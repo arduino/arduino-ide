@@ -1,9 +1,9 @@
 {
   "name": "arduino-poc",
   "version": "0.0.1",
-  "description": "A proof-of-concent demonstrating an Arduino IDE built using Theia",
+  "description": "A PoC demonstrating an Arduino IDE built using Eclipse Theia",
   "main": "index.js",
-  "repository": "https://github.com/TypeFox/arduino-poc.git",
+  "repository": "https://github.com/bcmi-labs/arduino-editor.git",
   "author": "Christian Weichel <christian.weichel@typefox.io>",
   "license": "MIT",
   "private": true,

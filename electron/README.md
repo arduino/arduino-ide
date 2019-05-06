@@ -34,7 +34,7 @@ One can create a GitHub release draft, tag the source, and upload the artifacts 
 
 ### Publishing the Release Draft:
 One has to manually publish the GitHub release.
- - Go to the [release page](https://github.com/TypeFox/arduino-poc/releases) of the arduino-poc repository.
+ - Go to the [release page](https://github.com/bcmi-labs/arduino-editor.git/releases) of the `arduino-editor` repository.
  - Select your release draft.
  - Click on `Edit`.
 

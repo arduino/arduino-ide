@@ -3,7 +3,7 @@
 
 /* tslint:disable */
 
-import * as grpc from "grpc";
+import * as grpc from "@grpc/grpc-js";
 import * as commands_pb from "./commands_pb";
 import * as common_pb from "./common_pb";
 import * as board_pb from "./board_pb";

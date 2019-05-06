@@ -4,6 +4,7 @@
   "main": "src-gen/frontend/electron-main.js",
   "author": "TypeFox",
   "dependencies": {
+    "google-protobuf": "^3.5.0",
     "arduino-ide-extension": "file:../working-copy/arduino-ide-extension"
   },
   "devDependencies": {
@@ -22,9 +23,14 @@
     "type": "git",
     "url": "git+https://github.com/TypeFox/arduino-poc.git"
   },
+  "// Notes:" : [
+    "The `electronVersion` version was pinned for `@grpc/grpc-js` -> Node.js version constraints.",
+    "`google-protobuf` was declared as it is not picked up by the `electron-builder` as a runtime dependency."
+  ],
   "build": {
     "productName": "Arduino-PoC",
     "appId": "arduino.PoC",
+    "electronVersion": "4.0.0",
     "asar": false,
     "directories": {
       "buildResources": "resources"
@@ -54,6 +60,12 @@
         ],
         "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}",
         "darkModeSupport": true
+    },
+    "linux": {
+      "target": [
+          "tar.xz"
+      ],
+      "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}"
     },
     "dmg": {
         "icon": "resources/icon.icns",

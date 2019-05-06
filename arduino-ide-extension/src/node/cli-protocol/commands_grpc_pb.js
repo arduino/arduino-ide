@@ -19,7 +19,7 @@
 //
 //
 'use strict';
-var grpc = require('grpc');
+var grpc = require('@grpc/grpc-js');
 var commands_pb = require('./commands_pb.js');
 var common_pb = require('./common_pb.js');
 var board_pb = require('./board_pb.js');

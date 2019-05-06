@@ -1,0 +1,82 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - electron # TODO: remove this!
+
+pr:
+- master
+
+jobs:
+- job: Build
+  strategy:
+    matrix:
+      linux:
+        imageName: 'ubuntu-16.04'
+      mac:
+        imageName: 'macos-10.13'
+      windows:
+        imageName: 'vs2017-win2016'
+  pool:
+    vmImage: $(imageName)
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '2.7'
+      architecture: 'x64'
+    displayName: '[Config] Use - Python 2.7'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+    displayName: '[Config] Use - Node.js 10.x'
+  - script: yarn
+    displayName: Build
+    env:
+      GITHUB_TOKEN: $(Personal.GitHub.Token)
+  - bash: |
+      yarn --cwd ./electron/packager/
+      yarn --cwd ./electron/packager/ package
+    displayName: Package
+    env:
+      GITHUB_TOKEN: $(Personal.GitHub.Token)
+      RELEASE_TAG: $(Release.Tag)
+  - bash: |
+      export ARDUINO_POC_NAME=$(./electron/packager/cli name)
+      echo "##vso[task.setvariable variable=ArduinoPoC.AppName]$ARDUINO_POC_NAME"
+    env:
+      RELEASE_TAG: $(Release.Tag)
+    displayName: '[Config] Use - ARDUINO_POC_NAME env'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: electron/build/dist/$(ArduinoPoC.AppName)
+      artifactName: 'Arduino-PoC - Applications'
+    displayName: Publish
+- job: Release
+  pool:
+    vmImage: ubuntu-16.04
+  dependsOn:
+    - Build
+  condition: and(in(variables['Build.Reason'], 'Manual', 'Schedule'), startsWith(variables['Release.Tag'], 'v'))
+  steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: Download
+    inputs:
+      artifactName: 'Arduino-PoC - Applications'
+      downloadPath: 'gh-release' 
+  - task: GithubRelease@0
+    inputs:
+      gitHubConnection: personal-access-token-service-connection
+      repositoryName: bcmi-labs/arduino-editor
+      assets: |
+        gh-release/Arduino-PoC - Applications/*.zip
+        gh-release/Arduino-PoC - Applications/*.dmg
+        gh-release/Arduino-PoC - Applications/*.tar.xz
+      target: $(Build.SourceVersion)
+      action: Edit
+      tagSource: auto
+      tag: $(Release.Tag)
+      assetUploadMode: delete
+      isDraft: true
+      addChangeLog: false
+    displayName: Release

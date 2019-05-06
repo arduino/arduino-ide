@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { ArduinoCoreClient } from './cli-protocol/commands_grpc_pb';
 import { InitResp, InitReq, Configuration, UpdateIndexReq, UpdateIndexResp } from './cli-protocol/commands_pb';
 import { WorkspaceServiceExt } from '../browser/workspace-service-ext';

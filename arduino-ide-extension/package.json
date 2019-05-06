@@ -4,6 +4,7 @@
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
   "dependencies": {
+    "@grpc/grpc-js": "^0.4.0",
     "@theia/core": "next",
     "@theia/editor": "next",
     "@theia/filesystem": "next",
@@ -14,8 +15,8 @@
     "p-queue": "^5.0.0"
   },
   "scripts": {
-    "generate-protoc": "./scripts/generate-protoc.sh",
-    "prepare": "yarn run clean && yarn generate-protoc && yarn run build",
+    "generate-protoc": "./scripts/generate-protoc.sh && node ./scripts/patch-grpc-js.js",
+    "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf lib",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "build": "tsc && cp -rf src/node/cli-protocol lib/node && yarn lint",
