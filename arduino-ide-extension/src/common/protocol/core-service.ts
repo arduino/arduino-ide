@@ -1,7 +1,7 @@
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
-    compile(options: CoreService.Compile.Options): Promise<string>;
+    compile(options: CoreService.Compile.Options): Promise<void>;
     upload(): Promise<void>;
 }
 

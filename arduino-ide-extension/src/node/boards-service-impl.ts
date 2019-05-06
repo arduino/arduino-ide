@@ -66,10 +66,10 @@ export class BoardsServiceImpl implements BoardsService {
         const [ platform, boardName ] = board.id.split(":");
 
         const req = new PlatformInstallReq();
+        req.setInstance(instance);
         req.setArchitecture(boardName);
         req.setPlatformPackage(platform);
         req.setVersion(board.availableVersions[0]);
-        req.setInstance(instance);
 
         console.info("Starting board installation", board);
         const resp = client.platformInstall(req);

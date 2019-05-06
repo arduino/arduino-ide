@@ -17,8 +17,11 @@ import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { WorkspaceServiceExt, WorkspaceServiceExtPath } from './workspace-service-ext';
 import { WorkspaceServiceExtImpl } from './workspace-service-ext-impl';
+import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 
 import '../../src/browser/style/index.css';
+import { ToolOutputService } from '../common/protocol/tool-output-service';
+import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -57,6 +60,14 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(CoreService)
         .toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, CoreServicePath))
         .inSingletonScope();
+
+    // Tool output service client
+    bind(ToolOutputServiceClientImpl).toSelf().inSingletonScope();
+    bind(ToolOutputServiceClient).toDynamicValue(context => {
+        const client = context.container.get(ToolOutputServiceClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, ToolOutputService.SERVICE_PATH, client);
+        return client;
+    }).inSingletonScope();
 
     // The workspace service extension
     bind(WorkspaceServiceExt).to(WorkspaceServiceExtImpl).inSingletonScope().onActivation(({ container }, workspaceServiceExt) => {

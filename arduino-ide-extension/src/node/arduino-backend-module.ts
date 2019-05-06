@@ -12,6 +12,9 @@ import { ConnectionContainerModule } from '@theia/core/lib/node/messaging/connec
 import { WorkspaceServiceExtPath, WorkspaceServiceExt } from '../browser/workspace-service-ext';
 import { CoreClientProviderImpl } from './core-client-provider-impl';
 import { CoreClientProviderPath, CoreClientProvider } from './core-client-provider';
+import { ToolOutputService, ToolOutputServiceClient, ToolOutputServiceServer } from '../common/protocol/tool-output-service';
+import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
+import { ToolOutputServiceServerImpl } from './tool-output-service-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoDaemon).toSelf().inSingletonScope();
@@ -50,6 +53,17 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         bindBackendService(CoreServicePath, CoreService);
     });
     bind(ConnectionContainerModule).toConstantValue(connectionConnectionModule);
+
+    // Tool output service -> feedback from the daemon, compile and flash
+    bind(ToolOutputServiceServer).to(ToolOutputServiceServerImpl).inSingletonScope();
+    bind(ConnectionHandler).toDynamicValue(context =>
+        new JsonRpcConnectionHandler<ToolOutputServiceClient>(ToolOutputService.SERVICE_PATH, client => {
+            const server = context.container.get<ToolOutputServiceServer>(ToolOutputServiceServer);
+            server.setClient(client);
+            client.onDidCloseConnection(() => server.disposeClient(client));
+            return server;
+        })
+    ).inSingletonScope();
 
     // Bind the workspace service extension to the backend per Theia connection.
     // So that we can access the workspace roots of the frontend.

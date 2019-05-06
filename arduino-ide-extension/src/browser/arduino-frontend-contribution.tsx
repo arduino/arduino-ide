@@ -11,6 +11,7 @@ import { ArduinoCommands } from './arduino-commands';
 import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
+import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 
 
 @injectable()
@@ -27,6 +28,9 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
 
     @inject(WorkspaceServiceExt)
     protected readonly workspaceServiceExt: WorkspaceServiceExt;
+
+    @inject(ToolOutputServiceClient)
+    protected readonly toolOutputServiceClient: ToolOutputServiceClient;
 
     @postConstruct()
     protected async init(): Promise<void> {

@@ -84,6 +84,24 @@ export class CoreClientProviderImpl implements CoreClientProvider {
                 updateResp.on('end', resolve);
             });
         }
+
+        // {
+        //     const installBuiltinPkgReq = new PlatformInstallReq();
+        //     installBuiltinPkgReq.setInstance(instance);
+        //     installBuiltinPkgReq.setPlatformPackage("builtin");
+        //     const resp = client.platformInstall(installBuiltinPkgReq);
+        //     resp.on('data', (r: PlatformInstallResp) => {
+        //         const prog = r.getProgress();
+        //         if (prog) {
+        //             console.info(`downloading ${prog.getFile()}: ${prog.getCompleted()}%`)
+        //         }
+        //     });
+        //     await new Promise<void>((resolve, reject) => {
+        //         resp.on('end', resolve);
+        //         resp.on('error', reject);
+        //     });
+        // }
+
         // TODO: revisit this!!!
         // `updateResp.on('data'` is called only when running, for instance, `compile`. It does not run eagerly.
         // await new Promise<void>((resolve, reject) => {

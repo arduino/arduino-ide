@@ -6,6 +6,7 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { DaemonLog } from './daemon-log';
+import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 
 const EXECUTABLE_PATH = resolve(join(__dirname, '..', '..', 'build', `arduino-cli.${os.platform()}`))
 
@@ -15,6 +16,9 @@ export class ArduinoDaemon implements BackendApplicationContribution {
     @inject(ILogger)
     @named('daemon')
     protected readonly logger: ILogger
+
+    @inject(ToolOutputServiceServer)
+    protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected isReady = new Deferred<boolean>();
 
@@ -28,10 +32,16 @@ export class ArduinoDaemon implements BackendApplicationContribution {
                 console.log(stdout);
             });
             if (daemon.stdout) {
-                daemon.stdout.on('data', data => DaemonLog.log(this.logger, data.toString()));
+                daemon.stdout.on('data', data => {
+                    this.toolOutputService.publishNewOutput("daeomn", data.toString());
+                    DaemonLog.log(this.logger, data.toString());
+                });
             }
             if (daemon.stderr) {
-                daemon.stderr.on('data', data => DaemonLog.log(this.logger, data.toString()));
+                daemon.stderr.on('data', data => {
+                    this.toolOutputService.publishNewOutput("daeomn error", data.toString());
+                    DaemonLog.log(this.logger, data.toString());
+                });
             }
             if (daemon.stderr) {
                 daemon.on('exit', (code, signal) => DaemonLog.log(this.logger, `Daemon exited with code: ${code}. Signal was: ${signal}.`));

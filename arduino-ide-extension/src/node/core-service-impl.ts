@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { CoreService } from '../common/protocol/core-service';
-import { CompileReq } from './cli-protocol/compile_pb';
+import { CompileReq, CompileResp } from './cli-protocol/compile_pb';
 import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
-import { PlatformInstallReq } from './cli-protocol/core_pb';
-import { LibraryInstallReq } from './cli-protocol/lib_pb';
+import * as path from 'path';
+import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 
 @injectable()
 export class CoreServiceImpl implements CoreService {
@@ -19,13 +19,17 @@ export class CoreServiceImpl implements CoreService {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    async compile(options: CoreService.Compile.Options): Promise<string> {
+    @inject(ToolOutputServiceServer)
+    protected readonly toolOutputService: ToolOutputServiceServer;
+
+    async compile(options: CoreService.Compile.Options): Promise<void> {
         console.log('compile', options);
         const { uri } = options;
-        const sketchpath = await this.fileSystem.getFsPath(options.uri);
-        if (!sketchpath) {
+        const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
+        if (!sketchFilePath) {
             throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
         }
+        const sketchpath = path.dirname(sketchFilePath);
 
         const { client, instance } = await this.coreClientProvider.getClient(uri);
         // const boards = await this.boardsService.connectedBoards();
@@ -34,38 +38,30 @@ export class CoreServiceImpl implements CoreService {
         // }
         // https://github.com/cmaglie/arduino-cli/blob/bd5e78701e7546787649d3cca6b21c5d22d0e438/cli/compile/compile.go#L78-L88
 
-        const installLibReq = new LibraryInstallReq();
-        installLibReq.setInstance(instance);
-        installLibReq.setName('arduino:samd');
-        const installResp = client.libraryInstall(installLibReq);
-        const xxx = await new Promise<string>((resolve, reject) => {
-            const chunks: Buffer[] = [];
-            installResp.on('data', (chunk: Buffer) => chunks.push(chunk));
-            installResp.on('error', error => reject(error));
-            installResp.on('end', () => resolve(Buffer.concat(chunks).toString('utf8').trim()))
-        });
-        console.log('xxx', xxx);
-
         const compilerReq = new CompileReq();
         compilerReq.setInstance(instance);
         compilerReq.setSketchpath(sketchpath);
-        compilerReq.setFqbn('arduino:samd'/*boards.current.name*/);
+        compilerReq.setFqbn('arduino:avr:uno'/*boards.current.name*/);
         // request.setShowproperties(false);
-        // request.setPreprocess(false);
+        compilerReq.setPreprocess(false);
         // request.setBuildcachepath('');
-        // request.setBuildpath('');
+        // compilerReq.setBuildpath('/tmp/build');
+        // compilerReq.setShowproperties(true);
         // request.setBuildpropertiesList([]);
         // request.setWarnings('none');
-        // request.setVerbose(true);
-        // request.setQuiet(false);
+        compilerReq.setVerbose(true);
+        compilerReq.setQuiet(false);
         // request.setVidpid('');
         // request.setExportfile('');
+
         const result = client.compile(compilerReq);
-        return new Promise<string>((resolve, reject) => {
-            const chunks: Buffer[] = [];
-            result.on('data', (chunk: Buffer) => chunks.push(chunk));
+        return new Promise<void>((resolve, reject) => {
+            result.on('data', (cr: CompileResp) => {
+                this.toolOutputService.publishNewOutput("compile", new Buffer(cr.getOutStream_asU8()).toString());
+                console.error(cr.getErrStream().toString());
+            });
             result.on('error', error => reject(error));
-            result.on('end', () => resolve(Buffer.concat(chunks).toString('utf8').trim()))
+            result.on('end', () => resolve());
         });
     }
 

@@ -52,6 +52,7 @@
     padding: 4px;
     font-size: 10px;
     font-weight: bold;
+    max-height: calc(1em + 4px);
 }
 
 .component-list-item .footer {
