@@ -1,0 +1,76 @@
+.arduino-list-widget {
+    color: var(--theia-ui-font-color1);
+}
+
+.arduino-list-widget .search-bar > input {
+    margin: 0px 5px 0px 5px;
+    width: 100%;
+}
+
+.component-list-item {
+    padding: 10px;
+    font-size: var(--theia-ui-font-size1);
+}
+
+.component-list-item:hover {
+    background: var(--theia-accent-color4);
+    cursor: pointer;
+}
+
+.component-list-item:hover .meta-info {
+    color: var(--theia-ui-font-color1);
+}
+
+.component-list-item .meta-info {
+    color: var(--theia-ui-font-color3);
+}
+
+.component-list-item .header {
+    padding-bottom: 2px;
+    display: flex;
+}
+
+.component-list-item .header .name {
+    font-weight: bold;
+}
+
+.component-list-item .header .author {
+    font-weight: bold;
+    color: var(--theia-ui-font-color2);
+}
+
+.component-list-item .header .version {
+    margin-left: auto;
+    justify-self: end;
+    color: var(--theia-ui-font-color2);
+}
+
+.component-list-item .header .installed {
+    margin-left: 4px;
+    justify-self: end;
+    background-color: var(--theia-accent-color2);
+    padding: 4px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.component-list-item .footer {
+    display: flex;
+}
+
+.component-list-item .footer a {
+    color: var(--theia-brand-color1);
+    text-decoration: none;
+    font-weight: 600;
+}
+.component-list-item .footer .install {
+    margin-left: auto;
+}
+
+.component-list-item a:hover {
+    text-decoration: underline;
+}
+
+.component-list-item strong.installed {
+    color: rgb(0, 151, 157)
+}

@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Backend",
+            "program": "${workspaceRoot}/arduino-ide-browser/src-gen/backend/main.js",
+            "args": [
+                "--hostname=0.0.0.0",
+                "--port=3000",
+                "--no-cluster",
+                "--no-app-auto-install"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/arduino-ide-browser/src-gen/backend/*.js",
+                "${workspaceRoot}/arduino-ide-browser/lib/**/*.js",
+                "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
+            ],
+            "smartStep": true,
+            "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std"
+        }
+    ]
+}

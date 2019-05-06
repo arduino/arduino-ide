@@ -1,0 +1,76 @@
+{
+  "name": "arduino-electron",
+  "description": "Arduino-PoC Electron",
+  "main": "src-gen/frontend/electron-main.js",
+  "author": "TypeFox",
+  "dependencies": {
+    "arduino-ide-extension": "file:../working-copy/arduino-ide-extension"
+  },
+  "devDependencies": {
+    "electron-builder": "^20.36.2"
+  },
+  "scripts": {
+    "build": "theia build --mode development",
+    "build:release": "theia build --mode production",
+    "package": "electron-builder --publish=never",
+    "package:preview": "electron-builder --dir"
+  },
+  "engines": {
+    "node": ">=8.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypeFox/arduino-poc.git"
+  },
+  "build": {
+    "productName": "Arduino-PoC",
+    "appId": "arduino.PoC",
+    "asar": false,
+    "directories": {
+      "buildResources": "resources"
+    },
+    "files": [
+      "src-gen/**/*",
+      "lib/**/*",
+      "!node_modules/**/*.{ts,map}",
+      "!node_modules/**/*.spec.js",
+      "!node_modules/@theia/**/test/*",
+      "!node_modules/@theia/**/src/*",
+      "!node_modules/@theia/java/download",
+      "!node_modules/@theia/**/lib/*browser/*",
+      "!node_modules/@typefox/monaco-editor-core/*",
+      "!node_modules/oniguruma/*",
+      "!node_modules/onigasm/*"
+    ],
+    "win": {
+        "target": [
+            "zip"
+        ],
+        "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}"
+    },
+    "mac": {
+        "target": [
+            "dmg"
+        ],
+        "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}",
+        "darkModeSupport": true
+    },
+    "dmg": {
+        "icon": "resources/icon.icns",
+        "iconSize": 128,
+        "contents": [
+            {
+                "x": 380,
+                "y": 240,
+                "type": "link",
+                "path": "/Applications"
+            },
+            {
+                "x": 122,
+                "y": 240,
+                "type": "file"
+            }
+        ]
+    }
+  }
+}

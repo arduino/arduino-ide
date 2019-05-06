@@ -1,0 +1,42 @@
+{
+  "name": "arduino-ide-extension",
+  "version": "0.0.1",
+  "description": "An extension for Theia building the Arduino IDE",
+  "license": "MIT",
+  "dependencies": {
+    "@theia/core": "next",
+    "@theia/editor": "next",
+    "@theia/filesystem": "next",
+    "@theia/languages": "next",
+    "@theia/monaco": "next",
+    "@theia/workspace": "next"
+  },
+  "scripts": {
+    "generate-protoc": "./scripts/generate-protoc.sh",
+    "prepare": "yarn run clean && yarn generate-protoc && yarn run build",
+    "clean": "rimraf lib",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
+    "build": "tsc && cp -rf src/node/cli-protocol lib/node && yarn lint",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/google-protobuf": "^3.2.7",
+    "grpc-tools": "^1.7.3",
+    "grpc_tools_node_protoc_ts": "^2.5.0",
+    "rimraf": "^2.6.1",
+    "tslint": "^5.5.0",
+    "typescript": "2.9.1"
+  },
+  "files": [
+    "lib",
+    "src",
+    "build",
+    "data"
+  ],
+  "theiaExtensions": [
+    {
+      "backend": "lib/node/arduino-backend-module",
+      "frontend": "lib/browser/arduino-frontend-module"
+    }
+  ]
+}

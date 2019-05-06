@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+// @ts-check
+const { versionInfo } = require('./utils');
+const yargs = require('yargs');
+
+(() => {
+    yargs
+        .command({
+            command: 'name',
+            describe: 'Returns with the application name we build. The name includes the full application name with the version, the platform and the file extension.',
+            handler: () => {
+                const { platform } = process;
+                let ext = undefined;
+                let os = undefined;
+                if (platform === 'darwin') {
+                    ext = 'dmg';
+                    os = 'mac';
+                } else if (platform === 'win32') {
+                    ext = 'zip';
+                    os = 'win';
+                } else {
+                    process.stderr.write(`Unexpected platform: ${platform}.`);
+                    process.exit(1);
+                }
+                process.stdout.write(`Arduino-PoC-${versionInfo().version}-${os}.${ext}`);
+                process.exit(0);
+            }
+        })
+        .demandCommand(1)
+        .argv;
+})();

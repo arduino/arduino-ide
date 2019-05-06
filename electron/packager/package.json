@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "packager",
+  "version": "1.0.0",
+  "description": "Packager for the Arduino-PoC electron application",
+  "main": "index.js",
+  "scripts": {
+    "package": "node index.js",
+    "cli": "./cli"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "depcheck": "^0.7.1",
+    "shelljs": "^0.8.3",
+    "yargs": "^12.0.5"
+  },
+  "engines": {
+    "node": ">=8.12.0"
+  }
+}

@@ -1,0 +1,19 @@
+# The working-copy folder we use to package the application.
+working-copy/
+
+# Ignore all Theia generated things.
+*.log
+src-gen/
+node_modules/
+build/yarn.lock
+webpack.config.js
+lib/
+
+# The electron-builder output.
+dist/
+
+# `dotenv` can provide dynamic input for the elecrton-builder. e.g.: commitish for the build.
+electron-builder.env
+
+# The generated `package.json` under the `build` folder.
+build/package.json

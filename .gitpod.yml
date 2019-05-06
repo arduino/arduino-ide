@@ -1,0 +1,20 @@
+image:
+  file: Dockerfile
+
+ports:
+- port: 3000
+  onOpen: open-browser
+
+tasks:
+  - init: >
+      yarn &&
+      yarn --cwd ./arduino-ide-browser start
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addComment: false
+    addBadge: false

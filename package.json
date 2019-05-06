@@ -1,0 +1,22 @@
+{
+  "name": "arduino-poc",
+  "version": "0.0.1",
+  "description": "A proof-of-concent demonstrating an Arduino IDE built using Theia",
+  "main": "index.js",
+  "repository": "https://github.com/TypeFox/arduino-poc.git",
+  "author": "Christian Weichel <christian.weichel@typefox.io>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.13.3"
+  },
+  "scripts": {
+      "prepare": "lerna run prepare",
+      "start": "cd arduino-ide-browser && yarn start"
+  },
+  "workspaces": [
+      "arduino-ide-electron",
+      "arduino-ide-browser",
+      "arduino-ide-extension"
+  ]
+}

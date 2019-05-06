@@ -1,0 +1,39 @@
+{
+    "private": true,
+    "name": "arduino-ide-electron",
+    "version": "0.0.1",
+    "license": "MIT",
+    "dependencies": {
+        "@theia/core": "next",
+        "@theia/editor": "next",
+        "@theia/electron": "next",
+        "@theia/file-search": "next",
+        "@theia/filesystem": "next",
+        "@theia/languages": "next",
+        "@theia/messages": "next",
+        "@theia/monaco": "next",
+        "@theia/navigator": "next",
+        "@theia/preferences": "next",
+        "@theia/process": "next",
+        "@theia/terminal": "next",
+        "@theia/workspace": "next",
+        "@theia/textmate-grammars": "next",
+        "arduino-ide-extension": "0.0.1"
+    },
+    "devDependencies": {
+        "@theia/cli": "next"
+    },
+    "scripts": {
+        "prepare": "theia build --mode development",
+        "start": "theia start --root-dir=../workspace",
+        "watch": "theia build --watch --mode development"
+    },
+    "theia": {
+        "target": "electron",
+        "backend": {
+            "config": {
+                "startupTimeout": -1
+            }
+        }
+    }
+}
