@@ -24,23 +24,15 @@ export class CoreServiceImpl implements CoreService {
         const { uri } = options;
         const sketchpath = await this.fileSystem.getFsPath(options.uri);
         if (!sketchpath) {
-            throw new Error(`Cannot resolve FS path for URI: ${uri}.`);
+            throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
         }
+
         const { client, instance } = await this.coreClientProvider.getClient(uri);
         // const boards = await this.boardsService.connectedBoards();
         // if (!boards.current) {
         //     throw new Error(`No selected board. The connected boards were: ${boards.boards}.`);
         // }
         // https://github.com/cmaglie/arduino-cli/blob/bd5e78701e7546787649d3cca6b21c5d22d0e438/cli/compile/compile.go#L78-L88
-
-        const installPlatformReq = new PlatformInstallReq();
-        installPlatformReq.setArchitecture('samd');
-        installPlatformReq.setVersion('1.6.0');
-        installPlatformReq.setInstance(instance);
-        const resp = client.platformInstall(installPlatformReq);
-        console.log(resp);
-
-
 
         const installLibReq = new LibraryInstallReq();
         installLibReq.setInstance(instance);

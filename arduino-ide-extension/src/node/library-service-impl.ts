@@ -43,4 +43,8 @@ export class LibraryServiceImpl implements LibraryService {
         };
     }
 
+    async install(board: Library): Promise<void> {
+
+    }
+
 }

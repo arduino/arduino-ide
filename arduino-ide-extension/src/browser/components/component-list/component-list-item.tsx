@@ -12,6 +12,10 @@ export class ComponentListItem extends React.Component<ComponentListItem.Props> 
         }
     }
 
+    private async install(item: ArduinoComponent) {
+        await this.props.install(item);
+    }
+
     render(): React.ReactNode {
         const { item } = this.props;
 
@@ -27,7 +31,8 @@ export class ComponentListItem extends React.Component<ComponentListItem.Props> 
         const description = !!item.description && <div className={style.DESCRIPTION_CLASS}>{item.description}</div>;
 
         const moreInfo = !!item.moreInfoLink && <a href={item.moreInfoLink} onClick={this.onClick}>More info</a>;
-        const install = item.installable && !item.installedVersion && <button className={style.INSTALL_BTN_CLASS}>INSTALL</button>;
+        const install = this.props.install && item.installable && !item.installedVersion &&
+            <button className={style.INSTALL_BTN_CLASS} onClick={this.install.bind(this, item)}>INSTALL</button>;
 
         return <div className={[style.LIST_ITEM_CLASS, style.NO_SELECT_CLASS].join(' ')}>
             <div className={style.HEADER_CLASS}>
@@ -52,6 +57,7 @@ export namespace ComponentListItem {
     export interface Props {
         readonly item: ArduinoComponent;
         readonly windowService: WindowService;
+        readonly install: (comp: ArduinoComponent) => Promise<void>;
     }
 
     export namespace Styles {

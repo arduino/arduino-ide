@@ -6,6 +6,8 @@ import { WorkspaceServiceExt } from '../browser/workspace-service-ext';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { CoreClientProvider, Client } from './core-client-provider';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
@@ -44,14 +46,15 @@ export class CoreClientProviderImpl implements CoreClientProvider {
 
         console.info(` >>> Creating and caching a new client for ${rootUri}...`);
         const client = new ArduinoCoreClient('localhost:50051', grpc.credentials.createInsecure());
+
         const config = new Configuration();
-        const path = await this.fileSystem.getFsPath(rootUri);
-        if (!path) {
+        const rootPath = await this.fileSystem.getFsPath(rootUri);
+        if (!rootPath) {
             throw new Error(`Could not resolve file-system path of URI: ${rootUri}.`);
         }
-        config.setSketchbookdir(path);
-        config.setDatadir(path);
-        config.setDownloadsdir(path);
+        config.setSketchbookdir(rootPath);
+        config.setDatadir(rootPath);
+        config.setDownloadsdir(rootPath);
 
         const initReq = new InitReq();
         initReq.setConfiguration(config);
@@ -60,19 +63,27 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         if (!instance) {
             throw new Error(`Could not retrieve instance from the initialize response.`);
         }
-        const updateReq = new UpdateIndexReq();
-        updateReq.setInstance(instance);
-        const updateResp = client.updateIndex(updateReq);
-        updateResp.on('data', (o: UpdateIndexResp) => {
-            const progress = o.getDownloadProgress();
-            if (progress) {
-                if (progress.getCompleted()) {
-                    console.log(`Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.`);
-                } else {
-                    console.log(`Downloading${progress.getFile() ? ` ${progress.getFile()}:` : ''} ${progress.getDownloaded()}.`);
+
+        // workaround to speed up startup on existing workspaces
+        if (!fs.existsSync(path.join(config.getDatadir(), "package_index.json"))) {
+            const updateReq = new UpdateIndexReq();
+            updateReq.setInstance(instance);
+            const updateResp = client.updateIndex(updateReq);
+            updateResp.on('data', (o: UpdateIndexResp) => {
+                const progress = o.getDownloadProgress();
+                if (progress) {
+                    if (progress.getCompleted()) {
+                        console.log(`Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.`);
+                    } else {
+                        console.log(`Downloading${progress.getFile() ? ` ${progress.getFile()}:` : ''} ${progress.getDownloaded()}.`);
+                    }
                 }
-            }
-        });
+            });
+            await new Promise<void>((resolve, reject) => {
+                updateResp.on('error', reject);
+                updateResp.on('end', resolve);
+            });
+        }
         // TODO: revisit this!!!
         // `updateResp.on('data'` is called only when running, for instance, `compile`. It does not run eagerly.
         // await new Promise<void>((resolve, reject) => {

@@ -3,6 +3,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { ComponentList } from './component-list';
 import { SearchBar } from './search-bar';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
+import { InstallationProgressDialog } from '../installation-progress-dialog';
 
 export class FilterableListContainer extends React.Component<FilterableListContainer.Props, FilterableListContainer.State> {
 
@@ -27,6 +28,7 @@ export class FilterableListContainer extends React.Component<FilterableListConta
             />
             <ComponentList
                 items={this.state.items}
+                install={this.install.bind(this)}
                 windowService={this.props.windowService}
             />
         </div>
@@ -40,6 +42,18 @@ export class FilterableListContainer extends React.Component<FilterableListConta
                 items
             });
         });
+    }
+
+    protected async install(comp: ArduinoComponent): Promise<void> {
+        const dialog = new InstallationProgressDialog(comp.name);
+        dialog.open();
+        try {
+            await this.props.service.install(comp);
+            const { items } = await this.props.service.search({ query: this.state.filterText });
+            this.setState({ items });
+        } finally {
+            dialog.close();
+        }
     }
 
 }
@@ -62,6 +76,7 @@ export namespace FilterableListContainer {
 
     export interface ComponentSource {
         search(req: { query: string }): Promise<{ items: ArduinoComponent[] }>
+        install(board: ArduinoComponent): Promise<void>;
     }
 
 }
