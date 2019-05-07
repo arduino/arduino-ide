@@ -4,40 +4,60 @@ import * as React from 'react';
 import { BoardsService, AttachedBoard } from '../../common/protocol/boards-service';
 
 export class ConnectedBoards extends React.Component<ConnectedBoards.Props, ConnectedBoards.State> {
-
     static TOOLBAR_ID: 'connected-boards-toolbar';
 
+    constructor(props: ConnectedBoards.Props) {
+        super(props);
+        this.state = { boardsLoading: false };
+    }
+
     render(): React.ReactNode {
+        let label = "no board available";
+        if (this.state.boardsLoading) {
+            label = "Loading ...";
+        } else if (!!this.state.current) {
+            label = this.state.current.name;
+        }
+
+        let content = [];
+        if (!!this.state.boards) {
+            content = this.state.boards.map((b, i) => <option value={i} key={i}>{b.name}</option>);
+        } else {
+            content = [ <option key="loading" value="0">{label}</option> ];
+        }
+
         return <div className={ConnectedBoards.Styles.CONNECTED_BOARDS_CLASS}>
-            {this.select(this.state ? this.state.boards : undefined, this.state ? this.state.current : undefined)}
+            <select disabled={!this.state.boards} onChange={this.onBoardSelect.bind(this)}>
+                { content }
+            </select>
         </div>;
     }
 
     componentDidMount(): void {
-        this.props.boardsService.attachedBoards().then(result => {
-            const { boards } = result;
-            this.setState({ boards });
-        });
+        this.reloadBoards();
     }
 
-    private select(boards: AttachedBoard[] | undefined, current: AttachedBoard | undefined): React.ReactNode {
-        // Initial pessimistic.
-        const options = [<option>Loading...</option>];
+    protected async reloadBoards() {
+        this.setState({ boardsLoading: true, boards: undefined, current: undefined });
+        const { boards } = await this.props.boardsService.getAttachedBoards()
+        this.setState({ boards, boardsLoading: false });
+
         if (boards) {
-            options.length = 0;
-            options.push(...boards.map(b => b.name).map(name => <option value={name} key={name}>{name}</option>));
+            this.selectBoard(boards[0]);
         }
-        const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-            const current = (boards || []).find(board => board.name === event.target.value);
-            this.setState({ current });
-        };
-        return <select
-            onChange={onChange}
-            value={current ? current.name : 'Loading...'}
-            name={current ? current.name : 'Loading...'}
-        >
-        {options}
-        </select>
+    }
+
+    protected async onBoardSelect(evt: React.ChangeEvent<HTMLSelectElement>) {
+        const selectedBoard = (this.state.boards || [])[parseInt(evt.target.value, 10)];
+        if (!selectedBoard) {
+            return;
+        }
+        this.selectBoard(selectedBoard);
+    }
+
+    protected async selectBoard(board: AttachedBoard) {
+        await this.props.boardsService.selectBoard(board);
+        this.setState({ current: board });
     }
 
 }
@@ -49,6 +69,7 @@ export namespace ConnectedBoards {
     }
 
     export interface State {
+        boardsLoading: boolean;
         boards?: AttachedBoard[];
         current?: AttachedBoard;
     }

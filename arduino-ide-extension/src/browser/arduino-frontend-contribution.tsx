@@ -75,10 +75,11 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         registry.registerCommand(ArduinoCommands.UPLOAD, {
             isVisible: widget => this.isArduinoEditor(widget),
             isEnabled: widget => this.isArduinoEditor(widget),
-            execute: widget => {
+            execute: async widget => {
                 const uri = this.toUri(widget);
                 if (uri) {
-                    this.messageService.info(`Uploading ${uri.toString()}`);
+                    const result = await this.coreService.upload({ uri: uri.toString() });
+                    console.log('upload result', result);
                 }
             }
         });

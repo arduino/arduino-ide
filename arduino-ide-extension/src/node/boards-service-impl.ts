@@ -10,7 +10,9 @@ export class BoardsServiceImpl implements BoardsService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
-    public async attachedBoards(): Promise<{ boards: AttachedBoard[] }> {
+    protected selectedBoard: AttachedBoard | undefined;
+
+    public async getAttachedBoards(): Promise<{ boards: AttachedBoard[] }> {
         const { client, instance } = await this.coreClientProvider.getClient();
 
         const req = new BoardListReq();
@@ -34,6 +36,14 @@ export class BoardsServiceImpl implements BoardsService {
         });
 
         return { boards: serialBoards.concat(networkBoards) };
+    }
+
+    async selectBoard(board: AttachedBoard): Promise<void> {
+        this.selectedBoard = board;
+    }
+
+    async getSelectBoard(): Promise<AttachedBoard | undefined> {
+        return this.selectedBoard;
     }
 
     async search(options: { query?: string }): Promise<{ items: Board[] }> {

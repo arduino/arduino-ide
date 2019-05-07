@@ -3,7 +3,10 @@ import { ArduinoComponent } from "./arduino-component";
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService {
-    attachedBoards(): Promise<{ boards: AttachedBoard[] }>;
+    getAttachedBoards(): Promise<{ boards: AttachedBoard[] }>;
+    selectBoard(board: AttachedBoard): Promise<void>;
+    getSelectBoard(): Promise<AttachedBoard | undefined>;
+
     search(options: { query?: string }): Promise<{ items: Board[] }>;
     install(board: Board): Promise<void>;
 }

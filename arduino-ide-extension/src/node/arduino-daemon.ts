@@ -33,13 +33,13 @@ export class ArduinoDaemon implements BackendApplicationContribution {
             });
             if (daemon.stdout) {
                 daemon.stdout.on('data', data => {
-                    this.toolOutputService.publishNewOutput("daeomn", data.toString());
+                    this.toolOutputService.publishNewOutput("daemon", data.toString());
                     DaemonLog.log(this.logger, data.toString());
                 });
             }
             if (daemon.stderr) {
                 daemon.stderr.on('data', data => {
-                    this.toolOutputService.publishNewOutput("daeomn error", data.toString());
+                    this.toolOutputService.publishNewOutput("daemon error", data.toString());
                     DaemonLog.log(this.logger, data.toString());
                 });
             }
