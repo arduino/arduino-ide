@@ -1,0 +1,48 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Arduino-PoC - Start Browser Example",
+            "type": "shell",
+            "command": "yarn --cwd ./arduino-ide-browser start",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            }
+        },
+        {
+            "label": "Arduino-PoC - Watch Theia Extension",
+            "type": "shell",
+            "command": "yarn --cwd ./arduino-ide-extension watch",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": false
+            }
+        },
+        {
+            "label": "Arduino-PoC - Watch Browser Example",
+            "type": "shell",
+            "command": "yarn --cwd ./arduino-ide-browser watch",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": false
+            }
+        },
+        {
+            "label": "Arduino-PoC - Watch All",
+            "type": "shell",
+            "dependsOn": [
+                "Arduino-PoC - Watch Theia Extension",
+                "Arduino-PoC - Watch Browser Example"
+            ]
+        }
+    ]
+}
