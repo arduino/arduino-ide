@@ -54,8 +54,8 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: CompileResp) => {
-                    this.toolOutputService.publishNewOutput("compile", new Buffer(cr.getOutStream_asU8()).toString());
-                    this.toolOutputService.publishNewOutput("compile error", new Buffer(cr.getErrStream_asU8()).toString());
+                    this.toolOutputService.publishNewOutput("compile", Buffer.from(cr.getOutStream_asU8()).toString());
+                    this.toolOutputService.publishNewOutput("compile error", Buffer.from(cr.getErrStream_asU8()).toString());
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
@@ -104,15 +104,15 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: UploadResp) => {
-                    this.toolOutputService.publishNewOutput("upload", new Buffer(cr.getOutStream_asU8()).toString());
-                    this.toolOutputService.publishNewOutput("upload error", new Buffer(cr.getErrStream_asU8()).toString());
+                    this.toolOutputService.publishNewOutput("upload", Buffer.from(cr.getOutStream_asU8()).toString());
+                    this.toolOutputService.publishNewOutput("upload error", Buffer.from(cr.getErrStream_asU8()).toString());
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
             this.toolOutputService.publishNewOutput("upload", "Upload complete\n");
         } catch (e) {
-            this.toolOutputService.publishNewOutput("upload error", `Uplaod error: ${e}\n`);
+            this.toolOutputService.publishNewOutput("upload error", `Upload error: ${e}\n`);
             throw e;
         }
     }
