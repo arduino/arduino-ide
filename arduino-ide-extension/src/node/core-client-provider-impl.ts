@@ -8,9 +8,12 @@ import URI from '@theia/core/lib/common/uri';
 import { CoreClientProvider, Client } from './core-client-provider';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as PQueue from 'p-queue';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
+
+    protected readonly clientRequestQueue = new PQueue({ autoStart: true, concurrency: 1 });
 
     @inject(FileSystem)
     protected readonly fileSystem: FileSystem;
@@ -21,20 +24,24 @@ export class CoreClientProviderImpl implements CoreClientProvider {
     protected clients = new Map<string, Client>();
 
     async getClient(workspaceRootOrResourceUri?: string): Promise<Client> {
-        const roots = await this.workspaceServiceExt.roots();
-        if (!workspaceRootOrResourceUri) {
-            return this.getOrCreateClient(roots[0]);
-        }
-        const root = roots
-            .sort((left, right) => right.length - left.length) // Longest "paths" first
-            .map(uri => new URI(uri))
-            .find(uri => uri.isEqualOrParent(new URI(workspaceRootOrResourceUri)));
-        if (!root) {
-            console.warn(`Could not retrieve the container workspace root for URI: ${workspaceRootOrResourceUri}.`);
-            console.warn(`Falling back to ${roots[0]}`);
-            return this.getOrCreateClient(roots[0]);
-        }
-        return this.getOrCreateClient(root.toString());
+        return this.clientRequestQueue.add(() => new Promise<Client>(async resolve => {
+            const roots = await this.workspaceServiceExt.roots();
+            if (!workspaceRootOrResourceUri) {
+                resolve(this.getOrCreateClient(roots[0]));
+                return;
+            }
+            const root = roots
+                .sort((left, right) => right.length - left.length) // Longest "paths" first
+                .map(uri => new URI(uri))
+                .find(uri => uri.isEqualOrParent(new URI(workspaceRootOrResourceUri)));
+            if (!root) {
+                console.warn(`Could not retrieve the container workspace root for URI: ${workspaceRootOrResourceUri}.`);
+                console.warn(`Falling back to ${roots[0]}`);
+                resolve(this.getOrCreateClient(roots[0]));
+                return;
+            }
+            resolve(this.getOrCreateClient(root.toString()));
+        }));
     }
 
     protected async getOrCreateClient(rootUri: string): Promise<Client> {

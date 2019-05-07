@@ -1,10 +1,23 @@
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { Library, LibraryService } from '../common/protocol/library-service';
+import { CoreClientProvider } from './core-client-provider';
+import { LibrarySearchReq, LibrarySearchResp } from './cli-protocol/lib_pb';
 
 @injectable()
 export class LibraryServiceImpl implements LibraryService {
 
+    @inject(CoreClientProvider)
+    protected readonly coreClientProvider: CoreClientProvider;
+
     async search(options: { query?: string; }): Promise<{ items: Library[] }> {
+        const { client, instance } = await this.coreClientProvider.getClient();
+
+        const req = new LibrarySearchReq();
+        req.setQuery(options.query || '');
+        req.setInstance(instance);
+        const resp = await new Promise<LibrarySearchResp>((resolve, reject) => client.librarySearch(req, (err, resp) => !!err ? reject(err) : resolve(resp)));
+        console.log(resp.getSearchOutputList());
+
         const { query } = options;
         const allItems: Library[] = [
             <Library>{
