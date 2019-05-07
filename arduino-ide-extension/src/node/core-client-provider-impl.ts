@@ -6,8 +6,6 @@ import { WorkspaceServiceExt } from '../browser/workspace-service-ext';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { CoreClientProvider, Client } from './core-client-provider';
-import * as fs from 'fs';
-import * as path from 'path';
 import * as PQueue from 'p-queue';
 
 @injectable()
@@ -72,49 +70,23 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         }
 
         // workaround to speed up startup on existing workspaces
-        if (!fs.existsSync(path.join(config.getDatadir(), "package_index.json"))) {
-            const updateReq = new UpdateIndexReq();
-            updateReq.setInstance(instance);
-            const updateResp = client.updateIndex(updateReq);
-            updateResp.on('data', (o: UpdateIndexResp) => {
-                const progress = o.getDownloadProgress();
-                if (progress) {
-                    if (progress.getCompleted()) {
-                        console.log(`Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.`);
-                    } else {
-                        console.log(`Downloading${progress.getFile() ? ` ${progress.getFile()}:` : ''} ${progress.getDownloaded()}.`);
-                    }
+        const updateReq = new UpdateIndexReq();
+        updateReq.setInstance(instance);
+        const updateResp = client.updateIndex(updateReq);
+        updateResp.on('data', (o: UpdateIndexResp) => {
+            const progress = o.getDownloadProgress();
+            if (progress) {
+                if (progress.getCompleted()) {
+                    console.log(`Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.`);
+                } else {
+                    console.log(`Downloading${progress.getFile() ? ` ${progress.getFile()}:` : ''} ${progress.getDownloaded()}.`);
                 }
-            });
-            await new Promise<void>((resolve, reject) => {
-                updateResp.on('error', reject);
-                updateResp.on('end', resolve);
-            });
-        }
-
-        // {
-        //     const installBuiltinPkgReq = new PlatformInstallReq();
-        //     installBuiltinPkgReq.setInstance(instance);
-        //     installBuiltinPkgReq.setPlatformPackage("builtin");
-        //     const resp = client.platformInstall(installBuiltinPkgReq);
-        //     resp.on('data', (r: PlatformInstallResp) => {
-        //         const prog = r.getProgress();
-        //         if (prog) {
-        //             console.info(`downloading ${prog.getFile()}: ${prog.getCompleted()}%`)
-        //         }
-        //     });
-        //     await new Promise<void>((resolve, reject) => {
-        //         resp.on('end', resolve);
-        //         resp.on('error', reject);
-        //     });
-        // }
-
-        // TODO: revisit this!!!
-        // `updateResp.on('data'` is called only when running, for instance, `compile`. It does not run eagerly.
-        // await new Promise<void>((resolve, reject) => {
-        //     updateResp.on('close', resolve);
-        //     updateResp.on('error', reject);
-        // });
+            }
+        });
+        await new Promise<void>((resolve, reject) => {
+            updateResp.on('error', reject);
+            updateResp.on('end', resolve);
+        });
 
         const result = {
             client,

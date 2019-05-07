@@ -1,7 +1,9 @@
 import { injectable, inject } from 'inversify';
 import { Library, LibraryService } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
-import { LibrarySearchReq, LibrarySearchResp } from './cli-protocol/lib_pb';
+import { LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
+    InstalledLibrary, LibraryInstallReq, LibraryInstallResp } from './cli-protocol/lib_pb';
+import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 
 @injectable()
 export class LibraryServiceImpl implements LibraryService {
@@ -9,55 +11,84 @@ export class LibraryServiceImpl implements LibraryService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
+    @inject(ToolOutputServiceServer)
+    protected readonly toolOutputService: ToolOutputServiceServer;
+
     async search(options: { query?: string; }): Promise<{ items: Library[] }> {
         const { client, instance } = await this.coreClientProvider.getClient();
+
+        const listReq = new LibraryListReq();
+        listReq.setInstance(instance);
+        const installedLibsResp = await new Promise<LibraryListResp>((resolve, reject) => client.libraryList(listReq, (err, resp) => !!err ? reject(err) : resolve(resp)));
+        const installedLibs = installedLibsResp.getLibrariesList();
+        const installedLibsIdx = new Map<string, InstalledLibrary>();
+        installedLibs.forEach(l => installedLibsIdx.set(l.getName(), l));
+
+        if (!options.query || options.query.length < 2) {
+            const items: Library[] = Array.from(installedLibsIdx.values()).map(lib => toLibrary({
+                name: lib.getName(),
+                installable: false,
+                installedVersion: lib.getInstalled()!.getVersion(),
+            }, lib.getInstalled()!));
+            return { items };
+        }
 
         const req = new LibrarySearchReq();
         req.setQuery(options.query || '');
         req.setInstance(instance);
         const resp = await new Promise<LibrarySearchResp>((resolve, reject) => client.librarySearch(req, (err, resp) => !!err ? reject(err) : resolve(resp)));
-        console.log(resp.getSearchOutputList());
+        const items = resp.getSearchOutputList()
+            .filter(item => !!item.getLatest())
+            .slice(0, 50)
+            .map(item => {
+                let installedVersion: string | undefined;
+                const installed = installedLibsIdx.get(item.getName());
+                if (installed) {
+                    installedVersion = installed.getInstalled()!.getVersion();
+                }
+                return toLibrary({
+                    name: item.getName(),
+                    installable: true,
+                    installedVersion
+                }, item.getLatest()!)
+            })
 
-        const { query } = options;
-        const allItems: Library[] = [
-            <Library>{
-                name: 'Keyboard',
-                availableVersions: ['1.0.0', '1.0.1', '1.02'],
-                author: 'Arduino',
-                summary: 'Allows an Arduino/Genuino board with USB capabilities to act as a Keyboard',
-                description: 'This library plugs on the HID library. It can be used with or without other HIG-based libraries (Mouse, Gamepad etc)',
-                installedVersion: '1.0.1',
-                moreInfoLink: 'https://www.arduino.cc/reference/en/language/functions/usb/keyboard/',
-                builtIn: true
-            },
-            <Library>{
-                name: 'Mouse',
-                availableVersions: ['1.0.0', '1.0.1'],
-                author: 'Arduino',
-                summary: 'Allows an Arduino board with USB capabilities to act as a Mouse. For Leonardo/Micro only',
-                description: 'This library plugs on the HID library. Can be used with ot without other HID-based libraries (Keyboard, Gamepad etc)',
-                installedVersion: '1.0.1',
-                moreInfoLink: 'https://www.arduino.cc/reference/en/language/functions/usb/mouse/',
-                builtIn: true
-            },
-            <Library>{
-                name: 'USBHost',
-                availableVersions: ['1.0.0', '1.0.1', '1.02', '1.0.3', '1.0.3', '1.0.4', '1.0.5'],
-                author: 'Arduino',
-                summary: 'Allows communication with USB peripherals like mice, keyboard, and thumbdrives.',
-                // tslint:disable-next-line:max-line-length
-                description: 'This USBHost library allows an Arduino Due board to appear as a USB host, enabling it to communicate with peripherals like USB mice and keyboards. USBHost does not support devices that ace corrected through USB hubs. This includes some keyboards that have an internal hub.',
-                moreInfoLink: 'https://www.arduino.cc/en/Reference/USBHost',
-                installable: true
+        return { items };
+    }
+
+    async install(library: Library): Promise<void> {
+        const { client, instance } = await this.coreClientProvider.getClient();
+
+        const req = new LibraryInstallReq();
+        req.setInstance(instance);
+        req.setName(library.name);
+        req.setVersion(library.availableVersions[0]);
+
+        const resp = client.libraryInstall(req);
+        resp.on('data', (r: LibraryInstallResp) => {
+            const prog = r.getProgress();
+            if (prog) {
+                this.toolOutputService.publishNewOutput("library download", `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n`)
             }
-        ];
-        return {
-            items: allItems.filter(item => !query || item.name.toLocaleLowerCase().indexOf(query.toLocaleLowerCase()) !== -1)
-        };
+        });
+        await new Promise<void>((resolve, reject) => {
+            resp.on('end', resolve);
+            resp.on('error', reject);
+        });
     }
 
-    async install(board: Library): Promise<void> {
+}
 
+function toLibrary(tpl: Partial<Library>, release: LibraryRelease): Library {
+    return {
+        name: "",
+        installable: false,
+        ...tpl,
+
+        author: release.getAuthor(),
+        availableVersions: [release.getVersion()],
+        description: release.getSentence(),
+        moreInfoLink: release.getWebsite(),
+        summary: release.getParagraph()
     }
-
 }

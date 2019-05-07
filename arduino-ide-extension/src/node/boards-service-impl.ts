@@ -80,14 +80,6 @@ export class BoardsServiceImpl implements BoardsService {
                 installedVersion,
             }
             return result;
-        }).sort((a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            } else if (a.name === b.name) {
-                return 0;
-            } else {
-                return 1;
-            }
         });
 
         return { items };

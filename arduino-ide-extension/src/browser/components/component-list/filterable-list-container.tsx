@@ -39,7 +39,15 @@ export class FilterableListContainer extends React.Component<FilterableListConta
             const { items } = result;
             this.setState({
                 filterText,
-                items
+                items: items.sort((a, b) => {
+                    if (a.name < b.name) {
+                        return -1;
+                    } else if (a.name === b.name) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                })
             });
         });
     }

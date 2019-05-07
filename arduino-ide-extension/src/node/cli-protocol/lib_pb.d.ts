@@ -325,6 +325,81 @@ export namespace SearchLibraryOutput {
     }
 }
 
+export class LibraryListReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): common_pb.Instance | undefined;
+    setInstance(value?: common_pb.Instance): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryListReq.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryListReq): LibraryListReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryListReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryListReq;
+    static deserializeBinaryFromReader(message: LibraryListReq, reader: jspb.BinaryReader): LibraryListReq;
+}
+
+export namespace LibraryListReq {
+    export type AsObject = {
+        instance?: common_pb.Instance.AsObject,
+    }
+}
+
+export class LibraryListResp extends jspb.Message { 
+    clearLibrariesList(): void;
+    getLibrariesList(): Array<InstalledLibrary>;
+    setLibrariesList(value: Array<InstalledLibrary>): void;
+    addLibraries(value?: InstalledLibrary, index?: number): InstalledLibrary;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryListResp.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryListResp): LibraryListResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryListResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryListResp;
+    static deserializeBinaryFromReader(message: LibraryListResp, reader: jspb.BinaryReader): LibraryListResp;
+}
+
+export namespace LibraryListResp {
+    export type AsObject = {
+        librariesList: Array<InstalledLibrary.AsObject>,
+    }
+}
+
+export class InstalledLibrary extends jspb.Message { 
+    getName(): string;
+    setName(value: string): void;
+
+
+    hasInstalled(): boolean;
+    clearInstalled(): void;
+    getInstalled(): LibraryRelease | undefined;
+    setInstalled(value?: LibraryRelease): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): InstalledLibrary.AsObject;
+    static toObject(includeInstance: boolean, msg: InstalledLibrary): InstalledLibrary.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: InstalledLibrary, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): InstalledLibrary;
+    static deserializeBinaryFromReader(message: InstalledLibrary, reader: jspb.BinaryReader): InstalledLibrary;
+}
+
+export namespace InstalledLibrary {
+    export type AsObject = {
+        name: string,
+        installed?: LibraryRelease.AsObject,
+    }
+}
+
 export class LibraryRelease extends jspb.Message { 
     getAuthor(): string;
     setAuthor(value: string): void;

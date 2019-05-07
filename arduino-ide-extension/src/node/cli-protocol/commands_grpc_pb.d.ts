@@ -32,6 +32,7 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     libraryUninstall: IArduinoCoreService_ILibraryUninstall;
     libraryUpgradeAll: IArduinoCoreService_ILibraryUpgradeAll;
     librarySearch: IArduinoCoreService_ILibrarySearch;
+    libraryList: IArduinoCoreService_ILibraryList;
 }
 
 interface IArduinoCoreService_IInit extends grpc.MethodDefinition<commands_pb.InitReq, commands_pb.InitResp> {
@@ -205,6 +206,15 @@ interface IArduinoCoreService_ILibrarySearch extends grpc.MethodDefinition<lib_p
     responseSerialize: grpc.serialize<lib_pb.LibrarySearchResp>;
     responseDeserialize: grpc.deserialize<lib_pb.LibrarySearchResp>;
 }
+interface IArduinoCoreService_ILibraryList extends grpc.MethodDefinition<lib_pb.LibraryListReq, lib_pb.LibraryListResp> {
+    path: string; // "/arduino.ArduinoCore/LibraryList"
+    requestStream: boolean; // false
+    responseStream: boolean; // false
+    requestSerialize: grpc.serialize<lib_pb.LibraryListReq>;
+    requestDeserialize: grpc.deserialize<lib_pb.LibraryListReq>;
+    responseSerialize: grpc.serialize<lib_pb.LibraryListResp>;
+    responseDeserialize: grpc.deserialize<lib_pb.LibraryListResp>;
+}
 
 export const ArduinoCoreService: IArduinoCoreService;
 
@@ -228,6 +238,7 @@ export interface IArduinoCoreServer {
     libraryUninstall: grpc.handleServerStreamingCall<lib_pb.LibraryUninstallReq, lib_pb.LibraryUninstallResp>;
     libraryUpgradeAll: grpc.handleServerStreamingCall<lib_pb.LibraryUpgradeAllReq, lib_pb.LibraryUpgradeAllResp>;
     librarySearch: grpc.handleUnaryCall<lib_pb.LibrarySearchReq, lib_pb.LibrarySearchResp>;
+    libraryList: grpc.handleUnaryCall<lib_pb.LibraryListReq, lib_pb.LibraryListResp>;
 }
 
 export interface IArduinoCoreClient {
@@ -277,6 +288,9 @@ export interface IArduinoCoreClient {
     librarySearch(request: lib_pb.LibrarySearchReq, callback: (error: grpc.ServiceError | null, response: lib_pb.LibrarySearchResp) => void): grpc.ClientUnaryCall;
     librarySearch(request: lib_pb.LibrarySearchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: lib_pb.LibrarySearchResp) => void): grpc.ClientUnaryCall;
     librarySearch(request: lib_pb.LibrarySearchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: lib_pb.LibrarySearchResp) => void): grpc.ClientUnaryCall;
+    libraryList(request: lib_pb.LibraryListReq, callback: (error: grpc.ServiceError | null, response: lib_pb.LibraryListResp) => void): grpc.ClientUnaryCall;
+    libraryList(request: lib_pb.LibraryListReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: lib_pb.LibraryListResp) => void): grpc.ClientUnaryCall;
+    libraryList(request: lib_pb.LibraryListReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: lib_pb.LibraryListResp) => void): grpc.ClientUnaryCall;
 }
 
 export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient {
@@ -327,4 +341,7 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public librarySearch(request: lib_pb.LibrarySearchReq, callback: (error: grpc.ServiceError | null, response: lib_pb.LibrarySearchResp) => void): grpc.ClientUnaryCall;
     public librarySearch(request: lib_pb.LibrarySearchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: lib_pb.LibrarySearchResp) => void): grpc.ClientUnaryCall;
     public librarySearch(request: lib_pb.LibrarySearchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: lib_pb.LibrarySearchResp) => void): grpc.ClientUnaryCall;
+    public libraryList(request: lib_pb.LibraryListReq, callback: (error: grpc.ServiceError | null, response: lib_pb.LibraryListResp) => void): grpc.ClientUnaryCall;
+    public libraryList(request: lib_pb.LibraryListReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: lib_pb.LibraryListResp) => void): grpc.ClientUnaryCall;
+    public libraryList(request: lib_pb.LibraryListReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: lib_pb.LibraryListResp) => void): grpc.ClientUnaryCall;
 }

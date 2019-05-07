@@ -4,7 +4,7 @@ export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
 export interface LibraryService {
     search(options: { query?: string }): Promise<{ items: Library[] }>;
-    install(board: Library): Promise<void>;
+    install(library: Library): Promise<void>;
 }
 
 export interface Library extends ArduinoComponent {

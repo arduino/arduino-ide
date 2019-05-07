@@ -182,6 +182,28 @@ function deserialize_arduino_LibraryInstallResp(buffer_arg) {
   return lib_pb.LibraryInstallResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_arduino_LibraryListReq(arg) {
+  if (!(arg instanceof lib_pb.LibraryListReq)) {
+    throw new Error('Expected argument of type arduino.LibraryListReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_arduino_LibraryListReq(buffer_arg) {
+  return lib_pb.LibraryListReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_arduino_LibraryListResp(arg) {
+  if (!(arg instanceof lib_pb.LibraryListResp)) {
+    throw new Error('Expected argument of type arduino.LibraryListResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_arduino_LibraryListResp(buffer_arg) {
+  return lib_pb.LibraryListResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_arduino_LibrarySearchReq(arg) {
   if (!(arg instanceof lib_pb.LibrarySearchReq)) {
     throw new Error('Expected argument of type arduino.LibrarySearchReq');
@@ -665,6 +687,17 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     requestDeserialize: deserialize_arduino_LibrarySearchReq,
     responseSerialize: serialize_arduino_LibrarySearchResp,
     responseDeserialize: deserialize_arduino_LibrarySearchResp,
+  },
+  libraryList: {
+    path: '/arduino.ArduinoCore/LibraryList',
+    requestStream: false,
+    responseStream: false,
+    requestType: lib_pb.LibraryListReq,
+    responseType: lib_pb.LibraryListResp,
+    requestSerialize: serialize_arduino_LibraryListReq,
+    requestDeserialize: deserialize_arduino_LibraryListReq,
+    responseSerialize: serialize_arduino_LibraryListResp,
+    responseDeserialize: deserialize_arduino_LibraryListResp,
   },
 };
 
