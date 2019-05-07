@@ -31,26 +31,29 @@ jobs:
       versionSpec: '10.x'
     displayName: '[Config] Use - Node.js 10.x'
   - script: yarn
-    displayName: Build
     env:
       GITHUB_TOKEN: $(Personal.GitHub.Token)
+    displayName: Build
   - bash: |
       yarn --cwd ./electron/packager/
       yarn --cwd ./electron/packager/ package
-    displayName: Package
     env:
       GITHUB_TOKEN: $(Personal.GitHub.Token)
       RELEASE_TAG: $(Release.Tag)
+    condition: in(variables['Build.Reason'], 'Manual', 'Schedule')
+    displayName: Package
   - bash: |
       export ARDUINO_POC_NAME=$(./electron/packager/cli name)
       echo "##vso[task.setvariable variable=ArduinoPoC.AppName]$ARDUINO_POC_NAME"
     env:
       RELEASE_TAG: $(Release.Tag)
+    condition: in(variables['Build.Reason'], 'Manual', 'Schedule')
     displayName: '[Config] Use - ARDUINO_POC_NAME env'
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: electron/build/dist/$(ArduinoPoC.AppName)
       artifactName: 'Arduino-PoC - Applications'
+    condition: in(variables['Build.Reason'], 'Manual', 'Schedule')
     displayName: Publish
 - job: Release
   pool:
