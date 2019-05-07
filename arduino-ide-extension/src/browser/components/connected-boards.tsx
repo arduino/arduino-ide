@@ -1,7 +1,7 @@
 import * as React from 'react';
 // TODO: make this `async`.
 // import { Async } from 'react-select/lib/Async';
-import { BoardsService, Board } from '../../common/protocol/boards-service';
+import { BoardsService, AttachedBoard } from '../../common/protocol/boards-service';
 
 export class ConnectedBoards extends React.Component<ConnectedBoards.Props, ConnectedBoards.State> {
 
@@ -14,16 +14,13 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
     }
 
     componentDidMount(): void {
-        this.props.boardsService.connectedBoards().then(result => {
-            const { boards, current } = result;
-            this.setState({
-                boards,
-                current
-            })
+        this.props.boardsService.attachedBoards().then(result => {
+            const { boards } = result;
+            this.setState({ boards });
         });
     }
 
-    private select(boards: Board[] | undefined, current: Board | undefined): React.ReactNode {
+    private select(boards: AttachedBoard[] | undefined, current: AttachedBoard | undefined): React.ReactNode {
         // Initial pessimistic.
         const options = [<option>Loading...</option>];
         if (boards) {
@@ -52,8 +49,8 @@ export namespace ConnectedBoards {
     }
 
     export interface State {
-        boards?: Board[];
-        current?: Board;
+        boards?: AttachedBoard[];
+        current?: AttachedBoard;
     }
 
     export namespace Styles {

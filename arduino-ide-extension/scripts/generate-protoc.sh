@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SCRIPT=`realpath -s $0`
-SCRIPTPATH=`dirname $SCRIPT`
 WORKDIR=/tmp/arduino-cli-protoc
 echo "Working in $WORKDIR"
 
@@ -9,7 +7,7 @@ echo "Working in $WORKDIR"
 mkdir -p $WORKDIR
 pushd $WORKDIR
 if [ ! -d arduino-cli ]; then
-    git clone https://github.com/cmaglie/arduino-cli
+    git clone https://github.com/typefox/arduino-cli
     cd arduino-cli
     git checkout daemon
     cd -

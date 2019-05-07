@@ -42,17 +42,9 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setInstance(instance);
         compilerReq.setSketchpath(sketchpath);
         compilerReq.setFqbn('arduino:avr:uno'/*boards.current.name*/);
-        // request.setShowproperties(false);
         compilerReq.setPreprocess(false);
-        // request.setBuildcachepath('');
-        // compilerReq.setBuildpath('/tmp/build');
-        // compilerReq.setShowproperties(true);
-        // request.setBuildpropertiesList([]);
-        // request.setWarnings('none');
         compilerReq.setVerbose(true);
         compilerReq.setQuiet(false);
-        // request.setVidpid('');
-        // request.setExportfile('');
 
         const result = client.compile(compilerReq);
         return new Promise<void>((resolve, reject) => {

@@ -1,7 +1,8 @@
 import { injectable, inject } from 'inversify';
-import { BoardsService, Board } from '../common/protocol/boards-service';
+import { BoardsService, Board, AttachedBoard, AttachedSerialBoard, AttachedNetworkBoard } from '../common/protocol/boards-service';
 import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/core_pb';
 import { CoreClientProvider } from './core-client-provider';
+import { BoardListReq, BoardListResp } from './cli-protocol/board_pb';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -9,8 +10,30 @@ export class BoardsServiceImpl implements BoardsService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
-    async connectedBoards(): Promise<{ boards: Board[], current?: Board }> {
-        return { boards: [] };
+    public async attachedBoards(): Promise<{ boards: AttachedBoard[] }> {
+        const { client, instance } = await this.coreClientProvider.getClient();
+
+        const req = new BoardListReq();
+        req.setInstance(instance);
+        const resp = await new Promise<BoardListResp>((resolve, reject) => client.boardList(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+
+        const serialBoards: AttachedBoard[] = resp.getSerialList().map(b =>  <AttachedSerialBoard>{
+            name: b.getName() || "unknown",
+            fqbn: b.getFqbn(),
+            port: b.getPort(),
+            serialNumber: b.getSerialnumber(),
+            productID: b.getProductid(),
+            vendorID: b.getVendorid()
+        });
+        const networkBoards: AttachedBoard[] = resp.getNetworkList().map(b => <AttachedNetworkBoard>{
+            name: b.getName(),
+            fqbn: b.getFqbn(),
+            address: b.getAddress(),
+            info: b.getInfo(),
+            port: b.getPort(),
+        });
+
+        return { boards: serialBoards.concat(networkBoards) };
     }
 
     async search(options: { query?: string }): Promise<{ items: Board[] }> {
