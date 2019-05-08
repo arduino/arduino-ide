@@ -10,6 +10,8 @@ import * as PQueue from 'p-queue';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Instance } from './cli-protocol/common_pb';
 import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as os from 'os';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
@@ -66,20 +68,12 @@ export class CoreClientProviderImpl implements CoreClientProvider {
             throw new Error(`Could not resolve filesystem path of URI: ${rootUri}.`);
         }
 
-        const defaultDownloadsDirUri = await this.workspaceServiceExt.defaultDownloadsDirUri();
-        const defaultDownloadsDirPath = await this.fileSystem.getFsPath(defaultDownloadsDirUri);
-        if (!defaultDownloadsDirPath) {
-            throw new Error(`Could not resolve filesystem path of URI: ${defaultDownloadsDirUri}.`);
-        }
+        const defaultDownloadsDirPath = path.resolve(os.homedir(), 'Arduino-PoC', 'downloads');
         if (!fs.existsSync(defaultDownloadsDirPath)) {
             fs.mkdirpSync(defaultDownloadsDirPath);
         }
 
-        const defaultDataDirUri = await this.workspaceServiceExt.defaultDataDirUri();
-        const defaultDataDirPath = await this.fileSystem.getFsPath(defaultDataDirUri);
-        if (!defaultDataDirPath) {
-            throw new Error(`Could not resolve filesystem path of URI: ${defaultDataDirUri}.`);
-        }
+        const defaultDataDirPath = path.resolve(os.homedir(), 'Arduino-PoC', 'data')
         if (!fs.existsSync(defaultDataDirPath)) {
             fs.mkdirpSync(defaultDataDirPath);
         }
