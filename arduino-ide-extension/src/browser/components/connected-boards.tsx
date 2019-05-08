@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { BoardsService, Board } from '../../common/protocol/boards-service';
-import { SelectBoardDialog } from './select-board-dialog';
+// import { SelectBoardDialog } from './select-board-dialog';
+import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 
 export class ConnectedBoards extends React.Component<ConnectedBoards.Props, ConnectedBoards.State> {
     static TOOLBAR_ID: 'connected-boards-toolbar';
@@ -25,7 +26,9 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
         }
 
         return <div className={ConnectedBoards.Styles.CONNECTED_BOARDS_CLASS}>
-            <select disabled={!this.state.boards} onChange={this.onBoardSelect.bind(this)} value={this.state.selection}>
+            <select disabled={!this.state.boards}
+                onChange={this.onBoardSelect.bind(this)}
+                value={this.state.selection}>
                 <optgroup label="Attached boards">
                     { content }
                 </optgroup>
@@ -57,7 +60,7 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
         if (selection === "select-other" || selection === "selected-other") {
             let selectedBoard = this.state.otherBoard;
             if (selection === "select-other" || !selectedBoard) {
-                selectedBoard = await new SelectBoardDialog(this.props.boardsService).open();
+                selectedBoard = await this.selectedInstalledBoard();
             }
             if (!selectedBoard) {
                 return;
@@ -76,12 +79,27 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
         this.setState({selection});
     }
 
+    protected async selectedInstalledBoard(): Promise<Board | undefined> {
+        const {items} = await this.props.boardsService.search({});
+
+        const idx = new Map<string, Board>();
+        items.filter(pkg => !!pkg.installedVersion).forEach(pkg => pkg.boards.forEach(brd => idx.set(`${brd.name}`, brd) ));
+
+        const selection = await this.props.quickPickService.show(Array.from(idx.keys()));
+        if (!selection) {
+            return;
+        }
+
+        return idx.get(selection);
+    }
+
 }
 
 export namespace ConnectedBoards {
 
     export interface Props {
         readonly boardsService: BoardsService;
+        readonly quickPickService: QuickPickService;
     }
 
     export interface State {

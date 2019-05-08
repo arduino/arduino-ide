@@ -13,6 +13,7 @@ import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { ConfirmDialog } from '@theia/core/lib/browser';
+import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 
 
 @injectable()
@@ -32,6 +33,9 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
 
     @inject(ToolOutputServiceClient)
     protected readonly toolOutputServiceClient: ToolOutputServiceClient;
+
+    @inject(QuickPickService)
+    protected readonly quickPickService: QuickPickService;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -56,7 +60,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         });
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
-            render: () => <ConnectedBoards boardsService={this.boardService}/>,
+            render: () => <ConnectedBoards boardsService={this.boardService} quickPickService={this.quickPickService} />,
             isVisible: widget => this.isArduinoEditor(widget)
         })
     }

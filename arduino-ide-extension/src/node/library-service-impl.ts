@@ -24,15 +24,6 @@ export class LibraryServiceImpl implements LibraryService {
         const installedLibsIdx = new Map<string, InstalledLibrary>();
         installedLibs.forEach(l => installedLibsIdx.set(l.getName(), l));
 
-        if (!options.query || options.query.length < 2) {
-            const items: Library[] = Array.from(installedLibsIdx.values()).map(lib => toLibrary({
-                name: lib.getName(),
-                installable: false,
-                installedVersion: lib.getInstalled()!.getVersion(),
-            }, lib.getInstalled()!));
-            return { items };
-        }
-
         const req = new LibrarySearchReq();
         req.setQuery(options.query || '');
         req.setInstance(instance);
