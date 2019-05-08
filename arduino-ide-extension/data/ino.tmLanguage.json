@@ -25,6 +25,10 @@
 			"name": "keyword.control.c"
 		},
 		{
+			"match": "\\b(loop|setup)\\b",
+			"name": "support.function"
+		},
+		{
 			"include": "#storage_types"
 		},
 		{

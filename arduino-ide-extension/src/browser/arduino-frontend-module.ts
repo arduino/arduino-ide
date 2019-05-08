@@ -24,6 +24,8 @@ import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 import { BoardsNotificationService } from './boards-notification-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { AWorkspaceService } from './arduino-workspace-service';
+import { ThemeService } from '@theia/core/lib/browser/theming';
+import { ArduinoTheme } from './arduino-theme';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -86,4 +88,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     });
 
     rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();
+    
+    const themeService = ThemeService.get();
+    themeService.register(...ArduinoTheme.themes);
 });

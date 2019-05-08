@@ -1,0 +1,197 @@
+/*
+The following CSS variables define the main public API for styling Theia.
+These variables should be used by all extensions wherever possible. In other
+words, extensions should not define custom colors, sizes, etc. unless
+absolutely necessary. This enables users to adapt the visual theme of Theia
+by changing these variables.
+
+Many variables appear in ordered sequences (0,1,2,...). For most of these
+sequences, colors go from dark to bright for dark themes, and from bright to
+dark for bright themes. A few sequences are used to create contrast against
+the others, e.g. font and accent colors, and thus their brightness goes the
+other way around.
+
+Throughout Theia, we are mostly following principles from Google's Material
+Design when selecting colors. We are not, however, following all of MD as it
+is not optimized for dense, information rich UIs.
+*/
+
+:root {
+    /* Custom Theme Colors */
+    --theia-arduino-light: rgb(0, 102, 105);
+    --theia-arduino-light1: rgb(0, 164, 167);
+    /* Borders: Width and color (bright to dark) */
+    --theia-border-width: 1px;
+    --theia-panel-border-width: 2px;
+    --theia-border-color0: var(--md-grey-100);
+    --theia-border-color1: var(--md-grey-200);
+    --theia-border-color2: var(--md-grey-300);
+    --theia-border-color3: var(--md-grey-500);
+    /* UI fonts: Family, size and color (dark to bright)
+        ---------------------------------------------------
+         The UI font CSS variables are used for the typography all of the Theia
+         user interface elements that are not directly user-generated content.
+      */
+    --theia-ui-font-scale-factor: 1.2;
+    --theia-ui-font-size0: calc(var(--theia-ui-font-size1) / var(--theia-ui-font-scale-factor));
+    --theia-ui-font-size1: 13px;
+    /* Base font size */
+    --theia-ui-font-size2: calc(var(--theia-ui-font-size1) * var(--theia-ui-font-scale-factor));
+    --theia-ui-font-size3: calc(var(--theia-ui-font-size2) * var(--theia-ui-font-scale-factor));
+    --theia-ui-icon-font-size: 14px;
+    /* Ensures px perfect FontAwesome icons */
+    --theia-ui-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --theia-ui-font-color0: var(--md-grey-900);
+    --theia-ui-font-color1: var(--md-grey-700);
+    --theia-ui-font-color2: var(--md-grey-500);
+    --theia-ui-font-color3: var(--md-grey-300);
+    /* Special font colors */
+    --theia-ui-icon-font-color: #ffffff;
+    --theia-ui-bar-font-color0: var(--theia-ui-font-color0);
+    --theia-ui-bar-font-color1: var(--theia-ui-font-color1);
+    /* Use the inverse UI colors against the brand/accent/warn/error colors. */
+    --theia-inverse-ui-font-color0: rgba(255, 255, 255, 1.0);
+    --theia-inverse-ui-font-color2: rgba(255, 255, 255, 0.7);
+    --theia-inverse-ui-font-color3: rgba(255, 255, 255, 0.5);
+    /* Content fonts: Family, size and color (dark to bright)
+         Content font variables are used for typography of user-generated content.
+      */
+    --theia-content-font-size: 13px;
+    --theia-content-line-height: 1.5;
+    --theia-content-font-color0: black;
+    --theia-content-font-color1: black;
+    --theia-content-font-color2: var(--md-grey-700);
+    --theia-content-font-color3: var(--md-grey-500);
+    --theia-code-font-size: 13px;
+    --theia-code-line-height: 17px;
+    --theia-code-padding: 5px;
+    --theia-code-font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+    --theia-terminal-font-family: monospace;
+    --theia-ui-padding: 6px;
+    /* Tab Icon Colors */
+    --theia-tab-icon-color: var(--theia-ui-font-color1);
+    --theia-tab-font-color: #000;
+    /* Main layout colors (bright to dark)
+        ------------------------------------ */
+    --theia-layout-color0: #ffffff;
+    --theia-layout-color1: #f3f3f3;
+    --theia-layout-color2: #ececec;
+    --theia-layout-color3: #dcdcdc;
+    --theia-layout-color4: #dcdcdc;
+    /* Brand colors */
+    --theia-brand-color0: var(--md-blue-700);
+    --theia-brand-color1: var(--md-blue-500);
+    --theia-brand-color2: var(--md-blue-300);
+    --theia-brand-color3: var(--md-blue-100);
+    /* Secondary Brand colors */
+    --theia-secondary-brand-color0: var(--md-grey-700);
+    --theia-secondary-brand-color1: var(--md-grey-500);
+    --theia-secondary-brand-color2: var(--md-grey-300);
+    --theia-secondary-brand-color3: var(--md-grey-100);
+    /* Accent colors (dark to bright): Use these to create contrast to layout colors. */
+    --theia-accent-color0: rgb(0, 102, 105);
+    --theia-accent-color1: rgb(0, 164, 167, 1.0);
+    --theia-accent-color2: rgb(0, 164, 167, 0.8);
+    --theia-accent-color3: rgb(0, 164, 167, 0.6);
+    --theia-accent-color4: rgb(0, 164, 167, 0.4);
+    /* Accent colors with opacity */
+    --theia-transparent-accent-color0: hsla(210, 63%, 46%, 0.3);
+    --theia-transparent-accent-color1: hsla(207, 66%, 56%, 0.3);
+    --theia-transparent-accent-color2: hsla(207, 64%, 85%, 0.3);
+    --theia-transparent-accent-color3: hsla(205, 70%, 91%, 0.3);
+    /* State colors (warn, error, success, info)
+        ------------------------------------------ */
+    --theia-warn-color0: var(--md-amber-500);
+    --theia-warn-color1: var(--md-amber-400);
+    --theia-warn-color2: var(--md-amber-300);
+    --theia-warn-color3: var(--md-amber-200);
+    --theia-warn-font-color0: var(--md-grey-900);
+    --theia-error-color0: var(--md-red-400);
+    --theia-error-color1: var(--md-red-300);
+    --theia-error-color2: var(--md-red-200);
+    --theia-error-color3: var(--md-red-100);
+    --theia-error-font-color0: var(--md-grey-300);
+    --theia-success-color0: var(--md-green-500);
+    --theia-success-color1: var(--md-green-300);
+    --theia-success-color2: var(--md-green-100);
+    --theia-success-color3: var(--md-green-50);
+    --theia-success-font-color0: var(--md-grey-300);
+    --theia-info-color0: var(--md-cyan-700);
+    --theia-info-color1: var(--md-cyan-500);
+    --theia-info-color2: var(--md-cyan-300);
+    --theia-info-color3: var(--md-cyan-100);
+    --theia-info-font-color0: var(--md-grey-300);
+    --theia-disabled-color0: var(--md-grey-500);
+    --theia-disabled-color1: var(--md-grey-300);
+    --theia-disabled-color2: var(--md-grey-200);
+    --theia-disabled-color3: var(--md-grey-50);
+    --theia-added-color0: rgba(0, 255, 0, 0.8);
+    --theia-removed-color0: rgba(230, 0, 0, 0.8);
+    --theia-modified-color0: rgba(0, 100, 150, 0.8);
+    /* Background for selected text */
+    --theia-selected-text-background: var(--theia-accent-color3);
+    /* Colors to highlight words in widgets like tree or editors */
+    --theia-word-highlight-color0: rgba(168, 172, 148, 0.7);
+    --theia-word-highlight-color1: rgba(253, 255, 0, 0.2);
+    --theia-word-highlight-match-color0: rgba(234, 92, 0, 0.33);
+    --theia-word-highlight-match-color1: rgba(234, 92, 0, 0.5);
+    --theia-word-highlight-replace-color0: rgba(155, 185, 85, 0.2);
+    /* Scroll-bars */
+    --theia-scrollbar-width: 10px;
+    --theia-scrollbar-rail-width: 10px;
+    --theia-scrollbar-thumb-color: hsla(0, 0%, 61%, .4);
+    --theia-scrollbar-rail-color: transparent;
+    --theia-scrollbar-active-thumb-color: hsla(0, 0%, 39%, .4);
+    --theia-scrollbar-active-rail-color: transparent;
+    /* Menu */
+    --theia-menu-color0: var(--theia-layout-color3);
+    --theia-menu-color1: var(--theia-layout-color0);
+    --theia-menu-color2: var(--theia-layout-color3);
+    /* Statusbar */
+    --theia-statusbar-color: var(--theia-github-light);
+    --theia-statusBar-font-color: var(--theia-inverse-ui-font-color0);
+    --theia-statusBar-font-size: 12px;
+    /* Buttons */
+    --theia-ui-button-color: var(--theia-github-light);
+    --theia-ui-button-color-hover: var(--theia-github-light1);
+    --theia-ui-button-font-color: var(--theia-inverse-ui-font-color0);
+    --theia-ui-button-color-secondary: var(--theia-secondary-brand-color1);
+    --theia-ui-button-color-secondary-hover: var(--theia-secondary-brand-color0);
+    --theia-ui-button-font-color-secondary: var(--theia-inverse-ui-font-color0);
+    --theia-ui-button-color-disabled: var(--theia-accent-color3);
+    --theia-ui-button-font-color-disabled: var(--theia-ui-font-color2);
+    --theia-ui-button-color-secondary-disabled: var(--theia-disabled-color1);
+    --theia-ui-button-font-color-secondary-disabled: var(--theia-ui-font-color2);
+    /* Expand/collapse element */
+    --theia-ui-expand-button-color: var(--theia-accent-color4);
+    --theia-ui-expand-button-font-color: var(--theia-ui-font-color1);
+    /* Dialogs */
+    --theia-ui-dialog-header-color: var(--theia-github-light);
+    --theia-ui-dialog-header-font-color: var(--theia-inverse-ui-font-color0);
+    --theia-ui-dialog-color: var(--theia-layout-color0);
+    --theia-ui-dialog-font-color: var(--theia-ui-font-color1);
+    /* Variables */
+    --theia-variable-name-color: #9B46B0;
+    --theia-variable-value-color: rgba(108, 108, 108, 0.8);
+    --theia-number-variable-color: #09885A;
+    --theia-boolean-variable-color: #0000FF;
+    --theia-string-variable-color: #A31515;
+    /* ANSI color */
+    --theia-ansi-black-color: gray;
+    --theia-ansi-red-color: #BE1717;
+    --theia-ansi-green-color: #338A2F;
+    --theia-ansi-yellow-color: #BEB817;
+    --theia-ansi-blue-color: darkblue;
+    --theia-ansi-magenta-color: darkmagenta;
+    --theia-ansi-cyan-color: darkcyan;
+    --theia-ansi-white-color: #BDBDBD;
+    /* ANSI background color */
+    --theia-ansi-black-background-color: gray;
+    --theia-ansi-red-background-color: #BE1717;
+    --theia-ansi-green-background-color: #338A2F;
+    --theia-ansi-yellow-background-color: #BEB817;
+    --theia-ansi-blue-background-color: darkblue;
+    --theia-ansi-magenta-background-color: darkmagenta;
+    --theia-ansi-cyan-background-color: darkcyan;
+    --theia-ansi-white-background-color: #BDBDBD;
+  }

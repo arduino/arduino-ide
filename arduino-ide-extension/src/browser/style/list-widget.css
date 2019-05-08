@@ -53,6 +53,7 @@
     font-size: 10px;
     font-weight: bold;
     max-height: calc(1em + 4px);
+    color: var(--theia-layout-color0);
 }
 
 .component-list-item .footer {
