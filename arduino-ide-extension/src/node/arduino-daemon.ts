@@ -1,5 +1,5 @@
 import * as os from 'os';
-import { exec } from 'child_process';
+import { exec, ChildProcess } from 'child_process';
 import { join, resolve } from 'path';
 import { inject, injectable, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -19,6 +19,8 @@ export class ArduinoDaemon implements BackendApplicationContribution {
 
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
+
+    protected process: ChildProcess | undefined;
 
     protected isReady = new Deferred<boolean>();
 
@@ -46,11 +48,22 @@ export class ArduinoDaemon implements BackendApplicationContribution {
             if (daemon.stderr) {
                 daemon.on('exit', (code, signal) => DaemonLog.log(this.logger, `Daemon exited with code: ${code}. Signal was: ${signal}.`));
             }
+            this.process = daemon;
+
             await new Promise((resolve, reject) => setTimeout(resolve, 2000));
             this.isReady.resolve();
         } catch (error) {
             this.isReady.reject(error || new Error('failed to start arduino-cli'));
         }
+    }
+
+    onStop() {
+        if (!this.process) {
+            return;
+        }
+
+        DaemonLog.log(this.logger, `Shutting down daemon.`);
+        this.process.kill("SIGTERM");
     }
 
 }
