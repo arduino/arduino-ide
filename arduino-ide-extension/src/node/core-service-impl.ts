@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/compile_pb';
-import { BoardsService, AttachedSerialBoard } from '../common/protocol/boards-service';
+import { BoardsService, AttachedSerialBoard, AttachedNetworkBoard } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
 import * as path from 'path';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
@@ -51,17 +51,25 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setQuiet(false);
 
         const result = client.compile(compilerReq);
-        return new Promise<void>((resolve, reject) => {
-            result.on('data', (cr: CompileResp) => {
-                this.toolOutputService.publishNewOutput("compile", new Buffer(cr.getOutStream_asU8()).toString());
-                console.error(cr.getErrStream().toString());
+        try {
+            await new Promise<void>((resolve, reject) => {
+                result.on('data', (cr: CompileResp) => {
+                    this.toolOutputService.publishNewOutput("compile", new Buffer(cr.getOutStream_asU8()).toString());
+                    this.toolOutputService.publishNewOutput("compile error", new Buffer(cr.getErrStream_asU8()).toString());
+                });
+                result.on('error', error => reject(error));
+                result.on('end', () => resolve());
             });
-            result.on('error', error => reject(error));
-            result.on('end', () => resolve());
-        });
+            this.toolOutputService.publishNewOutput("compile", "Compilation complete\n");
+        } catch (e) {
+            this.toolOutputService.publishNewOutput("compile error", `Compilation error: ${e}\n`);
+            throw e;
+        }
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
+        await this.compile({uri: options.uri});
+
         console.log('upload', options);
         const { uri } = options;
         const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
@@ -86,18 +94,27 @@ export class CoreServiceImpl implements CoreService {
         req.setFqbn(currentBoard.fqbn);
         if (AttachedSerialBoard.is(currentBoard)) {
             req.setPort(currentBoard.port);
-        } else {
+        } else if (AttachedNetworkBoard.is(currentBoard)) {
             throw new Error("can only upload to serial boards");
+        } else {
+            throw new Error("board is not attached");
         }
         const result = client.upload(req);
-        return new Promise<void>((resolve, reject) => {
-            result.on('data', (cr: UploadResp) => {
-                this.toolOutputService.publishNewOutput("upload", new Buffer(cr.getOutStream_asU8()).toString());
-                this.toolOutputService.publishNewOutput("upload error", new Buffer(cr.getErrStream_asU8()).toString());
+
+        try {
+            await new Promise<void>((resolve, reject) => {
+                result.on('data', (cr: UploadResp) => {
+                    this.toolOutputService.publishNewOutput("upload", new Buffer(cr.getOutStream_asU8()).toString());
+                    this.toolOutputService.publishNewOutput("upload error", new Buffer(cr.getErrStream_asU8()).toString());
+                });
+                result.on('error', error => reject(error));
+                result.on('end', () => resolve());
             });
-            result.on('error', error => reject(error));
-            result.on('end', () => resolve());
-        });
+            this.toolOutputService.publishNewOutput("upload", "Upload complete\n");
+        } catch (e) {
+            this.toolOutputService.publishNewOutput("upload error", `Uplaod error: ${e}\n`);
+            throw e;
+        }
     }
 
 }

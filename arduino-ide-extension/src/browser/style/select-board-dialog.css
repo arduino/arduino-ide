@@ -1,0 +1,13 @@
+
+.select-board-dialog {
+    width: 600px;
+}
+
+.select-board-dialog input {
+    width: calc(100% - 8px);
+    margin-bottom: 5px;
+}
+
+.select-board-dialog select {
+    width: 100%;
+}

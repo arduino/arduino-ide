@@ -320,11 +320,10 @@ export class SearchOutput extends jspb.Message {
     getAuthor(): string;
     setAuthor(value: string): void;
 
-    getSentence(): string;
-    setSentence(value: string): void;
-
-    getParagragh(): string;
-    setParagragh(value: string): void;
+    clearBoardsList(): void;
+    getBoardsList(): Array<SearchOutputBoard>;
+    setBoardsList(value: Array<SearchOutputBoard>): void;
+    addBoards(value?: SearchOutputBoard, index?: number): SearchOutputBoard;
 
 
     serializeBinary(): Uint8Array;
@@ -343,8 +342,32 @@ export namespace SearchOutput {
         version: string,
         name: string,
         author: string,
-        sentence: string,
-        paragragh: string,
+        boardsList: Array<SearchOutputBoard.AsObject>,
+    }
+}
+
+export class SearchOutputBoard extends jspb.Message { 
+    getName(): string;
+    setName(value: string): void;
+
+    getFqbn(): string;
+    setFqbn(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SearchOutputBoard.AsObject;
+    static toObject(includeInstance: boolean, msg: SearchOutputBoard): SearchOutputBoard.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SearchOutputBoard, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SearchOutputBoard;
+    static deserializeBinaryFromReader(message: SearchOutputBoard, reader: jspb.BinaryReader): SearchOutputBoard;
+}
+
+export namespace SearchOutputBoard {
+    export type AsObject = {
+        name: string,
+        fqbn: string,
     }
 }
 

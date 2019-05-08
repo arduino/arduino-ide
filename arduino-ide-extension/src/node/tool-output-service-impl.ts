@@ -6,6 +6,10 @@ export class ToolOutputServiceServerImpl implements ToolOutputServiceServer {
     protected clients: ToolOutputServiceClient[] = [];
 
     publishNewOutput(tool: string, chunk: string): void {
+        if (!chunk) {
+            return;
+        }
+
         this.clients.forEach(c => c.onNewOutput(tool, chunk));
     }
 

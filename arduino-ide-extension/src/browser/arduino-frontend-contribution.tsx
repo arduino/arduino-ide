@@ -12,6 +12,7 @@ import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
+import { ConfirmDialog } from '@theia/core/lib/browser';
 
 
 @injectable()
@@ -65,6 +66,10 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isVisible: widget => this.isArduinoEditor(widget),
             isEnabled: widget => this.isArduinoEditor(widget),
             execute: async widget => {
+                if (widget instanceof EditorWidget) {
+                    await widget.saveable.save();
+                }
+
                 const uri = this.toUri(widget);
                 if (uri) {
                     const result = await this.coreService.compile({ uri: uri.toString() });
@@ -76,10 +81,19 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isVisible: widget => this.isArduinoEditor(widget),
             isEnabled: widget => this.isArduinoEditor(widget),
             execute: async widget => {
+                if (widget instanceof EditorWidget) {
+                    await widget.saveable.save();
+                }
+
                 const uri = this.toUri(widget);
-                if (uri) {
-                    const result = await this.coreService.upload({ uri: uri.toString() });
-                    console.log('upload result', result);
+                if (!uri) {
+                    return;
+                }
+
+                try {
+                    await this.coreService.upload({ uri: uri.toString() });
+                } catch (e) {
+                    new ConfirmDialog({ title: "Error during upload", msg: e.toString(), ok: "Ok" }).open();
                 }
             }
         });

@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { BoardsService, Board, AttachedBoard, AttachedSerialBoard, AttachedNetworkBoard } from '../common/protocol/boards-service';
+import { BoardsService, AttachedSerialBoard, AttachedNetworkBoard, BoardPackage, Board } from '../common/protocol/boards-service';
 import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/board_pb';
@@ -10,16 +10,16 @@ export class BoardsServiceImpl implements BoardsService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
-    protected selectedBoard: AttachedBoard | undefined;
+    protected selectedBoard: Board | undefined;
 
-    public async getAttachedBoards(): Promise<{ boards: AttachedBoard[] }> {
+    public async getAttachedBoards(): Promise<{ boards: Board[] }> {
         const { client, instance } = await this.coreClientProvider.getClient();
 
         const req = new BoardListReq();
         req.setInstance(instance);
         const resp = await new Promise<BoardListResp>((resolve, reject) => client.boardList(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
 
-        const serialBoards: AttachedBoard[] = resp.getSerialList().map(b =>  <AttachedSerialBoard>{
+        const serialBoards: Board[] = resp.getSerialList().map(b =>  <AttachedSerialBoard>{
             name: b.getName() || "unknown",
             fqbn: b.getFqbn(),
             port: b.getPort(),
@@ -27,7 +27,7 @@ export class BoardsServiceImpl implements BoardsService {
             productID: b.getProductid(),
             vendorID: b.getVendorid()
         });
-        const networkBoards: AttachedBoard[] = resp.getNetworkList().map(b => <AttachedNetworkBoard>{
+        const networkBoards: Board[] = resp.getNetworkList().map(b => <AttachedNetworkBoard>{
             name: b.getName(),
             fqbn: b.getFqbn(),
             address: b.getAddress(),
@@ -38,15 +38,15 @@ export class BoardsServiceImpl implements BoardsService {
         return { boards: serialBoards.concat(networkBoards) };
     }
 
-    async selectBoard(board: AttachedBoard): Promise<void> {
+    async selectBoard(board: Board): Promise<void> {
         this.selectedBoard = board;
     }
 
-    async getSelectBoard(): Promise<AttachedBoard | undefined> {
+    async getSelectBoard(): Promise<Board | undefined> {
         return this.selectedBoard;
     }
 
-    async search(options: { query?: string }): Promise<{ items: Board[] }> {
+    async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {
         const { client, instance } = await this.coreClientProvider.getClient();
 
         const installedPlatformsReq = new PlatformListReq();
@@ -55,7 +55,6 @@ export class BoardsServiceImpl implements BoardsService {
             client.platformList(installedPlatformsReq,  (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp))
         );
         const installedPlatforms = installedPlatformsResp.getInstalledPlatformList();
-        console.info("Installed platforms", installedPlatforms);
 
         const req = new PlatformSearchReq();
         req.setSearchArgs(options.query || "");
@@ -69,15 +68,16 @@ export class BoardsServiceImpl implements BoardsService {
                 installedVersion = matchingPlatform.getInstalled();
             }
 
-            const result: Board = {
+            const result: BoardPackage = {
                 id: item.getId(),
                 name: item.getName(),
                 author: item.getAuthor(),
                 availableVersions: [ item.getVersion() ],
-                description: item.getParagragh(),
+                description: item.getBoardsList().map(b => b.getName()).join(", "),
                 installable: true,
-                summary: item.getSentence(),
+                summary: "Boards included in this package:",
                 installedVersion,
+                boards: item.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
             }
             return result;
         });
@@ -85,18 +85,18 @@ export class BoardsServiceImpl implements BoardsService {
         return { items };
     }
 
-    async install(board: Board): Promise<void> {
+    async install(pkg: BoardPackage): Promise<void> {
         const { client, instance } = await this.coreClientProvider.getClient();
 
-        const [ platform, boardName ] = board.id.split(":");
+        const [ platform, boardName ] = pkg.id.split(":");
 
         const req = new PlatformInstallReq();
         req.setInstance(instance);
         req.setArchitecture(boardName);
         req.setPlatformPackage(platform);
-        req.setVersion(board.availableVersions[0]);
+        req.setVersion(pkg.availableVersions[0]);
 
-        console.info("Starting board installation", board);
+        console.info("Starting board installation", pkg);
         const resp = client.platformInstall(req);
         resp.on('data', (r: PlatformInstallResp) => {
             const prog = r.getProgress();
@@ -108,7 +108,7 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('end', resolve);
             resp.on('error', reject);
         });
-        console.info("Board installation done", board);
+        console.info("Board installation done", pkg);
     }
 
 }

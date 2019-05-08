@@ -3,24 +3,25 @@ import { ArduinoComponent } from "./arduino-component";
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService {
-    getAttachedBoards(): Promise<{ boards: AttachedBoard[] }>;
-    selectBoard(board: AttachedBoard): Promise<void>;
-    getSelectBoard(): Promise<AttachedBoard | undefined>;
+    getAttachedBoards(): Promise<{ boards: Board[] }>;
+    selectBoard(board: Board): Promise<void>;
+    getSelectBoard(): Promise<Board | undefined>;
 
-    search(options: { query?: string }): Promise<{ items: Board[] }>;
-    install(board: Board): Promise<void>;
+    search(options: { query?: string }): Promise<{ items: BoardPackage[] }>;
+    install(item: BoardPackage): Promise<void>;
 }
 
-export interface Board extends ArduinoComponent {
+export interface BoardPackage extends ArduinoComponent {
     id: string;
+    boards: Board[];
 }
 
-export interface AttachedBoard {
+export interface Board {
     name: string
     fqbn?: string
 }
 
-export interface AttachedSerialBoard extends AttachedBoard {
+export interface AttachedSerialBoard extends Board {
     port: string;
     serialNumber: string;
     productID: string;
@@ -28,7 +29,7 @@ export interface AttachedSerialBoard extends AttachedBoard {
 }
 
 export namespace AttachedSerialBoard {
-    export function is(b: AttachedBoard): b is AttachedSerialBoard {
+    export function is(b: Board): b is AttachedSerialBoard {
         return 'port' in b
         && 'serialNumber' in b
         && 'productID' in b
@@ -36,14 +37,14 @@ export namespace AttachedSerialBoard {
     }
 }
 
-export interface AttachedNetworkBoard extends AttachedBoard {
+export interface AttachedNetworkBoard extends Board {
     info: string;
     address: string;
     port: number;
 }
 
 export namespace AttachedNetworkBoard {
-    export function is(b: AttachedBoard): b is AttachedNetworkBoard {
+    export function is(b: Board): b is AttachedNetworkBoard {
         return 'name' in b
         && 'info' in b
         && 'address' in b
