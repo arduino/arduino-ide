@@ -52,7 +52,11 @@ export class LibraryServiceImpl implements LibraryService {
     }
 
     async install(library: Library): Promise<void> {
-        const { client, instance } = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return;
+        }
+        const { client, instance } = coreClient;
 
         const req = new LibraryInstallReq();
         req.setInstance(instance);
