@@ -76,11 +76,10 @@ export class CoreServiceImpl implements CoreService {
 
         console.log('upload', options);
         const { uri } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
-        if (!sketchFilePath) {
+        const sketchpath = await this.fileSystem.getFsPath(options.uri);
+        if (!sketchpath) {
             throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
         }
-        const sketchpath = path.dirname(sketchFilePath);
 
         const currentBoard = await this.boardsService.getSelectBoard();
         if (!currentBoard) {
