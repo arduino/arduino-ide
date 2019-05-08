@@ -9,7 +9,7 @@ The prerequisites are defined [here](https://github.com/theia-ide/theia/blob/mas
 ### Build:
 To build the Arduino-PoC Electron-based Theia application you have to do the followings:
 ```bash
-yarn --cwd ./electron/packager/
+yarn --cwd ./electron/packager/ && yarn --cwd ./electron/packager/ package
 ```
 
 The packaged application will be under the `./electron/build/dist` folder.
