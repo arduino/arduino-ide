@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
+  "engines": {
+    "node": ">=10.10.0"
+  },
   "dependencies": {
     "@grpc/grpc-js": "^0.4.0",
     "@theia/core": "next",

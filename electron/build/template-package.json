@@ -17,7 +17,7 @@
     "package:preview": "electron-builder --dir"
   },
   "engines": {
-    "node": ">=8.12.0"
+    "node": ">=10.10.0"
   },
   "repository": {
     "type": "git",
@@ -41,7 +41,7 @@
       "!node_modules/**/*.{ts,map}",
       "!node_modules/**/*.spec.js",
       "!node_modules/@theia/**/test/*",
-      "!node_modules/@theia/**/src/*",
+      "!node_modules/@theia/**/src/*.ts",
       "!node_modules/@theia/java/download",
       "!node_modules/@theia/**/lib/*browser/*",
       "!node_modules/@typefox/monaco-editor-core/*",

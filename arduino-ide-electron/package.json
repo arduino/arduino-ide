@@ -30,9 +30,10 @@
     },
     "theia": {
         "target": "electron",
-        "backend": {
+        "frontend": {
             "config": {
-                "startupTimeout": -1
+                "applicationName": "Arduino-PoC",
+                "defaultTheme": "light"
             }
         }
     }
