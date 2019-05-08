@@ -15,6 +15,8 @@ import { CoreClientProviderPath, CoreClientProvider } from './core-client-provid
 import { ToolOutputService, ToolOutputServiceClient, ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { ToolOutputServiceServerImpl } from './tool-output-service-impl';
+import { DefaultWorkspaceServerExt } from './default-workspace-server-ext';
+import { WorkspaceServer } from '@theia/workspace/lib/common';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoDaemon).toSelf().inSingletonScope();
@@ -77,4 +79,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);
         return parentLogger.child('daemon');
     }).inSingletonScope().whenTargetNamed('daemon');
+
+    // Default workspace server extension to initialize and use a fallback workspace (`~/Arduino-PoC/workspace/`)
+    // If nothing was set previously.
+    bind(DefaultWorkspaceServerExt).toSelf().inSingletonScope();
+    rebind(WorkspaceServer).toService(DefaultWorkspaceServerExt);
 });

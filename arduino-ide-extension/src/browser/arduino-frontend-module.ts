@@ -1,3 +1,4 @@
+import '../../src/browser/style/index.css';
 import { ContainerModule, interfaces } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
@@ -18,11 +19,11 @@ import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-fro
 import { WorkspaceServiceExt, WorkspaceServiceExtPath } from './workspace-service-ext';
 import { WorkspaceServiceExtImpl } from './workspace-service-ext-impl';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
-
-import '../../src/browser/style/index.css';
 import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 import { BoardsNotificationService } from './boards-notification-service';
+import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { AWorkspaceService } from './arduino-workspace-service';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -83,4 +84,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         container.get(BoardsService);
         return workspaceServiceExt;
     });
+
+    rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();
 });
