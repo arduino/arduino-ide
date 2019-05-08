@@ -3,12 +3,16 @@ import { BoardsService, AttachedSerialBoard, AttachedNetworkBoard, BoardPackage,
 import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/board_pb';
+import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
 
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
+
+    @inject(ToolOutputServiceServer)
+    protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected selectedBoard: Board | undefined;
 
@@ -100,8 +104,8 @@ export class BoardsServiceImpl implements BoardsService {
         const resp = client.platformInstall(req);
         resp.on('data', (r: PlatformInstallResp) => {
             const prog = r.getProgress();
-            if (prog) {
-                console.info(`downloading ${prog.getFile()}: ${prog.getCompleted()}%`)
+            if (prog && prog.getFile()) {
+                this.toolOutputService.publishNewOutput("board download", `downloading ${prog.getFile()}\n`)
             }
         });
         await new Promise<void>((resolve, reject) => {

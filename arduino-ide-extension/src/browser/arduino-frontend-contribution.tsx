@@ -14,6 +14,8 @@ import { WorkspaceServiceExt } from './workspace-service-ext';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { ConfirmDialog } from '@theia/core/lib/browser';
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
+import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
+import { BoardsNotificationService } from './boards-notification-service';
 
 
 @injectable()
@@ -36,6 +38,12 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
 
     @inject(QuickPickService)
     protected readonly quickPickService: QuickPickService;
+
+    @inject(BoardsListWidgetFrontendContribution)
+    protected readonly boardsListWidgetFrontendContribution: BoardsListWidgetFrontendContribution;
+
+    @inject(BoardsNotificationService)
+    protected readonly boardsNotificationService: BoardsNotificationService;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -60,7 +68,12 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         });
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
-            render: () => <ConnectedBoards boardsService={this.boardService} quickPickService={this.quickPickService} />,
+            render: () => <ConnectedBoards
+                boardsService={this.boardService}
+                boardsNotificationService={this.boardsNotificationService}
+                quickPickService={this.quickPickService}
+                onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
+                onUnknownBoard={this.onUnknownBoard.bind(this)} />,
             isVisible: widget => this.isArduinoEditor(widget)
         })
     }
@@ -101,6 +114,25 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 }
             }
         });
+    }
+
+    private async onNoBoardsInstalled() {
+        const action = await this.messageService.info("You have no boards installed. Use the boards mangager to install one.", "Open Boards Manager");
+        if (!action) {
+            return;
+        }
+
+        this.boardsListWidgetFrontendContribution.openView({reveal: true});
+    }
+
+    private async onUnknownBoard() {
+        const action = await this.messageService.warn("There's a board connected for which you need to install software." +
+            " If this were not a PoC we would offer you the right package now.", "Open Boards Manager");
+        if (!action) {
+            return;
+        }
+
+        this.boardsListWidgetFrontendContribution.openView({reveal: true});
     }
 
     private isArduinoEditor(maybeEditorWidget: any): boolean {

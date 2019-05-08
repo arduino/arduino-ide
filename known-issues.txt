@@ -1,0 +1,3 @@
+Known issues:
+    - arduino-cli does not get stopped reliably upon app shutdown
+    - startup time is not as fast we'd like to have it

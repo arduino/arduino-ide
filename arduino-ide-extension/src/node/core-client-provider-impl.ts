@@ -7,6 +7,8 @@ import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { CoreClientProvider, Client } from './core-client-provider';
 import * as PQueue from 'p-queue';
+import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
+import { Instance } from './cli-protocol/common_pb';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
@@ -18,6 +20,9 @@ export class CoreClientProviderImpl implements CoreClientProvider {
 
     @inject(WorkspaceServiceExt)
     protected readonly workspaceServiceExt: WorkspaceServiceExt;
+
+    @inject(ToolOutputServiceServer)
+    protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected clients = new Map<string, Client>();
 
@@ -69,24 +74,20 @@ export class CoreClientProviderImpl implements CoreClientProvider {
             throw new Error(`Could not retrieve instance from the initialize response.`);
         }
 
-        // workaround to speed up startup on existing workspaces
-        const updateReq = new UpdateIndexReq();
-        updateReq.setInstance(instance);
-        const updateResp = client.updateIndex(updateReq);
-        updateResp.on('data', (o: UpdateIndexResp) => {
-            const progress = o.getDownloadProgress();
-            if (progress) {
-                if (progress.getCompleted()) {
-                    console.log(`Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.`);
-                } else {
-                    console.log(`Downloading${progress.getFile() ? ` ${progress.getFile()}:` : ''} ${progress.getDownloaded()}.`);
-                }
+        // in a seperate promise, try and update the index
+        let succeeded = true;
+        for (let i = 0; i < 10; i++) {
+            try {
+                await this.updateIndex(client, instance);
+                succeeded = true;
+                break;
+            } catch (e) {
+                this.toolOutputService.publishNewOutput("daemon", `Error while updating index in attempt ${i}: ${e}`);
             }
-        });
-        await new Promise<void>((resolve, reject) => {
-            updateResp.on('error', reject);
-            updateResp.on('end', resolve);
-        });
+        }
+        if (!succeeded) {
+            this.toolOutputService.publishNewOutput("daemon", `Was unable to update the index. Please restart to try again.`);
+        }
 
         const result = {
             client,
@@ -96,4 +97,23 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         console.info(` <<< New client has been successfully created and cached for ${rootUri}.`);
         return result;
     }
+
+    protected async updateIndex(client: ArduinoCoreClient, instance: Instance): Promise<void> {
+        const updateReq = new UpdateIndexReq();
+        updateReq.setInstance(instance);
+        const updateResp = client.updateIndex(updateReq);
+        updateResp.on('data', (o: UpdateIndexResp) => {
+            const progress = o.getDownloadProgress();
+            if (progress) {
+                if (progress.getCompleted()) {
+                    this.toolOutputService.publishNewOutput("daemon", `Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.\n`);
+                }
+            }
+        });
+        await new Promise<void>((resolve, reject) => {
+            updateResp.on('error', reject);
+            updateResp.on('end', resolve);
+        });
+    }
+
 }

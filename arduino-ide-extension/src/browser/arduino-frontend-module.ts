@@ -22,6 +22,7 @@ import { ToolOutputServiceClient } from '../common/protocol/tool-output-service'
 import '../../src/browser/style/index.css';
 import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
+import { BoardsNotificationService } from './boards-notification-service';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -43,6 +44,10 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(LibraryListWidget)
     }));
     bind(FrontendApplicationContribution).toService(LibraryListWidgetFrontendContribution);
+
+    // Boards Notification service for updating boards list
+    // TODO (post-PoC): move this to boards service/backend
+    bind(BoardsNotificationService).toSelf().inSingletonScope();
 
     // Boards service
     bind(BoardsService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath)).inSingletonScope();

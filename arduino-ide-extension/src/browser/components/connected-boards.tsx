@@ -2,6 +2,7 @@ import * as React from 'react';
 import { BoardsService, Board } from '../../common/protocol/boards-service';
 // import { SelectBoardDialog } from './select-board-dialog';
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
+import { BoardsNotificationService } from '../boards-notification-service';
 
 export class ConnectedBoards extends React.Component<ConnectedBoards.Props, ConnectedBoards.State> {
     static TOOLBAR_ID: 'connected-boards-toolbar';
@@ -9,6 +10,8 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
     constructor(props: ConnectedBoards.Props) {
         super(props);
         this.state = { boardsLoading: false };
+
+        props.boardsNotificationService.on('boards-installed', () => this.onBoardsInstalled());
     }
 
     render(): React.ReactNode {
@@ -44,14 +47,34 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
         this.reloadBoards();
     }
 
+    protected onBoardsInstalled() {
+        if (!!this.findUnknownBoards()) {
+            this.reloadBoards();
+        }
+    }
+
+    protected findUnknownBoards(): Board[] {
+        if (!this.state || !this.state.boards) {
+            return [];
+        }
+
+        return this.state.boards.filter(b => !b.fqbn || b.name === "unknown");
+    }
+
     protected async reloadBoards() {
-        this.setState({ boardsLoading: true, boards: undefined, selection: undefined });
+        const prevSelection = this.state.selection;
+        this.setState({ boardsLoading: true, boards: undefined, selection: "loading" });
         const { boards } = await this.props.boardsService.getAttachedBoards()
-        this.setState({ boards, boardsLoading: false });
+        this.setState({ boards, boardsLoading: false, selection: prevSelection });
 
         if (boards) {
             this.setState({ selection: "0" });
             await this.props.boardsService.selectBoard(boards[0]);
+
+            const unknownBoards = this.findUnknownBoards();
+            if (unknownBoards && unknownBoards.length > 0) {
+                this.props.onUnknownBoard(unknownBoards[0]);
+            }
         }
     }
 
@@ -85,6 +108,11 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
         const idx = new Map<string, Board>();
         items.filter(pkg => !!pkg.installedVersion).forEach(pkg => pkg.boards.forEach(brd => idx.set(`${brd.name}`, brd) ));
 
+        if (idx.size === 0) {
+            this.props.onNoBoardsInstalled();
+            return;
+        }
+
         const selection = await this.props.quickPickService.show(Array.from(idx.keys()));
         if (!selection) {
             return;
@@ -99,7 +127,10 @@ export namespace ConnectedBoards {
 
     export interface Props {
         readonly boardsService: BoardsService;
+        readonly boardsNotificationService: BoardsNotificationService;
         readonly quickPickService: QuickPickService;
+        readonly onNoBoardsInstalled: () => void;
+        readonly onUnknownBoard: (board: Board) => void;
     }
 
     export interface State {
