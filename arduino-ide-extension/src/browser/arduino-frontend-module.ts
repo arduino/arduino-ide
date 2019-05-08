@@ -88,7 +88,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     });
 
     rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();
-    
+
     const themeService = ThemeService.get();
     themeService.register(...ArduinoTheme.themes);
 });
