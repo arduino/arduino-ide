@@ -3,7 +3,6 @@ trigger:
   branches:
     include:
     - master
-    - electron # TODO: remove this!
 
 pr:
 - master
