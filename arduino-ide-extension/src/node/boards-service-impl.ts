@@ -62,21 +62,21 @@ export class BoardsServiceImpl implements BoardsService {
         req.setInstance(instance);
         const resp = await new Promise<PlatformSearchResp>((resolve, reject) => client.platformSearch(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
 
-        let items = resp.getSearchOutputList().map(o => {
+        let items = resp.getSearchOutputList().map(item => {
             let installedVersion: string | undefined;
-            const matchingPlatform = installedPlatforms.find(ip => ip.getId().startsWith(`${o.getId()}@`));
+            const matchingPlatform = installedPlatforms.find(ip => ip.getId().startsWith(`${item.getId()}@`));
             if (!!matchingPlatform) {
                 installedVersion = matchingPlatform.getInstalled();
             }
 
             const result: Board = {
-                id: o.getId(),
-                name: o.getName(),
-                author: "Someone",
-                availableVersions: [ o.getVersion() ],
-                description: "lorem ipsum sit dolor amet",
+                id: item.getId(),
+                name: item.getName(),
+                author: item.getAuthor(),
+                availableVersions: [ item.getVersion() ],
+                description: item.getParagragh(),
                 installable: true,
-                summary: "has none",
+                summary: item.getSentence(),
                 installedVersion,
             }
             return result;

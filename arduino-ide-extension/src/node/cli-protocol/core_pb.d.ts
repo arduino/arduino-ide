@@ -317,6 +317,15 @@ export class SearchOutput extends jspb.Message {
     getName(): string;
     setName(value: string): void;
 
+    getAuthor(): string;
+    setAuthor(value: string): void;
+
+    getSentence(): string;
+    setSentence(value: string): void;
+
+    getParagragh(): string;
+    setParagragh(value: string): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SearchOutput.AsObject;
@@ -333,6 +342,9 @@ export namespace SearchOutput {
         id: string,
         version: string,
         name: string,
+        author: string,
+        sentence: string,
+        paragragh: string,
     }
 }
 

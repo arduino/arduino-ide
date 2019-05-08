@@ -2087,7 +2087,10 @@ proto.arduino.SearchOutput.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     version: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    name: jspb.Message.getFieldWithDefault(msg, 3, "")
+    name: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    author: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    sentence: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    paragragh: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -2135,6 +2138,18 @@ proto.arduino.SearchOutput.deserializeBinaryFromReader = function(msg, reader) {
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAuthor(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSentence(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setParagragh(value);
       break;
     default:
       reader.skipField();
@@ -2186,6 +2201,27 @@ proto.arduino.SearchOutput.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getAuthor();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = message.getSentence();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getParagragh();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
 };
 
 
@@ -2231,6 +2267,51 @@ proto.arduino.SearchOutput.prototype.getName = function() {
 /** @param {string} value */
 proto.arduino.SearchOutput.prototype.setName = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string Author = 4;
+ * @return {string}
+ */
+proto.arduino.SearchOutput.prototype.getAuthor = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.arduino.SearchOutput.prototype.setAuthor = function(value) {
+  jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string Sentence = 5;
+ * @return {string}
+ */
+proto.arduino.SearchOutput.prototype.getSentence = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.arduino.SearchOutput.prototype.setSentence = function(value) {
+  jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string Paragragh = 6;
+ * @return {string}
+ */
+proto.arduino.SearchOutput.prototype.getParagragh = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/** @param {string} value */
+proto.arduino.SearchOutput.prototype.setParagragh = function(value) {
+  jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
