@@ -17,7 +17,11 @@ export class BoardsServiceImpl implements BoardsService {
     protected selectedBoard: Board | undefined;
 
     public async getAttachedBoards(): Promise<{ boards: Board[] }> {
-        const { client, instance } = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return { boards: [] };
+        }
+        const { client, instance } = coreClient;
 
         const req = new BoardListReq();
         req.setInstance(instance);
@@ -51,12 +55,16 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {
-        const { client, instance } = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return { items: [] };
+        }
+        const { client, instance } = coreClient;
 
         const installedPlatformsReq = new PlatformListReq();
         installedPlatformsReq.setInstance(instance);
         const installedPlatformsResp = await new Promise<PlatformListResp>((resolve, reject) =>
-            client.platformList(installedPlatformsReq,  (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp))
+            client.platformList(installedPlatformsReq, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp))
         );
         const installedPlatforms = installedPlatformsResp.getInstalledPlatformList();
 
@@ -90,7 +98,11 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     async install(pkg: BoardPackage): Promise<void> {
-        const { client, instance } = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return;
+        }
+        const { client, instance } = coreClient;
 
         const [ platform, boardName ] = pkg.id.split(":");
 

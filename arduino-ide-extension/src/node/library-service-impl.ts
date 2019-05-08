@@ -15,7 +15,11 @@ export class LibraryServiceImpl implements LibraryService {
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     async search(options: { query?: string; }): Promise<{ items: Library[] }> {
-        const { client, instance } = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return { items: [] };
+        }
+        const { client, instance } = coreClient;
 
         const listReq = new LibraryListReq();
         listReq.setInstance(instance);

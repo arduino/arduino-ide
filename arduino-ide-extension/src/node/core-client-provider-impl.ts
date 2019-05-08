@@ -9,10 +9,12 @@ import { CoreClientProvider, Client } from './core-client-provider';
 import * as PQueue from 'p-queue';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Instance } from './cli-protocol/common_pb';
+import * as fs from 'fs-extra';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
 
+    protected clients = new Map<string, Client>();
     protected readonly clientRequestQueue = new PQueue({ autoStart: true, concurrency: 1 });
 
     @inject(FileSystem)
@@ -24,10 +26,8 @@ export class CoreClientProviderImpl implements CoreClientProvider {
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
 
-    protected clients = new Map<string, Client>();
-
-    async getClient(workspaceRootOrResourceUri?: string): Promise<Client> {
-        return this.clientRequestQueue.add(() => new Promise<Client>(async resolve => {
+    async getClient(workspaceRootOrResourceUri?: string): Promise<Client | undefined> {
+        return this.clientRequestQueue.add(() => new Promise<Client | undefined>(async resolve => {
             const roots = await this.workspaceServiceExt.roots();
             if (!workspaceRootOrResourceUri) {
                 resolve(this.getOrCreateClient(roots[0]));
@@ -47,7 +47,10 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         }));
     }
 
-    protected async getOrCreateClient(rootUri: string): Promise<Client> {
+    protected async getOrCreateClient(rootUri: string | undefined): Promise<Client | undefined> {
+        if (!rootUri) {
+            return undefined;
+        }
         const existing = this.clients.get(rootUri);
         if (existing) {
             console.debug(`Reusing existing client for ${rootUri}.`);
@@ -60,11 +63,30 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         const config = new Configuration();
         const rootPath = await this.fileSystem.getFsPath(rootUri);
         if (!rootPath) {
-            throw new Error(`Could not resolve file-system path of URI: ${rootUri}.`);
+            throw new Error(`Could not resolve filesystem path of URI: ${rootUri}.`);
         }
+
+        const defaultDownloadsDirUri = await this.workspaceServiceExt.defaultDownloadsDirUri();
+        const defaultDownloadsDirPath = await this.fileSystem.getFsPath(defaultDownloadsDirUri);
+        if (!defaultDownloadsDirPath) {
+            throw new Error(`Could not resolve filesystem path of URI: ${defaultDownloadsDirUri}.`);
+        }
+        if (!fs.existsSync(defaultDownloadsDirPath)) {
+            fs.mkdirpSync(defaultDownloadsDirPath);
+        }
+
+        const defaultDataDirUri = await this.workspaceServiceExt.defaultDataDirUri();
+        const defaultDataDirPath = await this.fileSystem.getFsPath(defaultDataDirUri);
+        if (!defaultDataDirPath) {
+            throw new Error(`Could not resolve filesystem path of URI: ${defaultDataDirUri}.`);
+        }
+        if (!fs.existsSync(defaultDataDirPath)) {
+            fs.mkdirpSync(defaultDataDirPath);
+        }
+
         config.setSketchbookdir(rootPath);
-        config.setDatadir(rootPath);
-        config.setDownloadsdir(rootPath);
+        config.setDatadir(defaultDataDirPath);
+        config.setDownloadsdir(defaultDownloadsDirPath);
 
         const initReq = new InitReq();
         initReq.setConfiguration(config);

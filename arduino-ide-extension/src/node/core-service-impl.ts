@@ -32,7 +32,11 @@ export class CoreServiceImpl implements CoreService {
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-        const { client, instance } = await this.coreClientProvider.getClient(uri);
+        const coreClient = await this.coreClientProvider.getClient(uri);
+        if (!coreClient) {
+            return;
+        }
+        const { client, instance } = coreClient;
 
         const currentBoard = await this.boardsService.getSelectBoard();
         if (!currentBoard) {
@@ -86,7 +90,11 @@ export class CoreServiceImpl implements CoreService {
             throw new Error(`selected board (${currentBoard.name}) has no FQBN`);
         }
 
-        const { client, instance } = await this.coreClientProvider.getClient(uri);
+        const coreClient = await this.coreClientProvider.getClient(uri);
+        if (!coreClient) {
+            return;
+        }
+        const { client, instance } = coreClient;
 
         const req = new UploadReq();
         req.setInstance(instance);
