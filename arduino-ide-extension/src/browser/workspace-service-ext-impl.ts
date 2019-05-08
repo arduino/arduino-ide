@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import { FileSystem } from '@theia/filesystem/lib/common';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
 
@@ -8,9 +7,6 @@ import { WorkspaceServiceExt } from './workspace-service-ext';
  */
 @injectable()
 export class WorkspaceServiceExtImpl implements WorkspaceServiceExt {
-
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
 
     @inject(WorkspaceService)
     protected readonly delegate: WorkspaceService;
