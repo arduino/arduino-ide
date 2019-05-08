@@ -12,4 +12,10 @@ export namespace ArduinoCommands {
         label: 'Upload Sketch'
     }
 
+    export const NEW_SKETCH: Command = {
+        id: "arduino-new-sketch",
+        label: 'New Sketch',
+        category: 'File'
+    }
+
 }

@@ -6,7 +6,7 @@
     "forin": false,
     "indent": [true, "spaces"],
     "max-line-length": [true, 180],
-    "no-trailing-whitespace": true,
+    "no-trailing-whitespace": false,
     "no-unused-expression": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
