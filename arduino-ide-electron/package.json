@@ -33,7 +33,7 @@
         "frontend": {
             "config": {
                 "applicationName": "Arduino-PoC",
-                "defaultTheme": "arduino"
+                "defaultTheme": "arduino-theme"
             }
         }
     }
