@@ -14,7 +14,6 @@
     "@theia/languages": "next",
     "@theia/monaco": "next",
     "@theia/workspace": "next",
-    "@types/p-queue": "^3.2.1",
     "p-queue": "^5.0.0"
   },
   "scripts": {
