@@ -13,14 +13,13 @@
 }
 
 .filterable-list-container {
-    padding: 0 10px 0 15px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
 
 .component-list-item {
-    padding: 10px 0 10px 0;
+    padding: 10px 10px 10px 15px;
     font-size: var(--theia-ui-font-size1);
 }
 
