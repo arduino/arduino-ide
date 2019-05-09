@@ -27,9 +27,18 @@ yarn --cwd arduino-ide-browser start
 ```
 
 ## Arduino-PoC Electron Application
- - The project is built on [Azure DevOps](https://dev.azure.com/typefox/Arduino).
- - The configured pipelines are available [here](https://dev.azure.com/typefox/Arduino/_build?definitionId=4).
- - Currently, we build for Windows, macOS, and Linux. If you want to download the Arduino-PoC Electron application, follow the steps from below.
+The project is built on [Azure DevOps](https://dev.azure.com/typefox/Arduino).
+
+Currently, we provide the Arduino-PoC for the following platforms:
+ - Windows,
+ - macOS, and
+ - Linux.
+   
+You can download the latest release applications fom [here](https://github.com/bcmi-labs/arduino-editor/releases/latest).
+If you want to get a nightly build, go to the [Azure DevOps page](https://dev.azure.com/typefox/Arduino/_build?definitionId=4),
+and follow the steps from below.
+
  ![](static/download_01.gif)
  ![](static/download_02.gif)
- - Click [here](./electron/README.md) more details on the CI/CD, the GitHub release, and the build process in general.
+
+Click [here](./electron/README.md) for more details on the CI/CD, the GitHub release, and the build process in general.
