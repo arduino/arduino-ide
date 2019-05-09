@@ -7,9 +7,13 @@
     color: var(--theia-ui-font-color1);
 }
 
-.arduino-list-widget .search-bar > input {
-    margin: 0px 5px 0px 5px;
-    width: 95%;
+.arduino-list-widget .search-bar {
+    margin: 0 10px 0 15px;
+    border-color: var(--theia-border-color3);
+}
+
+.arduino-list-widget .search-bar:focus {
+    border-color: var(--theia-accent-color3);
 }
 
 .filterable-list-container {

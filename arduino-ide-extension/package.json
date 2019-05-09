@@ -12,7 +12,9 @@
     "@theia/editor": "next",
     "@theia/filesystem": "next",
     "@theia/languages": "next",
+    "@theia/markers": "next",
     "@theia/monaco": "next",
+    "@theia/outline-view": "next",
     "@theia/workspace": "next",
     "p-queue": "^5.0.0"
   },

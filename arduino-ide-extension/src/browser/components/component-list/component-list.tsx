@@ -7,7 +7,7 @@ export class ComponentList extends React.Component<ComponentList.Props> {
 
     render(): React.ReactNode {
         return <div>
-            {this.props.items.map((item, idx) => <ComponentListItem key={idx} item={item} windowService={this.props.windowService} install={this.props.install} />)}
+            {this.props.items.map(item => <ComponentListItem key={item.name} item={item} windowService={this.props.windowService} install={this.props.install} />)}
         </div>;
     }
 

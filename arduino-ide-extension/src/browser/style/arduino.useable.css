@@ -26,7 +26,7 @@ is not optimized for dense, information rich UIs.
     --theia-border-color0: var(--md-grey-100);
     --theia-border-color1: var(--md-grey-200);
     --theia-border-color2: var(--md-grey-300);
-    --theia-border-color3: var(--md-grey-500);
+    --theia-border-color3: var(--md-grey-400);
     /* UI fonts: Family, size and color (dark to bright)
         ---------------------------------------------------
          The UI font CSS variables are used for the typography all of the Theia

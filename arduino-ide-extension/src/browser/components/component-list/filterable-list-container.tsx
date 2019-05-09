@@ -39,16 +39,20 @@ export class FilterableListContainer extends React.Component<FilterableListConta
             const { items } = result;
             this.setState({
                 filterText,
-                items: items.sort((a, b) => {
-                    if (a.name < b.name) {
-                        return -1;
-                    } else if (a.name === b.name) {
-                        return 0;
-                    } else {
-                        return 1;
-                    }
-                })
+                items: this.sort(items)
             });
+        });
+    }
+
+    protected sort(items: ArduinoComponent[]): ArduinoComponent[] {
+        return items.sort((a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            } else if (a.name === b.name) {
+                return 0;
+            } else {
+                return 1;
+            }
         });
     }
 
@@ -58,7 +62,7 @@ export class FilterableListContainer extends React.Component<FilterableListConta
         try {
             await this.props.service.install(comp);
             const { items } = await this.props.service.search({ query: this.state.filterText });
-            this.setState({ items });
+            this.setState({ items: this.sort(items) });
         } finally {
             dialog.close();
         }

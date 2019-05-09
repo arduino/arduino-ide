@@ -29,6 +29,10 @@ import { ArduinoTheme } from './arduino-theme';
 import { ArduinoFileMenuContribution } from './arduino-file-menu';
 import { MenuContribution } from '@theia/core';
 import { SketchFactory } from './sketch-factory';
+import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
+import { SilentOutlineViewContribution } from './customization/silent-outline-contribution';
+import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
+import { SilentProblemContribution } from './customization/silent-problem-contribution';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -96,4 +100,10 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     const themeService = ThemeService.get();
     themeService.register(...ArduinoTheme.themes);
+
+    // customizing default theia
+    unbind(OutlineViewContribution);
+    bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
+    unbind(ProblemContribution);
+    bind(ProblemContribution).to(SilentProblemContribution).inSingletonScope();
 });
