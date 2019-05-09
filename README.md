@@ -11,9 +11,19 @@ It's built on top of a [fork of the arduino-cli](https://github.com/typefox/ardu
 
 ```
 git clone https://github.com/bcmi-labs/arduino-editor
-cd arduino-poc
+cd arduino-editor
 yarn
+yarn rebuild:electron
 yarn --cwd arduino-ide-electron start
+```
+
+If you want to switch back to the browser-based example, execute the following in the repository root
+```
+yarn rebuild:browser
+```
+Then you can start the browser example again:
+```
+yarn --cwd arduino-ide-browser start
 ```
 
 ## Arduino-PoC Electron Application

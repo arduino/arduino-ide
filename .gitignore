@@ -8,3 +8,5 @@ src-gen/
 arduino-ide-*/webpack.config.js
 .DS_Store
 /workspace/static
+# switching from `electron` to `browser` in dev mode.
+.browser_modules

@@ -12,6 +12,8 @@
   },
   "scripts": {
       "prepare": "lerna run prepare",
+      "rebuild:browser": "theia rebuild:browser",
+      "rebuild:electron": "theia rebuild:electron",
       "start": "cd arduino-ide-browser && yarn start"
   },
   "workspaces": [
