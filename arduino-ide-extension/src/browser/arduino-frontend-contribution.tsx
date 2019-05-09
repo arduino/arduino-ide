@@ -12,7 +12,6 @@ import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
-import { ConfirmDialog } from '@theia/core/lib/browser';
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsNotificationService } from './boards-notification-service';
@@ -101,9 +100,14 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 }
 
                 const uri = this.toUri(widget);
-                if (uri) {
-                    const result = await this.coreService.compile({ uri: uri.toString() });
-                    console.log('compile result', result);
+                if (!uri) {
+                    return;
+                }
+
+                try {
+                    await this.coreService.compile({ uri: uri.toString() });
+                } catch (e) {
+                    await this.messageService.error(e.toString());
                 }
             }
         });
@@ -123,19 +127,28 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 try {
                     await this.coreService.upload({ uri: uri.toString() });
                 } catch (e) {
-                    new ConfirmDialog({ title: "Error during upload", msg: e.toString(), ok: "Ok" }).open();
+                    await this.messageService.error(e.toString());
                 }
             }
         });
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
             execute: async uri => {
                 try {
+                    // hack: sometimes we don't get the workspace root, but the currently active file: correct for that
+                    if (uri.path.ext !== "") {
+                        uri = uri.withPath(uri.path.dir.dir);
+                    }
+
                     await this.sketchFactory.createNewSketch(uri);
                 } catch (e) {
-                    new ConfirmDialog({ title: "Cannot create new sketch", msg: e.toString(), ok: "Ok" }).open();
+                    await this.messageService.error(e.toString());
                 } 
             }
-        }))
+        }));
+        registry.registerCommand(ArduinoCommands.REFRESH_BOARDS, {
+            isEnabled: () => true,
+            execute: () => this.boardsNotificationService.notifyBoardsInstalled()
+        })
     }
 
     private async onNoBoardsInstalled() {

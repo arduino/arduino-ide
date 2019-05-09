@@ -18,4 +18,9 @@ export namespace ArduinoCommands {
         category: 'File'
     }
 
+    export const REFRESH_BOARDS: Command = {
+        id: "arduino-refresh-attached-boards",
+        label: "Refresh attached boards"
+    }
+
 }
