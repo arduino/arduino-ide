@@ -148,12 +148,12 @@ is not optimized for dense, information rich UIs.
     --theia-menu-color1: var(--theia-layout-color0);
     --theia-menu-color2: var(--theia-layout-color3);
     /* Statusbar */
-    --theia-statusbar-color: var(--theia-github-light);
+    --theia-statusbar-color: var(--theia-arduino-light);
     --theia-statusBar-font-color: var(--theia-inverse-ui-font-color0);
     --theia-statusBar-font-size: 12px;
     /* Buttons */
-    --theia-ui-button-color: var(--theia-github-light);
-    --theia-ui-button-color-hover: var(--theia-github-light1);
+    --theia-ui-button-color: var(--theia-arduino-light);
+    --theia-ui-button-color-hover: var(--theia-arduino-light1);
     --theia-ui-button-font-color: var(--theia-inverse-ui-font-color0);
     --theia-ui-button-color-secondary: var(--theia-secondary-brand-color1);
     --theia-ui-button-color-secondary-hover: var(--theia-secondary-brand-color0);
@@ -166,7 +166,7 @@ is not optimized for dense, information rich UIs.
     --theia-ui-expand-button-color: var(--theia-accent-color4);
     --theia-ui-expand-button-font-color: var(--theia-ui-font-color1);
     /* Dialogs */
-    --theia-ui-dialog-header-color: var(--theia-github-light);
+    --theia-ui-dialog-header-color: var(--theia-arduino-light);
     --theia-ui-dialog-header-font-color: var(--theia-inverse-ui-font-color0);
     --theia-ui-dialog-color: var(--theia-layout-color0);
     --theia-ui-dialog-font-color: var(--theia-ui-font-color1);
