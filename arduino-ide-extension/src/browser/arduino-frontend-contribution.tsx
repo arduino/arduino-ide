@@ -12,14 +12,14 @@ import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
-import { ConfirmDialog, OpenerService } from '@theia/core/lib/browser';
+import { ConfirmDialog } from '@theia/core/lib/browser';
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsNotificationService } from './boards-notification-service';
-import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { WorkspaceRootUriAwareCommandHandler } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { SketchFactory } from './sketch-factory';
 
 @injectable()
 export class ArduinoFrontendContribution extends DefaultFrontendApplicationContribution implements TabBarToolbarContribution, CommandContribution {
@@ -48,17 +48,14 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
     @inject(BoardsNotificationService)
     protected readonly boardsNotificationService: BoardsNotificationService;
 
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
-
-    @inject(OpenerService)
-    protected readonly openerService: OpenerService;
-
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
 
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
+
+    @inject(SketchFactory)
+    protected readonly sketchFactory: SketchFactory;
 
 
     @postConstruct()
@@ -132,62 +129,13 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         });
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
             execute: async uri => {
-                const parent = await this.getDirectory(uri)
-                if (!parent) {
-                    return;
-                }
-
-                const parentUri = new URI(parent.uri);
-                const monthNames = ["january", "february", "march", "april", "may", "june",
-                    "july", "august", "september", "october", "november", "december"
-                ];
-                const today = new Date();
-
-                const sketchBaseName = `sketch_${monthNames[today.getMonth()]}${today.getDay()}`;
-                let sketchName: string | undefined;
-                for (let i = 97; i < 97 + 26; i++) {
-                    let sketchNameCandidate = `${sketchBaseName}${String.fromCharCode(i)}`;
-                    if (await this.fileSystem.exists(parentUri.resolve(sketchNameCandidate).toString())) {
-                        continue;
-                    }
-
-                    sketchName = sketchNameCandidate;
-                    break;
-                }
-
-                if (!sketchName) {
-                    new ConfirmDialog({ title: "New sketch", msg: "Cannot create a unique sketch name", ok: "Ok" }).open();
-                    return;
-                }
-
                 try {
-                    const sketchDir = parentUri.resolve(sketchName);
-                    const sketchFile = sketchDir.resolve(`${sketchName}.ino`);
-                    this.fileSystem.createFolder(sketchDir.toString());
-                    this.fileSystem.createFile(sketchFile.toString(), { content: `
-void setup() {
-
-}
-
-void loop() {
-
-}
-`                   });
-                    const opener = await this.openerService.getOpener(sketchFile)
-                    opener.open(sketchFile, { reveal: true });
+                    await this.sketchFactory.createNewSketch(uri);
                 } catch (e) {
-                    new ConfirmDialog({ title: "New sketch", msg: "Cannot create new sketch: " + e, ok: "Ok" }).open();
-                }
+                    new ConfirmDialog({ title: "Cannot create new sketch", msg: e.toString(), ok: "Ok" }).open();
+                } 
             }
         }))
-    }
-
-    protected async getDirectory(candidate: URI): Promise<FileStat | undefined> {
-        const stat = await this.fileSystem.getFileStat(candidate.toString());
-        if (stat && stat.isDirectory) {
-            return stat;
-        }
-        return this.fileSystem.getFileStat(candidate.parent.toString());
     }
 
     private async onNoBoardsInstalled() {
