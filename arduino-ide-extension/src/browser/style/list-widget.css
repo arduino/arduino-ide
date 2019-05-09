@@ -9,11 +9,18 @@
 
 .arduino-list-widget .search-bar > input {
     margin: 0px 5px 0px 5px;
-    width: 100%;
+    width: 95%;
+}
+
+.filterable-list-container {
+    padding: 0 10px 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .component-list-item {
-    padding: 10px;
+    padding: 10px 0 10px 0;
     font-size: var(--theia-ui-font-size1);
 }
 
@@ -33,6 +40,13 @@
 .component-list-item .header {
     padding-bottom: 2px;
     display: flex;
+    flex-direction: column;
+}
+
+.component-list-item .header .version-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .component-list-item .header .name {
@@ -45,8 +59,6 @@
 }
 
 .component-list-item .header .version {
-    margin-left: auto;
-    justify-self: end;
     color: var(--theia-ui-font-color2);
 }
 
@@ -54,14 +66,15 @@
     margin-left: 4px;
     justify-self: end;
     background-color: var(--theia-accent-color2);
-    padding: 4px;
+    padding: 2px 4px 2px 4px;
     font-size: 10px;
     font-weight: bold;
     max-height: calc(1em + 4px);
-    color: var(--theia-layout-color0);
+    color: var(--theia-inverse-ui-font-color0);
 }
 
 .component-list-item .footer {
+    padding-top: 5px;
     display: flex;
 }
 

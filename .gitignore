@@ -7,3 +7,4 @@ build/
 src-gen/
 arduino-ide-*/webpack.config.js
 .DS_Store
+/workspace/static

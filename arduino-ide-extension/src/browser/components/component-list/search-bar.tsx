@@ -8,15 +8,14 @@ export class SearchBar extends React.Component<SearchBar.Props> {
     }
 
     render(): React.ReactNode {
-        return <form className={SearchBar.Styles.SEARCH_BAR_CLASS}>
-            <input
+        return <input
+                className={SearchBar.Styles.SEARCH_BAR_CLASS}
                 type='text'
                 placeholder='Search'
                 size={1}
                 value={this.props.filterText}
                 onChange={this.handleFilterTextChange}
-            />
-        </form>;
+            />;
     }
 
     private handleFilterTextChange(event: React.ChangeEvent<HTMLInputElement>): void {

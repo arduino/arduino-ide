@@ -22,13 +22,12 @@ export class ComponentListItem extends React.Component<ComponentListItem.Props> 
         const style = ComponentListItem.Styles;
         const name = <span className={style.NAME_CLASS}>{item.name}</span>;
         const author = <span className={style.AUTHOR_CLASS}>{item.author}</span>;
-        const installedVersion = !!item.installedVersion && <React.Fragment>
+        const installedVersion = !!item.installedVersion && <div className={style.VERSION_INFO_CLASS}>
             <span className={style.VERSION_CLASS}>Version {item.installedVersion}</span>
             <span className={style.INSTALLED_CLASS}>INSTALLED</span>
-        </React.Fragment>;
+        </div>;
 
         const summary = <div className={style.SUMMARY_CLASS}>{item.summary}</div>;
-        const description = !!item.description && <div className={style.DESCRIPTION_CLASS}>{item.description}</div>;
 
         const moreInfo = !!item.moreInfoLink && <a href={item.moreInfoLink} onClick={this.onClick}>More info</a>;
         const install = this.props.install && item.installable && !item.installedVersion &&
@@ -41,7 +40,6 @@ export class ComponentListItem extends React.Component<ComponentListItem.Props> 
             </div>
             <div className={style.CONTENT_CLASS}>
                 {summary}
-                {description}
             </div>
             <div className={style.FOOTER_CLASS}>
                 {moreInfo}
@@ -63,6 +61,7 @@ export namespace ComponentListItem {
     export namespace Styles {
         export const LIST_ITEM_CLASS = 'component-list-item';
         export const HEADER_CLASS = 'header';
+        export const VERSION_INFO_CLASS = 'version-info';
         export const CONTENT_CLASS = 'content';
         export const FOOTER_CLASS = 'footer';
         export const INSTALLED_CLASS = 'installed';
