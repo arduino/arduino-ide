@@ -9,7 +9,7 @@ export class LibraryListWidget extends ListWidget {
         return {
             id: LibraryListWidget.WIDGET_ID,
             title: LibraryListWidget.WIDGET_LABEL,
-            iconClass: 'fa fa-book'  // TODO: find a better icon
+            iconClass: 'library-tab-icon'
         }
     }
 
