@@ -32,6 +32,7 @@ jobs:
   - script: yarn
     env:
       GITHUB_TOKEN: $(Personal.GitHub.Token)
+      THEIA_ELECTRON_SKIP_REPLACE_FFMPEG: 1
     displayName: Build
   - bash: |
       yarn --cwd ./electron/packager/
@@ -59,7 +60,7 @@ jobs:
     vmImage: ubuntu-16.04
   dependsOn:
     - Build
-  condition: and(in(variables['Build.Reason'], 'Manual', 'Schedule'), startsWith(variables['Release.Tag'], 'v'))
+  condition: and(succeeded(), and(in(variables['Build.Reason'], 'Manual', 'Schedule'), startsWith(variables['Release.Tag'], 'v')))
   steps:
   - task: DownloadBuildArtifacts@0
     displayName: Download
