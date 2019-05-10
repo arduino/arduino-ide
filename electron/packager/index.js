@@ -5,6 +5,7 @@
     const fs = require('fs');
     const join = require('path').join;
     const shell = require('shelljs');
+    shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1';
     const utils = require('./utils');
     const { version, release } = utils.versionInfo();
 
