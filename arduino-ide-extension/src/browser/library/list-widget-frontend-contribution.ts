@@ -8,7 +8,7 @@ import { LibraryListWidget } from './library-list-widget';
 export abstract class ListWidgetFrontendContribution extends AbstractViewContribution<ListWidget> implements FrontendApplicationContribution {
 
     async initializeLayout(): Promise<void> {
-        await this.openView();
+        // await this.openView();
     }
 
 }
