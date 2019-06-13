@@ -19,6 +19,8 @@ import { WorkspaceRootUriAwareCommandHandler } from '@theia/workspace/lib/browse
 import { SelectionService } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SketchFactory } from './sketch-factory';
+import { ArduinoToolbar } from './toolbar/arduino-toolbar';
+import { EditorManager } from '@theia/editor/lib/browser';
 
 @injectable()
 export class ArduinoFrontendContribution extends DefaultFrontendApplicationContribution implements TabBarToolbarContribution, CommandContribution {
@@ -56,6 +58,8 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
     @inject(SketchFactory)
     protected readonly sketchFactory: SketchFactory;
 
+    @inject(EditorManager)
+    protected readonly editorManager: EditorManager;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -86,15 +90,16 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 quickPickService={this.quickPickService}
                 onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
                 onUnknownBoard={this.onUnknownBoard.bind(this)} />,
-            isVisible: widget => this.isArduinoEditor(widget)
+            isVisible: widget => this.isArduinoToolbar(widget)
         })
     }
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ArduinoCommands.VERIFY, {
-            isVisible: widget => this.isArduinoEditor(widget),
-            isEnabled: widget => this.isArduinoEditor(widget),
-            execute: async widget => {
+            isVisible: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => this.isArduinoToolbar(widget),
+            execute: async () => {
+                const widget = this.editorManager.currentEditor;
                 if (widget instanceof EditorWidget) {
                     await widget.saveable.save();
                 }
@@ -112,9 +117,10 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             }
         });
         registry.registerCommand(ArduinoCommands.UPLOAD, {
-            isVisible: widget => this.isArduinoEditor(widget),
-            isEnabled: widget => this.isArduinoEditor(widget),
-            execute: async widget => {
+            isVisible: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => this.isArduinoToolbar(widget),
+            execute: async () => {
+                const widget = this.editorManager.currentEditor;
                 if (widget instanceof EditorWidget) {
                     await widget.saveable.save();
                 }
@@ -170,9 +176,9 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         this.boardsListWidgetFrontendContribution.openView({reveal: true});
     }
 
-    private isArduinoEditor(maybeEditorWidget: any): boolean {
-        if (maybeEditorWidget instanceof EditorWidget) {
-            return maybeEditorWidget.editor.uri.toString().endsWith('.ino');
+    private isArduinoToolbar(maybeToolbarWidget: any): boolean {
+        if (maybeToolbarWidget instanceof ArduinoToolbar) {
+            return true;
         }
         return false;
     }
