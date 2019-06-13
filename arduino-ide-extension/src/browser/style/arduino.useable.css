@@ -20,6 +20,7 @@ is not optimized for dense, information rich UIs.
     /* Custom Theme Colors */
     --theia-arduino-light: rgb(0, 102, 102);
     --theia-arduino-light1: rgb(0, 153, 153);
+    --theia-arduino-terminal: rgb(0, 0, 0);
     /* Borders: Width and color (bright to dark) */
     --theia-border-width: 1px;
     --theia-panel-border-width: 2px;

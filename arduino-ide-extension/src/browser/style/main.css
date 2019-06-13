@@ -1,0 +1,11 @@
+.p-TabBar[data-orientation='horizontal'].theia-app-bottom {
+    background: var(--theia-layout-color1);
+}
+
+.theia-output {
+    background: var(--theia-arduino-terminal);
+}
+
+#outputView {
+    color: var(--theia-ui-font-color3);
+}
