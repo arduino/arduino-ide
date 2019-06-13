@@ -44,6 +44,9 @@
     {
       "backend": "lib/node/arduino-backend-module",
       "frontend": "lib/browser/arduino-frontend-module"
+    },
+    {
+      "frontendElectron": "lib/electron-browser/electron-arduino-frontend-module"
     }
   ]
 }

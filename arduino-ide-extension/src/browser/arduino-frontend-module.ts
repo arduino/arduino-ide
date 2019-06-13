@@ -33,6 +33,8 @@ import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline
 import { SilentOutlineViewContribution } from './customization/silent-outline-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { SilentProblemContribution } from './customization/silent-problem-contribution';
+import { BrowserMenuBarContribution } from '@theia/core/lib/browser/menu/browser-menu-plugin';
+import { ArduinoMenuContribution } from './menu/arduino-menu-contribution';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -40,6 +42,8 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
+
+    rebind(BrowserMenuBarContribution).to(ArduinoMenuContribution);
 
     // `ino` TextMate grammar
     bind(LanguageGrammarDefinitionContribution).to(ArduinoLanguageGrammarContribution).inSingletonScope();
