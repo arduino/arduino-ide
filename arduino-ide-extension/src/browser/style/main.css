@@ -57,3 +57,10 @@
 .p-Widget.p-TabBar.theia-app-centers.theia-app-bottom .p-TabBar-content-container.ps {
     display: none;
 }
+
+.arduino-toolbar-tooltip {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    color: var(--theia-ui-font-color3);
+}
