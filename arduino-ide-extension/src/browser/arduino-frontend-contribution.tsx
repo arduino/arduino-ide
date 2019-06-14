@@ -99,7 +99,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isVisible: widget => this.isArduinoToolbar(widget),
             isEnabled: widget => this.isArduinoToolbar(widget),
             execute: async () => {
-                const widget = this.editorManager.currentEditor;
+                const widget = this.getCurrentWidget();
                 if (widget instanceof EditorWidget) {
                     await widget.saveable.save();
                 }
@@ -120,7 +120,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isVisible: widget => this.isArduinoToolbar(widget),
             isEnabled: widget => this.isArduinoToolbar(widget),
             execute: async () => {
-                const widget = this.editorManager.currentEditor;
+                const widget = this.getCurrentWidget();
                 if (widget instanceof EditorWidget) {
                     await widget.saveable.save();
                 }
@@ -148,7 +148,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                     await this.sketchFactory.createNewSketch(uri);
                 } catch (e) {
                     await this.messageService.error(e.toString());
-                } 
+                }
             }
         }));
         registry.registerCommand(ArduinoCommands.REFRESH_BOARDS, {
@@ -157,13 +157,24 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         })
     }
 
+    protected getCurrentWidget(): EditorWidget | undefined {
+        let widget = this.editorManager.currentEditor;
+        if (!widget) {
+            const visibleWidgets = this.editorManager.all.filter(w => w.isVisible);
+            if (visibleWidgets.length > 0) {
+                widget = visibleWidgets[0];
+            }
+        }
+        return widget;
+    }
+
     private async onNoBoardsInstalled() {
         const action = await this.messageService.info("You have no boards installed. Use the boards mangager to install one.", "Open Boards Manager");
         if (!action) {
             return;
         }
 
-        this.boardsListWidgetFrontendContribution.openView({reveal: true});
+        this.boardsListWidgetFrontendContribution.openView({ reveal: true });
     }
 
     private async onUnknownBoard() {
@@ -173,7 +184,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             return;
         }
 
-        this.boardsListWidgetFrontendContribution.openView({reveal: true});
+        this.boardsListWidgetFrontendContribution.openView({ reveal: true });
     }
 
     private isArduinoToolbar(maybeToolbarWidget: any): boolean {

@@ -1,54 +1,39 @@
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
-import { TabBarToolbar, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import * as React from 'react';
+import { TabBarToolbar, TabBarToolbarRegistry, TabBarToolbarItem } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { LabelParser } from '@theia/core/lib/browser/label-parser';
+import { CommandRegistry } from '@theia/core/lib/common/command';
 
-export class ArduinoToolbar extends Widget {
+export const ARDUINO_TOOLBAR_ITEM_CLASS = 'arduino-tool-item';
 
-    protected toolbar: TabBarToolbar | undefined;
+export class ArduinoToolbar extends TabBarToolbar {
 
     constructor(
         protected readonly tabBarToolbarRegistry: TabBarToolbarRegistry,
-        protected readonly tabBarToolbarFactory: () => TabBarToolbar
+        commands: CommandRegistry, labelParser: LabelParser
     ) {
-        super();
+        super(commands, labelParser);
         this.id = 'arduino-toolbar';
         this.init();
-        this.tabBarToolbarRegistry.onDidChange(() => this.update());
-    }
-
-    protected onAfterAttach(msg: Message): void {
-        if (this.toolbar) {
-            if (this.toolbar.isAttached) {
-                Widget.detach(this.toolbar);
-            }
-            Widget.attach(this.toolbar, this.node);
-        }
-        super.onAfterAttach(msg);
-    }
-
-    protected onBeforeDetach(msg: Message): void {
-        if (this.toolbar && this.toolbar.isAttached) {
-            Widget.detach(this.toolbar);
-        }
-        super.onBeforeDetach(msg);
-    }
-
-    protected onUpdateRequest(msg: Message): void {
-        super.onUpdateRequest(msg);
-        this.updateToolbar();
+        this.tabBarToolbarRegistry.onDidChange(() => this.updateToolbar());
     }
 
     protected updateToolbar(): void {
-        if (!this.toolbar) {
-            return;
-        }
         const items = this ? this.tabBarToolbarRegistry.visibleItems(this) : [];
-        this.toolbar.updateItems(items, this);
+        this.updateItems(items, this);
     }
 
     protected init(): void {
         this.node.classList.add('theia-arduino-toolbar');
-        this.toolbar = this.tabBarToolbarFactory();
         this.update();
+    }
+
+    protected renderItem(item: TabBarToolbarItem): React.ReactNode {
+        let innerText = '';
+        const command = this.commands.getCommand(item.command);
+        return <div key={item.id}
+            className={`${ARDUINO_TOOLBAR_ITEM_CLASS} 
+        ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM}${command && this.commandIsEnabled(command.id) ? ' enabled' : ''}`} >
+            <div id={item.id} className='arduino-tool-icon' onClick={this.executeCommand} title={item.tooltip}>{innerText}</div>
+        </div>;
     }
 }

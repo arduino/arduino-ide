@@ -9,3 +9,37 @@
 #outputView {
     color: var(--theia-ui-font-color3);
 }
+
+#arduino-verify.arduino-tool-icon {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-x: 141px;
+    background-position-y: 21px;
+}
+
+#arduino-upload.arduino-tool-icon {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-x: 117px;
+    background-position-y: 21px;
+}
+
+#arduino-verify.arduino-tool-icon:hover {
+    background-position-y: 45px;
+}
+
+#arduino-upload.arduino-tool-icon:hover {
+    background-position-y: 45px;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item {
+    margin-left: 3px;
+}
+
+.arduino-tool-item.item.connected-boards {
+    opacity: 1;
+}
+
+.arduino-tool-item.item.connected-boards  select {
+    background: var(--theia-layout-color0);
+}

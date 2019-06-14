@@ -1,7 +1,9 @@
 import { FrontendApplicationContribution, FrontendApplication } from "@theia/core/lib/browser";
 import { injectable, inject } from "inversify";
 import { ArduinoToolbar } from "./arduino-toolbar";
-import { TabBarToolbarRegistry, TabBarToolbarFactory, TabBarToolbar } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
+import { TabBarToolbarRegistry } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
+import { CommandRegistry } from "@theia/core/lib/common/command";
+import { LabelParser } from "@theia/core/lib/browser/label-parser";
 
 @injectable()
 export class ArduinoToolbarContribution implements FrontendApplicationContribution {
@@ -10,8 +12,9 @@ export class ArduinoToolbarContribution implements FrontendApplicationContributi
 
     constructor(
         @inject(TabBarToolbarRegistry) protected tabBarToolBarRegistry: TabBarToolbarRegistry,
-        @inject(TabBarToolbarFactory) protected tabBarToolBarFactory: () => TabBarToolbar) {
-        this.toolbarWidget = new ArduinoToolbar(this.tabBarToolBarRegistry, this.tabBarToolBarFactory);
+        @inject(CommandRegistry) protected commandRegistry: CommandRegistry,
+        @inject(LabelParser) protected labelParser: LabelParser) {
+        this.toolbarWidget = new ArduinoToolbar(tabBarToolBarRegistry, commandRegistry, labelParser);
     }
 
     onStart(app: FrontendApplication) {
