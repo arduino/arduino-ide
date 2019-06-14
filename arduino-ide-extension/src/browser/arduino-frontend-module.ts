@@ -37,7 +37,13 @@ import { SilentNavigatorContribution } from './customization/silent-navigator-co
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
 import { OutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
-import { ArduinoOutputToolContribution } from './tool-output/arduino-output-tool-contribution';
+import { ArduinoOutputToolContribution } from './customization/silent-output-tool-contribution';
+import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
+import { SilentEditorContribution } from './customization/silent-editor-contribution';
+import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
+import { SilentMonacoStatusBarContribution } from './customization/silent-monaco-status-bar-contribution';
+import { ApplicationShell } from '@theia/core/lib/browser';
+import { CustomApplicationShell } from './customization/custom-application-shell';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -119,4 +125,10 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(FileNavigatorContribution).to(SilentNavigatorContribution).inSingletonScope();
     unbind(OutputToolbarContribution);
     bind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
+    unbind(EditorContribution);
+    bind(EditorContribution).to(SilentEditorContribution).inSingletonScope();
+    unbind(MonacoStatusBarContribution);
+    bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
+    unbind(ApplicationShell);
+    bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
 });

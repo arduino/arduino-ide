@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
+import { ProblemStat } from '@theia/markers/lib/browser/problem/problem-manager';
 
 @injectable()
 export class SilentProblemContribution extends ProblemContribution {
@@ -8,4 +9,7 @@ export class SilentProblemContribution extends ProblemContribution {
         // await this.openView();
     }
 
+    protected setStatusBarElement(problemStat: ProblemStat) {
+        
+    }
 }
