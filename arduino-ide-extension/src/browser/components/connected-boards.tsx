@@ -3,6 +3,7 @@ import { BoardsService, Board } from '../../common/protocol/boards-service';
 // import { SelectBoardDialog } from './select-board-dialog';
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsNotificationService } from '../boards-notification-service';
+import { ARDUINO_TOOLBAR_ITEM_CLASS } from '../toolbar/arduino-toolbar';
 
 export class ConnectedBoards extends React.Component<ConnectedBoards.Props, ConnectedBoards.State> {
     static TOOLBAR_ID: 'connected-boards-toolbar';
@@ -28,7 +29,7 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
             content = [ <option key="loading" value="0">{label}</option> ];
         }
 
-        return <div className={ConnectedBoards.Styles.CONNECTED_BOARDS_CLASS}>
+        return <div className={`${ARDUINO_TOOLBAR_ITEM_CLASS} item ${ConnectedBoards.Styles.CONNECTED_BOARDS_CLASS}`}>
             <select disabled={!this.state.boards}
                 onChange={this.onBoardSelect.bind(this)}
                 value={this.state.selection}>

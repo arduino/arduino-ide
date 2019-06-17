@@ -18,8 +18,9 @@ is not optimized for dense, information rich UIs.
 
 :root {
     /* Custom Theme Colors */
-    --theia-arduino-light: rgb(0, 102, 105);
-    --theia-arduino-light1: rgb(0, 164, 167);
+    --theia-arduino-light: rgb(0, 102, 102);
+    --theia-arduino-light1: rgb(0, 153, 153);
+    --theia-arduino-terminal: rgb(0, 0, 0);
     /* Borders: Width and color (bright to dark) */
     --theia-border-width: 1px;
     --theia-panel-border-width: 2px;
@@ -74,9 +75,9 @@ is not optimized for dense, information rich UIs.
     /* Main layout colors (bright to dark)
         ------------------------------------ */
     --theia-layout-color0: #ffffff;
-    --theia-layout-color1: #f3f3f3;
+    --theia-layout-color1: var(--theia-arduino-light1);
     --theia-layout-color2: #ececec;
-    --theia-layout-color3: #dcdcdc;
+    --theia-layout-color3: var(--theia-arduino-light);
     --theia-layout-color4: #dcdcdc;
     /* Brand colors */
     --theia-brand-color0: var(--md-blue-700);

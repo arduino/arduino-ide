@@ -14,7 +14,8 @@
       "prepare": "lerna run prepare",
       "rebuild:browser": "theia rebuild:browser",
       "rebuild:electron": "theia rebuild:electron",
-      "start": "cd arduino-ide-browser && yarn start"
+      "start": "cd arduino-ide-browser && yarn start",
+      "watch": "lerna run watch --parallel"
   },
   "workspaces": [
       "arduino-ide-electron",

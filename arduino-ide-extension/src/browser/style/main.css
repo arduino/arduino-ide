@@ -1,0 +1,66 @@
+.p-TabBar[data-orientation='horizontal'].theia-app-bottom {
+    background: var(--theia-layout-color1);
+}
+
+.theia-output {
+    background: var(--theia-arduino-terminal);
+}
+
+#outputView {
+    color: var(--theia-ui-font-color3);
+}
+
+#arduino-verify.arduino-tool-icon {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-x: 141px;
+    background-position-y: 21px;
+}
+
+#arduino-upload.arduino-tool-icon {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-x: 117px;
+    background-position-y: 21px;
+}
+
+#arduino-verify.arduino-tool-icon:hover {
+    background-position-y: 45px;
+}
+
+#arduino-upload.arduino-tool-icon:hover {
+    background-position-y: 45px;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item {
+    margin-left: 3px;
+}
+
+.arduino-tool-item.item.connected-boards {
+    opacity: 1;
+}
+
+.arduino-tool-item.item.connected-boards  select {
+    line-height: var(--theia-content-line-height);
+    font-size: var(--theia-ui-font-size1);
+    color: var(--theia-ui-font-color1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--theia-ui-font-color1) 50%), linear-gradient(135deg, var(--theia-ui-font-color1) 50%, transparent 50%);
+    background-position: calc(100% - 6px) 8px, calc(100% - 2px) 8px, 100% 0;
+    background-size: 4px 5px;
+    background-repeat: no-repeat;
+    padding-left: 3px;
+    padding-right: 15px;
+}
+
+.p-Widget.p-TabBar.theia-app-centers.theia-app-bottom .p-TabBar-content-container.ps {
+    display: none;
+}
+
+.arduino-toolbar-tooltip {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    color: var(--theia-ui-font-color3);
+}

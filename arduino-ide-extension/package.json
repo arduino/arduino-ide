@@ -16,6 +16,7 @@
     "@theia/monaco": "next",
     "@theia/outline-view": "next",
     "@theia/workspace": "next",
+    "@theia/navigator": "next",
     "p-queue": "^5.0.0"
   },
   "scripts": {
@@ -44,6 +45,10 @@
     {
       "backend": "lib/node/arduino-backend-module",
       "frontend": "lib/browser/arduino-frontend-module"
+    },
+    {
+      "frontend": "lib/browser/menu/browser-arduino-menu-module",
+      "frontendElectron": "lib/electron-browser/electron-arduino-menu-module"
     }
   ]
 }
