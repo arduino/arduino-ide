@@ -15,12 +15,16 @@ import { ToolOutputServiceClient } from '../common/protocol/tool-output-service'
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsNotificationService } from './boards-notification-service';
-import { WorkspaceRootUriAwareCommandHandler } from '@theia/workspace/lib/browser/workspace-commands';
+import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager } from '@theia/editor/lib/browser';
+import { open, ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
+import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
+import { FileSystem } from '@theia/filesystem/lib/common';
+import { ArduinoOpenSketchContextMenu, SketchMenuEntry } from './arduino-file-menu';
 
 @injectable()
 export class ArduinoFrontendContribution extends DefaultFrontendApplicationContribution implements TabBarToolbarContribution, CommandContribution {
@@ -61,6 +65,18 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
 
+    @inject(ContextMenuRenderer)
+    protected readonly contextMenuRenderer: ContextMenuRenderer;
+
+    @inject(FileDialogService) 
+    protected readonly fileDialogService: FileDialogService;
+
+    @inject(FileSystem) 
+    protected readonly fileSystem: FileSystem;
+
+    @inject(OpenerService) 
+    protected readonly openerService: OpenerService;
+
     @postConstruct()
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
@@ -81,6 +97,13 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             tooltip: 'Upload',
             group: 'arduino',
             text: '$(arrow-right)'
+        });
+        registry.registerItem({
+            id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
+            command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
+            tooltip: 'Open',
+            group: 'arduino',
+            text: '$(arrow-up)'
         });
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
@@ -137,6 +160,29 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 }
             }
         });
+        registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
+            isVisible: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => this.isArduinoToolbar(widget),
+            execute: async (widget: Widget, event: React.MouseEvent<HTMLElement>) => {
+                const el = (event.target as HTMLElement).parentElement;
+                if(el) {
+                    this.contextMenuRenderer.render(ArduinoOpenSketchContextMenu.PATH, {
+                        x: el.getBoundingClientRect().left,
+                        y: el.getBoundingClientRect().top + el.offsetHeight
+                    });
+                }
+            }
+        });
+        registry.registerCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR, {
+            isEnabled: () => true,
+            execute: () => this.doOpenFile()
+        })
+        registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
+            isEnabled: () => true,
+            execute: (sketch: SketchMenuEntry) => {
+                console.log("OPEN SOME SKETCH", sketch);
+            }
+        })
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
             execute: async uri => {
                 try {
@@ -155,6 +201,32 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isEnabled: () => true,
             execute: () => this.boardsNotificationService.notifyBoardsInstalled()
         })
+    }
+
+    /**
+     * Opens a file after prompting the `Open File` dialog. Resolves to `undefined`, if
+     *  - the workspace root is not set,
+     *  - the file to open does not exist, or
+     *  - it was not a file, but a directory.
+     *
+     * Otherwise, resolves to the URI of the file.
+     */
+    protected async doOpenFile(): Promise<URI | undefined> {
+        const props: OpenFileDialogProps = {
+            title: WorkspaceCommands.OPEN_FILE.dialogLabel,
+            canSelectFolders: false,
+            canSelectFiles: true
+        };
+        const [rootStat] = await this.workspaceService.roots;
+        const destinationFileUri = await this.fileDialogService.showOpenDialog(props, rootStat);
+        if (destinationFileUri) {
+            const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
+            if (destinationFile && !destinationFile.isDirectory) {
+                await open(this.openerService, destinationFileUri);
+                return destinationFileUri;
+            }
+        }
+        return undefined;
     }
 
     protected getCurrentWidget(): EditorWidget | undefined {

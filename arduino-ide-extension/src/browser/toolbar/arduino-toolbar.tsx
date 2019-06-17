@@ -26,14 +26,13 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
     protected renderItem(item: TabBarToolbarItem): React.ReactNode {
         let innerText = '';
         const command = this.props.commands.getCommand(item.command);
+        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? ' enabled' : ''}`
         return <React.Fragment>
             <div key={item.id}
-                className={`${ARDUINO_TOOLBAR_ITEM_CLASS} 
-                            ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM}
-                            ${command && this.props.commandIsEnabled(command.id) ? ' enabled' : ''}`} >
+                className={cls} >
                 <div
                     id={item.id}
-                    className='arduino-tool-icon'
+                    className={`${item.id} arduino-tool-icon`}
                     onClick={this.props.executeCommand}
                     onMouseOver={() => this.setState({ tootip: item.tooltip || '' })}
                     onMouseOut={() => this.setState({ tootip: '' })}
@@ -82,6 +81,13 @@ export class ArduinoToolbar extends TabBarToolbar {
             commandIsEnabled={this.doCommandIsEnabled}
             executeCommand={this.executeCommand}
         />
+    }
+
+    protected executeCommand = (e: React.MouseEvent<HTMLElement>) => {
+        const item = this.items.get(e.currentTarget.id);
+        if (TabBarToolbarItem.is(item)) {
+            this.commands.executeCommand(item.command, this, e);
+        }
     }
 
 }
