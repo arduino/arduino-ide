@@ -12,6 +12,7 @@ import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
+import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
 import { LibraryListWidgetFrontendContribution } from './library/list-widget-frontend-contribution';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
@@ -70,6 +71,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     }));
     bind(FrontendApplicationContribution).toService(LibraryListWidgetFrontendContribution);
 
+    // Sketch list service
+    bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
+
     // Boards Notification service for updating boards list
     // TODO (post-PoC): move this to boards service/backend
     bind(BoardsNotificationService).toSelf().inSingletonScope();
@@ -106,9 +110,11 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         container.get(CoreService);
         container.get(LibraryService);
         container.get(BoardsService);
+        container.get(SketchesService);
         return workspaceServiceExt;
     });
 
+    bind(AWorkspaceService).toSelf().inSingletonScope();
     rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();
     bind(SketchFactory).toSelf().inSingletonScope();
 

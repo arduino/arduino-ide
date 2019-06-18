@@ -2,7 +2,8 @@ import { injectable, inject } from "inversify";
 import { MenuContribution, MenuModelRegistry, MenuPath, CommandRegistry, Command } from "@theia/core";
 import { CommonMenus } from "@theia/core/lib/browser";
 import { ArduinoCommands } from "./arduino-commands";
-import URI from "@theia/core/lib/common/uri";
+import { SketchesService, Sketch } from "../common/protocol/sketches-service";
+import { AWorkspaceService } from "./arduino-workspace-service";
 
 export namespace ArduinoOpenSketchContextMenu {
     export const PATH: MenuPath = ['arduino-open-sketch-context-menu'];
@@ -11,29 +12,46 @@ export namespace ArduinoOpenSketchContextMenu {
     export const EXAMPLE_SKETCHES_GROUP: MenuPath = [...PATH, '3_examples'];
 }
 
-export interface SketchMenuEntry {
-    name: string,
-    uri: URI
-}
-
 @injectable()
 export class ArduinoFileMenuContribution implements MenuContribution {
 
     @inject(CommandRegistry)
     protected readonly commands: CommandRegistry;
 
+    @inject(SketchesService)
+    protected readonly sketches: SketchesService;
 
-    protected async getWorkspaceSketches(): Promise<SketchMenuEntry[]> {
-        return [
-            {
-                name: 'foo',
-                uri: new URI('this/is/a/test/uri/foo')
-            },
-            {
-                name: 'bar',
-                uri: new URI('this/is/a/test/uri/bar')
+    constructor(
+        @inject(AWorkspaceService) protected readonly workspaceService: AWorkspaceService,
+        @inject(MenuModelRegistry) protected readonly menuRegistry: MenuModelRegistry) {
+        workspaceService.onWorkspaceChanged(() => {
+            if (this.workspaceService.workspace) {
+                this.registerSketchesInMenu(menuRegistry);
             }
-        ]
+        })
+    }
+
+    protected registerSketchesInMenu(registry: MenuModelRegistry) {
+        this.getWorkspaceSketches().then(sketches => {
+            sketches.forEach(sketch => {
+                const command: Command = {
+                    id: 'openSketch' + sketch.name
+                }
+                this.commands.registerCommand(command, {
+                    execute: () => this.commands.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+                });
+
+                registry.registerMenuAction(ArduinoOpenSketchContextMenu.WS_SKETCHES_GROUP, {
+                    commandId: command.id,
+                    label: sketch.name
+                });
+            })
+        })
+    }
+
+    protected async getWorkspaceSketches(): Promise<Sketch[]> {
+        const sketches = this.sketches.getSketches(this.workspaceService.workspace);
+        return sketches;
     }
 
     registerMenus(registry: MenuModelRegistry) {
@@ -45,23 +63,5 @@ export class ArduinoFileMenuContribution implements MenuContribution {
             commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,
             label: 'Open...'
         });
-
-        this.getWorkspaceSketches().then(sketches => {
-            sketches.forEach(sketch => {
-
-                const command: Command = {
-                    id: 'openSketch' + sketch.name
-                }
-                this.commands.registerCommand(command, {
-                    execute: () => this.commands.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
-                });
-
-                registry.registerMenuAction(ArduinoOpenSketchContextMenu.WS_SKETCHES_GROUP, {
-                    commandId: command.id,
-                    label: sketch.name 
-                });    
-            })
-        })
-
     }
 }

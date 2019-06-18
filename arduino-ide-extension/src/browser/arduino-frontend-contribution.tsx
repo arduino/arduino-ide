@@ -24,7 +24,9 @@ import { EditorManager } from '@theia/editor/lib/browser';
 import { open, ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
-import { ArduinoOpenSketchContextMenu, SketchMenuEntry } from './arduino-file-menu';
+import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
+import { Sketch, SketchesService } from '../common/protocol/sketches-service';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
 
 @injectable()
 export class ArduinoFrontendContribution extends DefaultFrontendApplicationContribution implements TabBarToolbarContribution, CommandContribution {
@@ -68,14 +70,21 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
     @inject(ContextMenuRenderer)
     protected readonly contextMenuRenderer: ContextMenuRenderer;
 
-    @inject(FileDialogService) 
+    @inject(FileDialogService)
     protected readonly fileDialogService: FileDialogService;
 
-    @inject(FileSystem) 
+    @inject(FileSystem)
     protected readonly fileSystem: FileSystem;
 
-    @inject(OpenerService) 
+    @inject(OpenerService)
     protected readonly openerService: OpenerService;
+
+    @inject(SketchesService)
+    protected readonly sketches: SketchesService;
+
+    @inject(WindowService)
+    protected readonly windowService: WindowService;
+
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -165,7 +174,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isEnabled: widget => this.isArduinoToolbar(widget),
             execute: async (widget: Widget, event: React.MouseEvent<HTMLElement>) => {
                 const el = (event.target as HTMLElement).parentElement;
-                if(el) {
+                if (el) {
                     this.contextMenuRenderer.render(ArduinoOpenSketchContextMenu.PATH, {
                         x: el.getBoundingClientRect().left,
                         y: el.getBoundingClientRect().top + el.offsetHeight
@@ -179,8 +188,24 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         })
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
             isEnabled: () => true,
-            execute: (sketch: SketchMenuEntry) => {
-                console.log("OPEN SOME SKETCH", sketch);
+            execute: async (sketch: Sketch) => {
+                // const url = new URL(window.location.href);
+                // if (this.workspaceService.workspace) {
+                //     const wsUri = this.workspaceService.workspace.uri;
+                //     const path = new URI(wsUri).path;
+                //     url.hash = path + '?sketch=' + sketch.name
+                // }
+                // this.windowService.openNewWindow(url.toString());
+                
+                const fileStat = await this.fileSystem.getFileStat(sketch.uri);
+                if (fileStat) {
+                    const sketchFiles = await this.sketches.getSketchFiles(fileStat);
+                    sketchFiles.forEach(sketchFile => {
+                        const uri = new URI(sketchFile);
+                        this.editorManager.open(uri);
+                    });
+                }
+
             }
         })
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
