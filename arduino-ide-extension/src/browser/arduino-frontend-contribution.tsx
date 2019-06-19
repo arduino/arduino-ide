@@ -21,7 +21,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager } from '@theia/editor/lib/browser';
-import { open, ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
@@ -196,15 +196,8 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 //     url.hash = path + '?sketch=' + sketch.name
                 // }
                 // this.windowService.openNewWindow(url.toString());
-                
-                const fileStat = await this.fileSystem.getFileStat(sketch.uri);
-                if (fileStat) {
-                    const sketchFiles = await this.sketches.getSketchFiles(fileStat);
-                    sketchFiles.forEach(sketchFile => {
-                        const uri = new URI(sketchFile);
-                        this.editorManager.open(uri);
-                    });
-                }
+
+                this.openSketchFiles(sketch.uri);
 
             }
         })
@@ -228,6 +221,17 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         })
     }
 
+    protected async openSketchFiles(uri: string) {
+        const fileStat = await this.fileSystem.getFileStat(uri);
+        if (fileStat) {
+            const sketchFiles = await this.sketches.getSketchFiles(fileStat);
+            sketchFiles.forEach(sketchFile => {
+                const uri = new URI(sketchFile);
+                this.editorManager.open(uri);
+            });
+        }
+    }
+
     /**
      * Opens a file after prompting the `Open File` dialog. Resolves to `undefined`, if
      *  - the workspace root is not set,
@@ -247,7 +251,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         if (destinationFileUri) {
             const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
             if (destinationFile && !destinationFile.isDirectory) {
-                await open(this.openerService, destinationFileUri);
+                await this.openSketchFiles(destinationFileUri.toString());
                 return destinationFileUri;
             }
         }
