@@ -4,7 +4,6 @@ import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
-import { DefaultFrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
@@ -21,7 +20,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager } from '@theia/editor/lib/browser';
-import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget, Endpoint } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
@@ -29,7 +28,7 @@ import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 
 @injectable()
-export class ArduinoFrontendContribution extends DefaultFrontendApplicationContribution implements TabBarToolbarContribution, CommandContribution {
+export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -79,12 +78,11 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
     @inject(OpenerService)
     protected readonly openerService: OpenerService;
 
-    @inject(SketchesService)
-    protected readonly sketches: SketchesService;
-
     @inject(WindowService)
     protected readonly windowService: WindowService;
 
+    @inject(SketchesService)
+    protected readonly sketches: SketchesService;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -189,16 +187,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
             isEnabled: () => true,
             execute: async (sketch: Sketch) => {
-                // const url = new URL(window.location.href);
-                // if (this.workspaceService.workspace) {
-                //     const wsUri = this.workspaceService.workspace.uri;
-                //     const path = new URI(wsUri).path;
-                //     url.hash = path + '?sketch=' + sketch.name
-                // }
-                // this.windowService.openNewWindow(url.toString());
-
-                this.openSketchFiles(sketch.uri);
-
+                this.openSketchFilesInNewWindow(sketch.uri);
             }
         })
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
@@ -221,7 +210,14 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         })
     }
 
-    protected async openSketchFiles(uri: string) {
+    protected async openSketchFilesInNewWindow(uri: string) {
+        const location = new URL(window.location.href);
+        let url = new Endpoint().getRestUrl().withQuery(uri).toString();
+        url += location.hash;
+        this.windowService.openNewWindow(url);
+    }
+
+    async openSketchFiles(uri: string) {
         const fileStat = await this.fileSystem.getFileStat(uri);
         if (fileStat) {
             const sketchFiles = await this.sketches.getSketchFiles(fileStat);
@@ -251,7 +247,7 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
         if (destinationFileUri) {
             const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
             if (destinationFile && !destinationFile.isDirectory) {
-                await this.openSketchFiles(destinationFileUri.toString());
+                await this.openSketchFilesInNewWindow(destinationFileUri.toString());
                 return destinationFileUri;
             }
         }

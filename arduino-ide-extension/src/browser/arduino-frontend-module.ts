@@ -5,7 +5,7 @@ import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application'
+import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
@@ -45,12 +45,14 @@ import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-st
 import { SilentMonacoStatusBarContribution } from './customization/silent-monaco-status-bar-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { CustomApplicationShell } from './customization/custom-application-shell';
+import { CustomFrontendApplication } from './customization/custom-frontend-application';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
     bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
+    bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
@@ -126,7 +128,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
     unbind(ProblemContribution);
     bind(ProblemContribution).to(SilentProblemContribution).inSingletonScope();
-
     unbind(FileNavigatorContribution);
     bind(FileNavigatorContribution).to(SilentNavigatorContribution).inSingletonScope();
     unbind(OutputToolbarContribution);
@@ -137,4 +138,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
     unbind(ApplicationShell);
     bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
+    unbind(FrontendApplication);
+    bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
 });
