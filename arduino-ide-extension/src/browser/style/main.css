@@ -10,33 +10,31 @@
     color: var(--theia-ui-font-color3);
 }
 
-#arduino-verify.arduino-tool-icon {
+#arduino-verify {
     background: url(../icons/buttons.svg);
     background-size: 800%;
     background-position-y: 21px;
     background-position-x: 141px;
 }
 
-#arduino-upload.arduino-tool-icon {
+#arduino-verify.arduino-tool-icon:hover,
+#arduino-show-open-context-menu.arduino-tool-icon:hover,
+#arduino-upload.arduino-tool-icon:hover {
+    background-position-y: 45px;
+}
+
+#arduino-upload {
     background: url(../icons/buttons.svg);
     background-size: 800%;
     background-position-y: 21px;
     background-position-x: 117px;
 }
 
-#arduino-show-open-context-menu.arduino-tool-icon {
+#arduino-show-open-context-menu {
     background: url(../icons/buttons.svg);
     background-size: 800%;
     background-position-y: 21px;
     background-position-x: 69px;
-}
-
-#arduino-verify.arduino-tool-icon:hover {
-    background-position-y: 45px;
-}
-
-#arduino-upload.arduino-tool-icon:hover {
-    background-position-y: 45px;
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item {

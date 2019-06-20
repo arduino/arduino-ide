@@ -20,7 +20,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager } from '@theia/editor/lib/browser';
-import { ContextMenuRenderer, OpenerService, Widget, Endpoint } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
@@ -212,9 +212,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     protected async openSketchFilesInNewWindow(uri: string) {
         const location = new URL(window.location.href);
-        let url = new Endpoint().getRestUrl().withQuery(uri).toString();
-        url += location.hash;
-        this.windowService.openNewWindow(url);
+        location.searchParams.set('sketch', uri);
+        this.windowService.openNewWindow(location.toString());
     }
 
     async openSketchFiles(uri: string) {
