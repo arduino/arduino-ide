@@ -26,6 +26,7 @@ import { FileSystem } from '@theia/filesystem/lib/common';
 import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
@@ -113,6 +114,13 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             text: '$(arrow-up)'
         });
         registry.registerItem({
+            id: ArduinoCommands.SAVE_SKETCH.id,
+            command: ArduinoCommands.SAVE_SKETCH.id,
+            tooltip: 'Save',
+            group: 'arduino',
+            text: '$(arrow-down)'
+        });
+        registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
             render: () => <ConnectedBoards
                 boardsService={this.boardService}
@@ -188,6 +196,13 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             isEnabled: () => true,
             execute: async (sketch: Sketch) => {
                 this.openSketchFilesInNewWindow(sketch.uri);
+            }
+        })
+        registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
+            isEnabled: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => this.isArduinoToolbar(widget),
+            execute: async (sketch: Sketch) => {
+                registry.executeCommand(CommonCommands.SAVE_ALL.id);
             }
         })
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {

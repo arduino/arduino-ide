@@ -25,6 +25,10 @@ export namespace ArduinoCommands {
         id: 'arduino-open-file'
     }
 
+    export const SAVE_SKETCH: Command = {
+        id: 'arduino-save-file'
+    }
+
     export const NEW_SKETCH: Command = {
         id: "arduino-new-sketch",
         label: 'New Sketch',
