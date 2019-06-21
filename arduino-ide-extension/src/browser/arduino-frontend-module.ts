@@ -46,6 +46,8 @@ import { SilentMonacoStatusBarContribution } from './customization/silent-monaco
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { CustomApplicationShell } from './customization/custom-application-shell';
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
+import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
+import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -140,4 +142,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
     unbind(FrontendApplication);
     bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
+    unbind(EditorWidgetFactory);
+    bind(EditorWidgetFactory).to(CustomEditorWidgetFactory).inSingletonScope();
 });

@@ -96,28 +96,24 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             id: ArduinoCommands.VERIFY.id,
             command: ArduinoCommands.VERIFY.id,
             tooltip: 'Verify',
-            group: 'arduino',
             text: '$(check)'
         });
         registry.registerItem({
             id: ArduinoCommands.UPLOAD.id,
             command: ArduinoCommands.UPLOAD.id,
             tooltip: 'Upload',
-            group: 'arduino',
             text: '$(arrow-right)'
         });
         registry.registerItem({
             id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             tooltip: 'Open',
-            group: 'arduino',
             text: '$(arrow-up)'
         });
         registry.registerItem({
             id: ArduinoCommands.SAVE_SKETCH.id,
             command: ArduinoCommands.SAVE_SKETCH.id,
             tooltip: 'Save',
-            group: 'arduino',
             text: '$(arrow-down)'
         });
         registry.registerItem({
