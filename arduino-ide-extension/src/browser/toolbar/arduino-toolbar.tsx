@@ -14,14 +14,14 @@ export namespace ArduinoToolbarComponent {
         executeCommand: (e: React.MouseEvent<HTMLElement>) => void
     }
     export interface State {
-        tootip: string
+        tooltip: string
     }
 }
 export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarComponent.Props, ArduinoToolbarComponent.State> {
 
     constructor(props: ArduinoToolbarComponent.Props) {
         super(props);
-        this.state = { tootip: '' };
+        this.state = {tooltip: ''};
     }
 
     protected renderItem(item: TabBarToolbarItem): React.ReactNode {
@@ -35,8 +35,8 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
                     id={item.id}
                     className={`${item.id} arduino-tool-icon`}
                     onClick={this.props.executeCommand}
-                    onMouseOver={() => this.setState({ tootip: item.tooltip || '' })}
-                    onMouseOut={() => this.setState({ tootip: '' })}
+                    onMouseOver={() => this.setState({ tooltip: item.tooltip || '' })}
+                    onMouseOut={() => this.setState({ tooltip: '' })}
                     title={item.tooltip}>
                     {innerText}
                 </div>
@@ -46,7 +46,7 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
 
     render(): React.ReactNode {
         return <React.Fragment>
-            <div className={'arduino-toolbar-tooltip'}>{this.state.tootip}</div>
+            <div className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>
             {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
         </React.Fragment>;
     }
