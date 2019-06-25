@@ -21,17 +21,17 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
 
     constructor(props: ArduinoToolbarComponent.Props) {
         super(props);
-        this.state = {tooltip: ''};
+        this.state = { tooltip: '' };
     }
 
-    protected renderItem(item: TabBarToolbarItem): React.ReactNode {
+    protected renderItem = (item: TabBarToolbarItem) => {
         let innerText = '';
         const command = this.props.commands.getCommand(item.command);
         const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? ' enabled' : ''}`
-        return <React.Fragment>
-            <div key={item.id}
+        return <div key={item.id}
                 className={cls} >
                 <div
+                    key={item.id + '-icon'}
                     id={item.id}
                     className={`${item.id} arduino-tool-icon`}
                     onClick={this.props.executeCommand}
@@ -41,12 +41,11 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
                     {innerText}
                 </div>
             </div>
-        </React.Fragment>;
     }
 
     render(): React.ReactNode {
         return <React.Fragment>
-            <div className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>
+            <div key='arduino-toolbar-tooltip' className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>
             {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
         </React.Fragment>;
     }
@@ -59,7 +58,7 @@ export class ArduinoToolbar extends ReactWidget {
     constructor(
         protected readonly tabBarToolbarRegistry: TabBarToolbarRegistry,
         protected readonly commands: CommandRegistry,
-        protected readonly labelParser: LabelParser 
+        protected readonly labelParser: LabelParser
     ) {
         super();
         this.id = 'arduino-toolbar';
@@ -70,7 +69,8 @@ export class ArduinoToolbar extends ReactWidget {
 
     protected updateItems(items: Array<TabBarToolbarItem | ReactTabBarToolbarItem>): void {
         this.items.clear();
-        for (const item of items.sort(TabBarToolbarItem.PRIORITY_COMPARATOR).reverse()) {
+        const revItems = items.reverse();
+        for (const item of revItems) {
             this.items.set(item.id, item);
         }
         this.update();

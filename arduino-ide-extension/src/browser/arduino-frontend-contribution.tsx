@@ -27,7 +27,6 @@ import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
-import { BoardsToolBarItem } from './components/boards-toolbar-item';
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
@@ -119,15 +118,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         });
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
-            render: () => <BoardsToolBarItem
-                onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
-                onUnknownBoard={this.onUnknownBoard.bind(this)} />,
-            // render: () => <ConnectedBoards
-            //     boardsService={this.boardService}
-            //     boardsNotificationService={this.boardsNotificationService}
-            //     quickPickService={this.quickPickService}
+            // render: () => <BoardsToolBarItem
             //     onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
             //     onUnknownBoard={this.onUnknownBoard.bind(this)} />,
+            render: () => <ConnectedBoards
+                boardsService={this.boardService}
+                boardsNotificationService={this.boardsNotificationService}
+                quickPickService={this.quickPickService}
+                onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
+                onUnknownBoard={this.onUnknownBoard.bind(this)} />,
             isVisible: widget => this.isArduinoToolbar(widget)
         })
     }
