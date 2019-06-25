@@ -29,14 +29,14 @@ export class ConnectedBoards extends React.Component<ConnectedBoards.Props, Conn
             content = [ <option key="loading" value="0">{label}</option> ];
         }
 
-        return <div className={`${ARDUINO_TOOLBAR_ITEM_CLASS} item ${ConnectedBoards.Styles.CONNECTED_BOARDS_CLASS}`}>
-            <select disabled={!this.state.boards}
+        return <div key='arduino-connected-boards' className={`${ARDUINO_TOOLBAR_ITEM_CLASS} item ${ConnectedBoards.Styles.CONNECTED_BOARDS_CLASS}`}>
+            <select key='arduino-connected-boards-select' disabled={!this.state.boards}
                 onChange={this.onBoardSelect.bind(this)}
                 value={this.state.selection}>
-                <optgroup label="Attached boards">
+                <optgroup key='arduino-connected-boards-select-opt-group' label="Attached boards">
                     { content }
                 </optgroup>
-                <optgroup label="_________">
+                <optgroup label="_________" key='arduino-connected-boards-select-opt-group2'>
                     { !!this.state.otherBoard && <option value="selected-other" key="selected-other">{this.state.otherBoard.name} (not attached)</option> }
                     <option value="select-other" key="select-other">Select other Board</option>
                 </optgroup>
