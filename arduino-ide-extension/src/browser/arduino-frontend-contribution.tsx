@@ -5,7 +5,7 @@ import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService } from '../common/protocol/boards-service';
+import { BoardsService, Board } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
@@ -23,7 +23,7 @@ import { EditorManager } from '@theia/editor/lib/browser';
 import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
-import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
+import { ArduinoToolbarContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
@@ -120,6 +120,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
+                contextMenuRenderer={this.contextMenuRenderer}
                 onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
                 onUnknownBoard={this.onUnknownBoard.bind(this)} />,
             // render: () => <ConnectedBoards
@@ -181,7 +182,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             execute: async (widget: Widget, event: React.MouseEvent<HTMLElement>) => {
                 const el = (event.target as HTMLElement).parentElement;
                 if (el) {
-                    this.contextMenuRenderer.render(ArduinoOpenSketchContextMenu.PATH, {
+                    this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
                         x: el.getBoundingClientRect().left,
                         y: el.getBoundingClientRect().top + el.offsetHeight
                     });
@@ -222,6 +223,18 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerCommand(ArduinoCommands.REFRESH_BOARDS, {
             isEnabled: () => true,
             execute: () => this.boardsNotificationService.notifyBoardsInstalled()
+        });
+        registry.registerCommand(ArduinoCommands.SELECT_BOARD, {
+            isEnabled: () => true,
+            execute: (board: Board) => {
+                console.log("SELECT BOARD HERE", board);
+            }  
+        })
+        registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
+            isEnabled: () => true,
+            execute: () => {
+                console.log("OPEN THE DIALOG HERE");
+            }
         })
     }
 

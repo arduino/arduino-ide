@@ -27,7 +27,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { AWorkspaceService } from './arduino-workspace-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { ArduinoTheme } from './arduino-theme';
-import { ArduinoFileMenuContribution } from './arduino-file-menu';
+import { ArduinoToolbarMenuContribution } from './arduino-file-menu';
 import { MenuContribution } from '@theia/core';
 import { SketchFactory } from './sketch-factory';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
@@ -55,7 +55,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
-    bind(MenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
+    bind(MenuContribution).to(ArduinoToolbarMenuContribution).inSingletonScope();
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(ArduinoToolbarContribution);
