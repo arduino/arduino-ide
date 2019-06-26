@@ -10,26 +10,39 @@
     color: var(--theia-ui-font-color3);
 }
 
-#arduino-verify.arduino-tool-icon {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-x: 141px;
-    background-position-y: 21px;
-}
-
-#arduino-upload.arduino-tool-icon {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-x: 117px;
-    background-position-y: 21px;
-}
-
-#arduino-verify.arduino-tool-icon:hover {
-    background-position-y: 45px;
-}
-
+#arduino-verify.arduino-tool-icon:hover,
+#arduino-save-file.arduino-tool-icon:hover,
+#arduino-show-open-context-menu.arduino-tool-icon:hover,
 #arduino-upload.arduino-tool-icon:hover {
     background-position-y: 45px;
+}
+
+#arduino-save-file {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-y: 21px;
+    background-position-x: 44px;
+}
+
+#arduino-verify {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-y: 21px;
+    background-position-x: 141px;
+}
+
+#arduino-upload {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-y: 21px;
+    background-position-x: 117px;
+}
+
+#arduino-show-open-context-menu {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-y: 21px;
+    background-position-x: 69px;
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item {
@@ -38,6 +51,25 @@
 
 .arduino-tool-item.item.connected-boards {
     opacity: 1;
+}
+
+.arduino-boards-toolbar-item-container {
+    display: flex;
+    align-items: center;
+}
+
+.arduino-boards-toolbar-item .label {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.arduino-open-boards-button {
+}
+
+.arduino-boards-toolbar-item {
+    background: white;
+    height: 18px;
 }
 
 .arduino-tool-item.item.connected-boards  select {

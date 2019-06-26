@@ -31,7 +31,10 @@
         "frontend": {
             "config": {
                 "applicationName": "Arduino-PoC",
-                "defaultTheme": "arduino-theme"
+                "defaultTheme": "arduino-theme",
+                "preferences": {
+                    "editor.autoSave": "on"        
+                }
             }
         }
     }

@@ -5,13 +5,14 @@ import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application'
+import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
+import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
 import { LibraryListWidgetFrontendContribution } from './library/list-widget-frontend-contribution';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
@@ -44,12 +45,16 @@ import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-st
 import { SilentMonacoStatusBarContribution } from './customization/silent-monaco-status-bar-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { CustomApplicationShell } from './customization/custom-application-shell';
+import { CustomFrontendApplication } from './customization/custom-frontend-application';
+import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
+import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
     bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
+    bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
@@ -69,6 +74,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(LibraryListWidget)
     }));
     bind(FrontendApplicationContribution).toService(LibraryListWidgetFrontendContribution);
+
+    // Sketch list service
+    bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
 
     // Boards Notification service for updating boards list
     // TODO (post-PoC): move this to boards service/backend
@@ -106,9 +114,11 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         container.get(CoreService);
         container.get(LibraryService);
         container.get(BoardsService);
+        container.get(SketchesService);
         return workspaceServiceExt;
     });
 
+    bind(AWorkspaceService).toSelf().inSingletonScope();
     rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();
     bind(SketchFactory).toSelf().inSingletonScope();
 
@@ -120,7 +130,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
     unbind(ProblemContribution);
     bind(ProblemContribution).to(SilentProblemContribution).inSingletonScope();
-
     unbind(FileNavigatorContribution);
     bind(FileNavigatorContribution).to(SilentNavigatorContribution).inSingletonScope();
     unbind(OutputToolbarContribution);
@@ -131,4 +140,8 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
     unbind(ApplicationShell);
     bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
+    unbind(FrontendApplication);
+    bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
+    unbind(EditorWidgetFactory);
+    bind(EditorWidgetFactory).to(CustomEditorWidgetFactory).inSingletonScope();
 });

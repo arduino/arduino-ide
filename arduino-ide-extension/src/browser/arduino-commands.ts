@@ -12,6 +12,23 @@ export namespace ArduinoCommands {
         label: 'Upload Sketch'
     }
 
+    export const SHOW_OPEN_CONTEXT_MENU: Command = {
+        id: 'arduino-show-open-context-menu',
+        label: 'Open Sketch'
+    }
+
+    export const OPEN_FILE_NAVIGATOR: Command = {
+        id: 'arduino-open-file-navigator'
+    }
+
+    export const OPEN_SKETCH: Command = {
+        id: 'arduino-open-file'
+    }
+
+    export const SAVE_SKETCH: Command = {
+        id: 'arduino-save-file'
+    }
+
     export const NEW_SKETCH: Command = {
         id: "arduino-new-sketch",
         label: 'New Sketch',

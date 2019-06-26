@@ -4,7 +4,6 @@ import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
-import { DefaultFrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
@@ -15,15 +14,22 @@ import { ToolOutputServiceClient } from '../common/protocol/tool-output-service'
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsNotificationService } from './boards-notification-service';
-import { WorkspaceRootUriAwareCommandHandler } from '@theia/workspace/lib/browser/workspace-commands';
+import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager } from '@theia/editor/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
+import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
+import { FileSystem } from '@theia/filesystem/lib/common';
+import { ArduinoOpenSketchContextMenu } from './arduino-file-menu';
+import { Sketch, SketchesService } from '../common/protocol/sketches-service';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
 
 @injectable()
-export class ArduinoFrontendContribution extends DefaultFrontendApplicationContribution implements TabBarToolbarContribution, CommandContribution {
+export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -61,6 +67,24 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
 
+    @inject(ContextMenuRenderer)
+    protected readonly contextMenuRenderer: ContextMenuRenderer;
+
+    @inject(FileDialogService)
+    protected readonly fileDialogService: FileDialogService;
+
+    @inject(FileSystem)
+    protected readonly fileSystem: FileSystem;
+
+    @inject(OpenerService)
+    protected readonly openerService: OpenerService;
+
+    @inject(WindowService)
+    protected readonly windowService: WindowService;
+
+    @inject(SketchesService)
+    protected readonly sketches: SketchesService;
+
     @postConstruct()
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
@@ -72,18 +96,31 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             id: ArduinoCommands.VERIFY.id,
             command: ArduinoCommands.VERIFY.id,
             tooltip: 'Verify',
-            group: 'arduino',
             text: '$(check)'
         });
         registry.registerItem({
             id: ArduinoCommands.UPLOAD.id,
             command: ArduinoCommands.UPLOAD.id,
             tooltip: 'Upload',
-            group: 'arduino',
             text: '$(arrow-right)'
         });
         registry.registerItem({
+            id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
+            command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
+            tooltip: 'Open',
+            text: '$(arrow-up)'
+        });
+        registry.registerItem({
+            id: ArduinoCommands.SAVE_SKETCH.id,
+            command: ArduinoCommands.SAVE_SKETCH.id,
+            tooltip: 'Save',
+            text: '$(arrow-down)'
+        });
+        registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
+            // render: () => <BoardsToolBarItem
+            //     onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
+            //     onUnknownBoard={this.onUnknownBoard.bind(this)} />,
             render: () => <ConnectedBoards
                 boardsService={this.boardService}
                 boardsNotificationService={this.boardsNotificationService}
@@ -137,6 +174,36 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
                 }
             }
         });
+        registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
+            isVisible: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => this.isArduinoToolbar(widget),
+            execute: async (widget: Widget, event: React.MouseEvent<HTMLElement>) => {
+                const el = (event.target as HTMLElement).parentElement;
+                if (el) {
+                    this.contextMenuRenderer.render(ArduinoOpenSketchContextMenu.PATH, {
+                        x: el.getBoundingClientRect().left,
+                        y: el.getBoundingClientRect().top + el.offsetHeight
+                    });
+                }
+            }
+        });
+        registry.registerCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR, {
+            isEnabled: () => true,
+            execute: () => this.doOpenFile()
+        })
+        registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
+            isEnabled: () => true,
+            execute: async (sketch: Sketch) => {
+                this.openSketchFilesInNewWindow(sketch.uri);
+            }
+        })
+        registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
+            isEnabled: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => this.isArduinoToolbar(widget),
+            execute: async (sketch: Sketch) => {
+                registry.executeCommand(CommonCommands.SAVE_ALL.id);
+            }
+        })
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
             execute: async uri => {
                 try {
@@ -155,6 +222,49 @@ export class ArduinoFrontendContribution extends DefaultFrontendApplicationContr
             isEnabled: () => true,
             execute: () => this.boardsNotificationService.notifyBoardsInstalled()
         })
+    }
+
+    protected async openSketchFilesInNewWindow(uri: string) {
+        const location = new URL(window.location.href);
+        location.searchParams.set('sketch', uri);
+        this.windowService.openNewWindow(location.toString());
+    }
+
+    async openSketchFiles(uri: string) {
+        const fileStat = await this.fileSystem.getFileStat(uri);
+        if (fileStat) {
+            const sketchFiles = await this.sketches.getSketchFiles(fileStat);
+            sketchFiles.forEach(sketchFile => {
+                const uri = new URI(sketchFile);
+                this.editorManager.open(uri);
+            });
+        }
+    }
+
+    /**
+     * Opens a file after prompting the `Open File` dialog. Resolves to `undefined`, if
+     *  - the workspace root is not set,
+     *  - the file to open does not exist, or
+     *  - it was not a file, but a directory.
+     *
+     * Otherwise, resolves to the URI of the file.
+     */
+    protected async doOpenFile(): Promise<URI | undefined> {
+        const props: OpenFileDialogProps = {
+            title: WorkspaceCommands.OPEN_FILE.dialogLabel,
+            canSelectFolders: false,
+            canSelectFiles: true
+        };
+        const [rootStat] = await this.workspaceService.roots;
+        const destinationFileUri = await this.fileDialogService.showOpenDialog(props, rootStat);
+        if (destinationFileUri) {
+            const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
+            if (destinationFile && !destinationFile.isDirectory) {
+                await this.openSketchFilesInNewWindow(destinationFileUri.toString());
+                return destinationFileUri;
+            }
+        }
+        return undefined;
     }
 
     protected getCurrentWidget(): EditorWidget | undefined {

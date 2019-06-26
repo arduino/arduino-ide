@@ -17,6 +17,8 @@ import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { ToolOutputServiceServerImpl } from './tool-output-service-impl';
 import { DefaultWorkspaceServerExt } from './default-workspace-server-ext';
 import { WorkspaceServer } from '@theia/workspace/lib/common';
+import { SketchesServiceImpl } from './sketches-service-impl';
+import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoDaemon).toSelf().inSingletonScope();
@@ -29,6 +31,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         bindBackendService(LibraryServicePath, LibraryService);
     });
     bind(ConnectionContainerModule).toConstantValue(libraryServiceConnectionModule);
+
+    // Sketches service
+    const sketchesServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+        bind(SketchesServiceImpl).toSelf().inSingletonScope();
+        bind(SketchesService).toService(SketchesServiceImpl);
+        bindBackendService(SketchesServicePath, SketchesService);
+    });
+    bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
 
     // Boards service
     const boardsServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
