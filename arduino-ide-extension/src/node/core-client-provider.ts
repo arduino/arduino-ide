@@ -1,5 +1,5 @@
-import { Instance } from './cli-protocol/common_pb';
-import { ArduinoCoreClient } from './cli-protocol/commands_grpc_pb';
+import { Instance } from './cli-protocol/commands/common_pb';
+import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 
 export const CoreClientProviderPath = '/services/core-client-provider';
 export const CoreClientProvider = Symbol('CoreClientProvider');

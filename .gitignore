@@ -3,6 +3,7 @@ node_modules/
 .node_modules/
 lib/
 build/
+downloads/
 !electron/build/
 src-gen/
 arduino-ide-*/webpack.config.js
