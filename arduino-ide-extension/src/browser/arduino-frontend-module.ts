@@ -46,8 +46,6 @@ import { SilentMonacoStatusBarContribution } from './customization/silent-monaco
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { CustomApplicationShell } from './customization/custom-application-shell';
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
-import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
-import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
 import { SelectBoardDialog, SelectBoardDialogProps } from './boards/select-board-dialog';
 import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
 
@@ -152,6 +150,4 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
     unbind(FrontendApplication);
     bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
-    unbind(EditorWidgetFactory);
-    bind(EditorWidgetFactory).to(CustomEditorWidgetFactory).inSingletonScope();
 });
