@@ -109,3 +109,35 @@ div#select-board-dialog .selectBoardContainer .head {
 div#select-board-dialog .selectBoardContainer .body .list .item.selected {
     background: #aaaaaa;
 }
+
+#select-board-dialog .selectBoardContainer .body .search input, 
+#select-board-dialog .selectBoardContainer .body .boards.list,
+#select-board-dialog .selectBoardContainer .body .search, 
+#select-board-dialog .selectBoardContainer .body .ports.list {
+    background: white;
+}
+
+#select-board-dialog .selectBoardContainer .body .search input {
+    border: none;
+    width: 100%;
+}
+
+#select-board-dialog .selectBoardContainer .body .container {
+    flex: 1;
+}
+
+#select-board-dialog .selectBoardContainer .body .container .content {
+    margin: 0 5px;
+}
+
+#select-board-dialog .selectBoardContainer .body .list .item {
+    padding: 10px 5px 10px 20px;
+}
+
+#select-board-dialog .selectBoardContainer .body .list {
+    max-height: 265px;
+}
+
+#select-board-dialog .selectBoardContainer .body .search {
+    margin-bottom: 10px;
+}

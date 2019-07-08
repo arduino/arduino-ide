@@ -21,7 +21,7 @@ export namespace SelectableBoardsItem {
 export class SelectableBoardsItem extends React.Component<SelectableBoardsItem.Props> {
 
     render(): React.ReactNode {
-        return <div onClick={this.select} className={`item ${this.props.selected ? 'selected': ''}`}>{this.props.board.name}</div>
+        return <div onClick={this.select} className={`item ${this.props.selected ? 'selected' : ''}`}>{this.props.board.name}</div>
     }
 
     protected readonly select = (() => {
@@ -40,7 +40,7 @@ export namespace SelectablePortsItem {
 export class SelectablePortsItem extends React.Component<SelectablePortsItem.Props> {
 
     render(): React.ReactNode {
-        return <div onClick={() => this.props.onClick({ port: this.props.port })} className={`item ${this.props.selected ? 'selected': ''}`}>{this.props.port}</div>
+        return <div onClick={() => this.props.onClick({ port: this.props.port })} className={`item ${this.props.selected ? 'selected' : ''}`}>{this.props.port}</div>
     }
 
     protected readonly select = (() => {
@@ -83,23 +83,27 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
     render(): React.ReactNode {
         return <React.Fragment>
             <div className='body'>
-                <div className='left'>
-                    <div className='title'>
-                        BOARDS
+                <div className='left container'>
+                    <div className='content'>
+                        <div className='title'>
+                            BOARDS
                     </div>
-                    <div className='search'>
-                        <input type='search' placeholder='SEARCH BOARD' onChange={this.doFilter} />
-                    </div>
-                    <div className='boards list'>
-                        {this.state.boards.map(board => <SelectableBoardsItem key={board.name} onClick={this.doSelect} board={board} selected={this.isSelectedBoard(board)}/>)}
+                        <div className='search'>
+                            <input type='search' placeholder='SEARCH BOARD' onChange={this.doFilter} />
+                        </div>
+                        <div className='boards list'>
+                            {this.state.boards.map(board => <SelectableBoardsItem key={board.name} onClick={this.doSelect} board={board} selected={this.isSelectedBoard(board)} />)}
+                        </div>
                     </div>
                 </div>
-                <div className='right'>
-                    <div className='title'>
-                        PORTS
+                <div className='right container'>
+                    <div className='content'>
+                        <div className='title'>
+                            PORTS
                     </div>
-                    <div className='ports list'>
-                        {this.state.ports.map(port => <SelectablePortsItem key={port} onClick={this.doSelect} port={port} selected={this.isSelectedPort(port)}/>)}
+                        <div className='ports list'>
+                            {this.state.ports.map(port => <SelectablePortsItem key={port} onClick={this.doSelect} port={port} selected={this.isSelectedPort(port)} />)}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,11 +111,11 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
     }
 
     protected readonly isSelectedBoard = ((board: Board) => {
-        return (this.state.selection.board && this.state.selection.board === board) || false;       
+        return (this.state.selection.board && this.state.selection.board === board) || false;
     });
 
     protected readonly isSelectedPort = ((port: string) => {
-        return (this.state.selection.port && this.state.selection.port === port) || false;       
+        return (this.state.selection.port && this.state.selection.port === port) || false;
     });
 
     protected readonly doSelect = (boardAndPortSelection: BoardAndPortSelection) => {
