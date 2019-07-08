@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-import { OpenerService } from "@theia/core/lib/browser";
 import { FileSystem } from "@theia/filesystem/lib/common";
+import { WindowService } from "@theia/core/lib/browser/window/window-service";
 
 @injectable()
 export class SketchFactory {
@@ -9,8 +9,8 @@ export class SketchFactory {
     @inject(FileSystem)
     protected readonly fileSystem: FileSystem;
 
-    @inject(OpenerService)
-    protected readonly openerService: OpenerService;
+    @inject(WindowService)
+    protected readonly windowService: WindowService;
 
     public async createNewSketch(parent: URI): Promise<void> {
         const monthNames = ["january", "february", "march", "april", "may", "june",
@@ -49,8 +49,9 @@ void loop() {
 
 }
 `                   });
-            const opener = await this.openerService.getOpener(sketchFile)
-            opener.open(sketchFile, { reveal: true });
+            const location = new URL(window.location.href);
+            location.searchParams.set('sketch', sketchFile.toString());
+            this.windowService.openNewWindow(location.toString());
         } catch (e) {
             throw new Error("Cannot create new sketch: " + e);
         }
