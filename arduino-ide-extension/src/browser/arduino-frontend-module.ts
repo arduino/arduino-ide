@@ -48,6 +48,8 @@ import { CustomApplicationShell } from './customization/custom-application-shell
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
 import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
+import { SelectBoardsDialog, SelectBoardsDialogProps } from './boards/select-board-dialog';
+import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -93,6 +95,13 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(BoardsListWidget)
     }));
     bind(FrontendApplicationContribution).toService(BoardsListWidgetFrontendContribution);
+
+    // Board select dialog
+    bind(SelectBoardDialogWidget).toSelf().inSingletonScope();
+    bind(SelectBoardsDialog).toSelf().inSingletonScope();
+    bind(SelectBoardsDialogProps).toConstantValue({
+        title: 'Select Board'
+    })
 
     // Core service
     bind(CoreService)

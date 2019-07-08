@@ -31,6 +31,7 @@ export class BoardsServiceImpl implements BoardsService {
             name: b.getName() || "unknown",
             fqbn: b.getFqbn(),
             port: b.getPort(),
+            type: 'serial',
             serialNumber: b.getSerialnumber(),
             productID: b.getProductid(),
             vendorID: b.getVendorid()
@@ -41,6 +42,7 @@ export class BoardsServiceImpl implements BoardsService {
             address: b.getAddress(),
             info: b.getInfo(),
             port: b.getPort(),
+            type: 'network'
         });
 
         return { boards: serialBoards.concat(networkBoards) };

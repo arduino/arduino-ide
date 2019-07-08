@@ -27,7 +27,8 @@ import { ArduinoToolbarContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
-import { BoardsToolBarItem } from './components/boards-toolbar-item';
+import { BoardsToolBarItem } from './boards/boards-toolbar-item';
+import { SelectBoardsDialog } from './boards/select-board-dialog';
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
@@ -85,6 +86,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(SketchesService)
     protected readonly sketches: SketchesService;
+
+    @inject(SelectBoardsDialog)
+    protected readonly selectBoardsDialog: SelectBoardsDialog;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -227,13 +231,26 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerCommand(ArduinoCommands.SELECT_BOARD, {
             isEnabled: () => true,
             execute: (board: Board) => {
-                console.log("SELECT BOARD HERE", board);
-            }  
+                this.boardService.selectBoard(board).then(() => {
+                    return this.boardService.getSelectBoard();
+                }).then(board => {
+                    console.log("and the selected board is", board);
+                })
+            }
         })
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
             isEnabled: () => true,
-            execute: () => {
-                console.log("OPEN THE DIALOG HERE");
+            execute: async () => {
+                const boardAndPort = await this.selectBoardsDialog.open();
+                if(boardAndPort && boardAndPort.board){
+                    const selectedBoard = {
+                        fqbn: boardAndPort.board.fqbn,
+                        name: boardAndPort.board.name,
+                        port: boardAndPort.port
+                    }
+                    this.boardService.selectBoard(selectedBoard);
+
+                }
             }
         })
     }

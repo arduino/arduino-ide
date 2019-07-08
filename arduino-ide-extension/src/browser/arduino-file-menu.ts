@@ -62,11 +62,11 @@ export class ArduinoToolbarMenuContribution implements MenuContribution {
 
 
     protected getPort(board: Board): string {
-        if(AttachedSerialBoard.is(board)){
+        if (AttachedSerialBoard.is(board)) {
             return board.port;
         }
-        if(AttachedNetworkBoard.is(board)) {
-            return 'netport' + board.port;
+        if (AttachedNetworkBoard.is(board)) {
+            return 'netport: ' + board.port;
         }
         return '';
     }
@@ -95,7 +95,7 @@ export class ArduinoToolbarMenuContribution implements MenuContribution {
     registerMenus(registry: MenuModelRegistry) {
         registry.registerMenuAction([...CommonMenus.FILE, '0_new_sletch'], {
             commandId: ArduinoCommands.NEW_SKETCH.id
-        })
+        });
 
         registry.registerMenuAction(ArduinoToolbarContextMenu.OPEN_GROUP, {
             commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,

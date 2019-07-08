@@ -97,3 +97,15 @@
     align-items: center;
     color: var(--theia-ui-font-color3);
 }
+
+div#select-board-dialog .selectBoardContainer .body {
+    display: flex;
+}
+
+div#select-board-dialog .selectBoardContainer .head {
+    margin-bottom: 10px;
+}
+
+div#select-board-dialog .selectBoardContainer .body .list .item.selected {
+    background: #aaaaaa;
+}
