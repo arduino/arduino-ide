@@ -53,25 +53,10 @@
     opacity: 1;
 }
 
-.arduino-boards-toolbar-item-container {
-    display: flex;
-    align-items: center;
-}
-
-.arduino-boards-toolbar-item .label {
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-
 .arduino-open-boards-button {
     background: white;
 }
 
-.arduino-boards-toolbar-item {
-    background: white;
-    height: 18px;
-}
 
 .arduino-tool-item.item.connected-boards  select {
     line-height: var(--theia-content-line-height);
@@ -96,48 +81,4 @@
     display: flex;
     align-items: center;
     color: var(--theia-ui-font-color3);
-}
-
-div#select-board-dialog .selectBoardContainer .body {
-    display: flex;
-}
-
-div#select-board-dialog .selectBoardContainer .head {
-    margin-bottom: 10px;
-}
-
-div#select-board-dialog .selectBoardContainer .body .list .item.selected {
-    background: #aaaaaa;
-}
-
-#select-board-dialog .selectBoardContainer .body .search input, 
-#select-board-dialog .selectBoardContainer .body .boards.list,
-#select-board-dialog .selectBoardContainer .body .search, 
-#select-board-dialog .selectBoardContainer .body .ports.list {
-    background: white;
-}
-
-#select-board-dialog .selectBoardContainer .body .search input {
-    border: none;
-    width: 100%;
-}
-
-#select-board-dialog .selectBoardContainer .body .container {
-    flex: 1;
-}
-
-#select-board-dialog .selectBoardContainer .body .container .content {
-    margin: 0 5px;
-}
-
-#select-board-dialog .selectBoardContainer .body .list .item {
-    padding: 10px 5px 10px 20px;
-}
-
-#select-board-dialog .selectBoardContainer .body .list {
-    max-height: 265px;
-}
-
-#select-board-dialog .selectBoardContainer .body .search {
-    margin-bottom: 10px;
 }

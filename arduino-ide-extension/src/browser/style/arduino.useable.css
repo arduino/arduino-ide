@@ -86,7 +86,7 @@ is not optimized for dense, information rich UIs.
     --theia-brand-color3: var(--md-blue-100);
     /* Secondary Brand colors */
     --theia-secondary-brand-color0: var(--md-grey-700);
-    --theia-secondary-brand-color1: var(--md-grey-500);
+    --theia-secondary-brand-color1: #b5c8c9;
     --theia-secondary-brand-color2: var(--md-grey-300);
     --theia-secondary-brand-color3: var(--md-grey-100);
     /* Accent colors (dark to bright): Use these to create contrast to layout colors. */
@@ -147,7 +147,7 @@ is not optimized for dense, information rich UIs.
     /* Menu */
     --theia-menu-color0: var(--theia-layout-color3);
     --theia-menu-color1: var(--theia-layout-color0);
-    --theia-menu-color2: var(--theia-layout-color3);
+    --theia-menu-color2: #dae3e3;
     /* Statusbar */
     --theia-statusbar-color: var(--theia-arduino-light);
     --theia-statusBar-font-color: var(--theia-inverse-ui-font-color0);
@@ -157,7 +157,7 @@ is not optimized for dense, information rich UIs.
     --theia-ui-button-color-hover: var(--theia-arduino-light1);
     --theia-ui-button-font-color: var(--theia-inverse-ui-font-color0);
     --theia-ui-button-color-secondary: var(--theia-secondary-brand-color1);
-    --theia-ui-button-color-secondary-hover: var(--theia-secondary-brand-color0);
+    --theia-ui-button-color-secondary-hover: var(--theia-menu-color2);
     --theia-ui-button-font-color-secondary: var(--theia-inverse-ui-font-color0);
     --theia-ui-button-color-disabled: var(--theia-accent-color3);
     --theia-ui-button-font-color-disabled: var(--theia-ui-font-color2);
@@ -170,7 +170,7 @@ is not optimized for dense, information rich UIs.
     --theia-ui-dialog-header-color: var(--theia-arduino-light);
     --theia-ui-dialog-header-font-color: var(--theia-inverse-ui-font-color0);
     --theia-ui-dialog-color: rgb(236, 241, 241);
-    --theia-ui-dialog-font-color: var(--theia-ui-font-color1);
+    --theia-ui-dialog-font-color: black;
     /* Variables */
     --theia-variable-name-color: #9B46B0;
     --theia-variable-value-color: rgba(108, 108, 108, 0.8);

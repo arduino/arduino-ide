@@ -54,7 +54,7 @@ export class ArduinoToolbarMenuContribution implements MenuContribution {
             });
             registry.registerMenuAction(ArduinoToolbarContextMenu.CONNECTED_GROUP, {
                 commandId: command.id,
-                label: board.name + (selectedPort === port ? '*' : '')
+                label: board.name + ' at ' + port + (selectedPort === port ? '*' : '')
             });
         });
     }

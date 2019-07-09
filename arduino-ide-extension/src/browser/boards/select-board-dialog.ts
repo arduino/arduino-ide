@@ -44,7 +44,6 @@ export class SelectBoardsDialog extends AbstractDialog<BoardAndPortSelection> {
 
     protected onUpdateRequest(msg: Message) {
         super.onUpdateRequest(msg);
-
         this.widget.update();
     }
 
@@ -59,8 +58,8 @@ export class SelectBoardsDialog extends AbstractDialog<BoardAndPortSelection> {
     }
 
     protected isValid(value: BoardAndPortSelection): DialogError {
-        if(!value.board) {
-            if(value.port) {
+        if (!value.board) {
+            if (value.port) {
                 return 'Please pick the Board connected to the Port you have selected';
             }
             return false;
@@ -72,7 +71,13 @@ export class SelectBoardsDialog extends AbstractDialog<BoardAndPortSelection> {
         return this.widget.boardAndPort;
     }
 
-    protected async accept(): Promise<void> {
-        super.accept();
+    close(): void {
+        this.widget.reset();
+        super.close();
+    }
+
+    onAfterDetach(msg: Message) {
+        this.widget.reset();
+        super.onAfterDetach(msg);
     }
 }

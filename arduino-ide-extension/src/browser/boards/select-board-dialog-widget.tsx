@@ -10,42 +10,84 @@ export interface BoardAndPortSelection {
     port?: string;
 }
 
-export namespace SelectableBoardsItem {
+export namespace BoardAndPortSelectableItem {
     export interface Props {
-        board: Board,
+        item: BoardAndPortSelection,
         selected: boolean,
-        onClick: (selection: BoardAndPortSelection) => void
+        onSelect: (selection: BoardAndPortSelection) => void
     }
 }
 
-export class SelectableBoardsItem extends React.Component<SelectableBoardsItem.Props> {
+export class BoardAndPortSelectableItem extends React.Component<BoardAndPortSelectableItem.Props> {
 
     render(): React.ReactNode {
-        return <div onClick={this.select} className={`item ${this.props.selected ? 'selected' : ''}`}>{this.props.board.name}</div>
+        if (this.props.item.board || this.props.item.port) {
+            return <div onClick={this.select} className={`item ${this.props.selected ? 'selected' : ''}`}>
+                {this.props.item.board ? this.props.item.board.name : this.props.item.port}
+                {this.props.selected ? <i className='fa fa-check'></i> : ''}
+            </div>;
+        }
     }
 
     protected readonly select = (() => {
-        this.props.onClick({ board: this.props.board })
+        this.props.onSelect({ board: this.props.item.board, port: this.props.item.port })
     }).bind(this);
 }
 
-export namespace SelectablePortsItem {
+export namespace BoardAndPortSelectionList {
     export interface Props {
-        port: string,
-        selected: boolean,
-        onClick: (selection: BoardAndPortSelection) => void
+        type: 'boards' | 'ports';
+        list: BoardAndPortSelection[];
+        onSelect: (selection: BoardAndPortSelection) => void;
+    }
+
+    export interface State {
+        selection: BoardAndPortSelection
     }
 }
 
-export class SelectablePortsItem extends React.Component<SelectablePortsItem.Props> {
+export class BoardAndPortSelectionList extends React.Component<BoardAndPortSelectionList.Props, BoardAndPortSelectionList.State> {
+
+    constructor(props: BoardAndPortSelectionList.Props) {
+        super(props);
+
+        this.state = {
+            selection: {}
+        }
+    }
+
+    reset(): void {
+        this.setState({ selection: {} });
+    }
 
     render(): React.ReactNode {
-        return <div onClick={() => this.props.onClick({ port: this.props.port })} className={`item ${this.props.selected ? 'selected' : ''}`}>{this.props.port}</div>
+        return <div className={`${this.props.type} list`}>
+            {this.props.list.map(item => <BoardAndPortSelectableItem
+                key={item.board ? item.board.name : item.port}
+                onSelect={this.doSelect}
+                item={item}
+                selected={this.isSelectedItem(item)}
+            />)}
+        </div>
     }
 
-    protected readonly select = (() => {
-        this.props.onClick({ port: this.props.port })
-    }).bind(this);
+    protected readonly doSelect = (boardAndPortSelection: BoardAndPortSelection) => {
+        this.setState({ selection: boardAndPortSelection });
+        this.props.onSelect(boardAndPortSelection);
+    }
+
+    protected readonly isSelectedItem = ((item: BoardAndPortSelection) => {
+        if (this.state.selection.board) {
+            return (this.state.selection.board === item.board);
+        } else if (this.state.selection.port) {
+            return (this.state.selection.port === item.port);
+        }
+        return false;
+    });
+
+    protected readonly isSelectedPort = ((port: string) => {
+        return (this.state.selection.port && this.state.selection.port === port) || false;
+    });
 }
 
 export namespace BoardAndPortSelectionComponent {
@@ -64,6 +106,8 @@ export namespace BoardAndPortSelectionComponent {
 export class BoardAndPortSelectionComponent extends React.Component<BoardAndPortSelectionComponent.Props, BoardAndPortSelectionComponent.State> {
 
     protected allBoards: Board[] = [];
+    protected boardListComponent: BoardAndPortSelectionList | null;
+    protected portListComponent: BoardAndPortSelectionList | null;
 
     constructor(props: BoardAndPortSelectionComponent.Props) {
         super(props);
@@ -80,6 +124,16 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
         this.setPorts();
     }
 
+    reset(): void {
+        if (this.boardListComponent) {
+            this.boardListComponent.reset();
+        }
+        if (this.portListComponent) {
+            this.portListComponent.reset();
+        }
+        this.setState({selection: {}});
+    }
+
     render(): React.ReactNode {
         return <React.Fragment>
             <div className='body'>
@@ -87,13 +141,16 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
                     <div className='content'>
                         <div className='title'>
                             BOARDS
-                    </div>
+                        </div>
                         <div className='search'>
                             <input type='search' placeholder='SEARCH BOARD' onChange={this.doFilter} />
+                            <i className='fa fa-search'></i>
                         </div>
-                        <div className='boards list'>
-                            {this.state.boards.map(board => <SelectableBoardsItem key={board.name} onClick={this.doSelect} board={board} selected={this.isSelectedBoard(board)} />)}
-                        </div>
+                        <BoardAndPortSelectionList
+                            ref={ref => { this.boardListComponent = ref }}
+                            type='boards'
+                            onSelect={this.doSelect}
+                            list={this.state.boards.map<BoardAndPortSelection>(board => ({ board }))} />
                     </div>
                 </div>
                 <div className='right container'>
@@ -101,33 +158,15 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
                         <div className='title'>
                             PORTS
                     </div>
-                        <div className='ports list'>
-                            {this.state.ports.map(port => <SelectablePortsItem key={port} onClick={this.doSelect} port={port} selected={this.isSelectedPort(port)} />)}
-                        </div>
+                        <BoardAndPortSelectionList
+                            ref={ref => { this.portListComponent = ref }}
+                            type='ports'
+                            onSelect={this.doSelect}
+                            list={this.state.ports.map<BoardAndPortSelection>(port => ({ port }))} />
                     </div>
                 </div>
             </div>
         </React.Fragment>
-    }
-
-    protected readonly isSelectedBoard = ((board: Board) => {
-        return (this.state.selection.board && this.state.selection.board === board) || false;
-    });
-
-    protected readonly isSelectedPort = ((port: string) => {
-        return (this.state.selection.port && this.state.selection.port === port) || false;
-    });
-
-    protected readonly doSelect = (boardAndPortSelection: BoardAndPortSelection) => {
-        const selection = this.state.selection;
-        if (boardAndPortSelection.board) {
-            selection.board = boardAndPortSelection.board;
-        }
-        if (boardAndPortSelection.port) {
-            selection.port = boardAndPortSelection.port;
-        }
-        this.setState({ selection });
-        this.props.onSelect(this.state.selection);
     }
 
     protected sort(items: Board[]): Board[] {
@@ -140,6 +179,18 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
                 return 1;
             }
         });
+    }
+
+    protected readonly doSelect = (boardAndPortSelection: BoardAndPortSelection) => {
+        const selection = this.state.selection;
+        if (boardAndPortSelection.board) {
+            selection.board = boardAndPortSelection.board;
+        }
+        if (boardAndPortSelection.port) {
+            selection.port = boardAndPortSelection.port;
+        }
+        this.setState({ selection });
+        this.props.onSelect(this.state.selection);
     }
 
     protected readonly doFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,6 +226,7 @@ export class SelectBoardDialogWidget extends ReactWidget {
     protected readonly boardsNotificationService: BoardsNotificationService;
 
     protected readonly onChangedEmitter = new Emitter<BoardAndPortSelection>();
+    protected boardAndPortSelectionComponent: BoardAndPortSelectionComponent | null;
 
     boardAndPort: BoardAndPortSelection = {};
 
@@ -187,6 +239,13 @@ export class SelectBoardDialogWidget extends ReactWidget {
 
     get onChanged(): Event<BoardAndPortSelection> {
         return this.onChangedEmitter.event;
+    }
+
+    reset(): void {
+        if (this.boardAndPortSelectionComponent) {
+            this.boardAndPortSelectionComponent.reset();
+        }
+        this.boardAndPort = {};
     }
 
     protected fireChanged(boardAndPort: BoardAndPortSelection): void {
@@ -215,11 +274,12 @@ export class SelectBoardDialogWidget extends ReactWidget {
                         Select Other Board &amp; Port
                     </div>
                     <div className='text'>
-                        Select both a BOARD and a PORT if you want to upload a sketch.<br />
-                        If you only select a BOARD you will be able just to compile, but not to upload your sketch.
+                        <p>Select both a BOARD and a PORT if you want to upload a sketch.</p>
+                        <p>If you only select a BOARD you will be able just to compile,</p>
+                        <p>but not to upload your sketch.</p>
                     </div>
                 </div>
-                <BoardAndPortSelectionComponent boardsService={boardsService} onSelect={this.onSelect} />
+                <BoardAndPortSelectionComponent ref={ref => this.boardAndPortSelectionComponent = ref} boardsService={boardsService} onSelect={this.onSelect} />
             </div>
         </React.Fragment>
 

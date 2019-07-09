@@ -90,6 +90,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(SelectBoardsDialog)
     protected readonly selectBoardsDialog: SelectBoardsDialog;
 
+    protected boardsToolbarItem: BoardsToolBarItem | null;
+
     @postConstruct()
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
@@ -124,15 +126,10 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
+                ref={ref => this.boardsToolbarItem = ref}
                 contextMenuRenderer={this.contextMenuRenderer}
-                onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
-                onUnknownBoard={this.onUnknownBoard.bind(this)} />,
-            // render: () => <ConnectedBoards
-            //     boardsService={this.boardService}
-            //     boardsNotificationService={this.boardsNotificationService}
-            //     quickPickService={this.quickPickService}
-            //     onNoBoardsInstalled={this.onNoBoardsInstalled.bind(this)}
-            //     onUnknownBoard={this.onUnknownBoard.bind(this)} />,
+                boardsNotificationService={this.boardsNotificationService}
+                boardService={this.boardService} />,
             isVisible: widget => this.isArduinoToolbar(widget)
         })
     }
@@ -230,29 +227,35 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         });
         registry.registerCommand(ArduinoCommands.SELECT_BOARD, {
             isEnabled: () => true,
-            execute: (board: Board) => {
-                this.boardService.selectBoard(board).then(() => {
-                    return this.boardService.getSelectBoard();
-                }).then(board => {
-                    console.log("and the selected board is", board);
-                })
+            execute: async (board: Board) => {
+                this.selectBoard(board);
             }
         })
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
             isEnabled: () => true,
             execute: async () => {
                 const boardAndPort = await this.selectBoardsDialog.open();
-                if(boardAndPort && boardAndPort.board){
+                if (boardAndPort && boardAndPort.board) {
                     const selectedBoard = {
                         fqbn: boardAndPort.board.fqbn,
                         name: boardAndPort.board.name,
                         port: boardAndPort.port
                     }
-                    this.boardService.selectBoard(selectedBoard);
-
+                    this.selectBoard(selectedBoard);
                 }
             }
         })
+    }
+
+    protected async selectBoard(board: Board) {
+        const attached = await this.boardService.getAttachedBoards();
+        if(attached.boards.length) {
+            board = attached.boards.find(b => b.name === board.name && b.fqbn === board.fqbn) || board;
+        }
+        await this.boardService.selectBoard(board)
+        if (this.boardsToolbarItem) {
+            this.boardsToolbarItem.setSelectedBoard(board);
+        }
     }
 
     protected async openSketchFilesInNewWindow(uri: string) {
@@ -309,24 +312,24 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         return widget;
     }
 
-    private async onNoBoardsInstalled() {
-        const action = await this.messageService.info("You have no boards installed. Use the boards mangager to install one.", "Open Boards Manager");
-        if (!action) {
-            return;
-        }
+    // private async onNoBoardsInstalled() {
+    //     const action = await this.messageService.info("You have no boards installed. Use the boards mangager to install one.", "Open Boards Manager");
+    //     if (!action) {
+    //         return;
+    //     }
 
-        this.boardsListWidgetFrontendContribution.openView({ reveal: true });
-    }
+    //     this.boardsListWidgetFrontendContribution.openView({ reveal: true });
+    // }
 
-    private async onUnknownBoard() {
-        const action = await this.messageService.warn("There's a board connected for which you need to install software." +
-            " If this were not a PoC we would offer you the right package now.", "Open Boards Manager");
-        if (!action) {
-            return;
-        }
+    // private async onUnknownBoard() {
+    //     const action = await this.messageService.warn("There's a board connected for which you need to install software." +
+    //         " If this were not a PoC we would offer you the right package now.", "Open Boards Manager");
+    //     if (!action) {
+    //         return;
+    //     }
 
-        this.boardsListWidgetFrontendContribution.openView({ reveal: true });
-    }
+    //     this.boardsListWidgetFrontendContribution.openView({ reveal: true });
+    // }
 
     private isArduinoToolbar(maybeToolbarWidget: any): boolean {
         if (maybeToolbarWidget instanceof ArduinoToolbar) {
