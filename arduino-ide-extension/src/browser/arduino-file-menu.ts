@@ -4,8 +4,7 @@ import { CommonMenus } from "@theia/core/lib/browser";
 import { ArduinoCommands } from "./arduino-commands";
 import { SketchesService, Sketch } from "../common/protocol/sketches-service";
 import { AWorkspaceService } from "./arduino-workspace-service";
-import { BoardsService, Board, AttachedSerialBoard, AttachedNetworkBoard } from "../common/protocol/boards-service";
-import { BoardFrontendService } from "./boards/board-frontend-service";
+import { BoardsService } from "../common/protocol/boards-service";
 
 export namespace ArduinoToolbarContextMenu {
     export const OPEN_SKETCH_PATH: MenuPath = ['arduino-open-sketch-context-menu'];
@@ -30,49 +29,14 @@ export class ArduinoToolbarMenuContribution implements MenuContribution {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    @inject(BoardFrontendService)
-    protected readonly boardFrontendService: BoardFrontendService;
-
     constructor(
         @inject(AWorkspaceService) protected readonly workspaceService: AWorkspaceService,
         @inject(MenuModelRegistry) protected readonly menuRegistry: MenuModelRegistry) {
         workspaceService.onWorkspaceChanged(() => {
             if (this.workspaceService.workspace) {
                 this.registerSketchesInMenu(menuRegistry);
-                this.registerConnectedBoardsInMenu(menuRegistry);
             }
         })
-    }
-
-    protected async registerConnectedBoardsInMenu(registry: MenuModelRegistry) {
-        const boards = await this.boardFrontendService.getAttachedBoards();
-        const selectedBoard = await this.boardsService.getSelectBoard();
-        const selectedPort = selectedBoard ? this.getPort(selectedBoard) : '';
-        boards.forEach(board => {
-            const port = this.getPort(board);
-            const command: Command = {
-                id: 'selectBoard' + port
-            }
-            this.commands.registerCommand(command, {
-                execute: () => this.commands.executeCommand(ArduinoCommands.SELECT_BOARD.id, board)
-            });
-            registry.registerMenuAction(ArduinoToolbarContextMenu.CONNECTED_GROUP, {
-                commandId: command.id,
-                label: board.name + ' at ' + port + (selectedPort === port ? '*' : '')
-            });
-        });
-    }
-
-
-
-    protected getPort(board: Board): string {
-        if (AttachedSerialBoard.is(board)) {
-            return board.port;
-        }
-        if (AttachedNetworkBoard.is(board)) {
-            return 'netport: ' + board.port;
-        }
-        return '';
     }
 
     protected async registerSketchesInMenu(registry: MenuModelRegistry) {

@@ -3,9 +3,9 @@ import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
+import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, Board } from '../common/protocol/boards-service';
+import { BoardsService, Board, AttachedSerialBoard } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
@@ -15,7 +15,7 @@ import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsNotificationService } from './boards-notification-service';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { SelectionService } from '@theia/core';
+import { SelectionService, MenuModelRegistry } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
@@ -28,8 +28,7 @@ import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
-import { SelectBoardsDialog } from './boards/select-board-dialog';
-import { BoardFrontendService } from './boards/board-frontend-service';
+import { SelectBoardDialog } from './boards/select-board-dialog';
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
@@ -39,9 +38,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(BoardsService)
     protected readonly boardService: BoardsService;
-
-    @inject(BoardFrontendService)
-    protected readonly boardFrontendService: BoardFrontendService;
 
     @inject(CoreService)
     protected readonly coreService: CoreService;
@@ -91,15 +87,58 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(SketchesService)
     protected readonly sketches: SketchesService;
 
-    @inject(SelectBoardsDialog)
-    protected readonly selectBoardsDialog: SelectBoardsDialog;
+    @inject(SelectBoardDialog)
+    protected readonly selectBoardsDialog: SelectBoardDialog;
+
+    @inject(MenuModelRegistry)
+    protected readonly menuRegistry: MenuModelRegistry;
+
+    @inject(CommandRegistry)
+    protected readonly commands: CommandRegistry;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
+    protected attachedBoards: Board[];
+    protected selectedBoard: Board;
 
     @postConstruct()
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
         await this.workspaceServiceExt.roots();
+        const { boards } = await this.boardService.getAttachedBoards();
+        this.attachedBoards = boards;
+        this.registerConnectedBoardsInMenu(this.menuRegistry);
+    }
+
+    protected async registerConnectedBoardsInMenu(registry: MenuModelRegistry) {
+        this.attachedBoards.forEach(board => {
+            const port = this.getPort(board);
+            const command: Command = {
+                id: 'selectBoard' + port
+            }
+            this.commands.registerCommand(command, {
+                execute: () => this.commands.executeCommand(ArduinoCommands.SELECT_BOARD.id, board),
+                isToggled: () => this.isSelectedBoard(board)
+            });
+            registry.registerMenuAction(ArduinoToolbarContextMenu.CONNECTED_GROUP, {
+                commandId: command.id,
+                label: board.name + ' at ' + port
+            });
+        });
+    }
+
+    protected isSelectedBoard(board: Board): boolean {
+        return AttachedSerialBoard.is(board) &&
+            this.selectedBoard && 
+            AttachedSerialBoard.is(this.selectedBoard) &&
+            board.port === this.selectedBoard.port &&
+            board.fqbn === this.selectedBoard.fqbn;
+    }
+
+    protected getPort(board: Board): string {
+        if (AttachedSerialBoard.is(board)) {
+            return board.port;
+        }
+        return '';
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -133,7 +172,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 ref={ref => this.boardsToolbarItem = ref}
                 contextMenuRenderer={this.contextMenuRenderer}
                 boardsNotificationService={this.boardsNotificationService}
-                boardFrontendService={this.boardFrontendService}
                 boardService={this.boardService} />,
             isVisible: widget => this.isArduinoToolbar(widget)
         })
@@ -241,26 +279,18 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             execute: async () => {
                 const boardAndPort = await this.selectBoardsDialog.open();
                 if (boardAndPort && boardAndPort.board) {
-                    const selectedBoard = {
-                        fqbn: boardAndPort.board.fqbn,
-                        name: boardAndPort.board.name,
-                        port: boardAndPort.port
-                    }
-                    this.selectBoard(selectedBoard);
+                    this.selectBoard(boardAndPort.board);
                 }
             }
         })
     }
 
     protected async selectBoard(board: Board) {
-        const boards = await this.boardFrontendService.getAttachedBoards();
-        if (boards.length) {
-            board = boards.find(b => b.name === board.name && b.fqbn === board.fqbn) || board;
-        }
         await this.boardService.selectBoard(board)
         if (this.boardsToolbarItem) {
             this.boardsToolbarItem.setSelectedBoard(board);
         }
+        this.selectedBoard = board;
     }
 
     protected async openSketchFilesInNewWindow(uri: string) {

@@ -3,14 +3,12 @@ import { BoardsService, Board } from '../../common/protocol/boards-service';
 import { ContextMenuRenderer } from '@theia/core/lib/browser';
 import { ArduinoToolbarContextMenu } from '../arduino-file-menu';
 import { BoardsNotificationService } from '../boards-notification-service';
-import { BoardFrontendService } from './board-frontend-service';
 
 export namespace BoardsToolBarItem {
     export interface Props {
         readonly contextMenuRenderer: ContextMenuRenderer;
         readonly boardsNotificationService: BoardsNotificationService;
         readonly boardService: BoardsService;
-        readonly boardFrontendService: BoardFrontendService;
     }
 
     export interface State {
@@ -37,16 +35,16 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     }
 
     protected async setAttachedBoards() {
-        const boards = await this.props.boardFrontendService.getAttachedBoards();
+        const { boards } = await this.props.boardService.getAttachedBoards();
         this.attachedBoards = boards;
         if (this.attachedBoards.length) {
             await this.props.boardService.selectBoard(this.attachedBoards[0]);
             this.setSelectedBoard(this.attachedBoards[0]);
-        }
+        } 
     }
 
     setSelectedBoard(board: Board) {
-        if (this.attachedBoards.length) {
+        if (this.attachedBoards && this.attachedBoards.length) {
             this.setState({ selectedIsAttached: !!this.attachedBoards.find(attachedBoard => attachedBoard.name === board.name) });
         }
         this.setState({ selectedBoard: board });
@@ -56,10 +54,13 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     protected showSelectBoardsMenu(event: React.MouseEvent<HTMLElement>) {
         const el = (event.target as HTMLElement).parentElement;
         if (el) {
-            this.props.contextMenuRenderer.render(ArduinoToolbarContextMenu.SELECT_BOARDS_PATH, {
-                x: el.getBoundingClientRect().left,
-                y: el.getBoundingClientRect().top + el.offsetHeight
-            });
+            this.props.contextMenuRenderer.render({
+                menuPath: ArduinoToolbarContextMenu.SELECT_BOARDS_PATH,
+                anchor: {
+                    x: el.getBoundingClientRect().left,
+                    y: el.getBoundingClientRect().top + el.offsetHeight
+                }
+            })
         }
     }
 

@@ -4,7 +4,6 @@ import { injectable, inject } from 'inversify';
 import { BoardsService, Board, BoardPackage, AttachedSerialBoard } from '../../common/protocol/boards-service';
 import { BoardsNotificationService } from '../boards-notification-service';
 import { Emitter, Event } from '@theia/core';
-import { BoardFrontendService } from './board-frontend-service';
 
 export interface BoardAndPortSelection {
     board?: Board;
@@ -94,7 +93,6 @@ export class BoardAndPortSelectionList extends React.Component<BoardAndPortSelec
 export namespace BoardAndPortSelectionComponent {
     export interface Props {
         boardsService: BoardsService;
-        boardFrontendService: BoardFrontendService;
         onSelect: (selection: BoardAndPortSelection) => void;
     }
 
@@ -160,11 +158,14 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
                         <div className='title'>
                             PORTS
                     </div>
-                        <BoardAndPortSelectionList
-                            ref={ref => { this.portListComponent = ref }}
-                            type='ports'
-                            onSelect={this.doSelect}
-                            list={this.state.ports.map<BoardAndPortSelection>(port => ({ port }))} />
+                        {
+                            this.state.ports.length ?
+                                <BoardAndPortSelectionList
+                                    ref={ref => { this.portListComponent = ref }}
+                                    type='ports'
+                                    onSelect={this.doSelect}
+                                    list={this.state.ports.map<BoardAndPortSelection>(port => ({ port }))} /> : 'loading ports...'
+                        }
                     </div>
                 </div>
             </div>
@@ -209,7 +210,7 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
 
     protected async setPorts() {
         const ports: string[] = [];
-        const boards = await this.props.boardFrontendService.getAttachedBoards();
+        const { boards } = await this.props.boardsService.getAttachedBoards();
         boards.forEach(board => {
             if (AttachedSerialBoard.is(board)) {
                 ports.push(board.port);
@@ -221,16 +222,14 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
 
 @injectable()
 export class SelectBoardDialogWidget extends ReactWidget {
-
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
-    @inject(BoardFrontendService)
-    protected readonly boardFrontendService: BoardFrontendService;
     @inject(BoardsNotificationService)
     protected readonly boardsNotificationService: BoardsNotificationService;
 
     protected readonly onChangedEmitter = new Emitter<BoardAndPortSelection>();
     protected boardAndPortSelectionComponent: BoardAndPortSelectionComponent | null;
+    protected attachedBoards: Promise<{ boards: Board[] }>;
 
     boardAndPort: BoardAndPortSelection = {};
 
@@ -252,6 +251,10 @@ export class SelectBoardDialogWidget extends ReactWidget {
         this.boardAndPort = {};
     }
 
+    setAttachedBoards(attachedBoards: Promise<{ boards: Board[] }>): void {
+        this.attachedBoards = attachedBoards;
+    }
+
     protected fireChanged(boardAndPort: BoardAndPortSelection): void {
         this.onChangedEmitter.fire(boardAndPort);
     }
@@ -260,8 +263,9 @@ export class SelectBoardDialogWidget extends ReactWidget {
         let content: React.ReactNode;
 
         const boardsServiceDelegate = this.boardsService;
+        const attachedBoards = this.attachedBoards;
         const boardsService: BoardsService = {
-            getAttachedBoards: () => boardsServiceDelegate.getAttachedBoards(),
+            getAttachedBoards: () => attachedBoards,
             selectBoard: (board: Board) => boardsServiceDelegate.selectBoard(board),
             getSelectBoard: () => boardsServiceDelegate.getSelectBoard(),
             search: (options: { query?: string }) => boardsServiceDelegate.search(options),
@@ -285,7 +289,6 @@ export class SelectBoardDialogWidget extends ReactWidget {
                 </div>
                 <BoardAndPortSelectionComponent
                     ref={ref => this.boardAndPortSelectionComponent = ref}
-                    boardFrontendService={this.boardFrontendService}
                     boardsService={boardsService}
                     onSelect={this.onSelect} />
             </div>

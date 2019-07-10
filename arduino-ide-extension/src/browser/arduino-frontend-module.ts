@@ -48,9 +48,8 @@ import { CustomApplicationShell } from './customization/custom-application-shell
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
 import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
-import { SelectBoardsDialog, SelectBoardsDialogProps } from './boards/select-board-dialog';
+import { SelectBoardDialog, SelectBoardDialogProps } from './boards/select-board-dialog';
 import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
-import { BoardFrontendService } from './boards/board-frontend-service';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -87,7 +86,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     // Boards service
     bind(BoardsService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath)).inSingletonScope();
-    bind(BoardFrontendService).toSelf().inSingletonScope();
 
     // Boards list widget
     bind(BoardsListWidget).toSelf();
@@ -100,8 +98,8 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     // Board select dialog
     bind(SelectBoardDialogWidget).toSelf().inSingletonScope();
-    bind(SelectBoardsDialog).toSelf().inSingletonScope();
-    bind(SelectBoardsDialogProps).toConstantValue({
+    bind(SelectBoardDialog).toSelf().inSingletonScope();
+    bind(SelectBoardDialogProps).toConstantValue({
         title: 'Select Board'
     })
 
