@@ -29,6 +29,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { SelectBoardsDialog } from './boards/select-board-dialog';
+import { BoardFrontendService } from './boards/board-frontend-service';
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
@@ -38,6 +39,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(BoardsService)
     protected readonly boardService: BoardsService;
+
+    @inject(BoardFrontendService)
+    protected readonly boardFrontendService: BoardFrontendService;
 
     @inject(CoreService)
     protected readonly coreService: CoreService;
@@ -129,6 +133,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 ref={ref => this.boardsToolbarItem = ref}
                 contextMenuRenderer={this.contextMenuRenderer}
                 boardsNotificationService={this.boardsNotificationService}
+                boardFrontendService={this.boardFrontendService}
                 boardService={this.boardService} />,
             isVisible: widget => this.isArduinoToolbar(widget)
         })
@@ -248,9 +253,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     }
 
     protected async selectBoard(board: Board) {
-        const attached = await this.boardService.getAttachedBoards();
-        if(attached.boards.length) {
-            board = attached.boards.find(b => b.name === board.name && b.fqbn === board.fqbn) || board;
+        const boards = await this.boardFrontendService.getAttachedBoards();
+        if (boards.length) {
+            board = boards.find(b => b.name === board.name && b.fqbn === board.fqbn) || board;
         }
         await this.boardService.selectBoard(board)
         if (this.boardsToolbarItem) {

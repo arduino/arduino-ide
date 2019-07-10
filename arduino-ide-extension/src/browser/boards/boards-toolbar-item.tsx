@@ -3,12 +3,14 @@ import { BoardsService, Board } from '../../common/protocol/boards-service';
 import { ContextMenuRenderer } from '@theia/core/lib/browser';
 import { ArduinoToolbarContextMenu } from '../arduino-file-menu';
 import { BoardsNotificationService } from '../boards-notification-service';
+import { BoardFrontendService } from './board-frontend-service';
 
 export namespace BoardsToolBarItem {
     export interface Props {
         readonly contextMenuRenderer: ContextMenuRenderer;
         readonly boardsNotificationService: BoardsNotificationService;
         readonly boardService: BoardsService;
+        readonly boardFrontendService: BoardFrontendService;
     }
 
     export interface State {
@@ -35,9 +37,9 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     }
 
     protected async setAttachedBoards() {
-        const { boards } = await this.props.boardService.getAttachedBoards();
+        const boards = await this.props.boardFrontendService.getAttachedBoards();
         this.attachedBoards = boards;
-        if(this.attachedBoards.length){
+        if (this.attachedBoards.length) {
             await this.props.boardService.selectBoard(this.attachedBoards[0]);
             this.setSelectedBoard(this.attachedBoards[0]);
         }

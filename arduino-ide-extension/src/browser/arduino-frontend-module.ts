@@ -50,6 +50,7 @@ import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-fac
 import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
 import { SelectBoardsDialog, SelectBoardsDialogProps } from './boards/select-board-dialog';
 import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
+import { BoardFrontendService } from './boards/board-frontend-service';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -86,6 +87,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     // Boards service
     bind(BoardsService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath)).inSingletonScope();
+    bind(BoardFrontendService).toSelf().inSingletonScope();
 
     // Boards list widget
     bind(BoardsListWidget).toSelf();

@@ -5,6 +5,7 @@ import { ArduinoCommands } from "./arduino-commands";
 import { SketchesService, Sketch } from "../common/protocol/sketches-service";
 import { AWorkspaceService } from "./arduino-workspace-service";
 import { BoardsService, Board, AttachedSerialBoard, AttachedNetworkBoard } from "../common/protocol/boards-service";
+import { BoardFrontendService } from "./boards/board-frontend-service";
 
 export namespace ArduinoToolbarContextMenu {
     export const OPEN_SKETCH_PATH: MenuPath = ['arduino-open-sketch-context-menu'];
@@ -29,6 +30,9 @@ export class ArduinoToolbarMenuContribution implements MenuContribution {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
+    @inject(BoardFrontendService)
+    protected readonly boardFrontendService: BoardFrontendService;
+
     constructor(
         @inject(AWorkspaceService) protected readonly workspaceService: AWorkspaceService,
         @inject(MenuModelRegistry) protected readonly menuRegistry: MenuModelRegistry) {
@@ -41,7 +45,7 @@ export class ArduinoToolbarMenuContribution implements MenuContribution {
     }
 
     protected async registerConnectedBoardsInMenu(registry: MenuModelRegistry) {
-        const { boards } = await this.boardsService.getAttachedBoards();
+        const boards = await this.boardFrontendService.getAttachedBoards();
         const selectedBoard = await this.boardsService.getSelectBoard();
         const selectedPort = selectedBoard ? this.getPort(selectedBoard) : '';
         boards.forEach(board => {

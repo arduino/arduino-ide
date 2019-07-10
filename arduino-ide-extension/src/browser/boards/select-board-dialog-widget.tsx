@@ -4,6 +4,7 @@ import { injectable, inject } from 'inversify';
 import { BoardsService, Board, BoardPackage, AttachedSerialBoard } from '../../common/protocol/boards-service';
 import { BoardsNotificationService } from '../boards-notification-service';
 import { Emitter, Event } from '@theia/core';
+import { BoardFrontendService } from './board-frontend-service';
 
 export interface BoardAndPortSelection {
     board?: Board;
@@ -93,6 +94,7 @@ export class BoardAndPortSelectionList extends React.Component<BoardAndPortSelec
 export namespace BoardAndPortSelectionComponent {
     export interface Props {
         boardsService: BoardsService;
+        boardFrontendService: BoardFrontendService;
         onSelect: (selection: BoardAndPortSelection) => void;
     }
 
@@ -131,7 +133,7 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
         if (this.portListComponent) {
             this.portListComponent.reset();
         }
-        this.setState({selection: {}});
+        this.setState({ selection: {} });
     }
 
     render(): React.ReactNode {
@@ -207,8 +209,8 @@ export class BoardAndPortSelectionComponent extends React.Component<BoardAndPort
 
     protected async setPorts() {
         const ports: string[] = [];
-        const attached = await this.props.boardsService.getAttachedBoards();
-        attached.boards.forEach(board => {
+        const boards = await this.props.boardFrontendService.getAttachedBoards();
+        boards.forEach(board => {
             if (AttachedSerialBoard.is(board)) {
                 ports.push(board.port);
             }
@@ -222,6 +224,8 @@ export class SelectBoardDialogWidget extends ReactWidget {
 
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
+    @inject(BoardFrontendService)
+    protected readonly boardFrontendService: BoardFrontendService;
     @inject(BoardsNotificationService)
     protected readonly boardsNotificationService: BoardsNotificationService;
 
@@ -279,7 +283,11 @@ export class SelectBoardDialogWidget extends ReactWidget {
                         <p>but not to upload your sketch.</p>
                     </div>
                 </div>
-                <BoardAndPortSelectionComponent ref={ref => this.boardAndPortSelectionComponent = ref} boardsService={boardsService} onSelect={this.onSelect} />
+                <BoardAndPortSelectionComponent
+                    ref={ref => this.boardAndPortSelectionComponent = ref}
+                    boardFrontendService={this.boardFrontendService}
+                    boardsService={boardsService}
+                    onSelect={this.onSelect} />
             </div>
         </React.Fragment>
 
