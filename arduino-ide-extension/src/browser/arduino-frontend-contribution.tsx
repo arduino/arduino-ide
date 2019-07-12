@@ -31,6 +31,8 @@ import { FileSystemCommands } from '@theia/filesystem/lib/browser/filesystem-fro
 import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/file-download-command-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import {TerminalMenus} from '@theia/terminal/lib/browser/terminal-frontend-contribution';
+import { SelectBoardDialog } from './boards/select-board-dialog';
+import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
