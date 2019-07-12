@@ -49,7 +49,7 @@ is not optimized for dense, information rich UIs.
     /* Special font colors */
     --theia-ui-icon-font-color: #ffffff;
     --theia-ui-bar-font-color0: var(--theia-ui-font-color0);
-    --theia-ui-bar-font-color1: var(--theia-ui-font-color1);
+    --theia-ui-bar-font-color1: var(--theia-inverse-ui-font-color0); /* var(--theia-ui-font-color1); */
     /* Use the inverse UI colors against the brand/accent/warn/error colors. */
     --theia-inverse-ui-font-color0: rgba(255, 255, 255, 1.0);
     --theia-inverse-ui-font-color2: rgba(255, 255, 255, 0.7);

@@ -15,23 +15,30 @@ import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsNotificationService } from './boards-notification-service';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { SelectionService, MenuModelRegistry } from '@theia/core';
+import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
-import { EditorManager } from '@theia/editor/lib/browser';
+import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { ArduinoToolbarContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
-import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution'
-import { BoardsToolBarItem } from './boards/boards-toolbar-item';
-import { SelectBoardDialog } from './boards/select-board-dialog';
+import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
+import { FileSystemCommands } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
+import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/file-download-command-contribution';
+import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
+import {TerminalMenus} from '@theia/terminal/lib/browser/terminal-frontend-contribution';
+
+export namespace ArduinoMenus {
+    export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
+    export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
+}
 
 @injectable()
-export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution {
+export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution, MenuContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -180,7 +187,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ArduinoCommands.VERIFY, {
             isVisible: widget => this.isArduinoToolbar(widget),
-            isEnabled: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => true,
             execute: async () => {
                 const widget = this.getCurrentWidget();
                 if (widget instanceof EditorWidget) {
@@ -201,7 +208,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         });
         registry.registerCommand(ArduinoCommands.UPLOAD, {
             isVisible: widget => this.isArduinoToolbar(widget),
-            isEnabled: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => true,
             execute: async () => {
                 const widget = this.getCurrentWidget();
                 if (widget instanceof EditorWidget) {
@@ -291,6 +298,46 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             this.boardsToolbarItem.setSelectedBoard(board);
         }
         this.selectedBoard = board;
+    }
+    
+    registerMenus(registry: MenuModelRegistry) {
+        registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
+        registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
+
+        registry.unregisterMenuAction(WorkspaceCommands.NEW_FILE);
+        registry.unregisterMenuAction(WorkspaceCommands.NEW_FOLDER);
+        
+        registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
+        registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
+        registry.unregisterMenuAction(WorkspaceCommands.OPEN_RECENT_WORKSPACE);
+        registry.unregisterMenuAction(WorkspaceCommands.SAVE_WORKSPACE_AS);
+        registry.unregisterMenuAction(WorkspaceCommands.CLOSE);
+
+        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(MonacoMenus.SELECTION));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(EditorMainMenu.GO));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(TerminalMenus.TERMINAL));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(CommonMenus.VIEW));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(CommonMenus.HELP));
+
+        registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
+        registry.registerMenuAction(ArduinoMenus.SKETCH, {
+            commandId: ArduinoCommands.VERIFY.id,
+            label: 'Verify/Compile',
+            order: '1'
+        });
+        registry.registerMenuAction(ArduinoMenus.SKETCH, {
+            commandId: ArduinoCommands.UPLOAD.id,
+            label: 'Upload',
+            order: '2'
+        });
+
+        registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
+    }
+
+    protected getMenuId(menuPath: string[]): string {
+        const index = menuPath.length - 1;
+        const menuId = menuPath[index];
+        return menuId;
     }
 
     protected async openSketchFilesInNewWindow(uri: string) {

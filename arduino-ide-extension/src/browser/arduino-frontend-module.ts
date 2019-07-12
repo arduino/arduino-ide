@@ -55,6 +55,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     // Commands and toolbar items
     bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
     bind(CommandContribution).toService(ArduinoFrontendContribution);
+    bind(MenuContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).to(ArduinoToolbarMenuContribution).inSingletonScope();

@@ -3,6 +3,8 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { ListWidget } from './list-widget';
 import { BoardsListWidget } from './boards-list-widget';
+import { MenuModelRegistry } from '@theia/core';
+import { ArduinoMenus } from '../arduino-frontend-contribution';
 
 @injectable()
 export abstract class ListWidgetFrontendContribution extends AbstractViewContribution<ListWidget> implements FrontendApplicationContribution {
@@ -16,6 +18,8 @@ export abstract class ListWidgetFrontendContribution extends AbstractViewContrib
 @injectable()
 export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution {
 
+    static readonly OPEN_MANAGER = `${BoardsListWidget.WIDGET_ID}:toggle`;
+
     constructor() {
         super({
             widgetId: BoardsListWidget.WIDGET_ID,
@@ -24,9 +28,18 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
                 area: 'left',
                 rank: 600
             },
-            toggleCommandId: `${BoardsListWidget.WIDGET_ID}:toggle`,
+            toggleCommandId: BoardsListWidgetFrontendContribution.OPEN_MANAGER,
             toggleKeybinding: 'ctrlcmd+shift+b'
         });
+    }
+
+    registerMenus(menus: MenuModelRegistry): void {
+        if (this.toggleCommand) {
+            menus.registerMenuAction(ArduinoMenus.TOOLS, {
+                commandId: this.toggleCommand.id,
+                label: 'Boards Manager...'
+            });
+        }
     }
 
 }
