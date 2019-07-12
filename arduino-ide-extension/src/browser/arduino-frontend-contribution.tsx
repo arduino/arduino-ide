@@ -66,9 +66,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(BoardsNotificationService)
     protected readonly boardsNotificationService: BoardsNotificationService;
 
-    @inject(WorkspaceService)
-    protected readonly workspaceService: WorkspaceService;
-
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
 
@@ -108,6 +105,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected attachedBoards: Board[];
     protected selectedBoard: Board;
+    protected wsSketchCount: number = 0;
+
+    constructor(@inject(WorkspaceService) protected readonly workspaceService: WorkspaceService) {
+        this.workspaceService.onWorkspaceChanged(() => {
+            if (this.workspaceService.workspace) {
+                this.registerSketchesInMenu(this.menuRegistry);
+            }
+        })
+    }
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -233,12 +239,16 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             isVisible: widget => this.isArduinoToolbar(widget),
             isEnabled: widget => this.isArduinoToolbar(widget),
             execute: async (widget: Widget, target: EventTarget) => {
-                const el = (target as HTMLElement).parentElement;
-                if (el) {
-                    this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
-                        x: el.getBoundingClientRect().left,
-                        y: el.getBoundingClientRect().top + el.offsetHeight
-                    });
+                if (this.wsSketchCount) {
+                    const el = (target as HTMLElement).parentElement;
+                    if (el) {
+                        this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
+                            x: el.getBoundingClientRect().left,
+                            y: el.getBoundingClientRect().top + el.offsetHeight
+                        });
+                    }
+                } else {
+                    this.commands.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
                 }
             }
         });
@@ -332,6 +342,10 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             label: 'Upload',
             order: '2'
         });
+        registry.registerMenuAction(ArduinoToolbarContextMenu.OPEN_GROUP, {
+            commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,
+            label: 'Open...'
+        });
 
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
     }
@@ -340,6 +354,30 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         const index = menuPath.length - 1;
         const menuId = menuPath[index];
         return menuId;
+    }
+
+    protected registerSketchesInMenu(registry: MenuModelRegistry) {
+        this.getWorkspaceSketches().then(sketches => {
+            this.wsSketchCount = sketches.length;
+            sketches.forEach(sketch => {
+                const command: Command = {
+                    id: 'openSketch' + sketch.name
+                }
+                this.commands.registerCommand(command, {
+                    execute: () => this.commands.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+                });
+
+                registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {
+                    commandId: command.id,
+                    label: sketch.name
+                });
+            })
+        })
+    }
+
+    protected async getWorkspaceSketches(): Promise<Sketch[]> {
+        const sketches = this.sketches.getSketches(this.workspaceService.workspace);
+        return sketches;
     }
 
     protected async openSketchFilesInNewWindow(uri: string) {
