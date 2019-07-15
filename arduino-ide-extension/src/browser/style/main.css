@@ -100,3 +100,8 @@
     align-items: center;
     color: var(--theia-ui-font-color3);
 }
+
+.monaco-editor .margin {
+    border-right: 2px solid var(--theia-border-color1);
+    box-sizing: border-box;
+}
