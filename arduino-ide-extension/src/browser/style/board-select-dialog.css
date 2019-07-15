@@ -1,0 +1,152 @@
+div#select-board-dialog {
+    margin: 5px 20px 50px 20px;
+}
+
+div#select-board-dialog .selectBoardContainer .body {
+    display: flex;
+    overflow: hidden;
+}
+
+div#select-board-dialog .selectBoardContainer .head {
+    margin-bottom: 10px;
+}
+
+div#select-board-dialog .selectBoardContainer .head .title {
+    font-weight: 400;
+    letter-spacing: .02em;
+    font-size: 1.2em;
+    color: #00979d;
+    margin: 17px 0;
+}
+
+div#select-board-dialog .selectBoardContainer .head .text {
+    margin-bottom: 21px;
+}
+
+div#select-board-dialog .selectBoardContainer .body .list .item.selected {
+    background: var(--theia-ui-button-color-secondary-hover);
+}
+
+div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
+    color: var(--theia-arduino-light);
+}
+
+#select-board-dialog .selectBoardContainer .body .search input, 
+#select-board-dialog .selectBoardContainer .body .boards.list,
+#select-board-dialog .selectBoardContainer .body .search, 
+#select-board-dialog .selectBoardContainer .body .ports.list {
+    background: white;
+}
+
+#select-board-dialog .selectBoardContainer .body .search input {
+    border: none;
+    width: 100%;
+    height: auto;
+    max-height: 37px;
+    padding: 10px 8px;
+    margin: 0;
+    vertical-align: top;
+    display: flex;
+    color: var(--theia-content-font-color0);
+}
+
+#select-board-dialog .selectBoardContainer .body .search input:focus {
+    box-shadow: none;
+}
+
+#select-board-dialog .selectBoardContainer .body .container {
+    flex: 1;
+}
+
+#select-board-dialog .selectBoardContainer .body .left.container .content {
+    margin: 0 5px 0 0;
+}
+
+#select-board-dialog .selectBoardContainer .body .right.container .content {
+    margin: 0 0 0 5px;
+}
+
+#select-board-dialog .selectBoardContainer .body .container .content .title{
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+#select-board-dialog .selectBoardContainer .body .list .item {
+    padding: 10px 5px 10px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+#select-board-dialog .selectBoardContainer .body .list .item:hover {
+    background: var(--theia-ui-button-color-secondary-hover);
+}
+
+#select-board-dialog .selectBoardContainer .body .list {
+    max-height: 265px;
+    overflow-y: auto;
+}
+
+#select-board-dialog .selectBoardContainer .body .search {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+}
+
+.p-Widget.dialogOverlay .dialogBlock {
+    width: 740px;
+}
+
+button.theia-button {
+    height: 31px;
+}
+
+button.theia-button.secondary {
+    background-color: #b5c8c9;
+    color: #000;
+    box-shadow: 0 4px #95a5a6;
+}
+
+button.theia-button.main {
+    color: #fff;
+    background-color: #00979c;
+    box-shadow: 0 4px #005c5f;
+}
+
+.dialogControl {
+    margin: 0 20px 30px 0;
+}
+
+.arduino-boards-toolbar-item-container {
+    margin-left: 3px;
+}
+
+.arduino-boards-toolbar-item-container .arduino-boards-toolbar-item .inner-container {
+    display: flex;
+    align-items: baseline;
+    margin: 0 5px;
+}
+                    
+.arduino-boards-toolbar-item-container .arduino-boards-toolbar-item .inner-container .notAttached {
+    width: 10px;
+    height: 10px;
+    color: red;
+    margin-right: 5px;
+}
+
+.arduino-boards-toolbar-item-container {
+    display: flex;
+    align-items: center;
+}
+
+.arduino-boards-toolbar-item .label {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.arduino-boards-toolbar-item {
+    background: white;
+    height: 18px;
+}
+                    

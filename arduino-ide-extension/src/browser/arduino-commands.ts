@@ -40,4 +40,12 @@ export namespace ArduinoCommands {
         label: "Refresh attached boards"
     }
 
+    export const SELECT_BOARD: Command = {
+        id: "arduino-select-board"
+    }
+
+    export const OPEN_BOARDS_DIALOG: Command = {
+        id: "arduino-open-boards-dialog"
+    }
+
 }

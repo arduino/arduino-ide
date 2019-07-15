@@ -27,7 +27,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { AWorkspaceService } from './arduino-workspace-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { ArduinoTheme } from './arduino-theme';
-import { ArduinoFileMenuContribution } from './arduino-file-menu';
+import { ArduinoToolbarMenuContribution } from './arduino-file-menu';
 import { MenuContribution } from '@theia/core';
 import { SketchFactory } from './sketch-factory';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
@@ -48,6 +48,8 @@ import { CustomApplicationShell } from './customization/custom-application-shell
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
 import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
+import { SelectBoardDialog, SelectBoardDialogProps } from './boards/select-board-dialog';
+import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     // Commands and toolbar items
@@ -55,7 +57,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
-    bind(MenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
+    bind(MenuContribution).to(ArduinoToolbarMenuContribution).inSingletonScope();
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(ArduinoToolbarContribution);
@@ -93,6 +95,13 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(BoardsListWidget)
     }));
     bind(FrontendApplicationContribution).toService(BoardsListWidgetFrontendContribution);
+
+    // Board select dialog
+    bind(SelectBoardDialogWidget).toSelf().inSingletonScope();
+    bind(SelectBoardDialog).toSelf().inSingletonScope();
+    bind(SelectBoardDialogProps).toConstantValue({
+        title: 'Select Board'
+    })
 
     // Core service
     bind(CoreService)

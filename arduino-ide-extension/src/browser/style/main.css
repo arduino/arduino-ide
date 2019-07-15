@@ -53,24 +53,10 @@
     opacity: 1;
 }
 
-.arduino-boards-toolbar-item-container {
-    display: flex;
-    align-items: center;
-}
-
-.arduino-boards-toolbar-item .label {
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-
 .arduino-open-boards-button {
+    background: white;
 }
 
-.arduino-boards-toolbar-item {
-    background: white;
-    height: 18px;
-}
 
 .arduino-tool-item.item.connected-boards  select {
     line-height: var(--theia-content-line-height);
