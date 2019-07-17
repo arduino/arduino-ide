@@ -18,8 +18,10 @@ is not optimized for dense, information rich UIs.
 
 :root {
     /* Custom Theme Colors */
-    --theia-arduino-light: #005C5F;
-    --theia-arduino-light1: #00979D;
+    --theia-arduino-light: rgb(0, 102, 102);
+    --theia-arduino-light1: rgb(0, 153, 153);
+    --theia-arduino-light2: rgb(218, 226, 228);
+    --theia-arduino-light3: rgb(237, 241, 242);
     --theia-arduino-terminal: rgb(0, 0, 0);
     /* Borders: Width and color (bright to dark) */
     --theia-border-width: 1px;

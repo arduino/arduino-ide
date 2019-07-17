@@ -4,7 +4,7 @@ import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 
 export class ComponentListItem extends React.Component<ComponentListItem.Props> {
 
-    private onClick = (event: React.SyntheticEvent<HTMLAnchorElement, Event>) => {
+    protected onClick = (event: React.SyntheticEvent<HTMLAnchorElement, Event>) => {
         const { target } = event.nativeEvent;
         if (target instanceof HTMLAnchorElement) {
             this.props.windowService.openNewWindow(target.href);
@@ -12,7 +12,7 @@ export class ComponentListItem extends React.Component<ComponentListItem.Props> 
         }
     }
 
-    private async install(item: ArduinoComponent) {
+    protected async install(item: ArduinoComponent): Promise<void> {
         await this.props.install(item);
     }
 

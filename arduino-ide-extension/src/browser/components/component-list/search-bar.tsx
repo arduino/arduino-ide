@@ -9,13 +9,20 @@ export class SearchBar extends React.Component<SearchBar.Props> {
 
     render(): React.ReactNode {
         return <input
+                ref={this.setRef}
                 className={SearchBar.Styles.SEARCH_BAR_CLASS}
                 type='text'
-                placeholder='Search'
+                placeholder='Filter your search...'
                 size={1}
                 value={this.props.filterText}
                 onChange={this.handleFilterTextChange}
             />;
+    }
+
+    private setRef = (element: HTMLElement | null) => {
+        if (this.props.resolveFocus) {
+            this.props.resolveFocus(element || undefined);
+        }
     }
 
     private handleFilterTextChange(event: React.ChangeEvent<HTMLInputElement>): void {
@@ -29,6 +36,7 @@ export namespace SearchBar {
     export interface Props {
         filterText: string;
         onFilterTextChanged(filterText: string): void;
+        readonly resolveFocus?: (element: HTMLElement | undefined) => void;
     }
 
     export namespace Styles {

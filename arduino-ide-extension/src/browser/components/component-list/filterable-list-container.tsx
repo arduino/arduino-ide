@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
-import { ComponentList } from './component-list';
 import { SearchBar } from './search-bar';
+import { ComponentList } from './component-list';
+import { LibraryService } from '../../../common/protocol/library-service';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { InstallationProgressDialog } from '../installation-progress-dialog';
 
@@ -21,21 +22,37 @@ export class FilterableListContainer extends React.Component<FilterableListConta
     }
 
     render(): React.ReactNode {
-        return <div className={FilterableListContainer.Styles.FILTERABLE_LIST_CONTAINER_CLASS}>
-            <SearchBar
-                filterText={this.state.filterText}
-                onFilterTextChanged={this.handleFilterTextChange}
-            />
-            <ComponentList
-                items={this.state.items}
-                install={this.install.bind(this)}
-                windowService={this.props.windowService}
-            />
+        return <div className={'filterable-list-container'}>
+            {this.renderSearchFilter()}
+            {this.renderSearchBar()}
+            {this.renderComponentList()}
         </div>
     }
 
+    protected renderSearchFilter(): React.ReactNode {
+        return undefined;
+    }
+
+    protected renderSearchBar(): React.ReactNode {
+        return <SearchBar
+            resolveFocus={this.props.resolveFocus}
+            filterText={this.state.filterText}
+            onFilterTextChanged={this.handleFilterTextChange}
+        />
+    }
+
+    protected renderComponentList(): React.ReactNode {
+        return <ComponentList
+            items={this.state.items}
+            install={this.install.bind(this)}
+            windowService={this.props.windowService}
+            resolveContainer={this.props.resolveContainer}
+        />
+    }
+
     private handleFilterTextChange(filterText: string): void {
-        this.props.service.search({ query: filterText }).then(result => {
+        const { props } = this.state;
+        this.props.service.search({ query: filterText, props }).then(result => {
             const { items } = result;
             this.setState({
                 filterText,
@@ -45,15 +62,7 @@ export class FilterableListContainer extends React.Component<FilterableListConta
     }
 
     protected sort(items: ArduinoComponent[]): ArduinoComponent[] {
-        return items.sort((a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            } else if (a.name === b.name) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
+        return items.sort((left, right) => left.name.localeCompare(right.name));
     }
 
     protected async install(comp: ArduinoComponent): Promise<void> {
@@ -61,7 +70,8 @@ export class FilterableListContainer extends React.Component<FilterableListConta
         dialog.open();
         try {
             await this.props.service.install(comp);
-            const { items } = await this.props.service.search({ query: this.state.filterText });
+            const { props } = this.state;
+            const { items } = await this.props.service.search({ query: this.state.filterText, props });
             this.setState({ items: this.sort(items) });
         } finally {
             dialog.close();
@@ -75,19 +85,18 @@ export namespace FilterableListContainer {
     export interface Props {
         readonly service: ComponentSource;
         readonly windowService: WindowService;
+        readonly resolveContainer?: (element: HTMLElement) => void;
+        readonly resolveFocus?: (element: HTMLElement | undefined) => void;
     }
 
     export interface State {
         filterText: string;
         items: ArduinoComponent[];
-    }
-
-    export namespace Styles {
-        export const FILTERABLE_LIST_CONTAINER_CLASS = 'filterable-list-container';
+        props?: LibraryService.Search.Props;
     }
 
     export interface ComponentSource {
-        search(req: { query: string }): Promise<{ items: ArduinoComponent[] }>
+        search(req: { query: string, props?: LibraryService.Search.Props }): Promise<{ items: ArduinoComponent[] }>
         install(board: ArduinoComponent): Promise<void>;
     }
 
