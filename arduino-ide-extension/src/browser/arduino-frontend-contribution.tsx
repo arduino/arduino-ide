@@ -232,8 +232,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
             isVisible: widget => this.isArduinoToolbar(widget),
             isEnabled: widget => this.isArduinoToolbar(widget),
-            execute: async (widget: Widget, event: React.MouseEvent<HTMLElement>) => {
-                const el = (event.target as HTMLElement).parentElement;
+            execute: async (widget: Widget, target: EventTarget) => {
+                const el = (target as HTMLElement).parentElement;
                 if (el) {
                     this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
                         x: el.getBoundingClientRect().left,

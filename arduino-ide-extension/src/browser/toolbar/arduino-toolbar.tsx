@@ -103,7 +103,7 @@ export class ArduinoToolbar extends ReactWidget {
     protected executeCommand = (e: React.MouseEvent<HTMLElement>) => {
         const item = this.items.get(e.currentTarget.id);
         if (TabBarToolbarItem.is(item)) {
-            this.commands.executeCommand(item.command, this, e);
+            this.commands.executeCommand(item.command, this, e.target);
         }
     }
 }
