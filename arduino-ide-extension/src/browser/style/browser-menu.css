@@ -11,9 +11,5 @@
 }
 
 .p-MenuBar-item.p-mod-active {
-    color: var(--theia-inverse-ui-font-color3);
-}
-
-.p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {
     color: var(--theia-ui-bar-font-color0);
 }
