@@ -2,493 +2,89 @@
 	"tokenColors": [
 		{
 			"settings": {
-				"background": "#FFFFFF",
-				"foreground": "#000000"
+				"foreground": "#434f54"
 			}
 		},
 		{
-			"name": "Source",
-			"scope": "source",
-			"settings": {
-				"background": "#FFFFFF",
-				"fontStyle": ""
-			}
-		},
-		{
-			"name": "Comment",
+			"name": "Comments",
 			"scope": "comment",
 			"settings": {
-				"fontStyle": "italic",
-				"foreground": "#91a6a6"
+				"foreground": "#95a5a6cc"
 			}
 		},
 		{
-			"name": "Docblock",
-			"scope": "comment.block",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#91a6a6"
-			}
-		},
-		{
-			"name": "Docblock tag",
-			"scope": "keyword.other.phpdoc",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#91a6a6"
-			}
-		},
-		{
-			"name": "Core function",
-			"scope": "support.function",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#6f8100"
-			}
-		},
-		{
-			"name": "Keyword",
+			"name": "Keywords Attributes",
 			"scope": [
-				"keyword",
-				"storage"
+				"storage",
+				"support",
+				"string.quoted.single.c"
 			],
 			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
+				"foreground": "#00979D"
 			}
 		},
 		{
-			"name": "Keyword operator",
-			"scope": "keyword.operator.assignment",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "keyword like new",
-			"scope": "keyword.other.special-method",
-			"settings": {
-				"fontStyle": ""
-			}
-		},
-		{
-			"name": "Function (definition)",
+			"name": "literal",
 			"scope": [
+				"meta.function.c",
 				"entity.name.function",
-				"keyword.other.name-of-parameter.objc",
-				"support.type.exception.python"
+				"meta.function-call.c"
 			],
 			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
+				"foreground": "#D35400"
 			}
 		},
 		{
-			"name": "Class (definition)",
-			"scope": "entity.name",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#445588"
-			}
-		},
-		{
-			"name": "Number",
-			"scope": "constant.numeric",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#00b0b3"
-			}
-		},
-		{
-			"name": "Variable",
+			"name": "punctuation",
 			"scope": [
-				"variable.language",
-				"variable.other"
+				"punctuation.section",
+				"meta.function-call.c",
+				"meta.block.c",
+				"meta.function.c",
+				"entity.name.function.preprocessor.c",
+				"meta.preprocessor.macro.c"
 			],
 			"settings": {
-				"fontStyle": "",
-				"foreground": "#00b0b3"
+				"foreground": "#434f54"
 			}
 		},
 		{
-			"name": "Built-in constant",
-			"scope": "constant.language",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "Variable",
-			"scope": "variable.other.constant.ruby",
-			"settings": {
-				"foreground": "#0F8787"
-			}
-		},
-		{
-			"name": "Built-in constant",
+			"name": "strings",
 			"scope": [
-				"constant.language",
-				"support.function.construct"
+				"string.quoted.double"
 			],
 			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
+				"foreground": "#005C5F"
 			}
 		},
 		{
-			"name": "String",
-			"scope": "string",
-			"settings": {
-				"background": "#EB104512",
-				"foreground": "#006062"
-			}
-		},
-		{
-			"name": "Inherited class",
-			"scope": "entity.other.inherited-class",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#0F8787"
-			}
-		},
-		{
-			"name": "Inherited class seperator",
-			"scope": "punctuation.separator.inheritance",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "punctuation block",
-			"scope": "punctuation.separator.variable",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "array brackets",
-			"scope": "punctuation.section.array",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "hash separator",
-			"scope": "punctuation.separator.key-value",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "() brackets",
-			"scope": "punctuation.section.function",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "Method call",
-			"scope": "meta.function-call",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#108888"
-			}
-		},
-		{
-			"name": "Method call",
-			"scope": "meta.function-call.python",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "hash brackets",
-			"scope": "punctuation.section.scope",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "Special ruby method",
-			"scope": "keyword.other.special-method.ruby",
-			"settings": {
-				"fontStyle": "bold"
-			}
-		},
-		{
-			"name": "symbol",
-			"scope": "constant.other.symbol",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "Support class",
-			"scope": "support.class.ruby",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#008080"
-			}
-		},
-		{
-			"name": "String.regexp",
-			"scope": "string.regexp",
-			"settings": {
-				"foreground": "#009926"
-			}
-		},
-		{
-			"name": "String embedded source",
-			"scope": "string.quoted source",
-			"settings": {
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "doctype punctation",
-			"scope": "meta.tag.sgml.html",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#999999"
-			}
-		},
-		{
-			"name": "doctype declaration",
-			"scope": "entity.name.tag.doctype",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#999999"
-			}
-		},
-		{
-			"name": "doctype string",
-			"scope": "string.quoted.double.doctype",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#999999"
-			}
-		},
-		{
-			"name": "html tag punctuation",
-			"scope": "punctuation.definition.tag",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#121289"
-			}
-		},
-		{
-			"name": "html tag punctuation",
-			"scope": "entity.name.tag",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#121289"
-			}
-		},
-		{
-			"name": "html attribute",
-			"scope": "entity.other.attribute-name",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#0A8585"
-			}
-		},
-		{
-			"name": "html attribute punctation",
-			"scope": "entity.other.attribute-name",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#0A8585"
-			}
-		},
-		{
-			"name": "erb tags",
-			"scope": "punctuation.section.embedded.ruby",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#999999"
-			}
-		},
-		{
-			"name": "ruby string interpolation",
-			"scope": "source.ruby.embedded.source punctuation.section.embedded.ruby",
-			"settings": {
-				"foreground": "#CF1040"
-			}
-		},
-		{
-			"name": "css brackets",
-			"scope": "punctuation.section.property-list.css",
-			"settings": {
-				"fontStyle": ""
-			}
-		},
-		{
-			"name": "css property",
-			"scope": "support.type.property-name.css",
-			"settings": {
-				"fontStyle": "bold"
-			}
-		},
-		{
-			"name": "css property punctuation",
-			"scope": "punctuation.separator.key-value.css",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "css property value",
+			"name": "meta keywords",
 			"scope": [
-				"meta.property-value",
-				"constant.other.color"
+				"keyword.control",
+				"meta.preprocessor.c"
 			],
 			"settings": {
-				"fontStyle": "",
-				"foreground": "#00b0b3"
+				"foreground": "#728E00"
 			}
 		},
 		{
-			"name": "css ending",
-			"scope": "punctuation.terminator.rule.css",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "css font",
-			"scope": "support.constant.font-name",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "css keyword",
-			"scope": "keyword.other.unit",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#00b0b3"
-			}
-		},
-		{
-			"name": "pseudo class",
-			"scope": "entity.other.attribute-name.pseudo-class",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "css constant property value",
-			"scope": "support.constant.property-value",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "css attribute class",
-			"scope": "entity.other.attribute-name.class",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#445588"
-			}
-		},
-		{
-			"name": "css attribute id",
-			"scope": "entity.other.attribute-name.id",
-			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#990000"
-			}
-		},
-		{
-			"name": "diff header from",
-			"scope": "meta.diff.header.from-file",
-			"settings": {
-				"background": "#FFDDDD",
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "diff header to",
-			"scope": "meta.diff.header.to-file",
-			"settings": {
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "diff inserted",
-			"scope": "markup.inserted.diff",
-			"settings": {
-				"fontStyle": ""
-			}
-		},
-		{
-			"name": "diff deleted",
-			"scope": "markup.deleted.diff",
-			"settings": {
-				"background": "#FFDDDD",
-				"fontStyle": "",
-				"foreground": "#000000"
-			}
-		},
-		{
-			"name": "Function Parameters",
-			"scope": "variable.parameter",
-			"settings": {
-				"fontStyle": "italic"
-			}
-		},
-		{
-			"name": "Library object",
+			"name": "numeric preprocessor",
 			"scope": [
-				"support.function",
-				"support.variable",
-				"support.constant",
-				"support.class",
-				"support.type"
+				"meta.preprocessor.macro.c",
+				"constant.numeric.preprocessor.c",
+				"meta.preprocessor.c"
 			],
 			"settings": {
-				"fontStyle": "bold",
-				"foreground": "#4183c4"
-			}
-		},
-		{
-			"name": "Function Meta Call Arguments",
-			"scope": "meta.function-call.arguments",
-			"settings": {
-				"fontStyle": "italic"
-			}
-		},
-		{
-			"name": "Function Call",
-			"scope": "meta.function-call",
-			"settings": {
-				"fontStyle": ""
+				"foreground": "#434f54"
 			}
 		}
 	],
 	"colors": {
 		"editor.background": "#FFFFFF",
-		"editorCursor.foreground": "#000000",
-		"editor.foreground": "#000000",
+		"editorCursor.foreground": "#434f54",
+		"editor.foreground": "#434f54",
 		"editorWhitespace.foreground": "#BFBFBF",
-		"editor.lineHighlightBackground": "#00000010",
+		"editor.lineHighlightBackground": "#434f5410",
 		"editor.selectionBackground": "#ffcb00"
 	},
 	"name": "Arduino"
