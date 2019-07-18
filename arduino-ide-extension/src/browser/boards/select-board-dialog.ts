@@ -26,6 +26,8 @@ export class SelectBoardDialog extends AbstractDialog<BoardAndPortSelection> {
         this.dialogPanel = new Panel();
         this.dialogPanel.addWidget(this.widget);
 
+        this.contentNode.classList.add('select-board-dialog');
+
         this.toDispose.push(this.widget.onChanged(() => this.update()));
         this.toDispose.push(this.dialogPanel);
 

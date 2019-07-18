@@ -85,6 +85,10 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     overflow-y: auto;
 }
 
+#select-board-dialog .selectBoardContainer .body .boards.list {
+    min-height: 265px;
+}
+
 #select-board-dialog .selectBoardContainer .body .search {
     margin-bottom: 10px;
     display: flex;
@@ -92,7 +96,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     padding-right: 5px;
 }
 
-.p-Widget.dialogOverlay .dialogBlock {
+.p-Widget.dialogOverlay .dialogContent.select-board-dialog {
     width: 740px;
 }
 
