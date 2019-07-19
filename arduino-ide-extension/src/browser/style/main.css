@@ -61,21 +61,6 @@
     opacity: 1;
 }
 
-.arduino-boards-toolbar-item-container {
-    display: flex;
-    align-items: center;
-}
-
-.arduino-boards-toolbar-item .label {
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.arduino-boards-toolbar-item {
-    background: white;
-}
-
 .arduino-tool-item.item.connected-boards  select {
     line-height: var(--theia-content-line-height);
     font-size: var(--theia-ui-font-size1);
@@ -104,4 +89,10 @@
 .monaco-editor .margin {
     border-right: 2px solid var(--theia-border-color1);
     box-sizing: border-box;
+}
+
+.noWrapInfo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
