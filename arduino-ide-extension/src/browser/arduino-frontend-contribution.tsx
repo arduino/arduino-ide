@@ -5,7 +5,7 @@ import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, Board, AttachedSerialBoard } from '../common/protocol/boards-service';
+import { BoardsService, Board } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
@@ -66,9 +66,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(BoardsNotificationService)
     protected readonly boardsNotificationService: BoardsNotificationService;
 
-    @inject(WorkspaceService)
-    protected readonly workspaceService: WorkspaceService;
-
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
 
@@ -106,48 +103,20 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected readonly commands: CommandRegistry;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
-    protected attachedBoards: Board[];
-    protected selectedBoard: Board;
+    protected wsSketchCount: number = 0;
+
+    constructor(@inject(WorkspaceService) protected readonly workspaceService: WorkspaceService) {
+        this.workspaceService.onWorkspaceChanged(() => {
+            if (this.workspaceService.workspace) {
+                this.registerSketchesInMenu(this.menuRegistry);
+            }
+        })
+    }
 
     @postConstruct()
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
         await this.workspaceServiceExt.roots();
-        const { boards } = await this.boardService.getAttachedBoards();
-        this.attachedBoards = boards;
-        this.registerConnectedBoardsInMenu(this.menuRegistry);
-    }
-
-    protected async registerConnectedBoardsInMenu(registry: MenuModelRegistry) {
-        this.attachedBoards.forEach(board => {
-            const port = this.getPort(board);
-            const command: Command = {
-                id: 'selectBoard' + port
-            }
-            this.commands.registerCommand(command, {
-                execute: () => this.commands.executeCommand(ArduinoCommands.SELECT_BOARD.id, board),
-                isToggled: () => this.isSelectedBoard(board)
-            });
-            registry.registerMenuAction(ArduinoToolbarContextMenu.CONNECTED_GROUP, {
-                commandId: command.id,
-                label: board.name + ' at ' + port
-            });
-        });
-    }
-
-    protected isSelectedBoard(board: Board): boolean {
-        return AttachedSerialBoard.is(board) &&
-            this.selectedBoard && 
-            AttachedSerialBoard.is(this.selectedBoard) &&
-            board.port === this.selectedBoard.port &&
-            board.fqbn === this.selectedBoard.fqbn;
-    }
-
-    protected getPort(board: Board): string {
-        if (AttachedSerialBoard.is(board)) {
-            return board.port;
-        }
-        return '';
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -178,7 +147,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerItem({
             id: ConnectedBoards.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
+                key='boardsToolbarItem'
                 ref={ref => this.boardsToolbarItem = ref}
+                commands={this.commands}
                 contextMenuRenderer={this.contextMenuRenderer}
                 boardsNotificationService={this.boardsNotificationService}
                 boardService={this.boardService} />,
@@ -233,12 +204,16 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             isVisible: widget => this.isArduinoToolbar(widget),
             isEnabled: widget => this.isArduinoToolbar(widget),
             execute: async (widget: Widget, target: EventTarget) => {
-                const el = (target as HTMLElement).parentElement;
-                if (el) {
-                    this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
-                        x: el.getBoundingClientRect().left,
-                        y: el.getBoundingClientRect().top + el.offsetHeight
-                    });
+                if (this.wsSketchCount) {
+                    const el = (target as HTMLElement).parentElement;
+                    if (el) {
+                        this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
+                            x: el.getBoundingClientRect().left,
+                            y: el.getBoundingClientRect().top + el.offsetHeight
+                        });
+                    }
+                } else {
+                    this.commands.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
                 }
             }
         });
@@ -295,11 +270,10 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     }
 
     protected async selectBoard(board: Board) {
-        await this.boardService.selectBoard(board)
+        await this.boardService.selectBoard(board);
         if (this.boardsToolbarItem) {
             this.boardsToolbarItem.setSelectedBoard(board);
         }
-        this.selectedBoard = board;
     }
     
     registerMenus(registry: MenuModelRegistry) {
@@ -332,6 +306,10 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             label: 'Upload',
             order: '2'
         });
+        registry.registerMenuAction(ArduinoToolbarContextMenu.OPEN_GROUP, {
+            commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,
+            label: 'Open...'
+        });
 
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
     }
@@ -340,6 +318,30 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         const index = menuPath.length - 1;
         const menuId = menuPath[index];
         return menuId;
+    }
+
+    protected registerSketchesInMenu(registry: MenuModelRegistry) {
+        this.getWorkspaceSketches().then(sketches => {
+            this.wsSketchCount = sketches.length;
+            sketches.forEach(sketch => {
+                const command: Command = {
+                    id: 'openSketch' + sketch.name
+                }
+                this.commands.registerCommand(command, {
+                    execute: () => this.commands.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+                });
+
+                registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {
+                    commandId: command.id,
+                    label: sketch.name
+                });
+            })
+        })
+    }
+
+    protected async getWorkspaceSketches(): Promise<Sketch[]> {
+        const sketches = this.sketches.getSketches(this.workspaceService.workspace);
+        return sketches;
     }
 
     protected async openSketchFilesInNewWindow(uri: string) {
