@@ -6,6 +6,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { FilterableListContainer } from '../components/component-list/filterable-list-container';
 import { BoardsService, Board, BoardPackage } from '../../common/protocol/boards-service';
 import { BoardsNotificationService } from '../boards-notification-service';
+import { LibraryService } from '../../common/protocol/library-service';
 
 @injectable()
 export abstract class ListWidget extends ReactWidget {
@@ -55,7 +56,7 @@ export abstract class ListWidget extends ReactWidget {
             getAttachedBoards: () => boardsServiceDelegate.getAttachedBoards(),
             selectBoard: (board: Board) => boardsServiceDelegate.selectBoard(board),
             getSelectBoard: () => boardsServiceDelegate.getSelectBoard(),
-            search: (options: { query?: string }) => boardsServiceDelegate.search(options),
+            search: (options: { query?: string, props?: LibraryService.Search.Props }) => boardsServiceDelegate.search(options),
             install: async (item: BoardPackage) => {
                 await boardsServiceDelegate.install(item);
                 this.boardsNotificationService.notifyBoardsInstalled();

@@ -50,8 +50,12 @@ import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-fac
 import { CustomEditorWidgetFactory } from './customization/custom-editor-widget-factory';
 import { SelectBoardDialog, SelectBoardDialogProps } from './boards/select-board-dialog';
 import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
+const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
+    ElementQueries.listen();
+    ElementQueries.init();
+
     // Commands and toolbar items
     bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
     bind(CommandContribution).toService(ArduinoFrontendContribution);

@@ -96,3 +96,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.theia-sidepanel-toolbar .theia-sidepanel-title {
+    margin-left: 10px;
+}

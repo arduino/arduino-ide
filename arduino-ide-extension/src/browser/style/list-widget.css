@@ -8,7 +8,12 @@
 }
 
 .arduino-list-widget .search-bar {
-    margin: 0 10px 0 15px;
+    margin: 0px 10px 10px 15px;
+    border-color: var(--theia-border-color3);
+}
+
+.arduino-list-widget .search-filters {
+    margin: 0px 10px 0px 15px;
     border-color: var(--theia-border-color3);
 }
 
@@ -16,10 +21,44 @@
     border-color: var(--theia-accent-color3);
 }
 
+.arduino-list-widget .filterable-list-container .search-filters .filter {
+    margin: 0px 0px 10px 0px;
+    display: flex;
+}
+
+.arduino-list-widget .filterable-list-container .search-filters .filter .title {
+    margin: 0px 10px 0px 0px;
+    align-self: center;
+    text-transform: uppercase;
+    font-size: var(--theia-ui-font-size0);
+}
+
+.arduino-list-widget .filterable-list-container .search-filters .filter > select {
+    width: 100%;
+}
+
 .filterable-list-container {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    height: 100%; /* This has top be 100% down to the `scrollContainer`. */
+}
+
+.filterable-list-container .items-container {
+    height: 100%; /* This has to be propagated down from the widget. */
+    position: relative; /* To fix the `top` of the vertical toolbar.  */
+}
+
+.filterable-list-container .items-container > div:nth-child(odd) {
+    background-color: var(--theia-layout-color2);
+}
+
+.filterable-list-container .items-container > div:nth-child(even) {
+    background-color: var(--theia-layout-color0);
+}
+
+.filterable-list-container .items-container > div:hover {
+    background-color: var(--theia-layout-color1);
 }
 
 .component-list-item {
@@ -61,6 +100,10 @@
     color: var(--theia-ui-font-color2);
 }
 
+.component-list-item:hover .header .author {
+    color: var(--theia-ui-font-color1);
+}
+
 .component-list-item .header .version {
     color: var(--theia-ui-font-color2);
 }
@@ -76,18 +119,35 @@
     color: var(--theia-inverse-ui-font-color0);
 }
 
-.component-list-item .footer {
-    padding-top: 5px;
+.component-list-item[min-width~="170px"] .footer {
+    padding: 5px 5px 0px 0px;
+    min-height: 26px; /* 21 + 5 from the footer margin top */
     display: flex;
+    flex-direction: row-reverse;
 }
 
-.component-list-item .footer a {
+.component-list-item .footer {
+    flex-direction: column-reverse;
+}
+
+.component-list-item .footer > * {
+    display: none
+}
+
+.component-list-item:hover .footer > * {
+    display: block;
+    margin: 5px 0px 0px 10px;
+}
+
+.component-list-item:hover .footer > label {
+    display: block;
+    align-self: center;
+    margin: 5px 0px 0px 10px;
+}
+
+.component-list-item .info a {
     color: var(--theia-brand-color1);
     text-decoration: none;
-    font-weight: 600;
-}
-.component-list-item .footer .install {
-    margin-left: auto;
 }
 
 .component-list-item a:hover {

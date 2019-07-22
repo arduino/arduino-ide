@@ -18,6 +18,7 @@
     "@theia/workspace": "next",
     "@theia/navigator": "next",
     "@theia/terminal": "next",
+    "css-element-queries": "^1.2.0",
     "p-queue": "^5.0.0"
   },
   "scripts": {
