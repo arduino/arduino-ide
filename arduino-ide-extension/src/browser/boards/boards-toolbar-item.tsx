@@ -213,7 +213,7 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
                     <div className='inner-container' onClick={this.doShowSelectBoardsMenu}>
                         <span className={!selectedBoard || !this.state.selectedIsAttached ? 'fa fa-times notAttached' : ''}></span>
                         <div className='label noWrapInfo'>
-                            <div className='noWrapInfo'>
+                            <div className='noWrapInfo noselect'>
                                 {selectedBoard ? `${selectedBoard.name}${port ? ' at ' + port : ''}` : 'no board selected'}
                             </div>
                         </div>
