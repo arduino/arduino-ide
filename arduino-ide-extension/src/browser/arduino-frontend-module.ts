@@ -40,7 +40,7 @@ import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contributi
 import { OutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
 import { ArduinoOutputToolContribution } from './customization/silent-output-tool-contribution';
 import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { SilentEditorContribution } from './customization/silent-editor-contribution';
+import { CustomEditorContribution } from './customization/custom-editor-contribution';
 import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { SilentMonacoStatusBarContribution } from './customization/silent-monaco-status-bar-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser';
@@ -149,7 +149,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     unbind(OutputToolbarContribution);
     bind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
     unbind(EditorContribution);
-    bind(EditorContribution).to(SilentEditorContribution).inSingletonScope();
+    bind(EditorContribution).to(CustomEditorContribution).inSingletonScope();
     unbind(MonacoStatusBarContribution);
     bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
     unbind(ApplicationShell);

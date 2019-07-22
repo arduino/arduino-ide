@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { BoardsService, Board, AttachedSerialBoard } from '../../common/protocol/boards-service';
-import { ContextMenuRenderer } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, StatusBar, StatusBarAlignment } from '@theia/core/lib/browser';
 import { BoardsNotificationService } from '../boards-notification-service';
 import { Command, CommandRegistry } from '@theia/core';
 import { ArduinoCommands } from '../arduino-commands';
@@ -96,6 +96,7 @@ export namespace BoardsToolBarItem {
         readonly boardsNotificationService: BoardsNotificationService;
         readonly boardService: BoardsService;
         readonly commands: CommandRegistry;
+        readonly statusBar: StatusBar;
     }
 
     export interface State {
@@ -207,14 +208,19 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     render(): React.ReactNode {
         const selectedBoard = this.state.selectedBoard;
         const port = selectedBoard ? this.getPort(selectedBoard) : undefined;
+        const boardTxt = selectedBoard && `${selectedBoard.name}${port ? ' at ' + port : ''}` || '';
+        this.props.statusBar.setElement('arduino-selected-board', {
+            alignment: StatusBarAlignment.RIGHT,
+            text: boardTxt
+        });
         return <React.Fragment>
             <div className='arduino-boards-toolbar-item-container'>
-                <div className='arduino-boards-toolbar-item' title={selectedBoard && `${selectedBoard.name}${port ? ' at ' + port : ''}`}>
+                <div className='arduino-boards-toolbar-item' title={boardTxt}>
                     <div className='inner-container' onClick={this.doShowSelectBoardsMenu}>
                         <span className={!selectedBoard || !this.state.selectedIsAttached ? 'fa fa-times notAttached' : ''}></span>
                         <div className='label noWrapInfo'>
                             <div className='noWrapInfo noselect'>
-                                {selectedBoard ? `${selectedBoard.name}${port ? ' at ' + port : ''}` : 'no board selected'}
+                                {selectedBoard ? boardTxt : 'no board selected'}
                             </div>
                         </div>
                         <span className='fa fa-caret-down caret'></span>
