@@ -359,7 +359,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         if (fileStat) {
             const sketchFiles = await this.sketches.getSketchFiles(fileStat);
             sketchFiles.forEach(sketchFile => {
-                const uri = new URI(sketchFile);
+                const uri = new URI(sketchFile.uri);
                 this.editorManager.open(uri);
             });
         }

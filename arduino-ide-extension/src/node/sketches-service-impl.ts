@@ -17,17 +17,19 @@ export class SketchesServiceImpl implements SketchesService {
         const sketches: Sketch[] = [];
         if (fileStat && fileStat.isDirectory) {
             const uri = new URI(fileStat.uri);
-            const sketchFolderPath = uri.path.toString()
-            const files = fs.readdirSync(sketchFolderPath);
-            files.forEach(file => {
-                const filePath = path.join(sketchFolderPath, file);
-                if (this.isSketchFolder(filePath, file)) {
-                    sketches.push({
-                        name: file,
-                        uri: filePath
-                    });
-                }
-            });
+            const sketchFolderPath = await this.filesystem.getFsPath(uri.toString());
+            if (sketchFolderPath) {
+                const files = fs.readdirSync(sketchFolderPath);
+                files.forEach(file => {
+                    const filePath = path.join(sketchFolderPath, file);
+                    if (this.isSketchFolder(filePath, file)) {
+                        sketches.push({
+                            name: file,
+                            uri: filePath
+                        });
+                    }
+                });
+            }
         }
         return sketches;
     }
@@ -36,30 +38,39 @@ export class SketchesServiceImpl implements SketchesService {
      * Return all allowed files.
      * File extensions: "c", "cpp", "h", "hh", "hpp", "s", "pde", "ino"
      */
-    async getSketchFiles(sketchFileStat: FileStat): Promise<string[]> {
-        const files: string[] = [];
+    async getSketchFiles(sketchFileStat: FileStat): Promise<FileStat[]> {
+        const files: FileStat[] = [];
         const sketchUri = new URI(sketchFileStat.uri);
-        const sketchPath = sketchUri.path.toString();
-        if (sketchFileStat.isDirectory && this.isSketchFolder(sketchPath, sketchUri.displayName)) {
-            const sketchDirContents = fs.readdirSync(sketchPath);
-            sketchDirContents.forEach(fileName => {
-                const filePath = path.join(sketchPath, fileName);
-                if (fs.existsSync(filePath) &&
-                    fs.lstatSync(filePath).isFile() &&
-                    ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1) {
-                    files.push(filePath);
+        const sketchPath = await this.filesystem.getFsPath(sketchUri.toString());
+        if (sketchPath) {
+            if (sketchFileStat.isDirectory && this.isSketchFolder(sketchPath, sketchUri.displayName)) {
+                const sketchDirContents = fs.readdirSync(sketchPath);
+                for (const i in sketchDirContents) {
+                    const fileName = sketchDirContents[i];
+                    const filePath = path.join(sketchPath, fileName);
+                    if (fs.existsSync(filePath) &&
+                        fs.lstatSync(filePath).isFile() &&
+                        ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1) {
+                        const fileStat = await this.filesystem.getFileStat(filePath);
+                        if (fileStat) {
+                            console.log("111111111111", fileStat);
+                            files.push(fileStat);
+                            console.log("222222222222222", files);
+                        }
+                    }
                 }
-            });
-        } else {
-            const sketchDir = sketchUri.path.dir;
-            if (this.isSketchFolder(sketchDir.toString(), sketchDir.name)) {
-                const sketchFolderStat = await this.filesystem.getFileStat(sketchDir.toString());
-                if (sketchFolderStat) {
-                    const sketchDirContents = await this.getSketchFiles(sketchFolderStat);
-                    files.push(...sketchDirContents);
+            } else {
+                const sketchDir = path.dirname(sketchPath);
+                if (sketchDir && this.isSketchFolder(sketchDir, sketchUri.path.dir.name)) {
+                    const sketchFolderStat = await this.filesystem.getFileStat(sketchUri.path.dir.toString());
+                    if (sketchFolderStat) {
+                        const sketchDirContents = await this.getSketchFiles(sketchFolderStat);
+                        files.push(...sketchDirContents);
+                    }
                 }
             }
         }
+        console.log("###FILEPATH###", files);
         return files;
     }
 
