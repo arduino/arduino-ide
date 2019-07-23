@@ -4,7 +4,7 @@ export const SketchesServicePath = '/services/sketches-service';
 export const SketchesService = Symbol('SketchesService');
 export interface SketchesService {
     getSketches(fileStat?: FileStat): Promise<Sketch[]>
-    getSketchFiles(fileStat: FileStat): Promise<FileStat[]>
+    getSketchFiles(fileStat: FileStat): Promise<string[]>
 }
 
 export interface Sketch {
