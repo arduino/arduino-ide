@@ -20,7 +20,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
-import { ContextMenuRenderer, OpenerService, Widget } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget, StatusBar } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { ArduinoToolbarContextMenu } from './arduino-file-menu';
@@ -102,6 +102,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(CommandRegistry)
     protected readonly commands: CommandRegistry;
 
+    @inject(StatusBar)
+    protected readonly statusBar: StatusBar;
+
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
 
@@ -150,6 +153,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 key='boardsToolbarItem'
                 ref={ref => this.boardsToolbarItem = ref}
                 commands={this.commands}
+                statusBar={this.statusBar}
                 contextMenuRenderer={this.contextMenuRenderer}
                 boardsNotificationService={this.boardsNotificationService}
                 boardService={this.boardService} />,
