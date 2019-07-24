@@ -8,7 +8,7 @@ import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/w
 import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
 import { LibraryListWidget } from './library/library-list-widget';
-import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
+import { ArduinoFrontendContribution, ARDUINO_PRO_MODE } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
@@ -49,6 +49,10 @@ import { CustomFrontendApplication } from './customization/custom-frontend-appli
 import { SelectBoardDialog, SelectBoardDialogProps } from './boards/select-board-dialog';
 import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
+
+if (!ARDUINO_PRO_MODE) {
+    require('../../src/browser/style/silent-bottom-panel-tabs.css');
+}
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     ElementQueries.listen();
@@ -138,20 +142,22 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     themeService.register(...ArduinoTheme.themes);
 
     // customizing default theia
-    unbind(OutlineViewContribution);
-    bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
-    unbind(ProblemContribution);
-    bind(ProblemContribution).to(SilentProblemContribution).inSingletonScope();
-    unbind(FileNavigatorContribution);
-    bind(FileNavigatorContribution).to(SilentNavigatorContribution).inSingletonScope();
-    unbind(OutputToolbarContribution);
-    bind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
-    unbind(EditorContribution);
-    bind(EditorContribution).to(CustomEditorContribution).inSingletonScope();
-    unbind(MonacoStatusBarContribution);
-    bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
-    unbind(ApplicationShell);
-    bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
+    if (!ARDUINO_PRO_MODE) {
+        unbind(OutlineViewContribution);
+        bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
+        unbind(ProblemContribution);
+        bind(ProblemContribution).to(SilentProblemContribution).inSingletonScope();
+        unbind(FileNavigatorContribution);
+        bind(FileNavigatorContribution).to(SilentNavigatorContribution).inSingletonScope();
+        unbind(OutputToolbarContribution);
+        bind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
+        unbind(EditorContribution);
+        bind(EditorContribution).to(CustomEditorContribution).inSingletonScope();
+        unbind(MonacoStatusBarContribution);
+        bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
+        unbind(ApplicationShell);
+        bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
+    }
     unbind(FrontendApplication);
     bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
 });

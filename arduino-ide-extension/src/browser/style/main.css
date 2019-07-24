@@ -75,10 +75,6 @@
     padding-right: 15px;
 }
 
-.p-Widget.p-TabBar.theia-app-centers.theia-app-bottom .p-TabBar-content-container.ps {
-    display: none;
-}
-
 .arduino-toolbar-tooltip {
     margin-left: 10px;
     display: flex;

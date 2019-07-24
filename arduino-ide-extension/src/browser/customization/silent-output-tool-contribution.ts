@@ -5,6 +5,5 @@ import { injectable } from "inversify";
 @injectable()
 export class ArduinoOutputToolContribution extends OutputToolbarContribution {
     async registerToolbarItems(toolbarRegistry: TabBarToolbarRegistry): Promise<void> {
-        // register nothing
     }
 }

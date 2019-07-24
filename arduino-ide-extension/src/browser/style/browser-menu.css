@@ -3,7 +3,7 @@
     flex-direction: column;
 }
 
-.p-TabBar-toolbar {
+#theia-top-panel .p-TabBar-toolbar {
     justify-content: flex-end;
     margin: 0;
     padding-left: 10px;
