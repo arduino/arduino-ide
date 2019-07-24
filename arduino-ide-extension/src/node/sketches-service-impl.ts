@@ -4,6 +4,7 @@ import URI from "@theia/core/lib/common/uri";
 import { FileStat, FileSystem } from "@theia/filesystem/lib/common";
 import * as fs from 'fs';
 import * as path from 'path';
+import { FileUri } from "@theia/core/lib/node";
 
 export const ALLOWED_FILE_EXTENSIONS = [".c", ".cpp", ".h", ".hh", ".hpp", ".s", ".pde", ".ino"];
 
@@ -17,17 +18,19 @@ export class SketchesServiceImpl implements SketchesService {
         const sketches: Sketch[] = [];
         if (fileStat && fileStat.isDirectory) {
             const uri = new URI(fileStat.uri);
-            const sketchFolderPath = uri.path.toString()
-            const files = fs.readdirSync(sketchFolderPath);
-            files.forEach(file => {
-                const filePath = path.join(sketchFolderPath, file);
-                if (this.isSketchFolder(filePath, file)) {
-                    sketches.push({
-                        name: file,
-                        uri: filePath
-                    });
+            const sketchFolderPath = await this.filesystem.getFsPath(uri.toString());
+            if (sketchFolderPath) {
+                const fileNames = fs.readdirSync(sketchFolderPath);
+                for (const fileName of fileNames) {
+                    const filePath = path.join(sketchFolderPath, fileName);
+                    if (this.isSketchFolder(filePath, fileName)) {
+                        sketches.push({
+                            name: fileName,
+                            uri: FileUri.create(filePath).toString()
+                        });
+                    }
                 }
-            });
+            }
         }
         return sketches;
     }
@@ -37,30 +40,32 @@ export class SketchesServiceImpl implements SketchesService {
      * File extensions: "c", "cpp", "h", "hh", "hpp", "s", "pde", "ino"
      */
     async getSketchFiles(sketchFileStat: FileStat): Promise<string[]> {
-        const files: string[] = [];
+        const uris: string[] = [];
         const sketchUri = new URI(sketchFileStat.uri);
-        const sketchPath = sketchUri.path.toString();
-        if (sketchFileStat.isDirectory && this.isSketchFolder(sketchPath, sketchUri.displayName)) {
-            const sketchDirContents = fs.readdirSync(sketchPath);
-            sketchDirContents.forEach(fileName => {
-                const filePath = path.join(sketchPath, fileName);
-                if (fs.existsSync(filePath) &&
-                    fs.lstatSync(filePath).isFile() &&
-                    ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1) {
-                    files.push(filePath);
+        const sketchPath = await this.filesystem.getFsPath(sketchUri.toString());
+        if (sketchPath) {
+            if (sketchFileStat.isDirectory && this.isSketchFolder(sketchPath, sketchUri.displayName)) {
+                const fileNames = fs.readdirSync(sketchPath);
+                for (const fileName of fileNames) {
+                    const filePath = path.join(sketchPath, fileName);
+                    if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
+                        && fs.existsSync(filePath)
+                        && fs.lstatSync(filePath).isFile()) {
+                            uris.push(FileUri.create(filePath).toString())
+                    }
                 }
-            });
-        } else {
-            const sketchDir = sketchUri.path.dir;
-            if (this.isSketchFolder(sketchDir.toString(), sketchDir.name)) {
-                const sketchFolderStat = await this.filesystem.getFileStat(sketchDir.toString());
-                if (sketchFolderStat) {
-                    const sketchDirContents = await this.getSketchFiles(sketchFolderStat);
-                    files.push(...sketchDirContents);
+            } else {
+                const sketchDir = path.dirname(sketchPath);
+                if (sketchDir && this.isSketchFolder(sketchDir, sketchUri.path.dir.name)) {
+                    const sketchFolderStat = await this.filesystem.getFileStat(sketchUri.path.dir.toString());
+                    if (sketchFolderStat) {
+                        const sketchDirContents = await this.getSketchFiles(sketchFolderStat);
+                        uris.push(...sketchDirContents);
+                    }
                 }
             }
         }
-        return files;
+        return uris;
     }
 
     protected isSketchFolder(path: string, name: string): boolean {
