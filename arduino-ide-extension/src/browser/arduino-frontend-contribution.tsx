@@ -22,7 +22,7 @@ import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import { ContextMenuRenderer, OpenerService, Widget, StatusBar } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
-import { FileSystem } from '@theia/filesystem/lib/common';
+import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { ArduinoToolbarContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -30,7 +30,8 @@ import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-fron
 import { FileSystemCommands } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/file-download-command-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
-import {TerminalMenus} from '@theia/terminal/lib/browser/terminal-frontend-contribution';
+import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
+import { MaybePromise } from '@theia/core/lib/common/types';
 import { SelectBoardDialog } from './boards/select-board-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 
@@ -383,8 +384,13 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         if (destinationFileUri) {
             const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
             if (destinationFile && !destinationFile.isDirectory) {
-                await this.openSketchFilesInNewWindow(destinationFileUri.toString());
-                return destinationFileUri;
+                const message = await this.validate(destinationFile);
+                if (!message) {
+                    await this.openSketchFilesInNewWindow(destinationFileUri.toString());
+                    return destinationFileUri;
+                } else {
+                    this.messageService.warn(message);
+                }
             }
         }
         return undefined;
@@ -401,8 +407,24 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         return widget;
     }
 
+    /**
+     * Returns `undefined` if the `file` is valid. Otherwise, returns with the validation error message.
+     */
+    protected validate(file: FileStat): MaybePromise<string | undefined> {
+        const uri = new URI(file.uri);
+        const path = uri.path;
+        const { name, ext, dir } = path;
+        if (ext !== '.ino') {
+            return "Only sketches with '.ino' extension can be opened.";
+        }
+        if (name !== dir.name) {
+            return `The file "${name}${ext}" needs to be inside a sketch folder named "${name}".`;
+        }
+        return undefined;
+    }
+
     // private async onNoBoardsInstalled() {
-    //     const action = await this.messageService.info("You have no boards installed. Use the boards mangager to install one.", "Open Boards Manager");
+    //     const action = await this.messageService.info("You have no boards installed. Use the boards manager to install one.", "Open Boards Manager");
     //     if (!action) {
     //         return;
     //     }

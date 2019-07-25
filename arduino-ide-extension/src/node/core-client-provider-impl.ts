@@ -90,7 +90,7 @@ export class CoreClientProviderImpl implements CoreClientProvider {
             throw new Error(`Could not retrieve instance from the initialize response.`);
         }
 
-        // in a seperate promise, try and update the index
+        // in a separate promise, try and update the index
         let succeeded = true;
         for (let i = 0; i < 10; i++) {
             try {
@@ -118,11 +118,24 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         const updateReq = new UpdateIndexReq();
         updateReq.setInstance(instance);
         const updateResp = client.updateIndex(updateReq);
+        let file: string | undefined;
         updateResp.on('data', (o: UpdateIndexResp) => {
             const progress = o.getDownloadProgress();
             if (progress) {
+                if (!file && progress.getFile()) {
+                    file = `${progress.getFile()}`;
+                }
                 if (progress.getCompleted()) {
-                    this.toolOutputService.publishNewOutput("daemon", `Download${progress.getFile() ? ` of ${progress.getFile()}` : ''} completed.\n`);
+                    if (file) {
+                        if (/\s/.test(file)) {
+                            this.toolOutputService.publishNewOutput("daemon", `${file} completed.\n`);
+                        } else {
+                            this.toolOutputService.publishNewOutput("daemon", `Download of '${file}' completed.\n'`);
+                        }
+                    } else {
+                        this.toolOutputService.publishNewOutput("daemon", `The index has been successfully updated.\n'`);
+                    }
+                    file = undefined;
                 }
             }
         });
