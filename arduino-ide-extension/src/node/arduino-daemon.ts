@@ -1,12 +1,12 @@
 import * as which from 'which';
 import * as os from 'os';
 import { join, delimiter } from 'path';
-import { exec } from 'child_process';
-import { ChildProcess } from 'child_process';
+import { exec, spawn, SpawnOptions } from 'child_process';
 import { inject, injectable, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { environment } from '@theia/application-package/lib/environment';
 import { DaemonLog } from './daemon-log';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 
@@ -22,8 +22,6 @@ export class ArduinoDaemon implements BackendApplicationContribution {
 
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
-
-    protected process: ChildProcess | undefined;
 
     protected isReady = new Deferred<boolean>();
 
@@ -48,6 +46,15 @@ export class ArduinoDaemon implements BackendApplicationContribution {
                     }
                     console.log(stdout);
                 });
+                const options: SpawnOptions = {
+                    env: environment.electron.runAsNodeEnv(),
+                    detached: true,
+                    stdio: 'ignore'
+                }
+                const command = process.execPath;
+                const cp = spawn(command, [join(__dirname, 'daemon-watcher.js'), String(process.pid), String(daemon.pid)], options);
+                cp.unref();
+
                 if (daemon.stdout) {
                     daemon.stdout.on('data', data => {
                         this.toolOutputService.publishNewOutput('daemon', data.toString());
@@ -63,7 +70,6 @@ export class ArduinoDaemon implements BackendApplicationContribution {
                 if (daemon.stderr) {
                     daemon.on('exit', (code, signal) => DaemonLog.log(this.logger, `Daemon exited with code: ${code}. Signal was: ${signal}.`));
                 }
-                this.process = daemon;
             }
 
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -76,15 +82,6 @@ export class ArduinoDaemon implements BackendApplicationContribution {
         } catch (error) {
             this.isReady.reject(error || new Error('failed to start arduino-cli'));
         }
-    }
-
-    onStop() {
-        if (!this.process) {
-            return;
-        }
-
-        DaemonLog.log(this.logger, `Shutting down daemon.`);
-        this.process.kill("SIGTERM");
     }
 
 }
