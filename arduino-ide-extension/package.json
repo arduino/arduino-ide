@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^0.4.0",
+    "@theia/application-package": "next",
     "@theia/core": "next",
     "@theia/editor": "next",
     "@theia/filesystem": "next",
@@ -18,9 +19,12 @@
     "@theia/workspace": "next",
     "@theia/navigator": "next",
     "@theia/terminal": "next",
+    "@types/ps-tree": "^1.1.0",
     "@types/which": "^1.3.1",
     "css-element-queries": "^1.2.0",
     "p-queue": "^5.0.0",
+    "ps-tree": "^1.2.0",
+    "tree-kill": "^1.2.1",
     "which": "^1.3.1"
   },
   "scripts": {

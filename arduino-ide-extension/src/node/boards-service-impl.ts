@@ -55,7 +55,7 @@ export class BoardsServiceImpl implements BoardsService {
                         }
                     }
                 }
-                resolve({boards});
+                resolve({ boards });
             })
         });
     }
