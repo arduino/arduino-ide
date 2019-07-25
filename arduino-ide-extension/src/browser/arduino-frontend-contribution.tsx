@@ -20,7 +20,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
-import { ContextMenuRenderer, OpenerService, Widget, StatusBar } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget, StatusBar, ShellLayoutRestorer } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { ArduinoToolbarContextMenu } from './arduino-file-menu';
@@ -39,6 +39,11 @@ export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
     export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
 }
+
+export const ARDUINO_PRO_MODE: boolean = (() => {
+    const proModeStr = window.localStorage.getItem('arduino-pro-mode');
+    return proModeStr === 'true';
+})();
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution, MenuContribution {
@@ -105,6 +110,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(StatusBar)
     protected readonly statusBar: StatusBar;
+
+    @inject(ShellLayoutRestorer)
+    protected readonly layoutRestorer: ShellLayoutRestorer;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
@@ -272,6 +280,14 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 }
             }
         })
+        registry.registerCommand(ArduinoCommands.TOGGLE_PROMODE, {
+            execute: () => {
+                const oldModeState = ARDUINO_PRO_MODE;
+                window.localStorage.setItem('arduino-pro-mode', oldModeState ? 'false' : 'true');
+                registry.executeCommand('reset.layout');
+            },
+            isToggled: () => ARDUINO_PRO_MODE
+        })
     }
 
     protected async selectBoard(board: Board) {
@@ -280,25 +296,26 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             this.boardsToolbarItem.setSelectedBoard(board);
         }
     }
-    
+
     registerMenus(registry: MenuModelRegistry) {
-        registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
-        registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
+        if (!ARDUINO_PRO_MODE) {
+            registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
+            registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
 
-        registry.unregisterMenuAction(WorkspaceCommands.NEW_FILE);
-        registry.unregisterMenuAction(WorkspaceCommands.NEW_FOLDER);
-        
-        registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
-        registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
-        registry.unregisterMenuAction(WorkspaceCommands.OPEN_RECENT_WORKSPACE);
-        registry.unregisterMenuAction(WorkspaceCommands.SAVE_WORKSPACE_AS);
-        registry.unregisterMenuAction(WorkspaceCommands.CLOSE);
+            registry.unregisterMenuAction(WorkspaceCommands.NEW_FILE);
+            registry.unregisterMenuAction(WorkspaceCommands.NEW_FOLDER);
 
-        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(MonacoMenus.SELECTION));
-        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(EditorMainMenu.GO));
-        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(TerminalMenus.TERMINAL));
-        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(CommonMenus.VIEW));
-        registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(CommonMenus.HELP));
+            registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
+            registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
+            registry.unregisterMenuAction(WorkspaceCommands.OPEN_RECENT_WORKSPACE);
+            registry.unregisterMenuAction(WorkspaceCommands.SAVE_WORKSPACE_AS);
+            registry.unregisterMenuAction(WorkspaceCommands.CLOSE);
+
+            registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(MonacoMenus.SELECTION));
+            registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(EditorMainMenu.GO));
+            registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(TerminalMenus.TERMINAL));
+            registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(CommonMenus.VIEW));
+        }
 
         registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
@@ -317,6 +334,11 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         });
 
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
+
+        registry.registerMenuAction(CommonMenus.HELP, {
+            commandId: ArduinoCommands.TOGGLE_PROMODE.id,
+            label: 'Advanced Mode'
+        })
     }
 
     protected getMenuId(menuPath: string[]): string {

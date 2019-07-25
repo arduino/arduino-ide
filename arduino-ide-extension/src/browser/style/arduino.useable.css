@@ -77,7 +77,7 @@ is not optimized for dense, information rich UIs.
     /* Main layout colors (bright to dark)
         ------------------------------------ */
     --theia-layout-color0: #ffffff;
-    --theia-layout-color1: var(--theia-arduino-light1);
+    --theia-layout-color1: #f7f9f9;
     --theia-layout-color2: #ececec;
     --theia-layout-color3: var(--theia-arduino-light);
     --theia-layout-color4: #dcdcdc;

@@ -9,6 +9,7 @@ export class CustomFrontendApplication extends FrontendApplication {
     protected readonly frontendContribution: ArduinoFrontendContribution;
 
     protected async initializeLayout(): Promise<void> {
+        await super.initializeLayout();
         const location = new URL(window.location.href);
         const sketchPath = location.searchParams.get('sketch');
         if (sketchPath) {

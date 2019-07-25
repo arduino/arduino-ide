@@ -48,4 +48,8 @@ export namespace ArduinoCommands {
         id: "arduino-open-boards-dialog"
     }
 
+    export const TOGGLE_PROMODE: Command = {
+        id: "arduino-toggle-pro-mode"
+    }
+
 }
