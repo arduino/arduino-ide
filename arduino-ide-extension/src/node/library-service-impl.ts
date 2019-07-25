@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { Library, LibraryService } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
 import { LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
-    InstalledLibrary, LibraryInstallReq, LibraryInstallResp } from './cli-protocol/lib_pb';
+    InstalledLibrary, LibraryInstallReq, LibraryInstallResp } from './cli-protocol/commands/lib_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 
 @injectable()
@@ -24,22 +24,29 @@ export class LibraryServiceImpl implements LibraryService {
         const listReq = new LibraryListReq();
         listReq.setInstance(instance);
         const installedLibsResp = await new Promise<LibraryListResp>((resolve, reject) => client.libraryList(listReq, (err, resp) => !!err ? reject(err) : resolve(resp)));
-        const installedLibs = installedLibsResp.getLibrariesList();
+        const installedLibs = installedLibsResp.getInstalledLibraryList();
         const installedLibsIdx = new Map<string, InstalledLibrary>();
-        installedLibs.forEach(l => installedLibsIdx.set(l.getName(), l));
+        for (const installedLib of installedLibs) {
+            if (installedLib.hasLibrary()) {
+                const lib = installedLib.getLibrary();
+                if (lib) {
+                    installedLibsIdx.set(lib.getRealName(), installedLib);
+                }
+            }
+        }
 
         const req = new LibrarySearchReq();
         req.setQuery(options.query || '');
         req.setInstance(instance);
         const resp = await new Promise<LibrarySearchResp>((resolve, reject) => client.librarySearch(req, (err, resp) => !!err ? reject(err) : resolve(resp)));
-        const items = resp.getSearchOutputList()
+        const items = resp.getLibrariesList()
             .filter(item => !!item.getLatest())
             .slice(0, 50)
             .map(item => {
                 let installedVersion: string | undefined;
                 const installed = installedLibsIdx.get(item.getName());
                 if (installed) {
-                    installedVersion = installed.getInstalled()!.getVersion();
+                    installedVersion = installed.getLibrary()!.getVersion();
                 }
                 return toLibrary({
                     name: item.getName(),

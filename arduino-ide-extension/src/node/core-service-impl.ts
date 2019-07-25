@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { CoreService } from '../common/protocol/core-service';
-import { CompileReq, CompileResp } from './cli-protocol/compile_pb';
+import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { BoardsService, AttachedSerialBoard, AttachedNetworkBoard } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
 import * as path from 'path';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
-import { UploadReq, UploadResp } from './cli-protocol/upload_pb';
+import { UploadReq, UploadResp } from './cli-protocol/commands/upload_pb';
 
 @injectable()
 export class CoreServiceImpl implements CoreService {

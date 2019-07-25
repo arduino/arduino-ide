@@ -7,6 +7,12 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Node.js Program",
+            "program": "${file}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Backend",
             "program": "${workspaceRoot}/arduino-ide-browser/src-gen/backend/main.js",
             "args": [

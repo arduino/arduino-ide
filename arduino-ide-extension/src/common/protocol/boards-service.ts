@@ -23,29 +23,21 @@ export interface Board {
 
 export interface AttachedSerialBoard extends Board {
     port: string;
-    type: 'serial';
-    serialNumber?: string;
-    productID?: string;
-    vendorID?: string;
 }
 
 export namespace AttachedSerialBoard {
     export function is(b: Board): b is AttachedSerialBoard {
-        return 'type' in b && (b as Board & { type: any }).type === 'serial' &&
-            'port' in b && !!(b as Board & { port: any }).port && typeof (b as Board & { port: any }).port === 'string';
+        return 'port' in b;
     }
 }
 
 export interface AttachedNetworkBoard extends Board {
-    info?: string;
-    address?: string;
-    port: number;
-    type: 'network';
+    address: string;
+    port: string;
 }
 
 export namespace AttachedNetworkBoard {
     export function is(b: Board): b is AttachedNetworkBoard {
-        return 'type' in b && (b as Board & { type: any }).type === 'network' &&
-            'port' in b && !!(b as Board & { port: any }).port && typeof (b as Board & { port: any }).port === 'number';
+        return 'address' in b && 'port' in b;
     }
 }

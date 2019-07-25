@@ -1,14 +1,20 @@
 import { inject, injectable } from 'inversify';
 import * as grpc from '@grpc/grpc-js';
-import { ArduinoCoreClient } from './cli-protocol/commands_grpc_pb';
-import { InitResp, InitReq, Configuration, UpdateIndexReq, UpdateIndexResp } from './cli-protocol/commands_pb';
+import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
+import {
+    InitResp,
+    InitReq,
+    Configuration,
+    UpdateIndexReq,
+    UpdateIndexResp
+} from './cli-protocol/commands/commands_pb';
 import { WorkspaceServiceExt } from '../browser/workspace-service-ext';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { CoreClientProvider, Client } from './core-client-provider';
 import * as PQueue from 'p-queue';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
-import { Instance } from './cli-protocol/common_pb';
+import { Instance } from './cli-protocol/commands/common_pb';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
@@ -81,10 +87,24 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         config.setSketchbookdir(rootPath);
         config.setDatadir(defaultDataDirPath);
         config.setDownloadsdir(defaultDownloadsDirPath);
+        config.setBoardmanageradditionalurlsList(['https://downloads.arduino.cc/packages/package_index.json']);
 
         const initReq = new InitReq();
         initReq.setConfiguration(config);
-        const initResp = await new Promise<InitResp>((resolve, reject) => client.init(initReq, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+        initReq.setLibraryManagerOnly(false);
+        const initResp = await new Promise<InitResp>(resolve => {
+            let resp: InitResp | undefined = undefined;
+            const stream = client.init(initReq);
+            stream.on('data', (data: InitResp) => {
+                if (!resp) {
+                    resp = data;
+                }
+            })
+            stream.on('end', () => {
+                resolve(resp);
+            })
+        });
+
         const instance = initResp.getInstance();
         if (!instance) {
             throw new Error(`Could not retrieve instance from the initialize response.`);
