@@ -1,3 +1,4 @@
+import * as PQueue from 'p-queue';
 import { injectable, inject } from 'inversify';
 import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard } from '../common/protocol/boards-service';
 import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/commands/core_pb';
@@ -15,42 +16,48 @@ export class BoardsServiceImpl implements BoardsService {
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected selectedBoard: Board | undefined;
+    protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
     public async getAttachedBoards(): Promise<{ boards: Board[] }> {
-        const coreClient = await this.coreClientProvider.getClient();
-        const boards: Board[] = [];
-        if (!coreClient) {
-            return { boards };
-        }
-        const { client, instance } = coreClient;
-
-        const req = new BoardListReq();
-        req.setInstance(instance);
-        const resp = await new Promise<BoardListResp>((resolve, reject) => client.boardList(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
-        for (const portsList of resp.getPortsList()) {
-            const protocol = portsList.getProtocol();
-            const address = portsList.getAddress();
-            for (const board of portsList.getBoardsList()) {
-                const name = board.getName() || 'unknown';
-                const fqbn = board.getFqbn();
-                const port = address;
-                if (protocol === 'serial') {
-                    boards.push(<AttachedSerialBoard>{
-                        name,
-                        fqbn,
-                        port
-                    });
-                } else { // We assume, it is a `network` board.
-                    boards.push(<AttachedNetworkBoard>{
-                        name,
-                        fqbn,
-                        address,
-                        port
-                    });
+        return this.queue.add(() => {
+            return new Promise<{ boards: Board[] }>(async resolve => {
+                const coreClient = await this.coreClientProvider.getClient();
+                const boards: Board[] = [];
+                if (!coreClient) {
+                    resolve({ boards });
+                    return;
                 }
-            }
-        }
-        return { boards };
+
+                const { client, instance } = coreClient;
+                const req = new BoardListReq();
+                req.setInstance(instance);
+                const resp = await new Promise<BoardListResp>((resolve, reject) => client.boardList(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+                for (const portsList of resp.getPortsList()) {
+                    const protocol = portsList.getProtocol();
+                    const address = portsList.getAddress();
+                    for (const board of portsList.getBoardsList()) {
+                        const name = board.getName() || 'unknown';
+                        const fqbn = board.getFqbn();
+                        const port = address;
+                        if (protocol === 'serial') {
+                            boards.push(<AttachedSerialBoard>{
+                                name,
+                                fqbn,
+                                port
+                            });
+                        } else { // We assume, it is a `network` board.
+                            boards.push(<AttachedNetworkBoard>{
+                                name,
+                                fqbn,
+                                address,
+                                port
+                            });
+                        }
+                    }
+                }
+                resolve({boards});
+            })
+        });
     }
 
     async selectBoard(board: Board): Promise<void> {
