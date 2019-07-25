@@ -139,13 +139,13 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     }
 
     protected async setAttachedBoards() {
-        const { boards } = await this.props.boardService.getAttachedBoards();
-        this.attachedBoards = boards;
-        if (this.attachedBoards.length) {
-            await this.createBoardDropdownItems();
-            await this.props.boardService.selectBoard(this.attachedBoards[0]);
-            this.setSelectedBoard(this.attachedBoards[0]);
-        }
+        this.props.boardService.getAttachedBoards().then(attachedBoards => {
+            this.attachedBoards = attachedBoards.boards;
+            if (this.attachedBoards.length) {
+                this.createBoardDropdownItems();
+                this.props.boardService.selectBoard(this.attachedBoards[0]).then(() => this.setSelectedBoard(this.attachedBoards[0]));
+            }
+        })
     }
 
     protected createBoardDropdownItems() {
