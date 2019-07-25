@@ -62,8 +62,8 @@ export class BoardAndPortSelectionList extends React.Component<BoardAndPortSelec
 
     render(): React.ReactNode {
         return <div className={`${this.props.type} list`}>
-            {this.props.list.map(item => <BoardAndPortSelectableItem
-                key={item.board ? item.board.name : item.port}
+            {this.props.list.map((item, idx) => <BoardAndPortSelectableItem
+                key={(item.board ? item.board.name : item.port || '') + idx}
                 onSelect={this.doSelect}
                 item={item}
                 selected={this.isSelectedItem(item)}
