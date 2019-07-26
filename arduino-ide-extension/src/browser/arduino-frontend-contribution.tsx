@@ -302,7 +302,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
             registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
 
-            registry.unregisterMenuAction(WorkspaceCommands.NEW_FILE);
             registry.unregisterMenuAction(WorkspaceCommands.NEW_FOLDER);
 
             registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
