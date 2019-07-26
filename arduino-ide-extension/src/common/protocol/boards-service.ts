@@ -1,12 +1,25 @@
 import { ArduinoComponent } from "./arduino-component";
+import { JsonRpcServer } from "@theia/core";
+
+export interface AttachedBoardsChangeEvent {
+    readonly oldState: Readonly<{ boards: Board[] }>;
+    readonly newState: Readonly<{ boards: Board[] }>;
+}
+
+export interface BoardInstalledEvent {
+    readonly pkg: Readonly<BoardPackage>;
+}
+
+export const BoardsServiceClient = Symbol('BoardsServiceClient');
+export interface BoardsServiceClient {
+    notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
+    notifyBoardInstalled(event: BoardInstalledEvent): void
+}
 
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService {
+export interface BoardsService extends JsonRpcServer<BoardsServiceClient> {
     getAttachedBoards(): Promise<{ boards: Board[] }>;
-    selectBoard(board: Board | AttachedSerialBoard | AttachedNetworkBoard): Promise<void>;
-    getSelectBoard(): Promise<Board | AttachedSerialBoard | AttachedNetworkBoard | undefined>;
-
     search(options: { query?: string }): Promise<{ items: BoardPackage[] }>;
     install(item: BoardPackage): Promise<void>;
 }
@@ -21,13 +34,41 @@ export interface Board {
     fqbn?: string
 }
 
+export interface Port {
+    port?: string;
+}
+
+export namespace Board {
+
+    export function is(board: any): board is Board {
+        return !!board && 'name' in board;
+    }
+
+    export function equals(left: Board, right: Board): boolean {
+        return left.name === right.name && left.fqbn === right.fqbn;
+    }
+
+    export function compare(left: Board, right: Board): number {
+        let result = left.name.localeCompare(right.name);
+        if (result === 0) {
+            result = (left.fqbn || '').localeCompare(right.fqbn || '');
+        }
+        return result;
+    }
+
+    export function installed(board: Board): boolean {
+        return !!board.fqbn;
+    }
+
+}
+
 export interface AttachedSerialBoard extends Board {
     port: string;
 }
 
 export namespace AttachedSerialBoard {
-    export function is(b: Board): b is AttachedSerialBoard {
-        return 'port' in b;
+    export function is(b: Board | any): b is AttachedSerialBoard {
+        return !!b && 'port' in b;
     }
 }
 

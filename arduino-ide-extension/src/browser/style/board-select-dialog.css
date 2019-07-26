@@ -7,11 +7,11 @@ div#select-board-dialog .selectBoardContainer .body {
     overflow: hidden;
 }
 
-div#select-board-dialog .selectBoardContainer .head {
-    margin-bottom: 10px;
+div.dialogContent.select-board-dialog > div.head {
+    padding-left: 21px;
 }
 
-div#select-board-dialog .selectBoardContainer .head .title {
+div.dialogContent.select-board-dialog > div.head .title {
     font-weight: 400;
     letter-spacing: .02em;
     font-size: 1.2em;
@@ -31,11 +31,11 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     color: var(--theia-arduino-light);
 }
 
-#select-board-dialog .selectBoardContainer .body .search input, 
-#select-board-dialog .selectBoardContainer .body .boards.list,
-#select-board-dialog .selectBoardContainer .body .search, 
-#select-board-dialog .selectBoardContainer .body .ports.list {
-    background: white;
+#select-board-dialog .selectBoardContainer .search,
+#select-board-dialog .selectBoardContainer .search input,
+#select-board-dialog .selectBoardContainer .list,
+#select-board-dialog .selectBoardContainer .list {
+    background: white; /* TODO find a theia color instead! */
 }
 
 #select-board-dialog .selectBoardContainer .body .search input {
@@ -43,7 +43,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     width: 100%;
     height: auto;
     max-height: 37px;
-    padding: 10px 8px;
+    padding: 10px 5px 10px 10px;
     margin: 0;
     vertical-align: top;
     display: flex;
@@ -56,6 +56,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
 
 #select-board-dialog .selectBoardContainer .body .container {
     flex: 1;
+    padding: 0px 10px 0px 0px;
 }
 
 #select-board-dialog .selectBoardContainer .body .left.container .content {
@@ -66,27 +67,41 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     margin: 0 0 0 5px;
 }
 
-#select-board-dialog .selectBoardContainer .body .container .content .title{
+#select-board-dialog .selectBoardContainer .body .container .content .title {
     color: #7f8c8d;
-    margin-bottom: 10px;
+    padding: 0px 0px 10px 0px;
+    text-transform: uppercase;
+}
+
+#select-board-dialog .selectBoardContainer .body .container .content .loading {
+    font-size: var(--theia-ui-font-size1);
+    color: #7f8c8d;
+    padding: 10px 5px 10px 10px;
+    text-transform: uppercase;
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item {
-    padding: 10px 5px 10px 20px;
+    padding: 10px 5px 10px 10px;
     display: flex;
     justify-content: space-between;
 }
+
+#select-board-dialog .selectBoardContainer .body .list .item.missing {
+    color: var(--theia-disabled-color0);
+}
+
 #select-board-dialog .selectBoardContainer .body .list .item:hover {
     background: var(--theia-ui-button-color-secondary-hover);
 }
 
 #select-board-dialog .selectBoardContainer .body .list {
     max-height: 265px;
+    min-height: 265px;
     overflow-y: auto;
 }
 
-#select-board-dialog .selectBoardContainer .body .boards.list {
-    min-height: 265px;
+#select-board-dialog .selectBoardContainer .body .ports.list {
+    margin: 47px 0px 0px 0px /* 47 is 37 as input height for the `Boards`, plus 10 margin bottom. */
 }
 
 #select-board-dialog .selectBoardContainer .body .search {
@@ -129,7 +144,7 @@ button.theia-button.main {
     align-items: baseline;
     width: 100%;
 }
-                    
+
 .arduino-boards-toolbar-item-container .arduino-boards-toolbar-item .inner-container .notAttached {
     width: 10px;
     height: 10px;
@@ -184,4 +199,4 @@ button.theia-button.main {
 .arduino-boards-dropdown-item.selected,
 .arduino-boards-dropdown-item:hover {
     background: var(--theia-ui-button-color-secondary-hover);
-}               
+}

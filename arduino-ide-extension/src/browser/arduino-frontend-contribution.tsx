@@ -5,22 +5,21 @@ import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, Board } from '../common/protocol/boards-service';
+import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
-import { ConnectedBoards } from './components/connected-boards';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
-import { BoardsNotificationService } from './boards-notification-service';
+import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR } from '@theia/core';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
-import { ContextMenuRenderer, OpenerService, Widget, StatusBar, ShellLayoutRestorer } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget, StatusBar, ShellLayoutRestorer, StatusBarAlignment } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { ArduinoToolbarContextMenu } from './arduino-file-menu';
@@ -32,8 +31,9 @@ import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/fil
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 import { MaybePromise } from '@theia/core/lib/common/types';
-import { SelectBoardDialog } from './boards/select-board-dialog';
+import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
+import { BoardsConfig } from './boards/boards-config';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -41,8 +41,7 @@ export namespace ArduinoMenus {
 }
 
 export const ARDUINO_PRO_MODE: boolean = (() => {
-    const proModeStr = window.localStorage.getItem('arduino-pro-mode');
-    return proModeStr === 'true';
+    return window.localStorage.getItem('arduino-pro-mode') === 'true';
 })();
 
 @injectable()
@@ -52,7 +51,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected readonly messageService: MessageService;
 
     @inject(BoardsService)
-    protected readonly boardService: BoardsService;
+    protected readonly boardsService: BoardsService;
 
     @inject(CoreService)
     protected readonly coreService: CoreService;
@@ -69,8 +68,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(BoardsListWidgetFrontendContribution)
     protected readonly boardsListWidgetFrontendContribution: BoardsListWidgetFrontendContribution;
 
-    @inject(BoardsNotificationService)
-    protected readonly boardsNotificationService: BoardsNotificationService;
+    @inject(BoardsServiceClientImpl)
+    protected readonly boardsServiceClient: BoardsServiceClientImpl;
 
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
@@ -99,8 +98,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(SketchesService)
     protected readonly sketches: SketchesService;
 
-    @inject(SelectBoardDialog)
-    protected readonly selectBoardsDialog: SelectBoardDialog;
+    @inject(BoardsConfigDialog)
+    protected readonly boardsConfigDialog: BoardsConfigDialog;
 
     @inject(MenuModelRegistry)
     protected readonly menuRegistry: MenuModelRegistry;
@@ -129,6 +128,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
         await this.workspaceServiceExt.roots();
+
+        const updateStatusBar = (config: BoardsConfig.Config) => {
+            this.statusBar.setElement('arduino-selected-board', {
+                alignment: StatusBarAlignment.RIGHT,
+                text: BoardsConfig.Config.toString(config)
+            });
+        }
+        this.boardsServiceClient.onBoardsConfigChanged(updateStatusBar);
+        updateStatusBar(this.boardsServiceClient.boardsConfig);
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -157,15 +165,13 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             text: '$(arrow-down)'
         });
         registry.registerItem({
-            id: ConnectedBoards.TOOLBAR_ID,
+            id: BoardsToolBarItem.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
                 key='boardsToolbarItem'
                 ref={ref => this.boardsToolbarItem = ref}
                 commands={this.commands}
-                statusBar={this.statusBar}
-                contextMenuRenderer={this.contextMenuRenderer}
-                boardsNotificationService={this.boardsNotificationService}
-                boardService={this.boardService} />,
+                boardsServiceClient={this.boardsServiceClient}
+                boardService={this.boardsService} />,
             isVisible: widget => this.isArduinoToolbar(widget)
         })
     }
@@ -186,7 +192,14 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 }
 
                 try {
-                    await this.coreService.compile({ uri: uri.toString() });
+                    const { boardsConfig } = this.boardsServiceClient;
+                    if (!boardsConfig || !boardsConfig.selectedBoard) {
+                        throw new Error('No boards selected. Please select a board.');
+                    }
+                    if (!boardsConfig.selectedBoard.fqbn) {
+                        throw new Error(`No core is installed for ${boardsConfig.selectedBoard.name}. Please install the board.`);
+                    }
+                    await this.coreService.compile({ uri: uri.toString(), board: boardsConfig.selectedBoard });
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
@@ -207,7 +220,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 }
 
                 try {
-                    await this.coreService.upload({ uri: uri.toString() });
+                    const { boardsConfig } = this.boardsServiceClient;
+                    if (!boardsConfig || !boardsConfig.selectedBoard) {
+                        throw new Error('No boards selected. Please select a board.');
+                    }
+                    const { selectedPort } = boardsConfig;
+                    if (!selectedPort) {
+                        throw new Error('No ports selected. Please select a port.');
+                    }
+                    await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort });
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
@@ -261,26 +282,16 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 }
             }
         }));
-        registry.registerCommand(ArduinoCommands.REFRESH_BOARDS, {
-            isEnabled: () => true,
-            execute: () => this.boardsNotificationService.notifyBoardsInstalled()
-        });
-        registry.registerCommand(ArduinoCommands.SELECT_BOARD, {
-            isEnabled: () => true,
-            execute: async (board: Board) => {
-                this.selectBoard(board);
-            }
-        })
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
             isEnabled: () => true,
             execute: async () => {
-                const boardAndPort = await this.selectBoardsDialog.open();
-                if (boardAndPort && boardAndPort.board) {
-                    this.selectBoard(boardAndPort.board);
+                const boardsConfig = await this.boardsConfigDialog.open();
+                if (boardsConfig) {
+                    this.boardsServiceClient.boardsConfig = boardsConfig;
                 }
             }
         })
-        registry.registerCommand(ArduinoCommands.TOGGLE_PROMODE, {
+        registry.registerCommand(ArduinoCommands.TOGGLE_PRO_MODE, {
             execute: () => {
                 const oldModeState = ARDUINO_PRO_MODE;
                 window.localStorage.setItem('arduino-pro-mode', oldModeState ? 'false' : 'true');
@@ -288,13 +299,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             },
             isToggled: () => ARDUINO_PRO_MODE
         })
-    }
-
-    protected async selectBoard(board: Board) {
-        await this.boardService.selectBoard(board);
-        if (this.boardsToolbarItem) {
-            this.boardsToolbarItem.setSelectedBoard(board);
-        }
     }
 
     registerMenus(registry: MenuModelRegistry) {
@@ -335,7 +339,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
 
         registry.registerMenuAction(CommonMenus.HELP, {
-            commandId: ArduinoCommands.TOGGLE_PROMODE.id,
+            commandId: ArduinoCommands.TOGGLE_PRO_MODE.id,
             label: 'Advanced Mode'
         })
     }
