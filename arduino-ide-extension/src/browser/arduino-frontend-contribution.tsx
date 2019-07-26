@@ -47,6 +47,7 @@ import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
 import { MonitorService } from '../common/protocol/monitor-service';
 import { ConfigService } from '../common/protocol/config-service';
+import { MonitorConnection } from './monitor/monitor-connection';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -143,6 +144,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;
+    @inject(MonitorConnection)
+    protected readonly monitorConnection: MonitorConnection;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
@@ -244,6 +247,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                     return;
                 }
 
+                const connectionConfig = this.monitorConnection.connectionConfig;
+                await this.monitorConnection.disconnect();
+
                 try {
                     const { boardsConfig } = this.boardsServiceClient;
                     if (!boardsConfig || !boardsConfig.selectedBoard) {
@@ -256,6 +262,10 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                     await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort });
                 } catch (e) {
                     await this.messageService.error(e.toString());
+                } finally {
+                    if (connectionConfig) {
+                        await this.monitorConnection.connect(connectionConfig);
+                    }
                 }
             }
         });

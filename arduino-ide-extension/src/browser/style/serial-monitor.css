@@ -1,0 +1,86 @@
+.serial-monitor-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.serial-monitor-container .head {
+    display: flex;
+    padding: 5px;
+    background: var(--theia-brand-color2);
+    height: 27px;
+}
+
+.serial-monitor-container .head .send {
+    display: flex;
+    flex:1;
+}
+
+.serial-monitor-container .head .send .btn {
+    display: flex;
+    padding: 0 5px;
+    align-items: center;
+    background: var(--theia-brand-color3);
+    color: var(--theia-ui-dialog-font-color);
+}
+
+.serial-monitor-container .head .send form {
+    flex: 1;
+    display: flex;
+}
+
+.serial-monitor-container .head .send input#serial-monitor-send {
+    background: var(--theia-layout-color0);
+    flex: 1;
+}
+
+.serial-monitor-container .head .send input:focus {
+    outline: none;
+}
+
+.serial-monitor-container .head .config {
+    display: flex;
+}
+
+.serial-monitor-container .head .config .serial-monitor-select {
+    margin-left: 5px;
+}
+
+#serial-monitor-output-container {
+    overflow: auto;
+    flex: 1;
+    padding: 6px;
+}
+
+.p-TabBar-toolbar .item.arduino-monitor {
+    width: 24px;
+    justify-content: center;
+    font-size: medium;
+    box-sizing: border-box;
+}
+
+.p-TabBar-toolbar .item.arduino-monitor.toggled {
+    border: var(--theia-ui-button-color-hover) var(--theia-border-width) solid;
+}
+
+.p-TabBar-toolbar .item .clear-all {
+    background: var(--theia-icon-clear) no-repeat;
+}
+
+/* React Select Styles */
+.serial-monitor-select .sms__control {
+    border: var(--theia-border-color1) var(--theia-border-width) solid;
+}
+
+.serial-monitor-select .sms__option--is-selected {
+    background-color: var(--theia-ui-button-color-secondary-hover);
+    color: var(--theia-content-font-color0);
+}
+
+.serial-monitor-select  .sms__option--is-focused {
+    background-color: var(--theia-ui-button-color-secondary-hover);
+}
+
+.serial-monitor-select  .sms__menu {
+    background-color: var(--theia-layout-color1);
+}

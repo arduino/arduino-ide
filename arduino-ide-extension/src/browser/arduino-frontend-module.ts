@@ -57,11 +57,11 @@ import { BoardItemRenderer } from './boards/boards-item-renderer';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
 import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
+import { MonitorWidget } from './monitor/monitor-widget';
+import { MonitorViewContribution } from './monitor/monitor-view-contribution';
+import { MonitorConnection } from './monitor/monitor-connection';
+import { MonitorModel } from './monitor/monitor-model';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
-
-if (!ARDUINO_PRO_MODE) {
-    require('../../src/browser/style/silent-bottom-panel-tabs.css');
-}
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     ElementQueries.listen();
@@ -155,12 +155,23 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         return workspaceServiceExt;
     });
 
+    // Serial Monitor
+    bind(MonitorModel).toSelf().inSingletonScope();
+    bind(MonitorWidget).toSelf();
+    bindViewContribution(bind, MonitorViewContribution);
+    bind(TabBarToolbarContribution).toService(MonitorViewContribution);
+    bind(WidgetFactory).toDynamicValue(context => ({
+        id: MonitorWidget.ID,
+        createWidget: () => context.container.get(MonitorWidget)
+    }));
     // Frontend binding for the monitor service.
     bind(MonitorService).toDynamicValue(context => {
         const connection = context.container.get(WebSocketConnectionProvider);
         const client = context.container.get(MonitorServiceClientImpl);
         return connection.createProxy(MonitorServicePath, client);
     }).inSingletonScope();
+    // MonitorConnection
+    bind(MonitorConnection).toSelf().inSingletonScope();
     // Monitor service client to receive and delegate notifications from the backend.
     bind(MonitorServiceClientImpl).toSelf().inSingletonScope();
     bind(MonitorServiceClient).toDynamicValue(context => {

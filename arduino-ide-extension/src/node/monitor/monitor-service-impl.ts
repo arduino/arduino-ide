@@ -59,6 +59,10 @@ export class MonitorServiceImpl implements MonitorService {
         }
     }
 
+    async getConnectionIds(): Promise<string[]> {
+        return Array.from(this.connections.keys());
+    }
+
     async connect(config: ConnectionConfig): Promise<{ connectionId: string }> {
         const client = await this.monitorClientProvider.client;
         const duplex = client.streamingOpen();
@@ -122,11 +126,12 @@ export class MonitorServiceImpl implements MonitorService {
         return result;
     }
 
-    protected async doDisconnect(connectionId: string, duplex: MonitorDuplex): Promise<boolean> {
-        const { toDispose } = duplex;
+    protected async doDisconnect(connectionId: string, monitorDuplex: MonitorDuplex): Promise<boolean> {
+        const { duplex } = monitorDuplex;
         this.logger.info(`>>> Disposing monitor connection: ${connectionId}...`);
         try {
-            toDispose.dispose();
+            duplex.cancel();
+            this.connections.delete(connectionId);
             this.logger.info(`<<< Connection disposed: ${connectionId}.`);
             return true;
         } catch (e) {
