@@ -50,11 +50,11 @@
 }
 
 .filterable-list-container .items-container > div:nth-child(odd) {
-    background-color: var(--theia-layout-color2);
+    background-color: var(--theia-secondary-brand-color2);
 }
 
 .filterable-list-container .items-container > div:nth-child(even) {
-    background-color: var(--theia-layout-color0);
+    background-color: var(--theia-secondary-brand-color3);
 }
 
 .filterable-list-container .items-container > div:hover {

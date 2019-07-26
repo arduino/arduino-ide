@@ -82,15 +82,15 @@ is not optimized for dense, information rich UIs.
     --theia-layout-color3: var(--theia-arduino-light);
     --theia-layout-color4: #dcdcdc;
     /* Brand colors */
-    --theia-brand-color0: var(--md-blue-700);
-    --theia-brand-color1: var(--md-blue-500);
-    --theia-brand-color2: var(--md-blue-300);
-    --theia-brand-color3: var(--md-blue-100);
+    --theia-brand-color0: var(--theia-arduino-light);
+    --theia-brand-color1: var(--theia-arduino-light1);
+    --theia-brand-color2: var(--theia-arduino-light2);
+    --theia-brand-color3: var(--theia-arduino-light3);
     /* Secondary Brand colors */
     --theia-secondary-brand-color0: var(--md-grey-700);
     --theia-secondary-brand-color1: #b5c8c9;
-    --theia-secondary-brand-color2: var(--md-grey-300);
-    --theia-secondary-brand-color3: var(--md-grey-100);
+    --theia-secondary-brand-color2: var(--theia-arduino-light2);
+    --theia-secondary-brand-color3: var(--theia-arduino-light3);
     /* Accent colors (dark to bright): Use these to create contrast to layout colors. */
     --theia-accent-color0: rgb(0, 102, 105);
     --theia-accent-color1: rgb(0, 164, 167, 1.0);

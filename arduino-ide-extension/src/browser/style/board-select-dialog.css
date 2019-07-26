@@ -149,7 +149,6 @@ button.theia-button.main {
     align-items: center;
     margin: 0 5px;
     width: 100%;
-    font-weight: bold;
 }
 
 .arduino-boards-toolbar-item .caret {
