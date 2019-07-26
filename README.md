@@ -9,6 +9,9 @@ It's built on top of a [fork of the arduino-cli](https://github.com/typefox/ardu
 
 ## How to try (offline)
 
+### Prerequisites
+You should be able to build Theia locally. The requirements are defined [here](https://github.com/theia-ide/theia/blob/master/doc/Developing.md#prerequisites).
+
 ```
 git clone https://github.com/bcmi-labs/arduino-editor
 cd arduino-editor
