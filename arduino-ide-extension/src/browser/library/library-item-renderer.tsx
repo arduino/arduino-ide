@@ -22,7 +22,7 @@ export class LibraryItemRenderer extends ListItemRenderer<Library> {
 
         const versions = (() => {
             const { availableVersions } = item;
-            if (availableVersions.length === 0) {
+            if (!!item.installedVersion || availableVersions.length === 0) {
                 return undefined;
             } else if (availableVersions.length === 1) {
                 return <label>{availableVersions[0]}</label>

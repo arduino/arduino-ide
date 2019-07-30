@@ -172,12 +172,13 @@ export class BoardsServiceImpl implements BoardsService {
                 id: item.getId(),
                 name: item.getName(),
                 author: item.getMaintainer(),
-                availableVersions: [item.getInstalled()],
+                availableVersions: [item.getLatest()],
                 description: item.getBoardsList().map(b => b.getName()).join(", "),
                 installable: true,
                 summary: "Boards included in this package:",
                 installedVersion,
                 boards: item.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
+                moreInfoLink: item.getWebsite()
             }
             return result;
         });

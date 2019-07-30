@@ -41,7 +41,7 @@ export class LibraryServiceImpl implements LibraryService {
         const resp = await new Promise<LibrarySearchResp>((resolve, reject) => client.librarySearch(req, (err, resp) => !!err ? reject(err) : resolve(resp)));
         const items = resp.getLibrariesList()
             .filter(item => !!item.getLatest())
-            .slice(0, 50)
+            // .slice(0, 50)
             .map(item => {
                 let installedVersion: string | undefined;
                 const installed = installedLibsIdx.get(item.getName());

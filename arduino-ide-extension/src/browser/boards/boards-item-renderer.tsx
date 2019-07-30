@@ -15,10 +15,22 @@ export class BoardItemRenderer extends ListItemRenderer<BoardPackage> {
         </div>;
 
         const summary = <div className='summary'>{item.summary}</div>;
+        const description = <div className='summary'>{item.description}</div>;
 
         const moreInfo = !!item.moreInfoLink && <a href={item.moreInfoLink} onClick={this.onClick}>More info</a>;
         const installButton = item.installable && !item.installedVersion &&
             <button className='install' onClick={install.bind(this, item)}>INSTALL</button>;
+
+        const versions = (() => {
+            const { availableVersions } = item;
+            if (!!item.installedVersion || availableVersions.length === 0) {
+                return undefined;
+            } else if (availableVersions.length === 1) {
+                return <label>{availableVersions[0]}</label>
+            } else {
+                return <select>{item.availableVersions.map(version => <option value={version} key={version}>{version}</option>)}</select>;
+            }
+        })();
 
         return <div className='component-list-item noselect'>
             <div className='header'>
@@ -27,10 +39,14 @@ export class BoardItemRenderer extends ListItemRenderer<BoardPackage> {
             </div>
             <div className='content'>
                 {summary}
+                {description}
+            </div>
+            <div className='info'>
+                {moreInfo}
             </div>
             <div className='footer'>
-                {moreInfo}
                 {installButton}
+                {versions}
             </div>
         </div>;
     }
