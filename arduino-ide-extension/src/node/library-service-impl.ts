@@ -14,7 +14,7 @@ export class LibraryServiceImpl implements LibraryService {
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
 
-    async search(options: { query?: string, props: LibraryService.Search.Props }): Promise<{ items: Library[] }> {
+    async search(options: { query?: string }): Promise<{ items: Library[] }> {
         const coreClient = await this.coreClientProvider.getClient();
         if (!coreClient) {
             return { items: [] };

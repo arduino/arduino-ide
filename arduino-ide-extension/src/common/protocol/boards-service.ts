@@ -1,5 +1,7 @@
-import { ArduinoComponent } from "./arduino-component";
-import { JsonRpcServer } from "@theia/core";
+import { JsonRpcServer } from '@theia/core';
+import { Searchable } from './searchable';
+import { Installable } from './installable';
+import { ArduinoComponent } from './arduino-component';
 
 export interface AttachedBoardsChangeEvent {
     readonly oldState: Readonly<{ boards: Board[] }>;
@@ -18,10 +20,8 @@ export interface BoardsServiceClient {
 
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService extends JsonRpcServer<BoardsServiceClient> {
+export interface BoardsService extends Installable<BoardPackage>, Searchable<BoardPackage>, JsonRpcServer<BoardsServiceClient> {
     getAttachedBoards(): Promise<{ boards: Board[] }>;
-    search(options: { query?: string }): Promise<{ items: BoardPackage[] }>;
-    install(item: BoardPackage): Promise<void>;
 }
 
 export interface BoardPackage extends ArduinoComponent {

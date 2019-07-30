@@ -1,8 +1,8 @@
-import { AbstractDialog } from "@theia/core/lib/browser";
+import { AbstractDialog } from '@theia/core/lib/browser';
 
+export class InstallationProgressDialog extends AbstractDialog<undefined> {
 
-export class InstallationProgressDialog extends AbstractDialog<string> {
-    readonly value: "does-not-matter";
+    readonly value = undefined;
 
     constructor(componentName: string) {
         super({ title: 'Installation in progress' });

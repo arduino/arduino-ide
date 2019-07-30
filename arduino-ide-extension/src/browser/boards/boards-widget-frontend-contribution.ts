@@ -1,22 +1,12 @@
 import { injectable } from 'inversify';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import { ListWidget } from './list-widget';
-import { BoardsListWidget } from './boards-list-widget';
 import { MenuModelRegistry } from '@theia/core';
+import { BoardsListWidget } from './boards-list-widget';
 import { ArduinoMenus } from '../arduino-frontend-contribution';
+import { BoardPackage } from '../../common/protocol/boards-service';
+import { ListWidgetFrontendContribution } from '../components/component-list/list-widget-frontend-contribution';
 
 @injectable()
-export abstract class ListWidgetFrontendContribution extends AbstractViewContribution<ListWidget> implements FrontendApplicationContribution {
-
-    async initializeLayout(): Promise<void> {
-        // await this.openView();
-    }
-
-}
-
-@injectable()
-export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution {
+export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<BoardPackage> {
 
     static readonly OPEN_MANAGER = `${BoardsListWidget.WIDGET_ID}:toggle`;
 

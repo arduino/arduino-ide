@@ -1,24 +1,16 @@
 import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
+import { injectable, postConstruct } from 'inversify';
 import { Message } from '@phosphor/messaging';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
-import { WindowService } from '@theia/core/lib/browser/window/window-service';
-import { LibraryFilterableListContainer } from './library-filterable-list-container';
-import { LibraryService } from '../../common/protocol/library-service';
+import { Installable } from '../../../common/protocol/installable';
+import { Searchable } from '../../../common/protocol/searchable';
+import { FilterableListContainer } from './filterable-list-container';
+import { ListItemRenderer } from './list-item-renderer';
 
 @injectable()
-export class LibraryListWidget extends ReactWidget {
-
-    static WIDGET_ID = 'library-list-widget';
-    static WIDGET_LABEL = 'Library Manager';
-
-    @inject(LibraryService)
-    protected readonly libraryService: LibraryService;
-
-    @inject(WindowService)
-    protected readonly windowService: WindowService;
+export abstract class ListWidget<T> extends ReactWidget {
 
     /**
      * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
@@ -26,12 +18,13 @@ export class LibraryListWidget extends ReactWidget {
     protected focusNode: HTMLElement | undefined;
     protected readonly deferredContainer = new Deferred<HTMLElement>();
 
-    constructor() {
+    constructor(protected options: ListWidget.Options<T>) {
         super();
-        this.id = LibraryListWidget.WIDGET_ID
-        this.title.label = LibraryListWidget.WIDGET_LABEL;
-        this.title.caption = LibraryListWidget.WIDGET_LABEL
-        this.title.iconClass = 'library-tab-icon';
+        const { id, label, iconClass } = options;
+        this.id = id;
+        this.title.label = label;
+        this.title.caption = label;
+        this.title.iconClass = iconClass
         this.title.closable = true;
         this.addClass('arduino-list-widget');
         this.node.tabIndex = 0; // To be able to set the focus on the widget.
@@ -64,25 +57,25 @@ export class LibraryListWidget extends ReactWidget {
     }
 
     render(): React.ReactNode {
-        return <LibraryFilterableListContainer
+        return <FilterableListContainer<T>
             resolveContainer={this.deferredContainer.resolve}
             resolveFocus={this.onFocusResolved}
-            service={this.libraryService}
-            windowService={this.windowService}
-        />;
+            searchable={this.options.searchable}
+            installable={this.options.installable}
+            itemLabel={this.options.itemLabel}
+            itemRenderer={this.options.itemRenderer} />;
     }
 
 }
 
 export namespace ListWidget {
-
-    /**
-     * Props for customizing the abstract list widget.
-     */
-    export interface Props {
+    export interface Options<T> {
         readonly id: string;
-        readonly title: string;
+        readonly label: string;
         readonly iconClass: string;
+        readonly installable: Installable<T>;
+        readonly searchable: Searchable<T>;
+        readonly itemLabel: (item: T) => string;
+        readonly itemRenderer: ListItemRenderer<T>;
     }
-
 }
