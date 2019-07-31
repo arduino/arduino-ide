@@ -7,6 +7,21 @@ export interface AttachedBoardsChangeEvent {
     readonly oldState: Readonly<{ boards: Board[] }>;
     readonly newState: Readonly<{ boards: Board[] }>;
 }
+export namespace AttachedBoardsChangeEvent {
+
+    export function diff(event: AttachedBoardsChangeEvent): Readonly<{ attached: Board[], detached: Board[] }> {
+        const diff = <T>(left: T[], right: T[]) => {
+            return left.filter(item => right.indexOf(item) === -1);
+        }
+        const { boards: newBoards } = event.newState;
+        const { boards: oldBoards } = event.oldState;
+        return {
+            detached: diff(oldBoards, newBoards),
+            attached: diff(newBoards, oldBoards)
+        };
+    }
+
+}
 
 export interface BoardInstalledEvent {
     readonly pkg: Readonly<BoardPackage>;
@@ -32,10 +47,6 @@ export interface BoardPackage extends ArduinoComponent {
 export interface Board {
     name: string
     fqbn?: string
-}
-
-export interface Port {
-    port?: string;
 }
 
 export namespace Board {

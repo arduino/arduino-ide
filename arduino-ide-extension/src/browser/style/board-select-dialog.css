@@ -83,7 +83,20 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
 #select-board-dialog .selectBoardContainer .body .list .item {
     padding: 10px 5px 10px 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
+}
+
+#select-board-dialog .selectBoardContainer .body .list .item .selected-icon {
+    margin-left: auto;
+}
+
+#select-board-dialog .selectBoardContainer .body .list .item .detail {
+    font-size: var(--theia-ui-font-size1);
+    color: var(--theia-disabled-color0);
+    width: 155px; /* used heuristics for the calculation */
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item.missing {
