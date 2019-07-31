@@ -30,11 +30,11 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
         this.logger.info('Attached boards changed: ', JSON.stringify(event));
-        const { boards } = event.newState;
+        const detachedBoards = AttachedBoardsChangeEvent.diff(event).detached.filter(AttachedSerialBoard.is).map(({ port }) => port);
         const { selectedPort, selectedBoard } = this.boardsConfig;
         this.onAttachedBoardsChangedEmitter.fire(event);
-        // Dynamically unset the port if there is not corresponding attached boards for it.
-        if (!!selectedPort && boards.filter(AttachedSerialBoard.is).map(({ port }) => port).indexOf(selectedPort) === -1) {
+        // Dynamically unset the port if the selected board was an attached one and we detached it.
+        if (!!selectedPort && detachedBoards.indexOf(selectedPort) === -1) {
             this.boardsConfig = {
                 selectedBoard,
                 selectedPort: undefined
