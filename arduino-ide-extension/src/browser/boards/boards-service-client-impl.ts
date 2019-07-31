@@ -34,7 +34,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         const { selectedPort, selectedBoard } = this.boardsConfig;
         this.onAttachedBoardsChangedEmitter.fire(event);
         // Dynamically unset the port if the selected board was an attached one and we detached it.
-        if (!!selectedPort && detachedBoards.indexOf(selectedPort) === -1) {
+        if (!!selectedPort && detachedBoards.indexOf(selectedPort) !== -1) {
             this.boardsConfig = {
                 selectedBoard,
                 selectedPort: undefined

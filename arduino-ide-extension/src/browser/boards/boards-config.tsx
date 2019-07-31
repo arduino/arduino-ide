@@ -105,7 +105,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         this.queryPorts(Promise.resolve({ boards })).then(({ knownPorts }) => {
             let { selectedPort } = this.state;
             const removedPorts = detachedBoards.filter(AttachedSerialBoard.is).map(({ port }) => port);
-            if (!!selectedPort && removedPorts.indexOf(selectedPort) === -1) {
+            if (!!selectedPort && removedPorts.indexOf(selectedPort) !== -1) {
                 selectedPort = undefined;
             }
             this.setState({ knownPorts, selectedPort }, () => this.fireConfigChanged());

@@ -6,7 +6,6 @@ import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInst
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -23,7 +22,6 @@ export class BoardsServiceImpl implements BoardsService {
 
     protected selectedBoard: Board | undefined;
     protected discoveryInitialized = false;
-    protected discoveryReady = new Deferred<void>();
     protected discoveryTimer: NodeJS.Timeout | undefined;
     /**
      * Poor man's serial discovery:
@@ -41,7 +39,6 @@ export class BoardsServiceImpl implements BoardsService {
             this.doGetAttachedBoards().then(({ boards }) => {
                 const update = (oldState: Board[], newState: Board[], message: string) => {
                     this._attachedBoards = { boards: newState };
-                    this.discoveryReady.resolve();
                     this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newState)}`);
                     if (this.client) {
                         this.client.notifyAttachedBoardsChanged({
@@ -91,7 +88,6 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     async getAttachedBoards(): Promise<{ boards: Board[] }> {
-        await this.discoveryReady.promise;
         return this._attachedBoards;
     }
 
