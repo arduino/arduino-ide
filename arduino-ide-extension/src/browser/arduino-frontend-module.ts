@@ -54,6 +54,8 @@ import { SilentSearchInWorkspaceContribution } from './customization/silent-sear
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
 import { LibraryItemRenderer } from './library/library-item-renderer';
 import { BoardItemRenderer } from './boards/boards-item-renderer';
+import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
+import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 if (!ARDUINO_PRO_MODE) {
@@ -148,6 +150,20 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         container.get(SketchesService);
         return workspaceServiceExt;
     });
+
+    // Frontend binding for the monitor service.
+    bind(MonitorService).toDynamicValue(context => {
+        const connection = context.container.get(WebSocketConnectionProvider);
+        const client = context.container.get(MonitorServiceClientImpl);
+        return connection.createProxy(MonitorServicePath, client);
+    }).inSingletonScope();
+    // Monitor service client to receive and delegate notifications from the backend.
+    bind(MonitorServiceClientImpl).toSelf().inSingletonScope();
+    bind(MonitorServiceClient).toDynamicValue(context => {
+        const client = context.container.get(MonitorServiceClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, MonitorServicePath, client);
+        return client;
+    }).inSingletonScope();
 
     bind(AWorkspaceService).toSelf().inSingletonScope();
     rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();

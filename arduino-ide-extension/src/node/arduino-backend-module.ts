@@ -19,6 +19,9 @@ import { DefaultWorkspaceServerExt } from './default-workspace-server-ext';
 import { WorkspaceServer } from '@theia/workspace/lib/common';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
+import { MonitorServiceImpl } from './monitor/monitor-service-impl';
+import { MonitorService, MonitorServicePath, MonitorServiceClient } from '../common/protocol/monitor-service';
+import { MonitorClientProvider } from './monitor/monitor-client-provider';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoDaemon).toSelf().inSingletonScope();
@@ -104,4 +107,25 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // If nothing was set previously.
     bind(DefaultWorkspaceServerExt).toSelf().inSingletonScope();
     rebind(WorkspaceServer).toService(DefaultWorkspaceServerExt);
+
+    // Shared monitor client provider service for the backend.
+    bind(MonitorClientProvider).toSelf().inSingletonScope();
+
+    // Connection scoped service for the serial monitor.
+    const monitorServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+        bind(MonitorServiceImpl).toSelf().inSingletonScope();
+        bind(MonitorService).toService(MonitorServiceImpl);
+        bindBackendService<MonitorService, MonitorServiceClient>(MonitorServicePath, MonitorService, (service, client) => {
+            service.setClient(client);
+            client.onDidCloseConnection(() => service.dispose());
+            return service;
+        });
+    });
+    bind(ConnectionContainerModule).toConstantValue(monitorServiceConnectionModule);
+
+    // Logger for the monitor service.
+    bind(ILogger).toDynamicValue(ctx => {
+        const parentLogger = ctx.container.get<ILogger>(ILogger);
+        return parentLogger.child('monitor-service');
+    }).inSingletonScope().whenTargetNamed('monitor-service');
 });
