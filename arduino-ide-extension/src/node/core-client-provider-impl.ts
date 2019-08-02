@@ -6,7 +6,9 @@ import {
     InitReq,
     Configuration,
     UpdateIndexReq,
-    UpdateIndexResp
+    UpdateIndexResp,
+    UpdateLibrariesIndexReq,
+    UpdateLibrariesIndexResp
 } from './cli-protocol/commands/commands_pb';
 import { WorkspaceServiceExt } from '../browser/workspace-service-ext';
 import { FileSystem } from '@theia/filesystem/lib/common';
@@ -111,18 +113,32 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         }
 
         // in a separate promise, try and update the index
-        let succeeded = true;
+        let indexUpdateSucceeded = true;
         for (let i = 0; i < 10; i++) {
             try {
                 await this.updateIndex(client, instance);
-                succeeded = true;
+                indexUpdateSucceeded = true;
                 break;
             } catch (e) {
                 this.toolOutputService.publishNewOutput("daemon", `Error while updating index in attempt ${i}: ${e}`);
             }
         }
-        if (!succeeded) {
+        if (!indexUpdateSucceeded) {
             this.toolOutputService.publishNewOutput("daemon", `Was unable to update the index. Please restart to try again.`);
+        }
+
+        let libIndexUpdateSucceeded = true;
+        for (let i = 0; i < 10; i++) {
+            try {
+                await this.updateLibraryIndex(client, instance);
+                libIndexUpdateSucceeded = true;
+                break;
+            } catch (e) {
+                this.toolOutputService.publishNewOutput("daemon", `Error while updating library index in attempt ${i}: ${e}`);
+            }
+        }
+        if (!libIndexUpdateSucceeded) {
+            this.toolOutputService.publishNewOutput("daemon", `Was unable to update the library index. Please restart to try again.`);
         }
 
         const result = {
@@ -133,6 +149,38 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         console.info(` <<< New client has been successfully created and cached for ${rootUri}.`);
         return result;
     }
+
+    protected async updateLibraryIndex(client: ArduinoCoreClient, instance: Instance): Promise<void> {
+        const req = new UpdateLibrariesIndexReq();
+        req.setInstance(instance);
+        const resp = client.updateLibrariesIndex(req);
+        let file: string | undefined;
+        resp.on('data', (data: UpdateLibrariesIndexResp) => {
+            const progress = data.getDownloadProgress();
+            if (progress) {
+                if (!file && progress.getFile()) {
+                    file = `${progress.getFile()}`;
+                }
+                if (progress.getCompleted()) {
+                    if (file) {
+                        if (/\s/.test(file)) {
+                            this.toolOutputService.publishNewOutput("daemon", `${file} completed.\n`);
+                        } else {
+                            this.toolOutputService.publishNewOutput("daemon", `Download of '${file}' completed.\n'`);
+                        }
+                    } else {
+                        this.toolOutputService.publishNewOutput("daemon", `The library index has been successfully updated.\n'`);
+                    }
+                    file = undefined;
+                }
+            }
+        });
+        await new Promise<void>((resolve, reject) => {
+            resp.on('error', reject);
+            resp.on('end', resolve);
+        });
+    }
+
 
     protected async updateIndex(client: ArduinoCoreClient, instance: Instance): Promise<void> {
         const updateReq = new UpdateIndexReq();
