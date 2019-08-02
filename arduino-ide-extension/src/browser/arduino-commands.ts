@@ -39,7 +39,7 @@ export namespace ArduinoCommands {
         id: "arduino-open-boards-dialog"
     }
 
-    export const TOGGLE_PRO_MODE: Command = {
-        id: "arduino-toggle-pro-mode"
+    export const TOGGLE_ADVANCED_MODE: Command = {
+        id: "arduino-toggle-advanced-mode"
     }
 }

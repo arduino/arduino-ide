@@ -111,6 +111,15 @@
     color: var(--theia-ui-font-color3);
 }
 
+.p-TabBar-toolbar .item > div#arduino-toggle-advanced-mode {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    color: var(--theia-ui-font-color3);
+}
+
 .monaco-editor .margin {
     border-right: 2px solid var(--theia-border-color1);
     box-sizing: border-box;
