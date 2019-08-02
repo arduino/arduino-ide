@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
-import { BoardsService, AttachedSerialBoard, AttachedNetworkBoard } from '../common/protocol/boards-service';
+import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
 import * as path from 'path';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
@@ -38,7 +38,7 @@ export class CoreServiceImpl implements CoreService {
         }
         const { client, instance } = coreClient;
 
-        const currentBoard = await this.boardsService.getSelectBoard();
+        const currentBoard = options.board;
         if (!currentBoard) {
             throw new Error("no board selected");
         }
@@ -72,7 +72,7 @@ export class CoreServiceImpl implements CoreService {
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
-        await this.compile({uri: options.uri});
+        await this.compile({ uri: options.uri, board: options.board });
 
         console.log('upload', options);
         const { uri } = options;
@@ -82,7 +82,7 @@ export class CoreServiceImpl implements CoreService {
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-        const currentBoard = await this.boardsService.getSelectBoard();
+        const currentBoard = options.board;
         if (!currentBoard) {
             throw new Error("no board selected");
         }
@@ -100,13 +100,7 @@ export class CoreServiceImpl implements CoreService {
         req.setInstance(instance);
         req.setSketchPath(sketchpath);
         req.setFqbn(currentBoard.fqbn);
-        if (AttachedSerialBoard.is(currentBoard)) {
-            req.setPort(currentBoard.port);
-        } else if (AttachedNetworkBoard.is(currentBoard)) {
-            throw new Error("can only upload to serial boards");
-        } else {
-            throw new Error("board is not attached");
-        }
+        req.setPort(options.port);
         const result = client.upload(req);
 
         try {

@@ -11,7 +11,7 @@ import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution, ARDUINO_PRO_MODE } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
-import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
+import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
 import { LibraryListWidgetFrontendContribution } from './library/list-widget-frontend-contribution';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
@@ -22,7 +22,7 @@ import { WorkspaceServiceExtImpl } from './workspace-service-ext-impl';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
-import { BoardsNotificationService } from './boards-notification-service';
+import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { AWorkspaceService } from './arduino-workspace-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
@@ -46,8 +46,8 @@ import { SilentMonacoStatusBarContribution } from './customization/silent-monaco
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { CustomApplicationShell } from './customization/custom-application-shell';
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
-import { SelectBoardDialog, SelectBoardDialogProps } from './boards/select-board-dialog';
-import { SelectBoardDialogWidget } from './boards/select-board-dialog-widget';
+import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
+import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 if (!ARDUINO_PRO_MODE) {
@@ -87,12 +87,19 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
 
-    // Boards Notification service for updating boards list
-    // TODO (post-PoC): move this to boards service/backend
-    bind(BoardsNotificationService).toSelf().inSingletonScope();
-
     // Boards service
-    bind(BoardsService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath)).inSingletonScope();
+    bind(BoardsService).toDynamicValue(context => {
+        const connection = context.container.get(WebSocketConnectionProvider);
+        const client = context.container.get(BoardsServiceClientImpl);
+        return connection.createProxy(BoardsServicePath, client);
+    }).inSingletonScope();
+    // Boards service client to receive and delegate notifications from the backend.
+    bind(BoardsServiceClientImpl).toSelf().inSingletonScope();
+    bind(BoardsServiceClient).toDynamicValue(context => {
+        const client = context.container.get(BoardsServiceClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath, client);
+        return client;
+    }).inSingletonScope();
 
     // Boards list widget
     bind(BoardsListWidget).toSelf();
@@ -104,9 +111,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(FrontendApplicationContribution).toService(BoardsListWidgetFrontendContribution);
 
     // Board select dialog
-    bind(SelectBoardDialogWidget).toSelf().inSingletonScope();
-    bind(SelectBoardDialog).toSelf().inSingletonScope();
-    bind(SelectBoardDialogProps).toConstantValue({
+    bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
+    bind(BoardsConfigDialog).toSelf().inSingletonScope();
+    bind(BoardsConfigDialogProps).toConstantValue({
         title: 'Select Board'
     })
 

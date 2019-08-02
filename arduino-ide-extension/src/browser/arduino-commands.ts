@@ -35,20 +35,11 @@ export namespace ArduinoCommands {
         category: 'File'
     }
 
-    export const REFRESH_BOARDS: Command = {
-        id: "arduino-refresh-attached-boards",
-        label: "Refresh attached boards"
-    }
-
-    export const SELECT_BOARD: Command = {
-        id: "arduino-select-board"
-    }
-
     export const OPEN_BOARDS_DIALOG: Command = {
         id: "arduino-open-boards-dialog"
     }
 
-    export const TOGGLE_PROMODE: Command = {
+    export const TOGGLE_PRO_MODE: Command = {
         id: "arduino-toggle-pro-mode"
     }
 

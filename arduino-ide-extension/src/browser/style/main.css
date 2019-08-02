@@ -8,6 +8,7 @@
 
 #outputView {
     color: var(--theia-ui-font-color3);
+    cursor: text;
 }
 
 #arduino-verify.arduino-tool-icon:hover,

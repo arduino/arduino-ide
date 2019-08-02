@@ -3,10 +3,9 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { Message } from '@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { BoardsService } from '../../common/protocol/boards-service';
 import { FilterableListContainer } from '../components/component-list/filterable-list-container';
-import { BoardsService, Board, BoardPackage } from '../../common/protocol/boards-service';
-import { BoardsNotificationService } from '../boards-notification-service';
-import { LibraryService } from '../../common/protocol/library-service';
+import { BoardsServiceClientImpl } from './boards-service-client-impl';
 
 @injectable()
 export abstract class ListWidget extends ReactWidget {
@@ -17,8 +16,8 @@ export abstract class ListWidget extends ReactWidget {
     @inject(WindowService)
     protected readonly windowService: WindowService;
 
-    @inject(BoardsNotificationService)
-    protected readonly boardsNotificationService: BoardsNotificationService;
+    @inject(BoardsServiceClientImpl)
+    protected readonly boardsServiceClient: BoardsServiceClientImpl;
 
     constructor() {
         super();
@@ -51,19 +50,8 @@ export abstract class ListWidget extends ReactWidget {
     }
 
     render(): React.ReactNode {
-        const boardsServiceDelegate = this.boardsService;
-        const boardsService: BoardsService = {
-            getAttachedBoards: () => boardsServiceDelegate.getAttachedBoards(),
-            selectBoard: (board: Board) => boardsServiceDelegate.selectBoard(board),
-            getSelectBoard: () => boardsServiceDelegate.getSelectBoard(),
-            search: (options: { query?: string, props?: LibraryService.Search.Props }) => boardsServiceDelegate.search(options),
-            install: async (item: BoardPackage) => {
-                await boardsServiceDelegate.install(item);
-                this.boardsNotificationService.notifyBoardsInstalled();
-            }
-        }
         return <FilterableListContainer
-            service={boardsService}
+            service={this.boardsService}
             windowService={this.windowService}
         />;
     }

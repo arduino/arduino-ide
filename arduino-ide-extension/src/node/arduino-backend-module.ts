@@ -3,7 +3,7 @@ import { ArduinoDaemon } from './arduino-daemon';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
-import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
+import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { LibraryServiceImpl } from './library-service-impl';
 import { BoardsServiceImpl } from './boards-service-impl';
 import { CoreServiceImpl } from './core-service-impl';
@@ -44,7 +44,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     const boardsServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
         bind(BoardsServiceImpl).toSelf().inSingletonScope();
         bind(BoardsService).toService(BoardsServiceImpl);
-        bindBackendService(BoardsServicePath, BoardsService);
+        bindBackendService<BoardsService, BoardsServiceClient>(BoardsServicePath, BoardsService, (service, client) => {
+            service.setClient(client);
+            client.onDidCloseConnection(() => service.dispose());
+            return service;
+        });
     });
     bind(ConnectionContainerModule).toConstantValue(boardsServiceConnectionModule);
 
@@ -89,6 +93,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);
         return parentLogger.child('daemon');
     }).inSingletonScope().whenTargetNamed('daemon');
+
+    // Logger for the "serial discovery".
+    bind(ILogger).toDynamicValue(ctx => {
+        const parentLogger = ctx.container.get<ILogger>(ILogger);
+        return parentLogger.child('discovery');
+    }).inSingletonScope().whenTargetNamed('discovery');
 
     // Default workspace server extension to initialize and use a fallback workspace (`~/Arduino-PoC/workspace/`)
     // If nothing was set previously.

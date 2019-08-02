@@ -1,61 +1,42 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { CommandRegistry, DisposableCollection } from '@theia/core';
 import { BoardsService, Board, AttachedSerialBoard } from '../../common/protocol/boards-service';
-import { ContextMenuRenderer, StatusBar, StatusBarAlignment } from '@theia/core/lib/browser';
-import { BoardsNotificationService } from '../boards-notification-service';
-import { Command, CommandRegistry } from '@theia/core';
 import { ArduinoCommands } from '../arduino-commands';
-import ReactDOM = require('react-dom');
+import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { BoardsConfig } from './boards-config';
 
-export interface BoardsDropdownItem {
-    label: string;
-    commandExecutor: () => void;
-    isSelected: () => boolean;
-}
-
-export interface BoardsDropDownListCoord {
-    top: number;
-    left: number;
-    width: number;
-    paddingTop: number;
-}
-
-export namespace BoardsDropdownItemComponent {
-    export interface Props {
-        label: string;
-        onClick: () => void;
-        isSelected: boolean;
-    }
-}
-
-export class BoardsDropdownItemComponent extends React.Component<BoardsDropdownItemComponent.Props> {
-    render() {
-        return <div className={`arduino-boards-dropdown-item ${this.props.isSelected ? 'selected' : ''}`} onClick={this.props.onClick}>
-            <div>{this.props.label}</div>
-            {this.props.isSelected ? <span className='fa fa-check'></span> : ''}
-        </div>;
-    }
+export interface BoardsDropDownListCoords {
+    readonly top: number;
+    readonly left: number;
+    readonly width: number;
+    readonly paddingTop: number;
 }
 
 export namespace BoardsDropDown {
     export interface Props {
-        readonly coords: BoardsDropDownListCoord;
-        readonly isOpen: boolean;
-        readonly dropDownItems: BoardsDropdownItem[];
-        readonly openDialog: () => void;
+        readonly coords: BoardsDropDownListCoords | 'hidden';
+        readonly items: Item[];
+        readonly openBoardsConfig: () => void;
+    }
+    export interface Item {
+        readonly label: string;
+        readonly selected: boolean;
+        readonly onClick: () => void;
     }
 }
 
 export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
-    protected dropdownId: string = 'boards-dropdown-container';
+
     protected dropdownElement: HTMLElement;
 
     constructor(props: BoardsDropDown.Props) {
         super(props);
 
-        let list = document.getElementById(this.dropdownId);
+        let list = document.getElementById('boards-dropdown-container');
         if (!list) {
             list = document.createElement('div');
-            list.id = this.dropdownId;
+            list.id = 'boards-dropdown-container';
             document.body.appendChild(list);
             this.dropdownElement = list;
         }
@@ -65,179 +46,149 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
         return ReactDOM.createPortal(this.renderNode(), this.dropdownElement);
     }
 
-    renderNode(): React.ReactNode {
-        if (this.props.isOpen) {
-            return <div className='arduino-boards-dropdown-list'
-                style={{
-                    position: 'absolute',
-                    top: this.props.coords.top,
-                    left: this.props.coords.left,
-                    width: this.props.coords.width,
-                    paddingTop: this.props.coords.paddingTop
-                }}>
-                {
-                    this.props.dropDownItems.map(item => {
-                        return <React.Fragment key={item.label}>
-                            <BoardsDropdownItemComponent isSelected={item.isSelected()} label={item.label} onClick={item.commandExecutor}></BoardsDropdownItemComponent>
-                        </React.Fragment>;
-                    })
-                }
-                <BoardsDropdownItemComponent isSelected={false} label={'Select Other Board & Port'} onClick={this.props.openDialog}></BoardsDropdownItemComponent>
-            </div>
-        } else {
+    protected renderNode(): React.ReactNode {
+        const { coords, items } = this.props;
+        if (coords === 'hidden') {
             return '';
         }
+        items.push({
+            label: 'Select Other Board & Port',
+            selected: false,
+            onClick: () => this.props.openBoardsConfig()
+        })
+        return <div className='arduino-boards-dropdown-list'
+            style={{
+                position: 'absolute',
+                ...coords
+            }}>
+            {items.map(this.renderItem)}
+        </div>
     }
+
+    protected renderItem(item: BoardsDropDown.Item): React.ReactNode {
+        const { label, selected, onClick } = item;
+        return <div key={label} className={`arduino-boards-dropdown-item ${selected ? 'selected' : ''}`} onClick={onClick}>
+            <div>
+                {label}
+            </div>
+            {selected ? <span className='fa fa-check'/> : ''}
+        </div>
+    }
+
 }
 
 export namespace BoardsToolBarItem {
+
     export interface Props {
-        readonly contextMenuRenderer: ContextMenuRenderer;
-        readonly boardsNotificationService: BoardsNotificationService;
         readonly boardService: BoardsService;
+        readonly boardsServiceClient: BoardsServiceClientImpl;
         readonly commands: CommandRegistry;
-        readonly statusBar: StatusBar;
     }
 
     export interface State {
-        selectedBoard?: Board;
-        selectedIsAttached: boolean;
-        boardItems: BoardsDropdownItem[];
-        isOpen: boolean;
+        boardsConfig: BoardsConfig.Config;
+        attachedBoards: Board[];
+        coords: BoardsDropDownListCoords | 'hidden';
     }
 }
 
 export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, BoardsToolBarItem.State> {
 
-    protected attachedBoards: Board[];
-    protected dropDownListCoord: BoardsDropDownListCoord;
+    static TOOLBAR_ID: 'boards-toolbar';
+
+    protected readonly toDispose: DisposableCollection = new DisposableCollection();
 
     constructor(props: BoardsToolBarItem.Props) {
         super(props);
 
         this.state = {
-            selectedBoard: undefined,
-            selectedIsAttached: true,
-            boardItems: [],
-            isOpen: false
+            boardsConfig: this.props.boardsServiceClient.boardsConfig,
+            attachedBoards: [],
+            coords: 'hidden'
         };
 
         document.addEventListener('click', () => {
-            this.setState({ isOpen: false });
+            this.setState({ coords: 'hidden' });
         });
     }
 
     componentDidMount() {
-        this.setAttachedBoards();
-    }
-
-    setSelectedBoard(board: Board) {
-        if (this.attachedBoards && this.attachedBoards.length) {
-            this.setState({ selectedIsAttached: !!this.attachedBoards.find(attachedBoard => attachedBoard.name === board.name) });
-        }
-        this.setState({ selectedBoard: board });
-    }
-
-    protected async setAttachedBoards() {
-        this.props.boardService.getAttachedBoards().then(attachedBoards => {
-            this.attachedBoards = attachedBoards.boards;
-            if (this.attachedBoards.length) {
-                this.createBoardDropdownItems();
-                this.props.boardService.selectBoard(this.attachedBoards[0]).then(() => this.setSelectedBoard(this.attachedBoards[0]));
-            }
-        })
-    }
-
-    protected createBoardDropdownItems() {
-        const boardItems: BoardsDropdownItem[] = [];
-        this.attachedBoards.forEach(board => {
-            const { commands } = this.props;
-            const port = this.getPort(board);
-            const command: Command = {
-                id: 'selectBoard' + port
-            }
-            commands.registerCommand(command, {
-                execute: () => {
-                    commands.executeCommand(ArduinoCommands.SELECT_BOARD.id, board);
-                    this.setState({ isOpen: false, selectedBoard: board });
-                }
-            });
-            boardItems.push({
-                commandExecutor: () => commands.executeCommand(command.id),
-                label: board.name + ' at ' + port,
-                isSelected: () => this.doIsSelectedBoard(board)
-            });
+        const { boardsServiceClient: client, boardService } = this.props;
+        this.toDispose.pushAll([
+            client.onBoardsConfigChanged(boardsConfig => this.setState({ boardsConfig })),
+            client.onBoardsChanged(({ newState }) => this.setState({ attachedBoards: newState.boards }))
+        ]);
+        boardService.getAttachedBoards().then(({ boards: attachedBoards }) => {
+            this.setState({ attachedBoards })
         });
-        this.setState({ boardItems });
     }
 
-    protected doIsSelectedBoard = (board: Board) => this.isSelectedBoard(board);
-    protected isSelectedBoard(board: Board): boolean {
-        return AttachedSerialBoard.is(board) &&
-            !!this.state.selectedBoard &&
-            AttachedSerialBoard.is(this.state.selectedBoard) &&
-            board.port === this.state.selectedBoard.port &&
-            board.fqbn === this.state.selectedBoard.fqbn;
+    componentWillUnmount(): void {
+        this.toDispose.dispose();
     }
 
-    protected getPort(board: Board): string {
-        if (AttachedSerialBoard.is(board)) {
-            return board.port;
+    protected readonly show = (event: React.MouseEvent<HTMLElement>) => {
+        const { currentTarget: element } = event;
+        if (element instanceof HTMLElement) {
+            if (this.state.coords === 'hidden') {
+                const rect = element.getBoundingClientRect();
+                this.setState({
+                    coords: {
+                        top: rect.top,
+                        left: rect.left,
+                        width: rect.width,
+                        paddingTop: rect.height
+                    }
+                });
+            } else {
+                this.setState({ coords: 'hidden'});
+            }
         }
-        return '';
-    }
-
-    protected readonly doShowSelectBoardsMenu = (event: React.MouseEvent<HTMLElement>) => {
-        this.showSelectBoardsMenu(event);
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
     };
-    protected showSelectBoardsMenu(event: React.MouseEvent<HTMLElement>) {
-        const el = (event.currentTarget as HTMLElement);
-        if (el) {
-            this.dropDownListCoord = {
-                top: el.getBoundingClientRect().top,
-                left: el.getBoundingClientRect().left,
-                paddingTop: el.getBoundingClientRect().height,
-                width: el.getBoundingClientRect().width
-            }
-            this.setState({ isOpen: !this.state.isOpen });
-        }
-    }
 
     render(): React.ReactNode {
-        const selectedBoard = this.state.selectedBoard;
-        const port = selectedBoard ? this.getPort(selectedBoard) : undefined;
-        const boardTxt = selectedBoard && `${selectedBoard.name}${port ? ' at ' + port : ''}` || '';
-        this.props.statusBar.setElement('arduino-selected-board', {
-            alignment: StatusBarAlignment.RIGHT,
-            text: boardTxt
-        });
+        const { boardsConfig, coords, attachedBoards } = this.state;
+        const boardsConfigText = BoardsConfig.Config.toString(boardsConfig, { default: 'no board selected' });
+        const configuredBoard = attachedBoards
+            .filter(AttachedSerialBoard.is)
+            .filter(board => BoardsConfig.Config.sameAs(boardsConfig, board)).shift();
+
+        const items = attachedBoards.filter(AttachedSerialBoard.is).map(board => ({
+            label: `${board.name} at ${board.port}`,
+            selected: configuredBoard === board,
+            onClick: () => this.props.boardsServiceClient.boardsConfig = {
+                selectedBoard: board,
+                selectedPort: board.port
+            }
+        }));
+
         return <React.Fragment>
             <div className='arduino-boards-toolbar-item-container'>
-                <div className='arduino-boards-toolbar-item' title={boardTxt}>
-                    <div className='inner-container' onClick={this.doShowSelectBoardsMenu}>
-                        <span className={!selectedBoard || !this.state.selectedIsAttached ? 'fa fa-times notAttached' : ''}></span>
+                <div className='arduino-boards-toolbar-item' title={boardsConfigText}>
+                    <div className='inner-container' onClick={this.show}>
+                        <span className={!configuredBoard ? 'fa fa-times notAttached' : ''}/>
                         <div className='label noWrapInfo'>
                             <div className='noWrapInfo noselect'>
-                                {selectedBoard ? boardTxt : 'no board selected'}
+                                {boardsConfigText}
                             </div>
                         </div>
-                        <span className='fa fa-caret-down caret'></span>
+                        <span className='fa fa-caret-down caret'/>
                     </div>
                 </div>
             </div>
             <BoardsDropDown
-                isOpen={this.state.isOpen}
-                coords={this.dropDownListCoord}
-                dropDownItems={this.state.boardItems}
-                openDialog={this.openDialog}>
+                coords={coords}
+                items={items}
+                openBoardsConfig={this.openDialog}>
             </BoardsDropDown>
         </React.Fragment>;
     }
 
     protected openDialog = () => {
         this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
-        this.setState({ isOpen: false });
+        this.setState({ coords: 'hidden' });
     };
+
 }

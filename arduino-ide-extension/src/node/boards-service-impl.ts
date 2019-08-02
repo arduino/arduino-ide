@@ -1,13 +1,19 @@
 import * as PQueue from 'p-queue';
-import { injectable, inject } from 'inversify';
-import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard } from '../common/protocol/boards-service';
+import { injectable, inject, postConstruct, named } from 'inversify';
+import { ILogger } from '@theia/core/lib/common/logger';
+import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient } from '../common/protocol/boards-service';
 import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
+
+    @inject(ILogger)
+    @named('discovery')
+    protected discoveryLogger: ILogger;
 
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
@@ -16,9 +22,80 @@ export class BoardsServiceImpl implements BoardsService {
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected selectedBoard: Board | undefined;
+    protected discoveryInitialized = false;
+    protected discoveryReady = new Deferred<void>();
+    protected discoveryTimer: NodeJS.Timeout | undefined;
+    /**
+     * Poor man's serial discovery:
+     * Stores the state of the currently discovered, attached boards.
+     * This state is updated via periodical polls.
+     */
+    protected _attachedBoards: { boards: Board[] } = { boards: [] };
+    protected client: BoardsServiceClient | undefined;
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
-    public async getAttachedBoards(): Promise<{ boards: Board[] }> {
+    @postConstruct()
+    protected async init(): Promise<void> {
+        this.discoveryTimer = setInterval(() => {
+            this.discoveryLogger.trace('Discovering attached boards...');
+            this.doGetAttachedBoards().then(({ boards }) => {
+                const update = (oldState: Board[], newState: Board[], message: string) => {
+                    this._attachedBoards = { boards: newState };
+                    this.discoveryReady.resolve();
+                    this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newState)}`);
+                    if (this.client) {
+                        this.client.notifyAttachedBoardsChanged({
+                            oldState: {
+                                boards: oldState
+                            },
+                            newState: {
+                                boards: newState
+                            }
+                        });
+                    }
+                }
+                const sortedBoards = boards.sort(Board.compare);
+                this.discoveryLogger.trace(`Discovery done. ${JSON.stringify(sortedBoards)}`);
+                if (!this.discoveryInitialized) {
+                    update([], sortedBoards, 'Initialized attached boards.');
+                    this.discoveryInitialized = true;
+                } else {
+                    this.getAttachedBoards().then(({ boards: currentBoards }) => {
+                        this.discoveryLogger.trace(`Updating discovered boards... ${JSON.stringify(currentBoards)}`);
+                        if (currentBoards.length !== sortedBoards.length) {
+                            update(currentBoards, sortedBoards, 'Updated discovered boards.');
+                            return;
+                        }
+                        // `currentBoards` is already sorted.
+                        for (let i = 0; i < sortedBoards.length; i++) {
+                            if (Board.compare(sortedBoards[i], currentBoards[i]) !== 0) {
+                                update(currentBoards, sortedBoards, 'Updated discovered boards.');
+                                return;
+                            }
+                        }
+                        this.discoveryLogger.trace('No new boards were discovered.');
+                    });
+                }
+            });
+        }, 1000);
+    }
+
+    setClient(client: BoardsServiceClient | undefined): void {
+        this.client = client;
+    }
+
+    dispose(): void {
+        if (this.discoveryTimer !== undefined) {
+            clearInterval(this.discoveryTimer);
+        }
+    }
+
+    async getAttachedBoards(): Promise<{ boards: Board[] }> {
+        await this.discoveryReady.promise;
+        return this._attachedBoards;
+    }
+
+    private async doGetAttachedBoards(): Promise<{ boards: Board[] }> {
         return this.queue.add(() => {
             return new Promise<{ boards: Board[] }>(async resolve => {
                 const coreClient = await this.coreClientProvider.getClient();
@@ -55,17 +132,14 @@ export class BoardsServiceImpl implements BoardsService {
                         }
                     }
                 }
+                // TODO: remove mock board!
+                // boards.push(...[
+                //     <AttachedSerialBoard>{ name: 'Arduino/Genuino Uno', fqbn: 'arduino:avr:uno', port: '/dev/cu.usbmodem14201' },
+                //     <AttachedSerialBoard>{ name: 'Arduino/Genuino Uno', fqbn: 'arduino:avr:uno', port: '/dev/cu.usbmodem142xx' },
+                // ]);
                 resolve({ boards });
             })
         });
-    }
-
-    async selectBoard(board: Board): Promise<void> {
-        this.selectedBoard = board;
-    }
-
-    async getSelectBoard(): Promise<Board | undefined> {
-        return this.selectedBoard;
     }
 
     async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {
@@ -138,6 +212,9 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('end', resolve);
             resp.on('error', reject);
         });
+        if (this.client) {
+            this.client.notifyBoardInstalled({ pkg });
+        }
         console.info("Board installation done", pkg);
     }
 
