@@ -19,7 +19,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { SketchFactory } from './sketch-factory';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
-import { ContextMenuRenderer, OpenerService, Widget, StatusBar, ShellLayoutRestorer, StatusBarAlignment } from '@theia/core/lib/browser';
+import { ContextMenuRenderer, OpenerService, Widget, StatusBar, ShellLayoutRestorer, StatusBarAlignment, LabelProvider } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { ArduinoToolbarContextMenu } from './arduino-file-menu';
@@ -112,6 +112,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(ShellLayoutRestorer)
     protected readonly layoutRestorer: ShellLayoutRestorer;
+
+    @inject(LabelProvider)
+    protected readonly labelProvider: LabelProvider;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
@@ -375,9 +378,21 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     }
 
     protected async openSketchFilesInNewWindow(uri: string) {
-        const location = new URL(window.location.href);
-        location.searchParams.set('sketch', uri);
-        this.windowService.openNewWindow(location.toString());
+        const url = new URL(window.location.href);
+        const currentSketch = url.searchParams.get('sketch');
+        // Nothing to do if we want to open the same sketch which is already opened.
+        if (!!currentSketch && new URI(currentSketch).toString() === new URI(uri).toString()) {
+            this.messageService.info(`The '${this.labelProvider.getLongName(new URI(uri))}' is already opened.`);
+            // NOOP.
+            return;
+        }
+        // Preserve the current window if the `sketch` is not in the `searchParams`.
+        url.searchParams.set('sketch', uri);
+        if (!currentSketch) {
+            setTimeout(() => window.location.href = url.toString(), 100);
+            return;
+        }
+        this.windowService.openNewWindow(url.toString());
     }
 
     async openSketchFiles(uri: string) {

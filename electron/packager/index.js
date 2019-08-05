@@ -66,7 +66,7 @@
     //-------------------------------------------------------------------------------------------------+
     // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
     //-------------------------------------------------------------------------------------------------+
-    exec(`yarn --cwd ${path('..', workingCopy)}`, 'Building the Arduino Theia extensions');
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`, 'Building the Arduino Theia extensions');
     // Collect all unused dependencies by the backend. We have to remove them from the electron app.
     // The `bundle.js` already contains everything we need for the frontend.
     // We have to do it before changing the dependencies to `local-path`.
@@ -98,8 +98,8 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-------------------------------------------------------------------------------------------+
     // Install all private and public dependencies for the electron application and build Theia. |
     //-------------------------------------------------------------------------------------------+
-    exec(`yarn --cwd ${path('..', 'build')}`, 'Installing dependencies');
-    exec(`yarn --cwd ${path('..', 'build')} build${release ? ':release' : ''}`, 'Building the Arduino-PoC application');
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')}`, 'Installing dependencies');
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${release ? ':release' : ''}`, 'Building the Arduino-PoC application');
 
     //------------------------------------------------------------------------------+
     // Create a throw away dotenv file which we use to feed the builder with input. |
@@ -115,7 +115,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-----------------------------------+
     // Package the electron application. |
     //-----------------------------------+
-    exec(`yarn --cwd ${path('..', 'build')} package`, `Packaging your Arduino-PoC application`);
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`, `Packaging your Arduino-PoC application`);
     echo(`🎉  Success. Your application is at: ${path('..', 'build', 'dist')}`);
 
     restore();
