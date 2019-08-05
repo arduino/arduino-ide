@@ -48,6 +48,10 @@ import { CustomApplicationShell } from './customization/custom-application-shell
 import { CustomFrontendApplication } from './customization/custom-frontend-application';
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
 import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
+import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { SilentScmContribution } from './customization/silent-scm-contribution';
+import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { SilentSearchInWorkspaceContribution } from './customization/silent-search-in-workspace-contribution';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 if (!ARDUINO_PRO_MODE) {
@@ -164,6 +168,10 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
         unbind(ApplicationShell);
         bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
+        unbind(ScmContribution);
+        bind(ScmContribution).to(SilentScmContribution).inSingletonScope();
+        unbind(SearchInWorkspaceFrontendContribution);
+        bind(SearchInWorkspaceFrontendContribution).to(SilentSearchInWorkspaceContribution).inSingletonScope();
     }
     unbind(FrontendApplication);
     bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
