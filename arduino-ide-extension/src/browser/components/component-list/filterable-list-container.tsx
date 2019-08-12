@@ -60,7 +60,7 @@ export class FilterableListContainer<T> extends React.Component<FilterableListCo
     
     protected search (query: string): void {
         const { searchable } = this.props;
-        searchable.search({ query }).then(result => {
+        searchable.search({ query: query.trim() }).then(result => {
             const { items } = result;
             this.setState({
                 items: this.sort(items)
