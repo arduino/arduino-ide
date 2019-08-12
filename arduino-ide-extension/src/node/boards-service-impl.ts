@@ -159,7 +159,7 @@ export class BoardsServiceImpl implements BoardsService {
 
         let items = resp.getSearchOutputList().map(item => {
             let installedVersion: string | undefined;
-            const matchingPlatform = installedPlatforms.find(ip => ip.getId().startsWith(`${item.getId()}`));
+            const matchingPlatform = installedPlatforms.find(ip => ip.getId() === item.getId());
             if (!!matchingPlatform) {
                 installedVersion = matchingPlatform.getInstalled();
             }
