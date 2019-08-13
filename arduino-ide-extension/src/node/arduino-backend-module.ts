@@ -22,8 +22,19 @@ import { SketchesService, SketchesServicePath } from '../common/protocol/sketche
 import { MonitorServiceImpl } from './monitor/monitor-service-impl';
 import { MonitorService, MonitorServicePath, MonitorServiceClient } from '../common/protocol/monitor-service';
 import { MonitorClientProvider } from './monitor/monitor-client-provider';
+import { ArduinoCli } from './arduino-cli';
+import { ArduinoCliContribution } from './arduino-cli-contribution';
+import { CliContribution } from '@theia/core/lib/node';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
+    // Theia backend CLI contribution.
+    bind(ArduinoCliContribution).toSelf().inSingletonScope();
+    bind(CliContribution).toService(ArduinoCliContribution);
+
+    // Provides the path of the Ardunio CLI.
+    bind(ArduinoCli).toSelf().inSingletonScope();
+
+    // Shared daemonn 
     bind(ArduinoDaemon).toSelf().inSingletonScope();
     bind(BackendApplicationContribution).toService(ArduinoDaemon);
 

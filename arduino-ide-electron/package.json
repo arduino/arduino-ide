@@ -33,7 +33,7 @@
         "target": "electron",
         "frontend": {
             "config": {
-                "applicationName": "Arduino-PoC",
+                "applicationName": "Arduino Editor",
                 "defaultTheme": "arduino-theme",
                 "preferences": {
                     "editor.autoSave": "on"

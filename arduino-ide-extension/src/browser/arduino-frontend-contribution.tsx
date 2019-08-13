@@ -543,25 +543,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         return undefined;
     }
 
-    // private async onNoBoardsInstalled() {
-    //     const action = await this.messageService.info("You have no boards installed. Use the boards manager to install one.", "Open Boards Manager");
-    //     if (!action) {
-    //         return;
-    //     }
-
-    //     this.boardsListWidgetFrontendContribution.openView({ reveal: true });
-    // }
-
-    // private async onUnknownBoard() {
-    //     const action = await this.messageService.warn("There's a board connected for which you need to install software." +
-    //         " If this were not a PoC we would offer you the right package now.", "Open Boards Manager");
-    //     if (!action) {
-    //         return;
-    //     }
-
-    //     this.boardsListWidgetFrontendContribution.openView({ reveal: true });
-    // }
-
     private isArduinoToolbar(maybeToolbarWidget: any): boolean {
         if (maybeToolbarWidget instanceof ArduinoToolbar) {
             return true;
