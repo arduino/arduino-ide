@@ -13,7 +13,6 @@ import { ArduinoLanguageGrammarContribution } from './language/arduino-language-
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
-import { LibraryListWidgetFrontendContribution } from './library/list-widget-frontend-contribution';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
@@ -52,6 +51,11 @@ import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SilentScmContribution } from './customization/silent-scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { SilentSearchInWorkspaceContribution } from './customization/silent-search-in-workspace-contribution';
+import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
+import { LibraryItemRenderer } from './library/library-item-renderer';
+import { BoardItemRenderer } from './boards/boards-item-renderer';
+import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
+import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 if (!ARDUINO_PRO_MODE) {
@@ -87,6 +91,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(LibraryListWidget)
     }));
     bind(FrontendApplicationContribution).toService(LibraryListWidgetFrontendContribution);
+    bind(LibraryItemRenderer).toSelf().inSingletonScope();
 
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
@@ -113,6 +118,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(BoardsListWidget)
     }));
     bind(FrontendApplicationContribution).toService(BoardsListWidgetFrontendContribution);
+    bind(BoardItemRenderer).toSelf().inSingletonScope();
 
     // Board select dialog
     bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
@@ -144,6 +150,20 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         container.get(SketchesService);
         return workspaceServiceExt;
     });
+
+    // Frontend binding for the monitor service.
+    bind(MonitorService).toDynamicValue(context => {
+        const connection = context.container.get(WebSocketConnectionProvider);
+        const client = context.container.get(MonitorServiceClientImpl);
+        return connection.createProxy(MonitorServicePath, client);
+    }).inSingletonScope();
+    // Monitor service client to receive and delegate notifications from the backend.
+    bind(MonitorServiceClientImpl).toSelf().inSingletonScope();
+    bind(MonitorServiceClient).toDynamicValue(context => {
+        const client = context.container.get(MonitorServiceClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, MonitorServicePath, client);
+        return client;
+    }).inSingletonScope();
 
     bind(AWorkspaceService).toSelf().inSingletonScope();
     rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();

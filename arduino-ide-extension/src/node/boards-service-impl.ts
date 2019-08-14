@@ -6,7 +6,6 @@ import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInst
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -23,7 +22,6 @@ export class BoardsServiceImpl implements BoardsService {
 
     protected selectedBoard: Board | undefined;
     protected discoveryInitialized = false;
-    protected discoveryReady = new Deferred<void>();
     protected discoveryTimer: NodeJS.Timeout | undefined;
     /**
      * Poor man's serial discovery:
@@ -41,7 +39,6 @@ export class BoardsServiceImpl implements BoardsService {
             this.doGetAttachedBoards().then(({ boards }) => {
                 const update = (oldState: Board[], newState: Board[], message: string) => {
                     this._attachedBoards = { boards: newState };
-                    this.discoveryReady.resolve();
                     this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newState)}`);
                     if (this.client) {
                         this.client.notifyAttachedBoardsChanged({
@@ -91,7 +88,6 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     async getAttachedBoards(): Promise<{ boards: Board[] }> {
-        await this.discoveryReady.promise;
         return this._attachedBoards;
     }
 
@@ -163,7 +159,7 @@ export class BoardsServiceImpl implements BoardsService {
 
         let items = resp.getSearchOutputList().map(item => {
             let installedVersion: string | undefined;
-            const matchingPlatform = installedPlatforms.find(ip => ip.getId().startsWith(`${item.getId()}`));
+            const matchingPlatform = installedPlatforms.find(ip => ip.getId() === item.getId());
             if (!!matchingPlatform) {
                 installedVersion = matchingPlatform.getInstalled();
             }
@@ -172,12 +168,13 @@ export class BoardsServiceImpl implements BoardsService {
                 id: item.getId(),
                 name: item.getName(),
                 author: item.getMaintainer(),
-                availableVersions: [item.getInstalled()],
+                availableVersions: [item.getLatest()],
                 description: item.getBoardsList().map(b => b.getName()).join(", "),
                 installable: true,
                 summary: "Boards included in this package:",
                 installedVersion,
                 boards: item.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
+                moreInfoLink: item.getWebsite()
             }
             return result;
         });

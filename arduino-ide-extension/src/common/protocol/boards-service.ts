@@ -1,9 +1,26 @@
-import { ArduinoComponent } from "./arduino-component";
-import { JsonRpcServer } from "@theia/core";
+import { JsonRpcServer } from '@theia/core';
+import { Searchable } from './searchable';
+import { Installable } from './installable';
+import { ArduinoComponent } from './arduino-component';
 
 export interface AttachedBoardsChangeEvent {
     readonly oldState: Readonly<{ boards: Board[] }>;
     readonly newState: Readonly<{ boards: Board[] }>;
+}
+export namespace AttachedBoardsChangeEvent {
+
+    export function diff(event: AttachedBoardsChangeEvent): Readonly<{ attached: Board[], detached: Board[] }> {
+        const diff = <T>(left: T[], right: T[]) => {
+            return left.filter(item => right.indexOf(item) === -1);
+        }
+        const { boards: newBoards } = event.newState;
+        const { boards: oldBoards } = event.oldState;
+        return {
+            detached: diff(oldBoards, newBoards),
+            attached: diff(newBoards, oldBoards)
+        };
+    }
+
 }
 
 export interface BoardInstalledEvent {
@@ -18,10 +35,8 @@ export interface BoardsServiceClient {
 
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService extends JsonRpcServer<BoardsServiceClient> {
+export interface BoardsService extends Installable<BoardPackage>, Searchable<BoardPackage>, JsonRpcServer<BoardsServiceClient> {
     getAttachedBoards(): Promise<{ boards: Board[] }>;
-    search(options: { query?: string }): Promise<{ items: BoardPackage[] }>;
-    install(item: BoardPackage): Promise<void>;
 }
 
 export interface BoardPackage extends ArduinoComponent {
@@ -32,10 +47,6 @@ export interface BoardPackage extends ArduinoComponent {
 export interface Board {
     name: string
     fqbn?: string
-}
-
-export interface Port {
-    port?: string;
 }
 
 export namespace Board {
