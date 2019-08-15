@@ -1,26 +1,40 @@
-import { FrontendApplicationContribution, FrontendApplication } from "@theia/core/lib/browser";
+import { FrontendApplicationContribution, FrontendApplication, Widget, Message } from "@theia/core/lib/browser";
 import { injectable, inject } from "inversify";
 import { ArduinoToolbar } from "./arduino-toolbar";
 import { TabBarToolbarRegistry } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
 import { CommandRegistry } from "@theia/core";
 import { LabelParser } from "@theia/core/lib/browser/label-parser";
 
+export class ArduinoToolbarContainer extends Widget {
+    constructor(protected left: ArduinoToolbar, protected right: ArduinoToolbar) {
+        super();
+        this.id = 'arduino-toolbar-container';
+    }
+
+    onAfterAttach(msg: Message) {
+        Widget.attach(this.left, this.node);
+        Widget.attach(this.right, this.node);
+    }
+}
+
 @injectable()
 export class ArduinoToolbarContribution implements FrontendApplicationContribution {
 
-    protected toolbarWidget: ArduinoToolbar;
+    protected arduinoToolbarContainer: ArduinoToolbarContainer;
 
     constructor(
         @inject(TabBarToolbarRegistry) protected tabBarToolBarRegistry: TabBarToolbarRegistry,
         @inject(CommandRegistry) protected commandRegistry: CommandRegistry,
         @inject(LabelParser) protected labelParser: LabelParser) {
-        this.toolbarWidget = new ArduinoToolbar(tabBarToolBarRegistry, commandRegistry, labelParser);
+        const leftToolbarWidget = new ArduinoToolbar(tabBarToolBarRegistry, commandRegistry, labelParser, 'left');
+        const rightToolbarWidget = new ArduinoToolbar(tabBarToolBarRegistry, commandRegistry, labelParser, 'right');
+        this.arduinoToolbarContainer = new ArduinoToolbarContainer(leftToolbarWidget, rightToolbarWidget);
     }
 
 
     onStart(app: FrontendApplication) {
-        app.shell.addWidget(this.toolbarWidget, {
+        app.shell.addWidget(this.arduinoToolbarContainer, {
             area: 'top'
-        })
+        });
     }
 }

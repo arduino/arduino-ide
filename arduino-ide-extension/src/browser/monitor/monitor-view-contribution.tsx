@@ -6,6 +6,7 @@ import { MenuModelRegistry, Command, CommandRegistry } from "@theia/core";
 import { ArduinoMenus } from "../arduino-frontend-contribution";
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
 import { MonitorModel } from './monitor-model';
+import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 
 export namespace SerialMonitor {
     export namespace Commands {
@@ -56,14 +57,12 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     async registerToolbarItems(registry: TabBarToolbarRegistry) {
         registry.registerItem({
             id: 'monitor-autoscroll',
-            tooltip: 'Toggle Autoscroll',
             render: () => this.renderAutoScrollButton(),
             isVisible: widget => widget instanceof MonitorWidget,
             onDidChange: this.model.onChange
         });
         registry.registerItem({
             id: 'monitor-timestamp',
-            tooltip: 'Toggle Timestamp',
             render: () => this.renderTimestampButton(),
             isVisible: widget => widget instanceof MonitorWidget,
             onDidChange: this.model.onChange
@@ -76,7 +75,6 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     registerCommands(commands: CommandRegistry): void {
-        super.registerCommands(commands);
         commands.registerCommand(SerialMonitor.Commands.CLEAR_OUTPUT, {
             isEnabled: widget => widget instanceof MonitorWidget,
             isVisible: widget => widget instanceof MonitorWidget,
@@ -86,12 +84,21 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
                 }
             }
         });
+        if (this.toggleCommand) {
+            commands.registerCommand(this.toggleCommand, {
+                execute: () => this.openView({
+                    toggle: true,
+                    activate: true
+                }),
+                isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
+            });
+        }
     }
 
     protected renderAutoScrollButton(): React.ReactNode {
-
         return <React.Fragment>
             <div
+                title='Toggle Autoscroll'
                 className={`item enabled fa fa-angle-double-down arduino-monitor ${this.model.autoscroll ? 'toggled' : ''}`}
                 onClick={this.toggleAutoScroll}
             ></div>
@@ -104,9 +111,9 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected renderTimestampButton(): React.ReactNode {
-
         return <React.Fragment>
             <div
+                title='Toggle Timestamp'
                 className={`item enabled fa fa-clock-o arduino-monitor ${this.model.timestamp ? 'toggled' : ''}`}
                 onClick={this.toggleTimestamp}
             ></div>

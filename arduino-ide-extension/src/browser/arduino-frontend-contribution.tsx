@@ -48,6 +48,7 @@ import { BoardsConfig } from './boards/boards-config';
 import { MonitorService } from '../common/protocol/monitor-service';
 import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
+import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -200,13 +201,19 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 commands={this.commands}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
-            isVisible: widget => this.isArduinoToolbar(widget)
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left'
+        });
+        registry.registerItem({
+            id: 'toggle-serial-monitor',
+            command: MonitorViewContribution.OPEN_SERIAL_MONITOR,
+            tooltip: 'Toggle Serial Monitor',
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
         })
     }
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ArduinoCommands.VERIFY, {
-            isVisible: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
             execute: async () => {
                 const widget = this.getCurrentWidget();
@@ -234,7 +241,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         });
         registry.registerCommand(ArduinoCommands.UPLOAD, {
-            isVisible: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
             execute: async () => {
                 const widget = this.getCurrentWidget();
@@ -270,8 +277,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         });
         registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
-            isVisible: widget => this.isArduinoToolbar(widget),
-            isEnabled: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (widget: Widget, target: EventTarget) => {
                 if (this.wsSketchCount) {
                     const el = (target as HTMLElement).parentElement;
@@ -297,8 +304,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         })
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
-            isEnabled: widget => this.isArduinoToolbar(widget),
-            isVisible: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (sketch: Sketch) => {
                 registry.executeCommand(CommonCommands.SAVE_ALL.id);
             }
@@ -563,13 +570,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             return `The file "${name}${ext}" needs to be inside a sketch folder named "${name}".`;
         }
         return undefined;
-    }
-
-    private isArduinoToolbar(maybeToolbarWidget: any): boolean {
-        if (maybeToolbarWidget instanceof ArduinoToolbar) {
-            return true;
-        }
-        return false;
     }
 
     private toUri(arg: any): URI | undefined {
