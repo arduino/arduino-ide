@@ -14,7 +14,7 @@ import { ToolOutputServiceServer } from '../common/protocol/tool-output-service'
 export class ArduinoDaemon implements BackendApplicationContribution {
 
     // Set this to `true` if you want to connect to a CLI running in debug mode.
-    static DEBUG_CLI = false; 
+    static DEBUG_CLI = false;
 
     @inject(ILogger)
     @named('daemon')
@@ -57,13 +57,13 @@ export class ArduinoDaemon implements BackendApplicationContribution {
 
                 if (daemon.stdout) {
                     daemon.stdout.on('data', data => {
-                        this.toolOutputService.publishNewOutput('daemon', data.toString());
+                        this.toolOutputService.publishNewOutput('daemon', DaemonLog.toPrettyString(data.toString()));
                         DaemonLog.log(this.logger, data.toString());
                     });
                 }
                 if (daemon.stderr) {
                     daemon.stderr.on('data', data => {
-                        this.toolOutputService.publishNewOutput('daemon error', data.toString());
+                        this.toolOutputService.publishNewOutput('daemon error', DaemonLog.toPrettyString(data.toString()));
                         DaemonLog.log(this.logger, data.toString());
                     });
                 }
