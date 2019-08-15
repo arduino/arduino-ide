@@ -1,3 +1,10 @@
+.p-TabBar.theia-app-centers .p-TabBar-tabIcon.arduino-serial-monitor-tab-icon {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-y: 41px;
+    background-position-x: 19px;
+}
+
 .serial-monitor-container {
     height: 100%;
     display: flex;
@@ -60,7 +67,7 @@
 }
 
 .p-TabBar-toolbar .item.arduino-monitor.toggled {
-    border: var(--theia-ui-button-color-hover) var(--theia-border-width) solid;
+    background: var(--theia-brand-color2);
 }
 
 .p-TabBar-toolbar .item .clear-all {

@@ -83,7 +83,7 @@
     opacity: 1;
 }
 
-.arduino-tool-item.item.connected-boards  select {
+.arduino-tool-item.item.connected-boards select {
     line-height: var(--theia-content-line-height);
     font-size: var(--theia-ui-font-size1);
     color: var(--theia-ui-font-color1);

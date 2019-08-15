@@ -131,6 +131,7 @@ export class MonitorWidget extends ReactWidget {
 
         this.id = MonitorWidget.ID;
         this.title.label = 'Serial Monitor';
+        this.title.iconClass = 'arduino-serial-monitor-tab-icon';
 
         this.lines = [];
         this.tempData = '';
