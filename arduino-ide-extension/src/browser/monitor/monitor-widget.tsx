@@ -48,6 +48,7 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
 
     protected handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         this.props.onSend(this.state.value);
+        this.setState({ value: '' });
         event.preventDefault();
     }
 }
