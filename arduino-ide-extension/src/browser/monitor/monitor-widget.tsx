@@ -143,7 +143,11 @@ export class MonitorWidget extends ReactWidget {
             if (this.tempData.endsWith('\n')) {
                 if (this.model.timestamp) {
                     const nu = new Date();
-                    this.tempData = `${nu.getHours()}:${nu.getMinutes()}:${nu.getSeconds()}.${nu.getMilliseconds()} -> ` + this.tempData;
+                    const h = (100 + nu.getHours()).toString().substr(1)
+                    const min = (100 + nu.getMinutes()).toString().substr(1)
+                    const sec = (100 + nu.getSeconds()).toString().substr(1)
+                    const ms = (1000 + nu.getMilliseconds()).toString().substr(1);
+                    this.tempData = `${h}:${min}:${sec}.${ms} -> ` + this.tempData;
                 }
                 this.lines.push(this.tempData);
                 this.tempData = '';
