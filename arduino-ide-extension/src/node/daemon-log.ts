@@ -32,36 +32,49 @@ export namespace DaemonLog {
         const segments = toLog.split('time').filter(s => s.trim().length > 0);
         for (const segment of segments) {
             const maybeDaemonLog = parse(`time${segment}`.trim());
-            if (is(maybeDaemonLog)) {
-                const { msg } = maybeDaemonLog;
-                logger.log(toLogLevel(maybeDaemonLog), msg);
-            } else {
-                logger.info(toLog.trim());
+            for (const logMsg of maybeDaemonLog) {
+                logger.log(toLogLevel(logMsg), logMsg.msg);
             }
         }
     }
 
     // Super naive.
-    function parse(toLog: string): string | DaemonLog {
-        const rawSegments = toLog.split(/(\s+)/)
-            .map(segment => segment.replace(/['"]+/g, ''))
-            .map(segment => segment.trim())
-            .filter(segment => segment.length > 0);
+    function parse(toLog: string): DaemonLog[] {
+        const messages = toLog.split('\ntime=');
+        const result: DaemonLog[] = [];
+        for (let i = 0; i < messages.length; i++) {
+          const msg = (i > 0 ? 'time=' : '') + messages[i];
+          const rawSegments = msg.split(/(\s+)/)
+              .map(segment => segment.replace(/['"]+/g, ''))
+              .map(segment => segment.trim())
+              .filter(segment => segment.length > 0);
 
-        const timeIndex = rawSegments.findIndex(segment => segment.startsWith('time='));
-        const levelIndex = rawSegments.findIndex(segment => segment.startsWith('level='));
-        const msgIndex = rawSegments.findIndex(segment => segment.startsWith('msg='));
-        if (rawSegments.length > 2
-            && timeIndex !== -1
-            && levelIndex !== -1
-            && msgIndex !== -1) {
-            return {
-                time: rawSegments[timeIndex].split('=')[1],
-                level: rawSegments[levelIndex].split('=')[1] as Level,
-                msg: [rawSegments[msgIndex].split('=')[1], ...rawSegments.slice(msgIndex + 1)].join(' ')
-            }
+          const timeIndex = rawSegments.findIndex(segment => segment.startsWith('time='));
+          const levelIndex = rawSegments.findIndex(segment => segment.startsWith('level='));
+          const msgIndex = rawSegments.findIndex(segment => segment.startsWith('msg='));
+          if (rawSegments.length > 2
+              && timeIndex !== -1
+              && levelIndex !== -1
+              && msgIndex !== -1) {
+              result.push({
+                  time: rawSegments[timeIndex].split('=')[1],
+                  level: rawSegments[levelIndex].split('=')[1] as Level,
+                  msg: [rawSegments[msgIndex].split('=')[1], ...rawSegments.slice(msgIndex + 1)].join(' ')
+              });
+          } else {
+            result.push({
+              time: new Date().toString(),
+              level: 'info',
+              msg: msg
+            });
+          }
         }
         // Otherwise, log the string as is.
-        return toLog;
+        return result;
+    }
+
+    export function toPrettyString(logMessage: string): string {
+      const parsed = parse(logMessage);
+      return parsed.map(msg => `[${msg.level.toUpperCase() || 'INFO'}] ${msg.msg}\n`).join('');
     }
 }
