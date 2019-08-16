@@ -71,11 +71,8 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
             fontFamily: 'monospace',
         };
 
-        for (let text of this.props.lines) {
+        for (const text of this.props.lines) {
             result += text;
-        }
-        if (result.length === 0) {
-            result = '';
         }
         return <React.Fragment>
             <div style={style}>{result}</div>
@@ -116,7 +113,7 @@ export class MonitorWidget extends ReactWidget {
 
     protected lines: string[];
     protected tempData: string;
-    protected _baudRate: number;
+    protected baudRate: number;
     protected _lineEnding: string;
 
     constructor(
@@ -168,16 +165,12 @@ export class MonitorWidget extends ReactWidget {
         this.update();
     }
 
-    get baudRate(): number | undefined {
-        return this._baudRate;
-    }
-
     protected onAfterAttach(msg: Message) {
         super.onAfterAttach(msg);
         this.clear();
         this.connect();
         this.toDisposeOnDetach.push(this.boardsServiceClient.onBoardsChanged(async states => {
-            const currentConnectionConfig = this.connection.connectionConfig;
+            const currentConnectionConfig = this.connection.connectionConfig;      
             const connectedBoard = states.newState.boards
                 .filter(AttachedSerialBoard.is)
                 .find(board => {
@@ -296,7 +289,7 @@ export class MonitorWidget extends ReactWidget {
     }
 
     protected readonly onChangeBaudRate = (br: SelectOption) => {
-        this._baudRate = typeof br.value === 'number' ? br.value : 9600;
+        this.baudRate = typeof br.value === 'number' ? br.value : 9600;
     }
 
     protected renderSelectField(id: string, options: OptionsType<SelectOption>, defaultVal: SelectOption, onChange: (v: SelectOption) => void): React.ReactNode {

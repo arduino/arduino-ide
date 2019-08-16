@@ -45,17 +45,18 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
     }
 
     render(): React.ReactNode {
+        const tooltip = <div key='arduino-toolbar-tooltip' className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>;
+        const items = [
+            <React.Fragment>
+                {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
+            </React.Fragment>
+        ]
         if (this.props.side === 'left') {
-            return <React.Fragment>
-                <div key='arduino-toolbar-tooltip' className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>
-                {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
-            </React.Fragment>;
+            items.unshift(tooltip);
         } else {
-            return <React.Fragment>
-                {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
-                <div key='arduino-toolbar-tooltip' className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>
-            </React.Fragment>;
+            items.push(tooltip)
         }
+        return items;
     }
 }
 
@@ -91,8 +92,7 @@ export class ArduinoToolbar extends ReactWidget {
     }
 
     protected init(): void {
-        this.node.classList.add('theia-arduino-toolbar');
-        this.node.classList.add(this.side);
+        this.node.classList.add('theia-arduino-toolbar', this.side);
         this.update();
     }
 

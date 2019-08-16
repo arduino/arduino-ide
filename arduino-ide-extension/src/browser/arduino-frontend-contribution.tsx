@@ -5,7 +5,7 @@ import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, AttachedSerialBoard } from '../common/protocol/boards-service';
+import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
@@ -26,8 +26,6 @@ import {
     StatusBar,
     ShellLayoutRestorer,
     StatusBarAlignment,
-    QuickOpenItem,
-    QuickOpenMode,
     QuickOpenService,
     LabelProvider
 } from '@theia/core/lib/browser';
@@ -73,9 +71,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(MonitorService)
     protected readonly monitorService: MonitorService;
-
-    // TODO: make this better!
-    protected connectionId: string | undefined;
 
     @inject(WorkspaceServiceExt)
     protected readonly workspaceServiceExt: WorkspaceServiceExt;
@@ -341,65 +336,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             },
             isToggled: () => ARDUINO_PRO_MODE
         });
-        registry.registerCommand(ArduinoCommands.CONNECT_TODO, {
-            execute: async () => {
-                const { boardsConfig } = this.boardsServiceClient;
-                const { selectedBoard, selectedPort } = boardsConfig;
-                if (!selectedBoard) {
-                    this.messageService.warn('No boards selected.');
-                    return;
-                }
-                const { name } = selectedBoard;
-                if (!selectedPort) {
-                    this.messageService.warn(`No ports selected for board: '${name}'.`);
-                    return;
-                }
-                const attachedBoards = await this.boardsService.getAttachedBoards();
-                const connectedBoard = attachedBoards.boards.filter(AttachedSerialBoard.is).find(board => BoardsConfig.Config.sameAs(boardsConfig, board));
-                if (!connectedBoard) {
-                    this.messageService.warn(`The selected '${name}' board is not connected on ${selectedPort}.`);
-                    return;
-                }
-                if (this.connectionId) {
-                    console.log('>>> Disposing existing monitor connection before establishing a new one...');
-                    const result = await this.monitorService.disconnect(this.connectionId);
-                    if (!result) {
-                        // TODO: better!!!
-                        console.error(`Could not close connection: ${this.connectionId}. Check the backend logs.`);
-                    } else {
-                        console.log(`<<< Disposed ${this.connectionId} connection.`)
-                    }
-                }
-                const { connectionId } = await this.monitorService.connect({ board: selectedBoard, port: selectedPort });
-                this.connectionId = connectionId;
-            }
-        });
-        registry.registerCommand(ArduinoCommands.SEND, {
-            isEnabled: () => !!this.connectionId,
-            execute: async () => {
-                const { monitorService, connectionId } = this;
-                const model = {
-                    onType(lookFor: string, acceptor: (items: QuickOpenItem[]) => void): void {
-                        acceptor([
-                            new QuickOpenItem({
-                                label: "Type your message and press 'Enter' to send it to the board. Escape to cancel.",
-                                run: (mode: QuickOpenMode): boolean => {
-                                    if (mode !== QuickOpenMode.OPEN) {
-                                        return false;
-                                    }
-                                    monitorService.send(connectionId!, lookFor + '\n');
-                                    return true;
-                                }
-                            })
-                        ]);
-                    }
-                };
-                const options = {
-                    placeholder: "Your message. The message will be suffixed with a LF ['\\n'].",
-                };
-                this.quickOpenService.open(model, options);
-            }
-        })
     }
 
     registerMenus(registry: MenuModelRegistry) {

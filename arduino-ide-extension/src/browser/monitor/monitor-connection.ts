@@ -8,34 +8,26 @@ export class MonitorConnection {
     @inject(MonitorService)
     protected readonly monitorService: MonitorService;
 
-    protected _connectionId: string | undefined;
+    connectionId: string | undefined;
 
-    protected _connectionConfig: ConnectionConfig;
+    protected _connectionConfig: ConnectionConfig | undefined;
 
     protected readonly onConnectionChangedEmitter = new Emitter<string | undefined>();
     readonly onConnectionChanged: Event<string | undefined> = this.onConnectionChangedEmitter.event;
 
-    get connectionId(): string | undefined {
-        return this._connectionId;
-    }
-
-    set connectionId(cid: string | undefined) {
-        this._connectionId = cid;
-    }
-
-    get connectionConfig(): ConnectionConfig {
+    get connectionConfig(): ConnectionConfig | undefined {
         return this._connectionConfig;
     }
 
     async connect(config: ConnectionConfig): Promise<string | undefined> {
-        if (this._connectionId) {
+        if (this.connectionId) {
             await this.disconnect();
         }
         const { connectionId } = await this.monitorService.connect(config);
-        this._connectionId = connectionId;
+        this.connectionId = connectionId;
         this._connectionConfig = config;
 
-        this.onConnectionChangedEmitter.fire(this._connectionId);
+        this.onConnectionChangedEmitter.fire(this.connectionId);
 
         return connectionId;
     }
@@ -43,17 +35,18 @@ export class MonitorConnection {
     async disconnect(): Promise<boolean> {
         let result = true;
         const connections = await this.monitorService.getConnectionIds();
-        if (this._connectionId && connections.findIndex(id => id === this._connectionId) >= 0) {
+        if (this.connectionId && connections.findIndex(id => id === this.connectionId) >= 0) {
             console.log('>>> Disposing existing monitor connection before establishing a new one...');
-            result = await this.monitorService.disconnect(this._connectionId);
+            result = await this.monitorService.disconnect(this.connectionId);
             if (!result) {
                 // TODO: better!!!
-                console.error(`Could not close connection: ${this._connectionId}. Check the backend logs.`);
+                console.error(`Could not close connection: ${this.connectionId}. Check the backend logs.`);
             } else {
-                console.log(`<<< Disposed ${this._connectionId} connection.`);
-                this._connectionId = undefined;
+                console.log(`<<< Disposed ${this.connectionId} connection.`);
+                this.connectionId = undefined;
+                this._connectionConfig = undefined;
+                this.onConnectionChangedEmitter.fire(this.connectionId);
             }
-            this.onConnectionChangedEmitter.fire(this._connectionId);
         }
         return result;
     }

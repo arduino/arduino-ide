@@ -42,15 +42,4 @@ export namespace ArduinoCommands {
     export const TOGGLE_PRO_MODE: Command = {
         id: "arduino-toggle-pro-mode"
     }
-
-    export const CONNECT_TODO: Command = {
-        id: 'connect-to-attached-board',
-        label: 'Connect to Attached Board'
-    }
-
-    export const SEND: Command = {
-        id: 'send',
-        label: 'Send a Message to the Connected Board'
-    }
-
 }

@@ -6,14 +6,19 @@ import { CommandRegistry } from "@theia/core";
 import { LabelParser } from "@theia/core/lib/browser/label-parser";
 
 export class ArduinoToolbarContainer extends Widget {
-    constructor(protected left: ArduinoToolbar, protected right: ArduinoToolbar) {
+
+    protected toolbars: ArduinoToolbar[];
+
+    constructor(...toolbars: ArduinoToolbar[]) {
         super();
         this.id = 'arduino-toolbar-container';
+        this.toolbars = toolbars;
     }
 
     onAfterAttach(msg: Message) {
-        Widget.attach(this.left, this.node);
-        Widget.attach(this.right, this.node);
+        for (const toolbar of this.toolbars) {
+            Widget.attach(toolbar, this.node);
+        }
     }
 }
 
