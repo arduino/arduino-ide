@@ -79,15 +79,38 @@
     border: var(--theia-border-color1) var(--theia-border-width) solid;
 }
 
+.serial-monitor-select .sms__control--is-focused {
+    border-color: var(--theia-border-color2) !important;
+    box-shadow: none !important;
+}
+
+.sms__control--is-focused:hover {
+    border-color: var(--theia-border-color2) !important;
+}
+
 .serial-monitor-select .sms__option--is-selected {
     background-color: var(--theia-ui-button-color-secondary-hover);
     color: var(--theia-content-font-color0);
 }
 
-.serial-monitor-select  .sms__option--is-focused {
+.serial-monitor-select .sms__option--is-focused {
     background-color: var(--theia-ui-button-color-secondary-hover);
 }
 
-.serial-monitor-select  .sms__menu {
+.serial-monitor-select .sms__menu {
     background-color: var(--theia-layout-color1);
+    border: 1px solid var(--theia-border-color2);
+    border-top: none;
+    box-shadow: none;
+}
+
+.serial-monitor-select .sms__control.sms__control--menu-is-open {
+    border: 1px solid;
+    border-color: var(--theia-border-color2) !important;
+    border-bottom: none;
+}
+
+.sms__menu-list {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }

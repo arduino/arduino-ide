@@ -1,4 +1,4 @@
-import { ReactWidget, Message } from "@theia/core/lib/browser";
+import { ReactWidget, Message, Widget } from "@theia/core/lib/browser";
 import { postConstruct, injectable, inject } from "inversify";
 import * as React from 'react';
 import Select, { components } from 'react-select';
@@ -116,6 +116,8 @@ export class MonitorWidget extends ReactWidget {
     protected baudRate: number;
     protected _lineEnding: string;
 
+    protected widgetHeight: number;
+
     constructor(
         @inject(MonitorServiceClientImpl) protected readonly serviceClient: MonitorServiceClientImpl,
         @inject(MonitorConnection) protected readonly connection: MonitorConnection,
@@ -134,6 +136,8 @@ export class MonitorWidget extends ReactWidget {
         this.lines = [];
         this.tempData = '';
         this._lineEnding = '\n';
+
+        this.scrollOptions = undefined;
 
         this.toDisposeOnDetach.push(serviceClient.onRead(({ data, connectionId }) => {
             this.tempData += data;
@@ -170,7 +174,7 @@ export class MonitorWidget extends ReactWidget {
         this.clear();
         this.connect();
         this.toDisposeOnDetach.push(this.boardsServiceClient.onBoardsChanged(async states => {
-            const currentConnectionConfig = this.connection.connectionConfig;      
+            const currentConnectionConfig = this.connection.connectionConfig;
             const connectedBoard = states.newState.boards
                 .filter(AttachedSerialBoard.is)
                 .find(board => {
@@ -193,6 +197,12 @@ export class MonitorWidget extends ReactWidget {
     protected onBeforeDetach(msg: Message) {
         super.onBeforeDetach(msg);
         this.connection.disconnect();
+    }
+
+    protected onResize(msg: Widget.ResizeMessage) {
+        super.onResize(msg);
+        this.widgetHeight = msg.height;
+        this.update();
     }
 
     protected async connect() {
@@ -297,7 +307,8 @@ export class MonitorWidget extends ReactWidget {
         const selectStyles: Styles = {
             control: (provided, state) => ({
                 ...provided,
-                width: 200
+                width: 200,
+                border: 'none'
             }),
             dropdownIndicator: (p, s) => ({
                 ...p,
@@ -337,6 +348,7 @@ export class MonitorWidget extends ReactWidget {
             components={{ DropdownIndicator }}
             theme={theme}
             styles={selectStyles}
+            maxMenuHeight={this.widgetHeight - 40}
             classNamePrefix='sms'
             className='serial-monitor-select'
             id={id}
