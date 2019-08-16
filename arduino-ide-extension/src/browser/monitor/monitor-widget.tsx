@@ -1,4 +1,4 @@
-import { ReactWidget, Message, Widget } from "@theia/core/lib/browser";
+import { ReactWidget, Message, Widget, StatefulWidget } from "@theia/core/lib/browser";
 import { postConstruct, injectable, inject } from "inversify";
 import * as React from 'react';
 import Select, { components } from 'react-select';
@@ -107,7 +107,7 @@ export interface SelectOption {
 }
 
 @injectable()
-export class MonitorWidget extends ReactWidget {
+export class MonitorWidget extends ReactWidget implements StatefulWidget {
 
     static readonly ID = 'serial-monitor';
 
@@ -167,6 +167,14 @@ export class MonitorWidget extends ReactWidget {
     clear(): void {
         this.lines = [];
         this.update();
+    }
+
+    storeState(): MonitorModel.Data {
+        return this.model.store();
+    }
+
+    restoreState(oldState: MonitorModel.Data): void {
+        this.model.restore(oldState);
     }
 
     protected onAfterAttach(msg: Message) {
