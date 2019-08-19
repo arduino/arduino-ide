@@ -47,7 +47,7 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
     render(): React.ReactNode {
         const tooltip = <div key='arduino-toolbar-tooltip' className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>;
         const items = [
-            <React.Fragment>
+            <React.Fragment key={this.props.side + '-arduino-toolbar-tooltip'}>
                 {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
             </React.Fragment>
         ]
@@ -103,6 +103,7 @@ export class ArduinoToolbar extends ReactWidget {
 
     protected render(): React.ReactNode {
         return <ArduinoToolbarComponent
+            key='arduino-toolbar-component'
             side={this.side}
             items={[...this.items.values()]}
             commands={this.commands}

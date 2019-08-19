@@ -96,7 +96,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected renderAutoScrollButton(): React.ReactNode {
-        return <React.Fragment>
+        return <React.Fragment key='autoscroll-toolbar-item'>
             <div
                 title='Toggle Autoscroll'
                 className={`item enabled fa fa-angle-double-down arduino-monitor ${this.model.autoscroll ? 'toggled' : ''}`}
@@ -111,7 +111,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected renderTimestampButton(): React.ReactNode {
-        return <React.Fragment>
+        return <React.Fragment key='line-ending-toolbar-item'>
             <div
                 title='Toggle Timestamp'
                 className={`item enabled fa fa-clock-o arduino-monitor ${this.model.timestamp ? 'toggled' : ''}`}

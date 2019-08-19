@@ -25,6 +25,9 @@ export namespace SerialMonitorSendField {
 }
 
 export class SerialMonitorSendField extends React.Component<SerialMonitorSendField.Props, SerialMonitorSendField.State> {
+
+    protected inputField: HTMLInputElement | null;
+
     constructor(props: SerialMonitorSendField.Props) {
         super(props);
         this.state = { value: '' };
@@ -33,10 +36,22 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+        if (this.inputField) {
+            this.inputField.focus();
+        }
+    }
+
     render() {
         return <React.Fragment>
             <form onSubmit={this.handleSubmit}>
-                <input type='text' id='serial-monitor-send' autoComplete='off' value={this.state.value} onChange={this.handleChange} />
+                <input
+                    tabIndex={-1}
+                    ref={ref => this.inputField = ref}
+                    type='text' id='serial-monitor-send'
+                    autoComplete='off'
+                    value={this.state.value}
+                    onChange={this.handleChange} />
                 <input className="btn" type="submit" value="Submit" />
             </form>
         </React.Fragment>
