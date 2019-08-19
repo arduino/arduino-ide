@@ -4,7 +4,9 @@ import { Emitter } from "@theia/core";
 export namespace MonitorModel {
     export interface Data {
         autoscroll: boolean,
-        timestamp: boolean
+        timestamp: boolean,
+        baudRate: number,
+        lineEnding: string
     }
 }
 
@@ -17,6 +19,8 @@ export class MonitorModel {
 
     protected _autoscroll: boolean = true;
     protected _timestamp: boolean = false;
+    baudRate: number;
+    lineEnding: string = '\n';
 
     get autoscroll(): boolean {
         return this._autoscroll;
@@ -39,12 +43,16 @@ export class MonitorModel {
     restore(model: MonitorModel.Data) {
         this._autoscroll = model.autoscroll;
         this._timestamp = model.timestamp;
+        this.baudRate = model.baudRate;
+        this.lineEnding = model.lineEnding;
     }
 
     store(): MonitorModel.Data {
         return {
             autoscroll: this._autoscroll,
-            timestamp: this._timestamp
+            timestamp: this._timestamp,
+            baudRate: this.baudRate,
+            lineEnding: this.lineEnding
         }
     }
 }

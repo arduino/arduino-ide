@@ -113,8 +113,6 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
 
     protected lines: string[];
     protected tempData: string;
-    protected baudRate: number;
-    protected _lineEnding: string;
 
     protected widgetHeight: number;
 
@@ -135,7 +133,6 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
 
         this.lines = [];
         this.tempData = '';
-        this._lineEnding = '\n';
 
         this.scrollOptions = undefined;
 
@@ -221,7 +218,7 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
     }
 
     protected async getConnectionConfig(): Promise<ConnectionConfig | undefined> {
-        const baudRate = this.baudRate;
+        const baudRate = this.model.baudRate;
         const { boardsConfig } = this.boardsServiceClient;
         const { selectedBoard, selectedPort } = boardsConfig;
         if (!selectedBoard) {
@@ -276,6 +273,8 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
     protected render(): React.ReactNode {
         const le = this.getLineEndings();
         const br = this.getBaudRates();
+        const leVal = this.model.lineEnding && le.find(val => val.value === this.model.lineEnding);
+        const brVal = this.model.baudRate && br.find(val => val.value === this.model.baudRate);
         return <React.Fragment>
             <div className='serial-monitor-container'>
                 <div className='head'>
@@ -283,8 +282,8 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
                         <SerialMonitorSendField onSend={this.onSend} />
                     </div>
                     <div className='config'>
-                        {this.renderSelectField('arduino-serial-monitor-line-endings', le, le[1], this.onChangeLineEnding)}
-                        {this.renderSelectField('arduino-serial-monitor-baud-rates', br, br[4], this.onChangeBaudRate)}
+                        {this.renderSelectField('arduino-serial-monitor-line-endings', le, leVal || le[1], this.onChangeLineEnding)}
+                        {this.renderSelectField('arduino-serial-monitor-baud-rates', br, brVal || br[4], this.onChangeBaudRate)}
                     </div>
                 </div>
                 <div id='serial-monitor-output-container'>
@@ -298,16 +297,22 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
     protected async doSend(value: string) {
         const { connectionId } = this.connection;
         if (connectionId) {
-            this.monitorService.send(connectionId, value + this._lineEnding);
+            this.monitorService.send(connectionId, value + this.model.lineEnding);
         }
     }
 
     protected readonly onChangeLineEnding = (le: SelectOption) => {
-        this._lineEnding = typeof le.value === 'string' ? le.value : '\n';
+        this.model.lineEnding = typeof le.value === 'string' ? le.value : '\n';
     }
 
-    protected readonly onChangeBaudRate = (br: SelectOption) => {
-        this.baudRate = typeof br.value === 'number' ? br.value : 9600;
+    protected readonly onChangeBaudRate = async (br: SelectOption) => {
+        await this.connection.disconnect();
+        this.model.baudRate = typeof br.value === 'number' ? br.value : 9600;
+        this.clear();
+        const config = await this.getConnectionConfig();
+        if (config) {
+            await this.connection.connect(config);
+        }
     }
 
     protected renderSelectField(id: string, options: OptionsType<SelectOption>, defaultVal: SelectOption, onChange: (v: SelectOption) => void): React.ReactNode {
