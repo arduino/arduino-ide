@@ -69,6 +69,7 @@
 
 #arduino-toolbar-container {
     display: flex;
+    width: 100%;
 }
 
 .p-TabBar-toolbar.theia-arduino-toolbar {
@@ -82,6 +83,7 @@
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.left {
     min-width: 398px;
+    justify-content: flex-end;
 }
 
 .arduino-tool-item.item.connected-boards {
