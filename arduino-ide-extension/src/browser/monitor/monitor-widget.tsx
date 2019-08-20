@@ -131,6 +131,8 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
 
     protected widgetHeight: number;
 
+    protected continuePreviousConnection: boolean;
+
     constructor(
         @inject(MonitorServiceClientImpl) protected readonly serviceClient: MonitorServiceClientImpl,
         @inject(MonitorConnection) protected readonly connection: MonitorConnection,
@@ -204,13 +206,18 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
                     }
                     return false;
                 });
-            if (!connectedBoard) {
-                this.close();
+            if (connectedBoard && currentConnectionConfig) {
+                this.continuePreviousConnection = true;
+                this.connection.connect(currentConnectionConfig);
             }
         }));
 
         this.toDisposeOnDetach.push(this.connection.onConnectionChanged(() => {
-            this.clear();
+            if (!this.continuePreviousConnection) {
+                this.clear();
+            } else {
+                this.continuePreviousConnection = false;
+            }
         }));
     }
 
