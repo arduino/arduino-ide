@@ -195,22 +195,29 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
         super.onAfterAttach(msg);
         this.clear();
         this.connect();
-        this.toDisposeOnDetach.push(this.boardsServiceClient.onBoardsChanged(async states => {
-            const currentConnectionConfig = this.connection.connectionConfig;
-            const connectedBoard = states.newState.boards
-                .filter(AttachedSerialBoard.is)
-                .find(board => {
-                    const potentiallyConnected = currentConnectionConfig && currentConnectionConfig.board;
-                    if (AttachedSerialBoard.is(potentiallyConnected)) {
-                        return Board.equals(board, potentiallyConnected) && board.port === potentiallyConnected.port;
-                    }
-                    return false;
-                });
-            if (connectedBoard && currentConnectionConfig) {
-                this.continuePreviousConnection = true;
-                this.connection.connect(currentConnectionConfig);
-            }
-        }));
+        this.toDisposeOnDetach.push(
+            this.boardsServiceClient.onBoardsChanged(async states => {
+                const currentConnectionConfig = this.connection.connectionConfig;
+                const connectedBoard = states.newState.boards
+                    .filter(AttachedSerialBoard.is)
+                    .find(board => {
+                        const potentiallyConnected = currentConnectionConfig && currentConnectionConfig.board;
+                        if (AttachedSerialBoard.is(potentiallyConnected)) {
+                            return Board.equals(board, potentiallyConnected) && board.port === potentiallyConnected.port;
+                        }
+                        return false;
+                    });
+                if (connectedBoard && currentConnectionConfig) {
+                    this.continuePreviousConnection = true;
+                    this.connection.connect(currentConnectionConfig);
+                }
+            })
+        );
+        this.toDisposeOnDetach.push(
+            this.boardsServiceClient.onBoardsConfigChanged(async boardConfig => {
+                this.connect();
+            })
+        )
 
         this.toDisposeOnDetach.push(this.connection.onConnectionChanged(() => {
             if (!this.continuePreviousConnection) {
@@ -255,7 +262,6 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
         const attachedBoards = await this.boardsService.getAttachedBoards();
         const connectedBoard = attachedBoards.boards.filter(AttachedSerialBoard.is).find(board => BoardsConfig.Config.sameAs(boardsConfig, board));
         if (!connectedBoard) {
-            this.messageService.warn(`The selected '${name}' board is not connected on ${selectedPort}.`);
             return;
         }
 
