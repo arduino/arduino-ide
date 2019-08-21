@@ -74,6 +74,7 @@
 
 .p-TabBar-toolbar.theia-arduino-toolbar {
     flex: 1;
+    z-index: 0;
 }
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
