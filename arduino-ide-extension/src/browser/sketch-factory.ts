@@ -38,7 +38,8 @@ export class SketchFactory {
             const sketchDir = parent.resolve(sketchName);
             const sketchFile = sketchDir.resolve(`${sketchName}.ino`);
             this.fileSystem.createFolder(sketchDir.toString());
-            this.fileSystem.createFile(sketchFile.toString(), { content: `
+            this.fileSystem.createFile(sketchFile.toString(), {
+                content: `
 void setup() {
     // put your setup code here, to run once:
 
@@ -51,6 +52,10 @@ void loop() {
 `                   });
             const location = new URL(window.location.href);
             location.searchParams.set('sketch', sketchFile.toString());
+            const hash = await this.fileSystem.getFsPath(sketchDir.toString());
+            if (hash) {
+                location.hash = hash;
+            }
             this.windowService.openNewWindow(location.toString());
         } catch (e) {
             throw new Error("Cannot create new sketch: " + e);

@@ -133,20 +133,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
-    
+
     @inject(QuickOpenService)
     protected readonly quickOpenService: QuickOpenService;
 
+    @inject(WorkspaceService) 
+    protected readonly workspaceService: WorkspaceService;
+
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
-
-    constructor(@inject(WorkspaceService) protected readonly workspaceService: WorkspaceService) {
-        this.workspaceService.onWorkspaceChanged(() => {
-            if (this.workspaceService.workspace) {
-                this.registerSketchesInMenu(this.menuRegistry);
-            }
-        })
-    }
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -161,6 +156,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         }
         this.boardsServiceClient.onBoardsConfigChanged(updateStatusBar);
         updateStatusBar(this.boardsServiceClient.boardsConfig);
+
+        this.registerSketchesInMenu(this.menuRegistry);
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -453,7 +450,18 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     }
 
     protected async getWorkspaceSketches(): Promise<Sketch[]> {
-        const sketches = this.sketches.getSketches(this.workspaceService.workspace);
+
+        let sketches: Sketch[] = [];
+        const userHome = await this.fileSystem.getCurrentUserHome();
+        console.log('userHome', userHome);
+        if (!!userHome) {
+            // TODO: get this from the backend
+            const result = new URI(userHome.uri).resolve('Arduino-PoC').resolve('Sketches').toString();
+            const stat = await this.fileSystem.getFileStat(result);
+            if (!!stat) {
+                sketches = await this.sketches.getSketches(stat);
+            }
+        }
         return sketches;
     }
 
@@ -461,13 +469,18 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         const url = new URL(window.location.href);
         const currentSketch = url.searchParams.get('sketch');
         // Nothing to do if we want to open the same sketch which is already opened.
-        if (!!currentSketch && new URI(currentSketch).toString() === new URI(uri).toString()) {
-            this.messageService.info(`The '${this.labelProvider.getLongName(new URI(uri))}' is already opened.`);
+        const sketchUri = new URI(uri);
+        if (!!currentSketch && new URI(currentSketch).toString() === sketchUri.toString()) {
+            this.messageService.info(`The '${this.labelProvider.getLongName(sketchUri)}' is already opened.`);
             // NOOP.
             return;
         }
         // Preserve the current window if the `sketch` is not in the `searchParams`.
         url.searchParams.set('sketch', uri);
+        const hash = await this.fileSystem.getFsPath(sketchUri.toString());
+        if (hash) {
+            url.hash = hash;
+        }
         if (!currentSketch) {
             setTimeout(() => window.location.href = url.toString(), 100);
             return;
