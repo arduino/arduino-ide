@@ -16,6 +16,7 @@
     "@theia/process": "next",
     "@theia/terminal": "next",
     "@theia/workspace": "next",
+    "@theia/cpp": "next",
     "@theia/textmate-grammars": "next",
     "arduino-ide-extension": "0.0.1"
   },
