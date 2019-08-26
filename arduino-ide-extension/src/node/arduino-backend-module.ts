@@ -19,12 +19,14 @@ import { DefaultWorkspaceServerExt } from './default-workspace-server-ext';
 import { WorkspaceServer } from '@theia/workspace/lib/common';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
+import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
 import { MonitorServiceImpl } from './monitor/monitor-service-impl';
 import { MonitorService, MonitorServicePath, MonitorServiceClient } from '../common/protocol/monitor-service';
 import { MonitorClientProvider } from './monitor/monitor-client-provider';
 import { ArduinoCli } from './arduino-cli';
 import { ArduinoCliContribution } from './arduino-cli-contribution';
 import { CliContribution } from '@theia/core/lib/node';
+import { ConfigServiceImpl } from './config-service-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // Theia backend CLI contribution.
@@ -53,6 +55,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         bindBackendService(SketchesServicePath, SketchesService);
     });
     bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
+    
+    bind(ConfigServiceImpl).toSelf().inSingletonScope();
+    bind(ConfigService).toService(ConfigServiceImpl);
+    
+    // Config service
+    const configServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+        bindBackendService(ConfigServicePath, ConfigService);
+    });
+    bind(ConnectionContainerModule).toConstantValue(configServiceConnectionModule);
 
     // Boards service
     const boardsServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {

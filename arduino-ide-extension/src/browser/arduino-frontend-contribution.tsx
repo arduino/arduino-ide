@@ -46,6 +46,7 @@ import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
 import { MonitorService } from '../common/protocol/monitor-service';
+import { ConfigService } from '../common/protocol/config-service';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -139,6 +140,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(WorkspaceService) 
     protected readonly workspaceService: WorkspaceService;
+
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
@@ -452,11 +456,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected async getWorkspaceSketches(): Promise<Sketch[]> {
 
         let sketches: Sketch[] = [];
-        const userHome = await this.fileSystem.getCurrentUserHome();
-        console.log('userHome', userHome);
-        if (!!userHome) {
-            // TODO: get this from the backend
-            const result = new URI(userHome.uri).resolve('Arduino-PoC').resolve('Sketches').toString();
+        const config = await this.configService.getConfiguration();
+        const result = config.sketchDirPath;
+        if (!!result) {
             const stat = await this.fileSystem.getFileStat(result);
             if (!!stat) {
                 sketches = await this.sketches.getSketches(stat);

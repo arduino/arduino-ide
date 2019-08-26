@@ -3,6 +3,7 @@ import * as which from 'which';
 import * as cp from 'child_process';
 import { join, delimiter } from 'path';
 import { injectable } from 'inversify';
+import { Config } from '../common/protocol/config-service';
 
 @injectable()
 export class ArduinoCli {
@@ -20,9 +21,9 @@ export class ArduinoCli {
         });
     }
 
-    async getDefaultConfig(): Promise<ArduinoCli.Config> {
+    async getDefaultConfig(): Promise<Config> {
         const command = await this.getExecPath();
-        return new Promise<ArduinoCli.Config>((resolve, reject) => {
+        return new Promise<Config>((resolve, reject) => {
             cp.execFile(
                 command,
                 ['config', 'dump', '--format', 'json'],
@@ -41,7 +42,7 @@ export class ArduinoCli {
 
                     // https://github.com/arduino/arduino-cli/issues/342
                     // XXX: this is a hack. The CLI provides a non-valid JSON.
-                    const config: Partial<ArduinoCli.Config> = {};
+                    const config: Partial<Config> = {};
                     const raw = stdout.trim();
                     for (const line of raw.split(/\r?\n/) || []) {
                         // TODO: Named capture groups are avail from ES2018.
@@ -69,11 +70,4 @@ export class ArduinoCli {
         });
     }
 
-}
-
-export namespace ArduinoCli {
-    export interface Config {
-        sketchDirPath: string;
-        dataDirPath: string;
-    }
 }

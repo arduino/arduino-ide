@@ -56,6 +56,7 @@ import { LibraryItemRenderer } from './library/library-item-renderer';
 import { BoardItemRenderer } from './boards/boards-item-renderer';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
+import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 if (!ARDUINO_PRO_MODE) {
@@ -95,6 +96,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
+
+    // Config service
+    bind(ConfigService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ConfigServicePath)).inSingletonScope();
 
     // Boards service
     bind(BoardsService).toDynamicValue(context => {
