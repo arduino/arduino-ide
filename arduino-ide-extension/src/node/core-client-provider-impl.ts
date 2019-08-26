@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 import * as grpc from '@grpc/grpc-js';
 import * as PQueue from 'p-queue';
 import { inject, injectable } from 'inversify';
@@ -81,16 +82,21 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         const { dataDirPath, sketchDirPath } = await this.cli.getDefaultConfig();
 
         if (!fs.existsSync(dataDirPath)) {
-            throw new Error(`Data dir path does not exist: ${dataDirPath}.`);
+            fs.mkdirSync(dataDirPath);
         }
 
         if (!fs.existsSync(sketchDirPath)) {
-            throw new Error(`Sketch dir path does not exist: ${sketchDirPath}.`);
+            fs.mkdirSync(sketchDirPath);
+        }
+
+        const downloadDir = path.join(dataDirPath, 'staging');
+        if (fs.existsSync(downloadDir)) {
+            fs.mkdirSync(downloadDir);
         }
 
         config.setSketchbookdir(sketchDirPath);
         config.setDatadir(dataDirPath);
-        config.setDownloadsdir(dataDirPath);
+        config.setDownloadsdir(downloadDir);
         config.setBoardmanageradditionalurlsList(['https://downloads.arduino.cc/packages/package_index.json']);
 
         const initReq = new InitReq();
