@@ -23,13 +23,14 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
     }
 
     async start(clientConnection: IConnection): Promise<void> {
-        const clangd = await this.resolveExecutable('clangd')
-        const languageServer = await this.resolveExecutable('arduino-language-server')
+        const clangd = await this.resolveExecutable('clangd');
+        const languageServer = await this.resolveExecutable('arduino-language-server');
+        const cli = await this.resolveExecutable('arduino-cli');
         // Add '-log' argument to enable logging to files
-        const args: string[] = ['-clangd', clangd]
-        console.log(`Starting language server ${languageServer} ${args.join(' ')}`)
-        const serverConnection = await this.createProcessStreamConnectionAsync(languageServer, args)
-        this.forward(clientConnection, serverConnection)
+        const args: string[] = ['-clangd', clangd, '-cli', cli];
+        console.log(`Starting language server ${languageServer} ${args.join(' ')}`);
+        const serverConnection = await this.createProcessStreamConnectionAsync(languageServer, args);
+        this.forward(clientConnection, serverConnection);
     }
 
     protected resolveExecutable(name: string): Promise<string> {
