@@ -8,29 +8,14 @@
 // [...]
 // redirecting to latest generated builds by replacing latest with the latest available build date, using the format YYYYMMDD (i.e for 2019/Aug/06 latest is replaced with 20190806 
 
-(async () => {
+(() => {
 
     const DEFAULT_VERSION = 'latest'; // require('moment')().format('YYYYMMDD');
 
     const os = require('os');
-    const fs = require('fs');
     const path = require('path');
     const shell = require('shelljs');
-    const download = require('download');
-    const decompress = require('decompress');
-    const unzip = require('decompress-unzip');
-    const untargz = require('decompress-targz');
-
-    process.on('unhandledRejection', (reason, _) => {
-        shell.echo(String(reason));
-        shell.exit(1);
-        throw reason;
-    });
-    process.on('uncaughtException', error => {
-        shell.echo(String(error));
-        shell.exit(1);
-        throw error;
-    });
+    const downloader = require('./downloader');
 
     const yargs = require('yargs')
         .option('cli-version', {
@@ -50,22 +35,7 @@
     const { platform, arch } = process;
 
     const build = path.join(__dirname, '..', 'build');
-    const downloads = path.join(__dirname, '..', 'downloads');
     const cli = path.join(build, `arduino-cli${os.platform() === 'win32' ? '.exe' : ''}`);
-
-    if (fs.existsSync(cli) && !force) {
-        shell.echo(`The 'arduino-cli' already exists at ${cli}. Skipping download.`);
-        shell.exit(0);
-    }
-    if (!fs.existsSync(build)) {
-        if (shell.mkdir('-p', build).code !== 0) {
-            shell.echo('Could not create new directory.');
-            shell.exit(1);
-        }
-    }
-    if (shell.rm('-rf', cli, downloads).code !== 0) {
-        shell.exit(1);
-    }
 
     const suffix = (() => {
         switch (platform) {
@@ -87,36 +57,6 @@
     }
 
     const url = `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-${version}_${suffix}`;
-    shell.echo(`>>> Downloading 'arduino-cli' from '${url}'...`);
-    const data = await download(url);
-    shell.echo(`<<< Download succeeded.`);
-    shell.echo('>>> Decompressing CLI...');
-    const files = await decompress(data, downloads, {
-        plugins: [
-            unzip(),
-            untargz()
-        ]
-    });
-    if (files.length === 0) {
-        shell.echo('Error ocurred when decompressing the CLI.');
-        shell.exit(1);
-    }
-    const cliIndex = files.findIndex(f => f.path.startsWith('arduino-cli'));
-    if (cliIndex === -1) {
-        shell.echo('The downloaded artifact does not contains the CLI.');
-        shell.exit(1);
-    }
-    shell.echo('<<< Decompressing succeeded.');
-
-    if (shell.mv('-f', path.join(downloads, files[cliIndex].path), cli).code !== 0) {
-        shell.echo(`Could not move file to ${cli}.`);
-        shell.exit(1);
-    }
-    if (!fs.existsSync(cli)) {
-        shell.echo(`Could not find CLI at ${cli}.`);
-        shell.exit(1);
-    } else {
-        shell.echo('Done.');
-    }
+    downloader.download(url, cli, 'arduino-cli', force);
 
 })();
