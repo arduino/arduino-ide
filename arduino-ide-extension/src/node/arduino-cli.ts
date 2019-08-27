@@ -2,11 +2,16 @@ import * as os from 'os';
 import * as which from 'which';
 import * as cp from 'child_process';
 import { join, delimiter } from 'path';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { ILogger } from '@theia/core';
+import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Config } from '../common/protocol/config-service';
 
 @injectable()
 export class ArduinoCli {
+
+    @inject(ILogger)
+    protected logger: ILogger;
 
     async getExecPath(): Promise<string> {
         const build = join(__dirname, '..', '..', 'build');
@@ -47,25 +52,33 @@ export class ArduinoCli {
                     for (const line of raw.split(/\r?\n/) || []) {
                         // TODO: Named capture groups are avail from ES2018.
                         // const pair = line.match(/(?<key>[^:]+):(?<value>[^,]+),?/);
-                        const pair = line.split(':').map(entry => entry.trim());
-                        if (pair[0] === 'sketchbook_path') {
-                            config.sketchDirPath = pair[1];
-                        } else if (pair[0] === 'arduino_data') {
-                            config.dataDirPath = pair[1];
+                        const index = line.indexOf(':');
+                        if (index !== -1) {
+                            const key = line.substr(0, index).trim();
+                            const value = line.substr(index + 1, line.length).trim();
+                            if (!!key && !!value) {
+                                if (key === 'sketchbook_path') {
+                                    config.sketchDirUri = FileUri.create(value).toString();
+                                } else if (key === 'arduino_data') {
+                                    config.dataDirUri = FileUri.create(value).toString();
+                                }
+                            }
                         }
                     }
 
-                    if (!config.dataDirPath) {
+                    if (!config.dataDirUri) {
                         reject(new Error(`Could not parse config. 'arduino_data' was missing from: ${stdout}`));
                         return;
                     }
 
-                    if (!config.sketchDirPath) {
+                    if (!config.sketchDirUri) {
                         reject(new Error(`Could not parse config. 'sketchbook_path' was missing from: ${stdout}`));
                         return;
                     }
 
-                    resolve({ sketchDirPath: config.sketchDirPath, dataDirPath: config.dataDirPath });
+                    this.logger.info(`Retrieved the default configuration from the CLI: ${JSON.stringify(config)}`);
+
+                    resolve({ sketchDirUri: config.sketchDirUri, dataDirUri: config.dataDirUri });
                 });
         });
     }

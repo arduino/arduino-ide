@@ -457,12 +457,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
         let sketches: Sketch[] = [];
         const config = await this.configService.getConfiguration();
-        const result = config.sketchDirPath;
-        if (!!result) {
-            const stat = await this.fileSystem.getFileStat(result);
-            if (!!stat) {
-                sketches = await this.sketches.getSketches(stat);
-            }
+        const stat = await this.fileSystem.getFileStat(config.sketchDirUri);
+        if (!!stat) {
+            sketches = await this.sketches.getSketches(stat);
         }
         return sketches;
     }

@@ -20,6 +20,7 @@ import {
 import { ArduinoCli } from './arduino-cli';
 import { Instance } from './cli-protocol/commands/common_pb';
 import { CoreClientProvider, Client } from './core-client-provider';
+import { FileUri } from '@theia/core/lib/node';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
@@ -79,7 +80,9 @@ export class CoreClientProviderImpl implements CoreClientProvider {
             throw new Error(`Could not resolve filesystem path of URI: ${rootUri}.`);
         }
 
-        const { dataDirPath, sketchDirPath } = await this.cli.getDefaultConfig();
+        const { dataDirUri, sketchDirUri } = await this.cli.getDefaultConfig();
+        const dataDirPath = FileUri.fsPath(dataDirUri);
+        const sketchDirPath = FileUri.fsPath(sketchDirUri);
 
         if (!fs.existsSync(dataDirPath)) {
             fs.mkdirSync(dataDirPath);
@@ -90,7 +93,7 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         }
 
         const downloadDir = path.join(dataDirPath, 'staging');
-        if (fs.existsSync(downloadDir)) {
+        if (!fs.existsSync(downloadDir)) {
             fs.mkdirSync(downloadDir);
         }
 

@@ -1,4 +1,3 @@
-
 export const ConfigServicePath = '/services/config-service';
 export const ConfigService = Symbol('ConfigService');
 
@@ -7,6 +6,6 @@ export interface ConfigService {
 }
 
 export interface Config {
-    sketchDirPath: string;
-    dataDirPath: string;
+    sketchDirUri: string;
+    dataDirUri: string;
 }

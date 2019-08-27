@@ -29,7 +29,7 @@ export class AWorkspaceService  extends WorkspaceService {
         let result = await super.getDefaultWorkspacePath();
         if (!result) {
             const config = await this.configService.getConfiguration();
-            result = config.sketchDirPath;
+            result = config.sketchDirUri;
         }
 
         const stat = await this.fileSystem.getFileStat(result);
