@@ -8,9 +8,7 @@
 
 (async () => {
 
-    // TODO: currently, the download dates are one day behind.
-    // https://typefox.slack.com/archives/CJJHJCJSJ/p1567062276016400
-    const DEFAULT_VERSION = require('moment')().subtract(1, 'day').format('YYYYMMDD');
+    const DEFAULT_VERSION = require('moment')().format('YYYYMMDD');
 
     const os = require('os');
     const fs = require('fs');
