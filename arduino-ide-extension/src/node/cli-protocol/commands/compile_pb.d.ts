@@ -51,6 +51,9 @@ export class CompileReq extends jspb.Message {
     getExportfile(): string;
     setExportfile(value: string): void;
 
+    getJobs(): number;
+    setJobs(value: number): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileReq.AsObject;
@@ -77,6 +80,7 @@ export namespace CompileReq {
         quiet: boolean,
         vidpid: string,
         exportfile: string,
+        jobs: number,
     }
 }
 

@@ -43,42 +43,22 @@ export class ArduinoCli {
                         throw new Error(stderr);
                     }
 
-                    // const { sketchbook_path: sketchDirPath, arduino_data: dataDirPath } = JSON.parse(raw);
+                    const { sketchbook_path, arduino_data } = JSON.parse(stdout.trim());
 
-                    // https://github.com/arduino/arduino-cli/issues/342
-                    // XXX: this is a hack. The CLI provides a non-valid JSON.
-                    const config: Partial<Config> = {};
-                    const raw = stdout.trim();
-                    for (const line of raw.split(/\r?\n/) || []) {
-                        // TODO: Named capture groups are avail from ES2018.
-                        // const pair = line.match(/(?<key>[^:]+):(?<value>[^,]+),?/);
-                        const index = line.indexOf(':');
-                        if (index !== -1) {
-                            const key = line.substr(0, index).trim();
-                            const value = line.substr(index + 1, line.length).trim();
-                            if (!!key && !!value) {
-                                if (key === 'sketchbook_path') {
-                                    config.sketchDirUri = FileUri.create(value).toString();
-                                } else if (key === 'arduino_data') {
-                                    config.dataDirUri = FileUri.create(value).toString();
-                                }
-                            }
-                        }
-                    }
-
-                    if (!config.dataDirUri) {
-                        reject(new Error(`Could not parse config. 'arduino_data' was missing from: ${stdout}`));
-                        return;
-                    }
-
-                    if (!config.sketchDirUri) {
+                    if (!sketchbook_path) {
                         reject(new Error(`Could not parse config. 'sketchbook_path' was missing from: ${stdout}`));
                         return;
                     }
 
-                    this.logger.info(`Retrieved the default configuration from the CLI: ${JSON.stringify(config)}`);
+                    if (!arduino_data) {
+                        reject(new Error(`Could not parse config. 'arduino_data' was missing from: ${stdout}`));
+                        return;
+                    }
 
-                    resolve({ sketchDirUri: config.sketchDirUri, dataDirUri: config.dataDirUri });
+                    resolve({
+                        sketchDirUri: FileUri.create(sketchbook_path).toString(),
+                        dataDirUri: FileUri.create(arduino_data).toString()
+                    });
                 });
         });
     }
