@@ -6,7 +6,7 @@
         {
             "label": "Arduino Editor - Start Browser Example",
             "type": "shell",
-            "command": "yarn --cwd ./arduino-ide-browser start",
+            "command": "yarn --cwd ./browser-app start",
             "group": "build",
             "presentation": {
                 "reveal": "always",
@@ -28,7 +28,7 @@
         {
             "label": "Arduino Editor - Watch Browser Example",
             "type": "shell",
-            "command": "yarn --cwd ./arduino-ide-browser watch",
+            "command": "yarn --cwd ./browser-app watch",
             "group": "build",
             "presentation": {
                 "reveal": "always",

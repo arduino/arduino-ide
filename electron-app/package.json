@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "arduino-ide-electron",
+    "name": "electron-app",
     "version": "0.0.1",
     "license": "MIT",
     "dependencies": {

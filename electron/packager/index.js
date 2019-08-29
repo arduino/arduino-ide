@@ -47,13 +47,13 @@
     }
 
     //-----------------------------------------------------+
-    // No need to build the `arduino-ide-browser` example. |
+    // No need to build the `browser-app` example. |
     //-----------------------------------------------------+
     //@ts-ignore
     let pkg = require('../working-copy/package.json');
     const workspaces = pkg.workspaces;
     // We cannot remove the `arduino-ide-electron`. Otherwise, there is not way to collect the unused dependencies.
-    const dependenciesToRemove = ['arduino-ide-browser'];
+    const dependenciesToRemove = ['browser-app'];
     for (const dependencyToRemove of dependenciesToRemove) {
         const index = workspaces.indexOf(dependencyToRemove);
         if (index !== -1) {

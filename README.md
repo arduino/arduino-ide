@@ -26,7 +26,7 @@ yarn rebuild:browser
 ```
 Then you can start the browser example again:
 ```
-yarn --cwd arduino-ide-browser start
+yarn --cwd browser-app start
 ```
 
 ## Arduino-PoC Electron Application

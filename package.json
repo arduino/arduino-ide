@@ -14,12 +14,12 @@
       "prepare": "lerna run prepare",
       "rebuild:browser": "theia rebuild:browser",
       "rebuild:electron": "theia rebuild:electron",
-      "start": "yarn --cwd ./arduino-ide-browser start",
+      "start": "yarn --cwd ./browser-app start",
       "watch": "lerna run watch --parallel"
   },
   "workspaces": [
-      "arduino-ide-electron",
-      "arduino-ide-browser",
-      "arduino-ide-extension"
+    "arduino-ide-extension",
+      "electron-app",
+      "browser-app"
   ]
 }

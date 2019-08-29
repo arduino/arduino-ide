@@ -8,7 +8,7 @@ ports:
 tasks:
   - init: >
       yarn &&
-      yarn --cwd ./arduino-ide-browser start
+      yarn --cwd ./browser-app start
 
 github:
   prebuilds:
