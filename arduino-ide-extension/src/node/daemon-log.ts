@@ -83,7 +83,7 @@ export namespace DaemonLog {
     export function log(logger: ILogger, logMessages: string): void {
         const parsed = parse(logMessages);
         for (const log of parsed) {
-            logger.log(toLogLevel(log), toMessage(log).trim()); // XXX: `trim` as `toMessage` appends a NL.
+            logger.log(toLogLevel(log), toMessage(log));
         }
     }
 
@@ -107,14 +107,14 @@ export namespace DaemonLog {
         return result;
     }
 
-    export function toPrettyString(logMessages: string, logger?: ILogger): string {
+    export function toPrettyString(logMessages: string): string {
         const parsed = parse(logMessages);
-        return parsed.map(toMessage).join('');
+        return parsed.map(toMessage).join('\n');
     }
 
     function toMessage(log: DaemonLog): string {
         const details = Object.keys(log).filter(key => key !== 'msg' && key !== 'level' && key !== 'time').map(key => toDetails(log, key)).join(', ');
-        return `[${log.level.toUpperCase()}] ${log.msg}${!!details ? ` [${details}]` : ''}\n`
+        return `[${log.level.toUpperCase()}] ${log.msg}${!!details ? ` [${details}]` : ''}`
     }
 
     function toDetails(log: DaemonLog, key: string): string {
@@ -124,7 +124,7 @@ export namespace DaemonLog {
         } else if (DaemonLog.Tool.is(value)) {
             value = DaemonLog.Tool.toString(value);
         } else if (typeof value === 'object') {
-            value = JSON.stringify(value).replace(/\"([^(\")"]+)\":/g, '$1:');
+            value = JSON.stringify(value).replace(/\"([^(\")"]+)\":/g, '$1:'); // Remove the quotes from the property keys.
         }
         return `${key.toLowerCase()}: ${value}`;
     }
