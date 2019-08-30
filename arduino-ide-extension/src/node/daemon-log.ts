@@ -30,24 +30,6 @@ export namespace DaemonLog {
 
     }
 
-    export interface Tool {
-        readonly version: string;
-        readonly systems: System[];
-    }
-
-    export namespace Tool {
-
-        export function is(arg: any | undefined): arg is Tool {
-            return  !!arg && typeof arg.version === 'string' && 'systems' in arg;
-        }
-
-        export function toString(tool: Tool): string {
-            const { version, systems } = tool;
-            return `Version: ${version}${!!systems ? ` Systems: [${tool.systems.map(System.toString).join(', ')}]` : ''}`;
-        }
-
-    }
-
     export interface System {
         readonly os: string;
         // readonly Resource: Resource;
@@ -57,6 +39,24 @@ export namespace DaemonLog {
         export function toString(system: System): string {
             return `OS: ${system.os}`
         }
+    }
+
+    export interface Tool {
+        readonly version: string;
+        readonly systems: System[];
+    }
+
+    export namespace Tool {
+
+        export function is(arg: any | undefined): arg is Tool {
+            return !!arg && typeof arg.version === 'string' && 'systems' in arg;
+        }
+
+        export function toString(tool: Tool): string {
+            const { version, systems } = tool;
+            return `Version: ${version}${!!systems ? ` Systems: [${tool.systems.map(System.toString).join(', ')}]` : ''}`;
+        }
+
     }
 
     export type Level = 'trace' | 'debug' | 'info' | 'warning' | 'error';
