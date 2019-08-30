@@ -33,7 +33,7 @@ export class ArduinoDaemon implements BackendApplicationContribution {
             if (!this.cliContribution.debugCli) {
                 const executable = await this.cli.getExecPath();
                 this.logger.info(`>>> Starting 'arduino-cli' daemon... [${executable}]`);
-                const daemon = exec(`${executable} daemon -v --log-level info --format json`, (err, stdout, stderr) => {
+                const daemon = exec(`${executable} daemon -v --log-level info --format json --log-format json`, (err, stdout, stderr) => {
                     if (err || stderr) {
                         console.log(err || new Error(stderr));
                         return;
