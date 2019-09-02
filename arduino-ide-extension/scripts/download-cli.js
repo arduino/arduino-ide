@@ -1,14 +1,16 @@
 // @ts-check
-// The links to the downloads as of today (19.08.) are the followings:
+// The links to the downloads as of today (02.09.) are the followings:
 // In order to get the latest nightly build for your platform use the following links replacing <DATE> with the current date, using the format YYYYMMDD (i.e for 2019/Aug/06 use 20190806 )
 // Linux 64 bit: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_Linux_64bit.tar.gz
 // Linux ARM 64 bit: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_Linux_ARM64.tar.gz
 // Windows 64 bit: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_Windows_64bit.zip
 // Mac OSX: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_macOS_64bit.tar.gz
+// [...]
+// redirecting to latest generated builds by replacing latest with the latest available build date, using the format YYYYMMDD (i.e for 2019/Aug/06 latest is replaced with 20190806 
 
 (async () => {
 
-    const DEFAULT_VERSION = require('moment')().format('YYYYMMDD');
+    const DEFAULT_VERSION = 'latest'; // require('moment')().format('YYYYMMDD');
 
     const os = require('os');
     const fs = require('fs');
@@ -34,7 +36,7 @@
         .option('cli-version', {
             alias: 'cv',
             default: DEFAULT_VERSION,
-            describe: `The version of the 'arduino-cli' to download with the YYYYMMDD format. Defaults to ${DEFAULT_VERSION}.`
+            describe: `The version of the 'arduino-cli' to download with the YYYYMMDD format, or 'latest'. Defaults to ${DEFAULT_VERSION}.`
         })
         .option('force-download', {
             alias: 'fd',
