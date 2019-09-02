@@ -14,7 +14,7 @@
     const workingCopy = 'working-copy';
 
     /**
-     * Relative path from the `__dirname` to the root where the `arduino-ide-extension` and the `arduino-ide-electron` folders are.
+     * Relative path from the `__dirname` to the root where the `arduino-ide-extension` and the `electron-app` folders are.
      * This could come handy when moving the location of the `electron/packager`.
      */
     const rootPath = join('..', '..');
@@ -42,7 +42,7 @@
     // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
     //----------------------------------------------------------------------------------------------+
     mkdir('-p', path('..', workingCopy));
-    for (const name of ['arduino-ide-extension', 'arduino-ide-electron', 'yarn.lock', 'package.json', 'lerna.json']) {
+    for (const name of ['arduino-ide-extension', 'electron-app', 'yarn.lock', 'package.json', 'lerna.json']) {
         cp('-rf', path(rootPath, name), path('..', workingCopy));
     }
 
@@ -52,7 +52,7 @@
     //@ts-ignore
     let pkg = require('../working-copy/package.json');
     const workspaces = pkg.workspaces;
-    // We cannot remove the `arduino-ide-electron`. Otherwise, there is not way to collect the unused dependencies.
+    // We cannot remove the `electron-app`. Otherwise, there is not way to collect the unused dependencies.
     const dependenciesToRemove = ['browser-app'];
     for (const dependencyToRemove of dependenciesToRemove) {
         const index = workspaces.indexOf(dependencyToRemove);
@@ -70,13 +70,13 @@
     // Collect all unused dependencies by the backend. We have to remove them from the electron app.
     // The `bundle.js` already contains everything we need for the frontend.
     // We have to do it before changing the dependencies to `local-path`.
-    const unusedDependencies = await utils.collectUnusedDependencies('../working-copy/arduino-ide-electron/');
+    const unusedDependencies = await utils.collectUnusedDependencies('../working-copy/electron-app/');
 
     //------------------------------------------------------------------------------------+
     // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
     //------------------------------------------------------------------------------------+
     // @ts-ignore
-    pkg = require('../working-copy/arduino-ide-electron/package.json');
+    pkg = require('../working-copy/electron-app/package.json');
     // @ts-ignore
     const template = require('../build/template-package.json');
     template.build.files = [ ...template.build.files, ...unusedDependencies.map(name => `!node_modules/${name}`) ];

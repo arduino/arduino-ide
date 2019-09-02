@@ -17,7 +17,7 @@ git clone https://github.com/bcmi-labs/arduino-editor
 cd arduino-editor
 yarn
 yarn rebuild:electron
-yarn --cwd arduino-ide-electron start
+yarn --cwd electron-app start
 ```
 
 If you want to switch back to the browser-based example, execute the following in the repository root
