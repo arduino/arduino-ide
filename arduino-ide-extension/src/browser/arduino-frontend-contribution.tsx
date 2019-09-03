@@ -46,6 +46,7 @@ import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
 import { MonitorService } from '../common/protocol/monitor-service';
+import { ConfigService } from '../common/protocol/config-service';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -133,20 +134,18 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
-    
+
     @inject(QuickOpenService)
     protected readonly quickOpenService: QuickOpenService;
 
+    @inject(WorkspaceService) 
+    protected readonly workspaceService: WorkspaceService;
+
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
+
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
-
-    constructor(@inject(WorkspaceService) protected readonly workspaceService: WorkspaceService) {
-        this.workspaceService.onWorkspaceChanged(() => {
-            if (this.workspaceService.workspace) {
-                this.registerSketchesInMenu(this.menuRegistry);
-            }
-        })
-    }
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -161,6 +160,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         }
         this.boardsServiceClient.onBoardsConfigChanged(updateStatusBar);
         updateStatusBar(this.boardsServiceClient.boardsConfig);
+
+        this.registerSketchesInMenu(this.menuRegistry);
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -453,7 +454,13 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     }
 
     protected async getWorkspaceSketches(): Promise<Sketch[]> {
-        const sketches = this.sketches.getSketches(this.workspaceService.workspace);
+
+        let sketches: Sketch[] = [];
+        const config = await this.configService.getConfiguration();
+        const stat = await this.fileSystem.getFileStat(config.sketchDirUri);
+        if (!!stat) {
+            sketches = await this.sketches.getSketches(stat);
+        }
         return sketches;
     }
 
@@ -461,13 +468,18 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         const url = new URL(window.location.href);
         const currentSketch = url.searchParams.get('sketch');
         // Nothing to do if we want to open the same sketch which is already opened.
-        if (!!currentSketch && new URI(currentSketch).toString() === new URI(uri).toString()) {
-            this.messageService.info(`The '${this.labelProvider.getLongName(new URI(uri))}' is already opened.`);
+        const sketchUri = new URI(uri);
+        if (!!currentSketch && new URI(currentSketch).toString() === sketchUri.toString()) {
+            this.messageService.info(`The '${this.labelProvider.getLongName(sketchUri)}' is already opened.`);
             // NOOP.
             return;
         }
         // Preserve the current window if the `sketch` is not in the `searchParams`.
         url.searchParams.set('sketch', uri);
+        const hash = await this.fileSystem.getFsPath(sketchUri.toString());
+        if (hash) {
+            url.hash = hash;
+        }
         if (!currentSketch) {
             setTimeout(() => window.location.href = url.toString(), 100);
             return;
@@ -542,25 +554,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         }
         return undefined;
     }
-
-    // private async onNoBoardsInstalled() {
-    //     const action = await this.messageService.info("You have no boards installed. Use the boards manager to install one.", "Open Boards Manager");
-    //     if (!action) {
-    //         return;
-    //     }
-
-    //     this.boardsListWidgetFrontendContribution.openView({ reveal: true });
-    // }
-
-    // private async onUnknownBoard() {
-    //     const action = await this.messageService.warn("There's a board connected for which you need to install software." +
-    //         " If this were not a PoC we would offer you the right package now.", "Open Boards Manager");
-    //     if (!action) {
-    //         return;
-    //     }
-
-    //     this.boardsListWidgetFrontendContribution.openView({ reveal: true });
-    // }
 
     private isArduinoToolbar(maybeToolbarWidget: any): boolean {
         if (maybeToolbarWidget instanceof ArduinoToolbar) {

@@ -8,7 +8,58 @@ export interface DaemonLog {
 
 export namespace DaemonLog {
 
-    export type Level = 'info' | 'debug' | 'warning' | 'error';
+    export interface Url {
+        readonly Scheme: string;
+        readonly Host: string;
+        readonly Path: string;
+    }
+
+    export namespace Url {
+
+        export function is(arg: any | undefined): arg is Url {
+            return !!arg
+                && typeof arg.Scheme === 'string'
+                && typeof arg.Host === 'string'
+                && typeof arg.Path === 'string';
+        }
+
+        export function toString(url: Url): string {
+            const { Scheme, Host, Path } = url;
+            return `${Scheme}://${Host}${Path}`;
+        }
+
+    }
+
+    export interface System {
+        readonly os: string;
+        // readonly Resource: Resource;
+    }
+
+    export namespace System {
+        export function toString(system: System): string {
+            return `OS: ${system.os}`
+        }
+    }
+
+    export interface Tool {
+        readonly version: string;
+        readonly systems: System[];
+    }
+
+    export namespace Tool {
+
+        export function is(arg: any | undefined): arg is Tool {
+            return !!arg && typeof arg.version === 'string' && 'systems' in arg;
+        }
+
+        export function toString(tool: Tool): string {
+            const { version, systems } = tool;
+            return `Version: ${version}${!!systems ? ` Systems: [${tool.systems.map(System.toString).join(', ')}]` : ''}`;
+        }
+
+    }
+
+    export type Level = 'trace' | 'debug' | 'info' | 'warning' | 'error';
 
     export function is(arg: any | undefined): arg is DaemonLog {
         return !!arg
@@ -20,61 +71,62 @@ export namespace DaemonLog {
     export function toLogLevel(log: DaemonLog): LogLevel {
         const { level } = log;
         switch (level) {
-            case 'info': return LogLevel.INFO;
+            case 'trace': return LogLevel.TRACE;
             case 'debug': return LogLevel.DEBUG;
-            case 'error': return LogLevel.ERROR;
+            case 'info': return LogLevel.INFO;
             case 'warning': return LogLevel.WARN;
+            case 'error': return LogLevel.ERROR;
             default: return LogLevel.INFO;
         }
     }
 
-    export function log(logger: ILogger, toLog: string): void {
-        const segments = toLog.split('time').filter(s => s.trim().length > 0);
-        for (const segment of segments) {
-            const maybeDaemonLog = parse(`time${segment}`.trim());
-            for (const logMsg of maybeDaemonLog) {
-                logger.log(toLogLevel(logMsg), logMsg.msg);
-            }
+    export function log(logger: ILogger, logMessages: string): void {
+        const parsed = parse(logMessages);
+        for (const log of parsed) {
+            logger.log(toLogLevel(log), toMessage(log));
         }
     }
 
-    // Super naive.
     function parse(toLog: string): DaemonLog[] {
-        const messages = toLog.split('\ntime=');
+        const messages = toLog.trim().split('\n');
         const result: DaemonLog[] = [];
         for (let i = 0; i < messages.length; i++) {
-          const msg = (i > 0 ? 'time=' : '') + messages[i];
-          const rawSegments = msg.split(/(\s+)/)
-              .map(segment => segment.replace(/['"]+/g, ''))
-              .map(segment => segment.trim())
-              .filter(segment => segment.length > 0);
-
-          const timeIndex = rawSegments.findIndex(segment => segment.startsWith('time='));
-          const levelIndex = rawSegments.findIndex(segment => segment.startsWith('level='));
-          const msgIndex = rawSegments.findIndex(segment => segment.startsWith('msg='));
-          if (rawSegments.length > 2
-              && timeIndex !== -1
-              && levelIndex !== -1
-              && msgIndex !== -1) {
-              result.push({
-                  time: rawSegments[timeIndex].split('=')[1],
-                  level: rawSegments[levelIndex].split('=')[1] as Level,
-                  msg: [rawSegments[msgIndex].split('=')[1], ...rawSegments.slice(msgIndex + 1)].join(' ')
-              });
-          } else {
+            try {
+                const maybeDaemonLog = JSON.parse(messages[i]);
+                if (DaemonLog.is(maybeDaemonLog)) {
+                    result.push(maybeDaemonLog);
+                    continue;
+                }
+            } catch { /* NOOP */ }
             result.push({
-              time: new Date().toString(),
-              level: 'info',
-              msg: msg
+                time: new Date().toString(),
+                level: 'info',
+                msg: messages[i]
             });
-          }
         }
-        // Otherwise, log the string as is.
         return result;
     }
 
-    export function toPrettyString(logMessage: string): string {
-      const parsed = parse(logMessage);
-      return parsed.map(msg => `[${msg.level.toUpperCase() || 'INFO'}] ${msg.msg}\n`).join('');
+    export function toPrettyString(logMessages: string): string {
+        const parsed = parse(logMessages);
+        return parsed.map(toMessage).join('\n');
     }
+
+    function toMessage(log: DaemonLog): string {
+        const details = Object.keys(log).filter(key => key !== 'msg' && key !== 'level' && key !== 'time').map(key => toDetails(log, key)).join(', ');
+        return `[${log.level.toUpperCase()}] ${log.msg}${!!details ? ` [${details}]` : ''}`
+    }
+
+    function toDetails(log: DaemonLog, key: string): string {
+        let value = (log as any)[key];
+        if (DaemonLog.Url.is(value)) {
+            value = DaemonLog.Url.toString(value);
+        } else if (DaemonLog.Tool.is(value)) {
+            value = DaemonLog.Tool.toString(value);
+        } else if (typeof value === 'object') {
+            value = JSON.stringify(value).replace(/\"([^(\")"]+)\":/g, '$1:'); // Remove the quotes from the property keys.
+        }
+        return `${key.toLowerCase()}: ${value}`;
+    }
+
 }

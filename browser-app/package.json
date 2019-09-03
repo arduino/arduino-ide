@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "arduino-ide-browser",
+  "name": "browser-app",
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
@@ -30,7 +30,7 @@
   "theia": {
     "frontend": {
       "config": {
-        "applicationName": "Arduino-PoC",
+        "applicationName": "Arduino Editor",
         "defaultTheme": "arduino-theme",
         "preferences": {
           "editor.autoSave": "on"

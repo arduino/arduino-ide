@@ -1,5 +1,12 @@
-import { inject, injectable } from 'inversify';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as grpc from '@grpc/grpc-js';
+import * as PQueue from 'p-queue';
+import { inject, injectable } from 'inversify';
+import URI from '@theia/core/lib/common/uri';
+import { FileSystem } from '@theia/filesystem/lib/common';
+import { WorkspaceServiceExt } from '../browser/workspace-service-ext';
+import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import {
     InitResp,
@@ -10,16 +17,10 @@ import {
     UpdateLibrariesIndexReq,
     UpdateLibrariesIndexResp
 } from './cli-protocol/commands/commands_pb';
-import { WorkspaceServiceExt } from '../browser/workspace-service-ext';
-import { FileSystem } from '@theia/filesystem/lib/common';
-import URI from '@theia/core/lib/common/uri';
-import { CoreClientProvider, Client } from './core-client-provider';
-import * as PQueue from 'p-queue';
-import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
+import { ArduinoCli } from './arduino-cli';
 import { Instance } from './cli-protocol/commands/common_pb';
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as os from 'os';
+import { CoreClientProvider, Client } from './core-client-provider';
+import { FileUri } from '@theia/core/lib/node';
 
 @injectable()
 export class CoreClientProviderImpl implements CoreClientProvider {
@@ -35,6 +36,9 @@ export class CoreClientProviderImpl implements CoreClientProvider {
 
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
+
+    @inject(ArduinoCli)
+    protected readonly cli: ArduinoCli;
 
     async getClient(workspaceRootOrResourceUri?: string): Promise<Client | undefined> {
         return this.clientRequestQueue.add(() => new Promise<Client | undefined>(async resolve => {
@@ -76,19 +80,26 @@ export class CoreClientProviderImpl implements CoreClientProvider {
             throw new Error(`Could not resolve filesystem path of URI: ${rootUri}.`);
         }
 
-        const defaultDownloadsDirPath = path.resolve(os.homedir(), 'Arduino-PoC', 'downloads');
-        if (!fs.existsSync(defaultDownloadsDirPath)) {
-            fs.mkdirpSync(defaultDownloadsDirPath);
+        const { dataDirUri, sketchDirUri } = await this.cli.getDefaultConfig();
+        const dataDirPath = FileUri.fsPath(dataDirUri);
+        const sketchDirPath = FileUri.fsPath(sketchDirUri);
+
+        if (!fs.existsSync(dataDirPath)) {
+            fs.mkdirSync(dataDirPath);
         }
 
-        const defaultDataDirPath = path.resolve(os.homedir(), 'Arduino-PoC', 'data')
-        if (!fs.existsSync(defaultDataDirPath)) {
-            fs.mkdirpSync(defaultDataDirPath);
+        if (!fs.existsSync(sketchDirPath)) {
+            fs.mkdirSync(sketchDirPath);
         }
 
-        config.setSketchbookdir(rootPath);
-        config.setDatadir(defaultDataDirPath);
-        config.setDownloadsdir(defaultDownloadsDirPath);
+        const downloadDir = path.join(dataDirPath, 'staging');
+        if (!fs.existsSync(downloadDir)) {
+            fs.mkdirSync(downloadDir);
+        }
+
+        config.setSketchbookdir(sketchDirPath);
+        config.setDatadir(dataDirPath);
+        config.setDownloadsdir(downloadDir);
         config.setBoardmanageradditionalurlsList(['https://downloads.arduino.cc/packages/package_index.json']);
 
         const initReq = new InitReq();

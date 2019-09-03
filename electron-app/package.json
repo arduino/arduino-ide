@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "arduino-ide-electron",
+    "name": "electron-app",
     "version": "0.0.1",
     "license": "MIT",
     "dependencies": {
@@ -33,7 +33,7 @@
         "target": "electron",
         "frontend": {
             "config": {
-                "applicationName": "Arduino-PoC",
+                "applicationName": "Arduino Editor",
                 "defaultTheme": "arduino-theme",
                 "preferences": {
                     "editor.autoSave": "on"

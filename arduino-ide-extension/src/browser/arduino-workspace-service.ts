@@ -4,6 +4,7 @@ import { WorkspaceServer } from "@theia/workspace/lib/common";
 import { FileSystem, FileStat } from "@theia/filesystem/lib/common";
 import URI from "@theia/core/lib/common/uri";
 import { SketchFactory } from "./sketch-factory";
+import { ConfigService } from "../common/protocol/config-service";
 
 /**
  * This is workaround to have custom frontend binding for the default workspace, although we
@@ -21,16 +22,14 @@ export class AWorkspaceService  extends WorkspaceService {
     @inject(SketchFactory)
     protected readonly sketchFactory: SketchFactory;
 
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
+
     protected async getDefaultWorkspacePath(): Promise<string | undefined> {
         let result = await super.getDefaultWorkspacePath();
         if (!result) {
-            const userHome = await this.fileSystem.getCurrentUserHome();
-            if (!userHome) {
-                return;
-            }
-
-            // The backend has created this location if it was missing.
-            result = new URI(userHome.uri).resolve('Arduino-PoC').resolve('Sketches').toString();
+            const config = await this.configService.getConfiguration();
+            result = config.sketchDirUri;
         }
 
         const stat = await this.fileSystem.getFileStat(result);

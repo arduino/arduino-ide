@@ -81,7 +81,8 @@ proto.cc.arduino.cli.commands.CompileReq.toObject = function(includeInstance, ms
     verbose: jspb.Message.getFieldWithDefault(msg, 10, false),
     quiet: jspb.Message.getFieldWithDefault(msg, 11, false),
     vidpid: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    exportfile: jspb.Message.getFieldWithDefault(msg, 13, "")
+    exportfile: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    jobs: jspb.Message.getFieldWithDefault(msg, 14, 0)
   };
 
   if (includeInstance) {
@@ -170,6 +171,10 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
     case 13:
       var value = /** @type {string} */ (reader.readString());
       msg.setExportfile(value);
+      break;
+    case 14:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setJobs(value);
       break;
     default:
       reader.skipField();
@@ -289,6 +294,13 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
   if (f.length > 0) {
     writer.writeString(
       13,
+      f
+    );
+  }
+  f = message.getJobs();
+  if (f !== 0) {
+    writer.writeInt32(
+      14,
       f
     );
   }
@@ -524,6 +536,21 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.getExportfile = function() {
 /** @param {string} value */
 proto.cc.arduino.cli.commands.CompileReq.prototype.setExportfile = function(value) {
   jspb.Message.setProto3StringField(this, 13, value);
+};
+
+
+/**
+ * optional int32 jobs = 14;
+ * @return {number}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getJobs = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 14, 0));
+};
+
+
+/** @param {number} value */
+proto.cc.arduino.cli.commands.CompileReq.prototype.setJobs = function(value) {
+  jspb.Message.setProto3IntField(this, 14, value);
 };
 
 

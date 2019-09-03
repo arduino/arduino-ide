@@ -14,7 +14,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Backend",
-            "program": "${workspaceRoot}/arduino-ide-browser/src-gen/backend/main.js",
+            "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
             "args": [
                 "--hostname=0.0.0.0",
                 "--port=3000",
@@ -26,8 +26,8 @@
             },
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/arduino-ide-browser/src-gen/backend/*.js",
-                "${workspaceRoot}/arduino-ide-browser/lib/**/*.js",
+                "${workspaceRoot}/browser-app/src-gen/backend/*.js",
+                "${workspaceRoot}/browser-app/lib/**/*.js",
                 "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
             ],
             "smartStep": true,

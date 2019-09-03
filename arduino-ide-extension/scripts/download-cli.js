@@ -1,11 +1,16 @@
 // @ts-check
-// The links to the downloads as of today (11.08.) are the followings:
-// - https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli-nightly-latest-${FILE_NAME}
-// - https://downloads.arduino.cc/arduino-cli/arduino-cli-latest-${FILE_NAME}
+// The links to the downloads as of today (02.09.) are the followings:
+// In order to get the latest nightly build for your platform use the following links replacing <DATE> with the current date, using the format YYYYMMDD (i.e for 2019/Aug/06 use 20190806 )
+// Linux 64 bit: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_Linux_64bit.tar.gz
+// Linux ARM 64 bit: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_Linux_ARM64.tar.gz
+// Windows 64 bit: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_Windows_64bit.zip
+// Mac OSX: https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-<DATE>_macOS_64bit.tar.gz
+// [...]
+// redirecting to latest generated builds by replacing latest with the latest available build date, using the format YYYYMMDD (i.e for 2019/Aug/06 latest is replaced with 20190806 
 
 (async () => {
 
-    const DEFAULT_VERSION = 'nightly';
+    const DEFAULT_VERSION = 'latest'; // require('moment')().format('YYYYMMDD');
 
     const os = require('os');
     const fs = require('fs');
@@ -14,7 +19,7 @@
     const download = require('download');
     const decompress = require('decompress');
     const unzip = require('decompress-unzip');
-    const untarbz = require('decompress-tarbz2');
+    const untargz = require('decompress-targz');
 
     process.on('unhandledRejection', (reason, _) => {
         shell.echo(String(reason));
@@ -31,11 +36,7 @@
         .option('cli-version', {
             alias: 'cv',
             default: DEFAULT_VERSION,
-            choices: [
-                // 'latest', // TODO: How do we get the source for `latest`. Currently, `latest` is the `0.3.7-alpha.preview`.
-                'nightly'
-            ],
-            describe: `The version of the 'arduino-cli' to download. Defaults to ${DEFAULT_VERSION}.`
+            describe: `The version of the 'arduino-cli' to download with the YYYYMMDD format, or 'latest'. Defaults to ${DEFAULT_VERSION}.`
         })
         .option('force-download', {
             alias: 'fd',
@@ -68,13 +69,12 @@
 
     const suffix = (() => {
         switch (platform) {
-            case 'darwin': return 'macosx.zip';
-            case 'win32': return 'windows.zip';
+            case 'darwin': return 'macOS_64bit.tar.gz';
+            case 'win32': return 'Windows_64bit.zip';
             case 'linux': {
                 switch (arch) {
-                    case 'arm64': return 'linuxarm.tar.bz2';
-                    case 'x32': return 'linux32.tar.bz2';
-                    case 'x64': return 'linux64.tar.bz2';
+                    case 'arm64': return 'Linux_ARM64.tar.gz';
+                    case 'x64': return 'Linux_64bit.tar.gz';
                     default: return undefined;
                 }
             }
@@ -86,7 +86,7 @@
         shell.exit(1);
     }
 
-    const url = `https://downloads.arduino.cc/arduino-cli/${version === 'nightly' ? 'nightly/' : ''}arduino-cli-${version}-latest-${suffix}`;
+    const url = `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-${version}_${suffix}`;
     shell.echo(`>>> Downloading 'arduino-cli' from '${url}'...`);
     const data = await download(url);
     shell.echo(`<<< Download succeeded.`);
@@ -94,16 +94,21 @@
     const files = await decompress(data, downloads, {
         plugins: [
             unzip(),
-            untarbz()
+            untargz()
         ]
     });
-    shell.echo('<<< Decompressing succeeded.');
-
-    if (files.length !== 1) {
+    if (files.length === 0) {
         shell.echo('Error ocurred when decompressing the CLI.');
         shell.exit(1);
     }
-    if (shell.mv('-f', path.join(downloads, files[0].path), cli).code !== 0) {
+    const cliIndex = files.findIndex(f => f.path.startsWith('arduino-cli'));
+    if (cliIndex === -1) {
+        shell.echo('The downloaded artifact does not contains the CLI.');
+        shell.exit(1);
+    }
+    shell.echo('<<< Decompressing succeeded.');
+
+    if (shell.mv('-f', path.join(downloads, files[cliIndex].path), cli).code !== 0) {
         shell.echo(`Could not move file to ${cli}.`);
         shell.exit(1);
     }
