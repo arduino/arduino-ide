@@ -11,6 +11,7 @@
     cursor: text;
 }
 
+#toggle-serial-monitor.arduino-tool-icon:hover,
 #arduino-verify.arduino-tool-icon:hover,
 #arduino-save-file.arduino-tool-icon:hover,
 #arduino-show-open-context-menu.arduino-tool-icon:hover,
@@ -18,6 +19,7 @@
     background-position-y: 60px;
 }
 
+#toggle-serial-monitor.arduino-tool-icon,
 #arduino-verify.arduino-tool-icon,
 #arduino-save-file.arduino-tool-icon,
 #arduino-show-open-context-menu.arduino-tool-icon,
@@ -54,15 +56,41 @@
     background-position-x: 92px;
 }
 
+#toggle-serial-monitor {
+    background: url(../icons/buttons.svg);
+    background-size: 800%;
+    background-position-y: 28px;
+    background-position-x: 28px;
+}
+
 .p-TabBar-toolbar .item.arduino-tool-item {
     margin-left: 3px;
+}
+
+#arduino-toolbar-container {
+    display: flex;
+    width: 100%;
+}
+
+.p-TabBar-toolbar.theia-arduino-toolbar {
+    flex: 1;
+}
+
+#theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
+    justify-content: flex-start;
+    min-width: 190px;
+}
+
+#theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.left {
+    min-width: 398px;
+    justify-content: flex-end;
 }
 
 .arduino-tool-item.item.connected-boards {
     opacity: 1;
 }
 
-.arduino-tool-item.item.connected-boards  select {
+.arduino-tool-item.item.connected-boards select {
     line-height: var(--theia-content-line-height);
     font-size: var(--theia-ui-font-size1);
     color: var(--theia-ui-font-color1);

@@ -6,6 +6,7 @@ import { ILogger, Disposable, DisposableCollection } from '@theia/core';
 import { MonitorService, MonitorServiceClient, ConnectionConfig, ConnectionType } from '../../common/protocol/monitor-service';
 import { StreamingOpenReq, StreamingOpenResp, MonitorConfig } from '../cli-protocol/monitor/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
+import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 
 export interface MonitorDuplex {
     readonly toDispose: Disposable;
@@ -59,6 +60,10 @@ export class MonitorServiceImpl implements MonitorService {
         }
     }
 
+    async getConnectionIds(): Promise<string[]> {
+        return Array.from(this.connections.keys());
+    }
+
     async connect(config: ConnectionConfig): Promise<{ connectionId: string }> {
         const client = await this.monitorClientProvider.client;
         const duplex = client.streamingOpen();
@@ -94,7 +99,8 @@ export class MonitorServiceImpl implements MonitorService {
         monitorConfig.setType(this.mapType(type));
         monitorConfig.setTarget(port);
         if (config.baudRate !== undefined) {
-            monitorConfig.setAdditionalconfig({ 'BaudRate': config.baudRate });
+            const obj = google_protobuf_struct_pb.Struct.fromJavaScript({ 'BaudRate': config.baudRate });
+            monitorConfig.setAdditionalconfig(obj);
         }
         req.setMonitorconfig(monitorConfig);
 
@@ -122,11 +128,12 @@ export class MonitorServiceImpl implements MonitorService {
         return result;
     }
 
-    protected async doDisconnect(connectionId: string, duplex: MonitorDuplex): Promise<boolean> {
-        const { toDispose } = duplex;
+    protected async doDisconnect(connectionId: string, monitorDuplex: MonitorDuplex): Promise<boolean> {
+        const { duplex } = monitorDuplex;
         this.logger.info(`>>> Disposing monitor connection: ${connectionId}...`);
         try {
-            toDispose.dispose();
+            duplex.cancel();
+            this.connections.delete(connectionId);
             this.logger.info(`<<< Connection disposed: ${connectionId}.`);
             return true;
         } catch (e) {

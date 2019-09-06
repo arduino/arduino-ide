@@ -23,6 +23,7 @@ export interface MonitorService extends JsonRpcServer<MonitorServiceClient> {
     connect(config: ConnectionConfig): Promise<{ connectionId: string }>;
     disconnect(connectionId: string): Promise<boolean>;
     send(connectionId: string, data: string | Uint8Array): Promise<void>;
+    getConnectionIds(): Promise<string[]>;
 }
 
 export interface ConnectionConfig {

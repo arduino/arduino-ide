@@ -5,7 +5,7 @@ import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, AttachedSerialBoard } from '../common/protocol/boards-service';
+import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
@@ -26,8 +26,6 @@ import {
     StatusBar,
     ShellLayoutRestorer,
     StatusBarAlignment,
-    QuickOpenItem,
-    QuickOpenMode,
     QuickOpenService,
     LabelProvider
 } from '@theia/core/lib/browser';
@@ -47,6 +45,8 @@ import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
 import { MonitorService } from '../common/protocol/monitor-service';
 import { ConfigService } from '../common/protocol/config-service';
+import { MonitorConnection } from './monitor/monitor-connection';
+import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -71,9 +71,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(MonitorService)
     protected readonly monitorService: MonitorService;
-
-    // TODO: make this better!
-    protected connectionId: string | undefined;
 
     @inject(WorkspaceServiceExt)
     protected readonly workspaceServiceExt: WorkspaceServiceExt;
@@ -143,6 +140,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;
+    @inject(MonitorConnection)
+    protected readonly monitorConnection: MonitorConnection;
 
     protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
@@ -197,13 +196,19 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 commands={this.commands}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
-            isVisible: widget => this.isArduinoToolbar(widget)
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left'
+        });
+        registry.registerItem({
+            id: 'toggle-serial-monitor',
+            command: MonitorViewContribution.OPEN_SERIAL_MONITOR,
+            tooltip: 'Toggle Serial Monitor',
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
         })
     }
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ArduinoCommands.VERIFY, {
-            isVisible: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
             execute: async () => {
                 const widget = this.getCurrentWidget();
@@ -231,7 +236,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         });
         registry.registerCommand(ArduinoCommands.UPLOAD, {
-            isVisible: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
             execute: async () => {
                 const widget = this.getCurrentWidget();
@@ -243,6 +248,9 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 if (!uri) {
                     return;
                 }
+
+                const connectionConfig = this.monitorConnection.connectionConfig;
+                await this.monitorConnection.disconnect();
 
                 try {
                     const { boardsConfig } = this.boardsServiceClient;
@@ -256,12 +264,16 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                     await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort });
                 } catch (e) {
                     await this.messageService.error(e.toString());
+                } finally {
+                    if (connectionConfig) {
+                        await this.monitorConnection.connect(connectionConfig);
+                    }
                 }
             }
         });
         registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
-            isVisible: widget => this.isArduinoToolbar(widget),
-            isEnabled: widget => this.isArduinoToolbar(widget),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (widget: Widget, target: EventTarget) => {
                 if (this.wsSketchCount) {
                     const el = (target as HTMLElement).parentElement;
@@ -287,8 +299,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         })
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
-            isEnabled: widget => this.isArduinoToolbar(widget),
-            isVisible: widget => this.isArduinoToolbar(widget),
+            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (sketch: Sketch) => {
                 registry.executeCommand(CommonCommands.SAVE_ALL.id);
             }
@@ -324,65 +336,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             },
             isToggled: () => ARDUINO_PRO_MODE
         });
-        registry.registerCommand(ArduinoCommands.CONNECT_TODO, {
-            execute: async () => {
-                const { boardsConfig } = this.boardsServiceClient;
-                const { selectedBoard, selectedPort } = boardsConfig;
-                if (!selectedBoard) {
-                    this.messageService.warn('No boards selected.');
-                    return;
-                }
-                const { name } = selectedBoard;
-                if (!selectedPort) {
-                    this.messageService.warn(`No ports selected for board: '${name}'.`);
-                    return;
-                }
-                const attachedBoards = await this.boardsService.getAttachedBoards();
-                const connectedBoard = attachedBoards.boards.filter(AttachedSerialBoard.is).find(board => BoardsConfig.Config.sameAs(boardsConfig, board));
-                if (!connectedBoard) {
-                    this.messageService.warn(`The selected '${name}' board is not connected on ${selectedPort}.`);
-                    return;
-                }
-                if (this.connectionId) {
-                    console.log('>>> Disposing existing monitor connection before establishing a new one...');
-                    const result = await this.monitorService.disconnect(this.connectionId);
-                    if (!result) {
-                        // TODO: better!!!
-                        console.error(`Could not close connection: ${this.connectionId}. Check the backend logs.`);
-                    } else {
-                        console.log(`<<< Disposed ${this.connectionId} connection.`)
-                    }
-                }
-                const { connectionId } = await this.monitorService.connect({ board: selectedBoard, port: selectedPort });
-                this.connectionId = connectionId;
-            }
-        });
-        registry.registerCommand(ArduinoCommands.SEND, {
-            isEnabled: () => !!this.connectionId,
-            execute: async () => {
-                const { monitorService, connectionId } = this;
-                const model = {
-                    onType(lookFor: string, acceptor: (items: QuickOpenItem[]) => void): void {
-                        acceptor([
-                            new QuickOpenItem({
-                                label: "Type your message and press 'Enter' to send it to the board. Escape to cancel.",
-                                run: (mode: QuickOpenMode): boolean => {
-                                    if (mode !== QuickOpenMode.OPEN) {
-                                        return false;
-                                    }
-                                    monitorService.send(connectionId!, lookFor + '\n');
-                                    return true;
-                                }
-                            })
-                        ]);
-                    }
-                };
-                const options = {
-                    placeholder: "Your message. The message will be suffixed with a LF ['\\n'].",
-                };
-                this.quickOpenService.open(model, options);
-            }
-        })
     }
 
     registerMenus(registry: MenuModelRegistry) {
@@ -553,13 +506,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             return `The file "${name}${ext}" needs to be inside a sketch folder named "${name}".`;
         }
         return undefined;
-    }
-
-    private isArduinoToolbar(maybeToolbarWidget: any): boolean {
-        if (maybeToolbarWidget instanceof ArduinoToolbar) {
-            return true;
-        }
-        return false;
     }
 
     private toUri(arg: any): URI | undefined {
