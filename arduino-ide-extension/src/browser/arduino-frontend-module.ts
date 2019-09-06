@@ -8,7 +8,7 @@ import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/w
 import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
 import { LibraryListWidget } from './library/library-list-widget';
-import { ArduinoFrontendContribution, ARDUINO_PRO_MODE } from './arduino-frontend-contribution';
+import { ArduinoFrontendContribution, ArduinoAdvancedMode } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
@@ -188,7 +188,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     themeService.register(...ArduinoTheme.themes);
 
     // customizing default theia
-    if (!ARDUINO_PRO_MODE) {
+    if (!ArduinoAdvancedMode.TOGGLED) {
         unbind(OutlineViewContribution);
         bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
         unbind(ProblemContribution);

@@ -1,12 +1,12 @@
 import { injectable } from "inversify";
 import { CommonFrontendContribution, CommonMenus, CommonCommands } from "@theia/core/lib/browser";
 import { MenuModelRegistry } from "@theia/core";
-import { ARDUINO_PRO_MODE } from "../arduino-frontend-contribution";
+import { ArduinoAdvancedMode } from "../arduino-frontend-contribution";
 
 @injectable()
 export class CustomCommonFrontendContribution extends CommonFrontendContribution {
     registerMenus(registry: MenuModelRegistry): void {
-        if (!ARDUINO_PRO_MODE) {
+        if (!ArduinoAdvancedMode.TOGGLED) {
             registry.registerSubmenu(CommonMenus.FILE, 'File');
             registry.registerSubmenu(CommonMenus.EDIT, 'Edit');
 

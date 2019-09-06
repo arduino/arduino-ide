@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TabBarToolbar, TabBarToolbarRegistry, TabBarToolbarItem, ReactTabBarToolbarItem } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { ReactWidget } from '@theia/core/lib/browser';
-import { LabelParser } from '@theia/core/lib/browser/label-parser';
+import { LabelParser, LabelIcon } from '@theia/core/lib/browser/label-parser';
 
 export const ARDUINO_TOOLBAR_ITEM_CLASS = 'arduino-tool-item';
 
@@ -11,6 +11,7 @@ export namespace ArduinoToolbarComponent {
         side: 'left' | 'right',
         items: (TabBarToolbarItem | ReactTabBarToolbarItem)[],
         commands: CommandRegistry,
+        labelParser: LabelParser,
         commandIsEnabled: (id: string) => boolean,
         executeCommand: (e: React.MouseEvent<HTMLElement>) => void
     }
@@ -27,6 +28,16 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
 
     protected renderItem = (item: TabBarToolbarItem) => {
         let innerText = '';
+        let className = `${item.id} arduino-tool-icon`;
+        if (item.text) {
+            for (const labelPart of this.props.labelParser.parse(item.text)) {
+                if (typeof labelPart !== 'string' && LabelIcon.is(labelPart)) {
+                    className += ` fa fa-${labelPart.name}`;
+                } else {
+                    innerText = labelPart;
+                }
+            }
+        }
         const command = this.props.commands.getCommand(item.command);
         const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? ' enabled' : ''}`
         return <div key={item.id}
@@ -34,7 +45,7 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
             <div
                 key={item.id + '-icon'}
                 id={item.id}
-                className={`${item.id} arduino-tool-icon`}
+                className={className}
                 onClick={this.props.executeCommand}
                 onMouseOver={() => this.setState({ tooltip: item.tooltip || '' })}
                 onMouseOut={() => this.setState({ tooltip: '' })}
@@ -105,6 +116,7 @@ export class ArduinoToolbar extends ReactWidget {
         return <ArduinoToolbarComponent
             key='arduino-toolbar-component'
             side={this.side}
+            labelParser={this.labelParser}
             items={[...this.items.values()]}
             commands={this.commands}
             commandIsEnabled={this.doCommandIsEnabled}

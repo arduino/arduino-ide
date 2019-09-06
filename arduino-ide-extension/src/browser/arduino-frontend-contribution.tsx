@@ -53,9 +53,14 @@ export namespace ArduinoMenus {
     export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
 }
 
-export const ARDUINO_PRO_MODE: boolean = (() => {
-    return window.localStorage.getItem('arduino-pro-mode') === 'true';
-})();
+export namespace ArduinoAdvancedMode {
+    export const LS_ID = 'arduino-advanced-mode';
+    export const TOGGLED: boolean = (() => {
+        const advancedModeStr = window.localStorage.getItem(LS_ID);
+        return advancedModeStr === 'true';
+    })();
+}
+
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution, MenuContribution {
@@ -167,26 +172,22 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerItem({
             id: ArduinoCommands.VERIFY.id,
             command: ArduinoCommands.VERIFY.id,
-            tooltip: 'Verify',
-            text: '$(check)'
+            tooltip: 'Verify'
         });
         registry.registerItem({
             id: ArduinoCommands.UPLOAD.id,
             command: ArduinoCommands.UPLOAD.id,
-            tooltip: 'Upload',
-            text: '$(arrow-right)'
+            tooltip: 'Upload'
         });
         registry.registerItem({
             id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
-            tooltip: 'Open',
-            text: '$(arrow-up)'
+            tooltip: 'Open'
         });
         registry.registerItem({
             id: ArduinoCommands.SAVE_SKETCH.id,
             command: ArduinoCommands.SAVE_SKETCH.id,
-            tooltip: 'Save',
-            text: '$(arrow-down)'
+            tooltip: 'Save'
         });
         registry.registerItem({
             id: BoardsToolBarItem.TOOLBAR_ID,
@@ -203,7 +204,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             command: MonitorViewContribution.OPEN_SERIAL_MONITOR,
             tooltip: 'Toggle Serial Monitor',
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
-        })
+        });
+
+        registry.registerItem({
+            id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
+            command: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
+            tooltip: 'Toggle Advanced Mode',
+            text: (ArduinoAdvancedMode.TOGGLED ? '$(toggle-on)' : '$(toggle-off)'),
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
+        });
     }
 
     registerCommands(registry: CommandRegistry): void {
@@ -327,19 +336,20 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                     this.boardsServiceClient.boardsConfig = boardsConfig;
                 }
             }
-        });
-        registry.registerCommand(ArduinoCommands.TOGGLE_PRO_MODE, {
+        })
+        registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
             execute: () => {
-                const oldModeState = ARDUINO_PRO_MODE;
-                window.localStorage.setItem('arduino-pro-mode', oldModeState ? 'false' : 'true');
+                const oldModeState = ArduinoAdvancedMode.TOGGLED;
+                window.localStorage.setItem(ArduinoAdvancedMode.LS_ID, oldModeState ? 'false' : 'true');
                 registry.executeCommand('reset.layout');
             },
-            isToggled: () => ARDUINO_PRO_MODE
-        });
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
+            isToggled: () => ArduinoAdvancedMode.TOGGLED
+        })
     }
 
     registerMenus(registry: MenuModelRegistry) {
-        if (!ARDUINO_PRO_MODE) {
+        if (!ArduinoAdvancedMode.TOGGLED) {
             registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
             registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
 
@@ -376,7 +386,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
 
         registry.registerMenuAction(CommonMenus.HELP, {
-            commandId: ArduinoCommands.TOGGLE_PRO_MODE.id,
+            commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             label: 'Advanced Mode'
         })
     }
