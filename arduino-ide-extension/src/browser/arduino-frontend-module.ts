@@ -7,6 +7,8 @@ import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
+import { LanguageClientContribution } from '@theia/languages/lib/browser';
+import { ArduinoLanguageClientContribution } from './language/arduino-language-client-contribution';
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution, ArduinoAdvancedMode } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
@@ -78,8 +80,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(ArduinoToolbarContribution);
 
-    // `ino` TextMate grammar
+    // `ino` TextMate grammar and language client
     bind(LanguageGrammarDefinitionContribution).to(ArduinoLanguageGrammarContribution).inSingletonScope();
+    bind(LanguageClientContribution).to(ArduinoLanguageClientContribution).inSingletonScope();
 
     // Library service
     bind(LibraryService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServicePath)).inSingletonScope();

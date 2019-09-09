@@ -2,6 +2,8 @@ import { ContainerModule } from 'inversify';
 import { ArduinoDaemon } from './arduino-daemon';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
+import { LanguageServerContribution } from '@theia/languages/lib/node';
+import { ArduinoLanguageServerContribution } from './language/arduino-language-server-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { LibraryServiceImpl } from './library-service-impl';
@@ -39,6 +41,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // Shared daemonn 
     bind(ArduinoDaemon).toSelf().inSingletonScope();
     bind(BackendApplicationContribution).toService(ArduinoDaemon);
+
+    // Language server
+    bind(LanguageServerContribution).to(ArduinoLanguageServerContribution).inSingletonScope();
 
     // Library service
     const libraryServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
