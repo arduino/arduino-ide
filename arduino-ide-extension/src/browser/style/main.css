@@ -7,64 +7,63 @@
 }
 
 #outputView {
-    color: var(--theia-ui-font-color3);
     cursor: text;
-}
-
-#toggle-serial-monitor.arduino-tool-icon:hover,
-#arduino-verify.arduino-tool-icon:hover,
-#arduino-save-file.arduino-tool-icon:hover,
-#arduino-show-open-context-menu.arduino-tool-icon:hover,
-#arduino-upload.arduino-tool-icon:hover {
-    background-position-y: 60px;
-}
-
-#toggle-serial-monitor.arduino-tool-icon,
-#arduino-verify.arduino-tool-icon,
-#arduino-save-file.arduino-tool-icon,
-#arduino-show-open-context-menu.arduino-tool-icon,
-#arduino-upload.arduino-tool-icon {
-    height: 24px;
-    width: 24px;
-}
-
-#arduino-save-file {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-y: 28px;
-    background-position-x: 59px;
-}
-
-#arduino-verify {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-y: 28px;
-    background-position-x: 188px;
-}
-
-#arduino-upload {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-y: 28px;
-    background-position-x: 156px;
-}
-
-#arduino-show-open-context-menu {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-y: 28px;
-    background-position-x: 92px;
-}
-
-#toggle-serial-monitor {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-y: 28px;
-    background-position-x: 28px;
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item {
     margin-left: 3px;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24px;
+    width: 24px;
+    background: var(--theia-ui-button-color);
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item > div:hover {
+    background: var(--theia-ui-button-color-hover);
+}
+
+.arduino-verify, .arduino-upload {
+    border-radius: 12px;
+}
+
+.arduino-tool-icon {
+    height: 24px;
+    width: 24px;
+    background: var(--theia-ui-button-font-color);
+    -webkit-mask: url(../icons/mask-buttons.svg);
+    mask: url(../icons/mask-buttons.svg);
+    -webkit-mask-size: 800%;
+    mask-size: 800%;
+}
+
+.arduino-save-file-icon {
+    -webkit-mask-position: 59px -4px;
+    mask-position: 59px -4px;
+}
+
+.arduino-verify-icon {
+    -webkit-mask-position: 188px -4px;
+    mask-position: 188px -4px;
+}
+
+.arduino-upload-icon {
+    -webkit-mask-position: 156px -4px;
+    mask-position: 156px -4px;
+}
+
+.arduino-show-open-context-menu-icon {
+    -webkit-mask-position: 92px -4px;
+    mask-position: 92px -4px;
+}
+
+.toggle-serial-monitor-icon {
+    -webkit-mask-position: 28px -4px;
+    mask-position: 28px -4px;
 }
 
 #arduino-toolbar-container {
@@ -112,13 +111,22 @@
     color: var(--theia-ui-font-color3);
 }
 
-.p-TabBar-toolbar .item > div#arduino-toggle-advanced-mode {
+.p-TabBar-toolbar .item > div.arduino-toggle-advanced-mode {
     display: flex;
     width: 24px;
     height: 24px;
     justify-content: center;
     align-items: center;
-    color: var(--theia-ui-font-color3);
+}
+
+.arduino-toggle-advanced-mode-icon {
+    mask: none;
+    -webkit-mask: none;
+    background: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--theia-ui-button-font-color);
 }
 
 .monaco-editor .margin {

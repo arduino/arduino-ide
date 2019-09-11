@@ -140,8 +140,8 @@ button.theia-button.secondary {
 
 button.theia-button.main {
     color: #fff;
-    background-color: #00979c;
-    box-shadow: 0 4px #005c5f;
+    /* background-color: #00979c; */
+    box-shadow: 0 4px var(--theia-accent-color0);
 }
 
 .dialogControl {
@@ -185,7 +185,7 @@ button.theia-button.main {
 }
 
 .arduino-boards-toolbar-item {
-    background: white;
+    background: var(--theia-layout-color1);
     height: 22px;
     display: flex;
     width: 100%;
@@ -193,7 +193,7 @@ button.theia-button.main {
 }
 
 .arduino-boards-dropdown-list {
-    background: #f7f7f7;
+    background: var(--theia-layout-color1);
     border: 3px solid var(--theia-border-color2);
     margin: -3px;
     z-index: 1000;
@@ -204,13 +204,14 @@ button.theia-button.main {
     display: flex;
     padding: 10px;
     cursor: pointer;
+    color: var(--theia-ui-font-color1);
 }
 
 .arduino-boards-dropdown-item .fa-check {
-    color: var(--theia-accent-color2);
+    color: var(--theia-accent-color1);
 }
 
 .arduino-boards-dropdown-item.selected,
 .arduino-boards-dropdown-item:hover {
-    background: var(--theia-ui-button-color-secondary-hover);
+    background: var(--theia-layout-color3);
 }

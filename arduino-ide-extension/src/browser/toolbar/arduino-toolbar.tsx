@@ -28,7 +28,7 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
 
     protected renderItem = (item: TabBarToolbarItem) => {
         let innerText = '';
-        let className = `${item.id} arduino-tool-icon`;
+        let className = `arduino-tool-icon ${item.id}-icon`;
         if (item.text) {
             for (const labelPart of this.props.labelParser.parse(item.text)) {
                 if (typeof labelPart !== 'string' && LabelIcon.is(labelPart)) {
@@ -40,17 +40,18 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
         }
         const command = this.props.commands.getCommand(item.command);
         const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? ' enabled' : ''}`
-        return <div key={item.id}
-            className={cls} >
-            <div
-                key={item.id + '-icon'}
-                id={item.id}
-                className={className}
-                onClick={this.props.executeCommand}
-                onMouseOver={() => this.setState({ tooltip: item.tooltip || '' })}
-                onMouseOut={() => this.setState({ tooltip: '' })}
-                title={item.tooltip}>
-                {innerText}
+        return <div key={item.id} className={cls} >
+            <div className={item.id}>
+                <div
+                    key={item.id + '-icon'}
+                    id={item.id}
+                    className={className}
+                    onClick={this.props.executeCommand}
+                    onMouseOver={() => this.setState({ tooltip: item.tooltip || '' })}
+                    onMouseOut={() => this.setState({ tooltip: '' })}
+                    title={item.tooltip}>
+                    {innerText}
+                </div>
             </div>
         </div>
     }
