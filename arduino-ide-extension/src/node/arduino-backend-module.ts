@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as os from 'os';
+import { join } from 'path';
 import { ContainerModule } from 'inversify';
 import { ArduinoDaemon } from './arduino-daemon';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -155,4 +158,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);
         return parentLogger.child('monitor-service');
     }).inSingletonScope().whenTargetNamed('monitor-service');
+
+    // Set up cpp extension
+    if (!process.env.CPP_CLANGD_COMMAND) {
+        const executable = os.platform() === 'win32' ? 'clangd.exe' : 'clangd';
+        const clangdCommand = join(__dirname, '..', '..', 'build', executable);
+        if (fs.existsSync(clangdCommand)) {
+            process.env.CPP_CLANGD_COMMAND = clangdCommand;
+        }
+    }
 });
