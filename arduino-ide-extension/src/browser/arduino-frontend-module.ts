@@ -216,6 +216,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         bind(ScmContribution).to(SilentScmContribution).inSingletonScope();
         unbind(SearchInWorkspaceFrontendContribution);
         bind(SearchInWorkspaceFrontendContribution).to(SilentSearchInWorkspaceContribution).inSingletonScope();
+    } else {
+        // We use this CSS class on the body to modify the visibbility of the close button for the editors and views.
+        document.body.classList.add(ArduinoAdvancedMode.LS_ID);
     }
     unbind(FrontendApplication);
     bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
