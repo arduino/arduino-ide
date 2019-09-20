@@ -63,6 +63,12 @@ import { MonitorWidget } from './monitor/monitor-widget';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorModel } from './monitor/monitor-model';
+import { MonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
+import { ArduinoMonacoEditorProvider } from './editor/arduino-monaco-editor-provider';
+import { TabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
+import { ArduinoTabBarDecoratorService } from './shell/arduino-tab-bar-decorator';
+import { ProblemManager } from '@theia/markers/lib/browser';
+import { ArduinoProblemManager } from './markers/arduino-problem-manager';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -213,4 +219,19 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     }
     unbind(FrontendApplication);
     bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
+
+    // monaco customizations
+    unbind(MonacoEditorProvider);
+    bind(ArduinoMonacoEditorProvider).toSelf().inSingletonScope();
+    bind(MonacoEditorProvider).toService(ArduinoMonacoEditorProvider);
+
+    // decorator customizations
+    unbind(TabBarDecoratorService);
+    bind(ArduinoTabBarDecoratorService).toSelf().inSingletonScope();
+    bind(TabBarDecoratorService).toService(ArduinoTabBarDecoratorService);
+
+    // problem markers
+    unbind(ProblemManager);
+    bind(ArduinoProblemManager).toSelf().inSingletonScope();
+    bind(ProblemManager).toService(ArduinoProblemManager);
 });
