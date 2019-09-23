@@ -1,80 +1,126 @@
-import { injectable, inject } from "inversify";
-import { SketchesService, Sketch } from "../common/protocol/sketches-service";
-import URI from "@theia/core/lib/common/uri";
-import { FileStat, FileSystem } from "@theia/filesystem/lib/common";
-import * as fs from 'fs';
+import { injectable, inject } from 'inversify';
 import * as path from 'path';
-import { FileUri } from "@theia/core/lib/node";
+import * as fs from 'fs-extra';
+import { FileUri } from '@theia/core/lib/node';
+import { ConfigService } from '../common/protocol/config-service';
+import { SketchesService, Sketch } from '../common/protocol/sketches-service';
 
-export const ALLOWED_FILE_EXTENSIONS = [".c", ".cpp", ".h", ".hh", ".hpp", ".s", ".pde", ".ino"];
+export const ALLOWED_FILE_EXTENSIONS = ['.c', '.cpp', '.h', '.hh', '.hpp', '.s', '.pde', '.ino'];
 
+// TODO: `fs`: use async API 
 @injectable()
 export class SketchesServiceImpl implements SketchesService {
 
-    @inject(FileSystem)
-    protected readonly filesystem: FileSystem;
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
 
-    async getSketches(fileStat?: FileStat): Promise<Sketch[]> {
-        const sketches: Sketch[] = [];
-        if (fileStat && fileStat.isDirectory) {
-            const uri = new URI(fileStat.uri);
-            const sketchFolderPath = await this.filesystem.getFsPath(uri.toString());
-            if (sketchFolderPath) {
-                const fileNames = fs.readdirSync(sketchFolderPath);
-                for (const fileName of fileNames) {
-                    const filePath = path.join(sketchFolderPath, fileName);
-                    if (this.isSketchFolder(filePath, fileName)) {
-                        sketches.push({
-                            name: fileName,
-                            uri: FileUri.create(filePath).toString()
-                        });
-                    }
-                }
+    async getSketches(uri?: string): Promise<Sketch[]> {
+        const sketches: Array<Sketch & { mtimeMs: number }> = [];
+        const fsPath = FileUri.fsPath(uri ? uri : (await this.configService.getConfiguration()).sketchDirUri);
+        const fileNames = fs.readdirSync(fsPath);
+        for (const fileName of fileNames) {
+            const filePath = path.join(fsPath, fileName);
+            if (await this.isSketchFolder(FileUri.create(filePath).toString())) {
+                const stat = fs.statSync(filePath);
+                sketches.push({
+                    mtimeMs: stat.mtimeMs,
+                    name: fileName,
+                    uri: FileUri.create(filePath).toString()
+                });
             }
         }
-        return sketches;
+        return sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
     }
 
     /**
      * Return all allowed files.
-     * File extensions: "c", "cpp", "h", "hh", "hpp", "s", "pde", "ino"
+     * File extensions: 'c', 'cpp', 'h', 'hh', 'hpp', 's', 'pde', 'ino'
      */
-    async getSketchFiles(sketchFileStat: FileStat): Promise<string[]> {
+    async getSketchFiles(uri: string): Promise<string[]> {
         const uris: string[] = [];
-        const sketchUri = new URI(sketchFileStat.uri);
-        const sketchPath = await this.filesystem.getFsPath(sketchUri.toString());
-        if (sketchPath) {
-            if (sketchFileStat.isDirectory && this.isSketchFolder(sketchPath, sketchUri.displayName)) {
-                const fileNames = fs.readdirSync(sketchPath);
-                for (const fileName of fileNames) {
-                    const filePath = path.join(sketchPath, fileName);
-                    if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
-                        && fs.existsSync(filePath)
-                        && fs.lstatSync(filePath).isFile()) {
-                            uris.push(FileUri.create(filePath).toString())
-                    }
-                }
-            } else {
-                const sketchDir = path.dirname(sketchPath);
-                if (sketchDir && this.isSketchFolder(sketchDir, sketchUri.path.dir.name)) {
-                    const sketchFolderStat = await this.filesystem.getFileStat(sketchUri.path.dir.toString());
-                    if (sketchFolderStat) {
-                        const sketchDirContents = await this.getSketchFiles(sketchFolderStat);
-                        uris.push(...sketchDirContents);
-                    }
+        const fsPath = FileUri.fsPath(uri);
+        const stats = fs.lstatSync(fsPath);
+        if (stats.isDirectory && await this.isSketchFolder(uri)) {
+            const fileNames = fs.readdirSync(fsPath);
+            for (const fileName of fileNames) {
+                const filePath = path.join(fsPath, fileName);
+                if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
+                    && fs.existsSync(filePath)
+                    && fs.lstatSync(filePath).isFile()) {
+                    uris.push(FileUri.create(filePath).toString())
                 }
             }
+            return uris;
         }
-        return uris;
+        const sketchDir = path.dirname(fsPath);
+        return this.getSketchFiles(FileUri.create(sketchDir).toString());
     }
 
-    protected isSketchFolder(path: string, name: string): boolean {
-        if (fs.existsSync(path) && fs.lstatSync(path).isDirectory()) {
-            const files = fs.readdirSync(path);
-            for (let i = 0; i < files.length; i++) {
-                if (files[i] === name + '.ino') {
-                    return true;
-                }
+    async createNewSketch(parentUri: string): Promise<Sketch> {
+        const monthNames = ['january', 'february', 'march', 'april', 'may', 'june',
+            'july', 'august', 'september', 'october', 'november', 'december'
+        ];
+        const today = new Date();
+        const parent = FileUri.fsPath(parentUri);
+
+        const sketchBaseName = `sketch_${monthNames[today.getMonth()]}${today.getDate()}`;
+        let sketchName: string | undefined;
+        for (let i = 97; i < 97 + 26; i++) {
+            let sketchNameCandidate = `${sketchBaseName}${String.fromCharCode(i)}`;
+            if (fs.existsSync(path.join(parent, sketchNameCandidate))) {
+                continue;
+            }
+
+            sketchName = sketchNameCandidate;
+            break;
+        }
+
+        if (!sketchName) {
+            throw new Error('Cannot create a unique sketch name');
+        }
+
+        const sketchDir = path.join(parent, sketchName)
+        const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
+        fs.mkdirSync(sketchDir);
+        fs.writeFileSync(sketchFile, `
+void setup() {
+// put your setup code here, to run once:
+
+}
+
+void loop() {
+// put your main code here, to run repeatedly:
+
+}
+`, { encoding: 'utf8' });
+        return {
+            name: sketchName,
+            uri: FileUri.create(sketchDir).toString()
+        }
+    }
+
+    async isSketchFolder(uri: string): Promise<boolean> {
+        const fsPath = FileUri.fsPath(uri);
+        const exists = await fs.pathExists(fsPath);
+        if (exists) {
+            const stats = await fs.lstat(fsPath);
+            if (stats.isDirectory()) {
+                const basename = path.basename(fsPath);
+                return new Promise<boolean>((resolve, reject) => {
+                    fs.readdir(fsPath, (error, files) => {
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        for (let i = 0; i < files.length; i++) {
+                            if (files[i] === basename + '.ino') {
+                                resolve(true);
+                                return;
+                            }
+                        }
+                        resolve(false);
+                    });
+                })
             }
         }
         return false;

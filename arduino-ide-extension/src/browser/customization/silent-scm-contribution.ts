@@ -1,6 +1,6 @@
-import { injectable } from "inversify";
-import { ScmContribution } from "@theia/scm/lib/browser/scm-contribution";
-import { StatusBarEntry } from "@theia/core/lib/browser";
+import { injectable } from 'inversify';
+import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { StatusBarEntry } from '@theia/core/lib/browser';
 
 @injectable()
 export class SilentScmContribution extends ScmContribution {
@@ -9,6 +9,6 @@ export class SilentScmContribution extends ScmContribution {
     }
 
     protected setStatusBarEntry(id: string, entry: StatusBarEntry): void {
-
     }
+
 }

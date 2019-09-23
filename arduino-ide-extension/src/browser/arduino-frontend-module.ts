@@ -25,12 +25,11 @@ import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { AWorkspaceService } from './arduino-workspace-service';
+import { ArduinoWorkspaceService } from './arduino-workspace-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { ArduinoTheme } from './arduino-theme';
 import { ArduinoToolbarMenuContribution } from './arduino-file-menu';
 import { MenuContribution } from '@theia/core';
-import { SketchFactory } from './sketch-factory';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { SilentOutlineViewContribution } from './customization/silent-outline-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
@@ -41,12 +40,12 @@ import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contributi
 import { OutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
 import { ArduinoOutputToolContribution } from './customization/silent-output-tool-contribution';
 import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { CustomEditorContribution } from './customization/custom-editor-contribution';
+import { ArduinoEditorContribution } from './customization/arduino-editor-contribution';
 import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
-import { SilentMonacoStatusBarContribution } from './customization/silent-monaco-status-bar-contribution';
+import { ArduinoMonacoStatusBarContribution } from './customization/arduino-monaco-status-bar-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser';
-import { CustomApplicationShell } from './customization/custom-application-shell';
-import { CustomFrontendApplication } from './customization/custom-frontend-application';
+import { ArduinoApplicationShell } from './customization/arduino-application-shell';
+import { ArduinoFrontendApplication } from './customization/arduino-frontend-application';
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
 import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
@@ -189,9 +188,8 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         return client;
     }).inSingletonScope();
 
-    bind(AWorkspaceService).toSelf().inSingletonScope();
-    rebind(WorkspaceService).to(AWorkspaceService).inSingletonScope();
-    bind(SketchFactory).toSelf().inSingletonScope();
+    bind(ArduinoWorkspaceService).toSelf().inSingletonScope();
+    rebind(WorkspaceService).to(ArduinoWorkspaceService).inSingletonScope();
 
     const themeService = ThemeService.get();
     themeService.register(...ArduinoTheme.themes);
@@ -207,11 +205,11 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         unbind(OutputToolbarContribution);
         bind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
         unbind(EditorContribution);
-        bind(EditorContribution).to(CustomEditorContribution).inSingletonScope();
+        bind(EditorContribution).to(ArduinoEditorContribution).inSingletonScope();
         unbind(MonacoStatusBarContribution);
-        bind(MonacoStatusBarContribution).to(SilentMonacoStatusBarContribution).inSingletonScope();
+        bind(MonacoStatusBarContribution).to(ArduinoMonacoStatusBarContribution).inSingletonScope();
         unbind(ApplicationShell);
-        bind(ApplicationShell).to(CustomApplicationShell).inSingletonScope();
+        bind(ApplicationShell).to(ArduinoApplicationShell).inSingletonScope();
         unbind(ScmContribution);
         bind(ScmContribution).to(SilentScmContribution).inSingletonScope();
         unbind(SearchInWorkspaceFrontendContribution);
@@ -221,7 +219,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         document.body.classList.add(ArduinoAdvancedMode.LS_ID);
     }
     unbind(FrontendApplication);
-    bind(FrontendApplication).to(CustomFrontendApplication).inSingletonScope();
+    bind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
 
     // monaco customizations
     unbind(MonacoEditorProvider);
