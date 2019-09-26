@@ -11,7 +11,7 @@ export abstract class ListItemRenderer<T> {
     protected onClick = (event: React.SyntheticEvent<HTMLAnchorElement, Event>) => {
         const { target } = event.nativeEvent;
         if (target instanceof HTMLAnchorElement) {
-            this.windowService.openNewWindow(target.href);
+            this.windowService.openNewWindow(target.href, { external: true });
             event.nativeEvent.preventDefault();
         }
     }

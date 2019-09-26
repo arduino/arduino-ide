@@ -7,4 +7,4 @@ import '../../../src/browser/style/browser-menu.css'
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind) => {
     unbind(BrowserMenuBarContribution);
     bind(BrowserMenuBarContribution).to(ArduinoMenuContribution).inSingletonScope();
-})
+});

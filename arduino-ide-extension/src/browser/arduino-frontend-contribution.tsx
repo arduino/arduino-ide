@@ -14,9 +14,7 @@ import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR } from '@theia/core';
-import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { SketchFactory } from './sketch-factory';
+import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
@@ -26,12 +24,10 @@ import {
     StatusBar,
     ShellLayoutRestorer,
     StatusBarAlignment,
-    QuickOpenService,
-    LabelProvider
+    QuickOpenService
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
-import { ArduinoToolbarContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
@@ -47,10 +43,18 @@ import { MonitorService } from '../common/protocol/monitor-service';
 import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
+import { ArduinoWorkspaceService } from './arduino-workspace-service';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
     export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
+}
+
+export namespace ArduinoToolbarContextMenu {
+    export const OPEN_SKETCH_PATH: MenuPath = ['arduino-open-sketch-context-menu'];
+    export const OPEN_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '1_open'];
+    export const WS_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '2_sketches'];
+    export const EXAMPLE_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '3_examples'];
 }
 
 export namespace ArduinoAdvancedMode {
@@ -60,7 +64,6 @@ export namespace ArduinoAdvancedMode {
         return advancedModeStr === 'true';
     })();
 }
-
 
 @injectable()
 export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution, MenuContribution {
@@ -95,9 +98,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
 
-    @inject(SketchFactory)
-    protected readonly sketchFactory: SketchFactory;
-
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
 
@@ -117,7 +117,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected readonly windowService: WindowService;
 
     @inject(SketchesService)
-    protected readonly sketches: SketchesService;
+    protected readonly sketchService: SketchesService;
 
     @inject(BoardsConfigDialog)
     protected readonly boardsConfigDialog: BoardsConfigDialog;
@@ -134,17 +134,15 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(ShellLayoutRestorer)
     protected readonly layoutRestorer: ShellLayoutRestorer;
 
-    @inject(LabelProvider)
-    protected readonly labelProvider: LabelProvider;
-
     @inject(QuickOpenService)
     protected readonly quickOpenService: QuickOpenService;
 
-    @inject(WorkspaceService) 
-    protected readonly workspaceService: WorkspaceService;
+    @inject(ArduinoWorkspaceService) 
+    protected readonly workspaceService: ArduinoWorkspaceService;
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;
+
     @inject(MonitorConnection)
     protected readonly monitorConnection: MonitorConnection;
 
@@ -304,7 +302,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
             isEnabled: () => true,
             execute: async (sketch: Sketch) => {
-                this.openSketchFilesInNewWindow(sketch.uri);
+                this.workspaceService.openSketchFilesInNewWindow(sketch.uri);
             }
         })
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
@@ -322,7 +320,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                         uri = uri.withPath(uri.path.dir.dir);
                     }
 
-                    await this.sketchFactory.createNewSketch(uri);
+                    const sketch = await this.sketchService.createNewSketch(uri.toString());
+                    this.workspaceService.openSketchFilesInNewWindow(sketch.uri);
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
@@ -388,7 +387,11 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerMenuAction(CommonMenus.HELP, {
             commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             label: 'Advanced Mode'
-        })
+        });
+
+        registry.registerMenuAction([...CommonMenus.FILE, '0_new_sketch'], {
+            commandId: ArduinoCommands.NEW_SKETCH.id
+        });
     }
 
     protected getMenuId(menuPath: string[]): string {
@@ -397,8 +400,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         return menuId;
     }
 
-    protected registerSketchesInMenu(registry: MenuModelRegistry) {
-        this.getWorkspaceSketches().then(sketches => {
+    protected async registerSketchesInMenu(registry: MenuModelRegistry): Promise<void> {
+        this.sketchService.getSketches().then(sketches => {
             this.wsSketchCount = sketches.length;
             sketches.forEach(sketch => {
                 const command: Command = {
@@ -416,48 +419,12 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         })
     }
 
-    protected async getWorkspaceSketches(): Promise<Sketch[]> {
-
-        let sketches: Sketch[] = [];
-        const config = await this.configService.getConfiguration();
-        const stat = await this.fileSystem.getFileStat(config.sketchDirUri);
-        if (!!stat) {
-            sketches = await this.sketches.getSketches(stat);
-        }
-        return sketches;
-    }
-
-    protected async openSketchFilesInNewWindow(uri: string) {
-        const url = new URL(window.location.href);
-        const currentSketch = url.searchParams.get('sketch');
-        // Nothing to do if we want to open the same sketch which is already opened.
-        const sketchUri = new URI(uri);
-        if (!!currentSketch && new URI(currentSketch).toString() === sketchUri.toString()) {
-            this.messageService.info(`The '${this.labelProvider.getLongName(sketchUri)}' is already opened.`);
-            // NOOP.
-            return;
-        }
-        // Preserve the current window if the `sketch` is not in the `searchParams`.
-        url.searchParams.set('sketch', uri);
-        const hash = await this.fileSystem.getFsPath(sketchUri.toString());
-        if (hash) {
-            url.hash = hash;
-        }
-        if (!currentSketch) {
-            setTimeout(() => window.location.href = url.toString(), 100);
-            return;
-        }
-        this.windowService.openNewWindow(url.toString());
-    }
-
-    async openSketchFiles(uri: string) {
-        const fileStat = await this.fileSystem.getFileStat(uri);
-        if (fileStat) {
-            const uris = await this.sketches.getSketchFiles(fileStat);
+    async openSketchFiles(uri: string): Promise<void> {
+        this.sketchService.getSketchFiles(uri).then(uris => {
             for (const uri of uris) {
                 this.editorManager.open(new URI(uri));
             }
-        }
+        });
     }
 
     /**
@@ -481,7 +448,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             if (destinationFile && !destinationFile.isDirectory) {
                 const message = await this.validate(destinationFile);
                 if (!message) {
-                    await this.openSketchFilesInNewWindow(destinationFileUri.toString());
+                    await this.workspaceService.openSketchFilesInNewWindow(destinationFileUri.toString());
                     return destinationFileUri;
                 } else {
                     this.messageService.warn(message);

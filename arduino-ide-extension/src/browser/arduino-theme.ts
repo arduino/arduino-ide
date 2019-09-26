@@ -19,9 +19,10 @@ export class ArduinoTheme {
         deactivate() {
             ARDUINO_CSS.unuse();
         }
-    }
+    };
 
     static readonly themes: Theme[] = [
         ArduinoTheme.arduino
-    ]
+    ];
+
 }

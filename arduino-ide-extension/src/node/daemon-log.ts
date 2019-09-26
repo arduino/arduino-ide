@@ -109,7 +109,7 @@ export namespace DaemonLog {
 
     export function toPrettyString(logMessages: string): string {
         const parsed = parse(logMessages);
-        return parsed.map(toMessage).join('\n');
+        return parsed.map(toMessage).join('\n') + '\n';
     }
 
     function toMessage(log: DaemonLog): string {

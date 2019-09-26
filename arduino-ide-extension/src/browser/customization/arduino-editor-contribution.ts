@@ -1,8 +1,9 @@
-import {EditorContribution} from '@theia/editor/lib/browser/editor-contribution'; 
+import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
 import { TextEditor } from '@theia/editor/lib/browser';
 import { StatusBarAlignment } from '@theia/core/lib/browser';
 
-export class CustomEditorContribution extends EditorContribution {
+export class ArduinoEditorContribution extends EditorContribution {
+
     protected updateLanguageStatus(editor: TextEditor | undefined): void {
     }
 
@@ -18,4 +19,5 @@ export class CustomEditorContribution extends EditorContribution {
             priority: 100
         });
     }
+
 }

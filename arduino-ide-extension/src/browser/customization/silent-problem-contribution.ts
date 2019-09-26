@@ -11,4 +11,5 @@ export class SilentProblemContribution extends ProblemContribution {
 
     protected setStatusBarElement(problemStat: ProblemStat) {
     }
+
 }

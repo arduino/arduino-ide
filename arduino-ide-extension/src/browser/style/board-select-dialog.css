@@ -193,10 +193,9 @@ button.theia-button.main {
 }
 
 .arduino-boards-dropdown-list {
-    background: var(--theia-layout-color1);
     border: 3px solid var(--theia-border-color2);
     margin: -3px;
-    z-index: 1000;
+    z-index: 1;
 }
 
 .arduino-boards-dropdown-item {
@@ -205,6 +204,7 @@ button.theia-button.main {
     padding: 10px;
     cursor: pointer;
     color: var(--theia-ui-font-color1);
+    background: var(--theia-layout-color1);
 }
 
 .arduino-boards-dropdown-item .fa-check {

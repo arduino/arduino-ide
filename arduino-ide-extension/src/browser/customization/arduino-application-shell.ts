@@ -1,7 +1,7 @@
 import { ApplicationShell, Widget, Saveable, FocusTracker, Message } from '@theia/core/lib/browser';
 import { EditorWidget } from '@theia/editor/lib/browser';
 
-export class CustomApplicationShell extends ApplicationShell {
+export class ArduinoApplicationShell extends ApplicationShell {
 
     protected refreshBottomPanelToggleButton() {
     }
