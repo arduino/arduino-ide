@@ -14,7 +14,7 @@ import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR } from '@theia/core';
+import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
@@ -28,7 +28,6 @@ import {
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
-import { ArduinoToolbarContextMenu } from './arduino-file-menu';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
@@ -49,6 +48,13 @@ import { ArduinoWorkspaceService } from './arduino-workspace-service';
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
     export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
+}
+
+export namespace ArduinoToolbarContextMenu {
+    export const OPEN_SKETCH_PATH: MenuPath = ['arduino-open-sketch-context-menu'];
+    export const OPEN_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '1_open'];
+    export const WS_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '2_sketches'];
+    export const EXAMPLE_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '3_examples'];
 }
 
 export namespace ArduinoAdvancedMode {
@@ -381,7 +387,11 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerMenuAction(CommonMenus.HELP, {
             commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             label: 'Advanced Mode'
-        })
+        });
+
+        registry.registerMenuAction([...CommonMenus.FILE, '0_new_sketch'], {
+            commandId: ArduinoCommands.NEW_SKETCH.id
+        });
     }
 
     protected getMenuId(menuPath: string[]): string {
