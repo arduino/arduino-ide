@@ -2,7 +2,8 @@ import * as which from 'which';
 import * as os from 'os';
 import { join, delimiter } from 'path';
 import { injectable } from 'inversify';
-import { BaseLanguageServerContribution, IConnection } from '@theia/languages/lib/node';
+import { BaseLanguageServerContribution, IConnection, LanguageServerStartOptions } from '@theia/languages/lib/node';
+import { Board } from '../../common/protocol/boards-service';
 
 @injectable()
 export class ArduinoLanguageServerContribution extends BaseLanguageServerContribution {
@@ -22,12 +23,21 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
         return this.description.name;
     }
 
-    async start(clientConnection: IConnection): Promise<void> {
+    async start(clientConnection: IConnection, options: LanguageServerStartOptions): Promise<void> {
         const clangd = await this.resolveExecutable('clangd');
         const languageServer = await this.resolveExecutable('arduino-language-server');
         const cli = await this.resolveExecutable('arduino-cli');
         // Add '-log' argument to enable logging to files
         const args: string[] = ['-clangd', clangd, '-cli', cli];
+        if (options.parameters && options.parameters.selectedBoard) {
+            const board = options.parameters.selectedBoard as Board;
+            if (board.fqbn) {
+                args.push('-fqbn', board.fqbn);
+            }
+            if (board.name) {
+                args.push('-board-name', `"${board.name}"`);
+            }
+        }
         console.log(`Starting language server ${languageServer} ${args.join(' ')}`);
         const serverConnection = await this.createProcessStreamConnectionAsync(languageServer, args);
         this.forward(clientConnection, serverConnection);

@@ -46,7 +46,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(BackendApplicationContribution).toService(ArduinoDaemon);
 
     // Language server
-    bind(LanguageServerContribution).to(ArduinoLanguageServerContribution).inSingletonScope();
+    bind(ArduinoLanguageServerContribution).toSelf().inSingletonScope();
+    bind(LanguageServerContribution).toService(ArduinoLanguageServerContribution);
 
     // Library service
     const libraryServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
@@ -64,10 +65,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     });
     bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
     
+    // Config service
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
     bind(ConfigService).toService(ConfigServiceImpl);
-    
-    // Config service
     const configServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
         bindBackendService(ConfigServicePath, ConfigService);
     });
