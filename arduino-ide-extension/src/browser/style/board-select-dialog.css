@@ -209,6 +209,7 @@ button.theia-button.main {
 
 .arduino-boards-dropdown-item .fa-check {
     color: var(--theia-accent-color1);
+    align-self: center;
 }
 
 .arduino-boards-dropdown-item.selected,
