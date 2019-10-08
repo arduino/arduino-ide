@@ -137,7 +137,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(QuickOpenService)
     protected readonly quickOpenService: QuickOpenService;
 
-    @inject(ArduinoWorkspaceService) 
+    @inject(ArduinoWorkspaceService)
     protected readonly workspaceService: ArduinoWorkspaceService;
 
     @inject(ConfigService)
@@ -164,6 +164,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         updateStatusBar(this.boardsServiceClient.boardsConfig);
 
         this.registerSketchesInMenu(this.menuRegistry);
+
+        this.boardsService.getAttachedBoards().then(({ boards }) => this.boardsServiceClient.tryReconnect(boards));
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
