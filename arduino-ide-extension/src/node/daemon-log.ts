@@ -83,7 +83,9 @@ export namespace DaemonLog {
     export function log(logger: ILogger, logMessages: string): void {
         const parsed = parse(logMessages);
         for (const log of parsed) {
-            logger.log(toLogLevel(log), toMessage(log));
+            const logLevel = toLogLevel(log);
+            const message = toMessage(log, { omitLogLevel: true });
+            logger.log(logLevel, message);
         }
     }
 
@@ -109,12 +111,13 @@ export namespace DaemonLog {
 
     export function toPrettyString(logMessages: string): string {
         const parsed = parse(logMessages);
-        return parsed.map(toMessage).join('\n') + '\n';
+        return parsed.map(log => toMessage(log)).join('\n') + '\n';
     }
 
-    function toMessage(log: DaemonLog): string {
+    function toMessage(log: DaemonLog, options: { omitLogLevel: boolean } = { omitLogLevel: false }): string {
         const details = Object.keys(log).filter(key => key !== 'msg' && key !== 'level' && key !== 'time').map(key => toDetails(log, key)).join(', ');
-        return `[${log.level.toUpperCase()}] ${log.msg}${!!details ? ` [${details}]` : ''}`
+        const logLevel = options.omitLogLevel ? '' : `[${log.level.toUpperCase()}] `;
+        return `${logLevel}${log.msg}${!!details ? ` [${details}]` : ''}`
     }
 
     function toDetails(log: DaemonLog, key: string): string {
