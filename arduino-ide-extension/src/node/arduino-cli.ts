@@ -26,6 +26,11 @@ export class ArduinoCli {
         });
     }
 
+    async getVersion(): Promise<string> {
+        const execPath = await this.getExecPath();
+        return cp.execFileSync(`${execPath}`, ['version']).toString().trim();
+    }
+
     async getDefaultConfig(): Promise<Config> {
         const command = await this.getExecPath();
         return new Promise<Config>((resolve, reject) => {
