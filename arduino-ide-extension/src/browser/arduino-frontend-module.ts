@@ -68,6 +68,8 @@ import { ArduinoTabBarDecoratorService } from './shell/arduino-tab-bar-decorator
 import { ProblemManager } from '@theia/markers/lib/browser';
 import { ArduinoProblemManager } from './markers/arduino-problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
+import { AboutDialog } from '@theia/core/lib/browser/about-dialog';
+import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -175,13 +177,12 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         id: MonitorWidget.ID,
         createWidget: () => context.container.get(MonitorWidget)
     }));
-    // Frontend binding for the monitor service.
+    // Frontend binding for the monitor service
     bind(MonitorService).toDynamicValue(context => {
         const connection = context.container.get(WebSocketConnectionProvider);
         const client = context.container.get(MonitorServiceClientImpl);
         return connection.createProxy(MonitorServicePath, client);
     }).inSingletonScope();
-    // MonitorConnection
     bind(MonitorConnection).toSelf().inSingletonScope();
     // Monitor service client to receive and delegate notifications from the backend.
     bind(MonitorServiceClientImpl).toSelf().inSingletonScope();
@@ -197,7 +198,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     const themeService = ThemeService.get();
     themeService.register(...ArduinoTheme.themes);
 
-    // customizing default theia
+    // Customizing default Theia layout
     if (!ArduinoAdvancedMode.TOGGLED) {
         unbind(OutlineViewContribution);
         bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
@@ -218,24 +219,29 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         unbind(SearchInWorkspaceFrontendContribution);
         bind(SearchInWorkspaceFrontendContribution).to(SilentSearchInWorkspaceContribution).inSingletonScope();
     } else {
-        // We use this CSS class on the body to modify the visibbility of the close button for the editors and views.
+        // We use this CSS class on the body to modify the visibility of the close button for the editors and views.
         document.body.classList.add(ArduinoAdvancedMode.LS_ID);
     }
     unbind(FrontendApplication);
     bind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
 
-    // monaco customizations
+    // Monaco customizations
     unbind(MonacoEditorProvider);
     bind(ArduinoMonacoEditorProvider).toSelf().inSingletonScope();
     bind(MonacoEditorProvider).toService(ArduinoMonacoEditorProvider);
 
-    // decorator customizations
+    // Decorator customizations
     unbind(TabBarDecoratorService);
     bind(ArduinoTabBarDecoratorService).toSelf().inSingletonScope();
     bind(TabBarDecoratorService).toService(ArduinoTabBarDecoratorService);
 
-    // problem markers
+    // Problem markers
     unbind(ProblemManager);
     bind(ArduinoProblemManager).toSelf().inSingletonScope();
     bind(ProblemManager).toService(ArduinoProblemManager);
+
+    // About dialog to show the CLI version
+    unbind(AboutDialog);
+    bind(ArduinoAboutDialog).toSelf().inSingletonScope();
+    bind(AboutDialog).toService(ArduinoAboutDialog);
 });

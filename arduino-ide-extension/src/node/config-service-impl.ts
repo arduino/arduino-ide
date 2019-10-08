@@ -13,6 +13,10 @@ export class ConfigServiceImpl implements ConfigService {
         return this.cli.getDefaultConfig();
     }
 
+    async getVersion(): Promise<string> {
+        return this.cli.getVersion();
+    }
+
     async isInDataDir(uri: string): Promise<boolean> {
         return this.getConfiguration().then(({ dataDirUri }) => new URI(dataDirUri).isEqualOrParent(new URI(uri)));
     }
