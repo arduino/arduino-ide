@@ -69,7 +69,7 @@ jobs:
       downloadPath: 'gh-release' 
   - task: GithubRelease@0
     inputs:
-      gitHubConnection: personal-access-token-service-connection
+      gitHubConnection: typefox-service-account1
       repositoryName: bcmi-labs/arduino-editor
       assets: |
         gh-release/Arduino-PoC - Applications/*.zip
