@@ -59,6 +59,17 @@ export namespace Board {
         return left.name === right.name && left.fqbn === right.fqbn;
     }
 
+    export function sameAs(left: Board, right: string | Board): boolean {
+        // How to associate a selected board with one of the available cores: https://typefox.slack.com/archives/CJJHJCJSJ/p1571142327059200
+        // 1. How to use the FQBN if any and infer the package ID from it: https://typefox.slack.com/archives/CJJHJCJSJ/p1571147549069100
+        // 2. How to trim the `/Genuino` from the name: https://arduino.slack.com/archives/CJJHJCJSJ/p1571146951066800?thread_ts=1571142327.059200&cid=CJJHJCJSJ
+        const other = typeof right === 'string' ? { name: right } : right;
+        if (left.fqbn && other.fqbn) {
+            return left.fqbn === other.fqbn;
+        }
+        return left.name.replace('/Genuino', '') === other.name.replace('/Genuino', '');
+    }
+
     export function compare(left: Board, right: Board): number {
         let result = left.name.localeCompare(right.name);
         if (result === 0) {

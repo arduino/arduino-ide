@@ -1,5 +1,6 @@
 import * as React from 'react';
 import debounce = require('lodash.debounce');
+import { Event } from '@theia/core/lib/common/event';
 import { Searchable } from '../../../common/protocol/searchable';
 import { Installable } from '../../../common/protocol/installable';
 import { InstallationProgressDialog } from '../installation-progress-dialog';
@@ -20,6 +21,7 @@ export class FilterableListContainer<T> extends React.Component<FilterableListCo
     componentWillMount(): void {
         this.search = debounce(this.search, 500);
         this.handleFilterTextChange('');
+        this.props.filterTextChangeEvent(this.handleFilterTextChange.bind(this));
     }
 
     render(): React.ReactNode {
@@ -57,8 +59,8 @@ export class FilterableListContainer<T> extends React.Component<FilterableListCo
         this.setState({ filterText });
         this.search(filterText);
     }
-    
-    protected search (query: string): void {
+
+    protected search(query: string): void {
         const { searchable } = this.props;
         searchable.search({ query: query.trim() }).then(result => {
             const { items } = result;
@@ -97,6 +99,7 @@ export namespace FilterableListContainer {
         readonly itemRenderer: ListItemRenderer<T>;
         readonly resolveContainer: (element: HTMLElement) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
+        readonly filterTextChangeEvent: Event<string>;
     }
 
     export interface State<T> {

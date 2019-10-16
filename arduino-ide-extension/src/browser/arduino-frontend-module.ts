@@ -67,6 +67,7 @@ import { TabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-de
 import { ArduinoTabBarDecoratorService } from './shell/arduino-tab-bar-decorator';
 import { ProblemManager } from '@theia/markers/lib/browser';
 import { ArduinoProblemManager } from './markers/arduino-problem-manager';
+import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -119,6 +120,10 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath, client);
         return client;
     }).inSingletonScope();
+
+    // boards auto-installer
+    bind(BoardsAutoInstaller).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(BoardsAutoInstaller);
 
     // Boards list widget
     bind(BoardsListWidget).toSelf();
