@@ -7,8 +7,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Node.js Program",
-            "program": "${file}"
+            "name": "Launch Electron Packager",
+            "program": "${workspaceRoot}/electron/packager/index.js",
+            "cwd": "${workspaceFolder}/electron/packager"
         },
         {
             "type": "node",

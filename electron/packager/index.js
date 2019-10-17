@@ -33,10 +33,8 @@
     //---------------------------+
     // rm -rf ../working-copy
     rm('-rf', path('..', workingCopy));
-    // rm -rf ../build/dist
-    rm('-rf', path('..', 'build', 'dist'));
-    // rm -rf ../build/package.json
-    rm('-rf', path('..', 'build', 'package.json'));
+    // Clean up the `./electron/build` folder.
+    shell.exec(`git -C ${path('..', 'build')} clean -ffxdq`, { async: false });
 
     //----------------------------------------------------------------------------------------------+
     // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
@@ -79,7 +77,7 @@
     pkg = require('../working-copy/electron-app/package.json');
     // @ts-ignore
     const template = require('../build/template-package.json');
-    template.build.files = [ ...template.build.files, ...unusedDependencies.map(name => `!node_modules/${name}`) ];
+    template.build.files = [...template.build.files, ...unusedDependencies.map(name => `!node_modules/${name}`)];
     pkg.dependencies = { ...pkg.dependencies, ...template.dependencies };
     pkg.devDependencies = { ...pkg.devDependencies, ...template.devDependencies };
     fs.writeFileSync(path('..', 'build', 'package.json'), JSON.stringify({
@@ -95,6 +93,17 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
 -----------------------
     `);
 
+    // Make sure the original `yarn.lock` file is used from the electron application.
+    if (fs.existsSync(path('..', 'build', 'yarn.lock'))) {
+        echo(`${path('..', 'build', 'yarn.lock')} must not exist.`);
+        shell.exit(1);
+    }
+    cp('-rf', path(rootPath, 'yarn.lock'), path('..', 'build'));
+    if (!fs.existsSync(path('..', 'build', 'yarn.lock'))) {
+        echo(`${path('..', 'build', 'yarn.lock')} does not exist.`);
+        shell.exit(1);
+    }
+
     //-------------------------------------------------------------------------------------------+
     // Install all private and public dependencies for the electron application and build Theia. |
     //-------------------------------------------------------------------------------------------+
@@ -109,7 +118,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
         rm('-rf', path('..', 'build', dotenv));
     }
     // For the releases we use the desired tag as is defined by `$(Release.Tag)` from Azure.
-    // For the preview builds we use the version from the `electron/build/package.json` with the short commit hash. 
+    // For the preview builds we use the version from the `electron/build/package.json` with the short commit hash.
     fs.writeFileSync(path('..', 'build', dotenv), `ARDUINO_VERSION=${version}`);
 
     //-----------------------------------+
