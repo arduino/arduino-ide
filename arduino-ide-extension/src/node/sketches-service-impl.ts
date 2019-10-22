@@ -16,7 +16,19 @@ export class SketchesServiceImpl implements SketchesService {
 
     async getSketches(uri?: string): Promise<Sketch[]> {
         const sketches: Array<Sketch & { mtimeMs: number }> = [];
-        const fsPath = FileUri.fsPath(uri ? uri : (await this.configService.getConfiguration()).sketchDirUri);
+        let fsPath: undefined | string;
+        if (!uri) {
+            const { sketchDirUri } = (await this.configService.getConfiguration());
+            fsPath = FileUri.fsPath(sketchDirUri);
+            if (!fs.existsSync(fsPath)) {
+                fs.mkdirpSync(fsPath);
+            }
+        } else {
+            fsPath = FileUri.fsPath(uri);
+        }
+        if (!fs.existsSync(fsPath)) {
+            return [];
+        }
         const fileNames = fs.readdirSync(fsPath);
         for (const fileName of fileNames) {
             const filePath = path.join(fsPath, fileName);
@@ -56,12 +68,13 @@ export class SketchesServiceImpl implements SketchesService {
         return this.getSketchFiles(FileUri.create(sketchDir).toString());
     }
 
-    async createNewSketch(parentUri: string): Promise<Sketch> {
+    async createNewSketch(parentUri?: string): Promise<Sketch> {
         const monthNames = ['january', 'february', 'march', 'april', 'may', 'june',
             'july', 'august', 'september', 'october', 'november', 'december'
         ];
         const today = new Date();
-        const parent = FileUri.fsPath(parentUri);
+        const uri = !!parentUri ? parentUri : (await this.configService.getConfiguration()).sketchDirUri;
+        const parent = FileUri.fsPath(uri);
 
         const sketchBaseName = `sketch_${monthNames[today.getMonth()]}${today.getDate()}`;
         let sketchName: string | undefined;

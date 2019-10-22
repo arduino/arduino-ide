@@ -302,7 +302,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
             isEnabled: () => true,
             execute: async (sketch: Sketch) => {
-                this.workspaceService.openSketchFilesInNewWindow(sketch.uri);
+                this.workspaceService.open(new URI(sketch.uri));
             }
         })
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
@@ -321,7 +321,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                     }
 
                     const sketch = await this.sketchService.createNewSketch(uri.toString());
-                    this.workspaceService.openSketchFilesInNewWindow(sketch.uri);
+                    this.workspaceService.open(new URI(sketch.uri));
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
@@ -461,7 +461,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             if (destinationFile && !destinationFile.isDirectory) {
                 const message = await this.validate(destinationFile);
                 if (!message) {
-                    await this.workspaceService.openSketchFilesInNewWindow(destinationFileUri.toString());
+                    await this.workspaceService.open(destinationFileUri);
                     return destinationFileUri;
                 } else {
                     this.messageService.warn(message);
