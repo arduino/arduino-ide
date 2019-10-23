@@ -349,6 +349,19 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
     registerMenus(registry: MenuModelRegistry) {
         if (!ArduinoAdvancedMode.TOGGLED) {
+            // If are not in pro-mode, we have to disable the context menu for the tabs.
+            // Such as `Close`, `Close All`, etc.
+            for (const command of [
+                CommonCommands.CLOSE_TAB,
+                CommonCommands.CLOSE_OTHER_TABS,
+                CommonCommands.CLOSE_RIGHT_TABS,
+                CommonCommands.CLOSE_ALL_TABS,
+                CommonCommands.COLLAPSE_PANEL,
+                CommonCommands.TOGGLE_MAXIMIZED
+            ]) {
+                registry.unregisterMenuAction(command);
+            }
+
             registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
             registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
 
