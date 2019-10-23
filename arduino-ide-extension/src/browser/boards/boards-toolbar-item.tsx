@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { CommandRegistry, DisposableCollection } from '@theia/core';
-import { BoardsService, Board, AttachedSerialBoard } from '../../common/protocol/boards-service';
+import { BoardsService, Board, AttachedSerialBoard, Port } from '../../common/protocol/boards-service';
 import { ArduinoCommands } from '../arduino-commands';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
 import { BoardsConfig } from './boards-config';
@@ -88,6 +88,7 @@ export namespace BoardsToolBarItem {
     export interface State {
         boardsConfig: BoardsConfig.Config;
         attachedBoards: Board[];
+        availablePorts: Port[];
         coords: BoardsDropDownListCoords | 'hidden';
     }
 }
@@ -104,6 +105,7 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
         this.state = {
             boardsConfig: this.props.boardsServiceClient.boardsConfig,
             attachedBoards: [],
+            availablePorts: [],
             coords: 'hidden'
         };
 
@@ -116,10 +118,13 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
         const { boardsServiceClient: client, boardService } = this.props;
         this.toDispose.pushAll([
             client.onBoardsConfigChanged(boardsConfig => this.setState({ boardsConfig })),
-            client.onBoardsChanged(({ newState }) => this.setState({ attachedBoards: newState.boards }))
+            client.onBoardsChanged(({ newState }) => this.setState({ attachedBoards: newState.boards, availablePorts: newState.ports }))
         ]);
-        boardService.getAttachedBoards().then(({ boards: attachedBoards }) => {
-            this.setState({ attachedBoards })
+        Promise.all([
+            boardService.getAttachedBoards(),
+            boardService.getAvailablePorts()
+        ]).then(([{boards: attachedBoards}, { ports: availablePorts }]) => {
+            this.setState({ attachedBoards, availablePorts })
         });
     }
 
@@ -149,29 +154,32 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     };
 
     render(): React.ReactNode {
-        const { boardsConfig, coords, attachedBoards } = this.state;
-        const boardsConfigText = BoardsConfig.Config.toString(boardsConfig, { default: 'no board selected' });
+        const { boardsConfig, coords, attachedBoards, availablePorts } = this.state;
+        const title = BoardsConfig.Config.toString(boardsConfig, { default: 'no board selected' });
         const configuredBoard = attachedBoards
             .filter(AttachedSerialBoard.is)
+            .filter(board => availablePorts.some(port => Port.sameAs(port, board.port)))
             .filter(board => BoardsConfig.Config.sameAs(boardsConfig, board)).shift();
 
         const items = attachedBoards.filter(AttachedSerialBoard.is).map(board => ({
             label: `${board.name} at ${board.port}`,
             selected: configuredBoard === board,
-            onClick: () => this.props.boardsServiceClient.boardsConfig = {
-                selectedBoard: board,
-                selectedPort: board.port
+            onClick: () => {
+                this.props.boardsServiceClient.boardsConfig = {
+                    selectedBoard: board,
+                    selectedPort: availablePorts.find(port => Port.sameAs(port, board.port))
+                }
             }
         }));
 
         return <React.Fragment>
             <div className='arduino-boards-toolbar-item-container'>
-                <div className='arduino-boards-toolbar-item' title={boardsConfigText}>
+                <div className='arduino-boards-toolbar-item' title={title}>
                     <div className='inner-container' onClick={this.show}>
                         <span className={!configuredBoard ? 'fa fa-times notAttached' : ''}/>
                         <div className='label noWrapInfo'>
                             <div className='noWrapInfo noselect'>
-                                {boardsConfigText}
+                                {title}
                             </div>
                         </div>
                         <span className='fa fa-caret-down caret'/>

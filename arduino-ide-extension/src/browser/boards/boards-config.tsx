@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { DisposableCollection } from '@theia/core';
-import { BoardsService, Board, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
+import { BoardsService, Board, Port, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
 
 export namespace BoardsConfig {
 
     export interface Config {
         selectedBoard?: Board;
-        selectedPort?: string;
+        selectedPort?: Port;
     }
 
     export interface Props {
@@ -19,7 +19,8 @@ export namespace BoardsConfig {
 
     export interface State extends Config {
         searchResults: Array<Board & { packageName: string }>;
-        knownPorts: string[];
+        knownPorts: Port[];
+        showAllPorts: boolean;
     }
 
 }
@@ -47,7 +48,7 @@ export abstract class Item<T> extends React.Component<{
                 {label}
             </div>
             {!detail ? '' : <div className='detail'>{detail}</div>}
-            {!selected ? '' : <div className='selected-icon'><i className='fa fa-check'/></div>}
+            {!selected ? '' : <div className='selected-icon'><i className='fa fa-check' /></div>}
         </div>;
     }
 
@@ -68,16 +69,17 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         this.state = {
             searchResults: [],
             knownPorts: [],
+            showAllPorts: false,
             ...boardsConfig
         }
     }
 
     componentDidMount() {
         this.updateBoards();
-        this.props.boardsService.getAttachedBoards().then(({ boards }) => this.updatePorts(boards));
+        this.props.boardsService.getAvailablePorts().then(({ ports }) => this.updatePorts(ports));
         const { boardsServiceClient: client } = this.props;
         this.toDispose.pushAll([
-            client.onBoardsChanged(event => this.updatePorts(event.newState.boards, AttachedBoardsChangeEvent.diff(event).detached)),
+            client.onBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
             client.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
                 this.setState({ selectedBoard, selectedPort }, () => this.fireConfigChanged());
             })
@@ -101,11 +103,11 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         this.queryBoards({ query }).then(({ searchResults }) => this.setState({ searchResults }));
     }
 
-    protected updatePorts = (boards: Board[] = [], detachedBoards: Board[] = []) => {
-        this.queryPorts(Promise.resolve({ boards })).then(({ knownPorts }) => {
+    protected updatePorts = (ports: Port[] = [], removedPorts: Port[] = []) => {
+        this.queryPorts(Promise.resolve({ ports })).then(({ knownPorts }) => {
             let { selectedPort } = this.state;
-            const removedPorts = detachedBoards.filter(AttachedSerialBoard.is).map(({ port }) => port);
-            if (!!selectedPort && removedPorts.indexOf(selectedPort) !== -1) {
+            // If the currently selected port is not available anymore, unset the selected port.
+            if (removedPorts.some(port => Port.equals(port, selectedPort))) {
                 selectedPort = undefined;
             }
             this.setState({ knownPorts, selectedPort }, () => this.fireConfigChanged());
@@ -130,18 +132,24 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         return this.props.boardsService.getAttachedBoards();
     }
 
-    protected queryPorts = (attachedBoards: Promise<{ boards: Board[] }> = this.attachedBoards) => {
-        return new Promise<{ knownPorts: string[] }>(resolve => {
-            attachedBoards
-                .then(({ boards }) => boards
-                    .filter(AttachedSerialBoard.is)
-                    .map(({ port }) => port)
-                    .sort())
+    protected get availablePorts(): Promise<{ ports: Port[] }> {
+        return this.props.boardsService.getAvailablePorts();
+    }
+
+    protected queryPorts = (availablePorts: Promise<{ ports: Port[] }> = this.availablePorts) => {
+        return new Promise<{ knownPorts: Port[] }>(resolve => {
+            availablePorts
+                .then(({ ports }) => ports
+                    .sort(Port.compare))
                 .then(knownPorts => resolve({ knownPorts }));
         });
     }
 
-    protected selectPort = (selectedPort: string | undefined) => {
+    protected toggleFilterPorts = () => {
+        this.setState({ showAllPorts: !this.state.showAllPorts });
+    }
+
+    protected selectPort = (selectedPort: Port | undefined) => {
         this.setState({ selectedPort }, () => this.fireConfigChanged());
     }
 
@@ -156,17 +164,20 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     render(): React.ReactNode {
         return <div className='body'>
             {this.renderContainer('boards', this.renderBoards.bind(this))}
-            {this.renderContainer('ports', this.renderPorts.bind(this))}
+            {this.renderContainer('ports', this.renderPorts.bind(this), this.renderPortsFooter.bind(this))}
         </div>;
     }
 
-    protected renderContainer(title: string, contentRenderer: () => React.ReactNode): React.ReactNode {
+    protected renderContainer(title: string, contentRenderer: () => React.ReactNode, footerRenderer?: () => React.ReactNode): React.ReactNode {
         return <div className='container'>
             <div className='content'>
                 <div className='title'>
                     {title}
                 </div>
                 {contentRenderer()}
+                <div className='footer'>
+                    {(footerRenderer ? footerRenderer() : '')}
+                </div>
             </div>
         </div>;
     }
@@ -214,7 +225,9 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     }
 
     protected renderPorts(): React.ReactNode {
-        return !this.state.knownPorts.length ?
+        const filter = this.state.showAllPorts ? () => true : Port.isBoardPort;
+        const ports = this.state.knownPorts.filter(filter);
+        return !ports.length ?
             (
                 <div className='loading noselect'>
                     No ports discovered
@@ -222,15 +235,29 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             ) :
             (
                 <div className='ports list'>
-                    {this.state.knownPorts.map(port => <Item<string>
-                        key={port}
+                    {ports.map(port => <Item<Port>
+                        key={Port.toString(port)}
                         item={port}
-                        label={port}
-                        selected={this.state.selectedPort === port}
+                        label={Port.toString(port)}
+                        selected={Port.equals(this.state.selectedPort, port)}
                         onClick={this.selectPort}
                     />)}
                 </div>
             );
+    }
+
+    protected renderPortsFooter(): React.ReactNode {
+        return <div className='noselect'>
+            <label
+                title='Shows all available ports when enabled'>
+                <input
+                    type='checkbox'
+                    defaultChecked={this.state.showAllPorts}
+                    onChange={this.toggleFilterPorts}
+                />
+                <span>Show all ports</span>
+            </label>
+        </div>;
     }
 
 }
@@ -244,7 +271,7 @@ export namespace BoardsConfig {
             if (AttachedSerialBoard.is(other)) {
                 return !!selectedBoard
                     && Board.equals(other, selectedBoard)
-                    && selectedPort === other.port;
+                    && Port.sameAs(selectedPort, other.port);
             }
             return sameAs(config, other);
         }
@@ -260,7 +287,7 @@ export namespace BoardsConfig {
                 return options.default;
             }
             const { name } = selectedBoard;
-            return `${name}${port ? ' at ' + port : ''}`;
+            return `${name}${port ? ' at ' + Port.toString(port) : ''}`;
         }
 
     }

@@ -165,7 +165,10 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
 
         this.registerSketchesInMenu(this.menuRegistry);
 
-        this.boardsService.getAttachedBoards().then(({ boards }) => this.boardsServiceClient.tryReconnect(boards));
+        Promise.all([
+            this.boardsService.getAttachedBoards(),
+            this.boardsService.getAvailablePorts()
+        ]).then(([{ boards }, { ports }]) => this.boardsServiceClient.tryReconnect(boards, ports));
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -270,7 +273,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                     if (!selectedPort) {
                         throw new Error('No ports selected. Please select a port.');
                     }
-                    await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort });
+                    await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort.address });
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 } finally {

@@ -25,7 +25,7 @@
   },
   "scripts": {
     "prepare": "theia build --mode development",
-    "start": "theia start --root-dir=../workspace",
+    "start": "theia start",
     "watch": "theia build --watch --mode development"
   },
   "theia": {

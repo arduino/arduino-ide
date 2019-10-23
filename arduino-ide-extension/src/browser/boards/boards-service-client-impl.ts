@@ -3,9 +3,8 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
 import { RecursiveRequired } from '../../common/types';
-import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board } from '../../common/protocol/boards-service';
+import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
-import { MaybePromise } from '@theia/core';
 
 @injectable()
 export class BoardsServiceClientImpl implements BoardsServiceClient {
@@ -40,29 +39,27 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     }
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
-        this.logger.info('Attached boards changed: ', JSON.stringify(event));
+        this.logger.info('Attached boards and available ports changed: ', JSON.stringify(event));
         const { detached, attached } = AttachedBoardsChangeEvent.diff(event);
-        const detachedBoards = detached.filter(AttachedSerialBoard.is).map(({ port }) => port);
         const { selectedPort, selectedBoard } = this.boardsConfig;
         this.onAttachedBoardsChangedEmitter.fire(event);
-        // Dynamically unset the port if the selected board was an attached one and we detached it.
-        if (!!selectedPort && detachedBoards.indexOf(selectedPort) !== -1) {
+        // Dynamically unset the port if is not available anymore. A port can be "detached" when removing a board.
+        if (detached.ports.some(port => Port.equals(selectedPort, port))) {
             this.boardsConfig = {
                 selectedBoard,
                 selectedPort: undefined
             };
         }
         // Try to reconnect.
-        this.tryReconnect(attached);
+        this.tryReconnect(attached.boards, attached.ports);
     }
 
-    async tryReconnect(attachedBoards: MaybePromise<Array<Board>>): Promise<boolean> {
-        const boards = await attachedBoards;
+    async tryReconnect(attachedBoards: Board[], availablePorts: Port[]): Promise<boolean> {
         if (this.latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
-            for (const board of boards.filter(AttachedSerialBoard.is)) {
+            for (const board of attachedBoards.filter(AttachedSerialBoard.is)) {
                 if (this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn
                     && this.latestValidBoardsConfig.selectedBoard.name === board.name
-                    && this.latestValidBoardsConfig.selectedPort === board.port) {
+                    && Port.sameAs(this.latestValidBoardsConfig.selectedPort, board.port)) {
 
                     this.boardsConfig = this.latestValidBoardsConfig;
                     return true;
@@ -70,13 +67,13 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
             }
             // If we could not find an exact match, we compare the board FQBN-name pairs and ignore the port, as it might have changed.
             // See documentation on `latestValidBoardsConfig`.
-            for (const board of boards.filter(AttachedSerialBoard.is)) {
+            for (const board of attachedBoards.filter(AttachedSerialBoard.is)) {
                 if (this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn
                     && this.latestValidBoardsConfig.selectedBoard.name === board.name) {
 
                     this.boardsConfig = {
                         ...this.latestValidBoardsConfig,
-                        selectedPort: board.port
+                        selectedPort: availablePorts.find(port => Port.sameAs(port, board.port))
                     };
                     return true;
                 }

@@ -1,23 +1,42 @@
-import { JsonRpcServer } from '@theia/core';
+import { isWindows, isOSX } from '@theia/core/lib/common/os';
+import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
+const naturalCompare: (left: string, right: string) => number = require('string-natural-compare').caseInsensitive;
 
 export interface AttachedBoardsChangeEvent {
-    readonly oldState: Readonly<{ boards: Board[] }>;
-    readonly newState: Readonly<{ boards: Board[] }>;
+    readonly oldState: Readonly<{ boards: Board[], ports: Port[] }>;
+    readonly newState: Readonly<{ boards: Board[], ports: Port[] }>;
 }
 export namespace AttachedBoardsChangeEvent {
 
-    export function diff(event: AttachedBoardsChangeEvent): Readonly<{ attached: Board[], detached: Board[] }> {
+    export function diff(event: AttachedBoardsChangeEvent): Readonly<{
+        attached: {
+            boards: Board[],
+            ports: Port[]
+        },
+        detached: {
+            boards: Board[],
+            ports: Port[]
+        }
+    }> {
         const diff = <T>(left: T[], right: T[]) => {
             return left.filter(item => right.indexOf(item) === -1);
         }
         const { boards: newBoards } = event.newState;
         const { boards: oldBoards } = event.oldState;
+        const { ports: newPorts } = event.newState;
+        const { ports: oldPorts } = event.oldState;
         return {
-            detached: diff(oldBoards, newBoards),
-            attached: diff(newBoards, oldBoards)
+            detached: {
+                boards: diff(oldBoards, newBoards),
+                ports: diff(oldPorts, newPorts)
+            },
+            attached: {
+                boards: diff(newBoards, oldBoards),
+                ports: diff(newPorts, oldPorts)
+            }
         };
     }
 
@@ -37,6 +56,114 @@ export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService extends Installable<BoardPackage>, Searchable<BoardPackage>, JsonRpcServer<BoardsServiceClient> {
     getAttachedBoards(): Promise<{ boards: Board[] }>;
+    getAvailablePorts(): Promise<{ ports: Port[] }>;
+}
+
+export interface Port {
+    readonly address: string;
+    readonly protocol: Port.Protocol;
+    /**
+     * Optional label for the protocol. For example: `Serial Port (USB)`.
+     */
+    readonly label?: string;
+}
+export namespace Port {
+
+    export type Protocol = 'serial' | 'network' | 'unknown';
+    export namespace Protocol {
+        export function toProtocol(protocol: string | undefined): Protocol {
+            if (protocol === 'serial') {
+                return 'serial';
+            } else if (protocol === 'network') {
+                return 'network';
+            } else {
+                return 'unknown';
+            }
+        }
+    }
+
+    export function toString(port: Port, options: { useLabel: boolean } = { useLabel: false }): string {
+        if (options.useLabel && port.label) {
+            return `${port.address} ${port.label}`
+        }
+        return port.address;
+    }
+
+    export function compare(left: Port, right: Port): number {
+        // Board ports have higher priorities, they come first.
+        if (isBoardPort(left) && !isBoardPort(right)) {
+            return -1;
+        }
+        if (!isBoardPort(left) && isBoardPort(right)) {
+            return 1;
+        }
+        let result = left.protocol.toLocaleLowerCase().localeCompare(right.protocol.toLocaleLowerCase());
+        if (result !== 0) {
+            return result;
+        }
+        result = naturalCompare(left.address, right.address);
+        if (result !== 0) {
+            return result;
+        }
+        return (left.label || '').localeCompare(right.label || '');
+    }
+
+    export function equals(left: Port | undefined, right: Port | undefined): boolean {
+        if (left && right) {
+            return left.address === right.address
+                && left.protocol === right.protocol
+                && (left.label || '') === (right.label || '');
+        }
+        return left === right;
+    }
+
+    // Based on: https://github.com/arduino/Arduino/blob/93581b03d723e55c60caedb4729ffc6ea808fe78/arduino-core/src/processing/app/SerialPortList.java#L48-L74   
+    export function isBoardPort(port: Port): boolean {
+        const address = port.address.toLocaleLowerCase();
+        if (isWindows) {
+            // `COM1` seems to be the default serial port on Windows.
+            return address !== 'COM1'.toLocaleLowerCase();
+        }
+        // On macOS and Linux, the port should start with `/dev/`.
+        if (!address.startsWith('/dev/')) {
+            return false
+        }
+        if (isOSX) {
+            // Example: `/dev/cu.usbmodem14401`
+            if (/(tty|cu)\..*/.test(address.substring('/dev/'.length))) { 
+                return [
+                    '/dev/cu.MALS',
+                    '/dev/cu.SOC',
+                    '/dev/cu.Bluetooth-Incoming-Port'
+                ].map(a => a.toLocaleLowerCase()).every(a => a !== address);
+            }
+        }
+
+        // Example: `/dev/ttyACM0`
+        if (/(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}/.test(address.substring('/dev/'.length))) {
+            // Default ports were `/dev/ttyS0` -> `/dev/ttyS31` on Ubuntu 16.04.2.
+            if (address.startsWith('/dev/ttyS')) {
+                const index = Number.parseInt(address.substring('/dev/ttyS'.length), 10);
+                if (!Number.isNaN(index) && 0 <= index && 31 >= index) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    export function sameAs(left: Port | undefined, right: string | undefined) {
+        if (left && right) {
+            if (left.protocol !== 'serial') {
+                console.log(`Unexpected protocol for port: ${JSON.stringify(left)}. Ignoring protocol, comparing addresses with ${right}.`);
+            }
+            return left.address === right;
+        }
+        return false;
+    }
+
 }
 
 export interface BoardPackage extends ArduinoComponent {
