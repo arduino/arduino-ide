@@ -1,30 +1,11 @@
 import { injectable, inject } from 'inversify';
-// import { toUnix } from 'upath';
-// import URI from '@theia/core/lib/common/uri';
-// import { isWindows } from '@theia/core/lib/common/os';
 import { LabelProvider } from '@theia/core/lib/browser';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService } from '../common/protocol/sketches-service';
-// import { ArduinoAdvancedMode } from './arduino-frontend-contribution';
 import { ArduinoWorkspaceRootResolver } from './arduino-workspace-resolver';
 import { ArduinoAdvancedMode } from './arduino-frontend-contribution';
 
-/**
- * This is workaround to have custom frontend binding for the default workspace, although we
- * already have a custom binding for the backend.
- * 
- * The following logic is used for determining the default workspace location:
- * - #hash exists in location?
- *  - Yes
- *   - `validateHash`. Is valid sketch location?
- *    - Yes
- *     - Done.
- *    - No
- *     - `checkHistoricalWorkspaceRoots`, `try open last modified sketch`,create new sketch`.
- *  - No
- *   - `checkHistoricalWorkspaceRoots`, `try open last modified sketch`, `create new sketch`.
- */
 @injectable()
 export class ArduinoWorkspaceService extends WorkspaceService {
 

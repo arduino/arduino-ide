@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
-import { FileSystem } from '@theia/filesystem/lib/common';
-import { FrontendApplication } from '@theia/core/lib/browser';
+import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
+import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { ArduinoFrontendContribution, ArduinoAdvancedMode } from '../arduino-frontend-contribution';
-import { WorkspaceService } from '@theia/workspace/lib/browser';
 
 @injectable()
 export class ArduinoFrontendApplication extends FrontendApplication {

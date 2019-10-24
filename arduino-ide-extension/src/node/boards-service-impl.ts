@@ -191,8 +191,6 @@ export class BoardsServiceImpl implements BoardsService {
         });
     }
 
-
-
     async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {
         const coreClient = await this.coreClientProvider.getClient();
         if (!coreClient) {

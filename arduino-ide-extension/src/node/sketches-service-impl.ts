@@ -94,7 +94,7 @@ export class SketchesServiceImpl implements SketchesService {
 
         const sketchDir = path.join(parent, sketchName)
         const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
-        fs.mkdirSync(sketchDir);
+        fs.mkdirpSync(sketchDir);
         fs.writeFileSync(sketchFile, `
 void setup() {
 // put your setup code here, to run once:
