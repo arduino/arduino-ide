@@ -52,7 +52,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: electron/build/dist/$(ArduinoPoC.AppName)
-      artifactName: 'Arduino-PoC - Applications'
+      artifactName: 'Arduino Pro IDE - Applications'
     condition: or(in(variables['Agent.OS'], 'Windows_NT'), in(variables['Build.Reason'], 'Manual', 'Schedule'))
     displayName: Publish
 - job: Release
@@ -65,16 +65,16 @@ jobs:
   - task: DownloadBuildArtifacts@0
     displayName: Download
     inputs:
-      artifactName: 'Arduino-PoC - Applications'
+      artifactName: 'Arduino Pro IDE - Applications'
       downloadPath: 'gh-release' 
   - task: GithubRelease@0
     inputs:
       gitHubConnection: typefox-service-account1
       repositoryName: bcmi-labs/arduino-editor
       assets: |
-        gh-release/Arduino-PoC - Applications/*.zip
-        gh-release/Arduino-PoC - Applications/*.dmg
-        gh-release/Arduino-PoC - Applications/*.tar.xz
+        gh-release/Arduino Pro IDE - Applications/*.zip
+        gh-release/Arduino Pro IDE - Applications/*.dmg
+        gh-release/Arduino Pro IDE - Applications/*.tar.xz
       target: $(Build.SourceVersion)
       action: Edit
       tagSource: auto

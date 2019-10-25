@@ -133,7 +133,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         return parentLogger.child('discovery');
     }).inSingletonScope().whenTargetNamed('discovery');
 
-    // Default workspace server extension to initialize and use a fallback workspace (`~/Arduino-PoC/workspace/`)
+    // Default workspace server extension to initialize and use a fallback workspace.
     // If nothing was set previously.
     bind(DefaultWorkspaceServerExt).toSelf().inSingletonScope();
     rebind(WorkspaceServer).toService(DefaultWorkspaceServerExt);
