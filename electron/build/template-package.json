@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "theia build --mode development",
-    "build:release": "theia build --mode production",
+    "build:release": "theia build --mode development",
     "package": "electron-builder --publish=never",
     "package:preview": "electron-builder --dir"
   },
