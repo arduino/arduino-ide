@@ -268,7 +268,7 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
         return {
             baudRate,
             board: selectedBoard,
-            port: selectedPort
+            port: selectedPort.address
         }
     }
 

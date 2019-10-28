@@ -1,7 +1,7 @@
 import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient } from '../common/protocol/boards-service';
+import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
 import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
@@ -20,7 +20,6 @@ export class BoardsServiceImpl implements BoardsService {
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
 
-    protected selectedBoard: Board | undefined;
     protected discoveryInitialized = false;
     protected discoveryTimer: NodeJS.Timeout | undefined;
     /**
@@ -29,44 +28,58 @@ export class BoardsServiceImpl implements BoardsService {
      * This state is updated via periodical polls.
      */
     protected _attachedBoards: { boards: Board[] } = { boards: [] };
+    protected _availablePorts: { ports: Port[] } = { ports: [] };
     protected client: BoardsServiceClient | undefined;
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
     @postConstruct()
     protected async init(): Promise<void> {
         this.discoveryTimer = setInterval(() => {
-            this.discoveryLogger.trace('Discovering attached boards...');
-            this.doGetAttachedBoards().then(({ boards }) => {
-                const update = (oldState: Board[], newState: Board[], message: string) => {
-                    this._attachedBoards = { boards: newState };
-                    this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newState)}`);
+            this.discoveryLogger.trace('Discovering attached boards and available ports...');
+            this.doGetAttachedBoardsAndAvailablePorts().then(({ boards, ports }) => {
+                const update = (oldBoards: Board[], newBoards: Board[], oldPorts: Port[], newPorts: Port[], message: string) => {
+                    this._attachedBoards = { boards: newBoards };
+                    this._availablePorts = { ports: newPorts };
+                    this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newBoards)} and available ports: ${JSON.stringify(newPorts)}`);
                     if (this.client) {
                         this.client.notifyAttachedBoardsChanged({
                             oldState: {
-                                boards: oldState
+                                boards: oldBoards,
+                                ports: oldPorts
                             },
                             newState: {
-                                boards: newState
+                                boards: newBoards,
+                                ports: newPorts
                             }
                         });
                     }
                 }
                 const sortedBoards = boards.sort(Board.compare);
-                this.discoveryLogger.trace(`Discovery done. ${JSON.stringify(sortedBoards)}`);
+                const sortedPorts = ports.sort(Port.compare);
+                this.discoveryLogger.trace(`Discovery done. Boards: ${JSON.stringify(sortedBoards)}. Ports: ${sortedPorts}`);
                 if (!this.discoveryInitialized) {
-                    update([], sortedBoards, 'Initialized attached boards.');
+                    update([], sortedBoards, [], sortedPorts, 'Initialized attached boards and available ports.');
                     this.discoveryInitialized = true;
                 } else {
-                    this.getAttachedBoards().then(({ boards: currentBoards }) => {
+                    Promise.all([
+                        this.getAttachedBoards(),
+                        this.getAvailablePorts()
+                    ]).then(([{ boards: currentBoards }, { ports: currentPorts }]) => {
                         this.discoveryLogger.trace(`Updating discovered boards... ${JSON.stringify(currentBoards)}`);
-                        if (currentBoards.length !== sortedBoards.length) {
-                            update(currentBoards, sortedBoards, 'Updated discovered boards.');
+                        if (currentBoards.length !== sortedBoards.length || currentPorts.length !== sortedPorts.length) {
+                            update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards and available ports.');
                             return;
                         }
                         // `currentBoards` is already sorted.
                         for (let i = 0; i < sortedBoards.length; i++) {
                             if (Board.compare(sortedBoards[i], currentBoards[i]) !== 0) {
-                                update(currentBoards, sortedBoards, 'Updated discovered boards.');
+                                update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards.');
+                                return;
+                            }
+                        }
+                        for (let i = 0; i < sortedPorts.length; i++) {
+                            if (Port.compare(sortedPorts[i], currentPorts[i]) !== 0) {
+                                update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards.');
                                 return;
                             }
                         }
@@ -91,13 +104,18 @@ export class BoardsServiceImpl implements BoardsService {
         return this._attachedBoards;
     }
 
-    private async doGetAttachedBoards(): Promise<{ boards: Board[] }> {
+    async getAvailablePorts(): Promise<{ ports: Port[] }> {
+        return this._availablePorts;
+    }
+
+    private async doGetAttachedBoardsAndAvailablePorts(): Promise<{ boards: Board[], ports: Port[] }> {
         return this.queue.add(() => {
-            return new Promise<{ boards: Board[] }>(async resolve => {
+            return new Promise<{ boards: Board[], ports: Port[] }>(async resolve => {
                 const coreClient = await this.coreClientProvider.getClient();
                 const boards: Board[] = [];
+                const ports: Port[] = [];
                 if (!coreClient) {
-                    resolve({ boards });
+                    resolve({ boards, ports });
                     return;
                 }
 
@@ -105,10 +123,43 @@ export class BoardsServiceImpl implements BoardsService {
                 const req = new BoardListReq();
                 req.setInstance(instance);
                 const resp = await new Promise<BoardListResp>((resolve, reject) => client.boardList(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
-                for (const portsList of resp.getPortsList()) {
-                    const protocol = portsList.getProtocol();
-                    const address = portsList.getAddress();
-                    for (const board of portsList.getBoardsList()) {
+                const portsList = resp.getPortsList();
+                // TODO: remove unknown board mocking!
+                // You also have to manually import `DetectedPort`.
+                // const unknownPortList = new DetectedPort();
+                // unknownPortList.setAddress(platform() === 'win32' ? 'COM3' : platform() === 'darwin' ? '/dev/cu.usbmodem94401' : '/dev/ttyACM0');
+                // unknownPortList.setProtocol('serial');
+                // unknownPortList.setProtocolLabel('Serial Port (USB)');
+                // portsList.push(unknownPortList);
+
+                for (const portList of portsList) {
+                    const protocol = Port.Protocol.toProtocol(portList.getProtocol());
+                    const address = portList.getAddress();
+                    // Available ports can exist with unknown attached boards.
+                    // The `BoardListResp` looks like this for a known attached board:
+                    // [
+                    //     {
+                    //         "address": "COM10",
+                    //         "protocol": "serial",
+                    //         "protocol_label": "Serial Port (USB)",
+                    //         "boards": [
+                    //             {
+                    //                 "name": "Arduino MKR1000",
+                    //                 "FQBN": "arduino:samd:mkr1000"
+                    //             }
+                    //         ]
+                    //     }
+                    // ]
+                    // And the `BoardListResp` looks like this for an unknown board:
+                    // [
+                    //     {
+                    //         "address": "COM9",
+                    //         "protocol": "serial",
+                    //         "protocol_label": "Serial Port (USB)",
+                    //     }
+                    // ]
+                    ports.push({ protocol, address });
+                    for (const board of portList.getBoardsList()) {
                         const name = board.getName() || 'unknown';
                         const fqbn = board.getFqbn();
                         const port = address;
@@ -118,13 +169,15 @@ export class BoardsServiceImpl implements BoardsService {
                                 fqbn,
                                 port
                             });
-                        } else { // We assume, it is a `network` board.
+                        } else if (protocol === 'network') { // We assume, it is a `network` board.
                             boards.push(<AttachedNetworkBoard>{
                                 name,
                                 fqbn,
                                 address,
                                 port
                             });
+                        } else {
+                            console.warn(`Unknown protocol for port: ${address}.`);
                         }
                     }
                 }
@@ -133,7 +186,7 @@ export class BoardsServiceImpl implements BoardsService {
                 //     <AttachedSerialBoard>{ name: 'Arduino/Genuino Uno', fqbn: 'arduino:avr:uno', port: '/dev/cu.usbmodem14201' },
                 //     <AttachedSerialBoard>{ name: 'Arduino/Genuino Uno', fqbn: 'arduino:avr:uno', port: '/dev/cu.usbmodem142xx' },
                 // ]);
-                resolve({ boards });
+                resolve({ boards, ports });
             })
         });
     }

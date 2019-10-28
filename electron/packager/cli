@@ -25,7 +25,7 @@ const yargs = require('yargs');
                     process.stderr.write(`Unexpected platform: ${platform}.`);
                     process.exit(1);
                 }
-                process.stdout.write(`Arduino-PoC-${versionInfo().version}-${os}.${ext}`);
+                process.stdout.write(`Arduino Pro IDE-${versionInfo().version}-${os}.${ext}`);
                 process.exit(0);
             }
         })

@@ -73,11 +73,18 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     text-transform: uppercase;
 }
 
+#select-board-dialog .selectBoardContainer .body .container .content .footer {
+    padding: 10px 5px 10px 0px;
+}
+
 #select-board-dialog .selectBoardContainer .body .container .content .loading {
     font-size: var(--theia-ui-font-size1);
     color: #7f8c8d;
     padding: 10px 5px 10px 10px;
     text-transform: uppercase;
+    /* The max, min-height comes from `.body .list` 265px + 47px top padding - 2 * 10px top padding */
+    max-height: 292px;
+    min-height: 292px;
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item {
@@ -209,6 +216,7 @@ button.theia-button.main {
 
 .arduino-boards-dropdown-item .fa-check {
     color: var(--theia-accent-color1);
+    align-self: center;
 }
 
 .arduino-boards-dropdown-item.selected,

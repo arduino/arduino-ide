@@ -1,8 +1,10 @@
 import { injectable, inject, postConstruct } from 'inversify';
-import { Emitter, ILogger } from '@theia/core';
-import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard } from '../../common/protocol/boards-service';
+import { Emitter } from '@theia/core/lib/common/event';
+import { ILogger } from '@theia/core/lib/common/logger';
+import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
+import { RecursiveRequired } from '../../common/types';
+import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
-import { LocalStorageService } from '@theia/core/lib/browser';
 
 @injectable()
 export class BoardsServiceClientImpl implements BoardsServiceClient {
@@ -13,10 +15,18 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     @inject(LocalStorageService)
     protected storageService: LocalStorageService;
 
-    protected readonly onAttachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
     protected readonly onBoardInstalledEmitter = new Emitter<BoardInstalledEvent>();
+    protected readonly onAttachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
     protected readonly onSelectedBoardsConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
 
+    /**
+     * Used for the auto-reconnecting. Sometimes, the attached board gets disconnected after uploading something to it.
+     * It happens with certain boards on Windows. For example, the `MKR1000` boards is selected on post `COM5` on Windows,
+     * perform an upload, the board automatically disconnects and reconnects, but on another port, `COM10`.
+     * We have to listen on such changes and auto-reconnect the same board on another port.
+     * See: https://arduino.slack.com/archives/CJJHJCJSJ/p1568645417013000?thread_ts=1568640504.009400&cid=CJJHJCJSJ
+     */
+    protected latestValidBoardsConfig: RecursiveRequired<BoardsConfig.Config> | undefined = undefined;
     protected _boardsConfig: BoardsConfig.Config = {};
 
     readonly onBoardsChanged = this.onAttachedBoardsChangedEmitter.event;
@@ -29,17 +39,47 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     }
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
-        this.logger.info('Attached boards changed: ', JSON.stringify(event));
-        const detachedBoards = AttachedBoardsChangeEvent.diff(event).detached.filter(AttachedSerialBoard.is).map(({ port }) => port);
+        this.logger.info('Attached boards and available ports changed: ', JSON.stringify(event));
+        const { detached, attached } = AttachedBoardsChangeEvent.diff(event);
         const { selectedPort, selectedBoard } = this.boardsConfig;
         this.onAttachedBoardsChangedEmitter.fire(event);
-        // Dynamically unset the port if the selected board was an attached one and we detached it.
-        if (!!selectedPort && detachedBoards.indexOf(selectedPort) !== -1) {
+        // Dynamically unset the port if is not available anymore. A port can be "detached" when removing a board.
+        if (detached.ports.some(port => Port.equals(selectedPort, port))) {
             this.boardsConfig = {
                 selectedBoard,
                 selectedPort: undefined
             };
         }
+        // Try to reconnect.
+        this.tryReconnect(attached.boards, attached.ports);
+    }
+
+    async tryReconnect(attachedBoards: Board[], availablePorts: Port[]): Promise<boolean> {
+        if (this.latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
+            for (const board of attachedBoards.filter(AttachedSerialBoard.is)) {
+                if (this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn
+                    && this.latestValidBoardsConfig.selectedBoard.name === board.name
+                    && Port.sameAs(this.latestValidBoardsConfig.selectedPort, board.port)) {
+
+                    this.boardsConfig = this.latestValidBoardsConfig;
+                    return true;
+                }
+            }
+            // If we could not find an exact match, we compare the board FQBN-name pairs and ignore the port, as it might have changed.
+            // See documentation on `latestValidBoardsConfig`.
+            for (const board of attachedBoards.filter(AttachedSerialBoard.is)) {
+                if (this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn
+                    && this.latestValidBoardsConfig.selectedBoard.name === board.name) {
+
+                    this.boardsConfig = {
+                        ...this.latestValidBoardsConfig,
+                        selectedPort: availablePorts.find(port => Port.sameAs(port, board.port))
+                    };
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     notifyBoardInstalled(event: BoardInstalledEvent): void {
@@ -50,6 +90,9 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     set boardsConfig(config: BoardsConfig.Config) {
         this.logger.info('Board config changed: ', JSON.stringify(config));
         this._boardsConfig = config;
+        if (this.canUploadTo(this._boardsConfig)) {
+            this.latestValidBoardsConfig = this._boardsConfig;
+        }
         this.saveState().then(() => this.onSelectedBoardsConfigChangedEmitter.fire(this._boardsConfig));
     }
 
@@ -58,14 +101,22 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     }
 
     protected saveState(): Promise<void> {
-        return this.storageService.setData('boards-config', this.boardsConfig);
+        return this.storageService.setData('latest-valid-boards-config', this.latestValidBoardsConfig);
     }
 
     protected async loadState(): Promise<void> {
-        const boardsConfig = await this.storageService.getData<BoardsConfig.Config>('boards-config');
-        if (boardsConfig) {
-            this.boardsConfig = boardsConfig;
+        const storedValidBoardsConfig = await this.storageService.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
+        if (storedValidBoardsConfig) {
+            this.latestValidBoardsConfig = storedValidBoardsConfig;
         }
+    }
+
+    protected canVerify(config: BoardsConfig.Config | undefined): config is BoardsConfig.Config & { selectedBoard: Board } {
+        return !!config && !!config.selectedBoard;
+    }
+
+    protected canUploadTo(config: BoardsConfig.Config | undefined): config is RecursiveRequired<BoardsConfig.Config> {
+        return this.canVerify(config) && !!config.selectedPort && !!config.selectedBoard.fqbn;
     }
 
 }

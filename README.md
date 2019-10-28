@@ -29,10 +29,10 @@ Then you can start the browser example again:
 yarn --cwd browser-app start
 ```
 
-## Arduino-PoC Electron Application
+## Arduino Pro IDE Electron Application
 The project is built on [Azure DevOps](https://dev.azure.com/typefox/Arduino).
 
-Currently, we provide the Arduino-PoC for the following platforms:
+Currently, we provide the Arduino Pro IDE for the following platforms:
  - Windows,
  - macOS, and
  - Linux.

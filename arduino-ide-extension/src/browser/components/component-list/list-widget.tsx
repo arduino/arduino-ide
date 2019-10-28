@@ -2,6 +2,7 @@ import * as React from 'react';
 import { injectable, postConstruct } from 'inversify';
 import { Message } from '@phosphor/messaging';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Emitter } from '@theia/core/lib/common/event';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { Installable } from '../../../common/protocol/installable';
@@ -17,6 +18,7 @@ export abstract class ListWidget<T> extends ReactWidget {
      */
     protected focusNode: HTMLElement | undefined;
     protected readonly deferredContainer = new Deferred<HTMLElement>();
+    protected readonly filterTextChangeEmitter = new Emitter<string>();
 
     constructor(protected options: ListWidget.Options<T>) {
         super();
@@ -31,6 +33,7 @@ export abstract class ListWidget<T> extends ReactWidget {
         this.scrollOptions = {
             suppressScrollX: true
         }
+        this.toDispose.push(this.filterTextChangeEmitter);
     }
 
     @postConstruct()
@@ -63,7 +66,12 @@ export abstract class ListWidget<T> extends ReactWidget {
             searchable={this.options.searchable}
             installable={this.options.installable}
             itemLabel={this.options.itemLabel}
-            itemRenderer={this.options.itemRenderer} />;
+            itemRenderer={this.options.itemRenderer}
+            filterTextChangeEvent={this.filterTextChangeEmitter.event}/>;
+    }
+
+    refresh(filterText: string): void {
+        this.deferredContainer.promise.then(() => this.filterTextChangeEmitter.fire(filterText));
     }
 
 }

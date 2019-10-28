@@ -108,14 +108,8 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         const initResp = await new Promise<InitResp>(resolve => {
             let resp: InitResp | undefined = undefined;
             const stream = client.init(initReq);
-            stream.on('data', (data: InitResp) => {
-                if (!resp) {
-                    resp = data;
-                }
-            })
-            stream.on('end', () => {
-                resolve(resp);
-            })
+            stream.on('data', (data: InitResp) => resp = data);
+            stream.on('end', () => resolve(resp));
         });
 
         const instance = initResp.getInstance();
