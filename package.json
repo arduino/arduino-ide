@@ -1,25 +1,25 @@
 {
   "name": "arduino-editor",
   "version": "0.0.1",
-  "description": "Arduino IDE built using Eclipse Theia",
+  "description": "Arduino Pro IDE",
   "main": "index.js",
   "repository": "https://github.com/bcmi-labs/arduino-editor.git",
-  "author": "Christian Weichel <christian.weichel@typefox.io>",
+  "author": "Arduino SA",
   "license": "MIT",
   "private": true,
   "devDependencies": {
     "lerna": "^3.13.3"
   },
   "scripts": {
-      "prepare": "lerna run prepare",
-      "rebuild:browser": "theia rebuild:browser",
-      "rebuild:electron": "theia rebuild:electron",
-      "start": "yarn --cwd ./browser-app start",
-      "watch": "lerna run watch --parallel"
+    "prepare": "lerna run prepare",
+    "rebuild:browser": "theia rebuild:browser",
+    "rebuild:electron": "theia rebuild:electron",
+    "start": "yarn --cwd ./browser-app start",
+    "watch": "lerna run watch --parallel"
   },
   "workspaces": [
     "arduino-ide-extension",
-      "electron-app",
-      "browser-app"
+    "electron-app",
+    "browser-app"
   ]
 }

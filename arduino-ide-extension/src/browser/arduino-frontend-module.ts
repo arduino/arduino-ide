@@ -158,7 +158,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     }).inSingletonScope();
 
     // The workspace service extension
-    bind(WorkspaceServiceExt).to(WorkspaceServiceExtImpl).inSingletonScope().onActivation(({ container }, workspaceServiceExt) => {
+    bind(WorkspaceServiceExt).to(WorkspaceServiceExtImpl).inSingletonScope().onActivation(({ container }, workspaceServiceExt: WorkspaceServiceExt) => {
         WebSocketConnectionProvider.createProxy(container, WorkspaceServiceExtPath, workspaceServiceExt);
         // Eagerly active the core, library, and boards services.
         container.get(CoreService);

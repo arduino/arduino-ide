@@ -22,8 +22,7 @@
         "arduino-ide-extension": "0.0.2"
     },
     "devDependencies": {
-        "@theia/cli": "next",
-        "electron": "^4.2.0"
+        "@theia/cli": "next"
     },
     "scripts": {
         "prepare": "theia build --mode development",
