@@ -24,7 +24,10 @@ import {
     StatusBar,
     ShellLayoutRestorer,
     StatusBarAlignment,
-    QuickOpenService
+    QuickOpenService,
+    ApplicationShell,
+    FrontendApplicationContribution,
+    FrontendApplication
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
@@ -44,6 +47,12 @@ import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { ArduinoWorkspaceService } from './arduino-workspace-service';
+import { OutputWidget } from '@theia/output/lib/browser/output-widget';
+import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
+import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
+import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -66,7 +75,7 @@ export namespace ArduinoAdvancedMode {
 }
 
 @injectable()
-export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution, MenuContribution {
+export class ArduinoFrontendContribution implements FrontendApplicationContribution, TabBarToolbarContribution, CommandContribution, MenuContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -146,7 +155,26 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(MonitorConnection)
     protected readonly monitorConnection: MonitorConnection;
 
-    protected wsSketchCount: number = 0;
+    @inject(ApplicationShell)
+    protected readonly shell: ApplicationShell;
+
+    @inject(FileNavigatorContribution)
+    protected readonly fileNavigatorContributions: FileNavigatorContribution;
+
+    @inject(OutlineViewContribution)
+    protected readonly outlineContribution: OutlineViewContribution;
+
+    @inject(ProblemContribution)
+    protected readonly problemContribution: ProblemContribution;
+
+    @inject(ScmContribution)
+    protected readonly scmContribution: ScmContribution;
+
+    @inject(SearchInWorkspaceFrontendContribution)
+    protected readonly siwContribution: SearchInWorkspaceFrontendContribution;
+
+    protected application: FrontendApplication;
+    protected wsSketchCount: number = 0; // TODO: this does not belong here, does it?
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -168,6 +196,22 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             this.boardsService.getAttachedBoards(),
             this.boardsService.getAvailablePorts()
         ]).then(([{ boards }, { ports }]) => this.boardsServiceClient.tryReconnect(boards, ports));
+    }
+
+    onStart(app: FrontendApplication): void {
+        this.application = app;
+        // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
+        for (const viewContribution of [
+            this.fileNavigatorContributions,
+            this.outlineContribution,
+            this.problemContribution,
+            this.scmContribution,
+            this.siwContribution] as Array<FrontendApplicationContribution>) {
+
+            if (viewContribution.initializeLayout) {
+                viewContribution.initializeLayout(this.application);
+            }
+        }
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -340,10 +384,21 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         })
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            execute: () => {
-                const oldModeState = ArduinoAdvancedMode.TOGGLED;
-                window.localStorage.setItem(ArduinoAdvancedMode.LS_ID, oldModeState ? 'false' : 'true');
-                registry.executeCommand('reset.layout');
+            execute: async () => {
+                const oldState = ArduinoAdvancedMode.TOGGLED;
+                const inAdvancedMode = !oldState;
+                window.localStorage.setItem(ArduinoAdvancedMode.LS_ID, String(inAdvancedMode));
+                if (!inAdvancedMode) {
+                    // Close all widget that is neither editor nor `Output`.
+                    for (const area of ['left', 'right', 'bottom', 'main'] as Array<ApplicationShell.Area>) {
+                        this.shell.closeTabs(area, ({ owner }) => !(owner instanceof EditorWidget || owner instanceof OutputWidget));
+                    }
+                }
+                // No `else`. We initialize the views (if required) in `this.onStart`.
+                // `storeLayout` is not invoked in electron when refreshing the browser window: https://github.com/eclipse-theia/theia/issues/6530
+                // We store the state manually.
+                this.layoutRestorer.storeLayout(this.application);
+                window.location.reload(true);
             },
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => ArduinoAdvancedMode.TOGGLED
