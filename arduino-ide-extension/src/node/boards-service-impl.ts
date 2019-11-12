@@ -11,6 +11,9 @@ import { ToolOutputServiceServer } from '../common/protocol/tool-output-service'
 export class BoardsServiceImpl implements BoardsService {
 
     @inject(ILogger)
+    protected logger: ILogger;
+
+    @inject(ILogger)
     @named('discovery')
     protected discoveryLogger: ILogger;
 
@@ -95,9 +98,13 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     dispose(): void {
+        this.logger.info('>>> Disposing boards service...')
+        this.queue.pause();
+        this.queue.clear();
         if (this.discoveryTimer !== undefined) {
             clearInterval(this.discoveryTimer);
         }
+        this.logger.info('<<< Disposed boards service.')
     }
 
     async getAttachedBoards(): Promise<{ boards: Board[] }> {

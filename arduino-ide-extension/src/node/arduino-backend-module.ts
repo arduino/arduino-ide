@@ -38,10 +38,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoCliContribution).toSelf().inSingletonScope();
     bind(CliContribution).toService(ArduinoCliContribution);
 
-    // Provides the path of the Ardunio CLI.
+    // Provides the path of the Arduino CLI.
     bind(ArduinoCli).toSelf().inSingletonScope();
 
-    // Shared daemonn 
+    // Shared daemon 
     bind(ArduinoDaemon).toSelf().inSingletonScope();
     bind(BackendApplicationContribution).toService(ArduinoDaemon);
 
