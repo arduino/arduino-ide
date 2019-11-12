@@ -146,7 +146,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(MonitorConnection)
     protected readonly monitorConnection: MonitorConnection;
 
-    protected boardsToolbarItem: BoardsToolBarItem | null;
     protected wsSketchCount: number = 0;
 
     @postConstruct()
@@ -196,7 +195,6 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             id: BoardsToolBarItem.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
                 key='boardsToolbarItem'
-                ref={ref => this.boardsToolbarItem = ref}
                 commands={this.commands}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
