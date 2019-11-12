@@ -52,14 +52,16 @@ export class SketchesServiceImpl implements SketchesService {
         const uris: string[] = [];
         const fsPath = FileUri.fsPath(uri);
         const stats = fs.lstatSync(fsPath);
-        if (stats.isDirectory && await this.isSketchFolder(uri)) {
-            const fileNames = fs.readdirSync(fsPath);
-            for (const fileName of fileNames) {
-                const filePath = path.join(fsPath, fileName);
-                if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
-                    && fs.existsSync(filePath)
-                    && fs.lstatSync(filePath).isFile()) {
-                    uris.push(FileUri.create(filePath).toString())
+        if (stats.isDirectory) {
+            if (await this.isSketchFolder(uri)) {
+                const fileNames = fs.readdirSync(fsPath);
+                for (const fileName of fileNames) {
+                    const filePath = path.join(fsPath, fileName);
+                    if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
+                        && fs.existsSync(filePath)
+                        && fs.lstatSync(filePath).isFile()) {
+                        uris.push(FileUri.create(filePath).toString())
+                    }
                 }
             }
             return uris;
