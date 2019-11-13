@@ -61,6 +61,7 @@ export abstract class ListWidget<T> extends ReactWidget {
 
     render(): React.ReactNode {
         return <FilterableListContainer<T>
+            container={this}
             resolveContainer={this.deferredContainer.resolve}
             resolveFocus={this.onFocusResolved}
             searchable={this.options.searchable}

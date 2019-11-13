@@ -5,6 +5,7 @@ import { Searchable } from '../../../common/protocol/searchable';
 import { Installable } from '../../../common/protocol/installable';
 import { InstallationProgressDialog } from '../installation-progress-dialog';
 import { SearchBar } from './search-bar';
+import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 
@@ -25,6 +26,7 @@ export class FilterableListContainer<T> extends React.Component<FilterableListCo
     }
 
     render(): React.ReactNode {
+        this.props.container.update(); // This will recalculate the desired dimension of the scroll-bar thumb. (See: arduino/arduino-pro-ide#101)
         return <div className={'filterable-list-container'}>
             {this.renderSearchFilter()}
             {this.renderSearchBar()}
@@ -93,6 +95,7 @@ export class FilterableListContainer<T> extends React.Component<FilterableListCo
 export namespace FilterableListContainer {
 
     export interface Props<T> {
+        readonly container: ListWidget<T>;
         readonly installable: Installable<T>;
         readonly searchable: Searchable<T>;
         readonly itemLabel: (item: T) => string;
