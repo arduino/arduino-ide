@@ -26,6 +26,12 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         this.props.filterTextChangeEvent(this.handleFilterTextChange.bind(this));
     }
 
+    componentDidUpdate(): void {
+        // See: arduino/arduino-pro-ide#101
+        // Resets the top of the perfect scroll-bar's thumb.
+        this.props.container.updateScrollBar();
+    }
+
     render(): React.ReactNode {
         this.props.container.update(); // This will recalculate the desired dimension of the scroll-bar thumb. (See: arduino/arduino-pro-ide#101)
         return <div className={'filterable-list-container'}>

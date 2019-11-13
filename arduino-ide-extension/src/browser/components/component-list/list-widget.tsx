@@ -76,6 +76,12 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
         this.deferredContainer.promise.then(() => this.filterTextChangeEmitter.fire(filterText));
     }
 
+    updateScrollBar(): void {
+        if (this.scrollBar) {
+            this.scrollBar.update();
+        }
+    }
+
 }
 
 export namespace ListWidget {
