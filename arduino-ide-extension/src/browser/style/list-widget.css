@@ -61,6 +61,14 @@
     background-color: var(--theia-layout-color2);
 }
 
+/* Perfect scrollbar does not like if we explicitly set the `background-color` of the contained elements.
+See above: `.filterable-list-container .items-container > div:nth-child(odd|event)`.
+We have to increase `z-index` of the scroll-bar thumb. Otherwise, the thumb is not visible.
+https://github.com/arduino/arduino-pro-ide/issues/82 */
+.arduino-list-widget .ps__rail-y > .ps__thumb-y {
+    z-index: 1;
+}
+
 .component-list-item {
     padding: 10px 10px 10px 15px;
     font-size: var(--theia-ui-font-size1);
