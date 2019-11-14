@@ -2,7 +2,7 @@
   "name": "arduino.Pro.IDE",
   "description": "Arduino Pro IDE",
   "main": "src-gen/frontend/electron-main.js",
-  "author": "TypeFox",
+  "author": "Arduino SA",
   "dependencies": {
     "google-protobuf": "^3.5.0",
     "arduino-ide-extension": "file:../working-copy/arduino-ide-extension"
