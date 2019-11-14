@@ -6,6 +6,7 @@
   "dependencies": {
     "@theia/core": "next",
     "@theia/cpp": "next",
+    "@theia/debug": "next",
     "@theia/editor": "next",
     "@theia/file-search": "next",
     "@theia/filesystem": "next",
