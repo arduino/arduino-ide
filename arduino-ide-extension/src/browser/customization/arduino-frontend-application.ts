@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { ArduinoFrontendContribution, ArduinoAdvancedMode } from '../arduino-frontend-contribution';
+import { ArduinoFrontendContribution, EditorMode } from '../arduino-frontend-contribution';
 
 @injectable()
 export class ArduinoFrontendApplication extends FrontendApplication {
@@ -21,7 +21,7 @@ export class ArduinoFrontendApplication extends FrontendApplication {
             // If not in PRO mode, we open the sketch file with all the related files.
             // Otherwise, we reuse the workbench's restore functionality and we do not open anything at all.
             // TODO: check `otherwise`. Also, what if we check for opened editors, instead of blindly opening them?
-            if (!ArduinoAdvancedMode.TOGGLED) {
+            if (!EditorMode.IN_PRO_MODE) {
                 this.workspaceService.roots.then(roots => {
                     for (const root of roots) {
                         this.fileSystem.exists(root.uri).then(exists => {

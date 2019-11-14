@@ -8,10 +8,11 @@ export interface SketchesService {
     getSketches(uri?: string): Promise<Sketch[]>
     getSketchFiles(uri: string): Promise<string[]>
     /**
-     * Creates a new sketch folder in the `parentUri` location. If `parentUri` is not specified,
-     * it falls back to the default `sketchDirUri` from the CLI.
+     * Creates a new sketch folder in the `parentUri` location.
+     * Normally, `parentUri` is the client's workspace root, or the default `sketchDirUri` from the CLI.
+     * Note, `parentUri` and `sketchDirUri` can be the same.
      */
-    createNewSketch(parentUri?: string): Promise<Sketch>
+    createNewSketch(parentUri: string): Promise<Sketch>
     isSketchFolder(uri: string): Promise<boolean>
 }
 

@@ -10,7 +10,7 @@ import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser
 import { LanguageClientContribution } from '@theia/languages/lib/browser';
 import { ArduinoLanguageClientContribution } from './language/arduino-language-client-contribution';
 import { LibraryListWidget } from './library/library-list-widget';
-import { ArduinoFrontendContribution, ArduinoAdvancedMode } from './arduino-frontend-contribution';
+import { ArduinoFrontendContribution, EditorMode } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
@@ -199,7 +199,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     themeService.register(...ArduinoTheme.themes);
 
     // Customizing default Theia layout
-    if (!ArduinoAdvancedMode.TOGGLED) {
+    if (!EditorMode.IN_PRO_MODE) {
         unbind(OutlineViewContribution);
         bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
         unbind(ProblemContribution);
@@ -220,7 +220,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         bind(SearchInWorkspaceFrontendContribution).to(SilentSearchInWorkspaceContribution).inSingletonScope();
     } else {
         // We use this CSS class on the body to modify the visibility of the close button for the editors and views.
-        document.body.classList.add(ArduinoAdvancedMode.LS_ID);
+        document.body.classList.add(EditorMode.PRO_MODE_KEY);
     }
     unbind(FrontendApplication);
     bind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();

@@ -53,6 +53,7 @@ import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -66,11 +67,11 @@ export namespace ArduinoToolbarContextMenu {
     export const EXAMPLE_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '3_examples'];
 }
 
-export namespace ArduinoAdvancedMode {
-    export const LS_ID = 'arduino-advanced-mode';
-    export const TOGGLED: boolean = (() => {
-        const advancedModeStr = window.localStorage.getItem(LS_ID);
-        return advancedModeStr === 'true';
+export namespace EditorMode {
+    export const PRO_MODE_KEY = 'arduino-advanced-mode';
+    export const IN_PRO_MODE: boolean = (() => {
+        const value = window.localStorage.getItem(PRO_MODE_KEY);
+        return value === 'true';
     })();
 }
 
@@ -135,7 +136,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected readonly menuRegistry: MenuModelRegistry;
 
     @inject(CommandRegistry)
-    protected readonly commands: CommandRegistry;
+    protected readonly commandRegistry: CommandRegistry;
 
     @inject(StatusBar)
     protected readonly statusBar: StatusBar;
@@ -180,6 +181,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
         await this.workspaceServiceExt.roots();
+
+        if (!EditorMode.IN_PRO_MODE) {
+            const { ADD_FOLDER, REMOVE_FOLDER, SAVE_WORKSPACE_AS } = WorkspaceCommands;
+            for (const command of [ADD_FOLDER, REMOVE_FOLDER, SAVE_WORKSPACE_AS]) {
+                this.commandRegistry.unregisterCommand(command);
+            }
+        }
 
         const updateStatusBar = (config: BoardsConfig.Config) => {
             this.statusBar.setElement('arduino-selected-board', {
@@ -239,7 +247,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             id: BoardsToolBarItem.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
                 key='boardsToolbarItem'
-                commands={this.commands}
+                commands={this.commandRegistry}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left'
@@ -255,7 +263,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             command: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             tooltip: 'Toggle Advanced Mode',
-            text: (ArduinoAdvancedMode.TOGGLED ? '$(toggle-on)' : '$(toggle-off)'),
+            text: (EditorMode.IN_PRO_MODE ? '$(toggle-on)' : '$(toggle-off)'),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
         });
     }
@@ -338,7 +346,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                         });
                     }
                 } else {
-                    this.commands.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
+                    this.commandRegistry.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
                 }
             }
         });
@@ -385,9 +393,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         })
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
             execute: async () => {
-                const oldState = ArduinoAdvancedMode.TOGGLED;
+                const oldState = EditorMode.IN_PRO_MODE;
                 const inAdvancedMode = !oldState;
-                window.localStorage.setItem(ArduinoAdvancedMode.LS_ID, String(inAdvancedMode));
+                window.localStorage.setItem(EditorMode.PRO_MODE_KEY, String(inAdvancedMode));
                 if (!inAdvancedMode) {
                     // Close all widget that is neither editor nor `Output`.
                     for (const area of ['left', 'right', 'bottom', 'main'] as Array<ApplicationShell.Area>) {
@@ -401,12 +409,12 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 window.location.reload(true);
             },
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
-            isToggled: () => ArduinoAdvancedMode.TOGGLED
+            isToggled: () => EditorMode.IN_PRO_MODE
         })
     }
 
     registerMenus(registry: MenuModelRegistry) {
-        if (!ArduinoAdvancedMode.TOGGLED) {
+        if (!EditorMode.IN_PRO_MODE) {
             // If are not in pro-mode, we have to disable the context menu for the tabs.
             // Such as `Close`, `Close All`, etc.
             for (const command of [
@@ -415,7 +423,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 CommonCommands.CLOSE_RIGHT_TABS,
                 CommonCommands.CLOSE_ALL_TABS,
                 CommonCommands.COLLAPSE_PANEL,
-                CommonCommands.TOGGLE_MAXIMIZED
+                CommonCommands.TOGGLE_MAXIMIZED,
+                FileNavigatorCommands.REVEAL_IN_NAVIGATOR
+
             ]) {
                 registry.unregisterMenuAction(command);
             }
@@ -478,8 +488,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 const command: Command = {
                     id: 'openSketch' + sketch.name
                 }
-                this.commands.registerCommand(command, {
-                    execute: () => this.commands.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+                this.commandRegistry.registerCommand(command, {
+                    execute: () => this.commandRegistry.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
                 });
 
                 registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {
