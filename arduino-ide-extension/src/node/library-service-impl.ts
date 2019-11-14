@@ -4,6 +4,7 @@ import { CoreClientProvider } from './core-client-provider';
 import { LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
     InstalledLibrary, LibraryInstallReq, LibraryInstallResp } from './cli-protocol/commands/lib_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
+import { Installable } from '../common/protocol/installable';
 
 @injectable()
 export class LibraryServiceImpl implements LibraryService {
@@ -58,7 +59,9 @@ export class LibraryServiceImpl implements LibraryService {
         return { items };
     }
 
-    async install(library: Library): Promise<void> {
+    async install(options: { item: Library, version?: Installable.Version }): Promise<void> {
+        const library = options.item;
+        const version = !!options.version ? options.version : library.availableVersions[0];
         const coreClient = await this.coreClientProvider.getClient();
         if (!coreClient) {
             return;
@@ -68,7 +71,7 @@ export class LibraryServiceImpl implements LibraryService {
         const req = new LibraryInstallReq();
         req.setInstance(instance);
         req.setName(library.name);
-        req.setVersion(library.availableVersions[0]);
+        req.setVersion(version);
 
         const resp = client.libraryInstall(req);
         resp.on('data', (r: LibraryInstallResp) => {

@@ -43,17 +43,17 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
                     // tslint:disable-next-line:max-line-length
                     this.messageService.info(`The \`"${candidate.name}"\` core has to be installed for the currently selected \`"${selectedBoard.name}"\` board. Do you want to install it now?`, 'Yes', 'Install Manually').then(async answer => {
                         if (answer === 'Yes') {
-                            const dialog = new InstallationProgressDialog(candidate.name);
+                            const dialog = new InstallationProgressDialog(candidate.name, candidate.availableVersions[0]);
                             dialog.open();
                             try {
-                                await this.boardsService.install(candidate);
+                                await this.boardsService.install({ item: candidate });
                             } finally {
                                 dialog.close();
                             }
                         }
                         if (answer) {
                             this.boardsManagerFrontendContribution.openView({ reveal: true }).then(widget => widget.refresh(candidate.name.toLocaleLowerCase()));
-                        } 
+                        }
                     });
                 }
             })

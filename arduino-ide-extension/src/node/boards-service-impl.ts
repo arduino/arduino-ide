@@ -2,10 +2,11 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
-import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp } from './cli-protocol/commands/core_pb';
+import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp, Platform } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
+import { Installable } from '../common/protocol/installable';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -214,35 +215,47 @@ export class BoardsServiceImpl implements BoardsService {
 
         const req = new PlatformSearchReq();
         req.setSearchArgs(options.query || "");
+        req.setAllVersions(true);
         req.setInstance(instance);
         const resp = await new Promise<PlatformSearchResp>((resolve, reject) => client.platformSearch(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
-
-        let items = resp.getSearchOutputList().map(item => {
+        const packages = new Map<string, BoardPackage>();
+        const toPackage = (platform: Platform) => {
             let installedVersion: string | undefined;
-            const matchingPlatform = installedPlatforms.find(ip => ip.getId() === item.getId());
+            const matchingPlatform = installedPlatforms.find(ip => ip.getId() === platform.getId());
             if (!!matchingPlatform) {
                 installedVersion = matchingPlatform.getInstalled();
             }
-
-            const result: BoardPackage = {
-                id: item.getId(),
-                name: item.getName(),
-                author: item.getMaintainer(),
-                availableVersions: [item.getLatest()],
-                description: item.getBoardsList().map(b => b.getName()).join(", "),
+            return {
+                id: platform.getId(),
+                name: platform.getName(),
+                author: platform.getMaintainer(),
+                availableVersions: [platform.getLatest()],
+                description: platform.getBoardsList().map(b => b.getName()).join(", "),
                 installable: true,
                 summary: "Boards included in this package:",
                 installedVersion,
-                boards: item.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
-                moreInfoLink: item.getWebsite()
+                boards: platform.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
+                moreInfoLink: platform.getWebsite()
             }
-            return result;
-        });
+        }
 
-        return { items };
+        for (const platform of resp.getSearchOutputList()) {
+            const id = platform.getId();
+            const pkg = packages.get(id);
+            if (pkg) {
+                pkg.availableVersions.push(platform.getLatest());
+                pkg.availableVersions.sort(BoardPackage.VERSION_COMPARATOR);
+            } else {
+                packages.set(id, toPackage(platform));
+            }
+        }
+
+        return { items: [...packages.values()] };
     }
 
-    async install(pkg: BoardPackage): Promise<void> {
+    async install(options: { item: BoardPackage, version?: Installable.Version }): Promise<void> {
+        const pkg = options.item;
+        const version = !!options.version ? options.version : pkg.availableVersions[0];
         const coreClient = await this.coreClientProvider.getClient();
         if (!coreClient) {
             return;
@@ -255,7 +268,7 @@ export class BoardsServiceImpl implements BoardsService {
         req.setInstance(instance);
         req.setArchitecture(boardName);
         req.setPlatformPackage(platform);
-        req.setVersion(pkg.availableVersions[0]);
+        req.setVersion(version);
 
         console.info("Starting board installation", pkg);
         const resp = client.platformInstall(req);

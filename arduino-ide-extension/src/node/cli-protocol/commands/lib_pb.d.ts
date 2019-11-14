@@ -2,6 +2,7 @@
 // file: commands/lib.proto
 
 /* tslint:disable */
+/* eslint-disable */
 
 import * as jspb from "google-protobuf";
 import * as commands_common_pb from "../commands/common_pb";

@@ -1,12 +1,18 @@
 import * as React from 'react';
 import { injectable } from 'inversify';
 import { Library } from '../../common/protocol/library-service';
+import { Installable } from '../../common/protocol/installable';
 import { ListItemRenderer } from '../components/component-list/list-item-renderer';
+import { ComponentListItem } from '../components/component-list/component-list-item';
 
 @injectable()
 export class LibraryItemRenderer extends ListItemRenderer<Library> {
 
-    renderItem(item: Library, install: (item: Library) => Promise<void>): React.ReactNode {
+    renderItem(
+        input: ComponentListItem.State & { item: Library },
+        install: (item: Library, version: Installable.Version) => Promise<void>): React.ReactNode {
+
+        const { item } = input; 
         const name = <span className='name'>{item.name}</span>;
         const author = <span className='author'>by {item.author}</span>;
         const installedVersion = !!item.installedVersion && <div className='version-info'>
@@ -16,7 +22,7 @@ export class LibraryItemRenderer extends ListItemRenderer<Library> {
 
         const summary = <div className='summary'>{item.summary}</div>;
 
-        const moreInfo = !!item.moreInfoLink && <a href={item.moreInfoLink} onClick={this.onClick}>More info</a>;
+        const moreInfo = !!item.moreInfoLink && <a href={item.moreInfoLink} onClick={this.onMoreInfoClick}>More info</a>;
         const installButton = item.installable && !item.installedVersion &&
             <button className='install' onClick={install.bind(this, item)}>INSTALL</button>;
 
