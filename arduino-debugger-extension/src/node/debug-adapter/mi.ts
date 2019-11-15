@@ -42,8 +42,8 @@ export function sendTargetSelectRemote(gdb: GDBBackend, remote: string) {
 }
 
 export function sendTargetDownload(gdb: GDBBackend) {
-    const command = '-target-download';
-    return gdb.sendCommand(command);
+    // const command = '-target-download';
+    // return gdb.sendCommand(command);
 }
 
 export function sendBreakOnFunction(gdb: GDBBackend, fn: string = 'main') {

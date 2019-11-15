@@ -29,16 +29,18 @@ import { Logger, logger, InitializedEvent, OutputEvent, Scope, TerminatedEvent }
 import { GDBDebugSession, RequestArguments, FrameVariableReference, FrameReference, ObjectVariableReference } from 'cdt-gdb-adapter/dist/GDBDebugSession';
 import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
 import { CmsisBackend } from './cmsis-backend';
-import { PyocdServer } from './pyocd-server';
+// import { PyocdServer } from './pyocd-server';
 import { PortScanner } from './port-scanner';
 import { SymbolTable } from './symbols';
 import * as varMgr from 'cdt-gdb-adapter/dist/varManager';
 import * as mi from './mi';
+import { OpenocdServer } from './openocd-server';
 
 export interface CmsisRequestArguments extends RequestArguments {
     runToMain?: boolean;
     gdbServer?: string;
     gdbServerArguments?: string[];
+    gdbServerPort?: number;
     objdump?: string;
 }
 
@@ -48,7 +50,7 @@ const STATIC_HANDLES_FINISH = 0x01FFFF;
 
 export class CmsisDebugSession extends GDBDebugSession {
 
-    protected gdbServer = new PyocdServer();
+    protected gdbServer = new OpenocdServer();
     protected portScanner = new PortScanner();
     protected symbolTable!: SymbolTable;
     protected globalHandle!: number;
@@ -108,6 +110,11 @@ export class CmsisDebugSession extends GDBDebugSession {
         } catch (err) {
             this.sendErrorResponse(response, 1, err.message);
         }
+    }
+
+    protected async setBreakPointsRequest(response: DebugProtocol.SetBreakpointsResponse, args: DebugProtocol.SetBreakpointsArguments): Promise<void> {
+        await super.setBreakPointsRequest(response, args);
+        return;
     }
 
     protected scopesRequest(response: DebugProtocol.ScopesResponse, args: DebugProtocol.ScopesArguments): void {
@@ -245,10 +252,11 @@ export class CmsisDebugSession extends GDBDebugSession {
         if (!args.gdbServerArguments) {
             args.gdbServerArguments = [];
         }
-        args.gdbServerArguments.push('--port', port.toString());
+        args.gdbServerPort = port;
 
         // Start gdb client and server
         this.progressEvent(0, 'Starting Debugger');
+        this.sendEvent(new OutputEvent(`Starting debugger: ${JSON.stringify(args)}`));
         await this.gdbServer.spawn(args);
         await this.spawn(args);
 

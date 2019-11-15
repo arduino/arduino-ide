@@ -33,7 +33,6 @@ import { CmsisRequestArguments } from './cmsis-debug-session';
 const TIMEOUT = 1000 * 10; // 10 seconds
 
 export abstract class AbstractServer extends EventEmitter {
-
     protected process?: ChildProcess;
     protected outBuffer: string = '';
     protected errBuffer: string = '';
@@ -50,7 +49,7 @@ export abstract class AbstractServer extends EventEmitter {
                 this.timer = setTimeout(() => this.onSpawnError(new Error('Timeout waiting for gdb server to start')), TIMEOUT);
 
                 const command = args.gdbServer || 'gdb-server';
-                const serverArguments = await this.resolveServerArguments(args.gdbServerArguments);
+                const serverArguments = await this.resolveServerArguments(args);
                 this.process = spawn(command, serverArguments, {
                     cwd: dirname(command),
                 });
@@ -80,8 +79,8 @@ export abstract class AbstractServer extends EventEmitter {
         }
     }
 
-    protected async resolveServerArguments(serverArguments?: string[]): Promise<string[]> {
-        return serverArguments || [];
+    protected async resolveServerArguments(req: CmsisRequestArguments): Promise<string[]> {
+        return req.gdbServerArguments || [];
     }
 
     protected onExit(code: number, signal: string) {

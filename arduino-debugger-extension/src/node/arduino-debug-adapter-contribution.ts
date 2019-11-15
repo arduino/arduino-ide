@@ -27,9 +27,15 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
                         "description": "Path to the program to be launched",
                         "default": "${workspaceFolder}/${command:askProgramPath}"
                     },
-                    "arguments": {
+                    "sketch": {
                         "type": "string",
-                        "description": "Arguments for the program"
+                        "description": "Path to the sketch folder",
+                        "default": "${workspaceFolder}"
+                    },
+                    "fbqn": {
+                        "type": "string",
+                        "description": "Fully qualified board name of the debugging target",
+                        "default": "unknown"
                     },
                     "runToMain": {
                         "description": "If enabled the debugger will run until the start of the main function.",
@@ -75,7 +81,7 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
                         "type": "boolean",
                         "description": "Start the debug adapter in debug mode (with --inspect-brk)",
                         "default": "false"
-                    }
+                    },
                 }
             }
         ]
@@ -85,7 +91,7 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
         return []
     }
 
-    provideDebugAdapterExecutable?(config: DebugConfiguration): MaybePromise<DebugAdapterExecutable> {
+    provideDebugAdapterExecutable(config: DebugConfiguration): MaybePromise<DebugAdapterExecutable> {
         let args: string[] = [];
         if (!!config.debugDebugAdapter) {
             args.push('--inspect-brk')

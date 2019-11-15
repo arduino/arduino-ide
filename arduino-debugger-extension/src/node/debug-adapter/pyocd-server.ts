@@ -25,6 +25,7 @@
 
 import { AbstractServer } from './abstract-server';
 import { PortScanner } from './port-scanner';
+import { CmsisRequestArguments } from './cmsis-debug-session';
 
 const LAUNCH_REGEX = /GDB server started/;
 const ERROR_REGEX = /:ERROR:gdbserver:/;
@@ -35,22 +36,17 @@ export class PyocdServer extends AbstractServer {
     protected portScanner = new PortScanner();
     protected progress = 0;
 
-    protected async resolveServerArguments(serverArguments?: string[]): Promise<string[]> {
-        if (!serverArguments) {
-            serverArguments = [];
-        }
+    protected async resolveServerArguments(req: CmsisRequestArguments): Promise<string[]> {
+        let serverArguments = req.gdbServerArguments || [];
+        
+        serverArguments.push('--port', req.gdbServerPort!.toString())
 
         const telnetPort = await this.portScanner.findFreePort(4444);
-
-        if (!telnetPort) {
-            return serverArguments;
+        if (!!telnetPort) {
+            serverArguments.push('--telnet-port', telnetPort.toString())
         }
-
-        return [
-            ...serverArguments,
-            '--telnet-port',
-            telnetPort.toString()
-        ];
+        
+        return serverArguments;
     }
 
     protected onStdout(chunk: string | Buffer) {
