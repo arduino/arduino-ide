@@ -1,0 +1,40 @@
+{
+  "name": "arduino-debugger-extension",
+  "version": "0.0.2",
+  "description": "An extension for debugging Arduino programs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.10.0"
+  },
+  "dependencies": {
+    "@theia/core": "next",
+    "@theia/debug": "next",
+
+    "cdt-gdb-adapter": "^0.0.14-next.4783033.0",
+    "vscode-debugadapter": "^1.26.0",
+    "vscode-debugprotocol": "^1.26.0"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
+    "build": "tsc && yarn lint",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.1",
+    "tslint": "^5.5.0",
+    "typescript": "3.5.1"
+  },
+  "files": [
+    "lib",
+    "src",
+    "build",
+    "data"
+  ],
+  "theiaExtensions": [
+    {
+      "backend": "lib/node/backend-module"
+    }
+  ]
+}

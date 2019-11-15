@@ -1,0 +1,4 @@
+{
+    "board": "arduino:samd:arduino_zero_edbg",
+    "port": "/dev/cu.usbmodem141402"
+}
