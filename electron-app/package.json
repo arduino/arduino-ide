@@ -6,6 +6,7 @@
   "dependencies": {
     "@theia/core": "next",
     "@theia/cpp": "next",
+    "@theia/debug": "next",
     "@theia/editor": "next",
     "@theia/electron": "next",
     "@theia/file-search": "next",
@@ -19,7 +20,8 @@
     "@theia/terminal": "next",
     "@theia/workspace": "next",
     "@theia/textmate-grammars": "next",
-    "arduino-ide-extension": "0.0.4"
+    "arduino-ide-extension": "0.0.2",
+    "arduino-debugger-extension": "0.0.2"
   },
   "devDependencies": {
     "@theia/cli": "next"

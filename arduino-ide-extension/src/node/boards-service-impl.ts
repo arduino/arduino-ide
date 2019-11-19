@@ -272,9 +272,10 @@ export class BoardsServiceImpl implements BoardsService {
             case "openocd":
                 loc.scripts = path.join(loc.main, "share", "openocd", "scripts");
                 loc.main = path.join(loc.main, "bin", "openocd");
-                break
+                break;
             case "arm-none-eabi-gcc":
                 ["gdb", "objdump"].forEach(s => loc[s] = path.join(loc.main, "bin", `arm-none-eabi-${s}`));
+                break;
         }
 
         return loc;

@@ -83,7 +83,7 @@ export class ArduinoVariableResolver implements VariableContribution {
             toolLocations[t.name] = t.locations!;
         })
 
-        switch(argument) {
+        switch (argument) {
             case "openocd":
                 return toolLocations["openocd"].main;
             case "openocd-scripts":
