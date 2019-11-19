@@ -2,22 +2,21 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
 import {
-    PlatformSearchReq,
-    PlatformSearchResp,
-    PlatformInstallReq,
-    PlatformInstallResp,
-    PlatformListReq,
-    PlatformListResp,
-    Platform,
-    PlatformUninstallReq,
-    PlatformUninstallResp
+    BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient,
+    Port, BoardDetails, Tool, ToolLocations, BoardDetailLocations
+} from '../common/protocol/boards-service';
+import {
+    PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
+    PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
-import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
+import { BoardListReq, BoardListResp, BoardDetailsReq, BoardDetailsResp, RequiredTool } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
+import { ConfigService } from '../common/protocol/config-service';
+import * as path from 'path';
+import URI from '@theia/core/lib/common/uri';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -34,6 +33,9 @@ export class BoardsServiceImpl implements BoardsService {
 
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
+
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
 
     protected discoveryInitialized = false;
     protected discoveryTimer: NodeJS.Timer | undefined;
@@ -213,6 +215,69 @@ export class BoardsServiceImpl implements BoardsService {
                 resolve({ boards, ports });
             })
         });
+    }
+
+    async detail(options: { id: string }): Promise<{ item?: BoardDetails }> {
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return {};
+        }
+        const { client, instance } = coreClient;
+
+        const req = new BoardDetailsReq();
+        req.setInstance(instance);
+        req.setFqbn(options.id);
+        const resp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+
+
+
+        const tools = await Promise.all(resp.getRequiredToolsList().map(async t => <Tool>{
+            name: t.getName(),
+            packager: t.getPackager(),
+            version: t.getVersion(),
+            locations: await this.getToolLocations(t),
+        }));
+
+        return {
+            item: {
+                name: resp.getName(),
+                fqbn: options.id,
+                requiredTools: tools,
+                locations: await this.getBoardLocations(resp)
+            }
+        };
+    }
+
+    // TODO: these location should come from the CLI/daemon rather than us botching them together
+    protected async getBoardLocations(details: BoardDetailsResp): Promise<BoardDetailLocations | undefined> {
+        const config = await this.configService.getConfiguration();
+        const datadir = new URI(config.dataDirUri).path.toString();
+
+        return {
+            debugScript: path.join(datadir, "packages", "arduino", "hardware", "samd", "1.8.4", "variants", "arduino_zero", "openocd_scripts", "arduino_zero.cfg")
+        }
+    }
+
+    // TODO: these location should come from the CLI/daemon rather than us botching them together
+    protected async getToolLocations(t: RequiredTool) {
+        const config = await this.configService.getConfiguration();
+        const datadir = new URI(config.dataDirUri).path.toString();
+        const toolBasePath = path.join(datadir, "packages", "arduino", "tools");
+
+        let loc: ToolLocations = {
+            main: path.join(toolBasePath, t.getName(), t.getVersion())
+        };
+
+        switch (t.getName()) {
+            case "openocd":
+                loc.scripts = path.join(loc.main, "share", "openocd", "scripts");
+                loc.main = path.join(loc.main, "bin", "openocd");
+                break
+            case "arm-none-eabi-gcc":
+                ["gdb", "objdump"].forEach(s => loc[s] = path.join(loc.main, "bin", `arm-none-eabi-${s}`));
+        }
+
+        return loc;
     }
 
     async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {

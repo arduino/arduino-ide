@@ -9,7 +9,7 @@
   "dependencies": {
     "@theia/core": "next",
     "@theia/debug": "next",
-
+    "arduino-ide-extension": "0.0.2",
     "cdt-gdb-adapter": "^0.0.14-next.4783033.0",
     "vscode-debugadapter": "^1.26.0",
     "vscode-debugprotocol": "^1.26.0"
@@ -34,7 +34,8 @@
   ],
   "theiaExtensions": [
     {
-      "backend": "lib/node/backend-module"
+      "backend": "lib/node/backend-module",
+      "frontend": "lib/browser/frontend-module"
     }
   ]
 }

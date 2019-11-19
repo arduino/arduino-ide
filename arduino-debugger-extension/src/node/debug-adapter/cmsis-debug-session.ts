@@ -26,7 +26,7 @@
 import { normalize } from 'path';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { Logger, logger, InitializedEvent, OutputEvent, Scope, TerminatedEvent } from 'vscode-debugadapter';
-import { GDBDebugSession, RequestArguments, FrameVariableReference, FrameReference, ObjectVariableReference } from 'cdt-gdb-adapter/dist/GDBDebugSession';
+import { GDBDebugSession, RequestArguments, FrameVariableReference, FrameReference } from 'cdt-gdb-adapter/dist/GDBDebugSession';
 import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
 import { CmsisBackend } from './cmsis-backend';
 // import { PyocdServer } from './pyocd-server';
@@ -123,15 +123,15 @@ export class CmsisDebugSession extends GDBDebugSession {
                 type: 'frame',
                 frameHandle: args.frameId,
             };
-            const pins: ObjectVariableReference = {
-                type: "object",
-                varobjName: "__pins",
-                frameHandle: args.frameId,
-            }
+            // const pins: ObjectVariableReference = {
+            //     type: "object",
+            //     varobjName: "__pins",
+            //     frameHandle: 42000,
+            // }
 
             response.body = {
                 scopes: [
-                    new Scope('Pins', this.variableHandles.create(pins), false),
+                    // new Scope('Pins', this.variableHandles.create(pins), false),
                     new Scope('Local', this.variableHandles.create(frame), false),
                     new Scope('Global', GLOBAL_HANDLE_ID, false),
                     new Scope('Static', STATIC_HANDLES_START + parseInt(args.frameId as any, 10), false)
@@ -162,6 +162,8 @@ export class CmsisDebugSession extends GDBDebugSession {
             } else if (ref && ref.type === 'frame') {
                 // List variables for current frame
                 response.body.variables = await this.handleVariableRequestFrame(ref);
+            } else if (ref && ref.varobjName === '__pins') {
+                response.body.variables = await this.handlePinStatusRequest();
             } else if (ref && ref.type === 'object') {
                 // List data under any variable
                 response.body.variables = await this.handleVariableRequestObject(ref);
@@ -297,6 +299,17 @@ export class CmsisDebugSession extends GDBDebugSession {
             variables.push(variable);
         }
 
+        return variables;
+    }
+
+    private async handlePinStatusRequest(): Promise<DebugProtocol.Variable[]> {
+        const variables: DebugProtocol.Variable[] = [];
+        variables.push({
+            name: "D2",
+            type: "gpio",
+            value: "0x00",
+            variablesReference: 0
+        })
         return variables;
     }
 

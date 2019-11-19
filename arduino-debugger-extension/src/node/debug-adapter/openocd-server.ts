@@ -3,6 +3,7 @@ import { PortScanner } from './port-scanner';
 import { CmsisRequestArguments } from './cmsis-debug-session';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as os from 'os';
 
 const LAUNCH_REGEX = /GDB server started/;
 const ERROR_REGEX = /:ERROR:gdbserver:/;
@@ -20,7 +21,7 @@ export class OpenocdServer extends AbstractServer {
         }
         sessionConfigFile += `echo "GDB server started"${"\n"}`
         
-        const tmpdir = await fs.mkdtemp("arduino-debugger");
+        const tmpdir = await fs.mkdtemp(path.join(os.tmpdir(), "arduino-debugger"));
         const sessionCfgPath = path.join(tmpdir, "gdb.cfg");
         await fs.writeFile(sessionCfgPath, sessionConfigFile);
 

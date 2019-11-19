@@ -2,6 +2,7 @@ import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
+import { Detailable } from './detailable';
 import { ArduinoComponent } from './arduino-component';
 const naturalCompare: (left: string, right: string) => number = require('string-natural-compare').caseInsensitive;
 
@@ -59,7 +60,7 @@ export interface BoardsServiceClient {
 
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService extends Installable<BoardPackage>, Searchable<BoardPackage>, JsonRpcServer<BoardsServiceClient> {
+export interface BoardsService extends Installable<BoardPackage>, Searchable<BoardPackage>, Detailable<BoardDetails>, JsonRpcServer<BoardsServiceClient> {
     getAttachedBoards(): Promise<{ boards: Board[] }>;
     getAvailablePorts(): Promise<{ ports: Port[] }>;
 }
@@ -179,6 +180,28 @@ export interface BoardPackage extends ArduinoComponent {
 export interface Board {
     name: string
     fqbn?: string
+}
+
+export interface BoardDetails extends Board {
+    fqbn: string;
+
+    requiredTools: Tool[];
+    locations?: BoardDetailLocations;
+}
+
+export interface BoardDetailLocations {
+    debugScript: string;
+}
+
+export interface Tool {
+    readonly packager: string;
+    readonly name: string;
+    readonly version: string;
+    readonly locations?: ToolLocations;
+}
+export interface ToolLocations {
+    main: string
+    [key: string]: string
 }
 
 export namespace Board {
