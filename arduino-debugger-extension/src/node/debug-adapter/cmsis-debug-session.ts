@@ -393,13 +393,13 @@ export class CmsisDebugSession extends GDBDebugSession {
             }
         }
 
-        // Stop gdb client and server
+        // Stop gdb client and server - we give GDB five seconds to exit orderly before we kill the GDB server
+        setTimeout(() => this.gdbServer.kill(), 5000);
         try {
             await this.gdb.sendGDBExit();
         } catch (e) {
             // Need to catch here in case the connection has already been closed
         }
-        this.gdbServer.kill();
     }
 
     public async shutdown() {
