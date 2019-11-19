@@ -22,7 +22,6 @@ import {
     OpenerService,
     Widget,
     StatusBar,
-    ShellLayoutRestorer,
     StatusBarAlignment,
     QuickOpenService,
     ApplicationShell,
@@ -54,6 +53,7 @@ import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
+import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -141,8 +141,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(StatusBar)
     protected readonly statusBar: StatusBar;
 
-    @inject(ShellLayoutRestorer)
-    protected readonly layoutRestorer: ShellLayoutRestorer;
+    @inject(ArduinoShellLayoutRestorer)
+    protected readonly layoutRestorer: ArduinoShellLayoutRestorer;
 
     @inject(QuickOpenService)
     protected readonly quickOpenService: QuickOpenService;
@@ -405,7 +405,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 // No `else`. We initialize the views (if required) in `this.onStart`.
                 // `storeLayout` is not invoked in electron when refreshing the browser window: https://github.com/eclipse-theia/theia/issues/6530
                 // We store the state manually.
-                this.layoutRestorer.storeLayout(this.application);
+                await this.layoutRestorer.storeLayoutAsync(this.application);
                 window.location.reload(true);
             },
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',

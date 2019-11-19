@@ -42,7 +42,7 @@ import { EditorContribution } from '@theia/editor/lib/browser/editor-contributio
 import { ArduinoEditorContribution } from './customization/arduino-editor-contribution';
 import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { ArduinoMonacoStatusBarContribution } from './customization/arduino-monaco-status-bar-contribution';
-import { ApplicationShell } from '@theia/core/lib/browser';
+import { ApplicationShell, ShellLayoutRestorer } from '@theia/core/lib/browser';
 import { ArduinoApplicationShell } from './customization/arduino-application-shell';
 import { ArduinoFrontendApplication } from './customization/arduino-frontend-application';
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
@@ -70,6 +70,7 @@ import { ArduinoProblemManager } from './markers/arduino-problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { AboutDialog } from '@theia/core/lib/browser/about-dialog';
 import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
+import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -244,4 +245,9 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     unbind(AboutDialog);
     bind(ArduinoAboutDialog).toSelf().inSingletonScope();
     bind(AboutDialog).toService(ArduinoAboutDialog);
+
+    // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
+    unbind(ShellLayoutRestorer);
+    bind(ArduinoShellLayoutRestorer).toSelf().inSingletonScope();
+    bind(ShellLayoutRestorer).toService(ArduinoShellLayoutRestorer);
 });
