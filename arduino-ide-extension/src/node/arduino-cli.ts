@@ -1,7 +1,8 @@
 import * as os from 'os';
 import * as which from 'which';
+import * as semver from 'semver';
 import { spawn } from 'child_process';
-import { join, delimiter } from 'path';
+import { join } from 'path';
 import { injectable, inject } from 'inversify';
 import { ILogger } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -13,43 +14,49 @@ export class ArduinoCli {
     @inject(ILogger)
     protected logger: ILogger;
 
+    private execPath: string | undefined;
+
     async getExecPath(): Promise<string> {
-        const build = join(__dirname, '..', '..', 'build');
-        return new Promise<string>((resolve, reject) => {
-            which(`arduino-cli${os.platform() === 'win32' ? '.exe' : ''}`, { path: `${process.env.PATH}${delimiter}${build}` }, (err, path) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                resolve(path);
+        if (this.execPath) {
+            return this.execPath;
+        }
+        const version = /\d+\.\d+\.\d+/;
+        const cli = `arduino-cli${os.platform() === 'win32' ? '.exe' : ''}`;
+        const buildCli = join(__dirname, '..', '..', 'build', cli);
+        const buildVersion = await this.spawn(`"${buildCli}"`, ['version']);
+        const buildShortVersion = (buildVersion.match(version) || [])[0];
+        this.execPath = buildCli;
+        try {
+            const pathCli = await new Promise<string>((resolve, reject) => {
+                which(cli, (error, path) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(path);
+                });
             });
-        });
+            if (!pathCli) {
+                return buildCli;
+            }
+            const pathVersion = await this.spawn(`"${pathCli}"`, ['version']);
+            const pathShortVersion = (pathVersion.match(version) || [])[0];
+            if (semver.gt(pathShortVersion, buildShortVersion)) {
+                this.execPath = pathCli;
+                return pathCli;
+            }
+        } catch (error) {
+            this.logger.warn(`Could not check for Arduino CLI in $PATH, using embedded CLI instead:`, error);
+            // Any errors here should be safe to ignore, e.g.:
+            // - Could not search for CLI in $PATH
+            // - Could not get version of CLI in $PATH
+        }
+        return buildCli;
     }
 
     async getVersion(): Promise<string> {
         const execPath = await this.getExecPath();
         return this.spawn(`"${execPath}"`, ['version']);
-        return new Promise<string>((resolve, reject) => {
-            const buffers: Buffer[] = [];
-            const cp = spawn(`"${execPath}"`, ['version'], { windowsHide: true, shell: true });
-            cp.stdout.on('data', (b: Buffer) => buffers.push(b));
-            cp.on('error', error => reject(error));
-            cp.on('exit', (code, signal) => {
-                if (code === 0) {
-                    const result = Buffer.concat(buffers).toString('utf8').trim()
-                    resolve(result);
-                    return;
-                }
-                if (signal) {
-                    reject(new Error(`Process exited with signal: ${signal}`));
-                    return;
-                }
-                if (code) {
-                    reject(new Error(`Process exited with exit code: ${code}`));
-                    return;
-                }
-            });
-        });
     }
 
     async getDefaultConfig(): Promise<Config> {
