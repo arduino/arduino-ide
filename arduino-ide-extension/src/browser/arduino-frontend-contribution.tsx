@@ -46,7 +46,6 @@ import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { ArduinoWorkspaceService } from './arduino-workspace-service';
-import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
@@ -54,6 +53,7 @@ import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { EditorMode } from './editor-mode';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -65,14 +65,6 @@ export namespace ArduinoToolbarContextMenu {
     export const OPEN_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '1_open'];
     export const WS_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '2_sketches'];
     export const EXAMPLE_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '3_examples'];
-}
-
-export namespace EditorMode {
-    export const PRO_MODE_KEY = 'arduino-advanced-mode';
-    export const IN_PRO_MODE: boolean = (() => {
-        const value = window.localStorage.getItem(PRO_MODE_KEY);
-        return value === 'true';
-    })();
 }
 
 @injectable()
@@ -174,6 +166,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(SearchInWorkspaceFrontendContribution)
     protected readonly siwContribution: SearchInWorkspaceFrontendContribution;
 
+    @inject(EditorMode)
+    protected readonly editorMode: EditorMode;
+
     protected application: FrontendApplication;
     protected wsSketchCount: number = 0; // TODO: this does not belong here, does it?
 
@@ -181,13 +176,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected async init(): Promise<void> {
         // This is a hack. Otherwise, the backend services won't bind.
         await this.workspaceServiceExt.roots();
-
-        if (!EditorMode.IN_PRO_MODE) {
-            const { ADD_FOLDER, REMOVE_FOLDER, SAVE_WORKSPACE_AS } = WorkspaceCommands;
-            for (const command of [ADD_FOLDER, REMOVE_FOLDER, SAVE_WORKSPACE_AS]) {
-                this.commandRegistry.unregisterCommand(command);
-            }
-        }
 
         const updateStatusBar = (config: BoardsConfig.Config) => {
             this.statusBar.setElement('arduino-selected-board', {
@@ -263,7 +251,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             command: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             tooltip: 'Toggle Advanced Mode',
-            text: (EditorMode.IN_PRO_MODE ? '$(toggle-on)' : '$(toggle-off)'),
+            text: (this.editorMode.proMode ? '$(toggle-on)' : '$(toggle-off)'),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
         });
     }
@@ -392,29 +380,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             }
         })
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            execute: async () => {
-                const oldState = EditorMode.IN_PRO_MODE;
-                const inAdvancedMode = !oldState;
-                window.localStorage.setItem(EditorMode.PRO_MODE_KEY, String(inAdvancedMode));
-                if (!inAdvancedMode) {
-                    // Close all widget that is neither editor nor `Output`.
-                    for (const area of ['left', 'right', 'bottom', 'main'] as Array<ApplicationShell.Area>) {
-                        this.shell.closeTabs(area, ({ owner }) => !(owner instanceof EditorWidget || owner instanceof OutputWidget));
-                    }
-                }
-                // No `else`. We initialize the views (if required) in `this.onStart`.
-                // `storeLayout` is not invoked in electron when refreshing the browser window: https://github.com/eclipse-theia/theia/issues/6530
-                // We store the state manually.
-                await this.layoutRestorer.storeLayoutAsync(this.application);
-                window.location.reload(true);
-            },
+            execute: () => this.editorMode.toggle(),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
-            isToggled: () => EditorMode.IN_PRO_MODE
+            isToggled: () => this.editorMode.proMode
         })
     }
 
     registerMenus(registry: MenuModelRegistry) {
-        if (!EditorMode.IN_PRO_MODE) {
+        if (!this.editorMode.proMode) {
             // If are not in pro-mode, we have to disable the context menu for the tabs.
             // Such as `Close`, `Close All`, etc.
             for (const command of [

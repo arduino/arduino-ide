@@ -4,7 +4,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService } from '../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from './arduino-workspace-resolver';
-import { EditorMode as EditorMode } from './arduino-frontend-contribution';
+import { EditorMode } from './editor-mode';
 
 @injectable()
 export class ArduinoWorkspaceService extends WorkspaceService {
@@ -17,6 +17,9 @@ export class ArduinoWorkspaceService extends WorkspaceService {
 
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
+
+    @inject(EditorMode)
+    protected readonly editorMode: EditorMode;
 
     async getDefaultWorkspaceUri(): Promise<string | undefined> {
         const [hash, recentWorkspaces, recentSketches] = await Promise.all([
@@ -47,7 +50,7 @@ export class ArduinoWorkspaceService extends WorkspaceService {
         }
         // The workspace root location must exist. However, when opening a workspace root in pro-mode,
         // the workspace root must not be a sketch folder. It can be the default sketch directory, or any other directories, for instance.
-        if (EditorMode.IN_PRO_MODE) {
+        if (this.editorMode.proMode) {
             return true;
         }
         const sketchFolder = await this.sketchService.isSketchFolder(uri);

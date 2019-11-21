@@ -1,3 +1,21 @@
 {
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "tslint.enable": true,
+  "tslint.configFile": "./tslint.json",
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/lib": false
+  },
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "[typescript]": {
+    "editor.tabSize": 4
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
+  "[jsonc]": {
+    "editor.tabSize": 2
+  },
+  "files.insertFinalNewline": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

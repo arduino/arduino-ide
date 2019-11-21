@@ -10,7 +10,7 @@ import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser
 import { LanguageClientContribution } from '@theia/languages/lib/browser';
 import { ArduinoLanguageClientContribution } from './language/arduino-language-client-contribution';
 import { LibraryListWidget } from './library/library-list-widget';
-import { ArduinoFrontendContribution, EditorMode } from './arduino-frontend-contribution';
+import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
@@ -30,14 +30,14 @@ import { ThemeService } from '@theia/core/lib/browser/theming';
 import { ArduinoTheme } from './arduino-theme';
 import { MenuContribution } from '@theia/core';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { SilentOutlineViewContribution } from './customization/silent-outline-contribution';
+import { ArduinoOutlineViewContribution } from './customization/arduino-outline-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
-import { SilentProblemContribution } from './customization/silent-problem-contribution';
-import { SilentNavigatorContribution } from './customization/silent-navigator-contribution';
+import { ArduinoProblemContribution } from './customization/arduino-problem-contribution';
+import { ArduinoNavigatorContribution } from './customization/arduino-navigator-contribution';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
 import { OutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
-import { ArduinoOutputToolContribution } from './customization/silent-output-tool-contribution';
+import { ArduinoOutputToolContribution } from './customization/arduino-output-tool-contribution';
 import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
 import { ArduinoEditorContribution } from './customization/arduino-editor-contribution';
 import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
@@ -48,9 +48,9 @@ import { ArduinoFrontendApplication } from './customization/arduino-frontend-app
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
 import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
-import { SilentScmContribution } from './customization/silent-scm-contribution';
+import { ArduinoScmContribution } from './customization/arduino-scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
-import { SilentSearchInWorkspaceContribution } from './customization/silent-search-in-workspace-contribution';
+import { ArduinoSearchInWorkspaceContribution } from './customization/arduino-search-in-workspace-contribution';
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
 import { LibraryItemRenderer } from './library/library-item-renderer';
 import { BoardItemRenderer } from './boards/boards-item-renderer';
@@ -71,6 +71,7 @@ import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { AboutDialog } from '@theia/core/lib/browser/about-dialog';
 import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
 import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { EditorMode } from './editor-mode';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -199,55 +200,37 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     const themeService = ThemeService.get();
     themeService.register(...ArduinoTheme.themes);
 
-    // Customizing default Theia layout
-    if (!EditorMode.IN_PRO_MODE) {
-        unbind(OutlineViewContribution);
-        bind(OutlineViewContribution).to(SilentOutlineViewContribution).inSingletonScope();
-        unbind(ProblemContribution);
-        bind(ProblemContribution).to(SilentProblemContribution).inSingletonScope();
-        unbind(FileNavigatorContribution);
-        bind(FileNavigatorContribution).to(SilentNavigatorContribution).inSingletonScope();
-        unbind(OutputToolbarContribution);
-        bind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
-        unbind(EditorContribution);
-        bind(EditorContribution).to(ArduinoEditorContribution).inSingletonScope();
-        unbind(MonacoStatusBarContribution);
-        bind(MonacoStatusBarContribution).to(ArduinoMonacoStatusBarContribution).inSingletonScope();
-        unbind(ApplicationShell);
-        bind(ApplicationShell).to(ArduinoApplicationShell).inSingletonScope();
-        unbind(ScmContribution);
-        bind(ScmContribution).to(SilentScmContribution).inSingletonScope();
-        unbind(SearchInWorkspaceFrontendContribution);
-        bind(SearchInWorkspaceFrontendContribution).to(SilentSearchInWorkspaceContribution).inSingletonScope();
-    } else {
-        // We use this CSS class on the body to modify the visibility of the close button for the editors and views.
-        document.body.classList.add(EditorMode.PRO_MODE_KEY);
-    }
-    unbind(FrontendApplication);
-    bind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
+    // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
+    bind(EditorMode).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(EditorMode);
+    rebind(OutlineViewContribution).to(ArduinoOutlineViewContribution).inSingletonScope();
+    rebind(ProblemContribution).to(ArduinoProblemContribution).inSingletonScope();
+    rebind(FileNavigatorContribution).to(ArduinoNavigatorContribution).inSingletonScope();
+    rebind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
+    rebind(EditorContribution).to(ArduinoEditorContribution).inSingletonScope();
+    rebind(MonacoStatusBarContribution).to(ArduinoMonacoStatusBarContribution).inSingletonScope();
+    rebind(ApplicationShell).to(ArduinoApplicationShell).inSingletonScope();
+    rebind(ScmContribution).to(ArduinoScmContribution).inSingletonScope();
+    rebind(SearchInWorkspaceFrontendContribution).to(ArduinoSearchInWorkspaceContribution).inSingletonScope();
+    rebind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
 
     // Monaco customizations
-    unbind(MonacoEditorProvider);
     bind(ArduinoMonacoEditorProvider).toSelf().inSingletonScope();
-    bind(MonacoEditorProvider).toService(ArduinoMonacoEditorProvider);
+    rebind(MonacoEditorProvider).toService(ArduinoMonacoEditorProvider);
 
     // Decorator customizations
-    unbind(TabBarDecoratorService);
     bind(ArduinoTabBarDecoratorService).toSelf().inSingletonScope();
-    bind(TabBarDecoratorService).toService(ArduinoTabBarDecoratorService);
+    rebind(TabBarDecoratorService).toService(ArduinoTabBarDecoratorService);
 
     // Problem markers
-    unbind(ProblemManager);
     bind(ArduinoProblemManager).toSelf().inSingletonScope();
-    bind(ProblemManager).toService(ArduinoProblemManager);
+    rebind(ProblemManager).toService(ArduinoProblemManager);
 
     // About dialog to show the CLI version
-    unbind(AboutDialog);
     bind(ArduinoAboutDialog).toSelf().inSingletonScope();
-    bind(AboutDialog).toService(ArduinoAboutDialog);
+    rebind(AboutDialog).toService(ArduinoAboutDialog);
 
     // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
-    unbind(ShellLayoutRestorer);
     bind(ArduinoShellLayoutRestorer).toSelf().inSingletonScope();
-    bind(ShellLayoutRestorer).toService(ArduinoShellLayoutRestorer);
+    rebind(ShellLayoutRestorer).toService(ArduinoShellLayoutRestorer);
 });
