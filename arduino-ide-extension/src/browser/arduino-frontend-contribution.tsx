@@ -3,7 +3,7 @@ import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
+import { CommandContribution, CommandRegistry, Command, CommandHandler } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
@@ -257,6 +257,42 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     }
 
     registerCommands(registry: CommandRegistry): void {
+        // TODO: use proper API https://github.com/eclipse-theia/theia/pull/6599
+        const allHandlers: { [id: string]: CommandHandler[] } = (registry as any)._handlers;
+        // Make sure to reveal the `Explorer` before executing `New File` and `New Folder`.
+        for (const command of [WorkspaceCommands.NEW_FILE, WorkspaceCommands.NEW_FOLDER]) {
+            const { id } = command;
+            const handlers = allHandlers[id].slice();
+            registry.unregisterCommand(id);
+            registry.registerCommand(command);
+            for (const handler of handlers) {
+                const wrapper: CommandHandler = {
+                    execute: (...args: any[]) => {
+                        this.fileNavigatorContributions.openView({ reveal: true }).then(() => handler.execute(args));
+                    },
+                    isVisible: (...args: any[]) => {
+                        return handler.isVisible!(args);
+                    },
+                    isEnabled: (args: any[]) => {
+                        return handler.isEnabled!(args);
+                    },
+                    isToggled: (args: any[]) => {
+                        return handler.isToggled!(args);
+                    }
+                };
+                if (!handler.isEnabled) {
+                    delete wrapper.isEnabled;
+                }
+                if (!handler.isToggled) {
+                    delete wrapper.isToggled;
+                }
+                if (!handler.isVisible) {
+                    delete wrapper.isVisible;
+                }
+                registry.registerHandler(id, wrapper);
+            }
+        }
+
         registry.registerCommand(ArduinoCommands.VERIFY, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
@@ -398,15 +434,12 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 CommonCommands.COLLAPSE_PANEL,
                 CommonCommands.TOGGLE_MAXIMIZED,
                 FileNavigatorCommands.REVEAL_IN_NAVIGATOR
-
             ]) {
                 registry.unregisterMenuAction(command);
             }
 
             registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
             registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
-
-            registry.unregisterMenuAction(WorkspaceCommands.NEW_FOLDER);
 
             registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
             registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
@@ -502,7 +535,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             if (destinationFile && !destinationFile.isDirectory) {
                 const message = await this.validate(destinationFile);
                 if (!message) {
-                    await this.workspaceService.open(destinationFileUri);
+                    this.workspaceService.open(destinationFileUri);
                     return destinationFileUri;
                 } else {
                     this.messageService.warn(message);
