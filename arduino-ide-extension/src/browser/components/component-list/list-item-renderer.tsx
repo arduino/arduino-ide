@@ -22,15 +22,17 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     renderItem(
         input: ComponentListItem.State & { item: T },
         install: (item: T) => Promise<void>,
+        uninstall: (item: T) => Promise<void>,
         onVersionChange: (version: Installable.Version) => void
     ): React.ReactNode {
 
         const { item } = input;
         const name = <span className='name'>{item.name}</span>;
         const author = <span className='author'>{item.author}</span>;
+        const onClickUninstall = () => uninstall(item);
         const installedVersion = !!item.installedVersion && <div className='version-info'>
             <span className='version'>Version {item.installedVersion}</span>
-            <span className='installed'>INSTALLED</span>
+            <span className='installed' onClick={onClickUninstall} />
         </div>;
 
         const summary = <div className='summary'>{item.summary}</div>;

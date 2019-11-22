@@ -19,13 +19,22 @@ export class ComponentListItem<T extends ArduinoComponent> extends React.Compone
         await this.props.install(item, this.state.selectedVersion);
     }
 
+    protected async uninstall(item: T): Promise<void> {
+        await this.props.uninstall(item);
+    }
+
     protected onVersionChange(version: Installable.Version) {
         this.setState({ selectedVersion: version });
     }
 
     render(): React.ReactNode {
         const { item, itemRenderer } = this.props;
-        return itemRenderer.renderItem(Object.assign(this.state, { item }), this.install.bind(this), this.onVersionChange.bind(this));
+        return itemRenderer.renderItem(
+            Object.assign(this.state, { item }),
+            this.install.bind(this),
+            this.uninstall.bind(this),
+            this.onVersionChange.bind(this)
+        );
     }
 
 }
@@ -35,6 +44,7 @@ export namespace ComponentListItem {
     export interface Props<T extends ArduinoComponent> {
         readonly item: T;
         readonly install: (item: T, version?: Installable.Version) => Promise<void>;
+        readonly uninstall: (item: T) => Promise<void>;
         readonly itemRenderer: ListItemRenderer<T>;
     }
 

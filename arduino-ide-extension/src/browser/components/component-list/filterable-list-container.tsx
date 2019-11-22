@@ -1,10 +1,11 @@
 import * as React from 'react';
 import debounce = require('lodash.debounce');
 import { Event } from '@theia/core/lib/common/event';
+import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { Searchable } from '../../../common/protocol/searchable';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
-import { InstallationProgressDialog } from '../installation-progress-dialog';
+import { InstallationProgressDialog, UninstallationProgressDialog } from '../progress-dialog';
 import { SearchBar } from './search-bar';
 import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
@@ -59,6 +60,7 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
             itemLabel={itemLabel}
             itemRenderer={itemRenderer}
             install={this.install.bind(this)}
+            uninstall={this.uninstall.bind(this)}
             resolveContainer={resolveContainer}
         />
     }
@@ -89,6 +91,28 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         dialog.open();
         try {
             await installable.install({ item, version });
+            const { items } = await searchable.search({ query: this.state.filterText });
+            this.setState({ items: this.sort(items) });
+        } finally {
+            dialog.close();
+        }
+    }
+
+    protected async uninstall(item: T): Promise<void> {
+        const uninstall = await new ConfirmDialog({
+            title: 'Uninstall',
+            msg: `Do you want to uninstall ${item.name}?`,
+            ok: 'Yes',
+            cancel: 'No'
+        }).open();
+        if (!uninstall) {
+            return;
+        }
+        const { installable, searchable, itemLabel } = this.props;
+        const dialog = new UninstallationProgressDialog(itemLabel(item));
+        dialog.open();
+        try {
+            await installable.uninstall({ item });
             const { items } = await searchable.search({ query: this.state.filterText });
             this.setState({ items: this.sort(items) });
         } finally {

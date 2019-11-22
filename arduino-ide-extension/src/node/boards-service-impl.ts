@@ -2,7 +2,7 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
-import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp, Platform } from './cli-protocol/commands/core_pb';
+import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp, Platform, PlatformUninstallReq } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
@@ -286,6 +286,39 @@ export class BoardsServiceImpl implements BoardsService {
             this.client.notifyBoardInstalled({ pkg });
         }
         console.info("Board installation done", pkg);
+    }
+
+    async uninstall(options: { item: BoardPackage }): Promise<void> {
+        const pkg = options.item;
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return;
+        }
+        const { client, instance } = coreClient;
+
+        const [platform, boardName] = pkg.id.split(":");
+
+        const req = new PlatformUninstallReq();
+        req.setInstance(instance);
+        req.setArchitecture(boardName);
+        req.setPlatformPackage(platform);
+
+        console.info("Starting board uninstallation", pkg);
+        const resp = client.platformUninstall(req);
+        resp.on('data', (r: PlatformInstallResp) => {
+            const prog = r.getProgress();
+            if (prog && prog.getFile()) {
+                this.toolOutputService.publishNewOutput("board uninstall", `uninstalling ${prog.getFile()}\n`)
+            }
+        });
+        await new Promise<void>((resolve, reject) => {
+            resp.on('end', resolve);
+            resp.on('error', reject);
+        });
+        if (this.client) {
+            this.client.notifyBoardUninstalled({ pkg });
+        }
+        console.info("Board uninstallation done", pkg);
     }
 
 }

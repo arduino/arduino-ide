@@ -3,7 +3,7 @@ import { Library, LibraryService } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
 import {
     LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
-    InstalledLibrary, LibraryInstallReq, LibraryInstallResp
+    InstalledLibrary, LibraryInstallReq, LibraryInstallResp, LibraryUninstallReq
 } from './cli-protocol/commands/lib_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
@@ -82,6 +82,32 @@ export class LibraryServiceImpl implements LibraryService {
             const prog = r.getProgress();
             if (prog) {
                 this.toolOutputService.publishNewOutput("library download", `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n`)
+            }
+        });
+        await new Promise<void>((resolve, reject) => {
+            resp.on('end', resolve);
+            resp.on('error', reject);
+        });
+    }
+
+    async uninstall(options: { item: Library }): Promise<void> {
+        const library = options.item;
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return;
+        }
+        const { client, instance } = coreClient;
+
+        const req = new LibraryUninstallReq();
+        req.setInstance(instance);
+        req.setName(library.name);
+        req.setVersion(library.installedVersion!);
+
+        const resp = client.libraryInstall(req);
+        resp.on('data', (r: LibraryInstallResp) => {
+            const prog = r.getProgress();
+            if (prog) {
+                this.toolOutputService.publishNewOutput("library uninstall", `uninstalling ${prog.getFile()}: ${prog.getCompleted()}%\n`)
             }
         });
         await new Promise<void>((resolve, reject) => {

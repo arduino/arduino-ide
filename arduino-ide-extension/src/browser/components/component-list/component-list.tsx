@@ -31,7 +31,8 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<C
             key={this.props.itemLabel(item)}
             item={item}
             itemRenderer={this.props.itemRenderer}
-            install={this.props.install} />
+            install={this.props.install}
+            uninstall={this.props.uninstall} />
     }
 
 }
@@ -43,6 +44,7 @@ export namespace ComponentList {
         readonly itemLabel: (item: T) => string;
         readonly itemRenderer: ListItemRenderer<T>;
         readonly install: (item: T, version?: Installable.Version) => Promise<void>;
+        readonly uninstall: (item: T) => Promise<void>;
         readonly resolveContainer: (element: HTMLElement) => void;
     }
 

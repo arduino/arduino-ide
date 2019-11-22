@@ -4,7 +4,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { BoardsService, Board } from '../../common/protocol/boards-service';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
-import { InstallationProgressDialog } from '../components/installation-progress-dialog';
+import { InstallationProgressDialog } from '../components/progress-dialog';
 import { BoardsConfig } from './boards-config';
 
 

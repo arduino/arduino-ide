@@ -10,3 +10,14 @@ export class InstallationProgressDialog extends AbstractDialog<undefined> {
     }
 
 }
+
+export class UninstallationProgressDialog extends AbstractDialog<undefined> {
+
+    readonly value = undefined;
+
+    constructor(componentName: string) {
+        super({ title: 'Uninstallation in progress' });
+        this.contentNode.textContent = `Uninstalling ${componentName}. Please wait...`;
+    }
+
+}

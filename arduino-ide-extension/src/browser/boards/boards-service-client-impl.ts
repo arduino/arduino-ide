@@ -3,7 +3,7 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
 import { RecursiveRequired } from '../../common/types';
-import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port } from '../../common/protocol/boards-service';
+import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port, BoardUninstalledEvent } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
 
 @injectable()
@@ -16,6 +16,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     protected storageService: LocalStorageService;
 
     protected readonly onBoardInstalledEmitter = new Emitter<BoardInstalledEvent>();
+    protected readonly onBoardUninstalledEmitter = new Emitter<BoardUninstalledEvent>();
     protected readonly onAttachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
     protected readonly onSelectedBoardsConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
 
@@ -31,6 +32,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
 
     readonly onBoardsChanged = this.onAttachedBoardsChangedEmitter.event;
     readonly onBoardInstalled = this.onBoardInstalledEmitter.event;
+    readonly onBoardUninstalled = this.onBoardUninstalledEmitter.event;
     readonly onBoardsConfigChanged = this.onSelectedBoardsConfigChangedEmitter.event;
 
     @postConstruct()
@@ -85,6 +87,11 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     notifyBoardInstalled(event: BoardInstalledEvent): void {
         this.logger.info('Board installed: ', JSON.stringify(event));
         this.onBoardInstalledEmitter.fire(event);
+    }
+
+    notifyBoardUninstalled(event: BoardUninstalledEvent): void {
+        this.logger.info('Board uninstalled: ', JSON.stringify(event));
+        this.onBoardUninstalledEmitter.fire(event);
     }
 
     set boardsConfig(config: BoardsConfig.Config) {
