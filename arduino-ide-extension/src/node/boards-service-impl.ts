@@ -28,11 +28,11 @@ export class BoardsServiceImpl implements BoardsService {
     protected discoveryTimer: NodeJS.Timeout | undefined;
     /**
      * Poor man's serial discovery:
-     * Stores the state of the currently discovered, attached boards.
-     * This state is updated via periodical polls.
+     * Stores the state of the currently discovered and attached boards.
+     * This state is updated via periodical polls. If there diff, a change event will be sent out to the frontend.
      */
-    protected _attachedBoards: { boards: Board[] } = { boards: [] };
-    protected _availablePorts: { ports: Port[] } = { ports: [] };
+    protected attachedBoards: { boards: Board[] } = { boards: [] };
+    protected availablePorts: { ports: Port[] } = { ports: [] };
     protected client: BoardsServiceClient | undefined;
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
@@ -42,8 +42,8 @@ export class BoardsServiceImpl implements BoardsService {
             this.discoveryLogger.trace('Discovering attached boards and available ports...');
             this.doGetAttachedBoardsAndAvailablePorts().then(({ boards, ports }) => {
                 const update = (oldBoards: Board[], newBoards: Board[], oldPorts: Port[], newPorts: Port[], message: string) => {
-                    this._attachedBoards = { boards: newBoards };
-                    this._availablePorts = { ports: newPorts };
+                    this.attachedBoards = { boards: newBoards };
+                    this.availablePorts = { ports: newPorts };
                     this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newBoards)} and available ports: ${JSON.stringify(newPorts)}`);
                     if (this.client) {
                         this.client.notifyAttachedBoardsChanged({
@@ -109,11 +109,11 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     async getAttachedBoards(): Promise<{ boards: Board[] }> {
-        return this._attachedBoards;
+        return this.attachedBoards;
     }
 
     async getAvailablePorts(): Promise<{ ports: Port[] }> {
-        return this._availablePorts;
+        return this.availablePorts;
     }
 
     private async doGetAttachedBoardsAndAvailablePorts(): Promise<{ boards: Board[], ports: Port[] }> {
