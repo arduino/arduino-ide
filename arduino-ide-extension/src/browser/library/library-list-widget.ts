@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Library, LibraryService } from '../../common/protocol/library-service';
 import { ListWidget } from '../components/component-list/list-widget';
-import { LibraryItemRenderer } from './library-item-renderer';
+import { ListItemRenderer } from '../components/component-list/list-item-renderer';
 
 @injectable()
 export class LibraryListWidget extends ListWidget<Library> {
@@ -11,7 +11,7 @@ export class LibraryListWidget extends ListWidget<Library> {
 
     constructor(
         @inject(LibraryService) protected service: LibraryService,
-        @inject(LibraryItemRenderer) protected itemRenderer: LibraryItemRenderer) {
+        @inject(ListItemRenderer) protected itemRenderer: ListItemRenderer<Library>) {
 
         super({
             id: LibraryListWidget.WIDGET_ID,

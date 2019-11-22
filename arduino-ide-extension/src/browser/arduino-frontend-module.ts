@@ -52,8 +52,6 @@ import { ArduinoScmContribution } from './customization/arduino-scm-contribution
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { ArduinoSearchInWorkspaceContribution } from './customization/arduino-search-in-workspace-contribution';
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
-import { LibraryItemRenderer } from './library/library-item-renderer';
-import { BoardItemRenderer } from './boards/boards-item-renderer';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
 import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
@@ -72,6 +70,7 @@ import { AboutDialog } from '@theia/core/lib/browser/about-dialog';
 import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
 import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 import { EditorMode } from './editor-mode';
+import { ListItemRenderer } from './components/component-list/list-item-renderer';
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -92,9 +91,11 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(LanguageGrammarDefinitionContribution).to(ArduinoLanguageGrammarContribution).inSingletonScope();
     bind(LanguageClientContribution).to(ArduinoLanguageClientContribution).inSingletonScope();
 
+    // Renderer for both the library and the core widgets.
+    bind(ListItemRenderer).toSelf().inSingletonScope();
+
     // Library service
     bind(LibraryService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServicePath)).inSingletonScope();
-
     // Library list widget
     bind(LibraryListWidget).toSelf();
     bindViewContribution(bind, LibraryListWidgetFrontendContribution);
@@ -103,7 +104,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(LibraryListWidget)
     }));
     bind(FrontendApplicationContribution).toService(LibraryListWidgetFrontendContribution);
-    bind(LibraryItemRenderer).toSelf().inSingletonScope();
 
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
@@ -137,7 +137,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         createWidget: () => context.container.get(BoardsListWidget)
     }));
     bind(FrontendApplicationContribution).toService(BoardsListWidgetFrontendContribution);
-    bind(BoardItemRenderer).toSelf().inSingletonScope();
 
     // Board select dialog
     bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();

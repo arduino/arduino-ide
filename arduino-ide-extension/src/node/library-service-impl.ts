@@ -1,8 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { Library, LibraryService } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
-import { LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
-    InstalledLibrary, LibraryInstallReq, LibraryInstallResp } from './cli-protocol/commands/lib_pb';
+import {
+    LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
+    InstalledLibrary, LibraryInstallReq, LibraryInstallResp
+} from './cli-protocol/commands/lib_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
 
@@ -44,6 +46,7 @@ export class LibraryServiceImpl implements LibraryService {
             .filter(item => !!item.getLatest())
             .slice(0, 50)
             .map(item => {
+                const availableVersions = item.getReleasesMap().getEntryList().map(([key, _]) => key);
                 let installedVersion: string | undefined;
                 const installed = installedLibsIdx.get(item.getName());
                 if (installed) {
@@ -52,8 +55,8 @@ export class LibraryServiceImpl implements LibraryService {
                 return toLibrary({
                     name: item.getName(),
                     installable: true,
-                    installedVersion
-                }, item.getLatest()!)
+                    installedVersion,
+                }, item.getLatest()!, availableVersions)
             })
 
         return { items };
@@ -88,14 +91,14 @@ export class LibraryServiceImpl implements LibraryService {
 
 }
 
-function toLibrary(tpl: Partial<Library>, release: LibraryRelease): Library {
+function toLibrary(tpl: Partial<Library>, release: LibraryRelease, availableVersions: string[]): Library {
     return {
         name: "",
         installable: false,
         ...tpl,
 
         author: release.getAuthor(),
-        availableVersions: [release.getVersion()],
+        availableVersions,
         description: release.getSentence(),
         moreInfoLink: release.getWebsite(),
         summary: release.getParagraph()

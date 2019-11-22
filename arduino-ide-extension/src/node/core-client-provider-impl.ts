@@ -59,7 +59,7 @@ export class CoreClientProviderImpl implements CoreClientProvider {
                 resolve(undefined);
                 return
             }
-            
+
             if (!workspaceRootOrResourceUri) {
                 resolve(this.getOrCreateClient(roots[0]));
                 return;
