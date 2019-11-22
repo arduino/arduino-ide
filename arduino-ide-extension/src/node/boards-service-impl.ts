@@ -2,7 +2,17 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
-import { PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq, PlatformListResp, Platform, PlatformUninstallReq } from './cli-protocol/commands/core_pb';
+import {
+    PlatformSearchReq,
+    PlatformSearchResp,
+    PlatformInstallReq,
+    PlatformInstallResp,
+    PlatformListReq,
+    PlatformListResp,
+    Platform,
+    PlatformUninstallReq,
+    PlatformUninstallResp
+} from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
@@ -304,13 +314,14 @@ export class BoardsServiceImpl implements BoardsService {
         req.setPlatformPackage(platform);
 
         console.info("Starting board uninstallation", pkg);
+        let logged = false;
         const resp = client.platformUninstall(req);
-        resp.on('data', (r: PlatformInstallResp) => {
-            const prog = r.getProgress();
-            if (prog && prog.getFile()) {
-                this.toolOutputService.publishNewOutput("board uninstall", `uninstalling ${prog.getFile()}\n`)
+        resp.on('data', (_: PlatformUninstallResp) => {
+            if (!logged) {
+                this.toolOutputService.publishNewOutput("board uninstall", `uninstalling ${pkg.id}\n`)
+                logged = true;
             }
-        });
+        })
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', reject);

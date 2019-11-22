@@ -2,8 +2,16 @@ import { injectable, inject } from 'inversify';
 import { Library, LibraryService } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
 import {
-    LibrarySearchReq, LibrarySearchResp, LibraryListReq, LibraryListResp, LibraryRelease,
-    InstalledLibrary, LibraryInstallReq, LibraryInstallResp, LibraryUninstallReq
+    LibrarySearchReq,
+    LibrarySearchResp,
+    LibraryListReq,
+    LibraryListResp,
+    LibraryRelease,
+    InstalledLibrary,
+    LibraryInstallReq,
+    LibraryInstallResp,
+    LibraryUninstallReq,
+    LibraryUninstallResp
 } from './cli-protocol/commands/lib_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
@@ -103,11 +111,12 @@ export class LibraryServiceImpl implements LibraryService {
         req.setName(library.name);
         req.setVersion(library.installedVersion!);
 
-        const resp = client.libraryInstall(req);
-        resp.on('data', (r: LibraryInstallResp) => {
-            const prog = r.getProgress();
-            if (prog) {
-                this.toolOutputService.publishNewOutput("library uninstall", `uninstalling ${prog.getFile()}: ${prog.getCompleted()}%\n`)
+        let logged = false;
+        const resp = client.libraryUninstall(req);
+        resp.on('data', (_: LibraryUninstallResp) => {
+            if (!logged) {
+                this.toolOutputService.publishNewOutput("library uninstall", `uninstalling ${library.name}:${library.installedVersion}%\n`)
+                logged = true;
             }
         });
         await new Promise<void>((resolve, reject) => {
