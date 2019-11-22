@@ -33,11 +33,9 @@ export class EditorMode implements FrontendApplicationContribution {
                 shell.closeTabs(area, ({ owner }) => !(owner instanceof EditorWidget || owner instanceof OutputWidget));
             }
         }
-        // No `else`. We initialize the views (if required) in `this.onStart`.
-        // `storeLayout` is not invoked in electron when refreshing the browser window: https://github.com/eclipse-theia/theia/issues/6530
-        // We store the state manually.
-        // XXX: hack instead of injecting the `ArduinoShellLayoutRestorer` we have to retrieve it from the
-        // application to avoid DI cycle.
+        // `storeLayout` has a sync API but the implementation is async, we store the layout manually before we reload the page.
+        // See: https://github.com/eclipse-theia/theia/issues/6579
+        // XXX: hack instead of injecting the `ArduinoShellLayoutRestorer` we have to retrieve it from the application to avoid DI cycle.
         const layoutRestorer = (this.app as any).layoutRestorer as ArduinoShellLayoutRestorer
         await layoutRestorer.storeLayoutAsync(this.app);
         window.location.reload(true);
