@@ -20,7 +20,7 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         };
     }
 
-    componentWillMount(): void {
+    componentDidMount(): void {
         this.search = debounce(this.search, 500);
         this.handleFilterTextChange('');
         this.props.filterTextChangeEvent(this.handleFilterTextChange.bind(this));
@@ -33,7 +33,6 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
     }
 
     render(): React.ReactNode {
-        this.props.container.update(); // This will recalculate the desired dimension of the scroll-bar thumb. (See: arduino/arduino-pro-ide#101)
         return <div className={'filterable-list-container'}>
             {this.renderSearchFilter()}
             {this.renderSearchBar()}
