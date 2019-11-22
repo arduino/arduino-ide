@@ -130,7 +130,7 @@ export namespace Port {
         }
         if (isOSX) {
             // Example: `/dev/cu.usbmodem14401`
-            if (/(tty|cu)\..*/.test(address.substring('/dev/'.length))) { 
+            if (/(tty|cu)\..*/.test(address.substring('/dev/'.length))) {
                 return [
                     '/dev/cu.MALS',
                     '/dev/cu.SOC',
@@ -169,12 +169,6 @@ export namespace Port {
 export interface BoardPackage extends ArduinoComponent {
     id: string;
     boards: Board[];
-}
-export namespace BoardPackage {
-    /**
-     * Most recent version comes first, then the previous versions. (`1.8.1`, `1.6.3`, `1.6.2`, `1.6.1` and so on.)
-     */
-    export const VERSION_COMPARATOR = (left: string, right: string) => naturalCompare(right, left);
 }
 
 export interface Board {
