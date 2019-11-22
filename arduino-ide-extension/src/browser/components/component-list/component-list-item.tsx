@@ -16,7 +16,18 @@ export class ComponentListItem<T extends ArduinoComponent> extends React.Compone
     }
 
     protected async install(item: T): Promise<void> {
-        await this.props.install(item, this.state.selectedVersion);
+        const toInstall = this.state.selectedVersion;
+        const version = this.props.item.availableVersions.filter(version => version !== this.state.selectedVersion)[0];
+        this.setState({
+            selectedVersion: version
+        });
+        try {
+            await this.props.install(item, toInstall);
+        } catch {
+            this.setState({
+                selectedVersion: toInstall
+            });
+        }
     }
 
     protected async uninstall(item: T): Promise<void> {
