@@ -35,7 +35,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
 #select-board-dialog .selectBoardContainer .search input,
 #select-board-dialog .selectBoardContainer .list,
 #select-board-dialog .selectBoardContainer .list {
-    background: white; /* TODO find a theia color instead! */
+    background: var(--theia-layout-color0);
 }
 
 #select-board-dialog .selectBoardContainer .body .search input {
