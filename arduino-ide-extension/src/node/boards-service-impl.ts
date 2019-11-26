@@ -249,14 +249,43 @@ export class BoardsServiceImpl implements BoardsService {
             }
         }
 
+        // We must group the cores by ID, and sort platforms by, first the installed version, then version alphabetical order.
+        // Otherwise we lose the FQBN information.
+        const groupedById: Map<string, Platform[]> = new Map();
         for (const platform of resp.getSearchOutputList()) {
             const id = platform.getId();
-            const pkg = packages.get(id);
-            if (pkg) {
-                pkg.availableVersions.push(platform.getLatest());
-                pkg.availableVersions.sort(Installable.Version.COMPARATOR);
+            if (groupedById.has(id)) {
+                groupedById.get(id)!.push(platform);
             } else {
-                packages.set(id, toPackage(platform));
+                groupedById.set(id, [platform]);
+            }
+        }
+        const installedAwareVersionComparator = (left: Platform, right: Platform) => {
+            // XXX: we cannot rely on `platform.getInstalled()`, it is always an empty string.
+            const leftInstalled = !!installedPlatforms.find(ip => ip.getId() === left.getId() && ip.getInstalled() === left.getLatest());
+            const rightInstalled = !!installedPlatforms.find(ip => ip.getId() === right.getId() && ip.getInstalled() === right.getLatest());
+            if (leftInstalled && !rightInstalled) {
+                return -1;
+            }
+            if (!leftInstalled && rightInstalled) {
+                return 1;
+            }
+            return Installable.Version.COMPARATOR(right.getLatest(), left.getLatest()); // Higher version comes first.
+        }
+        for (const id of groupedById.keys()) {
+            groupedById.get(id)!.sort(installedAwareVersionComparator);
+        }
+
+        for (const id of groupedById.keys()) {
+            for (const platform of groupedById.get(id)!) {
+                const id = platform.getId();
+                const pkg = packages.get(id);
+                if (pkg) {
+                    pkg.availableVersions.push(platform.getLatest());
+                    pkg.availableVersions.sort(Installable.Version.COMPARATOR);
+                } else {
+                    packages.set(id, toPackage(platform));
+                }
             }
         }
 
