@@ -4,7 +4,8 @@
   "main": "src-gen/frontend/electron-main.js",
   "author": "Arduino SA",
   "dependencies": {
-    "arduino-ide-extension": "file:../working-copy/arduino-ide-extension"
+    "arduino-ide-extension": "file:../working-copy/arduino-ide-extension",
+    "arduino-debugger-extension": "file:../working-copy/arduino-debugger-extension"
   },
   "resolutions": {
     "**/fs-extra": "^4.0.3"
