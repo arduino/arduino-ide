@@ -1,6 +1,11 @@
-import { injectable, inject } from "inversify";
-import { MonitorService, ConnectionConfig } from "../../common/protocol/monitor-service";
-import { Emitter, Event } from "@theia/core";
+import { injectable, inject, postConstruct } from 'inversify';
+import { Emitter, Event } from '@theia/core/lib/common/event';
+// import { ConnectionStatusService } from '@theia/core/lib/browser/connection-status-service';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { MonitorService, MonitorConfig, MonitorError } from '../../common/protocol/monitor-service';
+import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { Port, Board } from '../../common/protocol/boards-service';
+import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 
 @injectable()
 export class MonitorConnection {
@@ -8,46 +13,102 @@ export class MonitorConnection {
     @inject(MonitorService)
     protected readonly monitorService: MonitorService;
 
-    connectionId: string | undefined;
+    @inject(MonitorServiceClientImpl)
+    protected readonly monitorServiceClient: MonitorServiceClientImpl;
 
-    protected _connectionConfig: ConnectionConfig | undefined;
+    @inject(BoardsServiceClientImpl)
+    protected boardsServiceClient: BoardsServiceClientImpl;
 
+    @inject(MessageService)
+    protected messageService: MessageService;
+
+    // @inject(ConnectionStatusService)
+    // protected readonly connectionStatusService: ConnectionStatusService;
+
+    protected state: MonitorConnection.State | undefined;
     protected readonly onConnectionChangedEmitter = new Emitter<string | undefined>();
+
     readonly onConnectionChanged: Event<string | undefined> = this.onConnectionChangedEmitter.event;
 
-    get connectionConfig(): ConnectionConfig | undefined {
-        return this._connectionConfig;
+    @postConstruct()
+    protected init(): void {
+        this.monitorServiceClient.onError(error => {
+            if (this.state) {
+                const { code, connectionId, config } = error;
+                if (this.state.connectionId === connectionId) {
+                    switch (code) {
+                        case MonitorError.ErrorCodes.CLIENT_CANCEL: {
+                            console.log(`Connection was canceled by client: ${MonitorConnection.State.toString(this.state)}.`);
+                            break;
+                        }
+                        case MonitorError.ErrorCodes.DEVICE_BUSY: {
+                            const { port } = config;
+                            this.messageService.warn(`Connection failed. Serial port is busy: ${Port.toString(port)}.`);
+                            break;
+                        }
+                        case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
+                            const { port } = config;
+                            this.messageService.info(`Disconnected from ${Port.toString(port)}.`);
+                            break;
+                        }
+                    }
+                    this.state = undefined;
+                } else {
+                    console.warn(`Received an error from unexpected connection: ${MonitorConnection.State.toString({ connectionId, config })}.`);
+                }
+            }
+        });
     }
 
-    async connect(config: ConnectionConfig): Promise<string | undefined> {
-        if (this.connectionId) {
-            await this.disconnect();
+    get connectionId(): string | undefined {
+        return this.state ? this.state.connectionId : undefined;
+    }
+
+    get connectionConfig(): MonitorConfig | undefined {
+        return this.state ? this.state.config : undefined;
+    }
+
+    async connect(config: MonitorConfig): Promise<string | undefined> {
+        if (this.state) {
+            throw new Error(`Already connected to ${MonitorConnection.State.toString(this.state)}.`);
         }
         const { connectionId } = await this.monitorService.connect(config);
-        this.connectionId = connectionId;
-        this._connectionConfig = config;
-
-        this.onConnectionChangedEmitter.fire(this.connectionId);
-
+        this.state = { connectionId, config };
+        this.onConnectionChangedEmitter.fire(connectionId);
         return connectionId;
     }
 
     async disconnect(): Promise<boolean> {
-        let result = true;
-        const connections = await this.monitorService.getConnectionIds();
-        if (this.connectionId && connections.findIndex(id => id === this.connectionId) >= 0) {
-            console.log('>>> Disposing existing monitor connection before establishing a new one...');
-            result = await this.monitorService.disconnect(this.connectionId);
-            if (!result) {
-                // TODO: better!!!
-                console.error(`Could not close connection: ${this.connectionId}. Check the backend logs.`);
-            } else {
-                console.log(`<<< Disposed ${this.connectionId} connection.`);
-                this.connectionId = undefined;
-                this._connectionConfig = undefined;
-                this.onConnectionChangedEmitter.fire(this.connectionId);
-            }
+        if (!this.state) {
+            throw new Error('Not connected. Nothing to disconnect.');
+        }
+        console.log('>>> Disposing existing monitor connection before establishing a new one...');
+        const result = await this.monitorService.disconnect(this.state.connectionId);
+        if (result) {
+            console.log(`<<< Disposed connection. Was: ${MonitorConnection.State.toString(this.state)}`);
+            this.state = undefined;
+            this.onConnectionChangedEmitter.fire(undefined);
+        } else {
+            console.warn(`<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(this.state)}`);
         }
         return result;
     }
+
+}
+
+export namespace MonitorConnection {
+
+    export interface State {
+        readonly connectionId: string;
+        readonly config: MonitorConfig;
+    }
+
+    export namespace State {
+        export function toString(state: State): string {
+            const { connectionId, config } = state;
+            const { board, port } = config;
+            return `${Board.toString(board)} ${Port.toString(port)} [ID: ${connectionId}]`;
+        }
+    }
+
 }

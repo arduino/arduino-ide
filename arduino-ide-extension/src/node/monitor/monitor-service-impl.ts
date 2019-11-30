@@ -1,40 +1,66 @@
 import { v4 } from 'uuid';
-import * as grpc from '@grpc/grpc-js';
+import { Chance } from 'chance';
+import { ClientDuplexStream } from '@grpc/grpc-js';
 import { TextDecoder, TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
+import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import { ILogger, Disposable, DisposableCollection } from '@theia/core';
-import { MonitorService, MonitorServiceClient, ConnectionConfig, ConnectionType } from '../../common/protocol/monitor-service';
-import { StreamingOpenReq, StreamingOpenResp, MonitorConfig } from '../cli-protocol/monitor/monitor_pb';
+import { MonitorService, MonitorServiceClient, MonitorConfig, MonitorError } from '../../common/protocol/monitor-service';
+import { StreamingOpenReq, StreamingOpenResp, MonitorConfig as GrpcMonitorConfig } from '../cli-protocol/monitor/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
-import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
+import { Board, Port } from '../../common/protocol/boards-service';
 
 export interface MonitorDuplex {
     readonly toDispose: Disposable;
-    readonly duplex: grpc.ClientDuplexStream<StreamingOpenReq, StreamingOpenResp>;
+    readonly duplex: ClientDuplexStream<StreamingOpenReq, StreamingOpenResp>;
 }
 
-type ErrorCode = { code: number };
-type MonitorError = Error & ErrorCode;
-namespace MonitorError {
-
-    export function is(error: Error & Partial<ErrorCode>): error is MonitorError {
+interface ErrorWithCode extends Error {
+    readonly code: number;
+}
+namespace ErrorWithCode {
+    export function is(error: Error & { code?: number }): error is ErrorWithCode {
         return typeof error.code === 'number';
     }
-
-    /**
-     * The frontend has refreshed the browser, for instance.
-     */
-    export function isClientCancelledError(error: MonitorError): boolean {
-        return error.code === 1 && error.message === 'Cancelled on client';
+    export function toMonitorError(error: Error, connectionId: string, config: MonitorConfig): MonitorError | undefined {
+        if (is(error)) {
+            const { code, message } = error;
+            // TODO: apply a regex on the `message`, and use enums instead of a numbers for the error codes.
+            if (code === 1 && message === 'Cancelled on client') {
+                return {
+                    connectionId,
+                    message,
+                    // message: `Cancelled on client. ${Board.toString(board)} from port ${Port.toString(port)}.`,
+                    code: MonitorError.ErrorCodes.CLIENT_CANCEL,
+                    config
+                };
+            }
+            if (code === 2) {
+                switch (message) {
+                    case 'device not configured': {
+                        return {
+                            connectionId,
+                            // message: ``,
+                            message,
+                            code: MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED,
+                            config
+                        }
+                    }
+                    case 'error opening serial monitor: Serial port busy': {
+                        return {
+                            connectionId,
+                            // message: `Connection failed. Serial port is busy: ${Port.toString(port)}.`,
+                            message,
+                            code: MonitorError.ErrorCodes.DEVICE_BUSY,
+                            config
+                        }
+                    }
+                }
+            }
+            console.warn(`Unhandled error with code:`, error);
+        }
+        return undefined;
     }
-
-    /**
-     * When detaching a physical device when the duplex channel is still opened.
-     */
-    export function isDeviceNotConfiguredError(error: MonitorError): boolean {
-        return error.code === 2 && error.message === 'device not configured';
-    }
-
 }
 
 @injectable()
@@ -60,29 +86,33 @@ export class MonitorServiceImpl implements MonitorService {
         }
     }
 
-    async getConnectionIds(): Promise<string[]> {
-        return Array.from(this.connections.keys());
-    }
-
-    async connect(config: ConnectionConfig): Promise<{ connectionId: string }> {
+    async connect(config: MonitorConfig): Promise<{ connectionId: string }> {
+        this.logger.info(`>>> Creating serial monitor connection for ${Board.toString(config.board)} on port ${Port.toString(config.port)}...`);
         const client = await this.monitorClientProvider.client;
         const duplex = client.streamingOpen();
-        const connectionId = v4();
+        const connectionId = `${new Chance(v4()).animal().replace(/\s+/g, '-').toLowerCase()}-monitor-connection`;
         const toDispose = new DisposableCollection(
             Disposable.create(() => this.disconnect(connectionId))
         );
 
         duplex.on('error', ((error: Error) => {
-            if (MonitorError.is(error) && (
-                MonitorError.isClientCancelledError(error)
-                || MonitorError.isDeviceNotConfiguredError(error)
-            )) {
-                if (this.client) {
-                    this.client.notifyError(error);
+            // Dispose the connection on error.
+            // If the client has disconnected, we call `disconnect` and hit this error
+            // no need to disconnect once more.
+            if (!toDispose.disposed) {
+                toDispose.dispose();
+            }
+            if (ErrorWithCode.is(error)) {
+                const monitorError = ErrorWithCode.toMonitorError(error, connectionId, config);
+                if (monitorError) {
+                    if (this.client) {
+                        this.client.notifyError(monitorError);
+                    }
+                    // Do not log the error, it was expected. The client will take care of the rest.
+                    return;
                 }
             }
             this.logger.error(`Error occurred for connection ${connectionId}.`, error);
-            toDispose.dispose();
         }).bind(this));
 
         duplex.on('data', ((resp: StreamingOpenResp) => {
@@ -95,18 +125,18 @@ export class MonitorServiceImpl implements MonitorService {
 
         const { type, port } = config;
         const req = new StreamingOpenReq();
-        const monitorConfig = new MonitorConfig();
+        const monitorConfig = new GrpcMonitorConfig();
         monitorConfig.setType(this.mapType(type));
-        monitorConfig.setTarget(port);
+        monitorConfig.setTarget(port.address);
         if (config.baudRate !== undefined) {
-            const obj = google_protobuf_struct_pb.Struct.fromJavaScript({ 'BaudRate': config.baudRate });
-            monitorConfig.setAdditionalconfig(obj);
+            monitorConfig.setAdditionalconfig(Struct.fromJavaScript({ 'BaudRate': config.baudRate }));
         }
         req.setMonitorconfig(monitorConfig);
 
         return new Promise<{ connectionId: string }>(resolve => {
             duplex.write(req, () => {
                 this.connections.set(connectionId, { toDispose, duplex });
+                this.logger.info(`<<< Serial monitor connection created for ${Board.toString(config.board)} on port ${Port.toString(config.port)}. ID: [${connectionId}]`);
                 resolve({ connectionId });
             });
         });
@@ -153,10 +183,10 @@ export class MonitorServiceImpl implements MonitorService {
         }
     }
 
-    protected mapType(type?: ConnectionType): MonitorConfig.TargetType {
+    protected mapType(type?: MonitorConfig.ConnectionType): GrpcMonitorConfig.TargetType {
         switch (type) {
-            case ConnectionType.SERIAL: return MonitorConfig.TargetType.SERIAL;
-            default: return MonitorConfig.TargetType.SERIAL;
+            case MonitorConfig.ConnectionType.SERIAL: return GrpcMonitorConfig.TargetType.SERIAL;
+            default: return GrpcMonitorConfig.TargetType.SERIAL;
         }
     }
 

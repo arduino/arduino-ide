@@ -214,6 +214,11 @@ export namespace Board {
         return !!board.fqbn;
     }
 
+    export function toString(board: Board): string {
+        const fqbn = board.fqbn ? ` [${board.fqbn}]` : '';
+        return `${board.name}${fqbn}`;
+    }
+
 }
 
 export interface AttachedSerialBoard extends Board {

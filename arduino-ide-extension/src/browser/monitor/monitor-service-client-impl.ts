@@ -13,7 +13,7 @@ export class MonitorServiceClientImpl implements MonitorServiceClient {
     notifyRead(event: MonitorReadEvent): void {
         this.onReadEmitter.fire(event);
         const { connectionId, data } = event;
-        console.log(`Received data from ${connectionId}: ${data}`);
+        console.debug(`Received data from ${connectionId}: ${data}`);
     }
 
     notifyError(error: MonitorError): void {

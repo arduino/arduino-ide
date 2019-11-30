@@ -1,9 +1,27 @@
-import { JsonRpcServer } from '@theia/core';
-import { Board } from './boards-service';
+import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
+import { Board, Port } from './boards-service';
 
 export interface MonitorError {
+    readonly connectionId: string;
     readonly message: string;
-    readonly code: number
+    readonly code: number;
+    readonly config: MonitorConfig;
+}
+export namespace MonitorError {
+    export namespace ErrorCodes {
+        /**
+         * The frontend has refreshed the browser, for instance.
+         */
+        export const CLIENT_CANCEL = 1;
+        /**
+         * When detaching a physical device when the duplex channel is still opened.
+         */
+        export const DEVICE_NOT_CONFIGURED = 2;
+        /**
+         * Another serial monitor was opened on this port. For another electron-instance, Java IDE.
+         */
+        export const DEVICE_BUSY = 3;
+    }
 }
 
 export interface MonitorReadEvent {
@@ -20,25 +38,34 @@ export interface MonitorServiceClient {
 export const MonitorServicePath = '/services/serial-monitor';
 export const MonitorService = Symbol('MonitorService');
 export interface MonitorService extends JsonRpcServer<MonitorServiceClient> {
-    connect(config: ConnectionConfig): Promise<{ connectionId: string }>;
+    connect(config: MonitorConfig): Promise<{ connectionId: string }>;
     disconnect(connectionId: string): Promise<boolean>;
     send(connectionId: string, data: string | Uint8Array): Promise<void>;
-    getConnectionIds(): Promise<string[]>;
 }
 
-export interface ConnectionConfig {
+export interface MonitorConfig {
     readonly board: Board;
-    readonly port: string;
+    readonly port: Port;
     /**
-     * Defaults to [`SERIAL`](ConnectionType#SERIAL).
+     * Defaults to [`SERIAL`](MonitorConfig#ConnectionType#SERIAL).
      */
-    readonly type?: ConnectionType;
+    readonly type?: MonitorConfig.ConnectionType;
     /**
      * Defaults to `9600`.
      */
-    readonly baudRate?: number;
+    readonly baudRate?: MonitorConfig.BaudRate;
+
+}
+export namespace MonitorConfig {
+
+    export type BaudRate = 300 | 1200 | 2400 | 4800 | 9600 | 19200 | 38400 | 57600 | 115200;
+    export namespace BaudRate {
+        export const DEFAULT: BaudRate = 9600;
+    }
+
+    export enum ConnectionType {
+        SERIAL = 0
+    }
+
 }
 
-export enum ConnectionType {
-    SERIAL = 0
-}

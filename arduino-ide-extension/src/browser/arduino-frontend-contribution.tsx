@@ -41,7 +41,6 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
-import { MonitorService } from '../common/protocol/monitor-service';
 import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
@@ -78,9 +77,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @inject(CoreService)
     protected readonly coreService: CoreService;
-
-    @inject(MonitorService)
-    protected readonly monitorService: MonitorService;
 
     @inject(WorkspaceServiceExt)
     protected readonly workspaceServiceExt: WorkspaceServiceExt;
@@ -336,7 +332,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 }
 
                 const connectionConfig = this.monitorConnection.connectionConfig;
-                await this.monitorConnection.disconnect();
+                if (connectionConfig) {
+                    await this.monitorConnection.disconnect();
+                }
 
                 try {
                     const { boardsConfig } = this.boardsServiceClient;

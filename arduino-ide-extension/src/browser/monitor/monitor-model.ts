@@ -1,58 +1,93 @@
-import { injectable } from "inversify";
-import { Emitter } from "@theia/core";
-
-export namespace MonitorModel {
-    export interface Data {
-        autoscroll: boolean,
-        timestamp: boolean,
-        baudRate: number,
-        lineEnding: string
-    }
-}
+import { injectable } from 'inversify';
+import { Emitter, Event } from '@theia/core/lib/common/event';
+import { MonitorConfig } from '../../common/protocol/monitor-service';
 
 @injectable()
 export class MonitorModel {
 
-    protected readonly onChangeEmitter = new Emitter<void>();
+    protected readonly onChangeEmitter: Emitter<void>;
+    protected _autoscroll: boolean;
+    protected _timestamp: boolean;
+    protected _baudRate: MonitorConfig.BaudRate;
+    protected _lineEnding: MonitorModel.EOL;
 
-    readonly onChange = this.onChangeEmitter.event;
+    constructor() {
+        this._autoscroll = true;
+        this._timestamp = false;
+        this._baudRate = MonitorConfig.BaudRate.DEFAULT;
+        this._lineEnding = MonitorModel.EOL.DEFAULT;
+        this.onChangeEmitter = new Emitter<void>();
+    }
 
-    protected _autoscroll: boolean = true;
-    protected _timestamp: boolean = false;
-    baudRate: number;
-    lineEnding: string = '\n';
+    get onChange(): Event<void> {
+        return this.onChangeEmitter.event;
+    }
 
     get autoscroll(): boolean {
         return this._autoscroll;
+    }
+
+    toggleAutoscroll(): void {
+        this._autoscroll = !this._autoscroll;
     }
 
     get timestamp(): boolean {
         return this._timestamp;
     }
 
-    toggleAutoscroll(): void {
-        this._autoscroll = !this._autoscroll;
-        this.onChangeEmitter.fire(undefined);
-    }
-
     toggleTimestamp(): void {
         this._timestamp = !this._timestamp;
+    }
+
+    get baudRate(): MonitorConfig.BaudRate {
+        return this._baudRate;
+    }
+
+    set baudRate(baudRate: MonitorConfig.BaudRate) {
+        this._baudRate = baudRate;
         this.onChangeEmitter.fire(undefined);
     }
 
-    restore(model: MonitorModel.Data) {
-        this._autoscroll = model.autoscroll;
-        this._timestamp = model.timestamp;
-        this.baudRate = model.baudRate;
-        this.lineEnding = model.lineEnding;
+    get lineEnding(): MonitorModel.EOL {
+        return this._lineEnding;
     }
 
-    store(): MonitorModel.Data {
+    set lineEnding(lineEnding: MonitorModel.EOL) {
+        this._lineEnding = lineEnding;
+        this.onChangeEmitter.fire(undefined);
+    }
+
+    restore(state: MonitorModel.State) {
+        this._autoscroll = state.autoscroll;
+        this._timestamp = state.timestamp;
+        this._baudRate = state.baudRate;
+        this._lineEnding = state.lineEnding;
+        this.onChangeEmitter.fire(undefined);
+    }
+
+    store(): MonitorModel.State {
         return {
             autoscroll: this._autoscroll,
             timestamp: this._timestamp,
-            baudRate: this.baudRate,
-            lineEnding: this.lineEnding
+            baudRate: this._baudRate,
+            lineEnding: this._lineEnding
         }
     }
+
+}
+
+export namespace MonitorModel {
+
+    export interface State {
+        autoscroll: boolean;
+        timestamp: boolean;
+        baudRate: MonitorConfig.BaudRate;
+        lineEnding: EOL;
+    }
+
+    export type EOL = '' | '\n' | '\r' | '\r\n';
+    export namespace EOL {
+        export const DEFAULT: EOL = '\n';
+    }
+
 }

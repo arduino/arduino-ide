@@ -80,7 +80,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
             isVisible: widget => widget instanceof MonitorWidget,
             execute: widget => {
                 if (widget instanceof MonitorWidget) {
-                    widget.clear();
+                    widget.clearConsole();
                 }
             }
         });
@@ -124,4 +124,5 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     protected async doToggleTimestamp() {
         this.model.toggleTimestamp();
     }
+
 }
