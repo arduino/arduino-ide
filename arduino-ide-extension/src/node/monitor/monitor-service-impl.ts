@@ -30,7 +30,6 @@ namespace ErrorWithCode {
                 return {
                     connectionId,
                     message,
-                    // message: `Cancelled on client. ${Board.toString(board)} from port ${Port.toString(port)}.`,
                     code: MonitorError.ErrorCodes.CLIENT_CANCEL,
                     config
                 };
@@ -40,7 +39,6 @@ namespace ErrorWithCode {
                     case 'device not configured': {
                         return {
                             connectionId,
-                            // message: ``,
                             message,
                             code: MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED,
                             config
@@ -49,9 +47,16 @@ namespace ErrorWithCode {
                     case 'error opening serial monitor: Serial port busy': {
                         return {
                             connectionId,
-                            // message: `Connection failed. Serial port is busy: ${Port.toString(port)}.`,
                             message,
                             code: MonitorError.ErrorCodes.DEVICE_BUSY,
+                            config
+                        }
+                    }
+                    case 'interrupted system call': {
+                        return {
+                            connectionId,
+                            message,
+                            code: MonitorError.ErrorCodes.interrupted_system_call,
                             config
                         }
                     }
@@ -81,9 +86,12 @@ export class MonitorServiceImpl implements MonitorService {
     }
 
     dispose(): void {
+        this.logger.info('>>> Disposing monitor service...');
         for (const [connectionId, duplex] of this.connections.entries()) {
             this.doDisconnect(connectionId, duplex);
         }
+        this.logger.info('<<< Disposing monitor service...');
+        this.client = undefined;
     }
 
     async connect(config: MonitorConfig): Promise<{ connectionId: string }> {
@@ -96,12 +104,6 @@ export class MonitorServiceImpl implements MonitorService {
         );
 
         duplex.on('error', ((error: Error) => {
-            // Dispose the connection on error.
-            // If the client has disconnected, we call `disconnect` and hit this error
-            // no need to disconnect once more.
-            if (!toDispose.disposed) {
-                toDispose.dispose();
-            }
             if (ErrorWithCode.is(error)) {
                 const monitorError = ErrorWithCode.toMonitorError(error, connectionId, config);
                 if (monitorError) {
@@ -109,8 +111,21 @@ export class MonitorServiceImpl implements MonitorService {
                         this.client.notifyError(monitorError);
                     }
                     // Do not log the error, it was expected. The client will take care of the rest.
+                    if (monitorError.code === MonitorError.ErrorCodes.interrupted_system_call) {
+                        console.log('jajjajaja');
+                        if (!toDispose.disposed) {
+                            toDispose.dispose();
+                        }
+                    }
                     return;
                 }
+            }
+            if (error.message === 'interrupted system call') {
+                this.logger.info('TODO: reduce to debug, INTERRUPTED SYSTEM CALL');
+                return; // Continue.
+            }
+            if (!toDispose.disposed) {
+                toDispose.dispose();
             }
             this.logger.error(`Error occurred for connection ${connectionId}.`, error);
         }).bind(this));

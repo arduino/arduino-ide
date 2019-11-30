@@ -32,13 +32,14 @@ export class MonitorConnection {
 
     @postConstruct()
     protected init(): void {
-        this.monitorServiceClient.onError(error => {
+        this.monitorServiceClient.onError(async error => {
+            let shouldReconnect = false;
             if (this.state) {
                 const { code, connectionId, config } = error;
                 if (this.state.connectionId === connectionId) {
                     switch (code) {
                         case MonitorError.ErrorCodes.CLIENT_CANCEL: {
-                            console.log(`Connection was canceled by client: ${MonitorConnection.State.toString(this.state)}.`);
+                            console.debug(`Connection was canceled by client: ${MonitorConnection.State.toString(this.state)}.`);
                             break;
                         }
                         case MonitorError.ErrorCodes.DEVICE_BUSY: {
@@ -51,8 +52,17 @@ export class MonitorConnection {
                             this.messageService.info(`Disconnected from ${Port.toString(port)}.`);
                             break;
                         }
+                        case MonitorError.ErrorCodes.interrupted_system_call: {
+                            const { board, port } = config;
+                            this.messageService.warn(`Unexpectedly interrupted by backend. Reconnecting ${Board.toString(board)} on port ${Port.toString(port)}.`);
+                            shouldReconnect = true;
+                        }
                     }
+                    const oldState = this.state;
                     this.state = undefined;
+                    if (shouldReconnect) {
+                        await this.connect(oldState.config);
+                    }
                 } else {
                     console.warn(`Received an error from unexpected connection: ${MonitorConnection.State.toString({ connectionId, config })}.`);
                 }

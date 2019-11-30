@@ -109,13 +109,14 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     dispose(): void {
-        this.logger.info('>>> Disposing boards service...')
+        this.logger.info('>>> Disposing boards service...');
         this.queue.pause();
         this.queue.clear();
         if (this.discoveryTimer !== undefined) {
             clearInterval(this.discoveryTimer);
         }
-        this.logger.info('<<< Disposed boards service.')
+        this.logger.info('<<< Disposed boards service.');
+        this.client = undefined;
     }
 
     async getAttachedBoards(): Promise<{ boards: Board[] }> {
