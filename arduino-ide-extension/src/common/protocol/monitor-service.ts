@@ -69,6 +69,6 @@ export namespace MonitorError {
         /**
          * Another serial monitor was opened on this port. For another electron-instance, Java IDE.
          */
-        export const interrupted_system_call = 3;
+        export const interrupted_system_call = 4;
     }
 }

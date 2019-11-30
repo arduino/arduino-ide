@@ -54,7 +54,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
         }
     }
 
-    async registerToolbarItems(registry: TabBarToolbarRegistry) {
+    registerToolbarItems(registry: TabBarToolbarRegistry): void {
         registry.registerItem({
             id: 'monitor-autoscroll',
             render: () => this.renderAutoScrollButton(),
@@ -106,7 +106,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected readonly toggleAutoScroll = () => this.doToggleAutoScroll();
-    protected async doToggleAutoScroll() {
+    protected async doToggleAutoScroll(): Promise<void> {
         this.model.toggleAutoscroll();
     }
 
@@ -121,7 +121,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected readonly toggleTimestamp = () => this.doToggleTimestamp();
-    protected async doToggleTimestamp() {
+    protected async doToggleTimestamp(): Promise<void> {
         this.model.toggleTimestamp();
     }
 

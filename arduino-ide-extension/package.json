@@ -7,7 +7,7 @@
     "node": ">=10.10.0"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^0.4.0",
+    "@grpc/grpc-js": "^0.6.12",
     "@theia/application-package": "next",
     "@theia/core": "next",
     "@theia/cpp": "next",
@@ -56,8 +56,8 @@
     "decompress-targz": "^4.1.1",
     "decompress-unzip": "^4.0.1",
     "download": "^7.1.0",
-    "grpc-tools": "^1.7.3",
-    "grpc_tools_node_protoc_ts": "^2.5.0",
+    "grpc-tools": "^1.8.0",
+    "grpc_tools_node_protoc_ts": "^2.5.8",
     "moment": "^2.24.0",
     "ncp": "^2.0.0",
     "rimraf": "^2.6.1",

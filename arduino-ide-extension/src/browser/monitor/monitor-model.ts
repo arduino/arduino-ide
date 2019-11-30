@@ -1,9 +1,15 @@
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
+import { FrontendApplicationContribution, LocalStorageService } from '@theia/core/lib/browser';
 
 @injectable()
-export class MonitorModel {
+export class MonitorModel implements FrontendApplicationContribution {
+
+    protected static STORAGE_ID = 'arduino-monitor-model';
+
+    @inject(LocalStorageService)
+    protected readonly localStorageService: LocalStorageService;
 
     protected readonly onChangeEmitter: Emitter<void>;
     protected _autoscroll: boolean;
@@ -19,6 +25,14 @@ export class MonitorModel {
         this.onChangeEmitter = new Emitter<void>();
     }
 
+    onStart(): void {
+        this.localStorageService.getData<MonitorModel.State>(MonitorModel.STORAGE_ID).then(state => {
+            if (state) {
+                this.restoreState(state);
+            }
+        });
+    }
+
     get onChange(): Event<void> {
         return this.onChangeEmitter.event;
     }
@@ -29,6 +43,7 @@ export class MonitorModel {
 
     toggleAutoscroll(): void {
         this._autoscroll = !this._autoscroll;
+        this.storeState();
     }
 
     get timestamp(): boolean {
@@ -37,6 +52,7 @@ export class MonitorModel {
 
     toggleTimestamp(): void {
         this._timestamp = !this._timestamp;
+        this.storeState();
     }
 
     get baudRate(): MonitorConfig.BaudRate {
@@ -45,7 +61,7 @@ export class MonitorModel {
 
     set baudRate(baudRate: MonitorConfig.BaudRate) {
         this._baudRate = baudRate;
-        this.onChangeEmitter.fire(undefined);
+        this.storeState().then(() => this.onChangeEmitter.fire(undefined));
     }
 
     get lineEnding(): MonitorModel.EOL {
@@ -54,10 +70,10 @@ export class MonitorModel {
 
     set lineEnding(lineEnding: MonitorModel.EOL) {
         this._lineEnding = lineEnding;
-        this.onChangeEmitter.fire(undefined);
+        this.storeState().then(() => this.onChangeEmitter.fire(undefined));
     }
 
-    restore(state: MonitorModel.State) {
+    protected restoreState(state: MonitorModel.State) {
         this._autoscroll = state.autoscroll;
         this._timestamp = state.timestamp;
         this._baudRate = state.baudRate;
@@ -65,13 +81,13 @@ export class MonitorModel {
         this.onChangeEmitter.fire(undefined);
     }
 
-    store(): MonitorModel.State {
-        return {
+    protected async storeState(): Promise<void> {
+        this.localStorageService.setData(MonitorModel.STORAGE_ID, {
             autoscroll: this._autoscroll,
             timestamp: this._timestamp,
             baudRate: this._baudRate,
             lineEnding: this._lineEnding
-        }
+        });
     }
 
 }

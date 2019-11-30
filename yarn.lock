@@ -818,12 +818,12 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@grpc/grpc-js@^0.4.0":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-0.4.3.tgz#d2d71278d42709631793f4a451b7398197d44033"
-  integrity sha512-09qiFMBh90YZ4P5RFzvpSUvBi9DmftvTaP+mmmTzigps0It5YxuwQNqDAo9pI7SWom/6A5ybxv2CUGNk86+FCg==
+"@grpc/grpc-js@^0.6.12":
+  version "0.6.12"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-0.6.12.tgz#1893d9b061f04e72bea2dc2ca3b753775ba56abe"
+  integrity sha512-/Yd/gOPyMpGfkIOJdr3ePJv/9DgDNUUEHZ2FciTiUFdlT36jvq7Z9S5c2uFQ81U12hCyj6rNnGoHwLkttn8gsw==
   dependencies:
-    semver "^6.0.0"
+    semver "^6.2.0"
 
 "@lerna/add@3.19.0":
   version "3.19.0"
@@ -7045,14 +7045,14 @@ grouped-queue@^0.3.3:
   dependencies:
     lodash "^4.17.2"
 
-grpc-tools@^1.7.3:
+grpc-tools@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/grpc-tools/-/grpc-tools-1.8.0.tgz#db438dbd0cfb43d412dc02a767d5fb2193636847"
   integrity sha512-GzYHjPQ/sbV/DmnNRksapMlLj26Tvq2Qppmzjmd+lHYZNeWM1feiGsYCduzJLyy295P+3uYIPy2/w/1thAnOow==
   dependencies:
     node-pre-gyp "^0.12.0"
 
-grpc_tools_node_protoc_ts@^2.5.0:
+grpc_tools_node_protoc_ts@^2.5.8:
   version "2.5.8"
   resolved "https://registry.yarnpkg.com/grpc_tools_node_protoc_ts/-/grpc_tools_node_protoc_ts-2.5.8.tgz#8b920fbc3ad7e39540199c7ab5326ecce785888c"
   integrity sha512-3fJ/PXsMkgUg6LWcrEfDV6MGouh219qnBMxIpS9lFIT7l7SteV8DqqlfSBThA2dgi3OPusxRUfeHABC3pzvFUg==

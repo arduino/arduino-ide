@@ -6,7 +6,7 @@ import { OptionsType } from 'react-select/src/types';
 import Select from 'react-select';
 import { Styles } from 'react-select/src/styles';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { ReactWidget, Message, Widget, StatefulWidget } from '@theia/core/lib/browser';
+import { ReactWidget, Message, Widget } from '@theia/core/lib/browser';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { MonitorConfig, MonitorService } from '../../common/protocol/monitor-service';
 import { AttachedSerialBoard, BoardsService } from '../../common/protocol/boards-service';
@@ -111,7 +111,7 @@ export interface SelectOption<T> {
 }
 
 @injectable()
-export class MonitorWidget extends ReactWidget implements StatefulWidget {
+export class MonitorWidget extends ReactWidget {
 
     static readonly ID = 'serial-monitor';
 
@@ -155,7 +155,6 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
         this.lines = [];
         this.chunk = '';
         this.scrollOptions = undefined;
-        // TODO onError
     }
 
     @postConstruct()
@@ -176,6 +175,7 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
                 if (selectedBoard && selectedPort) {
                     this.boardsService.getAttachedBoards().then(({ boards }) => {
                         if (boards.filter(AttachedSerialBoard.is).some(board => BoardsConfig.Config.sameAs(config, board))) {
+                            this.clearConsole();
                             this.connect();
                         }
                     });
@@ -188,14 +188,6 @@ export class MonitorWidget extends ReactWidget implements StatefulWidget {
         this.chunk = '';
         this.lines = [];
         this.update();
-    }
-
-    storeState(): MonitorModel.State {
-        return this.model.store();
-    }
-
-    restoreState(oldState: MonitorModel.State): void {
-        this.model.restore(oldState);
     }
 
     onBeforeAttach(msg: Message): void {

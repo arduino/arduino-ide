@@ -96,11 +96,11 @@ export class MonitorConnection {
         const result = await this.monitorService.disconnect(this.state.connectionId);
         if (result) {
             console.log(`<<< Disposed connection. Was: ${MonitorConnection.State.toString(this.state)}`);
-            this.state = undefined;
-            this.onConnectionChangedEmitter.fire(undefined);
         } else {
             console.warn(`<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(this.state)}`);
         }
+        this.state = undefined;
+        this.onConnectionChangedEmitter.fire(undefined);
         return result;
     }
 

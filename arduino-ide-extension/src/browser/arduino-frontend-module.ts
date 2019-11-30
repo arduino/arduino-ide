@@ -171,6 +171,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     // Serial Monitor
     bind(MonitorModel).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(MonitorModel);
     bind(MonitorWidget).toSelf();
     bindViewContribution(bind, MonitorViewContribution);
     bind(TabBarToolbarContribution).toService(MonitorViewContribution);

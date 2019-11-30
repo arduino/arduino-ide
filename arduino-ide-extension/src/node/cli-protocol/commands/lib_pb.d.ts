@@ -237,6 +237,90 @@ export namespace LibraryUpgradeAllResp {
     }
 }
 
+export class LibraryResolveDependenciesReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): void;
+
+    getName(): string;
+    setName(value: string): void;
+
+    getVersion(): string;
+    setVersion(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryResolveDependenciesReq.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryResolveDependenciesReq): LibraryResolveDependenciesReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryResolveDependenciesReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryResolveDependenciesReq;
+    static deserializeBinaryFromReader(message: LibraryResolveDependenciesReq, reader: jspb.BinaryReader): LibraryResolveDependenciesReq;
+}
+
+export namespace LibraryResolveDependenciesReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        name: string,
+        version: string,
+    }
+}
+
+export class LibraryResolveDependenciesResp extends jspb.Message { 
+    clearDependenciesList(): void;
+    getDependenciesList(): Array<LibraryDependencyStatus>;
+    setDependenciesList(value: Array<LibraryDependencyStatus>): void;
+    addDependencies(value?: LibraryDependencyStatus, index?: number): LibraryDependencyStatus;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryResolveDependenciesResp.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryResolveDependenciesResp): LibraryResolveDependenciesResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryResolveDependenciesResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryResolveDependenciesResp;
+    static deserializeBinaryFromReader(message: LibraryResolveDependenciesResp, reader: jspb.BinaryReader): LibraryResolveDependenciesResp;
+}
+
+export namespace LibraryResolveDependenciesResp {
+    export type AsObject = {
+        dependenciesList: Array<LibraryDependencyStatus.AsObject>,
+    }
+}
+
+export class LibraryDependencyStatus extends jspb.Message { 
+    getName(): string;
+    setName(value: string): void;
+
+    getVersionrequired(): string;
+    setVersionrequired(value: string): void;
+
+    getVersioninstalled(): string;
+    setVersioninstalled(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryDependencyStatus.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryDependencyStatus): LibraryDependencyStatus.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryDependencyStatus, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryDependencyStatus;
+    static deserializeBinaryFromReader(message: LibraryDependencyStatus, reader: jspb.BinaryReader): LibraryDependencyStatus;
+}
+
+export namespace LibraryDependencyStatus {
+    export type AsObject = {
+        name: string,
+        versionrequired: string,
+        versioninstalled: string,
+    }
+}
+
 export class LibrarySearchReq extends jspb.Message { 
 
     hasInstance(): boolean;

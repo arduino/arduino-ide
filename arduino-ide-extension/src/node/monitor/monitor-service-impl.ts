@@ -24,42 +24,20 @@ namespace ErrorWithCode {
     }
     export function toMonitorError(error: Error, connectionId: string, config: MonitorConfig): MonitorError | undefined {
         if (is(error)) {
-            const { code, message } = error;
-            // TODO: apply a regex on the `message`, and use enums instead of a numbers for the error codes.
-            if (code === 1 && message === 'Cancelled on client') {
+            // TODO: const `mapping`. Use regex for the `message`.
+            const mapping = new Map<string, number>();
+            mapping.set('1 CANCELLED: Cancelled on client', MonitorError.ErrorCodes.CLIENT_CANCEL);
+            mapping.set('2 UNKNOWN: device not configured', MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED);
+            mapping.set('2 UNKNOWN: error opening serial monitor: Serial port busy', MonitorError.ErrorCodes.DEVICE_BUSY);
+            mapping.set('2 UNKNOWN: interrupted system call', MonitorError.ErrorCodes.interrupted_system_call);
+            const { message } = error;
+            const code = mapping.get(message);
+            if (typeof code === 'number') {
                 return {
                     connectionId,
                     message,
-                    code: MonitorError.ErrorCodes.CLIENT_CANCEL,
+                    code,
                     config
-                };
-            }
-            if (code === 2) {
-                switch (message) {
-                    case 'device not configured': {
-                        return {
-                            connectionId,
-                            message,
-                            code: MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED,
-                            config
-                        }
-                    }
-                    case 'error opening serial monitor: Serial port busy': {
-                        return {
-                            connectionId,
-                            message,
-                            code: MonitorError.ErrorCodes.DEVICE_BUSY,
-                            config
-                        }
-                    }
-                    case 'interrupted system call': {
-                        return {
-                            connectionId,
-                            message,
-                            code: MonitorError.ErrorCodes.interrupted_system_call,
-                            config
-                        }
-                    }
                 }
             }
             console.warn(`Unhandled error with code:`, error);
@@ -120,10 +98,6 @@ export class MonitorServiceImpl implements MonitorService {
                     return;
                 }
             }
-            if (error.message === 'interrupted system call') {
-                this.logger.info('TODO: reduce to debug, INTERRUPTED SYSTEM CALL');
-                return; // Continue.
-            }
             if (!toDispose.disposed) {
                 toDispose.dispose();
             }
@@ -134,6 +108,7 @@ export class MonitorServiceImpl implements MonitorService {
             if (this.client) {
                 const raw = resp.getData();
                 const data = typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
+                this.logger.info('NOTIFY READ', data);
                 this.client.notifyRead({ connectionId, data });
             }
         }).bind(this));

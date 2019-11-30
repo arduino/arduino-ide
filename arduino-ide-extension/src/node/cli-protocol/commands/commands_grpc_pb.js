@@ -248,6 +248,28 @@ function deserialize_cc_arduino_cli_commands_LibraryListResp(buffer_arg) {
   return commands_lib_pb.LibraryListResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_LibraryResolveDependenciesReq(arg) {
+  if (!(arg instanceof commands_lib_pb.LibraryResolveDependenciesReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.LibraryResolveDependenciesReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_LibraryResolveDependenciesReq(buffer_arg) {
+  return commands_lib_pb.LibraryResolveDependenciesReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_LibraryResolveDependenciesResp(arg) {
+  if (!(arg instanceof commands_lib_pb.LibraryResolveDependenciesResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.LibraryResolveDependenciesResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_LibraryResolveDependenciesResp(buffer_arg) {
+  return commands_lib_pb.LibraryResolveDependenciesResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_LibrarySearchReq(arg) {
   if (!(arg instanceof commands_lib_pb.LibrarySearchReq)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.LibrarySearchReq');
@@ -809,6 +831,17 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     requestDeserialize: deserialize_cc_arduino_cli_commands_LibraryUpgradeAllReq,
     responseSerialize: serialize_cc_arduino_cli_commands_LibraryUpgradeAllResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_LibraryUpgradeAllResp,
+  },
+  libraryResolveDependencies: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/LibraryResolveDependencies',
+    requestStream: false,
+    responseStream: false,
+    requestType: commands_lib_pb.LibraryResolveDependenciesReq,
+    responseType: commands_lib_pb.LibraryResolveDependenciesResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_LibraryResolveDependenciesReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_LibraryResolveDependenciesReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_LibraryResolveDependenciesResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_LibraryResolveDependenciesResp,
   },
   librarySearch: {
     path: '/cc.arduino.cli.commands.ArduinoCore/LibrarySearch',
