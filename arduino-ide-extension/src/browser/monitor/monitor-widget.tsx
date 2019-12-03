@@ -202,7 +202,7 @@ export class MonitorWidget extends ReactWidget {
 
     protected onBeforeDetach(msg: Message): void {
         super.onBeforeDetach(msg);
-        if (this.connection.connectionId) {
+        if (this.connection.connected) {
             this.connection.disconnect();
         }
     }
@@ -294,9 +294,8 @@ export class MonitorWidget extends ReactWidget {
 
     protected readonly onSend = (value: string) => this.doSend(value);
     protected async doSend(value: string) {
-        const { connectionId } = this.connection;
-        if (connectionId) {
-            this.monitorService.send(connectionId, value + this.model.lineEnding);
+        if (this.connection.connected) {
+            this.monitorService.send(value + this.model.lineEnding);
         }
     }
 

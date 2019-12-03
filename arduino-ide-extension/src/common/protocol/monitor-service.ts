@@ -1,12 +1,26 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Board, Port } from './boards-service';
 
+export interface Status { }
+export interface OK extends Status { }
+export interface ErrorStatus extends Status {
+    readonly message: string;
+}
+export namespace Status {
+    export function isOK(status: Status & { message?: string }): status is OK {
+        return typeof status.message !== 'string';
+    }
+    export const OK: OK = {};
+    export const NOT_CONNECTED: ErrorStatus = { message: 'Not connected.' };
+    export const ALREADY_CONNECTED: ErrorStatus = { message: 'Already connected.' };
+}
+
 export const MonitorServicePath = '/services/serial-monitor';
 export const MonitorService = Symbol('MonitorService');
 export interface MonitorService extends JsonRpcServer<MonitorServiceClient> {
-    connect(config: MonitorConfig): Promise<{ connectionId: string }>;
-    disconnect(connectionId: string): Promise<boolean>;
-    send(connectionId: string, data: string | Uint8Array): Promise<void>;
+    connect(config: MonitorConfig): Promise<Status>;
+    disconnect(): Promise<Status>;
+    send(data: string | Uint8Array): Promise<Status>;
 }
 
 export interface MonitorConfig {
@@ -42,14 +56,15 @@ export interface MonitorServiceClient {
 }
 
 export interface MonitorReadEvent {
-    readonly connectionId: string;
     readonly data: string;
 }
 
 export interface MonitorError {
-    readonly connectionId: string;
     readonly message: string;
-    readonly code: number;
+    /**
+     * If no `code` is available, clients must reestablish the serial-monitor connection.
+     */
+    readonly code: number | undefined;
     readonly config: MonitorConfig;
 }
 export namespace MonitorError {
@@ -66,9 +81,5 @@ export namespace MonitorError {
          * Another serial monitor was opened on this port. For another electron-instance, Java IDE.
          */
         export const DEVICE_BUSY = 3;
-        /**
-         * Another serial monitor was opened on this port. For another electron-instance, Java IDE.
-         */
-        export const interrupted_system_call = 4;
     }
 }
