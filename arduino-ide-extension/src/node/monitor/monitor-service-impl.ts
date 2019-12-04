@@ -56,7 +56,7 @@ export class MonitorServiceImpl implements MonitorService {
         if (this.connection) {
             this.disconnect();
         }
-        this.logger.info('<<< Disposing monitor service...');
+        this.logger.info('<<< Disposed monitor service.');
         this.client = undefined;
     }
 

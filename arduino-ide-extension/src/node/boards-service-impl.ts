@@ -35,7 +35,7 @@ export class BoardsServiceImpl implements BoardsService {
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected discoveryInitialized = false;
-    protected discoveryTimer: NodeJS.Timeout | undefined;
+    protected discoveryTimer: NodeJS.Timer | undefined;
     /**
      * Poor man's serial discovery:
      * Stores the state of the currently discovered and attached boards.
