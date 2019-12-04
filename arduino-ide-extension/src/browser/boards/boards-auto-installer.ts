@@ -41,7 +41,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
                     .filter(({ installable, installedVersion }) => installable && !installedVersion);
                 for (const candidate of candidates) {
                     // tslint:disable-next-line:max-line-length
-                    this.messageService.info(`The \`"${candidate.name}"\` core has to be installed for the currently selected \`"${selectedBoard.name}"\` board. Do you want to install it now?`, 'Yes', 'Install Manually').then(async answer => {
+                    this.messageService.info(`The \`"${candidate.name}"\` core has to be installed for the currently selected \`"${selectedBoard.name}"\` board. Do you want to install it now?`, 'Install Manually', 'Yes').then(async answer => {
                         if (answer === 'Yes') {
                             const dialog = new InstallationProgressDialog(candidate.name, candidate.availableVersions[0]);
                             dialog.open();
