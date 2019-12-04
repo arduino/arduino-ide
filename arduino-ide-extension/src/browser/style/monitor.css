@@ -81,7 +81,7 @@
 
 /* React Select Styles */
 .serial-monitor-select .sms__control {
-    border: var(--theia-border-color3) var(--theia-border-width) solid;
+    border: var(--theia-layout-color2) var(--theia-border-width) solid;
     background: var(--theia-layout-color2);
 }
 
@@ -107,10 +107,10 @@
 
 .serial-monitor-select .sms__menu {
     background-color: var(--theia-layout-color1);
-    border: 1px solid var(--theia-border-color2);
+    border: 1px solid var(--theia-layout-color2);
     border-color: var(--theia-accent-color3);
     top: auto !important; /* to align the top of the menu with the bottom of the control */
-    border-top: none;
+    /* border-top: none; */
     box-shadow: none;
 }
 
