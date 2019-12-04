@@ -9,7 +9,6 @@
 
 .arduino-list-widget .search-bar {
     margin: 0px 10px 10px 15px;
-    border-color: var(--theia-border-color3);
 }
 
 .arduino-list-widget .search-filters {

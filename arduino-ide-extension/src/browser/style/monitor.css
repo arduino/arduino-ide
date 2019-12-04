@@ -85,8 +85,8 @@
     background: var(--theia-layout-color2);
 }
 
-.sms__control:hover {
-    border-color: var(--theia-accent-color3) !important;
+.serial-monitor-select .sms__control:hover {
+    border: var(--theia-layout-color2) var(--theia-border-width) solid !important;
 }
 
 .serial-monitor-select .sms__control--is-focused {
@@ -106,11 +106,9 @@
 }
 
 .serial-monitor-select .sms__menu {
-    background-color: var(--theia-layout-color1);
-    border: 1px solid var(--theia-layout-color2);
-    border-color: var(--theia-accent-color3);
+    background-color: var(--theia-layout-color2);
+    border: 1px solid var(--theia-accent-color3);
     top: auto !important; /* to align the top of the menu with the bottom of the control */
-    /* border-top: none; */
     box-shadow: none;
 }
 
