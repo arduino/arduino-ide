@@ -85,37 +85,39 @@
     background: var(--theia-layout-color2);
 }
 
+.sms__control:hover {
+    border-color: var(--theia-accent-color3) !important;
+}
+
 .serial-monitor-select .sms__control--is-focused {
     border-color: var(--theia-accent-color3) !important;
     box-shadow: none !important;
 }
 
-.sms__control--is-focused:hover {
-    border-color: var(--theia-accent-color3) !important;
-}
-
 .serial-monitor-select .sms__option--is-selected {
-    background-color: var(--theia-ui-button-color-secondary-hover);
+    background-color: var(--theia-accent-color3);
     color: var(--theia-content-font-color0);
     border-color: var(--theia-accent-color3);
 }
 
 .serial-monitor-select .sms__option--is-focused {
-    background-color: var(--theia-ui-button-color-secondary-hover);
+    background-color: var(--theia-accent-color4);
     border-color: var(--theia-accent-color3);
 }
 
 .serial-monitor-select .sms__menu {
     background-color: var(--theia-layout-color1);
     border: 1px solid var(--theia-border-color2);
+    border-color: var(--theia-accent-color3);
+    top: auto !important; /* to align the top of the menu with the bottom of the control */
     border-top: none;
     box-shadow: none;
 }
 
 .serial-monitor-select .sms__control.sms__control--menu-is-open {
     border: 1px solid;
-    border-color: var(--theia-border-color2) !important;
-    border-bottom: none;
+    border-color: var(--theia-accent-color3) !important;
+    border-bottom-color: var(--theia-layout-color2) !important; /* if the bottom border color has the same color as the background of the control, we make the border "invisible" */
 }
 
 .serial-monitor-select .sms__value-container .sms__single-value {

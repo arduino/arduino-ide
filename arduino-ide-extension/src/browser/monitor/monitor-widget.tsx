@@ -208,6 +208,7 @@ export class MonitorWidget extends ReactWidget {
             classNamePrefix='sms'
             className='serial-monitor-select'
             id={id}
+            isSearchable={false}
         />
     }
 }
