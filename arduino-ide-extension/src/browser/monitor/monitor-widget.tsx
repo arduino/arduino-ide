@@ -190,13 +190,15 @@ export class MonitorWidget extends ReactWidget {
                 controlHeight: height,
                 baseUnit: 2,
                 menuGutter: 4
+            }, colors: {
+                ...theme.colors,
+                // `primary50`??? it's crazy but apparently, without this, we would get a light-blueish
+                // color when selecting an option in the select by clicking and then not releasing the button.
+                // https://react-select.com/styles#overriding-the-theme
+                primary50: 'var(--theia-accent-color4)',
             }
         });
-        const DropdownIndicator = () => {
-            return (
-                <span className='fa fa-caret-down caret'></span>
-            );
-        };
+        const DropdownIndicator = () => <span className='fa fa-caret-down caret' />;
         return <Select
             options={options}
             defaultValue={defaultValue}
