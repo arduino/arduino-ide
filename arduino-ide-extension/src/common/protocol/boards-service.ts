@@ -214,8 +214,8 @@ export namespace Board {
         return !!board.fqbn;
     }
 
-    export function toString(board: Board): string {
-        const fqbn = board.fqbn ? ` [${board.fqbn}]` : '';
+    export function toString(board: Board, options: { useFqbn: boolean } = { useFqbn: true }): string {
+        const fqbn = options && options.useFqbn && board.fqbn ? ` [${board.fqbn}]` : '';
         return `${board.name}${fqbn}`;
     }
 

@@ -107,6 +107,20 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         return this._boardsConfig;
     }
 
+    /**
+     * `true` if the `config.selectedBoard` is defined; hence can compile against the board. Otherwise, `false`.
+     */
+    canVerify(config: BoardsConfig.Config | undefined = this.boardsConfig): config is BoardsConfig.Config & { selectedBoard: Board } {
+        return !!config && !!config.selectedBoard;
+    }
+
+    /**
+     * `true` if the `canVerify` and the `config.selectedPort` is also set with FQBN, hence can upload to board. Otherwise, `false`.
+     */
+    canUploadTo(config: BoardsConfig.Config | undefined = this.boardsConfig): config is RecursiveRequired<BoardsConfig.Config> {
+        return this.canVerify(config) && !!config.selectedPort && !!config.selectedBoard.fqbn;
+    }
+
     protected saveState(): Promise<void> {
         return this.storageService.setData('latest-valid-boards-config', this.latestValidBoardsConfig);
     }
@@ -116,14 +130,6 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         if (storedValidBoardsConfig) {
             this.latestValidBoardsConfig = storedValidBoardsConfig;
         }
-    }
-
-    protected canVerify(config: BoardsConfig.Config | undefined): config is BoardsConfig.Config & { selectedBoard: Board } {
-        return !!config && !!config.selectedBoard;
-    }
-
-    protected canUploadTo(config: BoardsConfig.Config | undefined): config is RecursiveRequired<BoardsConfig.Config> {
-        return this.canVerify(config) && !!config.selectedPort && !!config.selectedBoard.fqbn;
     }
 
 }

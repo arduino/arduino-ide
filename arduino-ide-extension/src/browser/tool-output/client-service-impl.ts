@@ -13,11 +13,11 @@ export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {
     protected readonly outputContribution: OutputContribution;
 
     onNewOutput(tool: string, chunk: string): void {
-        this.outputContribution.openView({ reveal: true }).then(() => {
+        this.outputContribution.openView({ activate: true }).then(() => {
             const channel = this.outputChannelManager.getChannel(`Arduino: ${tool}`);
             channel.setVisibility(true);
             channel.append(chunk);
-        })
+        });
     }
 
 }

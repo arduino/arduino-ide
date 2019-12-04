@@ -45,7 +45,7 @@ export class MonitorServiceImpl implements MonitorService {
     protected readonly monitorClientProvider: MonitorClientProvider;
 
     protected client?: MonitorServiceClient;
-    protected connection?: ClientDuplexStream<StreamingOpenReq, StreamingOpenResp>;
+    protected connection?: { duplex: ClientDuplexStream<StreamingOpenReq, StreamingOpenResp>, config: MonitorConfig };
 
     setClient(client: MonitorServiceClient | undefined): void {
         this.client = client;
@@ -66,20 +66,23 @@ export class MonitorServiceImpl implements MonitorService {
             return Status.ALREADY_CONNECTED;
         }
         const client = await this.monitorClientProvider.client;
-        this.connection = client.streamingOpen();
-        this.connection.on('error', ((error: Error) => {
+        const duplex = client.streamingOpen();
+        this.connection = { duplex, config };
+
+        duplex.on('error', ((error: Error) => {
             const monitorError = ErrorWithCode.toMonitorError(error, config);
-            if (monitorError.code === undefined) {
-                this.logger.error(error);
-            }
-            ((monitorError.code === undefined ? this.disconnect() : Promise.resolve()) as Promise<any>).then(() => {
+            this.disconnect().then(() => {
                 if (this.client) {
                     this.client.notifyError(monitorError);
                 }
-            })
+                if (monitorError.code === undefined) {
+                    // Log the original, unexpected error.
+                    this.logger.error(error);
+                }
+            });
         }).bind(this));
 
-        this.connection.on('data', ((resp: StreamingOpenResp) => {
+        duplex.on('data', ((resp: StreamingOpenResp) => {
             if (this.client) {
                 const raw = resp.getData();
                 const data = typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
@@ -99,21 +102,25 @@ export class MonitorServiceImpl implements MonitorService {
 
         return new Promise<Status>(resolve => {
             if (this.connection) {
-                this.connection.write(req, () => {
-                    this.logger.info(`<<< Serial monitor connection created for ${Board.toString(config.board)} on port ${Port.toString(config.port)}.`);
+                this.connection.duplex.write(req, () => {
+                    this.logger.info(`<<< Serial monitor connection created for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
                     resolve(Status.OK);
                 });
                 return;
             }
-            resolve(Status.NOT_CONNECTED);
+            this.disconnect().then(() => resolve(Status.NOT_CONNECTED));
         });
     }
 
     async disconnect(): Promise<Status> {
+        this.logger.info(`>>> Disposing monitor connection...`);
         if (!this.connection) {
+            this.logger.warn(`<<< Not connected. Nothing to dispose.`);
             return Status.NOT_CONNECTED;
         }
-        this.connection.cancel();
+        const { duplex, config } = this.connection;
+        duplex.cancel();
+        this.logger.info(`<<< Disposed monitor connection for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
         this.connection = undefined;
         return Status.OK;
     }
@@ -126,12 +133,12 @@ export class MonitorServiceImpl implements MonitorService {
         req.setData(new TextEncoder().encode(data));
         return new Promise<Status>(resolve => {
             if (this.connection) {
-                this.connection.write(req, () => {
+                this.connection.duplex.write(req, () => {
                     resolve(Status.OK);
                 });
                 return;
             }
-            resolve(Status.NOT_CONNECTED);
+            this.disconnect().then(() => resolve(Status.NOT_CONNECTED));
         });
     }
 

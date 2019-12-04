@@ -47,8 +47,8 @@ export class MonitorConnection {
                         break;
                     }
                     case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
-                        const { port } = config;
-                        this.messageService.info(`Disconnected from ${Port.toString(port)}.`);
+                        const { port, board } = config;
+                        this.messageService.info(`Disconnected ${Board.toString(board, { useFqbn: false })} from ${Port.toString(port)}.`);
                         break;
                     }
                     case undefined: {
@@ -77,19 +77,22 @@ export class MonitorConnection {
 
     async connect(config: MonitorConfig): Promise<Status> {
         if (this.state) {
-            throw new Error(`Already connected to ${MonitorConnection.State.toString(this.state)}.`);
+            const disconnectStatus = await this.disconnect();
+            if (!Status.isOK(disconnectStatus)) {
+                return disconnectStatus;
+            }
         }
-        const status = await this.monitorService.connect(config);
-        if (Status.isOK(status)) {
+        const connectStatus = await this.monitorService.connect(config);
+        if (Status.isOK(connectStatus)) {
             this.state = { config };
             this.onConnectionChangedEmitter.fire(true);
         }
-        return Status.isOK(status);
+        return Status.isOK(connectStatus);
     }
 
     async disconnect(): Promise<Status> {
         if (!this.state) {
-            throw new Error('Not connected. Nothing to disconnect.');
+            return Status.OK;
         }
         console.log('>>> Disposing existing monitor connection before establishing a new one...');
         const status = await this.monitorService.disconnect();

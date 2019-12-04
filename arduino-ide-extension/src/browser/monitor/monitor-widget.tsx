@@ -9,7 +9,7 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { ReactWidget, Message, Widget } from '@theia/core/lib/browser';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { MonitorConfig, MonitorService } from '../../common/protocol/monitor-service';
-import { AttachedSerialBoard, BoardsService } from '../../common/protocol/boards-service';
+import { AttachedSerialBoard, BoardsService, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { BoardsConfig } from '../boards/boards-config';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { MonitorModel } from './monitor-model';
@@ -171,16 +171,24 @@ export class MonitorWidget extends ReactWidget {
                 }
             }),
             this.boardsServiceClient.onBoardsConfigChanged(config => {
-                const { selectedBoard, selectedPort } = config;
-                if (selectedBoard && selectedPort) {
+                if (this.boardsServiceClient.canUploadTo(config)) {
                     this.boardsService.getAttachedBoards().then(({ boards }) => {
                         if (boards.filter(AttachedSerialBoard.is).some(board => BoardsConfig.Config.sameAs(config, board))) {
-                            this.clearConsole();
                             this.connect();
                         }
                     });
                 }
-            })]);
+            }),
+            this.boardsServiceClient.onBoardsChanged(event => {
+                const { attached } = AttachedBoardsChangeEvent.diff(event);
+                if (!this.connection.connected && this.boardsServiceClient.canUploadTo()) {
+                    const { boardsConfig } = this.boardsServiceClient;
+                    if (attached.boards.filter(AttachedSerialBoard.is).some(board => BoardsConfig.Config.sameAs(boardsConfig, board))) {
+                        this.connect();
+                    }
+                }
+            })
+        ]);
         this.update();
     }
 
@@ -214,6 +222,7 @@ export class MonitorWidget extends ReactWidget {
     }
 
     protected async connect(): Promise<void> {
+        this.clearConsole();
         const config = await this.getConnectionConfig();
         if (config) {
             this.connection.connect(config);
