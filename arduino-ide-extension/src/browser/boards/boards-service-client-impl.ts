@@ -5,12 +5,16 @@ import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
 import { RecursiveRequired } from '../../common/types';
 import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port, BoardUninstalledEvent } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
+import { MessageService } from '@theia/core';
 
 @injectable()
 export class BoardsServiceClientImpl implements BoardsServiceClient {
 
     @inject(ILogger)
     protected logger: ILogger;
+
+    @inject(MessageService)
+    protected messageService: MessageService;
 
     @inject(LocalStorageService)
     protected storageService: LocalStorageService;
@@ -110,15 +114,51 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     /**
      * `true` if the `config.selectedBoard` is defined; hence can compile against the board. Otherwise, `false`.
      */
-    canVerify(config: BoardsConfig.Config | undefined = this.boardsConfig): config is BoardsConfig.Config & { selectedBoard: Board } {
-        return !!config && !!config.selectedBoard;
+    canVerify(
+        config: BoardsConfig.Config | undefined = this.boardsConfig,
+        options: { silent: boolean } = { silent: true }): config is BoardsConfig.Config & { selectedBoard: Board } {
+
+        if (!config) {
+            return false;
+        }
+
+        if (!config.selectedBoard) {
+            if (!options.silent) {
+                this.messageService.warn('No boards selected.');
+            }
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * `true` if the `canVerify` and the `config.selectedPort` is also set with FQBN, hence can upload to board. Otherwise, `false`.
      */
-    canUploadTo(config: BoardsConfig.Config | undefined = this.boardsConfig): config is RecursiveRequired<BoardsConfig.Config> {
-        return this.canVerify(config) && !!config.selectedPort && !!config.selectedBoard.fqbn;
+    canUploadTo(
+        config: BoardsConfig.Config | undefined = this.boardsConfig,
+        options: { silent: boolean } = { silent: true }): config is RecursiveRequired<BoardsConfig.Config> {
+
+        if (!this.canVerify(config, options)) {
+            return false;
+        }
+
+        const { name } = config.selectedBoard;
+        if (!config.selectedPort) {
+            if (!options.silent) {
+                this.messageService.warn(`No ports selected for board: '${name}'.`);
+            }
+            return false;
+        }
+
+        if (!config.selectedBoard.fqbn) {
+            if (!options.silent) {
+                this.messageService.warn(`The FQBN is not available for the selected board ${name}. Do you have the corresponding core installed?`);
+            }
+            return false;
+        }
+
+        return true;
     }
 
     protected saveState(): Promise<void> {
