@@ -21,6 +21,7 @@
 .serial-monitor .head .send {
     display: flex;
     flex: 1;
+    margin-right: 5px;
 }
 
 .serial-monitor .head .send > input {
