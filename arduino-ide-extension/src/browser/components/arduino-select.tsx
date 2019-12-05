@@ -11,11 +11,11 @@ export class ArduinoSelect<T> extends Select<T> {
     }
 
     render(): React.ReactNode {
-        const height = 25;
+        const height = 27; // Seems to be the hard coded constant for `input` and `textArea` in Theia.
         const styles: Styles = {
             control: styles => ({
                 ...styles,
-                width: 200,
+                minWidth: 120,
                 color: 'var(--theia-ui-font-color1)'
             }),
             dropdownIndicator: styles => ({
