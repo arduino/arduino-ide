@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full
+FROM gitpod/workspace-full-vnc
 
 USER root
 RUN apt-get update -q --fix-missing && \
@@ -7,7 +7,8 @@ RUN apt-get update -q --fix-missing && \
     build-essential \
     libssl-dev \
     golang-go \
-    libxkbfile-dev
+    libxkbfile-dev \
+    libnss3-dev
 
 RUN set -ex && \
     tmpdir=$(mktemp -d) && \
