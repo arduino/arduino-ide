@@ -1,6 +1,6 @@
 .library-tab-icon {
-    -webkit-mask: url('library-tab-icon.svg');
-    mask: url('library-tab-icon.svg');
+    -webkit-mask: url('../icons/library-tab-icon.svg');
+    mask: url('../icons/library-tab-icon.svg');
 }
 
 .arduino-list-widget {

@@ -1,10 +1,8 @@
 import * as React from 'react';
 import * as dateFormat from 'dateformat';
 import { postConstruct, injectable, inject } from 'inversify';
-import { ThemeConfig } from 'react-select/src/theme';
 import { OptionsType } from 'react-select/src/types';
-import Select from 'react-select';
-import { Styles } from 'react-select/src/styles';
+import { ArduinoSelect } from '../components/arduino-select';
 import { ReactWidget, Message, Widget } from '@theia/core/lib/browser/widgets';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { MonitorModel } from './monitor-model';
@@ -74,11 +72,6 @@ export class MonitorWidget extends ReactWidget {
         this.update();
     }
 
-    onBeforeAttach(msg: Message): void {
-        super.onBeforeAttach(msg);
-        this.clearConsole();
-    }
-
     protected onAfterAttach(msg: Message): void {
         super.onAfterAttach(msg);
         this.monitorConnection.autoConnect = true;
@@ -131,8 +124,8 @@ export class MonitorWidget extends ReactWidget {
                     <SerialMonitorSendField onSend={this.onSend} />
                 </div>
                 <div className='config'>
-                    {this.renderSelectField('arduino-serial-monitor-line-endings', lineEndings, lineEnding, this.onChangeLineEnding)}
-                    {this.renderSelectField('arduino-serial-monitor-baud-rates', baudRates, baudRate, this.onChangeBaudRate)}
+                    <ArduinoSelect className='serial-monitor-select' options={lineEndings} defaultValue={lineEnding} onChange={this.onChangeLineEnding} />
+                    <ArduinoSelect className='serial-monitor-select' options={baudRates} defaultValue={baudRate} onChange={this.onChangeBaudRate} />
                 </div>
             </div>
             <div id='serial-monitor-output-container'>
@@ -155,66 +148,7 @@ export class MonitorWidget extends ReactWidget {
         this.model.baudRate = option.value;
     }
 
-    protected renderSelectField<T>(
-        id: string,
-        options: OptionsType<SelectOption<T>>,
-        defaultValue: SelectOption<T>,
-        onChange: (option: SelectOption<T>) => void): React.ReactNode {
-
-        const height = 25;
-        const styles: Styles = {
-            control: (styles, state) => ({
-                ...styles,
-                width: 200,
-                color: 'var(--theia-ui-font-color1)'
-            }),
-            dropdownIndicator: styles => ({
-                ...styles,
-                padding: 0
-            }),
-            indicatorSeparator: () => ({
-                display: 'none'
-            }),
-            indicatorsContainer: () => ({
-                padding: '0px 5px'
-            }),
-            menu: styles => ({
-                ...styles,
-                marginTop: 0
-            })
-        };
-        const theme: ThemeConfig = theme => ({
-            ...theme,
-            borderRadius: 0,
-            spacing: {
-                controlHeight: height,
-                baseUnit: 2,
-                menuGutter: 4
-            }, colors: {
-                ...theme.colors,
-                // `primary50`??? it's crazy but apparently, without this, we would get a light-blueish
-                // color when selecting an option in the select by clicking and then not releasing the button.
-                // https://react-select.com/styles#overriding-the-theme
-                primary50: 'var(--theia-accent-color4)',
-            }
-        });
-        const DropdownIndicator = () => <span className='fa fa-caret-down caret' />;
-        return <Select
-            options={options}
-            defaultValue={defaultValue}
-            onChange={onChange}
-            components={{ DropdownIndicator }}
-            theme={theme}
-            styles={styles}
-            maxMenuHeight={this.widgetHeight - 40}
-            classNamePrefix='sms'
-            className='serial-monitor-select'
-            id={id}
-            isSearchable={false}
-        />
-    }
 }
-
 
 export namespace SerialMonitorSendField {
     export interface Props {
@@ -248,14 +182,12 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
             <input
                 tabIndex={-1}
                 ref={ref => this.inputField = ref}
-                type='text' id='serial-monitor-send'
+                id='serial-monitor-send'
+                type='text'
                 autoComplete='off'
                 value={this.state.value}
                 onChange={this.handleChange} />
             <button className='button' onClick={this.handleSubmit}>Send</button>
-            {/* <input className='btn' type='submit' value='Submit' />
-            <form onSubmit={this.handleSubmit}>
-            </form> */}
         </React.Fragment>
     }
 
@@ -268,6 +200,7 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
         this.setState({ value: '' });
         event.preventDefault();
     }
+
 }
 
 export namespace SerialMonitorOutput {
@@ -279,6 +212,9 @@ export namespace SerialMonitorOutput {
 
 export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Props> {
 
+    /**
+     * Do not touch it. It is used to be able to "follow" the serial monitor log.
+     */
     protected anchor: HTMLElement | null;
 
     render() {
