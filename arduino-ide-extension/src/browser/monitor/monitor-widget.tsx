@@ -2,12 +2,15 @@ import * as React from 'react';
 import * as dateFormat from 'dateformat';
 import { postConstruct, injectable, inject } from 'inversify';
 import { OptionsType } from 'react-select/src/types';
-import { ArduinoSelect } from '../components/arduino-select';
+import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { ReactWidget, Message, Widget } from '@theia/core/lib/browser/widgets';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
+import { ArduinoSelect } from '../components/arduino-select';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
+import { isOSX } from '@theia/core';
+import { Board, Port } from '../../common/protocol/boards-service';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -15,7 +18,7 @@ export class MonitorWidget extends ReactWidget {
     static readonly ID = 'serial-monitor';
 
     @inject(MonitorModel)
-    protected readonly model: MonitorModel;
+    protected readonly monitorModel: MonitorModel;
 
     @inject(MonitorConnection)
     protected readonly monitorConnection: MonitorConnection;
@@ -53,15 +56,11 @@ export class MonitorWidget extends ReactWidget {
                 if (eolIndex !== -1) {
                     const line = this.chunk.substring(0, eolIndex + 1);
                     this.chunk = this.chunk.slice(eolIndex + 1);
-                    this.lines.push(`${this.model.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`);
+                    this.lines.push(`${this.monitorModel.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`);
                     this.update();
                 }
             }),
-            this.monitorConnection.onConnectionChanged(state => {
-                if (!state) {
-                    this.clearConsole();
-                }
-            })
+            this.monitorConnection.onConnectionChanged(() => this.clearConsole())
         ]);
         this.update();
     }
@@ -125,24 +124,23 @@ export class MonitorWidget extends ReactWidget {
 
     protected render(): React.ReactNode {
         const { baudRates, lineEndings } = this;
-        const lineEnding = lineEndings.find(item => item.value === this.model.lineEnding) || lineEndings[1]; // Defaults to `\n`.
-        const baudRate = baudRates.find(item => item.value === this.model.baudRate) || baudRates[4]; // Defaults to `9600`.
+        const lineEnding = lineEndings.find(item => item.value === this.monitorModel.lineEnding) || lineEndings[1]; // Defaults to `\n`.
+        const baudRate = baudRates.find(item => item.value === this.monitorModel.baudRate) || baudRates[4]; // Defaults to `9600`.
         return <div className='serial-monitor-container'>
             <div className='head'>
                 <div className='send'>
                     <SerialMonitorSendField
+                        monitorConfig={this.monitorConnection.monitorConfig}
                         resolveFocus={this.onFocusResolved}
                         onSend={this.onSend} />
                 </div>
                 <div className='config'>
                     <ArduinoSelect
-                        className='serial-monitor-select'
                         maxMenuHeight={this.widgetHeight - 40}
                         options={lineEndings}
                         defaultValue={lineEnding}
                         onChange={this.onChangeLineEnding} />,
                     <ArduinoSelect
-                        className='serial-monitor-select'
                         maxMenuHeight={this.widgetHeight - 40}
                         options={baudRates}
                         defaultValue={baudRate}
@@ -150,7 +148,7 @@ export class MonitorWidget extends ReactWidget {
                 </div>
             </div>
             <div id='serial-monitor-output-container'>
-                <SerialMonitorOutput model={this.model} lines={this.lines} />
+                <SerialMonitorOutput monitorModel={this.monitorModel} lines={this.lines} />
             </div>
         </div>;
     }
@@ -161,18 +159,19 @@ export class MonitorWidget extends ReactWidget {
     }
 
     protected readonly onChangeLineEnding = (option: SelectOption<MonitorModel.EOL>) => {
-        this.model.lineEnding = option.value;
+        this.monitorModel.lineEnding = option.value;
     }
 
     protected readonly onChangeBaudRate = async (option: SelectOption<MonitorConfig.BaudRate>) => {
         await this.monitorConnection.disconnect();
-        this.model.baudRate = option.value;
+        this.monitorModel.baudRate = option.value;
     }
 
 }
 
 export namespace SerialMonitorSendField {
     export interface Props {
+        readonly monitorConfig?: MonitorConfig;
         readonly onSend: (text: string) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
     }
@@ -186,23 +185,31 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
     constructor(props: SerialMonitorSendField.Props) {
         super(props);
         this.state = { value: '' };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onSend = this.onSend.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
     }
 
     render() {
         return <React.Fragment>
             <input
-                tabIndex={-1}
                 ref={this.setRef}
-                id='serial-monitor-send'
                 type='text'
-                autoComplete='off'
+                className={this.props.monitorConfig ? '' : 'not-connected'}
+                placeholder={this.placeholder}
                 value={this.state.value}
-                onChange={this.handleChange} />
-            <button className='button' onClick={this.handleSubmit}>Send</button>
+                onChange={this.onChange}
+                onKeyDown={this.onKeyDown} />
         </React.Fragment>
+    }
+
+    protected get placeholder(): string {
+        const { monitorConfig } = this.props;
+        if (!monitorConfig) {
+            return 'Not connected. Select a board and a port to connect automatically.'
+        }
+        const { board, port } = monitorConfig;
+        return `Message (${isOSX ? '⌘' : 'Ctrl'}+Enter to send message to '${Board.toString(board, { useFqbn: false })}' on '${Port.toString(port)}')`;
     }
 
     protected setRef = (element: HTMLElement | null) => {
@@ -211,14 +218,23 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
         }
     }
 
-    protected handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    protected onChange(event: React.ChangeEvent<HTMLInputElement>): void {
         this.setState({ value: event.target.value });
     }
 
-    protected handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
+    protected onSend(): void {
         this.props.onSend(this.state.value);
         this.setState({ value: '' });
-        event.preventDefault();
+    }
+
+    protected onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+        const keyCode = KeyCode.createKeyCode(event.nativeEvent);
+        if (keyCode) {
+            const { key, meta, ctrl } = keyCode;
+            if (key === Key.ENTER && ((isOSX && meta) || (!isOSX && ctrl))) {
+                this.onSend();
+            }
+        }
     }
 
 }
@@ -226,7 +242,7 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
 export namespace SerialMonitorOutput {
     export interface Props {
         readonly lines: string[];
-        readonly model: MonitorModel;
+        readonly monitorModel: MonitorModel;
     }
 }
 
@@ -255,7 +271,7 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
     }
 
     protected scrollToBottom() {
-        if (this.props.model.autoscroll && this.anchor) {
+        if (this.props.monitorModel.autoscroll && this.anchor) {
             this.anchor.scrollIntoView();
         }
     }

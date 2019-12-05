@@ -20,25 +20,21 @@
 
 .serial-monitor-container .head .send {
     display: flex;
-    flex:1;
-}
-
-.serial-monitor-container .head .send .btn {
-    display: flex;
-    padding: 0 5px;
-    align-items: center;
-    color: var(--theia-ui-font-color1);
-    opacity: 0.7;
-}
-.serial-monitor-container .head .send .btn:hover {
-    opacity: 1;
-    cursor: pointer;
-}
-
-.serial-monitor-container .head .send form {
     flex: 1;
-    display: flex;
-    background: var(--theia-layout-color2);
+    margin-right: 4px;
+}
+
+.serial-monitor-container .head .send > input {
+    line-height: var(--theia-content-line-height);
+    width: 100%;
+}
+
+.serial-monitor-container .head .send > input:focus {
+    border-color: var(--theia-accent-color3);
+}
+
+.serial-monitor-container .head .send > input.not-connected {
+    background-color: var(--theia-warn-color0);
 }
 
 .serial-monitor-container .head .send input#serial-monitor-send {
@@ -46,16 +42,8 @@
     flex: 1;
 }
 
-.serial-monitor-container .head .send input:focus {
-    outline: none;
-}
-
 .serial-monitor-container .head .config {
     display: flex;
-}
-
-.serial-monitor-container .head .config .serial-monitor-select {
-    margin-left: 5px;
 }
 
 #serial-monitor-output-container {

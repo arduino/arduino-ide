@@ -11,7 +11,7 @@ export class ArduinoSelect<T> extends Select<T> {
     }
 
     render(): React.ReactNode {
-        const height = 27; // Seems to be the hard coded constant for `input` and `textArea` in Theia.
+        const controlHeight = 27; // from `monitor.css` -> `.serial-monitor-container .head` (`height: 27px;`)
         const styles: Styles = {
             control: styles => ({
                 ...styles,
@@ -37,7 +37,7 @@ export class ArduinoSelect<T> extends Select<T> {
             ...theme,
             borderRadius: 0,
             spacing: {
-                controlHeight: height,
+                controlHeight,
                 baseUnit: 2,
                 menuGutter: 4
             }, colors: {

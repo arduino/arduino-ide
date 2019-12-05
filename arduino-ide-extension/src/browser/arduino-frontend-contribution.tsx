@@ -331,8 +331,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     return;
                 }
 
-                const connectionConfig = this.monitorConnection.connectionConfig;
-                if (connectionConfig) {
+                const monitorConfig = this.monitorConnection.monitorConfig;
+                if (monitorConfig) {
                     await this.monitorConnection.disconnect();
                 }
 
@@ -349,8 +349,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 } finally {
-                    if (connectionConfig) {
-                        await this.monitorConnection.connect(connectionConfig);
+                    if (monitorConfig) {
+                        await this.monitorConnection.connect(monitorConfig);
                     }
                 }
             }

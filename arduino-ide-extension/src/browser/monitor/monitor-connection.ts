@@ -107,7 +107,7 @@ export class MonitorConnection {
         return !!this.state;
     }
 
-    get connectionConfig(): MonitorConfig | undefined {
+    get monitorConfig(): MonitorConfig | undefined {
         return this.state ? this.state.config : undefined;
     }
 
