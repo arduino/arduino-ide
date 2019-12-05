@@ -8,7 +8,6 @@
 }
 
 .arduino-select__control--is-focused {
-    border-color: var(--theia-accent-color3) !important;
     box-shadow: none !important;
 }
 
