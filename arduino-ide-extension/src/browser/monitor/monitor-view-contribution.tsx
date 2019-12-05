@@ -59,13 +59,13 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
             id: 'monitor-autoscroll',
             render: () => this.renderAutoScrollButton(),
             isVisible: widget => widget instanceof MonitorWidget,
-            onDidChange: this.model.onChange as any // TODO: https://github.com/eclipse-theia/theia/pull/6696/
+            onDidChange: this.model.onChange as any // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
         });
         registry.registerItem({
             id: 'monitor-timestamp',
             render: () => this.renderTimestampButton(),
             isVisible: widget => widget instanceof MonitorWidget,
-            onDidChange: this.model.onChange as any // TODO: https://github.com/eclipse-theia/theia/pull/6696/
+            onDidChange: this.model.onChange as any // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
         });
         registry.registerItem({
             id: SerialMonitor.Commands.CLEAR_OUTPUT.id,

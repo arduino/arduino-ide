@@ -1,14 +1,15 @@
-import { injectable, inject, postConstruct } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { MessageService } from '@theia/core/lib/common/message-service';
 import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { RecursiveRequired } from '../../common/types';
 import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port, BoardUninstalledEvent } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
-import { MessageService } from '@theia/core';
 
 @injectable()
-export class BoardsServiceClientImpl implements BoardsServiceClient {
+export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApplicationContribution {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -39,9 +40,8 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     readonly onBoardUninstalled = this.onBoardUninstalledEmitter.event;
     readonly onBoardsConfigChanged = this.onSelectedBoardsConfigChangedEmitter.event;
 
-    @postConstruct()
-    protected init(): void {
-        this.loadState();
+    async onStart(): Promise<void> {
+        return this.loadState();
     }
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
@@ -124,7 +124,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
 
         if (!config.selectedBoard) {
             if (!options.silent) {
-                this.messageService.warn('No boards selected.');
+                this.messageService.warn('No boards selected.', { timeout: 3000 });
             }
             return false;
         }
@@ -146,14 +146,14 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         const { name } = config.selectedBoard;
         if (!config.selectedPort) {
             if (!options.silent) {
-                this.messageService.warn(`No ports selected for board: '${name}'.`);
+                this.messageService.warn(`No ports selected for board: '${name}'.`, { timeout: 3000 });
             }
             return false;
         }
 
         if (!config.selectedBoard.fqbn) {
             if (!options.silent) {
-                this.messageService.warn(`The FQBN is not available for the selected board ${name}. Do you have the corresponding core installed?`);
+                this.messageService.warn(`The FQBN is not available for the selected board ${name}. Do you have the corresponding core installed?`, { timeout: 3000 });
             }
             return false;
         }
@@ -169,6 +169,9 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         const storedValidBoardsConfig = await this.storageService.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
         if (storedValidBoardsConfig) {
             this.latestValidBoardsConfig = storedValidBoardsConfig;
+            if (this.canUploadTo(this.latestValidBoardsConfig)) {
+                this.boardsConfig = this.latestValidBoardsConfig;
+            }
         }
     }
 

@@ -119,6 +119,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     }).inSingletonScope();
     // Boards service client to receive and delegate notifications from the backend.
     bind(BoardsServiceClientImpl).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(BoardsServiceClientImpl);
     bind(BoardsServiceClient).toDynamicValue(context => {
         const client = context.container.get(BoardsServiceClientImpl);
         WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath, client);

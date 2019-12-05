@@ -169,7 +169,7 @@ export namespace SerialMonitorSendInput {
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
     }
     export interface State {
-        value: string;
+        text: string;
     }
 }
 
@@ -177,23 +177,21 @@ export class SerialMonitorSendInput extends React.Component<SerialMonitorSendInp
 
     constructor(props: Readonly<SerialMonitorSendInput.Props>) {
         super(props);
-        this.state = { value: '' };
+        this.state = { text: '' };
         this.onChange = this.onChange.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
     render(): React.ReactNode {
-        return <React.Fragment>
-            <input
-                ref={this.setRef}
-                type='text'
-                className={this.props.monitorConfig ? '' : 'not-connected'}
-                placeholder={this.placeholder}
-                value={this.state.value}
-                onChange={this.onChange}
-                onKeyDown={this.onKeyDown} />
-        </React.Fragment>
+        return <input
+            ref={this.setRef}
+            type='text'
+            className={this.props.monitorConfig ? '' : 'not-connected'}
+            placeholder={this.placeholder}
+            value={this.state.text}
+            onChange={this.onChange}
+            onKeyDown={this.onKeyDown} />
     }
 
     protected get placeholder(): string {
@@ -212,12 +210,12 @@ export class SerialMonitorSendInput extends React.Component<SerialMonitorSendInp
     }
 
     protected onChange(event: React.ChangeEvent<HTMLInputElement>): void {
-        this.setState({ value: event.target.value });
+        this.setState({ text: event.target.value });
     }
 
     protected onSend(): void {
-        this.props.onSend(this.state.value);
-        this.setState({ value: '' });
+        this.props.onSend(this.state.text);
+        this.setState({ text: '' });
     }
 
     protected onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {

@@ -2,6 +2,7 @@ import { injectable, inject, postConstruct } from 'inversify';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 // import { ConnectionStatusService } from '@theia/core/lib/browser/connection-status-service';
 import { MessageService } from '@theia/core/lib/common/message-service';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { MonitorService, MonitorConfig, MonitorError, Status } from '../../common/protocol/monitor-service';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { Port, Board, BoardsService, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
@@ -32,6 +33,9 @@ export class MonitorConnection {
 
     // @inject(ConnectionStatusService)
     // protected readonly connectionStatusService: ConnectionStatusService;
+
+    @inject(FrontendApplicationStateService)
+    protected readonly applicationState: FrontendApplicationStateService;
 
     protected state: MonitorConnection.State | undefined;
     /**
@@ -120,8 +124,12 @@ export class MonitorConnection {
         this._autoConnect = value;
         // When we enable the auto-connect, we have to connect
         if (!oldValue && value) {
-            const { boardsConfig } = this.boardsServiceClient;
-            this.handleBoardConfigChange(boardsConfig);
+            // We have to make sure the previous boards config has been restored.
+            // Otherwise, we might start the auto-connection without configured boards.
+            this.applicationState.reachedState('started_contributions').then(() => {
+                const { boardsConfig } = this.boardsServiceClient;
+                this.handleBoardConfigChange(boardsConfig);
+            });
         }
     }
 
