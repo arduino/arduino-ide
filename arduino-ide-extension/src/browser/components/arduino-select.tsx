@@ -11,7 +11,6 @@ export class ArduinoSelect<T> extends Select<T> {
     }
 
     render(): React.ReactNode {
-        const { defaultValue, onChange, options, className } = this.props;
         const height = 25;
         const styles: Styles = {
             control: styles => ({
@@ -51,14 +50,11 @@ export class ArduinoSelect<T> extends Select<T> {
         });
         const DropdownIndicator = () => <span className='fa fa-caret-down caret' />;
         return <Select
-            options={options}
-            defaultValue={defaultValue}
-            onChange={onChange}
+            {...this.props}
             components={{ DropdownIndicator }}
             theme={theme}
             styles={styles}
             classNamePrefix='arduino-select'
-            className={className}
             isSearchable={false}
         />
     }

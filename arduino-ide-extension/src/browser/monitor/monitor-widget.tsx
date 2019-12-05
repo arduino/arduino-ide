@@ -124,8 +124,18 @@ export class MonitorWidget extends ReactWidget {
                     <SerialMonitorSendField onSend={this.onSend} />
                 </div>
                 <div className='config'>
-                    <ArduinoSelect className='serial-monitor-select' options={lineEndings} defaultValue={lineEnding} onChange={this.onChangeLineEnding} />
-                    <ArduinoSelect className='serial-monitor-select' options={baudRates} defaultValue={baudRate} onChange={this.onChangeBaudRate} />
+                    <ArduinoSelect
+                        className='serial-monitor-select'
+                        maxMenuHeight={this.widgetHeight - 40}
+                        options={lineEndings}
+                        defaultValue={lineEnding}
+                        onChange={this.onChangeLineEnding} />,
+                    <ArduinoSelect
+                        className='serial-monitor-select'
+                        maxMenuHeight={this.widgetHeight - 40}
+                        options={baudRates}
+                        defaultValue={baudRate}
+                        onChange={this.onChangeBaudRate} />
                 </div>
             </div>
             <div id='serial-monitor-output-container'>
