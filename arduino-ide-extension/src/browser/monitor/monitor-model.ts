@@ -15,7 +15,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClient: BoardsServiceClientImpl;
 
-    protected readonly onChangeEmitter: Emitter<void>;
+    protected readonly onChangeEmitter: Emitter<MonitorModel.State.Change<keyof MonitorModel.State>>;
     protected _autoscroll: boolean;
     protected _timestamp: boolean;
     protected _baudRate: MonitorConfig.BaudRate;
@@ -26,7 +26,7 @@ export class MonitorModel implements FrontendApplicationContribution {
         this._timestamp = false;
         this._baudRate = MonitorConfig.BaudRate.DEFAULT;
         this._lineEnding = MonitorModel.EOL.DEFAULT;
-        this.onChangeEmitter = new Emitter<void>();
+        this.onChangeEmitter = new Emitter<MonitorModel.State.Change<keyof MonitorModel.State>>();
     }
 
     onStart(): void {
@@ -37,7 +37,7 @@ export class MonitorModel implements FrontendApplicationContribution {
         });
     }
 
-    get onChange(): Event<void> {
+    get onChange(): Event<MonitorModel.State.Change<keyof MonitorModel.State>> {
         return this.onChangeEmitter.event;
     }
 
@@ -48,6 +48,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     toggleAutoscroll(): void {
         this._autoscroll = !this._autoscroll;
         this.storeState();
+        this.storeState().then(() => this.onChangeEmitter.fire({ property: 'autoscroll', value: this._autoscroll }));
     }
 
     get timestamp(): boolean {
@@ -56,7 +57,7 @@ export class MonitorModel implements FrontendApplicationContribution {
 
     toggleTimestamp(): void {
         this._timestamp = !this._timestamp;
-        this.storeState();
+        this.storeState().then(() => this.onChangeEmitter.fire({ property: 'timestamp', value: this._timestamp }));
     }
 
     get baudRate(): MonitorConfig.BaudRate {
@@ -65,7 +66,7 @@ export class MonitorModel implements FrontendApplicationContribution {
 
     set baudRate(baudRate: MonitorConfig.BaudRate) {
         this._baudRate = baudRate;
-        this.storeState().then(() => this.onChangeEmitter.fire(undefined));
+        this.storeState().then(() => this.onChangeEmitter.fire({ property: 'baudRate', value: this._baudRate }));
     }
 
     get lineEnding(): MonitorModel.EOL {
@@ -74,7 +75,7 @@ export class MonitorModel implements FrontendApplicationContribution {
 
     set lineEnding(lineEnding: MonitorModel.EOL) {
         this._lineEnding = lineEnding;
-        this.storeState();
+        this.storeState().then(() => this.onChangeEmitter.fire({ property: 'lineEnding', value: this._lineEnding }));
     }
 
     protected restoreState(state: MonitorModel.State) {
@@ -82,7 +83,6 @@ export class MonitorModel implements FrontendApplicationContribution {
         this._timestamp = state.timestamp;
         this._baudRate = state.baudRate;
         this._lineEnding = state.lineEnding;
-        this.onChangeEmitter.fire(undefined);
     }
 
     protected async storeState(): Promise<void> {
@@ -103,6 +103,12 @@ export namespace MonitorModel {
         timestamp: boolean;
         baudRate: MonitorConfig.BaudRate;
         lineEnding: EOL;
+    }
+    export namespace State {
+        export interface Change<K extends keyof State> {
+            readonly property: K;
+            readonly value: State[K];
+        }
     }
 
     export type EOL = '' | '\n' | '\r' | '\r\n';

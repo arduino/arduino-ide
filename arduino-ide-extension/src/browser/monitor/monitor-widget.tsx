@@ -88,7 +88,7 @@ export class MonitorWidget extends ReactWidget {
                 value: ''
             },
             {
-                label: 'Newline',
+                label: 'New Line',
                 value: '\n'
             },
             {
@@ -99,7 +99,7 @@ export class MonitorWidget extends ReactWidget {
                 label: 'Both NL & CR',
                 value: '\r\n'
             }
-        ]
+        ];
     }
 
     protected get baudRates(): OptionsType<SelectOption<MonitorConfig.BaudRate>> {
@@ -111,28 +111,33 @@ export class MonitorWidget extends ReactWidget {
         const { baudRates, lineEndings } = this;
         const lineEnding = lineEndings.find(item => item.value === this.monitorModel.lineEnding) || lineEndings[1]; // Defaults to `\n`.
         const baudRate = baudRates.find(item => item.value === this.monitorModel.baudRate) || baudRates[4]; // Defaults to `9600`.
-        return <div className='serial-monitor-container'>
+        return <div className='serial-monitor'>
             <div className='head'>
                 <div className='send'>
-                    <SerialMonitorSendField
+                    <SerialMonitorSendInput
                         monitorConfig={this.monitorConnection.monitorConfig}
                         resolveFocus={this.onFocusResolved}
                         onSend={this.onSend} />
                 </div>
                 <div className='config'>
-                    <ArduinoSelect
-                        maxMenuHeight={this.widgetHeight - 40}
-                        options={lineEndings}
-                        defaultValue={lineEnding}
-                        onChange={this.onChangeLineEnding} />,
-                    <ArduinoSelect
-                        maxMenuHeight={this.widgetHeight - 40}
-                        options={baudRates}
-                        defaultValue={baudRate}
-                        onChange={this.onChangeBaudRate} />
+                    <div className='select'>
+                        <ArduinoSelect
+                            maxMenuHeight={this.widgetHeight - 40}
+                            options={lineEndings}
+                            defaultValue={lineEnding}
+                            onChange={this.onChangeLineEnding} />
+                    </div>
+                    <div className='select'>
+                        <ArduinoSelect
+                            className='select'
+                            maxMenuHeight={this.widgetHeight - 40}
+                            options={baudRates}
+                            defaultValue={baudRate}
+                            onChange={this.onChangeBaudRate} />
+                    </div>
                 </div>
             </div>
-            <div id='serial-monitor-output-container'>
+            <div className='body'>
                 <SerialMonitorOutput
                     monitorModel={this.monitorModel}
                     monitorServiceClient={this.monitorServiceClient}
@@ -157,7 +162,7 @@ export class MonitorWidget extends ReactWidget {
 
 }
 
-export namespace SerialMonitorSendField {
+export namespace SerialMonitorSendInput {
     export interface Props {
         readonly monitorConfig?: MonitorConfig;
         readonly onSend: (text: string) => void;
@@ -168,9 +173,9 @@ export namespace SerialMonitorSendField {
     }
 }
 
-export class SerialMonitorSendField extends React.Component<SerialMonitorSendField.Props, SerialMonitorSendField.State> {
+export class SerialMonitorSendInput extends React.Component<SerialMonitorSendInput.Props, SerialMonitorSendInput.State> {
 
-    constructor(props: SerialMonitorSendField.Props) {
+    constructor(props: Readonly<SerialMonitorSendInput.Props>) {
         super(props);
         this.state = { value: '' };
         this.onChange = this.onChange.bind(this);
@@ -235,6 +240,7 @@ export namespace SerialMonitorOutput {
     }
     export interface State {
         content: string;
+        timestamp: boolean;
     }
 }
 
@@ -248,7 +254,7 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
 
     constructor(props: Readonly<SerialMonitorOutput.Props>) {
         super(props);
-        this.state = { content: '' };
+        this.state = { content: '', timestamp: this.props.monitorModel.timestamp };
     }
 
     render(): React.ReactNode {
@@ -270,11 +276,17 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
                 if (eolIndex !== -1) {
                     const line = chunk.substring(0, eolIndex + 1);
                     chunk = chunk.slice(eolIndex + 1);
-                    const content = `${this.state.content}${false ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`;
+                    const content = `${this.state.content}${this.state.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`;
                     this.setState({ content });
                 }
             }),
-            this.props.clearConsoleEvent(() => this.setState({ content: '' }))
+            this.props.clearConsoleEvent(() => this.setState({ content: '' })),
+            this.props.monitorModel.onChange(({ property }) => {
+                if (property === 'timestamp') {
+                    const { timestamp } = this.props.monitorModel;
+                    this.setState({ timestamp });
+                }
+            })
         ]);
     }
 
@@ -283,7 +295,8 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
     }
 
     componentWillUnmount(): void {
-        this.toDisposeBeforeUnmount.dispose()
+        // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
+        this.toDisposeBeforeUnmount.dispose();
     }
 
     protected scrollToBottom(): void {

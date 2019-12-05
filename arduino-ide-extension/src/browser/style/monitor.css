@@ -5,51 +5,49 @@
     background-position-x: 19px;
 }
 
-.serial-monitor-container {
+.serial-monitor {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.serial-monitor-container .head {
+.serial-monitor .head {
     display: flex;
     padding: 5px;
     background: var(--theia-layout-color0);
     height: 27px;
 }
 
-.serial-monitor-container .head .send {
+.serial-monitor .head .send {
     display: flex;
     flex: 1;
-    margin-right: 4px;
 }
 
-.serial-monitor-container .head .send > input {
+.serial-monitor .head .send > input {
     line-height: var(--theia-content-line-height);
     width: 100%;
 }
 
-.serial-monitor-container .head .send > input:focus {
+.serial-monitor .head .send > input:focus {
     border-color: var(--theia-accent-color3);
 }
 
-.serial-monitor-container .head .send > input.not-connected {
+.serial-monitor .head .send > input.not-connected {
     background-color: var(--theia-warn-color0);
 }
 
-.serial-monitor-container .head .send input#serial-monitor-send {
-    color: var(--theia-ui-font-color1);
-    flex: 1;
-}
-
-.serial-monitor-container .head .config {
+.serial-monitor .head .config {
     display: flex;
 }
 
-#serial-monitor-output-container {
+.serial-monitor .head .config .select {
+    margin-left: 5px;
+}
+
+.serial-monitor .body {
     overflow: auto;
     flex: 1;
-    padding: 6px;
+    padding: 5px;
 }
 
 .p-TabBar-toolbar .item.arduino-monitor {

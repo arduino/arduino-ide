@@ -95,12 +95,12 @@ export class MonitorConnection {
             }
         });
         // Handles the `baudRate` changes by reconnecting if required.
-        this.monitorModel.onChange(() => {
-            if (this.autoConnect && this.connected) {
+        this.monitorModel.onChange(({ property }) => {
+            if (property === 'baudRate' && this.autoConnect && this.connected) {
                 const { boardsConfig } = this.boardsServiceClient;
                 this.handleBoardConfigChange(boardsConfig);
             }
-        })
+        });
     }
 
     get connected(): boolean {
