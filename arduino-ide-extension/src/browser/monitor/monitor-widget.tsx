@@ -88,6 +88,15 @@ export class MonitorWidget extends ReactWidget {
         this.update();
     }
 
+    protected onActivateRequest(msg: Message): void {
+        super.onActivateRequest(msg);
+        (this.focusNode || this.node).focus();
+    }
+
+    protected onFocusResolved = (element: HTMLElement | undefined) => {
+        this.focusNode = element;
+    }
+
     protected get lineEndings(): OptionsType<SelectOption<MonitorModel.EOL>> {
         return [
             {
@@ -121,7 +130,9 @@ export class MonitorWidget extends ReactWidget {
         return <div className='serial-monitor-container'>
             <div className='head'>
                 <div className='send'>
-                    <SerialMonitorSendField onSend={this.onSend} />
+                    <SerialMonitorSendField
+                        resolveFocus={this.onFocusResolved}
+                        onSend={this.onSend} />
                 </div>
                 <div className='config'>
                     <ArduinoSelect
@@ -162,7 +173,8 @@ export class MonitorWidget extends ReactWidget {
 
 export namespace SerialMonitorSendField {
     export interface Props {
-        readonly onSend: (text: string) => void
+        readonly onSend: (text: string) => void;
+        readonly resolveFocus: (element: HTMLElement | undefined) => void;
     }
     export interface State {
         value: string;
@@ -170,8 +182,6 @@ export namespace SerialMonitorSendField {
 }
 
 export class SerialMonitorSendField extends React.Component<SerialMonitorSendField.Props, SerialMonitorSendField.State> {
-
-    protected inputField: HTMLInputElement | null;
 
     constructor(props: SerialMonitorSendField.Props) {
         super(props);
@@ -181,17 +191,11 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
-        if (this.inputField) {
-            this.inputField.focus();
-        }
-    }
-
     render() {
         return <React.Fragment>
             <input
                 tabIndex={-1}
-                ref={ref => this.inputField = ref}
+                ref={this.setRef}
                 id='serial-monitor-send'
                 type='text'
                 autoComplete='off'
@@ -199,6 +203,12 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
                 onChange={this.handleChange} />
             <button className='button' onClick={this.handleSubmit}>Send</button>
         </React.Fragment>
+    }
+
+    protected setRef = (element: HTMLElement | null) => {
+        if (this.props.resolveFocus) {
+            this.props.resolveFocus(element || undefined);
+        }
     }
 
     protected handleChange(event: React.ChangeEvent<HTMLInputElement>) {
