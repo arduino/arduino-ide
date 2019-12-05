@@ -2,15 +2,17 @@ import * as React from 'react';
 import * as dateFormat from 'dateformat';
 import { postConstruct, injectable, inject } from 'inversify';
 import { OptionsType } from 'react-select/src/types';
+import { isOSX } from '@theia/core/lib/common/os';
+import { Event, Emitter } from '@theia/core/lib/common/event';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
+import { DisposableCollection } from '@theia/core/lib/common/disposable'
 import { ReactWidget, Message, Widget } from '@theia/core/lib/browser/widgets';
+import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { ArduinoSelect } from '../components/arduino-select';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
-import { isOSX } from '@theia/core';
-import { Board, Port } from '../../common/protocol/boards-service';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -26,48 +28,31 @@ export class MonitorWidget extends ReactWidget {
     @inject(MonitorServiceClientImpl)
     protected readonly monitorServiceClient: MonitorServiceClientImpl;
 
-    protected lines: string[];
-    protected chunk: string;
     protected widgetHeight: number;
 
     /**
      * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
      */
     protected focusNode: HTMLElement | undefined;
+    protected readonly clearOutputEmitter = new Emitter<void>();
 
     constructor() {
         super();
-
         this.id = MonitorWidget.ID;
         this.title.label = 'Serial Monitor';
         this.title.iconClass = 'arduino-serial-monitor-tab-icon';
-
-        this.lines = [];
-        this.chunk = '';
         this.scrollOptions = undefined;
+        this.toDispose.push(this.clearOutputEmitter);
     }
 
     @postConstruct()
     protected init(): void {
-        this.toDisposeOnDetach.pushAll([
-            this.monitorServiceClient.onRead(({ data }) => {
-                this.chunk += data;
-                const eolIndex = this.chunk.indexOf('\n');
-                if (eolIndex !== -1) {
-                    const line = this.chunk.substring(0, eolIndex + 1);
-                    this.chunk = this.chunk.slice(eolIndex + 1);
-                    this.lines.push(`${this.monitorModel.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`);
-                    this.update();
-                }
-            }),
-            this.monitorConnection.onConnectionChanged(() => this.clearConsole())
-        ]);
         this.update();
+        this.toDispose.push(this.monitorConnection.onConnectionChanged(() => this.clearConsole()));
     }
 
     clearConsole(): void {
-        this.chunk = '';
-        this.lines = [];
+        this.clearOutputEmitter.fire(undefined);
         this.update();
     }
 
@@ -148,7 +133,10 @@ export class MonitorWidget extends ReactWidget {
                 </div>
             </div>
             <div id='serial-monitor-output-container'>
-                <SerialMonitorOutput monitorModel={this.monitorModel} lines={this.lines} />
+                <SerialMonitorOutput
+                    monitorModel={this.monitorModel}
+                    monitorServiceClient={this.monitorServiceClient}
+                    clearConsoleEvent={this.clearOutputEmitter.event} />
             </div>
         </div>;
     }
@@ -190,7 +178,7 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
-    render() {
+    render(): React.ReactNode {
         return <React.Fragment>
             <input
                 ref={this.setRef}
@@ -241,36 +229,64 @@ export class SerialMonitorSendField extends React.Component<SerialMonitorSendFie
 
 export namespace SerialMonitorOutput {
     export interface Props {
-        readonly lines: string[];
+        readonly monitorServiceClient: MonitorServiceClientImpl;
         readonly monitorModel: MonitorModel;
+        readonly clearConsoleEvent: Event<void>;
+    }
+    export interface State {
+        content: string;
     }
 }
 
-export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Props> {
+export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Props, SerialMonitorOutput.State> {
 
     /**
      * Do not touch it. It is used to be able to "follow" the serial monitor log.
      */
     protected anchor: HTMLElement | null;
+    protected toDisposeBeforeUnmount = new DisposableCollection();
 
-    render() {
+    constructor(props: Readonly<SerialMonitorOutput.Props>) {
+        super(props);
+        this.state = { content: '' };
+    }
+
+    render(): React.ReactNode {
         return <React.Fragment>
             <div style={({ whiteSpace: 'pre', fontFamily: 'monospace' })}>
-                {this.props.lines.join('')}
+                {this.state.content}
             </div>
             <div style={{ float: 'left', clear: 'both' }} ref={element => { this.anchor = element; }} />
         </React.Fragment>;
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
+        this.scrollToBottom();
+        let chunk = '';
+        this.toDisposeBeforeUnmount.pushAll([
+            this.props.monitorServiceClient.onRead(({ data }) => {
+                chunk += data;
+                const eolIndex = chunk.indexOf('\n');
+                if (eolIndex !== -1) {
+                    const line = chunk.substring(0, eolIndex + 1);
+                    chunk = chunk.slice(eolIndex + 1);
+                    const content = `${this.state.content}${false ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`;
+                    this.setState({ content });
+                }
+            }),
+            this.props.clearConsoleEvent(() => this.setState({ content: '' }))
+        ]);
+    }
+
+    componentDidUpdate(): void {
         this.scrollToBottom();
     }
 
-    componentDidUpdate() {
-        this.scrollToBottom();
+    componentWillUnmount(): void {
+        this.toDisposeBeforeUnmount.dispose()
     }
 
-    protected scrollToBottom() {
+    protected scrollToBottom(): void {
         if (this.props.monitorModel.autoscroll && this.anchor) {
             this.anchor.scrollIntoView();
         }
