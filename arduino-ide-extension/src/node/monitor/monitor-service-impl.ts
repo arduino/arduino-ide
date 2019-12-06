@@ -71,7 +71,7 @@ export class MonitorServiceImpl implements MonitorService {
 
         duplex.on('error', ((error: Error) => {
             const monitorError = ErrorWithCode.toMonitorError(error, config);
-            this.disconnect().then(() => {
+            this.disconnect(monitorError).then(() => {
                 if (this.client) {
                     this.client.notifyError(monitorError);
                 }
@@ -112,7 +112,10 @@ export class MonitorServiceImpl implements MonitorService {
         });
     }
 
-    async disconnect(): Promise<Status> {
+    async disconnect(reason?: MonitorError): Promise<Status> {
+        if (!this.connection && reason && reason.code === MonitorError.ErrorCodes.CLIENT_CANCEL) {
+            return Status.OK;
+        }
         this.logger.info(`>>> Disposing monitor connection...`);
         if (!this.connection) {
             this.logger.warn(`<<< Not connected. Nothing to dispose.`);

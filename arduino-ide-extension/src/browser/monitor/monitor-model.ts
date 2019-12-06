@@ -78,7 +78,7 @@ export class MonitorModel implements FrontendApplicationContribution {
         this.storeState().then(() => this.onChangeEmitter.fire({ property: 'lineEnding', value: this._lineEnding }));
     }
 
-    protected restoreState(state: MonitorModel.State) {
+    protected restoreState(state: MonitorModel.State): void {
         this._autoscroll = state.autoscroll;
         this._timestamp = state.timestamp;
         this._baudRate = state.baudRate;
@@ -86,7 +86,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     }
 
     protected async storeState(): Promise<void> {
-        this.localStorageService.setData(MonitorModel.STORAGE_ID, {
+        return this.localStorageService.setData(MonitorModel.STORAGE_ID, {
             autoscroll: this._autoscroll,
             timestamp: this._timestamp,
             baudRate: this._baudRate,

@@ -7,14 +7,39 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Electron Packager",
-      "program": "${workspaceRoot}/electron/packager/index.js",
-      "cwd": "${workspaceFolder}/electron/packager"
+      "name": "App (Electron)",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "program": "${workspaceRoot}/electron-app/src-gen/frontend/electron-main.js",
+      "protocol": "inspector",
+      "args": [
+        "--log-level=debug",
+        "--hostname=localhost",
+        "--no-cluster",
+        "--remote-debugging-port=9222",
+        "--no-app-auto-install",
+        "--debug-cli=true"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/electron-app/src-gen/backend/*.js",
+        "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
+        "${workspaceRoot}/electron-app/lib/**/*.js",
+        "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
+      ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Backend",
+      "name": "App (Browser)",
       "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
       "args": [
         "--hostname=0.0.0.0",
@@ -38,7 +63,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Backend (Debug CLI daemon)",
+      "name": "App (Browser - Debug CLI daemon)",
       "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
       "args": [
         "--hostname=0.0.0.0",
@@ -59,6 +84,13 @@
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Packager",
+      "program": "${workspaceRoot}/electron/packager/index.js",
+      "cwd": "${workspaceFolder}/electron/packager"
     }
   ]
 }

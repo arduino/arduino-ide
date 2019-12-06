@@ -41,6 +41,7 @@ export class MonitorWidget extends ReactWidget {
         this.id = MonitorWidget.ID;
         this.title.label = 'Serial Monitor';
         this.title.iconClass = 'arduino-serial-monitor-tab-icon';
+        this.title.closable = true;
         this.scrollOptions = undefined;
         this.toDispose.push(this.clearOutputEmitter);
     }
@@ -56,14 +57,21 @@ export class MonitorWidget extends ReactWidget {
         this.update();
     }
 
+    dispose(): void {
+        super.dispose();
+    }
+
     protected onAfterAttach(msg: Message): void {
         super.onAfterAttach(msg);
         this.monitorConnection.autoConnect = true;
     }
 
-    protected onBeforeDetach(msg: Message): void {
-        super.onBeforeDetach(msg);
+    onCloseRequest(msg: Message): void {
         this.monitorConnection.autoConnect = false;
+        if (this.monitorConnection.connected) {
+            this.monitorConnection.disconnect();
+        }
+        super.onCloseRequest(msg);
     }
 
     protected onResize(msg: Widget.ResizeMessage): void {
