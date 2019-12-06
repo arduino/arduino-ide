@@ -3,7 +3,7 @@ import { Emitter, Event } from '@theia/core/lib/common/event';
 // import { ConnectionStatusService } from '@theia/core/lib/browser/connection-status-service';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { MonitorService, MonitorConfig, MonitorError, Status } from '../../common/protocol/monitor-service';
+import { MonitorService, MonitorConfig, MonitorError, Status, MonitorReadEvent } from '../../common/protocol/monitor-service';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { Port, Board, BoardsService, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
@@ -44,11 +44,19 @@ export class MonitorConnection {
      */
     protected _autoConnect: boolean = false;
     protected readonly onConnectionChangedEmitter = new Emitter<MonitorConnection.State | undefined>();
-
-    readonly onConnectionChanged: Event<MonitorConnection.State | undefined> = this.onConnectionChangedEmitter.event;
+    /**
+     * This emitter forwards all read events **iff** the connection is established.
+     */
+    protected readonly onReadEmitter = new Emitter<MonitorReadEvent>();
 
     @postConstruct()
     protected init(): void {
+        // Forward the messages from the board **iff** connected.
+        this.monitorServiceClient.onRead(event => {
+            if (this.connected) {
+                this.onReadEmitter.fire(event);
+            }
+        });
         this.monitorServiceClient.onError(async error => {
             let shouldReconnect = false;
             if (this.state) {
@@ -140,9 +148,11 @@ export class MonitorConnection {
                 return disconnectStatus;
             }
         }
+        console.info(`>>> Creating serial monitor connection for ${Board.toString(config.board)} on port ${Port.toString(config.port)}...`);
         const connectStatus = await this.monitorService.connect(config);
         if (Status.isOK(connectStatus)) {
             this.state = { config };
+            console.info(`<<< Serial monitor connection created for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
         }
         this.onConnectionChangedEmitter.fire(this.state);
         return Status.isOK(connectStatus);
@@ -152,7 +162,7 @@ export class MonitorConnection {
         if (!this.state) { // XXX: we user `this.state` instead of `this.connected` to make the type checker happy. 
             return Status.OK;
         }
-        console.log('>>> Disposing existing monitor connection before establishing a new one...');
+        console.log('>>> Disposing existing monitor connection...');
         const status = await this.monitorService.disconnect();
         if (Status.isOK(status)) {
             console.log(`<<< Disposed connection. Was: ${MonitorConnection.State.toString(this.state)}`);
@@ -177,6 +187,14 @@ export class MonitorConnection {
             this.monitorService.send(data + this.monitorModel.lineEnding)
                 .then(() => resolve(Status.OK));
         });
+    }
+
+    get onConnectionChanged(): Event<MonitorConnection.State | undefined> {
+        return this.onConnectionChangedEmitter.event;
+    }
+
+    get onRead(): Event<MonitorReadEvent> {
+        return this.onReadEmitter.event;
     }
 
     protected async handleBoardConfigChange(boardsConfig: BoardsConfig.Config): Promise<void> {

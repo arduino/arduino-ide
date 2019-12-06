@@ -81,7 +81,9 @@ export class MonitorWidget extends ReactWidget {
     }
 
     protected onUpdateRequest(msg: Message): void {
-        if (!this.closing) {
+        // TODO: `this.isAttached`
+        // See: https://github.com/eclipse-theia/theia/issues/6704#issuecomment-562574713
+        if (!this.closing && this.isAttached) {
             super.onUpdateRequest(msg);
         }
     }
@@ -160,7 +162,7 @@ export class MonitorWidget extends ReactWidget {
             <div className='body'>
                 <SerialMonitorOutput
                     monitorModel={this.monitorModel}
-                    monitorServiceClient={this.monitorServiceClient}
+                    monitorConnection={this.monitorConnection}
                     clearConsoleEvent={this.clearOutputEmitter.event} />
             </div>
         </div>;
@@ -251,8 +253,8 @@ export class SerialMonitorSendInput extends React.Component<SerialMonitorSendInp
 
 export namespace SerialMonitorOutput {
     export interface Props {
-        readonly monitorServiceClient: MonitorServiceClientImpl;
         readonly monitorModel: MonitorModel;
+        readonly monitorConnection: MonitorConnection;
         readonly clearConsoleEvent: Event<void>;
     }
     export interface State {
@@ -287,7 +289,7 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
         this.scrollToBottom();
         let chunk = '';
         this.toDisposeBeforeUnmount.pushAll([
-            this.props.monitorServiceClient.onRead(({ data }) => {
+            this.props.monitorConnection.onRead(({ data }) => {
                 chunk += data;
                 const eolIndex = chunk.indexOf('\n');
                 if (eolIndex !== -1) {
