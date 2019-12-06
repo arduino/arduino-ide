@@ -41,7 +41,7 @@ You can download the latest release applications fom [here](https://github.com/b
 If you want to get a nightly build, go to the [Azure DevOps page](https://dev.azure.com/typefox/Arduino/_build?definitionId=4),
 and follow the steps from below.
 
- ![](static/download_01.gif)
- ![](static/download_02.gif)
+<img width="500" src="static/download_01.gif">
+<img width="500" src="static/download_02.gif">
 
 Click [here](./electron/README.md) for more details on the CI/CD, the GitHub release, and the build process in general.
