@@ -34,6 +34,11 @@ export class MonitorWidget extends ReactWidget {
      * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
      */
     protected focusNode: HTMLElement | undefined;
+    /**
+     * Guard against re-rendering the view after the close was requested.
+     * See: https://github.com/eclipse-theia/theia/issues/6704
+     */
+    protected closing = false;
     protected readonly clearOutputEmitter = new Emitter<void>();
 
     constructor() {
@@ -67,11 +72,18 @@ export class MonitorWidget extends ReactWidget {
     }
 
     onCloseRequest(msg: Message): void {
+        this.closing = true;
         this.monitorConnection.autoConnect = false;
         if (this.monitorConnection.connected) {
             this.monitorConnection.disconnect();
         }
         super.onCloseRequest(msg);
+    }
+
+    protected onUpdateRequest(msg: Message): void {
+        if (!this.closing) {
+            super.onUpdateRequest(msg);
+        }
     }
 
     protected onResize(msg: Widget.ResizeMessage): void {
@@ -195,7 +207,7 @@ export class SerialMonitorSendInput extends React.Component<SerialMonitorSendInp
         return <input
             ref={this.setRef}
             type='text'
-            className={this.props.monitorConfig ? '' : 'not-connected'}
+            className={this.props.monitorConfig ? '' : 'warning'}
             placeholder={this.placeholder}
             value={this.state.text}
             onChange={this.onChange}

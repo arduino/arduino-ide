@@ -14,7 +14,7 @@
 .arduino-select__option--is-selected {
     background-color: var(--theia-accent-color3) !important;
     color: var(--theia-content-font-color0) !important;
-    border-color: var(--theia-accent-color3)  !important;
+    border-color: var(--theia-accent-color3) !important;
 }
 
 .arduino-select__option--is-focused {
