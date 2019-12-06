@@ -176,7 +176,6 @@ export class MonitorWidget extends ReactWidget {
     }
 
     protected readonly onChangeBaudRate = async (option: SelectOption<MonitorConfig.BaudRate>) => {
-        await this.monitorConnection.disconnect();
         this.monitorModel.baudRate = option.value;
     }
 
