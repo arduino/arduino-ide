@@ -188,6 +188,7 @@ export class MonitorConnection {
                             // First, disconnect if connected.
                             if (this.connected) {
                                 this.disconnect().then(() => resolve());
+                                return;
                             }
                             resolve();
                         }).then(() => {
