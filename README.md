@@ -1,4 +1,4 @@
-# Arduino IDE PoC
+# Arduino Pro IDE
 
 [![Build Status](https://dev.azure.com/typefox/Arduino/_apis/build/status/bcmi-labs.arduino-editor?branchName=master)](https://dev.azure.com/typefox/Arduino/_build/latest?definitionId=4&branchName=master)
 
