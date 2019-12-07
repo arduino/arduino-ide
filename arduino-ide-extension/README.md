@@ -4,7 +4,7 @@ Arduino Pro IDE is based on Theia, and most of its IDE features, UIs and customi
 
 ### IDE Services
 
-IDE services typically have a backend part (usually in [src/node/](./src/node/)) and a front-end part (usually in [src/browser/](./src/browser/)).
+IDE services typically have a backend part in [src/node/](./src/node/) and a front-end part in [src/browser/](./src/browser/).
 
 #### Boards Service
 
@@ -30,7 +30,7 @@ The Core Service is responsible for building your sketches and uploading them to
   - compiling a sketch for a selected board type
   - uploading a sketch to a connected board
 
-### Monitor Service
+#### Monitor Service
 
 The Monitor Service allows getting information back from sketches running on your Arduino boards.
 
