@@ -29,6 +29,9 @@ Then you can start the browser example again:
 yarn --cwd browser-app start
 ```
 
+Click [here](./arduino-ide-extension/README.md) for more details on various IDE services, and the Arduino Pro IDE implementation in general.
+
+
 ## Arduino Pro IDE Electron Application
 The project is built on [Azure DevOps](https://dev.azure.com/typefox/Arduino).
 
