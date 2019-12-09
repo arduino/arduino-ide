@@ -6,7 +6,7 @@ import { isOSX } from '@theia/core/lib/common/os';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { DisposableCollection } from '@theia/core/lib/common/disposable'
-import { ReactWidget, Message, Widget } from '@theia/core/lib/browser/widgets';
+import { ReactWidget, Message, Widget, MessageLoop } from '@theia/core/lib/browser/widgets';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { ArduinoSelect } from '../components/arduino-select';
@@ -101,6 +101,7 @@ export class MonitorWidget extends ReactWidget {
 
     protected onFocusResolved = (element: HTMLElement | undefined) => {
         this.focusNode = element;
+        requestAnimationFrame(() => MessageLoop.sendMessage(this, Widget.Msg.ActivateRequest));
     }
 
     protected get lineEndings(): OptionsType<SelectOption<MonitorModel.EOL>> {
