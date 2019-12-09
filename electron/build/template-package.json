@@ -2,7 +2,7 @@
   "name": "arduino.Pro.IDE",
   "description": "Arduino Pro IDE",
   "main": "src-gen/frontend/electron-main.js",
-  "author": "TypeFox",
+  "author": "Arduino SA",
   "dependencies": {
     "google-protobuf": "^3.5.0",
     "arduino-ide-extension": "file:../working-copy/arduino-ide-extension"
@@ -27,14 +27,12 @@
     "url": "git+https://github.com/arduino/arduino-pro-ide.git"
   },
   "// Notes:": [
-    "The `electronVersion` version was pinned for `@grpc/grpc-js` -> Node.js version constraints.",
     "`google-protobuf` was declared as it is not picked up by the `electron-builder` as a runtime dependency.",
     "The resolution for `fs-extra` was required due to this: https://spectrum.chat/theia/general/our-theia-electron-builder-app-no-longer-starts~f5cf09a0-6d88-448b-8818-24ad0ec2ee7c"
   ],
   "build": {
     "productName": "Arduino Pro IDE",
     "appId": "arduino.Pro.IDE",
-    "electronVersion": "4.2.0",
     "asar": false,
     "directories": {
       "buildResources": "resources"
@@ -46,7 +44,6 @@
       "!node_modules/**/*.spec.js",
       "!node_modules/@theia/**/test/*",
       "!node_modules/@theia/**/src/*.ts",
-      "!node_modules/@theia/java/download",
       "!node_modules/@theia/**/lib/*browser/*",
       "!node_modules/@typefox/monaco-editor-core/*",
       "!node_modules/oniguruma/*",

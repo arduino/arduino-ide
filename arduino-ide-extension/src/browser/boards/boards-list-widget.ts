@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { BoardPackage, BoardsService } from '../../common/protocol/boards-service';
 import { ListWidget } from '../components/component-list/list-widget';
-import { BoardItemRenderer } from './boards-item-renderer';
+import { ListItemRenderer } from '../components/component-list/list-item-renderer';
 
 @injectable()
 export class BoardsListWidget extends ListWidget<BoardPackage> {
@@ -11,7 +11,7 @@ export class BoardsListWidget extends ListWidget<BoardPackage> {
 
     constructor(
         @inject(BoardsService) protected service: BoardsService,
-        @inject(BoardItemRenderer) protected itemRenderer: BoardItemRenderer) {
+        @inject(ListItemRenderer) protected itemRenderer: ListItemRenderer<BoardPackage>) {
 
         super({
             id: BoardsListWidget.WIDGET_ID,

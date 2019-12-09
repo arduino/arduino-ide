@@ -7,11 +7,12 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { Installable } from '../../../common/protocol/installable';
 import { Searchable } from '../../../common/protocol/searchable';
+import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 
 @injectable()
-export abstract class ListWidget<T> extends ReactWidget {
+export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget {
 
     /**
      * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
@@ -61,6 +62,7 @@ export abstract class ListWidget<T> extends ReactWidget {
 
     render(): React.ReactNode {
         return <FilterableListContainer<T>
+            container={this}
             resolveContainer={this.deferredContainer.resolve}
             resolveFocus={this.onFocusResolved}
             searchable={this.options.searchable}
@@ -74,10 +76,16 @@ export abstract class ListWidget<T> extends ReactWidget {
         this.deferredContainer.promise.then(() => this.filterTextChangeEmitter.fire(filterText));
     }
 
+    updateScrollBar(): void {
+        if (this.scrollBar) {
+            this.scrollBar.update();
+        }
+    }
+
 }
 
 export namespace ListWidget {
-    export interface Options<T> {
+    export interface Options<T extends ArduinoComponent> {
         readonly id: string;
         readonly label: string;
         readonly iconClass: string;

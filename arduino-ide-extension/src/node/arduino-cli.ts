@@ -26,30 +26,15 @@ export class ArduinoCli {
         const buildVersion = await this.spawn(`"${buildCli}"`, ['version']);
         const buildShortVersion = (buildVersion.match(version) || [])[0];
         this.execPath = buildCli;
-        try {
-            const pathCli = await new Promise<string>((resolve, reject) => {
-                which(cli, (error, path) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-                    resolve(path);
-                });
-            });
-            if (!pathCli) {
-                return buildCli;
-            }
-            const pathVersion = await this.spawn(`"${pathCli}"`, ['version']);
-            const pathShortVersion = (pathVersion.match(version) || [])[0];
-            if (semver.gt(pathShortVersion, buildShortVersion)) {
-                this.execPath = pathCli;
-                return pathCli;
-            }
-        } catch (error) {
-            this.logger.warn(`Could not check for Arduino CLI in $PATH, using embedded CLI instead:`, error);
-            // Any errors here should be safe to ignore, e.g.:
-            // - Could not search for CLI in $PATH
-            // - Could not get version of CLI in $PATH
+        const pathCli = await new Promise<string | undefined>(resolve => which(cli, (error, path) => resolve(error ? undefined : path)));
+        if (!pathCli) {
+            return buildCli;
+        }
+        const pathVersion = await this.spawn(`"${pathCli}"`, ['version']);
+        const pathShortVersion = (pathVersion.match(version) || [])[0];
+        if (semver.gt(pathShortVersion, buildShortVersion)) {
+            this.execPath = pathCli;
+            return pathCli;
         }
         return buildCli;
     }

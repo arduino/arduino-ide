@@ -42,7 +42,24 @@ export class CoreClientProviderImpl implements CoreClientProvider {
 
     async getClient(workspaceRootOrResourceUri?: string): Promise<Client | undefined> {
         return this.clientRequestQueue.add(() => new Promise<Client | undefined>(async resolve => {
-            const roots = await this.workspaceServiceExt.roots();
+            let roots = undefined;
+            try {
+                roots = await this.workspaceServiceExt.roots();
+            } catch (e) {
+                if (e instanceof Error && e.message === 'Connection got disposed.') {
+                    console.info('The frontend has already disconnected.');
+                    // Ignore it for now: https://github.com/eclipse-theia/theia/issues/6499
+                    // Client has disconnected, and the server still runs the serial board poll.
+                    // The poll requires the client's workspace roots, but the client has disconnected :/
+                } else {
+                    throw e;
+                }
+            }
+            if (!roots) {
+                resolve(undefined);
+                return
+            }
+
             if (!workspaceRootOrResourceUri) {
                 resolve(this.getOrCreateClient(roots[0]));
                 return;

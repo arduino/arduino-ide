@@ -1,3 +1,4 @@
+import { Installable } from './installable';
 
 export interface ArduinoComponent {
     readonly name: string;
@@ -6,8 +7,8 @@ export interface ArduinoComponent {
     readonly description: string;
     readonly moreInfoLink?: string;
 
-    readonly availableVersions: string[];
+    readonly availableVersions: Installable.Version[];
     readonly installable: boolean;
 
-    readonly installedVersion?: string;
+    readonly installedVersion?: Installable.Version;
 }

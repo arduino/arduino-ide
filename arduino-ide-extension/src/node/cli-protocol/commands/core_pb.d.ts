@@ -2,6 +2,7 @@
 // file: commands/core.proto
 
 /* tslint:disable */
+/* eslint-disable */
 
 import * as jspb from "google-protobuf";
 import * as commands_common_pb from "../commands/common_pb";
@@ -262,6 +263,9 @@ export class PlatformSearchReq extends jspb.Message {
     getSearchArgs(): string;
     setSearchArgs(value: string): void;
 
+    getAllVersions(): boolean;
+    setAllVersions(value: boolean): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformSearchReq.AsObject;
@@ -277,6 +281,7 @@ export namespace PlatformSearchReq {
     export type AsObject = {
         instance?: commands_common_pb.Instance.AsObject,
         searchArgs: string,
+        allVersions: boolean,
     }
 }
 

@@ -1705,7 +1705,8 @@ proto.cc.arduino.cli.commands.PlatformSearchReq.prototype.toObject = function(op
 proto.cc.arduino.cli.commands.PlatformSearchReq.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
-    searchArgs: jspb.Message.getFieldWithDefault(msg, 2, "")
+    searchArgs: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    allVersions: jspb.Message.getFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -1751,6 +1752,10 @@ proto.cc.arduino.cli.commands.PlatformSearchReq.deserializeBinaryFromReader = fu
       var value = /** @type {string} */ (reader.readString());
       msg.setSearchArgs(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setAllVersions(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1792,6 +1797,13 @@ proto.cc.arduino.cli.commands.PlatformSearchReq.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getAllVersions();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -1840,6 +1852,23 @@ proto.cc.arduino.cli.commands.PlatformSearchReq.prototype.getSearchArgs = functi
 /** @param {string} value */
 proto.cc.arduino.cli.commands.PlatformSearchReq.prototype.setSearchArgs = function(value) {
   jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional bool all_versions = 3;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.PlatformSearchReq.prototype.getAllVersions = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 3, false));
+};
+
+
+/** @param {boolean} value */
+proto.cc.arduino.cli.commands.PlatformSearchReq.prototype.setAllVersions = function(value) {
+  jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 

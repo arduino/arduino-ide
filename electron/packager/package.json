@@ -9,8 +9,8 @@
     "cli": "./cli"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Arduino SA",
+  "license": "MIT",
   "dependencies": {
     "depcheck": "^0.7.1",
     "shelljs": "^0.8.3",

@@ -3,7 +3,7 @@ import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { CommandContribution, CommandRegistry, Command } from '@theia/core/lib/common/command';
+import { CommandContribution, CommandRegistry, Command, CommandHandler } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
@@ -22,9 +22,11 @@ import {
     OpenerService,
     Widget,
     StatusBar,
-    ShellLayoutRestorer,
     StatusBarAlignment,
-    QuickOpenService
+    QuickOpenService,
+    ApplicationShell,
+    FrontendApplicationContribution,
+    FrontendApplication
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
@@ -44,6 +46,14 @@ import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { ArduinoWorkspaceService } from './arduino-workspace-service';
+import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
+import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
+import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
+import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { EditorMode } from './editor-mode';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -57,16 +67,8 @@ export namespace ArduinoToolbarContextMenu {
     export const EXAMPLE_SKETCHES_GROUP: MenuPath = [...OPEN_SKETCH_PATH, '3_examples'];
 }
 
-export namespace ArduinoAdvancedMode {
-    export const LS_ID = 'arduino-advanced-mode';
-    export const TOGGLED: boolean = (() => {
-        const advancedModeStr = window.localStorage.getItem(LS_ID);
-        return advancedModeStr === 'true';
-    })();
-}
-
 @injectable()
-export class ArduinoFrontendContribution implements TabBarToolbarContribution, CommandContribution, MenuContribution {
+export class ArduinoFrontendContribution implements FrontendApplicationContribution, TabBarToolbarContribution, CommandContribution, MenuContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -126,13 +128,13 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     protected readonly menuRegistry: MenuModelRegistry;
 
     @inject(CommandRegistry)
-    protected readonly commands: CommandRegistry;
+    protected readonly commandRegistry: CommandRegistry;
 
     @inject(StatusBar)
     protected readonly statusBar: StatusBar;
 
-    @inject(ShellLayoutRestorer)
-    protected readonly layoutRestorer: ShellLayoutRestorer;
+    @inject(ArduinoShellLayoutRestorer)
+    protected readonly layoutRestorer: ArduinoShellLayoutRestorer;
 
     @inject(QuickOpenService)
     protected readonly quickOpenService: QuickOpenService;
@@ -146,8 +148,29 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
     @inject(MonitorConnection)
     protected readonly monitorConnection: MonitorConnection;
 
-    protected boardsToolbarItem: BoardsToolBarItem | null;
-    protected wsSketchCount: number = 0;
+    @inject(ApplicationShell)
+    protected readonly shell: ApplicationShell;
+
+    @inject(FileNavigatorContribution)
+    protected readonly fileNavigatorContributions: FileNavigatorContribution;
+
+    @inject(OutlineViewContribution)
+    protected readonly outlineContribution: OutlineViewContribution;
+
+    @inject(ProblemContribution)
+    protected readonly problemContribution: ProblemContribution;
+
+    @inject(ScmContribution)
+    protected readonly scmContribution: ScmContribution;
+
+    @inject(SearchInWorkspaceFrontendContribution)
+    protected readonly siwContribution: SearchInWorkspaceFrontendContribution;
+
+    @inject(EditorMode)
+    protected readonly editorMode: EditorMode;
+
+    protected application: FrontendApplication;
+    protected wsSketchCount: number = 0; // TODO: this does not belong here, does it?
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -169,6 +192,22 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             this.boardsService.getAttachedBoards(),
             this.boardsService.getAvailablePorts()
         ]).then(([{ boards }, { ports }]) => this.boardsServiceClient.tryReconnect(boards, ports));
+    }
+
+    onStart(app: FrontendApplication): void {
+        this.application = app;
+        // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
+        for (const viewContribution of [
+            this.fileNavigatorContributions,
+            this.outlineContribution,
+            this.problemContribution,
+            this.scmContribution,
+            this.siwContribution] as Array<FrontendApplicationContribution>) {
+
+            if (viewContribution.initializeLayout) {
+                viewContribution.initializeLayout(this.application);
+            }
+        }
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -196,8 +235,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             id: BoardsToolBarItem.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
                 key='boardsToolbarItem'
-                ref={ref => this.boardsToolbarItem = ref}
-                commands={this.commands}
+                commands={this.commandRegistry}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left'
@@ -213,12 +251,48 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             command: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             tooltip: 'Toggle Advanced Mode',
-            text: (ArduinoAdvancedMode.TOGGLED ? '$(toggle-on)' : '$(toggle-off)'),
+            text: (this.editorMode.proMode ? '$(toggle-on)' : '$(toggle-off)'),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
         });
     }
 
     registerCommands(registry: CommandRegistry): void {
+        // TODO: use proper API https://github.com/eclipse-theia/theia/pull/6599
+        const allHandlers: { [id: string]: CommandHandler[] } = (registry as any)._handlers;
+        // Make sure to reveal the `Explorer` before executing `New File` and `New Folder`.
+        for (const command of [WorkspaceCommands.NEW_FILE, WorkspaceCommands.NEW_FOLDER]) {
+            const { id } = command;
+            const handlers = allHandlers[id].slice();
+            registry.unregisterCommand(id);
+            registry.registerCommand(command);
+            for (const handler of handlers) {
+                const wrapper: CommandHandler = {
+                    execute: (...args: any[]) => {
+                        this.fileNavigatorContributions.openView({ reveal: true }).then(() => handler.execute(args));
+                    },
+                    isVisible: (...args: any[]) => {
+                        return handler.isVisible!(args);
+                    },
+                    isEnabled: (args: any[]) => {
+                        return handler.isEnabled!(args);
+                    },
+                    isToggled: (args: any[]) => {
+                        return handler.isToggled!(args);
+                    }
+                };
+                if (!handler.isEnabled) {
+                    delete wrapper.isEnabled;
+                }
+                if (!handler.isToggled) {
+                    delete wrapper.isToggled;
+                }
+                if (!handler.isVisible) {
+                    delete wrapper.isVisible;
+                }
+                registry.registerHandler(id, wrapper);
+            }
+        }
+
         registry.registerCommand(ArduinoCommands.VERIFY, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
@@ -296,7 +370,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                         });
                     }
                 } else {
-                    this.commands.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
+                    this.commandRegistry.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
                 }
             }
         });
@@ -342,18 +416,14 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             }
         })
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            execute: () => {
-                const oldModeState = ArduinoAdvancedMode.TOGGLED;
-                window.localStorage.setItem(ArduinoAdvancedMode.LS_ID, oldModeState ? 'false' : 'true');
-                registry.executeCommand('reset.layout');
-            },
+            execute: () => this.editorMode.toggle(),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
-            isToggled: () => ArduinoAdvancedMode.TOGGLED
+            isToggled: () => this.editorMode.proMode
         })
     }
 
     registerMenus(registry: MenuModelRegistry) {
-        if (!ArduinoAdvancedMode.TOGGLED) {
+        if (!this.editorMode.proMode) {
             // If are not in pro-mode, we have to disable the context menu for the tabs.
             // Such as `Close`, `Close All`, etc.
             for (const command of [
@@ -362,15 +432,14 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 CommonCommands.CLOSE_RIGHT_TABS,
                 CommonCommands.CLOSE_ALL_TABS,
                 CommonCommands.COLLAPSE_PANEL,
-                CommonCommands.TOGGLE_MAXIMIZED
+                CommonCommands.TOGGLE_MAXIMIZED,
+                FileNavigatorCommands.REVEAL_IN_NAVIGATOR
             ]) {
                 registry.unregisterMenuAction(command);
             }
 
             registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
             registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
-
-            registry.unregisterMenuAction(WorkspaceCommands.NEW_FOLDER);
 
             registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
             registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
@@ -425,8 +494,8 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
                 const command: Command = {
                     id: 'openSketch' + sketch.name
                 }
-                this.commands.registerCommand(command, {
-                    execute: () => this.commands.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+                this.commandRegistry.registerCommand(command, {
+                    execute: () => this.commandRegistry.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
                 });
 
                 registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {
@@ -466,7 +535,7 @@ export class ArduinoFrontendContribution implements TabBarToolbarContribution, C
             if (destinationFile && !destinationFile.isDirectory) {
                 const message = await this.validate(destinationFile);
                 if (!message) {
-                    await this.workspaceService.open(destinationFileUri);
+                    this.workspaceService.open(destinationFileUri);
                     return destinationFileUri;
                 } else {
                     this.messageService.warn(message);

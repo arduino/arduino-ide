@@ -2,6 +2,7 @@
 // file: monitor/monitor.proto
 
 /* tslint:disable */
+/* eslint-disable */
 
 import * as grpc from "@grpc/grpc-js";
 import * as monitor_monitor_pb from "../monitor/monitor_pb";

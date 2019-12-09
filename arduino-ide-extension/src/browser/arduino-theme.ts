@@ -9,6 +9,7 @@ const ARDUINO_JSON = MonacoThemeRegistry.SINGLETON.register(
 export class ArduinoTheme {
 
     static readonly arduino: Theme = {
+        type: 'light',
         id: 'arduino-theme',
         label: 'Arduino Light Theme',
         description: 'Arduino Light Theme',

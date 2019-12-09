@@ -4,7 +4,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService } from '../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from './arduino-workspace-resolver';
-import { ArduinoAdvancedMode } from './arduino-frontend-contribution';
+import { EditorMode } from './editor-mode';
 
 @injectable()
 export class ArduinoWorkspaceService extends WorkspaceService {
@@ -18,7 +18,10 @@ export class ArduinoWorkspaceService extends WorkspaceService {
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
 
-    async getDefaultWorkspacePath(): Promise<string | undefined> {
+    @inject(EditorMode)
+    protected readonly editorMode: EditorMode;
+
+    async getDefaultWorkspaceUri(): Promise<string | undefined> {
         const [hash, recentWorkspaces, recentSketches] = await Promise.all([
             window.location.hash,
             this.sketchService.getSketches().then(sketches => sketches.map(({ uri }) => uri)),
@@ -36,7 +39,8 @@ export class ArduinoWorkspaceService extends WorkspaceService {
             await this.server.setMostRecentlyUsedWorkspace(uri);
             return toOpen.uri;
         }
-        return (await this.sketchService.createNewSketch()).uri;
+        const { sketchDirUri } = (await this.configService.getConfiguration());
+        return (await this.sketchService.createNewSketch(sketchDirUri)).uri;
     }
 
     private async isValid(uri: string): Promise<boolean> {
@@ -46,7 +50,7 @@ export class ArduinoWorkspaceService extends WorkspaceService {
         }
         // The workspace root location must exist. However, when opening a workspace root in pro-mode,
         // the workspace root must not be a sketch folder. It can be the default sketch directory, or any other directories, for instance.
-        if (!ArduinoAdvancedMode.TOGGLED) {
+        if (this.editorMode.proMode) {
             return true;
         }
         const sketchFolder = await this.sketchService.isSketchFolder(uri);

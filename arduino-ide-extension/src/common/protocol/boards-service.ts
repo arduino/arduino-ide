@@ -46,10 +46,15 @@ export interface BoardInstalledEvent {
     readonly pkg: Readonly<BoardPackage>;
 }
 
+export interface BoardUninstalledEvent {
+    readonly pkg: Readonly<BoardPackage>;
+}
+
 export const BoardsServiceClient = Symbol('BoardsServiceClient');
 export interface BoardsServiceClient {
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
     notifyBoardInstalled(event: BoardInstalledEvent): void
+    notifyBoardUninstalled(event: BoardUninstalledEvent): void
 }
 
 export const BoardsServicePath = '/services/boards-service';
@@ -130,7 +135,7 @@ export namespace Port {
         }
         if (isOSX) {
             // Example: `/dev/cu.usbmodem14401`
-            if (/(tty|cu)\..*/.test(address.substring('/dev/'.length))) { 
+            if (/(tty|cu)\..*/.test(address.substring('/dev/'.length))) {
                 return [
                     '/dev/cu.MALS',
                     '/dev/cu.SOC',
