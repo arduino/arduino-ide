@@ -1,5 +1,5 @@
 {
-  "name": "arduino.Pro.IDE",
+  "name": "arduino-pro-ide",
   "description": "Arduino Pro IDE",
   "main": "src-gen/frontend/electron-main.js",
   "author": "Arduino SA",
@@ -32,7 +32,7 @@
   ],
   "build": {
     "productName": "Arduino Pro IDE",
-    "appId": "arduino.Pro.IDE",
+    "appId": "arduino.ProIDE",
     "asar": false,
     "directories": {
       "buildResources": "resources"
