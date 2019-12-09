@@ -10,8 +10,6 @@
     "@babel/highlight" "^7.0.0"
 
 "@babel/core@^7.5.5":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "7.7.5"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.7.5.tgz#ae1323cd035b5160293307f50647e83f8ba62f7e"
   integrity sha512-M42+ScN4+1S9iB6f+TL7QBpoQETxbclx+KNoKJABghnKYE+fMzSGqst0BZJc8CpI625bwPwYgUyRvxZ+0mZzpw==
@@ -23,32 +21,6 @@
     "@babel/template" "^7.7.4"
     "@babel/traverse" "^7.7.4"
     "@babel/types" "^7.7.4"
-=======
-  version "7.7.2"
-  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.7.2.tgz#ea5b99693bcfc058116f42fa1dd54da412b29d91"
-  integrity sha512-eeD7VEZKfhK1KUXGiyPFettgF3m513f8FoBSWiQ1xTvl1RAopLs42Wp9+Ze911I6H0N9lNqJMDgoZT7gHsipeQ==
-  dependencies:
-    "@babel/code-frame" "^7.5.5"
-    "@babel/generator" "^7.7.2"
-    "@babel/helpers" "^7.7.0"
-    "@babel/parser" "^7.7.2"
-    "@babel/template" "^7.7.0"
-    "@babel/traverse" "^7.7.2"
-    "@babel/types" "^7.7.2"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.7.4.tgz#37e864532200cb6b50ee9a4045f5f817840166ab"
-  integrity sha512-+bYbx56j4nYBmpsWtnPUsKW3NdnYxbqyfrP2w9wILBuHzdfIKz9prieZK0DFPyIzkjYVUe4QkusGL07r5pXznQ==
-  dependencies:
-    "@babel/code-frame" "^7.5.5"
-    "@babel/generator" "^7.7.4"
-    "@babel/helpers" "^7.7.4"
-    "@babel/parser" "^7.7.4"
-    "@babel/template" "^7.7.4"
-    "@babel/traverse" "^7.7.4"
-    "@babel/types" "^7.7.4"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     convert-source-map "^1.7.0"
     debug "^4.1.0"
     json5 "^2.1.0"
@@ -153,39 +125,16 @@
   dependencies:
     "@babel/types" "^7.7.4"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@babel/helper-module-transforms@^7.7.4", "@babel/helper-module-transforms@^7.7.5":
   version "7.7.5"
   resolved "https://registry.yarnpkg.com/@babel/helper-module-transforms/-/helper-module-transforms-7.7.5.tgz#d044da7ffd91ec967db25cd6748f704b6b244835"
   integrity sha512-A7pSxyJf1gN5qXVcidwLWydjftUN878VkalhXX5iQDuGyiGK3sOrrKKHF4/A4fwHtnsotv/NipwAeLzY4KQPvw==
-=======
-"@babel/helper-module-transforms@^7.7.4":
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/helper-module-transforms/-/helper-module-transforms-7.7.4.tgz#8d7cdb1e1f8ea3d8c38b067345924ac4f8e0879a"
-  integrity sha512-ehGBu4mXrhs0FxAqN8tWkzF8GSIGAiEumu4ONZ/hD9M88uHcD+Yu2ttKfOCgwzoesJOJrtQh7trI5YPbRtMmnA==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@babel/helper-module-imports" "^7.7.4"
     "@babel/helper-simple-access" "^7.7.4"
     "@babel/helper-split-export-declaration" "^7.7.4"
     "@babel/template" "^7.7.4"
     "@babel/types" "^7.7.4"
-<<<<<<< HEAD
-=======
-"@babel/helper-module-transforms@^7.1.0", "@babel/helper-module-transforms@^7.7.0":
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/@babel/helper-module-transforms/-/helper-module-transforms-7.7.0.tgz#154a69f0c5b8fd4d39e49750ff7ac4faa3f36786"
-  integrity sha512-rXEefBuheUYQyX4WjV19tuknrJFwyKw0HgzRwbkyTbB+Dshlq7eqkWbyjzToLrMZk/5wKVKdWFluiAsVkHXvuQ==
-  dependencies:
-    "@babel/helper-module-imports" "^7.7.0"
-    "@babel/helper-simple-access" "^7.7.0"
-    "@babel/helper-split-export-declaration" "^7.7.0"
-    "@babel/template" "^7.7.0"
-    "@babel/types" "^7.7.0"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     lodash "^4.17.13"
 
 "@babel/helper-optimise-call-expression@^7.7.4":
@@ -271,24 +220,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@babel/parser@^7.7.4", "@babel/parser@^7.7.5":
   version "7.7.5"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.7.5.tgz#cbf45321619ac12d83363fcf9c94bb67fa646d71"
   integrity sha512-KNlOe9+/nk4i29g0VXgl8PEXIRms5xKLJeuZ6UptN0fHv+jDiriG+y94X6qAgWTR0h3KaoM1wK5G5h7MHFRSig==
-=======
-"@babel/parser@^7.7.0", "@babel/parser@^7.7.2":
-  version "7.7.3"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.7.3.tgz#5fad457c2529de476a248f75b0f090b3060af043"
-  integrity sha512-bqv+iCo9i+uLVbI0ILzKkvMorqxouI+GbV13ivcARXn9NNEabi2IEz912IgNpT/60BNXac5dgcfjb94NjsF33A==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@babel/parser@^7.7.4":
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.7.4.tgz#75ab2d7110c2cf2fa949959afb05fa346d2231bb"
-  integrity sha512-jIwvLO0zCL+O/LmEJQjWA75MQTWwx3c3u2JOTDK5D3/9egrWRRA0/0hk9XXywYnXZVVpzrBYeIQTmhwUaePI9g==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 
 "@babel/plugin-proposal-async-generator-functions@^7.7.4":
   version "7.7.4"
@@ -492,8 +427,6 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@babel/plugin-transform-modules-amd@^7.7.5":
   version "7.7.5"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-amd/-/plugin-transform-modules-amd-7.7.5.tgz#39e0fb717224b59475b306402bb8eedab01e729c"
@@ -509,33 +442,6 @@
   integrity sha512-9Cq4zTFExwFhQI6MT1aFxgqhIsMWQWDVwOgLzl7PTWJHsNaqFvklAU+Oz6AQLAS0dJKTwZSOCo20INwktxpi3Q==
   dependencies:
     "@babel/helper-module-transforms" "^7.7.5"
-=======
-"@babel/plugin-transform-modules-amd@^7.5.0":
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-amd/-/plugin-transform-modules-amd-7.5.0.tgz#ef00435d46da0a5961aa728a1d2ecff063e4fb91"
-  integrity sha512-n20UsQMKnWrltocZZm24cRURxQnWIvsABPJlw/fvoy9c6AgHZzoelAIzajDHAQrDpuKFFPPcFGd7ChsYuIUMpg==
-=======
-"@babel/plugin-transform-modules-amd@^7.7.4":
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-amd/-/plugin-transform-modules-amd-7.7.4.tgz#276b3845ca2b228f2995e453adc2e6f54d72fb71"
-  integrity sha512-/542/5LNA18YDtg1F+QHvvUSlxdvjZoD/aldQwkq+E3WCkbEjNSN9zdrOXaSlfg3IfGi22ijzecklF/A7kVZFQ==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  dependencies:
-    "@babel/helper-module-transforms" "^7.7.4"
-    "@babel/helper-plugin-utils" "^7.0.0"
-    babel-plugin-dynamic-import-node "^2.3.0"
-
-"@babel/plugin-transform-modules-commonjs@^7.7.4":
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-commonjs/-/plugin-transform-modules-commonjs-7.7.4.tgz#bee4386e550446343dd52a571eda47851ff857a3"
-  integrity sha512-k8iVS7Jhc367IcNF53KCwIXtKAH7czev866ThsTgy8CwlXjnKZna2VHwChglzLleYrcHz1eQEIJlGRQxB53nqA==
-  dependencies:
-<<<<<<< HEAD
-    "@babel/helper-module-transforms" "^7.7.0"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@babel/helper-module-transforms" "^7.7.4"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/helper-simple-access" "^7.7.4"
     babel-plugin-dynamic-import-node "^2.3.0"
@@ -595,24 +501,10 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@babel/plugin-transform-regenerator@^7.7.5":
   version "7.7.5"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-regenerator/-/plugin-transform-regenerator-7.7.5.tgz#3a8757ee1a2780f390e89f246065ecf59c26fce9"
   integrity sha512-/8I8tPvX2FkuEyWbjRCt4qTAgZK0DVy8QRguhA524UH48RfGJy94On2ri+dCuwOpcerPRl9O4ebQkRcVzIaGBw==
-=======
-"@babel/plugin-transform-regenerator@^7.7.0":
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-regenerator/-/plugin-transform-regenerator-7.7.0.tgz#f1b20b535e7716b622c99e989259d7dd942dd9cc"
-  integrity sha512-AXmvnC+0wuj/cFkkS/HFHIojxH3ffSXE+ttulrqWjZZRaUOonfJc60e1wSNT4rV8tIunvu/R3wCp71/tLAa9xg==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@babel/plugin-transform-regenerator@^7.7.4":
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-regenerator/-/plugin-transform-regenerator-7.7.4.tgz#d18eac0312a70152d7d914cbed2dc3999601cfc0"
-  integrity sha512-e7MWl5UJvmPEwFJTwkBlPmqixCtr9yAASBqff4ggXTNicZiwbF8Eefzm6NVgfiBp7JdAGItecnctKTgH44q2Jw==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     regenerator-transform "^0.14.0"
 
@@ -624,21 +516,9 @@
     "@babel/helper-plugin-utils" "^7.0.0"
 
 "@babel/plugin-transform-runtime@^7.5.5":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "7.7.6"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.7.6.tgz#4f2b548c88922fb98ec1c242afd4733ee3e12f61"
   integrity sha512-tajQY+YmXR7JjTwRvwL4HePqoL3DYxpYXIHKVvrOIvJmeHe2y1w4tz5qz9ObUDC9m76rCzIMPyn4eERuwA4a4A==
-=======
-  version "7.6.2"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.6.2.tgz#2669f67c1fae0ae8d8bf696e4263ad52cb98b6f8"
-  integrity sha512-cqULw/QB4yl73cS5Y0TZlQSjDvNkzDbu0FurTZyHlJpWE5T3PCMdnyV+xXoH1opr1ldyHODe3QAX3OMAii5NxA==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.7.4.tgz#51fe458c1c1fa98a8b07934f4ed38b6cd62177a6"
-  integrity sha512-O8kSkS5fP74Ad/8pfsCMGa8sBRdLxYoSReaARRNSz3FbFQj3z/QUvoUmJ28gn9BO93YfnXc3j+Xyaqe8cKDNBQ==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@babel/helper-module-imports" "^7.7.4"
     "@babel/helper-plugin-utils" "^7.0.0"
@@ -691,28 +571,12 @@
     "@babel/helper-plugin-utils" "^7.0.0"
 
 "@babel/preset-env@^7.5.5":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "7.7.6"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.7.6.tgz#39ac600427bbb94eec6b27953f1dfa1d64d457b2"
   integrity sha512-k5hO17iF/Q7tR9Jv8PdNBZWYW6RofxhnxKjBMc0nG4JTaWvOTiPoO/RLFwAKcA4FpmuBFm6jkoqaRJLGi0zdaQ==
-=======
-  version "7.7.1"
-  resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.7.1.tgz#04a2ff53552c5885cf1083e291c8dd5490f744bb"
-  integrity sha512-/93SWhi3PxcVTDpSqC+Dp4YxUu3qZ4m7I76k0w73wYfn7bGVuRIO4QUz95aJksbS+AD1/mT1Ie7rbkT0wSplaA==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.7.4.tgz#ccaf309ae8d1ee2409c85a4e2b5e280ceee830f8"
-  integrity sha512-Dg+ciGJjwvC1NIe/DGblMbcGq1HOtKbw8RLl4nIjlfcILKEOkWT/vRqPpumswABEBVudii6dnVwrBtzD7ibm4g==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@babel/helper-module-imports" "^7.7.4"
     "@babel/helper-plugin-utils" "^7.0.0"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@babel/plugin-proposal-async-generator-functions" "^7.7.4"
     "@babel/plugin-proposal-dynamic-import" "^7.7.4"
     "@babel/plugin-proposal-json-strings" "^7.7.4"
@@ -739,13 +603,8 @@
     "@babel/plugin-transform-function-name" "^7.7.4"
     "@babel/plugin-transform-literals" "^7.7.4"
     "@babel/plugin-transform-member-expression-literals" "^7.7.4"
-<<<<<<< HEAD
     "@babel/plugin-transform-modules-amd" "^7.7.5"
     "@babel/plugin-transform-modules-commonjs" "^7.7.5"
-=======
-    "@babel/plugin-transform-modules-amd" "^7.7.4"
-    "@babel/plugin-transform-modules-commonjs" "^7.7.4"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@babel/plugin-transform-modules-systemjs" "^7.7.4"
     "@babel/plugin-transform-modules-umd" "^7.7.4"
     "@babel/plugin-transform-named-capturing-groups-regex" "^7.7.4"
@@ -753,11 +612,7 @@
     "@babel/plugin-transform-object-super" "^7.7.4"
     "@babel/plugin-transform-parameters" "^7.7.4"
     "@babel/plugin-transform-property-literals" "^7.7.4"
-<<<<<<< HEAD
     "@babel/plugin-transform-regenerator" "^7.7.5"
-=======
-    "@babel/plugin-transform-regenerator" "^7.7.4"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@babel/plugin-transform-reserved-words" "^7.7.4"
     "@babel/plugin-transform-shorthand-properties" "^7.7.4"
     "@babel/plugin-transform-spread" "^7.7.4"
@@ -766,76 +621,16 @@
     "@babel/plugin-transform-typeof-symbol" "^7.7.4"
     "@babel/plugin-transform-unicode-regex" "^7.7.4"
     "@babel/types" "^7.7.4"
-<<<<<<< HEAD
-=======
-    "@babel/plugin-proposal-async-generator-functions" "^7.7.0"
-    "@babel/plugin-proposal-dynamic-import" "^7.7.0"
-    "@babel/plugin-proposal-json-strings" "^7.2.0"
-    "@babel/plugin-proposal-object-rest-spread" "^7.6.2"
-    "@babel/plugin-proposal-optional-catch-binding" "^7.2.0"
-    "@babel/plugin-proposal-unicode-property-regex" "^7.7.0"
-    "@babel/plugin-syntax-async-generators" "^7.2.0"
-    "@babel/plugin-syntax-dynamic-import" "^7.2.0"
-    "@babel/plugin-syntax-json-strings" "^7.2.0"
-    "@babel/plugin-syntax-object-rest-spread" "^7.2.0"
-    "@babel/plugin-syntax-optional-catch-binding" "^7.2.0"
-    "@babel/plugin-syntax-top-level-await" "^7.7.0"
-    "@babel/plugin-transform-arrow-functions" "^7.2.0"
-    "@babel/plugin-transform-async-to-generator" "^7.7.0"
-    "@babel/plugin-transform-block-scoped-functions" "^7.2.0"
-    "@babel/plugin-transform-block-scoping" "^7.6.3"
-    "@babel/plugin-transform-classes" "^7.7.0"
-    "@babel/plugin-transform-computed-properties" "^7.2.0"
-    "@babel/plugin-transform-destructuring" "^7.6.0"
-    "@babel/plugin-transform-dotall-regex" "^7.7.0"
-    "@babel/plugin-transform-duplicate-keys" "^7.5.0"
-    "@babel/plugin-transform-exponentiation-operator" "^7.2.0"
-    "@babel/plugin-transform-for-of" "^7.4.4"
-    "@babel/plugin-transform-function-name" "^7.7.0"
-    "@babel/plugin-transform-literals" "^7.2.0"
-    "@babel/plugin-transform-member-expression-literals" "^7.2.0"
-    "@babel/plugin-transform-modules-amd" "^7.5.0"
-    "@babel/plugin-transform-modules-commonjs" "^7.7.0"
-    "@babel/plugin-transform-modules-systemjs" "^7.7.0"
-    "@babel/plugin-transform-modules-umd" "^7.7.0"
-    "@babel/plugin-transform-named-capturing-groups-regex" "^7.7.0"
-    "@babel/plugin-transform-new-target" "^7.4.4"
-    "@babel/plugin-transform-object-super" "^7.5.5"
-    "@babel/plugin-transform-parameters" "^7.4.4"
-    "@babel/plugin-transform-property-literals" "^7.2.0"
-    "@babel/plugin-transform-regenerator" "^7.7.0"
-    "@babel/plugin-transform-reserved-words" "^7.2.0"
-    "@babel/plugin-transform-shorthand-properties" "^7.2.0"
-    "@babel/plugin-transform-spread" "^7.6.2"
-    "@babel/plugin-transform-sticky-regex" "^7.2.0"
-    "@babel/plugin-transform-template-literals" "^7.4.4"
-    "@babel/plugin-transform-typeof-symbol" "^7.2.0"
-    "@babel/plugin-transform-unicode-regex" "^7.7.0"
-    "@babel/types" "^7.7.1"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     browserslist "^4.6.0"
     core-js-compat "^3.4.7"
     invariant "^2.2.2"
     js-levenshtein "^1.1.3"
     semver "^5.5.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@babel/runtime@^7.1.2", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2":
   version "7.7.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.6.tgz#d18c511121aff1b4f2cd1d452f1bac9601dd830f"
   integrity sha512-BWAJxpNVa0QlE5gZdWjSxXtemZyZ9RmrmVozxt3NUXeZhVIJ5ANyqmMc0JDrivBZyxUuQvFxlvH4OWWOogGfUw==
-=======
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.4.4", "@babel/runtime@^7.7.2":
-=======
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2":
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  version "7.7.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.4.tgz#b23a856751e4bf099262f867767889c0e3fe175b"
-  integrity sha512-r24eVUUr0QqNZa+qrImUk8fn5SPhHq+IfYvIoIMg0do3GdK9sMdiLKP3GYVVaxpPKORgm8KRKaNTEhAjgIpLMw==
->>>>>>> e40dc8e... Updated to next Theia.
   dependencies:
     regenerator-runtime "^0.13.2"
 
@@ -1869,21 +1664,9 @@
     "@phosphor/virtualdom" "^1.2.0"
 
 "@primer/octicons-react@^9.0.0":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "9.3.1"
   resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-9.3.1.tgz#f38812d387373383d40bb490b56d04eaddfbd5fe"
   integrity sha512-UOxcHuGAJ4YvmWodrgBnx44z/bPiD2C/TD7HlOB3BvvT9ozAOwoEm7lKKQqPo9SeDLu73ZsfbFl1AvnBuspzmQ==
-=======
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-9.2.0.tgz#76446c36346fef67cbf91c78bd329c8f860c35d5"
-  integrity sha512-IWY8tJ6j40R5ks6KYORxVxBsmKax/ttXcH7SyHfku0IrYYc/3TSwaPhUDh9hGKDoyE9TUmrku101XJgCbfKhmg==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "9.3.1"
-  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-9.3.1.tgz#f38812d387373383d40bb490b56d04eaddfbd5fe"
-  integrity sha512-UOxcHuGAJ4YvmWodrgBnx44z/bPiD2C/TD7HlOB3BvvT9ozAOwoEm7lKKQqPo9SeDLu73ZsfbFl1AvnBuspzmQ==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     prop-types "^15.6.1"
 
@@ -1904,38 +1687,16 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
   integrity sha512-ONhaKPIufzzrlNbqtWFFd+jlnemX6lJAgq9ZeiZtS7I1PIf/la7CW4m83rTXRnVnsMbW2k56pGYu7AUFJD9Pow==
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/application-manager@0.14.0-next.0159cd5b":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-0.14.0-next.0159cd5b.tgz#4e57bd5eda4d2710332d1a77151767dec9a8693a"
   integrity sha512-KgxMZxQZR/LtId6hQFJXpQ5aVDKfYy0+eX1GG4ClJI9pIHoIa3Kllfl3EEN2lsSeFRQq+UtSdSUbvNQqvUv6Pg==
-=======
-"@theia/application-manager@0.14.0-next.d5c81105":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-0.14.0-next.d5c81105.tgz#e8ea3e9e1f737313cb51367c609f0b07a85dc527"
-  integrity sha512-phWXMre1ZZF+XCDtBIu0intveQ2Vu+ErJ6R4dXpK7UWhi4uS1vo4SwVGdaI3CVtXwoLcuvlHhLeENGnf7GBvBg==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@theia/application-manager@0.14.0-next.b6daa53a":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-0.14.0-next.b6daa53a.tgz#ddbe7a1738a9644b250a4739fa6be4e09e967eb6"
-  integrity sha512-t3zREnqDhn3gig6TJAn1X8dIBsFslUy0Sh6gyKNvTfh3CTWQKf33qyzzksz60pCoqPdxd6h/1gWk8yvE73CH3g==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@babel/core" "^7.5.5"
     "@babel/plugin-transform-classes" "^7.5.5"
     "@babel/plugin-transform-runtime" "^7.5.5"
     "@babel/preset-env" "^7.5.5"
-<<<<<<< HEAD
-<<<<<<< HEAD
     "@theia/application-package" "0.14.0-next.0159cd5b"
-=======
-    "@theia/application-package" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/application-package" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@theia/compression-webpack-plugin" "^3.0.0"
     "@types/fs-extra" "^4.0.2"
     babel-loader "^8.0.6"
@@ -1957,24 +1718,10 @@
     webpack-cli "2.0.12"
     worker-loader "^1.1.1"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/application-package@0.14.0-next.0159cd5b", "@theia/application-package@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-0.14.0-next.0159cd5b.tgz#888061bfaea245462b50b512829efcd5f2ae32ee"
   integrity sha512-ck0ttkgSJFzRfEZEhOC0FUh8aBz7SRFOEKw4yLgwO+RIFJLGJup5F//W2NFsBas8eHR9Ky/bcSYdxi0emEdaQg==
-=======
-"@theia/application-package@0.14.0-next.d5c81105", "@theia/application-package@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-0.14.0-next.d5c81105.tgz#f5d64170b95fdbfc51643920cbb041d747b24c21"
-  integrity sha512-11yuVHdF5LbqbVqcbETh54Qnk3b4YQMG1LrDLwvxwb77FYvmQq21c8QvFo91e13C7edR08L6zd950EcuxMxU8Q==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@theia/application-package@0.14.0-next.b6daa53a", "@theia/application-package@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-0.14.0-next.b6daa53a.tgz#03fda7343376b4363fc0561e6e951bc7360efa1c"
-  integrity sha512-OlFol/7bNduyAvCgsJ9s2yd6MTusKkwaaxyNxGyDNa/VZ/KtkPgOasMvGc/SlPqPZq0VrsR4dPsYtNyrgHqQGA==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@types/fs-extra" "^4.0.2"
     "@types/request" "^2.0.3"
@@ -1988,30 +1735,12 @@
     write-json-file "^2.2.0"
 
 "@theia/cli@next":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-0.14.0-next.0159cd5b.tgz#84ad3d65f7db7a004daabf954bba3164cc399138"
   integrity sha512-bLdRHYqK0WxMGf+SoUQkima1fnmY1obb2dYgo5cvSLOK4mXik1oOik4ZSLv+11oKDi3qJeT6D6hEFDLkD9KadA==
   dependencies:
     "@theia/application-manager" "0.14.0-next.0159cd5b"
     "@theia/application-package" "0.14.0-next.0159cd5b"
-=======
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-0.14.0-next.d5c81105.tgz#45ec34cc4a7d0c32381bb06384febe9fb6b5ba5a"
-  integrity sha512-ZXjzPbgCh0Ka/R4nKWw8RXzvodi3U9Ljb1fZ/1n3z0Buk+FZwCj7b+nxJdJnfEOoQUtbLsbEV29sGZeqsAEQ4Q==
-  dependencies:
-    "@theia/application-manager" "0.14.0-next.d5c81105"
-    "@theia/application-package" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-0.14.0-next.b6daa53a.tgz#dac05c755ef61fca845a40e0cf22979b02161253"
-  integrity sha512-ww+T0LDJe63Wx7HADfH3q+nbHpYseldepfLmrUBiqPR9Lu/9L21YZ515mdpESm4PZ3drmAyUgPnluDqzzTW9Kw==
-  dependencies:
-    "@theia/application-manager" "0.14.0-next.b6daa53a"
-    "@theia/application-package" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     yargs "^11.1.0"
 
 "@theia/compression-webpack-plugin@^3.0.0":
@@ -2026,37 +1755,15 @@
     serialize-javascript "^1.4.0"
     webpack-sources "^1.0.1"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/core@0.14.0-next.0159cd5b", "@theia/core@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/core/-/core-0.14.0-next.0159cd5b.tgz#06f8080680d9195c8a1d148dbaa2d2396e4ff503"
   integrity sha512-GZS++3J3TmP0xdb57CvSj/ryVaXeAaZsrQaEGR9w8tNoDk8Aq+bfSi72mqLBesnH5HuqHkniDLtxoox+spF+zg==
-=======
-"@theia/core@0.14.0-next.d5c81105", "@theia/core@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/core/-/core-0.14.0-next.d5c81105.tgz#5eefa912001dd69dcb2156c9b812ba7a420720b8"
-  integrity sha512-jPclNVybKWqEONFX5z1ot1IQtZb7YK4MkJNEnw/g1euewbJ3gUCY4A0/fNACA8xkLxNxz0uEpz7Cleh+EIhQOw==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@theia/core@0.14.0-next.b6daa53a", "@theia/core@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/core/-/core-0.14.0-next.b6daa53a.tgz#863cea06c8683c88b7fad6bbca34072db32e7d74"
-  integrity sha512-Wgpc6/XKDXhtOVPSB6lbsBHnIq74Yt7l5xiYMTeIg+PlYm/zJPLf9MPyslWQAiN5p7BsCUWOlwkQvmMa0IAXhw==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@phosphor/widgets" "^1.9.3"
     "@primer/octicons-react" "^9.0.0"
-<<<<<<< HEAD
-<<<<<<< HEAD
     "@theia/application-package" "0.14.0-next.0159cd5b"
-=======
-    "@theia/application-package" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/application-package" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@types/body-parser" "^1.16.4"
     "@types/express" "^4.16.0"
     "@types/fs-extra" "^4.0.2"
@@ -2094,15 +1801,9 @@
     yargs "^11.1.0"
 
 "@theia/cpp@next":
-<<<<<<< HEAD
   version "0.14.0-next.032512b0"
   resolved "https://registry.yarnpkg.com/@theia/cpp/-/cpp-0.14.0-next.032512b0.tgz#c2a376896862ab860b3801ed931263a773edac49"
   integrity sha512-eCqoI7btbJsqhAUlROod8TcXTwmZj8V74VpF0ADgTdePkovixKhOOKs7zlpMiiYOB6NdER8H8OIwDJl6acDzYA==
-=======
-  version "0.14.0-next.b9558cf1"
-  resolved "https://registry.yarnpkg.com/@theia/cpp/-/cpp-0.14.0-next.b9558cf1.tgz#416b7921d740e9ada5f7165b83563c25a8354aca"
-  integrity sha512-hE40NL5wKkf/yFXw0yatJaaoqZmP3YLTTV8z7IAs9OljjuBAf40IH4uFXw8VsW01/4rHmuIaamcKi4qf9GcWvA==
->>>>>>> e40dc8e... Updated to next Theia.
   dependencies:
     "@theia/core" next
     "@theia/editor" next
@@ -2116,8 +1817,6 @@
     "@theia/workspace" next
     string-argv "^0.1.1"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/editor@0.14.0-next.0159cd5b", "@theia/editor@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/editor/-/editor-0.14.0-next.0159cd5b.tgz#9ede3a38f4cf8be0eac26e9f963ec47e66b488f8"
@@ -2126,45 +1825,13 @@
     "@theia/core" "0.14.0-next.0159cd5b"
     "@theia/languages" "0.14.0-next.0159cd5b"
     "@theia/variable-resolver" "0.14.0-next.0159cd5b"
-=======
-"@theia/editor@0.14.0-next.d5c81105", "@theia/editor@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/editor/-/editor-0.14.0-next.d5c81105.tgz#f6868b33e58f5face7c531c70a9b6b6506fc842f"
-  integrity sha512-dEE5i3MAjnTfzfy2Td9CqgBQH6xjWjRY6b4PTPvv4LUup4sAil2ESjY/Or0JP+wMa+OJneHZ/FEr9bSvnb4qAQ==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/languages" "0.14.0-next.d5c81105"
-    "@theia/variable-resolver" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@theia/editor@0.14.0-next.b6daa53a", "@theia/editor@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/editor/-/editor-0.14.0-next.b6daa53a.tgz#47092d68639f5d4a0acd6b0ad473d205971a661c"
-  integrity sha512-bmCwwbbsgSwA50kaA/QjjkaczA5wjDaTYQRZcoaHl16mIFDUuaaN1z9BNVmx2nLwuDLuN2Pk8hvQPx/ZmnmihA==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/languages" "0.14.0-next.b6daa53a"
-    "@theia/variable-resolver" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@types/base64-arraybuffer" "0.1.0"
     base64-arraybuffer "^0.1.5"
 
 "@theia/electron@next":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/electron/-/electron-0.14.0-next.0159cd5b.tgz#56a48f794a71b1f95e4cd046e69fa4faa4f80902"
   integrity sha512-+IJyeWy3lc4KZ9iA7I92fLQA9BbDN9k5KjjdA22+rCJUdPt916ejs2jPf3C5qmK0W8IBFqqA/TlKr/VLV6boqQ==
-=======
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/electron/-/electron-0.14.0-next.d5c81105.tgz#197c4554b048b1846b7ee49adce4caaecf7db59b"
-  integrity sha512-QftSt1UaAdK/z9olRMszK3cDV0rdhDE0UNP1v9TA3VeEQ9sV+MUk0uVFghi0zFVIF/fukq239bsWioulX2EkCg==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/electron/-/electron-0.14.0-next.b6daa53a.tgz#ad949c10285b31a27f421bdc16a2c51203137768"
-  integrity sha512-LaR/aOnB0ImBacgyB9be43D0fLBCr/diddPJCzyWqksa0ekhaoxA366MRMCbyfYofVo3H+caRcb3avMasd9gMA==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     electron "^4.2.11"
     electron-download "^4.1.1"
@@ -2176,8 +1843,6 @@
     yargs "^11.1.0"
 
 "@theia/file-search@next":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/file-search/-/file-search-0.14.0-next.0159cd5b.tgz#287a5d96b4d8a24f5fc7d7b080fa9c369a96cc4a"
   integrity sha512-GwrFUXQYPOCXlVT+4DLsiNP8wUJ7uQR3Fbr2H0A+1RFTCwxYhZr09XuYw9ITqCDow7IPcky8LwnBDmmo95BcZw==
@@ -2197,43 +1862,6 @@
   dependencies:
     "@theia/application-package" "0.14.0-next.0159cd5b"
     "@theia/core" "0.14.0-next.0159cd5b"
-=======
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/file-search/-/file-search-0.14.0-next.d5c81105.tgz#a512e10f97e083ae0e653451a28e45a7103397f3"
-  integrity sha512-rRYzmB1h1OjtR+jNe16NHP+CeBilpKtmmR8X1RAoz3Fw+IZzCYEywRNtiZ3mUflkr9tGuCsjWMxMyVA1ojlyUQ==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/editor" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/process" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
-=======
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/file-search/-/file-search-0.14.0-next.b6daa53a.tgz#90877316594261b4add099856da3057febd8aa71"
-  integrity sha512-sihbmacQ+unnBS8ZrSFUivHfqkp6Jn0ENNw8SIRdwtKhTNrdRCKpI04aVUPjKChMVKluJp536JDR/6H+kFV77w==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/process" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-    fuzzy "^0.1.3"
-    vscode-ripgrep "^1.2.4"
-
-"@theia/filesystem@0.14.0-next.b6daa53a", "@theia/filesystem@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/filesystem/-/filesystem-0.14.0-next.b6daa53a.tgz#80d678046ffc698043f8a0f191a03c7995f19ebf"
-  integrity sha512-REQvRDJ5WLwOdW3+yp8ED3bUmHbmJxedK6GUUqKideUh9T7wYiQt2OWbKpc4mtR5z3FWDh5uXMOx/Jp9UFbIzA==
-  dependencies:
-<<<<<<< HEAD
-    "@theia/application-package" "0.14.0-next.d5c81105"
-    "@theia/core" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/application-package" "0.14.0-next.b6daa53a"
-    "@theia/core" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@types/body-parser" "^1.17.0"
     "@types/rimraf" "^2.0.2"
     "@types/tar-fs" "^1.16.1"
@@ -2254,8 +1882,6 @@
     zip-dir "^1.0.2"
 
 "@theia/git@next":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/git/-/git-0.14.0-next.0159cd5b.tgz#6e8971e74114ccb391bb43f25ff3ef19289c66a4"
   integrity sha512-GHOlIaZCGKuGOJWgd4/IBzlzHVe5iLZWbaHgAdoBGe/iObIA6f3qTZfNmS0UEHear798VjtjmCXGkioPFAfhlA==
@@ -2267,32 +1893,6 @@
     "@theia/navigator" "0.14.0-next.0159cd5b"
     "@theia/scm" "0.14.0-next.0159cd5b"
     "@theia/workspace" "0.14.0-next.0159cd5b"
-=======
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/git/-/git-0.14.0-next.d5c81105.tgz#95023fb20d4430fc594f8eb4c362be77aced5a58"
-  integrity sha512-bCFLq3mvle1lSzo3zv7OevZp5f4l9DXaE3WLrqLmQJdLNUlcxY3eE9pJSrHuonREQPJBBDLd3iHNuU3aumIo/Q==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/editor" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/languages" "0.14.0-next.d5c81105"
-    "@theia/navigator" "0.14.0-next.d5c81105"
-    "@theia/scm" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/git/-/git-0.14.0-next.b6daa53a.tgz#842b0600834d47e3023e8c5f032986873c91bfdb"
-  integrity sha512-M2yeE74cp4/vHj+pvrU/0AlhSUflY8SY/FrLw/TSTvrK9OQmcwnO7ec0UjtF6Qxa+KXYHBGPQr4LlRfM+20rMg==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/languages" "0.14.0-next.b6daa53a"
-    "@theia/navigator" "0.14.0-next.b6daa53a"
-    "@theia/scm" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@types/diff" "^3.2.2"
     "@types/p-queue" "^2.3.1"
     diff "^3.4.0"
@@ -2304,8 +1904,6 @@
     p-queue "^2.4.2"
     ts-md5 "^1.2.2"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/json@0.14.0-next.0159cd5b":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/json/-/json-0.14.0-next.0159cd5b.tgz#61efa83a4e5c54d9981fefd24d372a7b199bfd68"
@@ -2327,49 +1925,11 @@
     "@theia/output" "0.14.0-next.0159cd5b"
     "@theia/process" "0.14.0-next.0159cd5b"
     "@theia/workspace" "0.14.0-next.0159cd5b"
-=======
-"@theia/json@0.14.0-next.d5c81105":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/json/-/json-0.14.0-next.d5c81105.tgz#0dac3e0910d86cddf063c4c799066053a4158a13"
-  integrity sha512-xK0FkiIqXDPU4CCex19NRMEjc03oJ00g9iMsHvv96GplsvKfjdqL/QlsrAZoaRJPRoU9gDivy+kNsCA78LXNDg==
-=======
-"@theia/json@0.14.0-next.b6daa53a":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/json/-/json-0.14.0-next.b6daa53a.tgz#7f139c28c4e2922f1043e456b04d5a93c2a0dbc8"
-  integrity sha512-ZxqV/CfFfkypxm9IFy8LmXuUSXB231ua/ReNWXwNYMZiuxgsx4sSM/fTQz6ouDQhGsqx0KEtMtjLiF2w+JmD4A==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  dependencies:
-    "@theia/application-package" "0.14.0-next.b6daa53a"
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/languages" "0.14.0-next.b6daa53a"
-    "@theia/monaco" "0.14.0-next.b6daa53a"
-    vscode-json-languageserver "^1.2.1"
-
-"@theia/languages@0.14.0-next.b6daa53a", "@theia/languages@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/languages/-/languages-0.14.0-next.b6daa53a.tgz#1bc2f0907c9c56aa2ca9e1595f36582279f24752"
-  integrity sha512-GgLmxdQaM8LpnCRsWdS2lYhV0wtxM+ffuj+/eHt+jbT0U6IP0JUTLfnR9qu66nfyVfxxAmaic771QfhIkg6nfQ==
-  dependencies:
-<<<<<<< HEAD
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/output" "0.14.0-next.d5c81105"
-    "@theia/process" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/application-package" "0.14.0-next.b6daa53a"
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/output" "0.14.0-next.b6daa53a"
-    "@theia/process" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@typefox/monaco-editor-core" "^0.18.0-next"
     "@types/uuid" "^3.4.3"
     monaco-languageclient "^0.10.2"
     uuid "^3.2.1"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/markers@0.14.0-next.0159cd5b", "@theia/markers@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/markers/-/markers-0.14.0-next.0159cd5b.tgz#8875c5e8bf1d06744ae05c1ed89d760cf295965d"
@@ -2386,41 +1946,11 @@
   integrity sha512-cj3N6/GMWOW5G5oP3jL2z5n1fLaXulh0FAC5geC1x2xjyUl6HcajQIA3sJVXbYEM7ci7+lGzRgvoWZkwhv7njg==
   dependencies:
     "@theia/core" "0.14.0-next.0159cd5b"
-=======
-"@theia/markers@0.14.0-next.d5c81105", "@theia/markers@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/markers/-/markers-0.14.0-next.d5c81105.tgz#19ce39f23b98b42594ef3192b903e25102235537"
-  integrity sha512-AAYc4CVFFsccvtL32xQkzX2IP9TOrhhUBm+8YIxMQvl7MIck3UiQk22Wvp9MsFcEwlC9Dk6WKTdiuRCZwrgkrA==
-=======
-"@theia/markers@0.14.0-next.b6daa53a", "@theia/markers@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/markers/-/markers-0.14.0-next.b6daa53a.tgz#2810b445b54a45d7eedb7464b49835ba531a4ac6"
-  integrity sha512-3blDnyOowV3HjMxyqVxhmurgNBRi5zSw3ugE4JCN9ztFZJ4KCpmAAcMMPiva6MrepSxwG72DowXq3fuzMhMY6Q==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/navigator" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
-
-"@theia/messages@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/messages/-/messages-0.14.0-next.b6daa53a.tgz#2a55e1ad97bf59c91ff563b46ec80036bd2e89c1"
-  integrity sha512-0sBEEsq//UJvpIGIwj+WXYwWQVEUTr07ZBZ1Vm4v1FxQ3q1ymNR1JMtj6lY5a46ZSNVnYxaWUBIw8VFfQkT5pw==
-  dependencies:
-<<<<<<< HEAD
-    "@theia/core" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/core" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     lodash.throttle "^4.1.1"
     markdown-it "^8.4.0"
     react-perfect-scrollbar "^1.5.3"
     ts-md5 "^1.2.2"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/monaco@0.14.0-next.0159cd5b", "@theia/monaco@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/monaco/-/monaco-0.14.0-next.0159cd5b.tgz#c1d0a7780baec9987c03a0494f6e5f8c59477196"
@@ -2433,34 +1963,6 @@
     "@theia/markers" "0.14.0-next.0159cd5b"
     "@theia/outline-view" "0.14.0-next.0159cd5b"
     "@theia/workspace" "0.14.0-next.0159cd5b"
-=======
-"@theia/monaco@0.14.0-next.d5c81105", "@theia/monaco@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/monaco/-/monaco-0.14.0-next.d5c81105.tgz#d6d96fe79727196a26da5c201274997b07de0a2b"
-  integrity sha512-E1/Ld913KPK4TK0GXwp5gTNK+4yel2WwocCkzjWmHd0e/xqlW9FQtt8EKIJHu5yKCEd9GJgUhhZ4pq6imeZmTg==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/editor" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/languages" "0.14.0-next.d5c81105"
-    "@theia/markers" "0.14.0-next.d5c81105"
-    "@theia/outline-view" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@theia/monaco@0.14.0-next.b6daa53a", "@theia/monaco@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/monaco/-/monaco-0.14.0-next.b6daa53a.tgz#50544794f0425ebf86e5ee3bcfd81d62e39563ee"
-  integrity sha512-p7gsrMDjuSDW1AF55bi+kG4j7qHSULmdQ8O44luEAqE/lG8ELNQetOA0sUfYQYrM3LM5DakYGOEzQKGsZwoGtQ==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/languages" "0.14.0-next.b6daa53a"
-    "@theia/markers" "0.14.0-next.b6daa53a"
-    "@theia/outline-view" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     deepmerge "2.0.1"
     jsonc-parser "^2.0.2"
     monaco-css "^2.5.0"
@@ -2468,8 +1970,6 @@
     onigasm "2.2.1"
     vscode-textmate "^4.0.1"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/navigator@0.14.0-next.0159cd5b", "@theia/navigator@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/navigator/-/navigator-0.14.0-next.0159cd5b.tgz#a068109aa37c6b87ae7e58cafba6378045975c0a"
@@ -2478,26 +1978,6 @@
     "@theia/core" "0.14.0-next.0159cd5b"
     "@theia/filesystem" "0.14.0-next.0159cd5b"
     "@theia/workspace" "0.14.0-next.0159cd5b"
-=======
-"@theia/navigator@0.14.0-next.d5c81105", "@theia/navigator@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/navigator/-/navigator-0.14.0-next.d5c81105.tgz#6c9325936942f8e0d295c7e32f47632c483aaea5"
-  integrity sha512-TtM9Uzx63MLhv14ELYcJNemvj4IuqUD38AVNKr22XsDRZ2GwF17Zsx3ayrOC7Osjtb0kyeaBiTz52+7beKHiEA==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-"@theia/navigator@0.14.0-next.b6daa53a", "@theia/navigator@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/navigator/-/navigator-0.14.0-next.b6daa53a.tgz#0f07e66d75ded603d13413eab392a3df497ff70b"
-  integrity sha512-nkF8YZ2IeDu5X0/AikFgkd3iCfUcvWMaaHLhWuRcSowfUV9XKUTVLvR2odKrLMLT43YCOOFmGG4nWULydeMw6g==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     fuzzy "^0.1.3"
     minimatch "^3.0.4"
 
@@ -2508,8 +1988,6 @@
   dependencies:
     nan "2.10.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/outline-view@0.14.0-next.0159cd5b", "@theia/outline-view@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/outline-view/-/outline-view-0.14.0-next.0159cd5b.tgz#9b6320d29457c75faf5259d0cc2b5ee4e1a93675"
@@ -2556,67 +2034,6 @@
     "@theia/editor" "0.14.0-next.0159cd5b"
     "@theia/filesystem" "0.14.0-next.0159cd5b"
     "@theia/navigator" "0.14.0-next.0159cd5b"
-=======
-"@theia/outline-view@0.14.0-next.d5c81105", "@theia/outline-view@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/outline-view/-/outline-view-0.14.0-next.d5c81105.tgz#6467284cafb912a5139edea2f77d4ae98d8268d7"
-  integrity sha512-sI336H9PJY7wf51/PFbK+Y3yf6hXDRrY8F35eN+vBpZ+cv84OvzH0gqmWdbZ4EHf6A1XZ5eU0GTcI8z+C5Axdg==
-=======
-"@theia/outline-view@0.14.0-next.b6daa53a", "@theia/outline-view@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/outline-view/-/outline-view-0.14.0-next.b6daa53a.tgz#9203e3fc38faf24c8b39aef6cd9fce42bcdfbc59"
-  integrity sha512-PaKUYd2rTVeyDV+yju2A5SnHNw1Z+HgU3lrvSHhm2Bl259sEuTSx97Oo5LZvHiVzrBAzr9URyVc14XRzfagrxA==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-
-"@theia/output@0.14.0-next.b6daa53a":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/output/-/output-0.14.0-next.b6daa53a.tgz#3a62dcb5f8a38b17b883c7c6fa1b5e1567b90b7f"
-  integrity sha512-UGZpQB2mlWhZb/5pbvn5w+POJzXZ2KOQHuSy0juA2iNeo19dKVWZYdh+pRAuw5TtSJ52F4zaT1oczJk1rfTDRg==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-
-"@theia/preferences@0.14.0-next.b6daa53a", "@theia/preferences@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/preferences/-/preferences-0.14.0-next.b6daa53a.tgz#0806f9386271ceabb1f45590693079b0a3117af8"
-  integrity sha512-2UWtOTzfM/M3D2YVNzBys8+qrugz1WEpl8ToQr5mi3SCpZCq8mmL2ZfzxmLLoQTZawWT7IIzeW05m3IIXiBs1g==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/json" "0.14.0-next.b6daa53a"
-    "@theia/monaco" "0.14.0-next.b6daa53a"
-    "@theia/userstorage" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
-    jsonc-parser "^2.0.2"
-
-"@theia/process@0.14.0-next.b6daa53a", "@theia/process@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/process/-/process-0.14.0-next.b6daa53a.tgz#9170ad9ecbc3853e81db40f7f7deaa0e350592bd"
-  integrity sha512-xUIPO3YcZ4PfjtBZSXAkOOmMtW8hJC0U4gzYWcc33v9OcXZnZtH5R48zn046iAcxCU/IWaVEIfn0GfEh0OB+rA==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/node-pty" "0.7.8-theia004"
-    string-argv "^0.1.1"
-
-"@theia/scm@0.14.0-next.b6daa53a":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/scm/-/scm-0.14.0-next.b6daa53a.tgz#ccab1b221a74ba0b6c6a951d24c5ea2912f0ff78"
-  integrity sha512-Ph4WKLcx2L3lPOA0A2ro6UeOL0zNTpYNcvbnard4ZLZpbGMH5e+QvQqq4QA6bc3d9OfJdPF1RI5ANOoM0VB32A==
-  dependencies:
-<<<<<<< HEAD
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/editor" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/navigator" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/navigator" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     "@types/diff" "^3.2.2"
     "@types/p-debounce" "^1.0.1"
     diff "^3.4.0"
@@ -2625,8 +2042,6 @@
     ts-md5 "^1.2.2"
 
 "@theia/search-in-workspace@next":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/search-in-workspace/-/search-in-workspace-0.14.0-next.0159cd5b.tgz#46bcb8a401ba7c12fd8c02832e1241b19d9d05cd"
   integrity sha512-VES+EehGHvk7tE0gNzxBy4nBqW7t3SjWZRa5O0JbDU9rQw7SITMvM5Qu8tl4houkqqX5uNxlAepl2NOw+hiUew==
@@ -2654,71 +2069,11 @@
     "@theia/terminal" "0.14.0-next.0159cd5b"
     "@theia/variable-resolver" "0.14.0-next.0159cd5b"
     "@theia/workspace" "0.14.0-next.0159cd5b"
-=======
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/search-in-workspace/-/search-in-workspace-0.14.0-next.d5c81105.tgz#bf74f299e75916de2129c1b5816166df595a1237"
-  integrity sha512-S4+Kyw8gnnrSDmcZ5pu19XwG2uubfzGcdj4ZctMPsTQPgSrhyW8lfjmEfcPhNi0OnRlnURgBsh54tvX4kbZiNQ==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/editor" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/navigator" "0.14.0-next.d5c81105"
-    "@theia/process" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
-    vscode-ripgrep "^1.2.4"
-
-"@theia/task@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/task/-/task-0.14.0-next.d5c81105.tgz#d08361941879d4bb017f1b03b7fafb43b97536ec"
-  integrity sha512-T5LRMdaTdl/3yTieqiUrlmL3r9ZVH3jUY0uzr5bYMy7gSAIkM8R1D07C93ncfhSFq9rDXJMjO5qaSNOJDi3VLQ==
-  dependencies:
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/editor" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/markers" "0.14.0-next.d5c81105"
-    "@theia/monaco" "0.14.0-next.d5c81105"
-    "@theia/preferences" "0.14.0-next.d5c81105"
-    "@theia/process" "0.14.0-next.d5c81105"
-    "@theia/terminal" "0.14.0-next.d5c81105"
-    "@theia/variable-resolver" "0.14.0-next.d5c81105"
-    "@theia/workspace" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/search-in-workspace/-/search-in-workspace-0.14.0-next.b6daa53a.tgz#489f451a10c57342c2eae0a3829c021096debb07"
-  integrity sha512-BMyRh/qnQh3OD2LehmRiQ9yAM/SaOBv59hBAmfreqPGpNXWDcMQ9fwwvflN6ct5DSuYct11GXY5ZzdMQkIdKvg==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/navigator" "0.14.0-next.b6daa53a"
-    "@theia/process" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
-    vscode-ripgrep "^1.2.4"
-
-"@theia/task@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/task/-/task-0.14.0-next.b6daa53a.tgz#9590185056fa338355ae6376f7392e6799059b0e"
-  integrity sha512-4viikbDqhgxZymp7/1YXyklnig7vEqUaSuZhdtr+jG3sKXLX0QsIR7cFornG3oBUivnlcNFtZl2/0M7xmYiFng==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/markers" "0.14.0-next.b6daa53a"
-    "@theia/monaco" "0.14.0-next.b6daa53a"
-    "@theia/preferences" "0.14.0-next.b6daa53a"
-    "@theia/process" "0.14.0-next.b6daa53a"
-    "@theia/terminal" "0.14.0-next.b6daa53a"
-    "@theia/variable-resolver" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     ajv "^6.5.3"
     jsonc-parser "^2.0.2"
     p-debounce "^2.1.0"
     vscode-uri "^1.0.8"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@theia/terminal@0.14.0-next.0159cd5b", "@theia/terminal@next":
   version "0.14.0-next.0159cd5b"
   resolved "https://registry.yarnpkg.com/@theia/terminal/-/terminal-0.14.0-next.0159cd5b.tgz#3f7cf2c12a02c8304168cdb4f94a72ea88fbf6c8"
@@ -2762,63 +2117,6 @@
     "@theia/core" "0.14.0-next.0159cd5b"
     "@theia/filesystem" "0.14.0-next.0159cd5b"
     "@theia/variable-resolver" "0.14.0-next.0159cd5b"
-=======
-"@theia/terminal@0.14.0-next.d5c81105", "@theia/terminal@next":
-  version "0.14.0-next.d5c81105"
-  resolved "https://registry.yarnpkg.com/@theia/terminal/-/terminal-0.14.0-next.d5c81105.tgz#03aba17ed70c590a853ac541c02e085b53774819"
-  integrity sha512-xW/lTkhjLSR6UyCGA4FzOPBsLboZE7anKhI7YV9MVH/jIF2nUgIZtIXhtNTfuD5f4hiR0fa0lH4XO6qdt9lbjA==
-=======
-"@theia/terminal@0.14.0-next.b6daa53a", "@theia/terminal@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/terminal/-/terminal-0.14.0-next.b6daa53a.tgz#518353ed3495e1c70289233ede162dc0ed647f88"
-  integrity sha512-PLVTJ4KoBy1QlgqTf/27RqcQk0k25nKvFI+FZYjF8oa2q8Mn6Wfc0iYkLg2DOwFNO1sdrmYJOrDzGr5fEA/W/g==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/editor" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/process" "0.14.0-next.b6daa53a"
-    "@theia/workspace" "0.14.0-next.b6daa53a"
-    xterm "3.13.0"
-
-"@theia/textmate-grammars@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/textmate-grammars/-/textmate-grammars-0.14.0-next.b6daa53a.tgz#b1f2323bed621d17dce31b143446ca92f26a0a84"
-  integrity sha512-xpn3/V+V2bmmJT4JEaoS6EVZ+KV1J/MIrTgjLPfz7X9E0lIdgxDONMZavj/f7VZPbKHd62UYy3ajADo0qribFA==
-  dependencies:
-    "@theia/monaco" "0.14.0-next.b6daa53a"
-    vscode-textmate "^4.0.1"
-
-"@theia/userstorage@0.14.0-next.b6daa53a":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/userstorage/-/userstorage-0.14.0-next.b6daa53a.tgz#a4bea7c1594e0ca3742fcd29175df14fcfe88abd"
-  integrity sha512-rxxiyutyf0DUxc0b2OFL4/BsNP8brXKWMx4ZuBCU01z8boSLVq5Y/cCBLrIMbybTQeOYUwHyZ+yQ/jLzc2G84g==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-
-"@theia/variable-resolver@0.14.0-next.b6daa53a", "@theia/variable-resolver@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/variable-resolver/-/variable-resolver-0.14.0-next.b6daa53a.tgz#2862b7d3816edc6606840c3c81e669e744dbcb37"
-  integrity sha512-XPJbV7lD19LXSO7v+Gw546LpqomfJ3kuVw2/Rf6UQWUuXVMuxhZNezELTgcWH2w/d1Y7ou4HvUQLflXouUxwxw==
-  dependencies:
-    "@theia/core" "0.14.0-next.b6daa53a"
-
-"@theia/workspace@0.14.0-next.b6daa53a", "@theia/workspace@next":
-  version "0.14.0-next.b6daa53a"
-  resolved "https://registry.yarnpkg.com/@theia/workspace/-/workspace-0.14.0-next.b6daa53a.tgz#e188630efe1236d5f47936dd9cd5edbce661f141"
-  integrity sha512-bcN9kgf96/sWiQF2uQgKxf+gLnu4fDbwE4ptyT24J8cdbvkHYMhUfWDxL94uIT9bZt1hRaqKctGv/4cIkpbd6g==
-  dependencies:
-<<<<<<< HEAD
-    "@theia/core" "0.14.0-next.d5c81105"
-    "@theia/filesystem" "0.14.0-next.d5c81105"
-    "@theia/variable-resolver" "0.14.0-next.d5c81105"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    "@theia/core" "0.14.0-next.b6daa53a"
-    "@theia/filesystem" "0.14.0-next.b6daa53a"
-    "@theia/variable-resolver" "0.14.0-next.b6daa53a"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     ajv "^6.5.3"
     jsonc-parser "^2.0.2"
     moment "^2.21.0"
@@ -2941,8 +2239,6 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@types/node@*", "@types/node@>= 8":
   version "12.12.16"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.16.tgz#3ebcbd7bf978fa4c5120fee8be57083271a8b3ac"
@@ -2952,25 +2248,6 @@
   version "10.17.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.8.tgz#07c0819207b4bb46e5a509fe25f3232e76fa6683"
   integrity sha512-FeTtEwXbQa187ABpeEQoO7pq3dHgE85FmAUExx2sKO6U1/MYrLTYv+BIMcgVbQ66WjI4w+Ni+5HJtY+gHgWnPg==
-=======
-"@types/node@*":
-  version "10.3.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.6.tgz#ea8aab9439b59f40d19ec5f13b44642344872b11"
-  integrity sha512-h7VDRFL8IhdPw1JjiNVvhr+WynfKW09q2BOflIOA0yeuXNeXBP1bIRuBrysSryH4keaJ5bYUNp63aIyQL9YpDQ==
-
-"@types/node@>= 8":
-=======
-"@types/node@*", "@types/node@>= 8":
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
-  version "12.12.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.14.tgz#1c1d6e3c75dba466e0326948d56e8bd72a1903d2"
-  integrity sha512-u/SJDyXwuihpwjXy7hOOghagLEV1KdAST6syfnOk6QZAMzZuWZqXy5aYYZbh8Jdpd4escVFP0MvftHNDb9pruA==
-
-"@types/node@^10.12.18", "@types/node@^10.14.22":
-  version "10.17.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.6.tgz#1aaabd6f6470a6ac3824ab1e94d731ca1326d93d"
-  integrity sha512-0a2X6cgN3RdPBL2MIlR6Lt0KlM7fOFsutuXcdglcOq6WvLnYXgPQSh0Mx6tO1KCAE8MxbHSOSTWDoUxRq+l3DA==
->>>>>>> e40dc8e... Updated to next Theia.
 
 "@types/p-debounce@^1.0.1":
   version "1.0.1"
@@ -3036,21 +2313,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.4.1":
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "16.9.16"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.16.tgz#4f12515707148b1f53a8eaa4341dae5dfefb066d"
   integrity sha512-dQ3wlehuBbYlfvRXfF5G+5TbZF3xqgkikK7DWAsQXe2KnzV+kjD4W2ea+ThCrKASZn9h98bjjPzoTYzfRqyBkw==
-=======
-  version "16.9.11"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.11.tgz#70e0b7ad79058a7842f25ccf2999807076ada120"
-  integrity sha512-UBT4GZ3PokTXSWmdgC/GeCGEJXE5ofWyibCcecRLUVN2ZBpXQGVgQGtG2foS7CrTKFKlQVVswLvf7Js6XA/CVQ==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "16.9.15"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.15.tgz#aeabb7a50f96c9e31a16079ada20ede9ed602977"
-  integrity sha512-WsmM1b6xQn1tG3X2Hx4F3bZwc2E82pJXt5OPs2YJgg71IzvUoKOSSSYOvLXYCg1ttipM+UuA4Lj3sfvqjVxyZw==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -4714,23 +3979,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 bluebird@^3.5.1, bluebird@^3.5.3, bluebird@^3.5.5:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
-  integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
-=======
-bluebird@^3.5.1, bluebird@^3.5.5:
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.1.tgz#df70e302b471d7473489acf26a93d63b53f874de"
-  integrity sha512-DdmyoGCleJnkbp3nkbxTLJ18rjDsE4yCggEwKNXkeV123sPNfOCYeDoeuOY+F2FrSjO1YXcTU+dsy96KMy+gcg==
->>>>>>> e40dc8e... Updated to next Theia.
-
-bluebird@^3.5.3:
-=======
-bluebird@^3.5.1, bluebird@^3.5.3, bluebird@^3.5.5:
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -4866,8 +4115,6 @@ browserslist@^1.3.6, browserslist@^1.5.2, browserslist@^1.7.6:
     caniuse-db "^1.0.30000639"
     electron-to-chromium "^1.2.7"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 browserslist@^4.6.0, browserslist@^4.8.2:
   version "4.8.2"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.2.tgz#b45720ad5fbc8713b7253c20766f701c9a694289"
@@ -4876,26 +4123,6 @@ browserslist@^4.6.0, browserslist@^4.8.2:
     caniuse-lite "^1.0.30001015"
     electron-to-chromium "^1.3.322"
     node-releases "^1.1.42"
-=======
-browserslist@^4.6.0, browserslist@^4.7.2:
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.7.2.tgz#1bb984531a476b5d389cedecb195b2cd69fb1348"
-  integrity sha512-uZavT/gZXJd2UTi9Ov7/Z340WOSQ3+m1iBVRUknf+okKxonL9P83S3ctiBDtuRmRu8PiCHjqyueqQ9HYlJhxiw==
-  dependencies:
-    caniuse-lite "^1.0.30001004"
-    electron-to-chromium "^1.3.295"
-    node-releases "^1.1.38"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-browserslist@^4.6.0, browserslist@^4.8.0:
-  version "4.8.2"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.2.tgz#b45720ad5fbc8713b7253c20766f701c9a694289"
-  integrity sha512-+M4oeaTplPm/f1pXDw84YohEv7B1i/2Aisei8s4s6k3QsoSHa7i5sz8u/cGQkkatCPxMASKxPualR4wwYgVboA==
-  dependencies:
-    caniuse-lite "^1.0.30001015"
-    electron-to-chromium "^1.3.322"
-    node-releases "^1.1.42"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 
 btoa-lite@^1.0.0:
   version "1.0.0"
@@ -5152,8 +4379,6 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "1.0.30001015"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001015.tgz#9f1b4fa158c747dcc04b15f9c5359ddcf0390d90"
   integrity sha512-+Fqdu7tOxSD0HDs922QPxseHlwnUzdjLC1Oq32HZ1/LWrMfYNt8JaUWnoiIAR+G4fRzM3tdgc4Lrqo5Nx76UsQ==
@@ -5162,26 +4387,6 @@ caniuse-lite@^1.0.30001015:
   version "1.0.30001015"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001015.tgz#15a7ddf66aba786a71d99626bc8f2b91c6f0f5f0"
   integrity sha512-/xL2AbW/XWHNu1gnIrO8UitBGoFthcsDgU9VLK1/dpsoxbaD5LscHozKze05R6WLsBvLhqv78dAPozMFQBYLbQ==
-=======
-  version "1.0.30001008"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001008.tgz#1691f28db0e08bf6abb5e472d8aaea392ec4a995"
-  integrity sha512-Fog+uREPKb/RDc0puoAqqBZB05I8wYff+TIMDkYw9Lweq7+hUEN5fNLpIaBX6AJxq4sndqPct8fYLrDUV6u4xw==
-
-caniuse-lite@^1.0.30001004:
-  version "1.0.30001008"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001008.tgz#b8841b1df78a9f5ed9702537ef592f1f8772c0d9"
-  integrity sha512-b8DJyb+VVXZGRgJUa30cbk8gKHZ3LOZTBLaUEEVr2P4xpmFigOCc62CO4uzquW641Ouq1Rm9N+rWLWdSYDaDIw==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "1.0.30001015"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001015.tgz#9f1b4fa158c747dcc04b15f9c5359ddcf0390d90"
-  integrity sha512-+Fqdu7tOxSD0HDs922QPxseHlwnUzdjLC1Oq32HZ1/LWrMfYNt8JaUWnoiIAR+G4fRzM3tdgc4Lrqo5Nx76UsQ==
-
-caniuse-lite@^1.0.30001015:
-  version "1.0.30001015"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001015.tgz#15a7ddf66aba786a71d99626bc8f2b91c6f0f5f0"
-  integrity sha512-/xL2AbW/XWHNu1gnIrO8UitBGoFthcsDgU9VLK1/dpsoxbaD5LscHozKze05R6WLsBvLhqv78dAPozMFQBYLbQ==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -5785,25 +4990,12 @@ copy-webpack-plugin@^4.5.0:
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
 
-<<<<<<< HEAD
 core-js-compat@^3.4.7:
   version "3.4.8"
   resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.4.8.tgz#f72e6a4ed76437ea710928f44615f926a81607d5"
   integrity sha512-l3WTmnXHV2Sfu5VuD7EHE2w7y+K68+kULKt5RJg8ZJk3YhHF1qLD4O8v8AmNq+8vbOwnPFFDvds25/AoEvMqlQ==
   dependencies:
     browserslist "^4.8.2"
-=======
-core-js-compat@^3.1.1:
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.4.7.tgz#39f8080b1d92a524d6d90505c42b9c5c1eb90611"
-  integrity sha512-57+mgz/P/xsGdjwQYkwtBZR3LuISaxD1dEwVDtbk8xJMqAmwqaxLOvnNT7kdJ7jYE/NjNptyzXi+IQFMi/2fCw==
-  dependencies:
-<<<<<<< HEAD
-    browserslist "^4.7.2"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-    browserslist "^4.8.0"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
     semver "^6.3.0"
 
 core-js@^2.4.0, core-js@^2.4.1, core-js@^2.5.0:
@@ -6539,23 +5731,10 @@ electron-store@^2.0.0:
   dependencies:
     conf "^2.0.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.322:
   version "1.3.322"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.322.tgz#a6f7e1c79025c2b05838e8e344f6e89eb83213a8"
   integrity sha512-Tc8JQEfGQ1MzfSzI/bTlSr7btJv/FFO7Yh6tanqVmIWOuNCu6/D1MilIEgLtmWqIrsv+o4IjpLAhgMBr/ncNAA==
-<<<<<<< HEAD
-=======
-electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.295:
-  version "1.3.306"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.306.tgz#e8265301d053d5f74e36cb876486830261fbe946"
-  integrity sha512-frDqXvrIROoYvikSKTIKbHbzO6M3/qC6kCIt/1FOa9kALe++c4VAJnwjSFvf1tYLEUsP2n9XZ4XSCyqc3l7A/A==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 
 electron@^4.2.11:
   version "4.2.12"
@@ -6648,21 +5827,9 @@ err-code@^1.0.0:
   integrity sha1-BuARbTAo9q70gGhJ6w6mp0iuaWA=
 
 errlop@^1.1.2:
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/errlop/-/errlop-1.7.0.tgz#6b1b35528f3056002ea560906617191fcf6d9fea"
   integrity sha512-JisgQc08Ry4ZzN4cTYL7wdmLMoiwv97Kj/xSXObOE9Be+ZDxAewq0kKRqR5WFVUhglym3fQc++sZSMvdgLalBw==
-=======
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/errlop/-/errlop-1.1.2.tgz#a99a48f37aa264d614e342ffdbbaa49eec9220e0"
-  integrity sha512-djkRp+urJ+SmqDBd7F6LUgm4Be1TTYBxia2bhjNdFBuBDQtJDHExD2VbxR6eyst3h1TZy3qPRCdqb6FBoFttTA==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/errlop/-/errlop-1.6.0.tgz#1d925f440b8727b6238b3972208823176d4e7c17"
-  integrity sha512-t+bvL0FM4vSHNE1Qya+g2u0+IokiA0EV18lUczdL30OHgkbHwT00n9UrH2hvnDafIEPqfKpa1EzuDAFsQCOwUQ==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     editions "^2.2.0"
 
@@ -7311,21 +6478,9 @@ flatten@^1.0.2:
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
 flow-parser@^0.*:
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "0.113.0"
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.113.0.tgz#5b5913c54833918d0c3136ba69f6cf0cdd85fc20"
   integrity sha512-+hRyEB1sVLNMTMniDdM1JIS8BJ3HUL7IFIJaxX+t/JUy0GNYdI0Tg1QLx8DJmOF8HeoCrUDcREpnDAc/pPta3w==
-=======
-  version "0.111.3"
-  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.111.3.tgz#4c256aa21a5dbb53d5305e3512cc120659ca08f3"
-  integrity sha512-iEjGZ94OBMcESxnLorXNjJmtd/JtQYXUVrQpfwvtAKkuyawRmv+2LM6nqyOsOJkISEYbyY6ziudRE0u4VyPSVA==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "0.113.0"
-  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.113.0.tgz#5b5913c54833918d0c3136ba69f6cf0cdd85fc20"
-  integrity sha512-+hRyEB1sVLNMTMniDdM1JIS8BJ3HUL7IFIJaxX+t/JUy0GNYdI0Tg1QLx8DJmOF8HeoCrUDcREpnDAc/pPta3w==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
@@ -10123,23 +9278,10 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 node-abi@^2.11.0, node-abi@^2.2.0:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.13.0.tgz#e2f2ec444d0aca3ea1b3874b6de41d1665828f63"
   integrity sha512-9HrZGFVTR5SOu3PZAnAY2hLO36aW1wmA+FDsVkr85BTST32TLCA1H/AEcatVRAsWLyXS3bqUDYCAjq5/QGuSTA==
-<<<<<<< HEAD
-=======
-node-abi@^2.2.0, node-abi@^2.9.0:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.12.0.tgz#40e9cfabdda1837863fa825e7dfa0b15686adf6f"
-  integrity sha512-VhPBXCIcvmo/5K8HPmnWJyyhvgKxnHTUMXR/XwGHV68+wrgkzST4UmQrY/XszSWA5dtnXpNp528zkcyJ/pzVcw==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     semver "^5.4.1"
 
@@ -10259,23 +9401,10 @@ node-pre-gyp@^0.12.0:
     semver "^5.3.0"
     tar "^4"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 node-releases@^1.1.42:
   version "1.1.42"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.42.tgz#a999f6a62f8746981f6da90627a8d2fc090bbad7"
   integrity sha512-OQ/ESmUqGawI2PRX+XIRao44qWYBBfN54ImQYdWVTQqUckuejOg76ysSqDBK8NG3zwySRVnX36JwDQ6x+9GxzA==
-<<<<<<< HEAD
-=======
-node-releases@^1.1.38:
-  version "1.1.39"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.39.tgz#c1011f30343aff5b633153b10ff691d278d08e8d"
-  integrity sha512-8MRC/ErwNCHOlAFycy9OPca46fQYUjbJRDcZTHVWIGXIjYLM73k70vv3WkYutVnM4cCo4hE0MqBVVZjP6vjISA==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     semver "^6.3.0"
 
@@ -12265,22 +11394,7 @@ resolve-url@^0.2.1:
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
   integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 resolve@^1.1.6, resolve@^1.10.0, resolve@^1.12.0, resolve@^1.3.2, resolve@^1.8.1:
-=======
-resolve@^1.1.6, resolve@^1.10.0, resolve@^1.3.2, resolve@^1.8.1:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.12.0.tgz#3fc644a35c84a48554609ff26ec52b66fa577df6"
-  integrity sha512-B/dOmuoAik5bKcD6s6nXDCjzUKnaDvdkRyAk6rsmsKLipWj4797iothd7jmmUhWTfinVMU+wc56rYKsit2Qy4w==
-  dependencies:
-    path-parse "^1.0.6"
-
-resolve@^1.12.0:
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-resolve@^1.1.6, resolve@^1.10.0, resolve@^1.12.0, resolve@^1.3.2, resolve@^1.8.1:
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.13.1.tgz#be0aa4c06acd53083505abb35f4d66932ab35d16"
   integrity sha512-CxqObCX8K8YtAhOBRg+lrcdn+LK+WYOS8tSjqSFbjtrI5PnS63QPhZl4+yKfrU9tdsbMu9Anr/amegT87M9Z6w==
@@ -13582,21 +12696,9 @@ uc.micro@^1.0.1, uc.micro@^1.0.5:
   integrity sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==
 
 uglify-js@^3.1.4:
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.7.2.tgz#cb1a601e67536e9ed094a92dd1e333459643d3f9"
   integrity sha512-uhRwZcANNWVLrxLfNFEdltoPNhECUR3lc+UdJoG9CBpMcSnKyWA94tc3eAujB1GcMY5Uwq8ZMp4qWpxWYDQmaA==
-=======
-  version "3.6.8"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.6.8.tgz#5edcbcf9d49cbb0403dc49f856fe81530d65145e"
-  integrity sha512-XhHJ3S3ZyMwP8kY1Gkugqx3CJh2C3O0y8NPiSxtm1tyD/pktLAkFZsFGpuNfTZddKDQ/bbDBLAd2YyA1pbi8HQ==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.7.1.tgz#35c7de17971a4aa7689cd2eae0a5b39bb838c0c5"
-  integrity sha512-pnOF7jY82wdIhATVn87uUY/FHU+MDUdPLkmGFvGoclQmeu229eTkbG5gjGGBi3R7UuYYSEeYXY/TTY5j2aym2g==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     commander "~2.20.3"
     source-map "~0.6.1"
@@ -13961,24 +13063,10 @@ vscode-languageclient@^5.3.0-next:
     semver "^6.3.0"
     vscode-languageserver-protocol "^3.15.0-next.8"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 vscode-languageserver-protocol@^3.15.0-next.14, vscode-languageserver-protocol@^3.15.0-next.8:
   version "3.15.0-next.14"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.15.0-next.14.tgz#e7eb337f1adb50b4a41c05d436ce03c8df1f4d14"
   integrity sha512-xUwwno6Q6RFd2Z2EWV9D3dQlsKPnHyiZMNWq+EC7JJdp2WH1gRlD+KPX4UGRCnJK0WI5omqHV313IESPwRY5xA==
-=======
-vscode-languageserver-protocol@^3.15.0-next.8, vscode-languageserver-protocol@^3.15.0-next.9:
-  version "3.15.0-next.11"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.15.0-next.11.tgz#fef95eca6f7f544069cfd48610124ec0060e2cdd"
-  integrity sha512-tpRnPtyS6q0EYH5RH12AtdMecgu3HVL2bBdBGzeQRN8Tf93I9LY4Fl5TXUNkIBjuxjMshkCM8ikhb+hlnWvB2w==
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-vscode-languageserver-protocol@^3.15.0-next.13, vscode-languageserver-protocol@^3.15.0-next.8:
-  version "3.15.0-next.13"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.15.0-next.13.tgz#05a742238e87f421df32f1f99a83f616242d6cca"
-  integrity sha512-2UGxOKc5VHav15n3zY5dtaOXGL/JuV0K2Mem/n6lhF8i3vaqIAnKv004SPU0flYHXIfCcQM7kCL+nwWVJ1K1qw==
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
   dependencies:
     vscode-jsonrpc "^5.0.0-next.5"
     vscode-languageserver-types "^3.15.0-next.9"
@@ -13994,28 +13082,11 @@ vscode-languageserver-types@^3.15.0-next, vscode-languageserver-types@^3.15.0-ne
   integrity sha512-Rl/8qJ6932nrHCdPn+9y0x08uLVQaSLRG+U4JzhyKpWU4eJbVaDRoAcz1Llj7CErJGbPr6kdBvShPy5fRfR+Uw==
 
 vscode-languageserver@^6.0.0-next.1:
-<<<<<<< HEAD
-<<<<<<< HEAD
   version "6.0.0-next.8"
   resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-6.0.0-next.8.tgz#39e22ebb9abecfc5f0e45104ed9bfae562257ca1"
   integrity sha512-NsRKThaAZ6DMX/sHDGxOQ6H4Hjt/GeDSybbFdGc3oCRov4t3gVFnF3kxZ3y5jlvYNYYDdYXfpr8oRzXImBXHwQ==
   dependencies:
     vscode-languageserver-protocol "^3.15.0-next.14"
-=======
-  version "6.0.0-next.1"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-6.0.0-next.1.tgz#4d71886d4a17d22eafc61b3a5fbf84e8e27c191f"
-  integrity sha512-LSF6bXoFeXfMPRNyqzI3yFX/kD2DzXBemqvyj1kDWNVraiWttm4xKF4YXsvJ7Z3s9sVt/Dpu3CFU3w61PGNZMg==
-  dependencies:
-    vscode-languageserver-protocol "^3.15.0-next.9"
-    vscode-textbuffer "^1.0.0"
->>>>>>> e40dc8e... Updated to next Theia.
-=======
-  version "6.0.0-next.7"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver/-/vscode-languageserver-6.0.0-next.7.tgz#e7e51d9d5b13bf96c2561d0f4abc393ed860f56b"
-  integrity sha512-DHUA8yNmH/dnrvyW8ejfYTd8AHlideOlExmyxnOQ7M1AOPzrIerL4OgjT+JIIN4t+UfC0MinEeHm1vdoYF36kQ==
-  dependencies:
-    vscode-languageserver-protocol "^3.15.0-next.13"
->>>>>>> 55cf2f8... No disconnect/reconnect when DNDing  the widget.
 
 vscode-nls@^4.1.1:
   version "4.1.1"
