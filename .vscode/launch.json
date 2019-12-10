@@ -10,7 +10,11 @@
       "name": "App (Electron)",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
+        "env": {
+          "NODE_ENV": "development",
+          "NODE_PRESERVE_SYMLINKS": "1"
+        }
       },
       "program": "${workspaceRoot}/electron-app/src-gen/frontend/electron-main.js",
       "protocol": "inspector",
@@ -47,6 +51,12 @@
         "--no-cluster",
         "--no-app-auto-install"
       ],
+      "windows": {
+        "env": {
+          "NODE_ENV": "development",
+          "NODE_PRESERVE_SYMLINKS": "1"
+        }
+      },
       "env": {
         "NODE_ENV": "development"
       },
