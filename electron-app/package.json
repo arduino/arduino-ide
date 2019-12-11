@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "electron-app",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "dependencies": {
     "@theia/core": "next",
@@ -19,7 +19,7 @@
     "@theia/terminal": "next",
     "@theia/workspace": "next",
     "@theia/textmate-grammars": "next",
-    "arduino-ide-extension": "0.0.3"
+    "arduino-ide-extension": "0.0.4"
   },
   "devDependencies": {
     "@theia/cli": "next"
