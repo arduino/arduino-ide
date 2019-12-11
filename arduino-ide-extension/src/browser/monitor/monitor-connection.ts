@@ -1,6 +1,5 @@
 import { injectable, inject, postConstruct } from 'inversify';
 import { Emitter, Event } from '@theia/core/lib/common/event';
-// import { ConnectionStatusService } from '@theia/core/lib/browser/connection-status-service';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { MonitorService, MonitorConfig, MonitorError, Status, MonitorReadEvent } from '../../common/protocol/monitor-service';
@@ -31,9 +30,6 @@ export class MonitorConnection {
     @inject(MessageService)
     protected messageService: MessageService;
 
-    // @inject(ConnectionStatusService)
-    // protected readonly connectionStatusService: ConnectionStatusService;
-
     @inject(FrontendApplicationStateService)
     protected readonly applicationState: FrontendApplicationStateService;
 
@@ -49,6 +45,14 @@ export class MonitorConnection {
      */
     protected readonly onReadEmitter = new Emitter<MonitorReadEvent>();
 
+    /**
+     * Array for storing previous monitor errors received from the server, and based on the number of elements in this array,
+     * we adjust the reconnection delay.
+     * Super naive way: we wait `array.length * 1000` ms. Once we hit 10 errors, we do not try to reconnect and clean the array.
+     */
+    protected monitorErrors: MonitorError[] = [];
+    protected reconnectTimeout?: number;
+
     @postConstruct()
     protected init(): void {
         // Forward the messages from the board **iff** connected.
@@ -61,33 +65,47 @@ export class MonitorConnection {
             let shouldReconnect = false;
             if (this.state) {
                 const { code, config } = error;
+                const { board, port } = config;
+                const options = { timeout: 3000 };
                 switch (code) {
                     case MonitorError.ErrorCodes.CLIENT_CANCEL: {
                         console.debug(`Connection was canceled by client: ${MonitorConnection.State.toString(this.state)}.`);
                         break;
                     }
                     case MonitorError.ErrorCodes.DEVICE_BUSY: {
-                        const { port } = config;
-                        this.messageService.warn(`Connection failed. Serial port is busy: ${Port.toString(port)}.`);
+                        this.messageService.warn(`Connection failed. Serial port is busy: ${Port.toString(port)}.`, options);
+                        shouldReconnect = this.autoConnect;
+                        this.monitorErrors.push(error);
                         break;
                     }
                     case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
-                        const { port, board } = config;
-                        this.messageService.info(`Disconnected ${Board.toString(board, { useFqbn: false })} from ${Port.toString(port)}.`);
+                        this.messageService.info(`Disconnected ${Board.toString(board, { useFqbn: false })} from ${Port.toString(port)}.`, options);
                         break;
                     }
                     case undefined: {
-                        const { board, port } = config;
-                        this.messageService.error(`Unexpected error. Reconnecting ${Board.toString(board)} on port ${Port.toString(port)}.`);
+                        this.messageService.error(`Unexpected error. Reconnecting ${Board.toString(board)} on port ${Port.toString(port)}.`, options);
                         console.error(JSON.stringify(error));
-                        shouldReconnect = this.connected;
+                        shouldReconnect = this.connected && this.autoConnect;
+                        break;
                     }
                 }
                 const oldState = this.state;
                 this.state = undefined;
                 this.onConnectionChangedEmitter.fire(this.state);
                 if (shouldReconnect) {
-                    await this.connect(oldState.config);
+                    if (this.monitorErrors.length >= 10) {
+                        this.messageService.warn(`Failed to reconnect ${Board.toString(board, { useFqbn: false })} to the the serial-monitor after 10 consecutive attempts. The ${Port.toString(port)} serial port is busy. after 10 consecutive attempts.`);
+                        this.monitorErrors.length = 0;
+                    } else {
+                        const attempts = (this.monitorErrors.length || 1);
+                        if (this.reconnectTimeout !== undefined) {
+                            // Clear the previous timer.
+                            window.clearTimeout(this.reconnectTimeout);
+                        }
+                        const timeout = attempts * 1000;
+                        this.messageService.warn(`Reconnecting ${Board.toString(board, { useFqbn: false })} to ${Port.toString(port)} in ${attempts} seconds...`, { timeout });
+                        this.reconnectTimeout = window.setTimeout(() => this.connect(oldState.config), timeout);
+                    }
                 }
             }
         });
@@ -138,6 +156,11 @@ export class MonitorConnection {
                 const { boardsConfig } = this.boardsServiceClient;
                 this.handleBoardConfigChange(boardsConfig);
             });
+        } else if (oldValue && !value) {
+            if (this.reconnectTimeout !== undefined) {
+                window.clearTimeout(this.reconnectTimeout);
+                this.monitorErrors.length = 0;
+            }
         }
     }
 

@@ -23,8 +23,7 @@
         "--hostname=localhost",
         "--no-cluster",
         "--remote-debugging-port=9222",
-        "--no-app-auto-install",
-        "--debug-cli=true"
+        "--no-app-auto-install"
       ],
       "env": {
         "NODE_ENV": "development"
