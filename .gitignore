@@ -12,3 +12,5 @@ electron-app/webpack.config.js
 /workspace/static
 # switching from `electron` to `browser` in dev mode.
 .browser_modules
+# LS logs
+inols*.log
