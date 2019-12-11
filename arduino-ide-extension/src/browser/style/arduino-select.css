@@ -1,0 +1,45 @@
+.arduino-select__control {
+    border: var(--theia-layout-color2) var(--theia-border-width) solid !important;
+    background: var(--theia-layout-color2) !important;
+}
+
+.arduino-select__control:hover {
+    border: var(--theia-layout-color2) var(--theia-border-width) solid !important;
+}
+
+.arduino-select__control--is-focused {
+    box-shadow: none !important;
+}
+
+.arduino-select__option--is-selected {
+    background-color: var(--theia-accent-color3) !important;
+    color: var(--theia-content-font-color0) !important;
+    border-color: var(--theia-accent-color3) !important;
+}
+
+.arduino-select__option--is-focused {
+    background-color: var(--theia-accent-color4) !important;
+    border-color: var(--theia-accent-color3) !important;
+}
+
+.arduino-select__menu {
+    background-color: var(--theia-layout-color2) !important;
+    border: 1px solid var(--theia-accent-color3) !important;
+    top: auto !important; /* to align the top of the menu with the bottom of the control */
+    box-shadow: none !important;
+}
+
+.arduino-select__control.arduino-select__control--menu-is-open {
+    border: 1px solid !important;
+    border-color: var(--theia-accent-color3) !important;
+    border-bottom-color: var(--theia-layout-color2) !important; /* if the bottom border color has the same color as the background of the control, we make the border "invisible" */
+}
+
+.arduino-select__value-container .arduino-select__single-value {
+    color: var(--theia-ui-font-color1) !important;
+}
+
+.arduino-select__menu-list {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}

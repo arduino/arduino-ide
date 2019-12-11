@@ -1,6 +1,7 @@
 import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
 import {
     PlatformSearchReq,
@@ -35,7 +36,7 @@ export class BoardsServiceImpl implements BoardsService {
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected discoveryInitialized = false;
-    protected discoveryTimer: NodeJS.Timeout | undefined;
+    protected discoveryTimer: NodeJS.Timer | undefined;
     /**
      * Poor man's serial discovery:
      * Stores the state of the currently discovered and attached boards.
@@ -43,6 +44,7 @@ export class BoardsServiceImpl implements BoardsService {
      */
     protected attachedBoards: { boards: Board[] } = { boards: [] };
     protected availablePorts: { ports: Port[] } = { ports: [] };
+    protected started = new Deferred<void>();
     protected client: BoardsServiceClient | undefined;
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
@@ -74,6 +76,7 @@ export class BoardsServiceImpl implements BoardsService {
                 if (!this.discoveryInitialized) {
                     update([], sortedBoards, [], sortedPorts, 'Initialized attached boards and available ports.');
                     this.discoveryInitialized = true;
+                    this.started.resolve();
                 } else {
                     Promise.all([
                         this.getAttachedBoards(),
@@ -109,20 +112,23 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     dispose(): void {
-        this.logger.info('>>> Disposing boards service...')
+        this.logger.info('>>> Disposing boards service...');
         this.queue.pause();
         this.queue.clear();
         if (this.discoveryTimer !== undefined) {
             clearInterval(this.discoveryTimer);
         }
-        this.logger.info('<<< Disposed boards service.')
+        this.logger.info('<<< Disposed boards service.');
+        this.client = undefined;
     }
 
     async getAttachedBoards(): Promise<{ boards: Board[] }> {
+        await this.started.promise;
         return this.attachedBoards;
     }
 
     async getAvailablePorts(): Promise<{ ports: Port[] }> {
+        await this.started.promise;
         return this.availablePorts;
     }
 

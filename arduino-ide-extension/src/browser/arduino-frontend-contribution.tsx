@@ -41,7 +41,6 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
-import { MonitorService } from '../common/protocol/monitor-service';
 import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
@@ -78,9 +77,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @inject(CoreService)
     protected readonly coreService: CoreService;
-
-    @inject(MonitorService)
-    protected readonly monitorService: MonitorService;
 
     @inject(WorkspaceServiceExt)
     protected readonly workspaceServiceExt: WorkspaceServiceExt;
@@ -335,8 +331,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     return;
                 }
 
-                const connectionConfig = this.monitorConnection.connectionConfig;
-                await this.monitorConnection.disconnect();
+                const monitorConfig = this.monitorConnection.monitorConfig;
+                if (monitorConfig) {
+                    await this.monitorConnection.disconnect();
+                }
 
                 try {
                     const { boardsConfig } = this.boardsServiceClient;
@@ -351,8 +349,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 } finally {
-                    if (connectionConfig) {
-                        await this.monitorConnection.connect(connectionConfig);
+                    if (monitorConfig) {
+                        await this.monitorConnection.connect(monitorConfig);
                     }
                 }
             }

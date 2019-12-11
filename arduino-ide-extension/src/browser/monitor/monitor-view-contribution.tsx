@@ -54,18 +54,18 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
         }
     }
 
-    async registerToolbarItems(registry: TabBarToolbarRegistry) {
+    registerToolbarItems(registry: TabBarToolbarRegistry): void {
         registry.registerItem({
             id: 'monitor-autoscroll',
             render: () => this.renderAutoScrollButton(),
             isVisible: widget => widget instanceof MonitorWidget,
-            onDidChange: this.model.onChange
+            onDidChange: this.model.onChange as any // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
         });
         registry.registerItem({
             id: 'monitor-timestamp',
             render: () => this.renderTimestampButton(),
             isVisible: widget => widget instanceof MonitorWidget,
-            onDidChange: this.model.onChange
+            onDidChange: this.model.onChange as any // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
         });
         registry.registerItem({
             id: SerialMonitor.Commands.CLEAR_OUTPUT.id,
@@ -80,7 +80,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
             isVisible: widget => widget instanceof MonitorWidget,
             execute: widget => {
                 if (widget instanceof MonitorWidget) {
-                    widget.clear();
+                    widget.clearConsole();
                 }
             }
         });
@@ -106,7 +106,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected readonly toggleAutoScroll = () => this.doToggleAutoScroll();
-    protected async doToggleAutoScroll() {
+    protected async doToggleAutoScroll(): Promise<void> {
         this.model.toggleAutoscroll();
     }
 
@@ -121,7 +121,8 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
     }
 
     protected readonly toggleTimestamp = () => this.doToggleTimestamp();
-    protected async doToggleTimestamp() {
+    protected async doToggleTimestamp(): Promise<void> {
         this.model.toggleTimestamp();
     }
+
 }

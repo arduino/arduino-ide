@@ -3,3 +3,41 @@
 @import './main.css';
 @import './editor.css';
 @import './monitor.css';
+@import './arduino-select.css';
+
+input:focus {
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+    opacity: 1 !important;
+    outline-color: var(--theia-accent-color3);
+}
+
+input.warning:focus {
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+    opacity: 1 !important;
+    color: var(--theia-warn-font-color0);
+    background-color: var(--theia-warn-color0);
+}
+
+input.warning {
+    background-color: var(--theia-warn-color0);
+}
+
+input.warning::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--theia-warn-font-color0);
+    background-color: var(--theia-warn-color0);
+    opacity: 1; /* Firefox */
+}
+
+input.warning:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--theia-warn-font-color0);
+    background-color: var(--theia-warn-color0);
+}
+
+input.warning::-ms-input-placeholder { /* Microsoft Edge */
+    color: var(--theia-warn-font-color0);
+    background-color: var(--theia-warn-color0);
+}

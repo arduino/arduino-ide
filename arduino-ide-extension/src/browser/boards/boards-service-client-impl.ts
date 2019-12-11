@@ -1,16 +1,21 @@
-import { injectable, inject, postConstruct } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { MessageService } from '@theia/core/lib/common/message-service';
 import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { RecursiveRequired } from '../../common/types';
 import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, AttachedSerialBoard, Board, Port, BoardUninstalledEvent } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
 
 @injectable()
-export class BoardsServiceClientImpl implements BoardsServiceClient {
+export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApplicationContribution {
 
     @inject(ILogger)
     protected logger: ILogger;
+
+    @inject(MessageService)
+    protected messageService: MessageService;
 
     @inject(LocalStorageService)
     protected storageService: LocalStorageService;
@@ -35,9 +40,8 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
     readonly onBoardUninstalled = this.onBoardUninstalledEmitter.event;
     readonly onBoardsConfigChanged = this.onSelectedBoardsConfigChangedEmitter.event;
 
-    @postConstruct()
-    protected init(): void {
-        this.loadState();
+    async onStart(): Promise<void> {
+        return this.loadState();
     }
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
@@ -107,6 +111,56 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         return this._boardsConfig;
     }
 
+    /**
+     * `true` if the `config.selectedBoard` is defined; hence can compile against the board. Otherwise, `false`.
+     */
+    canVerify(
+        config: BoardsConfig.Config | undefined = this.boardsConfig,
+        options: { silent: boolean } = { silent: true }): config is BoardsConfig.Config & { selectedBoard: Board } {
+
+        if (!config) {
+            return false;
+        }
+
+        if (!config.selectedBoard) {
+            if (!options.silent) {
+                this.messageService.warn('No boards selected.', { timeout: 3000 });
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * `true` if the `canVerify` and the `config.selectedPort` is also set with FQBN, hence can upload to board. Otherwise, `false`.
+     */
+    canUploadTo(
+        config: BoardsConfig.Config | undefined = this.boardsConfig,
+        options: { silent: boolean } = { silent: true }): config is RecursiveRequired<BoardsConfig.Config> {
+
+        if (!this.canVerify(config, options)) {
+            return false;
+        }
+
+        const { name } = config.selectedBoard;
+        if (!config.selectedPort) {
+            if (!options.silent) {
+                this.messageService.warn(`No ports selected for board: '${name}'.`, { timeout: 3000 });
+            }
+            return false;
+        }
+
+        if (!config.selectedBoard.fqbn) {
+            if (!options.silent) {
+                this.messageService.warn(`The FQBN is not available for the selected board ${name}. Do you have the corresponding core installed?`, { timeout: 3000 });
+            }
+            return false;
+        }
+
+        return true;
+    }
+
     protected saveState(): Promise<void> {
         return this.storageService.setData('latest-valid-boards-config', this.latestValidBoardsConfig);
     }
@@ -115,15 +169,10 @@ export class BoardsServiceClientImpl implements BoardsServiceClient {
         const storedValidBoardsConfig = await this.storageService.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
         if (storedValidBoardsConfig) {
             this.latestValidBoardsConfig = storedValidBoardsConfig;
+            if (this.canUploadTo(this.latestValidBoardsConfig)) {
+                this.boardsConfig = this.latestValidBoardsConfig;
+            }
         }
-    }
-
-    protected canVerify(config: BoardsConfig.Config | undefined): config is BoardsConfig.Config & { selectedBoard: Board } {
-        return !!config && !!config.selectedBoard;
-    }
-
-    protected canUploadTo(config: BoardsConfig.Config | undefined): config is RecursiveRequired<BoardsConfig.Config> {
-        return this.canVerify(config) && !!config.selectedPort && !!config.selectedBoard.fqbn;
     }
 
 }

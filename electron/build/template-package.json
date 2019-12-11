@@ -4,7 +4,6 @@
   "main": "src-gen/frontend/electron-main.js",
   "author": "Arduino SA",
   "dependencies": {
-    "google-protobuf": "^3.5.0",
     "arduino-ide-extension": "file:../working-copy/arduino-ide-extension"
   },
   "resolutions": {
@@ -27,7 +26,6 @@
     "url": "git+https://github.com/arduino/arduino-pro-ide.git"
   },
   "// Notes:": [
-    "`google-protobuf` was declared as it is not picked up by the `electron-builder` as a runtime dependency.",
     "The resolution for `fs-extra` was required due to this: https://spectrum.chat/theia/general/our-theia-electron-builder-app-no-longer-starts~f5cf09a0-6d88-448b-8818-24ad0ec2ee7c"
   ],
   "build": {

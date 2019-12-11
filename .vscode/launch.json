@@ -1,39 +1,105 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Electron Packager",
-            "program": "${workspaceRoot}/electron/packager/index.js",
-            "cwd": "${workspaceFolder}/electron/packager"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Backend",
-            "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
-            "args": [
-                "--hostname=0.0.0.0",
-                "--port=3000",
-                "--no-cluster",
-                "--no-app-auto-install"
-            ],
-            "env": {
-                "NODE_ENV": "development"
-            },
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/browser-app/src-gen/backend/*.js",
-                "${workspaceRoot}/browser-app/lib/**/*.js",
-                "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
-            ],
-            "smartStep": true,
-            "internalConsoleOptions": "openOnSessionStart",
-            "outputCapture": "std"
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "App (Electron)",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
+        "env": {
+          "NODE_ENV": "development",
+          "NODE_PRESERVE_SYMLINKS": "1"
         }
-    ]
+      },
+      "program": "${workspaceRoot}/electron-app/src-gen/frontend/electron-main.js",
+      "protocol": "inspector",
+      "args": [
+        "--log-level=debug",
+        "--hostname=localhost",
+        "--no-cluster",
+        "--remote-debugging-port=9222",
+        "--no-app-auto-install"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/electron-app/src-gen/backend/*.js",
+        "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
+        "${workspaceRoot}/electron-app/lib/**/*.js",
+        "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
+      ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "App (Browser)",
+      "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
+      "args": [
+        "--hostname=0.0.0.0",
+        "--port=3000",
+        "--no-cluster",
+        "--no-app-auto-install"
+      ],
+      "windows": {
+        "env": {
+          "NODE_ENV": "development",
+          "NODE_PRESERVE_SYMLINKS": "1"
+        }
+      },
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/browser-app/src-gen/backend/*.js",
+        "${workspaceRoot}/browser-app/lib/**/*.js",
+        "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
+      ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "App (Browser - Debug CLI daemon)",
+      "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
+      "args": [
+        "--hostname=0.0.0.0",
+        "--port=3000",
+        "--no-cluster",
+        "--no-app-auto-install",
+        "--debug-cli=true"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/browser-app/src-gen/backend/*.js",
+        "${workspaceRoot}/browser-app/lib/**/*.js",
+        "${workspaceRoot}/arduino-ide-extension/*/lib/**/*.js"
+      ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Packager",
+      "program": "${workspaceRoot}/electron/packager/index.js",
+      "cwd": "${workspaceFolder}/electron/packager"
+    }
+  ]
 }

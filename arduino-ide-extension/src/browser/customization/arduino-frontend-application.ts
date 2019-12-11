@@ -21,7 +21,7 @@ export class ArduinoFrontendApplication extends FrontendApplication {
     protected readonly editorMode: EditorMode;
 
     protected async initializeLayout(): Promise<void> {
-        super.initializeLayout().then(() => {
+        return super.initializeLayout().then(() => {
             // If not in PRO mode, we open the sketch file with all the related files.
             // Otherwise, we reuse the workbench's restore functionality and we do not open anything at all.
             // TODO: check `otherwise`. Also, what if we check for opened editors, instead of blindly opening them?
