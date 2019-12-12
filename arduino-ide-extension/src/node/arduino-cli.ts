@@ -47,16 +47,20 @@ export class ArduinoCli {
     async getDefaultConfig(): Promise<Config> {
         const execPath = await this.getExecPath();
         const result = await this.spawn(`"${execPath}"`, ['config', 'dump', '--format', 'json']);
-        const { sketchbook_path, arduino_data } = JSON.parse(result);
-        if (!sketchbook_path) {
-            throw new Error(`Could not parse config. 'sketchbook_path' was missing from: ${result}`);
+        const { directories } = JSON.parse(result);
+        if (!directories) {
+            throw new Error(`Could not parse config. 'directories' was missing from: ${result}`);
         }
-        if (!arduino_data) {
-            throw new Error(`Could not parse config. 'arduino_data' was missing from: ${result}`);
+        const { sketchbook, data } = directories;
+        if (!sketchbook) {
+            throw new Error(`Could not parse config. 'sketchbook' was missing from: ${result}`);
+        }
+        if (!data) {
+            throw new Error(`Could not parse config. 'data' was missing from: ${result}`);
         }
         return {
-            sketchDirUri: FileUri.create(sketchbook_path).toString(),
-            dataDirUri: FileUri.create(arduino_data).toString()
+            sketchDirUri: FileUri.create(sketchbook).toString(),
+            dataDirUri: FileUri.create(data).toString()
         };
     }
 
