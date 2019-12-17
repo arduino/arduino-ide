@@ -32,7 +32,7 @@ import { CmsisBackend } from './cmsis-backend';
 // import { PyocdServer } from './pyocd-server';
 import { PortScanner } from './port-scanner';
 import { SymbolTable } from './symbols';
-import * as varMgr from 'cdt-gdb-adapter/dist/varManager';
+import { VarManager } from 'cdt-gdb-adapter/dist/varManager';
 import * as mi from './mi';
 import { OpenocdServer } from './openocd-server';
 
@@ -54,13 +54,16 @@ export class CmsisDebugSession extends GDBDebugSession {
     protected portScanner = new PortScanner();
     protected symbolTable!: SymbolTable;
     protected globalHandle!: number;
+    protected varMgr: VarManager;
 
     constructor() {
         super();
     }
 
     protected createBackend(): GDBBackend {
-        return new CmsisBackend();
+        const gdb = new CmsisBackend();
+        this.varMgr = new VarManager(gdb);
+        return gdb;
     }
 
     protected async launchRequest(response: DebugProtocol.LaunchResponse, args: CmsisRequestArguments): Promise<void> {
@@ -334,7 +337,7 @@ export class CmsisDebugSession extends GDBDebugSession {
     }
 
     private async getVariables(frame: FrameReference, name: string, expression: string, depth: number): Promise<DebugProtocol.Variable> {
-        let global = varMgr.getVar(frame.frameId, frame.threadId, depth, name);
+        let global = this.varMgr.getVar(frame.frameId, frame.threadId, depth, name);
 
         if (global) {
             // Update value if it is already loaded
@@ -351,7 +354,7 @@ export class CmsisDebugSession extends GDBDebugSession {
                 expression,
             });
 
-            global = varMgr.addVar(frame.frameId, frame.threadId, depth, name, true, false, varCreateResponse);
+            global = this.varMgr.addVar(frame.frameId, frame.threadId, depth, name, true, false, varCreateResponse);
         }
 
         return {
