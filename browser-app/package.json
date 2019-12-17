@@ -20,7 +20,7 @@
     "@theia/workspace": "next",
     "@theia/textmate-grammars": "next",
     "arduino-ide-extension": "0.0.4",
-    "arduino-debugger-extension": "0.0.2"
+    "arduino-debugger-extension": "0.0.4"
   },
   "devDependencies": {
     "@theia/cli": "next"
