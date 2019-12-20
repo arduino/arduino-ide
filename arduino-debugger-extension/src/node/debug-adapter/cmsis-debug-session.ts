@@ -25,7 +25,7 @@
 
 import { normalize } from 'path';
 import { DebugProtocol } from 'vscode-debugprotocol';
-import { Logger, logger, InitializedEvent, OutputEvent, Scope, TerminatedEvent } from 'vscode-debugadapter';
+import { Logger, logger, InitializedEvent, OutputEvent, Scope, TerminatedEvent, ErrorDestination } from 'vscode-debugadapter';
 import { GDBDebugSession, RequestArguments, FrameVariableReference, FrameReference } from 'cdt-gdb-adapter/dist/GDBDebugSession';
 import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
 import { CmsisBackend } from './cmsis-backend';
@@ -117,7 +117,6 @@ export class CmsisDebugSession extends GDBDebugSession {
 
     protected async setBreakPointsRequest(response: DebugProtocol.SetBreakpointsResponse, args: DebugProtocol.SetBreakpointsArguments): Promise<void> {
         await super.setBreakPointsRequest(response, args);
-        return;
     }
 
     protected scopesRequest(response: DebugProtocol.ScopesResponse, args: DebugProtocol.ScopesArguments): void {
@@ -224,13 +223,10 @@ export class CmsisDebugSession extends GDBDebugSession {
         this.gdb.on('notifyAsync', (resultClass, resultData) => this.handleGDBNotify(resultClass, resultData));
 
         // gdb server has main info channel on stderr
-        this.gdbServer.on('stderr', data => {
-            this.sendEvent(new OutputEvent(data, 'stdout'))
-        });
-        this.gdbServer.on('error', message => {
-            this.sendEvent(new TerminatedEvent());
-            throw message;
-        });
+        this.gdbServer.on('stderr', data => this.sendEvent(new OutputEvent(data, 'stdout')));
+        const gdbServerErrors: any[] = []
+        const gdbServerErrorAccumulator = (message: any) => gdbServerErrors.push(message);
+        this.gdbServer.on('error', gdbServerErrorAccumulator);
 
         try {
             this.symbolTable = new SymbolTable(args.program, args.objdump);
@@ -264,12 +260,18 @@ export class CmsisDebugSession extends GDBDebugSession {
         this.sendEvent(new OutputEvent(`Starting debugger: ${JSON.stringify(args)}`));
         await this.gdbServer.spawn(args);
         await this.spawn(args);
+        if (gdbServerErrors.length > 0) {
+            throw new Error(gdbServerErrors.join('\n'));
+        }
 
         // Send commands
         await mi.sendTargetAsyncOn(this.gdb);
         await mi.sendTargetSelectRemote(this.gdb, remote);
         await mi.sendMonitorResetHalt(this.gdb);
         this.sendEvent(new OutputEvent(`Attached to debugger on port ${port}`));
+        if (gdbServerErrors.length > 0) {
+            throw new Error(gdbServerErrors.join('\n'));
+        }
 
         // Download image
         const progressListener = (percent: number) => this.progressEvent(percent, 'Loading Image');
@@ -287,8 +289,17 @@ export class CmsisDebugSession extends GDBDebugSession {
             await mi.sendBreakOnFunction(this.gdb);
         }
 
+        if (gdbServerErrors.length > 0) {
+            throw new Error(gdbServerErrors.join('\n'));
+        }
         this.sendEvent(new OutputEvent(`Image loaded: ${args.program}`));
         this.sendEvent(new InitializedEvent());
+
+        this.gdbServer.removeListener('error', gdbServerErrorAccumulator);
+        this.gdbServer.on('error', message => {
+            logger.error(JSON.stringify(message));
+            this.sendEvent(new TerminatedEvent());
+        });
     }
 
     private async getGlobalVariables(frameHandle: number): Promise<DebugProtocol.Variable[]> {
@@ -376,6 +387,15 @@ export class CmsisDebugSession extends GDBDebugSession {
             percent,
             message
         }));
+    }
+
+    protected sendErrorResponse(response: DebugProtocol.Response,
+        codeOrMessage: number | DebugProtocol.Message, format?: string,
+        variables?: any, dest?: ErrorDestination): void {
+        if (!!format && (dest === undefined || dest === ErrorDestination.User)) {
+            format = format.replace('\n', '<br>');
+        }
+        super.sendErrorResponse(response, codeOrMessage, format, variables, dest);
     }
 
     protected async stopSession() {

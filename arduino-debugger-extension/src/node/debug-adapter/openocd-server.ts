@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as os from 'os';
 
 const LAUNCH_REGEX = /GDB server started/;
-const ERROR_REGEX = /:ERROR:gdbserver:/;
+const ERROR_REGEX = /^error:/mi;
 const PERCENT_MULTIPLIER = 100 / 40; // pyOCD outputs 40 markers for progress
 
 export class OpenocdServer extends AbstractServer {
@@ -20,14 +20,14 @@ export class OpenocdServer extends AbstractServer {
             sessionConfigFile += `telnet_port ${telnetPort}${"\n"}`
         }
         sessionConfigFile += `echo "GDB server started"${"\n"}`
-        
+
         const tmpdir = await fs.mkdtemp(path.join(os.tmpdir(), "arduino-debugger"));
         const sessionCfgPath = path.join(tmpdir, "gdb.cfg");
         await fs.writeFile(sessionCfgPath, sessionConfigFile);
 
         let serverArguments = req.gdbServerArguments || [];
         serverArguments.push("--file", sessionCfgPath);
-        
+
         return serverArguments;
     }
 
