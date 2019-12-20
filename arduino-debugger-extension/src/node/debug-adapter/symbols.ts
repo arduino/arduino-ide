@@ -25,7 +25,7 @@
 */
 
 import { spawnSync } from 'child_process';
-import { platform, EOL } from 'os';
+import { EOL } from 'os';
 import { dirname, normalize, basename } from 'path';
 
 export enum SymbolType {
@@ -53,7 +53,6 @@ export interface SymbolInformation {
     hidden: boolean;
 }
 
-const DEFAULT_OBJDUMP = platform() !== 'win32' ? 'arm-none-eabi-objdump' : 'arm-none-eabi-objdump.exe';
 const SYMBOL_REGEX = /^([0-9a-f]{8})\s([lg\ !])([w\ ])([C\ ])([W\ ])([I\ ])([dD\ ])([FfO\ ])\s([^\s]+)\s([0-9a-f]+)\s(.*)\r?$/;
 
 const TYPE_MAP: { [id: string]: SymbolType } = {
@@ -74,7 +73,14 @@ export class SymbolTable {
 
     private symbols: SymbolInformation[] = [];
 
-    constructor(private program: string, private objdump: string = DEFAULT_OBJDUMP) {
+    constructor(private program: string, private objdump?: string) {
+        const varRegexp = /\$\{.*\}/;
+        if (varRegexp.test(program)) {
+            throw new Error(`Unresolved variable: ${program}`);
+        }
+        if (objdump && varRegexp.test(objdump)) {
+            throw new Error(`Unresolved variable: ${objdump}`);
+        }
     }
 
     public async loadSymbols(): Promise<void> {
@@ -128,6 +134,9 @@ export class SymbolTable {
 
     private execute(): Promise<string> {
         return new Promise((resolve, reject) => {
+            if (!this.objdump) {
+                return reject(new Error('Missing parameter: objdump'));
+            }
             try {
                 const { stdout, stderr } = spawnSync(this.objdump, [
                     '--syms',

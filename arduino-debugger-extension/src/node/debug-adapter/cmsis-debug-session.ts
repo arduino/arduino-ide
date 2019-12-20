@@ -71,7 +71,8 @@ export class CmsisDebugSession extends GDBDebugSession {
             await this.runSession(args);
             this.sendResponse(response);
         } catch (err) {
-            this.sendErrorResponse(response, 1, err.message);
+            const message = `Failed to launch the debugger:\n${err.message}`;
+            this.sendErrorResponse(response, 1, message);
         }
     }
 
@@ -80,7 +81,8 @@ export class CmsisDebugSession extends GDBDebugSession {
             await this.runSession(args);
             this.sendResponse(response);
         } catch (err) {
-            this.sendErrorResponse(response, 1, err.message);
+            const message = `Failed to attach the debugger:\n${err.message}`;
+            this.sendErrorResponse(response, 1, message);
         }
     }
 
@@ -302,6 +304,14 @@ export class CmsisDebugSession extends GDBDebugSession {
         });
     }
 
+    protected spawn(args: CmsisRequestArguments): Promise<void> {
+        const varRegexp = /\$\{.*\}/;
+        if (args.gdb && varRegexp.test(args.gdb)) {
+            throw new Error(`Unresolved variable: ${args.gdb}`)
+        }
+        return super.spawn(args);
+    }
+
     private async getGlobalVariables(frameHandle: number): Promise<DebugProtocol.Variable[]> {
         const frame = this.frameHandles.get(frameHandle);
         const symbolInfo = this.symbolTable.getGlobalVariables();
@@ -393,7 +403,7 @@ export class CmsisDebugSession extends GDBDebugSession {
         codeOrMessage: number | DebugProtocol.Message, format?: string,
         variables?: any, dest?: ErrorDestination): void {
         if (!!format && (dest === undefined || dest === ErrorDestination.User)) {
-            format = format.replace('\n', '<br>');
+            format = format.replace(/\n/g, '<br>');
         }
         super.sendErrorResponse(response, codeOrMessage, format, variables, dest);
     }

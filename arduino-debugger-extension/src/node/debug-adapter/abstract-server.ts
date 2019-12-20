@@ -48,7 +48,14 @@ export abstract class AbstractServer extends EventEmitter {
             try {
                 this.timer = setTimeout(() => this.onSpawnError(new Error('Timeout waiting for gdb server to start')), TIMEOUT);
 
-                const command = args.gdbServer || 'gdb-server';
+                const command = args.gdbServer;
+                if (!command) {
+                    throw new Error('Missing parameter: gdbServer');
+                }
+                const varRegexp = /\$\{.*\}/;
+                if (varRegexp.test(command)) {
+                    throw new Error(`Unresolved variable: ${command}`)
+                }
                 const serverArguments = await this.resolveServerArguments(args);
                 this.process = spawn(command, serverArguments, {
                     cwd: dirname(command),
@@ -110,7 +117,7 @@ export abstract class AbstractServer extends EventEmitter {
 
     protected onData(chunk: string | Buffer, buffer: string, event: string) {
         buffer += typeof chunk === 'string' ? chunk
-                : chunk.toString('utf8');
+            : chunk.toString('utf8');
 
         const end = buffer.lastIndexOf('\n');
         if (end !== -1) {

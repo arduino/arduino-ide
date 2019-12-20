@@ -1,59 +1,59 @@
 import { injectable } from 'inversify';
 import { DebugAdapterContribution, DebugAdapterExecutable, DebugAdapterSessionFactory } from '@theia/debug/lib/common/debug-model';
-import { DebugConfiguration } from "@theia/debug/lib/common/debug-configuration";
-import { MaybePromise } from "@theia/core/lib/common/types";
-import { IJSONSchema, IJSONSchemaSnippet } from "@theia/core/lib/common/json-schema";
+import { DebugConfiguration } from '@theia/debug/lib/common/debug-configuration';
+import { MaybePromise } from '@theia/core/lib/common/types';
+import { IJSONSchema, IJSONSchemaSnippet } from '@theia/core/lib/common/json-schema';
 import * as path from 'path';
 
 @injectable()
 export class ArduinoDebugAdapterContribution implements DebugAdapterContribution {
 
-    type = "arduino";
+    type = 'arduino';
 
-    label = "Arduino";
+    label = 'Arduino';
 
-    languages = ["c", "cpp", "ino"];
+    languages = ['c', 'cpp', 'ino'];
 
     debugAdapterSessionFactory?: DebugAdapterSessionFactory;
 
-    getSchemaAttributes?(): MaybePromise<IJSONSchema[]> {
+    getSchemaAttributes(): MaybePromise<IJSONSchema[]> {
         return [
             {
-                "required": [
-                    "program"
+                'required': [
+                    'program'
                 ],
-                "properties": {
-                    "sketch": {
-                        "type": "string",
-                        "description": "path to the sketch root ino file",
-                        "default": "${file}",
+                'properties': {
+                    'sketch': {
+                        'type': 'string',
+                        'description': 'path to the sketch root ino file',
+                        'default': '${file}',
                     },
-                    "fqbn": {
-                        "type": "string",
-                        "description": "Fully-qualified board name to debug on",
-                        "default": ""
+                    'fqbn': {
+                        'type': 'string',
+                        'description': 'Fully-qualified board name to debug on',
+                        'default': ''
                     },
-                    "runToMain": {
-                        "description": "If enabled the debugger will run until the start of the main function.",
-                        "type": "boolean",
-                        "default": false
+                    'runToMain': {
+                        'description': 'If enabled the debugger will run until the start of the main function.',
+                        'type': 'boolean',
+                        'default': false
                     },
-                    "verbose": {
-                        "type": "boolean",
-                        "description": "Produce verbose log output",
-                        "default": false
+                    'verbose': {
+                        'type': 'boolean',
+                        'description': 'Produce verbose log output',
+                        'default': false
                     },
-                    "debugDebugAdapter": {
-                        "type": "boolean",
-                        "description": "Start the debug adapter in debug mode (with --inspect-brk)",
-                        "default": false
+                    'debugDebugAdapter': {
+                        'type': 'boolean',
+                        'description': 'Start the debug adapter in debug mode (with --inspect-brk)',
+                        'default': false
                     },
                 }
             }
         ]
     }
 
-    getConfigurationSnippets?(): MaybePromise<IJSONSchemaSnippet[]> {
+    getConfigurationSnippets(): MaybePromise<IJSONSchemaSnippet[]> {
         return []
     }
 
@@ -65,29 +65,29 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
         args = args.concat([path.join(__dirname, 'debug-adapter', 'main')]);
 
         return {
-            command: "node",
+            command: 'node',
             args: args,
         }
     }
 
-    provideDebugConfigurations?(workspaceFolderUri?: string): MaybePromise<DebugConfiguration[]> {
+    provideDebugConfigurations(workspaceFolderUri?: string): MaybePromise<DebugConfiguration[]> {
         return [
             <DebugConfiguration>{
                 name: this.label,
                 type: this.type,
-                request: "launch",
-                sketch: "${file}",
+                request: 'launch',
+                sketch: '${file}',
             },
             <DebugConfiguration>{
-                name: this.label + " (explicit)",
+                name: this.label + ' (explicit)',
                 type: this.type,
-                request: "launch",
+                request: 'launch',
 
-                program: "${sketchBinary}",
-                objdump: "${boardTools:objdump}",
-                gdb: "${boardTools:gdb}",
-                gdbServer: "${boardTools:openocd}",
-                gdbServerArguments: ["-s", "${boardTools:openocd-scripts}", "--file", "${board:openocd-debug-file}"],
+                program: '${sketchBinary}',
+                objdump: '${boardTools:objdump}',
+                gdb: '${boardTools:gdb}',
+                gdbServer: '${boardTools:openocd}',
+                gdbServerArguments: ['-s', '${boardTools:openocd-scripts}', '--file', '${board:openocd-debug-file}'],
 
                 runToMain: false,
                 verbose: false,
@@ -95,23 +95,23 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
         ];
     }
 
-    async resolveDebugConfiguration?(config: DebugConfiguration, workspaceFolderUri?: string): Promise<DebugConfiguration> {
+    async resolveDebugConfiguration(config: DebugConfiguration, workspaceFolderUri?: string): Promise<DebugConfiguration> {
         // if program is present we expect to have an explicit config here
         if (!!config.program) {
             return config;
         }
 
-        let sketchBinary = "${sketchBinary}"
-        if (config.sketch !== "${file}") {
-            sketchBinary = "${sketchBinary:" + config.sketch + "}";
+        let sketchBinary = '${sketchBinary}'
+        if (typeof config.sketch === 'string' && config.sketch.indexOf('${') < 0) {
+            sketchBinary = '${sketchBinary:' + config.sketch + '}';
         }
         const res: ActualDebugConfig = {
             ...config,
 
-            objdump: "${boardTools:objdump}",
-            gdb: "${boardTools:gdb}",
-            gdbServer: "${boardTools:openocd}",
-            gdbServerArguments: ["-s", "${boardTools:openocd-scripts}", "--file", "${board:openocd-debug-file}"],
+            objdump: '${boardTools:objdump}',
+            gdb: '${boardTools:gdb}',
+            gdbServer: '${boardTools:openocd}',
+            gdbServerArguments: ['-s', '${boardTools:openocd-scripts}', '--file', '${board:openocd-debug-file}'],
             program: sketchBinary
         }
         return res;
