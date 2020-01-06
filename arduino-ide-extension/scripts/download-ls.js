@@ -6,7 +6,7 @@
 (() => {
 
     const DEFAULT_ALS_VERSION = 'nightly';
-    const DEFAULT_CLANGD_VERSION = '8.0.1';
+    const DEFAULT_CLANGD_VERSION = '9.0.0';
 
     const os = require('os');
     const path = require('path');
@@ -23,7 +23,7 @@
         .option('clangd-version', {
             alias: 'cv',
             default: DEFAULT_CLANGD_VERSION,
-            choices: ['8.0.1'],
+            choices: ['8.0.1', '9.0.0'],
             describe: `The version of 'clangd' to download. Defaults to ${DEFAULT_CLANGD_VERSION}.`
         })
         .option('force-download', {
