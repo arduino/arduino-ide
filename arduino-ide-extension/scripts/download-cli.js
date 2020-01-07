@@ -10,7 +10,7 @@
 
 (() => {
 
-    const DEFAULT_VERSION = 'latest'; // require('moment')().format('YYYYMMDD');
+    const DEFAULT_VERSION = '0.7.1'; // require('moment')().format('YYYYMMDD');
 
     const os = require('os');
     const path = require('path');
@@ -21,7 +21,7 @@
         .option('cli-version', {
             alias: 'cv',
             default: DEFAULT_VERSION,
-            describe: `The version of the 'arduino-cli' to download with the YYYYMMDD format, or 'latest'. Defaults to ${DEFAULT_VERSION}.`
+            describe: `The version of the 'arduino-cli' to download, or 'nightly-latest'. Defaults to ${DEFAULT_VERSION}.`
         })
         .option('force-download', {
             alias: 'fd',
@@ -56,7 +56,7 @@
         shell.exit(1);
     }
 
-    const url = `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-${version}_${suffix}`;
+    const url = `https://downloads.arduino.cc/arduino-cli${version.startsWith('nightly-') ? '/nightly' : ''}/arduino-cli_${version}_${suffix}`;
     downloader.download(url, cli, 'arduino-cli', force);
 
 })();
