@@ -51,15 +51,15 @@ export class ArduinoCli {
         if (!directories) {
             throw new Error(`Could not parse config. 'directories' was missing from: ${result}`);
         }
-        const { sketchbook, data } = directories;
-        if (!sketchbook) {
-            throw new Error(`Could not parse config. 'sketchbook' was missing from: ${result}`);
+        const { user, data } = directories;
+        if (!user) {
+            throw new Error(`Could not parse config. 'user' was missing from: ${result}`);
         }
         if (!data) {
             throw new Error(`Could not parse config. 'data' was missing from: ${result}`);
         }
         return {
-            sketchDirUri: FileUri.create(sketchbook).toString(),
+            sketchDirUri: FileUri.create(user).toString(),
             dataDirUri: FileUri.create(data).toString()
         };
     }
