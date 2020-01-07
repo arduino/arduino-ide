@@ -35,6 +35,7 @@ jobs:
       THEIA_ELECTRON_SKIP_REPLACE_FFMPEG: 1
     displayName: Build
   - bash: |
+      ./electron/packager/conf-node-gyp.sh
       yarn --cwd ./electron/packager/
       yarn --cwd ./electron/packager/ package
     env:

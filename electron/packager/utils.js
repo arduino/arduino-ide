@@ -13,7 +13,7 @@ const depcheck = require('depcheck');
  * and append the short commit SHA.
  */
 function versionInfo() {
-    if (typeof process.env.RELEASE_TAG === 'undefined' || /* Azure -> */ process.env.RELEASE_TAG === '$(Release.Tag)') {
+    if (typeof process.env.RELEASE_TAG === 'undefined' || !process.env.RELEASE_TAG || /* Azure -> */ process.env.RELEASE_TAG === '$(Release.Tag)') {
         return {
             version: `${targetVersion()}-${currentCommitish()}`,
             release: false
