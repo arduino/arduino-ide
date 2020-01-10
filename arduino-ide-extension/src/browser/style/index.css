@@ -5,39 +5,31 @@
 @import './monitor.css';
 @import './arduino-select.css';
 
-input:focus {
+.theia-input.warning:focus {
     outline-width: 1px;
     outline-style: solid;
     outline-offset: -1px;
     opacity: 1 !important;
-    outline-color: var(--theia-accent-color3);
+    color: var(--theia-foreground);
+    background-color: var(--theia-inputValidation-warningBackground);
 }
 
-input.warning:focus {
-    outline-width: 1px;
-    outline-style: solid;
-    outline-offset: -1px;
-    opacity: 1 !important;
-    color: var(--theia-warn-font-color0);
-    background-color: var(--theia-warn-color0);
+.theia-input.warning {
+    background-color: var(--theia-inputValidation-warningBackground);
 }
 
-input.warning {
-    background-color: var(--theia-warn-color0);
-}
-
-input.warning::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: var(--theia-warn-font-color0);
-    background-color: var(--theia-warn-color0);
+.theia-input.warning::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--theia-foreground);
+    background-color: var(--theia-inputValidation-warningBackground);
     opacity: 1; /* Firefox */
 }
 
-input.warning:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: var(--theia-warn-font-color0);
-    background-color: var(--theia-warn-color0);
+.theia-input.warning:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--theia-foreground);
+    background-color: var(--theia-inputValidation-warningBackground);
 }
 
-input.warning::-ms-input-placeholder { /* Microsoft Edge */
-    color: var(--theia-warn-font-color0);
-    background-color: var(--theia-warn-color0);
+.theia-input.warning::-ms-input-placeholder { /* Microsoft Edge */
+    color: var(--theia-foreground);
+    background-color: var(--theia-inputValidation-warningBackground);
 }

@@ -209,7 +209,7 @@ export class SerialMonitorSendInput extends React.Component<SerialMonitorSendInp
         return <input
             ref={this.setRef}
             type='text'
-            className={this.props.monitorConfig ? '' : 'warning'}
+            className={`theia-input ${this.props.monitorConfig ? '' : 'warning'}`}
             placeholder={this.placeholder}
             value={this.state.text}
             onChange={this.onChange}

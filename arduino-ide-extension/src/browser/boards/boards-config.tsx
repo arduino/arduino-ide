@@ -207,7 +207,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
 
         return <React.Fragment>
             <div className='search'>
-                <input type='search' placeholder='SEARCH BOARD' onChange={this.updateBoards} ref={this.focusNodeSet} />
+                <input type='search' className='theia-input' placeholder='SEARCH BOARD' onChange={this.updateBoards} ref={this.focusNodeSet} />
                 <i className='fa fa-search'></i>
             </div>
             <div className='boards list'>

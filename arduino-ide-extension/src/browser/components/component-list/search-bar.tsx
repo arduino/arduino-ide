@@ -10,7 +10,7 @@ export class SearchBar extends React.Component<SearchBar.Props> {
     render(): React.ReactNode {
         return <input
                 ref={this.setRef}
-                className={SearchBar.Styles.SEARCH_BAR_CLASS}
+                className={`theia-input ${SearchBar.Styles.SEARCH_BAR_CLASS}`}
                 type='text'
                 placeholder='Filter your search...'
                 size={1}

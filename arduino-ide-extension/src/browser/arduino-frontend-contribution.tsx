@@ -42,6 +42,8 @@ import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { EditorMode } from './editor-mode';
+import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
+import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -57,7 +59,7 @@ export namespace ArduinoToolbarContextMenu {
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
-    TabBarToolbarContribution, CommandContribution, MenuContribution, KeybindingContribution {
+    TabBarToolbarContribution, CommandContribution, MenuContribution, KeybindingContribution, ColorContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -575,6 +577,191 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             return arg.editor.uri;
         }
         return undefined;
+    }
+
+    registerColors(colors: ColorRegistry): void {
+        colors.register(
+            {
+                id: 'arduino.base',
+                defaults: {
+                    dark: '#616161',
+                    light: '#616161',
+                    hc: '#FFFFFF'
+                },
+                description: 'Base layout color.'
+            },
+            {
+                id: 'arduino.toolbarTooltip',
+                defaults: {
+                    dark: '#616161',
+                    light: '#616161',
+                    hc: '#FFFFFF'
+                },
+                description: 'The color of the toolbar tooltip (shown next to the buttons).'
+            },
+            {
+                id: 'arduino.editorMargin',
+                defaults: {
+                    dark: '#2e2e2e',
+                    light: '#EEEEEE',
+                    hc: 'contrastBorder'
+                },
+                description: 'The color of the border which separates line numbers from code area.'
+            },
+            {
+                id: 'arduino.dialogTitle',
+                defaults: {
+                    dark: 'foreground',
+                    light: 'foreground',
+                    hc: 'contrastBorder'
+                },
+                description: 'The color of a dialog title (e.g. in board selector dialog).'
+            },
+            {
+                id: 'arduino.select',
+                defaults: {
+
+                },
+                description: 'Color of background and border of select component (in serial monitor).'
+            },
+            {
+                id: 'arduino.selectItemHoverBackground',
+                defaults: {
+                    light: '#d7eaf8',
+                    dark: '#24455e'
+                },
+                description: 'Color of background of hovered Item in select component (in serial monitor).'
+            },
+            {
+                id: 'arduino.dialogSecondaryTitle',
+                defaults: {
+                    dark: '#7f8c8d',
+                    light: '#7f8c8d'
+                },
+                description: 'Color of secondary titles in Arduino Dialogs.'
+            },
+            {
+                id: 'arduino.secondaryButtonShadow',
+                defaults: {
+                    dark: '#95a5a6',
+                    light: '#95a5a6'
+                },
+                description: 'Color of secondary button shadow.'
+            },
+            {
+                id: 'arduino.buttonShadow',
+                defaults: {
+                    dark: '#006468',
+                    light: '#006468'
+                },
+                description: 'Color of button shadow.'
+            },
+            {
+                id: 'arduino.toolbarItemForeground',
+                defaults: {
+                    dark: 'button.foreground',
+                    light: 'button.foreground'
+                },
+                description: 'Foreground color of toolbar items.'
+            },
+            {
+                id: 'arduino.boardSelectorBackground',
+                defaults: {
+                    dark: 'editorWidget.background',
+                    light: 'editorWidget.background',
+                    hc: 'editorWidget.background'
+                },
+                description: 'Background color of board selector toolbar item.'
+            },
+            {
+                id: 'arduino.boardSelectorHoverBackground',
+                defaults: {
+                    dark: '#383838',
+                    light: '#dae2e4'
+                },
+                description: 'Background color of board selector toolbar item.'
+            },
+            {
+                id: 'arduino.boardSelectorBorder',
+                defaults: {
+                    dark: '#757575',
+                    light: '#e0e0e0'
+                },
+                description: 'Border color of board selector toolbar item.'
+            },
+            {
+                id: 'arduino.boardSelectorCheck',
+                defaults: {
+                    dark: '#259fd8',
+                    light: '#2b75c0'
+                },
+                description: 'Color of board selector toolbar check item.'
+            },
+            {
+                id: 'arduino.listOddItem',
+                defaults: {
+                    dark: '#1d1d1d',
+                    light: '#ffffff'
+                },
+                description: 'Backgroundcolor of item with odd number in list widget'
+            },
+            {
+                id: 'arduino.listEvenItem',
+                defaults: {
+                    dark: '#252526',
+                    light: '#f7f9f9'
+                },
+                description: 'Backgroundcolor of item with even number in list widget'
+            },
+            {
+                id: 'arduino.listItemHoverBackground',
+                defaults: {
+                    dark: '#333333',
+                    light: '#ececec'
+                },
+                description: 'Backgroundcolor of hovered item in list widget'
+            },
+            {
+                id: 'arduino.listItemSecondaryForeground',
+                defaults: {
+                    dark: '#9e9e9e',
+                    light: '#9e9e9e'
+                },
+                description: 'Backgroundcolor of hovered item in list widget'
+            },
+            {
+                id: 'arduino.listItemInstalledBadge',
+                defaults: {
+                    dark: '#259fd8',
+                    light: '#2b75c0'
+                },
+                description: 'Color of badge for installed list items.'
+            },
+            {
+                id: 'arduino.listItemInfoLinkForeground',
+                defaults: {
+                    dark: '#2196f3',
+                    light: '#2196f3'
+                },
+                description: 'Color of info link in list items.'
+            },
+            {
+                id: 'arduino.bottomPanelTabBackground',
+                defaults: {
+                    dark: 'editorGroupHeader.tabsBackground',
+                    light: 'editorGroupHeader.tabsBackground'
+                },
+                description: 'Color of info link in list items.'
+            },
+            {
+                id: 'arduino.toolbarToggleBackground',
+                defaults: {
+                    dark: '#757575',
+                    light: '#9e9e9e'
+                },
+                description: 'Color of active toggles (as in serial monitor toolbar).'
+            }
+        );
     }
 
 }

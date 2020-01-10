@@ -4,36 +4,15 @@
 }
 
 .arduino-list-widget {
-    color: var(--theia-ui-font-color1);
+    color: var(--theia-foreground);
 }
 
 .arduino-list-widget .search-bar {
     margin: 0px 10px 10px 15px;
 }
 
-.arduino-list-widget .search-filters {
-    margin: 0px 10px 0px 15px;
-    border-color: var(--theia-border-color3);
-}
-
 .arduino-list-widget .search-bar:focus {
-    border-color: var(--theia-accent-color3);
-}
-
-.arduino-list-widget .filterable-list-container .search-filters .filter {
-    margin: 0px 0px 10px 0px;
-    display: flex;
-}
-
-.arduino-list-widget .filterable-list-container .search-filters .filter .title {
-    margin: 0px 10px 0px 0px;
-    align-self: center;
-    text-transform: uppercase;
-    font-size: var(--theia-ui-font-size0);
-}
-
-.arduino-list-widget .filterable-list-container .search-filters .filter > select {
-    width: 100%;
+    border-color: var(--theia-focusBorder);
 }
 
 .filterable-list-container {
@@ -49,15 +28,15 @@
 }
 
 .filterable-list-container .items-container > div:nth-child(odd) {
-    background-color: var(--theia-layout-color0);
+    background-color: var(--theia-arduino-listOddItem);
 }
 
 .filterable-list-container .items-container > div:nth-child(even) {
-    background-color: var(--theia-layout-color1);
+    background-color: var(--theia-arduino-listEvenItem);
 }
 
 .filterable-list-container .items-container > div:hover {
-    background-color: var(--theia-layout-color2);
+    background-color: var(--theia-arduino-listItemHoverBackground);
 }
 
 /* Perfect scrollbar does not like if we explicitly set the `background-color` of the contained elements.
@@ -74,16 +53,7 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 }
 
 .component-list-item:hover {
-    background: var(--theia-accent-color4);
     cursor: pointer;
-}
-
-.component-list-item:hover .meta-info {
-    color: var(--theia-ui-font-color1);
-}
-
-.component-list-item .meta-info {
-    color: var(--theia-ui-font-color3);
 }
 
 .component-list-item .header {
@@ -104,33 +74,33 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 
 .component-list-item .header .author {
     font-weight: bold;
-    color: var(--theia-ui-font-color2);
+    color: var(--theia-arduino-listItemSecondaryForeground);
 }
 
 .component-list-item:hover .header .author {
-    color: var(--theia-ui-font-color1);
+    color: var(--theia-foreground);
 }
 
 .component-list-item .header .version {
-    color: var(--theia-ui-font-color2);
+    color: var(--theia-arduino-listItemSecondaryForeground);
 }
 
 .component-list-item .header .installed:before {
     margin-left: 4px;
     display: inline-block;
     justify-self: end;
-    background-color: var(--theia-accent-color1);
+    background-color: var(--theia-arduino-listItemInstalledBadge);
     padding: 2px 4px 2px 4px;
     font-size: 10px;
     font-weight: bold;
     max-height: calc(1em + 4px);
-    color: var(--theia-inverse-ui-font-color0);
+    color: var(--theia-button-foreground);
     content: 'INSTALLED';
 }
 
 .component-list-item .header .installed:hover:before {
-    background-color: var(--theia-inverse-ui-font-color0);
-    color: var(--theia-accent-color1);
+    background-color: var(--theia-button-foreground);
+    color: var(--theia-arduino-listItemInstalledBadge);
     content: 'UNINSTALL';
 }
 
@@ -161,14 +131,10 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 }
 
 .component-list-item .info a {
-    color: var(--theia-brand-color1);
+    color: var(--theia-arduino-listItemInfoLinkForeground);
     text-decoration: none;
 }
 
 .component-list-item a:hover {
     text-decoration: underline;
-}
-
-.component-list-item strong.installed {
-    color: rgb(0, 151, 157)
 }

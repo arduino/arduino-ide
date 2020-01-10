@@ -26,8 +26,6 @@ import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ArduinoWorkspaceService } from './arduino-workspace-service';
-import { ThemeService } from '@theia/core/lib/browser/theming';
-import { ArduinoTheme } from './arduino-theme';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { ArduinoOutlineViewContribution } from './customization/arduino-outline-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
@@ -71,8 +69,17 @@ import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
 import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './components/component-list/list-item-renderer';
+import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
+import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
+
+MonacoThemingService.register({
+    id: 'arduinoTheme',
+    label: 'Arduino Light Theme',
+    uiTheme: 'vs',
+    json: require('../../src/browser/data/arduino.color-theme.json')
+});
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     ElementQueries.listen();
@@ -85,6 +92,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
     bind(KeybindingContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
+    bind(ColorContribution).toService(ArduinoFrontendContribution);
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(ArduinoToolbarContribution);
@@ -199,9 +207,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     bind(ArduinoWorkspaceService).toSelf().inSingletonScope();
     rebind(WorkspaceService).to(ArduinoWorkspaceService).inSingletonScope();
-
-    const themeService = ThemeService.get();
-    themeService.register(...ArduinoTheme.themes);
 
     // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
     bind(EditorMode).toSelf().inSingletonScope();

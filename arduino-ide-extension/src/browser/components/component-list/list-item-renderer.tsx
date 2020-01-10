@@ -68,6 +68,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
                 return <label>{availableVersions[0]}</label>
             } else {
                 return <select
+                    className='theia-select'
                     value={input.selectedVersion}
                     onChange={onSelectChange}>
                     {
