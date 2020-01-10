@@ -24,8 +24,8 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
     }
 
     async start(clientConnection: IConnection, options: LanguageServerStartOptions): Promise<void> {
-        const clangd = await this.resolveExecutable('clangd');
         const languageServer = await this.resolveExecutable('arduino-language-server');
+        const clangd = await this.resolveExecutable('clangd');
         const cli = await this.resolveExecutable('arduino-cli');
         // Add '-log' argument to enable logging to files
         const args: string[] = ['-clangd', clangd, '-cli', cli];
@@ -47,7 +47,11 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
 
     protected resolveExecutable(name: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
-            const path = `${process.env.PATH}${delimiter}${join(__dirname, '..', '..', '..', 'build')}`;
+            const segments = ['..', '..', '..', 'build'];
+            if (name === 'clangd' && os.platform() !== 'win32') {
+                segments.push('bin');
+            }
+            const path = `${process.env.PATH}${delimiter}${join(__dirname, ...segments)}`;
             const suffix = os.platform() === 'win32' ? '.exe' : '';
             which(name + suffix, { path }, (err, execPath) => {
                 if (err) {
