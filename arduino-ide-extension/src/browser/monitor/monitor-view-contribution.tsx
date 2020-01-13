@@ -41,7 +41,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
                 area: 'bottom'
             },
             toggleCommandId: MonitorViewContribution.OPEN_SERIAL_MONITOR,
-            toggleKeybinding: 'ctrl+shift+m'
+            toggleKeybinding: 'ctrlcmd+shift+m'
         })
     }
 

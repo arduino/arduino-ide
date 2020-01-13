@@ -9,29 +9,19 @@ import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { CoreService } from '../common/protocol/core-service';
 import { WorkspaceServiceExt } from './workspace-service-ext';
-import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
-import { QuickPickService } from '@theia/core/lib/common/quick-pick-service';
-import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
-    ContextMenuRenderer,
-    OpenerService,
-    Widget,
-    StatusBar,
-    StatusBarAlignment,
-    QuickOpenService,
-    ApplicationShell,
-    FrontendApplicationContribution,
-    FrontendApplication
+    ContextMenuRenderer, Widget, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
+    FrontendApplication, KeybindingContribution, KeybindingRegistry
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { Sketch, SketchesService } from '../common/protocol/sketches-service';
-import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
 import { FileSystemCommands } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/file-download-command-contribution';
@@ -41,17 +31,16 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
-import { ConfigService } from '../common/protocol/config-service';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { ArduinoWorkspaceService } from './arduino-workspace-service';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
-import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 
 export namespace ArduinoMenus {
@@ -67,7 +56,8 @@ export namespace ArduinoToolbarContextMenu {
 }
 
 @injectable()
-export class ArduinoFrontendContribution implements FrontendApplicationContribution, TabBarToolbarContribution, CommandContribution, MenuContribution {
+export class ArduinoFrontendContribution implements FrontendApplicationContribution,
+    TabBarToolbarContribution, CommandContribution, MenuContribution, KeybindingContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -83,12 +73,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @inject(ToolOutputServiceClient)
     protected readonly toolOutputServiceClient: ToolOutputServiceClient;
-
-    @inject(QuickPickService)
-    protected readonly quickPickService: QuickPickService;
-
-    @inject(BoardsListWidgetFrontendContribution)
-    protected readonly boardsListWidgetFrontendContribution: BoardsListWidgetFrontendContribution;
 
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClient: BoardsServiceClientImpl;
@@ -108,12 +92,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(FileSystem)
     protected readonly fileSystem: FileSystem;
 
-    @inject(OpenerService)
-    protected readonly openerService: OpenerService;
-
-    @inject(WindowService)
-    protected readonly windowService: WindowService;
-
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
 
@@ -129,26 +107,17 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(StatusBar)
     protected readonly statusBar: StatusBar;
 
-    @inject(ArduinoShellLayoutRestorer)
-    protected readonly layoutRestorer: ArduinoShellLayoutRestorer;
-
-    @inject(QuickOpenService)
-    protected readonly quickOpenService: QuickOpenService;
-
     @inject(ArduinoWorkspaceService)
     protected readonly workspaceService: ArduinoWorkspaceService;
-
-    @inject(ConfigService)
-    protected readonly configService: ConfigService;
 
     @inject(MonitorConnection)
     protected readonly monitorConnection: MonitorConnection;
 
-    @inject(ApplicationShell)
-    protected readonly shell: ApplicationShell;
-
     @inject(FileNavigatorContribution)
     protected readonly fileNavigatorContributions: FileNavigatorContribution;
+
+    @inject(OutputContribution)
+    protected readonly outputContribution: OutputContribution;
 
     @inject(OutlineViewContribution)
     protected readonly outlineContribution: OutlineViewContribution;
@@ -195,6 +164,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
         for (const viewContribution of [
             this.fileNavigatorContributions,
+            this.outputContribution,
             this.outlineContribution,
             this.problemContribution,
             this.scmContribution,
@@ -255,6 +225,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     registerCommands(registry: CommandRegistry): void {
         // TODO: use proper API https://github.com/eclipse-theia/theia/pull/6599
         const allHandlers: { [id: string]: CommandHandler[] } = (registry as any)._handlers;
+
         // Make sure to reveal the `Explorer` before executing `New File` and `New Folder`.
         for (const command of [WorkspaceCommands.NEW_FILE, WorkspaceCommands.NEW_FOLDER]) {
             const { id } = command;
@@ -311,12 +282,15 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     if (!boardsConfig.selectedBoard.fqbn) {
                         throw new Error(`No core is installed for ${boardsConfig.selectedBoard.name}. Please install the board.`);
                     }
+                    // Reveal the Output view asynchronously (don't await it)
+                    this.outputContribution.openView({ reveal: true });
                     await this.coreService.compile({ uri: uri.toString(), board: boardsConfig.selectedBoard });
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
             }
         });
+
         registry.registerCommand(ArduinoCommands.UPLOAD, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => true,
@@ -345,6 +319,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     if (!selectedPort) {
                         throw new Error('No ports selected. Please select a port.');
                     }
+                    // Reveal the Output view asynchronously (don't await it)
+                    this.outputContribution.openView({ reveal: true });
                     await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort.address });
                 } catch (e) {
                     await this.messageService.error(e.toString());
@@ -355,6 +331,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 }
             }
         });
+
         registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
@@ -372,23 +349,27 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 }
             }
         });
+
         registry.registerCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR, {
             isEnabled: () => true,
             execute: () => this.doOpenFile()
-        })
+        });
+
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
             isEnabled: () => true,
             execute: async (sketch: Sketch) => {
                 this.workspaceService.open(new URI(sketch.uri));
             }
-        })
+        });
+
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
             isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (sketch: Sketch) => {
                 registry.executeCommand(CommonCommands.SAVE_ALL.id);
             }
-        })
+        });
+
         registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
             execute: async uri => {
                 try {
@@ -404,6 +385,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 }
             }
         }));
+
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
             isEnabled: () => true,
             execute: async () => {
@@ -412,12 +394,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     this.boardsServiceClient.boardsConfig = boardsConfig;
                 }
             }
-        })
+        });
+
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
             execute: () => this.editorMode.toggle(),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => this.editorMode.proMode
-        })
+        });
     }
 
     registerMenus(registry: MenuModelRegistry) {
@@ -483,6 +466,17 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         const index = menuPath.length - 1;
         const menuId = menuPath[index];
         return menuId;
+    }
+
+    registerKeybindings(keybindings: KeybindingRegistry): void {
+        keybindings.registerKeybinding({
+            command: ArduinoCommands.VERIFY.id,
+            keybinding: 'ctrlcmd+alt+v'
+        });
+        keybindings.registerKeybinding({
+            command: ArduinoCommands.UPLOAD.id,
+            keybinding: 'ctrlcmd+alt+u'
+        });
     }
 
     protected async registerSketchesInMenu(registry: MenuModelRegistry): Promise<void> {

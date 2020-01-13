@@ -28,7 +28,6 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { ArduinoWorkspaceService } from './arduino-workspace-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { ArduinoTheme } from './arduino-theme';
-import { MenuContribution } from '@theia/core';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { ArduinoOutlineViewContribution } from './customization/arduino-outline-contribution';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
@@ -42,7 +41,8 @@ import { EditorContribution } from '@theia/editor/lib/browser/editor-contributio
 import { ArduinoEditorContribution } from './customization/arduino-editor-contribution';
 import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { ArduinoMonacoStatusBarContribution } from './customization/arduino-monaco-status-bar-contribution';
-import { ApplicationShell, ShellLayoutRestorer } from '@theia/core/lib/browser';
+import { ApplicationShell, ShellLayoutRestorer, KeybindingContribution } from '@theia/core/lib/browser';
+import { MenuContribution } from '@theia/core/lib/common/menu';
 import { ArduinoApplicationShell } from './customization/arduino-application-shell';
 import { ArduinoFrontendApplication } from './customization/arduino-frontend-application';
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
@@ -71,6 +71,7 @@ import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
 import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './components/component-list/list-item-renderer';
+
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
@@ -82,6 +83,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
+    bind(KeybindingContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();

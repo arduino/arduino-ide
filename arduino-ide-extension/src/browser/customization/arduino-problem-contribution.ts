@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { KeybindingRegistry } from '@theia/core/lib/browser';
 import { ProblemStat } from '@theia/markers/lib/browser/problem/problem-manager';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
@@ -19,6 +20,15 @@ export class ArduinoProblemContribution extends ProblemContribution {
     protected setStatusBarElement(problemStat: ProblemStat): void {
         if (this.editorMode.proMode) {
             super.setStatusBarElement(problemStat);
+        }
+    }
+
+    registerKeybindings(keybindings: KeybindingRegistry): void {
+        if (this.toggleCommand) {
+            keybindings.registerKeybinding({
+                command: this.toggleCommand.id,
+                keybinding: 'ctrlcmd+alt+shift+m'
+            });
         }
     }
 
