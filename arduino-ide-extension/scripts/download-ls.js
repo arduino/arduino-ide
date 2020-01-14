@@ -8,7 +8,6 @@
     const DEFAULT_ALS_VERSION = 'nightly';
     const DEFAULT_CLANGD_VERSION = '9.0.0';
 
-    const os = require('os');
     const path = require('path');
     const shell = require('shelljs');
     const downloader = require('./downloader');
@@ -39,21 +38,24 @@
     const { platform, arch } = process;
 
     const build = path.join(__dirname, '..', 'build');
-    const als = path.join(build, `arduino-language-server${os.platform() === 'win32' ? '.exe' : ''}`);
-    const clangd = path.join(build, `clangd${os.platform() === 'win32' ? '.exe' : ''}`);
+    const alsTarget = path.join(build, `arduino-language-server${platform === 'win32' ? '.exe' : ''}`);
 
-    let alsSuffix, clangdSuffix;
+    let clangdTarget, alsSuffix, clangdSuffix;
     switch (platform) {
         case 'darwin':
+            clangdTarget = path.join(build, 'bin', 'clangd')
             alsSuffix = 'Darwin_amd64.zip';
             clangdSuffix = 'macos.zip';
             break;
+        case 'linux':
+            clangdTarget = path.join(build, 'bin', 'clangd')
+            alsSuffix = 'Linux_amd64.zip';
+            clangdSuffix = 'linux.zip'
+            break;
         case 'win32':
+            clangdTarget = path.join(build, 'clangd.exe')
             alsSuffix = 'Windows_NT_amd64.zip';
             clangdSuffix = 'windows.zip';
-            break;
-        case 'linux':
-            alsSuffix = 'Linux_amd64.zip';
             break;
     }
     if (!alsSuffix) {
@@ -62,11 +64,9 @@
     }
 
     const alsUrl = `https://downloads.arduino.cc/arduino-language-server/${alsVersion === 'nightly' ? 'nightly/arduino-language-server' : 'arduino-language-server_' + alsVersion}_${alsSuffix}`;
-    downloader.download(alsUrl, als, 'arduino-language-server', force);
+    downloader.downloadUnzipAll(alsUrl, build, alsTarget, force);
 
-    if (clangdSuffix) {
-        const clangdUrl = `https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${clangdVersion}_${clangdSuffix}`;
-        downloader.download(clangdUrl, clangd, 'clangd', force);
-    }
+    const clangdUrl = `https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${clangdVersion}_${clangdSuffix}`;
+    downloader.downloadUnzipAll(clangdUrl, build, clangdTarget, force);
 
 })();

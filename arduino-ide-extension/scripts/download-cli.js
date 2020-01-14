@@ -12,7 +12,6 @@
 
     const DEFAULT_VERSION = '0.7.1'; // require('moment')().format('YYYYMMDD');
 
-    const os = require('os');
     const path = require('path');
     const shell = require('shelljs');
     const downloader = require('./downloader');
@@ -35,7 +34,7 @@
     const { platform, arch } = process;
 
     const build = path.join(__dirname, '..', 'build');
-    const cli = path.join(build, `arduino-cli${os.platform() === 'win32' ? '.exe' : ''}`);
+    const cli = path.join(build, `arduino-cli${platform === 'win32' ? '.exe' : ''}`);
 
     const suffix = (() => {
         switch (platform) {
@@ -57,6 +56,6 @@
     }
 
     const url = `https://downloads.arduino.cc/arduino-cli${version.startsWith('nightly-') ? '/nightly' : ''}/arduino-cli_${version}_${suffix}`;
-    downloader.download(url, cli, 'arduino-cli', force);
+    downloader.downloadUnzipFile(url, cli, 'arduino-cli', force);
 
 })();

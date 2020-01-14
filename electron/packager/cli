@@ -19,7 +19,7 @@ const yargs = require('yargs');
                     ext = 'zip';
                     os = 'win';
                 } else if (platform === 'linux') {
-                    ext = 'tar.xz';
+                    ext = 'zip';
                     os = 'linux';
                 } else {
                     process.stderr.write(`Unexpected platform: ${platform}.`);

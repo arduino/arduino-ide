@@ -64,7 +64,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         bindBackendService(SketchesServicePath, SketchesService);
     });
     bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
-    
+
     // Config service
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
     bind(ConfigService).toService(ConfigServiceImpl);
@@ -161,8 +161,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // Set up cpp extension
     if (!process.env.CPP_CLANGD_COMMAND) {
-        const executable = os.platform() === 'win32' ? 'clangd.exe' : 'clangd';
-        const clangdCommand = join(__dirname, '..', '..', 'build', executable);
+        const segments = ['..', '..', 'build'];
+        if (os.platform() === 'win32') {
+            segments.push('clangd.exe');
+        } else {
+            segments.push('bin');
+            segments.push('clangd');
+        }
+        const clangdCommand = join(__dirname, ...segments);
         if (fs.existsSync(clangdCommand)) {
             process.env.CPP_CLANGD_COMMAND = clangdCommand;
         }

@@ -62,7 +62,7 @@
     },
     "linux": {
       "target": [
-        "tar.xz"
+        "zip"
       ],
       "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}"
     },
