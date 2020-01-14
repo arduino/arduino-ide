@@ -27,8 +27,18 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     ): React.ReactNode {
 
         const { item } = input;
-        const name = <span className='name'>{item.name}</span>;
-        const author = <span className='author'>{item.author}</span>;
+        let nameAndAuthor: JSX.Element;
+        if (item.name && item.author) {
+            const name = <span className='name'>{item.name}</span>;
+            const author = <span className='author'>{item.author}</span>;
+            nameAndAuthor = <span>{name} by {author}</span>
+        } else if (item.name) {
+            nameAndAuthor = <span className='name'>{item.name}</span>;
+        } else if ((item as any).id) {
+            nameAndAuthor = <span className='name'>{(item as any).id}</span>;
+        } else {
+            nameAndAuthor = <span className='name'>Unknown</span>;
+        }
         const onClickUninstall = () => uninstall(item);
         const installedVersion = !!item.installedVersion && <div className='version-info'>
             <span className='version'>Version {item.installedVersion}</span>
@@ -71,7 +81,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
 
         return <div className='component-list-item noselect'>
             <div className='header'>
-                <span>{name} by {author}</span>
+                {nameAndAuthor}
                 {installedVersion}
             </div>
             <div className='content'>
