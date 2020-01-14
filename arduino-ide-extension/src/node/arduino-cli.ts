@@ -1,12 +1,8 @@
-import * as os from 'os';
-import * as which from 'which';
-import * as semver from 'semver';
-import { spawn } from 'child_process';
-import { join } from 'path';
 import { injectable, inject } from 'inversify';
 import { ILogger } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Config } from '../common/protocol/config-service';
+import { spawnCommand, getExecPath } from './exec-util';
 
 @injectable()
 export class ArduinoCli {
@@ -20,33 +16,19 @@ export class ArduinoCli {
         if (this.execPath) {
             return this.execPath;
         }
-        const version = /\d+\.\d+\.\d+/;
-        const cli = `arduino-cli${os.platform() === 'win32' ? '.exe' : ''}`;
-        const buildCli = join(__dirname, '..', '..', 'build', cli);
-        const buildVersion = await this.spawn(`"${buildCli}"`, ['version']);
-        const buildShortVersion = (buildVersion.match(version) || [])[0];
-        this.execPath = buildCli;
-        const pathCli = await new Promise<string | undefined>(resolve => which(cli, (error, path) => resolve(error ? undefined : path)));
-        if (!pathCli) {
-            return buildCli;
-        }
-        const pathVersion = await this.spawn(`"${pathCli}"`, ['version']);
-        const pathShortVersion = (pathVersion.match(version) || [])[0];
-        if (semver.gt(pathShortVersion, buildShortVersion)) {
-            this.execPath = pathCli;
-            return pathCli;
-        }
-        return buildCli;
+        const path = await getExecPath('arduino-cli', this.logger, 'version');
+        this.execPath = path;
+        return path;
     }
 
     async getVersion(): Promise<string> {
         const execPath = await this.getExecPath();
-        return this.spawn(`"${execPath}"`, ['version']);
+        return spawnCommand(`"${execPath}"`, ['version'], this.logger);
     }
 
     async getDefaultConfig(): Promise<Config> {
         const execPath = await this.getExecPath();
-        const result = await this.spawn(`"${execPath}"`, ['config', 'dump', '--format', 'json']);
+        const result = await spawnCommand(`"${execPath}"`, ['config', 'dump', '--format', 'json'], this.logger);
         const { directories } = JSON.parse(result);
         if (!directories) {
             throw new Error(`Could not parse config. 'directories' was missing from: ${result}`);
@@ -62,35 +44,6 @@ export class ArduinoCli {
             sketchDirUri: FileUri.create(user).toString(),
             dataDirUri: FileUri.create(data).toString()
         };
-    }
-
-    private spawn(command: string, args?: string[]): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            const buffers: Buffer[] = [];
-            const cp = spawn(command, args, { windowsHide: true, shell: true });
-            cp.stdout.on('data', (b: Buffer) => buffers.push(b));
-            cp.on('error', error => {
-                this.logger.error(`Error executing ${command} with args: ${JSON.stringify(args)}.`, error);
-                reject(error);
-            });
-            cp.on('exit', (code, signal) => {
-                if (code === 0) {
-                    const result = Buffer.concat(buffers).toString('utf8').trim()
-                    resolve(result);
-                    return;
-                }
-                if (signal) {
-                    this.logger.error(`Unexpected signal '${signal}' when executing ${command} with args: ${JSON.stringify(args)}.`);
-                    reject(new Error(`Process exited with signal: ${signal}`));
-                    return;
-                }
-                if (code) {
-                    this.logger.error(`Unexpected exit code '${code}' when executing ${command} with args: ${JSON.stringify(args)}.`);
-                    reject(new Error(`Process exited with exit code: ${code}`));
-                    return;
-                }
-            });
-        });
     }
 
 }
