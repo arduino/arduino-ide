@@ -21,7 +21,7 @@ export class SketchesServiceImpl implements SketchesService {
             const { sketchDirUri } = (await this.configService.getConfiguration());
             fsPath = FileUri.fsPath(sketchDirUri);
             if (!fs.existsSync(fsPath)) {
-                fs.mkdirpSync(fsPath);
+                await fs.mkdirp(fsPath);
             }
         } else {
             fsPath = FileUri.fsPath(uri);
@@ -96,8 +96,8 @@ export class SketchesServiceImpl implements SketchesService {
 
         const sketchDir = path.join(parent, sketchName)
         const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
-        fs.mkdirpSync(sketchDir);
-        fs.writeFileSync(sketchFile, `
+        await fs.mkdirp(sketchDir);
+        await fs.writeFile(sketchFile, `
 void setup() {
 // put your setup code here, to run once:
 
