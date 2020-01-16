@@ -10,9 +10,6 @@
   "devDependencies": {
     "lerna": "^3.13.3"
   },
-  "resolutions": {
-    "**/fs-extra": "^8.1.0"
-  },
   "scripts": {
     "prepare": "lerna run prepare",
     "rebuild:browser": "theia rebuild:browser",
