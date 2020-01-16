@@ -75,7 +75,7 @@ export class ArduinoVariableResolver implements VariableContribution {
             return undefined;
         }
         if (!fileStat.isDirectory && fileStat.uri.endsWith('.elf')) {
-            return fileStat.uri;
+            return new URI(fileStat.uri).path.toString();
         }
 
         let parent: FileStat | undefined;
@@ -106,7 +106,7 @@ export class ArduinoVariableResolver implements VariableContribution {
                 bin = parent.children.find(c => c.uri.endsWith('.elf'));
             }
             if (bin) {
-                return bin.uri;
+                return new URI(bin.uri).path.toString();
             }
         }
         this.messageService.error('Cannot find sketch binary: ' + hint);
