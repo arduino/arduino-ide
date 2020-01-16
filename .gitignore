@@ -2,15 +2,16 @@ node_modules/
 # .node_modules is a hack for the electron builder.
 .node_modules/
 lib/
-build/
 downloads/
+build/
 !electron/build/
 src-gen/
 browser-app/webpack.config.js
 electron-app/webpack.config.js
-.DS_Store
 /workspace/static
+.DS_Store
 # switching from `electron` to `browser` in dev mode.
 .browser_modules
 # LS logs
 inols*.log
+yarn-error.log
