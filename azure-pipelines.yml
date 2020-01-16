@@ -34,6 +34,8 @@ jobs:
       GITHUB_TOKEN: $(Personal.GitHub.Token)
       THEIA_ELECTRON_SKIP_REPLACE_FFMPEG: 1
     displayName: Build
+  - script: yarn test
+    displayName: Test
   - bash: |
       ./electron/packager/conf-node-gyp.sh
       yarn --cwd ./electron/packager/

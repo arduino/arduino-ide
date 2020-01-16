@@ -18,7 +18,8 @@
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
     "start": "yarn --cwd ./browser-app start",
-    "watch": "lerna run watch --parallel"
+    "watch": "lerna run watch --parallel",
+    "test": "lerna run test"
   },
   "workspaces": [
     "arduino-ide-extension",
