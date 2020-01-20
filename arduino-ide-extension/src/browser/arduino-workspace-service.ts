@@ -1,4 +1,5 @@
 import { injectable, inject } from 'inversify';
+import { MessageService } from '@theia/core';
 import { LabelProvider } from '@theia/core/lib/browser';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../common/protocol/config-service';
@@ -21,26 +22,44 @@ export class ArduinoWorkspaceService extends WorkspaceService {
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
 
-    async getDefaultWorkspaceUri(): Promise<string | undefined> {
-        const [hash, recentWorkspaces, recentSketches] = await Promise.all([
-            window.location.hash,
-            this.sketchService.getSketches().then(sketches => sketches.map(({ uri }) => uri)),
-            this.server.getRecentWorkspaces()
-        ]);
-        const toOpen = await new ArduinoWorkspaceRootResolver({
-            isValid: this.isValid.bind(this)
-        }).resolve({
-            hash,
-            recentWorkspaces,
-            recentSketches
-        });
-        if (toOpen) {
-            const { uri } = toOpen;
-            await this.server.setMostRecentlyUsedWorkspace(uri);
-            return toOpen.uri;
+    @inject(MessageService)
+    protected readonly messageService: MessageService;
+
+    private workspaceUri?: Promise<string | undefined>;
+
+    protected getDefaultWorkspaceUri(): Promise<string | undefined> {
+        if (this.workspaceUri) {
+            // Avoid creating a new sketch twice
+            return this.workspaceUri;
         }
-        const { sketchDirUri } = (await this.configService.getConfiguration());
-        return (await this.sketchService.createNewSketch(sketchDirUri)).uri;
+        this.workspaceUri = (async () => {
+            try {
+                const hash = window.location.hash;
+                const [recentWorkspaces, recentSketches] = await Promise.all([
+                    this.server.getRecentWorkspaces(),
+                    this.sketchService.getSketches().then(sketches => sketches.map(s => s.uri))
+                ]);
+                const toOpen = await new ArduinoWorkspaceRootResolver({
+                    isValid: this.isValid.bind(this)
+                }).resolve({ hash, recentWorkspaces, recentSketches });
+                if (toOpen) {
+                    const { uri } = toOpen;
+                    await this.server.setMostRecentlyUsedWorkspace(uri);
+                    return toOpen.uri;
+                }
+                const { sketchDirUri } = (await this.configService.getConfiguration());
+                this.logger.info(`No valid workspace URI found. Creating new sketch in ${sketchDirUri}`)
+                return (await this.sketchService.createNewSketch(sketchDirUri)).uri;
+            } catch (err) {
+                this.logger.fatal(`Failed to determine the sketch directory: ${err}`)
+                this.messageService.error(
+                    'There was an error creating the sketch directory. ' +
+                    'See the log for more details. ' +
+                    'The application will probably not work as expected.')
+                return super.getDefaultWorkspaceUri();
+            }
+        })();
+        return this.workspaceUri;
     }
 
     private async isValid(uri: string): Promise<boolean> {

@@ -71,7 +71,7 @@ export class ArduinoDaemon implements BackendApplicationContribution {
             await new Promise(resolve => setTimeout(resolve, 2000));
             this.isReady.resolve();
             if (!this.cliContribution.debugCli) {
-                this.logger.info(`<<< The 'arduino-cli' daemon is up an running.`);
+                this.logger.info(`<<< The 'arduino-cli' daemon is up and running.`);
             } else {
                 this.logger.info(`Assuming the 'arduino-cli' already runs in debug mode.`);
             }
