@@ -40,7 +40,11 @@ export abstract class AbstractServer extends EventEmitter {
     protected launchReject?: (error: any) => void;
     protected timer?: NodeJS.Timer;
 
-    public spawn(args: CmsisRequestArguments): Promise<void> {
+    get isRunning(): boolean {
+        return !!this.process && !this.process.killed;
+    }
+
+    spawn(args: CmsisRequestArguments): Promise<void> {
         return new Promise(async (resolve, reject) => {
             this.launchResolve = resolve;
             this.launchReject = reject;
@@ -80,7 +84,7 @@ export abstract class AbstractServer extends EventEmitter {
         });
     }
 
-    public kill() {
+    kill() {
         if (this.process) {
             this.process.kill('SIGINT');
         }

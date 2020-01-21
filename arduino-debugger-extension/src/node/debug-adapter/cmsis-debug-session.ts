@@ -262,18 +262,14 @@ export class CmsisDebugSession extends GDBDebugSession {
         this.sendEvent(new OutputEvent(`Starting debugger: ${JSON.stringify(args)}`));
         await this.gdbServer.spawn(args);
         await this.spawn(args);
-        if (gdbServerErrors.length > 0) {
-            throw new Error(gdbServerErrors.join('\n'));
-        }
+        this.checkServerErrors(gdbServerErrors);
 
         // Send commands
         await mi.sendTargetAsyncOn(this.gdb);
         await mi.sendTargetSelectRemote(this.gdb, remote);
         await mi.sendMonitorResetHalt(this.gdb);
         this.sendEvent(new OutputEvent(`Attached to debugger on port ${port}`));
-        if (gdbServerErrors.length > 0) {
-            throw new Error(gdbServerErrors.join('\n'));
-        }
+        this.checkServerErrors(gdbServerErrors);
 
         // Download image
         const progressListener = (percent: number) => this.progressEvent(percent, 'Loading Image');
@@ -291,9 +287,7 @@ export class CmsisDebugSession extends GDBDebugSession {
             await mi.sendBreakOnFunction(this.gdb);
         }
 
-        if (gdbServerErrors.length > 0) {
-            throw new Error(gdbServerErrors.join('\n'));
-        }
+        this.checkServerErrors(gdbServerErrors);
         this.sendEvent(new OutputEvent(`Image loaded: ${args.program}`));
         this.sendEvent(new InitializedEvent());
 
@@ -302,6 +296,12 @@ export class CmsisDebugSession extends GDBDebugSession {
             logger.error(JSON.stringify(message));
             this.sendEvent(new TerminatedEvent());
         });
+    }
+
+    private checkServerErrors(errors: any[]): void {
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'));
+        }
     }
 
     protected spawn(args: CmsisRequestArguments): Promise<void> {
@@ -427,11 +427,19 @@ export class CmsisDebugSession extends GDBDebugSession {
         }
 
         // Stop gdb client and server - we give GDB five seconds to exit orderly before we kill the GDB server
-        setTimeout(() => this.gdbServer.kill(), 5000);
-        try {
-            await this.gdb.sendGDBExit();
-        } catch (e) {
-            // Need to catch here in case the connection has already been closed
+        if (this.gdbServer.isRunning) {
+            const killPromise = new Promise(resolve => {
+                setTimeout(() => {
+                    this.gdbServer.kill();
+                    resolve();
+                }, 5000);
+            });
+            try {
+                await this.gdb.sendGDBExit();
+            } catch (e) {
+                // Need to catch here in case the connection has already been closed
+            }
+            await killPromise;
         }
     }
 

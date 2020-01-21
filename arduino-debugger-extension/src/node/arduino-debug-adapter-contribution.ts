@@ -65,7 +65,7 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
         args = args.concat([path.join(__dirname, 'debug-adapter', 'main')]);
 
         return {
-            command: 'node',
+            command: process.execPath,
             args: args,
         }
     }
