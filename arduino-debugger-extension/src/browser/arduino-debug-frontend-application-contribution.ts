@@ -68,7 +68,7 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
                     await this.editorManager.open(sketchFileURI);
                     await this.manager.start(current);
                 } else {
-                    this.messageService.error('Please open a valid INO file.')
+                    this.messageService.error('Please open a sketch file to start debugging.')
                 }
             } else {
                 await this.manager.start(current);

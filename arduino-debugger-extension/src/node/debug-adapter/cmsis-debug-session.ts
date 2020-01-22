@@ -258,6 +258,11 @@ export class CmsisDebugSession extends GDBDebugSession {
         this.progressEvent(0, 'Starting Debugger');
         this.sendEvent(new OutputEvent(`Starting debugger: ${JSON.stringify(args)}`));
         await this.gdbServer.spawn(args);
+        process.on('exit', () => {
+            if (this.gdbServer.isRunning) {
+                this.gdbServer.kill();
+            }
+        });
         await this.spawn(args);
         this.checkServerErrors(gdbServerErrors);
 
@@ -425,20 +430,11 @@ export class CmsisDebugSession extends GDBDebugSession {
             }
         }
 
-        // Stop gdb client and server - we give GDB five seconds to exit orderly before we kill the GDB server
-        if (this.gdbServer.isRunning) {
-            const killPromise = new Promise(resolve => {
-                setTimeout(() => {
-                    this.gdbServer.kill();
-                    resolve();
-                }, 5000);
-            });
-            try {
-                await this.gdb.sendGDBExit();
-            } catch (e) {
-                // Need to catch here in case the connection has already been closed
-            }
-            await killPromise;
+        // Stop gdb client
+        try {
+            await this.gdb.sendGDBExit();
+        } catch (e) {
+            // Need to catch here in case the connection has already been closed
         }
     }
 
