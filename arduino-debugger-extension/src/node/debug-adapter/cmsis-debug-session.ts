@@ -208,9 +208,6 @@ export class CmsisDebugSession extends GDBDebugSession {
     protected async disconnectRequest(response: DebugProtocol.DisconnectResponse, args: DebugProtocol.DisconnectArguments): Promise<void> {
         try {
             this.stopSession();
-            if (!args || !args.restart) {
-                this.sendEvent(new TerminatedEvent());
-            }
             this.sendResponse(response);
         } catch (err) {
             this.sendErrorResponse(response, 1, err.message);
@@ -294,7 +291,9 @@ export class CmsisDebugSession extends GDBDebugSession {
         this.gdbServer.removeListener('error', gdbServerErrorAccumulator);
         this.gdbServer.on('error', message => {
             logger.error(JSON.stringify(message));
-            this.sendEvent(new TerminatedEvent());
+            if (!this.gdbServer.serverErrorEmitted) {
+                this.sendEvent(new TerminatedEvent());
+            }
         });
     }
 

@@ -40,6 +40,8 @@ export abstract class AbstractServer extends EventEmitter {
     protected launchReject?: (error: any) => void;
     protected timer?: NodeJS.Timer;
 
+    serverErrorEmitted = false;
+
     get isRunning(): boolean {
         return !!this.process && !this.process.killed;
     }
@@ -98,7 +100,7 @@ export abstract class AbstractServer extends EventEmitter {
         this.emit('exit', code, signal);
 
         // Code can be undefined, null or 0 and we want to ignore those values
-        if (!!code) {
+        if (!!code && !this.serverErrorEmitted) {
             this.emit('error', `GDB server stopped unexpectedly with exit code ${code}`);
         }
     }
@@ -141,6 +143,7 @@ export abstract class AbstractServer extends EventEmitter {
 
         if (this.serverError(data)) {
             this.emit('error', data.split(EOL)[0]);
+            this.serverErrorEmitted = true;
         }
     }
 
