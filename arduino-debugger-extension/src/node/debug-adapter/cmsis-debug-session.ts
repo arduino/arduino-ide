@@ -273,7 +273,7 @@ export class CmsisDebugSession extends GDBDebugSession {
         progressListener(0);
         this.gdbServer.on('progress', progressListener);
         await mi.sendTargetDownload(this.gdb);
-        this.gdbServer.off('progress', progressListener);
+        this.gdbServer.removeListener('progress', progressListener);
         progressListener(100);
 
         // Halt after image download
