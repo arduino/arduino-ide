@@ -2,6 +2,7 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { FileSystem } from '@theia/filesystem/lib/common';
 import {
     BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient,
     Port, BoardDetails, Tool, ToolLocations, BoardDetailLocations
@@ -16,7 +17,6 @@ import { ToolOutputServiceServer } from '../common/protocol/tool-output-service'
 import { Installable } from '../common/protocol/installable';
 import { ConfigService } from '../common/protocol/config-service';
 import * as path from 'path';
-import URI from '@theia/core/lib/common/uri';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -36,6 +36,9 @@ export class BoardsServiceImpl implements BoardsService {
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;
+
+    @inject(FileSystem)
+    protected readonly fileSystem: FileSystem;
 
     protected discoveryInitialized = false;
     protected discoveryTimer: NodeJS.Timer | undefined;
@@ -251,7 +254,10 @@ export class BoardsServiceImpl implements BoardsService {
     // TODO: these location should come from the CLI/daemon rather than us botching them together
     protected async getBoardLocations(details: BoardDetailsResp): Promise<BoardDetailLocations | undefined> {
         const config = await this.configService.getConfiguration();
-        const datadir = new URI(config.dataDirUri).path.toString();
+        const datadir = await this.fileSystem.getFsPath(config.dataDirUri);
+        if (!datadir) {
+            return undefined;
+        }
 
         return {
             debugScript: path.join(datadir, "packages", "arduino", "hardware", "samd", "1.8.4", "variants", "arduino_zero", "openocd_scripts", "arduino_zero.cfg")
@@ -259,11 +265,14 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     // TODO: these location should come from the CLI/daemon rather than us botching them together
-    protected async getToolLocations(t: RequiredTool) {
+    protected async getToolLocations(t: RequiredTool): Promise<ToolLocations | undefined> {
         const config = await this.configService.getConfiguration();
-        const datadir = new URI(config.dataDirUri).path.toString();
-        const toolBasePath = path.join(datadir, "packages", "arduino", "tools");
+        const datadir = await this.fileSystem.getFsPath(config.dataDirUri);
+        if (!datadir) {
+            return undefined;
+        }
 
+        const toolBasePath = path.join(datadir, "packages", "arduino", "tools");
         let loc: ToolLocations = {
             main: path.join(toolBasePath, t.getName(), t.getVersion())
         };
