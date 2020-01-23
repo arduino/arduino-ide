@@ -4,9 +4,9 @@ import { KeybindingRegistry } from '@theia/core/lib/browser';
 import { TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { DebugFrontendApplicationContribution, DebugCommands } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 import { DebugSessionOptions } from "@theia/debug/lib/browser/debug-session-options";
+import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { EditorMode } from "arduino-ide-extension/lib/browser/editor-mode";
 import { ArduinoDebugConfigurationManager } from './arduino-debug-configuration-manager';
-import { ArduinoWorkspaceService } from 'arduino-ide-extension/lib/browser/arduino-workspace-service';
 import { SketchesService } from 'arduino-ide-extension/lib/common/protocol/sketches-service';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
@@ -18,8 +18,8 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
 
-    @inject(ArduinoWorkspaceService)
-    protected readonly workspaceService: ArduinoWorkspaceService;
+    @inject(WorkspaceService)
+    protected readonly workspaceService: WorkspaceService;
 
     @inject(SketchesService)
     protected readonly sketchesService: SketchesService;
@@ -52,10 +52,10 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
                 };
             }
             if (current.configuration.type === 'arduino') {
-                const wsUri = await this.workspaceService.getDefaultWorkspaceUri();
+                const wsStat = this.workspaceService.workspace;
                 let sketchFileURI: URI | undefined;
-                if (wsUri && await this.sketchesService.isSketchFolder(wsUri)) {
-                    const wsPath = new Path(wsUri);
+                if (wsStat && await this.sketchesService.isSketchFolder(wsStat.uri)) {
+                    const wsPath = new Path(wsStat.uri);
                     const sketchFilePath = wsPath.join(wsPath.name + '.ino').toString();
                     sketchFileURI = new URI(sketchFilePath);
                 } else if (this.editorManager.currentEditor) {
