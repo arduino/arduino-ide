@@ -30,7 +30,7 @@ export async function getExecPath(commandName: string, logger: ILogger, versionA
     return buildCommand;
 }
 
-export function spawnCommand(command: string, args: string[], logger: ILogger): Promise<string> {
+export function spawnCommand(command: string, args: string[], logger?: ILogger): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         const cp = spawn(command, args, { windowsHide: true, shell: true });
         const outBuffers: Buffer[] = [];
@@ -38,7 +38,9 @@ export function spawnCommand(command: string, args: string[], logger: ILogger): 
         cp.stdout.on('data', (b: Buffer) => outBuffers.push(b));
         cp.stderr.on('data', (b: Buffer) => errBuffers.push(b));
         cp.on('error', error => {
-            logger.error(`Error executing ${command} ${args.join(' ')}`, error);
+            if (logger) {
+                logger.error(`Error executing ${command} ${args.join(' ')}`, error);
+            }
             reject(error);
         });
         cp.on('exit', (code, signal) => {
@@ -49,17 +51,23 @@ export function spawnCommand(command: string, args: string[], logger: ILogger): 
             }
             if (errBuffers.length > 0) {
                 const message = Buffer.concat(errBuffers).toString('utf8').trim();
-                logger.error(`Error executing ${command} ${args.join(' ')}: ${message}`);
+                if (logger) {
+                    logger.error(`Error executing ${command} ${args.join(' ')}: ${message}`);
+                }
                 reject(new Error(`Process failed with error: ${message}`));
                 return;
             }
             if (signal) {
-                logger.error(`Unexpected signal '${signal}' when executing ${command} ${args.join(' ')}`);
+                if (logger) {
+                    logger.error(`Unexpected signal '${signal}' when executing ${command} ${args.join(' ')}`);
+                }
                 reject(new Error(`Process exited with signal: ${signal}`));
                 return;
             }
             if (code) {
-                logger.error(`Unexpected exit code '${code}' when executing ${command} ${args.join(' ')}`);
+                if (logger) {
+                    logger.error(`Unexpected exit code '${code}' when executing ${command} ${args.join(' ')}`);
+                }
                 reject(new Error(`Process exited with exit code: ${code}`));
                 return;
             }

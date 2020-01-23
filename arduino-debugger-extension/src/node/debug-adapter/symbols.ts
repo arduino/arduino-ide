@@ -24,9 +24,9 @@
 * SOFTWARE.
 */
 
-import { spawnSync } from 'child_process';
 import { EOL } from 'os';
-import { dirname, normalize, basename } from 'path';
+import { normalize, basename } from 'path';
+import { spawnCommand } from 'arduino-ide-extension/lib/node/exec-util';
 
 export enum SymbolType {
     Function,
@@ -133,28 +133,9 @@ export class SymbolTable {
     }
 
     private execute(): Promise<string> {
-        return new Promise((resolve, reject) => {
-            if (!this.objdump) {
-                return reject(new Error('Missing parameter: objdump'));
-            }
-            try {
-                const { stdout, stderr } = spawnSync(this.objdump, [
-                    '--syms',
-                    this.program
-                ], {
-                    cwd: dirname(this.objdump),
-                    windowsHide: true
-                });
-
-                const error = stderr.toString('utf8');
-                if (error) {
-                    return reject(new Error(error));
-                }
-
-                resolve(stdout.toString('utf8'));
-            } catch (error) {
-                return reject(new Error(error));
-            }
-        });
+        if (!this.objdump) {
+            return Promise.reject(new Error('Missing parameter: objdump'));
+        }
+        return spawnCommand(this.objdump, ['--syms', this.program]);
     }
 }
