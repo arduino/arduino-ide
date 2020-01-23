@@ -1,4 +1,4 @@
-import { mkdirpSync, existsSync } from 'fs-extra';
+import * as fs from './fs-extra';
 import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -14,32 +14,35 @@ export class ConfigServiceImpl implements ConfigService {
     protected readonly config: Deferred<Config> = new Deferred();
 
     @postConstruct()
-    protected init(): void {
-        this.cli.getDefaultConfig().then(config => {
+    protected async init(): Promise<void> {
+        try {
+            const config = await this.cli.getDefaultConfig();
             const { dataDirUri, sketchDirUri } = config;
             for (const uri of [dataDirUri, sketchDirUri]) {
                 const path = FileUri.fsPath(uri);
-                if (!existsSync(path)) {
-                    mkdirpSync(path);
+                if (!fs.existsSync(path)) {
+                    await fs.mkdirp(path);
                 }
             }
             this.config.resolve(config);
-        });
+        } catch (err) {
+            this.config.reject(err);
+        }
     }
 
-    async getConfiguration(): Promise<Config> {
+    getConfiguration(): Promise<Config> {
         return this.config.promise;
     }
 
-    async getVersion(): Promise<string> {
+    getVersion(): Promise<string> {
         return this.cli.getVersion();
     }
 
-    async isInDataDir(uri: string): Promise<boolean> {
+    isInDataDir(uri: string): Promise<boolean> {
         return this.getConfiguration().then(({ dataDirUri }) => new URI(dataDirUri).isEqualOrParent(new URI(uri)));
     }
 
-    async isInSketchDir(uri: string): Promise<boolean> {
+    isInSketchDir(uri: string): Promise<boolean> {
         return this.getConfiguration().then(({ sketchDirUri }) => new URI(sketchDirUri).isEqualOrParent(new URI(uri)));
     }
 

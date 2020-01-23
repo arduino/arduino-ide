@@ -47,7 +47,7 @@ export class ArduinoWorkspaceRootResolver {
     }
 
     protected isValid(uri: string): MaybePromise<boolean> {
-        return this.options.isValid.bind(this)(uri);
+        return this.options.isValid(uri);
     }
 
     // Note: here, the `hash` was defined as new `URI(yourValidFsPath).path` so we have to map it to a valid FS path first.
@@ -59,8 +59,8 @@ export class ArduinoWorkspaceRootResolver {
         if (hash
             && hash.length > 1
             && hash.startsWith('#')) {
-                const path = hash.slice(1); // Trim the leading `#`.
-                return new URI(toUnix(path.slice(isWindows && hash.startsWith('/') ? 1 : 0))).withScheme('file').toString();
+            const path = hash.slice(1); // Trim the leading `#`.
+            return new URI(toUnix(path.slice(isWindows && hash.startsWith('/') ? 1 : 0))).withScheme('file').toString();
         }
         return undefined;
     }

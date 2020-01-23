@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import * as fs from './fs-extra';
 import { FileUri } from '@theia/core/lib/node';
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService, Sketch } from '../common/protocol/sketches-service';
@@ -18,7 +18,7 @@ export class SketchesServiceImpl implements SketchesService {
         const sketches: Array<Sketch & { mtimeMs: number }> = [];
         let fsPath: undefined | string;
         if (!uri) {
-            const { sketchDirUri } = (await this.configService.getConfiguration());
+            const { sketchDirUri } = await this.configService.getConfiguration();
             fsPath = FileUri.fsPath(sketchDirUri);
             if (!fs.existsSync(fsPath)) {
                 await fs.mkdirp(fsPath);
@@ -29,11 +29,11 @@ export class SketchesServiceImpl implements SketchesService {
         if (!fs.existsSync(fsPath)) {
             return [];
         }
-        const fileNames = fs.readdirSync(fsPath);
+        const fileNames = await fs.readdir(fsPath);
         for (const fileName of fileNames) {
             const filePath = path.join(fsPath, fileName);
             if (await this.isSketchFolder(FileUri.create(filePath).toString())) {
-                const stat = fs.statSync(filePath);
+                const stat = await fs.stat(filePath);
                 sketches.push({
                     mtimeMs: stat.mtimeMs,
                     name: fileName,
@@ -51,10 +51,9 @@ export class SketchesServiceImpl implements SketchesService {
     async getSketchFiles(uri: string): Promise<string[]> {
         const uris: string[] = [];
         const fsPath = FileUri.fsPath(uri);
-        const stats = fs.lstatSync(fsPath);
-        if (stats.isDirectory) {
+        if (fs.lstatSync(fsPath).isDirectory()) {
             if (await this.isSketchFolder(uri)) {
-                const fileNames = fs.readdirSync(fsPath);
+                const fileNames = await fs.readdir(fsPath);
                 for (const fileName of fileNames) {
                     const filePath = path.join(fsPath, fileName);
                     if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
@@ -116,26 +115,13 @@ void loop() {
 
     async isSketchFolder(uri: string): Promise<boolean> {
         const fsPath = FileUri.fsPath(uri);
-        const exists = await fs.pathExists(fsPath);
-        if (exists) {
-            const stats = await fs.lstat(fsPath);
-            if (stats.isDirectory()) {
-                const basename = path.basename(fsPath);
-                return new Promise<boolean>((resolve, reject) => {
-                    fs.readdir(fsPath, (error, files) => {
-                        if (error) {
-                            reject(error);
-                            return;
-                        }
-                        for (let i = 0; i < files.length; i++) {
-                            if (files[i] === basename + '.ino') {
-                                resolve(true);
-                                return;
-                            }
-                        }
-                        resolve(false);
-                    });
-                })
+        if (fs.existsSync(fsPath) && fs.lstatSync(fsPath).isDirectory()) {
+            const basename = path.basename(fsPath);
+            const files = await fs.readdir(fsPath);
+            for (let i = 0; i < files.length; i++) {
+                if (files[i] === basename + '.ino') {
+                    return true;
+                }
             }
         }
         return false;

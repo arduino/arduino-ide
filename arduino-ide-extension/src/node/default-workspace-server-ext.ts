@@ -1,15 +1,25 @@
 import { injectable, inject } from 'inversify';
+import { ILogger } from '@theia/core';
 import { DefaultWorkspaceServer } from '@theia/workspace/lib/node/default-workspace-server';
 import { ConfigService } from '../common/protocol/config-service';
 
 @injectable()
 export class DefaultWorkspaceServerExt extends DefaultWorkspaceServer {
 
-    @inject(ConfigService) protected readonly configService: ConfigService;
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
+
+    @inject(ILogger)
+    protected readonly logger: ILogger;
 
     protected async getWorkspaceURIFromCli(): Promise<string | undefined> {
-        const config = await this.configService.getConfiguration();
-        return config.sketchDirUri;
+        try {
+            const config = await this.configService.getConfiguration();
+            return config.sketchDirUri;
+        } catch (err) {
+            this.logger.error(`Failed to determine the sketch directory: ${err}`);
+            return super.getWorkspaceURIFromCli();
+        }
     }
 
 }
