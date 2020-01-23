@@ -50,14 +50,32 @@ const STATIC_HANDLES_FINISH = 0x01FFFF;
 
 export class CmsisDebugSession extends GDBDebugSession {
 
-    protected gdbServer = new OpenocdServer();
-    protected portScanner = new PortScanner();
+    protected readonly gdbServer = new OpenocdServer();
+    protected readonly portScanner = new PortScanner();
     protected symbolTable!: SymbolTable;
     protected globalHandle!: number;
     protected varMgr: VarManager;
 
     constructor() {
         super();
+        this.addProcessListeners();
+    }
+
+    protected addProcessListeners(): void {
+        process.on('exit', () => {
+            if (this.gdbServer.isRunning) {
+                this.gdbServer.kill();
+            }
+        });
+        const signalHandler = () => {
+            if (this.gdbServer.isRunning) {
+                this.gdbServer.kill();
+            }
+            process.exit();
+        }
+        process.on('SIGINT', signalHandler);
+        process.on('SIGTERM', signalHandler);
+        process.on('SIGHUP', signalHandler);
     }
 
     protected createBackend(): GDBBackend {
@@ -258,11 +276,6 @@ export class CmsisDebugSession extends GDBDebugSession {
         this.progressEvent(0, 'Starting Debugger');
         this.sendEvent(new OutputEvent(`Starting debugger: ${JSON.stringify(args)}`));
         await this.gdbServer.spawn(args);
-        process.on('exit', () => {
-            if (this.gdbServer.isRunning) {
-                this.gdbServer.kill();
-            }
-        });
         await this.spawn(args);
         this.checkServerErrors(gdbServerErrors);
 
