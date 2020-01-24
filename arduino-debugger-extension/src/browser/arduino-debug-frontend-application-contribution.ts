@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
-import { MenuModelRegistry, Path, MessageService } from '@theia/core';
-import { KeybindingRegistry } from '@theia/core/lib/browser';
+import { MenuModelRegistry, Path, MessageService, Command, CommandRegistry } from '@theia/core';
+import { KeybindingRegistry, Widget } from '@theia/core/lib/browser';
 import { TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { DebugFrontendApplicationContribution, DebugCommands } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 import { DebugSessionOptions } from "@theia/debug/lib/browser/debug-session-options";
@@ -11,6 +11,14 @@ import { SketchesService } from 'arduino-ide-extension/lib/common/protocol/sketc
 import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { EditorManager } from '@theia/editor/lib/browser';
+import { ArduinoToolbar } from 'arduino-ide-extension/lib/browser/toolbar/arduino-toolbar';
+
+export namespace ArduinoDebugCommands {
+    export const START_DEBUG: Command = {
+        id: 'arduino-start-debug',
+        label: 'Start Debugging'
+    }
+}
 
 @injectable()
 export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendApplicationContribution {
@@ -104,6 +112,24 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
         if (this.editorMode.proMode) {
             super.registerToolbarItems(toolbar);
         }
+        toolbar.registerItem({
+            id: ArduinoDebugCommands.START_DEBUG.id,
+            command: ArduinoDebugCommands.START_DEBUG.id,
+            tooltip: 'Start Debugging',
+            priority: 1
+        });
     }
+
+    registerCommands(registry: CommandRegistry): void {
+        super.registerCommands(registry);
+        registry.registerCommand(ArduinoDebugCommands.START_DEBUG, {
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            execute: async (widget: Widget, target: EventTarget) => {
+                registry.executeCommand(DebugCommands.START.id);
+            }
+        });
+    }
+
 
 }

@@ -91,7 +91,7 @@ export class ArduinoToolbar extends ReactWidget {
 
     protected updateItems(items: Array<TabBarToolbarItem | ReactTabBarToolbarItem>): void {
         this.items.clear();
-        const revItems = items.reverse();
+        const revItems = items.sort(TabBarToolbarItem.PRIORITY_COMPARATOR).reverse();
         for (const item of revItems) {
             this.items.set(item.id, item);
         }

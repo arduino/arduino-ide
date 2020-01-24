@@ -192,12 +192,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         registry.registerItem({
             id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
-            tooltip: 'Open'
+            tooltip: 'Open',
+            priority: 2
         });
         registry.registerItem({
             id: ArduinoCommands.SAVE_SKETCH.id,
             command: ArduinoCommands.SAVE_SKETCH.id,
-            tooltip: 'Save'
+            tooltip: 'Save',
+            priority: 2
         });
         registry.registerItem({
             id: BoardsToolBarItem.TOOLBAR_ID,
@@ -206,7 +208,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 commands={this.commandRegistry}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left'
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            priority: 2
         });
         registry.registerItem({
             id: 'toggle-serial-monitor',
