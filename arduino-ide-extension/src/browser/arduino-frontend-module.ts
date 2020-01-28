@@ -76,7 +76,7 @@ const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 MonacoThemingService.register({
     id: 'arduinoTheme',
-    label: 'Arduino Light Theme',
+    label: 'Light (Arduino)',
     uiTheme: 'vs',
     json: require('../../src/browser/data/arduino.color-theme.json')
 });

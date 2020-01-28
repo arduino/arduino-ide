@@ -10,26 +10,26 @@
     outline-style: solid;
     outline-offset: -1px;
     opacity: 1 !important;
-    color: var(--theia-foreground);
-    background-color: var(--theia-inputValidation-warningBackground);
+    color: var(--theia-warningForeground);
+    background-color: var(--theia-warningBackground);
 }
 
 .theia-input.warning {
-    background-color: var(--theia-inputValidation-warningBackground);
+    background-color: var(--theia-warningBackground);
 }
 
 .theia-input.warning::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: var(--theia-foreground);
-    background-color: var(--theia-inputValidation-warningBackground);
+    color: var(--theia-warningForeground);
+    background-color: var(--theia-warningBackground);
     opacity: 1; /* Firefox */
 }
 
 .theia-input.warning:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: var(--theia-foreground);
-    background-color: var(--theia-inputValidation-warningBackground);
+    color: var(--theia-warningForeground);
+    background-color: var(--theia-warningBackground);
 }
 
 .theia-input.warning::-ms-input-placeholder { /* Microsoft Edge */
-    color: var(--theia-foreground);
-    background-color: var(--theia-inputValidation-warningBackground);
+    color: var(--theia-warningForeground);
+    background-color: var(--theia-warningBackground);
 }

@@ -54,7 +54,8 @@
 }
 
 .p-TabBar-toolbar .item.arduino-monitor.toggled {
-    background: var(--theia-arduino-toolbarToggleBackground);
+    background: var(--theia-sideBarSectionHeader-background);
+    filter: contrast(80%);
 }
 
 .p-TabBar-toolbar .item .clear-all {

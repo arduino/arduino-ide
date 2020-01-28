@@ -45,7 +45,7 @@ export class ArduinoSelect<T> extends Select<T> {
                 // `primary50`??? it's crazy but apparently, without this, we would get a light-blueish
                 // color when selecting an option in the select by clicking and then not releasing the button.
                 // https://react-select.com/styles#overriding-the-theme
-                primary50: 'var(--theia-arduino-selectItemHoverBackground)',
+                primary50: 'var(--theia-list-activeSelectionBackground)',
             }
         });
         const DropdownIndicator = () => <span className='fa fa-caret-down caret' />;

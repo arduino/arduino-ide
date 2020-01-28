@@ -1,91 +1,93 @@
 {
-	"tokenColors": [
-		{
-			"settings": {
-				"foreground": "#434f54"
-			}
-		},
-		{
-			"name": "Comments",
-			"scope": "comment",
-			"settings": {
-				"foreground": "#95a5a6cc"
-			}
-		},
-		{
-			"name": "Keywords Attributes",
-			"scope": [
-				"storage",
-				"support",
-				"string.quoted.single.c"
-			],
-			"settings": {
-				"foreground": "#00979D"
-			}
-		},
-		{
-			"name": "literal",
-			"scope": [
-				"meta.function.c",
-				"entity.name.function",
-				"meta.function-call.c"
-			],
-			"settings": {
-				"foreground": "#D35400"
-			}
-		},
-		{
-			"name": "punctuation",
-			"scope": [
-				"punctuation.section",
-				"meta.function-call.c",
-				"meta.block.c",
-				"meta.function.c",
-				"entity.name.function.preprocessor.c",
-				"meta.preprocessor.macro.c"
-			],
-			"settings": {
-				"foreground": "#434f54"
-			}
-		},
-		{
-			"name": "strings",
-			"scope": [
-				"string.quoted.double"
-			],
-			"settings": {
-				"foreground": "#005C5F"
-			}
-		},
-		{
-			"name": "meta keywords",
-			"scope": [
-				"keyword.control",
-				"meta.preprocessor.c"
-			],
-			"settings": {
-				"foreground": "#728E00"
-			}
-		},
-		{
-			"name": "numeric preprocessor",
-			"scope": [
-				"meta.preprocessor.macro.c",
-				"constant.numeric.preprocessor.c",
-				"meta.preprocessor.c"
-			],
-			"settings": {
-				"foreground": "#434f54"
-			}
-		}
-	],
-	"colors": {
-		"editor.background": "#FFFFFF",
-		"editorCursor.foreground": "#434f54",
-		"editor.foreground": "#434f54",
-		"editorWhitespace.foreground": "#BFBFBF",
-		"editor.lineHighlightBackground": "#434f5410",
-		"editor.selectionBackground": "#ffcb00",
+  "tokenColors": [
+    {
+      "settings": {
+        "foreground": "#434f54"
+      }
+    },
+    {
+      "name": "Comments",
+      "scope": "comment",
+      "settings": {
+        "foreground": "#95a5a6cc"
+      }
+    },
+    {
+      "name": "Keywords Attributes",
+      "scope": [
+        "storage",
+        "support",
+        "string.quoted.single.c"
+      ],
+      "settings": {
+        "foreground": "#00979D"
+      }
+    },
+    {
+      "name": "literal",
+      "scope": [
+        "meta.function.c",
+        "entity.name.function",
+        "meta.function-call.c"
+      ],
+      "settings": {
+        "foreground": "#D35400"
+      }
+    },
+    {
+      "name": "punctuation",
+      "scope": [
+        "punctuation.section",
+        "meta.function-call.c",
+        "meta.block.c",
+        "meta.function.c",
+        "entity.name.function.preprocessor.c",
+        "meta.preprocessor.macro.c"
+      ],
+      "settings": {
+        "foreground": "#434f54"
+      }
+    },
+    {
+      "name": "strings",
+      "scope": [
+        "string.quoted.double"
+      ],
+      "settings": {
+        "foreground": "#005C5F"
+      }
+    },
+    {
+      "name": "meta keywords",
+      "scope": [
+        "keyword.control",
+        "meta.preprocessor.c"
+      ],
+      "settings": {
+        "foreground": "#728E00"
+      }
+    },
+    {
+      "name": "numeric preprocessor",
+      "scope": [
+        "meta.preprocessor.macro.c",
+        "constant.numeric.preprocessor.c",
+        "meta.preprocessor.c"
+      ],
+      "settings": {
+        "foreground": "#434f54"
+      }
+    }
+  ],
+  "colors": {
+    "list.highlightForeground": "#006468",
+    "list.activeSelectionBackground": "#006468",
+    "editor.background": "#ffffff",
+    "editorCursor.foreground": "#434f54",
+    "editor.foreground": "#434f54",
+    "editorWhitespace.foreground": "#bfbfbf",
+    "editor.lineHighlightBackground": "#434f5410",
+    "editor.selectionBackground": "#ffcb00",
     "focusBorder": "#4db7bb99",
     "menubar.selectionBackground": "#ffffff",
     "menubar.selectionForeground": "#212121",
@@ -95,32 +97,19 @@
     "button.background": "#4db7bb",
     "titleBar.activeBackground": "#006468",
     "titleBar.activeForeground": "#ffffff",
-    "secondaryButton.background": "#b5c8c9",
-    "secondaryButton.hoverBackground": "#dae3e3",
     "terminal.background": "#000000",
     "terminal.foreground": "#e0e0e0",
     "dropdown.border": "#ececec",
     "dropdown.background": "#ececec",
-    "warningForeground": "#434f54",
     "activityBar.background": "#ececec",
     "activityBar.foreground": "#616161",
     "statusBar.background": "#006468",
-    "arduino.base": "#006468",
-    "arduino.dialogTitle": "#00979d",
-    "arduino.select": "#ececec",
-    "arduino.selectItemHoverBackground": "#4db7bb66",
-    "list.hoverBackground": "#ececec",
-    "arduino.secondaryButtonShadow": "#95a5a6",
-    "arduino.buttonShadow": "#006468",
-    "arduino.boardSelectorCheck": "#4db7bb",
-    "arduino.listItemInstalledBadge": "#4db7bb",
-    "inputValidation.warningBackground": "#ffb300",
-    "arduino.listItemInfoLinkForeground": "#17a1a5",
-    "arduino.toolbarItemForeground": "#006468",
-    "arduino.toolbarTooltip": "#e0e0e0",
-    "arduino.bottomPanelTabBackground": "#ffffff",
-    "arduino.toolbarToggleBackground": "#b5c8c9"
-	},
+    "secondaryButton.background": "#b5c8c9",
+    "secondaryButton.hoverBackground": "#dae3e3",
+    "arduino.branding.primary": "#00979d",
+    "arduino.branding.secondary": "#b5c8c9",
+    "arduino.foreground": "#edf1f1"
+  },
   "type": "light",
-	"name": "Arduino"
+  "name": "Arduino"
 }

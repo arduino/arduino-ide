@@ -28,15 +28,18 @@
 }
 
 .filterable-list-container .items-container > div:nth-child(odd) {
-    background-color: var(--theia-arduino-listOddItem);
+    background-color: var(--theia-sideBar-background);
+    filter: contrast(105%);
 }
 
 .filterable-list-container .items-container > div:nth-child(even) {
-    background-color: var(--theia-arduino-listEvenItem);
+    background-color: var(--theia-sideBar-background);
+    filter: contrast(95%);
 }
 
 .filterable-list-container .items-container > div:hover {
-    background-color: var(--theia-arduino-listItemHoverBackground);
+    background-color: var(--theia-sideBar-background);
+    filter: contrast(90%);
 }
 
 /* Perfect scrollbar does not like if we explicitly set the `background-color` of the contained elements.
@@ -74,7 +77,7 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 
 .component-list-item .header .author {
     font-weight: bold;
-    color: var(--theia-arduino-listItemSecondaryForeground);
+    color: var(--theia-panelTitle-inactiveForeground);
 }
 
 .component-list-item:hover .header .author {
@@ -82,14 +85,18 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 }
 
 .component-list-item .header .version {
-    color: var(--theia-arduino-listItemSecondaryForeground);
+    color: var(--theia-panelTitle-inactiveForeground);
+}
+
+.component-list-item .footer .theia-button.install {
+    height: auto; /* resets the default Theia button height in the filterable list widget */
 }
 
 .component-list-item .header .installed:before {
     margin-left: 4px;
     display: inline-block;
     justify-self: end;
-    background-color: var(--theia-arduino-listItemInstalledBadge);
+    background-color: var(--theia-button-background);
     padding: 2px 4px 2px 4px;
     font-size: 10px;
     font-weight: bold;
@@ -100,7 +107,7 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 
 .component-list-item .header .installed:hover:before {
     background-color: var(--theia-button-foreground);
-    color: var(--theia-arduino-listItemInstalledBadge);
+    color: var(--theia-button-background);
     content: 'UNINSTALL';
 }
 
@@ -131,7 +138,7 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 }
 
 .component-list-item .info a {
-    color: var(--theia-arduino-listItemInfoLinkForeground);
+    color: var(--theia-button-background);
     text-decoration: none;
 }
 
