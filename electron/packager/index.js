@@ -8,6 +8,7 @@
     shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1'; // Do not run the ffmpeg validation for the packager.
     shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI
     const utils = require('./utils');
+    const merge = require('deepmerge');
     const { version, release } = utils.versionInfo();
 
     echo(`📦  Building ${release ? 'release ' : ''}version '${version}'...`);
@@ -81,9 +82,12 @@
     template.build.files = [...template.build.files, ...unusedDependencies.map(name => `!node_modules/${name}`)];
     pkg.dependencies = { ...pkg.dependencies, ...template.dependencies };
     pkg.devDependencies = { ...pkg.devDependencies, ...template.devDependencies };
+    // Deep-merging the Theia application configuration. We enable the electron window reload in dev mode but not for the final product. (arduino/arduino-pro-ide#187)
+    const theia = merge((pkg.theia || {}), (template.theia || {}));
     fs.writeFileSync(path('..', 'build', 'package.json'), JSON.stringify({
         ...pkg,
         ...template,
+        theia,
         dependencies: pkg.dependencies,
         devDependencies: pkg.devDependencies
     }, null, 2));

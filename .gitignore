@@ -6,7 +6,7 @@ downloads/
 build/
 !electron/build/
 src-gen/
-*-app/*webpack.config.js
+*webpack.config.js
 .DS_Store
 /workspace/static
 .DS_Store

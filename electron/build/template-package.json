@@ -28,6 +28,14 @@
   "// Notes:": [
     "The resolution for `fs-extra` was required due to this: https://spectrum.chat/theia/general/our-theia-electron-builder-app-no-longer-starts~f5cf09a0-6d88-448b-8818-24ad0ec2ee7c"
   ],
+  "theia": {
+    "target": "electron",
+    "frontend": {
+      "config": {
+        "disallowReloadKeybinding": true
+      }
+    }
+  },
   "build": {
     "productName": "Arduino Pro IDE",
     "appId": "arduino.ProIDE",
