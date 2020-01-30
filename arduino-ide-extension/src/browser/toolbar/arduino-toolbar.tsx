@@ -39,7 +39,7 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
             }
         }
         const command = this.props.commands.getCommand(item.command);
-        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? ' enabled' : ''}`
+        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''}`
         return <div key={item.id} className={cls} >
             <div className={item.id}>
                 <div

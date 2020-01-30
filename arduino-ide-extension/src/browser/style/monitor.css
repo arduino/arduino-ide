@@ -14,7 +14,6 @@
 .serial-monitor .head {
     display: flex;
     padding: 5px;
-    background: var(--theia-layout-color0);
     height: 27px;
 }
 
@@ -30,7 +29,7 @@
 }
 
 .serial-monitor .head .send > input:focus {
-    border-color: var(--theia-accent-color3);
+    border-color: var(--theia-focusBorder);
 }
 
 .serial-monitor .head .config {
@@ -55,7 +54,8 @@
 }
 
 .p-TabBar-toolbar .item.arduino-monitor.toggled {
-    background: var(--theia-secondary-brand-color1);
+    background: var(--theia-sideBarSectionHeader-background);
+    filter: contrast(80%);
 }
 
 .p-TabBar-toolbar .item .clear-all {

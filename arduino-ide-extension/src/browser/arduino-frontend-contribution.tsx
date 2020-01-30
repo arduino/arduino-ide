@@ -42,6 +42,8 @@ import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { EditorMode } from './editor-mode';
+import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
+import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -57,7 +59,7 @@ export namespace ArduinoToolbarContextMenu {
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
-    TabBarToolbarContribution, CommandContribution, MenuContribution, KeybindingContribution {
+    TabBarToolbarContribution, CommandContribution, MenuContribution, KeybindingContribution, ColorContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -575,6 +577,36 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             return arg.editor.uri;
         }
         return undefined;
+    }
+
+    registerColors(colors: ColorRegistry): void {
+        colors.register(
+            {
+                id: 'arduino.branding.primary',
+                defaults: {
+                    dark: 'statusBar.background',
+                    light: 'statusBar.background'
+                },
+                description: 'The primary branding color, such as dialog titles, library, and board manager list labels.'
+            },
+            {
+                id: 'arduino.branding.secondary',
+                defaults: {
+                    dark: 'statusBar.background',
+                    light: 'statusBar.background'
+                },
+                description: 'Secondary branding color for list selections, dropdowns, and widget borders.'
+            },
+            {
+                id: 'arduino.foreground',
+                defaults: {
+                    dark: 'editorWidget.background',
+                    light: 'editorWidget.background',
+                    hc: 'editorWidget.background'
+                },
+                description: 'Color of the Arduino Pro IDE foreground which is used for dialogs, such as the Select Board dialog.'
+            }
+        );
     }
 
 }

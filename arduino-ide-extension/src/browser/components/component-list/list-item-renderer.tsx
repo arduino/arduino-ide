@@ -51,7 +51,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
         const moreInfo = !!item.moreInfoLink && <a href={item.moreInfoLink} onClick={this.onMoreInfoClick}>More info</a>;
         const onClickInstall = () => install(item);
         const installButton = item.installable &&
-            <button className='install' onClick={onClickInstall}>INSTALL</button>;
+            <button className='theia-button install' onClick={onClickInstall}>INSTALL</button>;
 
         const onSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
             const version = event.target.value;
@@ -68,6 +68,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
                 return <label>{availableVersions[0]}</label>
             } else {
                 return <select
+                    className='theia-select'
                     value={input.selectedVersion}
                     onChange={onSelectChange}>
                     {

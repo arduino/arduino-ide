@@ -1,9 +1,10 @@
-.p-TabBar[data-orientation='horizontal'].theia-app-bottom {
-    background: var(--theia-layout-color1);
+#theia-bottom-content-panel .p-TabBar[data-orientation='horizontal'].theia-app-bottom {
+    background: var(--theia-editorGroupHeader-tabsBackground);
 }
 
 .theia-output {
-    background: var(--theia-arduino-terminal);
+    background: var(--theia-terminal-background);
+    color: var(--theia-terminal-foreground);
 }
 
 #outputView {
@@ -20,11 +21,11 @@
     align-items: center;
     height: 24px;
     width: 24px;
-    background: var(--theia-ui-button-color);
+    background: var(--theia-button-background);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item > div:hover {
-    background: var(--theia-ui-button-color-hover);
+    background: var(--theia-button-hoverBackground);
 }
 
 .arduino-verify, .arduino-upload {
@@ -34,7 +35,7 @@
 .arduino-tool-icon {
     height: 24px;
     width: 24px;
-    background: var(--theia-ui-button-font-color);
+    background-color: var(--theia-titleBar-activeBackground);
     -webkit-mask: url(../icons/mask-buttons.svg);
     mask: url(../icons/mask-buttons.svg);
     -webkit-mask-size: 800%;
@@ -76,6 +77,14 @@
     z-index: 0;
 }
 
+#theia-top-panel .p-TabBar-toolbar {
+    padding-left: 4px !important; /* moves the `verify`, upload and other toolbar items to the left */
+}
+
+.p-Widget .p-MenuBar {
+    padding-left: 1px !important; /* moves the menubar: `File`, `Edit`, etc to the left */
+}
+
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
     justify-content: flex-start;
     min-width: 190px;
@@ -86,29 +95,11 @@
     justify-content: flex-end;
 }
 
-.arduino-tool-item.item.connected-boards {
-    opacity: 1;
-}
-
-.arduino-tool-item.item.connected-boards select {
-    line-height: var(--theia-content-line-height);
-    font-size: var(--theia-ui-font-size1);
-    color: var(--theia-ui-font-color1);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--theia-ui-font-color1) 50%), linear-gradient(135deg, var(--theia-ui-font-color1) 50%, transparent 50%);
-    background-position: calc(100% - 6px) 8px, calc(100% - 2px) 8px, 100% 0;
-    background-size: 4px 5px;
-    background-repeat: no-repeat;
-    padding-left: 3px;
-    padding-right: 15px;
-}
-
 .arduino-toolbar-tooltip {
     margin-left: 10px;
     display: flex;
     align-items: center;
-    color: var(--theia-ui-font-color3);
+    color: var(--theia-titleBar-activeForeground);
 }
 
 .p-TabBar-toolbar .item > div.arduino-toggle-advanced-mode {
@@ -126,11 +117,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--theia-ui-button-font-color);
+    color: var(--theia-titleBar-activeBackground);;
 }
 
 .monaco-editor .margin {
-    border-right: 2px solid var(--theia-border-color1);
+    border-right: 2px solid var(--theia-sideBar-background);
     box-sizing: border-box;
 }
 
@@ -142,4 +133,8 @@
 
 .theia-sidepanel-toolbar .theia-sidepanel-title {
     margin-left: 10px;
+}
+
+.p-Widget.dialogOverlay .dialogBlock {
+    background-color: var(--theia-arduino-foreground);
 }

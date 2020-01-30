@@ -15,7 +15,7 @@ div.dialogContent.select-board-dialog > div.head .title {
     font-weight: 400;
     letter-spacing: .02em;
     font-size: 1.2em;
-    color: #00979d;
+    color: var(--theia-arduino-branding-primary);
     margin: 17px 0;
 }
 
@@ -24,18 +24,18 @@ div#select-board-dialog .selectBoardContainer .head .text {
 }
 
 div#select-board-dialog .selectBoardContainer .body .list .item.selected {
-    background: var(--theia-ui-button-color-secondary-hover);
+    background: var(--theia-secondaryButton-hoverBackground);
 }
 
-div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
-    color: var(--theia-arduino-light);
+div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
+    color: var(--theia-arduino-branding-primary);
 }
 
 #select-board-dialog .selectBoardContainer .search,
 #select-board-dialog .selectBoardContainer .search input,
 #select-board-dialog .selectBoardContainer .list,
 #select-board-dialog .selectBoardContainer .list {
-    background: var(--theia-layout-color0);
+    background: var(--theia-editor-background);
 }
 
 #select-board-dialog .selectBoardContainer .body .search input {
@@ -47,7 +47,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
     margin: 0;
     vertical-align: top;
     display: flex;
-    color: var(--theia-content-font-color0);
+    color: var(--theia-editor-foreground);
 }
 
 #select-board-dialog .selectBoardContainer .body .search input:focus {
@@ -79,7 +79,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
 
 #select-board-dialog .selectBoardContainer .body .container .content .loading {
     font-size: var(--theia-ui-font-size1);
-    color: #7f8c8d;
+    color: var(--theia-arduino-branding-secondary);
     padding: 10px 5px 10px 10px;
     text-transform: uppercase;
     /* The max, min-height comes from `.body .list` 265px + 47px top padding - 2 * 10px top padding */
@@ -99,7 +99,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
 
 #select-board-dialog .selectBoardContainer .body .list .item .detail {
     font-size: var(--theia-ui-font-size1);
-    color: var(--theia-disabled-color0);
+    opacity: var(--theia-mod-disabled-opacity);
     width: 155px; /* used heuristics for the calculation */
     white-space: pre;
     overflow: hidden;
@@ -107,11 +107,11 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i{
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item.missing {
-    color: var(--theia-disabled-color0);
+    opacity: var(--theia-mod-disabled-opacity);
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item:hover {
-    background: var(--theia-ui-button-color-secondary-hover);
+    background: var(--theia-secondaryButton-hoverBackground);
 }
 
 #select-board-dialog .selectBoardContainer .body .list {
@@ -140,15 +140,12 @@ button.theia-button {
 }
 
 button.theia-button.secondary {
-    background-color: #b5c8c9;
-    color: #000;
-    box-shadow: 0 4px #95a5a6;
+    background-color: var(--theia-secondaryButton-background);
+    color: var(--theia-foreground);
 }
 
 button.theia-button.main {
-    color: #fff;
-    /* background-color: #00979c; */
-    box-shadow: 0 4px var(--theia-accent-color0);
+    color: var(--theia-button-foreground);
 }
 
 .dialogControl {
@@ -192,15 +189,17 @@ button.theia-button.main {
 }
 
 .arduino-boards-toolbar-item {
-    background: var(--theia-layout-color1);
+    background: var(--theia-tab-unfocusedActiveBackground);
+    color: var(--theia-foreground);
     height: 22px;
     display: flex;
     width: 100%;
     overflow: hidden;
+    margin: 0px 3px 0px 3px;
 }
 
 .arduino-boards-dropdown-list {
-    border: 3px solid var(--theia-border-color2);
+    border: 3px solid var(--theia-activityBar-background);
     margin: -3px;
     z-index: 1;
 }
@@ -210,16 +209,16 @@ button.theia-button.main {
     display: flex;
     padding: 10px;
     cursor: pointer;
-    color: var(--theia-ui-font-color1);
-    background: var(--theia-layout-color1);
+    color: var(--theia-foreground);
+    background: var(--theia-tab-unfocusedActiveBackground);
 }
 
 .arduino-boards-dropdown-item .fa-check {
-    color: var(--theia-accent-color1);
+    color: var(--theia-arduino-branding-primary);
     align-self: center;
 }
 
 .arduino-boards-dropdown-item.selected,
 .arduino-boards-dropdown-item:hover {
-    background: var(--theia-layout-color3);
+    background: var(--theia-list-hoverBackground);
 }
