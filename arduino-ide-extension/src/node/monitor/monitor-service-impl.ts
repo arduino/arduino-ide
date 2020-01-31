@@ -65,7 +65,10 @@ export class MonitorServiceImpl implements MonitorService {
         if (this.connection) {
             return Status.ALREADY_CONNECTED;
         }
-        const client = await this.monitorClientProvider.client;
+        const client = await this.monitorClientProvider.client();
+        if (!client) {
+            return Status.NOT_CONNECTED;
+        }
         const duplex = client.streamingOpen();
         this.connection = { duplex, config };
 

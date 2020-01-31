@@ -8,7 +8,6 @@ import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/li
 import { BoardsService } from '../common/protocol/boards-service';
 import { ArduinoCommands } from './arduino-commands';
 import { CoreService } from '../common/protocol/core-service';
-import { WorkspaceServiceExt } from './workspace-service-ext';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
@@ -16,7 +15,7 @@ import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
     ContextMenuRenderer, Widget, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
-    FrontendApplication, KeybindingContribution, KeybindingRegistry
+    FrontendApplication, KeybindingContribution, KeybindingRegistry, OpenerService, open
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
@@ -44,6 +43,8 @@ import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-co
 import { EditorMode } from './editor-mode';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
+import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
+import { ConfigService } from '../common/protocol/config-service';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -69,9 +70,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @inject(CoreService)
     protected readonly coreService: CoreService;
-
-    @inject(WorkspaceServiceExt)
-    protected readonly workspaceServiceExt: WorkspaceServiceExt;
 
     @inject(ToolOutputServiceClient)
     protected readonly toolOutputServiceClient: ToolOutputServiceClient;
@@ -136,14 +134,20 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
 
+    @inject(ArduinoDaemon)
+    protected readonly daemon: ArduinoDaemon;
+
+    @inject(OpenerService)
+    protected readonly openerService: OpenerService;
+
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
+
     protected application: FrontendApplication;
     protected wsSketchCount: number = 0; // TODO: this does not belong here, does it?
 
     @postConstruct()
     protected async init(): Promise<void> {
-        // This is a hack. Otherwise, the backend services won't bind.
-        await this.workspaceServiceExt.roots();
-
         const updateStatusBar = (config: BoardsConfig.Config) => {
             this.statusBar.setElement('arduino-selected-board', {
                 alignment: StatusBarAlignment.RIGHT,
@@ -305,13 +309,11 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR, {
-            isEnabled: () => true,
             execute: () => this.doOpenFile()
         });
 
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
-            isEnabled: () => true,
-            execute: (sketch: Sketch) => {
+            execute: async (sketch: Sketch) => {
                 this.workspaceService.open(new URI(sketch.uri));
             }
         });
@@ -340,7 +342,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }));
 
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
-            isEnabled: () => true,
             execute: async () => {
                 const boardsConfig = await this.boardsConfigDialog.open();
                 if (boardsConfig) {
@@ -357,6 +358,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => this.editorMode.proMode,
             execute: () => this.editorMode.toggleProMode()
+        });
+
+        registry.registerCommand(ArduinoCommands.OPEN_CLI_CONFIG, {
+            execute: () => this.configService.getCliConfigFileUri().then(uri => open(this.openerService, new URI(uri)))
         });
     }
 
@@ -494,6 +499,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
         registry.registerMenuAction([...CommonMenus.FILE, '0_new_sketch'], {
             commandId: ArduinoCommands.NEW_SKETCH.id
+        });
+
+        registry.registerMenuAction([...CommonMenus.FILE_SETTINGS_SUBMENU, '3_settings_cli'], {
+            commandId: ArduinoCommands.OPEN_CLI_CONFIG.id
         });
     }
 

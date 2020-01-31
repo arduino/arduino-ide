@@ -65,7 +65,7 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         />
     }
 
-    protected handleFilterTextChange = (filterText: string) => {
+    protected handleFilterTextChange = (filterText: string = this.state.filterText) => {
         this.setState({ filterText });
         this.search(filterText);
     }
@@ -132,7 +132,7 @@ export namespace FilterableListContainer {
         readonly itemRenderer: ListItemRenderer<T>;
         readonly resolveContainer: (element: HTMLElement) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
-        readonly filterTextChangeEvent: Event<string>;
+        readonly filterTextChangeEvent: Event<string | undefined>;
     }
 
     export interface State<T> {

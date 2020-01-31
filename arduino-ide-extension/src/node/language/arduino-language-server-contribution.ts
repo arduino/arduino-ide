@@ -27,9 +27,11 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
     protected logger: ILogger;
 
     async start(clientConnection: IConnection, options: LanguageServerStartOptions): Promise<void> {
-        const languageServer = await getExecPath('arduino-language-server', this.logger);
-        const clangd = await getExecPath('clangd', this.logger, '--version', os.platform() !== 'win32');
-        const cli = await getExecPath('arduino-cli', this.logger, 'version');
+        const [languageServer, clangd, cli] = await Promise.all([
+            getExecPath('arduino-language-server', this.onError.bind(this)),
+            getExecPath('clangd', this.onError.bind(this), '--version', os.platform() !== 'win32'),
+            getExecPath('arduino-cli', this.onError.bind(this), 'version')
+        ]);
         // Add '-log' argument to enable logging to files
         const args: string[] = ['-clangd', clangd, '-cli', cli];
         if (options.parameters && options.parameters.selectedBoard) {
@@ -44,6 +46,10 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
         console.log(`Starting language server ${languageServer} ${args.join(' ')}`);
         const serverConnection = await this.createProcessStreamConnectionAsync(languageServer, args);
         this.forward(clientConnection, serverConnection);
+    }
+
+    protected onError(error: Error): void {
+        this.logger.error(error);
     }
 
 }

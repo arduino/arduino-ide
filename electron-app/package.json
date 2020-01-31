@@ -15,11 +15,12 @@
     "@theia/messages": "next",
     "@theia/monaco": "next",
     "@theia/navigator": "next",
+    "@theia/plugin-ext": "next",
+    "@theia/plugin-ext-vscode": "next",
     "@theia/preferences": "next",
     "@theia/process": "next",
     "@theia/terminal": "next",
     "@theia/workspace": "next",
-    "@theia/textmate-grammars": "next",
     "arduino-ide-extension": "0.0.5",
     "arduino-debugger-extension": "0.0.5"
   },
@@ -28,7 +29,7 @@
   },
   "scripts": {
     "prepare": "theia build --mode development",
-    "start": "theia start",
+    "start": "theia start --plugins=local-dir:../plugins",
     "watch": "theia build --watch --mode development"
   },
   "theia": {

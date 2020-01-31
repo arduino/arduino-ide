@@ -2,6 +2,8 @@ import * as React from 'react';
 import { DisposableCollection } from '@theia/core';
 import { BoardsService, Board, Port, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { CoreServiceClientImpl } from '../core-service-client-impl';
+import { ArduinoDaemonClientImpl } from '../arduino-daemon-client-impl';
 
 export namespace BoardsConfig {
 
@@ -13,6 +15,8 @@ export namespace BoardsConfig {
     export interface Props {
         readonly boardsService: BoardsService;
         readonly boardsServiceClient: BoardsServiceClientImpl;
+        readonly coreServiceClient: CoreServiceClientImpl;
+        readonly daemonClient: ArduinoDaemonClientImpl;
         readonly onConfigChange: (config: Config) => void;
         readonly onFocusNodeSet: (element: HTMLElement | undefined) => void;
     }
@@ -21,6 +25,7 @@ export namespace BoardsConfig {
         searchResults: Array<Board & { packageName: string }>;
         knownPorts: Port[];
         showAllPorts: boolean;
+        query: string;
     }
 
 }
@@ -70,6 +75,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             searchResults: [],
             knownPorts: [],
             showAllPorts: false,
+            query: '',
             ...boardsConfig
         }
     }
@@ -77,12 +83,15 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     componentDidMount() {
         this.updateBoards();
         this.props.boardsService.getAvailablePorts().then(({ ports }) => this.updatePorts(ports));
-        const { boardsServiceClient: client } = this.props;
+        const { boardsServiceClient, coreServiceClient, daemonClient } = this.props;
         this.toDispose.pushAll([
-            client.onBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
-            client.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
+            boardsServiceClient.onBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
+            boardsServiceClient.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
                 this.setState({ selectedBoard, selectedPort }, () => this.fireConfigChanged());
-            })
+            }),
+            coreServiceClient.onIndexUpdated(() => this.updateBoards(this.state.query)),
+            daemonClient.onDaemonStarted(() => this.updateBoards(this.state.query)),
+            daemonClient.onDaemonStopped(() => this.setState({ searchResults: [] }))
         ]);
     }
 
@@ -100,6 +109,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             ? eventOrQuery
             : eventOrQuery.target.value.toLowerCase()
         ).trim();
+        this.setState({ query });
         this.queryBoards({ query }).then(({ searchResults }) => this.setState({ searchResults }));
     }
 

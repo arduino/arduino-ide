@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { join } from 'path';
 import { ContainerModule } from 'inversify';
-import { ArduinoDaemon } from './arduino-daemon';
+import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { LanguageServerContribution } from '@theia/languages/lib/node';
@@ -12,11 +12,9 @@ import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common
 import { LibraryServiceImpl } from './library-service-impl';
 import { BoardsServiceImpl } from './boards-service-impl';
 import { CoreServiceImpl } from './core-service-impl';
-import { CoreService, CoreServicePath } from '../common/protocol/core-service';
+import { CoreService, CoreServicePath, CoreServiceClient } from '../common/protocol/core-service';
 import { ConnectionContainerModule } from '@theia/core/lib/node/messaging/connection-container-module';
-import { WorkspaceServiceExtPath, WorkspaceServiceExt } from '../browser/workspace-service-ext';
-import { CoreClientProviderImpl } from './core-client-provider-impl';
-import { CoreClientProviderPath, CoreClientProvider } from './core-client-provider';
+import { CoreClientProvider } from './core-client-provider';
 import { ToolOutputService, ToolOutputServiceClient, ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { ToolOutputServiceServerImpl } from './tool-output-service-impl';
@@ -24,26 +22,47 @@ import { DefaultWorkspaceServerExt } from './default-workspace-server-ext';
 import { WorkspaceServer } from '@theia/workspace/lib/common';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
-import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
+import { ConfigService, ConfigServicePath, ConfigServiceClient } from '../common/protocol/config-service';
+import { ArduinoDaemon, ArduinoDaemonPath, ArduinoDaemonClient } from '../common/protocol/arduino-daemon';
 import { MonitorServiceImpl } from './monitor/monitor-service-impl';
 import { MonitorService, MonitorServicePath, MonitorServiceClient } from '../common/protocol/monitor-service';
 import { MonitorClientProvider } from './monitor/monitor-client-provider';
-import { ArduinoCli } from './arduino-cli';
-import { ArduinoCliContribution } from './arduino-cli-contribution';
-import { CliContribution } from '@theia/core/lib/node';
 import { ConfigServiceImpl } from './config-service-impl';
+import { ArduinoHostedPluginReader } from './arduino-plugin-reader';
+import { HostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
+import { ConfigFileValidator } from './config-file-validator';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { ArduinoEnvVariablesServer } from './arduino-env-variables-server';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
-    // Theia backend CLI contribution.
-    bind(ArduinoCliContribution).toSelf().inSingletonScope();
-    bind(CliContribution).toService(ArduinoCliContribution);
-
-    // Provides the path of the Arduino CLI.
-    bind(ArduinoCli).toSelf().inSingletonScope();
+    rebind(EnvVariablesServer).to(ArduinoEnvVariablesServer).inSingletonScope();
+    bind(ConfigFileValidator).toSelf().inSingletonScope();
+    // XXX: The config service must start earlier than the daemon, hence the binding order does matter.
+    // Shared config service
+    bind(ConfigServiceImpl).toSelf().inSingletonScope();
+    bind(ConfigService).toService(ConfigServiceImpl);
+    bind(BackendApplicationContribution).toService(ConfigServiceImpl);
+    bind(ConnectionHandler).toDynamicValue(context =>
+        new JsonRpcConnectionHandler<ConfigServiceClient>(ConfigServicePath, client => {
+            const server = context.container.get<ConfigServiceImpl>(ConfigServiceImpl);
+            server.setClient(client);
+            client.onDidCloseConnection(() => server.disposeClient(client));
+            return server;
+        })
+    ).inSingletonScope();
 
     // Shared daemon 
-    bind(ArduinoDaemon).toSelf().inSingletonScope();
-    bind(BackendApplicationContribution).toService(ArduinoDaemon);
+    bind(ArduinoDaemonImpl).toSelf().inSingletonScope();
+    bind(ArduinoDaemon).toService(ArduinoDaemonImpl);
+    bind(BackendApplicationContribution).toService(ArduinoDaemonImpl);
+    bind(ConnectionHandler).toDynamicValue(context =>
+        new JsonRpcConnectionHandler<ArduinoDaemonClient>(ArduinoDaemonPath, async client => {
+            const server = context.container.get<ArduinoDaemonImpl>(ArduinoDaemonImpl);
+            server.setClient(client);
+            client.onDidCloseConnection(() => server.disposeClient(client));
+            return server;
+        })
+    ).inSingletonScope();
 
     // Language server
     bind(ArduinoLanguageServerContribution).toSelf().inSingletonScope();
@@ -65,14 +84,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     });
     bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
 
-    // Config service
-    bind(ConfigServiceImpl).toSelf().inSingletonScope();
-    bind(ConfigService).toService(ConfigServiceImpl);
-    const configServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        bindBackendService(ConfigServicePath, ConfigService);
-    });
-    bind(ConnectionContainerModule).toConstantValue(configServiceConnectionModule);
-
     // Boards service
     const boardsServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
         bind(BoardsServiceImpl).toSelf().inSingletonScope();
@@ -85,26 +96,25 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     });
     bind(ConnectionContainerModule).toConstantValue(boardsServiceConnectionModule);
 
-    // Arduino core client provider per Theia connection.
-    const coreClientProviderConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        bind(CoreClientProviderImpl).toSelf().inSingletonScope();
-        bind(CoreClientProvider).toService(CoreClientProviderImpl);
-        bindBackendService(CoreClientProviderPath, CoreClientProvider);
-    });
-    bind(ConnectionContainerModule).toConstantValue(coreClientProviderConnectionModule);
+    // Shared Arduino core client provider service for the backend.
+    bind(CoreClientProvider).toSelf().inSingletonScope();
 
     // Core service -> `verify` and `upload`. One per Theia connection.
     const connectionConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
         bind(CoreServiceImpl).toSelf().inSingletonScope();
         bind(CoreService).toService(CoreServiceImpl);
         bindBackendService(BoardsServicePath, BoardsService);
-        bindBackendService(CoreClientProviderPath, CoreClientProvider);
-        bindBackendService(CoreServicePath, CoreService);
+        bindBackendService<CoreService, CoreServiceClient>(CoreServicePath, CoreService, (service, client) => {
+            service.setClient(client);
+            client.onDidCloseConnection(() => service.dispose());
+            return service;
+        });
     });
     bind(ConnectionContainerModule).toConstantValue(connectionConnectionModule);
 
     // Tool output service -> feedback from the daemon, compile and flash
-    bind(ToolOutputServiceServer).to(ToolOutputServiceServerImpl).inSingletonScope();
+    bind(ToolOutputServiceServerImpl).toSelf().inSingletonScope();
+    bind(ToolOutputServiceServer).toService(ToolOutputServiceServerImpl);
     bind(ConnectionHandler).toDynamicValue(context =>
         new JsonRpcConnectionHandler<ToolOutputServiceClient>(ToolOutputService.SERVICE_PATH, client => {
             const server = context.container.get<ToolOutputServiceServer>(ToolOutputServiceServer);
@@ -113,13 +123,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
             return server;
         })
     ).inSingletonScope();
-
-    // Bind the workspace service extension to the backend per Theia connection.
-    // So that we can access the workspace roots of the frontend.
-    const workspaceServiceExtConnectionModule = ConnectionContainerModule.create(({ bindFrontendService }) => {
-        bindFrontendService(WorkspaceServiceExtPath, WorkspaceServiceExt);
-    });
-    bind(ConnectionContainerModule).toConstantValue(workspaceServiceExtConnectionModule);
 
     // Logger for the Arduino daemon
     bind(ILogger).toDynamicValue(ctx => {
@@ -132,6 +135,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);
         return parentLogger.child('discovery');
     }).inSingletonScope().whenTargetNamed('discovery');
+
+    // Logger for the CLI config service. From the CLI config (FS path aware), we make a URI-aware app config.
+    bind(ILogger).toDynamicValue(ctx => {
+        const parentLogger = ctx.container.get<ILogger>(ILogger);
+        return parentLogger.child('config');
+    }).inSingletonScope().whenTargetNamed('config');
 
     // Default workspace server extension to initialize and use a fallback workspace.
     // If nothing was set previously.
@@ -173,4 +182,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
             process.env.CPP_CLANGD_COMMAND = clangdCommand;
         }
     }
+
+    bind(ArduinoHostedPluginReader).toSelf().inSingletonScope();
+    rebind(HostedPluginReader).toService(ArduinoHostedPluginReader);
 });

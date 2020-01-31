@@ -15,11 +15,9 @@ import { ArduinoLanguageGrammarContribution } from './language/arduino-language-
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
-import { CoreService, CoreServicePath } from '../common/protocol/core-service';
+import { CoreService, CoreServicePath, CoreServiceClient } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
-import { WorkspaceServiceExt, WorkspaceServiceExtPath } from './workspace-service-ext';
-import { WorkspaceServiceExtImpl } from './workspace-service-ext-impl';
 import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
@@ -52,13 +50,11 @@ import { ArduinoSearchInWorkspaceContribution } from './customization/arduino-se
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
-import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
+import { ConfigService, ConfigServicePath, ConfigServiceClient } from '../common/protocol/config-service';
 import { MonitorWidget } from './monitor/monitor-widget';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorModel } from './monitor/monitor-model';
-import { MonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
-import { ArduinoMonacoEditorProvider } from './editor/arduino-monaco-editor-provider';
 import { TabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { ArduinoTabBarDecoratorService } from './shell/arduino-tab-bar-decorator';
 import { ProblemManager } from '@theia/markers/lib/browser';
@@ -71,6 +67,14 @@ import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './components/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
+import { ArduinoDaemonClientImpl } from './arduino-daemon-client-impl';
+import { ArduinoDaemonClient, ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
+import { EditorManager } from '@theia/editor/lib/browser';
+import { ArduinoEditorManager } from './editor/arduino-editor-manager';
+import { ArduinoFrontendConnectionStatusService, ArduinoApplicationConnectionStatusContribution } from './customization/arduino-connection-status-service';
+import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from '@theia/core/lib/browser/connection-status-service';
+import { ConfigServiceClientImpl } from './config-service-client-impl';
+import { CoreServiceClientImpl } from './core-service-client-impl';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -119,7 +123,17 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
 
     // Config service
-    bind(ConfigService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ConfigServicePath)).inSingletonScope();
+    bind(ConfigService).toDynamicValue(context => {
+        const connection = context.container.get(WebSocketConnectionProvider);
+        const client = context.container.get(ConfigServiceClientImpl);
+        return connection.createProxy(ConfigServicePath, client);
+    }).inSingletonScope();
+    bind(ConfigServiceClientImpl).toSelf().inSingletonScope();
+    bind(ConfigServiceClient).toDynamicValue(context => {
+        const client = context.container.get(ConfigServiceClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, ConfigServicePath, client);
+        return client;
+    }).inSingletonScope();
 
     // Boards service
     bind(BoardsService).toDynamicValue(context => {
@@ -136,7 +150,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         return client;
     }).inSingletonScope();
 
-    // boards auto-installer
+    // Boards auto-installer
     bind(BoardsAutoInstaller).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(BoardsAutoInstaller);
 
@@ -157,9 +171,18 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     })
 
     // Core service
-    bind(CoreService)
-        .toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, CoreServicePath))
-        .inSingletonScope();
+    bind(CoreService).toDynamicValue(context => {
+        const connection = context.container.get(WebSocketConnectionProvider);
+        const client = context.container.get(CoreServiceClientImpl);
+        return connection.createProxy(CoreServicePath, client);
+    }).inSingletonScope();
+    // Core service client to receive and delegate notifications when the index or the library index has been updated.
+    bind(CoreServiceClientImpl).toSelf().inSingletonScope();
+    bind(CoreServiceClient).toDynamicValue(context => {
+        const client = context.container.get(CoreServiceClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, CoreServicePath, client);
+        return client;
+    }).inSingletonScope();
 
     // Tool output service client
     bind(ToolOutputServiceClientImpl).toSelf().inSingletonScope();
@@ -169,18 +192,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         return client;
     }).inSingletonScope();
 
-    // The workspace service extension
-    bind(WorkspaceServiceExt).to(WorkspaceServiceExtImpl).inSingletonScope().onActivation(({ container }, workspaceServiceExt: WorkspaceServiceExt) => {
-        WebSocketConnectionProvider.createProxy(container, WorkspaceServiceExtPath, workspaceServiceExt);
-        // Eagerly active the core, library, and boards services.
-        container.get(CoreService);
-        container.get(LibraryService);
-        container.get(BoardsService);
-        container.get(SketchesService);
-        return workspaceServiceExt;
-    });
-
-    // Serial Monitor
+    // Serial monitor
     bind(MonitorModel).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(MonitorModel);
     bind(MonitorWidget).toSelf();
@@ -190,14 +202,14 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         id: MonitorWidget.ID,
         createWidget: () => context.container.get(MonitorWidget)
     }));
-    // Frontend binding for the monitor service
+    // Frontend binding for the serial monitor service
     bind(MonitorService).toDynamicValue(context => {
         const connection = context.container.get(WebSocketConnectionProvider);
         const client = context.container.get(MonitorServiceClientImpl);
         return connection.createProxy(MonitorServicePath, client);
     }).inSingletonScope();
     bind(MonitorConnection).toSelf().inSingletonScope();
-    // Monitor service client to receive and delegate notifications from the backend.
+    // Serial monitor service client to receive and delegate notifications from the backend.
     bind(MonitorServiceClientImpl).toSelf().inSingletonScope();
     bind(MonitorServiceClient).toDynamicValue(context => {
         const client = context.container.get(MonitorServiceClientImpl);
@@ -211,6 +223,8 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
     bind(EditorMode).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(EditorMode);
+
+    // Layout and shell customizations.
     rebind(OutlineViewContribution).to(ArduinoOutlineViewContribution).inSingletonScope();
     rebind(ProblemContribution).to(ArduinoProblemContribution).inSingletonScope();
     rebind(FileNavigatorContribution).to(ArduinoNavigatorContribution).inSingletonScope();
@@ -222,9 +236,15 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     rebind(SearchInWorkspaceFrontendContribution).to(ArduinoSearchInWorkspaceContribution).inSingletonScope();
     rebind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
 
-    // Monaco customizations
-    bind(ArduinoMonacoEditorProvider).toSelf().inSingletonScope();
-    rebind(MonacoEditorProvider).toService(ArduinoMonacoEditorProvider);
+    // Show a disconnected status bar, when the daemon is not available
+    bind(ArduinoApplicationConnectionStatusContribution).toSelf().inSingletonScope();
+    rebind(ApplicationConnectionStatusContribution).toService(ArduinoApplicationConnectionStatusContribution);
+    bind(ArduinoFrontendConnectionStatusService).toSelf().inSingletonScope();
+    rebind(FrontendConnectionStatusService).toService(ArduinoFrontendConnectionStatusService);
+
+    // Editor customizations. Sets the editor to `readOnly` if under the data dir.
+    bind(ArduinoEditorManager).toSelf().inSingletonScope();
+    rebind(EditorManager).toService(ArduinoEditorManager);
 
     // Decorator customizations
     bind(ArduinoTabBarDecoratorService).toSelf().inSingletonScope();
@@ -241,4 +261,17 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
     bind(ArduinoShellLayoutRestorer).toSelf().inSingletonScope();
     rebind(ShellLayoutRestorer).toService(ArduinoShellLayoutRestorer);
+
+    // Arduino daemon client. Receives notifications from the backend if the CLI daemon process has been restarted.
+    bind(ArduinoDaemon).toDynamicValue(context => {
+        const connection = context.container.get(WebSocketConnectionProvider);
+        const client = context.container.get(ArduinoDaemonClientImpl);
+        return connection.createProxy(ArduinoDaemonPath, client);
+    }).inSingletonScope();
+    bind(ArduinoDaemonClientImpl).toSelf().inSingletonScope();
+    bind(ArduinoDaemonClient).toDynamicValue(context => {
+        const client = context.container.get(ArduinoDaemonClientImpl);
+        WebSocketConnectionProvider.createProxy(context.container, ArduinoDaemonPath, client);
+        return client;
+    }).inSingletonScope();
 });

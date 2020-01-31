@@ -26,7 +26,7 @@ export class LibraryServiceImpl implements LibraryService {
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     async search(options: { query?: string }): Promise<{ items: Library[] }> {
-        const coreClient = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return { items: [] };
         }
@@ -74,7 +74,7 @@ export class LibraryServiceImpl implements LibraryService {
     async install(options: { item: Library, version?: Installable.Version }): Promise<void> {
         const library = options.item;
         const version = !!options.version ? options.version : library.availableVersions[0];
-        const coreClient = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
@@ -100,7 +100,7 @@ export class LibraryServiceImpl implements LibraryService {
 
     async uninstall(options: { item: Library }): Promise<void> {
         const library = options.item;
-        const coreClient = await this.coreClientProvider.getClient();
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }

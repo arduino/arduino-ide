@@ -3,7 +3,7 @@ import { injectable, inject } from 'inversify';
 import { DebugAdapterContribution, DebugAdapterExecutable } from '@theia/debug/lib/common/debug-model';
 import { DebugConfiguration } from '@theia/debug/lib/common/debug-configuration';
 import { IJSONSchema } from '@theia/core/lib/common/json-schema';
-import { ArduinoCli } from 'arduino-ide-extension/lib/node/arduino-cli';
+import { ArduinoDaemonImpl } from 'arduino-ide-extension/lib/node/arduino-daemon-impl';
 
 @injectable()
 export class ArduinoDebugAdapterContribution implements DebugAdapterContribution {
@@ -12,7 +12,7 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
     readonly label = 'Arduino';
     readonly languages = ['c', 'cpp', 'ino'];
 
-    @inject(ArduinoCli) arduinoCli: ArduinoCli;
+    @inject(ArduinoDaemonImpl) daemon: ArduinoDaemonImpl;
 
     getSchemaAttributes(): IJSONSchema[] {
         return [
@@ -66,7 +66,7 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
         const startFunction = config.pauseAtMain ? 'main' : 'setup';
         const res: ActualDebugConfig = {
             ...config,
-            arduinoCli: await this.arduinoCli.getExecPath(),
+            arduinoCli: await this.daemon.getExecPath(),
             fqbn: '${fqbn}',
             uploadPort: '${port}',
             initCommands: [

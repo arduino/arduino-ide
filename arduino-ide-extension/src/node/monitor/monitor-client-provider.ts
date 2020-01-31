@@ -1,20 +1,17 @@
 import * as grpc from '@grpc/grpc-js';
-import { injectable, postConstruct } from 'inversify';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { injectable } from 'inversify';
 import { MonitorClient } from '../cli-protocol/monitor/monitor_grpc_pb';
+import { GrpcClientProvider } from '../grpc-client-provider';
 
 @injectable()
-export class MonitorClientProvider {
+export class MonitorClientProvider extends GrpcClientProvider<MonitorClient> {
 
-    readonly deferred = new Deferred<MonitorClient>();
-
-    @postConstruct()
-    protected init(): void {
-        this.deferred.resolve(new MonitorClient('localhost:50051', grpc.credentials.createInsecure()));
+    createClient(port: string | number): MonitorClient {
+        return new MonitorClient(`localhost:${port}`, grpc.credentials.createInsecure());
     }
 
-    get client(): Promise<MonitorClient> {
-        return this.deferred.promise;
+    close(client: MonitorClient): void {
+        client.close();
     }
 
 }

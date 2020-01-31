@@ -1,7 +1,7 @@
 {
   "name": "arduino-pro-ide",
   "description": "Arduino Pro IDE",
-  "main": "src-gen/frontend/electron-main.js",
+  "main": "scripts/arduino-pro-ide-electron-main.js",
   "author": "Arduino SA",
   "dependencies": {
     "arduino-ide-extension": "file:../working-copy/arduino-ide-extension",
@@ -11,13 +11,15 @@
     "**/fs-extra": "^4.0.3"
   },
   "devDependencies": {
+    "@theia/cli": "next",
     "electron-builder": "^21.2.0"
   },
   "scripts": {
-    "build": "theia build --mode development",
-    "build:release": "theia build --mode development",
+    "build": "yarn download:plugins && theia build --mode development",
+    "build:release": "yarn download:plugins && theia build --mode development",
     "package": "electron-builder --publish=never",
-    "package:preview": "electron-builder --dir"
+    "package:preview": "electron-builder --dir",
+    "download:plugins": "theia download:plugins"
   },
   "engines": {
     "node": ">=10.10.0"
@@ -45,8 +47,9 @@
       "buildResources": "resources"
     },
     "files": [
-      "src-gen/**/*",
-      "lib/**/*",
+      "src-gen",
+      "lib",
+      "scripts",
       "!node_modules/**/*.{ts,map}",
       "!node_modules/**/*.spec.js",
       "!node_modules/@theia/**/test/*",
@@ -55,6 +58,12 @@
       "!node_modules/@typefox/monaco-editor-core/*",
       "!node_modules/oniguruma/*",
       "!node_modules/onigasm/*"
+    ],
+    "extraResources": [
+      {
+        "from": "plugins",
+        "to": "app/plugins"
+      }
     ],
     "win": {
       "target": [
@@ -92,5 +101,9 @@
         }
       ]
     }
+  },
+  "theiaPluginsDir": "plugins",
+  "theiaPlugins": {
+    "vscode-yaml": "https://github.com/redhat-developer/vscode-yaml/releases/download/0.7.2/redhat.vscode-yaml-0.7.2.vsix"
   }
 }

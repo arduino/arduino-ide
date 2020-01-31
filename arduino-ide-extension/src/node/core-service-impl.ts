@@ -1,6 +1,6 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
-import { CoreService } from '../common/protocol/core-service';
+import { CoreService, CoreServiceClient } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
@@ -23,6 +23,17 @@ export class CoreServiceImpl implements CoreService {
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
 
+    protected client: CoreServiceClient | undefined;
+
+    @postConstruct()
+    protected init(): void {
+        this.coreClientProvider.onIndexUpdated(() => {
+            if (this.client) {
+                this.client.notifyIndexUpdated();
+            }
+        })
+    }
+
     async compile(options: CoreService.Compile.Options): Promise<void> {
         console.log('compile', options);
         const { uri } = options;
@@ -32,7 +43,7 @@ export class CoreServiceImpl implements CoreService {
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-        const coreClient = await this.coreClientProvider.getClient(uri);
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
@@ -91,7 +102,7 @@ export class CoreServiceImpl implements CoreService {
             throw new Error(`selected board (${currentBoard.name}) has no FQBN`);
         }
 
-        const coreClient = await this.coreClientProvider.getClient(uri);
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
@@ -118,6 +129,14 @@ export class CoreServiceImpl implements CoreService {
             this.toolOutputService.publishNewOutput("upload error", `Upload error: ${e}\n`);
             throw e;
         }
+    }
+
+    setClient(client: CoreServiceClient | undefined): void {
+        this.client = client;
+    }
+
+    dispose(): void {
+        this.client = undefined;
     }
 
 }
