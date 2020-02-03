@@ -1880,6 +1880,15 @@
     serialize-javascript "^1.4.0"
     webpack-sources "^1.0.1"
 
+"@theia/console@0.16.0-next.46a2d510":
+  version "0.16.0-next.46a2d510"
+  resolved "https://registry.yarnpkg.com/@theia/console/-/console-0.16.0-next.46a2d510.tgz#ba5926258cf58b4fbe64460239f4af38a98ff883"
+  integrity sha512-yJk6+H6xzNO+fmJuz7k47cMjZsA2b4wgEp9FVaHCkn3fmTjMo/Qv3PCH78S8bSMQcKmfqFDCACj/X96cTmMAfg==
+  dependencies:
+    "@theia/core" "0.16.0-next.46a2d510"
+    "@theia/monaco" "0.16.0-next.46a2d510"
+    anser "^1.4.7"
+
 "@theia/core@0.16.0-next.46a2d510", "@theia/core@next":
   version "0.16.0-next.46a2d510"
   resolved "https://registry.yarnpkg.com/@theia/core/-/core-0.16.0-next.46a2d510.tgz#2ff298bf34721a2dc7a3ae1c261f0f01b2d6b0be"
@@ -1941,6 +1950,36 @@
     "@theia/variable-resolver" next
     "@theia/workspace" next
     string-argv "^0.1.1"
+
+"@theia/debug@next":
+  version "0.16.0-next.46a2d510"
+  resolved "https://registry.yarnpkg.com/@theia/debug/-/debug-0.16.0-next.46a2d510.tgz#702b7c9a44cab46f368fbafe2776c5ec703f97fb"
+  integrity sha512-iUvNV3UGFGBFEE0lpBlcLQoklr86Az2G36ORpVw9VPWTHkm21RKdmwY2M0rF1+JnaENz0iFJEVayD2rzNQGTdA==
+  dependencies:
+    "@theia/application-package" "0.16.0-next.46a2d510"
+    "@theia/console" "0.16.0-next.46a2d510"
+    "@theia/core" "0.16.0-next.46a2d510"
+    "@theia/editor" "0.16.0-next.46a2d510"
+    "@theia/filesystem" "0.16.0-next.46a2d510"
+    "@theia/languages" "0.16.0-next.46a2d510"
+    "@theia/markers" "0.16.0-next.46a2d510"
+    "@theia/monaco" "0.16.0-next.46a2d510"
+    "@theia/output" "0.16.0-next.46a2d510"
+    "@theia/preferences" "0.16.0-next.46a2d510"
+    "@theia/process" "0.16.0-next.46a2d510"
+    "@theia/task" "0.16.0-next.46a2d510"
+    "@theia/terminal" "0.16.0-next.46a2d510"
+    "@theia/userstorage" "0.16.0-next.46a2d510"
+    "@theia/variable-resolver" "0.16.0-next.46a2d510"
+    "@theia/workspace" "0.16.0-next.46a2d510"
+    "@types/p-debounce" "^1.0.1"
+    jsonc-parser "^2.0.2"
+    mkdirp "^0.5.0"
+    p-debounce "^2.1.0"
+    requestretry "^3.1.0"
+    tar "^4.0.0"
+    unzip-stream "^0.3.0"
+    vscode-debugprotocol "^1.32.0"
 
 "@theia/editor@0.16.0-next.46a2d510", "@theia/editor@next":
   version "0.16.0-next.46a2d510"
@@ -2169,7 +2208,7 @@
     "@theia/workspace" "0.16.0-next.46a2d510"
     vscode-ripgrep "^1.2.4"
 
-"@theia/task@next":
+"@theia/task@0.16.0-next.46a2d510", "@theia/task@next":
   version "0.16.0-next.46a2d510"
   resolved "https://registry.yarnpkg.com/@theia/task/-/task-0.16.0-next.46a2d510.tgz#004ca4f4256351c63602332798dd6d98e3c387cf"
   integrity sha512-390Meof3StbHNBNfQY8f/opNBj/IZN8z/ZjhRNf/0vtu1b6aZGMo1z/9e8eLcCwDyAdFvSCHRk1bny+rhB4//w==
@@ -2862,6 +2901,11 @@ alphanum-sort@^1.0.1, alphanum-sort@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
+
+anser@^1.4.7:
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/anser/-/anser-1.4.9.tgz#1f85423a5dcf8da4631a341665ff675b96845760"
+  integrity sha512-AI+BjTeGt2+WFk4eWcqbQ7snZpDBt8SaLlj0RT2h5xfdWaiy51OjYvqwMrNzJLGy8iOAL6nKDITWO+rd4MkYEA==
 
 ansi-bgblack@^0.1.1:
   version "0.1.1"
@@ -4665,6 +4709,15 @@ caw@^2.0.1:
     isurl "^1.0.0-alpha5"
     tunnel-agent "^0.6.0"
     url-to-options "^1.0.1"
+
+cdt-gdb-adapter@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/cdt-gdb-adapter/-/cdt-gdb-adapter-0.0.14.tgz#0b4cc8650699572003e52a9f8265e9c65055339c"
+  integrity sha512-SDRVECyEkgePj0AJNVp8HUOw/ObXSlakQNxMasC1wlCn6eE8HcLAdYqdIgwRtnkp2Ct96/U5mXHFHWQDan6ckw==
+  dependencies:
+    node-addon-api "^1.6.2"
+    vscode-debugadapter "^1.37.1"
+    vscode-debugprotocol "^1.37.0"
 
 chai-string@^1.5.0:
   version "1.5.0"
@@ -9719,6 +9772,11 @@ node-abi@^2.11.0, node-abi@^2.2.0:
   dependencies:
     semver "^5.4.1"
 
+node-addon-api@^1.6.2:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.7.1.tgz#cf813cd69bb8d9100f6bdca6755fc268f54ac492"
+  integrity sha512-2+DuKodWvwRTrCfKOeR24KIc5unKjOh8mz17NCzVnHWfjAdDqbfbjqh7gUT+BkXBRQM52+xCHciKWonJ3CbJMQ==
+
 node-dir@0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/node-dir/-/node-dir-0.1.8.tgz#55fb8deb699070707fb67f91a460f0448294c77d"
@@ -9826,22 +9884,6 @@ node-libs-browser@^2.2.1:
     url "^0.11.0"
     util "^0.11.0"
     vm-browserify "^1.0.1"
-
-node-pre-gyp@*:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.14.0.tgz#9a0596533b877289bcad4e143982ca3d904ddc83"
-  integrity sha512-+CvDC7ZttU/sSt9rFjix/P05iS43qHCOOGzcr3Ry99bXG7VX953+vFyEuph/tfqoYu8dttBkE86JSKBO2OzcxA==
-  dependencies:
-    detect-libc "^1.0.2"
-    mkdirp "^0.5.1"
-    needle "^2.2.1"
-    nopt "^4.0.1"
-    npm-packlist "^1.1.6"
-    npmlog "^4.0.2"
-    rc "^1.2.7"
-    rimraf "^2.6.1"
-    semver "^5.3.0"
-    tar "^4.4.2"
 
 node-pre-gyp@^0.12.0:
   version "0.12.0"
@@ -12850,7 +12892,7 @@ tar@^2.0.0:
     fstream "^1.0.12"
     inherits "2"
 
-tar@^4, tar@^4.0.0, tar@^4.0.2, tar@^4.4.10, tar@^4.4.12, tar@^4.4.2, tar@^4.4.8:
+tar@^4, tar@^4.0.0, tar@^4.0.2, tar@^4.4.10, tar@^4.4.12, tar@^4.4.8:
   version "4.4.13"
   resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.13.tgz#43b364bc52888d555298637b10d60790254ab525"
   integrity sha512-w2VwSrBoHa5BsSyH+KxEqeQBAllHhccyMFVHtGtdMpF4W7IRWfZjFiQceJPChOeTsSDVUpER2T8FA93pr0L+QA==
@@ -13227,6 +13269,11 @@ typeof-article@^0.1.1:
   dependencies:
     kind-of "^3.1.0"
 
+typescript@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.1.tgz#ba72a6a600b2158139c5dd8850f700e231464202"
+  integrity sha512-64HkdiRv1yYZsSe4xC1WVgamNigVYjlssIoaH2HcZF0+ijsk5YK2g0G34w9wJkze8+5ow4STd22AynfO6ZYYLw==
+
 typescript@3.5.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
@@ -13576,6 +13623,19 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
+
+vscode-debugadapter@^1.26.0, vscode-debugadapter@^1.37.1:
+  version "1.38.0"
+  resolved "https://registry.yarnpkg.com/vscode-debugadapter/-/vscode-debugadapter-1.38.0.tgz#764a2cef6634cf17c35e1ca97fa1faa253ac87c1"
+  integrity sha512-rm4qmbqj8aAaE8sUt4hX2HZUi7Nmtmf10fiGPqbLZWSFPrBi6myxhrQ0HPeG6Xep5rEgrGzVwCJ/lSGPz2ja1A==
+  dependencies:
+    mkdirp "^0.5.1"
+    vscode-debugprotocol "1.38.0"
+
+vscode-debugprotocol@1.38.0, vscode-debugprotocol@^1.26.0, vscode-debugprotocol@^1.32.0, vscode-debugprotocol@^1.37.0:
+  version "1.38.0"
+  resolved "https://registry.yarnpkg.com/vscode-debugprotocol/-/vscode-debugprotocol-1.38.0.tgz#7a9bcd457e6642f48fabef114c0fa1c25a2fb1e7"
+  integrity sha512-oam9iSjNfXSn71a8bmNsXv8k/rIKSOcllIPrFnNgxd1EMBpfnum+gb7lmRpcH0zSjGb+OH8Ncn8B5tv8srWbNQ==
 
 vscode-jsonrpc@^4.1.0-next:
   version "4.1.0-next.3"
