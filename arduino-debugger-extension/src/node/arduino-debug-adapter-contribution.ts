@@ -23,14 +23,9 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
                         'description': 'path to the sketch root ino file',
                         'default': '${file}',
                     },
-                    'runToMain': {
-                        'description': 'If enabled the debugger will run until the start of the main function.',
+                    'pauseAtMain': {
+                        'description': 'If enabled the debugger will pause at the start of the main function.',
                         'type': 'boolean',
-                        'default': false
-                    },
-                    'verbose': {
-                        'type': 'boolean',
-                        'description': 'Produce verbose log output',
                         'default': false
                     },
                     'debugDebugAdapter': {
@@ -68,11 +63,15 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
     }
 
     async resolveDebugConfiguration(config: DebugConfiguration): Promise<DebugConfiguration> {
+        const startFunction = config.pauseAtMain ? 'main' : 'setup';
         const res: ActualDebugConfig = {
             ...config,
             arduinoCli: await this.arduinoCli.getExecPath(),
             fqbn: '${fqbn}',
-            uploadPort: '${port}'
+            uploadPort: '${port}',
+            initCommands: [
+                `-break-insert -t --function ${startFunction}`
+            ]
         }
         if (!res.sketch) {
             res.sketch = '${file}';

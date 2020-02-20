@@ -1,13 +1,12 @@
 import * as path from 'path';
 import * as fs from 'arduino-ide-extension/lib/node/fs-extra'
-import * as mi from './mi';
 import { spawn } from 'child_process';
 import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
 import { ArduinoLaunchRequestArguments } from './arduino-debug-session';
 
 export class ArduinoGDBBackend extends GDBBackend {
 
-    public spawn(requestArgs: ArduinoLaunchRequestArguments) {
+    public spawn(requestArgs: ArduinoLaunchRequestArguments): Promise<void> {
         if (!requestArgs.sketch) {
             throw new Error('Missing argument: sketch');
         }
@@ -29,8 +28,13 @@ export class ArduinoGDBBackend extends GDBBackend {
         return this.parser.parse(proc.stdout);
     }
 
-    public pause() {
-        mi.sendExecInterrupt(this);
+    public sendFileExecAndSymbols(): Promise<void> {
+        // The program file is already sent by `arduino-cli`
+        return Promise.resolve();
+    }
+
+    public pause(): boolean {
+        this.sendCommand('-exec-interrupt');
         return true;
     }
 
