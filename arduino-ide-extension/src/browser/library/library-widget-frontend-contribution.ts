@@ -14,15 +14,15 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
             widgetName: LibraryListWidget.WIDGET_LABEL,
             defaultWidgetOptions: {
                 area: 'left',
-                rank: 600
+                rank: 700
             },
             toggleCommandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
             toggleKeybinding: 'ctrlcmd+shift+l'
         });
     }
 
-    initializeLayout(): void {
-        // NOOP
+    async initializeLayout(): Promise<void> {
+        this.openView();
     }
 
     registerMenus(menus: MenuModelRegistry): void {

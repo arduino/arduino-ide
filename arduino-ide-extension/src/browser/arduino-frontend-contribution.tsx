@@ -455,13 +455,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
         registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
-            commandId: ArduinoCommands.VERIFY.id,
-            label: 'Verify/Compile',
+            commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
+            label: 'Optimize for Debugging',
             order: '1'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
-            commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
-            label: 'Optimize for Debugging',
+            commandId: ArduinoCommands.VERIFY.id,
+            label: 'Verify/Compile',
             order: '2'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH, {

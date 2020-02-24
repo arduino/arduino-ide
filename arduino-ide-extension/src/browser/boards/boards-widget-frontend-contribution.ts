@@ -23,6 +23,10 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
         });
     }
 
+    async initializeLayout(): Promise<void> {
+        this.openView();
+    }
+
     registerMenus(menus: MenuModelRegistry): void {
         if (this.toggleCommand) {
             menus.registerMenuAction(ArduinoMenus.TOOLS, {
