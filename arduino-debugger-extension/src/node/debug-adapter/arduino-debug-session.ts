@@ -91,7 +91,7 @@ export class ArduinoDebugSession extends GDBDebugSession {
                     // new Scope('Pins', this.variableHandles.create(pins), false),
                     new Scope('Local', this.variableHandles.create(frame), false),
                     new Scope('Global', GLOBAL_HANDLE_ID, false),
-                    new Scope('Static', STATIC_HANDLES_START + parseInt(args.frameId as any, 10), false)
+                    // new Scope('Static', STATIC_HANDLES_START + parseInt(args.frameId as any, 10), false)
                 ],
             };
 

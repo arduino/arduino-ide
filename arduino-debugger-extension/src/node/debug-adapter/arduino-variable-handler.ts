@@ -44,6 +44,28 @@ export class ArduinoVariableHandler {
         return variables;
     }
 
+    /** TODO */
+    async getStaticVariables(frameHandle: number): Promise<DebugProtocol.Variable[]> {
+        throw new Error('Static variables are not supported yet.');
+        const frame = this.frameHandles.get(frameHandle);
+        const result = await this.gdb.sendStackInfoFrame(this.gdb, frame.threadId, frame.frameId);
+        const file = path.normalize(result.frame.file || '');
+        const symbolInfo: any[] = [] // this.symbolTable.getStaticVariables(file);
+        const variables: DebugProtocol.Variable[] = [];
+
+        // Fetch stack depth to obtain frameId/threadId/depth tuple
+        const stackDepth = await mi.sendStackInfoDepth(this.gdb, { maxDepth: 100 });
+        const depth = parseInt(stackDepth.depth, 10);
+
+        for (const symbol of symbolInfo) {
+            const name = `${file}_static_var_${symbol.name}`;
+            const variable = await this.getVariables(frame, name, symbol.name, depth);
+            variables.push(variable);
+        }
+
+        return variables;
+    }
+
     private async getVariables(frame: FrameReference, name: string, expression: string, depth: number): Promise<DebugProtocol.Variable> {
         let global = this.varMgr.getVar(frame.frameId, frame.threadId, depth, name);
 
@@ -77,28 +99,6 @@ export class ArduinoVariableHandler {
                 })
                 : 0,
         };
-    }
-
-    /** TODO */
-    async getStaticVariables(frameHandle: number): Promise<DebugProtocol.Variable[]> {
-        throw new Error('Static variables are not supported yet.');
-        const frame = this.frameHandles.get(frameHandle);
-        const result = await this.gdb.sendStackInfoFrame(this.gdb, frame.threadId, frame.frameId);
-        const file = path.normalize(result.frame.file || '');
-        const symbolInfo: any[] = [] // this.symbolTable.getStaticVariables(file);
-        const variables: DebugProtocol.Variable[] = [];
-
-        // Fetch stack depth to obtain frameId/threadId/depth tuple
-        const stackDepth = await mi.sendStackInfoDepth(this.gdb, { maxDepth: 100 });
-        const depth = parseInt(stackDepth.depth, 10);
-
-        for (const symbol of symbolInfo) {
-            const name = `${file}_static_var_${symbol.name}`;
-            const variable = await this.getVariables(frame, name, symbol.name, depth);
-            variables.push(variable);
-        }
-
-        return variables;
     }
 
     async handlePinStatusRequest(): Promise<DebugProtocol.Variable[]> {
