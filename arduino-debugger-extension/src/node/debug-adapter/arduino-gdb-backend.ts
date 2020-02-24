@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as fs from 'arduino-ide-extension/lib/node/fs-extra'
 import { spawn } from 'child_process';
 import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
+import { MIFrameInfo } from 'cdt-gdb-adapter/dist/mi';
 import { ArduinoLaunchRequestArguments } from './arduino-debug-session';
 
 export class ArduinoGDBBackend extends GDBBackend {
@@ -33,9 +34,17 @@ export class ArduinoGDBBackend extends GDBBackend {
         return Promise.resolve();
     }
 
-    pause(): boolean {
-        this.sendCommand('-exec-interrupt');
-        return true;
+    sendExecInterrupt(threadId?: number) {
+        let command = '-exec-interrupt';
+        if (threadId) {
+            command += ` --thread ${threadId}`;
+        }
+        return this.sendCommand(command);
+    }
+
+    sendStackInfoFrame(gdb: GDBBackend, threadId: number, frameId: number): Promise<{ frame: MIFrameInfo }> {
+        const command = `-stack-info-frame --thread ${threadId} --frame ${frameId}`;
+        return gdb.sendCommand(command);
     }
 
     sendTargetDetach(): Promise<void> {

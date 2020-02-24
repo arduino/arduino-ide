@@ -461,7 +461,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
             commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
-            label: 'Optimize for Debug',
+            label: 'Optimize for Debugging',
             order: '2'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH, {

@@ -1,17 +1,17 @@
 import { injectable, inject } from 'inversify';
 import { MenuModelRegistry, Path, MessageService, Command, CommandRegistry } from '@theia/core';
-import { KeybindingRegistry, Widget } from '@theia/core/lib/browser';
+import { KeybindingRegistry } from '@theia/core/lib/browser';
 import { TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { DebugFrontendApplicationContribution, DebugCommands } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 import { DebugSessionOptions } from "@theia/debug/lib/browser/debug-session-options";
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { EditorMode } from "arduino-ide-extension/lib/browser/editor-mode";
-import { ArduinoDebugConfigurationManager } from './arduino-debug-configuration-manager';
-import { SketchesService } from 'arduino-ide-extension/lib/common/protocol/sketches-service';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import URI from '@theia/core/lib/common/uri';
 import { EditorManager } from '@theia/editor/lib/browser';
+import { EditorMode } from "arduino-ide-extension/lib/browser/editor-mode";
+import { SketchesService } from 'arduino-ide-extension/lib/common/protocol/sketches-service';
 import { ArduinoToolbar } from 'arduino-ide-extension/lib/browser/toolbar/arduino-toolbar';
+import { ArduinoDebugConfigurationManager } from './arduino-debug-configuration-manager';
 
 export namespace ArduinoDebugCommands {
     export const START_DEBUG: Command = {
@@ -109,9 +109,7 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
     }
 
     registerToolbarItems(toolbar: TabBarToolbarRegistry): void {
-        if (this.editorMode.proMode) {
-            super.registerToolbarItems(toolbar);
-        }
+        super.registerToolbarItems(toolbar);
         toolbar.registerItem({
             id: ArduinoDebugCommands.START_DEBUG.id,
             command: ArduinoDebugCommands.START_DEBUG.id,
@@ -125,7 +123,7 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
         registry.registerCommand(ArduinoDebugCommands.START_DEBUG, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            execute: async (widget: Widget, target: EventTarget) => {
+            execute: () => {
                 registry.executeCommand(DebugCommands.START.id);
             }
         });
