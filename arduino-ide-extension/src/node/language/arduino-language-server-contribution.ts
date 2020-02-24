@@ -44,8 +44,6 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
         console.log(`Starting language server ${languageServer} ${args.join(' ')}`);
         const serverConnection = await this.createProcessStreamConnectionAsync(languageServer, args);
         this.forward(clientConnection, serverConnection);
-        // https://github.com/eclipse-theia/theia/issues/6308
-        serverConnection.onClose(() => (clientConnection as any).reader.socket.close());
     }
 
 }
