@@ -2,7 +2,6 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import { FileSystem } from '@theia/filesystem/lib/common';
 import {
     BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient,
     Port, BoardDetails, Tool
@@ -15,7 +14,6 @@ import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp, BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
-import { ConfigService } from '../common/protocol/config-service';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -32,12 +30,6 @@ export class BoardsServiceImpl implements BoardsService {
 
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
-
-    @inject(ConfigService)
-    protected readonly configService: ConfigService;
-
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
 
     protected discoveryInitialized = false;
     protected discoveryTimer: NodeJS.Timer | undefined;
@@ -230,8 +222,6 @@ export class BoardsServiceImpl implements BoardsService {
         req.setInstance(instance);
         req.setFqbn(options.id);
         const resp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
-
-
 
         const tools = await Promise.all(resp.getRequiredToolsList().map(async t => <Tool>{
             name: t.getName(),
