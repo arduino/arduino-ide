@@ -13,6 +13,10 @@ export interface ArduinoLaunchRequestArguments extends DebugProtocol.LaunchReque
 
 export class ArduinoDebugSession extends GDBDebugSession {
 
+    protected get arduinoBackend(): ArduinoGDBBackend {
+        return this.gdb as ArduinoGDBBackend;
+    }
+
     protected createBackend(): GDBBackend {
         return new ArduinoGDBBackend();
     }
@@ -35,6 +39,26 @@ export class ArduinoDebugSession extends GDBDebugSession {
             this.sendResponse(response);
         } catch (err) {
             this.sendErrorResponse(response, 100, err.message);
+        }
+    }
+
+    protected async disconnectRequest(response: DebugProtocol.DisconnectResponse): Promise<void> {
+        try {
+            if (this.isRunning) {
+                // Need to pause first
+                const waitPromise = new Promise(resolve => this.waitPaused = resolve);
+                this.gdb.pause();
+                await waitPromise;
+            }
+            try {
+                await this.arduinoBackend.sendTargetDetach();
+            } catch (e) {
+                // Need to catch here as the command result being returned will never exist as it's detached
+            }
+            await this.gdb.sendGDBExit();
+            this.sendResponse(response);
+        } catch (err) {
+            this.sendErrorResponse(response, 1, err.message);
         }
     }
 

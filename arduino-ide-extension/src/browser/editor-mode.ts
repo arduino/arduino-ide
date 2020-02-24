@@ -22,7 +22,7 @@ export class EditorMode implements FrontendApplicationContribution {
         return value === 'true';
     }
 
-    async toggle(): Promise<void> {
+    async toggleProMode(): Promise<void> {
         const oldState = this.proMode;
         const inAdvancedMode = !oldState;
         window.localStorage.setItem(EditorMode.PRO_MODE_KEY, String(inAdvancedMode));
@@ -41,8 +41,20 @@ export class EditorMode implements FrontendApplicationContribution {
         window.location.reload(true);
     }
 
+    get compileForDebug(): boolean {
+        const value = window.localStorage.getItem(EditorMode.COMPILE_FOR_DEBUG_KEY);
+        return value === 'true';
+    }
+
+    async toggleCompileForDebug(): Promise<void> {
+        const oldState = this.compileForDebug;
+        const newState = !oldState;
+        window.localStorage.setItem(EditorMode.COMPILE_FOR_DEBUG_KEY, String(newState));
+    }
+
 }
 
 export namespace EditorMode {
     export const PRO_MODE_KEY = 'arduino-advanced-mode';
+    export const COMPILE_FOR_DEBUG_KEY = 'arduino-compile-for-debug';
 }

@@ -14,6 +14,7 @@ export namespace CoreService {
             readonly uri: string;
             readonly board: Board;
             readonly port: string;
+            readonly optimizeForDebug: boolean;
         }
     }
 
@@ -21,6 +22,7 @@ export namespace CoreService {
         export interface Options {
             readonly uri: string;
             readonly board: Board;
+            readonly optimizeForDebug: boolean;
         }
     }
 }

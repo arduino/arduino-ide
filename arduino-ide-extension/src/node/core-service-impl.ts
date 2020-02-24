@@ -50,6 +50,7 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setInstance(instance);
         compilerReq.setSketchpath(sketchpath);
         compilerReq.setFqbn(currentBoard.fqbn!);
+        compilerReq.setOptimizefordebug(options.optimizeForDebug);
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(true);
         compilerReq.setQuiet(false);
@@ -72,7 +73,7 @@ export class CoreServiceImpl implements CoreService {
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
-        await this.compile({ uri: options.uri, board: options.board });
+        await this.compile({ uri: options.uri, board: options.board, optimizeForDebug: options.optimizeForDebug });
 
         console.log('upload', options);
         const { uri } = options;

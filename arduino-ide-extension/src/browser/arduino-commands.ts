@@ -12,6 +12,10 @@ export namespace ArduinoCommands {
         label: 'Upload Sketch'
     }
 
+    export const TOGGLE_COMPILE_FOR_DEBUG: Command = {
+        id: "arduino-toggle-compile-for-debug"
+    }
+
     export const SHOW_OPEN_CONTEXT_MENU: Command = {
         id: 'arduino-show-open-context-menu',
         label: 'Open Sketch'

@@ -289,11 +289,20 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     }
                     // Reveal the Output view asynchronously (don't await it)
                     this.outputContribution.openView({ reveal: true });
-                    await this.coreService.compile({ uri: uri.toString(), board: boardsConfig.selectedBoard });
+                    await this.coreService.compile({
+                        uri: uri.toString(),
+                        board: boardsConfig.selectedBoard,
+                        optimizeForDebug: this.editorMode.compileForDebug
+                    });
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
             }
+        });
+
+        registry.registerCommand(ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG, {
+            execute: () => this.editorMode.toggleCompileForDebug(),
+            isToggled: () => this.editorMode.compileForDebug
         });
 
         registry.registerCommand(ArduinoCommands.UPLOAD, {
@@ -326,7 +335,12 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     }
                     // Reveal the Output view asynchronously (don't await it)
                     this.outputContribution.openView({ reveal: true });
-                    await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort.address });
+                    await this.coreService.upload({
+                        uri: uri.toString(),
+                        board: boardsConfig.selectedBoard,
+                        port: selectedPort.address,
+                        optimizeForDebug: this.editorMode.compileForDebug
+                    });
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 } finally {
@@ -402,7 +416,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            execute: () => this.editorMode.toggle(),
+            execute: () => this.editorMode.toggleProMode(),
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => this.editorMode.proMode
         });
@@ -446,9 +460,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             order: '1'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
+            commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
+            label: 'Optimize for Debug',
+            order: '2'
+        });
+        registry.registerMenuAction(ArduinoMenus.SKETCH, {
             commandId: ArduinoCommands.UPLOAD.id,
             label: 'Upload',
-            order: '2'
+            order: '3'
         });
         registry.registerMenuAction(ArduinoToolbarContextMenu.OPEN_GROUP, {
             commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,

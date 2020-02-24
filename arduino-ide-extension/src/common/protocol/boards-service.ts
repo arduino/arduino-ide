@@ -186,22 +186,12 @@ export interface BoardDetails extends Board {
     fqbn: string;
 
     requiredTools: Tool[];
-    locations?: BoardDetailLocations;
-}
-
-export interface BoardDetailLocations {
-    debugScript: string;
 }
 
 export interface Tool {
     readonly packager: string;
     readonly name: string;
     readonly version: string;
-    readonly locations?: ToolLocations;
-}
-export interface ToolLocations {
-    main: string
-    [key: string]: string
 }
 
 export namespace Board {

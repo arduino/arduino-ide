@@ -55,6 +55,14 @@ export class CompileReq extends jspb.Message {
     getJobs(): number;
     setJobs(value: number): void;
 
+    clearLibrariesList(): void;
+    getLibrariesList(): Array<string>;
+    setLibrariesList(value: Array<string>): void;
+    addLibraries(value: string, index?: number): string;
+
+    getOptimizefordebug(): boolean;
+    setOptimizefordebug(value: boolean): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileReq.AsObject;
@@ -82,6 +90,8 @@ export namespace CompileReq {
         vidpid: string,
         exportfile: string,
         jobs: number,
+        librariesList: Array<string>,
+        optimizefordebug: boolean,
     }
 }
 

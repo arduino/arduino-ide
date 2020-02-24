@@ -6,7 +6,7 @@ import { ArduinoLaunchRequestArguments } from './arduino-debug-session';
 
 export class ArduinoGDBBackend extends GDBBackend {
 
-    public spawn(requestArgs: ArduinoLaunchRequestArguments): Promise<void> {
+    spawn(requestArgs: ArduinoLaunchRequestArguments): Promise<void> {
         if (!requestArgs.sketch) {
             throw new Error('Missing argument: sketch');
         }
@@ -28,14 +28,18 @@ export class ArduinoGDBBackend extends GDBBackend {
         return this.parser.parse(proc.stdout);
     }
 
-    public sendFileExecAndSymbols(): Promise<void> {
+    sendFileExecAndSymbols(): Promise<void> {
         // The program file is already sent by `arduino-cli`
         return Promise.resolve();
     }
 
-    public pause(): boolean {
+    pause(): boolean {
         this.sendCommand('-exec-interrupt');
         return true;
+    }
+
+    sendTargetDetach(): Promise<void> {
+        return this.sendCommand('-target-detach');
     }
 
 }

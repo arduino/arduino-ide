@@ -38,7 +38,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.CompileReq.repeatedFields_ = [8];
+proto.cc.arduino.cli.commands.CompileReq.repeatedFields_ = [8,15];
 
 
 
@@ -82,7 +82,9 @@ proto.cc.arduino.cli.commands.CompileReq.toObject = function(includeInstance, ms
     quiet: jspb.Message.getFieldWithDefault(msg, 11, false),
     vidpid: jspb.Message.getFieldWithDefault(msg, 12, ""),
     exportfile: jspb.Message.getFieldWithDefault(msg, 13, ""),
-    jobs: jspb.Message.getFieldWithDefault(msg, 14, 0)
+    jobs: jspb.Message.getFieldWithDefault(msg, 14, 0),
+    librariesList: jspb.Message.getRepeatedField(msg, 15),
+    optimizefordebug: jspb.Message.getFieldWithDefault(msg, 16, false)
   };
 
   if (includeInstance) {
@@ -175,6 +177,14 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
     case 14:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setJobs(value);
+      break;
+    case 15:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addLibraries(value);
+      break;
+    case 16:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOptimizefordebug(value);
       break;
     default:
       reader.skipField();
@@ -301,6 +311,20 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
   if (f !== 0) {
     writer.writeInt32(
       14,
+      f
+    );
+  }
+  f = message.getLibrariesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      15,
+      f
+    );
+  }
+  f = message.getOptimizefordebug();
+  if (f) {
+    writer.writeBool(
+      16,
       f
     );
   }
@@ -551,6 +575,52 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.getJobs = function() {
 /** @param {number} value */
 proto.cc.arduino.cli.commands.CompileReq.prototype.setJobs = function(value) {
   jspb.Message.setProto3IntField(this, 14, value);
+};
+
+
+/**
+ * repeated string libraries = 15;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getLibrariesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 15));
+};
+
+
+/** @param {!Array<string>} value */
+proto.cc.arduino.cli.commands.CompileReq.prototype.setLibrariesList = function(value) {
+  jspb.Message.setField(this, 15, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.addLibraries = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 15, value, opt_index);
+};
+
+
+proto.cc.arduino.cli.commands.CompileReq.prototype.clearLibrariesList = function() {
+  this.setLibrariesList([]);
+};
+
+
+/**
+ * optional bool optimizeForDebug = 16;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getOptimizefordebug = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 16, false));
+};
+
+
+/** @param {boolean} value */
+proto.cc.arduino.cli.commands.CompileReq.prototype.setOptimizefordebug = function(value) {
+  jspb.Message.setProto3BooleanField(this, 16, value);
 };
 
 

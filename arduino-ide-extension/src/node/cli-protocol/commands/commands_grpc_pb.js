@@ -1,10 +1,9 @@
 // GENERATED CODE -- DO NOT EDIT!
 
 // Original file comments:
-//
 // This file is part of arduino-cli.
 //
-// Copyright 2018 ARDUINO SA (http://www.arduino.cc/)
+// Copyright 2020 ARDUINO SA (http://www.arduino.cc/)
 //
 // This software is released under the GNU General Public License version 3,
 // which covers the main part of arduino-cli.
@@ -12,11 +11,10 @@
 // https://www.gnu.org/licenses/gpl-3.0.en.html
 //
 // You can be released from the requirements of the above licenses by purchasing
-// a commercial license. Buying such a license is mandatory if you want to modify or
-// otherwise use the software for commercial activities involving the Arduino
-// software without disclosing the source code of your own applications. To purchase
-// a commercial license, send an email to license@arduino.cc.
-//
+// a commercial license. Buying such a license is mandatory if you want to
+// modify or otherwise use the software for commercial activities involving the
+// Arduino software without disclosing the source code of your own applications.
+// To purchase a commercial license, send an email to license@arduino.cc.
 //
 'use strict';
 var grpc = require('@grpc/grpc-js');
@@ -582,7 +580,7 @@ function deserialize_cc_arduino_cli_commands_VersionResp(buffer_arg) {
 // The main Arduino Platform Service
 var ArduinoCoreService = exports.ArduinoCoreService = {
   // Start a new instance of the Arduino Core Service
-  init: {
+init: {
     path: '/cc.arduino.cli.commands.ArduinoCore/Init',
     requestStream: false,
     responseStream: true,
@@ -594,7 +592,7 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     responseDeserialize: deserialize_cc_arduino_cli_commands_InitResp,
   },
   // Destroy an instance of the Arduino Core Service
-  destroy: {
+destroy: {
     path: '/cc.arduino.cli.commands.ArduinoCore/Destroy',
     requestStream: false,
     responseStream: false,
@@ -606,7 +604,7 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     responseDeserialize: deserialize_cc_arduino_cli_commands_DestroyResp,
   },
   // Rescan instance of the Arduino Core Service
-  rescan: {
+rescan: {
     path: '/cc.arduino.cli.commands.ArduinoCore/Rescan',
     requestStream: false,
     responseStream: false,
@@ -618,7 +616,7 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     responseDeserialize: deserialize_cc_arduino_cli_commands_RescanResp,
   },
   // Update package index of the Arduino Core Service
-  updateIndex: {
+updateIndex: {
     path: '/cc.arduino.cli.commands.ArduinoCore/UpdateIndex',
     requestStream: false,
     responseStream: true,
@@ -630,7 +628,7 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     responseDeserialize: deserialize_cc_arduino_cli_commands_UpdateIndexResp,
   },
   // Update libraries index
-  updateLibrariesIndex: {
+updateLibrariesIndex: {
     path: '/cc.arduino.cli.commands.ArduinoCore/UpdateLibrariesIndex',
     requestStream: false,
     responseStream: true,
@@ -653,10 +651,10 @@ var ArduinoCoreService = exports.ArduinoCoreService = {
     responseDeserialize: deserialize_cc_arduino_cli_commands_VersionResp,
   },
   // BOARD COMMANDS
-  // --------------
-  //
-  // Requests details about a board
-  boardDetails: {
+// --------------
+//
+// Requests details about a board
+boardDetails: {
     path: '/cc.arduino.cli.commands.ArduinoCore/BoardDetails',
     requestStream: false,
     responseStream: false,
