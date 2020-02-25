@@ -65,15 +65,6 @@ export class ArduinoDebugSession extends GDBDebugSession {
         }
     }
 
-    protected async stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): Promise<void> {
-        try {
-
-            return super.stackTraceRequest(response, args);
-        } catch (err) {
-            this.sendErrorResponse(response, 1, err.message);
-        }
-    }
-
     protected scopesRequest(response: DebugProtocol.ScopesResponse, args: DebugProtocol.ScopesArguments): void {
         try {
             const frame: FrameVariableReference = {

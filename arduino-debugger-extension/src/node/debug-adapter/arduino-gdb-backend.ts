@@ -4,8 +4,14 @@ import { spawn } from 'child_process';
 import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
 import { MIFrameInfo } from 'cdt-gdb-adapter/dist/mi';
 import { ArduinoLaunchRequestArguments } from './arduino-debug-session';
+import { ArduinoParser } from './arduino-parser';
 
 export class ArduinoGDBBackend extends GDBBackend {
+
+    constructor() {
+        super();
+        this.parser = new ArduinoParser(this);
+    }
 
     spawn(requestArgs: ArduinoLaunchRequestArguments): Promise<void> {
         if (!requestArgs.sketch) {
@@ -26,7 +32,7 @@ export class ArduinoGDBBackend extends GDBBackend {
         const proc = spawn(command, args);
         this.proc = proc;
         this.out = proc.stdin;
-        return this.parser.parse(proc.stdout);
+        return (this.parser as ArduinoParser).parseFull(proc);
     }
 
     sendFileExecAndSymbols(): Promise<void> {
