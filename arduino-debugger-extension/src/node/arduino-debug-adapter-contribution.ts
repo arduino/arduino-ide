@@ -70,8 +70,7 @@ export class ArduinoDebugAdapterContribution implements DebugAdapterContribution
             fqbn: '${fqbn}',
             uploadPort: '${port}',
             initCommands: [
-                `-break-insert -t --function ${startFunction}`,
-                '-interpreter-exec console "monitor reset halt"'
+                `-break-insert -t --function ${startFunction}`
             ]
         }
         if (!res.sketch) {

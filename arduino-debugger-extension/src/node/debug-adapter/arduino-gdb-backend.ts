@@ -48,9 +48,9 @@ export class ArduinoGDBBackend extends GDBBackend {
         return this.sendCommand(command);
     }
 
-    sendStackInfoFrame(gdb: GDBBackend, threadId: number, frameId: number): Promise<{ frame: MIFrameInfo }> {
+    sendStackInfoFrame(threadId: number, frameId: number): Promise<{ frame: MIFrameInfo }> {
         const command = `-stack-info-frame --thread ${threadId} --frame ${frameId}`;
-        return gdb.sendCommand(command);
+        return this.sendCommand(command);
     }
 
     sendTargetDetach(): Promise<void> {

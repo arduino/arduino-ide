@@ -43,6 +43,7 @@ export class ArduinoDebugSession extends GDBDebugSession {
 
     protected async configurationDoneRequest(response: DebugProtocol.ConfigurationDoneResponse): Promise<void> {
         try {
+            await this.gdb.sendCommand('-interpreter-exec console "monitor reset halt"')
             await mi.sendExecContinue(this.gdb);
             this.sendResponse(response);
         } catch (err) {

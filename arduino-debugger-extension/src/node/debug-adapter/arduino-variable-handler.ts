@@ -48,7 +48,7 @@ export class ArduinoVariableHandler {
     async getStaticVariables(frameHandle: number): Promise<DebugProtocol.Variable[]> {
         throw new Error('Static variables are not supported yet.');
         const frame = this.frameHandles.get(frameHandle);
-        const result = await this.gdb.sendStackInfoFrame(this.gdb, frame.threadId, frame.frameId);
+        const result = await this.gdb.sendStackInfoFrame(frame.threadId, frame.frameId);
         const file = path.normalize(result.frame.file || '');
         const symbolInfo: any[] = [] // this.symbolTable.getStaticVariables(file);
         const variables: DebugProtocol.Variable[] = [];
