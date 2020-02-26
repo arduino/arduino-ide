@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide-extension",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
   "engines": {
