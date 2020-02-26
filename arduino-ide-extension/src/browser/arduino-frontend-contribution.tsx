@@ -301,7 +301,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG, {
-            execute: () => this.editorMode.toggleCompileForDebug(),
+            execute: () => {
+                this.editorMode.toggleCompileForDebug();
+                this.editorMode.menuContentChanged.fire();
+            },
             isToggled: () => this.editorMode.compileForDebug
         });
 
@@ -416,7 +419,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            execute: () => this.editorMode.toggleProMode(),
+            execute: () => {
+                this.editorMode.toggleProMode();
+                this.editorMode.menuContentChanged.fire();
+            },
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => this.editorMode.proMode
         });

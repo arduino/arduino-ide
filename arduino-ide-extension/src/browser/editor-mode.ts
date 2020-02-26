@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+import { Emitter } from '@theia/core/lib/common/event';
 import { ApplicationShell, FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser';
 import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 import { OutputWidget } from '@theia/output/lib/browser/output-widget';
@@ -6,6 +7,8 @@ import { EditorWidget } from '@theia/editor/lib/browser';
 
 @injectable()
 export class EditorMode implements FrontendApplicationContribution {
+
+    readonly menuContentChanged = new Emitter<void>();
 
     protected app: FrontendApplication;
 
