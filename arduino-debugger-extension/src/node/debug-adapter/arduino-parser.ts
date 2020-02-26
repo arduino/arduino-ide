@@ -50,10 +50,8 @@ export class ArduinoParser extends MIParser {
                 this.pos = 0;
                 this.handleLine();
                 // Detect error emitted as log message
-                if (line.startsWith('&"error') && this.rejectReady) {
-                    this.line = line;
-                    this.pos = 0;
-                    this.next();
+                if (this.rejectReady && line.toLowerCase().startsWith('&"error')) {
+                    this.pos = 1;
                     this.rejectReady(new Error(this.handleCString() || regexArray[1]));
                     this.rejectReady = undefined;
                 }
@@ -72,7 +70,7 @@ export class ArduinoParser extends MIParser {
                 const line = regexArray[1];
                 this.gdb.emit('consoleStreamOutput', line + '\n', 'stderr');
                 // Detect error emitted on the stderr stream
-                if (line.toLowerCase().startsWith('error') && this.rejectReady) {
+                if (this.rejectReady && line.toLowerCase().startsWith('error')) {
                     this.rejectReady(new Error(line));
                     this.rejectReady = undefined;
                 }
