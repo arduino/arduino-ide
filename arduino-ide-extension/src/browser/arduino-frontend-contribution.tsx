@@ -181,23 +181,25 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
         registry.registerItem({
             id: ArduinoCommands.VERIFY.id,
-            command: ArduinoCommands.VERIFY.id,
+            command: ArduinoCommands.VERIFY_TOOLBAR.id,
             tooltip: 'Verify'
         });
         registry.registerItem({
             id: ArduinoCommands.UPLOAD.id,
-            command: ArduinoCommands.UPLOAD.id,
+            command: ArduinoCommands.UPLOAD_TOOLBAR.id,
             tooltip: 'Upload'
         });
         registry.registerItem({
             id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
-            tooltip: 'Open'
+            tooltip: 'Open',
+            priority: 2
         });
         registry.registerItem({
             id: ArduinoCommands.SAVE_SKETCH.id,
             command: ArduinoCommands.SAVE_SKETCH.id,
-            tooltip: 'Save'
+            tooltip: 'Save',
+            priority: 2
         });
         registry.registerItem({
             id: BoardsToolBarItem.TOOLBAR_ID,
@@ -206,21 +208,20 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 commands={this.commandRegistry}
                 boardsServiceClient={this.boardsServiceClient}
                 boardService={this.boardsService} />,
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left'
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            priority: 2
         });
         registry.registerItem({
             id: 'toggle-serial-monitor',
-            command: MonitorViewContribution.OPEN_SERIAL_MONITOR,
-            tooltip: 'Toggle Serial Monitor',
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
+            command: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR,
+            tooltip: 'Toggle Serial Monitor'
         });
 
         registry.registerItem({
             id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
-            command: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
+            command: ArduinoCommands.TOGGLE_ADVANCED_MODE_TOOLBAR.id,
             tooltip: 'Toggle Advanced Mode',
-            text: (this.editorMode.proMode ? '$(toggle-on)' : '$(toggle-off)'),
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
+            text: (this.editorMode.proMode ? '$(toggle-on)' : '$(toggle-off)')
         });
     }
 
@@ -263,80 +264,31 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }
 
         registry.registerCommand(ArduinoCommands.VERIFY, {
+            execute: this.verify.bind(this)
+        });
+        registry.registerCommand(ArduinoCommands.VERIFY_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            isEnabled: widget => true,
-            execute: async () => {
-                const widget = this.getCurrentWidget();
-                if (widget instanceof EditorWidget) {
-                    await widget.saveable.save();
-                }
+            execute: this.verify.bind(this)
+        });
 
-                const uri = this.toUri(widget);
-                if (!uri) {
-                    return;
-                }
-
-                try {
-                    const { boardsConfig } = this.boardsServiceClient;
-                    if (!boardsConfig || !boardsConfig.selectedBoard) {
-                        throw new Error('No boards selected. Please select a board.');
-                    }
-                    if (!boardsConfig.selectedBoard.fqbn) {
-                        throw new Error(`No core is installed for ${boardsConfig.selectedBoard.name}. Please install the board.`);
-                    }
-                    // Reveal the Output view asynchronously (don't await it)
-                    this.outputContribution.openView({ reveal: true });
-                    await this.coreService.compile({ uri: uri.toString(), board: boardsConfig.selectedBoard });
-                } catch (e) {
-                    await this.messageService.error(e.toString());
-                }
-            }
+        registry.registerCommand(ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG, {
+            execute: () => {
+                this.editorMode.toggleCompileForDebug();
+                this.editorMode.menuContentChanged.fire();
+            },
+            isToggled: () => this.editorMode.compileForDebug
         });
 
         registry.registerCommand(ArduinoCommands.UPLOAD, {
+            execute: this.upload.bind(this)
+        });
+        registry.registerCommand(ArduinoCommands.UPLOAD_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            isEnabled: widget => true,
-            execute: async () => {
-                const widget = this.getCurrentWidget();
-                if (widget instanceof EditorWidget) {
-                    await widget.saveable.save();
-                }
-
-                const uri = this.toUri(widget);
-                if (!uri) {
-                    return;
-                }
-
-                const monitorConfig = this.monitorConnection.monitorConfig;
-                if (monitorConfig) {
-                    await this.monitorConnection.disconnect();
-                }
-
-                try {
-                    const { boardsConfig } = this.boardsServiceClient;
-                    if (!boardsConfig || !boardsConfig.selectedBoard) {
-                        throw new Error('No boards selected. Please select a board.');
-                    }
-                    const { selectedPort } = boardsConfig;
-                    if (!selectedPort) {
-                        throw new Error('No ports selected. Please select a port.');
-                    }
-                    // Reveal the Output view asynchronously (don't await it)
-                    this.outputContribution.openView({ reveal: true });
-                    await this.coreService.upload({ uri: uri.toString(), board: boardsConfig.selectedBoard, port: selectedPort.address });
-                } catch (e) {
-                    await this.messageService.error(e.toString());
-                } finally {
-                    if (monitorConfig) {
-                        await this.monitorConnection.connect(monitorConfig);
-                    }
-                }
-            }
+            execute: this.upload.bind(this)
         });
 
         registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (widget: Widget, target: EventTarget) => {
                 if (this.wsSketchCount) {
                     const el = (target as HTMLElement).parentElement;
@@ -365,7 +317,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
-            isEnabled: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (sketch: Sketch) => {
                 registry.executeCommand(CommonCommands.SAVE_ALL.id);
@@ -399,10 +350,87 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            execute: () => this.editorMode.toggle(),
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
-            isToggled: () => this.editorMode.proMode
+            isToggled: () => this.editorMode.proMode,
+            execute: () => this.editorMode.toggleProMode()
         });
+        registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE_TOOLBAR, {
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
+            isToggled: () => this.editorMode.proMode,
+            execute: () => this.editorMode.toggleProMode()
+        });
+    }
+
+    protected async verify() {
+        const widget = this.getCurrentWidget();
+        if (widget instanceof EditorWidget) {
+            await widget.saveable.save();
+        }
+
+        const uri = this.toUri(widget);
+        if (!uri) {
+            return;
+        }
+
+        try {
+            const { boardsConfig } = this.boardsServiceClient;
+            if (!boardsConfig || !boardsConfig.selectedBoard) {
+                throw new Error('No boards selected. Please select a board.');
+            }
+            if (!boardsConfig.selectedBoard.fqbn) {
+                throw new Error(`No core is installed for ${boardsConfig.selectedBoard.name}. Please install the board.`);
+            }
+            // Reveal the Output view asynchronously (don't await it)
+            this.outputContribution.openView({ reveal: true });
+            await this.coreService.compile({
+                uri: uri.toString(),
+                board: boardsConfig.selectedBoard,
+                optimizeForDebug: this.editorMode.compileForDebug
+            });
+        } catch (e) {
+            await this.messageService.error(e.toString());
+        }
+    }
+
+    protected async upload() {
+        const widget = this.getCurrentWidget();
+        if (widget instanceof EditorWidget) {
+            await widget.saveable.save();
+        }
+
+        const uri = this.toUri(widget);
+        if (!uri) {
+            return;
+        }
+
+        const monitorConfig = this.monitorConnection.monitorConfig;
+        if (monitorConfig) {
+            await this.monitorConnection.disconnect();
+        }
+
+        try {
+            const { boardsConfig } = this.boardsServiceClient;
+            if (!boardsConfig || !boardsConfig.selectedBoard) {
+                throw new Error('No boards selected. Please select a board.');
+            }
+            const { selectedPort } = boardsConfig;
+            if (!selectedPort) {
+                throw new Error('No ports selected. Please select a port.');
+            }
+            // Reveal the Output view asynchronously (don't await it)
+            this.outputContribution.openView({ reveal: true });
+            await this.coreService.upload({
+                uri: uri.toString(),
+                board: boardsConfig.selectedBoard,
+                port: selectedPort.address,
+                optimizeForDebug: this.editorMode.compileForDebug
+            });
+        } catch (e) {
+            await this.messageService.error(e.toString());
+        } finally {
+            if (monitorConfig) {
+                await this.monitorConnection.connect(monitorConfig);
+            }
+        }
     }
 
     registerMenus(registry: MenuModelRegistry) {
@@ -438,14 +466,19 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
         registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
+            commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
+            label: 'Optimize for Debugging',
+            order: '1'
+        });
+        registry.registerMenuAction(ArduinoMenus.SKETCH, {
             commandId: ArduinoCommands.VERIFY.id,
             label: 'Verify/Compile',
-            order: '1'
+            order: '2'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
             commandId: ArduinoCommands.UPLOAD.id,
             label: 'Upload',
-            order: '2'
+            order: '3'
         });
         registry.registerMenuAction(ArduinoToolbarContextMenu.OPEN_GROUP, {
             commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,

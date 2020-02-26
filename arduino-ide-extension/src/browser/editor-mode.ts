@@ -1,11 +1,16 @@
 import { injectable } from 'inversify';
-import { ApplicationShell, FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser';
-import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { Emitter } from '@theia/core/lib/common/event';
+import { ApplicationShell, FrontendApplicationContribution, FrontendApplication, Widget } from '@theia/core/lib/browser';
 import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import { EditorWidget } from '@theia/editor/lib/browser';
+import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { BoardsListWidget } from './boards/boards-list-widget';
+import { LibraryListWidget } from './library/library-list-widget';
 
 @injectable()
 export class EditorMode implements FrontendApplicationContribution {
+
+    readonly menuContentChanged = new Emitter<void>();
 
     protected app: FrontendApplication;
 
@@ -22,15 +27,15 @@ export class EditorMode implements FrontendApplicationContribution {
         return value === 'true';
     }
 
-    async toggle(): Promise<void> {
+    async toggleProMode(): Promise<void> {
         const oldState = this.proMode;
         const inAdvancedMode = !oldState;
         window.localStorage.setItem(EditorMode.PRO_MODE_KEY, String(inAdvancedMode));
         if (!inAdvancedMode) {
             const { shell } = this.app;
-            // Close all widget that is neither editor nor `Output`.
+            // Close all widgets that are neither editor nor `Output` / `Boards Manager` / `Library Manager`.
             for (const area of ['left', 'right', 'bottom', 'main'] as Array<ApplicationShell.Area>) {
-                shell.closeTabs(area, ({ owner }) => !(owner instanceof EditorWidget || owner instanceof OutputWidget));
+                shell.closeTabs(area, title => !this.isInSimpleMode(title.owner));
             }
         }
         // `storeLayout` has a sync API but the implementation is async, we store the layout manually before we reload the page.
@@ -41,8 +46,27 @@ export class EditorMode implements FrontendApplicationContribution {
         window.location.reload(true);
     }
 
+    protected isInSimpleMode(widget: Widget): boolean {
+        return widget instanceof EditorWidget
+            || widget instanceof OutputWidget
+            || widget instanceof BoardsListWidget
+            || widget instanceof LibraryListWidget;
+    }
+
+    get compileForDebug(): boolean {
+        const value = window.localStorage.getItem(EditorMode.COMPILE_FOR_DEBUG_KEY);
+        return value === 'true';
+    }
+
+    async toggleCompileForDebug(): Promise<void> {
+        const oldState = this.compileForDebug;
+        const newState = !oldState;
+        window.localStorage.setItem(EditorMode.COMPILE_FOR_DEBUG_KEY, String(newState));
+    }
+
 }
 
 export namespace EditorMode {
     export const PRO_MODE_KEY = 'arduino-advanced-mode';
+    export const COMPILE_FOR_DEBUG_KEY = 'arduino-compile-for-debug';
 }

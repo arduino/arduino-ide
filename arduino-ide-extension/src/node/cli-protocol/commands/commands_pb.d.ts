@@ -12,48 +12,7 @@ import * as commands_core_pb from "../commands/core_pb";
 import * as commands_upload_pb from "../commands/upload_pb";
 import * as commands_lib_pb from "../commands/lib_pb";
 
-export class Configuration extends jspb.Message { 
-    getDatadir(): string;
-    setDatadir(value: string): void;
-
-    getSketchbookdir(): string;
-    setSketchbookdir(value: string): void;
-
-    getDownloadsdir(): string;
-    setDownloadsdir(value: string): void;
-
-    clearBoardmanageradditionalurlsList(): void;
-    getBoardmanageradditionalurlsList(): Array<string>;
-    setBoardmanageradditionalurlsList(value: Array<string>): void;
-    addBoardmanageradditionalurls(value: string, index?: number): string;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Configuration.AsObject;
-    static toObject(includeInstance: boolean, msg: Configuration): Configuration.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Configuration, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Configuration;
-    static deserializeBinaryFromReader(message: Configuration, reader: jspb.BinaryReader): Configuration;
-}
-
-export namespace Configuration {
-    export type AsObject = {
-        datadir: string,
-        sketchbookdir: string,
-        downloadsdir: string,
-        boardmanageradditionalurlsList: Array<string>,
-    }
-}
-
 export class InitReq extends jspb.Message { 
-
-    hasConfiguration(): boolean;
-    clearConfiguration(): void;
-    getConfiguration(): Configuration | undefined;
-    setConfiguration(value?: Configuration): void;
-
     getLibraryManagerOnly(): boolean;
     setLibraryManagerOnly(value: boolean): void;
 
@@ -70,7 +29,6 @@ export class InitReq extends jspb.Message {
 
 export namespace InitReq {
     export type AsObject = {
-        configuration?: Configuration.AsObject,
         libraryManagerOnly: boolean,
     }
 }

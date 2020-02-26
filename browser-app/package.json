@@ -6,6 +6,7 @@
   "dependencies": {
     "@theia/core": "next",
     "@theia/cpp": "next",
+    "@theia/debug": "next",
     "@theia/editor": "next",
     "@theia/file-search": "next",
     "@theia/filesystem": "next",
@@ -18,14 +19,15 @@
     "@theia/terminal": "next",
     "@theia/workspace": "next",
     "@theia/textmate-grammars": "next",
-    "arduino-ide-extension": "0.0.4"
+    "arduino-ide-extension": "0.0.4",
+    "arduino-debugger-extension": "0.0.4"
   },
   "devDependencies": {
     "@theia/cli": "next"
   },
   "scripts": {
     "prepare": "theia build --mode development",
-    "start": "theia start",
+    "start": "theia start --plugins=local-dir:../",
     "watch": "theia build --watch --mode development"
   },
   "theia": {

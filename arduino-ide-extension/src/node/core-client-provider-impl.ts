@@ -11,7 +11,6 @@ import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import {
     InitResp,
     InitReq,
-    Configuration,
     UpdateIndexReq,
     UpdateIndexResp,
     UpdateLibrariesIndexReq,
@@ -91,7 +90,6 @@ export class CoreClientProviderImpl implements CoreClientProvider {
         console.info(` >>> Creating and caching a new client for ${rootUri}...`);
         const client = new ArduinoCoreClient('localhost:50051', grpc.credentials.createInsecure());
 
-        const config = new Configuration();
         const rootPath = await this.fileSystem.getFsPath(rootUri);
         if (!rootPath) {
             throw new Error(`Could not resolve filesystem path of URI: ${rootUri}.`);
@@ -114,13 +112,7 @@ export class CoreClientProviderImpl implements CoreClientProvider {
             fs.mkdirSync(downloadDir);
         }
 
-        config.setSketchbookdir(sketchDirPath);
-        config.setDatadir(dataDirPath);
-        config.setDownloadsdir(downloadDir);
-        config.setBoardmanageradditionalurlsList(['https://downloads.arduino.cc/packages/package_index.json']);
-
         const initReq = new InitReq();
-        initReq.setConfiguration(config);
         initReq.setLibraryManagerOnly(false);
         const initResp = await new Promise<InitResp>(resolve => {
             let resp: InitResp | undefined = undefined;

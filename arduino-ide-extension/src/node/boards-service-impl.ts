@@ -2,20 +2,16 @@ import * as PQueue from 'p-queue';
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import { BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient, Port } from '../common/protocol/boards-service';
 import {
-    PlatformSearchReq,
-    PlatformSearchResp,
-    PlatformInstallReq,
-    PlatformInstallResp,
-    PlatformListReq,
-    PlatformListResp,
-    Platform,
-    PlatformUninstallReq,
-    PlatformUninstallResp
+    BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient,
+    Port, BoardDetails, Tool
+} from '../common/protocol/boards-service';
+import {
+    PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
+    PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
-import { BoardListReq, BoardListResp } from './cli-protocol/commands/board_pb';
+import { BoardListReq, BoardListResp, BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
 
@@ -213,6 +209,33 @@ export class BoardsServiceImpl implements BoardsService {
                 resolve({ boards, ports });
             })
         });
+    }
+
+    async detail(options: { id: string }): Promise<{ item?: BoardDetails }> {
+        const coreClient = await this.coreClientProvider.getClient();
+        if (!coreClient) {
+            return {};
+        }
+        const { client, instance } = coreClient;
+
+        const req = new BoardDetailsReq();
+        req.setInstance(instance);
+        req.setFqbn(options.id);
+        const resp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+
+        const tools = await Promise.all(resp.getRequiredToolsList().map(async t => <Tool>{
+            name: t.getName(),
+            packager: t.getPackager(),
+            version: t.getVersion()
+        }));
+
+        return {
+            item: {
+                name: resp.getName(),
+                fqbn: options.id,
+                requiredTools: tools
+            }
+        };
     }
 
     async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {

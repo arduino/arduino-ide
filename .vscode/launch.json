@@ -13,6 +13,13 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch Electron Packager",
+      "program": "${workspaceRoot}/electron/packager/index.js",
+      "cwd": "${workspaceFolder}/electron/packager"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "App (Electron)",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
@@ -99,13 +106,6 @@
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Packager",
-      "program": "${workspaceRoot}/electron/packager/index.js",
-      "cwd": "${workspaceFolder}/electron/packager"
     }
   ]
 }

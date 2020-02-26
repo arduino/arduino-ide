@@ -42,13 +42,13 @@
     // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
     //----------------------------------------------------------------------------------------------+
     mkdir('-p', path('..', workingCopy));
-    for (const name of ['arduino-ide-extension', 'electron-app', 'yarn.lock', 'package.json', 'lerna.json']) {
+    for (const name of ['arduino-ide-extension', 'arduino-debugger-extension', 'electron-app', 'yarn.lock', 'package.json', 'lerna.json']) {
         cp('-rf', path(rootPath, name), path('..', workingCopy));
     }
 
-    //-----------------------------------------------------+
+    //---------------------------------------------+
     // No need to build the `browser-app` example. |
-    //-----------------------------------------------------+
+    //---------------------------------------------+
     //@ts-ignore
     let pkg = require('../working-copy/package.json');
     const workspaces = pkg.workspaces;
@@ -71,6 +71,14 @@
     // The `bundle.js` already contains everything we need for the frontend.
     // We have to do it before changing the dependencies to `local-path`.
     const unusedDependencies = await utils.collectUnusedDependencies('../working-copy/electron-app/');
+
+     //-------------------------------------------------------------------------------------------------------------+
+     // Change the regular NPM dependencies to `local-paths`, so that we can build them without any NPM registries. |
+     //-------------------------------------------------------------------------------------------------------------+
+     // @ts-ignore
+     pkg = require('../working-copy/arduino-debugger-extension/package.json');
+     pkg.dependencies['arduino-ide-extension'] = 'file:../arduino-ide-extension';
+     fs.writeFileSync(path('..', workingCopy, 'arduino-debugger-extension', 'package.json'), JSON.stringify(pkg, null, 2));
 
     //------------------------------------------------------------------------------------+
     // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
