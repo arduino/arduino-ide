@@ -5,8 +5,8 @@ import { MonitorWidget } from "./monitor-widget";
 import { MenuModelRegistry, Command, CommandRegistry } from "@theia/core";
 import { ArduinoMenus } from "../arduino-frontend-contribution";
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
-import { MonitorModel } from './monitor-model';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
+import { MonitorModel } from './monitor-model';
 
 export namespace SerialMonitor {
     export namespace Commands {
@@ -29,7 +29,8 @@ export namespace SerialMonitor {
 @injectable()
 export class MonitorViewContribution extends AbstractViewContribution<MonitorWidget> implements TabBarToolbarContribution {
 
-    static readonly OPEN_SERIAL_MONITOR = MonitorWidget.ID + ':toggle';
+    static readonly TOGGLE_SERIAL_MONITOR = MonitorWidget.ID + ':toggle';
+    static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR = MonitorWidget.ID + ':toggle-toolbar';
 
     @inject(MonitorModel) protected readonly model: MonitorModel;
 
@@ -40,7 +41,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
             defaultWidgetOptions: {
                 area: 'bottom'
             },
-            toggleCommandId: MonitorViewContribution.OPEN_SERIAL_MONITOR,
+            toggleCommandId: MonitorViewContribution.TOGGLE_SERIAL_MONITOR,
             toggleKeybinding: 'ctrlcmd+shift+m'
         })
     }
@@ -89,8 +90,17 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
                 execute: () => this.openView({
                     toggle: true,
                     activate: true
-                }),
-                isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right'
+                })
+            });
+            const toolbarCmd = {
+                id: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR
+            }
+            commands.registerCommand(toolbarCmd, {
+                isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
+                execute: () => this.openView({
+                    toggle: true,
+                    activate: true
+                })
             });
         }
     }

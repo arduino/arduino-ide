@@ -27,7 +27,7 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
 
     registerMenus(menus: MenuModelRegistry): void {
         if (this.toggleCommand) {
-            menus.registerMenuAction(ArduinoMenus.SKETCH, {
+            menus.registerMenuAction(ArduinoMenus.TOOLS, {
                 commandId: this.toggleCommand.id,
                 label: 'Manage Libraries...'
             });

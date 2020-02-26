@@ -6,10 +6,16 @@ export namespace ArduinoCommands {
         id: 'arduino-verify',
         label: 'Verify Sketch'
     }
+    export const VERIFY_TOOLBAR: Command = {
+        id: 'arduino-verify-toolbar',
+    }
 
     export const UPLOAD: Command = {
         id: 'arduino-upload',
         label: 'Upload Sketch'
+    }
+    export const UPLOAD_TOOLBAR: Command = {
+        id: 'arduino-upload-toolbar',
     }
 
     export const TOGGLE_COMPILE_FOR_DEBUG: Command = {
@@ -45,5 +51,8 @@ export namespace ArduinoCommands {
 
     export const TOGGLE_ADVANCED_MODE: Command = {
         id: "arduino-toggle-advanced-mode"
+    }
+    export const TOGGLE_ADVANCED_MODE_TOOLBAR: Command = {
+        id: "arduino-toggle-advanced-mode-toolbar"
     }
 }
