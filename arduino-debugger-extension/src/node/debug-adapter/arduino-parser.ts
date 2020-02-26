@@ -2,7 +2,6 @@ import { ChildProcessWithoutNullStreams } from 'child_process';
 import { Readable } from 'stream';
 import { MIParser } from "cdt-gdb-adapter/dist/MIParser";
 
-const READY_TIMEOUT = 7000;
 const LINE_REGEX = /(.*)(\r?\n)/;
 
 export class ArduinoParser extends MIParser {
@@ -13,19 +12,13 @@ export class ArduinoParser extends MIParser {
         return new Promise((resolve, reject) => {
             // Detect errors when the child process could not be spawned
             proc.on('error', reject);
-            // Detect hanging process (does not print command prompt or error)
-            const timeout = setTimeout(() => {
-                reject(new Error(`No response from gdb after ${READY_TIMEOUT} ms.`));
-            }, READY_TIMEOUT);
 
             this.waitReady = () => {
                 this.rejectReady = undefined;
-                clearTimeout(timeout);
                 resolve();
             }
             this.rejectReady = (error: Error) => {
                 this.waitReady = undefined;
-                clearTimeout(timeout);
                 reject(error);
             }
             // Detect unexpected termination

@@ -57,4 +57,15 @@ export class ArduinoGDBBackend extends GDBBackend {
         return this.sendCommand('-target-detach');
     }
 
+    kill(): void {
+        if (!this.proc) {
+            return;
+        }
+        if (process.platform === 'win32') {
+            spawn('taskkill', ['/pid', this.proc.pid.toString(), '/f', '/t']);
+        } else {
+            this.proc.kill('SIGKILL');
+        }
+    }
+
 }

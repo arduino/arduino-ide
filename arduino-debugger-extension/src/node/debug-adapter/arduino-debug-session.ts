@@ -4,7 +4,7 @@ import { GDBBackend } from 'cdt-gdb-adapter/dist/GDBBackend';
 import * as mi from 'cdt-gdb-adapter/dist/mi';
 import { ArduinoGDBBackend } from './arduino-gdb-backend';
 import { ArduinoVariableHandler } from './arduino-variable-handler';
-import { Scope } from 'vscode-debugadapter';
+import { Scope, OutputEvent } from 'vscode-debugadapter';
 
 export interface ArduinoLaunchRequestArguments extends DebugProtocol.LaunchRequestArguments {
     arduinoCli?: string;
@@ -51,9 +51,25 @@ export class ArduinoDebugSession extends GDBDebugSession {
         }
     }
 
+    protected pauseRequest(response: DebugProtocol.PauseResponse, args: DebugProtocol.PauseArguments): Promise<void> {
+        if (process.platform === 'win32') {
+            const message = 'Pause is not supported on Windows. Please stop the debug session and set a breakpoint instead.';
+            this.sendEvent(new OutputEvent(message));
+            this.sendErrorResponse(response, 1, message);
+            return Promise.resolve();
+        }
+        return super.pauseRequest(response, args);
+    }
+
     protected async disconnectRequest(response: DebugProtocol.DisconnectResponse): Promise<void> {
         try {
             if (this.isRunning) {
+                if (process.platform === 'win32') {
+                    // We cannot pause on Windows
+                    this.arduinoBackend.kill();
+                    this.sendResponse(response);
+                    return;
+                }
                 // Need to pause first
                 const waitPromise = new Promise(resolve => this.waitPaused = resolve);
                 this.gdb.pause();
