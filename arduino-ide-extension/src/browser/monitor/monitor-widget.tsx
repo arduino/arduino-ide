@@ -288,17 +288,20 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
 
     componentDidMount(): void {
         this.scrollToBottom();
-        let chunk = '';
         this.toDisposeBeforeUnmount.pushAll([
             this.props.monitorConnection.onRead(({ data }) => {
-                chunk += data;
-                const eolIndex = chunk.indexOf('\n');
-                if (eolIndex !== -1) {
-                    const line = chunk.substring(0, eolIndex + 1);
-                    chunk = chunk.slice(eolIndex + 1);
-                    const content = `${this.state.content}${this.state.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : ''}${line}`;
-                    this.setState({ content });
+                const rawLines = data.split('\n');
+                const lines: string[] = []
+                const timestamp = () => this.state.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : '';
+                for (let i = 0; i < rawLines.length; i++) {
+                    if (i === 0 && this.state.content.length !== 0) {
+                        lines.push(rawLines[i]);
+                    } else {
+                        lines.push(timestamp() + rawLines[i]);
+                    }
                 }
+                const content = this.state.content + lines.join('\n');
+                this.setState({ content });
             }),
             this.props.clearConsoleEvent(() => this.setState({ content: '' })),
             this.props.monitorModel.onChange(({ property }) => {
