@@ -46,7 +46,7 @@
 See above: `.filterable-list-container .items-container > div:nth-child(odd|event)`.
 We have to increase `z-index` of the scroll-bar thumb. Otherwise, the thumb is not visible.
 https://github.com/arduino/arduino-pro-ide/issues/82 */
-.arduino-list-widget .ps__rail-y > .ps__thumb-y {
+.arduino-list-widget .filterable-list-container .items-container .ps__rail-y {
     z-index: 1;
 }
 

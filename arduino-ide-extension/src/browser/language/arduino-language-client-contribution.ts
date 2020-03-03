@@ -2,7 +2,6 @@ import { injectable, inject, postConstruct } from 'inversify';
 import { BaseLanguageClientContribution } from '@theia/languages/lib/browser';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
-import { Board, BoardPackage } from '../../common/protocol/boards-service';
 
 @injectable()
 export class ArduinoLanguageClientContribution extends BaseLanguageClientContribution {
@@ -26,18 +25,6 @@ export class ArduinoLanguageClientContribution extends BaseLanguageClientContrib
     @postConstruct()
     protected init() {
         this.boardsServiceClient.onBoardsConfigChanged(this.selectBoard.bind(this));
-        const restartIfAffected = (pkg: BoardPackage) => {
-            if (!this.boardConfig) {
-                this.restart();
-                return;
-            }
-            const { selectedBoard } = this.boardConfig;
-            if (selectedBoard && pkg.boards.some(board => Board.sameAs(board, selectedBoard))) {
-                this.restart();
-            }
-        }
-        this.boardsServiceClient.onBoardInstalled(({ pkg }) => restartIfAffected(pkg));
-        this.boardsServiceClient.onBoardUninstalled(({ pkg }) => restartIfAffected(pkg));
     }
 
     selectBoard(config: BoardsConfig.Config): void {

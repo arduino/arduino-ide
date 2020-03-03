@@ -25,10 +25,10 @@ export class LibraryServiceImpl implements LibraryService {
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
 
-    async search(options: { query?: string }): Promise<{ items: Library[] }> {
+    async search(options: { query?: string }): Promise<Library[]> {
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
-            return { items: [] };
+            return [];
         }
         const { client, instance } = coreClient;
 
@@ -68,7 +68,7 @@ export class LibraryServiceImpl implements LibraryService {
                 }, item.getLatest()!, availableVersions)
             })
 
-        return { items };
+        return items;
     }
 
     async install(options: { item: Library, version?: Installable.Version }): Promise<void> {

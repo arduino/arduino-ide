@@ -85,7 +85,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
 
     // Boards service
-    const boardsServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+    const boardsServiceConnectionModule = ConnectionContainerModule.create(async ({ bind, bindBackendService }) => {
         bind(BoardsServiceImpl).toSelf().inSingletonScope();
         bind(BoardsService).toService(BoardsServiceImpl);
         bindBackendService<BoardsService, BoardsServiceClient>(BoardsServicePath, BoardsService, (service, client) => {

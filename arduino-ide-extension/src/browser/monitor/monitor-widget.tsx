@@ -178,7 +178,7 @@ export class MonitorWidget extends ReactWidget {
         this.monitorModel.lineEnding = option.value;
     }
 
-    protected readonly onChangeBaudRate = async (option: SelectOption<MonitorConfig.BaudRate>) => {
+    protected readonly onChangeBaudRate = (option: SelectOption<MonitorConfig.BaudRate>) => {
         this.monitorModel.baudRate = option.value;
     }
 

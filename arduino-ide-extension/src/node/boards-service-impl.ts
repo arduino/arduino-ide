@@ -1,10 +1,7 @@
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import {
-    BoardsService, AttachedSerialBoard, BoardPackage, Board, AttachedNetworkBoard, BoardsServiceClient,
-    Port, BoardDetails, Tool
-} from '../common/protocol/boards-service';
+import { BoardsService, BoardsPackage, Board, BoardsServiceClient, Port, BoardDetails, Tool, ConfigOption, ConfigValue } from '../common/protocol';
 import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
     PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
@@ -37,8 +34,8 @@ export class BoardsServiceImpl implements BoardsService {
      * Stores the state of the currently discovered and attached boards.
      * This state is updated via periodical polls. If there diff, a change event will be sent out to the frontend.
      */
-    protected attachedBoards: { boards: Board[] } = { boards: [] };
-    protected availablePorts: { ports: Port[] } = { ports: [] };
+    protected attachedBoards: Board[] = [];
+    protected availablePorts: Port[] = [];
     protected started = new Deferred<void>();
     protected client: BoardsServiceClient | undefined;
 
@@ -49,8 +46,8 @@ export class BoardsServiceImpl implements BoardsService {
             this.doGetAttachedBoardsAndAvailablePorts()
                 .then(({ boards, ports }) => {
                     const update = (oldBoards: Board[], newBoards: Board[], oldPorts: Port[], newPorts: Port[], message: string) => {
-                        this.attachedBoards = { boards: newBoards };
-                        this.availablePorts = { ports: newPorts };
+                        this.attachedBoards = newBoards;
+                        this.availablePorts = newPorts;
                         this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newBoards)} and available ports: ${JSON.stringify(newPorts)}`);
                         if (this.client) {
                             this.client.notifyAttachedBoardsChanged({
@@ -76,7 +73,7 @@ export class BoardsServiceImpl implements BoardsService {
                         Promise.all([
                             this.getAttachedBoards(),
                             this.getAvailablePorts()
-                        ]).then(([{ boards: currentBoards }, { ports: currentPorts }]) => {
+                        ]).then(([currentBoards, currentPorts]) => {
                             this.discoveryLogger.trace(`Updating discovered boards... ${JSON.stringify(currentBoards)}`);
                             if (currentBoards.length !== sortedBoards.length || currentPorts.length !== sortedPorts.length) {
                                 update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards and available ports.');
@@ -118,12 +115,12 @@ export class BoardsServiceImpl implements BoardsService {
         this.client = undefined;
     }
 
-    async getAttachedBoards(): Promise<{ boards: Board[] }> {
+    async getAttachedBoards(): Promise<Board[]> {
         await this.started.promise;
         return this.attachedBoards;
     }
 
-    async getAvailablePorts(): Promise<{ ports: Port[] }> {
+    async getAvailablePorts(): Promise<Port[]> {
         await this.started.promise;
         return this.availablePorts;
     }
@@ -192,23 +189,8 @@ export class BoardsServiceImpl implements BoardsService {
             for (const board of portList.getBoardsList()) {
                 const name = board.getName() || 'unknown';
                 const fqbn = board.getFqbn();
-                const port = address;
-                if (protocol === 'serial') {
-                    boards.push(<AttachedSerialBoard>{
-                        name,
-                        fqbn,
-                        port
-                    });
-                } else if (protocol === 'network') { // We assume, it is a `network` board.
-                    boards.push(<AttachedNetworkBoard>{
-                        name,
-                        fqbn,
-                        address,
-                        port
-                    });
-                } else {
-                    console.warn(`Unknown protocol for port: ${address}.`);
-                }
+                const port = { address, protocol };
+                boards.push({ name, fqbn, port });
             }
         }
         // TODO: remove mock board!
@@ -219,37 +201,79 @@ export class BoardsServiceImpl implements BoardsService {
         return { boards, ports };
     }
 
-    async detail(options: { id: string }): Promise<{ item?: BoardDetails }> {
+    async getBoardDetails(options: { fqbn: string }): Promise<BoardDetails> {
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
-            return {};
+            throw new Error(`Cannot acquire core client provider.`);
         }
         const { client, instance } = coreClient;
 
+        const { fqbn } = options;
         const req = new BoardDetailsReq();
         req.setInstance(instance);
-        req.setFqbn(options.id);
-        const resp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+        req.setFqbn(fqbn);
+        const resp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(req, (err, resp) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(resp);
+        }));
 
-        const tools = await Promise.all(resp.getRequiredToolsList().map(async t => <Tool>{
+        const requiredTools = resp.getRequiredToolsList().map(t => <Tool>{
             name: t.getName(),
             packager: t.getPackager(),
             version: t.getVersion()
-        }));
+        });
+
+        const configOptions = resp.getConfigOptionsList().map(c => <ConfigOption>{
+            label: c.getOptionLabel(),
+            option: c.getOption(),
+            values: c.getValuesList().map(v => <ConfigValue>{
+                value: v.getValue(),
+                label: v.getValueLabel(),
+                selected: v.getSelected()
+            })
+        });
 
         return {
-            item: {
-                name: resp.getName(),
-                fqbn: options.id,
-                requiredTools: tools
-            }
+            fqbn,
+            requiredTools,
+            configOptions
         };
     }
 
-    async search(options: { query?: string }): Promise<{ items: BoardPackage[] }> {
+    async getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined> {
+        const { id: expectedId } = options;
+        if (!expectedId) {
+            return undefined;
+        }
+        const packages = await this.search({ query: expectedId });
+        return packages.find(({ id }) => id === expectedId);
+    }
+
+    async getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined> {
+        const { fqbn: expectedFqbn } = options;
+        if (!expectedFqbn) {
+            return undefined;
+        }
+        const packages = await this.search({});
+        return packages.find(({ boards }) => boards.some(({ fqbn }) => fqbn === expectedFqbn));
+    }
+
+    async searchBoards(options: { query?: string }): Promise<Array<Board & { packageName: string }>> {
+        const query = (options.query || '').toLocaleLowerCase();
+        const results = await this.search(options);
+        return results.map(item => item.boards.map(board => ({ ...board, packageName: item.name })))
+            .reduce((acc, curr) => acc.concat(curr), [])
+            .filter(board => board.name.toLocaleLowerCase().indexOf(query) !== -1)
+            .sort(Board.compare);
+    }
+
+    async search(options: { query?: string }): Promise<BoardsPackage[]> {
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
-            return { items: [] };
+            return [];
         }
         const { client, instance } = coreClient;
 
@@ -265,7 +289,7 @@ export class BoardsServiceImpl implements BoardsService {
         req.setAllVersions(true);
         req.setInstance(instance);
         const resp = await new Promise<PlatformSearchResp>((resolve, reject) => client.platformSearch(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
-        const packages = new Map<string, BoardPackage>();
+        const packages = new Map<string, BoardsPackage>();
         const toPackage = (platform: Platform) => {
             let installedVersion: string | undefined;
             const matchingPlatform = installedPlatforms.find(ip => ip.getId() === platform.getId());
@@ -307,7 +331,7 @@ export class BoardsServiceImpl implements BoardsService {
             if (!leftInstalled && rightInstalled) {
                 return 1;
             }
-            return Installable.Version.COMPARATOR(right.getLatest(), left.getLatest()); // Higher version comes first.
+            return Installable.Version.COMPARATOR(left.getLatest(), right.getLatest()); // Higher version comes first.
         }
         for (const id of groupedById.keys()) {
             groupedById.get(id)!.sort(installedAwareVersionComparator);
@@ -326,10 +350,10 @@ export class BoardsServiceImpl implements BoardsService {
             }
         }
 
-        return { items: [...packages.values()] };
+        return [...packages.values()];
     }
 
-    async install(options: { item: BoardPackage, version?: Installable.Version }): Promise<void> {
+    async install(options: { item: BoardsPackage, version?: Installable.Version }): Promise<void> {
         const pkg = options.item;
         const version = !!options.version ? options.version : pkg.availableVersions[0];
         const coreClient = await this.coreClientProvider.client();
@@ -338,11 +362,11 @@ export class BoardsServiceImpl implements BoardsService {
         }
         const { client, instance } = coreClient;
 
-        const [platform, boardName] = pkg.id.split(":");
+        const [platform, architecture] = pkg.id.split(":");
 
         const req = new PlatformInstallReq();
         req.setInstance(instance);
-        req.setArchitecture(boardName);
+        req.setArchitecture(architecture);
         req.setPlatformPackage(platform);
         req.setVersion(version);
 
@@ -359,12 +383,14 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('error', reject);
         });
         if (this.client) {
-            this.client.notifyBoardInstalled({ pkg });
+            const packages = await this.search({});
+            const updatedPackage = packages.find(({ id }) => id === pkg.id) || pkg;
+            this.client.notifyBoardInstalled({ pkg: updatedPackage });
         }
         console.info("Board installation done", pkg);
     }
 
-    async uninstall(options: { item: BoardPackage }): Promise<void> {
+    async uninstall(options: { item: BoardsPackage }): Promise<void> {
         const pkg = options.item;
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
@@ -372,11 +398,11 @@ export class BoardsServiceImpl implements BoardsService {
         }
         const { client, instance } = coreClient;
 
-        const [platform, boardName] = pkg.id.split(":");
+        const [platform, architecture] = pkg.id.split(":");
 
         const req = new PlatformUninstallReq();
         req.setInstance(instance);
-        req.setArchitecture(boardName);
+        req.setArchitecture(architecture);
         req.setPlatformPackage(platform);
 
         console.info("Starting board uninstallation", pkg);
@@ -393,6 +419,7 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('error', reject);
         });
         if (this.client) {
+            // Here, unlike at `install` we send out the argument `pkg`. Otherwise, we would not know about the board FQBN.
             this.client.notifyBoardUninstalled({ pkg });
         }
         console.info("Board uninstallation done", pkg);

@@ -10,7 +10,6 @@ import { ArduinoDebugSessionManager } from './arduino-debug-session-manager';
 
 import '../../src/browser/style/index.css';
 
-
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoVariableResolver).toSelf().inSingletonScope();
     bind(VariableContribution).toService(ArduinoVariableResolver);

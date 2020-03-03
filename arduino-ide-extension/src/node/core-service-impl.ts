@@ -36,10 +36,10 @@ export class CoreServiceImpl implements CoreService {
 
     async compile(options: CoreService.Compile.Options): Promise<void> {
         console.log('compile', options);
-        const { uri } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
+        const { sketchUri, fqbn } = options;
+        const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
         if (!sketchFilePath) {
-            throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
+            throw new Error(`Cannot resolve filesystem path for URI: ${sketchUri}.`);
         }
         const sketchpath = path.dirname(sketchFilePath);
 
@@ -49,18 +49,14 @@ export class CoreServiceImpl implements CoreService {
         }
         const { client, instance } = coreClient;
 
-        const currentBoard = options.board;
-        if (!currentBoard) {
-            throw new Error("no board selected");
-        }
-        if (!currentBoard.fqbn) {
-            throw new Error(`selected board (${currentBoard.name}) has no FQBN`);
+        if (!fqbn) {
+            throw new Error('The selected board has no FQBN.');
         }
 
         const compilerReq = new CompileReq();
         compilerReq.setInstance(instance);
         compilerReq.setSketchpath(sketchpath);
-        compilerReq.setFqbn(currentBoard.fqbn!);
+        compilerReq.setFqbn(fqbn);
         compilerReq.setOptimizefordebug(options.optimizeForDebug);
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(true);
@@ -84,23 +80,15 @@ export class CoreServiceImpl implements CoreService {
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
-        await this.compile({ uri: options.uri, board: options.board, optimizeForDebug: options.optimizeForDebug });
-
+        await this.compile(options);
         console.log('upload', options);
-        const { uri } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
+        const { sketchUri, fqbn } = options;
+        const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
         if (!sketchFilePath) {
-            throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
+            throw new Error(`Cannot resolve filesystem path for URI: ${sketchUri}.`);
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-        const currentBoard = options.board;
-        if (!currentBoard) {
-            throw new Error("no board selected");
-        }
-        if (!currentBoard.fqbn) {
-            throw new Error(`selected board (${currentBoard.name}) has no FQBN`);
-        }
 
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
@@ -108,10 +96,14 @@ export class CoreServiceImpl implements CoreService {
         }
         const { client, instance } = coreClient;
 
+        if (!fqbn) {
+            throw new Error('The selected board has no FQBN.');
+        }
+
         const req = new UploadReq();
         req.setInstance(instance);
         req.setSketchPath(sketchpath);
-        req.setFqbn(currentBoard.fqbn);
+        req.setFqbn(fqbn);
         req.setPort(options.port);
         const result = client.upload(req);
 

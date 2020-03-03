@@ -110,5 +110,8 @@
       "additionalProperties": false
     }
   },
+  "// TODOs": [
+    "additionalProperties should be true. See the new telemetry entry"
+  ],
   "additionalProperties": false
 }

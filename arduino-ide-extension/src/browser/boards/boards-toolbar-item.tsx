@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { CommandRegistry, DisposableCollection } from '@theia/core';
-import { BoardsService, Board, AttachedSerialBoard, Port } from '../../common/protocol/boards-service';
-import { ArduinoCommands } from '../arduino-commands';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { CommandRegistry } from '@theia/core/lib/common/command';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { Port } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
+import { ArduinoCommands } from '../arduino-commands';
+import { BoardsServiceClientImpl, AvailableBoard } from './boards-service-client-impl';
 
 export interface BoardsDropDownListCoords {
     readonly top: number;
@@ -16,13 +17,8 @@ export interface BoardsDropDownListCoords {
 export namespace BoardsDropDown {
     export interface Props {
         readonly coords: BoardsDropDownListCoords | 'hidden';
-        readonly items: Item[];
+        readonly items: Array<AvailableBoard & { onClick: () => void, port: Port }>;
         readonly openBoardsConfig: () => void;
-    }
-    export interface Item {
-        readonly label: string;
-        readonly selected: boolean;
-        readonly onClick: () => void;
     }
 }
 
@@ -51,46 +47,28 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
         if (coords === 'hidden') {
             return '';
         }
-        items.push({
-            label: 'Select Other Board & Port',
-            selected: false,
-            onClick: () => this.props.openBoardsConfig()
-        })
         return <div className='arduino-boards-dropdown-list'
             style={{
                 position: 'absolute',
                 ...coords
             }}>
-            {items.map(this.renderItem)}
+            {this.renderItem({
+                label: 'Select Other Board & Port',
+                onClick: () => this.props.openBoardsConfig()
+            })}
+            {items.map(({ name, port, selected, onClick }) => ({ label: `${name} at ${Port.toString(port)}`, selected, onClick })).map(this.renderItem)}
         </div>
     }
 
-    protected renderItem(item: BoardsDropDown.Item): React.ReactNode {
-        const { label, selected, onClick } = item;
+    protected renderItem({ label, selected, onClick }: { label: string, selected?: boolean, onClick: () => void }): React.ReactNode {
         return <div key={label} className={`arduino-boards-dropdown-item ${selected ? 'selected' : ''}`} onClick={onClick}>
             <div>
                 {label}
             </div>
-            {selected ? <span className='fa fa-check'/> : ''}
+            {selected ? <span className='fa fa-check' /> : ''}
         </div>
     }
 
-}
-
-export namespace BoardsToolBarItem {
-
-    export interface Props {
-        readonly boardService: BoardsService;
-        readonly boardsServiceClient: BoardsServiceClientImpl;
-        readonly commands: CommandRegistry;
-    }
-
-    export interface State {
-        boardsConfig: BoardsConfig.Config;
-        attachedBoards: Board[];
-        availablePorts: Port[];
-        coords: BoardsDropDownListCoords | 'hidden';
-    }
 }
 
 export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, BoardsToolBarItem.State> {
@@ -102,10 +80,9 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     constructor(props: BoardsToolBarItem.Props) {
         super(props);
 
+        const { availableBoards } = props.boardsServiceClient;
         this.state = {
-            boardsConfig: this.props.boardsServiceClient.boardsConfig,
-            attachedBoards: [],
-            availablePorts: [],
+            availableBoards,
             coords: 'hidden'
         };
 
@@ -115,17 +92,7 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     }
 
     componentDidMount() {
-        const { boardsServiceClient: client, boardService } = this.props;
-        this.toDispose.pushAll([
-            client.onBoardsConfigChanged(boardsConfig => this.setState({ boardsConfig })),
-            client.onBoardsChanged(({ newState }) => this.setState({ attachedBoards: newState.boards, availablePorts: newState.ports }))
-        ]);
-        Promise.all([
-            boardService.getAttachedBoards(),
-            boardService.getAvailablePorts()
-        ]).then(([{boards: attachedBoards}, { ports: availablePorts }]) => {
-            this.setState({ attachedBoards, availablePorts })
-        });
+        this.props.boardsServiceClient.onAvailableBoardsChanged(availableBoards => this.setState({ availableBoards }));
     }
 
     componentWillUnmount(): void {
@@ -146,7 +113,7 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
                     }
                 });
             } else {
-                this.setState({ coords: 'hidden'});
+                this.setState({ coords: 'hidden' });
             }
         }
         event.stopPropagation();
@@ -154,41 +121,52 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
     };
 
     render(): React.ReactNode {
-        const { boardsConfig, coords, attachedBoards, availablePorts } = this.state;
+        const { coords, availableBoards } = this.state;
+        const boardsConfig = this.props.boardsServiceClient.boardsConfig;
         const title = BoardsConfig.Config.toString(boardsConfig, { default: 'no board selected' });
-        const configuredBoard = attachedBoards
-            .filter(AttachedSerialBoard.is)
-            .filter(board => availablePorts.some(port => Port.sameAs(port, board.port)))
-            .filter(board => BoardsConfig.Config.sameAs(boardsConfig, board)).shift();
-
-        const items = attachedBoards.filter(AttachedSerialBoard.is).map(board => ({
-            label: `${board.name} at ${board.port}`,
-            selected: configuredBoard === board,
-            onClick: () => {
-                this.props.boardsServiceClient.boardsConfig = {
-                    selectedBoard: board,
-                    selectedPort: availablePorts.find(port => Port.sameAs(port, board.port))
-                }
+        const decorator = (() => {
+            const selectedBoard = availableBoards.find(({ selected }) => selected);
+            if (!selectedBoard || !selectedBoard.port) {
+                return 'fa fa-times notAttached'
             }
-        }));
+            if (selectedBoard.state === AvailableBoard.State.guessed) {
+                return 'fa fa-exclamation-triangle guessed'
+            }
+            return ''
+        })();
 
         return <React.Fragment>
             <div className='arduino-boards-toolbar-item-container'>
                 <div className='arduino-boards-toolbar-item' title={title}>
                     <div className='inner-container' onClick={this.show}>
-                        <span className={!configuredBoard ? 'fa fa-times notAttached' : ''}/>
+                        <span className={decorator} />
                         <div className='label noWrapInfo'>
                             <div className='noWrapInfo noselect'>
                                 {title}
                             </div>
                         </div>
-                        <span className='fa fa-caret-down caret'/>
+                        <span className='fa fa-caret-down caret' />
                     </div>
                 </div>
             </div>
             <BoardsDropDown
                 coords={coords}
-                items={items}
+                items={availableBoards.filter(AvailableBoard.isWithPort).map(board => ({
+                    ...board,
+                    onClick: () => {
+                        if (board.state === AvailableBoard.State.incomplete) {
+                            this.props.boardsServiceClient.boardsConfig = {
+                                selectedPort: board.port
+                            };
+                            this.openDialog();
+                        } else {
+                            this.props.boardsServiceClient.boardsConfig = {
+                                selectedBoard: board,
+                                selectedPort: board.port
+                            }
+                        }
+                    }
+                }))}
                 openBoardsConfig={this.openDialog}>
             </BoardsDropDown>
         </React.Fragment>;
@@ -198,5 +176,18 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
         this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
         this.setState({ coords: 'hidden' });
     };
+
+}
+export namespace BoardsToolBarItem {
+
+    export interface Props {
+        readonly boardsServiceClient: BoardsServiceClientImpl;
+        readonly commands: CommandRegistry;
+    }
+
+    export interface State {
+        availableBoards: AvailableBoard[];
+        coords: BoardsDropDownListCoords | 'hidden';
+    }
 
 }

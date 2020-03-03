@@ -2,7 +2,6 @@ import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
-import { Detailable } from './detailable';
 import { ArduinoComponent } from './arduino-component';
 const naturalCompare: (left: string, right: string) => number = require('string-natural-compare').caseInsensitive;
 
@@ -22,21 +21,24 @@ export namespace AttachedBoardsChangeEvent {
             ports: Port[]
         }
     }> {
-        const diff = <T>(left: T[], right: T[]) => {
-            return left.filter(item => right.indexOf(item) === -1);
+        // In `lefts` AND not in `rights`.
+        const diff = <T>(lefts: T[], rights: T[], sameAs: (left: T, right: T) => boolean) => {
+            return lefts.filter(left => rights.findIndex(right => sameAs(left, right)) === -1);
         }
         const { boards: newBoards } = event.newState;
         const { boards: oldBoards } = event.oldState;
         const { ports: newPorts } = event.newState;
         const { ports: oldPorts } = event.oldState;
+        const boardSameAs = (left: Board, right: Board) => Board.sameAs(left, right);
+        const portSameAs = (left: Port, right: Port) => Port.sameAs(left, right);
         return {
             detached: {
-                boards: diff(oldBoards, newBoards),
-                ports: diff(oldPorts, newPorts)
+                boards: diff(oldBoards, newBoards, boardSameAs),
+                ports: diff(oldPorts, newPorts, portSameAs)
             },
             attached: {
-                boards: diff(newBoards, oldBoards),
-                ports: diff(newPorts, oldPorts)
+                boards: diff(newBoards, oldBoards, boardSameAs),
+                ports: diff(newPorts, oldPorts, portSameAs)
             }
         };
     }
@@ -44,11 +46,11 @@ export namespace AttachedBoardsChangeEvent {
 }
 
 export interface BoardInstalledEvent {
-    readonly pkg: Readonly<BoardPackage>;
+    readonly pkg: Readonly<BoardsPackage>;
 }
 
 export interface BoardUninstalledEvent {
-    readonly pkg: Readonly<BoardPackage>;
+    readonly pkg: Readonly<BoardsPackage>;
 }
 
 export const BoardsServiceClient = Symbol('BoardsServiceClient');
@@ -60,9 +62,13 @@ export interface BoardsServiceClient {
 
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService extends Installable<BoardPackage>, Searchable<BoardPackage>, Detailable<BoardDetails>, JsonRpcServer<BoardsServiceClient> {
-    getAttachedBoards(): Promise<{ boards: Board[] }>;
-    getAvailablePorts(): Promise<{ ports: Port[] }>;
+export interface BoardsService extends Installable<BoardsPackage>, Searchable<BoardsPackage>, JsonRpcServer<BoardsServiceClient> {
+    getAttachedBoards(): Promise<Board[]>;
+    getAvailablePorts(): Promise<Port[]>;
+    getBoardDetails(options: { fqbn: string }): Promise<BoardDetails>;
+    getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
+    getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
+    searchBoards(options: { query?: string }): Promise<Array<Board & { packageName: string }>>;
 }
 
 export interface Port {
@@ -160,38 +166,114 @@ export namespace Port {
         return false;
     }
 
-    export function sameAs(left: Port | undefined, right: string | undefined) {
+    export function sameAs(left: Port | undefined, right: Port | string | undefined) {
         if (left && right) {
             if (left.protocol !== 'serial') {
-                console.log(`Unexpected protocol for port: ${JSON.stringify(left)}. Ignoring protocol, comparing addresses with ${right}.`);
+                console.log(`Unexpected protocol for 'left' port: ${JSON.stringify(left)}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(right)}.`);
             }
-            return left.address === right;
+            if (typeof right === 'string') {
+                return left.address === right;
+            }
+            if (right.protocol !== 'serial') {
+                console.log(`Unexpected protocol for 'right' port: ${JSON.stringify(right)}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(left)}.`);
+            }
+            return left.address === right.address;
         }
         return false;
     }
 
 }
 
-export interface BoardPackage extends ArduinoComponent {
-    id: string;
-    boards: Board[];
+export interface BoardsPackage extends ArduinoComponent {
+    readonly id: string;
+    readonly boards: Board[];
 }
 
 export interface Board {
-    name: string
-    fqbn?: string
+    readonly name: string;
+    readonly fqbn?: string;
+    readonly port?: Port;
 }
 
-export interface BoardDetails extends Board {
-    fqbn: string;
-
-    requiredTools: Tool[];
+export interface BoardDetails {
+    readonly fqbn: string;
+    readonly requiredTools: Tool[];
+    readonly configOptions: ConfigOption[];
 }
 
 export interface Tool {
     readonly packager: string;
     readonly name: string;
-    readonly version: string;
+    readonly version: Installable.Version;
+}
+
+export interface ConfigOption {
+    readonly option: string;
+    readonly label: string;
+    readonly values: ConfigValue[];
+}
+export namespace ConfigOption {
+
+    /**
+     * Appends the configuration options to the `fqbn` argument.
+     * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
+     * The provided output format is always segment(':'segment)*(':'option'='value(','option'='value)*)?
+     * Validation can be disabled with the `{ validation: false }` option.
+     */
+    export function decorate(fqbn: string, configOptions: ConfigOption[], { validate } = { validate: true }): string {
+        if (validate) {
+            if (!isValidFqbn(fqbn)) {
+                throw new ConfigOptionError(`${fqbn} is not a valid FQBN.`);
+            }
+            if (isValidFqbnWithOptions(fqbn)) {
+                throw new ConfigOptionError(`${fqbn} is already decorated with the configuration options.`);
+            }
+        }
+
+        if (!configOptions.length) {
+            return fqbn;
+        }
+
+        const toValue = (values: ConfigValue[]) => {
+            const selectedValue = values.find(({ selected }) => selected);
+            if (!selectedValue) {
+                console.warn(`None of the config values was selected. Values were: ${JSON.stringify(values)}`);
+                return undefined;
+            }
+            return selectedValue.value;
+        };
+        const options = configOptions
+            .map(({ option, values }) => [option, toValue(values)])
+            .filter(([, value]) => !!value)
+            .map(([option, value]) => `${option}=${value}`)
+            .join(',');
+
+        return `${fqbn}:${options}`;
+    }
+
+    export function isValidFqbn(fqbn: string): boolean {
+        return /^\w+(:\w+)*$/.test(fqbn);
+    }
+
+    export function isValidFqbnWithOptions(fqbn: string): boolean {
+        return /^\w+(:\w+)*(:\w+=\w+(,\w+=\w+)*)$/.test(fqbn);
+    }
+
+    export class ConfigOptionError extends Error {
+        constructor(message: string) {
+            super(message);
+            Object.setPrototypeOf(this, ConfigOptionError.prototype);
+        }
+    }
+
+    export const LABEL_COMPARATOR = (left: ConfigOption, right: ConfigOption) => left.label.toLocaleLowerCase().localeCompare(right.label.toLocaleLowerCase());
+
+}
+
+export interface ConfigValue {
+    readonly label: string;
+    readonly value: string;
+    readonly selected: boolean;
 }
 
 export namespace Board {
@@ -232,25 +314,36 @@ export namespace Board {
         return `${board.name}${fqbn}`;
     }
 
-}
+    export function decorateBoards(
+        selectedBoard: Board | undefined,
+        searchResults: Array<Board & { packageName: string }>): Array<Board & { selected: boolean, missing: boolean, packageName: string, details?: string }> {
+        // Board names are not unique. We show the corresponding core name as a detail.
+        // https://github.com/arduino/arduino-cli/pull/294#issuecomment-513764948
+        const distinctBoardNames = new Map<string, number>();
+        for (const { name } of searchResults) {
+            const counter = distinctBoardNames.get(name) || 0;
+            distinctBoardNames.set(name, counter + 1);
+        }
 
-export interface AttachedSerialBoard extends Board {
-    port: string;
-}
-
-export namespace AttachedSerialBoard {
-    export function is(b: Board | any): b is AttachedSerialBoard {
-        return !!b && 'port' in b;
+        // Due to the non-unique board names, we have to check the package name as well.
+        const selected = (board: Board & { packageName: string }) => {
+            if (!!selectedBoard) {
+                if (Board.equals(board, selectedBoard)) {
+                    if ('packageName' in selectedBoard) {
+                        return board.packageName === (selectedBoard as any).packageName;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+        return searchResults.map(board => ({
+            ...board,
+            details: (distinctBoardNames.get(board.name) || 0) > 1 ? ` - ${board.packageName}` : undefined,
+            selected: selected(board),
+            missing: !installed(board)
+        }));
     }
-}
 
-export interface AttachedNetworkBoard extends Board {
-    address: string;
-    port: string;
-}
 
-export namespace AttachedNetworkBoard {
-    export function is(b: Board): b is AttachedNetworkBoard {
-        return 'address' in b && 'port' in b;
-    }
 }

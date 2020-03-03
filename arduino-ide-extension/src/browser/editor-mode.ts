@@ -1,16 +1,17 @@
-import { injectable } from 'inversify';
-import { Emitter } from '@theia/core/lib/common/event';
+import { injectable, inject } from 'inversify';
 import { ApplicationShell, FrontendApplicationContribution, FrontendApplication, Widget } from '@theia/core/lib/browser';
-import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { OutputWidget } from '@theia/output/lib/browser/output-widget';
+import { MainMenuManager } from './menu/main-menu-manager';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { LibraryListWidget } from './library/library-list-widget';
+import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 
 @injectable()
 export class EditorMode implements FrontendApplicationContribution {
 
-    readonly menuContentChanged = new Emitter<void>();
+    @inject(MainMenuManager)
+    protected readonly mainMenuManager: MainMenuManager;
 
     protected app: FrontendApplication;
 
@@ -62,6 +63,7 @@ export class EditorMode implements FrontendApplicationContribution {
         const oldState = this.compileForDebug;
         const newState = !oldState;
         window.localStorage.setItem(EditorMode.COMPILE_FOR_DEBUG_KEY, String(newState));
+        this.mainMenuManager.update();
     }
 
 }

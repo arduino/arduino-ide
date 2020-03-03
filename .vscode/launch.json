@@ -83,6 +83,27 @@
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "name": "Run Test [current]",
+      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--require",
+        "reflect-metadata/Reflect",
+        "--no-timeouts",
+        "--colors",
+        "**/${fileBasenameNoExtension}.js"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceRoot}/tsconfig.json"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
     }
   ]
 }

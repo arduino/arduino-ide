@@ -15,8 +15,8 @@
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "build": "tsc && ncp ./src/node/cli-protocol/ ./lib/node/cli-protocol/ && yarn lint",
     "watch": "tsc -w",
-    "test": "mocha \"./src/test/**/*.test.ts\"",
-    "test:watch": "mocha --watch --watch-files src \"./src/test/**/*.test.ts\""
+    "test": "mocha \"./lib/test/**/*.test.js\"",
+    "test:watch": "mocha --watch --watch-files lib \"./lib/test/**/*.test.js\""
   },
   "dependencies": {
     "@grpc/grpc-js": "^0.6.18",
@@ -79,18 +79,16 @@
     "protoc": "1.0.4",
     "shelljs": "^0.8.3",
     "temp": "^0.9.1",
-    "ts-node": "^8.6.2",
     "uuid": "^3.2.1",
     "yargs": "^11.1.0"
   },
   "mocha": {
     "require": [
-      "ts-node/register",
       "reflect-metadata/Reflect"
     ],
     "reporter": "spec",
     "colors": true,
-    "watch-extensions": "ts,tsx",
+    "watch-extensions": "js",
     "timeout": 10000
   },
   "files": [
@@ -101,12 +99,12 @@
   ],
   "theiaExtensions": [
     {
-      "backend": "lib/node/arduino-backend-module",
-      "frontend": "lib/browser/arduino-frontend-module"
+      "backend": "lib/node/arduino-ide-backend-module",
+      "frontend": "lib/browser/arduino-ide-frontend-module"
     },
     {
       "frontend": "lib/browser/menu/browser-arduino-menu-module",
-      "frontendElectron": "lib/electron-browser/electron-arduino-menu-module"
+      "frontendElectron": "lib/electron-browser/menu/electron-arduino-menu-module"
     }
   ]
 }

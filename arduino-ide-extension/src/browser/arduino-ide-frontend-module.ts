@@ -75,6 +75,9 @@ import { ArduinoFrontendConnectionStatusService, ArduinoApplicationConnectionSta
 import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from '@theia/core/lib/browser/connection-status-service';
 import { ConfigServiceClientImpl } from './config-service-client-impl';
 import { CoreServiceClientImpl } from './core-service-client-impl';
+import { BoardsDetailsMenuUpdater } from './boards/boards-details-menu-updater';
+import { BoardsConfigStore } from './boards/boards-config-store';
+import { ILogger } from '@theia/core';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -144,11 +147,27 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     // Boards service client to receive and delegate notifications from the backend.
     bind(BoardsServiceClientImpl).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(BoardsServiceClientImpl);
-    bind(BoardsServiceClient).toDynamicValue(context => {
+    bind(BoardsServiceClient).toDynamicValue(async context => {
         const client = context.container.get(BoardsServiceClientImpl);
+        const service = context.container.get<BoardsService>(BoardsService);
+        const [attachedBoards, availablePorts] = await Promise.all([
+            service.getAttachedBoards(),
+            service.getAvailablePorts()
+        ]);
+        client.init({ attachedBoards, availablePorts });
         WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath, client);
         return client;
     }).inSingletonScope();
+
+    // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
+    bind(FrontendApplicationContribution).to(BoardsDetailsMenuUpdater).inSingletonScope();
+    bind(BoardsConfigStore).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(BoardsConfigStore);
+    // Logger for the Arduino daemon
+    bind(ILogger).toDynamicValue(ctx => {
+        const parentLogger = ctx.container.get<ILogger>(ILogger);
+        return parentLogger.child('store');
+    }).inSingletonScope().whenTargetNamed('store');
 
     // Boards auto-installer
     bind(BoardsAutoInstaller).toSelf().inSingletonScope();

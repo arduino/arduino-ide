@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { ArduinoDaemonClient } from '../common/protocol/arduino-daemon';
+import { ArduinoDaemonClient } from '../common/protocol';
 
 @injectable()
 export class ArduinoDaemonClientImpl implements ArduinoDaemonClient {

@@ -26,8 +26,8 @@
   ],
   "theiaExtensions": [
     {
-      "backend": "lib/node/backend-module",
-      "frontend": "lib/browser/frontend-module"
+      "backend": "lib/node/arduino-debug-backend-module",
+      "frontend": "lib/browser/arduino-debug-frontend-module"
     }
   ]
 }
