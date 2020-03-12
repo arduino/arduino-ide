@@ -534,11 +534,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     }
 
     async openSketchFiles(uri: string): Promise<void> {
-        this.sketchService.getSketchFiles(uri).then(uris => {
-            for (const uri of uris) {
-                this.editorManager.open(new URI(uri));
-            }
-        });
+        const uris = await this.sketchService.getSketchFiles(uri);
+        for (const uri of uris) {
+            await this.editorManager.open(new URI(uri));
+        }
     }
 
     /**
