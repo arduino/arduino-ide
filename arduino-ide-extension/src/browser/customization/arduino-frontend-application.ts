@@ -21,22 +21,19 @@ export class ArduinoFrontendApplication extends FrontendApplication {
     protected readonly editorMode: EditorMode;
 
     protected async initializeLayout(): Promise<void> {
-        return super.initializeLayout().then(() => {
-            // If not in PRO mode, we open the sketch file with all the related files.
-            // Otherwise, we reuse the workbench's restore functionality and we do not open anything at all.
-            // TODO: check `otherwise`. Also, what if we check for opened editors, instead of blindly opening them?
-            if (!this.editorMode.proMode) {
-                this.workspaceService.roots.then(roots => {
-                    for (const root of roots) {
-                        this.fileSystem.exists(root.uri).then(exists => {
-                            if (exists) {
-                                this.frontendContribution.openSketchFiles(root.uri);
-                            }
-                        });
-                    }
-                });
+        await super.initializeLayout();
+        // If not in PRO mode, we open the sketch file with all the related files.
+        // Otherwise, we reuse the workbench's restore functionality and we do not open anything at all.
+        // TODO: check `otherwise`. Also, what if we check for opened editors, instead of blindly opening them?
+        if (!this.editorMode.proMode) {
+            const roots = await this.workspaceService.roots;
+            for (const root of roots) {
+                const exists = await this.fileSystem.exists(root.uri);
+                if (exists) {
+                    await this.frontendContribution.openSketchFiles(root.uri);
+                }
             }
-        });
+        }
     }
 
 }
