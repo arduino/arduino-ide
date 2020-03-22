@@ -1,9 +1,9 @@
 import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
+import { naturalCompare } from './../utils';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
-const naturalCompare: (left: string, right: string) => number = require('string-natural-compare').caseInsensitive;
 
 export interface AttachedBoardsChangeEvent {
     readonly oldState: Readonly<{ boards: Board[], ports: Port[] }>;
@@ -109,7 +109,7 @@ export namespace Port {
         if (!isBoardPort(left) && isBoardPort(right)) {
             return 1;
         }
-        let result = left.protocol.toLocaleLowerCase().localeCompare(right.protocol.toLocaleLowerCase());
+        let result = naturalCompare(left.protocol.toLocaleLowerCase(), right.protocol.toLocaleLowerCase());
         if (result !== 0) {
             return result;
         }
@@ -117,7 +117,7 @@ export namespace Port {
         if (result !== 0) {
             return result;
         }
-        return (left.label || '').localeCompare(right.label || '');
+        return naturalCompare(left.label || '', right.label || '');
     }
 
     export function equals(left: Port | undefined, right: Port | undefined): boolean {
@@ -214,6 +214,11 @@ export interface ConfigOption {
 }
 export namespace ConfigOption {
 
+    export function is(arg: any): arg is ConfigOption {
+        return !!arg && 'option' in arg && 'label' in arg && 'values' in arg
+            && typeof arg['option'] === 'string' && typeof arg['label'] === 'string' && Array.isArray(arg['values'])
+    }
+
     /**
      * Appends the configuration options to the `fqbn` argument.
      * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
@@ -266,7 +271,7 @@ export namespace ConfigOption {
         }
     }
 
-    export const LABEL_COMPARATOR = (left: ConfigOption, right: ConfigOption) => left.label.toLocaleLowerCase().localeCompare(right.label.toLocaleLowerCase());
+    export const LABEL_COMPARATOR = (left: ConfigOption, right: ConfigOption) => naturalCompare(left.label.toLocaleLowerCase(), right.label.toLocaleLowerCase());
 
 }
 
@@ -298,9 +303,9 @@ export namespace Board {
     }
 
     export function compare(left: Board, right: Board): number {
-        let result = left.name.localeCompare(right.name);
+        let result = naturalCompare(left.name, right.name);
         if (result === 0) {
-            result = (left.fqbn || '').localeCompare(right.fqbn || '');
+            result = naturalCompare(left.fqbn || '', right.fqbn || '');
         }
         return result;
     }
@@ -314,13 +319,14 @@ export namespace Board {
         return `${board.name}${fqbn}`;
     }
 
+    export type Detailed = Board & Readonly<{ selected: boolean, missing: boolean, packageName: string, details?: string }>;
     export function decorateBoards(
         selectedBoard: Board | undefined,
-        searchResults: Array<Board & { packageName: string }>): Array<Board & { selected: boolean, missing: boolean, packageName: string, details?: string }> {
+        boards: Array<Board & { packageName: string }>): Array<Detailed> {
         // Board names are not unique. We show the corresponding core name as a detail.
         // https://github.com/arduino/arduino-cli/pull/294#issuecomment-513764948
         const distinctBoardNames = new Map<string, number>();
-        for (const { name } of searchResults) {
+        for (const { name } of boards) {
             const counter = distinctBoardNames.get(name) || 0;
             distinctBoardNames.set(name, counter + 1);
         }
@@ -337,7 +343,7 @@ export namespace Board {
             }
             return false;
         }
-        return searchResults.map(board => ({
+        return boards.map(board => ({
             ...board,
             details: (distinctBoardNames.get(board.name) || 0) > 1 ? ` - ${board.packageName}` : undefined,
             selected: selected(board),

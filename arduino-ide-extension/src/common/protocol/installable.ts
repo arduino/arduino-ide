@@ -1,4 +1,4 @@
-const naturalCompare: (left: string, right: string) => number = require('string-natural-compare').caseInsensitive;
+import { naturalCompare } from './../utils';
 import { ArduinoComponent } from './arduino-component';
 
 export interface Installable<T extends ArduinoComponent> {

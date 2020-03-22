@@ -45,24 +45,25 @@ export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution
                 const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z_boardsConfig']; // `z_` is for ordering.
                 for (const { label, option, values } of configOptions.sort(ConfigOption.LABEL_COMPARATOR)) {
                     const menuPath = [...boardsConfigMenuPath, `${option}`];
-                    const commands = new Map<string, Disposable>()
+                    const commands = new Map<string, Disposable & { label: string }>()
                     for (const value of values) {
                         const id = `${fqbn}-${option}--${value.value}`;
-                        const command = { id, label: value.label };
+                        const command = { id };
                         const selectedValue = value.value;
                         const handler = {
                             execute: () => this.boardsConfigStore.setSelected({ fqbn, option, selectedValue }),
                             isToggled: () => value.selected
                         };
-                        commands.set(id, this.commandRegistry.registerCommand(command, handler));
+                        commands.set(id, Object.assign(this.commandRegistry.registerCommand(command, handler), { label: value.label }));
                     }
                     this.menuRegistry.registerSubmenu(menuPath, label);
                     this.toDisposeOnBoardChange.pushAll([
                         ...commands.values(),
                         Disposable.create(() => this.unregisterSubmenu(menuPath)), // We cannot dispose submenu entries: https://github.com/eclipse-theia/theia/issues/7299
                         ...Array.from(commands.keys()).map((commandId, index) => {
-                            this.menuRegistry.registerMenuAction(menuPath, { commandId, order: String(index) })
-                            return Disposable.create(() => this.menuRegistry.unregisterMenuAction(commandId))
+                            const { label } = commands.get(commandId)!;
+                            this.menuRegistry.registerMenuAction(menuPath, { commandId, order: String(index), label });
+                            return Disposable.create(() => this.menuRegistry.unregisterMenuAction(commandId));
                         })
                     ]);
                 }

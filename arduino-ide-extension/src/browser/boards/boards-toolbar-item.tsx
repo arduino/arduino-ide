@@ -151,7 +151,7 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
             </div>
             <BoardsDropDown
                 coords={coords}
-                items={availableBoards.filter(AvailableBoard.isWithPort).map(board => ({
+                items={availableBoards.filter(AvailableBoard.hasPort).map(board => ({
                     ...board,
                     onClick: () => {
                         if (board.state === AvailableBoard.State.incomplete) {

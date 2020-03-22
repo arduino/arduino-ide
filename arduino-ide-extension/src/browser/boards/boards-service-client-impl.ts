@@ -7,6 +7,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { RecursiveRequired } from '../../common/types';
 import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, Board, Port, BoardUninstalledEvent } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
+import { naturalCompare } from '../../common/utils';
 
 @injectable()
 export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApplicationContribution {
@@ -262,10 +263,10 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
             });
         }
 
-        const sortedAvailableBoards = availableBoards.sort(AvailableBoard.COMPARATOR);
+        const sortedAvailableBoards = availableBoards.sort(AvailableBoard.compare);
         let hasChanged = sortedAvailableBoards.length !== currentAvailableBoards.length;
         for (let i = 0; !hasChanged && i < sortedAvailableBoards.length; i++) {
-            hasChanged = AvailableBoard.COMPARATOR(sortedAvailableBoards[i], currentAvailableBoards[i]) !== 0;
+            hasChanged = AvailableBoard.compare(sortedAvailableBoards[i], currentAvailableBoards[i]) !== 0;
         }
         if (hasChanged) {
             this._availableBoards = sortedAvailableBoards;
@@ -312,9 +313,10 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
 }
 
 /**
- * Representation of a ready-to-use board, configured by the user. Not all of the available boards are
- * necessarily recognized by the CLI (e.g.: it is a 3rd party board) or correctly configured but ready for `verify`.
- * If it has the selected board and a associated port, it can be used for `upload`.
+ * Representation of a ready-to-use board, either the user has configured it or was automatically recognized by the CLI.
+ * An available board was not necessarily recognized by the CLI (e.g.: it is a 3rd party board) or correctly configured but ready for `verify`.
+ * If it has the selected board and a associated port, it can be used for `upload`. We render an available board for the user
+ * when it has the `port` set.
  */
 export interface AvailableBoard extends Board {
     readonly state: AvailableBoard.State;
@@ -339,17 +341,27 @@ export namespace AvailableBoard {
         'incomplete'
     }
 
-    export function isWithPort(board: AvailableBoard): board is AvailableBoard & { port: Port } {
+    export function is(board: any): board is AvailableBoard {
+        return Board.is(board) && 'state' in board;
+    }
+
+    export function hasPort(board: AvailableBoard): board is AvailableBoard & { port: Port } {
         return !!board.port;
     }
 
-    export const COMPARATOR = (left: AvailableBoard, right: AvailableBoard) => {
-        let result = left.name.localeCompare(right.name);
+    export const compare = (left: AvailableBoard, right: AvailableBoard) => {
+        if (left.selected && !right.selected) {
+            return -1;
+        }
+        if (right.selected && !left.selected) {
+            return 1;
+        }
+        let result = naturalCompare(left.name, right.name);
         if (result !== 0) {
             return result;
         }
         if (left.fqbn && right.fqbn) {
-            result = left.name.localeCompare(right.name);
+            result = naturalCompare(left.fqbn, right.fqbn);
             if (result !== 0) {
                 return result;
             }
