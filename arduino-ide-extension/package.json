@@ -1,10 +1,10 @@
 {
   "name": "arduino-ide-extension",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
   "engines": {
-    "node": ">=10.10.0"
+    "node": ">=10.11.0 <12"
   },
   "scripts": {
     "prepare": "yarn download-cli && yarn generate-protocol && yarn download-ls && yarn run clean && yarn run build",
@@ -19,7 +19,6 @@
     "test:watch": "mocha --watch --watch-files lib \"./lib/test/**/*.test.js\""
   },
   "dependencies": {
-    "@grpc/grpc-js": "^0.6.18",
     "@theia/application-package": "next",
     "@theia/core": "next",
     "@theia/cpp": "next",
@@ -37,11 +36,12 @@
     "@types/dateformat": "^3.0.1",
     "@types/deepmerge": "^2.2.0",
     "@types/glob": "^5.0.35",
-    "@types/google-protobuf": "^3.7.1",
+    "@types/google-protobuf": "^3.7.2",
     "@types/js-yaml": "^3.12.2",
     "@types/lodash.debounce": "^4.0.6",
     "@types/ps-tree": "^1.1.0",
     "@types/react-select": "^3.0.0",
+    "@types/sinon": "^7.5.2",
     "@types/which": "^1.3.1",
     "ajv": "^6.5.3",
     "css-element-queries": "^1.2.0",
@@ -49,7 +49,8 @@
     "deepmerge": "^4.2.2",
     "fuzzy": "^0.1.3",
     "glob": "^7.1.6",
-    "google-protobuf": "^3.11.0",
+    "google-protobuf": "^3.11.4",
+    "grpc": "^1.24.2",
     "lodash.debounce": "^4.0.8",
     "js-yaml": "^3.13.1",
     "p-queue": "^5.0.0",
@@ -79,6 +80,7 @@
     "ncp": "^2.0.0",
     "protoc": "1.0.4",
     "shelljs": "^0.8.3",
+    "sinon": "^9.0.1",
     "temp": "^0.9.1",
     "uuid": "^3.2.1",
     "yargs": "^11.1.0"

@@ -12,17 +12,17 @@
   },
   "devDependencies": {
     "@theia/cli": "next",
-    "electron-builder": "^21.2.0"
+    "electron-builder": "^22.4.1"
   },
   "scripts": {
-    "build": "yarn download:plugins && theia build --mode development",
-    "build:release": "yarn download:plugins && theia build --mode development",
+    "build": "yarn download:plugins && theia build --mode development && yarn patch:main",
+    "build:release": "yarn download:plugins && theia build --mode production && yarn patch:main",
     "package": "electron-builder --publish=never",
-    "package:preview": "electron-builder --dir",
-    "download:plugins": "theia download:plugins"
+    "download:plugins": "theia download:plugins",
+    "patch:main": "node ./scripts/patch-backend-main ."
   },
   "engines": {
-    "node": ">=10.10.0"
+    "node": ">=10.11.0 <12"
   },
   "repository": {
     "type": "git",
@@ -80,9 +80,17 @@
     },
     "linux": {
       "target": [
-        "zip"
+        {
+          "target": "zip"
+        },
+        {
+          "target": "AppImage",
+          "arch": "armv7l"
+        }
       ],
-      "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}"
+      "category": "Development",
+      "icon": "resources/icons",
+      "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}-${arch}.${ext}"
     },
     "dmg": {
       "icon": "resources/icon.icns",

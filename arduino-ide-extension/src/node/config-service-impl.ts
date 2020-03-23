@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import * as grpc from '@grpc/grpc-js';
+import * as grpc from 'grpc';
 import * as deepmerge from 'deepmerge';
 import { injectable, inject, named } from 'inversify';
 import URI from '@theia/core/lib/common/uri';

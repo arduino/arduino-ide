@@ -1,4 +1,6 @@
 import { expect } from 'chai';
+import * as sinon from 'sinon';
+import * as os from '@theia/core/lib/common/os';
 import { Container, injectable } from 'inversify';
 import { Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -26,16 +28,21 @@ describe('boards-service-client-impl', () => {
         const guessed = AvailableBoard.State.guessed;
         const incomplete = AvailableBoard.State.incomplete;
 
+        let stub: sinon.SinonStub;
+
         let server: MockBoardsService;
         let client: BoardsServiceClientImpl;
-        // let storage: MockStorageService;
 
         beforeEach(() => {
+            stub = sinon.stub(os, 'isOSX').value(true);
             const container = init();
             server = container.get(MockBoardsService);
             client = container.get(BoardsServiceClientImpl);
-            // storage = container.get(MockStorageService);
             server.setClient(client);
+        });
+
+        afterEach(() => {
+            stub.reset();
         });
 
         it('should have no available boards by default', () => {

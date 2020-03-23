@@ -1,6 +1,6 @@
 {
   "name": "arduino-editor",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Arduino Pro IDE",
   "repository": "https://github.com/bcmi-labs/arduino-editor.git",
   "author": "Arduino SA",
@@ -16,7 +16,7 @@
   "scripts": {
     "prepare": "lerna run prepare && yarn test && yarn download:plugins",
     "rebuild:browser": "theia rebuild:browser",
-    "rebuild:electron": "theia rebuild:electron",
+    "rebuild:electron": "theia rebuild:electron --modules \"@theia/node-pty\" nsfw native-keymap find-git-repositories grpc",
     "start": "yarn --cwd ./browser-app start",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test",

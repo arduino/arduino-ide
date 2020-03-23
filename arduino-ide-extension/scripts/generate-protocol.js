@@ -86,8 +86,6 @@ ${protos.join(' ')}`).code !== 0) {
         shell.exit(1);
     }
 
-    const { patch } = require('./patch-grpc-js');
-    patch([out])
     shell.echo('Done.');
 
 })();

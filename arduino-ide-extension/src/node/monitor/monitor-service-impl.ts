@@ -1,4 +1,4 @@
-import { ClientDuplexStream } from '@grpc/grpc-js';
+import { ClientDuplexStream } from 'grpc';
 import { TextDecoder, TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
