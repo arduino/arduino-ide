@@ -27,6 +27,7 @@ export class ArduinoGDBBackend extends GDBBackend {
             'debug',
             '-p', requestArgs.uploadPort || 'none',
             '-b', requestArgs.fqbn,
+            '--interpreter', 'mi2',
             sketchDir
         ];
         const proc = spawn(command, args);
