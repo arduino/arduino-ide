@@ -9,7 +9,7 @@ import { MaybePromise } from '@theia/core/lib/common/types';
  * `location.hash`, the historical workspace locations, and recent sketch files.
  * 
  * The following logic is used for determining the default workspace location:
- * - `hash` points to an exists in location?
+ * - `hash` points to an existing location?
  *  - Yes
  *   - `validate location`. Is valid sketch location?
  *    - Yes

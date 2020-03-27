@@ -311,14 +311,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
             isEnabled: () => true,
-            execute: async (sketch: Sketch) => {
+            execute: (sketch: Sketch) => {
                 this.workspaceService.open(new URI(sketch.uri));
             }
         });
 
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            execute: async (sketch: Sketch) => {
+            execute: (sketch: Sketch) => {
                 registry.executeCommand(CommonCommands.SAVE_ALL.id);
             }
         });
@@ -515,22 +515,21 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     }
 
     protected async registerSketchesInMenu(registry: MenuModelRegistry): Promise<void> {
-        this.sketchService.getSketches().then(sketches => {
-            this.wsSketchCount = sketches.length;
-            sketches.forEach(sketch => {
-                const command: Command = {
-                    id: 'openSketch' + sketch.name
-                }
-                this.commandRegistry.registerCommand(command, {
-                    execute: () => this.commandRegistry.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
-                });
+        const sketches = await this.sketchService.getSketches();
+        this.wsSketchCount = sketches.length;
+        sketches.forEach(sketch => {
+            const command: Command = {
+                id: 'openSketch' + sketch.name
+            }
+            this.commandRegistry.registerCommand(command, {
+                execute: () => this.commandRegistry.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+            });
 
-                registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {
-                    commandId: command.id,
-                    label: sketch.name
-                });
-            })
-        })
+            registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {
+                commandId: command.id,
+                label: sketch.name
+            });
+        });
     }
 
     async openSketchFiles(uri: string): Promise<void> {
@@ -541,14 +540,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     }
 
     /**
-     * Opens a file after prompting the `Open File` dialog. Resolves to `undefined`, if
-     *  - the workspace root is not set,
-     *  - the file to open does not exist, or
-     *  - it was not a file, but a directory.
+     * Opens a file after prompting the `Open File` dialog. Shows a warning message if
+     *  - the file to open does not exist,
+     *  - it was not a file, but a directory, or
+     *  - the file does not pass validation.
      *
      * Otherwise, resolves to the URI of the file.
      */
-    protected async doOpenFile(): Promise<URI | undefined> {
+    protected async doOpenFile(): Promise<void> {
         const props: OpenFileDialogProps = {
             title: WorkspaceCommands.OPEN_FILE.dialogLabel,
             canSelectFolders: false,
@@ -556,19 +555,24 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         };
         const [rootStat] = await this.workspaceService.roots;
         const destinationFileUri = await this.fileDialogService.showOpenDialog(props, rootStat);
-        if (destinationFileUri) {
-            const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
-            if (destinationFile && !destinationFile.isDirectory) {
-                const message = await this.validate(destinationFile);
-                if (!message) {
-                    this.workspaceService.open(destinationFileUri);
-                    return destinationFileUri;
-                } else {
-                    this.messageService.warn(message);
-                }
-            }
+        if (!destinationFileUri) {
+            return;
         }
-        return undefined;
+        const destinationFile = await this.fileSystem.getFileStat(destinationFileUri.toString());
+        if (!destinationFile) {
+            this.messageService.warn(`File does not exist: ${this.fileSystem.getFsPath(destinationFileUri.toString())}`)
+            return;
+        }
+        if (destinationFile.isDirectory) {
+            this.messageService.warn('Please select a sketch file, not a directory.')
+            return;
+        }
+        const message = await this.validate(destinationFile);
+        if (message) {
+            this.messageService.warn(message);
+            return;
+        }
+        this.workspaceService.open(destinationFileUri.parent);
     }
 
     protected getCurrentWidget(): EditorWidget | undefined {
