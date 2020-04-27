@@ -65,19 +65,14 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         />
     }
 
-    protected handleFilterTextChange = (filterText: string) => {
+    protected handleFilterTextChange = (filterText: string = this.state.filterText) => {
         this.setState({ filterText });
         this.search(filterText);
     }
 
     protected search(query: string): void {
         const { searchable } = this.props;
-        searchable.search({ query: query.trim() }).then(result => {
-            const { items } = result;
-            this.setState({
-                items: this.sort(items)
-            });
-        });
+        searchable.search({ query: query.trim() }).then(items => this.setState({ items: this.sort(items) }));
     }
 
     protected sort(items: T[]): T[] {
@@ -91,7 +86,7 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         dialog.open();
         try {
             await installable.install({ item, version });
-            const { items } = await searchable.search({ query: this.state.filterText });
+            const items = await searchable.search({ query: this.state.filterText });
             this.setState({ items: this.sort(items) });
         } finally {
             dialog.close();
@@ -113,7 +108,7 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         dialog.open();
         try {
             await installable.uninstall({ item });
-            const { items } = await searchable.search({ query: this.state.filterText });
+            const items = await searchable.search({ query: this.state.filterText });
             this.setState({ items: this.sort(items) });
         } finally {
             dialog.close();
@@ -132,7 +127,7 @@ export namespace FilterableListContainer {
         readonly itemRenderer: ListItemRenderer<T>;
         readonly resolveContainer: (element: HTMLElement) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
-        readonly filterTextChangeEvent: Event<string>;
+        readonly filterTextChangeEvent: Event<string | undefined>;
     }
 
     export interface State<T> {

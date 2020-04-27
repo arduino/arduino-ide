@@ -5,6 +5,8 @@
     const fs = require('fs');
     const join = require('path').join;
     const shell = require('shelljs');
+    const glob = require('glob');
+    const isCI = require('is-ci');
     shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1'; // Do not run the ffmpeg validation for the packager.
     shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI
     const utils = require('./utils');
@@ -72,13 +74,13 @@
     // We have to do it before changing the dependencies to `local-path`.
     const unusedDependencies = await utils.collectUnusedDependencies('../working-copy/electron-app/');
 
-     //-------------------------------------------------------------------------------------------------------------+
-     // Change the regular NPM dependencies to `local-paths`, so that we can build them without any NPM registries. |
-     //-------------------------------------------------------------------------------------------------------------+
-     // @ts-ignore
-     pkg = require('../working-copy/arduino-debugger-extension/package.json');
-     pkg.dependencies['arduino-ide-extension'] = 'file:../arduino-ide-extension';
-     fs.writeFileSync(path('..', workingCopy, 'arduino-debugger-extension', 'package.json'), JSON.stringify(pkg, null, 2));
+    //-------------------------------------------------------------------------------------------------------------+
+    // Change the regular NPM dependencies to `local-paths`, so that we can build them without any NPM registries. |
+    //-------------------------------------------------------------------------------------------------------------+
+    // @ts-ignore
+    pkg = require('../working-copy/arduino-debugger-extension/package.json');
+    pkg.dependencies['arduino-ide-extension'] = 'file:../arduino-ide-extension';
+    fs.writeFileSync(path('..', workingCopy, 'arduino-debugger-extension', 'package.json'), JSON.stringify(pkg, null, 2));
 
     //------------------------------------------------------------------------------------+
     // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
@@ -138,6 +140,18 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     // Package the electron application. |
     //-----------------------------------+
     exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`, `Packaging your Arduino Pro IDE application`);
+
+    //-----------------------------------------------------------------------------------------------------+
+    // Copy to another folder. Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |
+    //-----------------------------------------------------------------------------------------------------+
+    if (isCI) {
+        try {
+            await copyFilesToBuildArtifacts();
+        } catch (e) {
+            echo(JSON.stringify(e));
+            shell.exit(1);
+        }
+    }
     echo(`🎉  Success. Your application is at: ${path('..', 'build', 'dist')}`);
 
     restore();
@@ -198,6 +212,47 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
             echo('🔧  >>> [Restore] Renaming the root \'.node_modules\' folder to \'node_modules\'...');
             mv('-f', path(rootPath, '.node_modules'), path(rootPath, 'node_modules'));
             echo('👌  >>> [Restore] Renamed the root \'.node_modules\' folder to \'node_modules\'.');
+        }
+    }
+
+    async function copyFilesToBuildArtifacts() {
+        echo(`🚢  Detected CI, moving build artifacts...`);
+        const { platform } = process;
+        const cwd = path('..', 'build', 'dist');
+        const targetFolder = path('..', 'build', 'dist', 'build-artifacts');
+        mkdir('-p', targetFolder);
+        const filesToCopy = [];
+        switch (platform) {
+            case 'linux': {
+                filesToCopy.push(...glob.sync('**/Arduino Pro IDE*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
+                break;
+            }
+            case 'win32': {
+                filesToCopy.push(...glob.sync('**/Arduino Pro IDE*.zip', { cwd }).map(p => join(cwd, p)));
+                break;
+            }
+            case 'darwin': {
+                filesToCopy.push(...glob.sync('**/Arduino Pro IDE*.dmg', { cwd }).map(p => join(cwd, p)));
+                break;
+            }
+            default: {
+                echo(`Unsupported platform: ${platform}.`);
+                shell.exit(1);
+            }
+        }
+        if (!filesToCopy.length) {
+            echo(`Could not collect any build artifacts from ${cwd}.`);
+            shell.exit(1);
+        }
+        for (const fileToCopy of filesToCopy) {
+            echo(`🚢  >>> Copying ${fileToCopy} to ${targetFolder}.`);
+            const isZip = await utils.isZip(fileToCopy);
+            if (isZip) {
+                await utils.adjustArchiveStructure(fileToCopy, targetFolder);
+            } else {
+                cp('-rf', fileToCopy, targetFolder);
+            }
+            echo(`👌  >>> Copied ${fileToCopy} to ${targetFolder}.`);
         }
     }
 

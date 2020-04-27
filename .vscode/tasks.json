@@ -1,48 +1,80 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Arduino Editor - Start Browser Example",
-            "type": "shell",
-            "command": "yarn --cwd ./browser-app start",
-            "group": "build",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "clear": true
-            }
-        },
-        {
-            "label": "Arduino Editor - Watch Theia Extension",
-            "type": "shell",
-            "command": "yarn --cwd ./arduino-ide-extension watch",
-            "group": "build",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "clear": false
-            }
-        },
-        {
-            "label": "Arduino Editor - Watch Browser Example",
-            "type": "shell",
-            "command": "yarn --cwd ./browser-app watch",
-            "group": "build",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "clear": false
-            }
-        },
-        {
-            "label": "Arduino Editor - Watch All",
-            "type": "shell",
-            "dependsOn": [
-                "Arduino Editor - Watch Theia Extension",
-                "Arduino Editor - Watch Browser Example"
-            ]
-        }
-    ]
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Arduino Pro IDE - Start Browser App",
+      "type": "shell",
+      "command": "yarn --cwd ./browser-app start",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": true
+      }
+    },
+    {
+      "label": "Arduino Pro IDE - Watch IDE Extension",
+      "type": "shell",
+      "command": "yarn --cwd ./arduino-ide-extension watch",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Arduino Pro IDE - Watch Debugger Extension",
+      "type": "shell",
+      "command": "yarn --cwd ./arduino-debugger-extension watch",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Arduino Pro IDE - Watch Browser App",
+      "type": "shell",
+      "command": "yarn --cwd ./browser-app watch",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Arduino Pro IDE - Watch Electron App",
+      "type": "shell",
+      "command": "yarn --cwd ./electron-app watch",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Arduino Pro IDE - Watch All [Browser]",
+      "type": "shell",
+      "dependsOn": [
+        "Arduino Pro IDE - Watch IDE Extension",
+        "Arduino Pro IDE - Watch Debugger Extension",
+        "Arduino Pro IDE - Watch Browser App"
+      ]
+    },
+    {
+      "label": "Arduino Pro IDE - Watch All [Electron]",
+      "type": "shell",
+      "dependsOn": [
+        "Arduino Pro IDE - Watch IDE Extension",
+        "Arduino Pro IDE - Watch Debugger Extension",
+        "Arduino Pro IDE - Watch Electron App"
+      ]
+    }
+  ]
 }

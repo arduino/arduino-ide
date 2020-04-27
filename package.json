@@ -1,27 +1,36 @@
 {
   "name": "arduino-editor",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Arduino Pro IDE",
-  "main": "index.js",
   "repository": "https://github.com/bcmi-labs/arduino-editor.git",
   "author": "Arduino SA",
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "lerna": "^3.13.3"
+    "@theia/cli": "next",
+    "lerna": "^3.13.3",
+    "rimraf": "^2.6.1",
+    "tslint": "^5.5.0",
+    "typescript": "3.5.1"
   },
   "scripts": {
-    "prepare": "lerna run prepare",
+    "prepare": "lerna run prepare && yarn test && yarn download:plugins",
     "rebuild:browser": "theia rebuild:browser",
-    "rebuild:electron": "theia rebuild:electron",
+    "rebuild:electron": "theia rebuild:electron --modules \"@theia/node-pty\" nsfw native-keymap find-git-repositories grpc",
     "start": "yarn --cwd ./browser-app start",
     "watch": "lerna run watch --parallel",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "download:plugins": "theia download:plugins"
   },
   "workspaces": [
     "arduino-ide-extension",
     "arduino-debugger-extension",
     "electron-app",
     "browser-app"
-  ]
+  ],
+  "theiaPluginsDir": "plugins",
+  "theiaPlugins": {
+    "vscode-yaml": "https://open-vsx.org/api/redhat/vscode-yaml/0.7.2/file/redhat.vscode-yaml-0.7.2.vsix",
+    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.39.1/file/vscode.cpp-1.39.1.vsix"
+  }
 }

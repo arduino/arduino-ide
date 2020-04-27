@@ -4,7 +4,7 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { MonitorService, MonitorConfig, MonitorError, Status, MonitorReadEvent } from '../../common/protocol/monitor-service';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
-import { Port, Board, BoardsService, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
+import { Port, Board, BoardsService, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
@@ -110,12 +110,12 @@ export class MonitorConnection {
             }
         });
         this.boardsServiceClient.onBoardsConfigChanged(this.handleBoardConfigChange.bind(this));
-        this.boardsServiceClient.onBoardsChanged(event => {
+        this.boardsServiceClient.onAttachedBoardsChanged(event => {
             if (this.autoConnect && this.connected) {
                 const { boardsConfig } = this.boardsServiceClient;
                 if (this.boardsServiceClient.canUploadTo(boardsConfig, { silent: false })) {
                     const { attached } = AttachedBoardsChangeEvent.diff(event);
-                    if (attached.boards.some(board => AttachedSerialBoard.is(board) && BoardsConfig.Config.sameAs(boardsConfig, board))) {
+                    if (attached.boards.some(board => !!board.port && BoardsConfig.Config.sameAs(boardsConfig, board))) {
                         const { selectedBoard: board, selectedPort: port } = boardsConfig;
                         const { baudRate } = this.monitorModel;
                         this.disconnect()
@@ -225,7 +225,7 @@ export class MonitorConnection {
             if (this.boardsServiceClient.canUploadTo(boardsConfig, { silent: false })) {
                 // Instead of calling `getAttachedBoards` and filtering for `AttachedSerialBoard` we have to check the available ports.
                 // The connected board might be unknown. See: https://github.com/arduino/arduino-pro-ide/issues/127#issuecomment-563251881
-                this.boardsService.getAvailablePorts().then(({ ports }) => {
+                this.boardsService.getAvailablePorts().then(ports => {
                     if (ports.some(port => Port.equals(port, boardsConfig.selectedPort))) {
                         new Promise<void>(resolve => {
                             // First, disconnect if connected.

@@ -2,6 +2,8 @@ import { Command } from '@theia/core/lib/common/command';
 
 export namespace ArduinoCommands {
 
+    const category = 'Arduino';
+
     export const VERIFY: Command = {
         id: 'arduino-verify',
         label: 'Verify Sketch'
@@ -24,8 +26,9 @@ export namespace ArduinoCommands {
 
     export const SHOW_OPEN_CONTEXT_MENU: Command = {
         id: 'arduino-show-open-context-menu',
-        label: 'Open Sketch'
-    }
+        label: 'Open Sketch',
+        category
+    };
 
     export const OPEN_FILE_NAVIGATOR: Command = {
         id: 'arduino-open-file-navigator'
@@ -40,19 +43,26 @@ export namespace ArduinoCommands {
     }
 
     export const NEW_SKETCH: Command = {
-        id: "arduino-new-sketch",
+        id: 'arduino-new-sketch',
         label: 'New Sketch',
-        category: 'File'
+        category
     }
 
     export const OPEN_BOARDS_DIALOG: Command = {
-        id: "arduino-open-boards-dialog"
+        id: 'arduino-open-boards-dialog'
     }
 
     export const TOGGLE_ADVANCED_MODE: Command = {
-        id: "arduino-toggle-advanced-mode"
+        id: 'arduino-toggle-advanced-mode'
     }
     export const TOGGLE_ADVANCED_MODE_TOOLBAR: Command = {
         id: "arduino-toggle-advanced-mode-toolbar"
     }
+
+    export const OPEN_CLI_CONFIG: Command = {
+        id: 'arduino-open-cli-config',
+        label: 'Open CLI Configuration',
+        category
+    };
+
 }

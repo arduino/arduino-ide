@@ -97,7 +97,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
     margin-left: auto;
 }
 
-#select-board-dialog .selectBoardContainer .body .list .item .detail {
+#select-board-dialog .selectBoardContainer .body .list .item .details {
     font-size: var(--theia-ui-font-size1);
     opacity: var(--theia-mod-disabled-opacity);
     width: 155px; /* used heuristics for the calculation */
@@ -166,6 +166,13 @@ button.theia-button.main {
     width: 10px;
     height: 10px;
     color: red;
+    margin: 0 5px;
+}
+
+.arduino-boards-toolbar-item-container .arduino-boards-toolbar-item .inner-container .guessed {
+    width: 10px;
+    height: 10px;
+    color: var(--theia-warningBackground);
     margin: 0 5px;
 }
 

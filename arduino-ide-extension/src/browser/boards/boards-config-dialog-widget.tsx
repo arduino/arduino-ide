@@ -5,6 +5,8 @@ import { ReactWidget, Message } from '@theia/core/lib/browser';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { CoreServiceClientImpl } from '../core-service-client-impl';
+import { ArduinoDaemonClientImpl } from '../arduino-daemon-client-impl';
 
 @injectable()
 export class BoardsConfigDialogWidget extends ReactWidget {
@@ -14,6 +16,12 @@ export class BoardsConfigDialogWidget extends ReactWidget {
 
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClient: BoardsServiceClientImpl;
+
+    @inject(CoreServiceClientImpl)
+    protected readonly coreServiceClient: CoreServiceClientImpl;
+
+    @inject(ArduinoDaemonClientImpl)
+    protected readonly daemonClient: ArduinoDaemonClientImpl;
 
     protected readonly onBoardConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
     readonly onBoardConfigChanged = this.onBoardConfigChangedEmitter.event;
@@ -38,6 +46,8 @@ export class BoardsConfigDialogWidget extends ReactWidget {
             <BoardsConfig
                 boardsService={this.boardsService}
                 boardsServiceClient={this.boardsServiceClient}
+                coreServiceClient={this.coreServiceClient}
+                daemonClient={this.daemonClient}
                 onConfigChange={this.fireConfigChanged}
                 onFocusNodeSet={this.setFocusNode} />
         </div>;
@@ -50,6 +60,5 @@ export class BoardsConfigDialogWidget extends ReactWidget {
         }
         (this.focusNode || this.node).focus();
     }
-
 
 }

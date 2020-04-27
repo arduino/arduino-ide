@@ -8,10 +8,12 @@ build/
 src-gen/
 *webpack.config.js
 .DS_Store
-/workspace/static
-.DS_Store
 # switching from `electron` to `browser` in dev mode.
 .browser_modules
-# LS logs
-inols*.log
-yarn-error.log
+yarn*.log
+# For the VS Code extensions used by Theia.
+plugins
+# generated JS/TS for the gRPC API
+arduino-ide-extension/src/node/cli-protocol
+# the config files for the CLI
+arduino-ide-extension/data/cli/config

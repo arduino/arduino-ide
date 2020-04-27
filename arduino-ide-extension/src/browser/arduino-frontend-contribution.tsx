@@ -5,10 +5,8 @@ import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry, Command, CommandHandler } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService } from '../common/protocol/boards-service';
+import { BoardsService, BoardsServiceClient, CoreService, Sketch, SketchesService, ToolOutputServiceClient } from '../common/protocol';
 import { ArduinoCommands } from './arduino-commands';
-import { CoreService } from '../common/protocol/core-service';
-import { WorkspaceServiceExt } from './workspace-service-ext';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
@@ -16,12 +14,10 @@ import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
     ContextMenuRenderer, Widget, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
-    FrontendApplication, KeybindingContribution, KeybindingRegistry
+    FrontendApplication, KeybindingContribution, KeybindingRegistry, OpenerService, open
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
-import { Sketch, SketchesService } from '../common/protocol/sketches-service';
-import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
 import { FileSystemCommands } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/file-download-command-contribution';
@@ -44,6 +40,10 @@ import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-co
 import { EditorMode } from './editor-mode';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
+import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
+import { ConfigService } from '../common/protocol/config-service';
+import { BoardsConfigStore } from './boards/boards-config-store';
+import { MainMenuManager } from './menu/main-menu-manager';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -70,14 +70,15 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(CoreService)
     protected readonly coreService: CoreService;
 
-    @inject(WorkspaceServiceExt)
-    protected readonly workspaceServiceExt: WorkspaceServiceExt;
-
     @inject(ToolOutputServiceClient)
     protected readonly toolOutputServiceClient: ToolOutputServiceClient;
 
     @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
+
+    // Unused but do not remove it. It's required by DI, otherwise `init` method is not called.
+    @inject(BoardsServiceClient)
+    protected readonly boardsServiceClient: BoardsServiceClient;
 
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
@@ -136,29 +137,36 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
 
+    @inject(ArduinoDaemon)
+    protected readonly daemon: ArduinoDaemon;
+
+    @inject(OpenerService)
+    protected readonly openerService: OpenerService;
+
+    @inject(ConfigService)
+    protected readonly configService: ConfigService;
+
+    @inject(BoardsConfigStore)
+    protected readonly boardsConfigStore: BoardsConfigStore;
+
+    @inject(MainMenuManager)
+    protected readonly mainMenuManager: MainMenuManager;
+
     protected application: FrontendApplication;
     protected wsSketchCount: number = 0; // TODO: this does not belong here, does it?
 
     @postConstruct()
     protected async init(): Promise<void> {
-        // This is a hack. Otherwise, the backend services won't bind.
-        await this.workspaceServiceExt.roots();
-
         const updateStatusBar = (config: BoardsConfig.Config) => {
             this.statusBar.setElement('arduino-selected-board', {
                 alignment: StatusBarAlignment.RIGHT,
                 text: BoardsConfig.Config.toString(config)
             });
         }
-        this.boardsServiceClient.onBoardsConfigChanged(updateStatusBar);
-        updateStatusBar(this.boardsServiceClient.boardsConfig);
+        this.boardsServiceClientImpl.onBoardsConfigChanged(updateStatusBar);
+        updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
 
         this.registerSketchesInMenu(this.menuRegistry);
-
-        Promise.all([
-            this.boardsService.getAttachedBoards(),
-            this.boardsService.getAvailablePorts()
-        ]).then(([{ boards }, { ports }]) => this.boardsServiceClient.tryReconnect(boards, ports));
     }
 
     onStart(app: FrontendApplication): void {
@@ -206,8 +214,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             render: () => <BoardsToolBarItem
                 key='boardsToolbarItem'
                 commands={this.commandRegistry}
-                boardsServiceClient={this.boardsServiceClient}
-                boardService={this.boardsService} />,
+                boardsServiceClient={this.boardsServiceClientImpl} />,
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             priority: 2
         });
@@ -272,10 +279,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG, {
-            execute: () => {
-                this.editorMode.toggleCompileForDebug();
-                this.editorMode.menuContentChanged.fire();
-            },
+            execute: () => this.editorMode.toggleCompileForDebug(),
             isToggled: () => this.editorMode.compileForDebug
         });
 
@@ -305,13 +309,11 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
 
         registry.registerCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR, {
-            isEnabled: () => true,
             execute: () => this.doOpenFile()
         });
 
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
-            isEnabled: () => true,
-            execute: (sketch: Sketch) => {
+            execute: async (sketch: Sketch) => {
                 this.workspaceService.open(new URI(sketch.uri));
             }
         });
@@ -340,11 +342,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }));
 
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
-            isEnabled: () => true,
             execute: async () => {
                 const boardsConfig = await this.boardsConfigDialog.open();
                 if (boardsConfig) {
-                    this.boardsServiceClient.boardsConfig = boardsConfig;
+                    this.boardsServiceClientImpl.boardsConfig = boardsConfig;
                 }
             }
         });
@@ -357,6 +358,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => this.editorMode.proMode,
             execute: () => this.editorMode.toggleProMode()
+        });
+
+        registry.registerCommand(ArduinoCommands.OPEN_CLI_CONFIG, {
+            execute: () => this.configService.getCliConfigFileUri().then(uri => open(this.openerService, new URI(uri)))
         });
     }
 
@@ -372,18 +377,18 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }
 
         try {
-            const { boardsConfig } = this.boardsServiceClient;
+            const { boardsConfig } = this.boardsServiceClientImpl;
             if (!boardsConfig || !boardsConfig.selectedBoard) {
                 throw new Error('No boards selected. Please select a board.');
             }
             if (!boardsConfig.selectedBoard.fqbn) {
-                throw new Error(`No core is installed for ${boardsConfig.selectedBoard.name}. Please install the board.`);
+                throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
-            // Reveal the Output view asynchronously (don't await it)
+            const fqbn = await this.boardsConfigStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
             this.outputContribution.openView({ reveal: true });
             await this.coreService.compile({
-                uri: uri.toString(),
-                board: boardsConfig.selectedBoard,
+                sketchUri: uri.toString(),
+                fqbn,
                 optimizeForDebug: this.editorMode.compileForDebug
             });
         } catch (e) {
@@ -408,7 +413,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }
 
         try {
-            const { boardsConfig } = this.boardsServiceClient;
+            const { boardsConfig } = this.boardsServiceClientImpl;
             if (!boardsConfig || !boardsConfig.selectedBoard) {
                 throw new Error('No boards selected. Please select a board.');
             }
@@ -416,11 +421,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             if (!selectedPort) {
                 throw new Error('No ports selected. Please select a port.');
             }
-            // Reveal the Output view asynchronously (don't await it)
+            if (!boardsConfig.selectedBoard.fqbn) {
+                throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
+            }
             this.outputContribution.openView({ reveal: true });
+            const fqbn = await this.boardsConfigStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
             await this.coreService.upload({
-                uri: uri.toString(),
-                board: boardsConfig.selectedBoard,
+                sketchUri: uri.toString(),
+                fqbn,
                 port: selectedPort.address,
                 optimizeForDebug: this.editorMode.compileForDebug
             });
@@ -494,6 +502,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
         registry.registerMenuAction([...CommonMenus.FILE, '0_new_sketch'], {
             commandId: ArduinoCommands.NEW_SKETCH.id
+        });
+
+        registry.registerMenuAction([...CommonMenus.FILE_SETTINGS_SUBMENU, '3_settings_cli'], {
+            commandId: ArduinoCommands.OPEN_CLI_CONFIG.id
         });
     }
 

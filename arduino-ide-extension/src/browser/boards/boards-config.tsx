@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { DisposableCollection } from '@theia/core';
-import { BoardsService, Board, Port, AttachedSerialBoard, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
+import { BoardsService, Board, Port, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { CoreServiceClientImpl } from '../core-service-client-impl';
+import { ArduinoDaemonClientImpl } from '../arduino-daemon-client-impl';
 
 export namespace BoardsConfig {
 
@@ -13,6 +15,8 @@ export namespace BoardsConfig {
     export interface Props {
         readonly boardsService: BoardsService;
         readonly boardsServiceClient: BoardsServiceClientImpl;
+        readonly coreServiceClient: CoreServiceClientImpl;
+        readonly daemonClient: ArduinoDaemonClientImpl;
         readonly onConfigChange: (config: Config) => void;
         readonly onFocusNodeSet: (element: HTMLElement | undefined) => void;
     }
@@ -21,6 +25,7 @@ export namespace BoardsConfig {
         searchResults: Array<Board & { packageName: string }>;
         knownPorts: Port[];
         showAllPorts: boolean;
+        query: string;
     }
 
 }
@@ -31,11 +36,11 @@ export abstract class Item<T> extends React.Component<{
     selected: boolean,
     onClick: (item: T) => void,
     missing?: boolean,
-    detail?: string
+    details?: string
 }> {
 
     render(): React.ReactNode {
-        const { selected, label, missing, detail } = this.props;
+        const { selected, label, missing, details } = this.props;
         const classNames = ['item'];
         if (selected) {
             classNames.push('selected');
@@ -43,11 +48,11 @@ export abstract class Item<T> extends React.Component<{
         if (missing === true) {
             classNames.push('missing')
         }
-        return <div onClick={this.onClick} className={classNames.join(' ')} title={`${label}${!detail ? '' : detail}`}>
+        return <div onClick={this.onClick} className={classNames.join(' ')} title={`${label}${!details ? '' : details}`}>
             <div className='label'>
                 {label}
             </div>
-            {!detail ? '' : <div className='detail'>{detail}</div>}
+            {!details ? '' : <div className='details'>{details}</div>}
             {!selected ? '' : <div className='selected-icon'><i className='fa fa-check' /></div>}
         </div>;
     }
@@ -70,19 +75,25 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             searchResults: [],
             knownPorts: [],
             showAllPorts: false,
+            query: '',
             ...boardsConfig
         }
     }
 
     componentDidMount() {
         this.updateBoards();
-        this.props.boardsService.getAvailablePorts().then(({ ports }) => this.updatePorts(ports));
-        const { boardsServiceClient: client } = this.props;
+        this.props.boardsService.getAvailablePorts().then(ports => this.updatePorts(ports));
+        const { boardsServiceClient, coreServiceClient, daemonClient } = this.props;
         this.toDispose.pushAll([
-            client.onBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
-            client.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
+            boardsServiceClient.onAttachedBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
+            boardsServiceClient.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
                 this.setState({ selectedBoard, selectedPort }, () => this.fireConfigChanged());
-            })
+            }),
+            boardsServiceClient.onBoardsPackageInstalled(() => this.updateBoards(this.state.query)),
+            boardsServiceClient.onBoardsPackageUninstalled(() => this.updateBoards(this.state.query)),
+            coreServiceClient.onIndexUpdated(() => this.updateBoards(this.state.query)),
+            daemonClient.onDaemonStarted(() => this.updateBoards(this.state.query)),
+            daemonClient.onDaemonStopped(() => this.setState({ searchResults: [] }))
         ]);
     }
 
@@ -100,11 +111,12 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             ? eventOrQuery
             : eventOrQuery.target.value.toLowerCase()
         ).trim();
-        this.queryBoards({ query }).then(({ searchResults }) => this.setState({ searchResults }));
+        this.setState({ query });
+        this.queryBoards({ query }).then(searchResults => this.setState({ searchResults }));
     }
 
     protected updatePorts = (ports: Port[] = [], removedPorts: Port[] = []) => {
-        this.queryPorts(Promise.resolve({ ports })).then(({ knownPorts }) => {
+        this.queryPorts(Promise.resolve(ports)).then(({ knownPorts }) => {
             let { selectedPort } = this.state;
             // If the currently selected port is not available anymore, unset the selected port.
             if (removedPorts.some(port => Port.equals(port, selectedPort))) {
@@ -114,35 +126,17 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         });
     }
 
-    protected queryBoards = (options: { query?: string } = {}): Promise<{ searchResults: Array<Board & { packageName: string }> }> => {
-        const { boardsService } = this.props;
-        const query = (options.query || '').toLocaleLowerCase();
-        return new Promise<{ searchResults: Array<Board & { packageName: string }> }>(resolve => {
-            boardsService.search(options)
-                .then(({ items }) => items
-                    .map(item => item.boards.map(board => ({ ...board, packageName: item.name })))
-                    .reduce((acc, curr) => acc.concat(curr), [])
-                    .filter(board => board.name.toLocaleLowerCase().indexOf(query) !== -1)
-                    .sort(Board.compare))
-                .then(searchResults => resolve({ searchResults }));
-        });
+    protected queryBoards = (options: { query?: string } = {}): Promise<Array<Board & { packageName: string }>> => {
+        return this.props.boardsService.searchBoards(options);
     }
 
-    protected get attachedBoards(): Promise<{ boards: Board[] }> {
-        return this.props.boardsService.getAttachedBoards();
-    }
-
-    protected get availablePorts(): Promise<{ ports: Port[] }> {
+    protected get availablePorts(): Promise<Port[]> {
         return this.props.boardsService.getAvailablePorts();
     }
 
-    protected queryPorts = (availablePorts: Promise<{ ports: Port[] }> = this.availablePorts) => {
-        return new Promise<{ knownPorts: Port[] }>(resolve => {
-            availablePorts
-                .then(({ ports }) => ports
-                    .sort(Port.compare))
-                .then(knownPorts => resolve({ knownPorts }));
-        });
+    protected queryPorts = async (availablePorts: Promise<Port[]> = this.availablePorts) => {
+        const ports = await availablePorts;
+        return { knownPorts: ports.sort(Port.compare) };
     }
 
     protected toggleFilterPorts = () => {
@@ -184,41 +178,20 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
 
     protected renderBoards(): React.ReactNode {
         const { selectedBoard, searchResults } = this.state;
-        // Board names are not unique. We show the corresponding core name as a detail.
-        // https://github.com/arduino/arduino-cli/pull/294#issuecomment-513764948
-        const distinctBoardNames = new Map<string, number>();
-        for (const { name } of searchResults) {
-            const counter = distinctBoardNames.get(name) || 0;
-            distinctBoardNames.set(name, counter + 1);
-        }
-
-        // Due to the non-unique board names, we have to check the package name as well.
-        const selected = (board: Board & { packageName: string }) => {
-            if (!!selectedBoard) {
-                if (Board.equals(board, selectedBoard)) {
-                    if ('packageName' in selectedBoard) {
-                        return board.packageName === (selectedBoard as any).packageName;
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-
         return <React.Fragment>
             <div className='search'>
                 <input type='search' className='theia-input' placeholder='SEARCH BOARD' onChange={this.updateBoards} ref={this.focusNodeSet} />
                 <i className='fa fa-search'></i>
             </div>
             <div className='boards list'>
-                {this.state.searchResults.map(board => <Item<Board & { packageName: string }>
+                {Board.decorateBoards(selectedBoard, searchResults).map(board => <Item<Board & { packageName: string }>
                     key={`${board.name}-${board.packageName}`}
                     item={board}
                     label={board.name}
-                    detail={(distinctBoardNames.get(board.name) || 0) > 1 ? ` - ${board.packageName}` : undefined}
-                    selected={selected(board)}
+                    details={board.details}
+                    selected={board.selected}
                     onClick={this.selectBoard}
-                    missing={!Board.installed(board)}
+                    missing={board.missing}
                 />)}
             </div>
         </React.Fragment>;
@@ -266,9 +239,9 @@ export namespace BoardsConfig {
 
     export namespace Config {
 
-        export function sameAs(config: Config, other: Config | AttachedSerialBoard): boolean {
+        export function sameAs(config: Config, other: Config | Board): boolean {
             const { selectedBoard, selectedPort } = config;
-            if (AttachedSerialBoard.is(other)) {
+            if (Board.is(other)) {
                 return !!selectedBoard
                     && Board.equals(other, selectedBoard)
                     && Port.sameAs(selectedPort, other.port);

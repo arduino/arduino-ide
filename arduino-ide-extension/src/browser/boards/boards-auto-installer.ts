@@ -35,9 +35,9 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
     protected ensureCoreExists(config: BoardsConfig.Config): void {
         const { selectedBoard } = config;
         if (selectedBoard) {
-            this.boardsService.search({}).then(({ items }) => {
-                const candidates = items
-                    .filter(item => item.boards.some(board => Board.sameAs(board, selectedBoard)))
+            this.boardsService.search({}).then(packages => {
+                const candidates = packages
+                    .filter(pkg => pkg.boards.some(board => Board.sameAs(board, selectedBoard)))
                     .filter(({ installable, installedVersion }) => installable && !installedVersion);
                 for (const candidate of candidates) {
                     // tslint:disable-next-line:max-line-length

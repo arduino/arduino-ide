@@ -1,0 +1,117 @@
+{
+  "$id": "http://arduino.cc/arduino-cli.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Arduino CLI Configuration",
+  "properties": {
+    "board_manager": {
+      "type": "object",
+      "description": "Board Manager Configuration",
+      "properties": {
+        "additional_urls": {
+          "type": "array",
+          "description": "If your board requires 3rd party core packages to work, you can list the URLs to additional package indexes in the Arduino CLI configuration file.",
+          "items": {
+            "type": "string",
+            "description": "URL pointing to the 3rd party core package index JSON.",
+            "pattern": "^(.*)$"
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "daemon": {
+      "type": "object",
+      "description": "CLI Daemon Configuration",
+      "properties": {
+        "port": {
+          "type": [
+            "string",
+            "number"
+          ],
+          "description": "The CLI daemon port where the gRPC clients can connect to.",
+          "pattern": "^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "directories": {
+      "type": "object",
+      "description": "Directories Configuration",
+      "properties": {
+        "data": {
+          "type": "string",
+          "description": "Path to the the data folder where core packages will be stored.",
+          "pattern": "^(.*)$"
+        },
+        "downloads": {
+          "type": "string",
+          "description": "Path to the staging folder.",
+          "pattern": "^(.*)$"
+        },
+        "user": {
+          "type": "string",
+          "description": "Path to the sketchbooks.",
+          "pattern": "^(.*)$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "logging": {
+      "type": "object",
+      "description": "Logging Configuration",
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Path to the file where logs will be written.",
+          "pattern": "^(.*)$"
+        },
+        "format": {
+          "type": "string",
+          "description": "The output format for the logs, can be 'text' or 'json'",
+          "enum": [
+            "text",
+            "json"
+          ]
+        },
+        "level": {
+          "type": "string",
+          "description": "Messages with this level and above will be logged.",
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warning",
+            "error",
+            "fatal",
+            "panic"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "telemetry": {
+      "type": "object",
+      "description": "Telemetry Configuration",
+      "properties": {
+        "addr": {
+          "type": "string",
+          "description": "Address to the telemetry endpoint. Must be a full address with host, address, and port. For instance, ':9090' represents 'localhost:9090'",
+          "pattern": "^(.*)$"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the telemetry is enabled or not."
+        },
+        "additionalProperties": false
+      },
+      "additionalProperties": false
+    }
+  },
+  "// TODOs": [
+    "additionalProperties should be true. See the new telemetry entry"
+  ],
+  "additionalProperties": false
+}

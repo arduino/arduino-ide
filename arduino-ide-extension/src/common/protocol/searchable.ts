@@ -1,5 +1,5 @@
 export interface Searchable<T> {
-    search(options: Searchable.Options): Promise<{ items: T[] }>;
+    search(options: Searchable.Options): Promise<T[]>;
 }
 export namespace Searchable {
     export interface Options {

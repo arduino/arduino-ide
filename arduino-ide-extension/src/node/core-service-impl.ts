@@ -1,6 +1,6 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
-import { CoreService } from '../common/protocol/core-service';
+import { CoreService, CoreServiceClient } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
@@ -23,33 +23,40 @@ export class CoreServiceImpl implements CoreService {
     @inject(ToolOutputServiceServer)
     protected readonly toolOutputService: ToolOutputServiceServer;
 
+    protected client: CoreServiceClient | undefined;
+
+    @postConstruct()
+    protected init(): void {
+        this.coreClientProvider.onIndexUpdated(() => {
+            if (this.client) {
+                this.client.notifyIndexUpdated();
+            }
+        })
+    }
+
     async compile(options: CoreService.Compile.Options): Promise<void> {
         console.log('compile', options);
-        const { uri } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
+        const { sketchUri, fqbn } = options;
+        const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
         if (!sketchFilePath) {
-            throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
+            throw new Error(`Cannot resolve filesystem path for URI: ${sketchUri}.`);
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-        const coreClient = await this.coreClientProvider.getClient(uri);
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
         const { client, instance } = coreClient;
 
-        const currentBoard = options.board;
-        if (!currentBoard) {
-            throw new Error("no board selected");
-        }
-        if (!currentBoard.fqbn) {
-            throw new Error(`selected board (${currentBoard.name}) has no FQBN`);
+        if (!fqbn) {
+            throw new Error('The selected board has no FQBN.');
         }
 
         const compilerReq = new CompileReq();
         compilerReq.setInstance(instance);
         compilerReq.setSketchpath(sketchpath);
-        compilerReq.setFqbn(currentBoard.fqbn!);
+        compilerReq.setFqbn(fqbn);
         compilerReq.setOptimizefordebug(options.optimizeForDebug);
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(true);
@@ -73,34 +80,30 @@ export class CoreServiceImpl implements CoreService {
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
-        await this.compile({ uri: options.uri, board: options.board, optimizeForDebug: options.optimizeForDebug });
-
+        await this.compile(options);
         console.log('upload', options);
-        const { uri } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(options.uri);
+        const { sketchUri, fqbn } = options;
+        const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
         if (!sketchFilePath) {
-            throw new Error(`Cannot resolve filesystem path for URI: ${uri}.`);
+            throw new Error(`Cannot resolve filesystem path for URI: ${sketchUri}.`);
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-        const currentBoard = options.board;
-        if (!currentBoard) {
-            throw new Error("no board selected");
-        }
-        if (!currentBoard.fqbn) {
-            throw new Error(`selected board (${currentBoard.name}) has no FQBN`);
-        }
 
-        const coreClient = await this.coreClientProvider.getClient(uri);
+        const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
         const { client, instance } = coreClient;
 
+        if (!fqbn) {
+            throw new Error('The selected board has no FQBN.');
+        }
+
         const req = new UploadReq();
         req.setInstance(instance);
         req.setSketchPath(sketchpath);
-        req.setFqbn(currentBoard.fqbn);
+        req.setFqbn(fqbn);
         req.setPort(options.port);
         const result = client.upload(req);
 
@@ -118,6 +121,14 @@ export class CoreServiceImpl implements CoreService {
             this.toolOutputService.publishNewOutput("upload error", `Upload error: ${e}\n`);
             throw e;
         }
+    }
+
+    setClient(client: CoreServiceClient | undefined): void {
+        this.client = client;
+    }
+
+    dispose(): void {
+        this.client = undefined;
     }
 
 }

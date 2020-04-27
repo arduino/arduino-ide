@@ -1,4 +1,4 @@
-import { ClientDuplexStream } from '@grpc/grpc-js';
+import { ClientDuplexStream } from 'grpc';
 import { TextDecoder, TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
@@ -65,7 +65,10 @@ export class MonitorServiceImpl implements MonitorService {
         if (this.connection) {
             return Status.ALREADY_CONNECTED;
         }
-        const client = await this.monitorClientProvider.client;
+        const client = await this.monitorClientProvider.client();
+        if (!client) {
+            return Status.NOT_CONNECTED;
+        }
         const duplex = client.streamingOpen();
         this.connection = { duplex, config };
 
