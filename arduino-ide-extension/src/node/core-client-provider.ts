@@ -38,14 +38,12 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         const client = new ArduinoCoreClient(`localhost:${port}`, grpc.credentials.createInsecure(), this.channelOptions);
         const initReq = new InitReq();
         initReq.setLibraryManagerOnly(false);
-        const initResp = await new Promise<InitResp>(resolve => {
+        const initResp = await new Promise<InitResp>((resolve, reject) => {
             let resp: InitResp | undefined = undefined;
             const stream = client.init(initReq);
             stream.on('data', (data: InitResp) => resp = data);
             stream.on('end', () => resolve(resp));
-            stream.on('error', err => {
-                console.log('init error', err)
-            });
+            stream.on('error', err => reject(err));
         });
 
         const instance = initResp.getInstance();
