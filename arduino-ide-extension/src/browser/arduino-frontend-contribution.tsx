@@ -157,6 +157,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @postConstruct()
     protected async init(): Promise<void> {
+        if (!window.navigator.onLine) {
+            // tslint:disable-next-line:max-line-length
+            this.messageService.warn('You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.');
+        }
         const updateStatusBar = (config: BoardsConfig.Config) => {
             this.statusBar.setElement('arduino-selected-board', {
                 alignment: StatusBarAlignment.RIGHT,
