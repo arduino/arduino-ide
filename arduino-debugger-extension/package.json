@@ -1,6 +1,6 @@
 {
   "name": "arduino-debugger-extension",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "An extension for debugging Arduino programs",
   "license": "MIT",
   "engines": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@theia/debug": "next",
-    "arduino-ide-extension": "0.0.6",
+    "arduino-ide-extension": "0.0.7",
     "cdt-gdb-adapter": "^0.0.14",
     "vscode-debugadapter": "^1.26.0",
     "vscode-debugprotocol": "^1.26.0"
