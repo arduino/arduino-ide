@@ -9,11 +9,14 @@
     const isCI = require('is-ci');
     shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1'; // Do not run the ffmpeg validation for the packager.
     shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI
+    const template = require('./config').generateTemplate();
     const utils = require('./utils');
     const merge = require('deepmerge');
-    const { version, release } = utils.versionInfo();
+    const { isRelease, isElectronPublish } = utils;
+    const { version } = template;
+    const { productName } = template.build;
 
-    echo(`📦  Building ${release ? 'release ' : ''}version '${version}'...`);
+    echo(`📦  Building ${isRelease ? 'release ' : ''}version '${version}'...`);
 
     const workingCopy = 'working-copy';
 
@@ -40,17 +43,47 @@
     // Clean up the `./electron/build` folder.
     shell.exec(`git -C ${path('..', 'build')} clean -ffxdq`, { async: false });
 
+    const extensions = [
+        'arduino-ide-extension',
+        'arduino-debugger-extension',
+    ];
+    const allDependencies = [
+        ...extensions,
+        'electron-app'
+    ]
+
     //----------------------------------------------------------------------------------------------+
     // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
     //----------------------------------------------------------------------------------------------+
     mkdir('-p', path('..', workingCopy));
-    for (const name of ['arduino-ide-extension', 'arduino-debugger-extension', 'electron-app', 'yarn.lock', 'package.json', 'lerna.json']) {
+    for (const name of [...allDependencies, 'yarn.lock', 'package.json', 'lerna.json']) {
         cp('-rf', path(rootPath, name), path('..', workingCopy));
     }
 
-    //---------------------------------------------+
-    // No need to build the `browser-app` example. |
-    //---------------------------------------------+
+    //----------------------------------------------+
+    // Sanity check: all versions must be the same. |
+    //----------------------------------------------+
+    verifyVersions(allDependencies);
+    //----------------------------------------------------------------------+
+    // Use the nightly patch version if not a release but requires publish. |
+    //----------------------------------------------------------------------+
+    if (!isRelease) {
+        for (const dependency of allDependencies) {
+            const pkg = require(`../working-copy/${dependency}/package.json`);
+            pkg.version = version;
+            for (const dependency in pkg.dependencies) {
+                if (allDependencies.indexOf(dependency) !== -1) {
+                    pkg.dependencies[dependency] = version;
+                }
+            }
+            fs.writeFileSync(path('..', workingCopy, dependency, 'package.json'), JSON.stringify(pkg, null, 2));
+        }
+    }
+    verifyVersions(allDependencies);
+
+    //-------------------------------------------------------------+
+    // Save some time: no need to build the `browser-app` example. |
+    //-------------------------------------------------------------+
     //@ts-ignore
     let pkg = require('../working-copy/package.json');
     const workspaces = pkg.workspaces;
@@ -68,7 +101,7 @@
     //-------------------------------------------------------------------------------------------------+
     // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
     //-------------------------------------------------------------------------------------------------+
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`, 'Building the Arduino Pro IDE extensions');
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`, `Building the ${productName} application`);
     // Collect all unused dependencies by the backend. We have to remove them from the electron app.
     // The `bundle.js` already contains everything we need for the frontend.
     // We have to do it before changing the dependencies to `local-path`.
@@ -77,32 +110,45 @@
     //-------------------------------------------------------------------------------------------------------------+
     // Change the regular NPM dependencies to `local-paths`, so that we can build them without any NPM registries. |
     //-------------------------------------------------------------------------------------------------------------+
-    // @ts-ignore
-    pkg = require('../working-copy/arduino-debugger-extension/package.json');
-    pkg.dependencies['arduino-ide-extension'] = 'file:../arduino-ide-extension';
-    fs.writeFileSync(path('..', workingCopy, 'arduino-debugger-extension', 'package.json'), JSON.stringify(pkg, null, 2));
+    for (const extension of extensions) {
+        if (extension !== 'arduino-ide-extension') { // Do not unlink self.
+            // @ts-ignore
+            pkg = require(`../working-copy/${extension}/package.json`);
+            // @ts-ignore
+            pkg.dependencies['arduino-ide-extension'] = 'file:../arduino-ide-extension';
+            fs.writeFileSync(path('..', workingCopy, extension, 'package.json'), JSON.stringify(pkg, null, 2));
+        }
+    }
 
     //------------------------------------------------------------------------------------+
     // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
     //------------------------------------------------------------------------------------+
     // @ts-ignore
     pkg = require('../working-copy/electron-app/package.json');
-    // @ts-ignore
-    const template = require('../build/template-package.json');
     template.build.files = [...template.build.files, ...unusedDependencies.map(name => `!node_modules/${name}`)];
-    pkg.dependencies = { ...pkg.dependencies, ...template.dependencies };
+
+    const dependencies = {};
+    for (const extension of extensions) {
+        dependencies[extension] = `file:../working-copy/${extension}`;
+    }
+    // @ts-ignore
+    pkg.dependencies = { ...pkg.dependencies, ...dependencies };
     pkg.devDependencies = { ...pkg.devDependencies, ...template.devDependencies };
     // Deep-merging the Theia application configuration. We enable the electron window reload in dev mode but not for the final product. (arduino/arduino-pro-ide#187)
+    // @ts-ignore
     const theia = merge((pkg.theia || {}), (template.theia || {}));
-    fs.writeFileSync(path('..', 'build', 'package.json'), JSON.stringify({
+    const content = {
         ...pkg,
         ...template,
         theia,
+        // @ts-ignore
         dependencies: pkg.dependencies,
         devDependencies: pkg.devDependencies
-    }, null, 2));
+    };
+    const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
+    fs.writeFileSync(path('..', 'build', 'package.json'), JSON.stringify(merge(content, template, { arrayMerge: overwriteMerge }), null, 2));
 
-    echo(`📜  Effective 'package.json' for the Arduino Pro IDE application is:
+    echo(`📜  Effective 'package.json' for the ${productName} application is:
 -----------------------
 ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
 -----------------------
@@ -123,7 +169,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     // Install all private and public dependencies for the electron application and build Theia. |
     //-------------------------------------------------------------------------------------------+
     exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')}`, 'Installing dependencies');
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${release ? ':release' : ''}`, 'Building the Arduino Pro IDE application');
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''}`, `Building the ${productName} application`);
 
     //------------------------------------------------------------------------------+
     // Create a throw away dotenv file which we use to feed the builder with input. |
@@ -139,7 +185,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-----------------------------------+
     // Package the electron application. |
     //-----------------------------------+
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`, `Packaging your Arduino Pro IDE application`);
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`, `Packaging your ${productName} application`);
 
     //-----------------------------------------------------------------------------------------------------+
     // Copy to another folder. Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |
@@ -224,15 +270,15 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
         const filesToCopy = [];
         switch (platform) {
             case 'linux': {
-                filesToCopy.push(...glob.sync('**/Arduino Pro IDE*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             case 'win32': {
-                filesToCopy.push(...glob.sync('**/Arduino Pro IDE*.zip', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.zip', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             case 'darwin': {
-                filesToCopy.push(...glob.sync('**/Arduino Pro IDE*.dmg', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{dmg,zip}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             default: {
@@ -261,6 +307,25 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
      */
     function path(...paths) {
         return join(__dirname, ...paths);
+    }
+
+    function verifyVersions(allDependencies, expectedVersion) {
+        const versions = new Set();
+        for (const dependency of allDependencies) {
+            versions.add(require(`../working-copy/${dependency}/package.json`).version);
+        }
+        if (versions.size !== 1) {
+            echo(`Mismatching version configuration. All dependencies must have the same version. Versions were: ${JSON.stringify(Array.from(versions), null, 2)}.`);
+            shell.exit(1);
+            process.exit(1);
+        }
+        if (expectedVersion) {
+            if (!versions.has(expectedVersion)) {
+                echo(`Mismatching version configuration. Expected version was: '${expectedVersion}' actual was: '${Array.from(versions)[0]}'.`);
+                shell.exit(1);
+                process.exit(1);
+            }
+        }
     }
 
 })();

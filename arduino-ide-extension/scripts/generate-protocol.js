@@ -35,7 +35,7 @@
         }
     }
 
-    shell.echo('Generating TS/JS API from:');
+    shell.echo('>>> Generating TS/JS API from:');
     if (shell.exec(`git -C ${repository} rev-parse --abbrev-ref HEAD`).code !== 0) {
         shell.exit(1);
     }
@@ -83,6 +83,6 @@ ${protos.join(' ')}`).code !== 0) {
         shell.exit(1);
     }
 
-    shell.echo('Done.');
+    shell.echo('<<< Generation was successful.');
 
 })();

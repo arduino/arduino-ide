@@ -1,0 +1,89 @@
+name: Arduino Pro IDE
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
+
+env:
+  IS_NIGHTLY: ${{ github.event_name == 'schedule' || github.head_ref == 'gh-actions' }} # TODO: remove OR once PR is merged.
+  IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        config:
+          - os: windows-2016
+          - os: ubuntu-latest
+          - os: turin-macmini # self-hosted macOS
+
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Python 2.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: '2.7'
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+        run: yarn
+
+      - name: Test
+        run: yarn test
+
+      - name: Package
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # https://github.com/Microsoft/vscode/issues/28434#issuecomment-346199674
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+          AC_USERNAME: ${{ secrets.AC_USERNAME }}
+          AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            echo ">>> Detected macOS runner. Updating keychain for the app signing..."
+            echo "${{ secrets.KEYCHAIN }}" | base64 --decode > ~/Library/Keychains/apple-developer.keychain-db
+            security list-keychains -s ~/Library/Keychains/apple-developer.keychain-db
+            security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" ~/Library/Keychains/apple-developer.keychain-db
+            echo "<<< The keychain has been successfully updated."
+          fi
+            yarn --cwd ./electron/packager/
+            yarn --cwd ./electron/packager/ package
+
+      - name: Upload [GitHub Actions]
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}
+          path: electron/build/dist/build-artifacts/
+
+      - name: Upload [S3]
+        if: env.IS_NIGHTLY == 'true'
+        uses: kittaakos/upload-s3-action@v0.0.1
+        with:
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_bucket: ${{ secrets.DOWNLOADS_BUCKET }}
+          source_dir: electron/build/dist/build-artifacts/
+          destination_dir: arduino-pro-ide/nightly/

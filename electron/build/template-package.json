@@ -1,25 +1,23 @@
 {
-  "name": "arduino-pro-ide",
-  "description": "Arduino Pro IDE",
-  "main": "scripts/arduino-pro-ide-electron-main.js",
+  "main": "src-gen/frontend/electron-main.js",
   "author": "Arduino SA",
-  "dependencies": {
-    "arduino-ide-extension": "file:../working-copy/arduino-ide-extension",
-    "arduino-debugger-extension": "file:../working-copy/arduino-debugger-extension"
-  },
   "resolutions": {
     "**/fs-extra": "^4.0.3"
   },
   "devDependencies": {
     "@theia/cli": "next",
-    "electron-builder": "^22.4.1"
+    "cross-env": "^7.0.2",
+    "electron-builder": "^22.4.1",
+    "electron-notarize": "^0.3.0",
+    "is-ci": "^2.0.0",
+    "shelljs": "^0.8.3"
   },
   "scripts": {
-    "build": "yarn download:plugins && theia build --mode development && yarn patch:main",
-    "build:release": "yarn download:plugins && theia build --mode production && yarn patch:main",
-    "package": "electron-builder --publish=never",
-    "download:plugins": "theia download:plugins",
-    "patch:main": "node ./scripts/patch-backend-main ."
+    "build": "yarn download:plugins && theia build --mode development",
+    "build:publish": "yarn download:plugins && theia build --mode production",
+    "package": "cross-env DEBUG=* && electron-builder --publish=never",
+    "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
+    "download:plugins": "theia download:plugins"
   },
   "engines": {
     "node": ">=10.11.0 <12"
@@ -35,7 +33,14 @@
     "target": "electron",
     "frontend": {
       "config": {
+        "applicationName": "Arduino Pro IDE",
         "disallowReloadKeybinding": true
+      }
+    },
+    "backend": {
+      "config": {
+        "singleInstance": true,
+        "configDirName": ".arduinoProIDE"
       }
     }
   },
@@ -49,7 +54,6 @@
     "files": [
       "src-gen",
       "lib",
-      "scripts",
       "!node_modules/**/*.{ts,map}",
       "!node_modules/**/*.spec.js",
       "!node_modules/@theia/**/test/*",
@@ -68,29 +72,23 @@
     "win": {
       "target": [
         "zip"
-      ],
-      "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}"
+      ]
     },
     "mac": {
-      "target": [
-        "dmg"
-      ],
-      "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}.${ext}",
-      "darkModeSupport": true
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist"
     },
     "linux": {
       "target": [
         {
           "target": "zip"
-        },
-        {
-          "target": "AppImage",
-          "arch": "armv7l"
         }
       ],
       "category": "Development",
-      "icon": "resources/icons",
-      "artifactName": "${productName}-${env.ARDUINO_VERSION}-${os}-${arch}.${ext}"
+      "icon": "resources/icons"
     },
     "dmg": {
       "icon": "resources/icon.icns",
@@ -108,11 +106,19 @@
           "type": "file"
         }
       ]
-    }
+    },
+    "afterSign": "scripts/notarize.js",
+    "publish": [
+      {
+        "provider": "s3",
+        "bucket": "arduino-downloads-prod-beagle",
+        "path": "arduino-pro-ide/nightly"
+      }
+    ]
   },
   "theiaPluginsDir": "plugins",
   "theiaPlugins": {
-    "vscode-yaml": "https://open-vsx.org/api/redhat/vscode-yaml/0.7.2/file/redhat.vscode-yaml-0.7.2.vsix",
-    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.39.1/file/vscode.cpp-1.39.1.vsix"
+    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.44.2/file/vscode.cpp-1.44.2.vsix",
+    "vscode-yaml": "https://open-vsx.org/api/redhat/vscode-yaml/0.7.2/file/redhat.vscode-yaml-0.7.2.vsix"
   }
 }
