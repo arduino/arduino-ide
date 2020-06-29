@@ -1,9 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
+import { CommandService } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { EditorMode } from '../editor-mode';
-import { ArduinoFrontendContribution } from '../arduino-frontend-contribution';
+import { ArduinoCommands } from '../arduino-commands';
 
 @injectable()
 export class ArduinoFrontendApplication extends FrontendApplication {
@@ -14,8 +15,8 @@ export class ArduinoFrontendApplication extends FrontendApplication {
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
 
-    @inject(ArduinoFrontendContribution)
-    protected readonly frontendContribution: ArduinoFrontendContribution;
+    @inject(CommandService)
+    protected readonly commandService: CommandService;
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
@@ -30,7 +31,7 @@ export class ArduinoFrontendApplication extends FrontendApplication {
             for (const root of roots) {
                 const exists = await this.fileSystem.exists(root.uri);
                 if (exists) {
-                    await this.frontendContribution.openSketchFiles(root.uri);
+                    await this.commandService.executeCommand(ArduinoCommands.OPEN_SKETCH_FILES.id, root.uri);
                 }
             }
         }

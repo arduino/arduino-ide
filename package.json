@@ -11,7 +11,7 @@
     "lerna": "^3.20.2",
     "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
-    "typescript": "3.5.1"
+    "typescript": "^3.9.2"
   },
   "scripts": {
     "prepare": "lerna run prepare && yarn test && yarn download:plugins",

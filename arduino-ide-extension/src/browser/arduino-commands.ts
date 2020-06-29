@@ -38,6 +38,13 @@ export namespace ArduinoCommands {
         id: 'arduino-open-file'
     }
 
+    /**
+     * Unlike `OPEN_SKETCH`, it opens all files from a sketch folder. (ino, cpp, etc...)
+     */
+    export const OPEN_SKETCH_FILES: Command = {
+        id: 'arduino-open-sketch-files'
+    }
+
     export const SAVE_SKETCH: Command = {
         id: 'arduino-save-file'
     }

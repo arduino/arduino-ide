@@ -322,6 +322,12 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             }
         });
 
+        registry.registerCommand(ArduinoCommands.OPEN_SKETCH_FILES, {
+            execute: async (uri: string) => {
+                this.openSketchFiles(uri);
+            }
+        });
+
         registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: (sketch: Sketch) => {
@@ -548,7 +554,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
     }
 
-    async openSketchFiles(uri: string): Promise<void> {
+    protected async openSketchFiles(uri: string): Promise<void> {
         const uris = await this.sketchService.getSketchFiles(uri);
         for (const uri of uris) {
             await this.editorManager.open(new URI(uri));
