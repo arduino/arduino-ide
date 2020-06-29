@@ -39,9 +39,6 @@
     if (shell.exec(`git -C ${repository} rev-parse --abbrev-ref HEAD`).code !== 0) {
         shell.exit(1);
     }
-    if (shell.exec(`git -C ${repository} rev-parse --short HEAD`).code !== 0) {
-        shell.exit(1);
-    }
 
     const pluginExec = shell.which('grpc_tools_node_protoc_plugin');
     if (!pluginExec || pluginExec.code !== 0) {
