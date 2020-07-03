@@ -1,69 +1,14 @@
 //@ts-check
 
 const fs = require('fs');
-const path = require('path');
-const temp = require('temp');
 const zip = require('7zip-min');
+const temp = require('temp');
+const path = require('path');
+const isCI = require('is-ci');
 const shell = require('shelljs');
+const semver = require('semver');
 const depcheck = require('depcheck');
 const fromFile = require('file-type').fromFile;
-
-/**
- * Returns with the version info for the artifact.
- * If the `RELEASE_TAG` environment variable is set, we us that.
- * Falls back to the commit SHA if the `RELEASE_TAG` is the `$(Release.Tag)` string.
- * Otherwise, we concatenate the version of the extracted from `theia-app/electron-app/package.json`
- * and append the short commit SHA.
- */
-function versionInfo() {
-    if (typeof process.env.RELEASE_TAG === 'undefined' || !process.env.RELEASE_TAG || /* Azure -> */ process.env.RELEASE_TAG === '$(Release.Tag)') {
-        return {
-            version: `${targetVersion()}-${currentCommitish()}`,
-            release: false
-        }
-    } else {
-        return {
-            version: process.env.RELEASE_TAG,
-            release: true
-        }
-    }
-}
-
-/**
- * Returns with the absolute path of the `theia-app/electron-app/`.
- */
-function arduinoExtensionPath() {
-    // TODO: be smarter and locate the extension with Git: `git rev-parse --show-toplevel`.
-    return path.join(__dirname, '..', '..', 'arduino-ide-extension');
-}
-
-/**
- * The version extracted from the `package.json` of the `arduino-ide-extension`. Falls back to `x.x.x`.
- */
-function targetVersion() {
-    return JSON.parse(fs.readFileSync(path.join(arduinoExtensionPath(), 'package.json'), { encoding: 'utf8' })).version || 'x.x.x';
-}
-
-/**
- * Returns with the trimmed result of the `git rev-parse --short HEAD` as the current commitish if `git` is on the `PATH`.
- * Otherwise, it returns with `DEV_BUILD`.
- */
-function currentCommitish() {
-    try {
-        const gitPath = shell.which('git');
-        const error = shell.error();
-        if (error) {
-            throw new Error(error);
-        }
-        const { stderr, stdout } = shell.exec(`"${gitPath}" rev-parse --short HEAD`, { silent: true });
-        if (stderr) {
-            throw new Error(stderr.toString().trim());
-        }
-        return stdout.toString().trim();
-    } catch (e) {
-        return 'DEV_BUILD';
-    }
-}
 
 /**
  * Resolves to an array of `npm` package names that are declared in the `package.json` but **not** used by the project.
@@ -204,4 +149,25 @@ async function isZip(pathToFile) {
     return type && type.ext === 'zip';
 }
 
-module.exports = { versionInfo, collectUnusedDependencies, adjustArchiveStructure, isZip, unpack };
+const isElectronPublish = false; // TODO: support auto-updates
+const isNightly = process.env.IS_NIGHTLY === 'true';
+const isRelease = process.env.IS_RELEASE === 'true';
+
+function git(command) {
+    try {
+        const gitPath = shell.which('git');
+        const error = shell.error();
+        if (error) {
+            throw new Error(error);
+        }
+        const { stderr, stdout } = shell.exec(`"${gitPath}" ${command}`, { silent: true });
+        if (stderr) {
+            throw new Error(stderr.toString().trim());
+        }
+        return stdout.toString().trim();
+    } catch (e) {
+        throw e;
+    }
+}
+
+module.exports = { collectUnusedDependencies, adjustArchiveStructure, isZip, unpack, isNightly, isRelease, isElectronPublish, git };

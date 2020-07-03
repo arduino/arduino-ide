@@ -48,3 +48,4 @@ One has to manually publish the GitHub release.
 
  - Select `Publish release`.
  - ✨
+

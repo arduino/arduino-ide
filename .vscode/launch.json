@@ -13,7 +13,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Electron Packager",
+      "name": "Electron Packager",
       "program": "${workspaceRoot}/electron/packager/index.js",
       "cwd": "${workspaceFolder}/electron/packager"
     },

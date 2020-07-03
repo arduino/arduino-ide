@@ -220,7 +220,7 @@ export class BoardsServiceImpl implements BoardsService {
             resolve(resp);
         }));
 
-        const requiredTools = resp.getRequiredToolsList().map(t => <Tool>{
+        const requiredTools = resp.getToolsdependenciesList().map(t => <Tool>{
             name: t.getName(),
             packager: t.getPackager(),
             version: t.getVersion()

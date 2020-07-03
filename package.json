@@ -11,10 +11,10 @@
     "lerna": "^3.20.2",
     "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
-    "typescript": "3.5.1"
+    "typescript": "^3.9.2"
   },
   "scripts": {
-    "prepare": "lerna run prepare && yarn test && yarn download:plugins",
+    "prepare": "lerna run prepare && yarn download:plugins",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron --modules \"@theia/node-pty\" nsfw native-keymap find-git-repositories grpc",
     "start": "yarn --cwd ./browser-app start",
@@ -30,7 +30,7 @@
   ],
   "theiaPluginsDir": "plugins",
   "theiaPlugins": {
-    "vscode-yaml": "https://open-vsx.org/api/redhat/vscode-yaml/0.7.2/file/redhat.vscode-yaml-0.7.2.vsix",
-    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.39.1/file/vscode.cpp-1.39.1.vsix"
+    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.44.2/file/vscode.cpp-1.44.2.vsix",
+    "vscode-yaml": "https://open-vsx.org/api/redhat/vscode-yaml/0.7.2/file/redhat.vscode-yaml-0.7.2.vsix"
   }
 }
