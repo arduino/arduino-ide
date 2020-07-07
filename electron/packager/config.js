@@ -11,7 +11,7 @@ function artifactName() {
     const { platform, arch } = process;
     const id = (() => {
         if (isRelease) {
-            return 'latest';
+            return getVersion();
         } else if (isNightly) {
             return `nightly-${timestamp()}`
         } else {

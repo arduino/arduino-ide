@@ -4,9 +4,7 @@ const fs = require('fs');
 const zip = require('7zip-min');
 const temp = require('temp');
 const path = require('path');
-const isCI = require('is-ci');
 const shell = require('shelljs');
-const semver = require('semver');
 const depcheck = require('depcheck');
 const fromFile = require('file-type').fromFile;
 
