@@ -102,6 +102,12 @@
     // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
     //-------------------------------------------------------------------------------------------------+
     exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`, `Building the ${productName} application`);
+
+    //-------------------------------------------------------------------------------------------------------------------------+
+    // Test the application. With this approach, we cannot publish test results to GH Actions but save 6-10 minutes per builds |
+    //-------------------------------------------------------------------------------------------------------------------------+
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)} test`, `Testing the ${productName} application`);
+
     // Collect all unused dependencies by the backend. We have to remove them from the electron app.
     // The `bundle.js` already contains everything we need for the frontend.
     // We have to do it before changing the dependencies to `local-path`.
