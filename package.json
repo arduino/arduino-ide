@@ -8,16 +8,17 @@
   "private": true,
   "devDependencies": {
     "@theia/cli": "next",
+    "cross-env": "^7.0.2",
     "lerna": "^3.20.2",
     "rimraf": "^2.6.1",
     "tslint": "^5.5.0",
     "typescript": "^3.9.2"
   },
   "scripts": {
-    "prepare": "lerna run prepare && yarn download:plugins",
+    "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron --modules \"@theia/node-pty\" nsfw native-keymap find-git-repositories grpc",
-    "start": "yarn --cwd ./browser-app start",
+    "start": "yarn rebuild:electron && yarn --cwd ./electron-app start",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test",
     "download:plugins": "theia download:plugins"

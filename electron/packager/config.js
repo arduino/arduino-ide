@@ -79,8 +79,6 @@ function getVersion() {
         if (!semver.valid(version)) {
             throw new Error(`Invalid patched version: '${version}'.`);
         }
-    } else {
-        version = `v${version}`;
     }
     return version;
 }
