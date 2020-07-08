@@ -1,4 +1,3 @@
-import * as grpc from 'grpc';
 import { inject, injectable, postConstruct } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MaybePromise } from '@theia/core/lib/common/types';
@@ -69,7 +68,7 @@ export abstract class GrpcClientProvider<C> {
 
     protected abstract close(client: C): void;
 
-    protected get channelOptions(): grpc.CallOptions {
+    protected get channelOptions(): object {
         return {
             'grpc.max_send_message_length': 512 * 1024 * 1024,
             'grpc.max_receive_message_length': 512 * 1024 * 1024

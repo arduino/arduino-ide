@@ -42,6 +42,7 @@
             case 'win32': return 'Windows_64bit.zip';
             case 'linux': {
                 switch (arch) {
+                    case 'arm': return 'Linux_ARMv7.tar.gz';
                     case 'arm64': return 'Linux_ARM64.tar.gz';
                     case 'x64': return 'Linux_64bit.tar.gz';
                     default: return undefined;

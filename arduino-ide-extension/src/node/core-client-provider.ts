@@ -1,8 +1,9 @@
-import * as grpc from 'grpc';
+import * as grpc from '@grpc/grpc-js';
 import { inject, injectable } from 'inversify';
 import { ToolOutputServiceServer } from '../common/protocol';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
+import * as commandsGrpcPb from './cli-protocol/commands/commands_grpc_pb';
 import { Instance } from './cli-protocol/commands/common_pb';
 import { InitReq, InitResp, UpdateIndexReq, UpdateIndexResp, UpdateLibrariesIndexResp, UpdateLibrariesIndexReq } from './cli-protocol/commands/commands_pb';
 import { Event, Emitter } from '@theia/core/lib/common/event';
@@ -35,7 +36,10 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     }
 
     protected async createClient(port: string | number): Promise<CoreClientProvider.Client> {
-        const client = new ArduinoCoreClient(`localhost:${port}`, grpc.credentials.createInsecure(), this.channelOptions);
+        // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
+        // @ts-ignore
+        const ArduinoCoreClient = grpc.makeClientConstructor(commandsGrpcPb['cc.arduino.cli.commands.ArduinoCore'], 'ArduinoCoreService') as any;
+        const client = new ArduinoCoreClient(`localhost:${port}`, grpc.credentials.createInsecure(), this.channelOptions) as ArduinoCoreClient;
         const initReq = new InitReq();
         initReq.setLibraryManagerOnly(false);
         const initResp = await new Promise<InitResp>((resolve, reject) => {

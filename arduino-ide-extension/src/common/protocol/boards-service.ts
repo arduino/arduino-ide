@@ -142,7 +142,7 @@ export namespace Port {
         }
         if (isOSX) {
             // Example: `/dev/cu.usbmodem14401`
-            if (/(tty|cu)\..*/.test(address.substring('/dev/'.length))) {
+            if (/(tty|cu)\..*/i.test(address.substring('/dev/'.length))) {
                 return [
                     '/dev/cu.MALS',
                     '/dev/cu.SOC',
@@ -152,7 +152,7 @@ export namespace Port {
         }
 
         // Example: `/dev/ttyACM0`
-        if (/(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}/.test(address.substring('/dev/'.length))) {
+        if (/(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}/i.test(address.substring('/dev/'.length))) {
             // Default ports were `/dev/ttyS0` -> `/dev/ttyS31` on Ubuntu 16.04.2.
             if (address.startsWith('/dev/ttyS')) {
                 const index = Number.parseInt(address.substring('/dev/ttyS'.length), 10);

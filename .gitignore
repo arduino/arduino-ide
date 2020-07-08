@@ -13,7 +13,5 @@ src-gen/
 yarn*.log
 # For the VS Code extensions used by Theia.
 plugins
-# generated JS/TS for the gRPC API
-arduino-ide-extension/src/node/cli-protocol
 # the config files for the CLI
 arduino-ide-extension/data/cli/config
