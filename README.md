@@ -1,6 +1,6 @@
 # Arduino Pro IDE
 
-![Arduino Pro IDE](https://github.com/bcmi-labs/arduino-editor/workflows/Arduino%20Pro%20IDE/badge.svg)
+[![Arduino Pro IDE](https://github.com/bcmi-labs/arduino-editor/workflows/Arduino%20Pro%20IDE/badge.svg)](https://github.com/bcmi-labs/arduino-editor/actions?query=workflow%3A%22Arduino+Pro+IDE%22)
 
 ### Download
 
@@ -49,7 +49,7 @@ macOS     |                          | [Nightly macOS 64 bit]   |
 
 ### Build from source
 
-If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and of you want to contribute to the
+If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and if you want to contribute to the
 project, you should be able to build the Arduino Pro IDE locally. Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
 
 ### Build
