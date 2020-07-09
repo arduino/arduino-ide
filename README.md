@@ -84,3 +84,36 @@ This project is built on [GitHub Actions](https://github.com/bcmi-labs/arduino-e
     git push origin 1.2.3
    ```
 
+### Architecture overview
+
+The Pro IDE consists of three major parts:
+ - the _Electron main_ process,
+ - the _backend_, and 
+ - the _frontend_.
+
+The _Electron main_ process is responsible for:
+ - creating the application,
+ - managing the application lifecycle via listeners, and
+ - creating and managing the web pages for the app.
+
+In Electron, the process that runs the main entry JavaScript file is called the main process. The _Electron main_ process can display a GUI by creating web pages. An Electron app always has exactly on main process.
+
+By default, whenever the _Electron main_ process creates a web page, it will instantiate a new `BrowserWindow` instance. Since Electron uses Chromium for displaying web pages, Chromium's multi-process architecture is also used. Each web page in Electron runs in its own process, which is called the renderer process. Each `BrowserWindow` instance runs the web page in its own renderer process. When a `BrowserWindow` instance is destroyed, the corresponding renderer process is also terminated. The main process manages all web pages and their corresponding renderer processes. Each renderer process is isolated and only cares about the web page running in it.<sup>[[1]]</sup>
+
+In normal browsers, web pages usually run in a sandboxed environment, and accessing native resources are disallowed. However, Electron has the power to use Node.js APIs in the web pages allowing lower-level OS interactions. Due to security reasons, accessing native resources is an undesired behavior in the Pro IDE. So by convention, we do not use Node.js APIs. (Note: the Node.js integration is [not yet disabled](https://github.com/eclipse-theia/theia/issues/2018) although it is not used). In the Pro IDE, only the _backend_ allows OS interaction.
+
+The _backend_ process is responsible for:
+ - providing access to the filesystem,
+ - communicating with the Arduino CLI via gRPC,
+ - running your terminal,
+ - exposing additional RESTful APIs,
+ - performing the Git commands in the local repositories,
+ - hosting and running any VS Code extensions, or
+ - executing VS Code tasks<sup>[[2]]</sup>.
+
+The _Electron main_ process spawns the _backend_ process. There is always exactly one _backend_ process. However, due to performance considerations, the _backend_ spawns several sub-processes for the filesystem watching, Git repository discovery, etc. The communication between the _backend_ process and its sub-processes is established via IPC. Besides spawning sub-processes, the _backend_ will start an HTTP server on a random available port, and serves the web application as static content. When the sub-processes are up and running, and the HTTP server is also listening, the _backend_ process sends the HTTP server port to the _Electron main_ process via IPC. The _Electron main_ process will load the _backend_'s endpoint in the `BrowserWindow`.
+
+The _frontend_ is running as an Electron renderer process and can invoke services implemented on the _backend_. The communication between the _backend_ and the _frontend_ is done via JSON-RPC over a websocket connection. This means, the services running in the _frontend_ are all proxies, and will ask the corresponding service implementation on the _backend_.
+
+[1]: https://www.electronjs.org/docs/tutorial/application-architecture#differences-between-main-process-and-renderer-process
+[2]: https://code.visualstudio.com/Docs/editor/tasks
