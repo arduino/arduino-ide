@@ -61,7 +61,6 @@ yarn
 ```sh
 yarn rebuild:electron
 ```
-Note: this step takes long. It completes in 4-5 minutes on a MacBook Pro, 2.9 GHz Quad-Core Intel Core i7.
 
 ### Start
 ```sh

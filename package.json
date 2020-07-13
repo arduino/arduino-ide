@@ -17,8 +17,8 @@
   "scripts": {
     "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",
     "rebuild:browser": "theia rebuild:browser",
-    "rebuild:electron": "theia rebuild:electron --modules \"@theia/node-pty\" nsfw native-keymap find-git-repositories grpc",
-    "start": "yarn rebuild:electron && yarn --cwd ./electron-app start",
+    "rebuild:electron": "theia rebuild:electron",
+    "start": "yarn --cwd ./electron-app start",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test",
     "download:plugins": "theia download:plugins"

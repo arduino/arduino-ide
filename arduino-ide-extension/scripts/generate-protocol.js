@@ -40,12 +40,6 @@
         shell.exit(1);
     }
 
-    const pluginExec = shell.which('grpc_tools_node_protoc_plugin');
-    if (!pluginExec || pluginExec.code !== 0) {
-        shell.exit(1);
-    }
-    const plugin = pluginExec.stdout.trim();
-
     const rpc = path.join(repository, 'rpc');
     const out = path.join(__dirname, '..', 'src', 'node', 'cli-protocol');
     shell.mkdir('-p', out);
@@ -67,8 +61,7 @@
     // Generate JS code from the `.proto` files.
     if (shell.exec(`grpc_tools_node_protoc \
 --js_out=import_style=commonjs,binary:${out} \
---grpc_out=${out} \
---plugin=protoc-gen-grpc=${plugin} \
+--grpc_out=generate_package_definition:${out} \
 -I ${rpc} \
 ${protos.join(' ')}`).code !== 0) {
         shell.exit(1);
@@ -77,7 +70,7 @@ ${protos.join(' ')}`).code !== 0) {
     // Generate the `.d.ts` files for JS.
     if (shell.exec(`protoc \
 --plugin=protoc-gen-ts=${path.resolve(__dirname, '..', 'node_modules', '.bin', `protoc-gen-ts${platform === 'win32' ? '.cmd' : ''}`)} \
---ts_out=${out} \
+--ts_out=generate_package_definition:${out} \
 -I ${rpc} \
 ${protos.join(' ')}`).code !== 0) {
         shell.exit(1);
