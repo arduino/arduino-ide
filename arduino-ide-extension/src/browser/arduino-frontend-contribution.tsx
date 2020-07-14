@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as dateFormat from 'dateformat';
+import { remote } from 'electron';
 import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
@@ -8,8 +10,8 @@ import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/li
 import { BoardsService, BoardsServiceClient, CoreService, Sketch, SketchesService, ToolOutputServiceClient } from '../common/protocol';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
-import { WorkspaceRootUriAwareCommandHandler, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
+import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
+import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath, notEmpty } from '@theia/core';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
@@ -44,6 +46,7 @@ import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
 import { BoardsConfigStore } from './boards/boards-config-store';
 import { MainMenuManager } from './menu/main-menu-manager';
+import { FileSystemExt } from '../common/protocol/filesystem-ext';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -152,6 +155,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(MainMenuManager)
     protected readonly mainMenuManager: MainMenuManager;
 
+    @inject(FileSystemExt)
+    protected readonly fileSystemExt: FileSystemExt;
+
     protected application: FrontendApplication;
     protected wsSketchCount: number = 0; // TODO: this does not belong here, does it?
 
@@ -194,24 +200,32 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         registry.registerItem({
             id: ArduinoCommands.VERIFY.id,
             command: ArduinoCommands.VERIFY_TOOLBAR.id,
-            tooltip: 'Verify'
+            tooltip: 'Verify',
+            priority: 1
         });
         registry.registerItem({
             id: ArduinoCommands.UPLOAD.id,
             command: ArduinoCommands.UPLOAD_TOOLBAR.id,
-            tooltip: 'Upload'
+            tooltip: 'Upload',
+            priority: 2
+        });
+        registry.registerItem({
+            id: ArduinoCommands.NEW_SKETCH.id,
+            command: ArduinoCommands.NEW_SKETCH_TOOLBAR.id,
+            tooltip: 'New',
+            priority: 4 // Note: priority 3 was reserved by debug.
         });
         registry.registerItem({
             id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
             tooltip: 'Open',
-            priority: 2
+            priority: 5
         });
         registry.registerItem({
             id: ArduinoCommands.SAVE_SKETCH.id,
             command: ArduinoCommands.SAVE_SKETCH.id,
             tooltip: 'Save',
-            priority: 2
+            priority: 6
         });
         registry.registerItem({
             id: BoardsToolBarItem.TOOLBAR_ID,
@@ -220,14 +234,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 commands={this.commandRegistry}
                 boardsServiceClient={this.boardsServiceClientImpl} />,
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            priority: 2
+            priority: 6
         });
         registry.registerItem({
             id: 'toggle-serial-monitor',
             command: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR,
-            tooltip: 'Toggle Serial Monitor'
+            tooltip: 'Serial Monitor'
         });
-
         registry.registerItem({
             id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             command: ArduinoCommands.TOGGLE_ADVANCED_MODE_TOOLBAR.id,
@@ -335,21 +348,65 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             }
         });
 
-        registry.registerCommand(ArduinoCommands.NEW_SKETCH, new WorkspaceRootUriAwareCommandHandler(this.workspaceService, this.selectionService, {
-            execute: async uri => {
-                try {
-                    // hack: sometimes we don't get the workspace root, but the currently active file: correct for that
-                    if (uri.path.ext !== "") {
-                        uri = uri.withPath(uri.path.dir.dir);
-                    }
+        registry.registerCommand(ArduinoCommands.SAVE_SKETCH_AS, {
+            execute: async ({ execOnlyIfTemp }: { execOnlyIfTemp: boolean } = { execOnlyIfTemp: false }) => {
+                const sketches = (await Promise.all(this.workspaceService.tryGetRoots().map(({ uri }) => this.sketchService.getSketchFolder(uri)))).filter(notEmpty);
+                if (!sketches.length) {
+                    return;
+                }
+                if (sketches.length > 1) {
+                    console.log(`Multiple sketch folders were found in the workspace. Falling back to the first one. Sketch folders: ${JSON.stringify(sketches)}`);
+                }
+                const sketch = sketches[0];
+                const isTemp = await this.sketchService.isTemp(sketch);
+                if (!isTemp && !!execOnlyIfTemp) {
+                    return;
+                }
 
-                    const sketch = await this.sketchService.createNewSketch(uri.toString());
+                // If target does not exist, propose a `directories.user`/${sketch.name} path
+                // If target exists, propose `directories.user`/${sketch.name}_copy_${yyyymmddHHMMss}
+                const sketchDirUri = new URI((await this.configService.getConfiguration()).sketchDirUri);
+                const exists = await this.fileSystem.exists(sketchDirUri.resolve(sketch.name).toString());
+                const defaultUri = exists
+                    ? sketchDirUri.resolve(sketchDirUri.resolve(`${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`).toString())
+                    : sketchDirUri.resolve(sketch.name);
+                const defaultPath = await this.fileSystem.getFsPath(defaultUri.toString())!;
+                const fsPath = await new Promise<string | undefined>(resolve => {
+                    remote.dialog.showSaveDialog({
+                        title: 'Save sketch folder as...',
+                        defaultPath
+                    }, (filename) => resolve(filename));
+                });
+                if (!fsPath) { // Canceled
+                    return;
+                }
+                const destinationUri = await this.fileSystemExt.getUri(fsPath);
+                if (!destinationUri) {
+                    return;
+                }
+                const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
+                if (workspaceUri) {
+                    this.workspaceService.open(new URI(workspaceUri));
+                }
+            }
+        });
+
+        registry.registerCommand(ArduinoCommands.NEW_SKETCH, {
+            execute: async () => {
+                try {
+                    const sketch = await this.sketchService.createNewSketch();
                     this.workspaceService.open(new URI(sketch.uri));
                 } catch (e) {
                     await this.messageService.error(e.toString());
                 }
             }
-        }));
+        });
+        registry.registerCommand(ArduinoCommands.NEW_SKETCH_TOOLBAR, {
+            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            execute: async () => {
+                return registry.executeCommand(ArduinoCommands.NEW_SKETCH.id);
+            }
+        });
 
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
             execute: async () => {
@@ -481,7 +538,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(TerminalMenus.TERMINAL));
             registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(CommonMenus.VIEW));
         }
-
         registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
         registry.registerMenuAction(ArduinoMenus.SKETCH, {
             commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
@@ -517,6 +573,11 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         registry.registerMenuAction([...CommonMenus.FILE_SETTINGS_SUBMENU, '3_settings_cli'], {
             commandId: ArduinoCommands.OPEN_CLI_CONFIG.id
         });
+
+        registry.registerMenuAction(CommonMenus.FILE_SAVE, {
+            commandId: ArduinoCommands.SAVE_SKETCH_AS.id,
+            label: 'Save As...'
+        });
     }
 
     protected getMenuId(menuPath: string[]): string {
@@ -526,13 +587,22 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     }
 
     registerKeybindings(keybindings: KeybindingRegistry): void {
+        keybindings.unregisterKeybinding('ctrlcmd+n'); // Unregister the keybinding for `New File`, will be used by `New Sketch`. (eclipse-theia/theia#8170)
         keybindings.registerKeybinding({
             command: ArduinoCommands.VERIFY.id,
-            keybinding: 'ctrlcmd+alt+v'
+            keybinding: 'CtrlCmd+Alt+V'
         });
         keybindings.registerKeybinding({
             command: ArduinoCommands.UPLOAD.id,
-            keybinding: 'ctrlcmd+alt+u'
+            keybinding: 'CtrlCmd+Alt+U'
+        });
+        keybindings.registerKeybinding({
+            command: ArduinoCommands.NEW_SKETCH.id,
+            keybinding: 'CtrlCmd+N'
+        });
+        keybindings.registerKeybinding({
+            command: ArduinoCommands.SAVE_SKETCH_AS.id,
+            keybinding: 'CtrlCmd+Shift+S'
         });
     }
 

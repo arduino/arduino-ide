@@ -42,7 +42,7 @@
     mask-size: 800%;
 }
 
-.arduino-save-file-icon {
+.arduino-save-sketch-icon {
     -webkit-mask-position: 59px -4px;
     mask-position: 59px -4px;
 }
@@ -55,6 +55,11 @@
 .arduino-upload-icon {
     -webkit-mask-position: 156px -4px;
     mask-position: 156px -4px;
+}
+
+.arduino-new-sketch-icon {
+    -webkit-mask-position: 124px -4px;
+    mask-position: 124px -4px;
 }
 
 .arduino-show-open-context-menu-icon {

@@ -78,6 +78,9 @@ import { CoreServiceClientImpl } from './core-service-client-impl';
 import { BoardsDetailsMenuUpdater } from './boards/boards-details-menu-updater';
 import { BoardsConfigStore } from './boards/boards-config-store';
 import { ILogger } from '@theia/core';
+import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
+import { WorkspaceFrontendContribution } from '@theia/workspace/lib/browser';
+import { ArduinoWorkspaceFrontendContribution } from './customization/arduino-workspace-frontend-contribution';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -254,6 +257,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     rebind(ScmContribution).to(ArduinoScmContribution).inSingletonScope();
     rebind(SearchInWorkspaceFrontendContribution).to(ArduinoSearchInWorkspaceContribution).inSingletonScope();
     rebind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
+    rebind(WorkspaceFrontendContribution).to(ArduinoWorkspaceFrontendContribution).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ArduinoApplicationConnectionStatusContribution).toSelf().inSingletonScope();
@@ -293,4 +297,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         WebSocketConnectionProvider.createProxy(context.container, ArduinoDaemonPath, client);
         return client;
     }).inSingletonScope();
+
+    // File-system extension
+    bind(FileSystemExt).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, FileSystemExtPath)).inSingletonScope();
 });

@@ -1,13 +1,19 @@
+
+import { injectable, inject } from 'inversify';
 import { ApplicationShell, Widget, Saveable, FocusTracker, Message } from '@theia/core/lib/browser';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { injectable, inject } from 'inversify';
 import { EditorMode } from '../editor-mode';
+import { CommandService } from '@theia/core';
+import { ArduinoCommands } from '../arduino-commands';
 
 @injectable()
 export class ArduinoApplicationShell extends ApplicationShell {
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
+
+    @inject(CommandService)
+    protected readonly commandService: CommandService;
 
     protected refreshBottomPanelToggleButton() {
         if (this.editorMode.proMode) {
@@ -32,6 +38,11 @@ export class ArduinoApplicationShell extends ApplicationShell {
                 }
             }
         }
+    }
+
+    async save(): Promise<void> {
+        await super.save();
+        await this.commandService.executeCommand(ArduinoCommands.SAVE_SKETCH_AS.id, { execOnlyIfTemp: true });
     }
 
     private disableClose(widget: Widget | undefined): void {

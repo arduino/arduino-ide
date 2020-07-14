@@ -47,9 +47,7 @@ export class ArduinoWorkspaceService extends WorkspaceService {
                     await this.server.setMostRecentlyUsedWorkspace(uri);
                     return toOpen.uri;
                 }
-                const { sketchDirUri } = (await this.configService.getConfiguration());
-                this.logger.info(`No valid workspace URI found. Creating new sketch in ${sketchDirUri}`)
-                return (await this.sketchService.createNewSketch(sketchDirUri)).uri;
+                return (await this.sketchService.createNewSketch()).uri;
             } catch (err) {
                 this.logger.fatal(`Failed to determine the sketch directory: ${err}`)
                 this.messageService.error(
