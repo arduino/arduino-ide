@@ -28,7 +28,8 @@
     background: var(--theia-button-hoverBackground);
 }
 
-.arduino-verify, .arduino-upload {
+.arduino-verify,
+.arduino-upload {
     border-radius: 12px;
 }
 
