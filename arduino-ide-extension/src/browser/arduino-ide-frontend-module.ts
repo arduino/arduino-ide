@@ -31,8 +31,6 @@ import { ArduinoProblemContribution } from './customization/arduino-problem-cont
 import { ArduinoNavigatorContribution } from './customization/arduino-navigator-contribution';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
-import { OutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
-import { ArduinoOutputToolContribution } from './customization/arduino-output-tool-contribution';
 import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
 import { ArduinoEditorContribution } from './customization/arduino-editor-contribution';
 import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
@@ -250,7 +248,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     rebind(OutlineViewContribution).to(ArduinoOutlineViewContribution).inSingletonScope();
     rebind(ProblemContribution).to(ArduinoProblemContribution).inSingletonScope();
     rebind(FileNavigatorContribution).to(ArduinoNavigatorContribution).inSingletonScope();
-    rebind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
     rebind(EditorContribution).to(ArduinoEditorContribution).inSingletonScope();
     rebind(MonacoStatusBarContribution).to(ArduinoMonacoStatusBarContribution).inSingletonScope();
     rebind(ApplicationShell).to(ArduinoApplicationShell).inSingletonScope();
