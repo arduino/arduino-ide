@@ -1,5 +1,5 @@
 {
-  "main": "src-gen/frontend/electron-main.js",
+  "main": "scripts/arduino-pro-ide-electron-main.js",
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3"
@@ -54,6 +54,7 @@
     "files": [
       "src-gen",
       "lib",
+      "scripts",
       "!node_modules/**/*.{ts,map}",
       "!node_modules/**/*.spec.js",
       "!node_modules/@theia/**/test/*",
