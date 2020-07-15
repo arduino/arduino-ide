@@ -15,12 +15,6 @@ export class ArduinoApplicationShell extends ApplicationShell {
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
-    protected refreshBottomPanelToggleButton() {
-        if (this.editorMode.proMode) {
-            super.refreshBottomPanelToggleButton();
-        }
-    }
-
     protected async track(widget: Widget): Promise<void> {
         if (this.editorMode.proMode) {
             super.track(widget);
