@@ -11922,7 +11922,7 @@ proto-list@~1.2.1:
   resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
   integrity sha1-IS1b/hMYMGpCD2QCuOJv85ZHqEk=
 
-protoc@^1.0.4:
+protoc@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/protoc/-/protoc-1.0.4.tgz#fd0ba07132c459df80c6135889bd5cc92f0afec2"
   integrity sha512-2crtOP6xhacdWBW+lkhQJmzwg2cPmqSsh51FOHQmgTd8dKksO9sFzlhzteh6x+qPTfPU7h6smC1eg5d9bqGpTQ==

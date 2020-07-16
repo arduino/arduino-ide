@@ -79,7 +79,7 @@
     "grpc_tools_node_protoc_ts": "^4.1.0",
     "mocha": "^7.0.0",
     "moment": "^2.24.0",
-    "protoc": "1.0.4",
+    "protoc": "^1.0.4",
     "shelljs": "^0.8.3",
     "sinon": "^9.0.1",
     "uuid": "^3.2.1",
