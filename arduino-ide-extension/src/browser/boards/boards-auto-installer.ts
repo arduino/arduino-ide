@@ -7,7 +7,6 @@ import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-c
 import { InstallationProgressDialog } from '../components/progress-dialog';
 import { BoardsConfig } from './boards-config';
 
-
 /**
  * Listens on `BoardsConfig.Config` changes, if a board is selected which does not
  * have the corresponding core installed, it proposes the user to install the core.

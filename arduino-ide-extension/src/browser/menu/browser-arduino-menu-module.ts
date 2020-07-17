@@ -5,7 +5,6 @@ import { MainMenuManager } from './main-menu-manager';
 import { ArduinoMenuContribution } from './arduino-menu-contribution';
 import { ArduinoBrowserMainMenuFactory } from './arduino-browser-main-menu-factory';
 
-
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ArduinoBrowserMainMenuFactory).toSelf().inSingletonScope();
     bind(MainMenuManager).toService(ArduinoBrowserMainMenuFactory);

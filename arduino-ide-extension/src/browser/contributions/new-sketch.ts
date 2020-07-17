@@ -36,7 +36,7 @@ export class NewSketch extends SketchContribution {
             id: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
             command: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
             tooltip: 'New',
-            priority: 4
+            priority: 3
         });
     }
 

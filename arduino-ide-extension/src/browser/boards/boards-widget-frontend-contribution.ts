@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
 import { MenuModelRegistry } from '@theia/core';
 import { BoardsListWidget } from './boards-list-widget';
-import { ArduinoMenus } from '../arduino-frontend-contribution';
 import { BoardsPackage } from '../../common/protocol/boards-service';
 import { ListWidgetFrontendContribution } from '../components/component-list/list-widget-frontend-contribution';
+import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
 export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<BoardsPackage> {

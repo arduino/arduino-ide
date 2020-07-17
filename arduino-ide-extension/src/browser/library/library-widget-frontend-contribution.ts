@@ -3,7 +3,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { MenuModelRegistry } from '@theia/core';
 import { LibraryListWidget } from './library-list-widget';
-import { ArduinoMenus } from '../arduino-frontend-contribution';
+import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
 export class LibraryListWidgetFrontendContribution extends AbstractViewContribution<LibraryListWidget> implements FrontendApplicationContribution {

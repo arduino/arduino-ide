@@ -4,22 +4,6 @@ export namespace ArduinoCommands {
 
     const category = 'Arduino';
 
-    export const VERIFY: Command = {
-        id: 'arduino-verify',
-        label: 'Verify Sketch'
-    };
-    export const VERIFY_TOOLBAR: Command = {
-        id: 'arduino-verify-toolbar',
-    };
-
-    export const UPLOAD: Command = {
-        id: 'arduino-upload',
-        label: 'Upload Sketch'
-    };
-    export const UPLOAD_TOOLBAR: Command = {
-        id: 'arduino-upload-toolbar',
-    };
-
     export const TOGGLE_COMPILE_FOR_DEBUG: Command = {
         id: 'arduino-toggle-compile-for-debug'
     };

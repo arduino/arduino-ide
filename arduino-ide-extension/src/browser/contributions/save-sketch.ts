@@ -37,7 +37,7 @@ export class SaveSketch extends SketchContribution {
             id: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
             command: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
             tooltip: 'Save',
-            priority: 6
+            priority: 5
         });
     }
 

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { injectable, inject } from "inversify";
-import { AbstractViewContribution } from "@theia/core/lib/browser";
-import { MonitorWidget } from "./monitor-widget";
-import { MenuModelRegistry, Command, CommandRegistry } from "@theia/core";
-import { ArduinoMenus } from "../arduino-frontend-contribution";
-import { TabBarToolbarContribution, TabBarToolbarRegistry } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
+import { injectable, inject } from 'inversify';
+import { AbstractViewContribution } from '@theia/core/lib/browser';
+import { MonitorWidget } from './monitor-widget';
+import { MenuModelRegistry, Command, CommandRegistry } from '@theia/core';
+import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { MonitorModel } from './monitor-model';
+import { ArduinoMenus } from '../menu/arduino-menus';
 
 export namespace SerialMonitor {
     export namespace Commands {

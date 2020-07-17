@@ -85,6 +85,8 @@ import { OpenSketch } from './contributions/open-sketch';
 import { CloseSketch } from './contributions/close-sketch';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
+import { VerifySketch } from './contributions/verify-sketch';
+import { UploadSketch } from './contributions/upload-sketch';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -310,4 +312,6 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     Contribution.configure(bind, CloseSketch);
     Contribution.configure(bind, SaveSketch);
     Contribution.configure(bind, SaveAsSketch);
+    Contribution.configure(bind, VerifySketch);
+    Contribution.configure(bind, UploadSketch);
 });

@@ -10,6 +10,7 @@ import { KeybindingRegistry, KeybindingContribution } from '@theia/core/lib/brow
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { Command, CommandRegistry, CommandContribution, CommandService } from '@theia/core/lib/common/command';
 import { SketchesService, ConfigService, FileSystemExt, Sketch } from '../../common/protocol';
+import { EditorMode } from '../editor-mode';
 
 export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch };
 
@@ -27,6 +28,9 @@ export abstract class Contribution implements CommandContribution, MenuContribut
 
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
+
+    @inject(EditorMode)
+    protected readonly editorMode: EditorMode;
 
     registerCommands(registry: CommandRegistry): void {
     }

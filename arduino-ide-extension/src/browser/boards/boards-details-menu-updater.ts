@@ -5,9 +5,9 @@ import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposa
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
 import { Board, ConfigOption } from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
-import { ArduinoMenus } from '../arduino-frontend-contribution';
 import { BoardsConfigStore } from './boards-config-store';
 import { MainMenuManager } from '../menu/main-menu-manager';
+import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
 export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution {

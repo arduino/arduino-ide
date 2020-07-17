@@ -84,7 +84,7 @@ export class OpenSketch extends SketchContribution {
             id: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
             command: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
             tooltip: 'Open',
-            priority: 5
+            priority: 4
         });
     }
 
