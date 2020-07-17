@@ -28,15 +28,18 @@ export class SaveAsSketch extends SketchContribution {
         });
     }
 
-    async saveAs({ execOnlyIfTemp, openAfterMove }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT): Promise<void> {
+    /**
+     * Resolves `true` if the sketch was successfully saved as something.
+     */
+    async saveAs({ execOnlyIfTemp, openAfterMove }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT): Promise<boolean> {
         const sketch = await this.getCurrentSketch();
         if (!sketch) {
-            return;
+            return false;
         }
 
         const isTemp = await this.sketchService.isTemp(sketch);
         if (!isTemp && !!execOnlyIfTemp) {
-            return;
+            return false;
         }
 
         // If target does not exist, propose a `directories.user`/${sketch.name} path
@@ -49,16 +52,17 @@ export class SaveAsSketch extends SketchContribution {
         const defaultPath = await this.fileSystem.getFsPath(defaultUri.toString())!;
         const { filePath, canceled } = await remote.dialog.showSaveDialog({ title: 'Save sketch folder as...', defaultPath });
         if (!filePath || canceled) {
-            return;
+            return false;
         }
         const destinationUri = await this.fileSystemExt.getUri(filePath);
         if (!destinationUri) {
-            return;
+            return false;
         }
         const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
         if (workspaceUri && openAfterMove) {
             this.workspaceService.open(new URI(workspaceUri));
         }
+        return !!workspaceUri;
     }
 
 }

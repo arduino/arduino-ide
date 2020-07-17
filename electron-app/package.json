@@ -40,7 +40,9 @@
         "applicationName": "Arduino Pro IDE",
         "defaultTheme": "arduino-theme",
         "preferences": {
-          "editor.autoSave": "on"
+          "editor.autoSave": "on",
+          "editor.minimap.enabled": false,
+          "editor.scrollBeyondLastLine": false
         }
       }
     },

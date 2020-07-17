@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+import { remote } from 'electron';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry } from './contribution';
@@ -16,9 +17,24 @@ export class CloseSketch extends SketchContribution {
                 }
                 const isTemp = await this.sketchService.isTemp(sketch);
                 if (isTemp) {
-                    await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { openAfterMove: false, execOnlyIfTemp: true });
-                    await this.commandService.executeCommand(WorkspaceCommands.CLOSE.id);
+                    // TODO: check monaco model version. If `0` just close the app.
+                    const { response } = await remote.dialog.showMessageBox({
+                        type: 'question',
+                        buttons: ["Don't Save", 'Cancel', 'Save'],
+                        message: 'Do you want to save changes to this sketch before closing?',
+                        detail: "If you don't save, your changes will be lost."
+                    });
+                    if (response === 1) { // Cancel
+                        return;
+                    }
+                    if (response === 2) { // Save
+                        const saved = await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { openAfterMove: false, execOnlyIfTemp: true });
+                        if (!saved) { // If it was not saved, do bail the close.
+                            return;
+                        }
+                    }
                 }
+                await this.commandService.executeCommand(WorkspaceCommands.CLOSE.id);
             }
         });
     }

@@ -1,13 +1,13 @@
 
 import { injectable, inject } from 'inversify';
 import { CommandService } from '@theia/core/lib/common/command';
-import { ApplicationShell, Widget } from '@theia/core/lib/browser';
-import { EditorMode } from '../editor-mode';
+import { ApplicationShell as TheiaApplicationShell, Widget } from '@theia/core/lib/browser';
+import { EditorMode } from '../../editor-mode';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { SaveAsSketch } from '../contributions/save-as-sketch';
+import { SaveAsSketch } from '../../contributions/save-as-sketch';
 
 @injectable()
-export class ArduinoApplicationShell extends ApplicationShell {
+export class ApplicationShell extends TheiaApplicationShell {
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;

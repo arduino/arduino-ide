@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
-import { BrowserMainMenuFactory, MenuBarWidget } from '@theia/core/lib/browser/menu/browser-menu-plugin';
-import { MainMenuManager } from './main-menu-manager';
+import { BrowserMainMenuFactory as TheiaBrowserMainMenuFactory, MenuBarWidget } from '@theia/core/lib/browser/menu/browser-menu-plugin';
+import { MainMenuManager } from '../../menu/main-menu-manager';
 
 @injectable()
-export class ArduinoBrowserMainMenuFactory extends BrowserMainMenuFactory implements MainMenuManager {
+export class BrowserMainMenuFactory extends TheiaBrowserMainMenuFactory implements MainMenuManager {
 
     protected menuBar: MenuBarWidget | undefined;
 

@@ -1,11 +1,15 @@
 import { inject, injectable, postConstruct } from 'inversify';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { StatusBarAlignment } from '@theia/core/lib/browser/status-bar/status-bar';
-import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution, ConnectionStatus } from '@theia/core/lib/browser/connection-status-service';
-import { ArduinoDaemonClientImpl } from '../arduino-daemon-client-impl';
+import {
+    FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
+    ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution,
+    ConnectionStatus
+} from '@theia/core/lib/browser/connection-status-service';
+import { ArduinoDaemonClientImpl } from '../../arduino-daemon-client-impl';
 
 @injectable()
-export class ArduinoFrontendConnectionStatusService extends FrontendConnectionStatusService {
+export class FrontendConnectionStatusService extends TheiaFrontendConnectionStatusService {
 
     @inject(ArduinoDaemonClientImpl)
     protected readonly daemonClient: ArduinoDaemonClientImpl;
@@ -23,7 +27,7 @@ export class ArduinoFrontendConnectionStatusService extends FrontendConnectionSt
 }
 
 @injectable()
-export class ArduinoApplicationConnectionStatusContribution extends ApplicationConnectionStatusContribution {
+export class ApplicationConnectionStatusContribution extends TheiaApplicationConnectionStatusContribution {
 
     @inject(ArduinoDaemonClientImpl)
     protected readonly daemonClient: ArduinoDaemonClientImpl;

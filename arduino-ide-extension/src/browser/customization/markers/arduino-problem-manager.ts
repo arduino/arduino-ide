@@ -4,7 +4,7 @@ import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core';
 import { Marker } from '@theia/markers/lib/common/marker';
 import { ProblemManager } from '@theia/markers/lib/browser/problem/problem-manager';
-import { ConfigService } from '../../common/protocol/config-service';
+import { ConfigService } from '../../../common/protocol/config-service';
 
 @injectable()
 export class ArduinoProblemManager extends ProblemManager {

@@ -1,10 +1,10 @@
-import { injectable, inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { EditorMode } from '../editor-mode';
+import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { EditorMode } from '../../editor-mode';
 
 @injectable()
-export class ArduinoOutlineViewContribution extends OutlineViewContribution {
+export class ArduinoSearchInWorkspaceContribution extends SearchInWorkspaceFrontendContribution {
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
@@ -16,4 +16,3 @@ export class ArduinoOutlineViewContribution extends OutlineViewContribution {
     }
 
 }
-

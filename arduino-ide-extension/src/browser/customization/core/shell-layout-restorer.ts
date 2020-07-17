@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { ShellLayoutRestorer } from '@theia/core/lib/browser/shell/shell-layout-restorer';
+import { ShellLayoutRestorer as TheiaShellLayoutRestorer } from '@theia/core/lib/browser/shell/shell-layout-restorer';
 
 @injectable()
-export class ArduinoShellLayoutRestorer extends ShellLayoutRestorer {
+export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
 
     // Workaround for https://github.com/eclipse-theia/theia/issues/6579.
     async storeLayoutAsync(app: FrontendApplication): Promise<void> {

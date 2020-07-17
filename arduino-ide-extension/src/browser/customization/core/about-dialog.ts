@@ -1,9 +1,9 @@
 import { injectable, inject, postConstruct } from 'inversify';
-import { AboutDialog, ABOUT_CONTENT_CLASS } from '@theia/core/lib/browser/about-dialog';
-import { ConfigService } from '../../common/protocol/config-service';
+import { AboutDialog as TheiaAboutDialog, ABOUT_CONTENT_CLASS } from '@theia/core/lib/browser/about-dialog';
+import { ConfigService } from '../../../common/protocol/config-service';
 
 @injectable()
-export class ArduinoAboutDialog extends AboutDialog {
+export class AboutDialog extends TheiaAboutDialog {
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;

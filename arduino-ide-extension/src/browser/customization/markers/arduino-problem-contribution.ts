@@ -3,7 +3,7 @@ import { KeybindingRegistry } from '@theia/core/lib/browser';
 import { ProblemStat } from '@theia/markers/lib/browser/problem/problem-manager';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
-import { EditorMode } from '../editor-mode';
+import { EditorMode } from '../../editor-mode';
 
 @injectable()
 export class ArduinoProblemContribution extends ProblemContribution {

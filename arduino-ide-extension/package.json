@@ -106,7 +106,7 @@
       "frontend": "lib/browser/arduino-ide-frontend-module"
     },
     {
-      "frontend": "lib/browser/menu/browser-arduino-menu-module",
+      "frontend": "lib/browser/customization/core/browser-menu-module",
       "frontendElectron": "lib/electron-browser/menu/electron-arduino-menu-module"
     },
     {

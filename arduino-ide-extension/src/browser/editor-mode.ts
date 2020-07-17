@@ -5,7 +5,6 @@ import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import { MainMenuManager } from './menu/main-menu-manager';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { LibraryListWidget } from './library/library-list-widget';
-import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
 
 @injectable()
 export class EditorMode implements FrontendApplicationContribution {
@@ -42,7 +41,7 @@ export class EditorMode implements FrontendApplicationContribution {
         // `storeLayout` has a sync API but the implementation is async, we store the layout manually before we reload the page.
         // See: https://github.com/eclipse-theia/theia/issues/6579
         // XXX: hack instead of injecting the `ArduinoShellLayoutRestorer` we have to retrieve it from the application to avoid DI cycle.
-        const layoutRestorer = (this.app as any).layoutRestorer as ArduinoShellLayoutRestorer
+        const layoutRestorer = (this.app as any).layoutRestorer as { storeLayoutAsync(app: FrontendApplication): Promise<void> };
         await layoutRestorer.storeLayoutAsync(this.app);
         window.location.reload(true);
     }

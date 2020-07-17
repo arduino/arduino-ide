@@ -3,12 +3,12 @@ import URI from '@theia/core/lib/common/uri';
 import { Title, Widget } from '@phosphor/widgets';
 import { ILogger } from '@theia/core';
 import { WidgetDecoration } from '@theia/core/lib/browser/widget-decoration';
-import { TabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
-import { ConfigService } from '../../common/protocol/config-service';
+import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
+import { ConfigService } from '../../../common/protocol/config-service';
 import { EditorWidget } from '@theia/editor/lib/browser';
 
 @injectable()
-export class ArduinoTabBarDecoratorService extends TabBarDecoratorService {
+export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;

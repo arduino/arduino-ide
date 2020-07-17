@@ -26,6 +26,11 @@ export class ArduinoWorkspaceFrontendContribution extends WorkspaceFrontendContr
         // NOOP
     }
 
+    protected async closeWorkspace(): Promise<void> {
+        // Do not ask to close the workspace, just close it. The dirty/temp state of the sketch is handled somewhere else.
+        await this.workspaceService.close();
+    }
+
 }
 
 @injectable()

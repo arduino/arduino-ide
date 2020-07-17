@@ -2,11 +2,11 @@ import { injectable, inject } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { CommandService } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { ArduinoCommands } from '../arduino-commands';
+import { FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import { ArduinoCommands } from '../../arduino-commands';
 
 @injectable()
-export class ArduinoFrontendApplication extends FrontendApplication {
+export class FrontendApplication extends TheiaFrontendApplication {
 
     @inject(FileSystem)
     protected readonly fileSystem: FileSystem;
