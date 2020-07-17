@@ -3,6 +3,7 @@ export * from './arduino-daemon';
 export * from './boards-service';
 export * from './config-service';
 export * from './core-service';
+export * from './filesystem-ext';
 export * from './installable';
 export * from './library-service';
 export * from './monitor-service';

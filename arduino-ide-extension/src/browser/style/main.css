@@ -58,12 +58,12 @@
     mask-position: 156px -4px;
 }
 
-.arduino-new-sketch-icon {
+.arduino-new-sketch--toolbar-icon {
     -webkit-mask-position: 124px -4px;
     mask-position: 124px -4px;
 }
 
-.arduino-show-open-context-menu-icon {
+.arduino-open-sketch--toolbar-icon {
     -webkit-mask-position: 92px -4px;
     mask-position: 92px -4px;
 }

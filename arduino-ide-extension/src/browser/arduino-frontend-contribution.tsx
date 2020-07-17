@@ -1,28 +1,24 @@
 import * as React from 'react';
-import * as dateFormat from 'dateformat';
-import { remote } from 'electron';
 import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry, Command, CommandHandler } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, BoardsServiceClient, CoreService, Sketch, SketchesService, ToolOutputServiceClient } from '../common/protocol';
+import { BoardsService, BoardsServiceClient, CoreService, SketchesService, ToolOutputServiceClient } from '../common/protocol';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath, notEmpty } from '@theia/core';
+import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR, MenuPath } from '@theia/core';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
-    ContextMenuRenderer, Widget, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
+    ContextMenuRenderer, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
     FrontendApplication, KeybindingContribution, KeybindingRegistry, OpenerService, open
 } from '@theia/core/lib/browser';
 import { OpenFileDialogProps, FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem, FileStat } from '@theia/filesystem/lib/common';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
-import { FileSystemCommands } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
-import { FileDownloadCommands } from '@theia/filesystem/lib/browser/download/file-download-command-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 import { MaybePromise } from '@theia/core/lib/common/types';
@@ -47,6 +43,7 @@ import { ConfigService } from '../common/protocol/config-service';
 import { BoardsConfigStore } from './boards/boards-config-store';
 import { MainMenuManager } from './menu/main-menu-manager';
 import { FileSystemExt } from '../common/protocol/filesystem-ext';
+import { OpenSketch } from './contributions/open-sketch';
 
 export namespace ArduinoMenus {
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
@@ -210,24 +207,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             priority: 2
         });
         registry.registerItem({
-            id: ArduinoCommands.NEW_SKETCH.id,
-            command: ArduinoCommands.NEW_SKETCH_TOOLBAR.id,
-            tooltip: 'New',
-            priority: 4 // Note: priority 3 was reserved by debug.
-        });
-        registry.registerItem({
-            id: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
-            command: ArduinoCommands.SHOW_OPEN_CONTEXT_MENU.id,
-            tooltip: 'Open',
-            priority: 5
-        });
-        registry.registerItem({
-            id: ArduinoCommands.SAVE_SKETCH.id,
-            command: ArduinoCommands.SAVE_SKETCH.id,
-            tooltip: 'Save',
-            priority: 6
-        });
-        registry.registerItem({
             id: BoardsToolBarItem.TOOLBAR_ID,
             render: () => <BoardsToolBarItem
                 key='boardsToolbarItem'
@@ -308,98 +287,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             execute: this.upload.bind(this)
         });
 
-        registry.registerCommand(ArduinoCommands.SHOW_OPEN_CONTEXT_MENU, {
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            execute: async (widget: Widget, target: EventTarget) => {
-                if (this.wsSketchCount) {
-                    const el = (target as HTMLElement).parentElement;
-                    if (el) {
-                        this.contextMenuRenderer.render(ArduinoToolbarContextMenu.OPEN_SKETCH_PATH, {
-                            x: el.getBoundingClientRect().left,
-                            y: el.getBoundingClientRect().top + el.offsetHeight
-                        });
-                    }
-                } else {
-                    this.commandRegistry.executeCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR.id);
-                }
-            }
-        });
-
         registry.registerCommand(ArduinoCommands.OPEN_FILE_NAVIGATOR, {
             execute: () => this.doOpenFile()
-        });
-
-        registry.registerCommand(ArduinoCommands.OPEN_SKETCH, {
-            execute: async (sketch: Sketch) => {
-                this.workspaceService.open(new URI(sketch.uri));
-            }
         });
 
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH_FILES, {
             execute: async (uri: string) => {
                 this.openSketchFiles(uri);
-            }
-        });
-
-        registry.registerCommand(ArduinoCommands.SAVE_SKETCH, {
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            execute: (sketch: Sketch) => {
-                registry.executeCommand(CommonCommands.SAVE_ALL.id);
-            }
-        });
-
-        registry.registerCommand(ArduinoCommands.SAVE_SKETCH_AS, {
-            execute: async ({ execOnlyIfTemp }: { execOnlyIfTemp: boolean } = { execOnlyIfTemp: false }) => {
-                const sketches = (await Promise.all(this.workspaceService.tryGetRoots().map(({ uri }) => this.sketchService.getSketchFolder(uri)))).filter(notEmpty);
-                if (!sketches.length) {
-                    return;
-                }
-                if (sketches.length > 1) {
-                    console.log(`Multiple sketch folders were found in the workspace. Falling back to the first one. Sketch folders: ${JSON.stringify(sketches)}`);
-                }
-                const sketch = sketches[0];
-                const isTemp = await this.sketchService.isTemp(sketch);
-                if (!isTemp && !!execOnlyIfTemp) {
-                    return;
-                }
-
-                // If target does not exist, propose a `directories.user`/${sketch.name} path
-                // If target exists, propose `directories.user`/${sketch.name}_copy_${yyyymmddHHMMss}
-                const sketchDirUri = new URI((await this.configService.getConfiguration()).sketchDirUri);
-                const exists = await this.fileSystem.exists(sketchDirUri.resolve(sketch.name).toString());
-                const defaultUri = exists
-                    ? sketchDirUri.resolve(sketchDirUri.resolve(`${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`).toString())
-                    : sketchDirUri.resolve(sketch.name);
-                const defaultPath = await this.fileSystem.getFsPath(defaultUri.toString())!;
-                const { filePath, canceled } = await remote.dialog.showSaveDialog({ title: 'Save sketch folder as...', defaultPath });
-                if (!filePath || canceled) {
-                    return;
-                }
-                const destinationUri = await this.fileSystemExt.getUri(filePath);
-                if (!destinationUri) {
-                    return;
-                }
-                const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
-                if (workspaceUri) {
-                    this.workspaceService.open(new URI(workspaceUri));
-                }
-            }
-        });
-
-        registry.registerCommand(ArduinoCommands.NEW_SKETCH, {
-            execute: async () => {
-                try {
-                    const sketch = await this.sketchService.createNewSketch();
-                    this.workspaceService.open(new URI(sketch.uri));
-                } catch (e) {
-                    await this.messageService.error(e.toString());
-                }
-            }
-        });
-        registry.registerCommand(ArduinoCommands.NEW_SKETCH_TOOLBAR, {
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            execute: async () => {
-                return registry.executeCommand(ArduinoCommands.NEW_SKETCH.id);
             }
         });
 
@@ -516,17 +410,18 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 CommonCommands.TOGGLE_MAXIMIZED,
                 FileNavigatorCommands.REVEAL_IN_NAVIGATOR
             ]) {
-                registry.unregisterMenuAction(command);
+                if (command) { }
+                // registry.unregisterMenuAction(command);
             }
 
-            registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
-            registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
+            // registry.unregisterMenuAction(FileSystemCommands.UPLOAD);
+            // registry.unregisterMenuAction(FileDownloadCommands.DOWNLOAD);
 
-            registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
-            registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
-            registry.unregisterMenuAction(WorkspaceCommands.OPEN_RECENT_WORKSPACE);
-            registry.unregisterMenuAction(WorkspaceCommands.SAVE_WORKSPACE_AS);
-            registry.unregisterMenuAction(WorkspaceCommands.CLOSE);
+            // registry.unregisterMenuAction(WorkspaceCommands.OPEN_FOLDER);
+            // registry.unregisterMenuAction(WorkspaceCommands.OPEN_WORKSPACE);
+            // registry.unregisterMenuAction(WorkspaceCommands.OPEN_RECENT_WORKSPACE);
+            // registry.unregisterMenuAction(WorkspaceCommands.SAVE_WORKSPACE_AS);
+            // registry.unregisterMenuAction(WorkspaceCommands.CLOSE);
 
             registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(MonacoMenus.SELECTION));
             registry.getMenu(MAIN_MENU_BAR).removeNode(this.getMenuId(EditorMainMenu.GO));
@@ -549,10 +444,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             label: 'Upload',
             order: '3'
         });
-        registry.registerMenuAction(ArduinoToolbarContextMenu.OPEN_GROUP, {
-            commandId: ArduinoCommands.OPEN_FILE_NAVIGATOR.id,
-            label: 'Open...'
-        });
 
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
 
@@ -561,18 +452,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             label: 'Advanced Mode'
         });
 
-        registry.registerMenuAction([...CommonMenus.FILE, '0_new_sketch'], {
-            commandId: ArduinoCommands.NEW_SKETCH.id
-        });
-
         registry.registerMenuAction([...CommonMenus.FILE_SETTINGS_SUBMENU, '3_settings_cli'], {
             commandId: ArduinoCommands.OPEN_CLI_CONFIG.id
         });
 
-        registry.registerMenuAction(CommonMenus.FILE_SAVE, {
-            commandId: ArduinoCommands.SAVE_SKETCH_AS.id,
-            label: 'Save As...'
-        });
     }
 
     protected getMenuId(menuPath: string[]): string {
@@ -591,14 +474,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             command: ArduinoCommands.UPLOAD.id,
             keybinding: 'CtrlCmd+Alt+U'
         });
-        keybindings.registerKeybinding({
-            command: ArduinoCommands.NEW_SKETCH.id,
-            keybinding: 'CtrlCmd+N'
-        });
-        keybindings.registerKeybinding({
-            command: ArduinoCommands.SAVE_SKETCH_AS.id,
-            keybinding: 'CtrlCmd+Shift+S'
-        });
     }
 
     protected async registerSketchesInMenu(registry: MenuModelRegistry): Promise<void> {
@@ -609,7 +484,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 id: 'openSketch' + sketch.name
             }
             this.commandRegistry.registerCommand(command, {
-                execute: () => this.commandRegistry.executeCommand(ArduinoCommands.OPEN_SKETCH.id, sketch)
+                execute: () => this.commandRegistry.executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch)
             });
 
             registry.registerMenuAction(ArduinoToolbarContextMenu.WS_SKETCHES_GROUP, {

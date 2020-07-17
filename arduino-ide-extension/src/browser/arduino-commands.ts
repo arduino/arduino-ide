@@ -24,18 +24,8 @@ export namespace ArduinoCommands {
         id: 'arduino-toggle-compile-for-debug'
     };
 
-    export const SHOW_OPEN_CONTEXT_MENU: Command = {
-        id: 'arduino-show-open-context-menu',
-        label: 'Open Sketch',
-        category
-    };
-
     export const OPEN_FILE_NAVIGATOR: Command = {
         id: 'arduino-open-file-navigator'
-    };
-
-    export const OPEN_SKETCH: Command = {
-        id: 'arduino-open-file'
     };
 
     /**
@@ -43,23 +33,6 @@ export namespace ArduinoCommands {
      */
     export const OPEN_SKETCH_FILES: Command = {
         id: 'arduino-open-sketch-files'
-    };
-
-    export const SAVE_SKETCH: Command = {
-        id: 'arduino-save-sketch'
-    };
-
-    export const SAVE_SKETCH_AS: Command = {
-        id: 'arduino-save-sketch-as'
-    };
-
-    export const NEW_SKETCH: Command = {
-        id: 'arduino-new-sketch',
-        label: 'New Sketch',
-        category
-    };
-    export const NEW_SKETCH_TOOLBAR: Command = {
-        id: 'arduino-new-sketch-toolbar'
     };
 
     export const OPEN_BOARDS_DIALOG: Command = {

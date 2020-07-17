@@ -3,8 +3,8 @@ import { injectable, inject } from 'inversify';
 import { CommandService } from '@theia/core/lib/common/command';
 import { ApplicationShell, Widget } from '@theia/core/lib/browser';
 import { EditorMode } from '../editor-mode';
-import { ArduinoCommands } from '../arduino-commands';
 import { EditorWidget } from '@theia/editor/lib/browser';
+import { SaveAsSketch } from '../contributions/save-as-sketch';
 
 @injectable()
 export class ArduinoApplicationShell extends ApplicationShell {
@@ -28,7 +28,7 @@ export class ArduinoApplicationShell extends ApplicationShell {
 
     async save(): Promise<void> {
         await super.save();
-        await this.commandService.executeCommand(ArduinoCommands.SAVE_SKETCH_AS.id, { execOnlyIfTemp: true });
+        await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { execOnlyIfTemp: true, openAfterMove: true });
     }
 
 }

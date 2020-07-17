@@ -79,6 +79,12 @@ import { ILogger } from '@theia/core';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
 import { WorkspaceFrontendContribution, FileMenuContribution } from '@theia/workspace/lib/browser';
 import { ArduinoWorkspaceFrontendContribution, ArduinoFileMenuContribution } from './customization/arduino-workspace-frontend-contribution';
+import { Contribution } from './contributions/contribution';
+import { NewSketch } from './contributions/new-sketch';
+import { OpenSketch } from './contributions/open-sketch';
+import { CloseSketch } from './contributions/close-sketch';
+import { SaveAsSketch } from './contributions/save-as-sketch';
+import { SaveSketch } from './contributions/save-sketch';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -298,4 +304,10 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
 
     // File-system extension
     bind(FileSystemExt).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, FileSystemExtPath)).inSingletonScope();
+
+    Contribution.configure(bind, NewSketch);
+    Contribution.configure(bind, OpenSketch);
+    Contribution.configure(bind, CloseSketch);
+    Contribution.configure(bind, SaveSketch);
+    Contribution.configure(bind, SaveAsSketch);
 });

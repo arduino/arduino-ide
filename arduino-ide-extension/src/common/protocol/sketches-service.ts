@@ -42,3 +42,8 @@ export interface Sketch {
     readonly name: string;
     readonly uri: string;
 }
+export namespace Sketch {
+    export function is(arg: any): arg is Sketch {
+        return !!arg && 'name' in arg && 'uri' in arg && typeof arg.name === 'string' && typeof arg.uri === 'string';
+    }
+}
