@@ -371,16 +371,11 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     ? sketchDirUri.resolve(sketchDirUri.resolve(`${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`).toString())
                     : sketchDirUri.resolve(sketch.name);
                 const defaultPath = await this.fileSystem.getFsPath(defaultUri.toString())!;
-                const fsPath = await new Promise<string | undefined>(resolve => {
-                    remote.dialog.showSaveDialog({
-                        title: 'Save sketch folder as...',
-                        defaultPath
-                    }, (filename) => resolve(filename));
-                });
-                if (!fsPath) { // Canceled
+                const { filePath, canceled } = await remote.dialog.showSaveDialog({ title: 'Save sketch folder as...', defaultPath });
+                if (!filePath || canceled) {
                     return;
                 }
-                const destinationUri = await this.fileSystemExt.getUri(fsPath);
+                const destinationUri = await this.fileSystemExt.getUri(filePath);
                 if (!destinationUri) {
                     return;
                 }

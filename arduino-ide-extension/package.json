@@ -3,9 +3,6 @@
   "version": "0.0.7",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
-  "engines": {
-    "node": ">=10.11.0 <12"
-  },
   "scripts": {
     "prepare": "yarn download-cli && yarn download-ls && yarn run clean && yarn run build",
     "clean": "rimraf lib",
