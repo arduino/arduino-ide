@@ -166,7 +166,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
                 if (error) {
                     ready.reject(error);
                 }
-                if (message.includes('Daemon is listening on TCP port')) {
+                if (message.includes('Daemon is now listening on 127.0.0.1')) {
                     grpcServerIsReady = true;
                     ready.resolve(daemon);
                 }
