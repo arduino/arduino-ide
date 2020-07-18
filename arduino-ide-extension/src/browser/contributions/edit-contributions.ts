@@ -4,21 +4,28 @@ import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { Contribution, Command, MenuModelRegistry, KeybindingRegistry, CommandRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
+import { CommonCommands } from '@theia/core/lib/browser';
 
+// TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
+// Depends on https://github.com/eclipse-theia/theia/pull/7964
 @injectable()
 export class EditContributions extends Contribution {
 
-    @inject(ClipboardService)
-    protected readonly clipboardService: ClipboardService;
-
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
+
+    @inject(ClipboardService)
+    protected readonly clipboardService: ClipboardService;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(EditContributions.Commands.GO_TO_LINE, { execute: () => this.run('editor.action.gotoLine') });
         registry.registerCommand(EditContributions.Commands.TOGGLE_COMMENT, { execute: () => this.run('editor.action.commentLine') });
         registry.registerCommand(EditContributions.Commands.INDENT_LINES, { execute: () => this.run('editor.action.indentLines') });
         registry.registerCommand(EditContributions.Commands.OUTDENT_LINES, { execute: () => this.run('editor.action.outdentLines') });
+        registry.registerCommand(EditContributions.Commands.FIND, { execute: () => this.run('actions.find') });
+        registry.registerCommand(EditContributions.Commands.FIND_NEXT, { execute: () => this.run('actions.findWithSelection') });
+        registry.registerCommand(EditContributions.Commands.FIND_PREVIOUS, { execute: () => this.run('editor.action.nextMatchFindAction') });
+        registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, { execute: () => this.run('editor.action.previousSelectionMatchFindAction') });
         registry.registerCommand(EditContributions.Commands.COPY_FOR_FORUM, {
             execute: async () => {
                 const value = await this.currentValue();
@@ -29,7 +36,7 @@ ${value}
                 }
             }
         });
-        registry.registerCommand(EditContributions.Commands.COPY_FOR_MARKDOWN, {
+        registry.registerCommand(EditContributions.Commands.COPY_FOR_GITHUB, {
             execute: async () => {
                 const value = await this.currentValue();
                 if (value !== undefined) {
@@ -43,16 +50,35 @@ ${value}
 
     registerMenus(registry: MenuModelRegistry): void {
         registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-            commandId: EditContributions.Commands.COPY_FOR_FORUM.id,
-            label: 'Copy for Forum',
+            commandId: CommonCommands.CUT.id,
+            order: '0'
         });
         registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-            commandId: EditContributions.Commands.COPY_FOR_MARKDOWN.id,
-            label: 'Copy for GitHub [Markdown]',
+            commandId: CommonCommands.COPY.id,
+            order: '1'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
+            commandId: EditContributions.Commands.COPY_FOR_FORUM.id,
+            label: 'Copy for Forum',
+            order: '2'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
+            commandId: EditContributions.Commands.COPY_FOR_GITHUB.id,
+            label: 'Copy for GitHub',
+            order: '3'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
+            commandId: CommonCommands.PASTE.id,
+            order: '4'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
+            commandId: CommonCommands.SELECT_ALL.id,
+            order: '5'
         });
         registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
             commandId: EditContributions.Commands.GO_TO_LINE.id,
             label: 'Go to Line...',
+            order: '6'
         });
 
         registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
@@ -70,12 +96,37 @@ ${value}
             label: 'Decrease Indent',
             order: '2'
         });
+
+        registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
+            commandId: EditContributions.Commands.FIND.id,
+            label: 'Find',
+            order: '0'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
+            commandId: EditContributions.Commands.FIND_NEXT.id,
+            label: 'Find Next',
+            order: '1'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
+            commandId: EditContributions.Commands.FIND_PREVIOUS.id,
+            label: 'Find Previous',
+            order: '2'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
+            commandId: EditContributions.Commands.USE_FOR_FIND.id,
+            label: 'Use Selection for Find', // XXX: The Java IDE uses `Use Selection For Find`.
+            order: '3'
+        });
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: EditContributions.Commands.COPY_FOR_FORUM.id,
             keybinding: 'CtrlCmd+Shift+C'
+        });
+        registry.registerKeybinding({
+            command: EditContributions.Commands.COPY_FOR_GITHUB.id,
+            keybinding: 'CtrlCmd+Alt+C'
         });
         registry.registerKeybinding({
             command: EditContributions.Commands.GO_TO_LINE.id,
@@ -93,6 +144,23 @@ ${value}
         registry.registerKeybinding({
             command: EditContributions.Commands.OUTDENT_LINES.id,
             keybinding: 'Shift+Tab'
+        });
+
+        registry.registerKeybinding({
+            command: EditContributions.Commands.FIND.id,
+            keybinding: 'CtrlCmd+F'
+        });
+        registry.registerKeybinding({
+            command: EditContributions.Commands.FIND_NEXT.id,
+            keybinding: 'CtrlCmd+G'
+        });
+        registry.registerKeybinding({
+            command: EditContributions.Commands.FIND_PREVIOUS.id,
+            keybinding: 'CtrlCmd+Shift+G'
+        });
+        registry.registerKeybinding({
+            command: EditContributions.Commands.USE_FOR_FIND.id,
+            keybinding: 'CtrlCmd+E'
         });
     }
 
@@ -122,8 +190,8 @@ export namespace EditContributions {
         export const COPY_FOR_FORUM: Command = {
             id: 'arduino-copy-for-forum'
         };
-        export const COPY_FOR_MARKDOWN: Command = {
-            id: 'arduino-copy-for-markdown'
+        export const COPY_FOR_GITHUB: Command = {
+            id: 'arduino-copy-for-github'
         };
         export const GO_TO_LINE: Command = {
             id: 'arduino-go-to-line'
@@ -136,6 +204,18 @@ export namespace EditContributions {
         };
         export const OUTDENT_LINES: Command = {
             id: 'arduino-outdent-lines'
+        };
+        export const FIND: Command = {
+            id: 'arduino-find'
+        };
+        export const FIND_NEXT: Command = {
+            id: 'arduino-find-next'
+        };
+        export const FIND_PREVIOUS: Command = {
+            id: 'arduino-find-previous'
+        };
+        export const USE_FOR_FIND: Command = {
+            id: 'arduino-for-find'
         };
     }
 }

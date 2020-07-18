@@ -9,10 +9,10 @@ export namespace ArduinoMenus {
     export const FILE__PRINT_GROUP = [...CommonMenus.FILE, '1_print'];
 
     // Edit
-    export const EDIT__TEXT_CONTROL_GROUP = [...CommonMenus.EDIT, '1_text_control']; // `Copy`, `Copy to Forum`, `Paste`, etc.
-    export const EDIT__CODE_CONTROL_GROUP = [...CommonMenus.EDIT, '2_code_control']; // `Comment/Uncomment`, etc.
-    export const EDIT__FONT_CONTROL_GROUP = [...CommonMenus.EDIT, '3_font_control'];
-    export const EDIT__FIND_GROUP = [...CommonMenus.EDIT, '4_find'];
+    export const EDIT__TEXT_CONTROL_GROUP = [...CommonMenus.EDIT, '2_text_control']; // `Copy`, `Copy to Forum`, `Paste`, etc. Note: `1_undo` is the first group from Theia
+    export const EDIT__CODE_CONTROL_GROUP = [...CommonMenus.EDIT, '3_code_control']; // `Comment/Uncomment`, etc.
+    export const EDIT__FONT_CONTROL_GROUP = [...CommonMenus.EDIT, '4_font_control'];
+    export const EDIT__FIND_GROUP = [...CommonMenus.EDIT, '5_find'];
 
     // Sketch
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
