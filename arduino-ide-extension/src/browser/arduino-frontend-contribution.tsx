@@ -37,7 +37,7 @@ import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
 import { BoardsConfigStore } from './boards/boards-config-store';
-import { MainMenuManager } from './menu/main-menu-manager';
+import { MainMenuManager } from '../common/main-menu-manager';
 import { FileSystemExt } from '../common/protocol/filesystem-ext';
 import { ArduinoMenus } from './menu/arduino-menus';
 

@@ -6,7 +6,7 @@ import { BoardsServiceClientImpl } from './boards-service-client-impl';
 import { Board, ConfigOption } from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsConfigStore } from './boards-config-store';
-import { MainMenuManager } from '../menu/main-menu-manager';
+import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()

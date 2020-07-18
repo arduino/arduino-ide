@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { ApplicationShell, FrontendApplicationContribution, FrontendApplication, Widget } from '@theia/core/lib/browser';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { OutputWidget } from '@theia/output/lib/browser/output-widget';
-import { MainMenuManager } from './menu/main-menu-manager';
+import { MainMenuManager } from '../common/main-menu-manager';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { LibraryListWidget } from './library/library-list-widget';
 

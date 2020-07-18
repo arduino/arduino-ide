@@ -1,12 +1,16 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { remote } from 'electron';
-import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry } from './contribution';
+import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, URI, Sketch } from './contribution';
 import { SaveAsSketch } from './save-as-sketch';
+import { EditorManager } from '@theia/editor/lib/browser';
+import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 
 @injectable()
 export class CloseSketch extends SketchContribution {
+
+    @inject(EditorManager)
+    protected readonly editorManager: EditorManager;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(CloseSketch.Commands.CLOSE_SKETCH, {
@@ -16,8 +20,7 @@ export class CloseSketch extends SketchContribution {
                     return;
                 }
                 const isTemp = await this.sketchService.isTemp(sketch);
-                if (isTemp) {
-                    // TODO: check monaco model version. If `0` just close the app.
+                if (isTemp && await this.wasTouched(sketch)) {
                     const { response } = await remote.dialog.showMessageBox({
                         type: 'question',
                         buttons: ["Don't Save", 'Cancel', 'Save'],
@@ -34,7 +37,7 @@ export class CloseSketch extends SketchContribution {
                         }
                     }
                 }
-                await this.commandService.executeCommand(WorkspaceCommands.CLOSE.id);
+                window.close();
             }
         });
     }
@@ -52,6 +55,23 @@ export class CloseSketch extends SketchContribution {
             command: CloseSketch.Commands.CLOSE_SKETCH.id,
             keybinding: 'CtrlCmd+W' // TODO: Windows binding?
         });
+    }
+
+    /**
+     * If the file was ever touched/modified. We get this based on the `version` of the monaco model.
+     */
+    protected async wasTouched(sketch: Sketch): Promise<boolean> {
+        const editorWidget = await this.editorManager.getByUri(new URI(sketch.uri).resolve(`${sketch.name}.ino`));
+        if (editorWidget) {
+            const { editor } = editorWidget;
+            if (editor instanceof MonacoEditor) {
+                const versionId = editor.getControl().getModel()?.getVersionId();
+                if (Number.isInteger(versionId) && versionId! > 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

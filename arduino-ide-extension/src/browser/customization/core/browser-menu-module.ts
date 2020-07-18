@@ -1,7 +1,7 @@
 import '../../../../src/browser/style/browser-menu.css';
 import { ContainerModule } from 'inversify';
 import { BrowserMenuBarContribution, BrowserMainMenuFactory as TheiaBrowserMainMenuFactory } from '@theia/core/lib/browser/menu/browser-menu-plugin';
-import { MainMenuManager } from '../../menu/main-menu-manager';
+import { MainMenuManager } from '../../../common/main-menu-manager';
 import { ArduinoMenuContribution } from './browser-menu-plugin';
 import { BrowserMainMenuFactory } from './browser-main-menu-factory';
 

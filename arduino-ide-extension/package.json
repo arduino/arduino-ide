@@ -107,7 +107,7 @@
     },
     {
       "frontend": "lib/browser/customization/core/browser-menu-module",
-      "frontendElectron": "lib/electron-browser/menu/electron-arduino-menu-module"
+      "frontendElectron": "lib/electron-browser/customization/core/electron-menu-module"
     },
     {
       "frontend": "lib/browser/boards/quick-open/boards-quick-open-module"

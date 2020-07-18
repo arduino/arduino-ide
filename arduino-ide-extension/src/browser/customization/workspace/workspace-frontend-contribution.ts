@@ -18,17 +18,12 @@ export class WorkspaceFrontendContribution extends TheiaWorkspaceFrontendContrib
             WorkspaceCommands.OPEN_WORKSPACE,
             WorkspaceCommands.OPEN_RECENT_WORKSPACE,
             WorkspaceCommands.SAVE_WORKSPACE_AS,
-            WorkspaceCommands.SAVE_AS
+            WorkspaceCommands.SAVE_AS,
+            WorkspaceCommands.CLOSE
         ].filter(commands.has.bind(commands)).forEach(registry.unregisterCommand.bind(registry));
     }
 
     registerMenus(_: MenuModelRegistry): void {
-        // NOOP
-    }
-
-    protected async closeWorkspace(): Promise<void> {
-        // Do not ask to close the workspace, just close it. The dirty/temp state of the sketch is handled somewhere else.
-        await this.workspaceService.close();
     }
 
 }
