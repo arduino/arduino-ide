@@ -15,10 +15,9 @@ export class ApplicationShell extends TheiaApplicationShell {
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
-    protected async track(widget: Widget): Promise<void> {
-        if (this.editorMode.proMode) {
-            super.track(widget);
-        } else {
+    protected track(widget: Widget): void {
+        super.track(widget);
+        if (!this.editorMode.proMode) {
             if (widget instanceof EditorWidget && widget.editor.uri.toString().endsWith('arduino-cli.yaml')) {
                 return;
             }
