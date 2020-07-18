@@ -11,8 +11,6 @@ import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/li
 import { Command, CommandRegistry, CommandContribution, CommandService } from '@theia/core/lib/common/command';
 import { SketchesService, ConfigService, FileSystemExt, Sketch } from '../../common/protocol';
 import { EditorMode } from '../editor-mode';
-import { EditorManager } from '@theia/editor/lib/browser';
-import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 
 export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch };
 
@@ -63,7 +61,7 @@ export abstract class SketchContribution extends Contribution {
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
 
-    protected async getCurrentSketch(): Promise<Sketch | undefined> {
+    protected async currentSketch(): Promise<Sketch | undefined> {
         const sketches = (await Promise.all(this.workspaceService.tryGetRoots().map(({ uri }) => this.sketchService.getSketchFolder(uri)))).filter(notEmpty);
         if (!sketches.length) {
             return;
@@ -72,29 +70,6 @@ export abstract class SketchContribution extends Contribution {
             console.log(`Multiple sketch folders were found in the workspace. Falling back to the first one. Sketch folders: ${JSON.stringify(sketches)}`);
         }
         return sketches[0];
-    }
-
-}
-
-@injectable()
-export abstract class EditorContribution extends Contribution {
-
-    @inject(EditorManager)
-    protected readonly editorManager: EditorManager;
-
-    protected async current(): Promise<MonacoEditor | undefined> {
-        const editor = this.editorManager.currentEditor?.editor;
-        return editor instanceof MonacoEditor ? editor : undefined;
-    }
-
-    protected async run(commandId: string): Promise<any> {
-        const editor = await this.current();
-        if (editor) {
-            const action = editor.getControl().getAction(commandId);
-            if (action) {
-                return action.run();
-            }
-        }
     }
 
 }

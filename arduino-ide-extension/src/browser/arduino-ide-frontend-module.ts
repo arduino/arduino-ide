@@ -96,9 +96,7 @@ import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
 import { CommonFrontendContribution } from './customization/core/common-frontend-contribution';
-import { CopyToForum } from './contributions/copy-to-forum';
-import { GoToLine } from './contributions/go-to-line';
-import { ToggleComment } from './contributions/toggle-comment';
+import { EditContributions } from './contributions/edit-contributions';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -327,7 +325,5 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     Contribution.configure(bind, SaveAsSketch);
     Contribution.configure(bind, VerifySketch);
     Contribution.configure(bind, UploadSketch);
-    Contribution.configure(bind, CopyToForum);
-    Contribution.configure(bind, GoToLine);
-    Contribution.configure(bind, ToggleComment);
+    Contribution.configure(bind, EditContributions);
 });

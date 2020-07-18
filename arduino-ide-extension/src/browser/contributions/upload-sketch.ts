@@ -57,7 +57,7 @@ export class UploadSketch extends SketchContribution {
     }
 
     async uploadSketch(): Promise<void> {
-        const sketch = await this.getCurrentSketch();
+        const sketch = await this.currentSketch();
         if (!sketch) {
             return;
         }

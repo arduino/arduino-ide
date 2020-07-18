@@ -53,7 +53,7 @@ export class VerifySketch extends SketchContribution {
     }
 
     async verifySketch(): Promise<void> {
-        const sketch = await this.getCurrentSketch();
+        const sketch = await this.currentSketch();
         if (!sketch) {
             return;
         }

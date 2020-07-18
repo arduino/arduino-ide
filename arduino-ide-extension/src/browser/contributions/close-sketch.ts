@@ -15,7 +15,7 @@ export class CloseSketch extends SketchContribution {
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(CloseSketch.Commands.CLOSE_SKETCH, {
             execute: async () => {
-                const sketch = await this.getCurrentSketch();
+                const sketch = await this.currentSketch();
                 if (!sketch) {
                     return;
                 }
