@@ -1,8 +1,10 @@
-import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
+import { injectable } from 'inversify';
+import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
 import { TextEditor } from '@theia/editor/lib/browser';
 import { StatusBarAlignment } from '@theia/core/lib/browser';
 
-export class ArduinoEditorContribution extends EditorContribution {
+@injectable()
+export class EditorContribution extends TheiaEditorContribution {
 
     protected updateLanguageStatus(editor: TextEditor | undefined): void {
     }

@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
-import { EditorManager, EditorOpenerOptions } from '@theia/editor/lib/browser/editor-manager';
+import { EditorManager as TheiaEditorManager, EditorOpenerOptions } from '@theia/editor/lib/browser/editor-manager';
 import { ConfigService } from '../../../common/protocol/config-service';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 
 @injectable()
-export class ArduinoEditorManager extends EditorManager {
+export class EditorManager extends TheiaEditorManager {
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;

@@ -2,10 +2,10 @@ import { injectable } from 'inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { WorkspaceCommands, FileMenuContribution } from '@theia/workspace/lib/browser/workspace-commands';
-import { WorkspaceFrontendContribution } from '@theia/workspace/lib/browser/workspace-frontend-contribution';
+import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution } from '@theia/workspace/lib/browser/workspace-frontend-contribution';
 
 @injectable()
-export class ArduinoWorkspaceFrontendContribution extends WorkspaceFrontendContribution {
+export class WorkspaceFrontendContribution extends TheiaWorkspaceFrontendContribution {
 
     registerCommands(registry: CommandRegistry): void {
         super.registerCommands(registry);

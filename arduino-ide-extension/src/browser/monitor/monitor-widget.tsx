@@ -9,7 +9,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable'
 import { ReactWidget, Message, Widget, MessageLoop } from '@theia/core/lib/browser/widgets';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
-import { ArduinoSelect } from '../components/arduino-select';
+import { ArduinoSelect } from '../widgets/arduino-select';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';

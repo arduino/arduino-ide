@@ -1,10 +1,10 @@
 import { injectable, inject } from 'inversify';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { EditorMode } from '../../editor-mode';
 
 @injectable()
-export class ArduinoNavigatorContribution extends FileNavigatorContribution {
+export class OutlineViewContribution extends TheiaOutlineViewContribution {
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
@@ -16,3 +16,4 @@ export class ArduinoNavigatorContribution extends FileNavigatorContribution {
     }
 
 }
+

@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify';
-import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { ScmContribution as TheiaScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { StatusBarEntry } from '@theia/core/lib/browser/status-bar/status-bar';
 import { EditorMode } from '../../editor-mode';
 
 @injectable()
-export class ArduinoScmContribution extends ScmContribution {
+export class ScmContribution extends TheiaScmContribution {
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;

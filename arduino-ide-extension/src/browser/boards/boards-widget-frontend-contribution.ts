@@ -2,7 +2,7 @@ import { injectable } from 'inversify';
 import { MenuModelRegistry } from '@theia/core';
 import { BoardsListWidget } from './boards-list-widget';
 import { BoardsPackage } from '../../common/protocol/boards-service';
-import { ListWidgetFrontendContribution } from '../components/component-list/list-widget-frontend-contribution';
+import { ListWidgetFrontendContribution } from '../widgets/component-list/list-widget-frontend-contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()

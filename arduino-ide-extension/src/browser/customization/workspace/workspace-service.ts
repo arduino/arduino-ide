@@ -1,14 +1,14 @@
 import { injectable, inject } from 'inversify';
 import { MessageService } from '@theia/core';
 import { LabelProvider } from '@theia/core/lib/browser';
-import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
 import { SketchesService } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { EditorMode } from '../../editor-mode';
 
 @injectable()
-export class ArduinoWorkspaceService extends WorkspaceService {
+export class WorkspaceService extends TheiaWorkspaceService {
 
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
