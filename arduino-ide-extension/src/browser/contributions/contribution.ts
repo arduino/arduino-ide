@@ -87,6 +87,16 @@ export abstract class EditorContribution extends Contribution {
         return editor instanceof MonacoEditor ? editor : undefined;
     }
 
+    protected async run(commandId: string): Promise<any> {
+        const editor = await this.current();
+        if (editor) {
+            const action = editor.getControl().getAction(commandId);
+            if (action) {
+                return action.run();
+            }
+        }
+    }
+
 }
 
 export namespace Contribution {

@@ -27,11 +27,7 @@ export class GoToLine extends EditorContribution {
     }
 
     async goToLine(): Promise<void> {
-        const editor = await this.current();
-        if (editor) {
-            const action = editor.getControl().getAction('editor.action.gotoLine');
-            return action.run();
-        }
+        return this.run('editor.action.gotoLine');
     }
 
 }

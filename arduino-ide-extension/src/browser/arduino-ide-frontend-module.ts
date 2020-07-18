@@ -98,6 +98,7 @@ import { UploadSketch } from './contributions/upload-sketch';
 import { CommonFrontendContribution } from './customization/core/common-frontend-contribution';
 import { CopyToForum } from './contributions/copy-to-forum';
 import { GoToLine } from './contributions/go-to-line';
+import { ToggleComment } from './contributions/toggle-comment';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -328,4 +329,5 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     Contribution.configure(bind, UploadSketch);
     Contribution.configure(bind, CopyToForum);
     Contribution.configure(bind, GoToLine);
+    Contribution.configure(bind, ToggleComment);
 });
