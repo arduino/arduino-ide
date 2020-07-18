@@ -30,6 +30,8 @@ export class ElectronMenuContribution extends TheiaElectronMenuContribution impl
     registerKeybindings(registry: KeybindingRegistry): void {
         super.registerKeybindings(registry);
         registry.unregisterKeybinding(ElectronCommands.CLOSE_WINDOW.id);
+        registry.unregisterKeybinding(ElectronCommands.ZOOM_IN.id);
+        registry.unregisterKeybinding(ElectronCommands.ZOOM_OUT.id);
     }
 
 }

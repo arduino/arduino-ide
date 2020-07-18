@@ -1,10 +1,12 @@
 import { inject, injectable } from 'inversify';
-import { EditorManager } from '@theia/editor/lib/browser';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
+import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
+import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
+import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
+import { EDITOR_FONT_DEFAULTS } from '@theia/editor/lib/browser/editor-preferences';
 import { Contribution, Command, MenuModelRegistry, KeybindingRegistry, CommandRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
-import { CommonCommands } from '@theia/core/lib/browser';
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
@@ -17,6 +19,9 @@ export class EditContributions extends Contribution {
     @inject(ClipboardService)
     protected readonly clipboardService: ClipboardService;
 
+    @inject(PreferenceService)
+    protected readonly preferences: PreferenceService;
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(EditContributions.Commands.GO_TO_LINE, { execute: () => this.run('editor.action.gotoLine') });
         registry.registerCommand(EditContributions.Commands.TOGGLE_COMMENT, { execute: () => this.run('editor.action.commentLine') });
@@ -26,6 +31,12 @@ export class EditContributions extends Contribution {
         registry.registerCommand(EditContributions.Commands.FIND_NEXT, { execute: () => this.run('actions.findWithSelection') });
         registry.registerCommand(EditContributions.Commands.FIND_PREVIOUS, { execute: () => this.run('editor.action.nextMatchFindAction') });
         registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, { execute: () => this.run('editor.action.previousSelectionMatchFindAction') });
+        registry.registerCommand(EditContributions.Commands.INCREASE_FONT_SIZE, {
+            execute: () => this.preferences.set('editor.fontSize', this.preferences.get('editor.fontSize', EDITOR_FONT_DEFAULTS.fontSize) + 1)
+        });
+        registry.registerCommand(EditContributions.Commands.DECREASE_FONT_SIZE, {
+            execute: () => this.preferences.set('editor.fontSize', this.preferences.get('editor.fontSize', EDITOR_FONT_DEFAULTS.fontSize) - 1)
+        });
         /* Tools */registry.registerCommand(EditContributions.Commands.AUTO_FORMAT, { execute: () => this.run('editor.action.formatDocument') });
         registry.registerCommand(EditContributions.Commands.COPY_FOR_FORUM, {
             execute: async () => {
@@ -98,6 +109,17 @@ ${value}
             order: '2'
         });
 
+        registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
+            commandId: EditContributions.Commands.INCREASE_FONT_SIZE.id,
+            label: 'Increase Font Size',
+            order: '0'
+        });
+        registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
+            commandId: EditContributions.Commands.DECREASE_FONT_SIZE.id,
+            label: 'Decrease Font Size',
+            order: '1'
+        });
+
         registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
             commandId: EditContributions.Commands.FIND.id,
             label: 'Find',
@@ -152,6 +174,15 @@ ${value}
         registry.registerKeybinding({
             command: EditContributions.Commands.OUTDENT_LINES.id,
             keybinding: 'Shift+Tab'
+        });
+
+        registry.registerKeybinding({
+            command: EditContributions.Commands.INCREASE_FONT_SIZE.id,
+            keybinding: 'CtrlCmd+=' // TODO: compare with the Java IDE. It uses `⌘+`. There is no `+` on EN_US.
+        });
+        registry.registerKeybinding({
+            command: EditContributions.Commands.DECREASE_FONT_SIZE.id,
+            keybinding: 'CtrlCmd+-'
         });
 
         registry.registerKeybinding({
@@ -231,9 +262,14 @@ export namespace EditContributions {
         export const USE_FOR_FIND: Command = {
             id: 'arduino-for-find'
         };
-        // `Auto Format` does not belong here.
+        export const INCREASE_FONT_SIZE: Command = {
+            id: 'arduino-increase-font-size'
+        };
+        export const DECREASE_FONT_SIZE: Command = {
+            id: 'arduino-decrease-font-size'
+        };
         export const AUTO_FORMAT: Command = {
-            id: 'arduino-auto-format'
+            id: 'arduino-auto-format' // `Auto Format` should belong to `Tool`.
         };
     }
 }
