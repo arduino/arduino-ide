@@ -23,18 +23,18 @@ import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { WorkspaceService } from './customization/workspace/workspace-service';
+import { WorkspaceService } from './theia/workspace/workspace-service';
 import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { OutlineViewContribution } from './customization/outline/outline-contribution';
+import { OutlineViewContribution } from './theia/outline/outline-contribution';
 import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
-import { ProblemContribution } from './customization/markers/problem-contribution';
-import { FileNavigatorContribution } from './customization/navigator/navigator-contribution';
+import { ProblemContribution } from './theia/markers/problem-contribution';
+import { FileNavigatorContribution } from './theia/navigator/navigator-contribution';
 import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
 import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { EditorContribution } from './customization/editor/editor-contribution';
+import { EditorContribution } from './theia/editor/editor-contribution';
 import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
-import { MonacoStatusBarContribution } from './customization/monaco/monaco-status-bar-contribution';
+import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
     ApplicationShell as TheiaApplicationShell,
     ShellLayoutRestorer as TheiaShellLayoutRestorer,
@@ -42,14 +42,14 @@ import {
     CommonFrontendContribution as TheiaCommonFrontendContribution
 } from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
-import { ApplicationShell } from './customization/core/application-shell';
-import { FrontendApplication } from './customization/core/frontend-application';
+import { ApplicationShell } from './theia/core/application-shell';
+import { FrontendApplication } from './theia/core/frontend-application';
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
 import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
 import { ScmContribution as TheiaScmContribution } from '@theia/scm/lib/browser/scm-contribution';
-import { ScmContribution } from './customization/scm/scm-contribution';
+import { ScmContribution } from './theia/scm/scm-contribution';
 import { SearchInWorkspaceFrontendContribution as TheiaSearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
-import { SearchInWorkspaceFrontendContribution } from './customization/search-in-workspace/search-in-workspace-frontend-contribution';
+import { SearchInWorkspaceFrontendContribution } from './theia/search-in-workspace/search-in-workspace-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
@@ -59,13 +59,13 @@ import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorModel } from './monitor/monitor-model';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
-import { TabBarDecoratorService } from './customization/core/tab-bar-decorator';
+import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
-import { ProblemManager } from './customization/markers/problem-manager';
+import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
-import { AboutDialog } from './customization/core/about-dialog';
-import { ShellLayoutRestorer } from './customization/core/shell-layout-restorer';
+import { AboutDialog } from './theia/core/about-dialog';
+import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
@@ -73,8 +73,8 @@ import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-s
 import { ArduinoDaemonClientImpl } from './arduino-daemon-client-impl';
 import { ArduinoDaemonClient, ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser';
-import { EditorManager } from './customization/editor/editor-manager';
-import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from './customization/core/connection-status-service';
+import { EditorManager } from './theia/editor/editor-manager';
+import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from './theia/core/connection-status-service';
 import {
     FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
     ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution
@@ -86,7 +86,7 @@ import { BoardsConfigStore } from './boards/boards-config-store';
 import { ILogger } from '@theia/core';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
 import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution, FileMenuContribution as TheiaFileMenuContribution } from '@theia/workspace/lib/browser';
-import { WorkspaceFrontendContribution, ArduinoFileMenuContribution } from './customization/workspace/workspace-frontend-contribution';
+import { WorkspaceFrontendContribution, ArduinoFileMenuContribution } from './theia/workspace/workspace-frontend-contribution';
 import { Contribution } from './contributions/contribution';
 import { NewSketch } from './contributions/new-sketch';
 import { OpenSketch } from './contributions/open-sketch';
@@ -95,7 +95,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
-import { CommonFrontendContribution } from './customization/core/common-frontend-contribution';
+import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
 import { EditContributions } from './contributions/edit-contributions';
 import { OpenSketchExternal } from './contributions/open-sketch-external';
 

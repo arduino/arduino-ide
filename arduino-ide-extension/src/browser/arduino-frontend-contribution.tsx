@@ -24,7 +24,7 @@ import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { BoardsConfig } from './boards/boards-config';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
-import { WorkspaceService } from './customization/workspace/workspace-service';
+import { WorkspaceService } from './theia/workspace/workspace-service';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
