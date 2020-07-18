@@ -31,7 +31,8 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
         if (this.toggleCommand) {
             menus.registerMenuAction(ArduinoMenus.TOOLS, {
                 commandId: this.toggleCommand.id,
-                label: 'Boards Manager...'
+                label: 'Boards Manager...',
+                order: '4'
             });
         }
     }

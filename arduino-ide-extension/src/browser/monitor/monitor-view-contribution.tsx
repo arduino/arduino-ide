@@ -51,7 +51,7 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
             menus.registerMenuAction(ArduinoMenus.TOOLS, {
                 commandId: this.toggleCommand.id,
                 label: 'Serial Monitor',
-                order: '4'
+                order: '5'
             });
         }
     }
