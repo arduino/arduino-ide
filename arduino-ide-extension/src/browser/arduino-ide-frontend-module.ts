@@ -32,7 +32,7 @@ import { FileNavigatorContribution } from './customization/navigator/navigator-c
 import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
 import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { EditorContribution } from './customization/editor/arduino-editor-contribution';
+import { EditorContribution } from './customization/editor/editor-contribution';
 import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { MonacoStatusBarContribution } from './customization/monaco/monaco-status-bar-contribution';
 import { ApplicationShell as TheiaApplicationShell, ShellLayoutRestorer as TheiaShellLayoutRestorer, KeybindingContribution } from '@theia/core/lib/browser';
