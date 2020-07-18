@@ -50,7 +50,8 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
         if (this.toggleCommand) {
             menus.registerMenuAction(ArduinoMenus.TOOLS, {
                 commandId: this.toggleCommand.id,
-                label: 'Serial Monitor'
+                label: 'Serial Monitor',
+                order: '4'
             });
         }
     }

@@ -17,7 +17,7 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
                 rank: 700
             },
             toggleCommandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-            toggleKeybinding: 'ctrlcmd+shift+l'
+            toggleKeybinding: 'CtrlCmd+Shift+I'
         });
     }
 
@@ -29,7 +29,8 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
         if (this.toggleCommand) {
             menus.registerMenuAction(ArduinoMenus.TOOLS, {
                 commandId: this.toggleCommand.id,
-                label: 'Manage Libraries...'
+                label: 'Manage Libraries...',
+                order: '3'
             });
         }
     }

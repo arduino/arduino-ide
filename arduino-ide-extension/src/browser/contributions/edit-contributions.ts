@@ -26,6 +26,7 @@ export class EditContributions extends Contribution {
         registry.registerCommand(EditContributions.Commands.FIND_NEXT, { execute: () => this.run('actions.findWithSelection') });
         registry.registerCommand(EditContributions.Commands.FIND_PREVIOUS, { execute: () => this.run('editor.action.nextMatchFindAction') });
         registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, { execute: () => this.run('editor.action.previousSelectionMatchFindAction') });
+        /* Tools */registry.registerCommand(EditContributions.Commands.AUTO_FORMAT, { execute: () => this.run('editor.action.formatDocument') });
         registry.registerCommand(EditContributions.Commands.COPY_FOR_FORUM, {
             execute: async () => {
                 const value = await this.currentValue();
@@ -117,6 +118,13 @@ ${value}
             label: 'Use Selection for Find', // XXX: The Java IDE uses `Use Selection For Find`.
             order: '3'
         });
+
+        // `Tools`
+        registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
+            commandId: EditContributions.Commands.AUTO_FORMAT.id,
+            label: 'Auto Format', // XXX: The Java IDE uses `Use Selection For Find`.
+            order: '0'
+        });
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
@@ -161,6 +169,12 @@ ${value}
         registry.registerKeybinding({
             command: EditContributions.Commands.USE_FOR_FIND.id,
             keybinding: 'CtrlCmd+E'
+        });
+
+        // `Tools`
+        registry.registerKeybinding({
+            command: EditContributions.Commands.AUTO_FORMAT.id,
+            keybinding: 'CtrlCmd+T'
         });
     }
 
@@ -216,6 +230,10 @@ export namespace EditContributions {
         };
         export const USE_FOR_FIND: Command = {
             id: 'arduino-for-find'
+        };
+        // `Auto Format` does not belong here.
+        export const AUTO_FORMAT: Command = {
+            id: 'arduino-auto-format'
         };
     }
 }
