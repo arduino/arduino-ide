@@ -35,7 +35,12 @@ import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib
 import { EditorContribution } from './customization/editor/editor-contribution';
 import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { MonacoStatusBarContribution } from './customization/monaco/monaco-status-bar-contribution';
-import { ApplicationShell as TheiaApplicationShell, ShellLayoutRestorer as TheiaShellLayoutRestorer, KeybindingContribution } from '@theia/core/lib/browser';
+import {
+    ApplicationShell as TheiaApplicationShell,
+    ShellLayoutRestorer as TheiaShellLayoutRestorer,
+    KeybindingContribution,
+    CommonFrontendContribution as TheiaCommonFrontendContribution
+} from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
 import { ApplicationShell } from './customization/core/application-shell';
 import { FrontendApplication } from './customization/core/frontend-application';
@@ -90,6 +95,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
+import { CommonFrontendContribution } from './customization/core/common-frontend-contribution';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -267,6 +273,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     rebind(TheiaFrontendApplication).to(FrontendApplication).inSingletonScope();
     rebind(TheiaWorkspaceFrontendContribution).to(WorkspaceFrontendContribution).inSingletonScope();
     rebind(TheiaFileMenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
+    rebind(TheiaCommonFrontendContribution).to(CommonFrontendContribution).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
