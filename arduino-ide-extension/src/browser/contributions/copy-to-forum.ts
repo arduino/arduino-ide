@@ -12,7 +12,7 @@ export class CopyToForum extends EditorContribution {
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(CopyToForum.Commands.COPY_TO_FORUM, {
             execute: () => this.copyToForum()
-        })
+        });
     }
 
     registerMenus(registry: MenuModelRegistry): void {
