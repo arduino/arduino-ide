@@ -96,6 +96,7 @@ import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
 import { CommonFrontendContribution } from './customization/core/common-frontend-contribution';
+import { CopyToForum } from './contributions/copy-to-forum';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -324,4 +325,5 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     Contribution.configure(bind, SaveAsSketch);
     Contribution.configure(bind, VerifySketch);
     Contribution.configure(bind, UploadSketch);
+    Contribution.configure(bind, CopyToForum);
 });

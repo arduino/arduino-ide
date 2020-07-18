@@ -8,6 +8,12 @@ export namespace ArduinoMenus {
     export const FILE__SKETCH_GROUP = [...CommonMenus.FILE, '0_sketch'];
     export const FILE__PRINT_GROUP = [...CommonMenus.FILE, '1_print'];
 
+    // Edit
+    export const EDIT__TEXT_CONTROL_GROUP = [...CommonMenus.EDIT, '1_text_control']; // `Copy`, `Copy to Forum`, `Paste`, etc.
+    export const EDIT__CODE_CONTROL_GROUP = [...CommonMenus.EDIT, '2_code_control']; // `Comment/Uncomment`, etc.
+    export const EDIT__FONT_CONTROL_GROUP = [...CommonMenus.EDIT, '3_font_control'];
+    export const EDIT__FIND_GROUP = [...CommonMenus.EDIT, '4_find'];
+
     // Sketch
     export const SKETCH = [...MAIN_MENU_BAR, '3_sketch'];
     export const SKETCH__MAIN_GROUP = [...SKETCH, '0_main'];
