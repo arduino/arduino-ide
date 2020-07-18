@@ -35,7 +35,7 @@ export class UploadSketch extends SketchContribution {
     registerMenus(registry: MenuModelRegistry): void {
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
-            label: 'Verify',
+            label: 'Upload',
             order: '0'
         });
     }
