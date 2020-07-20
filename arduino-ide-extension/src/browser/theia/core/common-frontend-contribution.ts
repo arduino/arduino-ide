@@ -15,7 +15,8 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
             CommonCommands.PASTE,
             CommonCommands.COPY_PATH,
             CommonCommands.FIND,
-            CommonCommands.REPLACE
+            CommonCommands.REPLACE,
+            CommonCommands.AUTO_SAVE
         ]) {
             registry.unregisterMenuAction(command);
         }
