@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
+import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import { WorkspaceCommands, FileMenuContribution } from '@theia/workspace/lib/browser/workspace-commands';
 import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution } from '@theia/workspace/lib/browser/workspace-frontend-contribution';
 
@@ -24,6 +25,15 @@ export class WorkspaceFrontendContribution extends TheiaWorkspaceFrontendContrib
     }
 
     registerMenus(_: MenuModelRegistry): void {
+    }
+
+    registerKeybindings(registry: KeybindingRegistry): void {
+        super.registerKeybindings(registry);
+        [
+            WorkspaceCommands.NEW_FILE,
+            WorkspaceCommands.FILE_RENAME,
+            WorkspaceCommands.FILE_DELETE
+        ].map(({ id }) => id).forEach(registry.unregisterKeybinding.bind(registry));
     }
 
 }

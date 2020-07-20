@@ -1,5 +1,5 @@
 import '../../src/browser/style/index.css';
-import { ContainerModule, interfaces } from 'inversify';
+import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
@@ -101,6 +101,7 @@ import { OpenSketchExternal } from './contributions/open-sketch-external';
 import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
 import { PreferencesContribution } from './theia/preferences/preference-contribution';
 import { QuitApp } from './contributions/quit-app';
+import { SketchControl } from './contributions/sketch-control-contributions';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -111,7 +112,7 @@ MonacoThemingService.register({
     json: require('../../src/browser/data/arduino.color-theme.json')
 });
 
-export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
+export default new ContainerModule((bind, unbind, isBound, rebind) => {
     ElementQueries.listen();
     ElementQueries.init();
 
@@ -329,4 +330,5 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     Contribution.configure(bind, OpenSketchExternal);
     Contribution.configure(bind, EditContributions);
     Contribution.configure(bind, QuitApp);
+    Contribution.configure(bind, SketchControl);
 });

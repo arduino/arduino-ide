@@ -32,4 +32,10 @@ export namespace ArduinoMenus {
     export const OPEN_SKETCH__CONTEXT__RECENT_GROUP = [...OPEN_SKETCH__CONTEXT, '1_recent'];
     export const OPEN_SKETCH__CONTEXT__EXAMPLES_GROUP = [...OPEN_SKETCH__CONTEXT, '2_examples'];
 
+    // Sketch control (such as `New Tab`, `Rename`, `Delete`, etc.)
+    export const SKETCH_CONTROL__CONTEXT = ['arduino-sketch-control--context'];
+    export const SKETCH_CONTROL__CONTEXT__MAIN_GROUP = [...SKETCH_CONTROL__CONTEXT, '0_main'];
+    export const SKETCH_CONTROL__CONTEXT__NAVIGATION_GROUP = [...SKETCH_CONTROL__CONTEXT, '1_navigation'];
+    export const SKETCH_CONTROL__CONTEXT__RESOURCES_GROUP = [...SKETCH_CONTROL__CONTEXT, '2_resources'];
+
 }

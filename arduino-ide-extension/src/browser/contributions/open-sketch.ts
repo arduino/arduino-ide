@@ -1,9 +1,8 @@
 import { inject, injectable } from 'inversify';
 import { remote } from 'electron';
-import { Disposable } from '@theia/languages/lib/browser';
 import { MaybePromise } from '@theia/core/lib/common/types';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Widget, ContextMenuRenderer } from '@theia/core/lib/browser';
+import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { SketchContribution, Sketch, URI, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
@@ -28,37 +27,40 @@ export class OpenSketch extends SketchContribution {
                 if (!sketches.length) {
                     this.openSketch();
                 } else {
+
                     if (!(target instanceof HTMLElement)) {
                         return;
                     }
-                    const toDisposeOnClose = new DisposableCollection();
+                    const { parentElement } = target;
+                    if (!parentElement) {
+                        return;
+                    }
+
+                    const toDisposeOnHide = new DisposableCollection();
                     this.menuRegistry.registerMenuAction(ArduinoMenus.OPEN_SKETCH__CONTEXT__OPEN_GROUP, {
                         commandId: OpenSketch.Commands.OPEN_SKETCH.id,
                         label: 'Open...'
                     });
-                    toDisposeOnClose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(OpenSketch.Commands.OPEN_SKETCH)));
+                    toDisposeOnHide.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(OpenSketch.Commands.OPEN_SKETCH)));
                     for (const sketch of sketches) {
                         const command = { id: `arduino-open-sketch--${sketch.uri}` };
                         const handler = { execute: () => this.openSketch(sketch) };
-                        toDisposeOnClose.push(registry.registerCommand(command, handler));
+                        toDisposeOnHide.push(registry.registerCommand(command, handler));
                         this.menuRegistry.registerMenuAction(ArduinoMenus.OPEN_SKETCH__CONTEXT__RECENT_GROUP, {
                             commandId: command.id,
                             label: sketch.name
                         });
-                        toDisposeOnClose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+                        toDisposeOnHide.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
                     }
-                    const { parentElement } = target;
-                    if (parentElement) {
-                        const options = {
-                            menuPath: ArduinoMenus.OPEN_SKETCH__CONTEXT,
-                            anchor: {
-                                x: parentElement.getBoundingClientRect().left,
-                                y: parentElement.getBoundingClientRect().top + parentElement.offsetHeight
-                            },
-                            onHide: () => toDisposeOnClose.dispose()
-                        }
-                        this.contextMenuRenderer.render(options);
+                    const options = {
+                        menuPath: ArduinoMenus.OPEN_SKETCH__CONTEXT,
+                        anchor: {
+                            x: parentElement.getBoundingClientRect().left,
+                            y: parentElement.getBoundingClientRect().top + parentElement.offsetHeight
+                        },
+                        onHide: () => toDisposeOnHide.dispose()
                     }
+                    this.contextMenuRenderer.render(options);
                 }
             }
         });
