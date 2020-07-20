@@ -1,0 +1,3 @@
+.terminal-container .xterm .xterm-helper-textarea {
+    opacity: 0 !important; /* fix secondary cursor-like issue. See https://github.com/eclipse-theia/theia/issues/8158 */
+}
