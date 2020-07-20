@@ -2105,23 +2105,6 @@
     ws "^7.1.2"
     yargs "^11.1.0"
 
-"@theia/cpp@next":
-  version "1.1.0-next.184f7751"
-  resolved "https://registry.yarnpkg.com/@theia/cpp/-/cpp-1.1.0-next.184f7751.tgz#96c5ca20d24e1285599d2decfa425d1100f6c8e9"
-  integrity sha512-TAp0TS5YCUl1z3Avl7BrZF/LrZZmbbR+oMyeOwauVKkoc05k1+fKiH8qVVLeWPkvTmnAKfB/rVxVnmCKLE+O5w==
-  dependencies:
-    "@theia/core" next
-    "@theia/editor" next
-    "@theia/filesystem" next
-    "@theia/languages" next
-    "@theia/monaco" next
-    "@theia/preferences" next
-    "@theia/process" next
-    "@theia/task" next
-    "@theia/variable-resolver" next
-    "@theia/workspace" next
-    string-argv "^0.1.1"
-
 "@theia/debug@1.4.0-next.beb68c7f", "@theia/debug@next":
   version "1.4.0-next.beb68c7f"
   resolved "https://registry.yarnpkg.com/@theia/debug/-/debug-1.4.0-next.beb68c7f.tgz#c20dd658b207efb5d3534497083f0f3134193f75"
@@ -2458,7 +2441,7 @@
     "@theia/workspace" "1.4.0-next.beb68c7f"
     vscode-ripgrep "^1.2.4"
 
-"@theia/task@1.4.0-next.beb68c7f", "@theia/task@next":
+"@theia/task@1.4.0-next.beb68c7f":
   version "1.4.0-next.beb68c7f"
   resolved "https://registry.yarnpkg.com/@theia/task/-/task-1.4.0-next.beb68c7f.tgz#b0b1022e8b3e69520411d583331bb00f3eaa9d3b"
   integrity sha512-hpg3UMeiLrh2LxzJT3mn31E8MuS7OlO5D1VIkahcPOzsHMwqRsxNCJSojpT2coVz4Z11tcdt+0Tz73dfHsSwDw==
@@ -2499,7 +2482,7 @@
     "@theia/core" "1.4.0-next.beb68c7f"
     "@theia/filesystem" "1.4.0-next.beb68c7f"
 
-"@theia/variable-resolver@1.4.0-next.beb68c7f", "@theia/variable-resolver@next":
+"@theia/variable-resolver@1.4.0-next.beb68c7f":
   version "1.4.0-next.beb68c7f"
   resolved "https://registry.yarnpkg.com/@theia/variable-resolver/-/variable-resolver-1.4.0-next.beb68c7f.tgz#f06b2c3a3e2aa731aaa682ef62409c4e6bbb9a94"
   integrity sha512-TL0uYHI68Z9kRugygz3wwF+NV+FBsZA+3POxdVV4snWUSoGwmGBWBgb4NZ62Z6W4rRHgLYjs08xl62HtYT1B0Q==

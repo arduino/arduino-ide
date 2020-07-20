@@ -98,6 +98,8 @@ import { UploadSketch } from './contributions/upload-sketch';
 import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
 import { EditContributions } from './contributions/edit-contributions';
 import { OpenSketchExternal } from './contributions/open-sketch-external';
+import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
+import { PreferencesContribution } from './theia/preferences/preference-contribution';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -272,6 +274,7 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     rebind(TheiaWorkspaceFrontendContribution).to(WorkspaceFrontendContribution).inSingletonScope();
     rebind(TheiaFileMenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
     rebind(TheiaCommonFrontendContribution).to(CommonFrontendContribution).inSingletonScope();
+    rebind(TheiaPreferencesContribution).to(PreferencesContribution).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();

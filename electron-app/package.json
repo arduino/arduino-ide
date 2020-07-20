@@ -6,7 +6,6 @@
   "main": "src-gen/frontend/electron-main.js",
   "dependencies": {
     "@theia/core": "next",
-    "@theia/cpp": "next",
     "@theia/debug": "next",
     "@theia/editor": "next",
     "@theia/electron": "next",
