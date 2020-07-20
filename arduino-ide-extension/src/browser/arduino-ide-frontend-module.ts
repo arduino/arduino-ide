@@ -100,6 +100,7 @@ import { EditContributions } from './contributions/edit-contributions';
 import { OpenSketchExternal } from './contributions/open-sketch-external';
 import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
 import { PreferencesContribution } from './theia/preferences/preference-contribution';
+import { QuitApp } from './contributions/quit-app';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -327,4 +328,5 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     Contribution.configure(bind, UploadSketch);
     Contribution.configure(bind, OpenSketchExternal);
     Contribution.configure(bind, EditContributions);
+    Contribution.configure(bind, QuitApp);
 });

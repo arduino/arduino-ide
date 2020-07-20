@@ -7,6 +7,8 @@ export namespace ArduinoMenus {
     // File
     export const FILE__SKETCH_GROUP = [...CommonMenus.FILE, '0_sketch'];
     export const FILE__PRINT_GROUP = [...CommonMenus.FILE, '1_print'];
+    export const FILE__SETTINGS_GROUP = [...CommonMenus.FILE, '2_settings'];
+    export const FILE__QUIT_GROUP = [...CommonMenus.FILE, '3_quit'];
 
     // Edit
     export const EDIT__TEXT_CONTROL_GROUP = [...CommonMenus.EDIT, '2_text_control']; // `Copy`, `Copy to Forum`, `Paste`, etc. Note: `1_undo` is the first group from Theia
