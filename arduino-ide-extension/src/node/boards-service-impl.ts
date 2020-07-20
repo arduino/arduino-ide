@@ -261,13 +261,10 @@ export class BoardsServiceImpl implements BoardsService {
         return packages.find(({ boards }) => boards.some(({ fqbn }) => fqbn === expectedFqbn));
     }
 
-    async searchBoards(options: { query?: string }): Promise<Array<Board & { packageName: string }>> {
-        const query = (options.query || '').toLocaleLowerCase();
+    async allBoards(options: {}): Promise<Array<Board & { packageName: string }>> {
         const results = await this.search(options);
         return results.map(item => item.boards.map(board => ({ ...board, packageName: item.name })))
-            .reduce((acc, curr) => acc.concat(curr), [])
-            .filter(board => board.name.toLocaleLowerCase().indexOf(query) !== -1)
-            .sort(Board.compare);
+            .reduce((acc, curr) => acc.concat(curr), []);
     }
 
     async search(options: { query?: string }): Promise<BoardsPackage[]> {

@@ -159,7 +159,7 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
         const selectedBoard = availableBoards.filter(AvailableBoard.hasPort).find(({ selected }) => selected);
         const [configs, boards] = await Promise.all([
             selectedBoard && selectedBoard.fqbn ? this.configStore.getConfig(selectedBoard.fqbn) : Promise.resolve([]),
-            this.boardsService.searchBoards({})
+            this.boardsService.allBoards({})
         ]);
         this.allBoards = Board.decorateBoards(selectedBoard, boards)
             .filter(board => !availableBoards.some(availableBoard => Board.sameAs(availableBoard, board)));

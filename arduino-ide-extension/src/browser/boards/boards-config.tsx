@@ -127,7 +127,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     }
 
     protected queryBoards = (options: { query?: string } = {}): Promise<Array<Board & { packageName: string }>> => {
-        return this.props.boardsService.searchBoards(options);
+        return this.props.boardsServiceClient.searchBoards(options);
     }
 
     protected get availablePorts(): Promise<Port[]> {

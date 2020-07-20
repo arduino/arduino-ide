@@ -5,7 +5,7 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { StorageService } from '@theia/core/lib/browser/storage-service';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { RecursiveRequired } from '../../common/types';
-import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, Board, Port, BoardUninstalledEvent } from '../../common/protocol';
+import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, Board, Port, BoardUninstalledEvent, BoardsService } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 
@@ -40,6 +40,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
     protected _attachedBoards: Board[] = []; // This does not contain the `Unknown` boards. They're visible from the available ports only.
     protected _availablePorts: Port[] = [];
     protected _availableBoards: AvailableBoard[] = [];
+    protected boardsService: BoardsService;
 
     /**
      * Event when the state of the attached/detached boards has changed. For instance, the user have detached a physical board.
@@ -65,7 +66,12 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
      * When the FE connects to the BE, the BE stets the known boards and ports.\
      * This is a DI workaround for not being able to inject the service into the client.
      */
-    init({ attachedBoards, availablePorts }: { attachedBoards: Board[], availablePorts: Port[] }): void {
+    async init(boardsService: BoardsService): Promise<void> {
+        this.boardsService = boardsService;
+        const [attachedBoards, availablePorts] = await Promise.all([
+            this.boardsService.getAttachedBoards(),
+            this.boardsService.getAvailablePorts()
+        ]);
         this._attachedBoards = attachedBoards;
         this._availablePorts = availablePorts;
         this.reconcileAvailableBoards().then(() => this.tryReconnect());
@@ -155,6 +161,20 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
         if (this.canUploadTo(this._boardsConfig)) {
             this.latestValidBoardsConfig = this._boardsConfig;
         }
+    }
+
+    async searchBoards({ query, cores }: { query?: string, cores?: string[] }): Promise<Array<Board & { packageName: string }>> {
+        const boards = await this.boardsService.allBoards({});
+        const coresFilter = !!cores && cores.length
+            ? ((toFilter: { packageName: string }) => cores.some(core => core === toFilter.packageName))
+            : () => true;
+        const fuzzyFilter = !!query
+            ? ((toFilter: Board) => !!monaco.filters.matchesFuzzy(query, toFilter.name, true))
+            : () => true
+        return boards
+            .filter(coresFilter)
+            .filter(fuzzyFilter)
+            .sort(Board.compare)
     }
 
     get boardsConfig(): BoardsConfig.Config {
