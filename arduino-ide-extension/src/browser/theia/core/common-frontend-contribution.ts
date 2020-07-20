@@ -17,6 +17,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
             CommonCommands.FIND,
             CommonCommands.REPLACE,
             CommonCommands.AUTO_SAVE,
+            CommonCommands.OPEN_PREFERENCES,
             CommonCommands.SELECT_ICON_THEME,
             CommonCommands.SELECT_COLOR_THEME
         ]) {
