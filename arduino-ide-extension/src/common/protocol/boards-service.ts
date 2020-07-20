@@ -229,18 +229,8 @@ export namespace ConfigOption {
      * Appends the configuration options to the `fqbn` argument.
      * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
      * The provided output format is always segment(':'segment)*(':'option'='value(','option'='value)*)?
-     * Validation can be disabled with the `{ validation: false }` option.
      */
-    export function decorate(fqbn: string, configOptions: ConfigOption[], { validate } = { validate: true }): string {
-        if (validate) {
-            if (!isValidFqbn(fqbn)) {
-                throw new ConfigOptionError(`${fqbn} is not a valid FQBN.`);
-            }
-            if (isValidFqbnWithOptions(fqbn)) {
-                throw new ConfigOptionError(`${fqbn} is already decorated with the configuration options.`);
-            }
-        }
-
+    export function decorate(fqbn: string, configOptions: ConfigOption[]): string {
         if (!configOptions.length) {
             return fqbn;
         }
@@ -260,14 +250,6 @@ export namespace ConfigOption {
             .join(',');
 
         return `${fqbn}:${options}`;
-    }
-
-    export function isValidFqbn(fqbn: string): boolean {
-        return /^\w+(:\w+)*$/.test(fqbn);
-    }
-
-    export function isValidFqbnWithOptions(fqbn: string): boolean {
-        return /^\w+(:\w+)*(:\w+=\w+(,\w+=\w+)*)$/.test(fqbn);
     }
 
     export class ConfigOptionError extends Error {
