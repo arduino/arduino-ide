@@ -3,6 +3,7 @@
 @import './main.css';
 @import './monitor.css';
 @import './arduino-select.css';
+@import './status-bar.css';
 
 .theia-input.warning:focus {
     outline-width: 1px;

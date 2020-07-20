@@ -4,7 +4,7 @@ import URI from '@theia/core/lib/common/uri';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, BoardsServiceClient, CoreService, SketchesService, ToolOutputServiceClient } from '../common/protocol';
+import { BoardsService, BoardsServiceClient, CoreService, SketchesService, ToolOutputServiceClient, Port } from '../common/protocol';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
 import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR } from '@theia/core';
@@ -145,11 +145,19 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             // tslint:disable-next-line:max-line-length
             this.messageService.warn('You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.');
         }
-        const updateStatusBar = (config: BoardsConfig.Config) => {
+        const updateStatusBar = ({ selectedBoard, selectedPort }: BoardsConfig.Config) => {
             this.statusBar.setElement('arduino-selected-board', {
                 alignment: StatusBarAlignment.RIGHT,
-                text: BoardsConfig.Config.toString(config)
+                text: selectedBoard ? `$(microchip) ${selectedBoard.name}` : '$(close) no board selected',
+                className: 'arduino-selected-board'
             });
+            if (selectedBoard) {
+                this.statusBar.setElement('arduino-selected-port', {
+                    alignment: StatusBarAlignment.RIGHT,
+                    text: selectedPort ? `on ${Port.toString(selectedPort)}` : '[not connected]',
+                        className: 'arduino-selected-port'
+                });
+            }
         }
         this.boardsServiceClientImpl.onBoardsConfigChanged(updateStatusBar);
         updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
@@ -290,6 +298,24 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     hc: 'editorWidget.background'
                 },
                 description: 'Color of the Arduino Pro IDE foreground which is used for dialogs, such as the Select Board dialog.'
+            },
+            {
+                id: 'arduino.toolbar.background',
+                defaults: {
+                    dark: 'button.background',
+                    light: 'button.background',
+                    hc: 'activityBar.inactiveForeground'
+                },
+                description: 'Background color of the toolbar items. Such as Upload, Verify, etc.'
+            },
+            {
+                id: 'arduino.toolbar.hoverBackground',
+                defaults: {
+                    dark: 'button.hoverBackground',
+                    light: 'button.hoverBackground',
+                    hc: 'activityBar.inactiveForeground'
+                },
+                description: 'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.'
             }
         );
     }

@@ -21,11 +21,11 @@
     align-items: center;
     height: 24px;
     width: 24px;
-    background: var(--theia-button-background);
+    background: var(--theia-arduino-toolbar-background);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item > div:hover {
-    background: var(--theia-button-hoverBackground);
+    background: (--theia-arduino-toolbar-hoverBackground);
 }
 
 .arduino-verify-sketch--toolbar,
@@ -123,7 +123,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--theia-titleBar-activeBackground);;
+    color: var(--theia-titleBar-activeBackground);
+}
+
+.arduino-open-boards-control-icon {
+    mask: none;
+    -webkit-mask: none;
+    background: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--theia-titleBar-activeBackground);
 }
 
 .monaco-editor .margin {
