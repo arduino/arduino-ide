@@ -2,15 +2,6 @@
     background: var(--theia-editorGroupHeader-tabsBackground);
 }
 
-.theia-output {
-    background: var(--theia-terminal-background);
-    color: var(--theia-terminal-foreground);
-}
-
-#outputView {
-    cursor: text;
-}
-
 .p-TabBar-toolbar .item.arduino-tool-item {
     margin-left: 3px;
 }
