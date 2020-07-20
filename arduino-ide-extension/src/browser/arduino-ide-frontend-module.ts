@@ -102,6 +102,7 @@ import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/
 import { PreferencesContribution } from './theia/preferences/preference-contribution';
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control-contributions';
+import { Settings } from './contributions/settings';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -331,4 +332,5 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, EditContributions);
     Contribution.configure(bind, QuitApp);
     Contribution.configure(bind, SketchControl);
+    Contribution.configure(bind, Settings);
 });

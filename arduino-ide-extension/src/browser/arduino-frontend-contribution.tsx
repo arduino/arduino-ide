@@ -155,7 +155,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 this.statusBar.setElement('arduino-selected-port', {
                     alignment: StatusBarAlignment.RIGHT,
                     text: selectedPort ? `on ${Port.toString(selectedPort)}` : '[not connected]',
-                        className: 'arduino-selected-port'
+                    className: 'arduino-selected-port'
                 });
             }
         }
@@ -255,9 +255,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         registry.registerMenuAction(CommonMenus.HELP, {
             commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             label: 'Advanced Mode'
-        });
-        registry.registerMenuAction([...CommonMenus.FILE_SETTINGS_SUBMENU, '3_settings_cli'], {
-            commandId: ArduinoCommands.OPEN_CLI_CONFIG.id
         });
     }
 

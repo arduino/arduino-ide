@@ -16,7 +16,6 @@ export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
     @inject(ILogger)
     protected readonly logger: ILogger;
 
-
     protected dataDirUri: URI | undefined;
 
     @postConstruct()
