@@ -94,6 +94,10 @@ export namespace Port {
         }
     }
 
+    export function is(arg: any): arg is Port {
+        return !!arg && 'address' in arg && typeof arg['address'] === 'string' && 'protocol' in arg && typeof arg['protocol'] === 'string';
+    }
+
     export function toString(port: Port, options: { useLabel: boolean } = { useLabel: false }): string {
         if (options.useLabel && port.label) {
             return `${port.address} ${port.label}`
