@@ -39,7 +39,8 @@ import {
     ApplicationShell as TheiaApplicationShell,
     ShellLayoutRestorer as TheiaShellLayoutRestorer,
     KeybindingContribution,
-    CommonFrontendContribution as TheiaCommonFrontendContribution
+    CommonFrontendContribution as TheiaCommonFrontendContribution,
+    KeybindingRegistry as TheiaKeybindingRegistry
 } from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
 import { ApplicationShell } from './theia/core/application-shell';
@@ -103,6 +104,7 @@ import { PreferencesContribution } from './theia/preferences/preference-contribu
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control-contributions';
 import { Settings } from './contributions/settings';
+import { KeybindingRegistry } from './theia/core/keybindings';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -278,6 +280,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaFileMenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
     rebind(TheiaCommonFrontendContribution).to(CommonFrontendContribution).inSingletonScope();
     rebind(TheiaPreferencesContribution).to(PreferencesContribution).inSingletonScope();
+    rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
