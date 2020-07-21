@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser';
@@ -13,9 +12,6 @@ export class SketchControl extends SketchContribution {
 
     @inject(ApplicationShell)
     protected readonly shell: ApplicationShell;
-
-    @inject(EditorManager)
-    protected readonly editorManager: EditorManager;
 
     @inject(MenuModelRegistry)
     protected readonly menuRegistry: MenuModelRegistry;
