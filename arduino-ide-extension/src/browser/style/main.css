@@ -147,7 +147,7 @@
 }
 
 #arduino-open-sketch-control--toolbar {
-    background-color: var(--theia-button-background);
+    background-color: var(--theia-tab-inactiveBackground);
     border: 1px solid var(--theia-arduino-toolbar-background);
-    padding: 2px 0px 2px 8px;
+    padding: 2px 0px 2px 9px;
 }

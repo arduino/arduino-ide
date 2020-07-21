@@ -1,14 +1,10 @@
-import { inject, injectable } from 'inversify';
-import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
+import { injectable } from 'inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
-import { URI, Command, MenuModelRegistry, CommandRegistry, SketchContribution } from './contribution';
+import { URI, Command, MenuModelRegistry, CommandRegistry, SketchContribution, open } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
 export class Settings extends SketchContribution {
-
-    @inject(OpenerService)
-    protected readonly openerService: OpenerService;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(Settings.Commands.OPEN_CLI_CONFIG, {

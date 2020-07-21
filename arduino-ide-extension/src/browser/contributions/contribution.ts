@@ -3,8 +3,10 @@ import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { FileSystem } from '@theia/filesystem/lib/common';
+import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
 import { MenuModelRegistry, MenuContribution } from '@theia/core/lib/common/menu';
 import { KeybindingRegistry, KeybindingContribution } from '@theia/core/lib/browser/keybinding';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
@@ -12,7 +14,7 @@ import { Command, CommandRegistry, CommandContribution, CommandService } from '@
 import { SketchesService, ConfigService, FileSystemExt, Sketch } from '../../common/protocol';
 import { EditorMode } from '../editor-mode';
 
-export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch };
+export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch, open };
 
 @injectable()
 export abstract class Contribution implements CommandContribution, MenuContribution, KeybindingContribution, TabBarToolbarContribution {
@@ -31,6 +33,9 @@ export abstract class Contribution implements CommandContribution, MenuContribut
 
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
+
+    @inject(LabelProvider)
+    protected readonly labelProvider: LabelProvider;
 
     registerCommands(registry: CommandRegistry): void {
     }
@@ -60,6 +65,9 @@ export abstract class SketchContribution extends Contribution {
 
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
+
+    @inject(OpenerService)
+    protected readonly openerService: OpenerService;
 
     protected async currentSketch(): Promise<Sketch | undefined> {
         const sketches = (await Promise.all(this.workspaceService.tryGetRoots().map(({ uri }) => this.sketchService.getSketchFolder(uri)))).filter(notEmpty);

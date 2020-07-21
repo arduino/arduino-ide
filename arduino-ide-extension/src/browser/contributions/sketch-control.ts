@@ -5,7 +5,7 @@ import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shel
 import { WorkspaceCommands } from '@theia/workspace/lib/browser';
 import { ContextMenuRenderer } from '@theia/core/lib/browser/context-menu-renderer';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
-import { URI, SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
+import { URI, SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, open } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
@@ -23,11 +23,13 @@ export class SketchControl extends SketchContribution {
     @inject(ContextMenuRenderer)
     protected readonly contextMenuRenderer: ContextMenuRenderer;
 
+    protected readonly toDisposeBeforeCreateNewContextMenu = new DisposableCollection();
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR, {
             isVisible: widget => this.shell.getWidgets('main').indexOf(widget) !== -1,
             execute: async () => {
-                const toDisposeOnHide = new DisposableCollection();
+                this.toDisposeBeforeCreateNewContextMenu.dispose();
                 const sketch = await this.currentSketch();
                 if (!sketch) {
                     return;
@@ -47,28 +49,21 @@ export class SketchControl extends SketchContribution {
                 for (let i = 0; i < uris.length; i++) {
                     const uri = new URI(uris[i]);
                     const command = { id: `arduino-focus-file--${uri.toString()}` };
-                    const handler = {
-                        execute: () => {
-                            console.log('bar');
-                            this.editorManager.open(uri, { mode: 'activate' });
-                            console.log('foo');
-                        }
-                    };
-                    toDisposeOnHide.push(registry.registerCommand(command, handler));
+                    const handler = { execute: () => open(this.openerService, uri) };
+                    this.toDisposeBeforeCreateNewContextMenu.push(registry.registerCommand(command, handler));
                     this.menuRegistry.registerMenuAction(ArduinoMenus.SKETCH_CONTROL__CONTEXT__RESOURCES_GROUP, {
                         commandId: command.id,
-                        label: uri.path.base,
+                        label: this.labelProvider.getName(uri),
                         order: `${i}`
                     });
-                    toDisposeOnHide.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+                    this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
                 }
                 const options = {
                     menuPath: ArduinoMenus.SKETCH_CONTROL__CONTEXT,
                     anchor: {
                         x: parentElement.getBoundingClientRect().left,
                         y: parentElement.getBoundingClientRect().top + parentElement.offsetHeight
-                    },
-                    onHide: () => toDisposeOnHide.dispose()
+                    }
                 }
                 this.contextMenuRenderer.render(options);
             }

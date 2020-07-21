@@ -16,6 +16,8 @@ export class OpenSketch extends SketchContribution {
     @inject(ContextMenuRenderer)
     protected readonly contextMenuRenderer: ContextMenuRenderer;
 
+    protected readonly toDisposeBeforeCreateNewContextMenu = new DisposableCollection();
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(OpenSketch.Commands.OPEN_SKETCH, {
             execute: arg => Sketch.is(arg) ? this.openSketch(arg) : this.openSketch()
@@ -27,7 +29,7 @@ export class OpenSketch extends SketchContribution {
                 if (!sketches.length) {
                     this.openSketch();
                 } else {
-
+                    this.toDisposeBeforeCreateNewContextMenu.dispose();
                     if (!(target instanceof HTMLElement)) {
                         return;
                     }
@@ -36,29 +38,27 @@ export class OpenSketch extends SketchContribution {
                         return;
                     }
 
-                    const toDisposeOnHide = new DisposableCollection();
                     this.menuRegistry.registerMenuAction(ArduinoMenus.OPEN_SKETCH__CONTEXT__OPEN_GROUP, {
                         commandId: OpenSketch.Commands.OPEN_SKETCH.id,
                         label: 'Open...'
                     });
-                    toDisposeOnHide.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(OpenSketch.Commands.OPEN_SKETCH)));
+                    this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(OpenSketch.Commands.OPEN_SKETCH)));
                     for (const sketch of sketches) {
                         const command = { id: `arduino-open-sketch--${sketch.uri}` };
                         const handler = { execute: () => this.openSketch(sketch) };
-                        toDisposeOnHide.push(registry.registerCommand(command, handler));
+                        this.toDisposeBeforeCreateNewContextMenu.push(registry.registerCommand(command, handler));
                         this.menuRegistry.registerMenuAction(ArduinoMenus.OPEN_SKETCH__CONTEXT__RECENT_GROUP, {
                             commandId: command.id,
                             label: sketch.name
                         });
-                        toDisposeOnHide.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+                        this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
                     }
                     const options = {
                         menuPath: ArduinoMenus.OPEN_SKETCH__CONTEXT,
                         anchor: {
                             x: parentElement.getBoundingClientRect().left,
                             y: parentElement.getBoundingClientRect().top + parentElement.offsetHeight
-                        },
-                        onHide: () => toDisposeOnHide.dispose()
+                        }
                     }
                     this.contextMenuRenderer.render(options);
                 }
