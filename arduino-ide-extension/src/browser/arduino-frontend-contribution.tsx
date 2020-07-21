@@ -36,7 +36,7 @@ import { ColorContribution } from '@theia/core/lib/browser/color-application-con
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
-import { BoardsConfigStore } from './boards/boards-config-store';
+import { BoardsDataStore } from './boards/boards-data-store';
 import { MainMenuManager } from '../common/main-menu-manager';
 import { FileSystemExt } from '../common/protocol/filesystem-ext';
 import { ArduinoMenus } from './menu/arduino-menus';
@@ -130,8 +130,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(ConfigService)
     protected readonly configService: ConfigService;
 
-    @inject(BoardsConfigStore)
-    protected readonly boardsConfigStore: BoardsConfigStore;
+    @inject(BoardsDataStore)
+    protected readonly boardsDataStore: BoardsDataStore;
 
     @inject(MainMenuManager)
     protected readonly mainMenuManager: MainMenuManager;

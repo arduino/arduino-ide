@@ -5,12 +5,12 @@ import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposa
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
 import { Board, ConfigOption } from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
-import { BoardsConfigStore } from './boards-config-store';
+import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
-export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution {
+export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
 
     @inject(CommandRegistry)
     protected readonly commandRegistry: CommandRegistry;
@@ -21,8 +21,8 @@ export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution
     @inject(MainMenuManager)
     protected readonly mainMenuManager: MainMenuManager;
 
-    @inject(BoardsConfigStore)
-    protected readonly boardsConfigStore: BoardsConfigStore;
+    @inject(BoardsDataStore)
+    protected readonly boardsDataStore: BoardsDataStore;
 
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClient: BoardsServiceClientImpl;
@@ -30,7 +30,7 @@ export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution
     protected readonly toDisposeOnBoardChange = new DisposableCollection();
 
     onStart(): void {
-        this.boardsConfigStore.onChanged(() => this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard));
+        this.boardsDataStore.onChanged(() => this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard));
         this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) => this.updateMenuActions(selectedBoard));
         this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard);
     }
@@ -41,8 +41,8 @@ export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution
             this.mainMenuManager.update();
             const { fqbn } = selectedBoard;
             if (fqbn) {
-                const configOptions = await this.boardsConfigStore.getConfig(fqbn);
-                const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z_boardsConfig']; // `z_` is for ordering.
+                const { configOptions, programmers } = await this.boardsDataStore.getData(fqbn);
+                const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z01_boardsConfig']; // `z_` is for ordering.
                 for (const { label, option, values } of configOptions.sort(ConfigOption.LABEL_COMPARATOR)) {
                     const menuPath = [...boardsConfigMenuPath, `${option}`];
                     const commands = new Map<string, Disposable & { label: string }>()
@@ -51,7 +51,7 @@ export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution
                         const command = { id };
                         const selectedValue = value.value;
                         const handler = {
-                            execute: () => this.boardsConfigStore.setSelected({ fqbn, option, selectedValue }),
+                            execute: () => this.boardsDataStore.selectConfigOption({ fqbn, option, selectedValue }),
                             isToggled: () => value.selected
                         };
                         commands.set(id, Object.assign(this.commandRegistry.registerCommand(command, handler), { label: value.label }));
@@ -65,6 +65,18 @@ export class BoardsDetailsMenuUpdater implements FrontendApplicationContribution
                             this.menuRegistry.registerMenuAction(menuPath, { commandId, order: String(index), label });
                             return Disposable.create(() => this.menuRegistry.unregisterMenuAction(commandId));
                         })
+                    ]);
+                }
+                const programmersMenuPath = [...ArduinoMenus.TOOLS, 'z02_programmers'];
+                for (const programmer of programmers) {
+                    const { id, name } = programmer;
+                    const menuPath = [...programmersMenuPath, `${name}`];
+                    const command = { id: `${fqbn}-programmer--${id}` };
+                    const handler = { execute: () => this.boardsDataStore.selectProgrammer({ fqbn, programmer }) };
+                    this.menuRegistry.registerMenuAction(menuPath, { commandId: command.id, label: name });
+                    this.toDisposeOnBoardChange.pushAll([
+                        this.commandRegistry.registerCommand(command, handler),
+                        Disposable.create(() => this.menuRegistry.unregisterMenuAction(command, menuPath))
                     ]);
                 }
                 this.mainMenuManager.update();

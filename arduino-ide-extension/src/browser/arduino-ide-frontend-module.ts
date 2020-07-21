@@ -82,8 +82,8 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import { ConfigServiceClientImpl } from './config-service-client-impl';
 import { CoreServiceClientImpl } from './core-service-client-impl';
-import { BoardsDetailsMenuUpdater } from './boards/boards-details-menu-updater';
-import { BoardsConfigStore } from './boards/boards-config-store';
+import { BoardsDataMenuUpdater } from './boards/boards-details-menu-updater';
+import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
 import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution, FileMenuContribution as TheiaFileMenuContribution } from '@theia/workspace/lib/browser';
@@ -183,9 +183,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     }).inSingletonScope();
 
     // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
-    bind(FrontendApplicationContribution).to(BoardsDetailsMenuUpdater).inSingletonScope();
-    bind(BoardsConfigStore).toSelf().inSingletonScope();
-    bind(FrontendApplicationContribution).toService(BoardsConfigStore);
+    bind(FrontendApplicationContribution).to(BoardsDataMenuUpdater).inSingletonScope();
+    bind(BoardsDataStore).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(BoardsDataStore);
     // Logger for the Arduino daemon
     bind(ILogger).toDynamicValue(ctx => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);

@@ -205,6 +205,7 @@ export interface BoardDetails {
     readonly fqbn: string;
     readonly requiredTools: Tool[];
     readonly configOptions: ConfigOption[];
+    readonly programmers: Programmer[];
 }
 
 export interface Tool {
@@ -267,6 +268,23 @@ export interface ConfigValue {
     readonly label: string;
     readonly value: string;
     readonly selected: boolean;
+}
+
+export interface Programmer {
+    readonly name: string;
+    readonly platform: string;
+    readonly id: string;
+}
+export namespace Programmer {
+    export function equals(left: Programmer | undefined, right: Programmer | undefined): boolean {
+        if (!left) {
+            return !right;
+        }
+        if (!right) {
+            return !left;
+        }
+        return left.id === right.id && left.name === right.name && left.platform === right.platform;
+    }
 }
 
 export namespace Board {

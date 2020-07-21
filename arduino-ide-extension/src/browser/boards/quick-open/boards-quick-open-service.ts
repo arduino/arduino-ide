@@ -17,7 +17,7 @@ import {
 import { naturalCompare } from '../../../common/utils';
 import { BoardsService, Port, Board, ConfigOption, ConfigValue } from '../../../common/protocol';
 import { CoreServiceClientImpl } from '../../core-service-client-impl';
-import { BoardsConfigStore } from '../boards-config-store';
+import { BoardsDataStore } from '../boards-data-store';
 import { BoardsServiceClientImpl, AvailableBoard } from '../boards-service-client-impl';
 
 @injectable()
@@ -41,8 +41,8 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClient: BoardsServiceClientImpl;
 
-    @inject(BoardsConfigStore)
-    protected readonly configStore: BoardsConfigStore;
+    @inject(BoardsDataStore)
+    protected readonly boardsDataStore: BoardsDataStore;
 
     @inject(CoreServiceClientImpl)
     protected coreServiceClient: CoreServiceClientImpl;
@@ -52,7 +52,7 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
     // Attached boards plus the user's config.
     protected availableBoards: AvailableBoard[] = [];
     // Only for the `selected` one from the `availableBoards`. Note: the `port` of the `selected` is optional.
-    protected boardConfigs: ConfigOption[] = [];
+    protected data: BoardsDataStore.Data = BoardsDataStore.Data.EMPTY;
     protected allBoards: Board.Detailed[] = []
     protected selectedBoard?: (AvailableBoard & { port: Port });
 
@@ -86,7 +86,7 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
             placeholder += 'No board selected.';
         }
         placeholder += 'Type to filter boards';
-        if (this.boardConfigs.length) {
+        if (this.data.configOptions.length) {
             placeholder += ' or use the ↓↑ keys to adjust the board settings...';
         } else {
             placeholder += '...';
@@ -129,7 +129,7 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
 
         // Show the config only if the `input` is empty.
         if (!lookFor.trim().length) {
-            toAccept.push(...this.boardConfigs.map((config, i) => {
+            toAccept.push(...this.data.configOptions.map((config, i) => {
                 let group: QuickOpenGroupItemOptions | undefined = undefined;
                 if (i === 0) {
                     group = { groupLabel: 'Board Settings', showBorder: true };
@@ -157,14 +157,14 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
     protected async update(availableBoards: AvailableBoard[]): Promise<void> {
         // `selectedBoard` is not an attached board, we need to show the board settings for it (TODO: clarify!)
         const selectedBoard = availableBoards.filter(AvailableBoard.hasPort).find(({ selected }) => selected);
-        const [configs, boards] = await Promise.all([
-            selectedBoard && selectedBoard.fqbn ? this.configStore.getConfig(selectedBoard.fqbn) : Promise.resolve([]),
+        const [data, boards] = await Promise.all([
+            selectedBoard && selectedBoard.fqbn ? this.boardsDataStore.getData(selectedBoard.fqbn) : Promise.resolve(BoardsDataStore.Data.EMPTY),
             this.boardsService.allBoards({})
         ]);
         this.allBoards = Board.decorateBoards(selectedBoard, boards)
             .filter(board => !availableBoards.some(availableBoard => Board.sameAs(availableBoard, board)));
         this.availableBoards = availableBoards;
-        this.boardConfigs = configs;
+        this.data = data;
         this.selectedBoard = selectedBoard;
 
         if (this.isOpen) {
@@ -280,7 +280,7 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
                     return;
                 }
                 const { fqbn } = this.selectedBoard;
-                this.configStore.setSelected({
+                this.boardsDataStore.selectConfigOption({
                     fqbn,
                     option: config.option,
                     selectedValue: value.value

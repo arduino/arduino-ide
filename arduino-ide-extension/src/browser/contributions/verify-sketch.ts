@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
-import { BoardsConfigStore } from '../boards/boards-config-store';
+import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
 import { CoreService } from '../../common/protocol';
@@ -12,8 +12,8 @@ export class VerifySketch extends SketchContribution {
     @inject(CoreService)
     protected readonly coreService: CoreService;
 
-    @inject(BoardsConfigStore)
-    protected readonly boardsConfigStore: BoardsConfigStore;
+    @inject(BoardsDataStore)
+    protected readonly boardsDataStore: BoardsDataStore;
 
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
@@ -65,7 +65,7 @@ export class VerifySketch extends SketchContribution {
             if (!boardsConfig.selectedBoard.fqbn) {
                 throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
-            const fqbn = await this.boardsConfigStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
+            const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
             await this.coreService.compile({
                 sketchUri: sketch.uri,
                 fqbn,

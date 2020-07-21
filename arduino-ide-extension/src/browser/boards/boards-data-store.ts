@@ -1,14 +1,15 @@
 import { injectable, inject, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { deepClone } from '@theia/core/lib/common/objects';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import { deepClone, notEmpty } from '@theia/core/lib/common/objects';
 import { FrontendApplicationContribution, LocalStorageService } from '@theia/core/lib/browser';
-import { BoardsService, ConfigOption, Installable, BoardDetails } from '../../common/protocol';
+import { notEmpty } from '../../common/utils';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { BoardsService, ConfigOption, Installable, BoardDetails, Programmer } from '../../common/protocol';
 
 @injectable()
-export class BoardsConfigStore implements FrontendApplicationContribution {
+export class BoardsDataStore implements FrontendApplicationContribution {
 
     @inject(ILogger)
     @named('store')
@@ -60,39 +61,59 @@ export class BoardsConfigStore implements FrontendApplicationContribution {
         fqbn: string,
         boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<string> {
 
-        const configOptions = await this.getConfig(fqbn, boardsPackageVersion);
+        const { configOptions } = await this.getData(fqbn, boardsPackageVersion);
         return ConfigOption.decorate(fqbn, configOptions);
     }
 
-    async getConfig(
+    async getData(
         fqbn: string,
-        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<ConfigOption[]> {
+        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<BoardsDataStore.Data> {
 
         const version = await boardsPackageVersion;
         if (!version) {
-            return [];
+            return BoardsDataStore.Data.EMPTY;
         }
         const key = this.getStorageKey(fqbn, version);
-        let configOptions = await this.storageService.getData<ConfigOption[] | undefined>(key, undefined);
-        if (configOptions) {
-            return configOptions;
+        let data = await this.storageService.getData<BoardsDataStore.Data | undefined>(key, undefined);
+        if (data) {
+            if (data.programmers !== undefined) { // to be backward compatible. We did not save the `programmers` into the `localStorage`.
+                return data;
+            }
         }
 
-        const details = await this.getBoardDetailsSafe(fqbn);
-        if (!details) {
-            return [];
+        const boardDetails = await this.getBoardDetailsSafe(fqbn);
+        if (!boardDetails) {
+            return BoardsDataStore.Data.EMPTY;
         }
 
-        configOptions = details.configOptions;
-        await this.storageService.setData(key, configOptions);
-        return configOptions;
+        data = { configOptions: boardDetails.configOptions, programmers: boardDetails.programmers };
+        await this.storageService.setData(key, data);
+        return data;
     }
 
-    async setSelected(
+    async selectProgrammer(
+        { fqbn, programmer }: { fqbn: string, programmer: Programmer },
+        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<boolean> {
+
+        const { configOptions, programmers } = deepClone(await this.getData(fqbn, boardsPackageVersion));
+        if (!programmers.find(p => Programmer.equals(programmer, p))) {
+            return false;
+        }
+
+        const version = await boardsPackageVersion;
+        if (!version) {
+            return false;
+        }
+        await this.setData({ fqbn, data: { configOptions, programmers }, version });
+        this.fireChanged();
+        return true;
+    }
+
+    async selectConfigOption(
         { fqbn, option, selectedValue }: { fqbn: string, option: string, selectedValue: string },
         boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<boolean> {
 
-        const configOptions = deepClone(await this.getConfig(fqbn, boardsPackageVersion));
+        const { configOptions, programmers } = deepClone(await this.getData(fqbn, boardsPackageVersion));
         const configOption = configOptions.find(c => c.option === option);
         if (!configOption) {
             return false;
@@ -113,16 +134,16 @@ export class BoardsConfigStore implements FrontendApplicationContribution {
         if (!version) {
             return false;
         }
-        await this.setConfig({ fqbn, configOptions, version });
+        await this.setData({ fqbn, data: { configOptions, programmers }, version });
         this.fireChanged();
         return true;
     }
 
-    protected async setConfig(
-        { fqbn, configOptions, version }: { fqbn: string, configOptions: ConfigOption[], version: Installable.Version }): Promise<void> {
+    protected async setData(
+        { fqbn, data, version }: { fqbn: string, data: BoardsDataStore.Data, version: Installable.Version }): Promise<void> {
 
         const key = this.getStorageKey(fqbn, version);
-        return this.storageService.setData(key, configOptions);
+        return this.storageService.setData(key, data);
     }
 
     protected getStorageKey(fqbn: string, version: Installable.Version): string {
@@ -158,4 +179,17 @@ export class BoardsConfigStore implements FrontendApplicationContribution {
         return boardsPackage.installedVersion;
     }
 
+}
+
+export namespace BoardsDataStore {
+    export interface Data {
+        readonly configOptions: ConfigOption[];
+        readonly programmers: Programmer[];
+    }
+    export namespace Data {
+        export const EMPTY: Data = {
+            configOptions: [],
+            programmers: []
+        };
+    }
 }
