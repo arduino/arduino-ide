@@ -15,6 +15,7 @@ export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {
     onNewOutput(tool: string, chunk: string): void {
         this.outputContribution.openView().then(() => {
             const channel = this.outputChannelManager.getChannel(`Arduino: ${tool}`);
+            channel.show();
             channel.append(chunk);
         });
     }
