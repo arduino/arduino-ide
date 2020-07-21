@@ -102,7 +102,7 @@ import { OpenSketchExternal } from './contributions/open-sketch-external';
 import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
 import { PreferencesContribution } from './theia/preferences/preference-contribution';
 import { QuitApp } from './contributions/quit-app';
-import { SketchControl } from './contributions/sketch-control-contributions';
+import { SketchControl } from './contributions/sketch-control';
 import { Settings } from './contributions/settings';
 import { KeybindingRegistry } from './theia/core/keybindings';
 

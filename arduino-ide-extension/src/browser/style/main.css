@@ -145,3 +145,9 @@
 .p-Widget.dialogOverlay .dialogBlock {
     background-color: var(--theia-arduino-foreground);
 }
+
+#arduino-open-sketch-control--toolbar {
+    background-color: var(--theia-button-background);
+    border: 1px solid var(--theia-arduino-toolbar-background);
+    padding: 2px 0px 2px 8px;
+}
