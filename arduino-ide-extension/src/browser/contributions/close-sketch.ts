@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { remote } from 'electron';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, URI, Sketch } from './contribution';
+import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, URI } from './contribution';
 import { SaveAsSketch } from './save-as-sketch';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
@@ -20,7 +20,11 @@ export class CloseSketch extends SketchContribution {
                     return;
                 }
                 const isTemp = await this.sketchService.isTemp(sketch);
-                if (isTemp && await this.wasTouched(sketch)) {
+                const uri = await this.currentSketchFile();
+                if (!uri) {
+                    return;
+                }
+                if (isTemp && await this.wasTouched(uri)) {
                     const { response } = await remote.dialog.showMessageBox({
                         type: 'question',
                         buttons: ["Don't Save", 'Cancel', 'Save'],
@@ -60,8 +64,8 @@ export class CloseSketch extends SketchContribution {
     /**
      * If the file was ever touched/modified. We get this based on the `version` of the monaco model.
      */
-    protected async wasTouched(sketch: Sketch): Promise<boolean> {
-        const editorWidget = await this.editorManager.getByUri(new URI(sketch.uri).resolve(`${sketch.name}.ino`));
+    protected async wasTouched(uri: string): Promise<boolean> {
+        const editorWidget = await this.editorManager.getByUri(new URI(uri));
         if (editorWidget) {
             const { editor } = editorWidget;
             if (editor instanceof MonacoEditor) {

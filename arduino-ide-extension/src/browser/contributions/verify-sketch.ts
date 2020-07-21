@@ -53,8 +53,8 @@ export class VerifySketch extends SketchContribution {
     }
 
     async verifySketch(): Promise<void> {
-        const sketch = await this.currentSketch();
-        if (!sketch) {
+        const uri = await this.currentSketchFile();
+        if (!uri) {
             return;
         }
         try {
@@ -67,7 +67,7 @@ export class VerifySketch extends SketchContribution {
             }
             const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
             await this.coreService.compile({
-                sketchUri: sketch.uri,
+                sketchUri: uri,
                 fqbn,
                 optimizeForDebug: this.editorMode.compileForDebug
             });

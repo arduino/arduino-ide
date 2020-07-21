@@ -80,6 +80,20 @@ export abstract class SketchContribution extends Contribution {
         return sketches[0];
     }
 
+    protected async currentSketchFile(): Promise<string | undefined> {
+        const sketch = await this.currentSketch();
+        if (sketch) {
+            const uri = new URI(sketch.uri).resolve(`${sketch.name}.ino`).toString();
+            const exists = await this.fileSystem.exists(uri);
+            if (!exists) {
+                this.messageService.warn(`Could not find sketch file: ${uri}`);
+                return undefined;
+            }
+            return uri;
+        }
+        return undefined;
+    }
+
 }
 
 export namespace Contribution {

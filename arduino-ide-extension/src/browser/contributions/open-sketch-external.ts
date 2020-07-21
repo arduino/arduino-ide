@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { remote } from 'electron';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, URI } from './contribution';
+import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry } from './contribution';
 
 @injectable()
 export class OpenSketchExternal extends SketchContribution {
@@ -28,9 +28,8 @@ export class OpenSketchExternal extends SketchContribution {
     }
 
     protected async openExternal(): Promise<void> {
-        const sketch = await this.currentSketch();
-        if (sketch) {
-            const uri = new URI(sketch.uri).resolve(`${sketch.name}.ino`).toString();
+        const uri = await this.currentSketchFile();
+        if (uri) {
             const exists = this.fileSystem.exists(uri);
             if (exists) {
                 const fsPath = await this.fileSystem.getFsPath(uri);

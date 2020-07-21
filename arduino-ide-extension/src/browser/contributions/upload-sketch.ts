@@ -57,8 +57,8 @@ export class UploadSketch extends SketchContribution {
     }
 
     async uploadSketch(): Promise<void> {
-        const sketch = await this.currentSketch();
-        if (!sketch) {
+        const uri = await this.currentSketchFile();
+        if (!uri) {
             return;
         }
         const monitorConfig = this.monitorConnection.monitorConfig;
@@ -79,7 +79,7 @@ export class UploadSketch extends SketchContribution {
             }
             const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
             await this.coreService.upload({
-                sketchUri: sketch.uri,
+                sketchUri: uri,
                 fqbn,
                 port: selectedPort.address,
                 optimizeForDebug: this.editorMode.compileForDebug
