@@ -63,13 +63,19 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
         const fsPath = FileUri.fsPath(uri);
         if (fs.lstatSync(fsPath).isDirectory()) {
             if (await this.isSketchFolder(uri)) {
+                const basename = path.basename(fsPath)
                 const fileNames = await fs.readdir(fsPath);
                 for (const fileName of fileNames) {
                     const filePath = path.join(fsPath, fileName);
                     if (ALLOWED_FILE_EXTENSIONS.indexOf(path.extname(filePath)) !== -1
                         && fs.existsSync(filePath)
                         && fs.lstatSync(filePath).isFile()) {
-                        uris.push(FileUri.create(filePath).toString())
+                        const uri = FileUri.create(filePath).toString();
+                        if (fileName === basename + '.ino') {
+                            uris.unshift(uri);
+                        } else {
+                            uris.push(uri);
+                        }
                     }
                 }
             }

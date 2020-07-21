@@ -267,6 +267,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         for (const uri of uris) {
             await this.editorManager.open(new URI(uri));
         }
+        if (uris.length) {
+            await this.editorManager.open(new URI(uris[0])); // Make sure the sketch file has the focus.
+        }
     }
 
     registerColors(colors: ColorRegistry): void {
