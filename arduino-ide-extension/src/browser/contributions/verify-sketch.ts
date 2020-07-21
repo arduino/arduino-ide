@@ -1,10 +1,11 @@
 import { inject, injectable } from 'inversify';
+import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
-import { CoreService } from '../../common/protocol';
 
 @injectable()
 export class VerifySketch extends SketchContribution {
@@ -17,6 +18,9 @@ export class VerifySketch extends SketchContribution {
 
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
+
+    @inject(OutputChannelManager)
+    protected readonly outputChannelManager: OutputChannelManager;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
@@ -66,6 +70,7 @@ export class VerifySketch extends SketchContribution {
                 throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
             const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
+            this.outputChannelManager.getChannel('Arduino: compile').clear();
             await this.coreService.compile({
                 sketchUri: uri,
                 fqbn,

@@ -28,6 +28,7 @@
     "@theia/navigator": "next",
     "@theia/outline-view": "next",
     "@theia/preferences": "next",
+    "@theia/output": "next",
     "@theia/search-in-workspace": "next",
     "@theia/terminal": "next",
     "@theia/workspace": "next",

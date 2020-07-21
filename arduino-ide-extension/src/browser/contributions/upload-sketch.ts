@@ -1,10 +1,11 @@
 import { inject, injectable } from 'inversify';
+import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
 import { CoreService } from '../../common/protocol';
-import { MonitorConnection } from '../monitor/monitor-connection';
-import { BoardsDataStore } from '../boards/boards-data-store';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
+import { BoardsDataStore } from '../boards/boards-data-store';
+import { MonitorConnection } from '../monitor/monitor-connection';
+import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
 
 @injectable()
@@ -21,6 +22,9 @@ export class UploadSketch extends SketchContribution {
 
     @inject(BoardsServiceClientImpl)
     protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
+
+    @inject(OutputChannelManager)
+    protected readonly outputChannelManager: OutputChannelManager;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
@@ -78,6 +82,7 @@ export class UploadSketch extends SketchContribution {
                 throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
             const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
+            this.outputChannelManager.getChannel('Arduino: upload').clear();
             await this.coreService.upload({
                 sketchUri: uri,
                 fqbn,
