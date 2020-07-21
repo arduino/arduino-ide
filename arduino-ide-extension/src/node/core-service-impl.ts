@@ -61,6 +61,9 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(true);
         compilerReq.setQuiet(false);
+        if (options.programmer) {
+            compilerReq.setProgrammer(options.programmer.id);
+        }
 
         const result = client.compile(compilerReq);
         try {
@@ -89,7 +92,6 @@ export class CoreServiceImpl implements CoreService {
         }
         const sketchpath = path.dirname(sketchFilePath);
 
-
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
@@ -100,12 +102,15 @@ export class CoreServiceImpl implements CoreService {
             throw new Error('The selected board has no FQBN.');
         }
 
-        const req = new UploadReq();
-        req.setInstance(instance);
-        req.setSketchPath(sketchpath);
-        req.setFqbn(fqbn);
-        req.setPort(options.port);
-        const result = client.upload(req);
+        const uploadReq = new UploadReq();
+        uploadReq.setInstance(instance);
+        uploadReq.setSketchPath(sketchpath);
+        uploadReq.setFqbn(fqbn);
+        uploadReq.setPort(options.port);
+        if (options.programmer) {
+            uploadReq.setProgrammer(options.programmer.id);
+        }
+        const result = client.upload(uploadReq);
 
         try {
             await new Promise<void>((resolve, reject) => {

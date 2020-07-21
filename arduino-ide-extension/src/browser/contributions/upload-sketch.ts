@@ -81,13 +81,17 @@ export class UploadSketch extends SketchContribution {
             if (!boardsConfig.selectedBoard.fqbn) {
                 throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
-            const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
+            const [fqbn, data] = await Promise.all([
+                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn),
+                this.boardsDataStore.getData(boardsConfig.selectedBoard.fqbn)
+            ]);
             this.outputChannelManager.getChannel('Arduino: upload').clear();
             await this.coreService.upload({
                 sketchUri: uri,
                 fqbn,
                 port: selectedPort.address,
-                optimizeForDebug: this.editorMode.compileForDebug
+                optimizeForDebug: this.editorMode.compileForDebug,
+                programmer: data.selectedProgrammer
             });
             this.messageService.info('Done uploading.', { timeout: 1000 });
         } catch (e) {

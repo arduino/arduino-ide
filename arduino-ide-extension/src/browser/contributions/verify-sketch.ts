@@ -69,12 +69,16 @@ export class VerifySketch extends SketchContribution {
             if (!boardsConfig.selectedBoard.fqbn) {
                 throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
-            const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
+            const [data, fqbn] = await Promise.all([
+                this.boardsDataStore.getData(boardsConfig.selectedBoard.fqbn),
+                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn)
+            ]);
             this.outputChannelManager.getChannel('Arduino: compile').clear();
             await this.coreService.compile({
                 sketchUri: uri,
                 fqbn,
-                optimizeForDebug: this.editorMode.compileForDebug
+                optimizeForDebug: this.editorMode.compileForDebug,
+                programmer: data.selectedProgrammer
             });
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {
