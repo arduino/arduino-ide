@@ -71,8 +71,9 @@ export class VerifySketch extends SketchContribution {
                 fqbn,
                 optimizeForDebug: this.editorMode.compileForDebug
             });
+            this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {
-            await this.messageService.error(e.toString());
+            this.messageService.error(e.toString());
         }
     }
 

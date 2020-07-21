@@ -84,8 +84,9 @@ export class UploadSketch extends SketchContribution {
                 port: selectedPort.address,
                 optimizeForDebug: this.editorMode.compileForDebug
             });
+            this.messageService.info('Done uploading.', { timeout: 1000 });
         } catch (e) {
-            await this.messageService.error(e.toString());
+            this.messageService.error(e.toString());
         } finally {
             if (monitorConfig) {
                 await this.monitorConnection.connect(monitorConfig);
