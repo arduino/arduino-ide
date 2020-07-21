@@ -92,11 +92,12 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
 
     async selectProgrammer(
-        { fqbn, programmer }: { fqbn: string, programmer: Programmer },
+        { fqbn, selectedProgrammer }: { fqbn: string, selectedProgrammer: Programmer },
         boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<boolean> {
 
-        const { configOptions, programmers } = deepClone(await this.getData(fqbn, boardsPackageVersion));
-        if (!programmers.find(p => Programmer.equals(programmer, p))) {
+        const data = deepClone(await this.getData(fqbn, boardsPackageVersion));
+        const { programmers } = data;
+        if (!programmers.find(p => Programmer.equals(selectedProgrammer, p))) {
             return false;
         }
 
@@ -104,7 +105,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         if (!version) {
             return false;
         }
-        await this.setData({ fqbn, data: { configOptions, programmers }, version });
+
+        await this.setData({ fqbn, data: { ...data, selectedProgrammer }, version });
         this.fireChanged();
         return true;
     }
@@ -113,7 +115,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         { fqbn, option, selectedValue }: { fqbn: string, option: string, selectedValue: string },
         boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<boolean> {
 
-        const { configOptions, programmers } = deepClone(await this.getData(fqbn, boardsPackageVersion));
+        const data = deepClone(await this.getData(fqbn, boardsPackageVersion));
+        const { configOptions } = data;
         const configOption = configOptions.find(c => c.option === option);
         if (!configOption) {
             return false;
@@ -134,7 +137,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         if (!version) {
             return false;
         }
-        await this.setData({ fqbn, data: { configOptions, programmers }, version });
+
+        await this.setData({ fqbn, data, version });
         this.fireChanged();
         return true;
     }
@@ -185,6 +189,7 @@ export namespace BoardsDataStore {
     export interface Data {
         readonly configOptions: ConfigOption[];
         readonly programmers: Programmer[];
+        readonly selectedProgrammer?: Programmer;
     }
     export namespace Data {
         export const EMPTY: Data = {

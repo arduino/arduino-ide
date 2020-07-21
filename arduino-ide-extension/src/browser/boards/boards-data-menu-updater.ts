@@ -3,7 +3,7 @@ import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry, MenuNode } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { BoardsServiceClientImpl } from './boards-service-client-impl';
-import { Board, ConfigOption } from '../../common/protocol';
+import { Board, ConfigOption, Programmer } from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
@@ -41,7 +41,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
             this.mainMenuManager.update();
             const { fqbn } = selectedBoard;
             if (fqbn) {
-                const { configOptions, programmers } = await this.boardsDataStore.getData(fqbn);
+                const { configOptions, programmers, selectedProgrammer } = await this.boardsDataStore.getData(fqbn);
                 const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z01_boardsConfig']; // `z_` is for ordering.
                 for (const { label, option, values } of configOptions.sort(ConfigOption.LABEL_COMPARATOR)) {
                     const menuPath = [...boardsConfigMenuPath, `${option}`];
@@ -60,24 +60,31 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                     this.toDisposeOnBoardChange.pushAll([
                         ...commands.values(),
                         Disposable.create(() => this.unregisterSubmenu(menuPath)), // We cannot dispose submenu entries: https://github.com/eclipse-theia/theia/issues/7299
-                        ...Array.from(commands.keys()).map((commandId, index) => {
+                        ...Array.from(commands.keys()).map((commandId, i) => {
                             const { label } = commands.get(commandId)!;
-                            this.menuRegistry.registerMenuAction(menuPath, { commandId, order: String(index), label });
+                            this.menuRegistry.registerMenuAction(menuPath, { commandId, order: `${i}`, label });
                             return Disposable.create(() => this.menuRegistry.unregisterMenuAction(commandId));
                         })
                     ]);
                 }
-                const programmersMenuPath = [...ArduinoMenus.TOOLS, 'z02_programmers'];
-                for (const programmer of programmers) {
-                    const { id, name } = programmer;
-                    const menuPath = [...programmersMenuPath, `${name}`];
-                    const command = { id: `${fqbn}-programmer--${id}` };
-                    const handler = { execute: () => this.boardsDataStore.selectProgrammer({ fqbn, programmer }) };
-                    this.menuRegistry.registerMenuAction(menuPath, { commandId: command.id, label: name });
-                    this.toDisposeOnBoardChange.pushAll([
-                        this.commandRegistry.registerCommand(command, handler),
-                        Disposable.create(() => this.menuRegistry.unregisterMenuAction(command, menuPath))
-                    ]);
+                if (programmers.length) {
+                    const programmersMenuPath = [...ArduinoMenus.TOOLS, 'z02_programmers'];
+                    const label = selectedProgrammer ? `Programmer: ${selectedProgrammer.name}` : 'Programmer'
+                    this.menuRegistry.registerSubmenu(programmersMenuPath, label);
+                    for (const programmer of programmers) {
+                        const { id, name } = programmer;
+                        const command = { id: `${fqbn}-programmer--${id}` };
+                        const handler = {
+                            execute: () => this.boardsDataStore.selectProgrammer({ fqbn, selectedProgrammer: programmer }),
+                            isToggled: () => Programmer.equals(programmer, selectedProgrammer)
+                        };
+                        this.menuRegistry.registerMenuAction(programmersMenuPath, { commandId: command.id, label: name });
+                        this.toDisposeOnBoardChange.pushAll([
+                            this.commandRegistry.registerCommand(command, handler),
+                            Disposable.create(() => this.unregisterSubmenu(programmersMenuPath)),
+                            Disposable.create(() => this.menuRegistry.unregisterMenuAction(command, programmersMenuPath))
+                        ]);
+                    }
                 }
                 this.mainMenuManager.update();
             }

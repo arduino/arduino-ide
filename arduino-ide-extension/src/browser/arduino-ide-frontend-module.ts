@@ -82,7 +82,7 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import { ConfigServiceClientImpl } from './config-service-client-impl';
 import { CoreServiceClientImpl } from './core-service-client-impl';
-import { BoardsDataMenuUpdater } from './boards/boards-details-menu-updater';
+import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
 import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
