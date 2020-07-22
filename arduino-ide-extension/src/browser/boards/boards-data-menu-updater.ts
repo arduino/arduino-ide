@@ -29,10 +29,10 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
 
     protected readonly toDisposeOnBoardChange = new DisposableCollection();
 
-    onStart(): void {
-        this.boardsDataStore.onChanged(() => this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard));
-        this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) => this.updateMenuActions(selectedBoard));
-        this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard);
+    async onStart(): Promise<void> {
+        await this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard);
+        this.boardsDataStore.onChanged(async () => await this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard));
+        this.boardsServiceClient.onBoardsConfigChanged(async ({ selectedBoard }) => await this.updateMenuActions(selectedBoard));
     }
 
     protected async updateMenuActions(selectedBoard: Board | undefined): Promise<void> {
@@ -43,7 +43,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
             if (fqbn) {
                 const { configOptions, programmers, selectedProgrammer } = await this.boardsDataStore.getData(fqbn);
                 if (configOptions.length) {
-                    const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z01_boardsConfig']; // `z_` is for ordering.
+                    const boardsConfigMenuPath = [...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP, 'z01_boardsConfig']; // `z_` is for ordering.
                     for (const { label, option, values } of configOptions.sort(ConfigOption.LABEL_COMPARATOR)) {
                         const menuPath = [...boardsConfigMenuPath, `${option}`];
                         const commands = new Map<string, Disposable & { label: string }>()
@@ -70,9 +70,10 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                     }
                 }
                 if (programmers.length) {
-                    const programmersMenuPath = [...ArduinoMenus.TOOLS, 'z02_programmers'];
+                    const programmersMenuPath = [...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP, 'z02_programmers'];
                     const label = selectedProgrammer ? `Programmer: "${selectedProgrammer.name}"` : 'Programmer'
                     this.menuRegistry.registerSubmenu(programmersMenuPath, label);
+                    this.toDisposeOnBoardChange.push(Disposable.create(() => this.unregisterSubmenu(programmersMenuPath)));
                     for (const programmer of programmers) {
                         const { id, name } = programmer;
                         const command = { id: `${fqbn}-programmer--${id}` };
@@ -81,10 +82,10 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                             isToggled: () => Programmer.equals(programmer, selectedProgrammer)
                         };
                         this.menuRegistry.registerMenuAction(programmersMenuPath, { commandId: command.id, label: name });
+                        this.commandRegistry.registerCommand(command, handler);
                         this.toDisposeOnBoardChange.pushAll([
-                            this.commandRegistry.registerCommand(command, handler),
-                            Disposable.create(() => this.unregisterSubmenu(programmersMenuPath)),
-                            Disposable.create(() => this.menuRegistry.unregisterMenuAction(command, programmersMenuPath))
+                            Disposable.create(() => this.commandRegistry.unregisterCommand(command)),
+                            Disposable.create(() => this.menuRegistry.unregisterMenuAction(command.id))
                         ]);
                     }
                 }

@@ -1,15 +1,12 @@
 import { Command } from '@theia/core/lib/common/command';
 
+/**
+ * @deprecated all these commands should go under contributions and have their command, menu, keybinding, and toolbar contributions.
+ */
 export namespace ArduinoCommands {
-
-    const category = 'Arduino';
 
     export const TOGGLE_COMPILE_FOR_DEBUG: Command = {
         id: 'arduino-toggle-compile-for-debug'
-    };
-
-    export const OPEN_FILE_NAVIGATOR: Command = {
-        id: 'arduino-open-file-navigator'
     };
 
     /**
@@ -28,12 +25,6 @@ export namespace ArduinoCommands {
     };
     export const TOGGLE_ADVANCED_MODE_TOOLBAR: Command = {
         id: 'arduino-toggle-advanced-mode-toolbar'
-    };
-
-    export const OPEN_CLI_CONFIG: Command = {
-        id: 'arduino-open-cli-config',
-        label: 'Open CLI Configuration',
-        category
     };
 
 }

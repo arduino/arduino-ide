@@ -12,7 +12,7 @@ import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
 import {
     ContextMenuRenderer, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
-    FrontendApplication, KeybindingContribution, KeybindingRegistry, OpenerService, open
+    FrontendApplication, KeybindingContribution, KeybindingRegistry, OpenerService
 } from '@theia/core/lib/browser';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
@@ -227,9 +227,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
             isToggled: () => this.editorMode.proMode,
             execute: () => this.editorMode.toggleProMode()
-        });
-        registry.registerCommand(ArduinoCommands.OPEN_CLI_CONFIG, {
-            execute: () => this.configService.getCliConfigFileUri().then(uri => open(this.openerService, new URI(uri)))
         });
     }
 

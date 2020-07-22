@@ -42,13 +42,13 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
                 area: 'bottom'
             },
             toggleCommandId: MonitorViewContribution.TOGGLE_SERIAL_MONITOR,
-            toggleKeybinding: 'ctrlcmd+shift+m'
+            toggleKeybinding: 'CtrlCmd+Shift+M'
         })
     }
 
     registerMenus(menus: MenuModelRegistry): void {
         if (this.toggleCommand) {
-            menus.registerMenuAction(ArduinoMenus.TOOLS, {
+            menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
                 commandId: this.toggleCommand.id,
                 label: 'Serial Monitor',
                 order: '5'

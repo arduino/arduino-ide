@@ -4,7 +4,7 @@ import { Event, Emitter } from '@theia/core/lib/common/event';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { ConfigServiceClient, Config } from '../common/protocol';
-import { ArduinoCommands } from './arduino-commands';
+import { Settings } from './contributions/settings';
 
 @injectable()
 export class ConfigServiceClientImpl implements ConfigServiceClient {
@@ -32,7 +32,7 @@ export class ConfigServiceClientImpl implements ConfigServiceClient {
             this.invalidConfigPopup = this.messageService.error(`Your CLI configuration is invalid. Do you want to correct it now?`, 'No', 'Yes')
                 .then(answer => {
                     if (answer === 'Yes') {
-                        this.commandService.executeCommand(ArduinoCommands.OPEN_CLI_CONFIG.id)
+                        this.commandService.executeCommand(Settings.Commands.OPEN_CLI_CONFIG.id)
                     }
                     this.invalidConfigPopup = undefined;
                 })

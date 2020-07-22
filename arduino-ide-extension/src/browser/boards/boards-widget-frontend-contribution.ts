@@ -19,7 +19,7 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
                 rank: 600
             },
             toggleCommandId: BoardsListWidgetFrontendContribution.OPEN_MANAGER,
-            toggleKeybinding: 'ctrlcmd+shift+b'
+            toggleKeybinding: 'CtrlCmd+Shift+B'
         });
     }
 
@@ -29,7 +29,7 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
 
     registerMenus(menus: MenuModelRegistry): void {
         if (this.toggleCommand) {
-            menus.registerMenuAction(ArduinoMenus.TOOLS, {
+            menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
                 commandId: this.toggleCommand.id,
                 label: 'Boards Manager...',
                 order: '4'
