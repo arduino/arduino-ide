@@ -8,6 +8,12 @@ import { RecursiveRequired } from '../../common/types';
 import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, Board, Port, BoardUninstalledEvent, BoardsService } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
+import { compareAnything } from '../theia/monaco/comparers';
+
+interface BoardMatch {
+    readonly board: Board & Readonly<{ packageName: string }>;
+    readonly matches: monaco.filters.IMatch[] | undefined;
+}
 
 @injectable()
 export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApplicationContribution {
@@ -168,13 +174,28 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
         const coresFilter = !!cores && cores.length
             ? ((toFilter: { packageName: string }) => cores.some(core => core === toFilter.packageName))
             : () => true;
-        const fuzzyFilter = !!query
-            ? ((toFilter: Board) => !!monaco.filters.matchesFuzzy(query, toFilter.name, true))
-            : () => true
-        return boards
-            .filter(coresFilter)
-            .filter(fuzzyFilter)
-            .sort(Board.compare)
+        if (!query) {
+            return boards.filter(coresFilter).sort(Board.compare);
+        }
+        const toMatch = ((toFilter: Board & { packageName: string }) => (({ board: toFilter, matches: monaco.filters.matchesFuzzy(query, toFilter.name, true) })));
+        const compareEntries = (left: BoardMatch, right: BoardMatch, lookFor: string) => {
+            const leftMatches = left.matches || [];
+            const rightMatches = right.matches || [];
+            if (leftMatches.length && !rightMatches.length) {
+                return -1;
+            }
+            if (!leftMatches.length && rightMatches.length) {
+                return 1;
+            }
+            if (leftMatches.length === 0 && rightMatches.length === 0) {
+                return 0;
+            }
+            const leftLabel = left.board.name.replace(/\r?\n/g, ' ');
+            const rightLabel = right.board.name.replace(/\r?\n/g, ' ');
+            return compareAnything(leftLabel, rightLabel, lookFor);
+        }
+        const normalizedQuery = query.toLowerCase();
+        return boards.filter(coresFilter).map(toMatch).sort((left, right) => compareEntries(left, right, normalizedQuery)).map(({ board }) => board);
     }
 
     get boardsConfig(): BoardsConfig.Config {

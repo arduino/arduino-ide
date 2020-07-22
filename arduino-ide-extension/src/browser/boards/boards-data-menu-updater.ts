@@ -42,34 +42,36 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
             const { fqbn } = selectedBoard;
             if (fqbn) {
                 const { configOptions, programmers, selectedProgrammer } = await this.boardsDataStore.getData(fqbn);
-                const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z01_boardsConfig']; // `z_` is for ordering.
-                for (const { label, option, values } of configOptions.sort(ConfigOption.LABEL_COMPARATOR)) {
-                    const menuPath = [...boardsConfigMenuPath, `${option}`];
-                    const commands = new Map<string, Disposable & { label: string }>()
-                    for (const value of values) {
-                        const id = `${fqbn}-${option}--${value.value}`;
-                        const command = { id };
-                        const selectedValue = value.value;
-                        const handler = {
-                            execute: () => this.boardsDataStore.selectConfigOption({ fqbn, option, selectedValue }),
-                            isToggled: () => value.selected
-                        };
-                        commands.set(id, Object.assign(this.commandRegistry.registerCommand(command, handler), { label: value.label }));
+                if (configOptions.length) {
+                    const boardsConfigMenuPath = [...ArduinoMenus.TOOLS, 'z01_boardsConfig']; // `z_` is for ordering.
+                    for (const { label, option, values } of configOptions.sort(ConfigOption.LABEL_COMPARATOR)) {
+                        const menuPath = [...boardsConfigMenuPath, `${option}`];
+                        const commands = new Map<string, Disposable & { label: string }>()
+                        for (const value of values) {
+                            const id = `${fqbn}-${option}--${value.value}`;
+                            const command = { id };
+                            const selectedValue = value.value;
+                            const handler = {
+                                execute: () => this.boardsDataStore.selectConfigOption({ fqbn, option, selectedValue }),
+                                isToggled: () => value.selected
+                            };
+                            commands.set(id, Object.assign(this.commandRegistry.registerCommand(command, handler), { label: value.label }));
+                        }
+                        this.menuRegistry.registerSubmenu(menuPath, label);
+                        this.toDisposeOnBoardChange.pushAll([
+                            ...commands.values(),
+                            Disposable.create(() => this.unregisterSubmenu(menuPath)), // We cannot dispose submenu entries: https://github.com/eclipse-theia/theia/issues/7299
+                            ...Array.from(commands.keys()).map((commandId, i) => {
+                                const { label } = commands.get(commandId)!;
+                                this.menuRegistry.registerMenuAction(menuPath, { commandId, order: `${i}`, label });
+                                return Disposable.create(() => this.menuRegistry.unregisterMenuAction(commandId));
+                            })
+                        ]);
                     }
-                    this.menuRegistry.registerSubmenu(menuPath, label);
-                    this.toDisposeOnBoardChange.pushAll([
-                        ...commands.values(),
-                        Disposable.create(() => this.unregisterSubmenu(menuPath)), // We cannot dispose submenu entries: https://github.com/eclipse-theia/theia/issues/7299
-                        ...Array.from(commands.keys()).map((commandId, i) => {
-                            const { label } = commands.get(commandId)!;
-                            this.menuRegistry.registerMenuAction(menuPath, { commandId, order: `${i}`, label });
-                            return Disposable.create(() => this.menuRegistry.unregisterMenuAction(commandId));
-                        })
-                    ]);
                 }
                 if (programmers.length) {
                     const programmersMenuPath = [...ArduinoMenus.TOOLS, 'z02_programmers'];
-                    const label = selectedProgrammer ? `Programmer: ${selectedProgrammer.name}` : 'Programmer'
+                    const label = selectedProgrammer ? `Programmer: "${selectedProgrammer.name}"` : 'Programmer'
                     this.menuRegistry.registerSubmenu(programmersMenuPath, label);
                     for (const programmer of programmers) {
                         const { id, name } = programmer;

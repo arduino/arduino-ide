@@ -219,7 +219,7 @@ ${value}
     }
 
     protected async run(commandId: string): Promise<any> {
-        const editor = await this.current();
+        const editor = await this.current(); // TODO: this should be the active monaco editor and not Theia editor. e.g: Output
         if (editor) {
             const action = editor.getControl().getAction(commandId);
             if (action) {

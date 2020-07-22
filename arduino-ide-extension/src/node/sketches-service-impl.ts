@@ -72,7 +72,7 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
                         && fs.lstatSync(filePath).isFile()) {
                         const uri = FileUri.create(filePath).toString();
                         if (fileName === basename + '.ino') {
-                            uris.unshift(uri);
+                            uris.unshift(uri); // The sketch file is the first.
                         } else {
                             uris.push(uri);
                         }

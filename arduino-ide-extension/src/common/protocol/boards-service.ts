@@ -276,6 +276,7 @@ export interface Programmer {
     readonly id: string;
 }
 export namespace Programmer {
+
     export function equals(left: Programmer | undefined, right: Programmer | undefined): boolean {
         if (!left) {
             return !right;
@@ -285,6 +286,15 @@ export namespace Programmer {
         }
         return left.id === right.id && left.name === right.name && left.platform === right.platform;
     }
+
+    export function toString({ id, platform }: Programmer): string {
+        const [vendor,] = platform.split('@');
+        if (!vendor) {
+            throw new Error(`Could not extract vendor from platform: '${platform}'.`);
+        }
+        return `${vendor}:${id}`;
+    }
+
 }
 
 export namespace Board {
@@ -356,6 +366,5 @@ export namespace Board {
             missing: !installed(board)
         }));
     }
-
 
 }
