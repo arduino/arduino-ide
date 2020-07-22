@@ -99,6 +99,9 @@ export class UploadSketch extends SketchContribution {
             ]);
             this.outputChannelManager.getChannel('Arduino: upload').clear();
             const programmer = usingProgrammer ? data.selectedProgrammer : undefined;
+            if (usingProgrammer && !programmer) {
+                this.messageService.warn('Programmer is not selected. Uploading without programmer.', { timeout: 2000 });
+            }
             await this.coreService.upload({
                 sketchUri: uri,
                 fqbn,
