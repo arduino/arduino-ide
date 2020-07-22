@@ -353,6 +353,7 @@ export function compareByPrefix(one: string, other: string, lookFor: string): nu
     }
 
     // Same prefix: Sort shorter matches to the top to have those on top that match more precisely
+    // tslint:disable-next-line: one-line
     else if (elementAPrefixMatch && elementBPrefixMatch) {
         if (elementAName.length < elementBName.length) {
             return -1;

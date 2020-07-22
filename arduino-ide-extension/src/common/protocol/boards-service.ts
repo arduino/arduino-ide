@@ -288,7 +288,8 @@ export namespace Programmer {
     }
 
     export function toString({ id, platform }: Programmer): string {
-        const [vendor,] = platform.split('@');
+        // tslint:disable-next-line: whitespace
+        const [vendor,] = platform.split(':');
         if (!vendor) {
             throw new Error(`Could not extract vendor from platform: '${platform}'.`);
         }
