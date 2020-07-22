@@ -1,9 +1,8 @@
 import { inject, injectable } from 'inversify';
-import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
-import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
+import { MonacoEditorService } from '@theia/monaco/lib/browser/monaco-editor-service';
 import { EDITOR_FONT_DEFAULTS } from '@theia/editor/lib/browser/editor-preferences';
 import { Contribution, Command, MenuModelRegistry, KeybindingRegistry, CommandRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -13,8 +12,8 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 @injectable()
 export class EditContributions extends Contribution {
 
-    @inject(EditorManager)
-    protected readonly editorManager: EditorManager;
+    @inject(MonacoEditorService)
+    protected readonly codeEditorService: MonacoEditorService;
 
     @inject(ClipboardService)
     protected readonly clipboardService: ClipboardService;
@@ -209,19 +208,19 @@ ${value}
         });
     }
 
-    protected async current(): Promise<MonacoEditor | undefined> {
-        const editor = this.editorManager.currentEditor?.editor;
-        return editor instanceof MonacoEditor ? editor : undefined;
+    protected async current(): Promise<monaco.editor.ICodeEditor | undefined> {
+        return this.codeEditorService.getFocusedCodeEditor() || this.codeEditorService.getActiveCodeEditor();
     }
 
     protected async currentValue(): Promise<string | undefined> {
-        return this.editorManager.currentEditor?.editor.document.getText();
+        const currentEditor = await this.current()
+        return currentEditor?.getValue();
     }
 
     protected async run(commandId: string): Promise<any> {
-        const editor = await this.current(); // TODO: this should be the active monaco editor and not Theia editor. e.g: Output
+        const editor = await this.current();
         if (editor) {
-            const action = editor.getControl().getAction(commandId);
+            const action = editor.getAction(commandId);
             if (action) {
                 return action.run();
             }
