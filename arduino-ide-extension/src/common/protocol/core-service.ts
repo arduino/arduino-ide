@@ -20,7 +20,7 @@ export namespace CoreService {
             readonly sketchUri: string;
             readonly fqbn: string;
             readonly optimizeForDebug: boolean;
-            readonly programmer?: Programmer;
+            readonly programmer?: Programmer | undefined;
         }
     }
 

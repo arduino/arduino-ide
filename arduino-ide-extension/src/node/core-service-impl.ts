@@ -2,7 +2,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
 import { CoreService, CoreServiceClient } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
-import { BoardsService, Programmer } from '../common/protocol/boards-service';
+import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
 import * as path from 'path';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
@@ -62,7 +62,7 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setVerbose(true);
         compilerReq.setQuiet(false);
         if (options.programmer) {
-            compilerReq.setProgrammer(Programmer.toString(options.programmer));
+            compilerReq.setProgrammer(options.programmer.id);
         }
 
         const result = client.compile(compilerReq);
@@ -108,7 +108,7 @@ export class CoreServiceImpl implements CoreService {
         uploadReq.setFqbn(fqbn);
         uploadReq.setPort(options.port);
         if (options.programmer) {
-            uploadReq.setProgrammer(Programmer.toString(options.programmer));
+            uploadReq.setProgrammer(options.programmer.id);
         }
         const result = client.upload(uploadReq);
 

@@ -30,6 +30,9 @@ export class UploadSketch extends SketchContribution {
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
             execute: () => this.uploadSketch()
         });
+        registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER, {
+            execute: () => this.uploadSketch(true)
+        });
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: () => registry.executeCommand(UploadSketch.Commands.UPLOAD_SKETCH.id)
@@ -42,12 +45,21 @@ export class UploadSketch extends SketchContribution {
             label: 'Upload',
             order: '0'
         });
+        registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+            commandId: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
+            label: 'Upload Using Programmer',
+            order: '1'
+        });
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: UploadSketch.Commands.UPLOAD_SKETCH.id,
             keybinding: 'CtrlCmd+U'
+        });
+        registry.registerKeybinding({
+            command: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
+            keybinding: 'CtrlCmd+Shift+U'
         });
     }
 
@@ -60,7 +72,7 @@ export class UploadSketch extends SketchContribution {
         });
     }
 
-    async uploadSketch(): Promise<void> {
+    async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
         const uri = await this.currentSketchFile();
         if (!uri) {
             return;
@@ -86,12 +98,13 @@ export class UploadSketch extends SketchContribution {
                 this.boardsDataStore.getData(boardsConfig.selectedBoard.fqbn)
             ]);
             this.outputChannelManager.getChannel('Arduino: upload').clear();
+            const programmer = usingProgrammer ? data.selectedProgrammer : undefined;
             await this.coreService.upload({
                 sketchUri: uri,
                 fqbn,
                 port: selectedPort.address,
                 optimizeForDebug: this.editorMode.compileForDebug,
-                programmer: data.selectedProgrammer
+                programmer
             });
             this.messageService.info('Done uploading.', { timeout: 1000 });
         } catch (e) {
@@ -109,6 +122,9 @@ export namespace UploadSketch {
     export namespace Commands {
         export const UPLOAD_SKETCH: Command = {
             id: 'arduino-upload-sketch'
+        };
+        export const UPLOAD_SKETCH_USING_PROGRAMMER: Command = {
+            id: 'arduino-upload-sketch-using-programmer'
         };
         export const UPLOAD_SKETCH_TOOLBAR: Command = {
             id: 'arduino-upload-sketch--toolbar'

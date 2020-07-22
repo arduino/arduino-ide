@@ -36,7 +36,7 @@ export class VerifySketch extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: VerifySketch.Commands.VERIFY_SKETCH.id,
             label: 'Verify/Compile',
-            order: '0'
+            order: '2'
         });
     }
 

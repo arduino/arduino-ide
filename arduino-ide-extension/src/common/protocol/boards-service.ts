@@ -287,15 +287,6 @@ export namespace Programmer {
         return left.id === right.id && left.name === right.name && left.platform === right.platform;
     }
 
-    export function toString({ id, platform }: Programmer): string {
-        // tslint:disable-next-line: whitespace
-        const [vendor,] = platform.split(':');
-        if (!vendor) {
-            throw new Error(`Could not extract vendor from platform: '${platform}'.`);
-        }
-        return `${vendor}:${id}`;
-    }
-
 }
 
 export namespace Board {
