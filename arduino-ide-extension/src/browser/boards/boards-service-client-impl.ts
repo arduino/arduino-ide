@@ -195,7 +195,12 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
             return compareAnything(leftLabel, rightLabel, lookFor);
         }
         const normalizedQuery = query.toLowerCase();
-        return boards.filter(coresFilter).map(toMatch).sort((left, right) => compareEntries(left, right, normalizedQuery)).map(({ board }) => board);
+        return boards
+            .filter(coresFilter)
+            .map(toMatch)
+            .filter(({ matches }) => !!matches)
+            .sort((left, right) => compareEntries(left, right, normalizedQuery))
+            .map(({ board }) => board);
     }
 
     get boardsConfig(): BoardsConfig.Config {
