@@ -36,8 +36,8 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
     }
 
-    async save(): Promise<void> {
-        await super.save();
+    async saveAll(): Promise<void> {
+        await super.saveAll();
         await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { execOnlyIfTemp: true, openAfterMove: true });
     }
 
