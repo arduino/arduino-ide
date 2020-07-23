@@ -22,7 +22,12 @@ export class ToolOutputServiceServerImpl implements ToolOutputServiceServer {
     }
 
     disposeClient(client: ToolOutputServiceClient): void {
-
+        const index = this.clients.indexOf(client);
+        if (index === -1) {
+            console.warn(`Could not dispose tools output client. It was not registered.`);
+            return;
+        }
+        this.clients.splice(index, 1);
     }
 
     dispose(): void {
