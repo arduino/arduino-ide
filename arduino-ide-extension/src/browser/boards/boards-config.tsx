@@ -127,7 +127,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     }
 
     protected queryBoards = (options: { query?: string } = {}): Promise<Array<Board & { packageName: string }>> => {
-        return this.props.boardsService.searchBoards(options);
+        return this.props.boardsServiceClient.searchBoards(options);
     }
 
     protected get availablePorts(): Promise<Port[]> {
@@ -178,13 +178,24 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
 
     protected renderBoards(): React.ReactNode {
         const { selectedBoard, searchResults } = this.state;
+        // Board names are not unique per core https://github.com/arduino/arduino-pro-ide/issues/262#issuecomment-661019560
+        // It is tricky when the core is not yet installed, no FQBNs are available.
+        const distinctBoards = new Map<string, Board.Detailed>();
+        const toKey = ({ name, packageName, fqbn }: Board.Detailed) => !!fqbn ? `${name}-${packageName}-${fqbn}` : `${name}-${packageName}`;
+        for (const board of Board.decorateBoards(selectedBoard, searchResults)) {
+            const key = toKey(board);
+            if (!distinctBoards.has(key)) {
+                distinctBoards.set(key, board);
+            }
+        }
+
         return <React.Fragment>
             <div className='search'>
                 <input type='search' className='theia-input' placeholder='SEARCH BOARD' onChange={this.updateBoards} ref={this.focusNodeSet} />
                 <i className='fa fa-search'></i>
             </div>
             <div className='boards list'>
-                {Board.decorateBoards(selectedBoard, searchResults).map(board => <Item<Board & { packageName: string }>
+                {Array.from(distinctBoards.values()).map(board => <Item<Board & { packageName: string }>
                     key={`${board.name}-${board.packageName}`}
                     item={board}
                     label={board.name}

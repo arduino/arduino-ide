@@ -6,7 +6,6 @@
   "main": "src-gen/frontend/electron-main.js",
   "dependencies": {
     "@theia/core": "next",
-    "@theia/cpp": "next",
     "@theia/debug": "next",
     "@theia/editor": "next",
     "@theia/electron": "next",
@@ -40,7 +39,9 @@
         "applicationName": "Arduino Pro IDE",
         "defaultTheme": "arduino-theme",
         "preferences": {
-          "editor.autoSave": "on"
+          "editor.autoSave": "on",
+          "editor.minimap.enabled": false,
+          "editor.scrollBeyondLastLine": false
         }
       }
     },

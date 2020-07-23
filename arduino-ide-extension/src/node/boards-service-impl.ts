@@ -1,7 +1,7 @@
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import { BoardsService, BoardsPackage, Board, BoardsServiceClient, Port, BoardDetails, Tool, ConfigOption, ConfigValue } from '../common/protocol';
+import { BoardsService, BoardsPackage, Board, BoardsServiceClient, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer } from '../common/protocol';
 import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
     PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
@@ -10,6 +10,7 @@ import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp, BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
+import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
 
 @injectable()
 export class BoardsServiceImpl implements BoardsService {
@@ -209,10 +210,10 @@ export class BoardsServiceImpl implements BoardsService {
         const { client, instance } = coreClient;
 
         const { fqbn } = options;
-        const req = new BoardDetailsReq();
-        req.setInstance(instance);
-        req.setFqbn(fqbn);
-        const resp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(req, (err, resp) => {
+        const detailsReq = new BoardDetailsReq();
+        detailsReq.setInstance(instance);
+        detailsReq.setFqbn(fqbn);
+        const detailsResp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(detailsReq, (err, resp) => {
             if (err) {
                 reject(err);
                 return;
@@ -220,13 +221,13 @@ export class BoardsServiceImpl implements BoardsService {
             resolve(resp);
         }));
 
-        const requiredTools = resp.getToolsdependenciesList().map(t => <Tool>{
+        const requiredTools = detailsResp.getToolsdependenciesList().map(t => <Tool>{
             name: t.getName(),
             packager: t.getPackager(),
             version: t.getVersion()
         });
 
-        const configOptions = resp.getConfigOptionsList().map(c => <ConfigOption>{
+        const configOptions = detailsResp.getConfigOptionsList().map(c => <ConfigOption>{
             label: c.getOptionLabel(),
             option: c.getOption(),
             values: c.getValuesList().map(v => <ConfigValue>{
@@ -236,10 +237,28 @@ export class BoardsServiceImpl implements BoardsService {
             })
         });
 
+        const listReq = new ListProgrammersAvailableForUploadReq();
+        listReq.setInstance(instance);
+        listReq.setFqbn(fqbn);
+        const listResp = await new Promise<ListProgrammersAvailableForUploadResp>((resolve, reject) => client.listProgrammersAvailableForUpload(listReq, (err, resp) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(resp);
+        }));
+
+        const programmers = listResp.getProgrammersList().map(p => <Programmer>{
+            id: p.getId(),
+            name: p.getName(),
+            platform: p.getPlatform()
+        });
+
         return {
             fqbn,
             requiredTools,
-            configOptions
+            configOptions,
+            programmers
         };
     }
 
@@ -261,13 +280,10 @@ export class BoardsServiceImpl implements BoardsService {
         return packages.find(({ boards }) => boards.some(({ fqbn }) => fqbn === expectedFqbn));
     }
 
-    async searchBoards(options: { query?: string }): Promise<Array<Board & { packageName: string }>> {
-        const query = (options.query || '').toLocaleLowerCase();
+    async allBoards(options: {}): Promise<Array<Board & { packageName: string }>> {
         const results = await this.search(options);
         return results.map(item => item.boards.map(board => ({ ...board, packageName: item.name })))
-            .reduce((acc, curr) => acc.concat(curr), [])
-            .filter(board => board.name.toLocaleLowerCase().indexOf(query) !== -1)
-            .sort(Board.compare);
+            .reduce((acc, curr) => acc.concat(curr), []);
     }
 
     async search(options: { query?: string }): Promise<BoardsPackage[]> {

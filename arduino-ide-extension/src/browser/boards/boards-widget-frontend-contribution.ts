@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
 import { MenuModelRegistry } from '@theia/core';
 import { BoardsListWidget } from './boards-list-widget';
-import { ArduinoMenus } from '../arduino-frontend-contribution';
 import { BoardsPackage } from '../../common/protocol/boards-service';
-import { ListWidgetFrontendContribution } from '../components/component-list/list-widget-frontend-contribution';
+import { ListWidgetFrontendContribution } from '../widgets/component-list/list-widget-frontend-contribution';
+import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
 export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<BoardsPackage> {
@@ -19,7 +19,7 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
                 rank: 600
             },
             toggleCommandId: BoardsListWidgetFrontendContribution.OPEN_MANAGER,
-            toggleKeybinding: 'ctrlcmd+shift+b'
+            toggleKeybinding: 'CtrlCmd+Shift+B'
         });
     }
 
@@ -29,9 +29,10 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
 
     registerMenus(menus: MenuModelRegistry): void {
         if (this.toggleCommand) {
-            menus.registerMenuAction(ArduinoMenus.TOOLS, {
+            menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
                 commandId: this.toggleCommand.id,
-                label: 'Boards Manager...'
+                label: 'Boards Manager...',
+                order: '4'
             });
         }
     }

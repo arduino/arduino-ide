@@ -68,7 +68,9 @@ export interface BoardsService extends Installable<BoardsPackage>, Searchable<Bo
     getBoardDetails(options: { fqbn: string }): Promise<BoardDetails>;
     getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
     getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
-    searchBoards(options: { query?: string }): Promise<Array<Board & { packageName: string }>>;
+    // The CLI cannot do fuzzy search. This method provides all boards and we do the fuzzy search (with monaco) on the frontend.
+    // https://github.com/arduino/arduino-cli/issues/629
+    allBoards(options: {}): Promise<Array<Board & { packageName: string }>>;
 }
 
 export interface Port {
@@ -92,6 +94,10 @@ export namespace Port {
                 return 'unknown';
             }
         }
+    }
+
+    export function is(arg: any): arg is Port {
+        return !!arg && 'address' in arg && typeof arg['address'] === 'string' && 'protocol' in arg && typeof arg['protocol'] === 'string';
     }
 
     export function toString(port: Port, options: { useLabel: boolean } = { useLabel: false }): string {
@@ -199,6 +205,7 @@ export interface BoardDetails {
     readonly fqbn: string;
     readonly requiredTools: Tool[];
     readonly configOptions: ConfigOption[];
+    readonly programmers: Programmer[];
 }
 
 export interface Tool {
@@ -223,18 +230,8 @@ export namespace ConfigOption {
      * Appends the configuration options to the `fqbn` argument.
      * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
      * The provided output format is always segment(':'segment)*(':'option'='value(','option'='value)*)?
-     * Validation can be disabled with the `{ validation: false }` option.
      */
-    export function decorate(fqbn: string, configOptions: ConfigOption[], { validate } = { validate: true }): string {
-        if (validate) {
-            if (!isValidFqbn(fqbn)) {
-                throw new ConfigOptionError(`${fqbn} is not a valid FQBN.`);
-            }
-            if (isValidFqbnWithOptions(fqbn)) {
-                throw new ConfigOptionError(`${fqbn} is already decorated with the configuration options.`);
-            }
-        }
-
+    export function decorate(fqbn: string, configOptions: ConfigOption[]): string {
         if (!configOptions.length) {
             return fqbn;
         }
@@ -256,14 +253,6 @@ export namespace ConfigOption {
         return `${fqbn}:${options}`;
     }
 
-    export function isValidFqbn(fqbn: string): boolean {
-        return /^\w+(:\w+)*$/.test(fqbn);
-    }
-
-    export function isValidFqbnWithOptions(fqbn: string): boolean {
-        return /^\w+(:\w+)*(:\w+=\w+(,\w+=\w+)*)$/.test(fqbn);
-    }
-
     export class ConfigOptionError extends Error {
         constructor(message: string) {
             super(message);
@@ -279,6 +268,25 @@ export interface ConfigValue {
     readonly label: string;
     readonly value: string;
     readonly selected: boolean;
+}
+
+export interface Programmer {
+    readonly name: string;
+    readonly platform: string;
+    readonly id: string;
+}
+export namespace Programmer {
+
+    export function equals(left: Programmer | undefined, right: Programmer | undefined): boolean {
+        if (!left) {
+            return !right;
+        }
+        if (!right) {
+            return !left;
+        }
+        return left.id === right.id && left.name === right.name && left.platform === right.platform;
+    }
+
 }
 
 export namespace Board {
@@ -350,6 +358,5 @@ export namespace Board {
             missing: !installed(board)
         }));
     }
-
 
 }

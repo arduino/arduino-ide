@@ -8,6 +8,6 @@ import { BackendApplicationConfigProvider } from '@theia/core/lib/node/backend-a
 @injectable()
 export class ArduinoEnvVariablesServer extends EnvVariablesServerImpl {
 
-    protected readonly configDirUri = FileUri.create(join(homedir(), BackendApplicationConfigProvider.get().configDirName)).toString();
+    protected readonly configDirUri = Promise.resolve(FileUri.create(join(homedir(), BackendApplicationConfigProvider.get().configDirName)).toString());
 
 }

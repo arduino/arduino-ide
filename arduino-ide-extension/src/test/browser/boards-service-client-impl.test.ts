@@ -268,7 +268,7 @@ export class MockBoardsService implements BoardsService {
         throw new Error('Method not implemented.');
     }
 
-    searchBoards(): Promise<Array<Board & { packageName: string; }>> {
+    allBoards(): Promise<Array<Board & { packageName: string; }>> {
         throw new Error('Method not implemented.');
     }
 

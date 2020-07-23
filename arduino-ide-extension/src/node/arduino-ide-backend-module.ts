@@ -33,6 +33,8 @@ import { HostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-rea
 import { ConfigFileValidator } from './config-file-validator';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { ArduinoEnvVariablesServer } from './arduino-env-variables-server';
+import { NodeFileSystemExt } from './node-filesystem-ext';
+import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(EnvVariablesServer).to(ArduinoEnvVariablesServer).inSingletonScope();
@@ -185,4 +187,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(ArduinoHostedPluginReader).toSelf().inSingletonScope();
     rebind(HostedPluginReader).toService(ArduinoHostedPluginReader);
+
+    // File-system extension for mapping paths to URIs
+    bind(NodeFileSystemExt).toSelf().inSingletonScope();
+    bind(FileSystemExt).toDynamicValue(context => context.container.get(NodeFileSystemExt));
+    bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(FileSystemExtPath, () => context.container.get(FileSystemExt))).inSingletonScope();
 });

@@ -3,7 +3,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { MenuModelRegistry } from '@theia/core';
 import { LibraryListWidget } from './library-list-widget';
-import { ArduinoMenus } from '../arduino-frontend-contribution';
+import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
 export class LibraryListWidgetFrontendContribution extends AbstractViewContribution<LibraryListWidget> implements FrontendApplicationContribution {
@@ -17,7 +17,7 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
                 rank: 700
             },
             toggleCommandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-            toggleKeybinding: 'ctrlcmd+shift+l'
+            toggleKeybinding: 'CtrlCmd+Shift+I'
         });
     }
 
@@ -27,9 +27,10 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
 
     registerMenus(menus: MenuModelRegistry): void {
         if (this.toggleCommand) {
-            menus.registerMenuAction(ArduinoMenus.TOOLS, {
+            menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
                 commandId: this.toggleCommand.id,
-                label: 'Manage Libraries...'
+                label: 'Manage Libraries...',
+                order: '3'
             });
         }
     }

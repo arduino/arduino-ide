@@ -1,7 +1,7 @@
-import { ToolOutputServiceClient } from "../../common/protocol/tool-output-service";
-import { injectable, inject } from "inversify";
-import { OutputChannelManager } from "@theia/output/lib/common/output-channel";
-import { OutputContribution } from "@theia/output/lib/browser/output-contribution";
+import { ToolOutputServiceClient } from '../../common/protocol/tool-output-service';
+import { injectable, inject } from 'inversify';
+import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
 
 @injectable()
 export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {
@@ -13,9 +13,9 @@ export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {
     protected readonly outputContribution: OutputContribution;
 
     onNewOutput(tool: string, chunk: string): void {
-        this.outputContribution.openView({ reveal: true }).then(() => {
+        this.outputContribution.openView().then(() => {
             const channel = this.outputChannelManager.getChannel(`Arduino: ${tool}`);
-            channel.setVisibility(true);
+            channel.show();
             channel.append(chunk);
         });
     }

@@ -114,7 +114,7 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
             id: ArduinoDebugCommands.START_DEBUG.id,
             command: ArduinoDebugCommands.START_DEBUG.id,
             tooltip: 'Start Debugging',
-            priority: 1
+            priority: 3
         });
     }
 

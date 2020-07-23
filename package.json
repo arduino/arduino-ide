@@ -6,6 +6,9 @@
   "author": "Arduino SA",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": ">=10.11.0 <13"
+  },
   "devDependencies": {
     "@theia/cli": "next",
     "cross-env": "^7.0.2",

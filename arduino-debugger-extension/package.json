@@ -3,9 +3,6 @@
   "version": "0.0.7",
   "description": "An extension for debugging Arduino programs",
   "license": "MIT",
-  "engines": {
-    "node": ">=10.11.0 <12"
-  },
   "dependencies": {
     "@theia/debug": "next",
     "arduino-ide-extension": "0.0.7",

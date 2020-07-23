@@ -1,4 +1,5 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
+import { Programmer } from './boards-service';
 
 export const CoreServiceClient = Symbol('CoreServiceClient');
 export interface CoreServiceClient {
@@ -19,6 +20,7 @@ export namespace CoreService {
             readonly sketchUri: string;
             readonly fqbn: string;
             readonly optimizeForDebug: boolean;
+            readonly programmer?: Programmer | undefined;
         }
     }
 

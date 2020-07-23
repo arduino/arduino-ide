@@ -13,6 +13,7 @@ import * as fs from './fs-extra';
 import { spawnCommand } from './exec-util';
 import { RawData } from './cli-protocol/settings/settings_pb';
 import { SettingsClient } from './cli-protocol/settings/settings_grpc_pb';
+import * as serviceGrpcPb from './cli-protocol/settings/settings_grpc_pb';
 import { ConfigFileValidator } from './config-file-validator';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { DefaultCliConfig, CLI_CONFIG_SCHEMA_PATH, CLI_CONFIG } from './cli-config';
@@ -245,7 +246,10 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     }
 
     protected async updateDaemon(port: string | number, config: DefaultCliConfig): Promise<void> {
-        const client = new SettingsClient(`localhost:${port}`, grpc.credentials.createInsecure());
+        // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
+        // @ts-ignore
+        const SettingsClient = grpc.makeClientConstructor(serviceGrpcPb['cc.arduino.cli.settings.Settings'], 'SettingsService') as any;
+        const client = new SettingsClient(`localhost:${port}`, grpc.credentials.createInsecure()) as SettingsClient;
         const data = new RawData();
         data.setJsondata(JSON.stringify(config, null, 2));
         return new Promise<void>((resolve, reject) => {

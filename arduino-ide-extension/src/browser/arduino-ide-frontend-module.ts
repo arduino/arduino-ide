@@ -1,11 +1,11 @@
 import '../../src/browser/style/index.css';
-import { ContainerModule, interfaces } from 'inversify';
+import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
-import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application'
+import { FrontendApplicationContribution, FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
 import { LanguageClientContribution } from '@theia/languages/lib/browser';
 import { ArduinoLanguageClientContribution } from './language/arduino-language-client-contribution';
@@ -22,31 +22,35 @@ import { ToolOutputServiceClient } from '../common/protocol/tool-output-service'
 import { ToolOutputService } from '../common/protocol/tool-output-service';
 import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
 import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
-import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { ArduinoWorkspaceService } from './arduino-workspace-service';
-import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { ArduinoOutlineViewContribution } from './customization/arduino-outline-contribution';
-import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
-import { ArduinoProblemContribution } from './customization/arduino-problem-contribution';
-import { ArduinoNavigatorContribution } from './customization/arduino-navigator-contribution';
-import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { WorkspaceService } from './theia/workspace/workspace-service';
+import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
+import { OutlineViewContribution } from './theia/outline/outline-contribution';
+import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
+import { ProblemContribution } from './theia/markers/problem-contribution';
+import { FileNavigatorContribution } from './theia/navigator/navigator-contribution';
+import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
-import { OutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
-import { ArduinoOutputToolContribution } from './customization/arduino-output-tool-contribution';
-import { EditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { ArduinoEditorContribution } from './customization/arduino-editor-contribution';
-import { MonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
-import { ArduinoMonacoStatusBarContribution } from './customization/arduino-monaco-status-bar-contribution';
-import { ApplicationShell, ShellLayoutRestorer, KeybindingContribution } from '@theia/core/lib/browser';
+import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
+import { EditorContribution } from './theia/editor/editor-contribution';
+import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
+import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
+import {
+    ApplicationShell as TheiaApplicationShell,
+    ShellLayoutRestorer as TheiaShellLayoutRestorer,
+    KeybindingContribution,
+    CommonFrontendContribution as TheiaCommonFrontendContribution,
+    KeybindingRegistry as TheiaKeybindingRegistry
+} from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
-import { ArduinoApplicationShell } from './customization/arduino-application-shell';
-import { ArduinoFrontendApplication } from './customization/arduino-frontend-application';
+import { ApplicationShell } from './theia/core/application-shell';
+import { FrontendApplication } from './theia/core/frontend-application';
 import { BoardsConfigDialog, BoardsConfigDialogProps } from './boards/boards-config-dialog';
 import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
-import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
-import { ArduinoScmContribution } from './customization/arduino-scm-contribution';
-import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
-import { ArduinoSearchInWorkspaceContribution } from './customization/arduino-search-in-workspace-contribution';
+import { ScmContribution as TheiaScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { ScmContribution } from './theia/scm/scm-contribution';
+import { SearchInWorkspaceFrontendContribution as TheiaSearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { SearchInWorkspaceFrontendContribution } from './theia/search-in-workspace/search-in-workspace-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
@@ -55,29 +59,52 @@ import { MonitorWidget } from './monitor/monitor-widget';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorModel } from './monitor/monitor-model';
-import { TabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
-import { ArduinoTabBarDecoratorService } from './shell/arduino-tab-bar-decorator';
-import { ProblemManager } from '@theia/markers/lib/browser';
-import { ArduinoProblemManager } from './markers/arduino-problem-manager';
+import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
+import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
+import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
+import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
-import { AboutDialog } from '@theia/core/lib/browser/about-dialog';
-import { ArduinoAboutDialog } from './customization/arduino-about-dialog';
-import { ArduinoShellLayoutRestorer } from './shell/arduino-shell-layout-restorer';
+import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
+import { AboutDialog } from './theia/core/about-dialog';
+import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { EditorMode } from './editor-mode';
-import { ListItemRenderer } from './components/component-list/list-item-renderer';
+import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 import { ArduinoDaemonClientImpl } from './arduino-daemon-client-impl';
 import { ArduinoDaemonClient, ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
-import { EditorManager } from '@theia/editor/lib/browser';
-import { ArduinoEditorManager } from './editor/arduino-editor-manager';
-import { ArduinoFrontendConnectionStatusService, ArduinoApplicationConnectionStatusContribution } from './customization/arduino-connection-status-service';
-import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from '@theia/core/lib/browser/connection-status-service';
+import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser';
+import { EditorManager } from './theia/editor/editor-manager';
+import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from './theia/core/connection-status-service';
+import {
+    FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
+    ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution
+} from '@theia/core/lib/browser/connection-status-service';
 import { ConfigServiceClientImpl } from './config-service-client-impl';
 import { CoreServiceClientImpl } from './core-service-client-impl';
-import { BoardsDetailsMenuUpdater } from './boards/boards-details-menu-updater';
-import { BoardsConfigStore } from './boards/boards-config-store';
+import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
+import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core';
+import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
+import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution, FileMenuContribution as TheiaFileMenuContribution } from '@theia/workspace/lib/browser';
+import { WorkspaceFrontendContribution, ArduinoFileMenuContribution } from './theia/workspace/workspace-frontend-contribution';
+import { Contribution } from './contributions/contribution';
+import { NewSketch } from './contributions/new-sketch';
+import { OpenSketch } from './contributions/open-sketch';
+import { CloseSketch } from './contributions/close-sketch';
+import { SaveAsSketch } from './contributions/save-as-sketch';
+import { SaveSketch } from './contributions/save-sketch';
+import { VerifySketch } from './contributions/verify-sketch';
+import { UploadSketch } from './contributions/upload-sketch';
+import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
+import { EditContributions } from './contributions/edit-contributions';
+import { OpenSketchExternal } from './contributions/open-sketch-external';
+import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
+import { PreferencesContribution } from './theia/preferences/preference-contribution';
+import { QuitApp } from './contributions/quit-app';
+import { SketchControl } from './contributions/sketch-control';
+import { Settings } from './contributions/settings';
+import { KeybindingRegistry } from './theia/core/keybindings';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -88,7 +115,7 @@ MonacoThemingService.register({
     json: require('../../src/browser/data/arduino.color-theme.json')
 });
 
-export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
+export default new ContainerModule((bind, unbind, isBound, rebind) => {
     ElementQueries.listen();
     ElementQueries.init();
 
@@ -150,19 +177,15 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     bind(BoardsServiceClient).toDynamicValue(async context => {
         const client = context.container.get(BoardsServiceClientImpl);
         const service = context.container.get<BoardsService>(BoardsService);
-        const [attachedBoards, availablePorts] = await Promise.all([
-            service.getAttachedBoards(),
-            service.getAvailablePorts()
-        ]);
-        client.init({ attachedBoards, availablePorts });
+        await client.init(service);
         WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath, client);
         return client;
     }).inSingletonScope();
 
     // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
-    bind(FrontendApplicationContribution).to(BoardsDetailsMenuUpdater).inSingletonScope();
-    bind(BoardsConfigStore).toSelf().inSingletonScope();
-    bind(FrontendApplicationContribution).toService(BoardsConfigStore);
+    bind(FrontendApplicationContribution).to(BoardsDataMenuUpdater).inSingletonScope();
+    bind(BoardsDataStore).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(BoardsDataStore);
     // Logger for the Arduino daemon
     bind(ILogger).toDynamicValue(ctx => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);
@@ -236,50 +259,54 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         return client;
     }).inSingletonScope();
 
-    bind(ArduinoWorkspaceService).toSelf().inSingletonScope();
-    rebind(WorkspaceService).toService(ArduinoWorkspaceService);
+    bind(WorkspaceService).toSelf().inSingletonScope();
+    rebind(TheiaWorkspaceService).toService(WorkspaceService);
 
     // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
     bind(EditorMode).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(EditorMode);
 
     // Layout and shell customizations.
-    rebind(OutlineViewContribution).to(ArduinoOutlineViewContribution).inSingletonScope();
-    rebind(ProblemContribution).to(ArduinoProblemContribution).inSingletonScope();
-    rebind(FileNavigatorContribution).to(ArduinoNavigatorContribution).inSingletonScope();
-    rebind(OutputToolbarContribution).to(ArduinoOutputToolContribution).inSingletonScope();
-    rebind(EditorContribution).to(ArduinoEditorContribution).inSingletonScope();
-    rebind(MonacoStatusBarContribution).to(ArduinoMonacoStatusBarContribution).inSingletonScope();
-    rebind(ApplicationShell).to(ArduinoApplicationShell).inSingletonScope();
-    rebind(ScmContribution).to(ArduinoScmContribution).inSingletonScope();
-    rebind(SearchInWorkspaceFrontendContribution).to(ArduinoSearchInWorkspaceContribution).inSingletonScope();
-    rebind(FrontendApplication).to(ArduinoFrontendApplication).inSingletonScope();
+    rebind(TheiaOutlineViewContribution).to(OutlineViewContribution).inSingletonScope();
+    rebind(TheiaProblemContribution).to(ProblemContribution).inSingletonScope();
+    rebind(TheiaFileNavigatorContribution).to(FileNavigatorContribution).inSingletonScope();
+    rebind(TheiaEditorContribution).to(EditorContribution).inSingletonScope();
+    rebind(TheiaMonacoStatusBarContribution).to(MonacoStatusBarContribution).inSingletonScope();
+    rebind(TheiaApplicationShell).to(ApplicationShell).inSingletonScope();
+    rebind(TheiaScmContribution).to(ScmContribution).inSingletonScope();
+    rebind(TheiaSearchInWorkspaceFrontendContribution).to(SearchInWorkspaceFrontendContribution).inSingletonScope();
+    rebind(TheiaFrontendApplication).to(FrontendApplication).inSingletonScope();
+    rebind(TheiaWorkspaceFrontendContribution).to(WorkspaceFrontendContribution).inSingletonScope();
+    rebind(TheiaFileMenuContribution).to(ArduinoFileMenuContribution).inSingletonScope();
+    rebind(TheiaCommonFrontendContribution).to(CommonFrontendContribution).inSingletonScope();
+    rebind(TheiaPreferencesContribution).to(PreferencesContribution).inSingletonScope();
+    rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
-    bind(ArduinoApplicationConnectionStatusContribution).toSelf().inSingletonScope();
-    rebind(ApplicationConnectionStatusContribution).toService(ArduinoApplicationConnectionStatusContribution);
-    bind(ArduinoFrontendConnectionStatusService).toSelf().inSingletonScope();
-    rebind(FrontendConnectionStatusService).toService(ArduinoFrontendConnectionStatusService);
+    bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
+    rebind(TheiaApplicationConnectionStatusContribution).toService(ApplicationConnectionStatusContribution);
+    bind(FrontendConnectionStatusService).toSelf().inSingletonScope();
+    rebind(TheiaFrontendConnectionStatusService).toService(FrontendConnectionStatusService);
 
     // Editor customizations. Sets the editor to `readOnly` if under the data dir.
-    bind(ArduinoEditorManager).toSelf().inSingletonScope();
-    rebind(EditorManager).toService(ArduinoEditorManager);
+    bind(EditorManager).toSelf().inSingletonScope();
+    rebind(TheiaEditorManager).toService(EditorManager);
 
     // Decorator customizations
-    bind(ArduinoTabBarDecoratorService).toSelf().inSingletonScope();
-    rebind(TabBarDecoratorService).toService(ArduinoTabBarDecoratorService);
+    bind(TabBarDecoratorService).toSelf().inSingletonScope();
+    rebind(TheiaTabBarDecoratorService).toService(TabBarDecoratorService);
 
     // Problem markers
-    bind(ArduinoProblemManager).toSelf().inSingletonScope();
-    rebind(ProblemManager).toService(ArduinoProblemManager);
+    bind(ProblemManager).toSelf().inSingletonScope();
+    rebind(TheiaProblemManager).toService(ProblemManager);
 
     // About dialog to show the CLI version
-    bind(ArduinoAboutDialog).toSelf().inSingletonScope();
-    rebind(AboutDialog).toService(ArduinoAboutDialog);
+    bind(AboutDialog).toSelf().inSingletonScope();
+    rebind(TheiaAboutDialog).toService(AboutDialog);
 
     // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
-    bind(ArduinoShellLayoutRestorer).toSelf().inSingletonScope();
-    rebind(ShellLayoutRestorer).toService(ArduinoShellLayoutRestorer);
+    bind(ShellLayoutRestorer).toSelf().inSingletonScope();
+    rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
 
     // Arduino daemon client. Receives notifications from the backend if the CLI daemon process has been restarted.
     bind(ArduinoDaemon).toDynamicValue(context => {
@@ -293,4 +320,20 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
         WebSocketConnectionProvider.createProxy(context.container, ArduinoDaemonPath, client);
         return client;
     }).inSingletonScope();
+
+    // File-system extension
+    bind(FileSystemExt).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, FileSystemExtPath)).inSingletonScope();
+
+    Contribution.configure(bind, NewSketch);
+    Contribution.configure(bind, OpenSketch);
+    Contribution.configure(bind, CloseSketch);
+    Contribution.configure(bind, SaveSketch);
+    Contribution.configure(bind, SaveAsSketch);
+    Contribution.configure(bind, VerifySketch);
+    Contribution.configure(bind, UploadSketch);
+    Contribution.configure(bind, OpenSketchExternal);
+    Contribution.configure(bind, EditContributions);
+    Contribution.configure(bind, QuitApp);
+    Contribution.configure(bind, SketchControl);
+    Contribution.configure(bind, Settings);
 });
