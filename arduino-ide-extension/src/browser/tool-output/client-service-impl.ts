@@ -1,23 +1,19 @@
 import { ToolOutputServiceClient } from '../../common/protocol/tool-output-service';
 import { injectable, inject } from 'inversify';
-import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
-import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
+import { CommandService } from '@theia/core/lib/common/command';
+import { OutputCommands } from '@theia/output/lib/browser/output-contribution';
 
 @injectable()
 export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {
 
-    @inject(OutputChannelManager)
-    protected readonly outputChannelManager: OutputChannelManager;
+    @inject(CommandService)
+    protected commandService: CommandService;
 
-    @inject(OutputContribution)
-    protected readonly outputContribution: OutputContribution;
-
-    onNewOutput(tool: string, chunk: string): void {
-        this.outputContribution.openView().then(() => {
-            const channel = this.outputChannelManager.getChannel(`Arduino: ${tool}`);
-            channel.show();
-            channel.append(chunk);
-        });
+    onNewOutput(tool: string, text: string): void {
+        const name = `Arduino: ${tool}`;
+        // Zen-mode: we do not reveal the output for daemon messages.
+        const show = tool === 'daemon' ? Promise.resolve() : this.commandService.executeCommand(OutputCommands.SHOW.id, { name, options: { preserveFocus: false } });
+        show.then(() => this.commandService.executeCommand(OutputCommands.APPEND.id, { name, text }));
     }
 
 }
