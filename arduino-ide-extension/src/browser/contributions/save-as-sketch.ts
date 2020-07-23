@@ -60,7 +60,7 @@ export class SaveAsSketch extends SketchContribution {
         }
         const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
         if (workspaceUri && openAfterMove) {
-            this.workspaceService.open(new URI(workspaceUri));
+            this.workspaceService.open(new URI(workspaceUri), { preserveWindow: true });
         }
         return !!workspaceUri;
     }
