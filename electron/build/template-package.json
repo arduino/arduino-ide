@@ -10,17 +10,19 @@
     "electron-builder": "^22.4.1",
     "electron-notarize": "^0.3.0",
     "is-ci": "^2.0.0",
+    "ncp": "^2.0.0",
     "shelljs": "^0.8.3"
   },
   "scripts": {
-    "build": "yarn download:plugins && theia build --mode development",
-    "build:publish": "yarn download:plugins && theia build --mode production",
+    "build": "yarn download:plugins && theia build --mode development && yarn patch",
+    "build:publish": "yarn download:plugins && theia build --mode production && yarn patch",
     "package": "cross-env DEBUG=* && electron-builder --publish=never",
     "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
-    "download:plugins": "theia download:plugins"
+    "download:plugins": "theia download:plugins",
+    "patch": "ncp ./patch/electron-main.js ./src-gen/frontend/electron-main.js"
   },
   "engines": {
-    "node": ">=10.11.0 <12"
+    "node": ">=10.11.0 <13"
   },
   "repository": {
     "type": "git",
