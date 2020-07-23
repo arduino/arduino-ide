@@ -61,9 +61,6 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(true);
         compilerReq.setQuiet(false);
-        if (options.programmer) {
-            compilerReq.setProgrammer(options.programmer.id);
-        }
 
         const result = client.compile(compilerReq);
         try {
@@ -106,8 +103,9 @@ export class CoreServiceImpl implements CoreService {
         uploadReq.setInstance(instance);
         uploadReq.setSketchPath(sketchpath);
         uploadReq.setFqbn(fqbn);
-        uploadReq.setPort(options.port);
-        if (options.programmer) {
+        if ('port' in options) {
+            uploadReq.setPort(options.port);
+        } else {
             uploadReq.setProgrammer(options.programmer.id);
         }
         const result = client.upload(uploadReq);
