@@ -260,12 +260,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     }
 
     protected async openSketchFiles(uri: string): Promise<void> {
-        const uris = await this.sketchService.getSketchFiles(uri);
-        for (const uri of uris) {
+        const sketch = await this.sketchService.loadSketch(uri);
+        await this.editorManager.open(new URI(sketch.mainFileUri));
+        for (const uri of [...sketch.otherSketchFileUris, ...sketch.additionalFileUris]) {
             await this.editorManager.open(new URI(uri));
-        }
-        if (uris.length) {
-            await this.editorManager.open(new URI(uris[0])); // Make sure the sketch file has the focus.
         }
     }
 
@@ -313,6 +311,24 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     hc: 'activityBar.inactiveForeground'
                 },
                 description: 'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.'
+            },
+            {
+                id: 'arduino.output.background',
+                defaults: {
+                    dark: 'editorWidget.background',
+                    light: 'editorWidget.background',
+                    hc: 'editorWidget.background'
+                },
+                description: 'Background color of the Output view.'
+            },
+            {
+                id: 'arduino.output.foreground',
+                defaults: {
+                    dark: 'editorWidget.foreground',
+                    light: 'editorWidget.foreground',
+                    hc: 'editorWidget.foreground'
+                },
+                description: 'Color of the text in the Output view.'
             }
         );
     }

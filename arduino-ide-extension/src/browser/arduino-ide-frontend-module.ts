@@ -15,6 +15,7 @@ import { ArduinoLanguageGrammarContribution } from './language/arduino-language-
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
+import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { CoreService, CoreServicePath, CoreServiceClient } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
@@ -151,6 +152,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
+    bind(SketchesServiceClientImpl).toSelf().inSingletonScope();
 
     // Config service
     bind(ConfigService).toDynamicValue(context => {

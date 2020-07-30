@@ -73,7 +73,7 @@ export class UploadSketch extends SketchContribution {
     }
 
     async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
-        const uri = await this.currentSketchFile();
+        const uri = await this.sketchServiceClient.currentSketchFile();
         if (!uri) {
             return;
         }

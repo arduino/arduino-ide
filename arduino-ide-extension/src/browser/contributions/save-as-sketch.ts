@@ -32,7 +32,7 @@ export class SaveAsSketch extends SketchContribution {
      * Resolves `true` if the sketch was successfully saved as something.
      */
     async saveAs({ execOnlyIfTemp, openAfterMove }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT): Promise<boolean> {
-        const sketch = await this.currentSketch();
+        const sketch = await this.sketchServiceClient.currentSketch();
         if (!sketch) {
             return false;
         }

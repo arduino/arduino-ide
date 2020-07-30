@@ -26,7 +26,7 @@ export class SketchControl extends SketchContribution {
             isVisible: widget => this.shell.getWidgets('main').indexOf(widget) !== -1,
             execute: async () => {
                 this.toDisposeBeforeCreateNewContextMenu.dispose();
-                const sketch = await this.currentSketch();
+                const sketch = await this.sketchServiceClient.currentSketch();
                 if (!sketch) {
                     return;
                 }
@@ -40,8 +40,8 @@ export class SketchControl extends SketchContribution {
                     return;
                 }
 
-                const uris = await this.sketchService.getSketchFiles(sketch.uri);
-                // TODO: order them! The Java IDE orders them by tab index. Use the shell and the editor manager to achieve it.
+                const { mainFileUri, otherSketchFileUris, additionalFileUris } = await this.sketchService.loadSketch(sketch.uri);
+                const uris = [mainFileUri, ...otherSketchFileUris, ...additionalFileUris];
                 for (let i = 0; i < uris.length; i++) {
                     const uri = new URI(uris[i]);
                     const command = { id: `arduino-focus-file--${uri.toString()}` };

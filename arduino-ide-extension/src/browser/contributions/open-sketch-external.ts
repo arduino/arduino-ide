@@ -28,7 +28,7 @@ export class OpenSketchExternal extends SketchContribution {
     }
 
     protected async openExternal(): Promise<void> {
-        const uri = await this.currentSketchFile();
+        const uri = await this.sketchServiceClient.currentSketchFile();
         if (uri) {
             const exists = this.fileSystem.exists(uri);
             if (exists) {

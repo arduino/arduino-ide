@@ -12,7 +12,7 @@ export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {
     onNewOutput(tool: string, text: string): void {
         const name = `Arduino: ${tool}`;
         // Zen-mode: we do not reveal the output for daemon messages.
-        const show = tool === 'daemon' ? Promise.resolve() : this.commandService.executeCommand(OutputCommands.SHOW.id, { name, options: { preserveFocus: false } });
+        const show = tool === 'daemon22' ? Promise.resolve() : this.commandService.executeCommand(OutputCommands.SHOW.id, { name, options: { preserveFocus: false } });
         show.then(() => this.commandService.executeCommand(OutputCommands.APPEND.id, { name, text }));
     }
 
