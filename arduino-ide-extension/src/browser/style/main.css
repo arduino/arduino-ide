@@ -155,12 +155,3 @@
     border: 1px solid var(--theia-arduino-toolbar-background);
     padding: 2px 0px 2px 9px;
 }
-
-#outputView .monaco-editor .lines-content.monaco-editor-background {
-    background-color: var(--theia-arduino-output-background);
-}
-
-.monaco-editor {
-/* #outputView .monaco-editor .inputarea.ime-input { */
-    color: var(--theia-arduino-output-foreground);
-}

@@ -218,7 +218,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
 
     protected onData(message: string, options: { useOutput: boolean } = { useOutput: true }): void {
         if (options.useOutput) {
-            this.toolOutputService.publishNewOutput('daemon', DaemonLog.toPrettyString(message));
+            this.toolOutputService.append({ tool: 'daemon', chunk: DaemonLog.toPrettyString(message) });
         }
         DaemonLog.log(this.logger, message);
     }
