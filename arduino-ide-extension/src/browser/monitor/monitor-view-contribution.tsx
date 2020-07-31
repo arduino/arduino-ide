@@ -87,22 +87,20 @@ export class MonitorViewContribution extends AbstractViewContribution<MonitorWid
             }
         });
         if (this.toggleCommand) {
-            commands.registerCommand(this.toggleCommand, {
-                execute: () => this.openView({
-                    toggle: true,
-                    activate: true
-                })
-            });
-            const toolbarCmd = {
-                id: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR
-            }
-            commands.registerCommand(toolbarCmd, {
+            commands.registerCommand(this.toggleCommand, { execute: () => this.toggle() });
+            commands.registerCommand({ id: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR }, {
                 isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
-                execute: () => this.openView({
-                    toggle: true,
-                    activate: true
-                })
+                execute: () => this.toggle()
             });
+        }
+    }
+
+    protected async toggle(): Promise<void> {
+        const widget = this.tryGetWidget();
+        if (widget) {
+            widget.dispose();
+        } else {
+            await this.openView({ activate: true, reveal: true });
         }
     }
 
