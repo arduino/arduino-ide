@@ -1,7 +1,7 @@
 import { ToolOutputServiceClient } from '../../common/protocol/tool-output-service';
 import { injectable, inject } from 'inversify';
 import { CommandService } from '@theia/core/lib/common/command';
-import { OutputCommands } from '@theia/output/lib/browser/output-contribution';
+import { OutputCommands } from '@theia/output/lib/browser/output-commands';
 
 @injectable()
 export class ToolOutputServiceClientImpl implements ToolOutputServiceClient {

@@ -3,7 +3,7 @@ import { isOSX } from '@theia/core/lib/common/os';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser';
-import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
+import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preferences-contribution';
 
 @injectable()
 export class PreferencesContribution extends TheiaPreferencesContribution {
