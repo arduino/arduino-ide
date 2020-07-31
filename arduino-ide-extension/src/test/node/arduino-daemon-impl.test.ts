@@ -51,7 +51,10 @@ describe('arduino-daemon-impl', () => {
         track.cleanupSync();
     })
 
-    it('should parse an error - address already in use error [json]', async () => {
+    it('should parse an error - address already in use error [json]', async function (): Promise<void> {
+        if (process.platform === 'win32') {
+            this.skip();
+        }
         let server: net.Server | undefined = undefined;
         try {
             server = await new Promise<net.Server>(resolve => {
@@ -71,7 +74,10 @@ describe('arduino-daemon-impl', () => {
         }
     });
 
-    it('should parse an error - address already in use error [text]', async () => {
+    it('should parse an error - address already in use error [text]', async function (): Promise<void> {
+        if (process.platform === 'win32') {
+            this.skip();
+        }
         let server: net.Server | undefined = undefined;
         try {
             server = await new Promise<net.Server>(resolve => {
