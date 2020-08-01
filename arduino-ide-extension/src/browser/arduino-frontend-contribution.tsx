@@ -312,6 +312,24 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     hc: 'activityBar.inactiveForeground'
                 },
                 description: 'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.'
+            },
+            {
+                id: 'arduino.output.foreground',
+                defaults: {
+                    dark: 'editor.foreground',
+                    light: 'editor.foreground',
+                    hc: 'editor.foreground'
+                },
+                description: 'Color of the text in the Output view.'
+            },
+            {
+                id: 'arduino.output.background',
+                defaults: {
+                    dark: 'editor.background',
+                    light: 'editor.background',
+                    hc: 'editor.background'
+                },
+                description: 'Background color of the Output view.'
             }
         );
     }
