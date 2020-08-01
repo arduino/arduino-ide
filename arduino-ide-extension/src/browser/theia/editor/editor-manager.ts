@@ -17,9 +17,7 @@ export class EditorManager extends TheiaEditorManager {
             const { editor } = widget;
             if (editor instanceof MonacoEditor) {
                 const codeEditor = editor.getControl();
-                const lineNumbersMinChars = 2;
-                const overviewRulerLanes = 0;
-                codeEditor.updateOptions({ readOnly, lineNumbersMinChars, overviewRulerLanes });
+                codeEditor.updateOptions({ readOnly });
             }
         }
         return widget;
