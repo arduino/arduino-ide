@@ -265,6 +265,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         for (const uri of [...sketch.otherSketchFileUris, ...sketch.additionalFileUris]) {
             await this.editorManager.open(new URI(uri));
         }
+        await this.editorManager.open(new URI(sketch.mainFileUri)); // Activates the editor of the main sketch file.
     }
 
     registerColors(colors: ColorRegistry): void {
