@@ -31,7 +31,7 @@ export class SaveAsSketch extends SketchContribution {
     /**
      * Resolves `true` if the sketch was successfully saved as something.
      */
-    async saveAs({ execOnlyIfTemp, openAfterMove }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT): Promise<boolean> {
+    async saveAs({ execOnlyIfTemp, openAfterMove, wipeOriginal }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT): Promise<boolean> {
         const sketch = await this.sketchServiceClient.currentSketch();
         if (!sketch) {
             return false;
@@ -60,6 +60,9 @@ export class SaveAsSketch extends SketchContribution {
         }
         const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
         if (workspaceUri && openAfterMove) {
+            if (wipeOriginal) {
+                await this.fileSystem.delete(sketch.uri);
+            }
             this.workspaceService.open(new URI(workspaceUri), { preserveWindow: true });
         }
         return !!workspaceUri;
@@ -76,11 +79,16 @@ export namespace SaveAsSketch {
     export interface Options {
         readonly execOnlyIfTemp?: boolean;
         readonly openAfterMove?: boolean;
+        /**
+         * Ignored if `openAfterMove` is `false`.
+         */
+        readonly wipeOriginal?: boolean;
     }
     export namespace Options {
         export const DEFAULT: Options = {
             execOnlyIfTemp: false,
-            openAfterMove: true
+            openAfterMove: true,
+            wipeOriginal: false
         };
     }
 }

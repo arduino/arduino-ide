@@ -78,7 +78,7 @@ export class SketchControl extends SketchContribution {
             order: '1'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP, {
-            commandId: WorkspaceCommands.FILE_DELETE.id,
+            commandId: WorkspaceCommands.FILE_DELETE.id, // TODO: customize delete. Wipe sketch if deleting main file. Close window.
             label: 'Delete',
             order: '2'
         });

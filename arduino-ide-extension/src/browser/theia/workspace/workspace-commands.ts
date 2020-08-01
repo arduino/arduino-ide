@@ -48,7 +48,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         }, this.labelProvider);
 
         const name = await dialog.open();
-        const nameWithExt = this.appendInoExtensionMaybe(name);
+        const nameWithExt = this.maybeAppendInoExt(name);
         if (nameWithExt) {
             const fileUri = parentUri.resolve(nameWithExt);
             await this.fileSystem.createFile(fileUri.toString());
@@ -61,7 +61,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         // In the Java IDE the followings are the rules:
         //  - `name` without an extension should default to `name.ino`.
         //  - `name` with a single trailing `.` also defaults to `name.ino`.
-        const nameWithExt = this.appendInoExtensionMaybe(name);
+        const nameWithExt = this.maybeAppendInoExt(name);
         const errorMessage = await super.validateFileName(nameWithExt, parent, recursive);
         if (errorMessage) {
             return errorMessage;
@@ -76,7 +76,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         return '';
     }
 
-    protected appendInoExtensionMaybe(name: string | undefined): string {
+    protected maybeAppendInoExt(name: string | undefined): string {
         if (!name) {
             return '';
         }
@@ -100,7 +100,12 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
             return;
         }
         if (uri.toString() === sketch.mainFileUri) {
-            await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { execOnlyIfTemp: false, openAfterMove: true });
+            const options = {
+                execOnlyIfTemp: false,
+                openAfterMove: true,
+                wipeOriginal: true
+            };
+            await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, options);
             return;
         }
         const parent = await this.getParent(uri);
@@ -122,10 +127,11 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
                 return this.validateFileName(name, parent, false);
             }
         });
-        const fileName = await dialog.open();
-        if (fileName) {
+        const newName = await dialog.open();
+        const newNameWithExt = this.maybeAppendInoExt(newName);
+        if (newNameWithExt) {
             const oldUri = uri;
-            const newUri = uri.parent.resolve(fileName);
+            const newUri = uri.parent.resolve(newNameWithExt);
             this.fileSystem.move(oldUri.toString(), newUri.toString());
         }
     }
