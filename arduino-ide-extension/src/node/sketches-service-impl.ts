@@ -8,18 +8,12 @@ import * as fs from './fs-extra';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri, BackendApplicationContribution } from '@theia/core/lib/node';
 import { ConfigService } from '../common/protocol/config-service';
-import { SketchesService, Sketch } from '../common/protocol/sketches-service';
+import { SketchesService, Sketch, Extensions } from '../common/protocol/sketches-service';
 
 
 // As currently implemented on Linux,
 // the maximum number of symbolic links that will be followed while resolving a pathname is 40
 const MAX_FILESYSTEM_DEPTH = 40;
-
-export namespace Extensions {
-    export const MAIN = ['.ino', '.pde'];
-    export const SOURCE = ['.c', '.cpp', '.s'];
-    export const ADDITIONAL = ['.h', '.c', '.hpp', '.hh', '.cpp', '.s'];
-}
 
 // TODO: `fs`: use async API 
 @injectable()

@@ -87,7 +87,11 @@ import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
 import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
-import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution, FileMenuContribution as TheiaFileMenuContribution } from '@theia/workspace/lib/browser';
+import {
+    WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution,
+    FileMenuContribution as TheiaFileMenuContribution,
+    WorkspaceCommandContribution as TheiaWorkspaceCommandContribution
+} from '@theia/workspace/lib/browser';
 import { WorkspaceFrontendContribution, ArduinoFileMenuContribution } from './theia/workspace/workspace-frontend-contribution';
 import { Contribution } from './contributions/contribution';
 import { NewSketch } from './contributions/new-sketch';
@@ -106,6 +110,7 @@ import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control';
 import { Settings } from './contributions/settings';
 import { KeybindingRegistry } from './theia/core/keybindings';
+import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -283,6 +288,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaCommonFrontendContribution).to(CommonFrontendContribution).inSingletonScope();
     rebind(TheiaPreferencesContribution).to(PreferencesContribution).inSingletonScope();
     rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
+    rebind(TheiaWorkspaceCommandContribution).to(WorkspaceCommandContribution).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();

@@ -55,3 +55,10 @@ export namespace Sketch {
         return !!arg && 'name' in arg && 'uri' in arg && typeof arg.name === 'string' && typeof arg.uri === 'string';
     }
 }
+
+export namespace Extensions {
+    export const MAIN = ['.ino', '.pde'];
+    export const SOURCE = ['.c', '.cpp', '.s'];
+    export const ADDITIONAL = ['.h', '.c', '.hpp', '.hh', '.cpp', '.s'];
+    export const ALL = Array.from(new Set([...MAIN, ...SOURCE, ...ADDITIONAL]));
+}
