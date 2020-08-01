@@ -132,6 +132,11 @@
     box-sizing: border-box;
 }
 
+/* To left shift the content in the Output view */
+/* .theia-output {
+    margin-left: -20px;
+} */
+
 .theia-output .monaco-editor .margin {
     border-right: none;
 }
