@@ -8,7 +8,7 @@ import * as fs from './fs-extra';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri, BackendApplicationContribution } from '@theia/core/lib/node';
 import { ConfigService } from '../common/protocol/config-service';
-import { SketchesService, Sketch, Extensions } from '../common/protocol/sketches-service';
+import { SketchesService, Sketch } from '../common/protocol/sketches-service';
 
 
 // As currently implemented on Linux,
@@ -81,7 +81,7 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
         if (stat.isDirectory()) {
             sketchFolder = sketchPath;
             // Allowed extensions are .ino and .pde (but not both)
-            for (const extension of Extensions.MAIN) {
+            for (const extension of Sketch.Extensions.MAIN) {
                 const candidateSketchFile = path.join(sketchPath, `${path.basename(sketchPath)}${extension}`);
                 const candidateExists = await fs.exists(candidateSketchFile);
                 if (candidateExists) {
@@ -137,8 +137,8 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
                 return undefined;
             }
             const ext = path.extname(fsPath);
-            const isMain = Extensions.MAIN.indexOf(ext) !== -1;
-            const isAdditional = Extensions.ADDITIONAL.indexOf(ext) !== -1;
+            const isMain = Sketch.Extensions.MAIN.indexOf(ext) !== -1;
+            const isAdditional = Sketch.Extensions.ADDITIONAL.indexOf(ext) !== -1;
             if (!isMain && !isAdditional) {
                 return undefined;
             }
@@ -177,11 +177,11 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
         const otherSketchFiles: string[] = [];
         for (const p of Array.from(paths)) {
             const ext = path.extname(p);
-            if (Extensions.MAIN.indexOf(ext) !== -1) {
+            if (Sketch.Extensions.MAIN.indexOf(ext) !== -1) {
                 if (path.dirname(p) === sketchFolderPath) {
                     otherSketchFiles.push(p);
                 }
-            } else if (Extensions.ADDITIONAL.indexOf(ext) !== -1) {
+            } else if (Sketch.Extensions.ADDITIONAL.indexOf(ext) !== -1) {
                 // XXX: this is a caveat with the CLI, we do not know the `buildPath`.
                 // https://github.com/arduino/arduino-cli/blob/0483882b4f370c288d5318913657bbaa0325f534/arduino/sketch/sketch.go#L108-L110
                 additionalFiles.push(p);

@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import URI from '@theia/core/lib/common/uri';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -35,7 +34,7 @@ export class SketchesServiceClientImpl {
     async currentSketchFile(): Promise<string | undefined> {
         const sketch = await this.currentSketch();
         if (sketch) {
-            const uri = new URI(sketch.uri).resolve(`${sketch.name}.ino`).toString();
+            const uri = sketch.mainFileUri;
             const exists = await this.fileSystem.exists(uri);
             if (!exists) {
                 this.messageService.warn(`Could not find sketch file: ${uri}`);
