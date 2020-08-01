@@ -20,32 +20,24 @@ export class ApplicationShell extends TheiaApplicationShell {
     @inject(SketchesServiceClientImpl)
     protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-    protected sketch?: Sketch;
-
-    async addWidget(widget: Widget, options: Readonly<TheiaApplicationShell.WidgetOptions> = {}): Promise<void> {
-        // Get the current sketch before adding a widget. This wil trigger an update.
-        this.sketch = await this.sketchesServiceClient.currentSketch();
-        super.addWidget(widget, options);
-    }
-
-    async setLayoutData(layoutData: TheiaApplicationShell.LayoutData): Promise<void> {
-        // I could not find other ways to get sketch in async fashion for sync `track`.
-        this.sketch = await this.sketchesServiceClient.currentSketch();
-        super.setLayoutData(layoutData);
-    }
-
     protected track(widget: Widget): void {
-        if (!this.editorMode.proMode && this.sketch && widget instanceof EditorWidget) {
-            if (Sketch.isInSketch(widget.editor.uri, this.sketch)) {
-                widget.title.closable = false;
-            }
-        }
         super.track(widget);
+        if (!this.editorMode.proMode && widget instanceof EditorWidget) {
+            // Make the editor un-closeable asynchronously.
+            this.sketchesServiceClient.currentSketch().then(sketch => {
+                if (sketch) {
+                    if (Sketch.isInSketch(widget.editor.uri, sketch)) {
+                        widget.title.closable = false;
+                    }
+                }
+            });
+        }
     }
 
     async saveAll(): Promise<void> {
         await super.saveAll();
-        await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { execOnlyIfTemp: true, openAfterMove: true });
+        const options = { execOnlyIfTemp: true, openAfterMove: true };
+        await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, options);
     }
 
 }

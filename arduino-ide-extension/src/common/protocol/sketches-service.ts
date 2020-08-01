@@ -64,7 +64,7 @@ export namespace Sketch {
     }
     export function isInSketch(uri: string | URI, sketch: Sketch): boolean {
         const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
-        return [mainFileUri, ...otherSketchFileUris, additionalFileUris].indexOf(uri.toString()) !== -1;
+        return [mainFileUri, ...otherSketchFileUris, ...additionalFileUris].indexOf(uri.toString()) !== -1;
     }
 }
 
