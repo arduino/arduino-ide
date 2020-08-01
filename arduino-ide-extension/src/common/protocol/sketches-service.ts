@@ -1,3 +1,5 @@
+import URI from '@theia/core/lib/common/uri';
+
 export const SketchesServicePath = '/services/sketches-service';
 export const SketchesService = Symbol('SketchesService');
 export interface SketchesService {
@@ -60,9 +62,9 @@ export namespace Sketch {
         export const ADDITIONAL = ['.h', '.c', '.hpp', '.hh', '.cpp', '.s'];
         export const ALL = Array.from(new Set([...MAIN, ...SOURCE, ...ADDITIONAL]));
     }
-    export function isInSketch(uri: string, sketch: Sketch): boolean {
+    export function isInSketch(uri: string | URI, sketch: Sketch): boolean {
         const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
-        return [mainFileUri, ...otherSketchFileUris, additionalFileUris].indexOf(uri) !== -1;
+        return [mainFileUri, ...otherSketchFileUris, additionalFileUris].indexOf(uri.toString()) !== -1;
     }
 }
 
