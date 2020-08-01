@@ -34,7 +34,7 @@ export class ApplicationShell extends TheiaApplicationShell {
         super.setLayoutData(layoutData);
     }
 
-    track(widget: Widget): void {
+    protected track(widget: Widget): void {
         if (!this.editorMode.proMode && this.sketch && widget instanceof EditorWidget) {
             if (Sketch.isInSketch(widget.editor.uri, this.sketch)) {
                 widget.title.closable = false;
@@ -42,7 +42,6 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
         super.track(widget);
     }
-
 
     async saveAll(): Promise<void> {
         await super.saveAll();
