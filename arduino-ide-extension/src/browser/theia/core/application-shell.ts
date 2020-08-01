@@ -34,6 +34,27 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
     }
 
+    async addWidget(widget: Widget, options: Readonly<TheiaApplicationShell.WidgetOptions> = {}): Promise<void> {
+        // By default, Theia open a widget **next** to the currently active in the target area.
+        // Instead of this logic, we want to open the new widget after the last of the target area.
+        if (!widget.id) {
+            console.error('Widgets added to the application shell must have a unique id property.');
+            return;
+        }
+        let ref: Widget | undefined = options.ref;
+        let area: TheiaApplicationShell.Area = options.area || 'main';
+        if (!ref && (area === 'main' || area === 'bottom')) {
+            const tabBar = this.getTabBarFor(area);
+            if (tabBar) {
+                const last = tabBar.titles[tabBar.titles.length - 1];
+                if (last) {
+                    ref = last.owner;
+                }
+            }
+        }
+        return super.addWidget(widget, { ...options, ref });
+    }
+
     async saveAll(): Promise<void> {
         await super.saveAll();
         const options = { execOnlyIfTemp: true, openAfterMove: true };
