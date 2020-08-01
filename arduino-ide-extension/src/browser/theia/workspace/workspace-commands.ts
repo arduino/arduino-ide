@@ -53,10 +53,9 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         if (errorMessage) {
             return errorMessage;
         }
-
         const extension = nameWithExt.split('.').pop();
         if (!extension) {
-            return 'Invalid file extension.';
+            return 'Invalid filename.'; // XXX: this should not happen as we forcefully append `.ino` if it's not there.
         }
         if (Extensions.ALL.indexOf(`.${extension}`) === -1) {
             return `.${extension} is not a valid extension.`;
@@ -72,7 +71,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
             if (name.indexOf('.') === -1) {
                 return `${name}.ino`
             }
-            if (name.indexOf('.') === name.length - 1) {
+            if (name.lastIndexOf('.') === name.length - 1) {
                 return `${name.slice(0, -1)}.ino`
             }
         }
