@@ -255,7 +255,7 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
         const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
         const today = new Date();
         const parent = await new Promise<string>((resolve, reject) => {
-            this.temp.mkdir({ prefix: '.arduinoProIDE' }, (err, dirPath) => {
+            this.temp.mkdir({ prefix: '.arduinoProIDE-unsaved' }, (err, dirPath) => {
                 if (err) {
                     reject(err);
                     return;
@@ -319,7 +319,10 @@ void loop() {
             const files = await fs.readdir(fsPath);
             for (let i = 0; i < files.length; i++) {
                 if (files[i] === basename + '.ino') {
-                    return true;
+                    try {
+                        await this.loadSketch(fsPath);
+                        return true;
+                    } catch { }
                 }
             }
         }
@@ -328,7 +331,7 @@ void loop() {
 
     async isTemp(sketch: Sketch): Promise<boolean> {
         const sketchPath = FileUri.fsPath(sketch.uri);
-        return sketchPath.indexOf('.arduinoProIDE') !== -1 && sketchPath.startsWith(os.tmpdir());
+        return sketchPath.indexOf('.arduinoProIDE-unsaved') !== -1 && sketchPath.startsWith(os.tmpdir());
     }
 
     async copy(sketch: Sketch, { destinationUri }: { destinationUri: string }): Promise<string> {

@@ -18,9 +18,9 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
         // Deleting the main sketch file.
         if (uris.map(uri => uri.toString()).some(uri => uri === sketch.mainFileUri)) {
             const { response } = await remote.dialog.showMessageBox({
+                title: 'Delete',
                 type: 'question',
                 buttons: ['Cancel', 'OK'],
-                title: 'Delete',
                 message: 'Do you want to delete the current sketch?'
             });
             if (response === 1) { // OK
