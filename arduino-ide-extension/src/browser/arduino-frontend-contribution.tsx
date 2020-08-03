@@ -1,49 +1,50 @@
-import * as React from 'react';
-import { injectable, inject, postConstruct } from 'inversify';
-import URI from '@theia/core/lib/common/uri';
-import { MessageService } from '@theia/core/lib/common/message-service';
-import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
-import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { BoardsService, BoardsServiceClient, CoreService, SketchesService, ToolOutputServiceClient, Port } from '../common/protocol';
-import { ArduinoCommands } from './arduino-commands';
-import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
-import { SelectionService, MenuContribution, MenuModelRegistry, MAIN_MENU_BAR } from '@theia/core';
-import { ArduinoToolbar } from './toolbar/arduino-toolbar';
-import { EditorManager, EditorMainMenu } from '@theia/editor/lib/browser';
+import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService } from '@theia/core';
 import {
-    ContextMenuRenderer, StatusBar, StatusBarAlignment, FrontendApplicationContribution,
-    FrontendApplication, KeybindingContribution, KeybindingRegistry, OpenerService
+    ContextMenuRenderer,
+    FrontendApplication, FrontendApplicationContribution,
+    OpenerService, StatusBar, StatusBarAlignment
 } from '@theia/core/lib/browser';
+import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
+import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
+import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
+import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import URI from '@theia/core/lib/common/uri';
+import { EditorMainMenu, EditorManager } from '@theia/editor/lib/browser';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { FileSystem } from '@theia/filesystem/lib/common';
-import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
+import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
+import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
+import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
+import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
+import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { BoardsConfigDialog } from './boards/boards-config-dialog';
-import { BoardsToolBarItem } from './boards/boards-toolbar-item';
+import { inject, injectable, postConstruct } from 'inversify';
+import * as React from 'react';
+import { MainMenuManager } from '../common/main-menu-manager';
+import { BoardsService, BoardsServiceClient, CoreService, Port, SketchesService, ToolOutputServiceClient } from '../common/protocol';
+import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
+import { ConfigService } from '../common/protocol/config-service';
+import { FileSystemExt } from '../common/protocol/filesystem-ext';
+import { ArduinoCommands } from './arduino-commands';
 import { BoardsConfig } from './boards/boards-config';
+import { BoardsConfigDialog } from './boards/boards-config-dialog';
+import { BoardsDataStore } from './boards/boards-data-store';
+import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
+import { BoardsToolBarItem } from './boards/boards-toolbar-item';
+import { EditorMode } from './editor-mode';
+import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { WorkspaceService } from './theia/workspace/workspace-service';
-import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
-import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
-import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
-import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
-import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
-import { EditorMode } from './editor-mode';
-import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
-import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
-import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
-import { ConfigService } from '../common/protocol/config-service';
-import { BoardsDataStore } from './boards/boards-data-store';
-import { MainMenuManager } from '../common/main-menu-manager';
-import { FileSystemExt } from '../common/protocol/filesystem-ext';
-import { ArduinoMenus } from './menu/arduino-menus';
+import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
-    TabBarToolbarContribution, CommandContribution, MenuContribution, KeybindingContribution, ColorContribution {
+    TabBarToolbarContribution, CommandContribution, MenuContribution, ColorContribution {
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -255,17 +256,26 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
     }
 
-    registerKeybindings(keybindings: KeybindingRegistry): void {
-        keybindings.unregisterKeybinding('ctrlcmd+n'); // Unregister the keybinding for `New File`, will be used by `New Sketch`. (eclipse-theia/theia#8170)
+    protected async openSketchFiles(uri: string): Promise<void> {
+        try {
+            const sketch = await this.sketchService.loadSketch(uri);
+            const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
+            for (const uri of [mainFileUri, ...otherSketchFileUris, ...additionalFileUris]) {
+                await this.ensureOpened(uri);
+            }
+            await this.ensureOpened(mainFileUri, true);
+        } catch (e) {
+            console.error(e);
+            const message = e instanceof Error ? e.message : JSON.stringify(e);
+            this.messageService.error(message);
+        }
     }
 
-    protected async openSketchFiles(uri: string): Promise<void> {
-        const sketch = await this.sketchService.loadSketch(uri);
-        await this.editorManager.open(new URI(sketch.mainFileUri));
-        for (const uri of [...sketch.otherSketchFileUris, ...sketch.additionalFileUris]) {
-            await this.editorManager.open(new URI(uri));
+    protected async ensureOpened(uri: string, forceOpen: boolean = false): Promise<any> {
+        const widget = this.editorManager.all.find(widget => widget.editor.uri.toString() === uri);
+        if (!widget || forceOpen) {
+            return this.editorManager.open(new URI(uri));
         }
-        await this.editorManager.open(new URI(sketch.mainFileUri)); // Activates the editor of the main sketch file.
     }
 
     registerColors(colors: ColorRegistry): void {
