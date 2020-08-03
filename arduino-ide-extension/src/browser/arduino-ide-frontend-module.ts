@@ -113,6 +113,8 @@ import { WorkspaceCommandContribution } from './theia/workspace/workspace-comman
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
 import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
+import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
+import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -291,6 +293,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
     rebind(TheiaWorkspaceCommandContribution).to(WorkspaceCommandContribution).inSingletonScope();
     rebind(TheiaWorkspaceDeleteHandler).to(WorkspaceDeleteHandler).inSingletonScope();
+    rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
     rebind(TabBarToolbarFactory).toFactory(({ container: parentContainer }) => () => {
         const container = parentContainer.createChild();
         container.bind(TabBarToolbar).toSelf().inSingletonScope();
