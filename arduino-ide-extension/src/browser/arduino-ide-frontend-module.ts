@@ -111,6 +111,8 @@ import { SketchControl } from './contributions/sketch-control';
 import { Settings } from './contributions/settings';
 import { KeybindingRegistry } from './theia/core/keybindings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
+import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
+import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -289,6 +291,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaPreferencesContribution).to(PreferencesContribution).inSingletonScope();
     rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
     rebind(TheiaWorkspaceCommandContribution).to(WorkspaceCommandContribution).inSingletonScope();
+    rebind(TheiaWorkspaceDeleteHandler).to(WorkspaceDeleteHandler).inSingletonScope();
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
