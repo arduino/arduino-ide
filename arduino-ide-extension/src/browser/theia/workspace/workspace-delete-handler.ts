@@ -27,8 +27,8 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
                 await Promise.all([...sketch.additionalFileUris, ...sketch.otherSketchFileUris, sketch.mainFileUri].map(uri => this.closeWithoutSaving(new URI(uri))));
                 await this.fileSystem.delete(sketch.uri);
                 window.close();
-                return;
             }
+            return;
         }
         return super.execute(uris);
     }
