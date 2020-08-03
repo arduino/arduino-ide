@@ -146,10 +146,9 @@
     background-color: var(--theia-arduino-foreground);
 }
 
-#arduino-open-sketch-control--toolbar {
-    background-color: var(--theia-tab-inactiveBackground);
-    border: 1px solid var(--theia-arduino-toolbar-background);
-    padding: 2px 0px 2px 9px;
+#arduino-open-sketch-control--toolbar--container {
+    background-color: var(--theia-arduino-toolbar-background);
+    padding-left: 8px; /* based on pure heuristics */
 }
 
 /* Output */

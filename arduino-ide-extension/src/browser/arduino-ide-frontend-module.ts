@@ -3,7 +3,7 @@ import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { TabBarToolbarContribution, TabBarToolbarFactory } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 import { FrontendApplicationContribution, FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
@@ -39,7 +39,6 @@ import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-co
 import {
     ApplicationShell as TheiaApplicationShell,
     ShellLayoutRestorer as TheiaShellLayoutRestorer,
-    KeybindingContribution,
     CommonFrontendContribution as TheiaCommonFrontendContribution,
     KeybindingRegistry as TheiaKeybindingRegistry
 } from '@theia/core/lib/browser';
@@ -113,6 +112,7 @@ import { KeybindingRegistry } from './theia/core/keybindings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
+import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -132,7 +132,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
-    bind(KeybindingContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
     bind(ColorContribution).toService(ArduinoFrontendContribution);
 
@@ -292,6 +291,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
     rebind(TheiaWorkspaceCommandContribution).to(WorkspaceCommandContribution).inSingletonScope();
     rebind(TheiaWorkspaceDeleteHandler).to(WorkspaceDeleteHandler).inSingletonScope();
+    rebind(TabBarToolbarFactory).toFactory(({ container: parentContainer }) => () => {
+        const container = parentContainer.createChild();
+        container.bind(TabBarToolbar).toSelf().inSingletonScope();
+        return container.get(TabBarToolbar);
+    });
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
