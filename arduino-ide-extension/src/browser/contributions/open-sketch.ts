@@ -119,7 +119,10 @@ export class OpenSketch extends SketchContribution {
         const sketchFilePath = filePaths[0];
         const sketchFileUri = await this.fileSystemExt.getUri(sketchFilePath);
         const sketch = await this.sketchService.getSketchFolder(sketchFileUri);
-        if (!sketch && sketchFileUri.endsWith('.ino')) {
+        if (sketch) {
+            return sketch;
+        }
+        if (sketchFileUri.endsWith('.ino')) {
             const name = new URI(sketchFileUri).path.name;
             const nameWithExt = this.labelProvider.getName(new URI(sketchFileUri));
             const { response } = await remote.dialog.showMessageBox({
