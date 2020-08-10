@@ -6,14 +6,18 @@ import { ncp } from 'ncp';
 import { Stats } from 'fs';
 import * as fs from './fs-extra';
 import URI from '@theia/core/lib/common/uri';
+import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri, BackendApplicationContribution } from '@theia/core/lib/node';
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService, Sketch } from '../common/protocol/sketches-service';
+import { firstToLowerCase } from '../common/utils';
 
 
 // As currently implemented on Linux,
 // the maximum number of symbolic links that will be followed while resolving a pathname is 40
 const MAX_FILESYSTEM_DEPTH = 40;
+
+const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
 // TODO: `fs`: use async API 
 @injectable()
@@ -330,8 +334,19 @@ void loop() {
     }
 
     async isTemp(sketch: Sketch): Promise<boolean> {
-        const sketchPath = FileUri.fsPath(sketch.uri);
-        return sketchPath.indexOf('.arduinoProIDE-unsaved') !== -1 && sketchPath.startsWith(os.tmpdir());
+        let sketchPath = FileUri.fsPath(sketch.uri);
+        let temp = os.tmpdir();
+        // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
+        // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
+        if (isWindows) {
+            if (WIN32_DRIVE_REGEXP.exec(sketchPath)) {
+                sketchPath = firstToLowerCase(sketchPath);
+            }
+            if (WIN32_DRIVE_REGEXP.exec(temp)) {
+                temp = firstToLowerCase(temp);
+            }
+        }
+        return sketchPath.indexOf('.arduinoProIDE-unsaved') !== -1 && sketchPath.startsWith(temp);
     }
 
     async copy(sketch: Sketch, { destinationUri }: { destinationUri: string }): Promise<string> {
