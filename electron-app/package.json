@@ -41,6 +41,7 @@
         "preferences": {
           "editor.autoSave": "on",
           "editor.minimap.enabled": false,
+          "editor.tabSize": 2,
           "editor.scrollBeyondLastLine": false
         }
       }
