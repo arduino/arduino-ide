@@ -1,12 +1,13 @@
 import { injectable, inject } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
+import { FileStat } from '@theia/filesystem/lib/common';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { ApplicationServer } from '@theia/core/lib/common/application-protocol';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
-import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { WorkspaceService as TheiaWorkspaceService, WorkspaceInput } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
 import { SketchesService } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
@@ -106,6 +107,20 @@ export class WorkspaceService extends TheiaWorkspaceService {
         if (this.workspace) {
             const uri = new URI(this.workspace.uri);
             return this.labelProvider.getName(uri);
+        }
+    }
+
+    protected openWindow(uri: FileStat, options?: WorkspaceInput): void {
+        const workspacePath = new URI(uri.uri).path.toString();
+        try {
+            this.openNewWindow(workspacePath);
+            if (this.shouldPreserveWindow(options)) {
+                setTimeout(() => window.close(), 10);
+            }
+        } catch (error) {
+            // Fall back to reloading the current window in case the browser has blocked the new window
+            (this as any)._workspace = uri;
+            this.logger.error(error.toString()).then(() => this.reloadWindow());
         }
     }
 
