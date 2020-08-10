@@ -15,7 +15,7 @@ function artifactName() {
         } else if (isNightly) {
             return `nightly-${timestamp()}`
         } else {
-            return 'snapshot';
+            return getVersion();
         }
     })();
     const name = 'arduino-pro-ide';
