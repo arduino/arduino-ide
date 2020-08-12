@@ -115,6 +115,8 @@ import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handl
 import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
+import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/output-widget';
+import { OutputWidget } from './theia/output/output-widget';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -299,6 +301,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         container.bind(TabBarToolbar).toSelf().inSingletonScope();
         return container.get(TabBarToolbar);
     });
+    bind(OutputWidget).toSelf().inSingletonScope();
+    rebind(TheiaOutputWidget).toService(OutputWidget);
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
