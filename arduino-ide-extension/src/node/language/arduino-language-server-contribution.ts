@@ -30,7 +30,7 @@ export class ArduinoLanguageServerContribution extends BaseLanguageServerContrib
         const [languageServer, clangd, cli] = await Promise.all([
             getExecPath('arduino-language-server', this.onError.bind(this)),
             getExecPath('clangd', this.onError.bind(this), '--version', os.platform() !== 'win32'),
-            getExecPath('arduino-cli', this.onError.bind(this), 'version')
+            getExecPath('arduino-cli', this.onError.bind(this))
         ]);
         // Add '-log' argument to enable logging to files
         const args: string[] = ['-clangd', clangd, '-cli', cli];

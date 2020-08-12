@@ -133,7 +133,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
         if (this._execPath) {
             return this._execPath;
         }
-        this._execPath = await getExecPath('arduino-cli', this.onError.bind(this), 'version');
+        this._execPath = await getExecPath('arduino-cli', this.onError.bind(this));
         return this._execPath;
     }
 

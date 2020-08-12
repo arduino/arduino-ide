@@ -83,6 +83,17 @@ This project is built on [GitHub Actions](https://github.com/bcmi-labs/arduino-e
     git push origin 1.2.3
    ```
 
+### FAQ
+
+ - Q: Can I manually change the version of the [`arduino-cli`](https://github.com/arduino/arduino-cli/) used by the IDE?
+ - A: Yes. It is possible but not recommended. The CLI exposes a set of functionality via [gRPC](https://github.com/arduino/arduino-cli/tree/master/rpc) and the IDE uses this API to communicate with the CLI. Before we build a new version of IDE, we pin a specific version of CLI and use the corresponding `proto` files to generate TypeScript modules for gRPC. This means, a particular version of IDE is compliant only with the pinned version of CLI. Mismatching IDE and CLI versions might not be able to communicate with each other. This could cause unpredictable IDE behavior.
+
+ - Q: I have understood that not all versions of the CLI is compatible with my version of IDE but how can I manually update the `arduino-cli` inside the IDE?
+ - A: [Get](https://arduino.github.io/arduino-cli/installation) the desired version of `arduino-cli` for your platform and manually replace the one inside the IDE. The CLI can be found inside the IDE at:
+   - Windows: `C:\path\to\Arduino Pro IDE\resources\app\node_modules\arduino-ide-extension\build\arduino-cli.exe`,
+   - macOS: `/path/to/Arduino Pro IDE.app/Contents/Resources/app/node_modules/arduino-ide-extension/build/arduino-cli`, and
+   - Linux: `/path/to/Arduino Pro IDE/resources/app/node_modules/arduino-ide-extension/build/arduino-cli`.
+
 ### Architecture overview
 
 The Pro IDE consists of three major parts:
