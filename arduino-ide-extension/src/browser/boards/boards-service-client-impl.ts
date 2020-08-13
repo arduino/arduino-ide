@@ -1,11 +1,20 @@
-import { injectable, inject, optional } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { StorageService } from '@theia/core/lib/browser/storage-service';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { RecursiveRequired } from '../../common/types';
-import { BoardsServiceClient, AttachedBoardsChangeEvent, BoardInstalledEvent, Board, Port, BoardUninstalledEvent, BoardsService } from '../../common/protocol';
+import {
+    Port,
+    Board,
+    BoardsService,
+    BoardsPackage,
+    InstalledEvent,
+    UninstalledEvent,
+    BoardsServiceClient,
+    AttachedBoardsChangeEvent
+} from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 import { compareAnything } from '../theia/monaco/comparers';
@@ -21,15 +30,14 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
     @inject(ILogger)
     protected logger: ILogger;
 
-    @optional()
     @inject(MessageService)
     protected messageService: MessageService;
 
     @inject(StorageService)
     protected storageService: StorageService;
 
-    protected readonly onBoardsPackageInstalledEmitter = new Emitter<BoardInstalledEvent>();
-    protected readonly onBoardsPackageUninstalledEmitter = new Emitter<BoardUninstalledEvent>();
+    protected readonly onBoardsPackageInstalledEmitter = new Emitter<InstalledEvent<BoardsPackage>>();
+    protected readonly onBoardsPackageUninstalledEmitter = new Emitter<UninstalledEvent<BoardsPackage>>();
     protected readonly onAttachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
     protected readonly onBoardsConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
     protected readonly onAvailableBoardsChangedEmitter = new Emitter<AvailableBoard[]>();
@@ -119,13 +127,13 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
         return false;
     }
 
-    notifyBoardInstalled(event: BoardInstalledEvent): void {
-        this.logger.info('Board installed: ', JSON.stringify(event));
+    notifyInstalled(event: InstalledEvent<BoardsPackage>): void {
+        this.logger.info('Boards package installed: ', JSON.stringify(event));
         this.onBoardsPackageInstalledEmitter.fire(event);
         const { selectedBoard } = this.boardsConfig;
-        const { installedVersion, id } = event.pkg;
+        const { installedVersion, id } = event.item;
         if (selectedBoard) {
-            const installedBoard = event.pkg.boards.find(({ name }) => name === selectedBoard.name);
+            const installedBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
             if (installedBoard && (!selectedBoard.fqbn || selectedBoard.fqbn === installedBoard.fqbn)) {
                 this.logger.info(`Board package ${id}[${installedVersion}] was installed. Updating the FQBN of the currently selected ${selectedBoard.name} board. [FQBN: ${installedBoard.fqbn}]`);
                 this.boardsConfig = {
@@ -136,14 +144,14 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
         }
     }
 
-    notifyBoardUninstalled(event: BoardUninstalledEvent): void {
-        this.logger.info('Board uninstalled: ', JSON.stringify(event));
+    notifyUninstalled(event: UninstalledEvent<BoardsPackage>): void {
+        this.logger.info('Boards package uninstalled: ', JSON.stringify(event));
         this.onBoardsPackageUninstalledEmitter.fire(event);
         const { selectedBoard } = this.boardsConfig;
         if (selectedBoard && selectedBoard.fqbn) {
-            const uninstalledBoard = event.pkg.boards.find(({ name }) => name === selectedBoard.name);
+            const uninstalledBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
             if (uninstalledBoard && uninstalledBoard.fqbn === selectedBoard.fqbn) {
-                this.logger.info(`Board package ${event.pkg.id} was uninstalled. Discarding the FQBN of the currently selected ${selectedBoard.name} board.`);
+                this.logger.info(`Board package ${event.item.id} was uninstalled. Discarding the FQBN of the currently selected ${selectedBoard.name} board.`);
                 const selectedBoardWithoutFqbn = {
                     name: selectedBoard.name
                     // No FQBN
@@ -219,7 +227,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
         }
 
         if (!config.selectedBoard) {
-            if (!options.silent && this.messageService) {
+            if (!options.silent) {
                 this.messageService.warn('No boards selected.', { timeout: 3000 });
             }
             return false;
@@ -241,14 +249,14 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
 
         const { name } = config.selectedBoard;
         if (!config.selectedPort) {
-            if (!options.silent && this.messageService) {
+            if (!options.silent) {
                 this.messageService.warn(`No ports selected for board: '${name}'.`, { timeout: 3000 });
             }
             return false;
         }
 
         if (!config.selectedBoard.fqbn) {
-            if (!options.silent && this.messageService) {
+            if (!options.silent) {
                 this.messageService.warn(`The FQBN is not available for the selected board ${name}. Do you have the corresponding core installed?`, { timeout: 3000 });
             }
             return false;

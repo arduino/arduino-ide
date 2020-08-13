@@ -12,7 +12,7 @@ import { ArduinoLanguageClientContribution } from './language/arduino-language-c
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
 import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
-import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
+import { LibraryServiceServer, LibraryServiceServerPath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
@@ -118,6 +118,11 @@ import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
 import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/output-widget';
 import { OutputWidget } from './theia/output/output-widget';
 import { BurnBootloader } from './contributions/burn-bootloader';
+import { ExamplesServicePath, ExamplesService } from '../common/protocol/examples-service';
+import { Examples } from './contributions/examples';
+import { LibraryServiceProvider } from './library/library-service-provider';
+import { IncludeLibrary } from './contributions/include-library';
+import { IncludeLibraryMenuUpdater } from './library/include-library-menu-updater';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -151,7 +156,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ListItemRenderer).toSelf().inSingletonScope();
 
     // Library service
-    bind(LibraryService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServicePath)).inSingletonScope();
+    bind(LibraryServiceProvider).toSelf().inSingletonScope();
+    bind(LibraryServiceServer).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServiceServerPath)).inSingletonScope();
+    bind(FrontendApplicationContribution).to(IncludeLibraryMenuUpdater).inSingletonScope();
+
     // Library list widget
     bind(LibraryListWidget).toSelf();
     bindViewContribution(bind, LibraryListWidgetFrontendContribution);
@@ -347,6 +355,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // File-system extension
     bind(FileSystemExt).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, FileSystemExtPath)).inSingletonScope();
 
+    // Examples service
+    bind(ExamplesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ExamplesServicePath)).inSingletonScope();
+
     Contribution.configure(bind, NewSketch);
     Contribution.configure(bind, OpenSketch);
     Contribution.configure(bind, CloseSketch);
@@ -360,4 +371,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, SketchControl);
     Contribution.configure(bind, Settings);
     Contribution.configure(bind, BurnBootloader);
+    Contribution.configure(bind, Examples);
+    Contribution.configure(bind, IncludeLibrary);
 });

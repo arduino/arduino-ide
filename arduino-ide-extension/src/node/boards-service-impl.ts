@@ -112,8 +112,8 @@ export class BoardsServiceImpl implements BoardsService {
         if (this.discoveryTimer !== undefined) {
             clearInterval(this.discoveryTimer);
         }
-        this.logger.info('<<< Disposed boards service.');
         this.client = undefined;
+        this.logger.info('<<< Disposed boards service.');
     }
 
     async getAttachedBoards(): Promise<Board[]> {
@@ -370,15 +370,15 @@ export class BoardsServiceImpl implements BoardsService {
     }
 
     async install(options: { item: BoardsPackage, version?: Installable.Version }): Promise<void> {
-        const pkg = options.item;
-        const version = !!options.version ? options.version : pkg.availableVersions[0];
+        const item = options.item;
+        const version = !!options.version ? options.version : item.availableVersions[0];
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
         const { client, instance } = coreClient;
 
-        const [platform, architecture] = pkg.id.split(':');
+        const [platform, architecture] = item.id.split(':');
 
         const req = new PlatformInstallReq();
         req.setInstance(instance);
@@ -386,7 +386,7 @@ export class BoardsServiceImpl implements BoardsService {
         req.setPlatformPackage(platform);
         req.setVersion(version);
 
-        console.info('Starting board installation', pkg);
+        console.info('>>> Starting boards package installation...', item);
         const resp = client.platformInstall(req);
         resp.on('data', (r: PlatformInstallResp) => {
             const prog = r.getProgress();
@@ -399,34 +399,34 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('error', reject);
         });
         if (this.client) {
-            const packages = await this.search({});
-            const updatedPackage = packages.find(({ id }) => id === pkg.id) || pkg;
-            this.client.notifyBoardInstalled({ pkg: updatedPackage });
+            const items = await this.search({});
+            const updated = items.find(other => BoardsPackage.equals(other, item)) || item;
+            this.client.notifyInstalled({ item: updated });
         }
-        console.info('Board installation done', pkg);
+        console.info('<<< Boards package installation done.', item);
     }
 
     async uninstall(options: { item: BoardsPackage }): Promise<void> {
-        const pkg = options.item;
+        const item = options.item;
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
             return;
         }
         const { client, instance } = coreClient;
 
-        const [platform, architecture] = pkg.id.split(':');
+        const [platform, architecture] = item.id.split(':');
 
         const req = new PlatformUninstallReq();
         req.setInstance(instance);
         req.setArchitecture(architecture);
         req.setPlatformPackage(platform);
 
-        console.info('Starting board uninstallation', pkg);
+        console.info('>>> Starting boards package uninstallation...', item);
         let logged = false;
         const resp = client.platformUninstall(req);
         resp.on('data', (_: PlatformUninstallResp) => {
             if (!logged) {
-                this.toolOutputService.append({ tool: 'board uninstall', chunk: `uninstalling ${pkg.id}\n` });
+                this.toolOutputService.append({ tool: 'board uninstall', chunk: `uninstalling ${item.id}\n` });
                 logged = true;
             }
         })
@@ -435,10 +435,10 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('error', reject);
         });
         if (this.client) {
-            // Here, unlike at `install` we send out the argument `pkg`. Otherwise, we would not know about the board FQBN.
-            this.client.notifyBoardUninstalled({ pkg });
+            // Here, unlike at `install` we send out the argument `item`. Otherwise, we would not know about the board FQBN.
+            this.client.notifyUninstalled({ item });
         }
-        console.info('Board uninstallation done', pkg);
+        console.info('<<< Boards package uninstallation done.', item);
     }
 
 }

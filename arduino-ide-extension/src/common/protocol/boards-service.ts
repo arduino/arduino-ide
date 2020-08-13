@@ -2,7 +2,7 @@ import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { naturalCompare } from './../utils';
 import { Searchable } from './searchable';
-import { Installable } from './installable';
+import { Installable, InstallableClient } from './installable';
 import { ArduinoComponent } from './arduino-component';
 
 export interface AttachedBoardsChangeEvent {
@@ -45,19 +45,9 @@ export namespace AttachedBoardsChangeEvent {
 
 }
 
-export interface BoardInstalledEvent {
-    readonly pkg: Readonly<BoardsPackage>;
-}
-
-export interface BoardUninstalledEvent {
-    readonly pkg: Readonly<BoardsPackage>;
-}
-
 export const BoardsServiceClient = Symbol('BoardsServiceClient');
-export interface BoardsServiceClient {
+export interface BoardsServiceClient extends InstallableClient<BoardsPackage> {
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
-    notifyBoardInstalled(event: BoardInstalledEvent): void
-    notifyBoardUninstalled(event: BoardUninstalledEvent): void
 }
 
 export const BoardsServicePath = '/services/boards-service';
@@ -193,6 +183,11 @@ export namespace Port {
 export interface BoardsPackage extends ArduinoComponent {
     readonly id: string;
     readonly boards: Board[];
+}
+export namespace BoardsPackage {
+    export function equals(left: BoardsPackage, right: BoardsPackage): boolean {
+        return left.id === right.id;
+    }
 }
 
 export interface Board {

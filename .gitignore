@@ -4,6 +4,7 @@ node_modules/
 lib/
 downloads/
 build/
+Examples/
 !electron/build/
 src-gen/
 *webpack.config.js

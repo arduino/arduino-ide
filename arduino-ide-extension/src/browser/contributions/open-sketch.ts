@@ -6,6 +6,8 @@ import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposa
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { SketchContribution, Sketch, URI, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
+import { ExamplesService } from '../../common/protocol/examples-service';
+import { Examples } from './examples';
 
 @injectable()
 export class OpenSketch extends SketchContribution {
@@ -15,6 +17,12 @@ export class OpenSketch extends SketchContribution {
 
     @inject(ContextMenuRenderer)
     protected readonly contextMenuRenderer: ContextMenuRenderer;
+
+    @inject(Examples)
+    protected readonly examples: Examples;
+
+    @inject(ExamplesService)
+    protected readonly examplesService: ExamplesService;
 
     protected readonly toDisposeBeforeCreateNewContextMenu = new DisposableCollection();
 
@@ -52,6 +60,14 @@ export class OpenSketch extends SketchContribution {
                             label: sketch.name
                         });
                         this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+                    }
+                    try {
+                        const { children } = await this.examplesService.all();
+                        for (const child of children) {
+                            this.examples.registerRecursively(child, ArduinoMenus.OPEN_SKETCH__CONTEXT__EXAMPLES_GROUP, this.toDisposeBeforeCreateNewContextMenu);
+                        }
+                    } catch (e) {
+                        console.error('Error when collecting built-in examples.', e);
                     }
                     const options = {
                         menuPath: ArduinoMenus.OPEN_SKETCH__CONTEXT,

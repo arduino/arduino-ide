@@ -15,9 +15,14 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     protected readonly toolOutputService: ToolOutputServiceServer;
 
     protected readonly onIndexUpdatedEmitter = new Emitter<void>();
+    protected readonly onClientReadyEmitter = new Emitter<void>();
 
     get onIndexUpdated(): Event<void> {
         return this.onIndexUpdatedEmitter.event;
+    }
+
+    get onClientReady(): Event<void> {
+        return this.onClientReadyEmitter.event;
     }
 
     close(client: CoreClientProvider.Client): void {
@@ -28,10 +33,12 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         if (port && port === this._port) {
             // No need to create a new gRPC client, but we have to update the indexes.
             if (this._client) {
-                this.updateIndexes(this._client);
+                await this.updateIndexes(this._client);
+                this.onClientReadyEmitter.fire();
             }
         } else {
-            return super.reconcileClient(port);
+            await super.reconcileClient(port);
+            this.onClientReadyEmitter.fire();
         }
     }
 

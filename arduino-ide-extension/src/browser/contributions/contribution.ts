@@ -2,6 +2,7 @@ import { inject, injectable, interfaces } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { FileSystem } from '@theia/filesystem/lib/common';
+import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
@@ -13,11 +14,12 @@ import { Command, CommandRegistry, CommandContribution, CommandService } from '@
 import { EditorMode } from '../editor-mode';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
 import { SketchesService, ConfigService, FileSystemExt, Sketch } from '../../common/protocol';
+import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser';
 
 export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch, open };
 
 @injectable()
-export abstract class Contribution implements CommandContribution, MenuContribution, KeybindingContribution, TabBarToolbarContribution {
+export abstract class Contribution implements CommandContribution, MenuContribution, KeybindingContribution, TabBarToolbarContribution, FrontendApplicationContribution {
 
     @inject(ILogger)
     protected readonly logger: ILogger;
@@ -36,6 +38,9 @@ export abstract class Contribution implements CommandContribution, MenuContribut
 
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
+
+    onStart(app: FrontendApplication): MaybePromise<void> {
+    }
 
     registerCommands(registry: CommandRegistry): void {
     }
@@ -75,11 +80,12 @@ export abstract class SketchContribution extends Contribution {
 }
 
 export namespace Contribution {
-    export function configure<T>(bind: interfaces.Bind, serviceIdentifier: interfaces.ServiceIdentifier<T>): void {
+    export function configure<T>(bind: interfaces.Bind, serviceIdentifier: typeof Contribution): void {
         bind(serviceIdentifier).toSelf().inSingletonScope();
         bind(CommandContribution).toService(serviceIdentifier);
         bind(MenuContribution).toService(serviceIdentifier);
         bind(KeybindingContribution).toService(serviceIdentifier);
         bind(TabBarToolbarContribution).toService(serviceIdentifier);
+        bind(FrontendApplicationContribution).toService(serviceIdentifier);
     }
 }

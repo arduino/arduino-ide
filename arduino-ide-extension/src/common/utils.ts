@@ -7,3 +7,7 @@ export function notEmpty(arg: string | undefined | null): arg is string {
 export function firstToLowerCase(what: string): string {
     return what.charAt(0).toLowerCase() + what.slice(1);
 }
+
+export function firstToUpperCase(what: string): string {
+    return what.charAt(0).toUpperCase() + what.slice(1);
+}

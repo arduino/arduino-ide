@@ -22,6 +22,11 @@ export interface SketchesService {
      */
     createNewSketch(): Promise<Sketch>;
 
+    /**
+     * Creates a new sketch with existing content. Rejects if `uri` is not pointing to a valid sketch folder.
+     */
+    cloneExample(uri: string): Promise<Sketch>;
+
     isSketchFolder(uri: string): Promise<boolean>;
 
     /**

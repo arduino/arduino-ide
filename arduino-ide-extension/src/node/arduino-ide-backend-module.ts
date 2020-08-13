@@ -7,7 +7,7 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { LanguageServerContribution } from '@theia/languages/lib/node';
 import { ArduinoLanguageServerContribution } from './language/arduino-language-server-contribution';
-import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
+import { LibraryServiceServerPath, LibraryServiceServer, LibraryServiceClient } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { LibraryServiceImpl } from './library-service-impl';
 import { BoardsServiceImpl } from './boards-service-impl';
@@ -35,6 +35,8 @@ import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { ArduinoEnvVariablesServer } from './arduino-env-variables-server';
 import { NodeFileSystemExt } from './node-filesystem-ext';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
+import { ExamplesServiceImpl } from './examples-service-impl';
+import { ExamplesService, ExamplesServicePath } from '../common/protocol/examples-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(EnvVariablesServer).to(ArduinoEnvVariablesServer).inSingletonScope();
@@ -66,25 +68,31 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         })
     ).inSingletonScope();
 
+    // Shared examples service
+    bind(ExamplesServiceImpl).toSelf().inSingletonScope();
+    bind(ExamplesService).toService(ExamplesServiceImpl);
+    bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(ExamplesServicePath, () => context.container.get(ExamplesService))).inSingletonScope();
+
     // Language server
     bind(ArduinoLanguageServerContribution).toSelf().inSingletonScope();
     bind(LanguageServerContribution).toService(ArduinoLanguageServerContribution);
 
     // Library service
-    const libraryServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        bind(LibraryServiceImpl).toSelf().inSingletonScope();
-        bind(LibraryService).toService(LibraryServiceImpl);
-        bindBackendService(LibraryServicePath, LibraryService);
-    });
-    bind(ConnectionContainerModule).toConstantValue(libraryServiceConnectionModule);
+    bind(LibraryServiceImpl).toSelf().inSingletonScope();
+    bind(LibraryServiceServer).toService(LibraryServiceImpl);
+    bind(ConnectionHandler).toDynamicValue(context =>
+        new JsonRpcConnectionHandler<LibraryServiceClient>(LibraryServiceServerPath, client => {
+            const server = context.container.get<LibraryServiceImpl>(LibraryServiceImpl);
+            server.setClient(client);
+            client.onDidCloseConnection(() => server.dispose());
+            return server;
+        })
+    ).inSingletonScope();
 
-    // Sketches service
-    const sketchesServiceConnectionModule = ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        bind(SketchesServiceImpl).toSelf().inSingletonScope();
-        bind(SketchesService).toService(SketchesServiceImpl);
-        bindBackendService(SketchesServicePath, SketchesService);
-    });
-    bind(ConnectionContainerModule).toConstantValue(sketchesServiceConnectionModule);
+    // Shred sketches service
+    bind(SketchesServiceImpl).toSelf().inSingletonScope();
+    bind(SketchesService).toService(SketchesServiceImpl);
+    bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(SketchesServicePath, () => context.container.get(SketchesService))).inSingletonScope();
 
     // Boards service
     const boardsServiceConnectionModule = ConnectionContainerModule.create(async ({ bind, bindBackendService }) => {
@@ -190,6 +198,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // File-system extension for mapping paths to URIs
     bind(NodeFileSystemExt).toSelf().inSingletonScope();
-    bind(FileSystemExt).toDynamicValue(context => context.container.get(NodeFileSystemExt));
+    bind(FileSystemExt).toService(NodeFileSystemExt);
     bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(FileSystemExtPath, () => context.container.get(FileSystemExt))).inSingletonScope();
 });

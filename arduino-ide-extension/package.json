@@ -4,10 +4,11 @@
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
   "scripts": {
-    "prepare": "yarn download-cli && yarn download-ls && yarn run clean && yarn run build",
+    "prepare": "yarn download-cli && yarn download-ls && yarn clean && yarn download-examples && yarn build",
     "clean": "rimraf lib",
     "download-cli": "node ./scripts/download-cli.js",
     "download-ls": "node ./scripts/download-ls.js",
+    "download-examples": "node ./scripts/download-examples.js",
     "generate-protocol": "node ./scripts/generate-protocol.js",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "build": "tsc && ncp ./src/node/cli-protocol/ ./lib/node/cli-protocol/ && yarn lint",
@@ -99,7 +100,8 @@
     "lib",
     "src",
     "build",
-    "data"
+    "data",
+    "examples"
   ],
   "theiaExtensions": [
     {

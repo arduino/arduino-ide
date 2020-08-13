@@ -19,6 +19,8 @@ const MAX_FILESYSTEM_DEPTH = 40;
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
+const prefix = '.arduinoProIDE-unsaved';
+
 // TODO: `fs`: use async API 
 @injectable()
 export class SketchesServiceImpl implements SketchesService, BackendApplicationContribution {
@@ -205,6 +207,22 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
         }
     }
 
+    async cloneExample(uri: string): Promise<Sketch> {
+        const sketch = await this.loadSketch(uri);
+        const parentPath = await new Promise<string>((resolve, reject) => {
+            this.temp.mkdir({ prefix }, (err, dirPath) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(dirPath);
+            })
+        });
+        const destinationUri = FileUri.create(path.join(parentPath, sketch.name)).toString();
+        const copiedSketchUri = await this.copy(sketch, { destinationUri });
+        return this.loadSketch(copiedSketchUri);
+    }
+
     protected async simpleLocalWalk(
         root: string,
         maxDepth: number,
@@ -258,15 +276,15 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
     async createNewSketch(): Promise<Sketch> {
         const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
         const today = new Date();
-        const parent = await new Promise<string>((resolve, reject) => {
-            this.temp.mkdir({ prefix: '.arduinoProIDE-unsaved' }, (err, dirPath) => {
+        const parentPath = await new Promise<string>((resolve, reject) => {
+            this.temp.mkdir({ prefix }, (err, dirPath) => {
                 if (err) {
                     reject(err);
                     return;
                 }
                 resolve(dirPath);
-            })
-        })
+            });
+        });
         const sketchBaseName = `sketch_${monthNames[today.getMonth()]}${today.getDate()}`;
         const config = await this.configService.getConfiguration();
         const user = FileUri.fsPath(config.sketchDirUri);
@@ -286,7 +304,7 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
             throw new Error('Cannot create a unique sketch name');
         }
 
-        const sketchDir = path.join(parent, sketchName)
+        const sketchDir = path.join(parentPath, sketchName)
         const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
         await fs.mkdirp(sketchDir);
         await fs.writeFile(sketchFile, `void setup() {
@@ -346,7 +364,7 @@ void loop() {
                 temp = firstToLowerCase(temp);
             }
         }
-        return sketchPath.indexOf('.arduinoProIDE-unsaved') !== -1 && sketchPath.startsWith(temp);
+        return sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(temp);
     }
 
     async copy(sketch: Sketch, { destinationUri }: { destinationUri: string }): Promise<string> {

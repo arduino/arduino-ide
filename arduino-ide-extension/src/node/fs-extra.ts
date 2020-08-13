@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 
 export const constants = fs.constants;
+export type Stats = fs.Stats;
 
 export const existsSync = fs.existsSync;
 export const lstatSync = fs.lstatSync;

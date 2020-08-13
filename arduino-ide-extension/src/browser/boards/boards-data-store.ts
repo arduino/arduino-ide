@@ -27,13 +27,13 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     protected readonly onChangedEmitter = new Emitter<void>();
 
     onStart(): void {
-        this.boardsServiceClient.onBoardsPackageInstalled(async ({ pkg }) => {
-            const { installedVersion: version } = pkg;
+        this.boardsServiceClient.onBoardsPackageInstalled(async ({ item }) => {
+            const { installedVersion: version } = item;
             if (!version) {
                 return;
             }
             let shouldFireChanged = false;
-            for (const fqbn of pkg.boards.map(({ fqbn }) => fqbn).filter(notEmpty).filter(fqbn => !!fqbn)) {
+            for (const fqbn of item.boards.map(({ fqbn }) => fqbn).filter(notEmpty).filter(fqbn => !!fqbn)) {
                 const key = this.getStorageKey(fqbn, version);
                 let data = await this.storageService.getData<ConfigOption[] | undefined>(key);
                 if (!data || !data.length) {
