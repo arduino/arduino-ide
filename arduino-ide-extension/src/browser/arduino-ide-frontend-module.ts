@@ -117,6 +117,7 @@ import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/l
 import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
 import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/output-widget';
 import { OutputWidget } from './theia/output/output-widget';
+import { BurnBootloader } from './contributions/burn-bootloader';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -358,4 +359,5 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, QuitApp);
     Contribution.configure(bind, SketchControl);
     Contribution.configure(bind, Settings);
+    Contribution.configure(bind, BurnBootloader);
 });

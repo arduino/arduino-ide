@@ -103,7 +103,7 @@ export class UploadSketch extends SketchContribution {
             if (usingProgrammer) {
                 const programmer = selectedProgrammer;
                 if (!programmer) {
-                    throw new Error('Programmer is not selected. Please select a programmer.');
+                    throw new Error('Programmer is not selected. Please select a programmer from the `Tools` > `Programmer` menu.');
                 }
                 let port: undefined | string = undefined;
                 // If the port is set by the user, we pass it to the CLI as it might be required.

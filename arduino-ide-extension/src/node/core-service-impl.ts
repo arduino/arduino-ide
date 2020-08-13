@@ -6,7 +6,7 @@ import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
 import * as path from 'path';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
-import { UploadReq, UploadResp } from './cli-protocol/commands/upload_pb';
+import { UploadReq, UploadResp, BurnBootloaderReq, BurnBootloaderResp } from './cli-protocol/commands/upload_pb';
 
 @injectable()
 export class CoreServiceImpl implements CoreService {
@@ -113,9 +113,9 @@ export class CoreServiceImpl implements CoreService {
 
         try {
             await new Promise<void>((resolve, reject) => {
-                result.on('data', (cr: UploadResp) => {
-                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
-                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
+                result.on('data', (resp: UploadResp) => {
+                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
@@ -123,6 +123,40 @@ export class CoreServiceImpl implements CoreService {
             this.toolOutputService.append({ tool: 'upload', chunk: '\n--------------------------\nUpload complete.\n' });
         } catch (e) {
             this.toolOutputService.append({ tool: 'upload', chunk: `Upload error: ${e}\n`, severity: 'error' });
+            throw e;
+        }
+    }
+
+    async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
+        const coreClient = await this.coreClientProvider.client();
+        if (!coreClient) {
+            return;
+        }
+        const { fqbn, port, programmer } = options;
+        if (!fqbn) {
+            throw new Error('The selected board has no FQBN.');
+        }
+        if (!port) {
+            throw new Error('Port must be specified.');
+        }
+        const { client, instance } = coreClient;
+        const req = new BurnBootloaderReq();
+        req.setFqbn(fqbn);
+        req.setPort(port);
+        req.setProgrammer(programmer.id);
+        req.setInstance(instance);
+        const result = client.burnBootloader(req);
+        try {
+            await new Promise<void>((resolve, reject) => {
+                result.on('data', (resp: BurnBootloaderResp) => {
+                    this.toolOutputService.append({ tool: 'bootloader', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.toolOutputService.append({ tool: 'bootloader', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                });
+                result.on('error', error => reject(error));
+                result.on('end', () => resolve());
+            });
+        } catch (e) {
+            this.toolOutputService.append({ tool: 'bootloader', chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
             throw e;
         }
     }

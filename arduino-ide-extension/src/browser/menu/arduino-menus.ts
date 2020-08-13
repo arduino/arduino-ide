@@ -30,7 +30,7 @@ export namespace ArduinoMenus {
     export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
     // `Auto Format`, `Library Manager...`, `Boards Manager...`
     export const TOOLS__MAIN_GROUP = [...TOOLS, '0_main'];
-    // Core settings, such as `Processor` and `Programmers` for the board.
+    // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`
     export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '1_board_settings'];
 
     // Context menu
