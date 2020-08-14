@@ -110,18 +110,4 @@ export class WorkspaceService extends TheiaWorkspaceService {
         }
     }
 
-    protected openWindow(uri: FileStat, options?: WorkspaceInput): void {
-        const workspacePath = new URI(uri.uri).path.toString();
-        try {
-            this.openNewWindow(workspacePath);
-            if (this.shouldPreserveWindow(options)) {
-                setTimeout(() => window.close(), 10);
-            }
-        } catch (error) {
-            // Fall back to reloading the current window in case the browser has blocked the new window
-            (this as any)._workspace = uri;
-            this.logger.error(error.toString()).then(() => this.reloadWindow());
-        }
-    }
-
 }
