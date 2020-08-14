@@ -114,8 +114,7 @@ proto.cc.arduino.cli.commands.CompileReq.toObject = function(includeInstance, ms
     librariesList: (f = jspb.Message.getRepeatedField(msg, 15)) == null ? undefined : f,
     optimizefordebug: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
     dryrun: jspb.Message.getBooleanFieldWithDefault(msg, 17, false),
-    exportDir: jspb.Message.getFieldWithDefault(msg, 18, ""),
-    programmer: jspb.Message.getFieldWithDefault(msg, 19, "")
+    exportDir: jspb.Message.getFieldWithDefault(msg, 18, "")
   };
 
   if (includeInstance) {
@@ -224,10 +223,6 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
     case 18:
       var value = /** @type {string} */ (reader.readString());
       msg.setExportDir(value);
-      break;
-    case 19:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setProgrammer(value);
       break;
     default:
       reader.skipField();
@@ -382,13 +377,6 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
   if (f.length > 0) {
     writer.writeString(
       18,
-      f
-    );
-  }
-  f = message.getProgrammer();
-  if (f.length > 0) {
-    writer.writeString(
-      19,
       f
     );
   }
@@ -773,24 +761,6 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.getExportDir = function() {
  */
 proto.cc.arduino.cli.commands.CompileReq.prototype.setExportDir = function(value) {
   return jspb.Message.setProto3StringField(this, 18, value);
-};
-
-
-/**
- * optional string programmer = 19;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.getProgrammer = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 19, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.setProgrammer = function(value) {
-  return jspb.Message.setProto3StringField(this, 19, value);
 };
 
 
