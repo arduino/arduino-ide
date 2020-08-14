@@ -57,7 +57,7 @@ export class CloseSketch extends SketchContribution {
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: CloseSketch.Commands.CLOSE_SKETCH.id,
-            keybinding: 'CtrlCmd+W' // TODO: Windows binding?
+            keybinding: 'CtrlCmd+W'
         });
     }
 

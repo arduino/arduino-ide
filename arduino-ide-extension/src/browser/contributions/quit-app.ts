@@ -29,7 +29,7 @@ export class QuitApp extends Contribution {
         if (!isOSX) {
             registry.registerKeybinding({
                 command: QuitApp.Commands.QUIT_APP.id,
-                keybinding: isWindows ? 'Alt+F4' : 'Ctrl+Q'
+                keybinding: 'CtrlCmd+Q'
             });
         }
     }
