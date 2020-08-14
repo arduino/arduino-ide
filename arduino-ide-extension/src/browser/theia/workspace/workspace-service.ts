@@ -1,13 +1,12 @@
 import { injectable, inject } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
-import { FileStat } from '@theia/filesystem/lib/common';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { ApplicationServer } from '@theia/core/lib/common/application-protocol';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
-import { WorkspaceService as TheiaWorkspaceService, WorkspaceInput } from '@theia/workspace/lib/browser/workspace-service';
+import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
 import { SketchesService } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';

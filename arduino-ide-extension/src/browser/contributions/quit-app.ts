@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { remote } from 'electron';
-import { isOSX, isWindows } from '@theia/core/lib/common/os';
+import { isOSX } from '@theia/core/lib/common/os';
 import { Contribution, Command, MenuModelRegistry, KeybindingRegistry, CommandRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
@@ -16,6 +16,7 @@ export class QuitApp extends Contribution {
     }
 
     registerMenus(registry: MenuModelRegistry): void {
+        // On macOS we will get the `Quit ${YOUR_APP_NAME}` menu item natively, no need to duplicate it. 
         if (!isOSX) {
             registry.registerMenuAction(ArduinoMenus.FILE__QUIT_GROUP, {
                 commandId: QuitApp.Commands.QUIT_APP.id,
