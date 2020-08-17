@@ -20,7 +20,7 @@ jobs:
         config:
           - os: windows-2016
           - os: ubuntu-latest
-          - os: turin-macmini # self-hosted macOS
+          - os: macos-latest
           # - os: rsora-rpi-arm # self-hosted armhf
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 30
