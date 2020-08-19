@@ -25,13 +25,41 @@ export namespace LibraryService {
     }
 }
 
+export enum LibraryLocation {
+    /**
+     * In the `libraries` subdirectory of the Arduino IDE installation.
+     */
+    IDE_BUILTIN = 0,
+    /**
+     * In the `libraries` subdirectory of the user directory (sketchbook).
+     */
+    USER = 1,
+    /**
+     * In the `libraries` subdirectory of a platform.
+     */
+    PLATFORM_BUILTIN = 2,
+    /**
+     * When `LibraryLocation` is used in a context where a board is specified, this indicates the library is in the `libraries`
+     * subdirectory of a platform referenced by the board's platform.
+     */
+    REFERENCED_PLATFORM_BUILTIN = 3
+}
+
 export interface LibraryPackage extends ArduinoComponent {
+    /**
+     * Same as [`Library#real_name`](https://arduino.github.io/arduino-cli/latest/rpc/commands/#library).
+     * Should be used for the UI, and `name` is used to uniquely identify a library. It does not have an ID.
+     */
+    readonly label: string;
     /**
      * An array of string that should be included into the `ino` file if this library is used.
      * For example, including `SD` will prepend `#include <SD.h>` to the `ino` file. While including `Bridge`
      * requires multiple `#include` declarations: `YunClient`, `YunServer`, `Bridge`, etc.
      */
     readonly includes: string[];
+    readonly exampleUris: string[];
+    readonly location: LibraryLocation;
+    readonly installDirUri?: string;
 }
 export namespace LibraryPackage {
 

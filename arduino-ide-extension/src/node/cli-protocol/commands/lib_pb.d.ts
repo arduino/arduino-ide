@@ -565,6 +565,12 @@ export class LibraryListReq extends jspb.Message {
     getUpdatable(): boolean;
     setUpdatable(value: boolean): LibraryListReq;
 
+    getName(): string;
+    setName(value: string): LibraryListReq;
+
+    getFqbn(): string;
+    setFqbn(value: string): LibraryListReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryListReq.AsObject;
@@ -581,6 +587,8 @@ export namespace LibraryListReq {
         instance?: commands_common_pb.Instance.AsObject,
         all: boolean,
         updatable: boolean,
+        name: string,
+        fqbn: string,
     }
 }
 
@@ -713,6 +721,11 @@ export class Library extends jspb.Message {
     getLayout(): LibraryLayout;
     setLayout(value: LibraryLayout): Library;
 
+    clearExamplesList(): void;
+    getExamplesList(): Array<string>;
+    setExamplesList(value: Array<string>): Library;
+    addExamples(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Library.AsObject;
@@ -750,6 +763,7 @@ export namespace Library {
         propertiesMap: Array<[string, string]>,
         location: LibraryLocation,
         layout: LibraryLayout,
+        examplesList: Array<string>,
     }
 }
 

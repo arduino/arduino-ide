@@ -4157,7 +4157,9 @@ proto.cc.arduino.cli.commands.LibraryListReq.toObject = function(includeInstance
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
     all: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    updatable: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    updatable: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    name: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    fqbn: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -4207,6 +4209,14 @@ proto.cc.arduino.cli.commands.LibraryListReq.deserializeBinaryFromReader = funct
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setUpdatable(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFqbn(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -4255,6 +4265,20 @@ proto.cc.arduino.cli.commands.LibraryListReq.serializeBinaryToWriter = function(
   if (f) {
     writer.writeBool(
       3,
+      f
+    );
+  }
+  f = message.getName();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = message.getFqbn();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
       f
     );
   }
@@ -4331,6 +4355,42 @@ proto.cc.arduino.cli.commands.LibraryListReq.prototype.getUpdatable = function()
  */
 proto.cc.arduino.cli.commands.LibraryListReq.prototype.setUpdatable = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+/**
+ * optional string name = 4;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.LibraryListReq.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.LibraryListReq} returns this
+ */
+proto.cc.arduino.cli.commands.LibraryListReq.prototype.setName = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string fqbn = 5;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.LibraryListReq.prototype.getFqbn = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.LibraryListReq} returns this
+ */
+proto.cc.arduino.cli.commands.LibraryListReq.prototype.setFqbn = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 
@@ -4702,7 +4762,7 @@ proto.cc.arduino.cli.commands.InstalledLibrary.prototype.hasRelease = function()
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.Library.repeatedFields_ = [8,9];
+proto.cc.arduino.cli.commands.Library.repeatedFields_ = [8,9,26];
 
 
 
@@ -4757,7 +4817,8 @@ proto.cc.arduino.cli.commands.Library.toObject = function(includeInstance, msg) 
     license: jspb.Message.getFieldWithDefault(msg, 22, ""),
     propertiesMap: (f = msg.getPropertiesMap()) ? f.toObject(includeInstance, undefined) : [],
     location: jspb.Message.getFieldWithDefault(msg, 24, 0),
-    layout: jspb.Message.getFieldWithDefault(msg, 25, 0)
+    layout: jspb.Message.getFieldWithDefault(msg, 25, 0),
+    examplesList: (f = jspb.Message.getRepeatedField(msg, 26)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -4887,6 +4948,10 @@ proto.cc.arduino.cli.commands.Library.deserializeBinaryFromReader = function(msg
     case 25:
       var value = /** @type {!proto.cc.arduino.cli.commands.LibraryLayout} */ (reader.readEnum());
       msg.setLayout(value);
+      break;
+    case 26:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addExamples(value);
       break;
     default:
       reader.skipField();
@@ -5072,6 +5137,13 @@ proto.cc.arduino.cli.commands.Library.serializeBinaryToWriter = function(message
   if (f !== 0.0) {
     writer.writeEnum(
       25,
+      f
+    );
+  }
+  f = message.getExamplesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      26,
       f
     );
   }
@@ -5531,6 +5603,43 @@ proto.cc.arduino.cli.commands.Library.prototype.getLayout = function() {
  */
 proto.cc.arduino.cli.commands.Library.prototype.setLayout = function(value) {
   return jspb.Message.setProto3EnumField(this, 25, value);
+};
+
+
+/**
+ * repeated string examples = 26;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.Library.prototype.getExamplesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 26));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.setExamplesList = function(value) {
+  return jspb.Message.setField(this, 26, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.addExamples = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 26, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.clearExamplesList = function() {
+  return this.setExamplesList([]);
 };
 
 

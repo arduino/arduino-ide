@@ -43,7 +43,7 @@ function deserialize_cc_arduino_cli_monitor_StreamingOpenResp(buffer_arg) {
 }
 
 
-// Service that abstract a Monitor usage
+// Service that abstracts a Monitor usage
 var MonitorService = exports['cc.arduino.cli.monitor.Monitor'] = {
   // Open a bidirectional monitor stream. This can be used to implement
 // something similar to the Arduino IDE's Serial Monitor.

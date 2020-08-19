@@ -84,6 +84,11 @@ export class BoardDetailsResp extends jspb.Message {
     setIdentificationPrefList(value: Array<IdentificationPref>): BoardDetailsResp;
     addIdentificationPref(value?: IdentificationPref, index?: number): IdentificationPref;
 
+    clearProgrammersList(): void;
+    getProgrammersList(): Array<commands_common_pb.Programmer>;
+    setProgrammersList(value: Array<commands_common_pb.Programmer>): BoardDetailsResp;
+    addProgrammers(value?: commands_common_pb.Programmer, index?: number): commands_common_pb.Programmer;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsResp.AsObject;
@@ -109,6 +114,7 @@ export namespace BoardDetailsResp {
         toolsdependenciesList: Array<ToolsDependencies.AsObject>,
         configOptionsList: Array<ConfigOption.AsObject>,
         identificationPrefList: Array<IdentificationPref.AsObject>,
+        programmersList: Array<commands_common_pb.Programmer.AsObject>,
     }
 }
 

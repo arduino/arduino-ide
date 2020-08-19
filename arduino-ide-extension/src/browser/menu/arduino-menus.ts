@@ -12,6 +12,13 @@ export namespace ArduinoMenus {
     export const FILE__SETTINGS_GROUP = [...(isOSX ? MAIN_MENU_BAR : CommonMenus.FILE), '2_settings'];
     export const FILE__QUIT_GROUP = [...CommonMenus.FILE, '3_quit'];
 
+    // -- File / Examples
+    export const FILE__EXAMPLES_SUBMENU = [...FILE__SKETCH_GROUP, '0_examples'];
+    export const EXAMPLES__BUILT_IN_GROUP = [...FILE__EXAMPLES_SUBMENU, '0_built_ins'];
+    export const EXAMPLES__ANY_BOARD_GROUP = [...FILE__EXAMPLES_SUBMENU, '1_any_board'];
+    export const EXAMPLES__CURRENT_BOARD_GROUP = [...FILE__EXAMPLES_SUBMENU, '2_current_board'];
+    export const EXAMPLES__USER_LIBS_GROUP = [...FILE__EXAMPLES_SUBMENU, '3_user_libs'];
+
     // -- Edit
     // `Copy`, `Copy to Forum`, `Paste`, etc.
     // Note: `1_undo` is the first group from Theia, we start with `2`

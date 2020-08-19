@@ -23,6 +23,9 @@ export class PlatformInstallReq extends jspb.Message {
     getVersion(): string;
     setVersion(value: string): PlatformInstallReq;
 
+    getSkippostinstall(): boolean;
+    setSkippostinstall(value: boolean): PlatformInstallReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallReq.AsObject;
@@ -40,6 +43,7 @@ export namespace PlatformInstallReq {
         platformPackage: string,
         architecture: string,
         version: string,
+        skippostinstall: boolean,
     }
 }
 
@@ -203,6 +207,9 @@ export class PlatformUpgradeReq extends jspb.Message {
     getArchitecture(): string;
     setArchitecture(value: string): PlatformUpgradeReq;
 
+    getSkippostinstall(): boolean;
+    setSkippostinstall(value: boolean): PlatformUpgradeReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeReq.AsObject;
@@ -219,6 +226,7 @@ export namespace PlatformUpgradeReq {
         instance?: commands_common_pb.Instance.AsObject,
         platformPackage: string,
         architecture: string,
+        skippostinstall: boolean,
     }
 }
 

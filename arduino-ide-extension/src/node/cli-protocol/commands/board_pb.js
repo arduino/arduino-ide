@@ -619,7 +619,7 @@ proto.cc.arduino.cli.commands.BoardDetailsReq.prototype.setFqbn = function(value
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.BoardDetailsResp.repeatedFields_ = [10,11,12];
+proto.cc.arduino.cli.commands.BoardDetailsResp.repeatedFields_ = [10,11,12,13];
 
 
 
@@ -666,7 +666,9 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.toObject = function(includeInstan
     configOptionsList: jspb.Message.toObjectList(msg.getConfigOptionsList(),
     proto.cc.arduino.cli.commands.ConfigOption.toObject, includeInstance),
     identificationPrefList: jspb.Message.toObjectList(msg.getIdentificationPrefList(),
-    proto.cc.arduino.cli.commands.IdentificationPref.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.IdentificationPref.toObject, includeInstance),
+    programmersList: jspb.Message.toObjectList(msg.getProgrammersList(),
+    commands_common_pb.Programmer.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -755,6 +757,11 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.deserializeBinaryFromReader = fun
       var value = new proto.cc.arduino.cli.commands.IdentificationPref;
       reader.readMessage(value,proto.cc.arduino.cli.commands.IdentificationPref.deserializeBinaryFromReader);
       msg.addIdentificationPref(value);
+      break;
+    case 13:
+      var value = new commands_common_pb.Programmer;
+      reader.readMessage(value,commands_common_pb.Programmer.deserializeBinaryFromReader);
+      msg.addProgrammers(value);
       break;
     default:
       reader.skipField();
@@ -872,6 +879,14 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.serializeBinaryToWriter = functio
       12,
       f,
       proto.cc.arduino.cli.commands.IdentificationPref.serializeBinaryToWriter
+    );
+  }
+  f = message.getProgrammersList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      13,
+      f,
+      commands_common_pb.Programmer.serializeBinaryToWriter
     );
   }
 };
@@ -1188,6 +1203,44 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.addIdentificationPref =
  */
 proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.clearIdentificationPrefList = function() {
   return this.setIdentificationPrefList([]);
+};
+
+
+/**
+ * repeated Programmer programmers = 13;
+ * @return {!Array<!proto.cc.arduino.cli.commands.Programmer>}
+ */
+proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.getProgrammersList = function() {
+  return /** @type{!Array<!proto.cc.arduino.cli.commands.Programmer>} */ (
+    jspb.Message.getRepeatedWrapperField(this, commands_common_pb.Programmer, 13));
+};
+
+
+/**
+ * @param {!Array<!proto.cc.arduino.cli.commands.Programmer>} value
+ * @return {!proto.cc.arduino.cli.commands.BoardDetailsResp} returns this
+*/
+proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.setProgrammersList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 13, value);
+};
+
+
+/**
+ * @param {!proto.cc.arduino.cli.commands.Programmer=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.Programmer}
+ */
+proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.addProgrammers = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 13, opt_value, proto.cc.arduino.cli.commands.Programmer, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.BoardDetailsResp} returns this
+ */
+proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.clearProgrammersList = function() {
+  return this.setProgrammersList([]);
 };
 
 

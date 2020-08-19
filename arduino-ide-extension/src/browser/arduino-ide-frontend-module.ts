@@ -119,7 +119,7 @@ import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/out
 import { OutputWidget } from './theia/output/output-widget';
 import { BurnBootloader } from './contributions/burn-bootloader';
 import { ExamplesServicePath, ExamplesService } from '../common/protocol/examples-service';
-import { Examples } from './contributions/examples';
+import { BuiltInExamples, LibraryExamples } from './contributions/examples';
 import { LibraryServiceProvider } from './library/library-service-provider';
 import { IncludeLibrary } from './contributions/include-library';
 import { IncludeLibraryMenuUpdater } from './library/include-library-menu-updater';
@@ -371,6 +371,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, SketchControl);
     Contribution.configure(bind, Settings);
     Contribution.configure(bind, BurnBootloader);
-    Contribution.configure(bind, Examples);
+    Contribution.configure(bind, BuiltInExamples);
+    Contribution.configure(bind, LibraryExamples);
     Contribution.configure(bind, IncludeLibrary);
 });

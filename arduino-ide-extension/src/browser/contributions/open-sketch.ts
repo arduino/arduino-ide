@@ -7,7 +7,7 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { SketchContribution, Sketch, URI, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
 import { ExamplesService } from '../../common/protocol/examples-service';
-import { Examples } from './examples';
+import { BuiltInExamples } from './examples';
 
 @injectable()
 export class OpenSketch extends SketchContribution {
@@ -18,8 +18,8 @@ export class OpenSketch extends SketchContribution {
     @inject(ContextMenuRenderer)
     protected readonly contextMenuRenderer: ContextMenuRenderer;
 
-    @inject(Examples)
-    protected readonly examples: Examples;
+    @inject(BuiltInExamples)
+    protected readonly builtInExamples: BuiltInExamples;
 
     @inject(ExamplesService)
     protected readonly examplesService: ExamplesService;
@@ -62,9 +62,9 @@ export class OpenSketch extends SketchContribution {
                         this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
                     }
                     try {
-                        const { children } = await this.examplesService.all();
-                        for (const child of children) {
-                            this.examples.registerRecursively(child, ArduinoMenus.OPEN_SKETCH__CONTEXT__EXAMPLES_GROUP, this.toDisposeBeforeCreateNewContextMenu);
+                        const containers = await this.examplesService.builtIns();
+                        for (const container of containers) {
+                            this.builtInExamples.registerRecursively(container, ArduinoMenus.OPEN_SKETCH__CONTEXT__EXAMPLES_GROUP, this.toDisposeBeforeCreateNewContextMenu);
                         }
                     } catch (e) {
                         console.error('Error when collecting built-in examples.', e);

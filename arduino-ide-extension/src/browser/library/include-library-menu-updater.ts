@@ -44,8 +44,12 @@ export class IncludeLibraryMenuUpdater implements FrontendApplicationContributio
         return this.queue.add(async () => {
             this.toDispose.dispose();
             this.mainMenuManager.update();
+            const libraries: LibraryPackage[] = []
             const fqbn = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn;
-            const libraries = await this.libraryServiceProvider.list({ fqbn });
+            // Do not show board specific examples, when no board is selected.
+            if (fqbn) {
+                libraries.push(...await this.libraryServiceProvider.list({ fqbn }));
+            }
 
             // `Include Library` submenu
             const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];

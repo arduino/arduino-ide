@@ -16,7 +16,7 @@
         shell.exit(1);
     }
 
-    if (shell.exec(`git clone https://github.com/arduino/arduino-cli.git ${repository}`).code !== 0) {
+    if (shell.exec(`git clone --depth 1 https://github.com/arduino/arduino-cli.git ${repository}`).code !== 0) {
         shell.exit(1);
     }
 

@@ -357,7 +357,8 @@ proto.cc.arduino.cli.commands.PlatformInstallReq.toObject = function(includeInst
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
     platformPackage: jspb.Message.getFieldWithDefault(msg, 2, ""),
     architecture: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    version: jspb.Message.getFieldWithDefault(msg, 4, "")
+    version: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    skippostinstall: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
   };
 
   if (includeInstance) {
@@ -410,6 +411,10 @@ proto.cc.arduino.cli.commands.PlatformInstallReq.deserializeBinaryFromReader = f
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setVersion(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkippostinstall(value);
       break;
     default:
       reader.skipField();
@@ -466,6 +471,13 @@ proto.cc.arduino.cli.commands.PlatformInstallReq.serializeBinaryToWriter = funct
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = message.getSkippostinstall();
+  if (f) {
+    writer.writeBool(
+      5,
       f
     );
   }
@@ -560,6 +572,24 @@ proto.cc.arduino.cli.commands.PlatformInstallReq.prototype.getVersion = function
  */
 proto.cc.arduino.cli.commands.PlatformInstallReq.prototype.setVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional bool skipPostInstall = 5;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.PlatformInstallReq.prototype.getSkippostinstall = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.PlatformInstallReq} returns this
+ */
+proto.cc.arduino.cli.commands.PlatformInstallReq.prototype.setSkippostinstall = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
 };
 
 
@@ -1553,7 +1583,8 @@ proto.cc.arduino.cli.commands.PlatformUpgradeReq.toObject = function(includeInst
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
     platformPackage: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    architecture: jspb.Message.getFieldWithDefault(msg, 3, "")
+    architecture: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    skippostinstall: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -1603,6 +1634,10 @@ proto.cc.arduino.cli.commands.PlatformUpgradeReq.deserializeBinaryFromReader = f
       var value = /** @type {string} */ (reader.readString());
       msg.setArchitecture(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkippostinstall(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1651,6 +1686,13 @@ proto.cc.arduino.cli.commands.PlatformUpgradeReq.serializeBinaryToWriter = funct
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getSkippostinstall();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -1727,6 +1769,24 @@ proto.cc.arduino.cli.commands.PlatformUpgradeReq.prototype.getArchitecture = fun
  */
 proto.cc.arduino.cli.commands.PlatformUpgradeReq.prototype.setArchitecture = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool skipPostInstall = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.PlatformUpgradeReq.prototype.getSkippostinstall = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.PlatformUpgradeReq} returns this
+ */
+proto.cc.arduino.cli.commands.PlatformUpgradeReq.prototype.setSkippostinstall = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 

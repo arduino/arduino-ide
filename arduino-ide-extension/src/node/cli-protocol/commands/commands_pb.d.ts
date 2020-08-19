@@ -269,6 +269,162 @@ export namespace UpdateLibrariesIndexResp {
     }
 }
 
+export class UpdateCoreLibrariesIndexReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): UpdateCoreLibrariesIndexReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpdateCoreLibrariesIndexReq.AsObject;
+    static toObject(includeInstance: boolean, msg: UpdateCoreLibrariesIndexReq): UpdateCoreLibrariesIndexReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpdateCoreLibrariesIndexReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpdateCoreLibrariesIndexReq;
+    static deserializeBinaryFromReader(message: UpdateCoreLibrariesIndexReq, reader: jspb.BinaryReader): UpdateCoreLibrariesIndexReq;
+}
+
+export namespace UpdateCoreLibrariesIndexReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+    }
+}
+
+export class UpdateCoreLibrariesIndexResp extends jspb.Message { 
+
+    hasDownloadProgress(): boolean;
+    clearDownloadProgress(): void;
+    getDownloadProgress(): commands_common_pb.DownloadProgress | undefined;
+    setDownloadProgress(value?: commands_common_pb.DownloadProgress): UpdateCoreLibrariesIndexResp;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpdateCoreLibrariesIndexResp.AsObject;
+    static toObject(includeInstance: boolean, msg: UpdateCoreLibrariesIndexResp): UpdateCoreLibrariesIndexResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpdateCoreLibrariesIndexResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpdateCoreLibrariesIndexResp;
+    static deserializeBinaryFromReader(message: UpdateCoreLibrariesIndexResp, reader: jspb.BinaryReader): UpdateCoreLibrariesIndexResp;
+}
+
+export namespace UpdateCoreLibrariesIndexResp {
+    export type AsObject = {
+        downloadProgress?: commands_common_pb.DownloadProgress.AsObject,
+    }
+}
+
+export class OutdatedReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): OutdatedReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): OutdatedReq.AsObject;
+    static toObject(includeInstance: boolean, msg: OutdatedReq): OutdatedReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: OutdatedReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): OutdatedReq;
+    static deserializeBinaryFromReader(message: OutdatedReq, reader: jspb.BinaryReader): OutdatedReq;
+}
+
+export namespace OutdatedReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+    }
+}
+
+export class OutdatedResp extends jspb.Message { 
+    clearOutdatedLibraryList(): void;
+    getOutdatedLibraryList(): Array<commands_lib_pb.InstalledLibrary>;
+    setOutdatedLibraryList(value: Array<commands_lib_pb.InstalledLibrary>): OutdatedResp;
+    addOutdatedLibrary(value?: commands_lib_pb.InstalledLibrary, index?: number): commands_lib_pb.InstalledLibrary;
+
+    clearOutdatedPlatformList(): void;
+    getOutdatedPlatformList(): Array<commands_core_pb.Platform>;
+    setOutdatedPlatformList(value: Array<commands_core_pb.Platform>): OutdatedResp;
+    addOutdatedPlatform(value?: commands_core_pb.Platform, index?: number): commands_core_pb.Platform;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): OutdatedResp.AsObject;
+    static toObject(includeInstance: boolean, msg: OutdatedResp): OutdatedResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: OutdatedResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): OutdatedResp;
+    static deserializeBinaryFromReader(message: OutdatedResp, reader: jspb.BinaryReader): OutdatedResp;
+}
+
+export namespace OutdatedResp {
+    export type AsObject = {
+        outdatedLibraryList: Array<commands_lib_pb.InstalledLibrary.AsObject>,
+        outdatedPlatformList: Array<commands_core_pb.Platform.AsObject>,
+    }
+}
+
+export class UpgradeReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): UpgradeReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpgradeReq.AsObject;
+    static toObject(includeInstance: boolean, msg: UpgradeReq): UpgradeReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpgradeReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpgradeReq;
+    static deserializeBinaryFromReader(message: UpgradeReq, reader: jspb.BinaryReader): UpgradeReq;
+}
+
+export namespace UpgradeReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+    }
+}
+
+export class UpgradeResp extends jspb.Message { 
+
+    hasProgress(): boolean;
+    clearProgress(): void;
+    getProgress(): commands_common_pb.DownloadProgress | undefined;
+    setProgress(value?: commands_common_pb.DownloadProgress): UpgradeResp;
+
+
+    hasTaskProgress(): boolean;
+    clearTaskProgress(): void;
+    getTaskProgress(): commands_common_pb.TaskProgress | undefined;
+    setTaskProgress(value?: commands_common_pb.TaskProgress): UpgradeResp;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UpgradeResp.AsObject;
+    static toObject(includeInstance: boolean, msg: UpgradeResp): UpgradeResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UpgradeResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UpgradeResp;
+    static deserializeBinaryFromReader(message: UpgradeResp, reader: jspb.BinaryReader): UpgradeResp;
+}
+
+export namespace UpgradeResp {
+    export type AsObject = {
+        progress?: commands_common_pb.DownloadProgress.AsObject,
+        taskProgress?: commands_common_pb.TaskProgress.AsObject,
+    }
+}
+
 export class VersionReq extends jspb.Message { 
 
     serializeBinary(): Uint8Array;
@@ -304,5 +460,70 @@ export class VersionResp extends jspb.Message {
 export namespace VersionResp {
     export type AsObject = {
         version: string,
+    }
+}
+
+export class LoadSketchReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): LoadSketchReq;
+
+    getSketchPath(): string;
+    setSketchPath(value: string): LoadSketchReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LoadSketchReq.AsObject;
+    static toObject(includeInstance: boolean, msg: LoadSketchReq): LoadSketchReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LoadSketchReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LoadSketchReq;
+    static deserializeBinaryFromReader(message: LoadSketchReq, reader: jspb.BinaryReader): LoadSketchReq;
+}
+
+export namespace LoadSketchReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        sketchPath: string,
+    }
+}
+
+export class LoadSketchResp extends jspb.Message { 
+    getMainFile(): string;
+    setMainFile(value: string): LoadSketchResp;
+
+    getLocationPath(): string;
+    setLocationPath(value: string): LoadSketchResp;
+
+    clearOtherSketchFilesList(): void;
+    getOtherSketchFilesList(): Array<string>;
+    setOtherSketchFilesList(value: Array<string>): LoadSketchResp;
+    addOtherSketchFiles(value: string, index?: number): string;
+
+    clearAdditionalFilesList(): void;
+    getAdditionalFilesList(): Array<string>;
+    setAdditionalFilesList(value: Array<string>): LoadSketchResp;
+    addAdditionalFiles(value: string, index?: number): string;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LoadSketchResp.AsObject;
+    static toObject(includeInstance: boolean, msg: LoadSketchResp): LoadSketchResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LoadSketchResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LoadSketchResp;
+    static deserializeBinaryFromReader(message: LoadSketchResp, reader: jspb.BinaryReader): LoadSketchResp;
+}
+
+export namespace LoadSketchResp {
+    export type AsObject = {
+        mainFile: string,
+        locationPath: string,
+        otherSketchFilesList: Array<string>,
+        additionalFilesList: Array<string>,
     }
 }

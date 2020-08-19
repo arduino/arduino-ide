@@ -195,9 +195,9 @@ export namespace ListProgrammersAvailableForUploadReq {
 
 export class ListProgrammersAvailableForUploadResp extends jspb.Message { 
     clearProgrammersList(): void;
-    getProgrammersList(): Array<Programmer>;
-    setProgrammersList(value: Array<Programmer>): ListProgrammersAvailableForUploadResp;
-    addProgrammers(value?: Programmer, index?: number): Programmer;
+    getProgrammersList(): Array<commands_common_pb.Programmer>;
+    setProgrammersList(value: Array<commands_common_pb.Programmer>): ListProgrammersAvailableForUploadResp;
+    addProgrammers(value?: commands_common_pb.Programmer, index?: number): commands_common_pb.Programmer;
 
 
     serializeBinary(): Uint8Array;
@@ -212,35 +212,6 @@ export class ListProgrammersAvailableForUploadResp extends jspb.Message {
 
 export namespace ListProgrammersAvailableForUploadResp {
     export type AsObject = {
-        programmersList: Array<Programmer.AsObject>,
-    }
-}
-
-export class Programmer extends jspb.Message { 
-    getPlatform(): string;
-    setPlatform(value: string): Programmer;
-
-    getId(): string;
-    setId(value: string): Programmer;
-
-    getName(): string;
-    setName(value: string): Programmer;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Programmer.AsObject;
-    static toObject(includeInstance: boolean, msg: Programmer): Programmer.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Programmer, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Programmer;
-    static deserializeBinaryFromReader(message: Programmer, reader: jspb.BinaryReader): Programmer;
-}
-
-export namespace Programmer {
-    export type AsObject = {
-        platform: string,
-        id: string,
-        name: string,
+        programmersList: Array<commands_common_pb.Programmer.AsObject>,
     }
 }

@@ -9,7 +9,7 @@ import { LanguageServerContribution } from '@theia/languages/lib/node';
 import { ArduinoLanguageServerContribution } from './language/arduino-language-server-contribution';
 import { LibraryServiceServerPath, LibraryServiceServer, LibraryServiceClient } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
-import { LibraryServiceImpl } from './library-service-impl';
+import { LibraryServiceServerImpl } from './library-service-server-impl';
 import { BoardsServiceImpl } from './boards-service-impl';
 import { CoreServiceImpl } from './core-service-impl';
 import { CoreService, CoreServicePath, CoreServiceClient } from '../common/protocol/core-service';
@@ -78,11 +78,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(LanguageServerContribution).toService(ArduinoLanguageServerContribution);
 
     // Library service
-    bind(LibraryServiceImpl).toSelf().inSingletonScope();
-    bind(LibraryServiceServer).toService(LibraryServiceImpl);
+    bind(LibraryServiceServerImpl).toSelf().inSingletonScope();
+    bind(LibraryServiceServer).toService(LibraryServiceServerImpl);
     bind(ConnectionHandler).toDynamicValue(context =>
         new JsonRpcConnectionHandler<LibraryServiceClient>(LibraryServiceServerPath, client => {
-            const server = context.container.get<LibraryServiceImpl>(LibraryServiceImpl);
+            const server = context.container.get<LibraryServiceServerImpl>(LibraryServiceServerImpl);
             server.setClient(client);
             client.onDidCloseConnection(() => server.dispose());
             return server;

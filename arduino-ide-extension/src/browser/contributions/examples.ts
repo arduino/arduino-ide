@@ -1,20 +1,16 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { MenuPath, SubMenuOptions } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
+import { LibraryServiceProvider } from '../library/library-service-provider';
+import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
 import { ExamplesService, ExampleContainer } from '../../common/protocol/examples-service';
 import { SketchContribution, CommandRegistry, MenuModelRegistry } from './contribution';
 
 @injectable()
-export class Examples extends SketchContribution {
-
-    @inject(MainMenuManager)
-    protected readonly menuManager: MainMenuManager;
-
-    @inject(ExamplesService)
-    protected readonly examplesService: ExamplesService;
+export abstract class Examples extends SketchContribution {
 
     @inject(CommandRegistry)
     protected readonly commandRegistry: CommandRegistry;
@@ -22,26 +18,30 @@ export class Examples extends SketchContribution {
     @inject(MenuModelRegistry)
     protected readonly menuRegistry: MenuModelRegistry;
 
-    protected readonly toDisposeBeforeRegister = new DisposableCollection();
+    @inject(MainMenuManager)
+    protected readonly menuManager: MainMenuManager;
 
-    onStart(): void {
-        this.registerExamples(); // no `await`
+    @inject(ExamplesService)
+    protected readonly examplesService: ExamplesService;
+
+    @inject(BoardsServiceClientImpl)
+    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+
+    protected readonly toDispose = new DisposableCollection();
+
+    @postConstruct()
+    init(): void {
+        this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) => this.handleBoardChanged(selectedBoard?.fqbn));
     }
 
-    protected async registerExamples() {
-        let exampleContainer: ExampleContainer | undefined;
-        try {
-            exampleContainer = await this.examplesService.all();
-        } catch (e) {
-            console.error('Could not initialize built-in examples.', e);
-        }
-        if (!exampleContainer) {
-            this.messageService.error('Could not initialize built-in examples.');
-            return;
-        }
-        this.toDisposeBeforeRegister.dispose();
-        this.registerRecursively(exampleContainer, ArduinoMenus.FILE__SKETCH_GROUP, this.toDisposeBeforeRegister, { order: '4' });
-        this.menuManager.update();
+    protected handleBoardChanged(fqbn: string | undefined): void {
+        // NOOP
+    }
+
+    registerMenus(registry: MenuModelRegistry): void {
+        // Registering the same submenu multiple times has no side-effect.
+        // TODO: unregister submenu? https://github.com/eclipse-theia/theia/issues/7300
+        registry.registerSubmenu(ArduinoMenus.FILE__EXAMPLES_SUBMENU, 'Examples', { order: '4' });
     }
 
     registerRecursively(
@@ -52,7 +52,6 @@ export class Examples extends SketchContribution {
 
         const { label, sketches, children } = exampleContainer;
         const submenuPath = [...menuPath, label];
-        // TODO: unregister submenu? https://github.com/eclipse-theia/theia/issues/7300
         this.menuRegistry.registerSubmenu(submenuPath, label, options);
         children.forEach(child => this.registerRecursively(child, submenuPath, pushToDispose));
         for (const sketch of sketches) {
@@ -69,6 +68,71 @@ export class Examples extends SketchContribution {
             this.menuRegistry.registerMenuAction(submenuPath, { commandId, label: sketch.name });
             pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
         }
+    }
+
+}
+
+@injectable()
+export class BuiltInExamples extends Examples {
+
+    onStart(): void {
+        this.register(); // no `await`
+    }
+
+    protected async register() {
+        let exampleContainers: ExampleContainer[] | undefined;
+        try {
+            exampleContainers = await this.examplesService.builtIns();
+        } catch (e) {
+            console.error('Could not initialize built-in examples.', e);
+            this.messageService.error('Could not initialize built-in examples.');
+            return;
+        }
+        this.toDispose.dispose();
+        for (const container of exampleContainers) {
+            this.registerRecursively(container, ArduinoMenus.EXAMPLES__BUILT_IN_GROUP, this.toDispose);
+        }
+        this.menuManager.update();
+    }
+
+}
+
+@injectable()
+export class LibraryExamples extends Examples {
+
+    @inject(LibraryServiceProvider)
+    protected readonly libraryServiceProvider: LibraryServiceProvider;
+
+    protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
+
+    onStart(): void {
+        this.register(); // no `await`
+        this.libraryServiceProvider.onLibraryPackageInstalled(() => this.register());
+        this.libraryServiceProvider.onLibraryPackageUninstalled(() => this.register());
+    }
+
+    protected handleBoardChanged(fqbn: string | undefined): void {
+        this.register(fqbn);
+    }
+
+    protected async register(fqbn: string | undefined = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn) {
+        return this.queue.add(async () => {
+            this.toDispose.dispose();
+            if (!fqbn) {
+                return;
+            }
+            const { user, current, any } = await this.examplesService.installed({ fqbn });
+            for (const container of user) {
+                this.registerRecursively(container, ArduinoMenus.EXAMPLES__USER_LIBS_GROUP, this.toDispose);
+            }
+            for (const container of current) {
+                this.registerRecursively(container, ArduinoMenus.EXAMPLES__CURRENT_BOARD_GROUP, this.toDispose);
+            }
+            for (const container of any) {
+                this.registerRecursively(container, ArduinoMenus.EXAMPLES__ANY_BOARD_GROUP, this.toDispose);
+            }
+            this.menuManager.update();
+        });
     }
 
 }

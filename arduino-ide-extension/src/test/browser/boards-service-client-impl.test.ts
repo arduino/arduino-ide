@@ -7,6 +7,8 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
 import { MaybePromise } from '@theia/core/lib/common/types';
+import { MessageClient } from '@theia/core/lib/common/message-service-protocol';
+import { MessageService } from '@theia/core/lib/common/message-service';
 import { StorageService } from '@theia/core/lib/browser/storage-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { BoardsService, Board, Port, BoardsPackage, BoardDetails, BoardsServiceClient } from '../../common/protocol';
@@ -164,6 +166,8 @@ function init(): Container {
     container.bind(MockStorageService).toSelf();
     container.bind(StorageService).toService(MockStorageService);
     container.bind(BoardsServiceClientImpl).toSelf();
+    container.bind(MessageClient).toSelf().inSingletonScope();
+    container.bind(MessageService).toSelf().inSingletonScope();
     return container;
 }
 

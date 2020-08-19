@@ -1,5 +1,5 @@
 import { injectable, inject, postConstruct } from 'inversify';
-import { LibraryPackage, LibraryService, LibraryServiceClient } from '../common/protocol/library-service';
+import { LibraryPackage, LibraryServiceClient, LibraryServiceServer } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
 import {
     LibrarySearchReq,
@@ -17,9 +17,10 @@ import { ToolOutputServiceServer } from '../common/protocol/tool-output-service'
 import { Installable } from '../common/protocol/installable';
 import { ILogger, notEmpty } from '@theia/core';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { FileUri } from '@theia/core/lib/node';
 
 @injectable()
-export class LibraryServiceImpl implements LibraryService {
+export class LibraryServiceServerImpl implements LibraryServiceServer {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -97,62 +98,37 @@ export class LibraryServiceImpl implements LibraryService {
         if (!coreClient) {
             return [];
         }
-        const { client, instance } = coreClient;
 
+        const { client, instance } = coreClient;
         const req = new LibraryListReq();
         req.setInstance(instance);
         req.setAll(true);
+        if (fqbn) {
+            req.setFqbn(fqbn);
+        }
+
         const resp = await new Promise<LibraryListResp>((resolve, reject) => client.libraryList(req, ((error, resp) => !!error ? reject(error) : resolve(resp))));
-        const x = resp.getInstalledLibraryList().map(item => {
+        return resp.getInstalledLibraryList().map(item => {
             const release = item.getRelease();
             const library = item.getLibrary();
             if (!release || !library) {
                 return undefined;
             }
-            // https://arduino.github.io/arduino-cli/latest/rpc/commands/#librarylocation
-            // 0: In the libraries subdirectory of the Arduino IDE installation. (`ide_builtin`)
-            // 1: In the libraries subdirectory of the user directory (sketchbook). (`user`)
-            // 2: In the libraries subdirectory of a platform. (`platform_builtin`)
-            // 3: When LibraryLocation is used in a context where a board is specified, this indicates the library is
-            // in the libraries subdirectory of a platform referenced by the board's platform. (`referenced_platform_builtin`)
-            // If 0, we ignore it.
-            // If 1, we include always.
-            // If 2, we include iff `fqbn` is specified and the platform matches.
-            // if 3, TODO
-            const location = library.getLocation();
-
-            if (location === 0) {
-                return undefined;
-            }
-
-            if (location === 2) {
-                if (!fqbn) {
-                    return undefined;
-                }
-                const architectures = library.getArchitecturesList();
-                const [platform] = library.getContainerPlatform().split(':');
-                if (!platform) {
-                    return undefined;
-                }
-                const [boardPlatform, boardArchitecture] = fqbn.split(':');
-                if (boardPlatform !== platform || architectures.indexOf(boardArchitecture) === -1) {
-                    return undefined;
-                }
-            }
-
             const installedVersion = library.getVersion();
             return toLibrary({
                 name: library.getName(),
+                label: library.getRealName(),
                 installedVersion,
                 installable: true,
                 description: library.getSentence(),
                 summary: library.getParagraph(),
+                moreInfoLink: library.getWebsite(),
                 includes: release.getProvidesIncludesList(),
-                moreInfoLink: library.getWebsite()
+                location: library.getLocation(),
+                installDirUri: FileUri.create(library.getInstallDir()).toString(),
+                exampleUris: library.getExamplesList().map(fsPath => FileUri.create(fsPath).toString())
             }, release, [library.getVersion()]);
         }).filter(notEmpty);
-        console.log(x);
-        return x;
     }
 
     async install(options: { item: LibraryPackage, version?: Installable.Version }): Promise<void> {
@@ -236,11 +212,14 @@ export class LibraryServiceImpl implements LibraryService {
 
 }
 
-function toLibrary(tpl: Partial<LibraryPackage>, release: LibraryRelease, availableVersions: string[]): LibraryPackage {
+function toLibrary(pkg: Partial<LibraryPackage>, release: LibraryRelease, availableVersions: string[]): LibraryPackage {
     return {
         name: '',
+        label: '',
+        exampleUris: [],
         installable: false,
-        ...tpl,
+        location: 0,
+        ...pkg,
 
         author: release.getAuthor(),
         availableVersions,

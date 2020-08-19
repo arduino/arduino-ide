@@ -3,7 +3,8 @@ import { Sketch } from './sketches-service';
 export const ExamplesServicePath = '/services/example-service';
 export const ExamplesService = Symbol('ExamplesService');
 export interface ExamplesService {
-    all(): Promise<ExampleContainer>;
+    builtIns(): Promise<ExampleContainer[]>;
+    installed(options: { fqbn: string }): Promise<{ user: ExampleContainer[], current: ExampleContainer[], any: ExampleContainer[] }>;
 }
 
 export interface ExampleContainer {

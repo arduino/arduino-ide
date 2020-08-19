@@ -20,7 +20,11 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     rescan: IArduinoCoreService_IRescan;
     updateIndex: IArduinoCoreService_IUpdateIndex;
     updateLibrariesIndex: IArduinoCoreService_IUpdateLibrariesIndex;
+    updateCoreLibrariesIndex: IArduinoCoreService_IUpdateCoreLibrariesIndex;
+    outdated: IArduinoCoreService_IOutdated;
+    upgrade: IArduinoCoreService_IUpgrade;
     version: IArduinoCoreService_IVersion;
+    loadSketch: IArduinoCoreService_ILoadSketch;
     boardDetails: IArduinoCoreService_IBoardDetails;
     boardAttach: IArduinoCoreService_IBoardAttach;
     boardList: IArduinoCoreService_IBoardList;
@@ -89,6 +93,33 @@ interface IArduinoCoreService_IUpdateLibrariesIndex extends grpc.MethodDefinitio
     responseSerialize: grpc.serialize<commands_commands_pb.UpdateLibrariesIndexResp>;
     responseDeserialize: grpc.deserialize<commands_commands_pb.UpdateLibrariesIndexResp>;
 }
+interface IArduinoCoreService_IUpdateCoreLibrariesIndex extends grpc.MethodDefinition<commands_commands_pb.UpdateCoreLibrariesIndexReq, commands_commands_pb.UpdateCoreLibrariesIndexResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/UpdateCoreLibrariesIndex"
+    requestStream: false;
+    responseStream: true;
+    requestSerialize: grpc.serialize<commands_commands_pb.UpdateCoreLibrariesIndexReq>;
+    requestDeserialize: grpc.deserialize<commands_commands_pb.UpdateCoreLibrariesIndexReq>;
+    responseSerialize: grpc.serialize<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+    responseDeserialize: grpc.deserialize<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+}
+interface IArduinoCoreService_IOutdated extends grpc.MethodDefinition<commands_commands_pb.OutdatedReq, commands_commands_pb.OutdatedResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Outdated"
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<commands_commands_pb.OutdatedReq>;
+    requestDeserialize: grpc.deserialize<commands_commands_pb.OutdatedReq>;
+    responseSerialize: grpc.serialize<commands_commands_pb.OutdatedResp>;
+    responseDeserialize: grpc.deserialize<commands_commands_pb.OutdatedResp>;
+}
+interface IArduinoCoreService_IUpgrade extends grpc.MethodDefinition<commands_commands_pb.UpgradeReq, commands_commands_pb.UpgradeResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Upgrade"
+    requestStream: false;
+    responseStream: true;
+    requestSerialize: grpc.serialize<commands_commands_pb.UpgradeReq>;
+    requestDeserialize: grpc.deserialize<commands_commands_pb.UpgradeReq>;
+    responseSerialize: grpc.serialize<commands_commands_pb.UpgradeResp>;
+    responseDeserialize: grpc.deserialize<commands_commands_pb.UpgradeResp>;
+}
 interface IArduinoCoreService_IVersion extends grpc.MethodDefinition<commands_commands_pb.VersionReq, commands_commands_pb.VersionResp> {
     path: string; // "/cc.arduino.cli.commands.ArduinoCore/Version"
     requestStream: false;
@@ -97,6 +128,15 @@ interface IArduinoCoreService_IVersion extends grpc.MethodDefinition<commands_co
     requestDeserialize: grpc.deserialize<commands_commands_pb.VersionReq>;
     responseSerialize: grpc.serialize<commands_commands_pb.VersionResp>;
     responseDeserialize: grpc.deserialize<commands_commands_pb.VersionResp>;
+}
+interface IArduinoCoreService_ILoadSketch extends grpc.MethodDefinition<commands_commands_pb.LoadSketchReq, commands_commands_pb.LoadSketchResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LoadSketch"
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<commands_commands_pb.LoadSketchReq>;
+    requestDeserialize: grpc.deserialize<commands_commands_pb.LoadSketchReq>;
+    responseSerialize: grpc.serialize<commands_commands_pb.LoadSketchResp>;
+    responseDeserialize: grpc.deserialize<commands_commands_pb.LoadSketchResp>;
 }
 interface IArduinoCoreService_IBoardDetails extends grpc.MethodDefinition<commands_board_pb.BoardDetailsReq, commands_board_pb.BoardDetailsResp> {
     path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardDetails"
@@ -296,7 +336,11 @@ export interface IArduinoCoreServer {
     rescan: grpc.handleUnaryCall<commands_commands_pb.RescanReq, commands_commands_pb.RescanResp>;
     updateIndex: grpc.handleServerStreamingCall<commands_commands_pb.UpdateIndexReq, commands_commands_pb.UpdateIndexResp>;
     updateLibrariesIndex: grpc.handleServerStreamingCall<commands_commands_pb.UpdateLibrariesIndexReq, commands_commands_pb.UpdateLibrariesIndexResp>;
+    updateCoreLibrariesIndex: grpc.handleServerStreamingCall<commands_commands_pb.UpdateCoreLibrariesIndexReq, commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+    outdated: grpc.handleUnaryCall<commands_commands_pb.OutdatedReq, commands_commands_pb.OutdatedResp>;
+    upgrade: grpc.handleServerStreamingCall<commands_commands_pb.UpgradeReq, commands_commands_pb.UpgradeResp>;
     version: grpc.handleUnaryCall<commands_commands_pb.VersionReq, commands_commands_pb.VersionResp>;
+    loadSketch: grpc.handleUnaryCall<commands_commands_pb.LoadSketchReq, commands_commands_pb.LoadSketchResp>;
     boardDetails: grpc.handleUnaryCall<commands_board_pb.BoardDetailsReq, commands_board_pb.BoardDetailsResp>;
     boardAttach: grpc.handleServerStreamingCall<commands_board_pb.BoardAttachReq, commands_board_pb.BoardAttachResp>;
     boardList: grpc.handleUnaryCall<commands_board_pb.BoardListReq, commands_board_pb.BoardListResp>;
@@ -333,9 +377,19 @@ export interface IArduinoCoreClient {
     updateIndex(request: commands_commands_pb.UpdateIndexReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateIndexResp>;
     updateLibrariesIndex(request: commands_commands_pb.UpdateLibrariesIndexReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateLibrariesIndexResp>;
     updateLibrariesIndex(request: commands_commands_pb.UpdateLibrariesIndexReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateLibrariesIndexResp>;
+    updateCoreLibrariesIndex(request: commands_commands_pb.UpdateCoreLibrariesIndexReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+    updateCoreLibrariesIndex(request: commands_commands_pb.UpdateCoreLibrariesIndexReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+    outdated(request: commands_commands_pb.OutdatedReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.OutdatedResp) => void): grpc.ClientUnaryCall;
+    outdated(request: commands_commands_pb.OutdatedReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.OutdatedResp) => void): grpc.ClientUnaryCall;
+    outdated(request: commands_commands_pb.OutdatedReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.OutdatedResp) => void): grpc.ClientUnaryCall;
+    upgrade(request: commands_commands_pb.UpgradeReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpgradeResp>;
+    upgrade(request: commands_commands_pb.UpgradeReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpgradeResp>;
     version(request: commands_commands_pb.VersionReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.VersionResp) => void): grpc.ClientUnaryCall;
     version(request: commands_commands_pb.VersionReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.VersionResp) => void): grpc.ClientUnaryCall;
     version(request: commands_commands_pb.VersionReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.VersionResp) => void): grpc.ClientUnaryCall;
+    loadSketch(request: commands_commands_pb.LoadSketchReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
+    loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
+    loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
     boardDetails(request: commands_board_pb.BoardDetailsReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
@@ -403,9 +457,19 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public updateIndex(request: commands_commands_pb.UpdateIndexReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateIndexResp>;
     public updateLibrariesIndex(request: commands_commands_pb.UpdateLibrariesIndexReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateLibrariesIndexResp>;
     public updateLibrariesIndex(request: commands_commands_pb.UpdateLibrariesIndexReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateLibrariesIndexResp>;
+    public updateCoreLibrariesIndex(request: commands_commands_pb.UpdateCoreLibrariesIndexReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+    public updateCoreLibrariesIndex(request: commands_commands_pb.UpdateCoreLibrariesIndexReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
+    public outdated(request: commands_commands_pb.OutdatedReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.OutdatedResp) => void): grpc.ClientUnaryCall;
+    public outdated(request: commands_commands_pb.OutdatedReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.OutdatedResp) => void): grpc.ClientUnaryCall;
+    public outdated(request: commands_commands_pb.OutdatedReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.OutdatedResp) => void): grpc.ClientUnaryCall;
+    public upgrade(request: commands_commands_pb.UpgradeReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpgradeResp>;
+    public upgrade(request: commands_commands_pb.UpgradeReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.UpgradeResp>;
     public version(request: commands_commands_pb.VersionReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.VersionResp) => void): grpc.ClientUnaryCall;
     public version(request: commands_commands_pb.VersionReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.VersionResp) => void): grpc.ClientUnaryCall;
     public version(request: commands_commands_pb.VersionReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.VersionResp) => void): grpc.ClientUnaryCall;
+    public loadSketch(request: commands_commands_pb.LoadSketchReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
+    public loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
+    public loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
     public boardDetails(request: commands_board_pb.BoardDetailsReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     public boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     public boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
