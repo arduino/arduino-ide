@@ -23,7 +23,7 @@ jobs:
           - os: macos-latest
           # - os: rsora-rpi-arm # self-hosted armhf
     runs-on: ${{ matrix.config.os }}
-    timeout-minutes: 30
+    timeout-minutes: 90
     env:
       CERTIFICATE_PATH: /tmp/macos_signing_certificate.p12
 
