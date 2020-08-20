@@ -2,10 +2,11 @@
 import { injectable, inject } from 'inversify';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { CommandService } from '@theia/core/lib/common/command';
-import { PreferencesWidget } from '@theia/preferences/lib/browser/views/preference-widget';
 import { ApplicationShell as TheiaApplicationShell, Widget } from '@theia/core/lib/browser';
+import { Sketch } from '../../../common/protocol';
 import { EditorMode } from '../../editor-mode';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
+import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
@@ -16,29 +17,48 @@ export class ApplicationShell extends TheiaApplicationShell {
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
+    @inject(SketchesServiceClientImpl)
+    protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+
     protected track(widget: Widget): void {
         super.track(widget);
-        if (!this.editorMode.proMode) {
-            if (widget instanceof EditorWidget) {
-                // Always allow closing the whitelisted files.
-                // TODO: It would be better to blacklist the sketch files only.
-                if (['tasks.json',
-                    'launch.json',
-                    'settings.json',
-                    'arduino-cli.yaml'].some(fileName => widget.editor.uri.toString().endsWith(fileName))) {
-                    return;
+        if (!this.editorMode.proMode && widget instanceof EditorWidget) {
+            // Make the editor un-closeable asynchronously.
+            this.sketchesServiceClient.currentSketch().then(sketch => {
+                if (sketch) {
+                    if (Sketch.isInSketch(widget.editor.uri, sketch)) {
+                        widget.title.closable = false;
+                    }
+                }
+            });
+        }
+    }
+
+    async addWidget(widget: Widget, options: Readonly<TheiaApplicationShell.WidgetOptions> = {}): Promise<void> {
+        // By default, Theia open a widget **next** to the currently active in the target area.
+        // Instead of this logic, we want to open the new widget after the last of the target area.
+        if (!widget.id) {
+            console.error('Widgets added to the application shell must have a unique id property.');
+            return;
+        }
+        let ref: Widget | undefined = options.ref;
+        let area: TheiaApplicationShell.Area = options.area || 'main';
+        if (!ref && (area === 'main' || area === 'bottom')) {
+            const tabBar = this.getTabBarFor(area);
+            if (tabBar) {
+                const last = tabBar.titles[tabBar.titles.length - 1];
+                if (last) {
+                    ref = last.owner;
                 }
             }
-            if (widget instanceof PreferencesWidget) {
-                return;
-            }
-            widget.title.closable = false;
         }
+        return super.addWidget(widget, { ...options, ref });
     }
 
     async saveAll(): Promise<void> {
         await super.saveAll();
-        await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { execOnlyIfTemp: true, openAfterMove: true });
+        const options = { execOnlyIfTemp: true, openAfterMove: true };
+        await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, options);
     }
 
 }

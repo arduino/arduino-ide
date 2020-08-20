@@ -69,9 +69,6 @@ export class CompileReq extends jspb.Message {
     getExportDir(): string;
     setExportDir(value: string): CompileReq;
 
-    getProgrammer(): string;
-    setProgrammer(value: string): CompileReq;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileReq.AsObject;
@@ -103,7 +100,6 @@ export namespace CompileReq {
         optimizefordebug: boolean,
         dryrun: boolean,
         exportDir: string,
-        programmer: string,
     }
 }
 

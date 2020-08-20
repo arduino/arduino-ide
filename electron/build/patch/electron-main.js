@@ -22,6 +22,9 @@ const { fork } = require('child_process');
 const { app, dialog, shell, BrowserWindow, ipcMain, Menu, globalShortcut } = electron;
 const { ElectronSecurityToken } = require('@theia/core/lib/electron-common/electron-token');
 
+// Fix the window reloading issue, see: https://github.com/electron/electron/issues/22119
+app.allowRendererProcessReuse = false;
+
 const applicationName = `Arduino Pro IDE`;
 const isSingleInstance = false;
 const disallowReloadKeybinding = false;

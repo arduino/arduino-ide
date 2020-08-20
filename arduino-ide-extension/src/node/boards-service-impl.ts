@@ -167,13 +167,13 @@ export class BoardsServiceImpl implements BoardsService {
             // The `BoardListResp` looks like this for a known attached board:
             // [
             //     {
-            //         "address": "COM10",
-            //         "protocol": "serial",
-            //         "protocol_label": "Serial Port (USB)",
-            //         "boards": [
+            //         'address': 'COM10',
+            //         'protocol': 'serial',
+            //         'protocol_label': 'Serial Port (USB)',
+            //         'boards': [
             //             {
-            //                 "name": "Arduino MKR1000",
-            //                 "FQBN": "arduino:samd:mkr1000"
+            //                 'name': 'Arduino MKR1000',
+            //                 'FQBN': 'arduino:samd:mkr1000'
             //             }
             //         ]
             //     }
@@ -181,9 +181,9 @@ export class BoardsServiceImpl implements BoardsService {
             // And the `BoardListResp` looks like this for an unknown board:
             // [
             //     {
-            //         "address": "COM9",
-            //         "protocol": "serial",
-            //         "protocol_label": "Serial Port (USB)",
+            //         'address': 'COM9',
+            //         'protocol': 'serial',
+            //         'protocol_label': 'Serial Port (USB)',
             //     }
             // ]
             ports.push({ protocol, address });
@@ -301,7 +301,7 @@ export class BoardsServiceImpl implements BoardsService {
         const installedPlatforms = installedPlatformsResp.getInstalledPlatformList();
 
         const req = new PlatformSearchReq();
-        req.setSearchArgs(options.query || "");
+        req.setSearchArgs(options.query || '');
         req.setAllVersions(true);
         req.setInstance(instance);
         const resp = await new Promise<PlatformSearchResp>((resolve, reject) => client.platformSearch(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
@@ -317,9 +317,9 @@ export class BoardsServiceImpl implements BoardsService {
                 name: platform.getName(),
                 author: platform.getMaintainer(),
                 availableVersions: [platform.getLatest()],
-                description: platform.getBoardsList().map(b => b.getName()).join(", "),
+                description: platform.getBoardsList().map(b => b.getName()).join(', '),
                 installable: true,
-                summary: "Boards included in this package:",
+                summary: 'Boards included in this package:',
                 installedVersion,
                 boards: platform.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
                 moreInfoLink: platform.getWebsite()
@@ -378,7 +378,7 @@ export class BoardsServiceImpl implements BoardsService {
         }
         const { client, instance } = coreClient;
 
-        const [platform, architecture] = pkg.id.split(":");
+        const [platform, architecture] = pkg.id.split(':');
 
         const req = new PlatformInstallReq();
         req.setInstance(instance);
@@ -386,12 +386,12 @@ export class BoardsServiceImpl implements BoardsService {
         req.setPlatformPackage(platform);
         req.setVersion(version);
 
-        console.info("Starting board installation", pkg);
+        console.info('Starting board installation', pkg);
         const resp = client.platformInstall(req);
         resp.on('data', (r: PlatformInstallResp) => {
             const prog = r.getProgress();
             if (prog && prog.getFile()) {
-                this.toolOutputService.publishNewOutput("board download", `downloading ${prog.getFile()}\n`)
+                this.toolOutputService.append({ tool: 'board download', chunk: `downloading ${prog.getFile()}\n` });
             }
         });
         await new Promise<void>((resolve, reject) => {
@@ -403,7 +403,7 @@ export class BoardsServiceImpl implements BoardsService {
             const updatedPackage = packages.find(({ id }) => id === pkg.id) || pkg;
             this.client.notifyBoardInstalled({ pkg: updatedPackage });
         }
-        console.info("Board installation done", pkg);
+        console.info('Board installation done', pkg);
     }
 
     async uninstall(options: { item: BoardsPackage }): Promise<void> {
@@ -414,19 +414,19 @@ export class BoardsServiceImpl implements BoardsService {
         }
         const { client, instance } = coreClient;
 
-        const [platform, architecture] = pkg.id.split(":");
+        const [platform, architecture] = pkg.id.split(':');
 
         const req = new PlatformUninstallReq();
         req.setInstance(instance);
         req.setArchitecture(architecture);
         req.setPlatformPackage(platform);
 
-        console.info("Starting board uninstallation", pkg);
+        console.info('Starting board uninstallation', pkg);
         let logged = false;
         const resp = client.platformUninstall(req);
         resp.on('data', (_: PlatformUninstallResp) => {
             if (!logged) {
-                this.toolOutputService.publishNewOutput("board uninstall", `uninstalling ${pkg.id}\n`)
+                this.toolOutputService.append({ tool: 'board uninstall', chunk: `uninstalling ${pkg.id}\n` });
                 logged = true;
             }
         })
@@ -438,7 +438,7 @@ export class BoardsServiceImpl implements BoardsService {
             // Here, unlike at `install` we send out the argument `pkg`. Otherwise, we would not know about the board FQBN.
             this.client.notifyBoardUninstalled({ pkg });
         }
-        console.info("Board uninstallation done", pkg);
+        console.info('Board uninstallation done', pkg);
     }
 
 }

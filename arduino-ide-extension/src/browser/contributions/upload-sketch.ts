@@ -73,7 +73,7 @@ export class UploadSketch extends SketchContribution {
     }
 
     async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
-        const uri = await this.currentSketchFile();
+        const uri = await this.sketchServiceClient.currentSketchFile();
         if (!uri) {
             return;
         }
@@ -86,29 +86,45 @@ export class UploadSketch extends SketchContribution {
             if (!boardsConfig || !boardsConfig.selectedBoard) {
                 throw new Error('No boards selected. Please select a board.');
             }
-            const { selectedPort } = boardsConfig;
-            if (!selectedPort) {
-                throw new Error('No ports selected. Please select a port.');
-            }
             if (!boardsConfig.selectedBoard.fqbn) {
                 throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
             }
-            const [fqbn, data] = await Promise.all([
+
+            const [fqbn, { selectedProgrammer }] = await Promise.all([
                 this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn),
                 this.boardsDataStore.getData(boardsConfig.selectedBoard.fqbn)
             ]);
-            this.outputChannelManager.getChannel('Arduino: upload').clear();
-            const programmer = usingProgrammer ? data.selectedProgrammer : undefined;
-            if (usingProgrammer && !programmer) {
-                this.messageService.warn('Programmer is not selected. Uploading without programmer.', { timeout: 2000 });
+
+            let options: CoreService.Upload.Options | undefined = undefined;
+            const sketchUri = uri;
+            const optimizeForDebug = this.editorMode.compileForDebug;
+
+            if (usingProgrammer) {
+                const programmer = selectedProgrammer;
+                if (!programmer) {
+                    throw new Error('Programmer is not selected. Please select a programmer.');
+                }
+                options = {
+                    sketchUri,
+                    fqbn,
+                    optimizeForDebug,
+                    programmer
+                };
+            } else {
+                const { selectedPort } = boardsConfig;
+                if (!selectedPort) {
+                    throw new Error('No ports selected. Please select a port.');
+                }
+                const port = selectedPort.address;
+                options = {
+                    sketchUri,
+                    fqbn,
+                    optimizeForDebug,
+                    port
+                };
             }
-            await this.coreService.upload({
-                sketchUri: uri,
-                fqbn,
-                port: selectedPort.address,
-                optimizeForDebug: this.editorMode.compileForDebug,
-                programmer
-            });
+            this.outputChannelManager.getChannel('Arduino: upload').clear();
+            await this.coreService.upload(options);
             this.messageService.info('Done uploading.', { timeout: 1000 });
         } catch (e) {
             this.messageService.error(e.toString());

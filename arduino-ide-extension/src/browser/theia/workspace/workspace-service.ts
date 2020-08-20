@@ -7,7 +7,6 @@ import { ApplicationServer } from '@theia/core/lib/common/application-protocol';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { EditorMode } from '../../editor-mode';
 import { ConfigService } from '../../../common/protocol/config-service';
 import { SketchesService } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
@@ -23,9 +22,6 @@ export class WorkspaceService extends TheiaWorkspaceService {
 
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
-
-    @inject(EditorMode)
-    protected readonly editorMode: EditorMode;
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -82,13 +78,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
         if (!exists) {
             return false;
         }
-        // The workspace root location must exist. However, when opening a workspace root in pro-mode,
-        // the workspace root must not be a sketch folder. It can be the default sketch directory, or any other directories, for instance.
-        if (this.editorMode.proMode) {
-            return true;
-        }
-        const sketchFolder = await this.sketchService.isSketchFolder(uri);
-        return sketchFolder;
+        return this.sketchService.isSketchFolder(uri);
     }
 
     protected onCurrentWidgetChange({ newValue }: FocusTracker.IChangedArgs<Widget>): void {

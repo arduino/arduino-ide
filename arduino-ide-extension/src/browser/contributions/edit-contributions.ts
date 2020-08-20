@@ -151,33 +151,29 @@ ${value}
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: EditContributions.Commands.COPY_FOR_FORUM.id,
-            keybinding: 'CtrlCmd+Shift+C'
+            keybinding: 'CtrlCmd+Shift+C',
+            when: 'editorFocus'
         });
         registry.registerKeybinding({
             command: EditContributions.Commands.COPY_FOR_GITHUB.id,
-            keybinding: 'CtrlCmd+Alt+C'
+            keybinding: 'CtrlCmd+Alt+C',
+            when: 'editorFocus'
         });
         registry.registerKeybinding({
             command: EditContributions.Commands.GO_TO_LINE.id,
-            keybinding: 'CtrlCmd+L'
+            keybinding: 'CtrlCmd+L',
+            when: 'editorFocus'
         });
 
         registry.registerKeybinding({
             command: EditContributions.Commands.TOGGLE_COMMENT.id,
-            keybinding: 'CtrlCmd+/'
-        });
-        registry.registerKeybinding({
-            command: EditContributions.Commands.INDENT_LINES.id,
-            keybinding: 'Tab'
-        });
-        registry.registerKeybinding({
-            command: EditContributions.Commands.OUTDENT_LINES.id,
-            keybinding: 'Shift+Tab'
+            keybinding: 'CtrlCmd+/',
+            when: 'editorFocus'
         });
 
         registry.registerKeybinding({
             command: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-            keybinding: 'CtrlCmd+=' // TODO: compare with the Java IDE. It uses `⌘+`. There is no `+` on EN_US.
+            keybinding: 'CtrlCmd+='
         });
         registry.registerKeybinding({
             command: EditContributions.Commands.DECREASE_FONT_SIZE.id,
@@ -213,8 +209,15 @@ ${value}
     }
 
     protected async currentValue(): Promise<string | undefined> {
-        const currentEditor = await this.current()
-        return currentEditor?.getValue();
+        const currentEditor = await this.current();
+        if (currentEditor) {
+            const selection = currentEditor.getSelection();
+            if (!selection || selection.isEmpty()) {
+                return currentEditor.getValue();
+            }
+            return currentEditor.getModel()?.getValueInRange(selection);
+        }
+        return undefined;
     }
 
     protected async run(commandId: string): Promise<any> {

@@ -89,7 +89,7 @@ export class LibraryServiceImpl implements LibraryService {
         resp.on('data', (r: LibraryInstallResp) => {
             const prog = r.getProgress();
             if (prog) {
-                this.toolOutputService.publishNewOutput("library download", `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n`)
+                this.toolOutputService.append({ tool: 'library', chunk: `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n` });
             }
         });
         await new Promise<void>((resolve, reject) => {
@@ -115,7 +115,7 @@ export class LibraryServiceImpl implements LibraryService {
         const resp = client.libraryUninstall(req);
         resp.on('data', (_: LibraryUninstallResp) => {
             if (!logged) {
-                this.toolOutputService.publishNewOutput("library uninstall", `uninstalling ${library.name}:${library.installedVersion}%\n`)
+                this.toolOutputService.append({ tool: 'library', chunk: `uninstalling ${library.name}:${library.installedVersion}%\n` });
                 logged = true;
             }
         });
@@ -129,7 +129,7 @@ export class LibraryServiceImpl implements LibraryService {
 
 function toLibrary(tpl: Partial<Library>, release: LibraryRelease, availableVersions: string[]): Library {
     return {
-        name: "",
+        name: '',
         installable: false,
         ...tpl,
 

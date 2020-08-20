@@ -116,10 +116,37 @@ export class OpenSketch extends SketchContribution {
         if (filePaths.length > 1) {
             this.logger.warn(`Multiple sketches were selected: ${filePaths}. Using the first one.`);
         }
-        // TODO: validate sketch file name against the sketch folder. Move the file if required.
         const sketchFilePath = filePaths[0];
         const sketchFileUri = await this.fileSystemExt.getUri(sketchFilePath);
-        return this.sketchService.getSketchFolder(sketchFileUri);
+        const sketch = await this.sketchService.getSketchFolder(sketchFileUri);
+        if (sketch) {
+            return sketch;
+        }
+        if (sketchFileUri.endsWith('.ino')) {
+            const name = new URI(sketchFileUri).path.name;
+            const nameWithExt = this.labelProvider.getName(new URI(sketchFileUri));
+            const { response } = await remote.dialog.showMessageBox({
+                title: 'Moving',
+                type: 'question',
+                buttons: ['Cancel', 'OK'],
+                message: `The file "${nameWithExt}" needs to be inside a sketch folder named as "${name}".\nCreate this folder, move the file, and continue?`
+            });
+            if (response === 1) { // OK
+                const newSketchUri = new URI(sketchFileUri).parent.resolve(name);
+                const exists = await this.fileSystem.exists(newSketchUri.toString());
+                if (exists) {
+                    await remote.dialog.showMessageBox({
+                        type: 'error',
+                        title: 'Error',
+                        message: `A folder named "${name}" already exists. Can't open sketch.`
+                    });
+                    return undefined;
+                }
+                await this.fileSystem.createFolder(newSketchUri.toString());
+                await this.fileSystem.move(sketchFileUri, newSketchUri.resolve(nameWithExt).toString());
+                return this.sketchService.getSketchFolder(newSketchUri.toString());
+            }
+        }
     }
 
 }

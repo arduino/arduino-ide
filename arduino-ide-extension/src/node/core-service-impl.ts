@@ -35,7 +35,7 @@ export class CoreServiceImpl implements CoreService {
     }
 
     async compile(options: CoreService.Compile.Options): Promise<void> {
-        this.toolOutputService.publishNewOutput('compile', 'Compiling...\n' + JSON.stringify(options, null, 2) + '\n');
+        this.toolOutputService.append({ tool: 'compile', chunk: 'Compiling...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
         const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
         if (!sketchFilePath) {
@@ -61,30 +61,27 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(true);
         compilerReq.setQuiet(false);
-        if (options.programmer) {
-            compilerReq.setProgrammer(options.programmer.id);
-        }
 
         const result = client.compile(compilerReq);
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: CompileResp) => {
-                    this.toolOutputService.publishNewOutput("compile", Buffer.from(cr.getOutStream_asU8()).toString());
-                    this.toolOutputService.publishNewOutput("compile", Buffer.from(cr.getErrStream_asU8()).toString());
+                    this.toolOutputService.append({ tool: 'compile', chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
+                    this.toolOutputService.append({ tool: 'compile', chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.toolOutputService.publishNewOutput("compile", "Compilation complete.\n");
+            this.toolOutputService.append({ tool: 'compile', chunk: '\n--------------------------\nCompilation complete.\n' });
         } catch (e) {
-            this.toolOutputService.publishNewOutput("compile", `Compilation error: ${e}\n`);
+            this.toolOutputService.append({ tool: 'compile', chunk: `Compilation error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
         await this.compile(options);
-        this.toolOutputService.publishNewOutput('upload', 'Uploading...\n' + JSON.stringify(options, null, 2) + '\n');
+        this.toolOutputService.append({ tool: 'upload', chunk: 'Uploading...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
         const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
         if (!sketchFilePath) {
@@ -106,8 +103,9 @@ export class CoreServiceImpl implements CoreService {
         uploadReq.setInstance(instance);
         uploadReq.setSketchPath(sketchpath);
         uploadReq.setFqbn(fqbn);
-        uploadReq.setPort(options.port);
-        if (options.programmer) {
+        if ('port' in options) {
+            uploadReq.setPort(options.port);
+        } else {
             uploadReq.setProgrammer(options.programmer.id);
         }
         const result = client.upload(uploadReq);
@@ -115,15 +113,15 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: UploadResp) => {
-                    this.toolOutputService.publishNewOutput("upload", Buffer.from(cr.getOutStream_asU8()).toString());
-                    this.toolOutputService.publishNewOutput("upload", Buffer.from(cr.getErrStream_asU8()).toString());
+                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
+                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.toolOutputService.publishNewOutput("upload", "Upload complete.\n");
+            this.toolOutputService.append({ tool: 'upload', chunk: '\n--------------------------\nUpload complete.\n' });
         } catch (e) {
-            this.toolOutputService.publishNewOutput("upload", `Upload error: ${e}\n`);
+            this.toolOutputService.append({ tool: 'upload', chunk: `Upload error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }

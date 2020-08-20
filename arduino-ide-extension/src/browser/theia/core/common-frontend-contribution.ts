@@ -19,8 +19,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
             CommonCommands.AUTO_SAVE,
             CommonCommands.OPEN_PREFERENCES,
             CommonCommands.SELECT_ICON_THEME,
-            CommonCommands.SELECT_COLOR_THEME,
-            CommonCommands.OPEN_PREFERENCES
+            CommonCommands.SELECT_COLOR_THEME
         ]) {
             registry.unregisterMenuAction(command);
         }

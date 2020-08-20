@@ -15,12 +15,12 @@ export class CloseSketch extends SketchContribution {
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(CloseSketch.Commands.CLOSE_SKETCH, {
             execute: async () => {
-                const sketch = await this.currentSketch();
+                const sketch = await this.sketchServiceClient.currentSketch();
                 if (!sketch) {
                     return;
                 }
                 const isTemp = await this.sketchService.isTemp(sketch);
-                const uri = await this.currentSketchFile();
+                const uri = await this.sketchServiceClient.currentSketchFile();
                 if (!uri) {
                     return;
                 }
@@ -57,7 +57,7 @@ export class CloseSketch extends SketchContribution {
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: CloseSketch.Commands.CLOSE_SKETCH.id,
-            keybinding: 'CtrlCmd+W' // TODO: Windows binding?
+            keybinding: 'CtrlCmd+W'
         });
     }
 

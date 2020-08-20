@@ -1,12 +1,12 @@
 import * as grpc from '@grpc/grpc-js';
 import { inject, injectable } from 'inversify';
+import { Event, Emitter } from '@theia/core/lib/common/event';
 import { ToolOutputServiceServer } from '../common/protocol';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import * as commandsGrpcPb from './cli-protocol/commands/commands_grpc_pb';
 import { Instance } from './cli-protocol/commands/common_pb';
 import { InitReq, InitResp, UpdateIndexReq, UpdateIndexResp, UpdateLibrariesIndexResp, UpdateLibrariesIndexReq } from './cli-protocol/commands/commands_pb';
-import { Event, Emitter } from '@theia/core/lib/common/event';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -69,11 +69,11 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 indexUpdateSucceeded = true;
                 break;
             } catch (e) {
-                this.toolOutputService.publishNewOutput("daemon", `Error while updating index in attempt ${i}: ${e}`);
+                this.toolOutputService.append({ tool: 'daemon', chunk: `Error while updating index in attempt ${i}: ${e}`, severity: 'error' });
             }
         }
         if (!indexUpdateSucceeded) {
-            this.toolOutputService.publishNewOutput("daemon", `Was unable to update the index. Please restart to try again.`);
+            this.toolOutputService.append({ tool: 'daemon', chunk: 'Was unable to update the index. Please restart to try again.', severity: 'error' });
         }
 
         let libIndexUpdateSucceeded = true;
@@ -83,11 +83,11 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 libIndexUpdateSucceeded = true;
                 break;
             } catch (e) {
-                this.toolOutputService.publishNewOutput("daemon", `Error while updating library index in attempt ${i}: ${e}`);
+                this.toolOutputService.append({ tool: 'daemon', chunk: `Error while updating library index in attempt ${i}: ${e}`, severity: 'error' });
             }
         }
         if (!libIndexUpdateSucceeded) {
-            this.toolOutputService.publishNewOutput("daemon", `Was unable to update the library index. Please restart to try again.`);
+            this.toolOutputService.append({ tool: 'daemon', chunk: `Was unable to update the library index. Please restart to try again.`, severity: 'error' });
         }
 
         if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
@@ -109,12 +109,12 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 if (progress.getCompleted()) {
                     if (file) {
                         if (/\s/.test(file)) {
-                            this.toolOutputService.publishNewOutput("daemon", `${file} completed.\n`);
+                            this.toolOutputService.append({ tool: 'daemon', chunk: `${file} completed.\n` });
                         } else {
-                            this.toolOutputService.publishNewOutput("daemon", `Download of '${file}' completed.\n'`);
+                            this.toolOutputService.append({ tool: 'daemon', chunk: `Download of '${file}' completed.\n'` });
                         }
                     } else {
-                        this.toolOutputService.publishNewOutput("daemon", `The library index has been successfully updated.\n'`);
+                        this.toolOutputService.append({ tool: 'daemon', chunk: `The library index has been successfully updated.\n'` });
                     }
                     file = undefined;
                 }
@@ -140,12 +140,12 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 if (progress.getCompleted()) {
                     if (file) {
                         if (/\s/.test(file)) {
-                            this.toolOutputService.publishNewOutput("daemon", `${file} completed.\n`);
+                            this.toolOutputService.append({ tool: 'daemon', chunk: `${file} completed.\n` });
                         } else {
-                            this.toolOutputService.publishNewOutput("daemon", `Download of '${file}' completed.\n'`);
+                            this.toolOutputService.append({ tool: 'daemon', chunk: `Download of '${file}' completed.\n'` });
                         }
                     } else {
-                        this.toolOutputService.publishNewOutput("daemon", `The index has been successfully updated.\n'`);
+                        this.toolOutputService.append({ tool: 'daemon', chunk: `The index has been successfully updated.\n'` });
                     }
                     file = undefined;
                 }

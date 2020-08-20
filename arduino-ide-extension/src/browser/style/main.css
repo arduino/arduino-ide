@@ -132,10 +132,6 @@
     box-sizing: border-box;
 }
 
-.theia-output .monaco-editor .margin {
-    border-right: none;
-}
-
 .noWrapInfo {
     white-space: nowrap;
     overflow: hidden;
@@ -150,8 +146,32 @@
     background-color: var(--theia-arduino-foreground);
 }
 
+#arduino-open-sketch-control--toolbar--container {
+    background-color: var(--theia-arduino-toolbar-background);
+    padding: 8px 8px 8px 8px; /* based on pure heuristics */
+}
+
 #arduino-open-sketch-control--toolbar {
-    background-color: var(--theia-tab-inactiveBackground);
-    border: 1px solid var(--theia-arduino-toolbar-background);
-    padding: 2px 0px 2px 9px;
+    height: unset;
+    width: unset;
+    line-height: unset;
+    color: var(--theia-titleBar-activeBackground);
+}
+
+/* Output */
+.theia-output .editor-container {
+    background-color: var(--theia-arduino-output-background);
+}
+
+.theia-output .monaco-editor .lines-content.monaco-editor-background {
+    background-color: var(--theia-arduino-output-background);
+}
+
+.theia-output .monaco-editor .lines-content.monaco-editor-background .view-lines .view-line .mtk1:not(.theia-output-error):not(.theia-output-warning) {
+    color: var(--theia-arduino-output-foreground);
+}
+
+.theia-output .monaco-editor .margin {
+    border-right: none;
+    background-color: var(--theia-arduino-output-background);
 }

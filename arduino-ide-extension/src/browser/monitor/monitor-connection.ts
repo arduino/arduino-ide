@@ -1,4 +1,5 @@
 import { injectable, inject, postConstruct } from 'inversify';
+import { deepClone } from '@theia/core/lib/common/objects';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -182,15 +183,19 @@ export class MonitorConnection {
     }
 
     async disconnect(): Promise<Status> {
-        if (!this.state) { // XXX: we user `this.state` instead of `this.connected` to make the type checker happy. 
+        if (!this.connected) {
+            return Status.OK;
+        }
+        const stateCopy = deepClone(this.state);
+        if (!stateCopy) {
             return Status.OK;
         }
         console.log('>>> Disposing existing monitor connection...');
         const status = await this.monitorService.disconnect();
         if (Status.isOK(status)) {
-            console.log(`<<< Disposed connection. Was: ${MonitorConnection.State.toString(this.state)}`);
+            console.log(`<<< Disposed connection. Was: ${MonitorConnection.State.toString(stateCopy)}`);
         } else {
-            console.warn(`<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(this.state)}`);
+            console.warn(`<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(stateCopy)}`);
         }
         this.state = undefined;
         this.onConnectionChangedEmitter.fire(this.state);

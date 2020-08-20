@@ -133,7 +133,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
         if (this._execPath) {
             return this._execPath;
         }
-        this._execPath = await getExecPath('arduino-cli', this.onError.bind(this), 'version');
+        this._execPath = await getExecPath('arduino-cli', this.onError.bind(this));
         return this._execPath;
     }
 
@@ -218,7 +218,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
 
     protected onData(message: string, options: { useOutput: boolean } = { useOutput: true }): void {
         if (options.useOutput) {
-            this.toolOutputService.publishNewOutput('daemon', DaemonLog.toPrettyString(message));
+            this.toolOutputService.append({ tool: 'daemon', chunk: DaemonLog.toPrettyString(message) });
         }
         DaemonLog.log(this.logger, message);
     }

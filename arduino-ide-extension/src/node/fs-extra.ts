@@ -1,12 +1,16 @@
 import * as fs from 'fs';
 import { promisify } from 'util';
 
+export const constants = fs.constants;
+
 export const existsSync = fs.existsSync;
 export const lstatSync = fs.lstatSync;
 export const readdirSync = fs.readdirSync;
 export const statSync = fs.statSync;
 export const writeFileSync = fs.writeFileSync;
 export const readFileSync = fs.readFileSync;
+export const accessSync = fs.accessSync;
+export const renameSync = fs.renameSync;
 
 export const exists = promisify(fs.exists);
 export const lstat = promisify(fs.lstat);
@@ -14,6 +18,8 @@ export const readdir = promisify(fs.readdir);
 export const stat = promisify(fs.stat);
 export const writeFile = promisify(fs.writeFile);
 export const readFile = promisify(fs.readFile);
+export const access = promisify(fs.access);
+export const rename = promisify(fs.rename);
 
 export const watchFile = fs.watchFile;
 export const unwatchFile = fs.unwatchFile;

@@ -3,7 +3,7 @@ import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { TabBarToolbarContribution, TabBarToolbarFactory } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 import { FrontendApplicationContribution, FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
@@ -15,6 +15,7 @@ import { ArduinoLanguageGrammarContribution } from './language/arduino-language-
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
+import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { CoreService, CoreServicePath, CoreServiceClient } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
@@ -38,7 +39,6 @@ import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-co
 import {
     ApplicationShell as TheiaApplicationShell,
     ShellLayoutRestorer as TheiaShellLayoutRestorer,
-    KeybindingContribution,
     CommonFrontendContribution as TheiaCommonFrontendContribution,
     KeybindingRegistry as TheiaKeybindingRegistry
 } from '@theia/core/lib/browser';
@@ -86,7 +86,11 @@ import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
 import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
-import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution, FileMenuContribution as TheiaFileMenuContribution } from '@theia/workspace/lib/browser';
+import {
+    WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution,
+    FileMenuContribution as TheiaFileMenuContribution,
+    WorkspaceCommandContribution as TheiaWorkspaceCommandContribution
+} from '@theia/workspace/lib/browser';
 import { WorkspaceFrontendContribution, ArduinoFileMenuContribution } from './theia/workspace/workspace-frontend-contribution';
 import { Contribution } from './contributions/contribution';
 import { NewSketch } from './contributions/new-sketch';
@@ -99,12 +103,20 @@ import { UploadSketch } from './contributions/upload-sketch';
 import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
 import { EditContributions } from './contributions/edit-contributions';
 import { OpenSketchExternal } from './contributions/open-sketch-external';
-import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preference-contribution';
-import { PreferencesContribution } from './theia/preferences/preference-contribution';
+import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/preferences/lib/browser/preferences-contribution';
+import { PreferencesContribution } from './theia/preferences/preferences-contribution';
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control';
 import { Settings } from './contributions/settings';
 import { KeybindingRegistry } from './theia/core/keybindings';
+import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
+import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
+import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
+import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
+import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
+import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
+import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/output-widget';
+import { OutputWidget } from './theia/output/output-widget';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -124,7 +136,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(CommandContribution).toService(ArduinoFrontendContribution);
     bind(MenuContribution).toService(ArduinoFrontendContribution);
     bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
-    bind(KeybindingContribution).toService(ArduinoFrontendContribution);
     bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
     bind(ColorContribution).toService(ArduinoFrontendContribution);
 
@@ -151,6 +162,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
+    bind(SketchesServiceClientImpl).toSelf().inSingletonScope();
 
     // Config service
     bind(ConfigService).toDynamicValue(context => {
@@ -281,6 +293,16 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaCommonFrontendContribution).to(CommonFrontendContribution).inSingletonScope();
     rebind(TheiaPreferencesContribution).to(PreferencesContribution).inSingletonScope();
     rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
+    rebind(TheiaWorkspaceCommandContribution).to(WorkspaceCommandContribution).inSingletonScope();
+    rebind(TheiaWorkspaceDeleteHandler).to(WorkspaceDeleteHandler).inSingletonScope();
+    rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
+    rebind(TabBarToolbarFactory).toFactory(({ container: parentContainer }) => () => {
+        const container = parentContainer.createChild();
+        container.bind(TabBarToolbar).toSelf().inSingletonScope();
+        return container.get(TabBarToolbar);
+    });
+    bind(OutputWidget).toSelf().inSingletonScope();
+    rebind(TheiaOutputWidget).toService(OutputWidget);
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();

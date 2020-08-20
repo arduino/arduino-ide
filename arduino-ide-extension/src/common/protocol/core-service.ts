@@ -20,14 +20,13 @@ export namespace CoreService {
             readonly sketchUri: string;
             readonly fqbn: string;
             readonly optimizeForDebug: boolean;
-            readonly programmer?: Programmer | undefined;
         }
     }
 
     export namespace Upload {
-        export interface Options extends Compile.Options {
-            readonly port: string;
-        }
+        export type Options =
+            Compile.Options & Readonly<{ port: string }> |
+            Compile.Options & Readonly<{ programmer: Programmer }>;
     }
 
 }

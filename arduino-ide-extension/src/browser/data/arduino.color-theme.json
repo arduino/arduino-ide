@@ -108,7 +108,9 @@
     "secondaryButton.hoverBackground": "#dae3e3",
     "arduino.branding.primary": "#00979d",
     "arduino.branding.secondary": "#b5c8c9",
-    "arduino.foreground": "#edf1f1"
+    "arduino.foreground": "#edf1f1",
+    "arduino.output.foreground": "#FFFFFF",
+    "arduino.output.background": "#000000"
   },
   "type": "light",
   "name": "Arduino"
