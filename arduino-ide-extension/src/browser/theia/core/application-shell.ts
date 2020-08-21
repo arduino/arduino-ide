@@ -2,6 +2,7 @@
 import { injectable, inject } from 'inversify';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { CommandService } from '@theia/core/lib/common/command';
+import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import { ApplicationShell as TheiaApplicationShell, Widget } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
 import { EditorMode } from '../../editor-mode';
@@ -22,6 +23,9 @@ export class ApplicationShell extends TheiaApplicationShell {
 
     protected track(widget: Widget): void {
         super.track(widget);
+        if (widget instanceof OutputWidget) {
+            widget.title.closable = false; // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
+        }
         if (!this.editorMode.proMode && widget instanceof EditorWidget) {
             // Make the editor un-closeable asynchronously.
             this.sketchesServiceClient.currentSketch().then(sketch => {
