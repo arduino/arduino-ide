@@ -98,20 +98,27 @@ export class UploadSketch extends SketchContribution {
             let options: CoreService.Upload.Options | undefined = undefined;
             const sketchUri = uri;
             const optimizeForDebug = this.editorMode.compileForDebug;
+            const { selectedPort } = boardsConfig;
 
             if (usingProgrammer) {
                 const programmer = selectedProgrammer;
                 if (!programmer) {
                     throw new Error('Programmer is not selected. Please select a programmer.');
                 }
+                let port: undefined | string = undefined;
+                // If the port is set by the user, we pass it to the CLI as it might be required.
+                // If it is not set but the CLI requires it, we let the CLI to complain.
+                if (selectedPort) {
+                    port = selectedPort.address;
+                }
                 options = {
                     sketchUri,
                     fqbn,
                     optimizeForDebug,
-                    programmer
+                    programmer,
+                    port
                 };
             } else {
-                const { selectedPort } = boardsConfig;
                 if (!selectedPort) {
                     throw new Error('No ports selected. Please select a port.');
                 }

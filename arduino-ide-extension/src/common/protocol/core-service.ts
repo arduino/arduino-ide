@@ -26,7 +26,7 @@ export namespace CoreService {
     export namespace Upload {
         export type Options =
             Compile.Options & Readonly<{ port: string }> |
-            Compile.Options & Readonly<{ programmer: Programmer }>;
+            Compile.Options & Readonly<{ programmer: Programmer, port?: string }>;
     }
 
 }

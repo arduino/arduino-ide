@@ -103,10 +103,11 @@ export class CoreServiceImpl implements CoreService {
         uploadReq.setInstance(instance);
         uploadReq.setSketchPath(sketchpath);
         uploadReq.setFqbn(fqbn);
-        if ('port' in options) {
-            uploadReq.setPort(options.port);
-        } else {
+        if ('programmer' in options) {
             uploadReq.setProgrammer(options.programmer.id);
+        }
+        if (options.port) {
+            uploadReq.setPort(options.port);
         }
         const result = client.upload(uploadReq);
 
