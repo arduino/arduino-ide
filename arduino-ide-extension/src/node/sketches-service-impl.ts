@@ -324,7 +324,7 @@ void loop() {
             for (let i = 0; i < files.length; i++) {
                 if (files[i] === basename + '.ino') {
                     try {
-                        await this.loadSketch(fsPath);
+                        await this.loadSketch(FileUri.create(fsPath).toString());
                         return true;
                     } catch { }
                 }
