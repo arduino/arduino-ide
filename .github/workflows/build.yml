@@ -6,6 +6,7 @@ on:
       - master
     tags:
       - '[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
   pull_request:
     branches:
       - master
@@ -58,7 +59,7 @@ jobs:
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          IS_NIGHTLY: ${{ github.event_name == 'schedule' }}
+          IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
             # electron-builder will try to sign during the Windows job if these environment variables are defined
@@ -78,7 +79,7 @@ jobs:
 
   publish:
     needs: build
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     steps:
       - name: Download [GitHub Actions]
