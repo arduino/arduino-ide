@@ -10,7 +10,7 @@
 
 (() => {
 
-    const DEFAULT_VERSION = '0.12.0'; // require('moment')().format('YYYYMMDD');
+    const DEFAULT_VERSION = '0.12.1'; // require('moment')().format('YYYYMMDD');
 
     const path = require('path');
     const shell = require('shelljs');
