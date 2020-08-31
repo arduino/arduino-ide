@@ -77,8 +77,44 @@ jobs:
           name: build-artifacts
           path: electron/build/dist/build-artifacts/
 
-  publish:
+  changelog:
     needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      BODY: ${{ steps.changelog.outputs.BODY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # To fetch all history for all branches and tags.
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+            export LATEST_TAG=$(git describe --abbrev=0)
+            export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
+            export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-pro-ide/releases/tag/$LATEST_TAG)")
+            if [ -z "$GIT_LOG" ]; then
+                export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
+            else
+                export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")
+            fi
+            echo -e "$BODY"
+            OUTPUT_SAFE_BODY="${BODY//'%'/'%25'}"
+            OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\n'/'%0A'}"
+            OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\r'/'%0D'}"
+            echo "::set-output name=BODY::$OUTPUT_SAFE_BODY"
+            echo "$BODY" > CHANGELOG.txt
+
+      - name: Upload Changelog [GitHub Actions]
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: CHANGELOG.txt
+
+  publish:
+    needs: changelog
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     steps:
@@ -98,7 +134,7 @@ jobs:
           destination_dir: arduino-pro-ide/nightly/
 
   release:
-    needs: build
+    needs: changelog
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -108,14 +144,6 @@ jobs:
           name: build-artifacts
           path: build-artifacts
 
-      - name: Create Release [GitHub]
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-
       - name: Publish Release [GitHub]
         uses: svenstaro/upload-release-action@v1-release
         with:
@@ -123,6 +151,7 @@ jobs:
           file: build-artifacts/*
           tag: ${{ github.ref }}
           file_glob: true
+          body: ${{ needs.changelog.outputs.BODY }}
 
       - name: Publish Release [S3]
         uses: kittaakos/upload-s3-action@v0.0.1
