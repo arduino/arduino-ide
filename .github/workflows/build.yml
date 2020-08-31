@@ -146,9 +146,11 @@ jobs:
           path: build-artifacts
 
       - name: Publish Release [GitHub]
-        uses: svenstaro/upload-release-action@v1-release
+        uses: kittaakos/upload-release-action@dev
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          repo_name: arduino/arduino-pro-ide
+          release_name: ${{ github.event.release.tag_name }}
           file: build-artifacts/*
           tag: ${{ github.ref }}
           file_glob: true
