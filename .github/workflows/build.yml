@@ -125,13 +125,14 @@ jobs:
           path: build-artifacts
 
       - name: Publish Nightly [S3]
-        uses: kittaakos/upload-s3-action@v0.0.1
-        with:
-          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_bucket: ${{ secrets.DOWNLOADS_BUCKET }}
-          source_dir: build-artifacts/
-          destination_dir: arduino-pro-ide/nightly/
+        uses: docker://plugins/s3
+        env:
+          PLUGIN_SOURCE: "build-artifacts/*"
+          PLUGIN_STRIP_PREFIX: "build-artifacts/"
+          PLUGIN_TARGET: "/arduino-pro-ide/nightly"
+          PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   release:
     needs: changelog
@@ -154,10 +155,11 @@ jobs:
           body: ${{ needs.changelog.outputs.BODY }}
 
       - name: Publish Release [S3]
-        uses: kittaakos/upload-s3-action@v0.0.1
-        with:
-          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_bucket: ${{ secrets.DOWNLOADS_BUCKET }}
-          source_dir: build-artifacts/
-          destination_dir: arduino-pro-ide/
+        uses: docker://plugins/s3
+        env:
+          PLUGIN_SOURCE: "build-artifacts/*"
+          PLUGIN_STRIP_PREFIX: "build-artifacts/"
+          PLUGIN_TARGET: "/arduino-pro-ide"
+          PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
