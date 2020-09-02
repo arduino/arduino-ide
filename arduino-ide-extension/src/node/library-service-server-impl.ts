@@ -11,7 +11,8 @@ import {
     LibraryInstallReq,
     LibraryInstallResp,
     LibraryUninstallReq,
-    LibraryUninstallResp
+    LibraryUninstallResp,
+    Library
 } from './cli-protocol/commands/lib_pb';
 import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
@@ -87,7 +88,7 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
                     installable: true,
                     installedVersion,
                 }, item.getLatest()!, availableVersions)
-            })
+            });
 
         return items;
     }
@@ -109,9 +110,8 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
 
         const resp = await new Promise<LibraryListResp>((resolve, reject) => client.libraryList(req, ((error, resp) => !!error ? reject(error) : resolve(resp))));
         return resp.getInstalledLibraryList().map(item => {
-            const release = item.getRelease();
             const library = item.getLibrary();
-            if (!release || !library) {
+            if (!library) {
                 return undefined;
             }
             const installedVersion = library.getVersion();
@@ -123,11 +123,11 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
                 description: library.getSentence(),
                 summary: library.getParagraph(),
                 moreInfoLink: library.getWebsite(),
-                includes: release.getProvidesIncludesList(),
+                includes: library.getProvidesIncludesList(),
                 location: library.getLocation(),
                 installDirUri: FileUri.create(library.getInstallDir()).toString(),
                 exampleUris: library.getExamplesList().map(fsPath => FileUri.create(fsPath).toString())
-            }, release, [library.getVersion()]);
+            }, library, [library.getVersion()]);
         }).filter(notEmpty);
     }
 
@@ -212,7 +212,7 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
 
 }
 
-function toLibrary(pkg: Partial<LibraryPackage>, release: LibraryRelease, availableVersions: string[]): LibraryPackage {
+function toLibrary(pkg: Partial<LibraryPackage>, lib: LibraryRelease | Library, availableVersions: string[]): LibraryPackage {
     return {
         name: '',
         label: '',
@@ -221,11 +221,11 @@ function toLibrary(pkg: Partial<LibraryPackage>, release: LibraryRelease, availa
         location: 0,
         ...pkg,
 
-        author: release.getAuthor(),
+        author: lib.getAuthor(),
         availableVersions,
-        includes: release.getProvidesIncludesList(),
-        description: release.getSentence(),
-        moreInfoLink: release.getWebsite(),
-        summary: release.getParagraph()
+        includes: lib.getProvidesIncludesList(),
+        description: lib.getSentence(),
+        moreInfoLink: lib.getWebsite(),
+        summary: lib.getParagraph()
     }
 }

@@ -726,6 +726,11 @@ export class Library extends jspb.Message {
     setExamplesList(value: Array<string>): Library;
     addExamples(value: string, index?: number): string;
 
+    clearProvidesIncludesList(): void;
+    getProvidesIncludesList(): Array<string>;
+    setProvidesIncludesList(value: Array<string>): Library;
+    addProvidesIncludes(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Library.AsObject;
@@ -764,6 +769,7 @@ export namespace Library {
         location: LibraryLocation,
         layout: LibraryLayout,
         examplesList: Array<string>,
+        providesIncludesList: Array<string>,
     }
 }
 

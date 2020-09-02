@@ -1,3 +1,4 @@
+import * as PQueue from 'p-queue';
 import { inject, injectable, postConstruct } from 'inversify';
 import { MenuPath, SubMenuOptions } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';

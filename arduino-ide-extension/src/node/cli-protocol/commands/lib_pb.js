@@ -4762,7 +4762,7 @@ proto.cc.arduino.cli.commands.InstalledLibrary.prototype.hasRelease = function()
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.Library.repeatedFields_ = [8,9,26];
+proto.cc.arduino.cli.commands.Library.repeatedFields_ = [8,9,26,27];
 
 
 
@@ -4818,7 +4818,8 @@ proto.cc.arduino.cli.commands.Library.toObject = function(includeInstance, msg) 
     propertiesMap: (f = msg.getPropertiesMap()) ? f.toObject(includeInstance, undefined) : [],
     location: jspb.Message.getFieldWithDefault(msg, 24, 0),
     layout: jspb.Message.getFieldWithDefault(msg, 25, 0),
-    examplesList: (f = jspb.Message.getRepeatedField(msg, 26)) == null ? undefined : f
+    examplesList: (f = jspb.Message.getRepeatedField(msg, 26)) == null ? undefined : f,
+    providesIncludesList: (f = jspb.Message.getRepeatedField(msg, 27)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -4952,6 +4953,10 @@ proto.cc.arduino.cli.commands.Library.deserializeBinaryFromReader = function(msg
     case 26:
       var value = /** @type {string} */ (reader.readString());
       msg.addExamples(value);
+      break;
+    case 27:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addProvidesIncludes(value);
       break;
     default:
       reader.skipField();
@@ -5144,6 +5149,13 @@ proto.cc.arduino.cli.commands.Library.serializeBinaryToWriter = function(message
   if (f.length > 0) {
     writer.writeRepeatedString(
       26,
+      f
+    );
+  }
+  f = message.getProvidesIncludesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      27,
       f
     );
   }
@@ -5640,6 +5652,43 @@ proto.cc.arduino.cli.commands.Library.prototype.addExamples = function(value, op
  */
 proto.cc.arduino.cli.commands.Library.prototype.clearExamplesList = function() {
   return this.setExamplesList([]);
+};
+
+
+/**
+ * repeated string provides_includes = 27;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.Library.prototype.getProvidesIncludesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 27));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.setProvidesIncludesList = function(value) {
+  return jspb.Message.setField(this, 27, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.addProvidesIncludes = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 27, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.clearProvidesIncludesList = function() {
+  return this.setProvidesIncludesList([]);
 };
 
 

@@ -122,7 +122,6 @@ import { ExamplesServicePath, ExamplesService } from '../common/protocol/example
 import { BuiltInExamples, LibraryExamples } from './contributions/examples';
 import { LibraryServiceProvider } from './library/library-service-provider';
 import { IncludeLibrary } from './contributions/include-library';
-import { IncludeLibraryMenuUpdater } from './library/include-library-menu-updater';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -158,7 +157,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // Library service
     bind(LibraryServiceProvider).toSelf().inSingletonScope();
     bind(LibraryServiceServer).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServiceServerPath)).inSingletonScope();
-    bind(FrontendApplicationContribution).to(IncludeLibraryMenuUpdater).inSingletonScope();
 
     // Library list widget
     bind(LibraryListWidget).toSelf();
