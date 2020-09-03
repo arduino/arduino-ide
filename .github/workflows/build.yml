@@ -145,12 +145,17 @@ jobs:
           name: build-artifacts
           path: build-artifacts
 
+      - name: Get Tag
+        id: tag_name
+        run: |
+          echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
+
       - name: Publish Release [GitHub]
         uses: kittaakos/upload-release-action@dev
         with:
           repo_token: ${{ secrets.RELEASE_TOKEN }}
           repo_name: arduino/arduino-pro-ide
-          release_name: ${{ github.event.release.tag_name }}
+          release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
           file: build-artifacts/*
           tag: ${{ github.ref }}
           file_glob: true
