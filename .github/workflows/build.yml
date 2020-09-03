@@ -90,14 +90,20 @@ jobs:
 
       - name: Generate Changelog
         id: changelog
+        env:
+          IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
             export LATEST_TAG=$(git describe --abbrev=0)
             export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
-            export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-pro-ide/releases/tag/$LATEST_TAG)")
-            if [ -z "$GIT_LOG" ]; then
-                export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
-            else
-                export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")
+            if [ "$IS_RELEASE" = true ]; then
+              export BODY=$(echo -e "$GIT_LOG")
+            else 
+              export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-pro-ide/releases/tag/$LATEST_TAG)")
+              if [ -z "$GIT_LOG" ]; then
+                  export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
+              else
+                  export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")
+              fi
             fi
             echo -e "$BODY"
             OUTPUT_SAFE_BODY="${BODY//'%'/'%25'}"
