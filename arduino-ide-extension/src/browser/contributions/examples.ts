@@ -1,6 +1,6 @@
 import * as PQueue from 'p-queue';
 import { inject, injectable, postConstruct } from 'inversify';
-import { MenuPath, SubMenuOptions } from '@theia/core/lib/common/menu';
+import { MenuPath, SubMenuOptions, CompositeMenuNode } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -40,6 +40,18 @@ export abstract class Examples extends SketchContribution {
     }
 
     registerMenus(registry: MenuModelRegistry): void {
+        try {
+            // This is a hack the ensures the desired menu ordering! We cannot use https://github.com/eclipse-theia/theia/pull/8377 due to ATL-222.
+            const index = ArduinoMenus.FILE__EXAMPLES_SUBMENU.length - 1;
+            const menuId = ArduinoMenus.FILE__EXAMPLES_SUBMENU[index];
+            const groupPath = index === 0 ? [] : ArduinoMenus.FILE__EXAMPLES_SUBMENU.slice(0, index);
+            const parent: CompositeMenuNode = (registry as any).findGroup(groupPath);
+            const examples = new CompositeMenuNode(menuId, '', { order: '4' });
+            parent.addNode(examples);
+        } catch (e) {
+            console.error(e);
+            console.warn('Could not patch menu ordering.');
+        }
         // Registering the same submenu multiple times has no side-effect.
         // TODO: unregister submenu? https://github.com/eclipse-theia/theia/issues/7300
         registry.registerSubmenu(ArduinoMenus.FILE__EXAMPLES_SUBMENU, 'Examples', { order: '4' });
