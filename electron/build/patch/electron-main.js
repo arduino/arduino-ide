@@ -286,7 +286,15 @@ app.on('ready', () => {
         app.on('quit', () => {
             // If we forked the process for the clusters, we need to manually terminate it.
             // See: https://github.com/eclipse-theia/theia/issues/835
-            process.kill(cp.pid);
+            try {
+                process.kill(cp.pid);
+            } catch (e) {
+                if (e.code === 'ESRCH') {
+                    console.log('Could not terminate the backend process. It was not running.');
+                    return;
+                }
+                throw e;
+            }
         });
     }
 });
