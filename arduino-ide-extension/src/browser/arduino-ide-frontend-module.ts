@@ -122,6 +122,8 @@ import { ExamplesServicePath, ExamplesService } from '../common/protocol/example
 import { BuiltInExamples, LibraryExamples } from './contributions/examples';
 import { LibraryServiceProvider } from './library/library-service-provider';
 import { IncludeLibrary } from './contributions/include-library';
+import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager } from './theia/output/output-channel';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -310,6 +312,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     });
     bind(OutputWidget).toSelf().inSingletonScope();
     rebind(TheiaOutputWidget).toService(OutputWidget);
+    bind(OutputChannelManager).toSelf().inSingletonScope();
+    rebind(TheiaOutputChannelManager).toService(OutputChannelManager);
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
