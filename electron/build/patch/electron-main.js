@@ -89,8 +89,9 @@ app.on('ready', () => {
             title: applicationName,
             width: windowState.width,
             height: windowState.height,
-            minWidth: 200,
-            minHeight: 120,
+            // Set and use a custom minimum window size: https://github.com/arduino/arduino-pro-ide/issues/337#issuecomment-687017281
+            minWidth: 900,
+            minHeight: 800,
             x: windowState.x,
             y: windowState.y,
             isMaximized: windowState.isMaximized,
