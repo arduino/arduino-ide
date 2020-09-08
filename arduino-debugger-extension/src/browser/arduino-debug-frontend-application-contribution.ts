@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { MenuModelRegistry, Path, MessageService, Command, CommandRegistry } from '@theia/core';
+import { MenuModelRegistry, MessageService, Command, CommandRegistry } from '@theia/core';
 import { KeybindingRegistry } from '@theia/core/lib/browser';
 import { TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { DebugFrontendApplicationContribution, DebugCommands } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
@@ -62,8 +62,8 @@ export class ArduinoDebugFrontendApplicationContribution extends DebugFrontendAp
             if (current.configuration.type === 'arduino') {
                 const wsStat = this.workspaceService.workspace;
                 let sketchFileURI: URI | undefined;
-                if (wsStat && await this.sketchesService.isSketchFolder(wsStat.uri)) {
-                    const wsPath = new Path(wsStat.uri);
+                if (wsStat && await this.sketchesService.isSketchFolder(wsStat.resource.toString())) {
+                    const wsPath = wsStat.resource.path;
                     const sketchFilePath = wsPath.join(wsPath.name + '.ino').toString();
                     sketchFileURI = new URI(sketchFilePath);
                 } else if (this.editorManager.currentEditor) {

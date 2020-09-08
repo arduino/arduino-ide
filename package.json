@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=10.11.0 <13"
+    "node": ">=12.14.1 <13"
   },
   "devDependencies": {
     "@theia/cli": "next",
@@ -34,6 +34,7 @@
   ],
   "theiaPluginsDir": "plugins",
   "theiaPlugins": {
-    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.44.2/file/vscode.cpp-1.44.2.vsix"
+    "vscode-builtin-cpp": "http://open-vsx.org/api/vscode/cpp/1.44.2/file/vscode.cpp-1.44.2.vsix",
+    "vscode-arduino-language-server": "https://downloads.arduino.cc/vscode-arduino-language-server/nightly/vscode-arduino-language-server-0.0.1.vsix"
   }
 }

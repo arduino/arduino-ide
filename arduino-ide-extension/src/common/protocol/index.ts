@@ -10,3 +10,5 @@ export * from './monitor-service';
 export * from './searchable';
 export * from './sketches-service';
 export * from './tool-output-service';
+export * from './examples-service';
+export * from './executable-service';

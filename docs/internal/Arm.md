@@ -8,13 +8,13 @@ Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`)
     ```
     Restart your shell then:
     ```
-    nvm install 10.15.3
-    nvm use 10.15.3
+    nvm install 12.14.1
+    nvm use 12.14.1
     ```
     Verify:
     ```
     node -v
-    v10.15.3
+    v12.14.1
     ```
 
 2. Install [Yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable):

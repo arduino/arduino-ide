@@ -4,6 +4,17 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Arduino Pro IDE - Rebuild Electron App",
+      "type": "shell",
+      "command": "yarn rebuild:browser && yarn rebuild:electron",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
       "label": "Arduino Pro IDE - Start Browser App",
       "type": "shell",
       "command": "yarn --cwd ./browser-app start",

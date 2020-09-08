@@ -9,7 +9,6 @@
     "@theia/editor": "next",
     "@theia/file-search": "next",
     "@theia/filesystem": "next",
-    "@theia/languages": "next",
     "@theia/messages": "next",
     "@theia/monaco": "next",
     "@theia/navigator": "next",

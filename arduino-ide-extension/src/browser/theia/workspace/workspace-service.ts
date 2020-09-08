@@ -74,7 +74,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
 
     private async isValid(uri: string): Promise<boolean> {
-        const exists = await this.fileSystem.exists(uri);
+        const exists = await this.fileService.exists(new URI(uri));
         if (!exists) {
             return false;
         }
@@ -104,8 +104,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
 
     protected get workspaceTitle(): string | undefined {
         if (this.workspace) {
-            const uri = new URI(this.workspace.uri);
-            return this.labelProvider.getName(uri);
+            return this.labelProvider.getName(this.workspace.resource);
         }
     }
 

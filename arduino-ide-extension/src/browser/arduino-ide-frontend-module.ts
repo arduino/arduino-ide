@@ -6,12 +6,8 @@ import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contrib
 import { TabBarToolbarContribution, TabBarToolbarFactory } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 import { FrontendApplicationContribution, FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application'
-import { LanguageGrammarDefinitionContribution } from '@theia/monaco/lib/browser/textmate';
-import { LanguageClientContribution } from '@theia/languages/lib/browser';
-import { ArduinoLanguageClientContribution } from './language/arduino-language-client-contribution';
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
-import { ArduinoLanguageGrammarContribution } from './language/arduino-language-grammar-contribution';
 import { LibraryServiceServer, LibraryServiceServerPath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
@@ -125,6 +121,9 @@ import { IncludeLibrary } from './contributions/include-library';
 import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/common/output-channel';
 import { OutputChannelManager } from './theia/output/output-channel';
 import { OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl, OutputChannelRegistryMainImpl } from './theia/plugin-ext/output-channel-registry-main';
+import { ExecutableService, ExecutableServicePath } from '../common/protocol';
+import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
+import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -149,10 +148,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(ArduinoToolbarContribution);
-
-    // `ino` TextMate grammar and language client
-    bind(LanguageGrammarDefinitionContribution).to(ArduinoLanguageGrammarContribution).inSingletonScope();
-    bind(LanguageClientContribution).to(ArduinoLanguageClientContribution).inSingletonScope();
 
     // Renderer for both the library and the core widgets.
     bind(ListItemRenderer).toSelf().inSingletonScope();
@@ -317,6 +312,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaOutputChannelManager).toService(OutputChannelManager);
     bind(OutputChannelRegistryMainImpl).toSelf().inTransientScope();
     rebind(TheiaOutputChannelRegistryMainImpl).toService(OutputChannelRegistryMainImpl);
+    bind(MonacoTextModelService).toSelf().inSingletonScope();
+    rebind(TheiaMonacoTextModelService).toService(MonacoTextModelService);
 
     // Show a disconnected status bar, when the daemon is not available
     bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
@@ -360,8 +357,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // File-system extension
     bind(FileSystemExt).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, FileSystemExtPath)).inSingletonScope();
 
-    // Examples service
+    // Examples service@
     bind(ExamplesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ExamplesServicePath)).inSingletonScope();
+
+    // Executable URIs known by the backend
+    bind(ExecutableService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ExecutableServicePath)).inSingletonScope();
 
     Contribution.configure(bind, NewSketch);
     Contribution.configure(bind, OpenSketch);

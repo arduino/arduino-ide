@@ -1,5 +1,5 @@
 import { inject, injectable, postConstruct } from 'inversify';
-import { FileSystem } from '@theia/filesystem/lib/common/filesystem';
+import { FileUri } from '@theia/core/lib/node/file-uri';
 import { CoreService, CoreServiceClient } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { BoardsService } from '../common/protocol/boards-service';
@@ -14,8 +14,6 @@ export class CoreServiceImpl implements CoreService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
 
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
@@ -37,10 +35,7 @@ export class CoreServiceImpl implements CoreService {
     async compile(options: CoreService.Compile.Options): Promise<void> {
         this.toolOutputService.append({ tool: 'compile', chunk: 'Compiling...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
-        if (!sketchFilePath) {
-            throw new Error(`Cannot resolve filesystem path for URI: ${sketchUri}.`);
-        }
+        const sketchFilePath = FileUri.fsPath(sketchUri);
         const sketchpath = path.dirname(sketchFilePath);
 
         const coreClient = await this.coreClientProvider.client();
@@ -83,10 +78,7 @@ export class CoreServiceImpl implements CoreService {
         await this.compile(options);
         this.toolOutputService.append({ tool: 'upload', chunk: 'Uploading...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
-        const sketchFilePath = await this.fileSystem.getFsPath(sketchUri);
-        if (!sketchFilePath) {
-            throw new Error(`Cannot resolve filesystem path for URI: ${sketchUri}.`);
-        }
+        const sketchFilePath = FileUri.fsPath(sketchUri);
         const sketchpath = path.dirname(sketchFilePath);
 
         const coreClient = await this.coreClientProvider.client();

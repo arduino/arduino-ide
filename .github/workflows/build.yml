@@ -32,10 +32,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Node.js 10.x
+      - name: Install Node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          node-version: '12.14.1'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Python 2.7

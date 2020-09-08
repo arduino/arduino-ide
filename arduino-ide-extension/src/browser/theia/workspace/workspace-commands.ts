@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { open } from '@theia/core/lib/browser/opener-service';
-import { FileStat } from '@theia/filesystem/lib/common';
+import { FileStat } from '@theia/filesystem/lib/common/files';
 import { CommandRegistry, CommandService } from '@theia/core/lib/common/command';
 import { WorkspaceCommandContribution as TheiaWorkspaceCommandContribution, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { Sketch } from '../../../common/protocol';
@@ -40,7 +40,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
             return;
         }
 
-        const parentUri = new URI(parent.uri);
+        const parentUri = parent.resource;
         const dialog = new WorkspaceInputDialog({
             title: 'Name for new file',
             parentUri,
@@ -51,7 +51,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         const nameWithExt = this.maybeAppendInoExt(name);
         if (nameWithExt) {
             const fileUri = parentUri.resolve(nameWithExt);
-            await this.fileSystem.createFile(fileUri.toString());
+            await this.fileService.createFile(fileUri);
             this.fireCreateNewFile({ parent: parentUri, uri: fileUri });
             open(this.openerService, fileUri);
         }
@@ -132,7 +132,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         if (newNameWithExt) {
             const oldUri = uri;
             const newUri = uri.parent.resolve(newNameWithExt);
-            this.fileSystem.move(oldUri.toString(), newUri.toString());
+            this.fileService.move(oldUri, newUri);
         }
     }
 

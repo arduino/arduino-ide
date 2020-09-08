@@ -1,4 +1,4 @@
-import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService } from '@theia/core';
+import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService, ILogger } from '@theia/core';
 import {
     ContextMenuRenderer,
     FrontendApplication, FrontendApplicationContribution,
@@ -13,7 +13,6 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import URI from '@theia/core/lib/common/uri';
 import { EditorMainMenu, EditorManager } from '@theia/editor/lib/browser';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
-import { FileSystem } from '@theia/filesystem/lib/common';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
@@ -25,7 +24,7 @@ import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-con
 import { inject, injectable, postConstruct } from 'inversify';
 import * as React from 'react';
 import { MainMenuManager } from '../common/main-menu-manager';
-import { BoardsService, BoardsServiceClient, CoreService, Port, SketchesService, ToolOutputServiceClient } from '../common/protocol';
+import { BoardsService, BoardsServiceClient, CoreService, Port, SketchesService, ToolOutputServiceClient, ExecutableService } from '../common/protocol';
 import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
 import { FileSystemExt } from '../common/protocol/filesystem-ext';
@@ -41,10 +40,17 @@ import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { WorkspaceService } from './theia/workspace/workspace-service';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
+import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+
+const debounce = require('lodash.debounce');
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
     TabBarToolbarContribution, CommandContribution, MenuContribution, ColorContribution {
+
+    @inject(ILogger)
+    protected logger: ILogger;
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -77,8 +83,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(FileDialogService)
     protected readonly fileDialogService: FileDialogService;
 
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
+    @inject(FileService)
+    protected readonly fileSystem: FileService;
 
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
@@ -140,6 +146,12 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(FileSystemExt)
     protected readonly fileSystemExt: FileSystemExt;
 
+    @inject(HostedPluginSupport)
+    protected hostedPluginSupport: HostedPluginSupport;
+
+    @inject(ExecutableService)
+    protected executableService: ExecutableService;
+
     @postConstruct()
     protected async init(): Promise<void> {
         if (!window.navigator.onLine) {
@@ -177,6 +189,35 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 viewContribution.initializeLayout(app);
             }
         }
+        this.boardsServiceClientImpl.onBoardsConfigChanged(async ({ selectedBoard }) => {
+            if (selectedBoard) {
+                const { name, fqbn } = selectedBoard;
+                if (fqbn) {
+                    await this.hostedPluginSupport.didStart;
+                    this.startLanguageServer(fqbn, name);
+                }
+            }
+        });
+    }
+
+    protected startLanguageServer = debounce((fqbn: string, name: string | undefined) => this.doStartLanguageServer(fqbn, name));
+    protected async doStartLanguageServer(fqbn: string, name: string | undefined): Promise<void> {
+        this.logger.info(`Starting language server: ${fqbn}`);
+        const { clangdUri, cliUri, lsUri } = await this.executableService.list();
+        const [clangdPath, cliPath, lsPath] = await Promise.all([
+            this.fileSystem.fsPath(new URI(clangdUri)),
+            this.fileSystem.fsPath(new URI(cliUri)),
+            this.fileSystem.fsPath(new URI(lsUri)),
+        ]);
+        this.commandRegistry.executeCommand('arduino.languageserver.start', {
+            lsPath,
+            cliPath,
+            clangdPath,
+            board: {
+                fqbn,
+                name: name ? `"${name}"` : undefined
+            }
+        });
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -208,7 +249,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             isToggled: () => this.editorMode.compileForDebug
         });
         registry.registerCommand(ArduinoCommands.OPEN_SKETCH_FILES, {
-            execute: async (uri: string) => {
+            execute: async (uri: URI) => {
                 this.openSketchFiles(uri);
             }
         });
@@ -256,9 +297,9 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
     }
 
-    protected async openSketchFiles(uri: string): Promise<void> {
+    protected async openSketchFiles(uri: URI): Promise<void> {
         try {
-            const sketch = await this.sketchService.loadSketch(uri);
+            const sketch = await this.sketchService.loadSketch(uri.toString());
             const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
             for (const uri of [mainFileUri, ...otherSketchFileUris, ...additionalFileUris]) {
                 await this.ensureOpened(uri);

@@ -30,6 +30,7 @@ export class ArduinoGDBBackend extends GDBBackend {
             '--interpreter', 'mi2',
             sketchDir
         ];
+        console.log('Starting debugger:', command, JSON.stringify(args));
         const proc = spawn(command, args);
         this.proc = proc;
         this.out = proc.stdin;

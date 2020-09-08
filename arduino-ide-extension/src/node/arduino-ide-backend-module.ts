@@ -5,8 +5,6 @@ import { ContainerModule } from 'inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
-import { LanguageServerContribution } from '@theia/languages/lib/node';
-import { ArduinoLanguageServerContribution } from './language/arduino-language-server-contribution';
 import { LibraryServiceServerPath, LibraryServiceServer, LibraryServiceClient } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
 import { LibraryServiceServerImpl } from './library-service-server-impl';
@@ -37,6 +35,8 @@ import { NodeFileSystemExt } from './node-filesystem-ext';
 import { FileSystemExt, FileSystemExtPath } from '../common/protocol/filesystem-ext';
 import { ExamplesServiceImpl } from './examples-service-impl';
 import { ExamplesService, ExamplesServicePath } from '../common/protocol/examples-service';
+import { ExecutableService, ExecutableServicePath } from '../common/protocol/executable-service';
+import { ExecutableServiceImpl } from './executable-service-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(EnvVariablesServer).to(ArduinoEnvVariablesServer).inSingletonScope();
@@ -73,9 +73,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ExamplesService).toService(ExamplesServiceImpl);
     bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(ExamplesServicePath, () => context.container.get(ExamplesService))).inSingletonScope();
 
-    // Language server
-    bind(ArduinoLanguageServerContribution).toSelf().inSingletonScope();
-    bind(LanguageServerContribution).toService(ArduinoLanguageServerContribution);
+    // Exposes the executable paths/URIs to the frontend
+    bind(ExecutableServiceImpl).toSelf().inSingletonScope();
+    bind(ExecutableService).toService(ExecutableServiceImpl);
+    bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(ExecutableServicePath, () => context.container.get(ExecutableService))).inSingletonScope();
 
     // Library service
     bind(LibraryServiceServerImpl).toSelf().inSingletonScope();

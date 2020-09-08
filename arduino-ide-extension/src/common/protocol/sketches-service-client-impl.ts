@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
+import URI from '@theia/core/lib/common/uri';
 import { notEmpty } from '@theia/core/lib/common/objects';
-import { FileSystem } from '@theia/filesystem/lib/common';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { Sketch, SketchesService } from '../../common/protocol';
@@ -8,8 +9,8 @@ import { Sketch, SketchesService } from '../../common/protocol';
 @injectable()
 export class SketchesServiceClientImpl {
 
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
+    @inject(FileService)
+    protected readonly fileService: FileService;
 
     @inject(MessageService)
     protected readonly messageService: MessageService;
@@ -21,7 +22,7 @@ export class SketchesServiceClientImpl {
     protected readonly workspaceService: WorkspaceService;
 
     async currentSketch(): Promise<Sketch | undefined> {
-        const sketches = (await Promise.all(this.workspaceService.tryGetRoots().map(({ uri }) => this.sketchService.getSketchFolder(uri)))).filter(notEmpty);
+        const sketches = (await Promise.all(this.workspaceService.tryGetRoots().map(({ resource }) => this.sketchService.getSketchFolder(resource.toString())))).filter(notEmpty);
         if (!sketches.length) {
             return undefined;
         }
@@ -35,7 +36,7 @@ export class SketchesServiceClientImpl {
         const sketch = await this.currentSketch();
         if (sketch) {
             const uri = sketch.mainFileUri;
-            const exists = await this.fileSystem.exists(uri);
+            const exists = await this.fileService.exists(new URI(uri));
             if (!exists) {
                 this.messageService.warn(`Could not find sketch file: ${uri}`);
                 return undefined;

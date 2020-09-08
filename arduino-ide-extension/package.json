@@ -23,7 +23,6 @@
     "@theia/editor": "next",
     "@theia/filesystem": "next",
     "@theia/git": "next",
-    "@theia/languages": "next",
     "@theia/markers": "next",
     "@theia/monaco": "next",
     "@theia/navigator": "next",
