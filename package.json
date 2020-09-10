@@ -1,6 +1,6 @@
 {
   "name": "arduino-editor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Arduino Pro IDE",
   "repository": "https://github.com/bcmi-labs/arduino-editor.git",
   "author": "Arduino SA",
