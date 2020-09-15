@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { BoardsPackage, BoardsService } from '../../common/protocol/boards-service';
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
@@ -22,6 +22,15 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
             itemLabel: (item: BoardsPackage) => item.name,
             itemRenderer
         });
+    }
+
+    @postConstruct()
+    protected init(): void {
+        super.init();
+        this.toDispose.pushAll([
+            this.notificationCenter.onPlatformInstalled(() => this.refresh(undefined)),
+            this.notificationCenter.onPlatformUninstalled(() => this.refresh(undefined)),
+        ]);
     }
 
 }

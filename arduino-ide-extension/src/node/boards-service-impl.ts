@@ -1,19 +1,22 @@
 import { injectable, inject, postConstruct, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import { BoardsService, BoardsPackage, Board, BoardsServiceClient, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer } from '../common/protocol';
+import {
+    BoardsService,
+    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AttachedBoardsChangeEvent
+} from '../common/protocol';
 import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
     PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { BoardListReq, BoardListResp, BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
-import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
 import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
+import { Disposable } from '@theia/core/lib/common/disposable';
 
 @injectable()
-export class BoardsServiceImpl implements BoardsService {
+export class BoardsServiceImpl implements BoardsService, Disposable {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -25,8 +28,11 @@ export class BoardsServiceImpl implements BoardsService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
-    @inject(ToolOutputServiceServer)
-    protected readonly toolOutputService: ToolOutputServiceServer;
+    @inject(OutputService)
+    protected readonly outputService: OutputService;
+
+    @inject(NotificationServiceServer)
+    protected readonly notificationService: NotificationServiceServer;
 
     protected discoveryInitialized = false;
     protected discoveryTimer: NodeJS.Timer | undefined;
@@ -38,7 +44,6 @@ export class BoardsServiceImpl implements BoardsService {
     protected attachedBoards: Board[] = [];
     protected availablePorts: Port[] = [];
     protected started = new Deferred<void>();
-    protected client: BoardsServiceClient | undefined;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -49,19 +54,19 @@ export class BoardsServiceImpl implements BoardsService {
                     const update = (oldBoards: Board[], newBoards: Board[], oldPorts: Port[], newPorts: Port[], message: string) => {
                         this.attachedBoards = newBoards;
                         this.availablePorts = newPorts;
-                        this.discoveryLogger.info(`${message} - Discovered boards: ${JSON.stringify(newBoards)} and available ports: ${JSON.stringify(newPorts)}`);
-                        if (this.client) {
-                            this.client.notifyAttachedBoardsChanged({
-                                oldState: {
-                                    boards: oldBoards,
-                                    ports: oldPorts
-                                },
-                                newState: {
-                                    boards: newBoards,
-                                    ports: newPorts
-                                }
-                            });
-                        }
+                        const event = {
+                            oldState: {
+                                boards: oldBoards,
+                                ports: oldPorts
+                            },
+                            newState: {
+                                boards: newBoards,
+                                ports: newPorts
+                            }
+                        };
+                        this.discoveryLogger.info(`${message}`);
+                        this.discoveryLogger.info(`${AttachedBoardsChangeEvent.toString(event)}`);
+                        this.notificationService.notifyAttachedBoardsChanged(event);
                     }
                     const sortedBoards = boards.sort(Board.compare);
                     const sortedPorts = ports.sort(Port.compare);
@@ -103,16 +108,13 @@ export class BoardsServiceImpl implements BoardsService {
         }, 1000);
     }
 
-    setClient(client: BoardsServiceClient | undefined): void {
-        this.client = client;
-    }
-
     dispose(): void {
         this.logger.info('>>> Disposing boards service...');
         if (this.discoveryTimer !== undefined) {
+            this.logger.info('>>> Disposing the boards discovery...');
             clearInterval(this.discoveryTimer);
+            this.logger.info('<<< Disposed the boards discovery.');
         }
-        this.client = undefined;
         this.logger.info('<<< Disposed boards service.');
     }
 
@@ -213,13 +215,27 @@ export class BoardsServiceImpl implements BoardsService {
         const detailsReq = new BoardDetailsReq();
         detailsReq.setInstance(instance);
         detailsReq.setFqbn(fqbn);
-        const detailsResp = await new Promise<BoardDetailsResp>((resolve, reject) => client.boardDetails(detailsReq, (err, resp) => {
+        const detailsResp = await new Promise<BoardDetailsResp | undefined>((resolve, reject) => client.boardDetails(detailsReq, (err, resp) => {
             if (err) {
+                // Required cores are not installed manually: https://github.com/arduino/arduino-cli/issues/954
+                if (err.message.indexOf('missing platform release') !== -1 && err.message.indexOf('referenced by board') !== -1) {
+                    resolve(undefined);
+                    return;
+                }
                 reject(err);
                 return;
             }
             resolve(resp);
         }));
+
+        if (!detailsResp) {
+            return {
+                fqbn,
+                configOptions: [],
+                programmers: [],
+                requiredTools: []
+            };
+        }
 
         const requiredTools = detailsResp.getToolsdependenciesList().map(t => <Tool>{
             name: t.getName(),
@@ -391,18 +407,17 @@ export class BoardsServiceImpl implements BoardsService {
         resp.on('data', (r: PlatformInstallResp) => {
             const prog = r.getProgress();
             if (prog && prog.getFile()) {
-                this.toolOutputService.append({ tool: 'board download', chunk: `downloading ${prog.getFile()}\n` });
+                this.outputService.append({ name: 'board download', chunk: `downloading ${prog.getFile()}\n` });
             }
         });
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', reject);
         });
-        if (this.client) {
-            const items = await this.search({});
-            const updated = items.find(other => BoardsPackage.equals(other, item)) || item;
-            this.client.notifyInstalled({ item: updated });
-        }
+
+        const items = await this.search({});
+        const updated = items.find(other => BoardsPackage.equals(other, item)) || item;
+        this.notificationService.notifyPlatformInstalled({ item: updated });
         console.info('<<< Boards package installation done.', item);
     }
 
@@ -426,7 +441,7 @@ export class BoardsServiceImpl implements BoardsService {
         const resp = client.platformUninstall(req);
         resp.on('data', (_: PlatformUninstallResp) => {
             if (!logged) {
-                this.toolOutputService.append({ tool: 'board uninstall', chunk: `uninstalling ${item.id}\n` });
+                this.outputService.append({ name: 'board uninstall', chunk: `uninstalling ${item.id}\n` });
                 logged = true;
             }
         })
@@ -434,10 +449,9 @@ export class BoardsServiceImpl implements BoardsService {
             resp.on('end', resolve);
             resp.on('error', reject);
         });
-        if (this.client) {
-            // Here, unlike at `install` we send out the argument `item`. Otherwise, we would not know about the board FQBN.
-            this.client.notifyUninstalled({ item });
-        }
+
+        // Here, unlike at `install` we send out the argument `item`. Otherwise, we would not know about the board FQBN.
+        this.notificationService.notifyPlatformUninstalled({ item });
         console.info('<<< Boards package uninstallation done.', item);
     }
 

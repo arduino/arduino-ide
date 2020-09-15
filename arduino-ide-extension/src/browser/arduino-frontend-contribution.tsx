@@ -24,7 +24,7 @@ import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-con
 import { inject, injectable, postConstruct } from 'inversify';
 import * as React from 'react';
 import { MainMenuManager } from '../common/main-menu-manager';
-import { BoardsService, BoardsServiceClient, CoreService, Port, SketchesService, ToolOutputServiceClient, ExecutableService } from '../common/protocol';
+import { BoardsService, CoreService, Port, SketchesService, ExecutableService } from '../common/protocol';
 import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
 import { FileSystemExt } from '../common/protocol/filesystem-ext';
@@ -32,7 +32,7 @@ import { ArduinoCommands } from './arduino-commands';
 import { BoardsConfig } from './boards/boards-config';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsDataStore } from './boards/boards-data-store';
-import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
+import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { EditorMode } from './editor-mode';
 import { ArduinoMenus } from './menu/arduino-menus';
@@ -44,6 +44,9 @@ import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 
 const debounce = require('lodash.debounce');
+import { OutputService } from '../common/protocol/output-service';
+import { NotificationCenter } from './notification-center';
+import { Settings } from './contributions/settings';
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
@@ -61,15 +64,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(CoreService)
     protected readonly coreService: CoreService;
 
-    @inject(ToolOutputServiceClient)
-    protected readonly toolOutputServiceClient: ToolOutputServiceClient;
-
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
-
-    // Unused but do not remove it. It's required by DI, otherwise `init` method is not called.
-    @inject(BoardsServiceClient)
-    protected readonly boardsServiceClient: BoardsServiceClient;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
     @inject(SelectionService)
     protected readonly selectionService: SelectionService;
@@ -151,6 +147,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @inject(ExecutableService)
     protected executableService: ExecutableService;
+    @inject(OutputService)
+    protected readonly outputService: OutputService;
+
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
+
+    protected invalidConfigPopup: Promise<void | 'No' | 'Yes' | undefined> | undefined;
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -195,6 +198,21 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 if (fqbn) {
                     await this.hostedPluginSupport.didStart;
                     this.startLanguageServer(fqbn, name);
+                }
+            }
+        });
+        this.notificationCenter.onConfigChanged(({ config }) => {
+            if (config) {
+                this.invalidConfigPopup = undefined;
+            } else {
+                if (!this.invalidConfigPopup) {
+                    this.invalidConfigPopup = this.messageService.error(`Your CLI configuration is invalid. Do you want to correct it now?`, 'No', 'Yes')
+                        .then(answer => {
+                            if (answer === 'Yes') {
+                                this.commandRegistry.executeCommand(Settings.Commands.OPEN_CLI_CONFIG.id)
+                            }
+                            this.invalidConfigPopup = undefined;
+                        });
                 }
             }
         });

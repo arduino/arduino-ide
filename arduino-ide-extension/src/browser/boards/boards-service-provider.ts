@@ -10,14 +10,12 @@ import {
     Board,
     BoardsService,
     BoardsPackage,
-    InstalledEvent,
-    UninstalledEvent,
-    BoardsServiceClient,
     AttachedBoardsChangeEvent
 } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 import { compareAnything } from '../theia/monaco/comparers';
+import { NotificationCenter } from '../notification-center';
 
 interface BoardMatch {
     readonly board: Board & Readonly<{ packageName: string }>;
@@ -25,7 +23,7 @@ interface BoardMatch {
 }
 
 @injectable()
-export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApplicationContribution {
+export class BoardsServiceProvider implements FrontendApplicationContribution {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -36,9 +34,12 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
     @inject(StorageService)
     protected storageService: StorageService;
 
-    protected readonly onBoardsPackageInstalledEmitter = new Emitter<InstalledEvent<BoardsPackage>>();
-    protected readonly onBoardsPackageUninstalledEmitter = new Emitter<UninstalledEvent<BoardsPackage>>();
-    protected readonly onAttachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
+    @inject(BoardsService)
+    protected boardsService: BoardsService;
+
+    @inject(NotificationCenter)
+    protected notificationCenter: NotificationCenter;
+
     protected readonly onBoardsConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
     protected readonly onAvailableBoardsChangedEmitter = new Emitter<AvailableBoard[]>();
 
@@ -54,14 +55,7 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
     protected _attachedBoards: Board[] = []; // This does not contain the `Unknown` boards. They're visible from the available ports only.
     protected _availablePorts: Port[] = [];
     protected _availableBoards: AvailableBoard[] = [];
-    protected boardsService: BoardsService;
 
-    /**
-     * Event when the state of the attached/detached boards has changed. For instance, the user have detached a physical board.
-     */
-    readonly onAttachedBoardsChanged = this.onAttachedBoardsChangedEmitter.event;
-    readonly onBoardsPackageInstalled = this.onBoardsPackageInstalledEmitter.event;
-    readonly onBoardsPackageUninstalled = this.onBoardsPackageUninstalledEmitter.event;
     /**
      * Unlike `onAttachedBoardsChanged` this even fires when the user modifies the selected board in the IDE.\
      * This even also fires, when the boards package was not available for the currently selected board,
@@ -72,31 +66,70 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
     readonly onBoardsConfigChanged = this.onBoardsConfigChangedEmitter.event;
     readonly onAvailableBoardsChanged = this.onAvailableBoardsChangedEmitter.event;
 
-    async onStart(): Promise<void> {
-        return this.loadState();
-    }
+    onStart(): void {
+        this.notificationCenter.onAttachedBoardsChanged(this.notifyAttachedBoardsChanged.bind(this));
+        this.notificationCenter.onPlatformInstalled(this.notifyPlatformInstalled.bind(this));
+        this.notificationCenter.onPlatformUninstalled(this.notifyPlatformUninstalled.bind(this));
 
-    /**
-     * When the FE connects to the BE, the BE stets the known boards and ports.\
-     * This is a DI workaround for not being able to inject the service into the client.
-     */
-    async init(boardsService: BoardsService): Promise<void> {
-        this.boardsService = boardsService;
-        const [attachedBoards, availablePorts] = await Promise.all([
+        Promise.all([
             this.boardsService.getAttachedBoards(),
-            this.boardsService.getAvailablePorts()
-        ]);
-        this._attachedBoards = attachedBoards;
-        this._availablePorts = availablePorts;
-        this.reconcileAvailableBoards().then(() => this.tryReconnect());
+            this.boardsService.getAvailablePorts(),
+            this.loadState()
+        ]).then(([attachedBoards, availablePorts]) => {
+            this._attachedBoards = attachedBoards;
+            this._availablePorts = availablePorts;
+            this.reconcileAvailableBoards().then(() => this.tryReconnect());
+        });
     }
 
-    notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
-        this.logger.info('Attached boards and available ports changed: ', JSON.stringify(event));
+    protected notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
+        if (!AttachedBoardsChangeEvent.isEmpty(event)) {
+            this.logger.info('Attached boards and available ports changed:');
+            this.logger.info(AttachedBoardsChangeEvent.toString(event));
+            this.logger.info(`------------------------------------------`);
+        }
         this._attachedBoards = event.newState.boards;
-        this.onAttachedBoardsChangedEmitter.fire(event);
         this._availablePorts = event.newState.ports;
         this.reconcileAvailableBoards().then(() => this.tryReconnect());
+    }
+
+    protected notifyPlatformInstalled(event: { item: BoardsPackage }): void {
+        this.logger.info('Boards package installed: ', JSON.stringify(event));
+        const { selectedBoard } = this.boardsConfig;
+        const { installedVersion, id } = event.item;
+        if (selectedBoard) {
+            const installedBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
+            if (installedBoard && (!selectedBoard.fqbn || selectedBoard.fqbn === installedBoard.fqbn)) {
+                this.logger.info(`Board package ${id}[${installedVersion}] was installed. Updating the FQBN of the currently selected ${selectedBoard.name} board. [FQBN: ${installedBoard.fqbn}]`);
+                this.boardsConfig = {
+                    ...this.boardsConfig,
+                    selectedBoard: installedBoard
+                };
+                return;
+            }
+            // Trigger a board re-set. See: https://github.com/arduino/arduino-cli/issues/954
+            // E.g: install `adafruit:avr`, then select `adafruit:avr:adafruit32u4` board, and finally install the required `arduino:avr`
+            this.boardsConfig = this.boardsConfig;
+        }
+    }
+
+    protected notifyPlatformUninstalled(event: { item: BoardsPackage }): void {
+        this.logger.info('Boards package uninstalled: ', JSON.stringify(event));
+        const { selectedBoard } = this.boardsConfig;
+        if (selectedBoard && selectedBoard.fqbn) {
+            const uninstalledBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
+            if (uninstalledBoard && uninstalledBoard.fqbn === selectedBoard.fqbn) {
+                this.logger.info(`Board package ${event.item.id} was uninstalled. Discarding the FQBN of the currently selected ${selectedBoard.name} board.`);
+                const selectedBoardWithoutFqbn = {
+                    name: selectedBoard.name
+                    // No FQBN
+                };
+                this.boardsConfig = {
+                    ...this.boardsConfig,
+                    selectedBoard: selectedBoardWithoutFqbn
+                };
+            }
+        }
     }
 
     protected async tryReconnect(): Promise<boolean> {
@@ -125,43 +158,6 @@ export class BoardsServiceClientImpl implements BoardsServiceClient, FrontendApp
             }
         }
         return false;
-    }
-
-    notifyInstalled(event: InstalledEvent<BoardsPackage>): void {
-        this.logger.info('Boards package installed: ', JSON.stringify(event));
-        this.onBoardsPackageInstalledEmitter.fire(event);
-        const { selectedBoard } = this.boardsConfig;
-        const { installedVersion, id } = event.item;
-        if (selectedBoard) {
-            const installedBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
-            if (installedBoard && (!selectedBoard.fqbn || selectedBoard.fqbn === installedBoard.fqbn)) {
-                this.logger.info(`Board package ${id}[${installedVersion}] was installed. Updating the FQBN of the currently selected ${selectedBoard.name} board. [FQBN: ${installedBoard.fqbn}]`);
-                this.boardsConfig = {
-                    ...this.boardsConfig,
-                    selectedBoard: installedBoard
-                };
-            }
-        }
-    }
-
-    notifyUninstalled(event: UninstalledEvent<BoardsPackage>): void {
-        this.logger.info('Boards package uninstalled: ', JSON.stringify(event));
-        this.onBoardsPackageUninstalledEmitter.fire(event);
-        const { selectedBoard } = this.boardsConfig;
-        if (selectedBoard && selectedBoard.fqbn) {
-            const uninstalledBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
-            if (uninstalledBoard && uninstalledBoard.fqbn === selectedBoard.fqbn) {
-                this.logger.info(`Board package ${event.item.id} was uninstalled. Discarding the FQBN of the currently selected ${selectedBoard.name} board.`);
-                const selectedBoardWithoutFqbn = {
-                    name: selectedBoard.name
-                    // No FQBN
-                };
-                this.boardsConfig = {
-                    ...this.boardsConfig,
-                    selectedBoard: selectedBoardWithoutFqbn
-                };
-            }
-        }
     }
 
     set boardsConfig(config: BoardsConfig.Config) {

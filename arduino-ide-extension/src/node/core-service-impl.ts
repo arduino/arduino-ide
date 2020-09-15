@@ -1,12 +1,12 @@
-import { inject, injectable, postConstruct } from 'inversify';
 import { FileUri } from '@theia/core/lib/node/file-uri';
-import { CoreService, CoreServiceClient } from '../common/protocol/core-service';
+import { inject, injectable } from 'inversify';
+import { dirname } from 'path';
+import { CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
-import { BoardsService } from '../common/protocol/boards-service';
 import { CoreClientProvider } from './core-client-provider';
-import * as path from 'path';
-import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { UploadReq, UploadResp, BurnBootloaderReq, BurnBootloaderResp } from './cli-protocol/commands/upload_pb';
+import { OutputService } from '../common/protocol/output-service';
+import { NotificationServiceServer } from '../common/protocol';
 
 @injectable()
 export class CoreServiceImpl implements CoreService {
@@ -14,29 +14,17 @@ export class CoreServiceImpl implements CoreService {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
+    @inject(OutputService)
+    protected readonly outputService: OutputService;
 
-    @inject(BoardsService)
-    protected readonly boardsService: BoardsService;
-
-    @inject(ToolOutputServiceServer)
-    protected readonly toolOutputService: ToolOutputServiceServer;
-
-    protected client: CoreServiceClient | undefined;
-
-    @postConstruct()
-    protected init(): void {
-        this.coreClientProvider.onIndexUpdated(() => {
-            if (this.client) {
-                this.client.notifyIndexUpdated();
-            }
-        })
-    }
+    @inject(NotificationServiceServer)
+    protected readonly notificationService: NotificationServiceServer;
 
     async compile(options: CoreService.Compile.Options): Promise<void> {
-        this.toolOutputService.append({ tool: 'compile', chunk: 'Compiling...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
+        this.outputService.append({ name: 'compile', chunk: 'Compiling...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
         const sketchFilePath = FileUri.fsPath(sketchUri);
-        const sketchpath = path.dirname(sketchFilePath);
+        const sketchpath = dirname(sketchFilePath);
 
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
@@ -61,25 +49,25 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: CompileResp) => {
-                    this.toolOutputService.append({ tool: 'compile', chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
-                    this.toolOutputService.append({ tool: 'compile', chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
+                    this.outputService.append({ name: 'compile', chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
+                    this.outputService.append({ name: 'compile', chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.toolOutputService.append({ tool: 'compile', chunk: '\n--------------------------\nCompilation complete.\n' });
+            this.outputService.append({ name: 'compile', chunk: '\n--------------------------\nCompilation complete.\n' });
         } catch (e) {
-            this.toolOutputService.append({ tool: 'compile', chunk: `Compilation error: ${e}\n`, severity: 'error' });
+            this.outputService.append({ name: 'compile', chunk: `Compilation error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
 
     async upload(options: CoreService.Upload.Options): Promise<void> {
         await this.compile(options);
-        this.toolOutputService.append({ tool: 'upload', chunk: 'Uploading...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
+        this.outputService.append({ name: 'upload', chunk: 'Uploading...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
         const sketchFilePath = FileUri.fsPath(sketchUri);
-        const sketchpath = path.dirname(sketchFilePath);
+        const sketchpath = dirname(sketchFilePath);
 
         const coreClient = await this.coreClientProvider.client();
         if (!coreClient) {
@@ -106,15 +94,15 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (resp: UploadResp) => {
-                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
-                    this.toolOutputService.append({ tool: 'upload', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                    this.outputService.append({ name: 'upload', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.outputService.append({ name: 'upload', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.toolOutputService.append({ tool: 'upload', chunk: '\n--------------------------\nUpload complete.\n' });
+            this.outputService.append({ name: 'upload', chunk: '\n--------------------------\nUpload complete.\n' });
         } catch (e) {
-            this.toolOutputService.append({ tool: 'upload', chunk: `Upload error: ${e}\n`, severity: 'error' });
+            this.outputService.append({ name: 'upload', chunk: `Upload error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
@@ -141,24 +129,16 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (resp: BurnBootloaderResp) => {
-                    this.toolOutputService.append({ tool: 'bootloader', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
-                    this.toolOutputService.append({ tool: 'bootloader', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                    this.outputService.append({ name: 'bootloader', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.outputService.append({ name: 'bootloader', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
         } catch (e) {
-            this.toolOutputService.append({ tool: 'bootloader', chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
+            this.outputService.append({ name: 'bootloader', chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
             throw e;
         }
-    }
-
-    setClient(client: CoreServiceClient | undefined): void {
-        this.client = client;
-    }
-
-    dispose(): void {
-        this.client = undefined;
     }
 
 }

@@ -11,9 +11,10 @@ import { MessageClient } from '@theia/core/lib/common/message-service-protocol';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { StorageService } from '@theia/core/lib/browser/storage-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { BoardsService, Board, Port, BoardsPackage, BoardDetails, BoardsServiceClient } from '../../common/protocol';
-import { BoardsServiceClientImpl, AvailableBoard } from '../../browser/boards/boards-service-client-impl';
+import { BoardsService, Board, Port, BoardsPackage, BoardDetails } from '../../common/protocol';
+import { BoardsServiceProvider, AvailableBoard } from '../../browser/boards/boards-service-provider';
 import { BoardsConfig } from '../../browser/boards/boards-config';
+import { NotificationCenter } from '../../browser/notification-center';
 
 // tslint:disable: no-unused-expression   
 
@@ -33,14 +34,14 @@ describe('boards-service-client-impl', () => {
         let stub: sinon.SinonStub;
 
         let server: MockBoardsService;
-        let client: BoardsServiceClientImpl;
+        let client: BoardsServiceProvider;
+        let notificationCenter: NotificationCenter;
 
         beforeEach(() => {
             stub = sinon.stub(os, 'isOSX').value(true);
             const container = init();
             server = container.get(MockBoardsService);
-            client = container.get(BoardsServiceClientImpl);
-            server.setClient(client);
+            client = container.get(BoardsServiceProvider);
         });
 
         afterEach(() => {
@@ -165,7 +166,7 @@ function init(): Container {
     container.bind(ILogger).toService(MockLogger);
     container.bind(MockStorageService).toSelf();
     container.bind(StorageService).toService(MockStorageService);
-    container.bind(BoardsServiceClientImpl).toSelf();
+    container.bind(BoardsServiceProvider).toSelf();
     container.bind(MessageClient).toSelf().inSingletonScope();
     container.bind(MessageService).toSelf().inSingletonScope();
     return container;
@@ -291,10 +292,6 @@ export class MockBoardsService implements BoardsService {
     dispose(): void {
         this.reset();
         this.client = undefined;
-    }
-
-    setClient(client: BoardsServiceClient | undefined): void {
-        this.client = client;
     }
 
 }

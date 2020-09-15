@@ -1,11 +1,11 @@
 import { injectable, inject } from 'inversify';
-import { HostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
+import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
 import { PluginPackage, PluginContribution } from '@theia/plugin-ext/lib/common/plugin-protocol';
-import { CLI_CONFIG } from './cli-config';
-import { ConfigServiceImpl } from './config-service-impl';
+import { CLI_CONFIG } from '../../cli-config';
+import { ConfigServiceImpl } from '../../config-service-impl';
 
 @injectable()
-export class ArduinoHostedPluginReader extends HostedPluginReader {
+export class HostedPluginReader extends TheiaHostedPluginReader {
 
     @inject(ConfigServiceImpl)
     protected readonly configService: ConfigServiceImpl;

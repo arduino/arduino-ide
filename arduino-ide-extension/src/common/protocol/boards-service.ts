@@ -1,8 +1,7 @@
 import { isWindows, isOSX } from '@theia/core/lib/common/os';
-import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { naturalCompare } from './../utils';
 import { Searchable } from './searchable';
-import { Installable, InstallableClient } from './installable';
+import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
 
 export interface AttachedBoardsChangeEvent {
@@ -10,6 +9,45 @@ export interface AttachedBoardsChangeEvent {
     readonly newState: Readonly<{ boards: Board[], ports: Port[] }>;
 }
 export namespace AttachedBoardsChangeEvent {
+
+    export function isEmpty(event: AttachedBoardsChangeEvent): boolean {
+        const { detached, attached } = diff(event);
+        return !!detached.boards.length && !!detached.ports.length && !!attached.boards.length && !!attached.ports.length;
+    }
+
+    export function toString(event: AttachedBoardsChangeEvent): string {
+        let rows: string[] = [];
+        if (!isEmpty(event)) {
+            const { attached, detached } = diff(event);
+            const visitedAttachedPorts: Port[] = [];
+            const visitedDetachedPorts: Port[] = [];
+            for (const board of attached.boards) {
+                const port = board.port ? ` on ${Port.toString(board.port, { useLabel: true })}` : '';
+                rows.push(` - Attached board: ${Board.toString(board)}${port}`);
+                if (board.port) {
+                    visitedAttachedPorts.push(board.port);
+                }
+            }
+            for (const board of detached.boards) {
+                const port = board.port ? ` from ${Port.toString(board.port, { useLabel: true })}` : '';
+                rows.push(` - Detached board: ${Board.toString(board)}${port}`);
+                if (board.port) {
+                    visitedDetachedPorts.push(board.port);
+                }
+            }
+            for (const port of attached.ports) {
+                if (!visitedAttachedPorts.find(p => Port.sameAs(port, p))) {
+                    rows.push(` - New port is available on ${Port.toString(port, { useLabel: true })}`);
+                }
+            }
+            for (const port of detached.ports) {
+                if (!visitedDetachedPorts.find(p => Port.sameAs(port, p))) {
+                    rows.push(` - Port is no longer available on ${Port.toString(port, { useLabel: true })}`);
+                }
+            }
+        }
+        return rows.length ? rows.join('\n') : 'No changes.';
+    }
 
     export function diff(event: AttachedBoardsChangeEvent): Readonly<{
         attached: {
@@ -45,14 +83,9 @@ export namespace AttachedBoardsChangeEvent {
 
 }
 
-export const BoardsServiceClient = Symbol('BoardsServiceClient');
-export interface BoardsServiceClient extends InstallableClient<BoardsPackage> {
-    notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
-}
-
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService extends Installable<BoardsPackage>, Searchable<BoardsPackage>, JsonRpcServer<BoardsServiceClient> {
+export interface BoardsService extends Installable<BoardsPackage>, Searchable<BoardsPackage> {
     getAttachedBoards(): Promise<Board[]>;
     getAvailablePorts(): Promise<Port[]>;
     getBoardDetails(options: { fqbn: string }): Promise<BoardDetails>;
@@ -185,9 +218,24 @@ export interface BoardsPackage extends ArduinoComponent {
     readonly boards: Board[];
 }
 export namespace BoardsPackage {
+
     export function equals(left: BoardsPackage, right: BoardsPackage): boolean {
         return left.id === right.id;
     }
+
+    export function contains(selectedBoard: Board, { id, boards }: BoardsPackage): boolean {
+        if (boards.some(board => Board.sameAs(board, selectedBoard))) {
+            return true;
+        }
+        if (selectedBoard.fqbn) {
+            const [platform, architecture] = selectedBoard.fqbn.split(':');
+            if (platform && architecture) {
+                return `${platform}:${architecture}` === id;
+            }
+        }
+        return false;
+    }
+
 }
 
 export interface Board {

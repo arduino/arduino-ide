@@ -1,14 +1,8 @@
-import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Programmer } from './boards-service';
-
-export const CoreServiceClient = Symbol('CoreServiceClient');
-export interface CoreServiceClient {
-    notifyIndexUpdated(): void;
-}
 
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
-export interface CoreService extends JsonRpcServer<CoreServiceClient> {
+export interface CoreService {
     compile(options: CoreService.Compile.Options): Promise<void>;
     upload(options: CoreService.Upload.Options): Promise<void>;
     burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;

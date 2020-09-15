@@ -4,9 +4,8 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { ReactWidget, Message } from '@theia/core/lib/browser';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
-import { CoreServiceClientImpl } from '../core-service-client-impl';
-import { ArduinoDaemonClientImpl } from '../arduino-daemon-client-impl';
+import { BoardsServiceProvider } from './boards-service-provider';
+import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class BoardsConfigDialogWidget extends ReactWidget {
@@ -14,14 +13,11 @@ export class BoardsConfigDialogWidget extends ReactWidget {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
-    @inject(CoreServiceClientImpl)
-    protected readonly coreServiceClient: CoreServiceClientImpl;
-
-    @inject(ArduinoDaemonClientImpl)
-    protected readonly daemonClient: ArduinoDaemonClientImpl;
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
 
     protected readonly onBoardConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
     readonly onBoardConfigChanged = this.onBoardConfigChangedEmitter.event;
@@ -44,10 +40,8 @@ export class BoardsConfigDialogWidget extends ReactWidget {
     protected render(): React.ReactNode {
         return <div className='selectBoardContainer'>
             <BoardsConfig
-                boardsService={this.boardsService}
-                boardsServiceClient={this.boardsServiceClient}
-                coreServiceClient={this.coreServiceClient}
-                daemonClient={this.daemonClient}
+                boardsServiceProvider={this.boardsServiceClient}
+                notificationCenter={this.notificationCenter}
                 onConfigChange={this.fireConfigChanged}
                 onFocusNodeSet={this.setFocusNode} />
         </div>;

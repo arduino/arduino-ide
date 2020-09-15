@@ -4,7 +4,7 @@ import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
 
 @injectable()
@@ -16,8 +16,8 @@ export class VerifySketch extends SketchContribution {
     @inject(BoardsDataStore)
     protected readonly boardsDataStore: BoardsDataStore;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
     @inject(OutputChannelManager)
     protected readonly outputChannelManager: OutputChannelManager;

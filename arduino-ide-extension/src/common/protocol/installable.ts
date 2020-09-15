@@ -1,17 +1,6 @@
 import { naturalCompare } from './../utils';
 import { ArduinoComponent } from './arduino-component';
 
-export interface InstalledEvent<T extends ArduinoComponent> {
-    readonly item: Readonly<T>;
-}
-export interface UninstalledEvent<T extends ArduinoComponent> {
-    readonly item: Readonly<T>;
-}
-export interface InstallableClient<T extends ArduinoComponent> {
-    notifyInstalled(event: InstalledEvent<T>): void
-    notifyUninstalled(event: UninstalledEvent<T>): void
-}
-
 export interface Installable<T extends ArduinoComponent> {
     /**
      * If `options.version` is specified, that will be installed. Otherwise, `item.availableVersions[0]`.

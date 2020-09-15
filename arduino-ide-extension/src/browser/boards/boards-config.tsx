@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { DisposableCollection } from '@theia/core';
-import { BoardsService, Board, Port, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
-import { CoreServiceClientImpl } from '../core-service-client-impl';
-import { ArduinoDaemonClientImpl } from '../arduino-daemon-client-impl';
+import { notEmpty } from '@theia/core/lib/common/objects';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { Board, Port, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
+import { BoardsServiceProvider } from './boards-service-provider';
+import { NotificationCenter } from '../notification-center';
+import { MaybePromise } from '@theia/core';
 
 export namespace BoardsConfig {
 
@@ -13,10 +14,8 @@ export namespace BoardsConfig {
     }
 
     export interface Props {
-        readonly boardsService: BoardsService;
-        readonly boardsServiceClient: BoardsServiceClientImpl;
-        readonly coreServiceClient: CoreServiceClientImpl;
-        readonly daemonClient: ArduinoDaemonClientImpl;
+        readonly boardsServiceProvider: BoardsServiceProvider;
+        readonly notificationCenter: NotificationCenter;
         readonly onConfigChange: (config: Config) => void;
         readonly onFocusNodeSet: (element: HTMLElement | undefined) => void;
     }
@@ -70,7 +69,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     constructor(props: BoardsConfig.Props) {
         super(props);
 
-        const { boardsConfig } = props.boardsServiceClient;
+        const { boardsConfig } = props.boardsServiceProvider;
         this.state = {
             searchResults: [],
             knownPorts: [],
@@ -82,18 +81,17 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
 
     componentDidMount() {
         this.updateBoards();
-        this.props.boardsService.getAvailablePorts().then(ports => this.updatePorts(ports));
-        const { boardsServiceClient, coreServiceClient, daemonClient } = this.props;
+        this.updatePorts(this.props.boardsServiceProvider.availableBoards.map(({ port }) => port).filter(notEmpty));
         this.toDispose.pushAll([
-            boardsServiceClient.onAttachedBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
-            boardsServiceClient.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
+            this.props.notificationCenter.onAttachedBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
+            this.props.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
                 this.setState({ selectedBoard, selectedPort }, () => this.fireConfigChanged());
             }),
-            boardsServiceClient.onBoardsPackageInstalled(() => this.updateBoards(this.state.query)),
-            boardsServiceClient.onBoardsPackageUninstalled(() => this.updateBoards(this.state.query)),
-            coreServiceClient.onIndexUpdated(() => this.updateBoards(this.state.query)),
-            daemonClient.onDaemonStarted(() => this.updateBoards(this.state.query)),
-            daemonClient.onDaemonStopped(() => this.setState({ searchResults: [] }))
+            this.props.notificationCenter.onPlatformInstalled(() => this.updateBoards(this.state.query)),
+            this.props.notificationCenter.onPlatformUninstalled(() => this.updateBoards(this.state.query)),
+            this.props.notificationCenter.onIndexUpdated(() => this.updateBoards(this.state.query)),
+            this.props.notificationCenter.onDaemonStarted(() => this.updateBoards(this.state.query)),
+            this.props.notificationCenter.onDaemonStopped(() => this.setState({ searchResults: [] }))
         ]);
     }
 
@@ -127,14 +125,14 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     }
 
     protected queryBoards = (options: { query?: string } = {}): Promise<Array<Board & { packageName: string }>> => {
-        return this.props.boardsServiceClient.searchBoards(options);
+        return this.props.boardsServiceProvider.searchBoards(options);
     }
 
-    protected get availablePorts(): Promise<Port[]> {
-        return this.props.boardsService.getAvailablePorts();
+    protected get availablePorts(): MaybePromise<Port[]> {
+        return this.props.boardsServiceProvider.availableBoards.map(({ port }) => port).filter(notEmpty);
     }
 
-    protected queryPorts = async (availablePorts: Promise<Port[]> = this.availablePorts) => {
+    protected queryPorts = async (availablePorts: MaybePromise<Port[]> = this.availablePorts) => {
         const ports = await availablePorts;
         return { knownPorts: ports.sort(Port.compare) };
     }

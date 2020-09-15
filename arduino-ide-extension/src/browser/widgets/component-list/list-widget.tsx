@@ -10,17 +10,13 @@ import { Searchable } from '../../../common/protocol/searchable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
-import { CoreServiceClientImpl } from '../../core-service-client-impl';
-import { ArduinoDaemonClientImpl } from '../../arduino-daemon-client-impl';
+import { NotificationCenter } from '../../notification-center';
 
 @injectable()
 export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget {
 
-    @inject(CoreServiceClientImpl)
-    protected readonly coreServiceClient: CoreServiceClientImpl;
-
-    @inject(ArduinoDaemonClientImpl)
-    protected readonly daemonClient: ArduinoDaemonClientImpl;
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
 
     /**
      * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
@@ -49,9 +45,9 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
     protected init(): void {
         this.update();
         this.toDispose.pushAll([
-            this.coreServiceClient.onIndexUpdated(() => this.refresh(undefined)),
-            this.daemonClient.onDaemonStarted(() => this.refresh(undefined)),
-            this.daemonClient.onDaemonStopped(() => this.refresh(undefined))
+            this.notificationCenter.onIndexUpdated(() => this.refresh(undefined)),
+            this.notificationCenter.onDaemonStarted(() => this.refresh(undefined)),
+            this.notificationCenter.onDaemonStopped(() => this.refresh(undefined))
         ]);
     }
 

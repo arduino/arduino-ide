@@ -16,9 +16,9 @@ import {
 } from '@theia/core/lib/browser/quick-open';
 import { naturalCompare } from '../../../common/utils';
 import { BoardsService, Port, Board, ConfigOption, ConfigValue } from '../../../common/protocol';
-import { CoreServiceClientImpl } from '../../core-service-client-impl';
 import { BoardsDataStore } from '../boards-data-store';
-import { BoardsServiceClientImpl, AvailableBoard } from '../boards-service-client-impl';
+import { BoardsServiceProvider, AvailableBoard } from '../boards-service-provider';
+import { NotificationCenter } from '../../notification-center';
 
 @injectable()
 export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenModel, QuickOpenHandler, CommandContribution, KeybindingContribution, Command {
@@ -38,14 +38,14 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
     @inject(BoardsDataStore)
     protected readonly boardsDataStore: BoardsDataStore;
 
-    @inject(CoreServiceClientImpl)
-    protected coreServiceClient: CoreServiceClientImpl;
+    @inject(NotificationCenter)
+    protected notificationCenter: NotificationCenter;
 
     protected isOpen: boolean = false;
     protected currentQuery: string = '';
@@ -59,7 +59,7 @@ export class BoardsQuickOpenService implements QuickOpenContribution, QuickOpenM
     // `init` name is used by the `QuickOpenHandler`.
     @postConstruct()
     protected postConstruct(): void {
-        this.coreServiceClient.onIndexUpdated(() => this.update(this.availableBoards));
+        this.notificationCenter.onIndexUpdated(() => this.update(this.availableBoards));
         this.boardsServiceClient.onAvailableBoardsChanged(availableBoards => this.update(availableBoards));
         this.update(this.boardsServiceClient.availableBoards);
     }

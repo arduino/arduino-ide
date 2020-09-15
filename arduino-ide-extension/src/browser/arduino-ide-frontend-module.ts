@@ -8,17 +8,14 @@ import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/w
 import { FrontendApplicationContribution, FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application'
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
-import { LibraryServiceServer, LibraryServiceServerPath } from '../common/protocol/library-service';
-import { BoardsService, BoardsServicePath, BoardsServiceClient } from '../common/protocol/boards-service';
+import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
+import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
 import { SketchesService, SketchesServicePath } from '../common/protocol/sketches-service';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
-import { CoreService, CoreServicePath, CoreServiceClient } from '../common/protocol/core-service';
+import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
-import { ToolOutputServiceClient } from '../common/protocol/tool-output-service';
-import { ToolOutputService } from '../common/protocol/tool-output-service';
-import { ToolOutputServiceClientImpl } from './tool-output/client-service-impl';
-import { BoardsServiceClientImpl } from './boards/boards-service-client-impl';
+import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { WorkspaceService } from './theia/workspace/workspace-service';
 import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
@@ -50,7 +47,7 @@ import { SearchInWorkspaceFrontendContribution } from './theia/search-in-workspa
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
 import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
 import { MonitorServicePath, MonitorService, MonitorServiceClient } from '../common/protocol/monitor-service';
-import { ConfigService, ConfigServicePath, ConfigServiceClient } from '../common/protocol/config-service';
+import { ConfigService, ConfigServicePath } from '../common/protocol/config-service';
 import { MonitorWidget } from './monitor/monitor-widget';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
 import { MonitorConnection } from './monitor/monitor-connection';
@@ -67,8 +64,7 @@ import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
-import { ArduinoDaemonClientImpl } from './arduino-daemon-client-impl';
-import { ArduinoDaemonClient, ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
+import { ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser';
 import { EditorManager } from './theia/editor/editor-manager';
 import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from './theia/core/connection-status-service';
@@ -76,8 +72,6 @@ import {
     FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
     ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution
 } from '@theia/core/lib/browser/connection-status-service';
-import { ConfigServiceClientImpl } from './config-service-client-impl';
-import { CoreServiceClientImpl } from './core-service-client-impl';
 import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
 import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core';
@@ -116,7 +110,6 @@ import { OutputWidget } from './theia/output/output-widget';
 import { BurnBootloader } from './contributions/burn-bootloader';
 import { ExamplesServicePath, ExamplesService } from '../common/protocol/examples-service';
 import { BuiltInExamples, LibraryExamples } from './contributions/examples';
-import { LibraryServiceProvider } from './library/library-service-provider';
 import { IncludeLibrary } from './contributions/include-library';
 import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/common/output-channel';
 import { OutputChannelManager } from './theia/output/output-channel';
@@ -124,6 +117,10 @@ import { OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl, Ou
 import { ExecutableService, ExecutableServicePath } from '../common/protocol';
 import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
 import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
+import { OutputServiceImpl } from './output-service-impl';
+import { OutputServicePath, OutputService } from '../common/protocol/output-service';
+import { NotificationCenter } from './notification-center';
+import { NotificationServicePath, NotificationServiceServer } from '../common/protocol';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -153,8 +150,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ListItemRenderer).toSelf().inSingletonScope();
 
     // Library service
-    bind(LibraryServiceProvider).toSelf().inSingletonScope();
-    bind(LibraryServiceServer).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServiceServerPath)).inSingletonScope();
+    bind(LibraryService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, LibraryServicePath)).inSingletonScope();
 
     // Library list widget
     bind(LibraryListWidget).toSelf();
@@ -170,34 +166,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(SketchesServiceClientImpl).toSelf().inSingletonScope();
 
     // Config service
-    bind(ConfigService).toDynamicValue(context => {
-        const connection = context.container.get(WebSocketConnectionProvider);
-        const client = context.container.get(ConfigServiceClientImpl);
-        return connection.createProxy(ConfigServicePath, client);
-    }).inSingletonScope();
-    bind(ConfigServiceClientImpl).toSelf().inSingletonScope();
-    bind(ConfigServiceClient).toDynamicValue(context => {
-        const client = context.container.get(ConfigServiceClientImpl);
-        WebSocketConnectionProvider.createProxy(context.container, ConfigServicePath, client);
-        return client;
-    }).inSingletonScope();
+    bind(ConfigService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ConfigServicePath)).inSingletonScope();
 
     // Boards service
-    bind(BoardsService).toDynamicValue(context => {
-        const connection = context.container.get(WebSocketConnectionProvider);
-        const client = context.container.get(BoardsServiceClientImpl);
-        return connection.createProxy(BoardsServicePath, client);
-    }).inSingletonScope();
+    bind(BoardsService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath)).inSingletonScope();
     // Boards service client to receive and delegate notifications from the backend.
-    bind(BoardsServiceClientImpl).toSelf().inSingletonScope();
-    bind(FrontendApplicationContribution).toService(BoardsServiceClientImpl);
-    bind(BoardsServiceClient).toDynamicValue(async context => {
-        const client = context.container.get(BoardsServiceClientImpl);
-        const service = context.container.get<BoardsService>(BoardsService);
-        await client.init(service);
-        WebSocketConnectionProvider.createProxy(context.container, BoardsServicePath, client);
-        return client;
-    }).inSingletonScope();
+    bind(BoardsServiceProvider).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(BoardsServiceProvider);
 
     // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
     bind(FrontendApplicationContribution).to(BoardsDataMenuUpdater).inSingletonScope();
@@ -230,26 +205,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
 
     // Core service
-    bind(CoreService).toDynamicValue(context => {
-        const connection = context.container.get(WebSocketConnectionProvider);
-        const client = context.container.get(CoreServiceClientImpl);
-        return connection.createProxy(CoreServicePath, client);
-    }).inSingletonScope();
-    // Core service client to receive and delegate notifications when the index or the library index has been updated.
-    bind(CoreServiceClientImpl).toSelf().inSingletonScope();
-    bind(CoreServiceClient).toDynamicValue(context => {
-        const client = context.container.get(CoreServiceClientImpl);
-        WebSocketConnectionProvider.createProxy(context.container, CoreServicePath, client);
-        return client;
-    }).inSingletonScope();
-
-    // Tool output service client
-    bind(ToolOutputServiceClientImpl).toSelf().inSingletonScope();
-    bind(ToolOutputServiceClient).toDynamicValue(context => {
-        const client = context.container.get(ToolOutputServiceClientImpl);
-        WebSocketConnectionProvider.createProxy(context.container, ToolOutputService.SERVICE_PATH, client);
-        return client;
-    }).inSingletonScope();
+    bind(CoreService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, CoreServicePath)).inSingletonScope();
 
     // Serial monitor
     bind(MonitorModel).toSelf().inSingletonScope();
@@ -341,18 +297,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ShellLayoutRestorer).toSelf().inSingletonScope();
     rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
 
-    // Arduino daemon client. Receives notifications from the backend if the CLI daemon process has been restarted.
-    bind(ArduinoDaemon).toDynamicValue(context => {
-        const connection = context.container.get(WebSocketConnectionProvider);
-        const client = context.container.get(ArduinoDaemonClientImpl);
-        return connection.createProxy(ArduinoDaemonPath, client);
-    }).inSingletonScope();
-    bind(ArduinoDaemonClientImpl).toSelf().inSingletonScope();
-    bind(ArduinoDaemonClient).toDynamicValue(context => {
-        const client = context.container.get(ArduinoDaemonClientImpl);
-        WebSocketConnectionProvider.createProxy(context.container, ArduinoDaemonPath, client);
-        return client;
-    }).inSingletonScope();
+    bind(ArduinoDaemon).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ArduinoDaemonPath)).inSingletonScope();
 
     // File-system extension
     bind(FileSystemExt).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, FileSystemExtPath)).inSingletonScope();
@@ -379,4 +324,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, BuiltInExamples);
     Contribution.configure(bind, LibraryExamples);
     Contribution.configure(bind, IncludeLibrary);
+
+    bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
+        WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);
+        return outputService;
+    });
+    bind(OutputService).toService(OutputServiceImpl);
+
+    bind(NotificationCenter).toSelf().inSingletonScope();
+    bind(NotificationServiceServer).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, NotificationServicePath)).inSingletonScope();
 });

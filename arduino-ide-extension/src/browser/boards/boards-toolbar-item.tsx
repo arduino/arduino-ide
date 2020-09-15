@@ -5,7 +5,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { ArduinoCommands } from '../arduino-commands';
-import { BoardsServiceClientImpl, AvailableBoard } from './boards-service-client-impl';
+import { BoardsServiceProvider, AvailableBoard } from './boards-service-provider';
 
 export interface BoardsDropDownListCoords {
     readonly top: number;
@@ -181,7 +181,7 @@ export class BoardsToolBarItem extends React.Component<BoardsToolBarItem.Props, 
 export namespace BoardsToolBarItem {
 
     export interface Props {
-        readonly boardsServiceClient: BoardsServiceClientImpl;
+        readonly boardsServiceClient: BoardsServiceProvider;
         readonly commands: CommandRegistry;
     }
 

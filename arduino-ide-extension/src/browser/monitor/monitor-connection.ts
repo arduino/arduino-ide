@@ -4,11 +4,12 @@ import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { MonitorService, MonitorConfig, MonitorError, Status, MonitorReadEvent } from '../../common/protocol/monitor-service';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { Port, Board, BoardsService, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
+import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class MonitorConnection {
@@ -25,8 +26,11 @@ export class MonitorConnection {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    @inject(BoardsServiceClientImpl)
-    protected boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceProvider: BoardsServiceProvider;
+
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
 
     @inject(MessageService)
     protected messageService: MessageService;
@@ -110,11 +114,11 @@ export class MonitorConnection {
                 }
             }
         });
-        this.boardsServiceClient.onBoardsConfigChanged(this.handleBoardConfigChange.bind(this));
-        this.boardsServiceClient.onAttachedBoardsChanged(event => {
+        this.boardsServiceProvider.onBoardsConfigChanged(this.handleBoardConfigChange.bind(this));
+        this.notificationCenter.onAttachedBoardsChanged(event => {
             if (this.autoConnect && this.connected) {
-                const { boardsConfig } = this.boardsServiceClient;
-                if (this.boardsServiceClient.canUploadTo(boardsConfig, { silent: false })) {
+                const { boardsConfig } = this.boardsServiceProvider;
+                if (this.boardsServiceProvider.canUploadTo(boardsConfig, { silent: false })) {
                     const { attached } = AttachedBoardsChangeEvent.diff(event);
                     if (attached.boards.some(board => !!board.port && BoardsConfig.Config.sameAs(boardsConfig, board))) {
                         const { selectedBoard: board, selectedPort: port } = boardsConfig;
@@ -128,7 +132,7 @@ export class MonitorConnection {
         // Handles the `baudRate` changes by reconnecting if required.
         this.monitorModel.onChange(({ property }) => {
             if (property === 'baudRate' && this.autoConnect && this.connected) {
-                const { boardsConfig } = this.boardsServiceClient;
+                const { boardsConfig } = this.boardsServiceProvider;
                 this.handleBoardConfigChange(boardsConfig);
             }
         });
@@ -154,7 +158,7 @@ export class MonitorConnection {
             // We have to make sure the previous boards config has been restored.
             // Otherwise, we might start the auto-connection without configured boards.
             this.applicationState.reachedState('started_contributions').then(() => {
-                const { boardsConfig } = this.boardsServiceClient;
+                const { boardsConfig } = this.boardsServiceProvider;
                 this.handleBoardConfigChange(boardsConfig);
             });
         } else if (oldValue && !value) {
@@ -227,7 +231,7 @@ export class MonitorConnection {
 
     protected async handleBoardConfigChange(boardsConfig: BoardsConfig.Config): Promise<void> {
         if (this.autoConnect) {
-            if (this.boardsServiceClient.canUploadTo(boardsConfig, { silent: false })) {
+            if (this.boardsServiceProvider.canUploadTo(boardsConfig, { silent: false })) {
                 // Instead of calling `getAttachedBoards` and filtering for `AttachedSerialBoard` we have to check the available ports.
                 // The connected board might be unknown. See: https://github.com/arduino/arduino-pro-ide/issues/127#issuecomment-563251881
                 this.boardsService.getAvailablePorts().then(ports => {

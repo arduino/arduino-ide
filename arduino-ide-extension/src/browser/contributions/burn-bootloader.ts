@@ -4,7 +4,7 @@ import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { MonitorConnection } from '../monitor/monitor-connection';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry } from './contribution';
 
 @injectable()
@@ -19,8 +19,8 @@ export class BurnBootloader extends SketchContribution {
     @inject(BoardsDataStore)
     protected readonly boardsDataStore: BoardsDataStore;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClientImpl: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
     @inject(OutputChannelManager)
     protected readonly outputChannelManager: OutputChannelManager;

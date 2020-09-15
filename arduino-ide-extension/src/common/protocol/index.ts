@@ -9,6 +9,7 @@ export * from './library-service';
 export * from './monitor-service';
 export * from './searchable';
 export * from './sketches-service';
-export * from './tool-output-service';
 export * from './examples-service';
 export * from './executable-service';
+export * from './output-service';
+export * from './notification-service';

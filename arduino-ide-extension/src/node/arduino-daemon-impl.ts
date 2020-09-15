@@ -9,7 +9,7 @@ import { Event, Emitter } from '@theia/core/lib/common/event';
 import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
-import { ArduinoDaemon, ArduinoDaemonClient, ToolOutputServiceServer } from '../common/protocol';
+import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { DaemonLog } from './daemon-log';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath, spawnCommand } from './exec-util';
@@ -21,13 +21,12 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
     @named('daemon')
     protected readonly logger: ILogger
 
-    @inject(ToolOutputServiceServer)
-    protected readonly toolOutputService: ToolOutputServiceServer;
-
     @inject(EnvVariablesServer)
     protected readonly envVariablesServer: EnvVariablesServer;
 
-    protected readonly clients: Array<ArduinoDaemonClient> = [];
+    @inject(NotificationServiceServer)
+    protected readonly notificationService: NotificationServiceServer;
+
     protected readonly toDispose = new DisposableCollection();
     protected readonly onDaemonStartedEmitter = new Emitter<void>();
     protected readonly onDaemonStoppedEmitter = new Emitter<void>();
@@ -40,37 +39,6 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
 
     onStart(): void {
         this.startDaemon();
-    }
-
-    onStop(): void {
-        this.dispose();
-    }
-
-    // JSON-RPC proxy
-
-    setClient(client: ArduinoDaemonClient | undefined): void {
-        if (client) {
-            if (this._running) {
-                client.notifyStarted()
-            } else {
-                client.notifyStopped();
-            }
-            this.clients.push(client);
-        }
-    }
-
-    dispose(): void {
-        this.toDispose.dispose();
-        this.clients.length = 0;
-    }
-
-    disposeClient(client: ArduinoDaemonClient): void {
-        const index = this.clients.indexOf(client);
-        if (index === -1) {
-            this.logger.warn('Could not dispose client. It was not registered or was already disposed.');
-        } else {
-            this.clients.splice(index, 1);
-        }
     }
 
     // Daemon API
@@ -184,7 +152,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
             if (code === 0 || signal === 'SIGINT' || signal === 'SIGKILL') {
                 this.onData('Daemon has stopped.');
             } else {
-                this.onData(`Daemon exited with ${typeof code === 'undefined' ? `signal '${signal}'` : `exit code: ${code}`}.`, { useOutput: false });
+                this.onData(`Daemon exited with ${typeof code === 'undefined' ? `signal '${signal}'` : `exit code: ${code}`}.`);
             }
         });
         daemon.on('error', error => {
@@ -198,9 +166,7 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
         this._running = true;
         this._ready.resolve();
         this.onDaemonStartedEmitter.fire();
-        for (const client of this.clients) {
-            client.notifyStarted();
-        }
+        this.notificationService.notifyDaemonStarted();
     }
 
     protected fireDaemonStopped(): void {
@@ -211,15 +177,10 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
         this._ready.reject(); // Reject all pending.
         this._ready = new Deferred<void>();
         this.onDaemonStoppedEmitter.fire();
-        for (const client of this.clients) {
-            client.notifyStopped();
-        }
+        this.notificationService.notifyDaemonStopped();
     }
 
-    protected onData(message: string, options: { useOutput: boolean } = { useOutput: true }): void {
-        if (options.useOutput) {
-            this.toolOutputService.append({ tool: 'daemon', chunk: DaemonLog.toPrettyString(message) });
-        }
+    protected onData(message: string): void {
         DaemonLog.log(this.logger, message);
     }
 

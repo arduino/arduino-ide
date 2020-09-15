@@ -1,25 +1,20 @@
 import * as grpc from '@grpc/grpc-js';
 import { inject, injectable } from 'inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import { ToolOutputServiceServer } from '../common/protocol';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import * as commandsGrpcPb from './cli-protocol/commands/commands_grpc_pb';
 import { Instance } from './cli-protocol/commands/common_pb';
 import { InitReq, InitResp, UpdateIndexReq, UpdateIndexResp, UpdateLibrariesIndexResp, UpdateLibrariesIndexReq } from './cli-protocol/commands/commands_pb';
+import { NotificationServiceServer } from '../common/protocol';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
 
-    @inject(ToolOutputServiceServer)
-    protected readonly toolOutputService: ToolOutputServiceServer;
+    @inject(NotificationServiceServer)
+    protected readonly notificationService: NotificationServiceServer;
 
-    protected readonly onIndexUpdatedEmitter = new Emitter<void>();
     protected readonly onClientReadyEmitter = new Emitter<void>();
-
-    get onIndexUpdated(): Event<void> {
-        return this.onIndexUpdatedEmitter.event;
-    }
 
     get onClientReady(): Event<void> {
         return this.onClientReadyEmitter.event;
@@ -76,11 +71,11 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 indexUpdateSucceeded = true;
                 break;
             } catch (e) {
-                this.toolOutputService.append({ tool: 'daemon', chunk: `Error while updating index in attempt ${i}: ${e}`, severity: 'error' });
+                console.error(`Error while updating index in attempt ${i}.`, e);
             }
         }
         if (!indexUpdateSucceeded) {
-            this.toolOutputService.append({ tool: 'daemon', chunk: 'Was unable to update the index. Please restart to try again.', severity: 'error' });
+            console.error('Could not update the index. Please restart to try again.');
         }
 
         let libIndexUpdateSucceeded = true;
@@ -90,15 +85,15 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 libIndexUpdateSucceeded = true;
                 break;
             } catch (e) {
-                this.toolOutputService.append({ tool: 'daemon', chunk: `Error while updating library index in attempt ${i}: ${e}`, severity: 'error' });
+                console.error(`Error while updating library index in attempt ${i}.`, e);
             }
         }
         if (!libIndexUpdateSucceeded) {
-            this.toolOutputService.append({ tool: 'daemon', chunk: `Was unable to update the library index. Please restart to try again.`, severity: 'error' });
+            console.error('Could not update the library index. Please restart to try again.');
         }
 
         if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
-            this.onIndexUpdatedEmitter.fire();
+            this.notificationService.notifyIndexUpdated();
         }
     }
 
@@ -116,12 +111,12 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 if (progress.getCompleted()) {
                     if (file) {
                         if (/\s/.test(file)) {
-                            this.toolOutputService.append({ tool: 'daemon', chunk: `${file} completed.\n` });
+                            console.log(`${file} completed.`);
                         } else {
-                            this.toolOutputService.append({ tool: 'daemon', chunk: `Download of '${file}' completed.\n'` });
+                            console.log(`Download of '${file}' completed.`);
                         }
                     } else {
-                        this.toolOutputService.append({ tool: 'daemon', chunk: `The library index has been successfully updated.\n'` });
+                        console.log('The library index has been successfully updated.');
                     }
                     file = undefined;
                 }
@@ -147,12 +142,12 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
                 if (progress.getCompleted()) {
                     if (file) {
                         if (/\s/.test(file)) {
-                            this.toolOutputService.append({ tool: 'daemon', chunk: `${file} completed.\n` });
+                            console.log(`${file} completed.`);
                         } else {
-                            this.toolOutputService.append({ tool: 'daemon', chunk: `Download of '${file}' completed.\n'` });
+                            console.log(`Download of '${file}' completed.`);
                         }
                     } else {
-                        this.toolOutputService.append({ tool: 'daemon', chunk: `The index has been successfully updated.\n'` });
+                        console.log('The index has been successfully updated.');
                     }
                     file = undefined;
                 }

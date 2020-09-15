@@ -6,12 +6,12 @@ import { EditorManager } from '@theia/editor/lib/browser';
 import { MenuModelRegistry, MenuPath } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { LibraryPackage, LibraryLocation } from '../../common/protocol';
+import { LibraryPackage, LibraryLocation, LibraryService } from '../../common/protocol';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { LibraryListWidget } from '../library/library-list-widget';
-import { LibraryServiceProvider } from '../library/library-service-provider';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
+import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -28,11 +28,14 @@ export class IncludeLibrary extends SketchContribution {
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
 
-    @inject(LibraryServiceProvider)
-    protected readonly libraryServiceProvider: LibraryServiceProvider;
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
+
+    @inject(LibraryService)
+    protected readonly libraryService: LibraryService;
 
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
     protected readonly toDispose = new DisposableCollection();
@@ -40,8 +43,8 @@ export class IncludeLibrary extends SketchContribution {
     onStart(): void {
         this.updateMenuActions();
         this.boardsServiceClient.onBoardsConfigChanged(() => this.updateMenuActions())
-        this.libraryServiceProvider.onLibraryPackageInstalled(() => this.updateMenuActions());
-        this.libraryServiceProvider.onLibraryPackageUninstalled(() => this.updateMenuActions());
+        this.notificationCenter.onLibraryInstalled(() => this.updateMenuActions());
+        this.notificationCenter.onLibraryUninstalled(() => this.updateMenuActions());
     }
 
     registerCommands(registry: CommandRegistry): void {
@@ -62,7 +65,7 @@ export class IncludeLibrary extends SketchContribution {
             const fqbn = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn;
             // Do not show board specific examples, when no board is selected.
             if (fqbn) {
-                libraries.push(...await this.libraryServiceProvider.list({ fqbn }));
+                libraries.push(...await this.libraryService.list({ fqbn }));
             }
 
             // `Include Library` submenu

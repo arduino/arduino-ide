@@ -8,7 +8,7 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
-import { ConfigService, Config, ConfigServiceClient } from '../common/protocol';
+import { ConfigService, Config, NotificationServiceServer } from '../common/protocol';
 import * as fs from './fs-extra';
 import { spawnCommand } from './exec-util';
 import { RawData } from './cli-protocol/settings/settings_pb';
@@ -38,10 +38,12 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     @inject(ArduinoDaemonImpl)
     protected readonly daemon: ArduinoDaemonImpl;
 
+    @inject(NotificationServiceServer)
+    protected readonly notificationService: NotificationServiceServer;
+
     protected updating = false;
     protected config: Config;
     protected cliConfig: DefaultCliConfig | undefined;
-    protected clients: Array<ConfigServiceClient> = [];
     protected ready = new Deferred<void>();
     protected readonly configChangeEmitter = new Emitter<Config>();
 
@@ -92,25 +94,6 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
 
     async isInSketchDir(uri: string): Promise<boolean> {
         return this.getConfiguration().then(({ sketchDirUri }) => new URI(sketchDirUri).isEqualOrParent(new URI(uri)));
-    }
-
-    setClient(client: ConfigServiceClient | undefined): void {
-        if (client) {
-            this.clients.push(client);
-        }
-    }
-
-    dispose(): void {
-        this.clients.length = 0;
-    }
-
-    disposeClient(client: ConfigServiceClient): void {
-        const index = this.clients.indexOf(client);
-        if (index === -1) {
-            this.logger.warn('Could not dispose client. It was not registered or was already disposed.');
-        } else {
-            this.clients.splice(index, 1);
-        }
     }
 
     protected async loadCliConfig(): Promise<DefaultCliConfig | undefined> {
@@ -214,9 +197,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
                     this.cliConfig = cliConfig;
                     this.config = config;
                     this.configChangeEmitter.fire(this.config);
-                    for (const client of this.clients) {
-                        client.notifyConfigChanged(this.config);
-                    }
+                    this.notificationService.notifyConfigChanged({ config: this.config });
                 }).finally(() => this.updating = false);
             } catch (err) {
                 this.logger.error('Failed to update the daemon with the current CLI configuration.', err);
@@ -227,15 +208,11 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     }
 
     protected fireConfigChanged(config: Config): void {
-        for (const client of this.clients) {
-            client.notifyConfigChanged(config);
-        }
+        this.notificationService.notifyConfigChanged({ config });
     }
 
     protected fireInvalidConfig(): void {
-        for (const client of this.clients) {
-            client.notifyInvalidConfig();
-        }
+        this.notificationService.notifyConfigChanged({ config: undefined });
     }
 
     protected async unwatchCliConfig(): Promise<void> {

@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry, MenuNode } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { BoardsServiceProvider } from './boards-service-provider';
 import { Board, ConfigOption, Programmer } from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
@@ -25,8 +25,8 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
     @inject(BoardsDataStore)
     protected readonly boardsDataStore: BoardsDataStore;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
     protected readonly toDisposeOnBoardChange = new DisposableCollection();

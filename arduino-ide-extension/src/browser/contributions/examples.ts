@@ -5,10 +5,10 @@ import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposa
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
-import { LibraryServiceProvider } from '../library/library-service-provider';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { ExamplesService, ExampleContainer } from '../../common/protocol/examples-service';
 import { SketchContribution, CommandRegistry, MenuModelRegistry } from './contribution';
+import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -25,8 +25,8 @@ export abstract class Examples extends SketchContribution {
     @inject(ExamplesService)
     protected readonly examplesService: ExamplesService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
     protected readonly toDispose = new DisposableCollection();
 
@@ -113,15 +113,15 @@ export class BuiltInExamples extends Examples {
 @injectable()
 export class LibraryExamples extends Examples {
 
-    @inject(LibraryServiceProvider)
-    protected readonly libraryServiceProvider: LibraryServiceProvider;
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
 
     protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
     onStart(): void {
         this.register(); // no `await`
-        this.libraryServiceProvider.onLibraryPackageInstalled(() => this.register());
-        this.libraryServiceProvider.onLibraryPackageUninstalled(() => this.register());
+        this.notificationCenter.onLibraryInstalled(() => this.register());
+        this.notificationCenter.onLibraryUninstalled(() => this.register());
     }
 
     protected handleBoardChanged(fqbn: string | undefined): void {

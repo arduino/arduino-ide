@@ -5,8 +5,8 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationContribution, LocalStorageService } from '@theia/core/lib/browser';
 import { notEmpty } from '../../common/utils';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
 import { BoardsService, ConfigOption, Installable, BoardDetails, Programmer } from '../../common/protocol';
+import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class BoardsDataStore implements FrontendApplicationContribution {
@@ -18,8 +18,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
 
     @inject(LocalStorageService)
     protected readonly storageService: LocalStorageService;
@@ -27,7 +27,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     protected readonly onChangedEmitter = new Emitter<void>();
 
     onStart(): void {
-        this.boardsServiceClient.onBoardsPackageInstalled(async ({ item }) => {
+        this.notificationCenter.onPlatformInstalled(async ({ item }) => {
             const { installedVersion: version } = item;
             if (!version) {
                 return;
@@ -76,7 +76,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         const key = this.getStorageKey(fqbn, version);
         let data = await this.storageService.getData<BoardsDataStore.Data | undefined>(key, undefined);
         if (data) {
-            if (data.programmers !== undefined) { // to be backward compatible. We did not save the `programmers` into the `localStorage`.
+            // If `configOptions` is empty we rather reload the data. See arduino/arduino-cli#954 and arduino/arduino-cli#955.
+            if (data.configOptions.length && data.programmers !== undefined) { // to be backward compatible. We did not save the `programmers` into the `localStorage`.
                 return data;
             }
         }

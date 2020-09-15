@@ -6,7 +6,7 @@ import { notEmpty } from '@theia/core/lib/common/objects';
 import { Sketch } from '../common/protocol/sketches-service';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import { ExamplesService, ExampleContainer } from '../common/protocol/examples-service';
-import { LibraryServiceServer, LibraryLocation, LibraryPackage } from '../common/protocol';
+import { LibraryLocation, LibraryPackage, LibraryService } from '../common/protocol';
 import { ConfigServiceImpl } from './config-service-impl';
 
 @injectable()
@@ -15,8 +15,8 @@ export class ExamplesServiceImpl implements ExamplesService {
     @inject(SketchesServiceImpl)
     protected readonly sketchesService: SketchesServiceImpl;
 
-    @inject(LibraryServiceServer)
-    protected readonly libraryService: LibraryServiceServer;
+    @inject(LibraryService)
+    protected readonly libraryService: LibraryService;
 
     @inject(ConfigServiceImpl)
     protected readonly configService: ConfigServiceImpl;
@@ -44,7 +44,7 @@ export class ExamplesServiceImpl implements ExamplesService {
         const current: ExampleContainer[] = [];
         const any: ExampleContainer[] = [];
         if (fqbn) {
-            const packages = await this.libraryService.list({ fqbn });
+            const packages: LibraryPackage[] = await this.libraryService.list({ fqbn });
             for (const pkg of packages) {
                 const container = await this.tryGroupExamples(pkg);
                 const { location } = pkg;

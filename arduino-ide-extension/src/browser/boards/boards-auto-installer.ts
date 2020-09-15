@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { BoardsService, Board } from '../../common/protocol/boards-service';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { BoardsService, BoardsPackage } from '../../common/protocol/boards-service';
+import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
 import { InstallationProgressDialog } from '../widgets/progress-dialog';
 import { BoardsConfig } from './boards-config';
@@ -20,8 +20,8 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
     @inject(BoardsListWidgetFrontendContribution)
     protected readonly boardsManagerFrontendContribution: BoardsListWidgetFrontendContribution;
@@ -36,7 +36,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
         if (selectedBoard) {
             this.boardsService.search({}).then(packages => {
                 const candidates = packages
-                    .filter(pkg => pkg.boards.some(board => Board.sameAs(board, selectedBoard)))
+                    .filter(pkg => BoardsPackage.contains(selectedBoard, pkg))
                     .filter(({ installable, installedVersion }) => installable && !installedVersion);
                 for (const candidate of candidates) {
                     // tslint:disable-next-line:max-line-length

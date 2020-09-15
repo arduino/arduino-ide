@@ -4,7 +4,7 @@ import { AbstractDialog, DialogProps, Widget, DialogError } from '@theia/core/li
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
 import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
-import { BoardsServiceClientImpl } from './boards-service-client-impl';
+import { BoardsServiceProvider } from './boards-service-provider';
 
 @injectable()
 export class BoardsConfigDialogProps extends DialogProps {
@@ -19,8 +19,8 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     @inject(BoardsService)
     protected readonly boardService: BoardsService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
     protected config: BoardsConfig.Config = {};
 

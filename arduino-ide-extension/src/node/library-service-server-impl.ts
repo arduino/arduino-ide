@@ -1,5 +1,5 @@
 import { injectable, inject, postConstruct } from 'inversify';
-import { LibraryPackage, LibraryServiceClient, LibraryServiceServer } from '../common/protocol/library-service';
+import { LibraryPackage, LibraryService } from '../common/protocol/library-service';
 import { CoreClientProvider } from './core-client-provider';
 import {
     LibrarySearchReq,
@@ -14,14 +14,14 @@ import {
     LibraryUninstallResp,
     Library
 } from './cli-protocol/commands/lib_pb';
-import { ToolOutputServiceServer } from '../common/protocol/tool-output-service';
 import { Installable } from '../common/protocol/installable';
 import { ILogger, notEmpty } from '@theia/core';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { FileUri } from '@theia/core/lib/node';
+import { OutputService, NotificationServiceServer } from '../common/protocol';
 
 @injectable()
-export class LibraryServiceServerImpl implements LibraryServiceServer {
+export class LibraryServiceImpl implements LibraryService {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -29,11 +29,13 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
     @inject(CoreClientProvider)
     protected readonly coreClientProvider: CoreClientProvider;
 
-    @inject(ToolOutputServiceServer)
-    protected readonly toolOutputService: ToolOutputServiceServer;
+    @inject(OutputService)
+    protected readonly outputService: OutputService;
+
+    @inject(NotificationServiceServer)
+    protected readonly notificationServer: NotificationServiceServer;
 
     protected ready = new Deferred<void>();
-    protected client: LibraryServiceClient | undefined;
 
     @postConstruct()
     protected init(): void {
@@ -108,7 +110,31 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
             req.setFqbn(fqbn);
         }
 
-        const resp = await new Promise<LibraryListResp>((resolve, reject) => client.libraryList(req, ((error, resp) => !!error ? reject(error) : resolve(resp))));
+        const resp = await new Promise<LibraryListResp | undefined>((resolve, reject) => {
+            client.libraryList(req, ((error, r) => {
+                if (error) {
+                    const { message } = error;
+                    // Required core dependency is missing.
+                    // https://github.com/arduino/arduino-cli/issues/954
+                    if (message.indexOf('missing platform release') !== -1 && message.indexOf('referenced by board') !== -1) {
+                        resolve(undefined);
+                        return;
+                    }
+                    // The core for the board is not installed, `lib list` cannot be filtered based on FQBN.
+                    // https://github.com/arduino/arduino-cli/issues/955
+                    if (message.indexOf('platform') !== -1 && message.indexOf('is not installed') !== -1) {
+                        resolve(undefined);
+                        return;
+                    }
+                    reject(error);
+                    return;
+                }
+                resolve(r);
+            }));
+        });
+        if (!resp) {
+            return [];
+        }
         return resp.getInstalledLibraryList().map(item => {
             const library = item.getLibrary();
             if (!library) {
@@ -151,7 +177,7 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
         resp.on('data', (r: LibraryInstallResp) => {
             const prog = r.getProgress();
             if (prog) {
-                this.toolOutputService.append({ tool: 'library', chunk: `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n` });
+                this.outputService.append({ name: 'library', chunk: `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n` });
             }
         });
         await new Promise<void>((resolve, reject) => {
@@ -159,12 +185,9 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
             resp.on('error', reject);
         });
 
-        if (this.client) {
-            const items = await this.search({});
-            const updated = items.find(other => LibraryPackage.equals(other, item)) || item;
-            this.client.notifyInstalled({ item: updated });
-        }
-
+        const items = await this.search({});
+        const updated = items.find(other => LibraryPackage.equals(other, item)) || item;
+        this.notificationServer.notifyLibraryInstalled({ item: updated });
         console.info('<<< Library package installation done.', item);
     }
 
@@ -186,7 +209,7 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
         const resp = client.libraryUninstall(req);
         resp.on('data', (_: LibraryUninstallResp) => {
             if (!logged) {
-                this.toolOutputService.append({ tool: 'library', chunk: `uninstalling ${item.name}:${item.installedVersion}%\n` });
+                this.outputService.append({ name: 'library', chunk: `uninstalling ${item.name}:${item.installedVersion}%\n` });
                 logged = true;
             }
         });
@@ -194,19 +217,13 @@ export class LibraryServiceServerImpl implements LibraryServiceServer {
             resp.on('end', resolve);
             resp.on('error', reject);
         });
-        if (this.client) {
-            this.client.notifyUninstalled({ item });
-        }
-        console.info('<<< Library package uninstallation done.', item);
-    }
 
-    setClient(client: LibraryServiceClient | undefined): void {
-        this.client = client;
+        this.notificationServer.notifyLibraryUninstalled({ item });
+        console.info('<<< Library package uninstallation done.', item);
     }
 
     dispose(): void {
         this.logger.info('>>> Disposing library service...');
-        this.client = undefined;
         this.logger.info('<<< Disposed library service.');
     }
 

@@ -6,20 +6,30 @@ import {
     ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution,
     ConnectionStatus
 } from '@theia/core/lib/browser/connection-status-service';
-import { ArduinoDaemonClientImpl } from '../../arduino-daemon-client-impl';
+import { ArduinoDaemon } from '../../../common/protocol';
+import { NotificationCenter } from '../../notification-center';
 
 @injectable()
 export class FrontendConnectionStatusService extends TheiaFrontendConnectionStatusService {
 
-    @inject(ArduinoDaemonClientImpl)
-    protected readonly daemonClient: ArduinoDaemonClientImpl;
+    @inject(ArduinoDaemon)
+    protected readonly daemon: ArduinoDaemon;
+
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
+
+    protected isRunning = false;
 
     @postConstruct()
-    protected init(): void {
+    protected async init(): Promise<void> {
         this.schedulePing();
+        try {
+            this.isRunning = await this.daemon.isRunning();
+        } catch { }
+        this.notificationCenter.onDaemonStarted(() => this.isRunning = true);
+        this.notificationCenter.onDaemonStopped(() => this.isRunning = false);
         this.wsConnectionProvider.onIncomingMessageActivity(() => {
-            // natural activity
-            this.updateStatus(this.daemonClient.isRunning);
+            this.updateStatus(this.isRunning);
             this.schedulePing();
         });
     }
@@ -29,22 +39,35 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
 @injectable()
 export class ApplicationConnectionStatusContribution extends TheiaApplicationConnectionStatusContribution {
 
-    @inject(ArduinoDaemonClientImpl)
-    protected readonly daemonClient: ArduinoDaemonClientImpl;
+    @inject(ArduinoDaemon)
+    protected readonly daemon: ArduinoDaemon;
+
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter;
+
+    protected isRunning = false;
+
+    @postConstruct()
+    protected async init(): Promise<void> {
+        try {
+            this.isRunning = await this.daemon.isRunning();
+        } catch { }
+        this.notificationCenter.onDaemonStarted(() => this.isRunning = true);
+        this.notificationCenter.onDaemonStopped(() => this.isRunning = false);
+    }
 
     protected onStateChange(state: ConnectionStatus): void {
-        if (!this.daemonClient.isRunning && state === ConnectionStatus.ONLINE) {
+        if (!this.isRunning && state === ConnectionStatus.ONLINE) {
             return;
         }
         super.onStateChange(state);
     }
 
     protected handleOffline(): void {
-        const { isRunning } = this.daemonClient;
         this.statusBar.setElement('connection-status', {
             alignment: StatusBarAlignment.LEFT,
-            text: isRunning ? 'Offline' : '$(bolt) CLI Daemon Offline',
-            tooltip: isRunning ? 'Cannot connect to the backend.' : 'Cannot connect to the CLI daemon.',
+            text: this.isRunning ? 'Offline' : '$(bolt) CLI Daemon Offline',
+            tooltip: this.isRunning ? 'Cannot connect to the backend.' : 'Cannot connect to the CLI daemon.',
             priority: 5000
         });
         this.toDisposeOnOnline.push(Disposable.create(() => this.statusBar.removeElement('connection-status')));

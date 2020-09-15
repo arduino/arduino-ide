@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { FrontendApplicationContribution, LocalStorageService } from '@theia/core/lib/browser';
-import { BoardsServiceClientImpl } from '../boards/boards-service-client-impl';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 
 @injectable()
 export class MonitorModel implements FrontendApplicationContribution {
@@ -12,8 +12,8 @@ export class MonitorModel implements FrontendApplicationContribution {
     @inject(LocalStorageService)
     protected readonly localStorageService: LocalStorageService;
 
-    @inject(BoardsServiceClientImpl)
-    protected readonly boardsServiceClient: BoardsServiceClientImpl;
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClient: BoardsServiceProvider;
 
     protected readonly onChangeEmitter: Emitter<MonitorModel.State.Change<keyof MonitorModel.State>>;
     protected _autoscroll: boolean;

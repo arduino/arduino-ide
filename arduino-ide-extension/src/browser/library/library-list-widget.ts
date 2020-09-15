@@ -1,8 +1,7 @@
-import { inject, injectable } from 'inversify';
-import { LibraryPackage } from '../../common/protocol/library-service';
+import { injectable, postConstruct, inject } from 'inversify';
+import { LibraryPackage, LibraryService } from '../../common/protocol/library-service';
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
-import { LibraryServiceProvider } from './library-service-provider';
 
 @injectable()
 export class LibraryListWidget extends ListWidget<LibraryPackage> {
@@ -11,7 +10,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
     static WIDGET_LABEL = 'Library Manager';
 
     constructor(
-        @inject(LibraryServiceProvider) protected service: LibraryServiceProvider,
+        @inject(LibraryService) protected service: LibraryService,
         @inject(ListItemRenderer) protected itemRenderer: ListItemRenderer<LibraryPackage>) {
 
         super({
@@ -23,6 +22,15 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
             itemLabel: (item: LibraryPackage) => item.name,
             itemRenderer
         });
+    }
+
+    @postConstruct()
+    protected init(): void {
+        super.init();
+        this.toDispose.pushAll([
+            this.notificationCenter.onLibraryInstalled(() => this.refresh(undefined)),
+            this.notificationCenter.onLibraryUninstalled(() => this.refresh(undefined)),
+        ]);
     }
 
 }
