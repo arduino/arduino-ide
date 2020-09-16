@@ -9,6 +9,14 @@ export class OutlineViewContribution extends TheiaOutlineViewContribution {
     @inject(EditorMode)
     protected readonly editorMode: EditorMode;
 
+    constructor() {
+        super();
+        this.options.defaultWidgetOptions = {
+            area: 'left',
+            rank: 500
+        };
+    }
+
     async initializeLayout(app: FrontendApplication): Promise<void> {
         if (this.editorMode.proMode) {
             return super.initializeLayout(app);
