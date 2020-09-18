@@ -22,7 +22,7 @@
     "package": "cross-env DEBUG=* && electron-builder --publish=never",
     "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
     "download:plugins": "theia download:plugins",
-    "patch": "ncp ./patch/electron-main.js ./src-gen/frontend/electron-main.js && ncp ./patch/main.js ./src-gen/backend/main.js"
+    "patch": "ncp ./patch/main.js ./src-gen/backend/main.js"
   },
   "engines": {
     "node": ">=12.14.1 <13"

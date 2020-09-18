@@ -6,8 +6,8 @@ import { ncp } from 'ncp';
 import { Stats } from 'fs';
 import * as fs from './fs-extra';
 import URI from '@theia/core/lib/common/uri';
+import { FileUri } from '@theia/core/lib/node';
 import { isWindows } from '@theia/core/lib/common/os';
-import { FileUri, BackendApplicationContribution } from '@theia/core/lib/node';
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService, Sketch } from '../common/protocol/sketches-service';
 import { firstToLowerCase } from '../common/utils';
@@ -23,16 +23,10 @@ const prefix = '.arduinoProIDE-unsaved';
 
 // TODO: `fs`: use async API 
 @injectable()
-export class SketchesServiceImpl implements SketchesService, BackendApplicationContribution {
-
-    protected readonly temp = temp.track();
+export class SketchesServiceImpl implements SketchesService {
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;
-
-    onStop(): void {
-        this.temp.cleanupSync();
-    }
 
     async getSketches(uri?: string): Promise<Sketch[]> {
         const sketches: Array<Sketch & { mtimeMs: number }> = [];
@@ -210,7 +204,7 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
     async cloneExample(uri: string): Promise<Sketch> {
         const sketch = await this.loadSketch(uri);
         const parentPath = await new Promise<string>((resolve, reject) => {
-            this.temp.mkdir({ prefix }, (err, dirPath) => {
+            temp.mkdir({ prefix }, (err, dirPath) => {
                 if (err) {
                     reject(err);
                     return;
@@ -277,7 +271,7 @@ export class SketchesServiceImpl implements SketchesService, BackendApplicationC
         const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
         const today = new Date();
         const parentPath = await new Promise<string>((resolve, reject) => {
-            this.temp.mkdir({ prefix }, (err, dirPath) => {
+            temp.mkdir({ prefix }, (err, dirPath) => {
                 if (err) {
                     reject(err);
                     return;
@@ -373,6 +367,11 @@ void loop() {
         if (!exists) {
             throw new Error(`Sketch does not exist: ${sketch}`);
         }
+        // Nothing to do when source and destination are the same.
+        if (sketch.uri === destinationUri) {
+            await this.loadSketch(sketch.uri); // Sanity check.
+            return sketch.uri;
+        }
         const destination = FileUri.fsPath(destinationUri);
         await new Promise<void>((resolve, reject) => {
             ncp.ncp(source, destination, async error => {
@@ -384,9 +383,7 @@ void loop() {
                 try {
                     const oldPath = path.join(destination, new URI(sketch.mainFileUri).path.base);
                     const newPath = path.join(destination, `${newName}.ino`);
-                    if (oldPath !== newPath) {
-                        await fs.rename(oldPath, newPath);
-                    }
+                    await fs.rename(oldPath, newPath);
                     await this.loadSketch(destinationUri); // Sanity check.
                     resolve();
                 } catch (e) {

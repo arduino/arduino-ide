@@ -1,7 +1,7 @@
 import { inject, injectable, interfaces } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { FileSystem } from '@theia/filesystem/lib/common';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -59,8 +59,8 @@ export abstract class Contribution implements CommandContribution, MenuContribut
 @injectable()
 export abstract class SketchContribution extends Contribution {
 
-    @inject(FileSystem)
-    protected readonly fileSystem: FileSystem;
+    @inject(FileService)
+    protected readonly fileService: FileService;
 
     @inject(FileSystemExt)
     protected readonly fileSystemExt: FileSystemExt;

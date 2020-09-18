@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
 import { remote } from 'electron';
+import URI from '@theia/core/lib/common/uri';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry } from './contribution';
 
@@ -30,9 +31,9 @@ export class OpenSketchExternal extends SketchContribution {
     protected async openExternal(): Promise<void> {
         const uri = await this.sketchServiceClient.currentSketchFile();
         if (uri) {
-            const exists = this.fileSystem.exists(uri);
+            const exists = this.fileService.exists(new URI(uri));
             if (exists) {
-                const fsPath = await this.fileSystem.getFsPath(uri);
+                const fsPath = await this.fileService.fsPath(new URI(uri));
                 if (fsPath) {
                     remote.shell.showItemInFolder(fsPath);
                 }

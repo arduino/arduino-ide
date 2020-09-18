@@ -45,11 +45,11 @@ export class SaveAsSketch extends SketchContribution {
         // If target does not exist, propose a `directories.user`/${sketch.name} path
         // If target exists, propose `directories.user`/${sketch.name}_copy_${yyyymmddHHMMss}
         const sketchDirUri = new URI((await this.configService.getConfiguration()).sketchDirUri);
-        const exists = await this.fileSystem.exists(sketchDirUri.resolve(sketch.name).toString());
+        const exists = await this.fileService.exists(sketchDirUri.resolve(sketch.name));
         const defaultUri = exists
             ? sketchDirUri.resolve(sketchDirUri.resolve(`${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`).toString())
             : sketchDirUri.resolve(sketch.name);
-        const defaultPath = await this.fileSystem.getFsPath(defaultUri.toString())!;
+        const defaultPath = await this.fileService.fsPath(defaultUri);
         const { filePath, canceled } = await remote.dialog.showSaveDialog({ title: 'Save sketch folder as...', defaultPath });
         if (!filePath || canceled) {
             return false;
@@ -61,7 +61,7 @@ export class SaveAsSketch extends SketchContribution {
         const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
         if (workspaceUri && openAfterMove) {
             if (wipeOriginal) {
-                await this.fileSystem.delete(sketch.uri);
+                await this.fileService.delete(new URI(sketch.uri));
             }
             this.workspaceService.open(new URI(workspaceUri), { preserveWindow: true });
         }

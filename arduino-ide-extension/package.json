@@ -113,6 +113,9 @@
     },
     {
       "frontend": "lib/browser/boards/quick-open/boards-quick-open-module"
+    },
+    {
+      "electronMain": "lib/electron-main/arduino-electron-main-module"
     }
   ]
 }

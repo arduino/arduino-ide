@@ -115,7 +115,7 @@ export class OpenSketch extends SketchContribution {
 
     protected async selectSketch(): Promise<Sketch | undefined> {
         const config = await this.configService.getConfiguration();
-        const defaultPath = await this.fileSystem.getFsPath(config.sketchDirUri);
+        const defaultPath = await this.fileService.fsPath(new URI(config.sketchDirUri));
         const { filePaths } = await remote.dialog.showOpenDialog({
             defaultPath,
             properties: ['createDirectory', 'openFile'],
@@ -149,7 +149,7 @@ export class OpenSketch extends SketchContribution {
             });
             if (response === 1) { // OK
                 const newSketchUri = new URI(sketchFileUri).parent.resolve(name);
-                const exists = await this.fileSystem.exists(newSketchUri.toString());
+                const exists = await this.fileService.exists(newSketchUri);
                 if (exists) {
                     await remote.dialog.showMessageBox({
                         type: 'error',
@@ -158,8 +158,8 @@ export class OpenSketch extends SketchContribution {
                     });
                     return undefined;
                 }
-                await this.fileSystem.createFolder(newSketchUri.toString());
-                await this.fileSystem.move(sketchFileUri, newSketchUri.resolve(nameWithExt).toString());
+                await this.fileService.createFolder(newSketchUri);
+                await this.fileService.move(new URI(sketchFileUri), new URI(newSketchUri.resolve(nameWithExt).toString()));
                 return this.sketchService.getSketchFolder(newSketchUri.toString());
             }
         }
