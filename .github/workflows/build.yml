@@ -25,8 +25,6 @@ jobs:
           # - os: rsora-rpi-arm # self-hosted armhf
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 90
-    env:
-      CERTIFICATE_PATH: /tmp/macos_signing_certificate.p12
 
     steps:
       - name: Checkout
@@ -43,13 +41,6 @@ jobs:
         with:
           python-version: '2.7'
 
-      - name: Generate signing certificate file [macOS]
-        if: runner.OS == 'macOS'
-        run: |
-            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
-            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
-            echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "${{ env.CERTIFICATE_PATH }}"
-
       - name: Package
         shell: bash
         env:
@@ -62,12 +53,22 @@ jobs:
           IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-            # electron-builder will try to sign during the Windows job if these environment variables are defined
+            # See: https://www.electron.build/code-signing
             if [ "${{ runner.OS }}" = "macOS" ]; then
-              # See: https://www.electron.build/code-signing
-              export CSC_LINK="${{ env.CERTIFICATE_PATH }}"
+              export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
+              # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+              # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+              echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "$CSC_LINK"
+
               export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
+
+            elif [ "${{ runner.OS }}" = "Windows" ]; then
+              export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
+              echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
+
+              export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
             fi
+
             yarn --cwd ./electron/packager/
             yarn --cwd ./electron/packager/ package
 
