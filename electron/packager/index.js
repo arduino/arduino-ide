@@ -280,7 +280,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
                 break;
             }
             case 'win32': {
-                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{exe,zip}', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{exe,msi,zip}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             case 'darwin': {

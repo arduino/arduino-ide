@@ -77,6 +77,7 @@
     ],
     "win": {
       "target": [
+        "msi",
         "nsis",
         "zip"
       ]
