@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         config:
-          - os: windows-2016
+          - os: windows-latest
           - os: ubuntu-latest
           - os: macos-latest
           # - os: rsora-rpi-arm # self-hosted armhf
