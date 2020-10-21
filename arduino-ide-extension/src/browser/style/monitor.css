@@ -1,8 +1,6 @@
-.p-TabBar.theia-app-centers .p-TabBar-tabIcon.arduino-serial-monitor-tab-icon {
-    background: url(../icons/buttons.svg);
-    background-size: 800%;
-    background-position-y: 41px;
-    background-position-x: 19px;
+.monitor-tab-icon {
+    -webkit-mask: url('../icons/monitor-tab-icon.svg');
+    mask: url('../icons/monitor-tab-icon.svg');
 }
 
 .serial-monitor {

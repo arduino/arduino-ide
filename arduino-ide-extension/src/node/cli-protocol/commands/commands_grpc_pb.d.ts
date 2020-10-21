@@ -30,6 +30,7 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     boardAttach: IArduinoCoreService_IBoardAttach;
     boardList: IArduinoCoreService_IBoardList;
     boardListAll: IArduinoCoreService_IBoardListAll;
+    boardListWatch: IArduinoCoreService_IBoardListWatch;
     compile: IArduinoCoreService_ICompile;
     platformInstall: IArduinoCoreService_IPlatformInstall;
     platformDownload: IArduinoCoreService_IPlatformDownload;
@@ -43,6 +44,8 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     platformList: IArduinoCoreService_IPlatformList;
     libraryDownload: IArduinoCoreService_ILibraryDownload;
     libraryInstall: IArduinoCoreService_ILibraryInstall;
+    zipLibraryInstall: IArduinoCoreService_IZipLibraryInstall;
+    gitLibraryInstall: IArduinoCoreService_IGitLibraryInstall;
     libraryUninstall: IArduinoCoreService_ILibraryUninstall;
     libraryUpgradeAll: IArduinoCoreService_ILibraryUpgradeAll;
     libraryResolveDependencies: IArduinoCoreService_ILibraryResolveDependencies;
@@ -185,6 +188,15 @@ interface IArduinoCoreService_IBoardListAll extends grpc.MethodDefinition<comman
     responseSerialize: grpc.serialize<commands_board_pb.BoardListAllResp>;
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardListAllResp>;
 }
+interface IArduinoCoreService_IBoardListWatch extends grpc.MethodDefinition<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardListWatch"
+    requestStream: true;
+    responseStream: true;
+    requestSerialize: grpc.serialize<commands_board_pb.BoardListWatchReq>;
+    requestDeserialize: grpc.deserialize<commands_board_pb.BoardListWatchReq>;
+    responseSerialize: grpc.serialize<commands_board_pb.BoardListWatchResp>;
+    responseDeserialize: grpc.deserialize<commands_board_pb.BoardListWatchResp>;
+}
 interface IArduinoCoreService_ICompile extends grpc.MethodDefinition<commands_compile_pb.CompileReq, commands_compile_pb.CompileResp> {
     path: string; // "/cc.arduino.cli.commands.ArduinoCore/Compile"
     requestStream: false;
@@ -302,6 +314,24 @@ interface IArduinoCoreService_ILibraryInstall extends grpc.MethodDefinition<comm
     responseSerialize: grpc.serialize<commands_lib_pb.LibraryInstallResp>;
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibraryInstallResp>;
 }
+interface IArduinoCoreService_IZipLibraryInstall extends grpc.MethodDefinition<commands_lib_pb.ZipLibraryInstallReq, commands_lib_pb.ZipLibraryInstallResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/ZipLibraryInstall"
+    requestStream: false;
+    responseStream: true;
+    requestSerialize: grpc.serialize<commands_lib_pb.ZipLibraryInstallReq>;
+    requestDeserialize: grpc.deserialize<commands_lib_pb.ZipLibraryInstallReq>;
+    responseSerialize: grpc.serialize<commands_lib_pb.ZipLibraryInstallResp>;
+    responseDeserialize: grpc.deserialize<commands_lib_pb.ZipLibraryInstallResp>;
+}
+interface IArduinoCoreService_IGitLibraryInstall extends grpc.MethodDefinition<commands_lib_pb.GitLibraryInstallReq, commands_lib_pb.GitLibraryInstallResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/GitLibraryInstall"
+    requestStream: false;
+    responseStream: true;
+    requestSerialize: grpc.serialize<commands_lib_pb.GitLibraryInstallReq>;
+    requestDeserialize: grpc.deserialize<commands_lib_pb.GitLibraryInstallReq>;
+    responseSerialize: grpc.serialize<commands_lib_pb.GitLibraryInstallResp>;
+    responseDeserialize: grpc.deserialize<commands_lib_pb.GitLibraryInstallResp>;
+}
 interface IArduinoCoreService_ILibraryUninstall extends grpc.MethodDefinition<commands_lib_pb.LibraryUninstallReq, commands_lib_pb.LibraryUninstallResp> {
     path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryUninstall"
     requestStream: false;
@@ -366,6 +396,7 @@ export interface IArduinoCoreServer {
     boardAttach: grpc.handleServerStreamingCall<commands_board_pb.BoardAttachReq, commands_board_pb.BoardAttachResp>;
     boardList: grpc.handleUnaryCall<commands_board_pb.BoardListReq, commands_board_pb.BoardListResp>;
     boardListAll: grpc.handleUnaryCall<commands_board_pb.BoardListAllReq, commands_board_pb.BoardListAllResp>;
+    boardListWatch: grpc.handleBidiStreamingCall<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     compile: grpc.handleServerStreamingCall<commands_compile_pb.CompileReq, commands_compile_pb.CompileResp>;
     platformInstall: grpc.handleServerStreamingCall<commands_core_pb.PlatformInstallReq, commands_core_pb.PlatformInstallResp>;
     platformDownload: grpc.handleServerStreamingCall<commands_core_pb.PlatformDownloadReq, commands_core_pb.PlatformDownloadResp>;
@@ -379,6 +410,8 @@ export interface IArduinoCoreServer {
     platformList: grpc.handleUnaryCall<commands_core_pb.PlatformListReq, commands_core_pb.PlatformListResp>;
     libraryDownload: grpc.handleServerStreamingCall<commands_lib_pb.LibraryDownloadReq, commands_lib_pb.LibraryDownloadResp>;
     libraryInstall: grpc.handleServerStreamingCall<commands_lib_pb.LibraryInstallReq, commands_lib_pb.LibraryInstallResp>;
+    zipLibraryInstall: grpc.handleServerStreamingCall<commands_lib_pb.ZipLibraryInstallReq, commands_lib_pb.ZipLibraryInstallResp>;
+    gitLibraryInstall: grpc.handleServerStreamingCall<commands_lib_pb.GitLibraryInstallReq, commands_lib_pb.GitLibraryInstallResp>;
     libraryUninstall: grpc.handleServerStreamingCall<commands_lib_pb.LibraryUninstallReq, commands_lib_pb.LibraryUninstallResp>;
     libraryUpgradeAll: grpc.handleServerStreamingCall<commands_lib_pb.LibraryUpgradeAllReq, commands_lib_pb.LibraryUpgradeAllResp>;
     libraryResolveDependencies: grpc.handleUnaryCall<commands_lib_pb.LibraryResolveDependenciesReq, commands_lib_pb.LibraryResolveDependenciesResp>;
@@ -426,6 +459,9 @@ export interface IArduinoCoreClient {
     boardListAll(request: commands_board_pb.BoardListAllReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
+    boardListWatch(): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
+    boardListWatch(options: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
+    boardListWatch(metadata: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     compile(request: commands_compile_pb.CompileReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_compile_pb.CompileResp>;
     compile(request: commands_compile_pb.CompileReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_compile_pb.CompileResp>;
     platformInstall(request: commands_core_pb.PlatformInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_core_pb.PlatformInstallResp>;
@@ -455,6 +491,10 @@ export interface IArduinoCoreClient {
     libraryDownload(request: commands_lib_pb.LibraryDownloadReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryDownloadResp>;
     libraryInstall(request: commands_lib_pb.LibraryInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryInstallResp>;
     libraryInstall(request: commands_lib_pb.LibraryInstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryInstallResp>;
+    zipLibraryInstall(request: commands_lib_pb.ZipLibraryInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.ZipLibraryInstallResp>;
+    zipLibraryInstall(request: commands_lib_pb.ZipLibraryInstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.ZipLibraryInstallResp>;
+    gitLibraryInstall(request: commands_lib_pb.GitLibraryInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.GitLibraryInstallResp>;
+    gitLibraryInstall(request: commands_lib_pb.GitLibraryInstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.GitLibraryInstallResp>;
     libraryUninstall(request: commands_lib_pb.LibraryUninstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryUninstallResp>;
     libraryUninstall(request: commands_lib_pb.LibraryUninstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryUninstallResp>;
     libraryUpgradeAll(request: commands_lib_pb.LibraryUpgradeAllReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryUpgradeAllResp>;
@@ -511,6 +551,8 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public boardListAll(request: commands_board_pb.BoardListAllReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     public boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     public boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
+    public boardListWatch(options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
+    public boardListWatch(metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     public compile(request: commands_compile_pb.CompileReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_compile_pb.CompileResp>;
     public compile(request: commands_compile_pb.CompileReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_compile_pb.CompileResp>;
     public platformInstall(request: commands_core_pb.PlatformInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_core_pb.PlatformInstallResp>;
@@ -540,6 +582,10 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public libraryDownload(request: commands_lib_pb.LibraryDownloadReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryDownloadResp>;
     public libraryInstall(request: commands_lib_pb.LibraryInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryInstallResp>;
     public libraryInstall(request: commands_lib_pb.LibraryInstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryInstallResp>;
+    public zipLibraryInstall(request: commands_lib_pb.ZipLibraryInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.ZipLibraryInstallResp>;
+    public zipLibraryInstall(request: commands_lib_pb.ZipLibraryInstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.ZipLibraryInstallResp>;
+    public gitLibraryInstall(request: commands_lib_pb.GitLibraryInstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.GitLibraryInstallResp>;
+    public gitLibraryInstall(request: commands_lib_pb.GitLibraryInstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.GitLibraryInstallResp>;
     public libraryUninstall(request: commands_lib_pb.LibraryUninstallReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryUninstallResp>;
     public libraryUninstall(request: commands_lib_pb.LibraryUninstallReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryUninstallResp>;
     public libraryUpgradeAll(request: commands_lib_pb.LibraryUpgradeAllReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_lib_pb.LibraryUpgradeAllResp>;

@@ -135,6 +135,28 @@ function deserialize_cc_arduino_cli_commands_BoardListResp(buffer_arg) {
   return commands_board_pb.BoardListResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_BoardListWatchReq(arg) {
+  if (!(arg instanceof commands_board_pb.BoardListWatchReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.BoardListWatchReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_BoardListWatchReq(buffer_arg) {
+  return commands_board_pb.BoardListWatchReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_BoardListWatchResp(arg) {
+  if (!(arg instanceof commands_board_pb.BoardListWatchResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.BoardListWatchResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_BoardListWatchResp(buffer_arg) {
+  return commands_board_pb.BoardListWatchResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_BurnBootloaderReq(arg) {
   if (!(arg instanceof commands_upload_pb.BurnBootloaderReq)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.BurnBootloaderReq');
@@ -199,6 +221,28 @@ function serialize_cc_arduino_cli_commands_DestroyResp(arg) {
 
 function deserialize_cc_arduino_cli_commands_DestroyResp(buffer_arg) {
   return commands_commands_pb.DestroyResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_GitLibraryInstallReq(arg) {
+  if (!(arg instanceof commands_lib_pb.GitLibraryInstallReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.GitLibraryInstallReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_GitLibraryInstallReq(buffer_arg) {
+  return commands_lib_pb.GitLibraryInstallReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_GitLibraryInstallResp(arg) {
+  if (!(arg instanceof commands_lib_pb.GitLibraryInstallResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.GitLibraryInstallResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_GitLibraryInstallResp(buffer_arg) {
+  return commands_lib_pb.GitLibraryInstallResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_cc_arduino_cli_commands_InitReq(arg) {
@@ -751,6 +795,28 @@ function deserialize_cc_arduino_cli_commands_VersionResp(buffer_arg) {
   return commands_commands_pb.VersionResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_ZipLibraryInstallReq(arg) {
+  if (!(arg instanceof commands_lib_pb.ZipLibraryInstallReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.ZipLibraryInstallReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_ZipLibraryInstallReq(buffer_arg) {
+  return commands_lib_pb.ZipLibraryInstallReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_ZipLibraryInstallResp(arg) {
+  if (!(arg instanceof commands_lib_pb.ZipLibraryInstallResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.ZipLibraryInstallResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_ZipLibraryInstallResp(buffer_arg) {
+  return commands_lib_pb.ZipLibraryInstallResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 // The main Arduino Platform Service
 var ArduinoCoreService = exports['cc.arduino.cli.commands.ArduinoCore'] = {
@@ -938,6 +1004,18 @@ boardListAll: {
     responseSerialize: serialize_cc_arduino_cli_commands_BoardListAllResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_BoardListAllResp,
   },
+  // List boards connection and disconnected events.
+boardListWatch: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/BoardListWatch',
+    requestStream: true,
+    responseStream: true,
+    requestType: commands_board_pb.BoardListWatchReq,
+    responseType: commands_board_pb.BoardListWatchResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_BoardListWatchReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_BoardListWatchReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_BoardListWatchResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_BoardListWatchResp,
+  },
   // Compile an Arduino sketch.
 compile: {
     path: '/cc.arduino.cli.commands.ArduinoCore/Compile',
@@ -1096,6 +1174,30 @@ libraryInstall: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_LibraryInstallReq,
     responseSerialize: serialize_cc_arduino_cli_commands_LibraryInstallResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_LibraryInstallResp,
+  },
+  // Install a library from a Zip File 
+zipLibraryInstall: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/ZipLibraryInstall',
+    requestStream: false,
+    responseStream: true,
+    requestType: commands_lib_pb.ZipLibraryInstallReq,
+    responseType: commands_lib_pb.ZipLibraryInstallResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_ZipLibraryInstallReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_ZipLibraryInstallReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_ZipLibraryInstallResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_ZipLibraryInstallResp,
+  },
+  // Download and install a library from a git url
+gitLibraryInstall: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/GitLibraryInstall',
+    requestStream: false,
+    responseStream: true,
+    requestType: commands_lib_pb.GitLibraryInstallReq,
+    responseType: commands_lib_pb.GitLibraryInstallResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_GitLibraryInstallReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_GitLibraryInstallReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_GitLibraryInstallResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_GitLibraryInstallResp,
   },
   // Uninstall an Arduino library.
 libraryUninstall: {

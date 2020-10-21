@@ -5,7 +5,7 @@ import { OptionsType } from 'react-select/src/types';
 import { isOSX } from '@theia/core/lib/common/os';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
-import { DisposableCollection } from '@theia/core/lib/common/disposable'
+import { DisposableCollection, Disposable } from '@theia/core/lib/common/disposable'
 import { ReactWidget, Message, Widget, MessageLoop } from '@theia/core/lib/browser/widgets';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
@@ -45,10 +45,16 @@ export class MonitorWidget extends ReactWidget {
         super();
         this.id = MonitorWidget.ID;
         this.title.label = 'Serial Monitor';
-        this.title.iconClass = 'arduino-serial-monitor-tab-icon';
+        this.title.iconClass = 'monitor-tab-icon';
         this.title.closable = true;
         this.scrollOptions = undefined;
         this.toDispose.push(this.clearOutputEmitter);
+        this.toDispose.push(Disposable.create(() => {
+            this.monitorConnection.autoConnect = false;
+            if (this.monitorConnection.connected) {
+                this.monitorConnection.disconnect();
+            }
+        }));
     }
 
     @postConstruct()
@@ -73,10 +79,6 @@ export class MonitorWidget extends ReactWidget {
 
     onCloseRequest(msg: Message): void {
         this.closing = true;
-        this.monitorConnection.autoConnect = false;
-        if (this.monitorConnection.connected) {
-            this.monitorConnection.disconnect();
-        }
         super.onCloseRequest(msg);
     }
 
@@ -100,6 +102,9 @@ export class MonitorWidget extends ReactWidget {
     }
 
     protected onFocusResolved = (element: HTMLElement | undefined) => {
+        if (this.closing || !this.isAttached) {
+            return;
+        }
         this.focusNode = element;
         requestAnimationFrame(() => MessageLoop.sendMessage(this, Widget.Msg.ActivateRequest));
     }

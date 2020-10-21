@@ -608,6 +608,66 @@ export namespace BoardListAllResp {
     }
 }
 
+export class BoardListWatchReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): BoardListWatchReq;
+
+    getInterrupt(): boolean;
+    setInterrupt(value: boolean): BoardListWatchReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BoardListWatchReq.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardListWatchReq): BoardListWatchReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BoardListWatchReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardListWatchReq;
+    static deserializeBinaryFromReader(message: BoardListWatchReq, reader: jspb.BinaryReader): BoardListWatchReq;
+}
+
+export namespace BoardListWatchReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        interrupt: boolean,
+    }
+}
+
+export class BoardListWatchResp extends jspb.Message { 
+    getEventType(): string;
+    setEventType(value: string): BoardListWatchResp;
+
+
+    hasPort(): boolean;
+    clearPort(): void;
+    getPort(): DetectedPort | undefined;
+    setPort(value?: DetectedPort): BoardListWatchResp;
+
+    getError(): string;
+    setError(value: string): BoardListWatchResp;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BoardListWatchResp.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardListWatchResp): BoardListWatchResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BoardListWatchResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardListWatchResp;
+    static deserializeBinaryFromReader(message: BoardListWatchResp, reader: jspb.BinaryReader): BoardListWatchResp;
+}
+
+export namespace BoardListWatchResp {
+    export type AsObject = {
+        eventType: string,
+        port?: DetectedPort.AsObject,
+        error: string,
+    }
+}
+
 export class BoardListItem extends jspb.Message { 
     getName(): string;
     setName(value: string): BoardListItem;

@@ -77,9 +77,14 @@ export class UploadSketch extends SketchContribution {
         if (!uri) {
             return;
         }
+        let shouldAutoConnect = false;
         const monitorConfig = this.monitorConnection.monitorConfig;
         if (monitorConfig) {
             await this.monitorConnection.disconnect();
+            if (this.monitorConnection.autoConnect) {
+                shouldAutoConnect = true;
+            }
+            this.monitorConnection.autoConnect = false;
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
@@ -122,7 +127,18 @@ export class UploadSketch extends SketchContribution {
             this.messageService.error(e.toString());
         } finally {
             if (monitorConfig) {
-                await this.monitorConnection.connect(monitorConfig);
+                const { board, port } = monitorConfig;
+                try {
+                    await this.boardsServiceClientImpl.waitUntilAvailable(Object.assign(board, { port }), 10_000);
+                    if (shouldAutoConnect) {
+                        // Enabling auto-connect will trigger a connect.
+                        this.monitorConnection.autoConnect = true;
+                    } else {
+                        await this.monitorConnection.connect(monitorConfig);
+                    }
+                } catch (waitError) {
+                    this.messageService.error(`Could not reconnect to serial monitor. ${waitError.toString()}`);
+                }
             }
         }
     }

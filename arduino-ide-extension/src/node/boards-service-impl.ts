@@ -1,22 +1,21 @@
-import { injectable, inject, postConstruct, named } from 'inversify';
+import { injectable, inject, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
     BoardsService,
-    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AttachedBoardsChangeEvent
+    Installable,
+    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AvailablePorts
 } from '../common/protocol';
 import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
     PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
+import { BoardDiscovery } from './board-discovery';
 import { CoreClientProvider } from './core-client-provider';
-import { BoardListReq, BoardListResp, BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
-import { Installable } from '../common/protocol/installable';
+import { BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
 import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
-import { Disposable } from '@theia/core/lib/common/disposable';
 
 @injectable()
-export class BoardsServiceImpl implements BoardsService, Disposable {
+export class BoardsServiceImpl implements BoardsService {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -34,183 +33,43 @@ export class BoardsServiceImpl implements BoardsService, Disposable {
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    protected discoveryInitialized = false;
-    protected discoveryTimer: NodeJS.Timer | undefined;
-    /**
-     * Poor man's serial discovery:
-     * Stores the state of the currently discovered and attached boards.
-     * This state is updated via periodical polls. If there diff, a change event will be sent out to the frontend.
-     */
-    protected attachedBoards: Board[] = [];
-    protected availablePorts: Port[] = [];
-    protected started = new Deferred<void>();
+    @inject(BoardDiscovery)
+    protected readonly boardDiscovery: BoardDiscovery;
 
-    @postConstruct()
-    protected async init(): Promise<void> {
-        this.discoveryTimer = setInterval(() => {
-            this.discoveryLogger.trace('Discovering attached boards and available ports...');
-            this.doGetAttachedBoardsAndAvailablePorts()
-                .then(({ boards, ports }) => {
-                    const update = (oldBoards: Board[], newBoards: Board[], oldPorts: Port[], newPorts: Port[], message: string) => {
-                        this.attachedBoards = newBoards;
-                        this.availablePorts = newPorts;
-                        const event = {
-                            oldState: {
-                                boards: oldBoards,
-                                ports: oldPorts
-                            },
-                            newState: {
-                                boards: newBoards,
-                                ports: newPorts
-                            }
-                        };
-                        this.discoveryLogger.info(`${message}`);
-                        this.discoveryLogger.info(`${AttachedBoardsChangeEvent.toString(event)}`);
-                        this.notificationService.notifyAttachedBoardsChanged(event);
-                    }
-                    const sortedBoards = boards.sort(Board.compare);
-                    const sortedPorts = ports.sort(Port.compare);
-                    this.discoveryLogger.trace(`Discovery done. Boards: ${JSON.stringify(sortedBoards)}. Ports: ${sortedPorts}`);
-                    if (!this.discoveryInitialized) {
-                        update([], sortedBoards, [], sortedPorts, 'Initialized attached boards and available ports.');
-                        this.discoveryInitialized = true;
-                        this.started.resolve();
-                    } else {
-                        Promise.all([
-                            this.getAttachedBoards(),
-                            this.getAvailablePorts()
-                        ]).then(([currentBoards, currentPorts]) => {
-                            this.discoveryLogger.trace(`Updating discovered boards... ${JSON.stringify(currentBoards)}`);
-                            if (currentBoards.length !== sortedBoards.length || currentPorts.length !== sortedPorts.length) {
-                                update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards and available ports.');
-                                return;
-                            }
-                            // `currentBoards` is already sorted.
-                            for (let i = 0; i < sortedBoards.length; i++) {
-                                if (Board.compare(sortedBoards[i], currentBoards[i]) !== 0) {
-                                    update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards.');
-                                    return;
-                                }
-                            }
-                            for (let i = 0; i < sortedPorts.length; i++) {
-                                if (Port.compare(sortedPorts[i], currentPorts[i]) !== 0) {
-                                    update(currentBoards, sortedBoards, currentPorts, sortedPorts, 'Updated discovered boards.');
-                                    return;
-                                }
-                            }
-                            this.discoveryLogger.trace('No new boards were discovered.');
-                        });
-                    }
-                })
-                .catch(error => {
-                    this.logger.error('Unexpected error when polling boards and ports.', error);
-                });
-        }, 1000);
-    }
-
-    dispose(): void {
-        this.logger.info('>>> Disposing boards service...');
-        if (this.discoveryTimer !== undefined) {
-            this.logger.info('>>> Disposing the boards discovery...');
-            clearInterval(this.discoveryTimer);
-            this.logger.info('<<< Disposed the boards discovery.');
-        }
-        this.logger.info('<<< Disposed boards service.');
+    async getState(): Promise<AvailablePorts> {
+        return this.boardDiscovery.state;
     }
 
     async getAttachedBoards(): Promise<Board[]> {
-        await this.started.promise;
-        return this.attachedBoards;
+        return this.boardDiscovery.getAttachedBoards();
     }
 
     async getAvailablePorts(): Promise<Port[]> {
-        await this.started.promise;
-        return this.availablePorts;
+        return this.boardDiscovery.getAvailablePorts();
     }
 
-    private async doGetAttachedBoardsAndAvailablePorts(): Promise<{ boards: Board[], ports: Port[] }> {
-        const boards: Board[] = [];
-        const ports: Port[] = [];
-
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return { boards, ports };
-        }
-
-        const { client, instance } = coreClient;
-        const req = new BoardListReq();
-        req.setInstance(instance);
-        const resp = await new Promise<BoardListResp | undefined>(resolve => {
-            client.boardList(req, (err, resp) => {
-                if (err) {
-                    this.logger.error(err);
-                    resolve(undefined);
+    private async coreClient(): Promise<CoreClientProvider.Client> {
+        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
+            const client = await this.coreClientProvider.client();
+            if (client) {
+                resolve(client);
+                return;
+            }
+            const toDispose = this.coreClientProvider.onClientReady(async () => {
+                const client = await this.coreClientProvider.client();
+                if (client) {
+                    toDispose.dispose();
+                    resolve(client);
                     return;
                 }
-                resolve(resp);
             });
         });
-        if (!resp) {
-            return { boards, ports };
-        }
-        const portsList = resp.getPortsList();
-        // TODO: remove unknown board mocking!
-        // You also have to manually import `DetectedPort`.
-        // const unknownPortList = new DetectedPort();
-        // unknownPortList.setAddress(platform() === 'win32' ? 'COM3' : platform() === 'darwin' ? '/dev/cu.usbmodem94401' : '/dev/ttyACM0');
-        // unknownPortList.setProtocol('serial');
-        // unknownPortList.setProtocolLabel('Serial Port (USB)');
-        // portsList.push(unknownPortList);
-
-        for (const portList of portsList) {
-            const protocol = Port.Protocol.toProtocol(portList.getProtocol());
-            const address = portList.getAddress();
-            // Available ports can exist with unknown attached boards.
-            // The `BoardListResp` looks like this for a known attached board:
-            // [
-            //     {
-            //         'address': 'COM10',
-            //         'protocol': 'serial',
-            //         'protocol_label': 'Serial Port (USB)',
-            //         'boards': [
-            //             {
-            //                 'name': 'Arduino MKR1000',
-            //                 'FQBN': 'arduino:samd:mkr1000'
-            //             }
-            //         ]
-            //     }
-            // ]
-            // And the `BoardListResp` looks like this for an unknown board:
-            // [
-            //     {
-            //         'address': 'COM9',
-            //         'protocol': 'serial',
-            //         'protocol_label': 'Serial Port (USB)',
-            //     }
-            // ]
-            ports.push({ protocol, address });
-            for (const board of portList.getBoardsList()) {
-                const name = board.getName() || 'unknown';
-                const fqbn = board.getFqbn();
-                const port = { address, protocol };
-                boards.push({ name, fqbn, port });
-            }
-        }
-        // TODO: remove mock board!
-        // boards.push(...[
-        //     <AttachedSerialBoard>{ name: 'Arduino/Genuino Uno', fqbn: 'arduino:avr:uno', port: '/dev/cu.usbmodem14201' },
-        //     <AttachedSerialBoard>{ name: 'Arduino/Genuino Uno', fqbn: 'arduino:avr:uno', port: '/dev/cu.usbmodem142xx' },
-        // ]);
-        return { boards, ports };
+        return coreClient;
     }
 
     async getBoardDetails(options: { fqbn: string }): Promise<BoardDetails> {
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            throw new Error(`Cannot acquire core client provider.`);
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
-
         const { fqbn } = options;
         const detailsReq = new BoardDetailsReq();
         detailsReq.setInstance(instance);
@@ -303,10 +162,7 @@ export class BoardsServiceImpl implements BoardsService, Disposable {
     }
 
     async search(options: { query?: string }): Promise<BoardsPackage[]> {
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return [];
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const installedPlatformsReq = new PlatformListReq();
@@ -388,10 +244,7 @@ export class BoardsServiceImpl implements BoardsService, Disposable {
     async install(options: { item: BoardsPackage, version?: Installable.Version }): Promise<void> {
         const item = options.item;
         const version = !!options.version ? options.version : item.availableVersions[0];
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return;
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const [platform, architecture] = item.id.split(':');
@@ -423,10 +276,7 @@ export class BoardsServiceImpl implements BoardsService, Disposable {
 
     async uninstall(options: { item: BoardsPackage }): Promise<void> {
         const item = options.item;
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return;
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const [platform, architecture] = item.id.split(':');

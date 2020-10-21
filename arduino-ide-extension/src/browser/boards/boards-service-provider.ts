@@ -265,6 +265,29 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         return this._availableBoards;
     }
 
+    async waitUntilAvailable(what: Board & { port: Port }, timeout?: number): Promise<void> {
+        const find = (needle: Board & { port: Port }, haystack: AvailableBoard[]) =>
+            haystack.find(board => Board.equals(needle, board) && Port.equals(needle.port, board.port));
+        const timeoutTask = !!timeout && timeout > 0
+            ? new Promise<void>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${timeout} ms.`)), timeout))
+            : new Promise<void>(() => { /* never */ });
+        const waitUntilTask = new Promise<void>(resolve => {
+            let candidate = find(what, this.availableBoards);
+            if (candidate) {
+                resolve();
+                return;
+            }
+            const disposable = this.onAvailableBoardsChanged(availableBoards => {
+                candidate = find(what, availableBoards);
+                if (candidate) {
+                    disposable.dispose();
+                    resolve();
+                }
+            });
+        });
+        return await Promise.race([waitUntilTask, timeoutTask]);
+    }
+
     protected async reconcileAvailableBoards(): Promise<void> {
         const attachedBoards = this._attachedBoards;
         const availablePorts = this._availablePorts;

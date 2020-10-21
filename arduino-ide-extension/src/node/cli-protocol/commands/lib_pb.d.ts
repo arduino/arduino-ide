@@ -779,6 +779,110 @@ export namespace Library {
     }
 }
 
+export class ZipLibraryInstallReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): ZipLibraryInstallReq;
+
+    getPath(): string;
+    setPath(value: string): ZipLibraryInstallReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ZipLibraryInstallReq.AsObject;
+    static toObject(includeInstance: boolean, msg: ZipLibraryInstallReq): ZipLibraryInstallReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ZipLibraryInstallReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ZipLibraryInstallReq;
+    static deserializeBinaryFromReader(message: ZipLibraryInstallReq, reader: jspb.BinaryReader): ZipLibraryInstallReq;
+}
+
+export namespace ZipLibraryInstallReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        path: string,
+    }
+}
+
+export class ZipLibraryInstallResp extends jspb.Message { 
+
+    hasTaskProgress(): boolean;
+    clearTaskProgress(): void;
+    getTaskProgress(): commands_common_pb.TaskProgress | undefined;
+    setTaskProgress(value?: commands_common_pb.TaskProgress): ZipLibraryInstallResp;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ZipLibraryInstallResp.AsObject;
+    static toObject(includeInstance: boolean, msg: ZipLibraryInstallResp): ZipLibraryInstallResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ZipLibraryInstallResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ZipLibraryInstallResp;
+    static deserializeBinaryFromReader(message: ZipLibraryInstallResp, reader: jspb.BinaryReader): ZipLibraryInstallResp;
+}
+
+export namespace ZipLibraryInstallResp {
+    export type AsObject = {
+        taskProgress?: commands_common_pb.TaskProgress.AsObject,
+    }
+}
+
+export class GitLibraryInstallReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): GitLibraryInstallReq;
+
+    getUrl(): string;
+    setUrl(value: string): GitLibraryInstallReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GitLibraryInstallReq.AsObject;
+    static toObject(includeInstance: boolean, msg: GitLibraryInstallReq): GitLibraryInstallReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GitLibraryInstallReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GitLibraryInstallReq;
+    static deserializeBinaryFromReader(message: GitLibraryInstallReq, reader: jspb.BinaryReader): GitLibraryInstallReq;
+}
+
+export namespace GitLibraryInstallReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        url: string,
+    }
+}
+
+export class GitLibraryInstallResp extends jspb.Message { 
+
+    hasTaskProgress(): boolean;
+    clearTaskProgress(): void;
+    getTaskProgress(): commands_common_pb.TaskProgress | undefined;
+    setTaskProgress(value?: commands_common_pb.TaskProgress): GitLibraryInstallResp;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GitLibraryInstallResp.AsObject;
+    static toObject(includeInstance: boolean, msg: GitLibraryInstallResp): GitLibraryInstallResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GitLibraryInstallResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GitLibraryInstallResp;
+    static deserializeBinaryFromReader(message: GitLibraryInstallResp, reader: jspb.BinaryReader): GitLibraryInstallResp;
+}
+
+export namespace GitLibraryInstallResp {
+    export type AsObject = {
+        taskProgress?: commands_common_pb.TaskProgress.AsObject,
+    }
+}
+
 export enum LibrarySearchStatus {
     FAILED = 0,
     SUCCESS = 1,

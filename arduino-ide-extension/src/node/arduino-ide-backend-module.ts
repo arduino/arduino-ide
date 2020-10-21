@@ -13,7 +13,7 @@ import { CoreServiceImpl } from './core-service-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { ConnectionContainerModule } from '@theia/core/lib/node/messaging/connection-container-module';
 import { CoreClientProvider } from './core-client-provider';
-import { ConnectionHandler, JsonRpcConnectionHandler, JsonRpcProxy } from '@theia/core';
+import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { DefaultWorkspaceServer } from './theia/workspace/default-workspace-server';
 import { WorkspaceServer as TheiaWorkspaceServer } from '@theia/workspace/lib/common';
 import { SketchesServiceImpl } from './sketches-service-impl';
@@ -39,6 +39,7 @@ import { OutputServicePath, OutputService } from '../common/protocol/output-serv
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { NotificationServiceServer, NotificationServiceClient, NotificationServicePath } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
+import { BoardDiscovery } from './board-discovery';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(BackendApplication).toSelf().inSingletonScope();
@@ -60,9 +61,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // Examples service. One per backend, each connected FE gets a proxy.
     bind(ConnectionContainerModule).toConstantValue(ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        // const ExamplesServiceProxy = Symbol('ExamplesServiceProxy');
-        // bind(ExamplesServiceProxy).toDynamicValue(ctx => new Proxy(ctx.container.get(ExamplesService), {}));
-        // bindBackendService(ExamplesServicePath, ExamplesServiceProxy);
         bind(ExamplesServiceImpl).toSelf().inSingletonScope();
         bind(ExamplesService).toService(ExamplesServiceImpl);
         bindBackendService(ExamplesServicePath, ExamplesService);
@@ -75,9 +73,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // Library service. Singleton per backend, each connected FE gets its proxy.
     bind(ConnectionContainerModule).toConstantValue(ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        // const LibraryServiceProxy = Symbol('LibraryServiceProxy');
-        // bind(LibraryServiceProxy).toDynamicValue(ctx => new Proxy(ctx.container.get(LibraryService), {}));
-        // bindBackendService(LibraryServicePath, LibraryServiceProxy);
         bind(LibraryServiceImpl).toSelf().inSingletonScope();
         bind(LibraryService).toService(LibraryServiceImpl);
         bindBackendService(LibraryServicePath, LibraryService);
@@ -88,27 +83,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(SketchesService).toService(SketchesServiceImpl);
     bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(SketchesServicePath, () => context.container.get(SketchesService))).inSingletonScope();
 
-    // Boards service. One singleton per backend that does the board and port polling. Each connected FE gets its proxy.
+    // Boards service. One instance per connected frontend.
     bind(ConnectionContainerModule).toConstantValue(ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        // const BoardsServiceProxy = Symbol('BoardsServiceProxy');
-        // bind(BoardsServiceProxy).toDynamicValue(ctx => new Proxy(ctx.container.get(BoardsService), {}));
-        // bindBackendService(BoardsServicePath, BoardsServiceProxy);
         bind(BoardsServiceImpl).toSelf().inSingletonScope();
         bind(BoardsService).toService(BoardsServiceImpl);
-        bindBackendService<BoardsServiceImpl, JsonRpcProxy<object>>(BoardsServicePath, BoardsService, (service, client) => {
-            client.onDidCloseConnection(() => service.dispose());
-            return service;
-        });
+        bindBackendService(BoardsServicePath, BoardsService);
     }));
 
     // Shared Arduino core client provider service for the backend.
     bind(CoreClientProvider).toSelf().inSingletonScope();
 
+    // Shared port/board discovery for the server
+    bind(BoardDiscovery).toSelf().inSingletonScope();
+
     // Core service -> `verify` and `upload`. Singleton per BE, each FE connection gets its proxy.
     bind(ConnectionContainerModule).toConstantValue(ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        // const CoreServiceProxy = Symbol('CoreServiceProxy');
-        // bind(CoreServiceProxy).toDynamicValue(ctx => new Proxy(ctx.container.get(CoreService), {}));
-        // bindBackendService(CoreServicePath, CoreServiceProxy);
         bind(CoreServiceImpl).toSelf().inSingletonScope();
         bind(CoreService).toService(CoreServiceImpl);
         bindBackendService(CoreServicePath, CoreService);
@@ -127,14 +116,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // #endregion Theia customizations
 
-    // Shared monitor client provider service for the backend.
-    bind(MonitorClientProvider).toSelf().inSingletonScope();
-    bind(MonitorServiceImpl).toSelf().inSingletonScope();
-    bind(MonitorService).toService(MonitorServiceImpl);
+    // Monitor client provider per connected frontend.
     bind(ConnectionContainerModule).toConstantValue(ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-        const MonitorServiceProxy = Symbol('MonitorServiceProxy');
-        bind(MonitorServiceProxy).toDynamicValue(ctx => new Proxy(ctx.container.get(MonitorService), {}));
-        bindBackendService<MonitorService, MonitorServiceClient>(MonitorServicePath, MonitorServiceProxy, (service, client) => {
+        bind(MonitorClientProvider).toSelf().inSingletonScope();
+        bind(MonitorServiceImpl).toSelf().inSingletonScope();
+        bind(MonitorService).toService(MonitorServiceImpl);
+        bindBackendService<MonitorService, MonitorServiceClient>(MonitorServicePath, MonitorService, (service, client) => {
             service.setClient(client);
             client.onDidCloseConnection(() => service.dispose());
             return service;

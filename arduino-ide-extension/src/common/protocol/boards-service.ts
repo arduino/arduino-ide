@@ -4,6 +4,8 @@ import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
 
+export type AvailablePorts = Record<string, [Port, Array<Board>]>;
+
 export interface AttachedBoardsChangeEvent {
     readonly oldState: Readonly<{ boards: Board[], ports: Port[] }>;
     readonly newState: Readonly<{ boards: Board[], ports: Port[] }>;
@@ -86,8 +88,17 @@ export namespace AttachedBoardsChangeEvent {
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService extends Installable<BoardsPackage>, Searchable<BoardsPackage> {
+    /**
+     * Deprecated. `getState` should be used to correctly map a board with a port.
+     * @deprecated
+     */
     getAttachedBoards(): Promise<Board[]>;
+    /**
+     * Deprecated. `getState` should be used to correctly map a board with a port.
+     * @deprecated
+     */
     getAvailablePorts(): Promise<Port[]>;
+    getState(): Promise<AvailablePorts>;
     getBoardDetails(options: { fqbn: string }): Promise<BoardDetails>;
     getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
     getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
