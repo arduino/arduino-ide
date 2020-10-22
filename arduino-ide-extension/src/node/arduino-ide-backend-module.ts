@@ -4,7 +4,7 @@ import { join } from 'path';
 import { ContainerModule } from 'inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
+import { BackendApplicationContribution, BackendApplication as TheiaBackendApplication } from '@theia/core/lib/node/backend-application';
 import { LibraryService, LibraryServicePath } from '../common/protocol/library-service';
 import { BoardsService, BoardsServicePath } from '../common/protocol/boards-service';
 import { LibraryServiceImpl } from './library-service-server-impl';
@@ -38,8 +38,12 @@ import { ExecutableServiceImpl } from './executable-service-impl';
 import { OutputServicePath, OutputService } from '../common/protocol/output-service';
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { NotificationServiceServer, NotificationServiceClient, NotificationServicePath } from '../common/protocol';
+import { BackendApplication } from './theia/core/backend-application';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
+    bind(BackendApplication).toSelf().inSingletonScope();
+    rebind(TheiaBackendApplication).toService(BackendApplication);
+
     // Shared config service
     bind(ConfigFileValidator).toSelf().inSingletonScope();
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
