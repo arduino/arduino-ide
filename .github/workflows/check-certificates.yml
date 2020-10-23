@@ -3,7 +3,7 @@ name: Check for issues with signing certificates
 on:
   schedule:
     # run every 10 hours
-    - cron: "* */10 * * *"
+    - cron: "0 */10 * * *"
   # workflow_dispatch event allows the workflow to be triggered manually.
   # This could be used to run an immediate check after updating certificate secrets.
   # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
