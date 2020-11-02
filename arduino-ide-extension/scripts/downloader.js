@@ -21,9 +21,9 @@ process.on('uncaughtException', error => {
  * @param url {string}        Download URL
  * @param targetFile {string} Path to the file to copy from the decompressed archive
  * @param filePrefix {string} Prefix of the file name found in the archive
- * @param force {boolean}     Whether to download even if the target file exists
+ * @param force {boolean}     Whether to download even if the target file exists. `false` by default.
  */
-exports.downloadUnzipFile = async (url, targetFile, filePrefix, force) => {
+exports.downloadUnzipFile = async (url, targetFile, filePrefix, force = false) => {
     if (fs.existsSync(targetFile) && !force) {
         shell.echo(`Skipping download because file already exists: ${targetFile}`);
         return;

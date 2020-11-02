@@ -92,6 +92,17 @@
       },
       "additionalProperties": false
     },
+    "sketch": {
+      "type": "object",
+      "description": "Sketch Configuration",
+      "properties": {
+        "always_export_binaries": {
+          "type": "boolean",
+          "description": "Controls whether the compiled binaries will be exported into the sketch's 'build' folder or not. 'false' if the binaries are not exported."
+        }
+      },
+      "additionalProperties": false
+    },
     "telemetry": {
       "type": "object",
       "description": "Telemetry Configuration",
@@ -110,8 +121,5 @@
       "additionalProperties": false
     }
   },
-  "// TODOs": [
-    "additionalProperties should be true. See the new telemetry entry"
-  ],
   "additionalProperties": false
 }

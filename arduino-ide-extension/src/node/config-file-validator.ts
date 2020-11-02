@@ -15,6 +15,11 @@ export class ConfigFileValidator {
     protected async doValidate(object: object): Promise<boolean> {
         const valid = this.function(object);
         if (!valid) {
+            if (Array.isArray(this.function.errors)) {
+                for (const error of this.function.errors) {
+                    console.log(JSON.stringify(error));
+                }
+            }
             return false;
         }
         if (!DefaultCliConfig.is(object)) {

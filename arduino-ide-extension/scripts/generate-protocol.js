@@ -16,9 +16,52 @@
         shell.exit(1);
     }
 
-    if (shell.exec(`git clone --depth 1 https://github.com/arduino/arduino-cli.git ${repository}`).code !== 0) {
+    const { owner, repo, commitish } = (() => {
+        const pkg = require(path.join(__dirname, '..', 'package.json'));
+        if (!pkg) {
+            shell.echo(`Could not parse the 'package.json'.`);
+            shell.exit(1);
+        }
+
+        const { arduino } = pkg;
+        if (!arduino) {
+            return { owner: 'arduino', repo: 'arduino-cli' };
+        }
+
+        const { cli } = arduino;
+        if (!cli) {
+            return { owner: 'arduino', repo: 'arduino-cli' };
+        }
+
+        const { version } = cli;
+        if (!version) {
+            return { owner: 'arduino', repo: 'arduino-cli' };
+        }
+
+        if (typeof version === 'string') {
+            return { owner: 'arduino', repo: 'arduino-cli' };
+        }
+
+        // We assume an object with `owner`, `repo`, commitish?` properties.
+        const { owner, repo, commitish } = version;
+        if (!owner) {
+            shell.echo(`Could not retrieve 'owner' from ${JSON.stringify(version)}`);
+            shell.exit(1);
+        }
+        if (!repo) {
+            shell.echo(`Could not retrieve 'repo' from ${JSON.stringify(version)}`);
+            shell.exit(1);
+        }
+
+        return { owner, repo, commitish };
+    })();
+
+    const url = `https://github.com/${owner}/${repo}.git`;
+    shell.echo(`>>> Cloning repository from '${url}'...`);
+    if (shell.exec(`git clone ${url} ${repository}`).code !== 0) {
         shell.exit(1);
     }
+    shell.echo(`<<< Repository cloned.`);
 
     const { platform } = process;
     const build = path.join(__dirname, '..', 'build');
@@ -30,9 +73,17 @@
     }
     const version = rawVersion.substring(rawVersion.lastIndexOf('Commit:') + 'Commit:'.length).trim();
     if (version) {
+        shell.echo(`>>> Checking out version: ${version}...`);
         if (shell.exec(`git -C ${repository} checkout ${version} -b ${version}`).code !== 0) {
             shell.exit(1);
         }
+        shell.echo(`<<< Checked out version: ${commitish}.`);
+    } else if (commitish) {
+        shell.echo(`>>> Checking out commitish: ${commitish}...`);
+        if (shell.exec(`git -C ${repository} checkout ${commitish}`).code !== 0) {
+            shell.exit(1);
+        }
+        shell.echo(`<<< Checked out commitish: ${commitish}.`);
     }
 
     shell.echo('>>> Generating TS/JS API from:');

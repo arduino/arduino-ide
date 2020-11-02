@@ -50,3 +50,7 @@ The Config Service knows about your system, like for example the default sketch 
 - [src/node/config-service-impl.ts](./src/node/config-service-impl.ts) implements the service backend:
   - getting the `arduino-cli` version and configuration
   - checking whether a file is in a data or sketch directory
+
+### `"arduino"` configuration in the `package.json`:
+ - `"cli"`:
+   - `"version"` type `string` | `{ owner: string, repo: string, commitish?: string }`: if the type is a `string` and is a valid semver, it will get the corresponding [released](https://github.com/arduino/arduino-cli/releases) CLI. If the type is `string` and is a [date in `YYYYMMDD`](https://arduino.github.io/arduino-cli/latest/installation/#nightly-builds) format, it will get a nightly CLI. If the type is an object, a CLI, build from the sources in the `owner/repo` will be used. If `commitish` is not defined, the HEAD of the default branch will be used. In any other cases an error is thrown.

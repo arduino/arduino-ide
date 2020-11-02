@@ -57,7 +57,7 @@
     "p-queue": "^5.0.0",
     "ps-tree": "^1.2.0",
     "react-select": "^3.0.4",
-    "semver": "^6.3.0",
+    "semver": "^7.3.2",
     "string-natural-compare": "^2.0.3",
     "temp": "^0.9.1",
     "tree-kill": "^1.2.1",
@@ -117,5 +117,10 @@
     {
       "electronMain": "lib/electron-main/arduino-electron-main-module"
     }
-  ]
+  ],
+  "arduino": {
+    "cli": {
+      "version": "20201102"
+    }
+  }
 }
