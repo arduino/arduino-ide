@@ -36,7 +36,7 @@ export interface IMonitorClient {
 }
 
 export class MonitorClient extends grpc.Client implements IMonitorClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public streamingOpen(options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<monitor_monitor_pb.StreamingOpenReq, monitor_monitor_pb.StreamingOpenResp>;
     public streamingOpen(metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<monitor_monitor_pb.StreamingOpenReq, monitor_monitor_pb.StreamingOpenResp>;
 }

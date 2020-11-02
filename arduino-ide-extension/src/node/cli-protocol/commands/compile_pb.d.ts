@@ -49,9 +49,6 @@ export class CompileReq extends jspb.Message {
     getVidpid(): string;
     setVidpid(value: string): CompileReq;
 
-    getExportfile(): string;
-    setExportfile(value: string): CompileReq;
-
     getJobs(): number;
     setJobs(value: number): CompileReq;
 
@@ -63,11 +60,14 @@ export class CompileReq extends jspb.Message {
     getOptimizefordebug(): boolean;
     setOptimizefordebug(value: boolean): CompileReq;
 
-    getDryrun(): boolean;
-    setDryrun(value: boolean): CompileReq;
-
     getExportDir(): string;
     setExportDir(value: string): CompileReq;
+
+    getClean(): boolean;
+    setClean(value: boolean): CompileReq;
+
+    getExportBinaries(): boolean;
+    setExportBinaries(value: boolean): CompileReq;
 
 
     serializeBinary(): Uint8Array;
@@ -94,12 +94,12 @@ export namespace CompileReq {
         verbose: boolean,
         quiet: boolean,
         vidpid: string,
-        exportfile: string,
         jobs: number,
         librariesList: Array<string>,
         optimizefordebug: boolean,
-        dryrun: boolean,
         exportDir: string,
+        clean: boolean,
+        exportBinaries: boolean,
     }
 }
 

@@ -20,6 +20,17 @@
 var debug_debug_pb = require('../debug/debug_pb.js');
 var commands_common_pb = require('../commands/common_pb.js');
 
+function serialize_cc_arduino_cli_debug_DebugConfigReq(arg) {
+  if (!(arg instanceof debug_debug_pb.DebugConfigReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.debug.DebugConfigReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_debug_DebugConfigReq(buffer_arg) {
+  return debug_debug_pb.DebugConfigReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_debug_DebugReq(arg) {
   if (!(arg instanceof debug_debug_pb.DebugReq)) {
     throw new Error('Expected argument of type cc.arduino.cli.debug.DebugReq');
@@ -42,6 +53,17 @@ function deserialize_cc_arduino_cli_debug_DebugResp(buffer_arg) {
   return debug_debug_pb.DebugResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_debug_GetDebugConfigResp(arg) {
+  if (!(arg instanceof debug_debug_pb.GetDebugConfigResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.debug.GetDebugConfigResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_debug_GetDebugConfigResp(buffer_arg) {
+  return debug_debug_pb.GetDebugConfigResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 // Service that abstract a debug Session usage
 var DebugService = exports['cc.arduino.cli.debug.Debug'] = {
@@ -56,6 +78,17 @@ debug: {
     requestDeserialize: deserialize_cc_arduino_cli_debug_DebugReq,
     responseSerialize: serialize_cc_arduino_cli_debug_DebugResp,
     responseDeserialize: deserialize_cc_arduino_cli_debug_DebugResp,
+  },
+  getDebugConfig: {
+    path: '/cc.arduino.cli.debug.Debug/GetDebugConfig',
+    requestStream: false,
+    responseStream: false,
+    requestType: debug_debug_pb.DebugConfigReq,
+    responseType: debug_debug_pb.GetDebugConfigResp,
+    requestSerialize: serialize_cc_arduino_cli_debug_DebugConfigReq,
+    requestDeserialize: deserialize_cc_arduino_cli_debug_DebugConfigReq,
+    responseSerialize: serialize_cc_arduino_cli_debug_GetDebugConfigResp,
+    responseDeserialize: deserialize_cc_arduino_cli_debug_GetDebugConfigResp,
   },
 };
 

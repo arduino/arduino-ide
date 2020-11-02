@@ -4199,7 +4199,8 @@ proto.cc.arduino.cli.commands.BoardListAllReq.prototype.toObject = function(opt_
 proto.cc.arduino.cli.commands.BoardListAllReq.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
-    searchArgsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
+    searchArgsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
+    includeHiddenBoards: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -4245,6 +4246,10 @@ proto.cc.arduino.cli.commands.BoardListAllReq.deserializeBinaryFromReader = func
       var value = /** @type {string} */ (reader.readString());
       msg.addSearchArgs(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIncludeHiddenBoards(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -4286,6 +4291,13 @@ proto.cc.arduino.cli.commands.BoardListAllReq.serializeBinaryToWriter = function
   if (f.length > 0) {
     writer.writeRepeatedString(
       2,
+      f
+    );
+  }
+  f = message.getIncludeHiddenBoards();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -4363,6 +4375,24 @@ proto.cc.arduino.cli.commands.BoardListAllReq.prototype.addSearchArgs = function
  */
 proto.cc.arduino.cli.commands.BoardListAllReq.prototype.clearSearchArgsList = function() {
   return this.setSearchArgsList([]);
+};
+
+
+/**
+ * optional bool include_hidden_boards = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.BoardListAllReq.prototype.getIncludeHiddenBoards = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.BoardListAllReq} returns this
+ */
+proto.cc.arduino.cli.commands.BoardListAllReq.prototype.setIncludeHiddenBoards = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
@@ -4559,7 +4589,8 @@ proto.cc.arduino.cli.commands.BoardListItem.prototype.toObject = function(opt_in
 proto.cc.arduino.cli.commands.BoardListItem.toObject = function(includeInstance, msg) {
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    fqbn: jspb.Message.getFieldWithDefault(msg, 2, "")
+    fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    isHidden: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -4604,6 +4635,10 @@ proto.cc.arduino.cli.commands.BoardListItem.deserializeBinaryFromReader = functi
       var value = /** @type {string} */ (reader.readString());
       msg.setFqbn(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsHidden(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -4647,6 +4682,13 @@ proto.cc.arduino.cli.commands.BoardListItem.serializeBinaryToWriter = function(m
       f
     );
   }
+  f = message.getIsHidden();
+  if (f) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -4683,6 +4725,24 @@ proto.cc.arduino.cli.commands.BoardListItem.prototype.getFqbn = function() {
  */
 proto.cc.arduino.cli.commands.BoardListItem.prototype.setFqbn = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional bool is_hidden = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.BoardListItem.prototype.getIsHidden = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.BoardListItem} returns this
+ */
+proto.cc.arduino.cli.commands.BoardListItem.prototype.setIsHidden = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 

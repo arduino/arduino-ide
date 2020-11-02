@@ -92,6 +92,91 @@ export namespace UploadResp {
     }
 }
 
+export class UploadUsingProgrammerReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): UploadUsingProgrammerReq;
+
+    getFqbn(): string;
+    setFqbn(value: string): UploadUsingProgrammerReq;
+
+    getSketchPath(): string;
+    setSketchPath(value: string): UploadUsingProgrammerReq;
+
+    getPort(): string;
+    setPort(value: string): UploadUsingProgrammerReq;
+
+    getVerbose(): boolean;
+    setVerbose(value: boolean): UploadUsingProgrammerReq;
+
+    getVerify(): boolean;
+    setVerify(value: boolean): UploadUsingProgrammerReq;
+
+    getImportFile(): string;
+    setImportFile(value: string): UploadUsingProgrammerReq;
+
+    getImportDir(): string;
+    setImportDir(value: string): UploadUsingProgrammerReq;
+
+    getProgrammer(): string;
+    setProgrammer(value: string): UploadUsingProgrammerReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UploadUsingProgrammerReq.AsObject;
+    static toObject(includeInstance: boolean, msg: UploadUsingProgrammerReq): UploadUsingProgrammerReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UploadUsingProgrammerReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UploadUsingProgrammerReq;
+    static deserializeBinaryFromReader(message: UploadUsingProgrammerReq, reader: jspb.BinaryReader): UploadUsingProgrammerReq;
+}
+
+export namespace UploadUsingProgrammerReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        fqbn: string,
+        sketchPath: string,
+        port: string,
+        verbose: boolean,
+        verify: boolean,
+        importFile: string,
+        importDir: string,
+        programmer: string,
+    }
+}
+
+export class UploadUsingProgrammerResp extends jspb.Message { 
+    getOutStream(): Uint8Array | string;
+    getOutStream_asU8(): Uint8Array;
+    getOutStream_asB64(): string;
+    setOutStream(value: Uint8Array | string): UploadUsingProgrammerResp;
+
+    getErrStream(): Uint8Array | string;
+    getErrStream_asU8(): Uint8Array;
+    getErrStream_asB64(): string;
+    setErrStream(value: Uint8Array | string): UploadUsingProgrammerResp;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UploadUsingProgrammerResp.AsObject;
+    static toObject(includeInstance: boolean, msg: UploadUsingProgrammerResp): UploadUsingProgrammerResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UploadUsingProgrammerResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UploadUsingProgrammerResp;
+    static deserializeBinaryFromReader(message: UploadUsingProgrammerResp, reader: jspb.BinaryReader): UploadUsingProgrammerResp;
+}
+
+export namespace UploadUsingProgrammerResp {
+    export type AsObject = {
+        outStream: Uint8Array | string,
+        errStream: Uint8Array | string,
+    }
+}
+
 export class BurnBootloaderReq extends jspb.Message { 
 
     hasInstance(): boolean;

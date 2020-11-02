@@ -25,6 +25,28 @@ var commands_core_pb = require('../commands/core_pb.js');
 var commands_upload_pb = require('../commands/upload_pb.js');
 var commands_lib_pb = require('../commands/lib_pb.js');
 
+function serialize_cc_arduino_cli_commands_ArchiveSketchReq(arg) {
+  if (!(arg instanceof commands_commands_pb.ArchiveSketchReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.ArchiveSketchReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_ArchiveSketchReq(buffer_arg) {
+  return commands_commands_pb.ArchiveSketchReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_ArchiveSketchResp(arg) {
+  if (!(arg instanceof commands_commands_pb.ArchiveSketchResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.ArchiveSketchResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_ArchiveSketchResp(buffer_arg) {
+  return commands_commands_pb.ArchiveSketchResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_BoardAttachReq(arg) {
   if (!(arg instanceof commands_board_pb.BoardAttachReq)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.BoardAttachReq');
@@ -685,6 +707,28 @@ function deserialize_cc_arduino_cli_commands_UploadResp(buffer_arg) {
   return commands_upload_pb.UploadResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_UploadUsingProgrammerReq(arg) {
+  if (!(arg instanceof commands_upload_pb.UploadUsingProgrammerReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.UploadUsingProgrammerReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_UploadUsingProgrammerReq(buffer_arg) {
+  return commands_upload_pb.UploadUsingProgrammerReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_UploadUsingProgrammerResp(arg) {
+  if (!(arg instanceof commands_upload_pb.UploadUsingProgrammerResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.UploadUsingProgrammerResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_UploadUsingProgrammerResp(buffer_arg) {
+  return commands_upload_pb.UploadUsingProgrammerResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_VersionReq(arg) {
   if (!(arg instanceof commands_commands_pb.VersionReq)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.VersionReq');
@@ -830,6 +874,18 @@ loadSketch: {
     responseSerialize: serialize_cc_arduino_cli_commands_LoadSketchResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_LoadSketchResp,
   },
+  // Creates a zip file containing all files of specified Sketch
+archiveSketch: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/ArchiveSketch',
+    requestStream: false,
+    responseStream: false,
+    requestType: commands_commands_pb.ArchiveSketchReq,
+    responseType: commands_commands_pb.ArchiveSketchResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_ArchiveSketchReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_ArchiveSketchReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_ArchiveSketchResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_ArchiveSketchResp,
+  },
   // BOARD COMMANDS
 // --------------
 //
@@ -944,7 +1000,7 @@ platformUpgrade: {
     responseSerialize: serialize_cc_arduino_cli_commands_PlatformUpgradeResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_PlatformUpgradeResp,
   },
-  // Upload a compiled sketch to an Arduino board.
+  // Upload a compiled sketch to a board.
 upload: {
     path: '/cc.arduino.cli.commands.ArduinoCore/Upload',
     requestStream: false,
@@ -956,7 +1012,20 @@ upload: {
     responseSerialize: serialize_cc_arduino_cli_commands_UploadResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_UploadResp,
   },
-  listProgrammersAvailableForUpload: {
+  // Upload a compiled sketch to a board using a programmer.
+uploadUsingProgrammer: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/UploadUsingProgrammer',
+    requestStream: false,
+    responseStream: true,
+    requestType: commands_upload_pb.UploadUsingProgrammerReq,
+    responseType: commands_upload_pb.UploadUsingProgrammerResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_UploadUsingProgrammerReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_UploadUsingProgrammerReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_UploadUsingProgrammerResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_UploadUsingProgrammerResp,
+  },
+  // List programmers available for a board.
+listProgrammersAvailableForUpload: {
     path: '/cc.arduino.cli.commands.ArduinoCore/ListProgrammersAvailableForUpload',
     requestStream: false,
     responseStream: false,

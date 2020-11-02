@@ -109,12 +109,12 @@ proto.cc.arduino.cli.commands.CompileReq.toObject = function(includeInstance, ms
     verbose: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
     quiet: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
     vidpid: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    exportfile: jspb.Message.getFieldWithDefault(msg, 13, ""),
     jobs: jspb.Message.getFieldWithDefault(msg, 14, 0),
     librariesList: (f = jspb.Message.getRepeatedField(msg, 15)) == null ? undefined : f,
     optimizefordebug: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
-    dryrun: jspb.Message.getBooleanFieldWithDefault(msg, 17, false),
-    exportDir: jspb.Message.getFieldWithDefault(msg, 18, "")
+    exportDir: jspb.Message.getFieldWithDefault(msg, 18, ""),
+    clean: jspb.Message.getBooleanFieldWithDefault(msg, 19, false),
+    exportBinaries: jspb.Message.getBooleanFieldWithDefault(msg, 20, false)
   };
 
   if (includeInstance) {
@@ -200,10 +200,6 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
       var value = /** @type {string} */ (reader.readString());
       msg.setVidpid(value);
       break;
-    case 13:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setExportfile(value);
-      break;
     case 14:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setJobs(value);
@@ -216,13 +212,17 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setOptimizefordebug(value);
       break;
-    case 17:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setDryrun(value);
-      break;
     case 18:
       var value = /** @type {string} */ (reader.readString());
       msg.setExportDir(value);
+      break;
+    case 19:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setClean(value);
+      break;
+    case 20:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setExportBinaries(value);
       break;
     default:
       reader.skipField();
@@ -338,13 +338,6 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getExportfile();
-  if (f.length > 0) {
-    writer.writeString(
-      13,
-      f
-    );
-  }
   f = message.getJobs();
   if (f !== 0) {
     writer.writeInt32(
@@ -366,17 +359,24 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getDryrun();
-  if (f) {
-    writer.writeBool(
-      17,
-      f
-    );
-  }
   f = message.getExportDir();
   if (f.length > 0) {
     writer.writeString(
       18,
+      f
+    );
+  }
+  f = message.getClean();
+  if (f) {
+    writer.writeBool(
+      19,
+      f
+    );
+  }
+  f = message.getExportBinaries();
+  if (f) {
+    writer.writeBool(
+      20,
       f
     );
   }
@@ -638,24 +638,6 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.setVidpid = function(value) {
 
 
 /**
- * optional string exportFile = 13;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.getExportfile = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.setExportfile = function(value) {
-  return jspb.Message.setProto3StringField(this, 13, value);
-};
-
-
-/**
  * optional int32 jobs = 14;
  * @return {number}
  */
@@ -729,24 +711,6 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.setOptimizefordebug = functio
 
 
 /**
- * optional bool dryRun = 17;
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.getDryrun = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 17, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.setDryrun = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 17, value);
-};
-
-
-/**
  * optional string export_dir = 18;
  * @return {string}
  */
@@ -761,6 +725,42 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.getExportDir = function() {
  */
 proto.cc.arduino.cli.commands.CompileReq.prototype.setExportDir = function(value) {
   return jspb.Message.setProto3StringField(this, 18, value);
+};
+
+
+/**
+ * optional bool clean = 19;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getClean = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 19, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.setClean = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 19, value);
+};
+
+
+/**
+ * optional bool export_binaries = 20;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getExportBinaries = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 20, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.setExportBinaries = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 20, value);
 };
 
 

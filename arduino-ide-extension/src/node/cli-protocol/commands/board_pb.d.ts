@@ -563,6 +563,9 @@ export class BoardListAllReq extends jspb.Message {
     setSearchArgsList(value: Array<string>): BoardListAllReq;
     addSearchArgs(value: string, index?: number): string;
 
+    getIncludeHiddenBoards(): boolean;
+    setIncludeHiddenBoards(value: boolean): BoardListAllReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListAllReq.AsObject;
@@ -578,6 +581,7 @@ export namespace BoardListAllReq {
     export type AsObject = {
         instance?: commands_common_pb.Instance.AsObject,
         searchArgsList: Array<string>,
+        includeHiddenBoards: boolean,
     }
 }
 
@@ -611,6 +615,9 @@ export class BoardListItem extends jspb.Message {
     getFqbn(): string;
     setFqbn(value: string): BoardListItem;
 
+    getIsHidden(): boolean;
+    setIsHidden(value: boolean): BoardListItem;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListItem.AsObject;
@@ -626,5 +633,6 @@ export namespace BoardListItem {
     export type AsObject = {
         name: string,
         fqbn: string,
+        isHidden: boolean,
     }
 }

@@ -25,6 +25,7 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     upgrade: IArduinoCoreService_IUpgrade;
     version: IArduinoCoreService_IVersion;
     loadSketch: IArduinoCoreService_ILoadSketch;
+    archiveSketch: IArduinoCoreService_IArchiveSketch;
     boardDetails: IArduinoCoreService_IBoardDetails;
     boardAttach: IArduinoCoreService_IBoardAttach;
     boardList: IArduinoCoreService_IBoardList;
@@ -35,6 +36,7 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     platformUninstall: IArduinoCoreService_IPlatformUninstall;
     platformUpgrade: IArduinoCoreService_IPlatformUpgrade;
     upload: IArduinoCoreService_IUpload;
+    uploadUsingProgrammer: IArduinoCoreService_IUploadUsingProgrammer;
     listProgrammersAvailableForUpload: IArduinoCoreService_IListProgrammersAvailableForUpload;
     burnBootloader: IArduinoCoreService_IBurnBootloader;
     platformSearch: IArduinoCoreService_IPlatformSearch;
@@ -138,6 +140,15 @@ interface IArduinoCoreService_ILoadSketch extends grpc.MethodDefinition<commands
     responseSerialize: grpc.serialize<commands_commands_pb.LoadSketchResp>;
     responseDeserialize: grpc.deserialize<commands_commands_pb.LoadSketchResp>;
 }
+interface IArduinoCoreService_IArchiveSketch extends grpc.MethodDefinition<commands_commands_pb.ArchiveSketchReq, commands_commands_pb.ArchiveSketchResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/ArchiveSketch"
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<commands_commands_pb.ArchiveSketchReq>;
+    requestDeserialize: grpc.deserialize<commands_commands_pb.ArchiveSketchReq>;
+    responseSerialize: grpc.serialize<commands_commands_pb.ArchiveSketchResp>;
+    responseDeserialize: grpc.deserialize<commands_commands_pb.ArchiveSketchResp>;
+}
 interface IArduinoCoreService_IBoardDetails extends grpc.MethodDefinition<commands_board_pb.BoardDetailsReq, commands_board_pb.BoardDetailsResp> {
     path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardDetails"
     requestStream: false;
@@ -227,6 +238,15 @@ interface IArduinoCoreService_IUpload extends grpc.MethodDefinition<commands_upl
     requestDeserialize: grpc.deserialize<commands_upload_pb.UploadReq>;
     responseSerialize: grpc.serialize<commands_upload_pb.UploadResp>;
     responseDeserialize: grpc.deserialize<commands_upload_pb.UploadResp>;
+}
+interface IArduinoCoreService_IUploadUsingProgrammer extends grpc.MethodDefinition<commands_upload_pb.UploadUsingProgrammerReq, commands_upload_pb.UploadUsingProgrammerResp> {
+    path: string; // "/cc.arduino.cli.commands.ArduinoCore/UploadUsingProgrammer"
+    requestStream: false;
+    responseStream: true;
+    requestSerialize: grpc.serialize<commands_upload_pb.UploadUsingProgrammerReq>;
+    requestDeserialize: grpc.deserialize<commands_upload_pb.UploadUsingProgrammerReq>;
+    responseSerialize: grpc.serialize<commands_upload_pb.UploadUsingProgrammerResp>;
+    responseDeserialize: grpc.deserialize<commands_upload_pb.UploadUsingProgrammerResp>;
 }
 interface IArduinoCoreService_IListProgrammersAvailableForUpload extends grpc.MethodDefinition<commands_upload_pb.ListProgrammersAvailableForUploadReq, commands_upload_pb.ListProgrammersAvailableForUploadResp> {
     path: string; // "/cc.arduino.cli.commands.ArduinoCore/ListProgrammersAvailableForUpload"
@@ -341,6 +361,7 @@ export interface IArduinoCoreServer {
     upgrade: grpc.handleServerStreamingCall<commands_commands_pb.UpgradeReq, commands_commands_pb.UpgradeResp>;
     version: grpc.handleUnaryCall<commands_commands_pb.VersionReq, commands_commands_pb.VersionResp>;
     loadSketch: grpc.handleUnaryCall<commands_commands_pb.LoadSketchReq, commands_commands_pb.LoadSketchResp>;
+    archiveSketch: grpc.handleUnaryCall<commands_commands_pb.ArchiveSketchReq, commands_commands_pb.ArchiveSketchResp>;
     boardDetails: grpc.handleUnaryCall<commands_board_pb.BoardDetailsReq, commands_board_pb.BoardDetailsResp>;
     boardAttach: grpc.handleServerStreamingCall<commands_board_pb.BoardAttachReq, commands_board_pb.BoardAttachResp>;
     boardList: grpc.handleUnaryCall<commands_board_pb.BoardListReq, commands_board_pb.BoardListResp>;
@@ -351,6 +372,7 @@ export interface IArduinoCoreServer {
     platformUninstall: grpc.handleServerStreamingCall<commands_core_pb.PlatformUninstallReq, commands_core_pb.PlatformUninstallResp>;
     platformUpgrade: grpc.handleServerStreamingCall<commands_core_pb.PlatformUpgradeReq, commands_core_pb.PlatformUpgradeResp>;
     upload: grpc.handleServerStreamingCall<commands_upload_pb.UploadReq, commands_upload_pb.UploadResp>;
+    uploadUsingProgrammer: grpc.handleServerStreamingCall<commands_upload_pb.UploadUsingProgrammerReq, commands_upload_pb.UploadUsingProgrammerResp>;
     listProgrammersAvailableForUpload: grpc.handleUnaryCall<commands_upload_pb.ListProgrammersAvailableForUploadReq, commands_upload_pb.ListProgrammersAvailableForUploadResp>;
     burnBootloader: grpc.handleServerStreamingCall<commands_upload_pb.BurnBootloaderReq, commands_upload_pb.BurnBootloaderResp>;
     platformSearch: grpc.handleUnaryCall<commands_core_pb.PlatformSearchReq, commands_core_pb.PlatformSearchResp>;
@@ -390,6 +412,9 @@ export interface IArduinoCoreClient {
     loadSketch(request: commands_commands_pb.LoadSketchReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
     loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
     loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
+    archiveSketch(request: commands_commands_pb.ArchiveSketchReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.ArchiveSketchResp) => void): grpc.ClientUnaryCall;
+    archiveSketch(request: commands_commands_pb.ArchiveSketchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.ArchiveSketchResp) => void): grpc.ClientUnaryCall;
+    archiveSketch(request: commands_commands_pb.ArchiveSketchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.ArchiveSketchResp) => void): grpc.ClientUnaryCall;
     boardDetails(request: commands_board_pb.BoardDetailsReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
@@ -413,6 +438,8 @@ export interface IArduinoCoreClient {
     platformUpgrade(request: commands_core_pb.PlatformUpgradeReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_core_pb.PlatformUpgradeResp>;
     upload(request: commands_upload_pb.UploadReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadResp>;
     upload(request: commands_upload_pb.UploadReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadResp>;
+    uploadUsingProgrammer(request: commands_upload_pb.UploadUsingProgrammerReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadUsingProgrammerResp>;
+    uploadUsingProgrammer(request: commands_upload_pb.UploadUsingProgrammerReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadUsingProgrammerResp>;
     listProgrammersAvailableForUpload(request: commands_upload_pb.ListProgrammersAvailableForUploadReq, callback: (error: grpc.ServiceError | null, response: commands_upload_pb.ListProgrammersAvailableForUploadResp) => void): grpc.ClientUnaryCall;
     listProgrammersAvailableForUpload(request: commands_upload_pb.ListProgrammersAvailableForUploadReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_upload_pb.ListProgrammersAvailableForUploadResp) => void): grpc.ClientUnaryCall;
     listProgrammersAvailableForUpload(request: commands_upload_pb.ListProgrammersAvailableForUploadReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_upload_pb.ListProgrammersAvailableForUploadResp) => void): grpc.ClientUnaryCall;
@@ -444,7 +471,7 @@ export interface IArduinoCoreClient {
 }
 
 export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public init(request: commands_commands_pb.InitReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.InitResp>;
     public init(request: commands_commands_pb.InitReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_commands_pb.InitResp>;
     public destroy(request: commands_commands_pb.DestroyReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.DestroyResp) => void): grpc.ClientUnaryCall;
@@ -470,6 +497,9 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public loadSketch(request: commands_commands_pb.LoadSketchReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
     public loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
     public loadSketch(request: commands_commands_pb.LoadSketchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.LoadSketchResp) => void): grpc.ClientUnaryCall;
+    public archiveSketch(request: commands_commands_pb.ArchiveSketchReq, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.ArchiveSketchResp) => void): grpc.ClientUnaryCall;
+    public archiveSketch(request: commands_commands_pb.ArchiveSketchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.ArchiveSketchResp) => void): grpc.ClientUnaryCall;
+    public archiveSketch(request: commands_commands_pb.ArchiveSketchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_commands_pb.ArchiveSketchResp) => void): grpc.ClientUnaryCall;
     public boardDetails(request: commands_board_pb.BoardDetailsReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     public boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
     public boardDetails(request: commands_board_pb.BoardDetailsReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardDetailsResp) => void): grpc.ClientUnaryCall;
@@ -493,6 +523,8 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public platformUpgrade(request: commands_core_pb.PlatformUpgradeReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_core_pb.PlatformUpgradeResp>;
     public upload(request: commands_upload_pb.UploadReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadResp>;
     public upload(request: commands_upload_pb.UploadReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadResp>;
+    public uploadUsingProgrammer(request: commands_upload_pb.UploadUsingProgrammerReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadUsingProgrammerResp>;
+    public uploadUsingProgrammer(request: commands_upload_pb.UploadUsingProgrammerReq, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_upload_pb.UploadUsingProgrammerResp>;
     public listProgrammersAvailableForUpload(request: commands_upload_pb.ListProgrammersAvailableForUploadReq, callback: (error: grpc.ServiceError | null, response: commands_upload_pb.ListProgrammersAvailableForUploadResp) => void): grpc.ClientUnaryCall;
     public listProgrammersAvailableForUpload(request: commands_upload_pb.ListProgrammersAvailableForUploadReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_upload_pb.ListProgrammersAvailableForUploadResp) => void): grpc.ClientUnaryCall;
     public listProgrammersAvailableForUpload(request: commands_upload_pb.ListProgrammersAvailableForUploadReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_upload_pb.ListProgrammersAvailableForUploadResp) => void): grpc.ClientUnaryCall;

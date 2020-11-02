@@ -377,6 +377,9 @@ export class UpgradeReq extends jspb.Message {
     getInstance(): commands_common_pb.Instance | undefined;
     setInstance(value?: commands_common_pb.Instance): UpgradeReq;
 
+    getSkippostinstall(): boolean;
+    setSkippostinstall(value: boolean): UpgradeReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UpgradeReq.AsObject;
@@ -391,6 +394,7 @@ export class UpgradeReq extends jspb.Message {
 export namespace UpgradeReq {
     export type AsObject = {
         instance?: commands_common_pb.Instance.AsObject,
+        skippostinstall: boolean,
     }
 }
 
@@ -525,5 +529,51 @@ export namespace LoadSketchResp {
         locationPath: string,
         otherSketchFilesList: Array<string>,
         additionalFilesList: Array<string>,
+    }
+}
+
+export class ArchiveSketchReq extends jspb.Message { 
+    getSketchPath(): string;
+    setSketchPath(value: string): ArchiveSketchReq;
+
+    getArchivePath(): string;
+    setArchivePath(value: string): ArchiveSketchReq;
+
+    getIncludeBuildDir(): boolean;
+    setIncludeBuildDir(value: boolean): ArchiveSketchReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ArchiveSketchReq.AsObject;
+    static toObject(includeInstance: boolean, msg: ArchiveSketchReq): ArchiveSketchReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ArchiveSketchReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ArchiveSketchReq;
+    static deserializeBinaryFromReader(message: ArchiveSketchReq, reader: jspb.BinaryReader): ArchiveSketchReq;
+}
+
+export namespace ArchiveSketchReq {
+    export type AsObject = {
+        sketchPath: string,
+        archivePath: string,
+        includeBuildDir: boolean,
+    }
+}
+
+export class ArchiveSketchResp extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ArchiveSketchResp.AsObject;
+    static toObject(includeInstance: boolean, msg: ArchiveSketchResp): ArchiveSketchResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ArchiveSketchResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ArchiveSketchResp;
+    static deserializeBinaryFromReader(message: ArchiveSketchResp, reader: jspb.BinaryReader): ArchiveSketchResp;
+}
+
+export namespace ArchiveSketchResp {
+    export type AsObject = {
     }
 }

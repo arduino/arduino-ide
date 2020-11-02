@@ -4819,7 +4819,8 @@ proto.cc.arduino.cli.commands.Library.toObject = function(includeInstance, msg) 
     location: jspb.Message.getFieldWithDefault(msg, 24, 0),
     layout: jspb.Message.getFieldWithDefault(msg, 25, 0),
     examplesList: (f = jspb.Message.getRepeatedField(msg, 26)) == null ? undefined : f,
-    providesIncludesList: (f = jspb.Message.getRepeatedField(msg, 27)) == null ? undefined : f
+    providesIncludesList: (f = jspb.Message.getRepeatedField(msg, 27)) == null ? undefined : f,
+    compatibleWithMap: (f = msg.getCompatibleWithMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -4957,6 +4958,12 @@ proto.cc.arduino.cli.commands.Library.deserializeBinaryFromReader = function(msg
     case 27:
       var value = /** @type {string} */ (reader.readString());
       msg.addProvidesIncludes(value);
+      break;
+    case 28:
+      var value = msg.getCompatibleWithMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readBool, null, "", false);
+         });
       break;
     default:
       reader.skipField();
@@ -5158,6 +5165,10 @@ proto.cc.arduino.cli.commands.Library.serializeBinaryToWriter = function(message
       27,
       f
     );
+  }
+  f = message.getCompatibleWithMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(28, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeBool);
   }
 };
 
@@ -5690,6 +5701,28 @@ proto.cc.arduino.cli.commands.Library.prototype.addProvidesIncludes = function(v
 proto.cc.arduino.cli.commands.Library.prototype.clearProvidesIncludesList = function() {
   return this.setProvidesIncludesList([]);
 };
+
+
+/**
+ * map<string, bool> compatible_with = 28;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,boolean>}
+ */
+proto.cc.arduino.cli.commands.Library.prototype.getCompatibleWithMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,boolean>} */ (
+      jspb.Message.getMapField(this, 28, opt_noLazyCreate,
+      null));
+};
+
+
+/**
+ * Clears values from the map. The map will be non-null.
+ * @return {!proto.cc.arduino.cli.commands.Library} returns this
+ */
+proto.cc.arduino.cli.commands.Library.prototype.clearCompatibleWithMap = function() {
+  this.getCompatibleWithMap().clear();
+  return this;};
 
 
 /**

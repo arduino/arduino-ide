@@ -77,7 +77,7 @@ export interface ISettingsClient {
 }
 
 export class SettingsClient extends grpc.Client implements ISettingsClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public getAll(request: settings_settings_pb.GetAllRequest, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.RawData) => void): grpc.ClientUnaryCall;
     public getAll(request: settings_settings_pb.GetAllRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.RawData) => void): grpc.ClientUnaryCall;
     public getAll(request: settings_settings_pb.GetAllRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.RawData) => void): grpc.ClientUnaryCall;
