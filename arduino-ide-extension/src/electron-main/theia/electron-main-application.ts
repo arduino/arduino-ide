@@ -3,10 +3,19 @@ import { app } from 'electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
+import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
 import { ElectronMainApplication as TheiaElectronMainApplication, TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/electron-main-application';
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
+
+    async start(config: FrontendApplicationConfig): Promise<void> {
+        // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
+        // See: https://github.com/electron-userland/electron-builder/issues/2468
+        // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
+        app.on('ready', () => app.setName(config.applicationName));
+        return super.start(config);
+    }
 
     protected async getDefaultBrowserWindowOptions(): Promise<TheiaBrowserWindowOptions> {
         const options = await super.getDefaultBrowserWindowOptions();
