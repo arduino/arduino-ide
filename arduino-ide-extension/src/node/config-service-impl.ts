@@ -84,7 +84,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         return this.configChangeEmitter.event;
     }
 
-    async getVersion(): Promise<string> {
+    async getVersion(): Promise<Readonly<{ version: string, commit: string, status?: string }>> {
         return this.daemon.getVersion();
     }
 

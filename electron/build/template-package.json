@@ -38,20 +38,17 @@
     "target": "electron",
     "frontend": {
       "config": {
-        "applicationName": "Arduino Pro IDE",
         "disallowReloadKeybinding": true
       }
     },
     "backend": {
       "config": {
-        "singleInstance": true,
-        "configDirName": ".arduinoProIDE"
+        "singleInstance": true
       }
     }
   },
   "build": {
     "productName": "Arduino Pro IDE",
-    "appId": "arduino.ProIDE",
     "asar": false,
     "directories": {
       "buildResources": "resources"

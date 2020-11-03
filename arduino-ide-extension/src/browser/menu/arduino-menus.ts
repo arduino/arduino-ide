@@ -1,6 +1,6 @@
-import { MAIN_MENU_BAR } from '@theia/core/lib/common/menu';
+import { isOSX } from '@theia/core/lib/common/os';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
-import { isOSX } from '@theia/core';
+import { MAIN_MENU_BAR } from '@theia/core/lib/common/menu';
 
 export namespace ArduinoMenus {
 
@@ -40,7 +40,14 @@ export namespace ArduinoMenus {
     // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`
     export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '1_board_settings'];
 
-    // Context menu
+    // -- Help
+    // `About` group
+    // XXX: on macOS, the about group is not under `Help`
+    export const HELP__ABOUT_GROUP = [...(isOSX ? MAIN_MENU_BAR : CommonMenus.HELP), '999_about'];
+
+    // ------------
+
+    // Context menus
     // -- Open
     export const OPEN_SKETCH__CONTEXT = ['arduino-open-sketch--context'];
     export const OPEN_SKETCH__CONTEXT__OPEN_GROUP = [...OPEN_SKETCH__CONTEXT, '0_open'];

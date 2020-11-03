@@ -20,13 +20,13 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
         const { submenu } = super.createOSXMenu();
         const label = 'Arduino Pro IDE';
         if (!!submenu && !(submenu instanceof remote.Menu)) {
-            const [about, , ...rest] = submenu;
-            const menuModel = this.menuProvider.getMenu(ArduinoMenus.FILE__SETTINGS_GROUP);
-            const settings = this.fillMenuTemplate([], menuModel);
+            const [/* about */, /* settings */, ...rest] = submenu;
+            const about = this.fillMenuTemplate([], this.menuProvider.getMenu(ArduinoMenus.HELP__ABOUT_GROUP));
+            const settings = this.fillMenuTemplate([], this.menuProvider.getMenu(ArduinoMenus.FILE__SETTINGS_GROUP));
             return {
                 label,
                 submenu: [
-                    about, // TODO: we have two about dialogs! one from electron the other from Theia.
+                    ...about,
                     { type: 'separator' },
                     ...settings,
                     { type: 'separator' },

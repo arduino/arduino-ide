@@ -57,8 +57,6 @@ import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
-import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
-import { AboutDialog } from './theia/core/about-dialog';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
@@ -121,11 +119,12 @@ import { OutputServiceImpl } from './output-service-impl';
 import { OutputServicePath, OutputService } from '../common/protocol/output-service';
 import { NotificationCenter } from './notification-center';
 import { NotificationServicePath, NotificationServiceServer } from '../common/protocol';
+import { About } from './contributions/about';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 MonacoThemingService.register({
-    id: 'arduinoTheme',
+    id: 'arduino-theme',
     label: 'Light (Arduino)',
     uiTheme: 'vs',
     json: require('../../src/browser/data/arduino.color-theme.json')
@@ -289,10 +288,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ProblemManager).toSelf().inSingletonScope();
     rebind(TheiaProblemManager).toService(ProblemManager);
 
-    // About dialog to show the CLI version
-    bind(AboutDialog).toSelf().inSingletonScope();
-    rebind(TheiaAboutDialog).toService(AboutDialog);
-
     // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
     bind(ShellLayoutRestorer).toSelf().inSingletonScope();
     rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
@@ -324,6 +319,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, BuiltInExamples);
     Contribution.configure(bind, LibraryExamples);
     Contribution.configure(bind, IncludeLibrary);
+    Contribution.configure(bind, About);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);

@@ -105,9 +105,20 @@ export class ArduinoDaemonImpl implements ArduinoDaemon, BackendApplicationContr
         return this._execPath;
     }
 
-    async getVersion(): Promise<string> {
+    async getVersion(): Promise<Readonly<{ version: string, commit: string, status?: string }>> {
         const execPath = await this.getExecPath();
-        return spawnCommand(`"${execPath}"`, ['version'], this.onError.bind(this));
+        const raw = await spawnCommand(`"${execPath}"`, ['version', '--format', 'json'], this.onError.bind(this));
+        try {
+            // The CLI `Info` object: https://github.com/arduino/arduino-cli/blob/17d24eb901b1fdaa5a4ec7da3417e9e460f84007/version/version.go#L31-L34
+            const { VersionString, Commit, Status } = JSON.parse(raw);
+            return {
+                version: VersionString,
+                commit: Commit,
+                status: Status
+            };
+        } catch {
+            return { version: raw, commit: raw };
+        }
     }
 
     protected async getSpawnArgs(): Promise<string[]> {

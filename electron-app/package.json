@@ -37,6 +37,7 @@
       "config": {
         "applicationName": "Arduino Pro IDE",
         "defaultTheme": "arduino-theme",
+        "status": "Alpha",
         "preferences": {
           "editor.autoSave": "on",
           "editor.minimap.enabled": false,
