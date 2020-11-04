@@ -79,7 +79,7 @@ export class LibraryServiceImpl implements LibraryService {
             .slice(0, 50)
             .map(item => {
                 // TODO: This seems to contain only the latest item instead of all of the items.
-                const availableVersions = item.getReleasesMap().getEntryList().map(([key, _]) => key).sort(Installable.Version.COMPARATOR);
+                const availableVersions = item.getReleasesMap().getEntryList().map(([key, _]) => key).sort(Installable.Version.COMPARATOR).reverse();
                 let installedVersion: string | undefined;
                 const installed = installedLibsIdx.get(item.getName());
                 if (installed) {

@@ -375,7 +375,7 @@ export class BoardsServiceImpl implements BoardsService, Disposable {
                 const pkg = packages.get(id);
                 if (pkg) {
                     pkg.availableVersions.push(platform.getLatest());
-                    pkg.availableVersions.sort(Installable.Version.COMPARATOR);
+                    pkg.availableVersions.sort(Installable.Version.COMPARATOR).reverse();
                 } else {
                     packages.set(id, toPackage(platform));
                 }
