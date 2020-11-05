@@ -46,27 +46,11 @@ export class BurnBootloader extends SketchContribution {
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            if (!boardsConfig || !boardsConfig.selectedBoard) {
-                throw new Error('No boards selected. Please select a board.');
-            }
-            if (!boardsConfig.selectedBoard.fqbn) {
-                throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
-            }
-            const { selectedPort } = boardsConfig;
-            if (!selectedPort) {
-                throw new Error('No ports selected. Please select a port.');
-            }
-
-            const port = selectedPort.address;
+            const port = boardsConfig.selectedPort?.address;
             const [fqbn, { selectedProgrammer: programmer }] = await Promise.all([
-                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn),
-                this.boardsDataStore.getData(boardsConfig.selectedBoard.fqbn)
+                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
+                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn)
             ]);
-
-            if (!programmer) {
-                throw new Error('Programmer is not selected. Please select a programmer from the `Tools` > `Programmer` menu.');
-            }
-
             this.outputChannelManager.getChannel('Arduino: bootloader').clear();
             await this.coreService.burnBootloader({
                 fqbn,

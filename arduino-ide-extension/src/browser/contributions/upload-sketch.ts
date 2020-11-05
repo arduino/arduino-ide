@@ -83,34 +83,19 @@ export class UploadSketch extends SketchContribution {
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            if (!boardsConfig || !boardsConfig.selectedBoard) {
-                throw new Error('No boards selected. Please select a board.');
-            }
-            if (!boardsConfig.selectedBoard.fqbn) {
-                throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
-            }
-
             const [fqbn, { selectedProgrammer }] = await Promise.all([
-                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn),
-                this.boardsDataStore.getData(boardsConfig.selectedBoard.fqbn)
+                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
+                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn)
             ]);
 
             let options: CoreService.Upload.Options | undefined = undefined;
             const sketchUri = uri;
             const optimizeForDebug = this.editorMode.compileForDebug;
             const { selectedPort } = boardsConfig;
+            const port = selectedPort?.address;
 
             if (usingProgrammer) {
                 const programmer = selectedProgrammer;
-                if (!programmer) {
-                    throw new Error('Programmer is not selected. Please select a programmer from the `Tools` > `Programmer` menu.');
-                }
-                let port: undefined | string = undefined;
-                // If the port is set by the user, we pass it to the CLI as it might be required.
-                // If it is not set but the CLI requires it, we let the CLI to complain.
-                if (selectedPort) {
-                    port = selectedPort.address;
-                }
                 options = {
                     sketchUri,
                     fqbn,
@@ -119,10 +104,6 @@ export class UploadSketch extends SketchContribution {
                     port
                 };
             } else {
-                if (!selectedPort) {
-                    throw new Error('No ports selected. Please select a port.');
-                }
-                const port = selectedPort.address;
                 options = {
                     sketchUri,
                     fqbn,
@@ -131,7 +112,11 @@ export class UploadSketch extends SketchContribution {
                 };
             }
             this.outputChannelManager.getChannel('Arduino: upload').clear();
-            await this.coreService.upload(options);
+            if (usingProgrammer) {
+                await this.coreService.uploadUsingProgrammer(options);
+            } else {
+                await this.coreService.upload(options);
+            }
             this.messageService.info('Done uploading.', { timeout: 1000 });
         } catch (e) {
             this.messageService.error(e.toString());

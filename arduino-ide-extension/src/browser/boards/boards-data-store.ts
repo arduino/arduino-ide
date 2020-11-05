@@ -58,16 +58,24 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
 
     async appendConfigToFqbn(
-        fqbn: string,
-        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<string> {
+        fqbn: string | undefined,
+        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<string | undefined> {
+
+        if (!fqbn) {
+            return undefined;
+        }
 
         const { configOptions } = await this.getData(fqbn, boardsPackageVersion);
         return ConfigOption.decorate(fqbn, configOptions);
     }
 
     async getData(
-        fqbn: string,
+        fqbn: string | undefined,
         boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<BoardsDataStore.Data> {
+
+        if (!fqbn) {
+            return BoardsDataStore.Data.EMPTY;
+        }
 
         const version = await boardsPackageVersion;
         if (!version) {
@@ -76,10 +84,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         const key = this.getStorageKey(fqbn, version);
         let data = await this.storageService.getData<BoardsDataStore.Data | undefined>(key, undefined);
         if (data) {
-            // If `configOptions` is empty we rather reload the data. See arduino/arduino-cli#954 and arduino/arduino-cli#955.
-            if (data.configOptions.length && data.programmers !== undefined) { // to be backward compatible. We did not save the `programmers` into the `localStorage`.
-                return data;
-            }
+            return data;
         }
 
         const boardDetails = await this.getBoardDetailsSafe(fqbn);
@@ -173,7 +178,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         this.onChangedEmitter.fire();
     }
 
-    protected async getBoardsPackageVersion(fqbn: string): Promise<Installable.Version | undefined> {
+    protected async getBoardsPackageVersion(fqbn: string | undefined): Promise<Installable.Version | undefined> {
         if (!fqbn) {
             return undefined;
         }

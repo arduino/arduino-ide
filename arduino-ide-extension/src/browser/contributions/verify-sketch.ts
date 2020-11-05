@@ -63,13 +63,7 @@ export class VerifySketch extends SketchContribution {
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            if (!boardsConfig || !boardsConfig.selectedBoard) {
-                throw new Error('No boards selected. Please select a board.');
-            }
-            if (!boardsConfig.selectedBoard.fqbn) {
-                throw new Error(`No core is installed for the '${boardsConfig.selectedBoard.name}' board. Please install the core.`);
-            }
-            const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard.fqbn);
+            const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn);
             this.outputChannelManager.getChannel('Arduino: compile').clear();
             await this.coreService.compile({
                 sketchUri: uri,

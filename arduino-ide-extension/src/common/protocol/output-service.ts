@@ -1,7 +1,7 @@
 export interface OutputMessage {
     readonly name: string;
     readonly chunk: string;
-    readonly severity?: 'error' | 'warning' | 'info';
+    readonly severity?: 'error' | 'warning' | 'info'; // Currently not used!
 }
 
 export const OutputServicePath = '/services/output-service';
