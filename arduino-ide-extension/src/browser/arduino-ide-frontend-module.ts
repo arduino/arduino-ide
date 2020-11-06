@@ -125,6 +125,8 @@ import { About } from './contributions/about';
 import { IconThemeService } from '@theia/core/lib/browser/icon-theme-service';
 import { TabBarRenderer } from './theia/core/tab-bars';
 import { EditorCommandContribution } from './theia/editor/editor-command';
+import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
+import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-decorator';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -347,4 +349,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // Do not trigger a save on IDE startup if `"editor.autoSave": "on"` was set as a preference.
     bind(EditorCommandContribution).toSelf().inSingletonScope();
     rebind(TheiaEditorCommandContribution).toService(EditorCommandContribution);
+
+    // Silent the badge decoration in the Explorer view.
+    bind(NavigatorTabBarDecorator).toSelf().inSingletonScope();
+    rebind(TheiaNavigatorTabBarDecorator).toService(NavigatorTabBarDecorator);
 });
