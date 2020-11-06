@@ -65,7 +65,7 @@ import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 import { ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
-import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser';
+import { EditorManager as TheiaEditorManager, EditorCommandContribution as TheiaEditorCommandContribution } from '@theia/editor/lib/browser';
 import { EditorManager } from './theia/editor/editor-manager';
 import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from './theia/core/connection-status-service';
 import {
@@ -124,6 +124,7 @@ import { NotificationServicePath, NotificationServiceServer } from '../common/pr
 import { About } from './contributions/about';
 import { IconThemeService } from '@theia/core/lib/browser/icon-theme-service';
 import { TabBarRenderer } from './theia/core/tab-bars';
+import { EditorCommandContribution } from './theia/editor/editor-command';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -341,4 +342,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const iconThemeService = context.container.get<IconThemeService>(IconThemeService);
         return new TabBarRenderer(contextMenuRenderer, decoratorService, iconThemeService);
     });
+
+    // Workaround for https://github.com/eclipse-theia/theia/issues/8722
+    // Do not trigger a save on IDE startup if `"editor.autoSave": "on"` was set as a preference.
+    bind(EditorCommandContribution).toSelf().inSingletonScope();
+    rebind(TheiaEditorCommandContribution).toService(EditorCommandContribution);
 });
