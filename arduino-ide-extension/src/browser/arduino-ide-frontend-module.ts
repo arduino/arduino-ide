@@ -33,7 +33,9 @@ import {
     ApplicationShell as TheiaApplicationShell,
     ShellLayoutRestorer as TheiaShellLayoutRestorer,
     CommonFrontendContribution as TheiaCommonFrontendContribution,
-    KeybindingRegistry as TheiaKeybindingRegistry
+    KeybindingRegistry as TheiaKeybindingRegistry,
+    TabBarRendererFactory,
+    ContextMenuRenderer
 } from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
 import { ApplicationShell } from './theia/core/application-shell';
@@ -120,6 +122,8 @@ import { OutputServicePath, OutputService } from '../common/protocol/output-serv
 import { NotificationCenter } from './notification-center';
 import { NotificationServicePath, NotificationServiceServer } from '../common/protocol';
 import { About } from './contributions/about';
+import { IconThemeService } from '@theia/core/lib/browser/icon-theme-service';
+import { TabBarRenderer } from './theia/core/tab-bars';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -329,4 +333,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(NotificationCenter).toSelf().inSingletonScope();
     bind(NotificationServiceServer).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, NotificationServicePath)).inSingletonScope();
+
+    // Enable the dirty indicator on uncloseable widgets.
+    rebind(TabBarRendererFactory).toFactory(context => () => {
+        const contextMenuRenderer = context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
+        const decoratorService = context.container.get<TabBarDecoratorService>(TabBarDecoratorService);
+        const iconThemeService = context.container.get<IconThemeService>(IconThemeService);
+        return new TabBarRenderer(contextMenuRenderer, decoratorService, iconThemeService);
+    });
 });
