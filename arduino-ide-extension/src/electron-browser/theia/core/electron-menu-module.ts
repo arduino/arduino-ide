@@ -1,9 +1,11 @@
 import { ContainerModule } from 'inversify';
-import { ElectronMenuContribution as TheiaElectronMenuContribution } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution'
-import { ElectronMenuContribution } from './electron-menu-contribution';
-import { MainMenuManager } from '../../../common/main-menu-manager';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { ElectronMainMenuFactory as TheiaElectronMainMenuFactory } from '@theia/core/lib/electron-browser/menu/electron-main-menu-factory';
+import { ElectronMenuContribution as TheiaElectronMenuContribution } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution'
+import { MainMenuManager } from '../../../common/main-menu-manager';
+import { ElectronWindowService } from '../../electron-window-service';
 import { ElectronMainMenuFactory } from './electron-main-menu-factory';
+import { ElectronMenuContribution } from './electron-menu-contribution';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(ElectronMenuContribution).toSelf().inSingletonScope();
@@ -11,4 +13,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaElectronMenuContribution).to(ElectronMenuContribution);
     bind(ElectronMainMenuFactory).toSelf().inRequestScope();
     rebind(TheiaElectronMainMenuFactory).toService(ElectronMainMenuFactory);
+    bind(ElectronWindowService).toSelf().inSingletonScope()
+    rebind(WindowService).toService(ElectronWindowService);
 });

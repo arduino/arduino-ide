@@ -57,6 +57,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
                 args,
                 await this.getForkOptions(),
             );
+            console.log(`Starting backend process. PID: ${backendProcess.pid}`);
             return new Promise((resolve, reject) => {
                 // The backend server main file is also supposed to send the resolved http(s) server port via IPC.
                 backendProcess.on('message', (address: AddressInfo) => {
