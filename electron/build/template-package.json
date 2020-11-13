@@ -105,7 +105,8 @@
       "uninstallerIcon": "resources/icon.ico",
       "installerSidebar": "resources/installerSidebar.bmp",
       "uninstallerSidebar": "resources/installerSidebar.bmp",
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "license": "resources/eula.txt"
     },
     "dmg": {
       "icon": "resources/icon.icns",
