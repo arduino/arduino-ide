@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import * as moment from 'moment';
 import { remote } from 'electron';
 import { isOSX, isWindows } from '@theia/core/lib/common/os';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
@@ -34,8 +35,10 @@ export class About extends Contribution {
     async showAbout(): Promise<void> {
         const ideStatus = FrontendApplicationConfigProvider.get()['status'];
         const { version, commit, status: cliStatus } = await this.configService.getVersion();
-        const detail = `
+        const buildDate = this.buildDate;
+        const detail = (useAgo: boolean) => `
 Version: ${remote.app.getVersion()}
+Date: ${buildDate ? buildDate : 'dev build'}${buildDate && useAgo ? ` (${this.ago(buildDate)})` : ''}
 CLI Version: ${version}${cliStatus ? ` ${cliStatus}` : ''} [${commit}]
 
 Copyright © ${new Date().getFullYear()} Arduino SA 
@@ -47,7 +50,7 @@ Copyright © ${new Date().getFullYear()} Arduino SA
             message: `${this.applicationName}${ideStatus ? ` – ${ideStatus}` : ''}`,
             title: `${this.applicationName}${ideStatus ? ` – ${ideStatus}` : ''}`,
             type: 'info',
-            detail,
+            detail: detail(true),
             buttons,
             noLink: true,
             defaultId: buttons.indexOf(ok),
@@ -55,12 +58,43 @@ Copyright © ${new Date().getFullYear()} Arduino SA
         });
 
         if (buttons[response] === copy) {
-            await this.clipboardService.writeText(detail);
+            await this.clipboardService.writeText(detail(false));
         }
     }
 
     protected get applicationName(): string {
         return FrontendApplicationConfigProvider.get().applicationName;
+    }
+
+    protected get buildDate(): string | undefined {
+        return FrontendApplicationConfigProvider.get().buildDate;
+    }
+
+    protected ago(isoTime: string): string {
+        const now = moment(Date.now());
+        const other = moment(isoTime);
+        let result = now.diff(other, 'minute');
+        if (result < 60) {
+            return result === 1 ? `${result} minute ago` : `${result} minute ago`;
+        }
+        result = now.diff(other, 'hour');
+        if (result < 25) {
+            return result === 1 ? `${result} hour ago` : `${result} hours ago`;
+        }
+        result = now.diff(other, 'day');
+        if (result < 8) {
+            return result === 1 ? `${result} day ago` : `${result} days ago`;
+        }
+        result = now.diff(other, 'week');
+        if (result < 5) {
+            return result === 1 ? `${result} week ago` : `${result} weeks ago`;
+        }
+        result = now.diff(other, 'month');
+        if (result < 13) {
+            return result === 1 ? `${result} month ago` : `${result} months ago`;
+        }
+        result = now.diff(other, 'year');
+        return result === 1 ? `${result} year ago` : `${result} years ago`;
     }
 
 }

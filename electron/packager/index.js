@@ -9,7 +9,7 @@
     const isCI = require('is-ci');
     shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1'; // Do not run the ffmpeg validation for the packager.
     shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI
-    const template = require('./config').generateTemplate();
+    const template = require('./config').generateTemplate(new Date().toISOString());
     const utils = require('./utils');
     const merge = require('deepmerge');
     const { isRelease, isElectronPublish } = utils;

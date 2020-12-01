@@ -95,13 +95,13 @@ function currentCommitish() {
 //     return git('rev-parse --abbrev-ref HEAD');
 // }
 
-function generateTemplate() {
+function generateTemplate(buildDate) {
     // do `export PUBLISH=true yarn package` if you want to mimic CI build locally.
     // const electronPublish = release || (isCI && currentBranch() === 'master') || process.env.PUBLISH === 'true';
     const version = getVersion();
     const productName = 'Arduino Pro IDE';
     const name = 'arduino-pro-ide';
-    const customizations = {
+    let customizations = {
         name,
         description: productName,
         version,
@@ -113,6 +113,9 @@ function generateTemplate() {
             }
         }
     };
+    if (buildDate) {
+        customizations = merge(customizations, { theia: { frontend: { config: { buildDate } } } });
+    }
     const template = require('../build/template-package.json');
     return merge(template, customizations);
 }
