@@ -15,7 +15,7 @@ interface IDebugService extends grpc.ServiceDefinition<grpc.UntypedServiceImplem
 }
 
 interface IDebugService_IDebug extends grpc.MethodDefinition<debug_debug_pb.DebugReq, debug_debug_pb.DebugResp> {
-    path: string; // "/cc.arduino.cli.debug.Debug/Debug"
+    path: "/cc.arduino.cli.debug.Debug/Debug";
     requestStream: true;
     responseStream: true;
     requestSerialize: grpc.serialize<debug_debug_pb.DebugReq>;
@@ -24,7 +24,7 @@ interface IDebugService_IDebug extends grpc.MethodDefinition<debug_debug_pb.Debu
     responseDeserialize: grpc.deserialize<debug_debug_pb.DebugResp>;
 }
 interface IDebugService_IGetDebugConfig extends grpc.MethodDefinition<debug_debug_pb.DebugConfigReq, debug_debug_pb.GetDebugConfigResp> {
-    path: string; // "/cc.arduino.cli.debug.Debug/GetDebugConfig"
+    path: "/cc.arduino.cli.debug.Debug/GetDebugConfig";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<debug_debug_pb.DebugConfigReq>;

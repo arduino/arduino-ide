@@ -14,7 +14,7 @@ interface IMonitorService extends grpc.ServiceDefinition<grpc.UntypedServiceImpl
 }
 
 interface IMonitorService_IStreamingOpen extends grpc.MethodDefinition<monitor_monitor_pb.StreamingOpenReq, monitor_monitor_pb.StreamingOpenResp> {
-    path: string; // "/cc.arduino.cli.monitor.Monitor/StreamingOpen"
+    path: "/cc.arduino.cli.monitor.Monitor/StreamingOpen";
     requestStream: true;
     responseStream: true;
     requestSerialize: grpc.serialize<monitor_monitor_pb.StreamingOpenReq>;

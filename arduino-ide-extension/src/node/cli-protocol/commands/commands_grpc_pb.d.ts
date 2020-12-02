@@ -54,7 +54,7 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
 }
 
 interface IArduinoCoreService_IInit extends grpc.MethodDefinition<commands_commands_pb.InitReq, commands_commands_pb.InitResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Init"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Init";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_commands_pb.InitReq>;
@@ -63,7 +63,7 @@ interface IArduinoCoreService_IInit extends grpc.MethodDefinition<commands_comma
     responseDeserialize: grpc.deserialize<commands_commands_pb.InitResp>;
 }
 interface IArduinoCoreService_IDestroy extends grpc.MethodDefinition<commands_commands_pb.DestroyReq, commands_commands_pb.DestroyResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Destroy"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Destroy";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_commands_pb.DestroyReq>;
@@ -72,7 +72,7 @@ interface IArduinoCoreService_IDestroy extends grpc.MethodDefinition<commands_co
     responseDeserialize: grpc.deserialize<commands_commands_pb.DestroyResp>;
 }
 interface IArduinoCoreService_IRescan extends grpc.MethodDefinition<commands_commands_pb.RescanReq, commands_commands_pb.RescanResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Rescan"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Rescan";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_commands_pb.RescanReq>;
@@ -81,7 +81,7 @@ interface IArduinoCoreService_IRescan extends grpc.MethodDefinition<commands_com
     responseDeserialize: grpc.deserialize<commands_commands_pb.RescanResp>;
 }
 interface IArduinoCoreService_IUpdateIndex extends grpc.MethodDefinition<commands_commands_pb.UpdateIndexReq, commands_commands_pb.UpdateIndexResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/UpdateIndex"
+    path: "/cc.arduino.cli.commands.ArduinoCore/UpdateIndex";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_commands_pb.UpdateIndexReq>;
@@ -90,7 +90,7 @@ interface IArduinoCoreService_IUpdateIndex extends grpc.MethodDefinition<command
     responseDeserialize: grpc.deserialize<commands_commands_pb.UpdateIndexResp>;
 }
 interface IArduinoCoreService_IUpdateLibrariesIndex extends grpc.MethodDefinition<commands_commands_pb.UpdateLibrariesIndexReq, commands_commands_pb.UpdateLibrariesIndexResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/UpdateLibrariesIndex"
+    path: "/cc.arduino.cli.commands.ArduinoCore/UpdateLibrariesIndex";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_commands_pb.UpdateLibrariesIndexReq>;
@@ -99,7 +99,7 @@ interface IArduinoCoreService_IUpdateLibrariesIndex extends grpc.MethodDefinitio
     responseDeserialize: grpc.deserialize<commands_commands_pb.UpdateLibrariesIndexResp>;
 }
 interface IArduinoCoreService_IUpdateCoreLibrariesIndex extends grpc.MethodDefinition<commands_commands_pb.UpdateCoreLibrariesIndexReq, commands_commands_pb.UpdateCoreLibrariesIndexResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/UpdateCoreLibrariesIndex"
+    path: "/cc.arduino.cli.commands.ArduinoCore/UpdateCoreLibrariesIndex";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_commands_pb.UpdateCoreLibrariesIndexReq>;
@@ -108,7 +108,7 @@ interface IArduinoCoreService_IUpdateCoreLibrariesIndex extends grpc.MethodDefin
     responseDeserialize: grpc.deserialize<commands_commands_pb.UpdateCoreLibrariesIndexResp>;
 }
 interface IArduinoCoreService_IOutdated extends grpc.MethodDefinition<commands_commands_pb.OutdatedReq, commands_commands_pb.OutdatedResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Outdated"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Outdated";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_commands_pb.OutdatedReq>;
@@ -117,7 +117,7 @@ interface IArduinoCoreService_IOutdated extends grpc.MethodDefinition<commands_c
     responseDeserialize: grpc.deserialize<commands_commands_pb.OutdatedResp>;
 }
 interface IArduinoCoreService_IUpgrade extends grpc.MethodDefinition<commands_commands_pb.UpgradeReq, commands_commands_pb.UpgradeResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Upgrade"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Upgrade";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_commands_pb.UpgradeReq>;
@@ -126,7 +126,7 @@ interface IArduinoCoreService_IUpgrade extends grpc.MethodDefinition<commands_co
     responseDeserialize: grpc.deserialize<commands_commands_pb.UpgradeResp>;
 }
 interface IArduinoCoreService_IVersion extends grpc.MethodDefinition<commands_commands_pb.VersionReq, commands_commands_pb.VersionResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Version"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Version";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_commands_pb.VersionReq>;
@@ -135,7 +135,7 @@ interface IArduinoCoreService_IVersion extends grpc.MethodDefinition<commands_co
     responseDeserialize: grpc.deserialize<commands_commands_pb.VersionResp>;
 }
 interface IArduinoCoreService_ILoadSketch extends grpc.MethodDefinition<commands_commands_pb.LoadSketchReq, commands_commands_pb.LoadSketchResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LoadSketch"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LoadSketch";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_commands_pb.LoadSketchReq>;
@@ -144,7 +144,7 @@ interface IArduinoCoreService_ILoadSketch extends grpc.MethodDefinition<commands
     responseDeserialize: grpc.deserialize<commands_commands_pb.LoadSketchResp>;
 }
 interface IArduinoCoreService_IArchiveSketch extends grpc.MethodDefinition<commands_commands_pb.ArchiveSketchReq, commands_commands_pb.ArchiveSketchResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/ArchiveSketch"
+    path: "/cc.arduino.cli.commands.ArduinoCore/ArchiveSketch";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_commands_pb.ArchiveSketchReq>;
@@ -153,7 +153,7 @@ interface IArduinoCoreService_IArchiveSketch extends grpc.MethodDefinition<comma
     responseDeserialize: grpc.deserialize<commands_commands_pb.ArchiveSketchResp>;
 }
 interface IArduinoCoreService_IBoardDetails extends grpc.MethodDefinition<commands_board_pb.BoardDetailsReq, commands_board_pb.BoardDetailsResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardDetails"
+    path: "/cc.arduino.cli.commands.ArduinoCore/BoardDetails";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_board_pb.BoardDetailsReq>;
@@ -162,7 +162,7 @@ interface IArduinoCoreService_IBoardDetails extends grpc.MethodDefinition<comman
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardDetailsResp>;
 }
 interface IArduinoCoreService_IBoardAttach extends grpc.MethodDefinition<commands_board_pb.BoardAttachReq, commands_board_pb.BoardAttachResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardAttach"
+    path: "/cc.arduino.cli.commands.ArduinoCore/BoardAttach";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_board_pb.BoardAttachReq>;
@@ -171,7 +171,7 @@ interface IArduinoCoreService_IBoardAttach extends grpc.MethodDefinition<command
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardAttachResp>;
 }
 interface IArduinoCoreService_IBoardList extends grpc.MethodDefinition<commands_board_pb.BoardListReq, commands_board_pb.BoardListResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardList"
+    path: "/cc.arduino.cli.commands.ArduinoCore/BoardList";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_board_pb.BoardListReq>;
@@ -180,7 +180,7 @@ interface IArduinoCoreService_IBoardList extends grpc.MethodDefinition<commands_
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardListResp>;
 }
 interface IArduinoCoreService_IBoardListAll extends grpc.MethodDefinition<commands_board_pb.BoardListAllReq, commands_board_pb.BoardListAllResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardListAll"
+    path: "/cc.arduino.cli.commands.ArduinoCore/BoardListAll";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_board_pb.BoardListAllReq>;
@@ -189,7 +189,7 @@ interface IArduinoCoreService_IBoardListAll extends grpc.MethodDefinition<comman
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardListAllResp>;
 }
 interface IArduinoCoreService_IBoardListWatch extends grpc.MethodDefinition<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BoardListWatch"
+    path: "/cc.arduino.cli.commands.ArduinoCore/BoardListWatch";
     requestStream: true;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_board_pb.BoardListWatchReq>;
@@ -198,7 +198,7 @@ interface IArduinoCoreService_IBoardListWatch extends grpc.MethodDefinition<comm
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardListWatchResp>;
 }
 interface IArduinoCoreService_ICompile extends grpc.MethodDefinition<commands_compile_pb.CompileReq, commands_compile_pb.CompileResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Compile"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Compile";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_compile_pb.CompileReq>;
@@ -207,7 +207,7 @@ interface IArduinoCoreService_ICompile extends grpc.MethodDefinition<commands_co
     responseDeserialize: grpc.deserialize<commands_compile_pb.CompileResp>;
 }
 interface IArduinoCoreService_IPlatformInstall extends grpc.MethodDefinition<commands_core_pb.PlatformInstallReq, commands_core_pb.PlatformInstallResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/PlatformInstall"
+    path: "/cc.arduino.cli.commands.ArduinoCore/PlatformInstall";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_core_pb.PlatformInstallReq>;
@@ -216,7 +216,7 @@ interface IArduinoCoreService_IPlatformInstall extends grpc.MethodDefinition<com
     responseDeserialize: grpc.deserialize<commands_core_pb.PlatformInstallResp>;
 }
 interface IArduinoCoreService_IPlatformDownload extends grpc.MethodDefinition<commands_core_pb.PlatformDownloadReq, commands_core_pb.PlatformDownloadResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/PlatformDownload"
+    path: "/cc.arduino.cli.commands.ArduinoCore/PlatformDownload";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_core_pb.PlatformDownloadReq>;
@@ -225,7 +225,7 @@ interface IArduinoCoreService_IPlatformDownload extends grpc.MethodDefinition<co
     responseDeserialize: grpc.deserialize<commands_core_pb.PlatformDownloadResp>;
 }
 interface IArduinoCoreService_IPlatformUninstall extends grpc.MethodDefinition<commands_core_pb.PlatformUninstallReq, commands_core_pb.PlatformUninstallResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/PlatformUninstall"
+    path: "/cc.arduino.cli.commands.ArduinoCore/PlatformUninstall";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_core_pb.PlatformUninstallReq>;
@@ -234,7 +234,7 @@ interface IArduinoCoreService_IPlatformUninstall extends grpc.MethodDefinition<c
     responseDeserialize: grpc.deserialize<commands_core_pb.PlatformUninstallResp>;
 }
 interface IArduinoCoreService_IPlatformUpgrade extends grpc.MethodDefinition<commands_core_pb.PlatformUpgradeReq, commands_core_pb.PlatformUpgradeResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/PlatformUpgrade"
+    path: "/cc.arduino.cli.commands.ArduinoCore/PlatformUpgrade";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_core_pb.PlatformUpgradeReq>;
@@ -243,7 +243,7 @@ interface IArduinoCoreService_IPlatformUpgrade extends grpc.MethodDefinition<com
     responseDeserialize: grpc.deserialize<commands_core_pb.PlatformUpgradeResp>;
 }
 interface IArduinoCoreService_IUpload extends grpc.MethodDefinition<commands_upload_pb.UploadReq, commands_upload_pb.UploadResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/Upload"
+    path: "/cc.arduino.cli.commands.ArduinoCore/Upload";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_upload_pb.UploadReq>;
@@ -252,7 +252,7 @@ interface IArduinoCoreService_IUpload extends grpc.MethodDefinition<commands_upl
     responseDeserialize: grpc.deserialize<commands_upload_pb.UploadResp>;
 }
 interface IArduinoCoreService_IUploadUsingProgrammer extends grpc.MethodDefinition<commands_upload_pb.UploadUsingProgrammerReq, commands_upload_pb.UploadUsingProgrammerResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/UploadUsingProgrammer"
+    path: "/cc.arduino.cli.commands.ArduinoCore/UploadUsingProgrammer";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_upload_pb.UploadUsingProgrammerReq>;
@@ -261,7 +261,7 @@ interface IArduinoCoreService_IUploadUsingProgrammer extends grpc.MethodDefiniti
     responseDeserialize: grpc.deserialize<commands_upload_pb.UploadUsingProgrammerResp>;
 }
 interface IArduinoCoreService_IListProgrammersAvailableForUpload extends grpc.MethodDefinition<commands_upload_pb.ListProgrammersAvailableForUploadReq, commands_upload_pb.ListProgrammersAvailableForUploadResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/ListProgrammersAvailableForUpload"
+    path: "/cc.arduino.cli.commands.ArduinoCore/ListProgrammersAvailableForUpload";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_upload_pb.ListProgrammersAvailableForUploadReq>;
@@ -270,7 +270,7 @@ interface IArduinoCoreService_IListProgrammersAvailableForUpload extends grpc.Me
     responseDeserialize: grpc.deserialize<commands_upload_pb.ListProgrammersAvailableForUploadResp>;
 }
 interface IArduinoCoreService_IBurnBootloader extends grpc.MethodDefinition<commands_upload_pb.BurnBootloaderReq, commands_upload_pb.BurnBootloaderResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/BurnBootloader"
+    path: "/cc.arduino.cli.commands.ArduinoCore/BurnBootloader";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_upload_pb.BurnBootloaderReq>;
@@ -279,7 +279,7 @@ interface IArduinoCoreService_IBurnBootloader extends grpc.MethodDefinition<comm
     responseDeserialize: grpc.deserialize<commands_upload_pb.BurnBootloaderResp>;
 }
 interface IArduinoCoreService_IPlatformSearch extends grpc.MethodDefinition<commands_core_pb.PlatformSearchReq, commands_core_pb.PlatformSearchResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/PlatformSearch"
+    path: "/cc.arduino.cli.commands.ArduinoCore/PlatformSearch";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_core_pb.PlatformSearchReq>;
@@ -288,7 +288,7 @@ interface IArduinoCoreService_IPlatformSearch extends grpc.MethodDefinition<comm
     responseDeserialize: grpc.deserialize<commands_core_pb.PlatformSearchResp>;
 }
 interface IArduinoCoreService_IPlatformList extends grpc.MethodDefinition<commands_core_pb.PlatformListReq, commands_core_pb.PlatformListResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/PlatformList"
+    path: "/cc.arduino.cli.commands.ArduinoCore/PlatformList";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_core_pb.PlatformListReq>;
@@ -297,7 +297,7 @@ interface IArduinoCoreService_IPlatformList extends grpc.MethodDefinition<comman
     responseDeserialize: grpc.deserialize<commands_core_pb.PlatformListResp>;
 }
 interface IArduinoCoreService_ILibraryDownload extends grpc.MethodDefinition<commands_lib_pb.LibraryDownloadReq, commands_lib_pb.LibraryDownloadResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryDownload"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibraryDownload";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_lib_pb.LibraryDownloadReq>;
@@ -306,7 +306,7 @@ interface IArduinoCoreService_ILibraryDownload extends grpc.MethodDefinition<com
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibraryDownloadResp>;
 }
 interface IArduinoCoreService_ILibraryInstall extends grpc.MethodDefinition<commands_lib_pb.LibraryInstallReq, commands_lib_pb.LibraryInstallResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryInstall"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibraryInstall";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_lib_pb.LibraryInstallReq>;
@@ -315,7 +315,7 @@ interface IArduinoCoreService_ILibraryInstall extends grpc.MethodDefinition<comm
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibraryInstallResp>;
 }
 interface IArduinoCoreService_IZipLibraryInstall extends grpc.MethodDefinition<commands_lib_pb.ZipLibraryInstallReq, commands_lib_pb.ZipLibraryInstallResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/ZipLibraryInstall"
+    path: "/cc.arduino.cli.commands.ArduinoCore/ZipLibraryInstall";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_lib_pb.ZipLibraryInstallReq>;
@@ -324,7 +324,7 @@ interface IArduinoCoreService_IZipLibraryInstall extends grpc.MethodDefinition<c
     responseDeserialize: grpc.deserialize<commands_lib_pb.ZipLibraryInstallResp>;
 }
 interface IArduinoCoreService_IGitLibraryInstall extends grpc.MethodDefinition<commands_lib_pb.GitLibraryInstallReq, commands_lib_pb.GitLibraryInstallResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/GitLibraryInstall"
+    path: "/cc.arduino.cli.commands.ArduinoCore/GitLibraryInstall";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_lib_pb.GitLibraryInstallReq>;
@@ -333,7 +333,7 @@ interface IArduinoCoreService_IGitLibraryInstall extends grpc.MethodDefinition<c
     responseDeserialize: grpc.deserialize<commands_lib_pb.GitLibraryInstallResp>;
 }
 interface IArduinoCoreService_ILibraryUninstall extends grpc.MethodDefinition<commands_lib_pb.LibraryUninstallReq, commands_lib_pb.LibraryUninstallResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryUninstall"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibraryUninstall";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_lib_pb.LibraryUninstallReq>;
@@ -342,7 +342,7 @@ interface IArduinoCoreService_ILibraryUninstall extends grpc.MethodDefinition<co
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibraryUninstallResp>;
 }
 interface IArduinoCoreService_ILibraryUpgradeAll extends grpc.MethodDefinition<commands_lib_pb.LibraryUpgradeAllReq, commands_lib_pb.LibraryUpgradeAllResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryUpgradeAll"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibraryUpgradeAll";
     requestStream: false;
     responseStream: true;
     requestSerialize: grpc.serialize<commands_lib_pb.LibraryUpgradeAllReq>;
@@ -351,7 +351,7 @@ interface IArduinoCoreService_ILibraryUpgradeAll extends grpc.MethodDefinition<c
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibraryUpgradeAllResp>;
 }
 interface IArduinoCoreService_ILibraryResolveDependencies extends grpc.MethodDefinition<commands_lib_pb.LibraryResolveDependenciesReq, commands_lib_pb.LibraryResolveDependenciesResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryResolveDependencies"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibraryResolveDependencies";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_lib_pb.LibraryResolveDependenciesReq>;
@@ -360,7 +360,7 @@ interface IArduinoCoreService_ILibraryResolveDependencies extends grpc.MethodDef
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibraryResolveDependenciesResp>;
 }
 interface IArduinoCoreService_ILibrarySearch extends grpc.MethodDefinition<commands_lib_pb.LibrarySearchReq, commands_lib_pb.LibrarySearchResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibrarySearch"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibrarySearch";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_lib_pb.LibrarySearchReq>;
@@ -369,7 +369,7 @@ interface IArduinoCoreService_ILibrarySearch extends grpc.MethodDefinition<comma
     responseDeserialize: grpc.deserialize<commands_lib_pb.LibrarySearchResp>;
 }
 interface IArduinoCoreService_ILibraryList extends grpc.MethodDefinition<commands_lib_pb.LibraryListReq, commands_lib_pb.LibraryListResp> {
-    path: string; // "/cc.arduino.cli.commands.ArduinoCore/LibraryList"
+    path: "/cc.arduino.cli.commands.ArduinoCore/LibraryList";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<commands_lib_pb.LibraryListReq>;

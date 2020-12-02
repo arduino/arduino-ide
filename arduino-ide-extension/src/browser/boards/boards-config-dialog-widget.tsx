@@ -19,6 +19,7 @@ export class BoardsConfigDialogWidget extends ReactWidget {
     @inject(NotificationCenter)
     protected readonly notificationCenter: NotificationCenter;
 
+    protected readonly onFilterTextDidChangeEmitter = new Emitter<string>();
     protected readonly onBoardConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
     readonly onBoardConfigChanged = this.onBoardConfigChangedEmitter.event;
 
@@ -27,6 +28,14 @@ export class BoardsConfigDialogWidget extends ReactWidget {
     constructor() {
         super();
         this.id = 'select-board-dialog';
+        this.toDispose.pushAll([
+            this.onBoardConfigChangedEmitter,
+            this.onFilterTextDidChangeEmitter
+        ]);
+    }
+
+    search(query: string): void {
+        this.onFilterTextDidChangeEmitter.fire(query);
     }
 
     protected fireConfigChanged = (config: BoardsConfig.Config) => {
@@ -43,7 +52,8 @@ export class BoardsConfigDialogWidget extends ReactWidget {
                 boardsServiceProvider={this.boardsServiceClient}
                 notificationCenter={this.notificationCenter}
                 onConfigChange={this.fireConfigChanged}
-                onFocusNodeSet={this.setFocusNode} />
+                onFocusNodeSet={this.setFocusNode}
+                onFilteredTextDidChangeEvent={this.onFilterTextDidChangeEmitter.event} />
         </div>;
     }
 

@@ -104,7 +104,7 @@ export interface BoardsService extends Installable<BoardsPackage>, Searchable<Bo
     getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
     // The CLI cannot do fuzzy search. This method provides all boards and we do the fuzzy search (with monaco) on the frontend.
     // https://github.com/arduino/arduino-cli/issues/629
-    allBoards(options: {}): Promise<Array<Board & { packageName: string }>>;
+    allBoards(options: {}): Promise<Array<BoardWithPackage>>;
 }
 
 export interface Port {
@@ -255,6 +255,18 @@ export interface Board {
     readonly port?: Port;
 }
 
+export interface BoardWithPackage extends Board {
+    readonly packageName: string;
+    readonly packageId: string;
+}
+export namespace BoardWithPackage {
+
+    export function is(board: Board & Partial<{ packageName: string, packageId: string }>): board is BoardWithPackage {
+        return !!board.packageId && !!board.packageName;
+    }
+
+}
+
 export interface BoardDetails {
     readonly fqbn: string;
     readonly requiredTools: Tool[];
@@ -381,10 +393,10 @@ export namespace Board {
         return `${board.name}${fqbn}`;
     }
 
-    export type Detailed = Board & Readonly<{ selected: boolean, missing: boolean, packageName: string, details?: string }>;
+    export type Detailed = Board & Readonly<{ selected: boolean, missing: boolean, packageName: string, packageId: string, details?: string }>;
     export function decorateBoards(
         selectedBoard: Board | undefined,
-        boards: Array<Board & { packageName: string }>): Array<Detailed> {
+        boards: Array<BoardWithPackage>): Array<Detailed> {
         // Board names are not unique. We show the corresponding core name as a detail.
         // https://github.com/arduino/arduino-cli/pull/294#issuecomment-513764948
         const distinctBoardNames = new Map<string, number>();
@@ -394,11 +406,14 @@ export namespace Board {
         }
 
         // Due to the non-unique board names, we have to check the package name as well.
-        const selected = (board: Board & { packageName: string }) => {
+        const selected = (board: BoardWithPackage) => {
             if (!!selectedBoard) {
                 if (Board.equals(board, selectedBoard)) {
                     if ('packageName' in selectedBoard) {
                         return board.packageName === (selectedBoard as any).packageName;
+                    }
+                    if ('packageId' in selectedBoard) {
+                        return board.packageId === (selectedBoard as any).packageId;
                     }
                     return true;
                 }

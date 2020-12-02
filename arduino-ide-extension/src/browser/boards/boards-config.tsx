@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { Event } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
+import { MaybePromise } from '@theia/core/lib/common/types';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { Board, Port, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
-import { BoardsServiceProvider } from './boards-service-provider';
+import { Board, Port, AttachedBoardsChangeEvent, BoardWithPackage } from '../../common/protocol/boards-service';
 import { NotificationCenter } from '../notification-center';
-import { MaybePromise } from '@theia/core';
+import { BoardsServiceProvider } from './boards-service-provider';
 
 export namespace BoardsConfig {
 
@@ -18,10 +19,11 @@ export namespace BoardsConfig {
         readonly notificationCenter: NotificationCenter;
         readonly onConfigChange: (config: Config) => void;
         readonly onFocusNodeSet: (element: HTMLElement | undefined) => void;
+        readonly onFilteredTextDidChangeEvent: Event<string>;
     }
 
     export interface State extends Config {
-        searchResults: Array<Board & { packageName: string }>;
+        searchResults: Array<BoardWithPackage>;
         knownPorts: Port[];
         showAllPorts: boolean;
         query: string;
@@ -91,7 +93,8 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             this.props.notificationCenter.onPlatformUninstalled(() => this.updateBoards(this.state.query)),
             this.props.notificationCenter.onIndexUpdated(() => this.updateBoards(this.state.query)),
             this.props.notificationCenter.onDaemonStarted(() => this.updateBoards(this.state.query)),
-            this.props.notificationCenter.onDaemonStopped(() => this.setState({ searchResults: [] }))
+            this.props.notificationCenter.onDaemonStopped(() => this.setState({ searchResults: [] })),
+            this.props.onFilteredTextDidChangeEvent(query => this.setState({ query }, () => this.updateBoards(this.state.query)))
         ]);
     }
 
@@ -105,10 +108,9 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     }
 
     protected updateBoards = (eventOrQuery: React.ChangeEvent<HTMLInputElement> | string = '') => {
-        const query = (typeof eventOrQuery === 'string'
+        const query = typeof eventOrQuery === 'string'
             ? eventOrQuery
-            : eventOrQuery.target.value.toLowerCase()
-        ).trim();
+            : eventOrQuery.target.value.toLowerCase();
         this.setState({ query });
         this.queryBoards({ query }).then(searchResults => this.setState({ searchResults }));
     }
@@ -124,7 +126,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         });
     }
 
-    protected queryBoards = (options: { query?: string } = {}): Promise<Array<Board & { packageName: string }>> => {
+    protected queryBoards = (options: { query?: string } = {}): Promise<Array<BoardWithPackage>> => {
         return this.props.boardsServiceProvider.searchBoards(options);
     }
 
@@ -145,7 +147,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         this.setState({ selectedPort }, () => this.fireConfigChanged());
     }
 
-    protected selectBoard = (selectedBoard: Board & { packageName: string } | undefined) => {
+    protected selectBoard = (selectedBoard: BoardWithPackage | undefined) => {
         this.setState({ selectedBoard }, () => this.fireConfigChanged());
     }
 
@@ -175,7 +177,7 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
     }
 
     protected renderBoards(): React.ReactNode {
-        const { selectedBoard, searchResults } = this.state;
+        const { selectedBoard, searchResults, query } = this.state;
         // Board names are not unique per core https://github.com/arduino/arduino-pro-ide/issues/262#issuecomment-661019560
         // It is tricky when the core is not yet installed, no FQBNs are available.
         const distinctBoards = new Map<string, Board.Detailed>();
@@ -189,11 +191,18 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
 
         return <React.Fragment>
             <div className='search'>
-                <input type='search' className='theia-input' placeholder='SEARCH BOARD' onChange={this.updateBoards} ref={this.focusNodeSet} />
+                <input
+                    type='search'
+                    value={query}
+                    className='theia-input'
+                    placeholder='SEARCH BOARD'
+                    onChange={this.updateBoards}
+                    ref={this.focusNodeSet}
+                />
                 <i className='fa fa-search'></i>
             </div>
             <div className='boards list'>
-                {Array.from(distinctBoards.values()).map(board => <Item<Board & { packageName: string }>
+                {Array.from(distinctBoards.values()).map(board => <Item<BoardWithPackage>
                     key={`${board.name}-${board.packageName}`}
                     item={board}
                     label={board.name}

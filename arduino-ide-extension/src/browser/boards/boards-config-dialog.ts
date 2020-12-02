@@ -1,10 +1,10 @@
 import { injectable, inject, postConstruct } from 'inversify';
 import { Message } from '@phosphor/messaging';
 import { AbstractDialog, DialogProps, Widget, DialogError } from '@theia/core/lib/browser';
-import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsConfig } from './boards-config';
-import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
+import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
+import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
 
 @injectable()
 export class BoardsConfigDialogProps extends DialogProps {
@@ -40,6 +40,16 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
             this.config = config;
             this.update();
         }));
+    }
+
+    /**
+     * Pass in an empty string if you want to reset the search term. Using `undefined` has no effect.
+     */
+    async open(query: string | undefined = undefined): Promise<BoardsConfig.Config | undefined> {
+        if (typeof query === 'string') {
+            this.widget.search(query);
+        }
+        return super.open();
     }
 
     protected createDescription(): HTMLElement {

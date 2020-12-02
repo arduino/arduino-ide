@@ -89,6 +89,9 @@ export class BoardDetailsResp extends jspb.Message {
     setProgrammersList(value: Array<commands_common_pb.Programmer>): BoardDetailsResp;
     addProgrammers(value?: commands_common_pb.Programmer, index?: number): commands_common_pb.Programmer;
 
+    getDebuggingSupported(): boolean;
+    setDebuggingSupported(value: boolean): BoardDetailsResp;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsResp.AsObject;
@@ -115,6 +118,7 @@ export namespace BoardDetailsResp {
         configOptionsList: Array<ConfigOption.AsObject>,
         identificationPrefList: Array<IdentificationPref.AsObject>,
         programmersList: Array<commands_common_pb.Programmer.AsObject>,
+        debuggingSupported: boolean,
     }
 }
 
@@ -678,6 +682,12 @@ export class BoardListItem extends jspb.Message {
     getIsHidden(): boolean;
     setIsHidden(value: boolean): BoardListItem;
 
+    getVid(): string;
+    setVid(value: string): BoardListItem;
+
+    getPid(): string;
+    setPid(value: string): BoardListItem;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListItem.AsObject;
@@ -694,5 +704,7 @@ export namespace BoardListItem {
         name: string,
         fqbn: string,
         isHidden: boolean,
+        vid: string,
+        pid: string,
     }
 }

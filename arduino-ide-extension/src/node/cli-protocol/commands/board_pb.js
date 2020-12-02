@@ -7,6 +7,8 @@
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
+/* eslint-disable */
+// @ts-nocheck
 
 var jspb = require('google-protobuf');
 var goog = jspb;
@@ -712,7 +714,8 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.toObject = function(includeInstan
     identificationPrefList: jspb.Message.toObjectList(msg.getIdentificationPrefList(),
     proto.cc.arduino.cli.commands.IdentificationPref.toObject, includeInstance),
     programmersList: jspb.Message.toObjectList(msg.getProgrammersList(),
-    commands_common_pb.Programmer.toObject, includeInstance)
+    commands_common_pb.Programmer.toObject, includeInstance),
+    debuggingSupported: jspb.Message.getBooleanFieldWithDefault(msg, 14, false)
   };
 
   if (includeInstance) {
@@ -806,6 +809,10 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.deserializeBinaryFromReader = fun
       var value = new commands_common_pb.Programmer;
       reader.readMessage(value,commands_common_pb.Programmer.deserializeBinaryFromReader);
       msg.addProgrammers(value);
+      break;
+    case 14:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDebuggingSupported(value);
       break;
     default:
       reader.skipField();
@@ -931,6 +938,13 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.serializeBinaryToWriter = functio
       13,
       f,
       commands_common_pb.Programmer.serializeBinaryToWriter
+    );
+  }
+  f = message.getDebuggingSupported();
+  if (f) {
+    writer.writeBool(
+      14,
+      f
     );
   }
 };
@@ -1285,6 +1299,24 @@ proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.addProgrammers = functi
  */
 proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.clearProgrammersList = function() {
   return this.setProgrammersList([]);
+};
+
+
+/**
+ * optional bool debugging_supported = 14;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.getDebuggingSupported = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 14, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.BoardDetailsResp} returns this
+ */
+proto.cc.arduino.cli.commands.BoardDetailsResp.prototype.setDebuggingSupported = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 14, value);
 };
 
 
@@ -5026,7 +5058,9 @@ proto.cc.arduino.cli.commands.BoardListItem.toObject = function(includeInstance,
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
     fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    isHidden: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    isHidden: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    vid: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    pid: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
   if (includeInstance) {
@@ -5075,6 +5109,14 @@ proto.cc.arduino.cli.commands.BoardListItem.deserializeBinaryFromReader = functi
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIsHidden(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVid(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPid(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -5122,6 +5164,20 @@ proto.cc.arduino.cli.commands.BoardListItem.serializeBinaryToWriter = function(m
   if (f) {
     writer.writeBool(
       3,
+      f
+    );
+  }
+  f = message.getVid();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = message.getPid();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
       f
     );
   }
@@ -5179,6 +5235,42 @@ proto.cc.arduino.cli.commands.BoardListItem.prototype.getIsHidden = function() {
  */
 proto.cc.arduino.cli.commands.BoardListItem.prototype.setIsHidden = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+/**
+ * optional string VID = 4;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.BoardListItem.prototype.getVid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.BoardListItem} returns this
+ */
+proto.cc.arduino.cli.commands.BoardListItem.prototype.setVid = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string PID = 5;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.BoardListItem.prototype.getPid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.BoardListItem} returns this
+ */
+proto.cc.arduino.cli.commands.BoardListItem.prototype.setPid = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 

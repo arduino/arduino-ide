@@ -6,6 +6,7 @@
 
 import * as jspb from "google-protobuf";
 import * as commands_common_pb from "../commands/common_pb";
+import * as commands_lib_pb from "../commands/lib_pb";
 
 export class CompileReq extends jspb.Message { 
 
@@ -114,6 +115,19 @@ export class CompileResp extends jspb.Message {
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): CompileResp;
 
+    getBuildPath(): string;
+    setBuildPath(value: string): CompileResp;
+
+    clearUsedLibrariesList(): void;
+    getUsedLibrariesList(): Array<commands_lib_pb.Library>;
+    setUsedLibrariesList(value: Array<commands_lib_pb.Library>): CompileResp;
+    addUsedLibraries(value?: commands_lib_pb.Library, index?: number): commands_lib_pb.Library;
+
+    clearExecutableSectionsSizeList(): void;
+    getExecutableSectionsSizeList(): Array<ExecutableSectionSize>;
+    setExecutableSectionsSizeList(value: Array<ExecutableSectionSize>): CompileResp;
+    addExecutableSectionsSize(value?: ExecutableSectionSize, index?: number): ExecutableSectionSize;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileResp.AsObject;
@@ -129,5 +143,37 @@ export namespace CompileResp {
     export type AsObject = {
         outStream: Uint8Array | string,
         errStream: Uint8Array | string,
+        buildPath: string,
+        usedLibrariesList: Array<commands_lib_pb.Library.AsObject>,
+        executableSectionsSizeList: Array<ExecutableSectionSize.AsObject>,
+    }
+}
+
+export class ExecutableSectionSize extends jspb.Message { 
+    getName(): string;
+    setName(value: string): ExecutableSectionSize;
+
+    getSize(): number;
+    setSize(value: number): ExecutableSectionSize;
+
+    getMaxsize(): number;
+    setMaxsize(value: number): ExecutableSectionSize;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ExecutableSectionSize.AsObject;
+    static toObject(includeInstance: boolean, msg: ExecutableSectionSize): ExecutableSectionSize.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ExecutableSectionSize, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ExecutableSectionSize;
+    static deserializeBinaryFromReader(message: ExecutableSectionSize, reader: jspb.BinaryReader): ExecutableSectionSize;
+}
+
+export namespace ExecutableSectionSize {
+    export type AsObject = {
+        name: string,
+        size: number,
+        maxsize: number,
     }
 }

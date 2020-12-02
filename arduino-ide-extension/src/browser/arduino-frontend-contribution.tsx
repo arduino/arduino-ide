@@ -272,8 +272,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             }
         });
         registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
-            execute: async () => {
-                const boardsConfig = await this.boardsConfigDialog.open();
+            execute: async (query?: string | undefined) => {
+                const boardsConfig = await this.boardsConfigDialog.open(query);
                 if (boardsConfig) {
                     this.boardsServiceClientImpl.boardsConfig = boardsConfig;
                 }

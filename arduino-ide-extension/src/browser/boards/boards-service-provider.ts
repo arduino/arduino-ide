@@ -10,15 +10,18 @@ import {
     Board,
     BoardsService,
     BoardsPackage,
-    AttachedBoardsChangeEvent
+    AttachedBoardsChangeEvent,
+    BoardWithPackage
 } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 import { compareAnything } from '../theia/monaco/comparers';
 import { NotificationCenter } from '../notification-center';
+import { CommandService } from '@theia/core';
+import { ArduinoCommands } from '../arduino-commands';
 
 interface BoardMatch {
-    readonly board: Board & Readonly<{ packageName: string }>;
+    readonly board: BoardWithPackage;
     readonly matches: monaco.filters.IMatch[] | undefined;
 }
 
@@ -36,6 +39,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
     @inject(BoardsService)
     protected boardsService: BoardsService;
+
+    @inject(CommandService)
+    protected commandService: CommandService;
 
     @inject(NotificationCenter)
     protected notificationCenter: NotificationCenter;
@@ -107,6 +113,19 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
                 };
                 return;
             }
+            // The board name can change after install.
+            // This logic handles it "gracefully" by unselecting the board, so that we can avoid no FQBN is set error.
+            // https://github.com/arduino/arduino-cli/issues/620
+            // https://github.com/arduino/arduino-pro-ide/issues/374
+            if (BoardWithPackage.is(selectedBoard) && selectedBoard.packageId === event.item.id && !installedBoard) {
+                this.messageService.warn(`Could not find previously selected board '${selectedBoard.name}' in installed platform '${event.item.name}'. Please manually reselect the board you want to use. Do you want to reselect it now?`, 'Reselect later', 'Yes').then(async answer => {
+                    if (answer === 'Yes') {
+                        this.commandService.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id, selectedBoard.name);
+                    }
+                });
+                this.boardsConfig = {}
+                return;
+            }
             // Trigger a board re-set. See: https://github.com/arduino/arduino-cli/issues/954
             // E.g: install `adafruit:avr`, then select `adafruit:avr:adafruit32u4` board, and finally install the required `arduino:avr`
             this.boardsConfig = this.boardsConfig;
@@ -173,15 +192,15 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         }
     }
 
-    async searchBoards({ query, cores }: { query?: string, cores?: string[] }): Promise<Array<Board & { packageName: string }>> {
+    async searchBoards({ query, cores }: { query?: string, cores?: string[] }): Promise<Array<BoardWithPackage>> {
         const boards = await this.boardsService.allBoards({});
         const coresFilter = !!cores && cores.length
-            ? ((toFilter: { packageName: string }) => cores.some(core => core === toFilter.packageName))
+            ? ((toFilter: BoardWithPackage) => cores.some(core => core === toFilter.packageName || core === toFilter.packageId))
             : () => true;
         if (!query) {
             return boards.filter(coresFilter).sort(Board.compare);
         }
-        const toMatch = ((toFilter: Board & { packageName: string }) => (({ board: toFilter, matches: monaco.filters.matchesFuzzy(query, toFilter.name, true) })));
+        const toMatch = ((toFilter: BoardWithPackage) => (({ board: toFilter, matches: monaco.filters.matchesFuzzy(query, toFilter.name, true) })));
         const compareEntries = (left: BoardMatch, right: BoardMatch, lookFor: string) => {
             const leftMatches = left.matches || [];
             const rightMatches = right.matches || [];

@@ -83,7 +83,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         }
         const key = this.getStorageKey(fqbn, version);
         let data = await this.storageService.getData<BoardsDataStore.Data | undefined>(key, undefined);
-        if (data) {
+        if (BoardsDataStore.Data.is(data)) {
             return data;
         }
 
@@ -202,5 +202,10 @@ export namespace BoardsDataStore {
             configOptions: [],
             programmers: []
         };
+        export function is(arg: any): arg is Data {
+            return !!arg
+                && 'configOptions' in arg && Array.isArray(arg['configOptions'])
+                && 'programmers' in arg && Array.isArray(arg['programmers'])
+        }
     }
 }

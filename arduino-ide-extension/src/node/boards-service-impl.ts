@@ -3,7 +3,7 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import {
     BoardsService,
     Installable,
-    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AvailablePorts
+    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AvailablePorts, BoardWithPackage
 } from '../common/protocol';
 import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
@@ -155,9 +155,9 @@ export class BoardsServiceImpl implements BoardsService {
         return packages.find(({ boards }) => boards.some(({ fqbn }) => fqbn === expectedFqbn));
     }
 
-    async allBoards(options: {}): Promise<Array<Board & { packageName: string }>> {
+    async allBoards(options: {}): Promise<Array<BoardWithPackage>> {
         const results = await this.search(options);
-        return results.map(item => item.boards.map(board => ({ ...board, packageName: item.name })))
+        return results.map(item => item.boards.map(board => ({ ...board, packageName: item.name, packageId: item.id })))
             .reduce((acc, curr) => acc.concat(curr), []);
     }
 

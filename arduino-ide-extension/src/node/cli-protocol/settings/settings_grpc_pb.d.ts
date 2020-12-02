@@ -16,7 +16,7 @@ interface ISettingsService extends grpc.ServiceDefinition<grpc.UntypedServiceImp
 }
 
 interface ISettingsService_IGetAll extends grpc.MethodDefinition<settings_settings_pb.GetAllRequest, settings_settings_pb.RawData> {
-    path: string; // "/cc.arduino.cli.settings.Settings/GetAll"
+    path: "/cc.arduino.cli.settings.Settings/GetAll";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<settings_settings_pb.GetAllRequest>;
@@ -25,7 +25,7 @@ interface ISettingsService_IGetAll extends grpc.MethodDefinition<settings_settin
     responseDeserialize: grpc.deserialize<settings_settings_pb.RawData>;
 }
 interface ISettingsService_IMerge extends grpc.MethodDefinition<settings_settings_pb.RawData, settings_settings_pb.MergeResponse> {
-    path: string; // "/cc.arduino.cli.settings.Settings/Merge"
+    path: "/cc.arduino.cli.settings.Settings/Merge";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<settings_settings_pb.RawData>;
@@ -34,7 +34,7 @@ interface ISettingsService_IMerge extends grpc.MethodDefinition<settings_setting
     responseDeserialize: grpc.deserialize<settings_settings_pb.MergeResponse>;
 }
 interface ISettingsService_IGetValue extends grpc.MethodDefinition<settings_settings_pb.GetValueRequest, settings_settings_pb.Value> {
-    path: string; // "/cc.arduino.cli.settings.Settings/GetValue"
+    path: "/cc.arduino.cli.settings.Settings/GetValue";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<settings_settings_pb.GetValueRequest>;
@@ -43,7 +43,7 @@ interface ISettingsService_IGetValue extends grpc.MethodDefinition<settings_sett
     responseDeserialize: grpc.deserialize<settings_settings_pb.Value>;
 }
 interface ISettingsService_ISetValue extends grpc.MethodDefinition<settings_settings_pb.Value, settings_settings_pb.SetValueResponse> {
-    path: string; // "/cc.arduino.cli.settings.Settings/SetValue"
+    path: "/cc.arduino.cli.settings.Settings/SetValue";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<settings_settings_pb.Value>;
