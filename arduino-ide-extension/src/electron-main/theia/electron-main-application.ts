@@ -1,13 +1,22 @@
-import { injectable } from 'inversify';
-import { app } from 'electron';
+import { inject, injectable } from 'inversify';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, screen } from 'electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
+import { join } from 'path';
+import { initSplashScreen } from '../splash/splash-screen';
+import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
 import { ElectronMainApplication as TheiaElectronMainApplication, TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/electron-main-application';
+import { SplashServiceImpl } from '../splash/splash-service-impl';
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
+
+    protected windows: BrowserWindow[] = [];
+
+    @inject(SplashServiceImpl)
+    protected readonly splashService: SplashServiceImpl;
 
     async start(config: FrontendApplicationConfig): Promise<void> {
         // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
@@ -15,6 +24,62 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
         app.on('ready', () => app.setName(config.applicationName));
         return super.start(config);
+    }
+
+    /**
+     * Use this rather than creating `BrowserWindow` instances from scratch, since some security parameters need to be set, this method will do it.
+     *
+     * @param options
+     */
+    async createWindow(asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultBrowserWindowOptions()): Promise<BrowserWindow> {
+        const options = await asyncOptions;
+        let electronWindow: BrowserWindow | undefined;
+        if (this.windows.length) {
+            electronWindow = new BrowserWindow(options);
+        } else {
+            const { bounds } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+            const splashHeight = 450;
+            const splashWidth = 600;
+            const splashY = Math.floor(bounds.y + (bounds.height - splashHeight) / 2);
+            const splashX = Math.floor(bounds.x + (bounds.width - splashWidth) / 2);
+            const splashScreenOpts: BrowserWindowConstructorOptions = {
+                height: splashHeight,
+                width: splashWidth,
+                x: splashX,
+                y: splashY,
+                transparent: true,
+                alwaysOnTop: true,
+                focusable: false,
+                minimizable: false,
+                maximizable: false,
+                hasShadow: false,
+                resizable: false
+            };
+            electronWindow = initSplashScreen({
+                windowOpts: options,
+                templateUrl: join(__dirname, '..', '..', '..', 'src', 'electron-main', 'splash', 'static', 'splash.html'),
+                delay: 0,
+                minVisible: 2000,
+                splashScreenOpts
+            }, this.splashService.onCloseRequested);
+        }
+        this.windows.push(electronWindow);
+        electronWindow.on('closed', () => {
+            if (electronWindow) {
+                const index = this.windows.indexOf(electronWindow);
+                if (index === -1) {
+                    console.warn(`Could not dispose browser window: '${electronWindow.title}'.`);
+                } else {
+                    this.windows.splice(index, 1);
+                    electronWindow = undefined;
+                }
+            }
+        })
+        this.attachReadyToShow(electronWindow);
+        this.attachSaveWindowState(electronWindow);
+        this.attachGlobalShortcuts(electronWindow);
+        this.restoreMaximizedState(electronWindow, options);
+        return electronWindow;
     }
 
     protected async getDefaultBrowserWindowOptions(): Promise<TheiaBrowserWindowOptions> {

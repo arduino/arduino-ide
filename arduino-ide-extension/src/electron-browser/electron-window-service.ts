@@ -1,13 +1,26 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { remote } from 'electron';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { ConnectionStatus, ConnectionStatusService } from '@theia/core/lib/browser/connection-status-service';
 import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
+import { SplashService } from '../electron-common/splash-service';
 
 @injectable()
 export class ElectronWindowService extends TheiaElectronWindowService {
 
     @inject(ConnectionStatusService)
     protected readonly connectionStatusService: ConnectionStatusService;
+
+    @inject(SplashService)
+    protected readonly splashService: SplashService;
+
+    @inject(FrontendApplicationStateService)
+    protected readonly appStateService: FrontendApplicationStateService;
+
+    @postConstruct()
+    protected init(): void {
+        this.appStateService.reachedAnyState('initialized_layout').then(() => this.splashService.requestClose());
+    }
 
     protected shouldUnload(): boolean {
         const offline = this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE;
