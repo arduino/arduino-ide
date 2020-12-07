@@ -119,6 +119,18 @@
         "additionalProperties": false
       },
       "additionalProperties": false
+    },
+    "library": {
+      "type": "object",
+      "description": "Library Configuration",
+      "properties": {
+        "enable_unsafe_install": {
+          "type": "boolean",
+          "description": "Set to 'true' to enable the use of the '--git-url' and '--zip-file' flags with 'arduino-cli lib install' These are considered 'unsafe' installation methods because they allow installing files that have not passed through the Library Manager submission process."
+        },
+        "additionalProperties": false
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

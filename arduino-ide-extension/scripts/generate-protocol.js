@@ -66,12 +66,12 @@
     const { platform } = process;
     const build = path.join(__dirname, '..', 'build');
     const cli = path.join(build, `arduino-cli${platform === 'win32' ? '.exe' : ''}`);
-    const rawVersion = shell.exec(`${cli} version`).trim();
-    if (!rawVersion) {
+    const jsonVersion = shell.exec(`${cli} version --format json`).trim();
+    if (!jsonVersion) {
         shell.echo(`Could not retrieve the CLI version from ${cli}.`);
         shell.exit(1);
     }
-    const version = rawVersion.substring(rawVersion.lastIndexOf('Commit:') + 'Commit:'.length).trim();
+    const version = JSON.parse(jsonVersion).VersionString;
     if (version) {
         shell.echo(`>>> Checking out version: ${version}...`);
         if (shell.exec(`git -C ${repository} checkout ${version} -b ${version}`).code !== 0) {
