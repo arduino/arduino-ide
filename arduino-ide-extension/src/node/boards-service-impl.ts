@@ -67,7 +67,7 @@ export class BoardsServiceImpl implements BoardsService {
         return coreClient;
     }
 
-    async getBoardDetails(options: { fqbn: string }): Promise<BoardDetails> {
+    async getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined> {
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const { fqbn } = options;
@@ -77,7 +77,9 @@ export class BoardsServiceImpl implements BoardsService {
         const detailsResp = await new Promise<BoardDetailsResp | undefined>((resolve, reject) => client.boardDetails(detailsReq, (err, resp) => {
             if (err) {
                 // Required cores are not installed manually: https://github.com/arduino/arduino-cli/issues/954
-                if (err.message.indexOf('missing platform release') !== -1 && err.message.indexOf('referenced by board') !== -1) {
+                if ((err.message.indexOf('missing platform release') !== -1 && err.message.indexOf('referenced by board') !== -1)
+                    // Platform is not installed.
+                    || err.message.indexOf('platform') !== -1 && err.message.indexOf('not installed') !== -1) {
                     resolve(undefined);
                     return;
                 }
@@ -88,13 +90,10 @@ export class BoardsServiceImpl implements BoardsService {
         }));
 
         if (!detailsResp) {
-            return {
-                fqbn,
-                configOptions: [],
-                programmers: [],
-                requiredTools: []
-            };
+            return undefined;
         }
+
+        const debuggingSupported = detailsResp.getDebuggingSupported();
 
         const requiredTools = detailsResp.getToolsdependenciesList().map(t => <Tool>{
             name: t.getName(),
@@ -133,7 +132,8 @@ export class BoardsServiceImpl implements BoardsService {
             fqbn,
             requiredTools,
             configOptions,
-            programmers
+            programmers,
+            debuggingSupported
         };
     }
 

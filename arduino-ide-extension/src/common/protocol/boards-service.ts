@@ -99,7 +99,7 @@ export interface BoardsService extends Installable<BoardsPackage>, Searchable<Bo
      */
     getAvailablePorts(): Promise<Port[]>;
     getState(): Promise<AvailablePorts>;
-    getBoardDetails(options: { fqbn: string }): Promise<BoardDetails>;
+    getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
     getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
     getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
     // The CLI cannot do fuzzy search. This method provides all boards and we do the fuzzy search (with monaco) on the frontend.
@@ -272,6 +272,7 @@ export interface BoardDetails {
     readonly requiredTools: Tool[];
     readonly configOptions: ConfigOption[];
     readonly programmers: Programmer[];
+    readonly debuggingSupported: boolean;
 }
 
 export interface Tool {

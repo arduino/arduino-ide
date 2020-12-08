@@ -44,8 +44,7 @@
     shell.exec(`git -C ${path('..', 'build')} clean -ffxdq`, { async: false });
 
     const extensions = [
-        'arduino-ide-extension',
-        'arduino-debugger-extension',
+        'arduino-ide-extension'
     ];
     const allDependencies = [
         ...extensions,

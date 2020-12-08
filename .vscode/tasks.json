@@ -35,18 +35,7 @@
         "panel": "new",
         "clear": false
       }
-    },
-    {
-      "label": "Arduino Pro IDE - Watch Debugger Extension",
-      "type": "shell",
-      "command": "yarn --cwd ./arduino-debugger-extension watch",
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "clear": false
-      }
-    },
+    }
     {
       "label": "Arduino Pro IDE - Watch Browser App",
       "type": "shell",
@@ -74,7 +63,6 @@
       "type": "shell",
       "dependsOn": [
         "Arduino Pro IDE - Watch IDE Extension",
-        "Arduino Pro IDE - Watch Debugger Extension",
         "Arduino Pro IDE - Watch Browser App"
       ]
     },
@@ -83,7 +71,6 @@
       "type": "shell",
       "dependsOn": [
         "Arduino Pro IDE - Watch IDE Extension",
-        "Arduino Pro IDE - Watch Debugger Extension",
         "Arduino Pro IDE - Watch Electron App"
       ]
     }

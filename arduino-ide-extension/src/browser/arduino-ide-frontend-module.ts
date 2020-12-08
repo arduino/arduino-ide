@@ -127,6 +127,7 @@ import { TabBarRenderer } from './theia/core/tab-bars';
 import { EditorCommandContribution } from './theia/editor/editor-command';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-decorator';
+import { Debug } from './contributions/debug';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -327,6 +328,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, LibraryExamples);
     Contribution.configure(bind, IncludeLibrary);
     Contribution.configure(bind, About);
+    Contribution.configure(bind, Debug);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);

@@ -5200,15 +5200,6 @@ caw@^2.0.1:
     tunnel-agent "^0.6.0"
     url-to-options "^1.0.1"
 
-cdt-gdb-adapter@^0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/cdt-gdb-adapter/-/cdt-gdb-adapter-0.0.14.tgz#0b4cc8650699572003e52a9f8265e9c65055339c"
-  integrity sha512-SDRVECyEkgePj0AJNVp8HUOw/ObXSlakQNxMasC1wlCn6eE8HcLAdYqdIgwRtnkp2Ct96/U5mXHFHWQDan6ckw==
-  dependencies:
-    node-addon-api "^1.6.2"
-    vscode-debugadapter "^1.37.1"
-    vscode-debugprotocol "^1.37.0"
-
 chai-string@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/chai-string/-/chai-string-1.5.0.tgz#0bdb2d8a5f1dbe90bc78ec493c1c1c180dd4d3d2"
@@ -10620,7 +10611,7 @@ mkdirp@*, mkdirp@^1.0.0, mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mkdirp@0.5.5, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4, mkdirp@^0.5.5, mkdirp@~0.5.1:
+mkdirp@0.5.5, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.4, mkdirp@~0.5.1:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
@@ -10855,11 +10846,6 @@ node-abi@^2.11.0, node-abi@^2.7.0:
   integrity sha512-9xZrlyfvKhWme2EXFKQhZRp1yNWT/uI1luYPr3sFl+H4keYY4xR+1jO7mvTTijIsHf1M+QDe9uWuKeEpLInIlg==
   dependencies:
     semver "^5.4.1"
-
-node-addon-api@^1.6.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.7.2.tgz#3df30b95720b53c24e59948b49532b662444f54d"
-  integrity sha512-ibPK3iA+vaY1eEjESkQkM0BbCqFOaZMiXRTtdB0u7b4djtY6JnsjvPdUHVMg6xQt3B8fpTTWHI9A+ADjM9frzg==
 
 node-dir@0.1.8:
   version "0.1.8"
@@ -15058,15 +15044,7 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-vscode-debugadapter@^1.26.0, vscode-debugadapter@^1.37.1:
-  version "1.42.1"
-  resolved "https://registry.yarnpkg.com/vscode-debugadapter/-/vscode-debugadapter-1.42.1.tgz#8fe1daa23548dbe4034a065c362d16a4bab18dc2"
-  integrity sha512-bICDB8mxReU2kGL13ftjNqeInYtVN3zpRdZKjRZHCpXC/mofrdaj9KRlJsALwcUNivMA9S/LwTZ2n+ros3X0jg==
-  dependencies:
-    mkdirp "^0.5.5"
-    vscode-debugprotocol "1.42.0"
-
-vscode-debugprotocol@1.42.0, vscode-debugprotocol@^1.26.0, vscode-debugprotocol@^1.32.0, vscode-debugprotocol@^1.37.0:
+vscode-debugprotocol@^1.32.0:
   version "1.42.0"
   resolved "https://registry.yarnpkg.com/vscode-debugprotocol/-/vscode-debugprotocol-1.42.0.tgz#86ad5d95c52a8fd255bc40476414b3a417160f84"
   integrity sha512-nVsfVCat9FZlOso5SYB1LQQiFGifTyOALpkpJdudDlRXGTpI3mSFiDYXWaoFm7UcfqTOzn1SC7Hqw4d89btT0w==
