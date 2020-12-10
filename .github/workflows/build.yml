@@ -158,7 +158,7 @@ jobs:
           echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
 
       - name: Publish Release [GitHub]
-        uses: svenstaro/upload-release-action@v2.2.0
+        uses: svenstaro/upload-release-action@2.2.0
         with:
           repo_token: ${{ secrets.RELEASE_TOKEN }}
           repo_name: arduino/arduino-pro-ide
