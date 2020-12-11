@@ -383,7 +383,9 @@ void loop() {
                 try {
                     const oldPath = path.join(destination, new URI(sketch.mainFileUri).path.base);
                     const newPath = path.join(destination, `${newName}.ino`);
-                    await fs.rename(oldPath, newPath);
+                    if (oldPath !== newPath) {
+                        await fs.rename(oldPath, newPath);
+                    }
                     await this.loadSketch(destinationUri); // Sanity check.
                     resolve();
                 } catch (e) {

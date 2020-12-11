@@ -68,9 +68,6 @@ export class ApplicationShell extends TheiaApplicationShell {
     }
 
     async saveAll(): Promise<void> {
-        if (!this.canSaveAll()) { // This is a quick fix for not saving the editor when there are no dirty editors.
-            return; // https://github.com/bcmi-labs/arduino-editor/pull/172#issuecomment-741831888
-        }
         if (this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE) {
             this.messageService.error('Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.');
             return; // Theia does not reject on failed save: https://github.com/eclipse-theia/theia/pull/8803
