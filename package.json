@@ -14,6 +14,7 @@
     "cross-env": "^7.0.2",
     "lerna": "^3.20.2",
     "rimraf": "^2.6.1",
+    "semver": "^7.3.2",
     "tslint": "^5.5.0",
     "typescript": "^3.9.2"
   },
@@ -24,7 +25,8 @@
     "start": "yarn --cwd ./electron-app start",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test",
-    "download:plugins": "theia download:plugins"
+    "download:plugins": "theia download:plugins",
+    "update:version": "node ./scripts/update-version.js"
   },
   "workspaces": [
     "arduino-ide-extension",
