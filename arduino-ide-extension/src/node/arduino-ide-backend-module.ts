@@ -1,6 +1,3 @@
-import * as fs from 'fs';
-import * as os from 'os';
-import { join } from 'path';
 import { ContainerModule } from 'inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -127,21 +124,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
             return service;
         });
     }));
-
-    // Set up cpp extension
-    if (!process.env.CPP_CLANGD_COMMAND) {
-        const segments = ['..', '..', 'build'];
-        if (os.platform() === 'win32') {
-            segments.push('clangd.exe');
-        } else {
-            segments.push('bin');
-            segments.push('clangd');
-        }
-        const clangdCommand = join(__dirname, ...segments);
-        if (fs.existsSync(clangdCommand)) {
-            process.env.CPP_CLANGD_COMMAND = clangdCommand;
-        }
-    }
 
     // File-system extension for mapping paths to URIs
     bind(NodeFileSystemExt).toSelf().inSingletonScope();

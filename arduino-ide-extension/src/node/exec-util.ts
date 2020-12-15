@@ -4,7 +4,12 @@ import * as semver from 'semver';
 import { join } from 'path';
 import { spawn } from 'child_process';
 
-export async function getExecPath(commandName: string, onError: (error: Error) => void = (error) => console.log(error), versionArg?: string, inBinDir?: boolean): Promise<string> {
+export async function getExecPath(
+    commandName: string,
+    onError: (error: Error) => void = (error) => console.log(error),
+    versionArg?: string | undefined,
+    inBinDir?: boolean): Promise<string> {
+
     const execName = `${commandName}${os.platform() === 'win32' ? '.exe' : ''}`;
     const relativePath = ['..', '..', 'build'];
     if (inBinDir) {
