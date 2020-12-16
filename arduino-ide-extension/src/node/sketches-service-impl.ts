@@ -2,16 +2,18 @@ import { injectable, inject } from 'inversify';
 import * as os from 'os';
 import * as temp from 'temp';
 import * as path from 'path';
+import * as nsfw from 'nsfw';
 import { ncp } from 'ncp';
 import { Stats } from 'fs';
 import * as fs from './fs-extra';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { isWindows } from '@theia/core/lib/common/os';
 import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService, Sketch } from '../common/protocol/sketches-service';
 import { firstToLowerCase } from '../common/utils';
-
+import { NotificationServiceServerImpl } from './notification-service-server';
 
 // As currently implemented on Linux,
 // the maximum number of symbolic links that will be followed while resolving a pathname is 40
@@ -28,8 +30,10 @@ export class SketchesServiceImpl implements SketchesService {
     @inject(ConfigService)
     protected readonly configService: ConfigService;
 
+    @inject(NotificationServiceServerImpl)
+    protected readonly notificationService: NotificationServiceServerImpl;
+
     async getSketches(uri?: string): Promise<Sketch[]> {
-        const sketches: Array<Sketch & { mtimeMs: number }> = [];
         let fsPath: undefined | string;
         if (!uri) {
             const { sketchDirUri } = await this.configService.getConfiguration();
@@ -43,9 +47,62 @@ export class SketchesServiceImpl implements SketchesService {
         if (!fs.existsSync(fsPath)) {
             return [];
         }
-        const fileNames = await fs.readdir(fsPath);
-        for (const fileName of fileNames) {
-            const filePath = path.join(fsPath, fileName);
+        const stat = await fs.stat(fsPath);
+        if (!stat.isDirectory()) {
+            return [];
+        }
+        return this.doGetSketches(fsPath);
+    }
+
+    /**
+     * Dev note: The keys are filesystem paths, not URI strings.
+     */
+    private sketchbooks = new Map<string, Sketch[] | Deferred<Sketch[]>>();
+    private fireSoonHandle?: NodeJS.Timer;
+    private bufferedSketchbookEvents: { type: 'created' | 'removed', sketch: Sketch }[] = [];
+
+    private fireSoon(type: 'created' | 'removed', sketch: Sketch): void {
+        this.bufferedSketchbookEvents.push({ type, sketch });
+
+        if (this.fireSoonHandle) {
+            clearTimeout(this.fireSoonHandle);
+        }
+
+        this.fireSoonHandle = setTimeout(() => {
+            const event: { created: Sketch[], removed: Sketch[] } = {
+                created: [],
+                removed: []
+            };
+            for (const { type, sketch } of this.bufferedSketchbookEvents) {
+                if (type === 'created') {
+                    event.created.push(sketch);
+                } else {
+                    event.removed.push(sketch);
+                }
+            }
+            this.notificationService.notifySketchbookChanged(event);
+            this.bufferedSketchbookEvents.length = 0;
+        }, 100);
+    }
+
+    /**
+     * Assumes the `fsPath` points to an existing directory.
+     */
+    private async doGetSketches(sketchbookPath: string): Promise<Sketch[]> {
+        const resolvedSketches = this.sketchbooks.get(sketchbookPath);
+        if (resolvedSketches) {
+            if (Array.isArray(resolvedSketches)) {
+                return resolvedSketches;
+            }
+            return resolvedSketches.promise;
+        }
+
+        const deferred = new Deferred<Sketch[]>();
+        this.sketchbooks.set(sketchbookPath, deferred);
+        const sketches: Array<Sketch & { mtimeMs: number }> = [];
+        const filenames = await fs.readdir(sketchbookPath);
+        for (const fileName of filenames) {
+            const filePath = path.join(sketchbookPath, fileName);
             if (await this.isSketchFolder(FileUri.create(filePath).toString())) {
                 try {
                     const stat = await fs.stat(filePath);
@@ -59,7 +116,84 @@ export class SketchesServiceImpl implements SketchesService {
                 }
             }
         }
-        return sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
+        sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
+        const deleteSketch = (toDelete: Sketch & { mtimeMs: number }) => {
+            const index = sketches.indexOf(toDelete);
+            if (index !== -1) {
+                console.log(`Sketch '${toDelete.name}' was removed from sketchbook '${sketchbookPath}'.`);
+                sketches.splice(index, 1);
+                sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
+                this.fireSoon('removed', toDelete);
+            }
+        };
+        const createSketch = async (path: string) => {
+            try {
+                const [stat, sketch] = await Promise.all([
+                    fs.stat(path),
+                    this.loadSketch(path)
+                ]);
+                console.log(`New sketch '${sketch.name}' was crated in sketchbook '${sketchbookPath}'.`);
+                sketches.push({ ...sketch, mtimeMs: stat.mtimeMs });
+                sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
+                this.fireSoon('created', sketch);
+            } catch { }
+        };
+        const watcher = await nsfw(sketchbookPath, async (events: any) => {
+            // We track `.ino` files changes only.
+            for (const event of events) {
+                switch (event.action) {
+                    case nsfw.ActionType.CREATED:
+                        if (event.file.endsWith('.ino') && path.join(event.directory, '..') === sketchbookPath && event.file === `${path.basename(event.directory)}.ino`) {
+                            createSketch(event.directory);
+                        }
+                        break;
+                    case nsfw.ActionType.DELETED:
+                        let sketch: Sketch & { mtimeMs: number } | undefined = undefined
+                        // Deleting the `ino` file.
+                        if (event.file.endsWith('.ino') && path.join(event.directory, '..') === sketchbookPath && event.file === `${path.basename(event.directory)}.ino`) {
+                            sketch = sketches.find(sketch => FileUri.fsPath(sketch.uri) === event.directory);
+                        } else if (event.directory === sketchbookPath) { // Deleting the sketch (or any folder folder in the sketchbook).
+                            sketch = sketches.find(sketch => FileUri.fsPath(sketch.uri) === path.join(event.directory, event.file));
+                        }
+                        if (sketch) {
+                            deleteSketch(sketch);
+                        }
+                        break;
+                    case nsfw.ActionType.RENAMED:
+                        let sketchToDelete: Sketch & { mtimeMs: number } | undefined = undefined
+                        // When renaming with the Java IDE we got an event where `directory` is the sketchbook and `oldFile` is the sketch.
+                        if (event.directory === sketchbookPath) {
+                            sketchToDelete = sketches.find(sketch => FileUri.fsPath(sketch.uri) === path.join(event.directory, event.oldFile));
+                        }
+
+                        if (sketchToDelete) {
+                            deleteSketch(sketchToDelete);
+                        } else {
+                            // If it's not a deletion, check for creation. The `directory` is the new sketch and the `newFile` is the new `ino` file.
+                            // tslint:disable-next-line:max-line-length
+                            if (event.newFile.endsWith('.ino') && path.join(event.directory, '..') === sketchbookPath && event.newFile === `${path.basename(event.directory)}.ino`) {
+                                createSketch(event.directory);
+                            } else {
+                                // When renaming the `ino` file directly on the filesystem. The `directory` is the sketch and `newFile` and `oldFile` is the `ino` file.
+                                // tslint:disable-next-line:max-line-length
+                                if (event.oldFile.endsWith('.ino') && path.join(event.directory, '..') === sketchbookPath && event.oldFile === `${path.basename(event.directory)}.ino`) {
+                                    sketchToDelete = sketches.find(sketch => FileUri.fsPath(sketch.uri) === event.directory, event.oldFile);
+                                }
+                                if (sketchToDelete) {
+                                    deleteSketch(sketchToDelete);
+                                } else if (event.directory === sketchbookPath) {
+                                    createSketch(path.join(event.directory, event.newFile));
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+        });
+        await watcher.start();
+        deferred.resolve(sketches);
+        this.sketchbooks.set(sketchbookPath, sketches);
+        return sketches;
     }
 
     /**

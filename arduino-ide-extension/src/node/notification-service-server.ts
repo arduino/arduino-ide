@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { NotificationServiceServer, NotificationServiceClient, AttachedBoardsChangeEvent, BoardsPackage, LibraryPackage, Config } from '../common/protocol';
+import { NotificationServiceServer, NotificationServiceClient, AttachedBoardsChangeEvent, BoardsPackage, LibraryPackage, Config, Sketch } from '../common/protocol';
 
 @injectable()
 export class NotificationServiceServerImpl implements NotificationServiceServer {
@@ -40,6 +40,10 @@ export class NotificationServiceServerImpl implements NotificationServiceServer 
 
     notifyConfigChanged(event: { config: Config | undefined }): void {
         this.clients.forEach(client => client.notifyConfigChanged(event));
+    }
+
+    notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void {
+        this.clients.forEach(client => client.notifySketchbookChanged(event));
     }
 
     setClient(client: NotificationServiceClient): void {

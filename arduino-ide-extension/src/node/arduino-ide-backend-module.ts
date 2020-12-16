@@ -75,7 +75,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         bindBackendService(LibraryServicePath, LibraryService);
     }));
 
-    // Shred sketches service
+    // Shared sketches service
     bind(SketchesServiceImpl).toSelf().inSingletonScope();
     bind(SketchesService).toService(SketchesServiceImpl);
     bind(ConnectionHandler).toDynamicValue(context => new JsonRpcConnectionHandler(SketchesServicePath, () => context.container.get(SketchesService))).inSingletonScope();

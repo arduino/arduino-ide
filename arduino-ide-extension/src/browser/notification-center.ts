@@ -4,7 +4,7 @@ import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { NotificationServiceClient, NotificationServiceServer } from '../common/protocol/notification-service';
-import { AttachedBoardsChangeEvent, BoardsPackage, LibraryPackage, Config } from '../common/protocol';
+import { AttachedBoardsChangeEvent, BoardsPackage, LibraryPackage, Config, Sketch } from '../common/protocol';
 
 @injectable()
 export class NotificationCenter implements NotificationServiceClient, FrontendApplicationContribution {
@@ -21,6 +21,7 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
     protected readonly libraryInstalledEmitter = new Emitter<{ item: LibraryPackage }>();
     protected readonly libraryUninstalledEmitter = new Emitter<{ item: LibraryPackage }>();
     protected readonly attachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
+    protected readonly sketchbookChangedEmitter = new Emitter<{ created: Sketch[], removed: Sketch[] }>();
 
     protected readonly toDispose = new DisposableCollection(
         this.indexUpdatedEmitter,
@@ -31,7 +32,8 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
         this.platformUninstalledEmitter,
         this.libraryInstalledEmitter,
         this.libraryUninstalledEmitter,
-        this.attachedBoardsChangedEmitter
+        this.attachedBoardsChangedEmitter,
+        this.sketchbookChangedEmitter
     );
 
     readonly onIndexUpdated = this.indexUpdatedEmitter.event;
@@ -43,6 +45,7 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
     readonly onLibraryInstalled = this.libraryInstalledEmitter.event;
     readonly onLibraryUninstalled = this.libraryUninstalledEmitter.event;
     readonly onAttachedBoardsChanged = this.attachedBoardsChangedEmitter.event;
+    readonly onSketchbookChanged = this.sketchbookChangedEmitter.event;
 
     @postConstruct()
     protected init(): void {
@@ -87,6 +90,10 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
         this.attachedBoardsChangedEmitter.fire(event);
+    }
+
+    notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void {
+        this.sketchbookChangedEmitter.fire(event);
     }
 
 }

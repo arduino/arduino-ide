@@ -130,6 +130,7 @@ import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-de
 import { Debug } from './contributions/debug';
 import { DebugSessionManager } from './theia/debug/debug-session-manager';
 import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
+import { Sketchbook } from './contributions/sketchbook';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -331,6 +332,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, IncludeLibrary);
     Contribution.configure(bind, About);
     Contribution.configure(bind, Debug);
+    Contribution.configure(bind, Sketchbook);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);

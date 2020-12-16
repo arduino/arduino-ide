@@ -1,7 +1,6 @@
 import { LibraryPackage } from './library-service';
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
-import { BoardsPackage, AttachedBoardsChangeEvent } from './boards-service';
-import { Config } from './config-service';
+import { Sketch, Config, BoardsPackage, AttachedBoardsChangeEvent } from '../protocol';
 
 export interface NotificationServiceClient {
     notifyIndexUpdated(): void;
@@ -13,6 +12,7 @@ export interface NotificationServiceClient {
     notifyLibraryInstalled(event: { item: LibraryPackage }): void;
     notifyLibraryUninstalled(event: { item: LibraryPackage }): void;
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
+    notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void;
 }
 
 export const NotificationServicePath = '/services/notification-service';
