@@ -131,6 +131,8 @@ import { Debug } from './contributions/debug';
 import { DebugSessionManager } from './theia/debug/debug-session-manager';
 import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
 import { Sketchbook } from './contributions/sketchbook';
+import { DebugFrontendApplicationContribution } from './theia/debug/debug-frontend-application-contribution';
+import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -363,4 +365,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // To avoid running `Save All` when there are no dirty editors before starting the debug session.
     bind(DebugSessionManager).toSelf().inSingletonScope();
     rebind(TheiaDebugSessionManager).toService(DebugSessionManager);
+    // To remove the `Run` menu item from the application menu.
+    bind(DebugFrontendApplicationContribution).toSelf().inSingletonScope();
+    rebind(TheiaDebugFrontendApplicationContribution).toService(DebugFrontendApplicationContribution);
 });

@@ -1,6 +1,6 @@
 import { isOSX } from '@theia/core/lib/common/os';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
-import { MAIN_MENU_BAR } from '@theia/core/lib/common/menu';
+import { MAIN_MENU_BAR, MenuModelRegistry, MenuNode } from '@theia/core/lib/common/menu';
 
 export namespace ArduinoMenus {
 
@@ -66,4 +66,24 @@ export namespace ArduinoMenus {
     // Sketch files opened in editors
     export const SKETCH_CONTROL__CONTEXT__RESOURCES_GROUP = [...SKETCH_CONTROL__CONTEXT, '2_resources'];
 
+}
+
+/**
+ * This is a hack. It removes a submenu with all its children if any.
+ * Theia cannot dispose submenu entries with a proper API: https://github.com/eclipse-theia/theia/issues/7299
+ */
+export function unregisterSubmenu(menuPath: string[], menuRegistry: MenuModelRegistry): void {
+    if (menuPath.length < 2) {
+        throw new Error(`Expected at least two item as a menu-path. Got ${JSON.stringify(menuPath)} instead.`);
+    }
+    const toRemove = menuPath[menuPath.length - 1];
+    const parentMenuPath = menuPath.slice(0, menuPath.length - 1);
+    // This is unsafe. Calling `getMenu` with a non-existing menu-path will result in a new menu creation.
+    // https://github.com/eclipse-theia/theia/issues/7300
+    const parent = menuRegistry.getMenu(parentMenuPath);
+    const index = parent.children.findIndex(({ id }) => id === toRemove);
+    if (index === -1) {
+        throw new Error(`Could not find menu with menu-path: ${JSON.stringify(menuPath)}.`);
+    }
+    (parent.children as Array<MenuNode>).splice(index, 1);
 }

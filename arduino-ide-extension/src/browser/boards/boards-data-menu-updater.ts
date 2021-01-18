@@ -1,14 +1,14 @@
 import * as PQueue from 'p-queue';
 import { inject, injectable } from 'inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
-import { MenuModelRegistry, MenuNode } from '@theia/core/lib/common/menu';
+import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { BoardsServiceProvider } from './boards-service-provider';
 import { Board, ConfigOption, Programmer } from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
-import { ArduinoMenus } from '../menu/arduino-menus';
+import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
 
 @injectable()
 export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
@@ -63,7 +63,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                             this.menuRegistry.registerSubmenu(menuPath, label);
                             this.toDisposeOnBoardChange.pushAll([
                                 ...commands.values(),
-                                Disposable.create(() => this.unregisterSubmenu(menuPath)), // We cannot dispose submenu entries: https://github.com/eclipse-theia/theia/issues/7299
+                                Disposable.create(() => unregisterSubmenu(menuPath, this.menuRegistry)),
                                 ...Array.from(commands.keys()).map((commandId, i) => {
                                     const { label } = commands.get(commandId)!;
                                     this.menuRegistry.registerMenuAction(menuPath, { commandId, order: `${i}`, label });
@@ -76,7 +76,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                         const programmersMenuPath = [...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP, 'z02_programmers'];
                         const label = selectedProgrammer ? `Programmer: "${selectedProgrammer.name}"` : 'Programmer'
                         this.menuRegistry.registerSubmenu(programmersMenuPath, label);
-                        this.toDisposeOnBoardChange.push(Disposable.create(() => this.unregisterSubmenu(programmersMenuPath)));
+                        this.toDisposeOnBoardChange.push(Disposable.create(() => unregisterSubmenu(programmersMenuPath, this.menuRegistry)));
                         for (const programmer of programmers) {
                             const { id, name } = programmer;
                             const command = { id: `${fqbn}-programmer--${id}` };
@@ -96,22 +96,6 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                 }
             }
         });
-    }
-
-    protected unregisterSubmenu(menuPath: string[]): void {
-        if (menuPath.length < 2) {
-            throw new Error(`Expected at least two item as a menu-path. Got ${JSON.stringify(menuPath)} instead.`);
-        }
-        const toRemove = menuPath[menuPath.length - 1];
-        const parentMenuPath = menuPath.slice(0, menuPath.length - 1);
-        // This is unsafe. Calling `getMenu` with a non-existing menu-path will result in a new menu creation.
-        // https://github.com/eclipse-theia/theia/issues/7300
-        const parent = this.menuRegistry.getMenu(parentMenuPath);
-        const index = parent.children.findIndex(({ id }) => id === toRemove);
-        if (index === -1) {
-            throw new Error(`Could not find menu with menu-path: ${JSON.stringify(menuPath)}.`);
-        }
-        (parent.children as Array<MenuNode>).splice(index, 1);
     }
 
 }
