@@ -48,6 +48,16 @@ export interface SketchesService {
      */
     getSketchFolder(uri: string): Promise<Sketch | undefined>;
 
+    /**
+     * Marks the sketch with the given URI as recently opened. It does nothing if the sketch is temp or not valid.
+     */
+    markAsRecentlyOpened(uri: string): Promise<void>;
+
+    /**
+     * Resolves to an array of sketches in inverse chronological order. The newest is the first.
+     */
+    recentlyOpenedSketches(): Promise<Sketch[]>;
+
 }
 
 export interface Sketch {
@@ -72,4 +82,3 @@ export namespace Sketch {
         return [mainFileUri, ...otherSketchFileUris, ...additionalFileUris].indexOf(uri.toString()) !== -1;
     }
 }
-

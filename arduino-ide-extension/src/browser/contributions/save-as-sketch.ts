@@ -60,8 +60,8 @@ export class SaveAsSketch extends SketchContribution {
         }
         const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
         if (workspaceUri && openAfterMove) {
-            if (wipeOriginal) {
-                await this.fileService.delete(new URI(sketch.uri));
+            if (wipeOriginal || (openAfterMove && execOnlyIfTemp)) {
+                await this.fileService.delete(new URI(sketch.uri), { recursive: true });
             }
             this.workspaceService.open(new URI(workspaceUri), { preserveWindow: true });
         }

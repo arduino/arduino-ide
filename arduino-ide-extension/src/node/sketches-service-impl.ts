@@ -14,6 +14,8 @@ import { ConfigService } from '../common/protocol/config-service';
 import { SketchesService, Sketch } from '../common/protocol/sketches-service';
 import { firstToLowerCase } from '../common/utils';
 import { NotificationServiceServerImpl } from './notification-service-server';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { notEmpty } from '@theia/core';
 
 // As currently implemented on Linux,
 // the maximum number of symbolic links that will be followed while resolving a pathname is 40
@@ -33,7 +35,10 @@ export class SketchesServiceImpl implements SketchesService {
     @inject(NotificationServiceServerImpl)
     protected readonly notificationService: NotificationServiceServerImpl;
 
-    async getSketches(uri?: string): Promise<Sketch[]> {
+    @inject(EnvVariablesServer)
+    protected readonly envVariableServer: EnvVariablesServer;
+
+    async getSketches(uri?: string): Promise<SketchWithDetails[]> {
         let fsPath: undefined | string;
         if (!uri) {
             const { sketchDirUri } = await this.configService.getConfiguration();
@@ -57,7 +62,7 @@ export class SketchesServiceImpl implements SketchesService {
     /**
      * Dev note: The keys are filesystem paths, not URI strings.
      */
-    private sketchbooks = new Map<string, Sketch[] | Deferred<Sketch[]>>();
+    private sketchbooks = new Map<string, SketchWithDetails[] | Deferred<SketchWithDetails[]>>();
     private fireSoonHandle?: NodeJS.Timer;
     private bufferedSketchbookEvents: { type: 'created' | 'removed', sketch: Sketch }[] = [];
 
@@ -88,7 +93,7 @@ export class SketchesServiceImpl implements SketchesService {
     /**
      * Assumes the `fsPath` points to an existing directory.
      */
-    private async doGetSketches(sketchbookPath: string): Promise<Sketch[]> {
+    private async doGetSketches(sketchbookPath: string): Promise<SketchWithDetails[]> {
         const resolvedSketches = this.sketchbooks.get(sketchbookPath);
         if (resolvedSketches) {
             if (Array.isArray(resolvedSketches)) {
@@ -97,9 +102,9 @@ export class SketchesServiceImpl implements SketchesService {
             return resolvedSketches.promise;
         }
 
-        const deferred = new Deferred<Sketch[]>();
+        const deferred = new Deferred<SketchWithDetails[]>();
         this.sketchbooks.set(sketchbookPath, deferred);
-        const sketches: Array<Sketch & { mtimeMs: number }> = [];
+        const sketches: Array<SketchWithDetails> = [];
         const filenames = await fs.readdir(sketchbookPath);
         for (const fileName of filenames) {
             const filePath = path.join(sketchbookPath, fileName);
@@ -201,7 +206,7 @@ export class SketchesServiceImpl implements SketchesService {
      * See: https://github.com/arduino/arduino-cli/issues/837
      * Based on: https://github.com/arduino/arduino-cli/blob/eef3705c4afcba4317ec38b803d9ffce5dd59a28/arduino/builder/sketch.go#L100-L215
      */
-    async loadSketch(uri: string): Promise<Sketch> {
+    async loadSketch(uri: string): Promise<SketchWithDetails> {
         const sketchPath = FileUri.fsPath(uri);
         const exists = await fs.exists(sketchPath);
         if (!exists) {
@@ -294,7 +299,80 @@ export class SketchesServiceImpl implements SketchesService {
 
     }
 
-    private newSketch(sketchFolderPath: string, mainFilePath: string, allFilesPaths: string[]): Sketch {
+    private get recentSketchesFsPath(): Promise<string> {
+        return this.envVariableServer.getConfigDirUri().then(uri => path.join(FileUri.fsPath(uri), 'recent-sketches.json'));
+    }
+
+    private async loadRecentSketches(fsPath: string): Promise<Record<string, number>> {
+        let data: Record<string, number> = {};
+        try {
+            const raw = await fs.readFile(fsPath, { encoding: 'utf8' });
+            data = JSON.parse(raw);
+        } catch { }
+        return data;
+    }
+
+    async markAsRecentlyOpened(uri: string): Promise<void> {
+        let sketch: Sketch | undefined = undefined;
+        try {
+            sketch = await this.loadSketch(uri);
+        } catch {
+            return;
+        }
+        if (await this.isTemp(sketch)) {
+            return;
+        }
+
+        const fsPath = await this.recentSketchesFsPath;
+        const data = await this.loadRecentSketches(fsPath);
+        const now = Date.now();
+        data[sketch.uri] = now;
+
+        let toDeleteUri: string | undefined = undefined;
+        if (Object.keys(data).length > 10) {
+            let min = Number.MAX_SAFE_INTEGER;
+            for (const uri of Object.keys(data)) {
+                if (min > data[uri]) {
+                    min = data[uri];
+                    toDeleteUri = uri;
+                }
+            }
+        }
+
+        if (toDeleteUri) {
+            delete data[toDeleteUri];
+        }
+
+        await fs.writeFile(fsPath, JSON.stringify(data, null, 2));
+        this.recentlyOpenedSketches().then(sketches => this.notificationService.notifyRecentSketchesChanged({ sketches }));
+    }
+
+    async recentlyOpenedSketches(): Promise<Sketch[]> {
+        const configDirUri = await this.envVariableServer.getConfigDirUri();
+        const fsPath = path.join(FileUri.fsPath(configDirUri), 'recent-sketches.json');
+        let data: Record<string, number> = {};
+        try {
+            const raw = await fs.readFile(fsPath, { encoding: 'utf8' });
+            data = JSON.parse(raw);
+        } catch { }
+
+        const loadSketchSafe = (uri: string) => {
+            try {
+                return this.loadSketch(uri);
+            } catch {
+                return undefined;
+            }
+        }
+
+        const sketches = await Promise.all(Object.keys(data)
+            .sort((left, right) => data[right] - data[left])
+            .map(loadSketchSafe)
+            .filter(notEmpty));
+
+        return sketches;
+    }
+
+    private async newSketch(sketchFolderPath: string, mainFilePath: string, allFilesPaths: string[]): Promise<SketchWithDetails> {
         let mainFile: string | undefined;
         const paths = new Set<string>();
         for (const p of allFilesPaths) {
@@ -326,13 +404,15 @@ export class SketchesServiceImpl implements SketchesService {
         additionalFiles.sort();
         otherSketchFiles.sort();
 
+        const { mtimeMs } = await fs.lstat(sketchFolderPath);
         return {
             uri: FileUri.create(sketchFolderPath).toString(),
             mainFileUri: FileUri.create(mainFile).toString(),
             name: path.basename(sketchFolderPath),
             additionalFileUris: additionalFiles.map(p => FileUri.create(p).toString()),
-            otherSketchFileUris: otherSketchFiles.map(p => FileUri.create(p).toString())
-        }
+            otherSketchFileUris: otherSketchFiles.map(p => FileUri.create(p).toString()),
+            mtimeMs
+        };
     }
 
     async cloneExample(uri: string): Promise<Sketch> {
@@ -538,3 +618,8 @@ class SkipDir extends Error {
         Object.setPrototypeOf(this, SkipDir.prototype);
     }
 }
+
+interface SketchWithDetails extends Sketch {
+    readonly mtimeMs: number;
+}
+

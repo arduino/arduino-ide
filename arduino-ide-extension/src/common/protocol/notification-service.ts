@@ -13,6 +13,7 @@ export interface NotificationServiceClient {
     notifyLibraryUninstalled(event: { item: LibraryPackage }): void;
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
     notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void;
+    notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void;
 }
 
 export const NotificationServicePath = '/services/notification-service';
