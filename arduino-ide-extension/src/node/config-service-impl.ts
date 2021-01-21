@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as temp from 'temp';
 import * as yaml from 'js-yaml';
 import * as grpc from '@grpc/grpc-js';
 import * as deepmerge from 'deepmerge';
@@ -21,6 +22,7 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 
 const debounce = require('lodash.debounce');
+const track = temp.track();
 
 @injectable()
 export class ConfigServiceImpl implements BackendApplicationContribution, ConfigService {
@@ -113,7 +115,17 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
 
     protected async getFallbackCliConfig(): Promise<DefaultCliConfig> {
         const cliPath = await this.daemon.getExecPath();
-        const rawYaml = await spawnCommand(`"${cliPath}"`, ['config', 'dump']);
+        const throwawayDirPath = await new Promise<string>((resolve, reject) => {
+            track.mkdir({}, (err, dirPath) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(dirPath);
+            });
+        });
+        await spawnCommand(`"${cliPath}"`, ['config', 'init', '--dest-dir', throwawayDirPath]);
+        const rawYaml = await fs.readFile(path.join(throwawayDirPath, CLI_CONFIG), { encoding: 'utf-8' });
         const model = yaml.safeLoad(rawYaml.trim());
         return model as DefaultCliConfig;
     }
