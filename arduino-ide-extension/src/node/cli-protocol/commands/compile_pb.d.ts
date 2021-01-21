@@ -70,6 +70,13 @@ export class CompileReq extends jspb.Message {
     getExportBinaries(): boolean;
     setExportBinaries(value: boolean): CompileReq;
 
+    getCreateCompilationDatabaseOnly(): boolean;
+    setCreateCompilationDatabaseOnly(value: boolean): CompileReq;
+
+
+    getSourceOverrideMap(): jspb.Map<string, string>;
+    clearSourceOverrideMap(): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileReq.AsObject;
@@ -101,6 +108,9 @@ export namespace CompileReq {
         exportDir: string,
         clean: boolean,
         exportBinaries: boolean,
+        createCompilationDatabaseOnly: boolean,
+
+        sourceOverrideMap: Array<[string, string]>,
     }
 }
 

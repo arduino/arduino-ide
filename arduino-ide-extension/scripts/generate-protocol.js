@@ -72,7 +72,7 @@
         shell.exit(1);
     }
     const version = JSON.parse(jsonVersion).VersionString;
-    if (version) {
+    if (version && version !== '0.0.0-git') { // 0.0.0-git is the version of the CLI when built manually and not downloaded as a releases/nightly.
         shell.echo(`>>> Checking out version: ${version}...`);
         if (shell.exec(`git -C ${repository} checkout ${version} -b ${version}`).code !== 0) {
             shell.exit(1);

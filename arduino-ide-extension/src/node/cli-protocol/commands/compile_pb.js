@@ -140,7 +140,9 @@ proto.cc.arduino.cli.commands.CompileReq.toObject = function(includeInstance, ms
     optimizefordebug: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
     exportDir: jspb.Message.getFieldWithDefault(msg, 18, ""),
     clean: jspb.Message.getBooleanFieldWithDefault(msg, 19, false),
-    exportBinaries: jspb.Message.getBooleanFieldWithDefault(msg, 20, false)
+    exportBinaries: jspb.Message.getBooleanFieldWithDefault(msg, 20, false),
+    createCompilationDatabaseOnly: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
+    sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -249,6 +251,16 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
     case 20:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setExportBinaries(value);
+      break;
+    case 21:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setCreateCompilationDatabaseOnly(value);
+      break;
+    case 22:
+      var value = msg.getSourceOverrideMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
+         });
       break;
     default:
       reader.skipField();
@@ -405,6 +417,17 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
       20,
       f
     );
+  }
+  f = message.getCreateCompilationDatabaseOnly();
+  if (f) {
+    writer.writeBool(
+      21,
+      f
+    );
+  }
+  f = message.getSourceOverrideMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(22, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
 };
 
@@ -788,6 +811,46 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.getExportBinaries = function(
 proto.cc.arduino.cli.commands.CompileReq.prototype.setExportBinaries = function(value) {
   return jspb.Message.setProto3BooleanField(this, 20, value);
 };
+
+
+/**
+ * optional bool create_compilation_database_only = 21;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getCreateCompilationDatabaseOnly = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 21, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.setCreateCompilationDatabaseOnly = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 21, value);
+};
+
+
+/**
+ * map<string, string> source_override = 22;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,string>}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getSourceOverrideMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,string>} */ (
+      jspb.Message.getMapField(this, 22, opt_noLazyCreate,
+      null));
+};
+
+
+/**
+ * Clears values from the map. The map will be non-null.
+ * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.clearSourceOverrideMap = function() {
+  this.getSourceOverrideMap().clear();
+  return this;};
 
 
 
