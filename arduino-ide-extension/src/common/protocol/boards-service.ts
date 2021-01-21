@@ -267,12 +267,25 @@ export namespace BoardWithPackage {
 
 }
 
+export interface InstalledBoardWithPackage extends BoardWithPackage {
+    readonly fqbn: string;
+}
+export namespace InstalledBoardWithPackage {
+
+    export function is(boardWithPackage: BoardWithPackage): boardWithPackage is InstalledBoardWithPackage {
+        return !!boardWithPackage.fqbn;
+    }
+
+}
+
 export interface BoardDetails {
     readonly fqbn: string;
     readonly requiredTools: Tool[];
     readonly configOptions: ConfigOption[];
     readonly programmers: Programmer[];
     readonly debuggingSupported: boolean;
+    readonly VID: string;
+    readonly PID: string;
 }
 
 export interface Tool {

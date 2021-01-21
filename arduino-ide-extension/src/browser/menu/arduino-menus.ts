@@ -40,8 +40,10 @@ export namespace ArduinoMenus {
     export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
     // `Auto Format`, `Library Manager...`, `Boards Manager...`
     export const TOOLS__MAIN_GROUP = [...TOOLS, '0_main'];
+    // `Board`, `Port`, and `Get Board Info`.
+    export const TOOLS__BOARD_SELECTION_GROUP = [...TOOLS, '2_board_selection'];
     // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`
-    export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '1_board_settings'];
+    export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '3_board_settings'];
 
     // -- Help
     // `About` group

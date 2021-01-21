@@ -133,6 +133,7 @@ import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/li
 import { Sketchbook } from './contributions/sketchbook';
 import { DebugFrontendApplicationContribution } from './theia/debug/debug-frontend-application-contribution';
 import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
+import { BoardSelection } from './contributions/board-selection';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -335,6 +336,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, About);
     Contribution.configure(bind, Debug);
     Contribution.configure(bind, Sketchbook);
+    Contribution.configure(bind, BoardSelection);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);
@@ -343,6 +345,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(OutputService).toService(OutputServiceImpl);
 
     bind(NotificationCenter).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(NotificationCenter);
     bind(NotificationServiceServer).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, NotificationServicePath)).inSingletonScope();
 
     // Enable the dirty indicator on uncloseable widgets.

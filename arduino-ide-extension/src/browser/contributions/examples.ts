@@ -1,6 +1,6 @@
 import * as PQueue from 'p-queue';
 import { inject, injectable, postConstruct } from 'inversify';
-import { MenuPath, SubMenuOptions, CompositeMenuNode } from '@theia/core/lib/common/menu';
+import { MenuPath, CompositeMenuNode } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -60,12 +60,11 @@ export abstract class Examples extends SketchContribution {
     registerRecursively(
         exampleContainer: ExampleContainer,
         menuPath: MenuPath,
-        pushToDispose: DisposableCollection = new DisposableCollection(),
-        options?: SubMenuOptions): void {
+        pushToDispose: DisposableCollection = new DisposableCollection()): void {
 
         const { label, sketches, children } = exampleContainer;
         const submenuPath = [...menuPath, label];
-        this.menuRegistry.registerSubmenu(submenuPath, label, options);
+        this.menuRegistry.registerSubmenu(submenuPath, label);
         children.forEach(child => this.registerRecursively(child, submenuPath, pushToDispose));
         for (const sketch of sketches) {
             const { uri } = sketch;

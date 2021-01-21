@@ -1,5 +1,6 @@
 import { injectable, inject, named } from 'inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { notEmpty } from '@theia/core/lib/common/objects';
 import {
     BoardsService,
     Installable,
@@ -128,12 +129,22 @@ export class BoardsServiceImpl implements BoardsService {
             platform: p.getPlatform()
         });
 
+        let VID = 'N/A';
+        let PID = 'N/A';
+        const usbId = detailsResp.getIdentificationPrefList().map(item => item.getUsbid()).find(notEmpty);
+        if (usbId) {
+            VID = usbId.getVid();
+            PID = usbId.getPid();
+        }
+
         return {
             fqbn,
             requiredTools,
             configOptions,
             programmers,
-            debuggingSupported
+            debuggingSupported,
+            VID,
+            PID
         };
     }
 
