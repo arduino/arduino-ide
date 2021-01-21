@@ -36,12 +36,11 @@ export class About extends Contribution {
         const ideStatus = FrontendApplicationConfigProvider.get()['status'];
         const { version, commit, status: cliStatus } = await this.configService.getVersion();
         const buildDate = this.buildDate;
-        const detail = (useAgo: boolean) => `
-Version: ${remote.app.getVersion()}
+        const detail = (useAgo: boolean) => `Version: ${remote.app.getVersion()}
 Date: ${buildDate ? buildDate : 'dev build'}${buildDate && useAgo ? ` (${this.ago(buildDate)})` : ''}
 CLI Version: ${version}${cliStatus ? ` ${cliStatus}` : ''} [${commit}]
 
-Copyright © ${new Date().getFullYear()} Arduino SA 
+Copyright © ${new Date().getFullYear()} Arduino SA
 `;
         const ok = 'OK';
         const copy = 'Copy';
