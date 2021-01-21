@@ -7,6 +7,11 @@ import { ArduinoMenus } from '../../../browser/menu/arduino-menus';
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
 
+    createMenuBar(): Electron.Menu {
+        this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
+        return super.createMenuBar();
+    }
+
     protected acceleratorFor(keybinding: Keybinding): string {
         // TODO: https://github.com/eclipse-theia/theia/issues/8207
         return this.keybindingRegistry.resolveKeybinding(keybinding)
