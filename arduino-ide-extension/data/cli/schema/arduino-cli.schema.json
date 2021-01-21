@@ -103,18 +103,18 @@
       },
       "additionalProperties": false
     },
-    "telemetry": {
+    "metrics": {
       "type": "object",
-      "description": "Telemetry Configuration",
+      "description": "Metrics Configuration",
       "properties": {
         "addr": {
           "type": "string",
-          "description": "Address to the telemetry endpoint. Must be a full address with host, address, and port. For instance, ':9090' represents 'localhost:9090'",
+          "description": "Address to the metrics endpoint. Must be a full address with host, address, and port. For instance, ':9090' represents 'localhost:9090'",
           "pattern": "^(.*)$"
         },
         "enabled": {
           "type": "boolean",
-          "description": "Whether the telemetry is enabled or not."
+          "description": "Whether the metrics is enabled or not."
         },
         "additionalProperties": false
       },
@@ -132,6 +132,5 @@
       },
       "additionalProperties": false
     }
-  },
-  "additionalProperties": false
+  }
 }
