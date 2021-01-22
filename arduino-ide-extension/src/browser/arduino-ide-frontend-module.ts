@@ -135,6 +135,7 @@ import { DebugFrontendApplicationContribution } from './theia/debug/debug-fronte
 import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 import { BoardSelection } from './contributions/board-selection';
 import { OpenRecentSketch } from './contributions/open-recent-sketch';
+import { Help } from './contributions/help';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -339,6 +340,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, Sketchbook);
     Contribution.configure(bind, BoardSelection);
     Contribution.configure(bind, OpenRecentSketch);
+    Contribution.configure(bind, Help);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);

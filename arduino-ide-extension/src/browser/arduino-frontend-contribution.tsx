@@ -309,7 +309,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             label: 'Optimize for Debugging',
             order: '1'
         });
-        registry.registerMenuAction(CommonMenus.HELP, {
+        registry.registerMenuAction(ArduinoMenus.HELP__CONTROL_GROUP, {
             commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
             label: 'Advanced Mode'
         });

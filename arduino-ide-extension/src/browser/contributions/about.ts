@@ -24,10 +24,9 @@ export class About extends Contribution {
     }
 
     registerMenus(registry: MenuModelRegistry): void {
-        // On macOS we will get the `Quit ${YOUR_APP_NAME}` menu item natively, no need to duplicate it. 
         registry.registerMenuAction(ArduinoMenus.HELP__ABOUT_GROUP, {
             commandId: About.Commands.ABOUT_APP.id,
-            label: `About${isOSX ? ` ${this.applicationName}` : ''}`,
+            label: `About ${this.applicationName}`,
             order: '0'
         });
     }

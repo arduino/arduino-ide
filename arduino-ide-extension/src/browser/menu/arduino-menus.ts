@@ -49,6 +49,13 @@ export namespace ArduinoMenus {
     export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '3_board_settings'];
 
     // -- Help
+    // `Getting Started`, `Environment`, `Troubleshooting`, etc.
+    export const HELP__MAIN_GROUP = [...CommonMenus.HELP, '0_main'];
+    // `Find in reference`, `FAQ`, etc.
+    export const HELP__FIND_GROUP = [...CommonMenus.HELP, '1_find'];
+    // `Advanced Mode`.
+    // XXX: this will be removed.
+    export const HELP__CONTROL_GROUP = [...CommonMenus.HELP, '2_control'];
     // `About` group
     // XXX: on macOS, the about group is not under `Help`
     export const HELP__ABOUT_GROUP = [...(isOSX ? MAIN_MENU_BAR : CommonMenus.HELP), '999_about'];
