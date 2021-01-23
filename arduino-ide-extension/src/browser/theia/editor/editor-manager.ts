@@ -24,13 +24,7 @@ export class EditorManager extends TheiaEditorManager {
     }
 
     protected async isReadOnly(uri: URI): Promise<boolean> {
-        const [config, configFileUri] = await Promise.all([
-            this.configService.getConfiguration(),
-            this.configService.getCliConfigFileUri()
-        ]);
-        if (new URI(configFileUri).toString(true) === uri.toString(true)) {
-            return false;
-        }
+        const config = await this.configService.getConfiguration();
         return new URI(config.dataDirUri).isEqualOrParent(uri)
     }
 

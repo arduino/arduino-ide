@@ -88,9 +88,11 @@ export class UploadSketch extends SketchContribution {
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            const [fqbn, { selectedProgrammer }] = await Promise.all([
+            const [fqbn, { selectedProgrammer }, verify, verbose] = await Promise.all([
                 this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
-                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn)
+                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
+                this.preferences.get('arduino.upload.verify'),
+                this.preferences.get('arduino.upload.verbose')
             ]);
 
             let options: CoreService.Upload.Options | undefined = undefined;
@@ -106,14 +108,18 @@ export class UploadSketch extends SketchContribution {
                     fqbn,
                     optimizeForDebug,
                     programmer,
-                    port
+                    port,
+                    verbose,
+                    verify
                 };
             } else {
                 options = {
                     sketchUri,
                     fqbn,
                     optimizeForDebug,
-                    port
+                    port,
+                    verbose,
+                    verify
                 };
             }
             this.outputChannelManager.getChannel('Arduino: upload').clear();

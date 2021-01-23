@@ -1,0 +1,43 @@
+.arduino-settings-dialog {
+    width: 740px;
+}
+
+.arduino-settings-dialog .content {
+    padding: 5px;
+}
+
+.arduino-settings-dialog .flex-line {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.arduino-settings-dialog .with-margin {
+    margin-left: 5px;
+}
+
+.arduino-settings-dialog .theia-select {
+    background: var(--theia-input-background) !important;
+}
+
+.arduino-settings-dialog .column > div {
+    height: 26px;
+    vertical-align: middle;
+}
+
+.arduino-settings-dialog .flex-line .theia-button.shrink {
+    min-width: unset;
+}
+
+.arduino-settings-dialog .theia-input.stretch {
+    width: 100% !important;
+}
+
+.arduino-settings-dialog .theia-input.small {
+    max-width: 40px;
+    width: 40px;
+}
+
+.additional-urls-dialog .link:hover {
+    color: var(--theia-textLink-activeForeground);
+}

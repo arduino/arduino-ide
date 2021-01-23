@@ -47,15 +47,19 @@ export class BurnBootloader extends SketchContribution {
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
             const port = boardsConfig.selectedPort?.address;
-            const [fqbn, { selectedProgrammer: programmer }] = await Promise.all([
+            const [fqbn, { selectedProgrammer: programmer }, verify, verbose] = await Promise.all([
                 this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
-                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn)
+                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
+                this.preferences.get('arduino.upload.verify'),
+                this.preferences.get('arduino.upload.verbose')
             ]);
             this.outputChannelManager.getChannel('Arduino: bootloader').clear();
             await this.coreService.burnBootloader({
                 fqbn,
                 programmer,
-                port
+                port,
+                verify,
+                verbose
             });
             this.messageService.info('Done burning bootloader.', { timeout: 1000 });
         } catch (e) {

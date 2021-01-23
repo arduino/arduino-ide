@@ -85,6 +85,28 @@ function deserialize_cc_arduino_cli_settings_Value(buffer_arg) {
   return settings_settings_pb.Value.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_settings_WriteRequest(arg) {
+  if (!(arg instanceof settings_settings_pb.WriteRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.settings.WriteRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_settings_WriteRequest(buffer_arg) {
+  return settings_settings_pb.WriteRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_settings_WriteResponse(arg) {
+  if (!(arg instanceof settings_settings_pb.WriteResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.settings.WriteResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_settings_WriteResponse(buffer_arg) {
+  return settings_settings_pb.WriteResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 // The Settings service provides an interface to Arduino CLI's configuration
 // options
@@ -136,6 +158,18 @@ setValue: {
     requestDeserialize: deserialize_cc_arduino_cli_settings_Value,
     responseSerialize: serialize_cc_arduino_cli_settings_SetValueResponse,
     responseDeserialize: deserialize_cc_arduino_cli_settings_SetValueResponse,
+  },
+  // Writes to file settings currently stored in memory
+write: {
+    path: '/cc.arduino.cli.settings.Settings/Write',
+    requestStream: false,
+    responseStream: false,
+    requestType: settings_settings_pb.WriteRequest,
+    responseType: settings_settings_pb.WriteResponse,
+    requestSerialize: serialize_cc_arduino_cli_settings_WriteRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_settings_WriteRequest,
+    responseSerialize: serialize_cc_arduino_cli_settings_WriteResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_settings_WriteResponse,
   },
 };
 

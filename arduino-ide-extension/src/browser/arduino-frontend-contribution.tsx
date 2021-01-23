@@ -1,3 +1,4 @@
+const debounce = require('lodash.debounce');
 import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService, ILogger } from '@theia/core';
 import {
     ContextMenuRenderer,
@@ -23,6 +24,7 @@ import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspac
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 import { inject, injectable, postConstruct } from 'inversify';
 import * as React from 'react';
+import { remote } from 'electron';
 import { MainMenuManager } from '../common/main-menu-manager';
 import { BoardsService, CoreService, Port, SketchesService, ExecutableService } from '../common/protocol';
 import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
@@ -42,11 +44,9 @@ import { WorkspaceService } from './theia/workspace/workspace-service';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-
-const debounce = require('lodash.debounce');
 import { OutputService } from '../common/protocol/output-service';
-import { NotificationCenter } from './notification-center';
-import { Settings } from './contributions/settings';
+import { ArduinoPreferences } from './arduino-preferences';
+import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
@@ -147,11 +147,15 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
 
     @inject(ExecutableService)
     protected executableService: ExecutableService;
+
     @inject(OutputService)
     protected readonly outputService: OutputService;
 
-    @inject(NotificationCenter)
-    protected readonly notificationCenter: NotificationCenter;
+    @inject(ArduinoPreferences)
+    protected readonly arduinoPreferences: ArduinoPreferences;
+
+    @inject(SketchesServiceClientImpl)
+    protected readonly sketchServiceClient: SketchesServiceClientImpl;
 
     protected invalidConfigPopup: Promise<void | 'No' | 'Yes' | undefined> | undefined;
 
@@ -192,7 +196,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 viewContribution.initializeLayout(app);
             }
         }
-        this.boardsServiceClientImpl.onBoardsConfigChanged(async ({ selectedBoard }) => {
+        const start = async ({ selectedBoard }: BoardsConfig.Config) => {
             if (selectedBoard) {
                 const { name, fqbn } = selectedBoard;
                 if (fqbn) {
@@ -200,20 +204,22 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     this.startLanguageServer(fqbn, name);
                 }
             }
+        };
+        this.boardsServiceClientImpl.onBoardsConfigChanged(start);
+        this.arduinoPreferences.onPreferenceChanged(event => {
+            if (event.preferenceName === 'arduino.language.log' && event.newValue !== event.oldValue) {
+                start(this.boardsServiceClientImpl.boardsConfig);
+            }
         });
-        this.notificationCenter.onConfigChanged(({ config }) => {
-            if (config) {
-                this.invalidConfigPopup = undefined;
-            } else {
-                if (!this.invalidConfigPopup) {
-                    this.invalidConfigPopup = this.messageService.error(`Your CLI configuration is invalid. Do you want to correct it now?`, 'No', 'Yes')
-                        .then(answer => {
-                            if (answer === 'Yes') {
-                                this.commandRegistry.executeCommand(Settings.Commands.OPEN_CLI_CONFIG.id)
-                            }
-                            this.invalidConfigPopup = undefined;
-                        });
-                }
+        this.arduinoPreferences.ready.then(() => {
+            const webContents = remote.getCurrentWebContents();
+            const zoomLevel = this.arduinoPreferences.get('arduino.window.zoomLevel');
+            webContents.setZoomLevel(zoomLevel);
+        });
+        this.arduinoPreferences.onPreferenceChanged(event => {
+            if (event.preferenceName === 'arduino.window.zoomLevel' && typeof event.newValue === 'number' && event.newValue !== event.oldValue) {
+                const webContents = remote.getCurrentWebContents();
+                webContents.setZoomLevel(event.newValue || 0);
             }
         });
     }
@@ -221,6 +227,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected startLanguageServer = debounce((fqbn: string, name: string | undefined) => this.doStartLanguageServer(fqbn, name));
     protected async doStartLanguageServer(fqbn: string, name: string | undefined): Promise<void> {
         this.logger.info(`Starting language server: ${fqbn}`);
+        const log = this.arduinoPreferences.get('arduino.language.log');
+        let currentSketchPath: string | undefined = undefined;
+        if (log) {
+            const currentSketch = await this.sketchServiceClient.currentSketch();
+            if (currentSketch) {
+                currentSketchPath = await this.fileSystem.fsPath(new URI(currentSketch.uri));
+            }
+        }
         const { clangdUri, cliUri, lsUri } = await this.executableService.list();
         const [clangdPath, cliPath, lsPath] = await Promise.all([
             this.fileSystem.fsPath(new URI(clangdUri)),
@@ -231,6 +245,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             lsPath,
             cliPath,
             clangdPath,
+            log: currentSketchPath ? currentSketchPath : log,
             board: {
                 fqbn,
                 name: name ? `"${name}"` : undefined

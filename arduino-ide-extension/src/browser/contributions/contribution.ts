@@ -10,11 +10,13 @@ import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
 import { MenuModelRegistry, MenuContribution } from '@theia/core/lib/common/menu';
 import { KeybindingRegistry, KeybindingContribution } from '@theia/core/lib/browser/keybinding';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { Command, CommandRegistry, CommandContribution, CommandService } from '@theia/core/lib/common/command';
 import { EditorMode } from '../editor-mode';
+import { SettingsService } from '../settings';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
 import { SketchesService, ConfigService, FileSystemExt, Sketch } from '../../common/protocol';
-import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser';
+import { ArduinoPreferences } from '../arduino-preferences';
 
 export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch, open };
 
@@ -38,6 +40,9 @@ export abstract class Contribution implements CommandContribution, MenuContribut
 
     @inject(LabelProvider)
     protected readonly labelProvider: LabelProvider;
+
+    @inject(SettingsService)
+    protected readonly settingsService: SettingsService;
 
     onStart(app: FrontendApplication): MaybePromise<void> {
     }
@@ -76,6 +81,9 @@ export abstract class SketchContribution extends Contribution {
 
     @inject(SketchesServiceClientImpl)
     protected readonly sketchServiceClient: SketchesServiceClientImpl;
+
+    @inject(ArduinoPreferences)
+    protected readonly preferences: ArduinoPreferences;
 
 }
 

@@ -6,6 +6,7 @@
 @import './status-bar.css';
 @import './terminal.css';
 @import './editor.css';
+@import './settings-dialog.css';
 
 .theia-input.warning:focus {
     outline-width: 1px;

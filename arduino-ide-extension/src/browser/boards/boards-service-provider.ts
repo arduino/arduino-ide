@@ -57,6 +57,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
      * See: https://arduino.slack.com/archives/CJJHJCJSJ/p1568645417013000?thread_ts=1568640504.009400&cid=CJJHJCJSJ
      */
     protected latestValidBoardsConfig: RecursiveRequired<BoardsConfig.Config> | undefined = undefined;
+    protected latestBoardsConfig: BoardsConfig.Config | undefined = undefined;
     protected _boardsConfig: BoardsConfig.Config = {};
     protected _attachedBoards: Board[] = []; // This does not contain the `Unknown` boards. They're visible from the available ports only.
     protected _availablePorts: Port[] = [];
@@ -187,6 +188,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     protected doSetBoardsConfig(config: BoardsConfig.Config): void {
         this.logger.info('Board config changed: ', JSON.stringify(config));
         this._boardsConfig = config;
+        this.latestBoardsConfig = this._boardsConfig;
         if (this.canUploadTo(this._boardsConfig)) {
             this.latestValidBoardsConfig = this._boardsConfig;
         }
@@ -384,7 +386,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
             const key = this.getLastSelectedBoardOnPortKey(selectedPort);
             await this.storageService.setData(key, selectedBoard);
         }
-        await this.storageService.setData('latest-valid-boards-config', this.latestValidBoardsConfig);
+        await Promise.all([
+            this.storageService.setData('latest-valid-boards-config', this.latestValidBoardsConfig),
+            this.storageService.setData('latest-boards-config', this.latestBoardsConfig)
+        ]);
     }
 
     protected getLastSelectedBoardOnPortKey(port: Port | string): string {
@@ -393,15 +398,21 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
 
     protected async loadState(): Promise<void> {
-        const storedValidBoardsConfig = await this.storageService.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
-        if (storedValidBoardsConfig) {
-            this.latestValidBoardsConfig = storedValidBoardsConfig;
+        const storedLatestValidBoardsConfig = await this.storageService.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
+        if (storedLatestValidBoardsConfig) {
+            this.latestValidBoardsConfig = storedLatestValidBoardsConfig;
             if (this.canUploadTo(this.latestValidBoardsConfig)) {
                 this.boardsConfig = this.latestValidBoardsConfig;
             }
+        } else {
+            // If we could not restore the latest valid config, try to restore something, the board at least.
+            const storedLatestBoardsConfig = await this.storageService.getData<BoardsConfig.Config | undefined>('latest-boards-config');
+            if (storedLatestBoardsConfig) {
+                this.latestBoardsConfig = storedLatestBoardsConfig;
+                this.boardsConfig = this.latestBoardsConfig;
+            }
         }
     }
-
 }
 
 /**

@@ -16,6 +16,7 @@ export namespace CoreService {
             readonly sketchUri: string;
             readonly fqbn?: string | undefined;
             readonly optimizeForDebug: boolean;
+            readonly verbose: boolean;
         }
     }
 
@@ -23,6 +24,7 @@ export namespace CoreService {
         export interface Options extends Compile.Options {
             readonly port?: string | undefined;
             readonly programmer?: Programmer | undefined;
+            readonly verify: boolean;
         }
     }
 
@@ -31,6 +33,8 @@ export namespace CoreService {
             readonly fqbn?: string | undefined;
             readonly port?: string | undefined;
             readonly programmer?: Programmer | undefined;
+            readonly verbose: boolean;
+            readonly verify: boolean;
         }
     }
 

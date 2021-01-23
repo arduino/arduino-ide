@@ -64,11 +64,13 @@ export class VerifySketch extends SketchContribution {
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
             const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn);
+            const verbose = this.preferences.get('arduino.compile.verbose');
             this.outputChannelManager.getChannel('Arduino: compile').clear();
             await this.coreService.compile({
                 sketchUri: uri,
                 fqbn,
-                optimizeForDebug: this.editorMode.compileForDebug
+                optimizeForDebug: this.editorMode.compileForDebug,
+                verbose
             });
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {

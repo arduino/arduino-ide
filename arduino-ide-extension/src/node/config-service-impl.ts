@@ -12,7 +12,7 @@ import { BackendApplicationContribution } from '@theia/core/lib/node/backend-app
 import { ConfigService, Config, NotificationServiceServer } from '../common/protocol';
 import * as fs from './fs-extra';
 import { spawnCommand } from './exec-util';
-import { RawData } from './cli-protocol/settings/settings_pb';
+import { RawData, WriteRequest } from './cli-protocol/settings/settings_pb';
 import { SettingsClient } from './cli-protocol/settings/settings_grpc_pb';
 import * as serviceGrpcPb from './cli-protocol/settings/settings_grpc_pb';
 import { ConfigFileValidator } from './config-file-validator';
@@ -20,8 +20,8 @@ import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { DefaultCliConfig, CLI_CONFIG_SCHEMA_PATH, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { deepClone } from '@theia/core';
 
-const debounce = require('lodash.debounce');
 const track = temp.track();
 
 @injectable()
@@ -43,7 +43,6 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    protected updating = false;
     protected config: Config;
     protected cliConfig: DefaultCliConfig | undefined;
     protected ready = new Deferred<void>();
@@ -51,17 +50,16 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
 
     async onStart(): Promise<void> {
         await this.ensureCliConfigExists();
-        await this.watchCliConfig();
         this.cliConfig = await this.loadCliConfig();
         if (this.cliConfig) {
             const config = await this.mapCliConfigToAppConfig(this.cliConfig);
             if (config) {
                 this.config = config;
                 this.ready.resolve();
+                return;
             }
-        } else {
-            this.fireInvalidConfig();
         }
+        this.fireInvalidConfig();
     }
 
     async getCliConfigFileUri(): Promise<string> {
@@ -76,6 +74,35 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     async getConfiguration(): Promise<Config> {
         await this.ready.promise;
         return this.config;
+    }
+
+    async setConfiguration(config: Config): Promise<void> {
+        await this.ready.promise;
+        if (Config.sameAs(this.config, config)) {
+            return;
+        }
+        let copyDefaultCliConfig: DefaultCliConfig | undefined = deepClone(this.cliConfig);
+        if (!copyDefaultCliConfig) {
+            copyDefaultCliConfig = await this.getFallbackCliConfig();
+        }
+        const { additionalUrls, dataDirUri, downloadsDirUri, sketchDirUri } = config;
+        copyDefaultCliConfig.directories = {
+            data: FileUri.fsPath(dataDirUri),
+            downloads: FileUri.fsPath(downloadsDirUri),
+            user: FileUri.fsPath(sketchDirUri)
+        };
+        copyDefaultCliConfig.board_manager = {
+            additional_urls: [
+                ...additionalUrls
+            ]
+        };
+        const { port } = copyDefaultCliConfig.daemon;
+        await this.updateDaemon(port, copyDefaultCliConfig);
+        await this.writeDaemonState(port);
+
+        this.config = deepClone(config);
+        this.cliConfig = copyDefaultCliConfig;
+        this.fireConfigChanged(this.config);
     }
 
     get cliConfiguration(): DefaultCliConfig | undefined {
@@ -124,7 +151,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
                 resolve(dirPath);
             });
         });
-        await spawnCommand(`"${cliPath}"`, ['config', 'init', '--dest-dir', throwawayDirPath]);
+        await spawnCommand(`"${cliPath}"`, ['config', 'init', '--dest-dir', `"${throwawayDirPath}"`]);
         const rawYaml = await fs.readFile(path.join(throwawayDirPath, CLI_CONFIG), { encoding: 'utf-8' });
         const model = yaml.safeLoad(rawYaml.trim());
         return model as DefaultCliConfig;
@@ -163,63 +190,8 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         };
     }
 
-    protected async watchCliConfig(): Promise<void> {
-        const configDirUri = await this.getCliConfigFileUri();
-        const cliConfigPath = FileUri.fsPath(configDirUri);
-        const listener = debounce(async () => {
-            if (this.updating) {
-                return;
-            } else {
-                this.updating = true;
-            }
-
-            const cliConfig = await this.loadCliConfig();
-            // Could not parse the YAML content.
-            if (!cliConfig) {
-                this.updating = false;
-                this.fireInvalidConfig();
-                return;
-            }
-            const valid = await this.validator.validate(cliConfig);
-            if (!valid) {
-                this.updating = false;
-                this.fireInvalidConfig();
-                return;
-            }
-            const shouldUpdate = !this.cliConfig || !DefaultCliConfig.sameAs(this.cliConfig, cliConfig);
-            if (!shouldUpdate) {
-                this.fireConfigChanged(this.config);
-                this.updating = false;
-                return;
-            }
-            // We use the gRPC `Settings` API iff the `daemon.port` has not changed.
-            // Otherwise, we restart the daemon. 
-            const canUpdateSettings = this.cliConfig && this.cliConfig.daemon.port === cliConfig.daemon.port;
-            try {
-                const config = await this.mapCliConfigToAppConfig(cliConfig);
-                const update = new Promise<void>(resolve => {
-                    if (canUpdateSettings) {
-                        return this.updateDaemon(cliConfig.daemon.port, cliConfig).then(resolve);
-                    }
-                    return this.daemon.stopDaemon()
-                        .then(() => this.daemon.startDaemon())
-                        .then(resolve);
-                })
-                update.then(() => {
-                    this.cliConfig = cliConfig;
-                    this.config = config;
-                    this.configChangeEmitter.fire(this.config);
-                    this.notificationService.notifyConfigChanged({ config: this.config });
-                }).finally(() => this.updating = false);
-            } catch (err) {
-                this.logger.error('Failed to update the daemon with the current CLI configuration.', err);
-            }
-        }, 200);
-        fs.watchFile(cliConfigPath, listener);
-        this.logger.info(`Started watching the Arduino CLI configuration: '${cliConfigPath}'.`);
-    }
-
     protected fireConfigChanged(config: Config): void {
+        this.configChangeEmitter.fire(config);
         this.notificationService.notifyConfigChanged({ config });
     }
 
@@ -227,30 +199,51 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         this.notificationService.notifyConfigChanged({ config: undefined });
     }
 
-    protected async unwatchCliConfig(): Promise<void> {
-        const cliConfigFileUri = await this.getCliConfigFileUri();
-        const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
-        fs.unwatchFile(cliConfigPath);
-        this.logger.info(`Stopped watching the Arduino CLI configuration: '${cliConfigPath}'.`);
-    }
-
     protected async updateDaemon(port: string | number, config: DefaultCliConfig): Promise<void> {
-        // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
-        // @ts-ignore
-        const SettingsClient = grpc.makeClientConstructor(serviceGrpcPb['cc.arduino.cli.settings.Settings'], 'SettingsService') as any;
-        const client = new SettingsClient(`localhost:${port}`, grpc.credentials.createInsecure()) as SettingsClient;
+        const client = this.createClient(port);
         const data = new RawData();
         data.setJsondata(JSON.stringify(config, null, 2));
         return new Promise<void>((resolve, reject) => {
             client.merge(data, error => {
-                if (error) {
-                    reject(error);
-                    return;
+                try {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve();
+                } finally {
+                    client.close();
                 }
-                client.close();
-                resolve();
-            })
+            });
         });
+    }
+
+    protected async writeDaemonState(port: string | number): Promise<void> {
+        const client = this.createClient(port);
+        const req = new WriteRequest();
+        const cliConfigUri = await this.getCliConfigFileUri();
+        const cliConfigPath = FileUri.fsPath(cliConfigUri);
+        req.setFilepath(cliConfigPath);
+        return new Promise<void>((resolve, reject) => {
+            client.write(req, error => {
+                try {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve();
+                } finally {
+                    client.close();
+                }
+            });
+        });
+    }
+
+    private createClient(port: string | number): SettingsClient {
+        // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
+        // @ts-ignore
+        const SettingsClient = grpc.makeClientConstructor(serviceGrpcPb['cc.arduino.cli.settings.Settings'], 'SettingsService') as any;
+        return new SettingsClient(`localhost:${port}`, grpc.credentials.createInsecure()) as SettingsClient;
     }
 
 }

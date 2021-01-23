@@ -123,3 +123,41 @@ export namespace SetValueResponse {
     export type AsObject = {
     }
 }
+
+export class WriteRequest extends jspb.Message { 
+    getFilepath(): string;
+    setFilepath(value: string): WriteRequest;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): WriteRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: WriteRequest): WriteRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: WriteRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): WriteRequest;
+    static deserializeBinaryFromReader(message: WriteRequest, reader: jspb.BinaryReader): WriteRequest;
+}
+
+export namespace WriteRequest {
+    export type AsObject = {
+        filepath: string,
+    }
+}
+
+export class WriteResponse extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): WriteResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: WriteResponse): WriteResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: WriteResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): WriteResponse;
+    static deserializeBinaryFromReader(message: WriteResponse, reader: jspb.BinaryReader): WriteResponse;
+}
+
+export namespace WriteResponse {
+    export type AsObject = {
+    }
+}

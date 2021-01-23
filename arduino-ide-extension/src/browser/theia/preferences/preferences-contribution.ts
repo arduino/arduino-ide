@@ -15,11 +15,7 @@ export class PreferencesContribution extends TheiaPreferencesContribution {
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
-        // https://github.com/eclipse-theia/theia/issues/8202
-        registry.registerKeybinding({
-            command: CommonCommands.OPEN_PREFERENCES.id,
-            keybinding: 'CtrlCmd+,',
-        });
+        registry.unregisterKeybinding(CommonCommands.OPEN_PREFERENCES.id);
     }
 
 }

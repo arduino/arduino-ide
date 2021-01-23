@@ -3,7 +3,6 @@ import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribu
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
 import { MonacoEditorService } from '@theia/monaco/lib/browser/monaco-editor-service';
-import { EDITOR_FONT_DEFAULTS } from '@theia/editor/lib/browser/editor-preferences';
 import { Contribution, Command, MenuModelRegistry, KeybindingRegistry, CommandRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
@@ -31,10 +30,28 @@ export class EditContributions extends Contribution {
         registry.registerCommand(EditContributions.Commands.FIND_PREVIOUS, { execute: () => this.run('editor.action.nextMatchFindAction') });
         registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, { execute: () => this.run('editor.action.previousSelectionMatchFindAction') });
         registry.registerCommand(EditContributions.Commands.INCREASE_FONT_SIZE, {
-            execute: () => this.preferences.set('editor.fontSize', this.preferences.get('editor.fontSize', EDITOR_FONT_DEFAULTS.fontSize) + 1)
+            execute: async () => {
+                const settings = await this.settingsService.settings();
+                if (settings.autoScaleInterface) {
+                    settings.interfaceScale = settings.interfaceScale + 1;
+                } else {
+                    settings.editorFontSize = settings.editorFontSize + 1;
+                }
+                await this.settingsService.update(settings);
+                await this.settingsService.save();
+            }
         });
         registry.registerCommand(EditContributions.Commands.DECREASE_FONT_SIZE, {
-            execute: () => this.preferences.set('editor.fontSize', this.preferences.get('editor.fontSize', EDITOR_FONT_DEFAULTS.fontSize) - 1)
+            execute: async () => {
+                const settings = await this.settingsService.settings();
+                if (settings.autoScaleInterface) {
+                    settings.interfaceScale = settings.interfaceScale - 1;
+                } else {
+                    settings.editorFontSize = settings.editorFontSize - 1;
+                }
+                await this.settingsService.update(settings);
+                await this.settingsService.save();
+            }
         });
         /* Tools */registry.registerCommand(EditContributions.Commands.AUTO_FORMAT, { execute: () => this.run('editor.action.formatDocument') });
         registry.registerCommand(EditContributions.Commands.COPY_FOR_FORUM, {

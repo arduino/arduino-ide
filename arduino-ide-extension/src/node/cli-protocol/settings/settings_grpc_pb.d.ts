@@ -13,6 +13,7 @@ interface ISettingsService extends grpc.ServiceDefinition<grpc.UntypedServiceImp
     merge: ISettingsService_IMerge;
     getValue: ISettingsService_IGetValue;
     setValue: ISettingsService_ISetValue;
+    write: ISettingsService_IWrite;
 }
 
 interface ISettingsService_IGetAll extends grpc.MethodDefinition<settings_settings_pb.GetAllRequest, settings_settings_pb.RawData> {
@@ -51,6 +52,15 @@ interface ISettingsService_ISetValue extends grpc.MethodDefinition<settings_sett
     responseSerialize: grpc.serialize<settings_settings_pb.SetValueResponse>;
     responseDeserialize: grpc.deserialize<settings_settings_pb.SetValueResponse>;
 }
+interface ISettingsService_IWrite extends grpc.MethodDefinition<settings_settings_pb.WriteRequest, settings_settings_pb.WriteResponse> {
+    path: "/cc.arduino.cli.settings.Settings/Write";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<settings_settings_pb.WriteRequest>;
+    requestDeserialize: grpc.deserialize<settings_settings_pb.WriteRequest>;
+    responseSerialize: grpc.serialize<settings_settings_pb.WriteResponse>;
+    responseDeserialize: grpc.deserialize<settings_settings_pb.WriteResponse>;
+}
 
 export const SettingsService: ISettingsService;
 
@@ -59,6 +69,7 @@ export interface ISettingsServer {
     merge: grpc.handleUnaryCall<settings_settings_pb.RawData, settings_settings_pb.MergeResponse>;
     getValue: grpc.handleUnaryCall<settings_settings_pb.GetValueRequest, settings_settings_pb.Value>;
     setValue: grpc.handleUnaryCall<settings_settings_pb.Value, settings_settings_pb.SetValueResponse>;
+    write: grpc.handleUnaryCall<settings_settings_pb.WriteRequest, settings_settings_pb.WriteResponse>;
 }
 
 export interface ISettingsClient {
@@ -74,6 +85,9 @@ export interface ISettingsClient {
     setValue(request: settings_settings_pb.Value, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.SetValueResponse) => void): grpc.ClientUnaryCall;
     setValue(request: settings_settings_pb.Value, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.SetValueResponse) => void): grpc.ClientUnaryCall;
     setValue(request: settings_settings_pb.Value, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.SetValueResponse) => void): grpc.ClientUnaryCall;
+    write(request: settings_settings_pb.WriteRequest, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
+    write(request: settings_settings_pb.WriteRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
+    write(request: settings_settings_pb.WriteRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class SettingsClient extends grpc.Client implements ISettingsClient {
@@ -90,4 +104,7 @@ export class SettingsClient extends grpc.Client implements ISettingsClient {
     public setValue(request: settings_settings_pb.Value, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.SetValueResponse) => void): grpc.ClientUnaryCall;
     public setValue(request: settings_settings_pb.Value, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.SetValueResponse) => void): grpc.ClientUnaryCall;
     public setValue(request: settings_settings_pb.Value, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.SetValueResponse) => void): grpc.ClientUnaryCall;
+    public write(request: settings_settings_pb.WriteRequest, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
+    public write(request: settings_settings_pb.WriteRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
+    public write(request: settings_settings_pb.WriteRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: settings_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
 }

@@ -136,6 +136,8 @@ import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationCo
 import { BoardSelection } from './contributions/board-selection';
 import { OpenRecentSketch } from './contributions/open-recent-sketch';
 import { Help } from './contributions/help';
+import { bindArduinoPreferences } from './arduino-preferences'
+import { SettingsService, SettingsDialog, SettingsWidget, SettingsDialogProps } from './settings';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -375,4 +377,16 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // To remove the `Run` menu item from the application menu.
     bind(DebugFrontendApplicationContribution).toSelf().inSingletonScope();
     rebind(TheiaDebugFrontendApplicationContribution).toService(DebugFrontendApplicationContribution);
+
+    // Preferences
+    bindArduinoPreferences(bind);
+
+    // Settings wrapper for the preferences and the CLI config.
+    bind(SettingsService).toSelf().inSingletonScope();
+    // Settings dialog and widget
+    bind(SettingsWidget).toSelf().inSingletonScope();
+    bind(SettingsDialog).toSelf().inSingletonScope();
+    bind(SettingsDialogProps).toConstantValue({
+        title: 'Preferences'
+    });
 });
