@@ -66,24 +66,48 @@
     const { platform } = process;
     const build = path.join(__dirname, '..', 'build');
     const cli = path.join(build, `arduino-cli${platform === 'win32' ? '.exe' : ''}`);
-    const jsonVersion = shell.exec(`${cli} version --format json`).trim();
-    if (!jsonVersion) {
+    const versionJson = shell.exec(`${cli} version --format json`).trim();
+    if (!versionJson) {
         shell.echo(`Could not retrieve the CLI version from ${cli}.`);
         shell.exit(1);
     }
-    const version = JSON.parse(jsonVersion).VersionString;
-    if (version && version !== '0.0.0-git') { // 0.0.0-git is the version of the CLI when built manually and not downloaded as a releases/nightly.
-        shell.echo(`>>> Checking out version: ${version}...`);
-        if (shell.exec(`git -C ${repository} checkout ${version} -b ${version}`).code !== 0) {
+    // As of today (28.01.2021), the `VersionString` can be one of the followings:
+    //  - `nightly-YYYYMMDD` stands for the nightly build, we use the , the `commitish` from the `package.json` to check out the code.
+    //  - `0.0.0-git` for local builds, we use the `commitish` from the `package.json` to check out the code and generate the APIs.
+    //  - `git-snapshot` for local build executed via `task build`. We do not do this.
+    //  - rest, we assume it is a valid semver and has the corresponding tagged code, we use the tag to generate the APIs from the `proto` files.
+    /*
+    {
+      "Application": "arduino-cli",
+      "VersionString": "nightly-20210126",
+      "Commit": "079bb6c6",
+      "Status": "alpha",
+      "Date": "2021-01-26T01:46:31Z"
+    }
+    */
+    const versionObject = JSON.parse(versionJson);
+    const version = versionObject.VersionString;
+    if (version && !version.startsWith('nightly-') && version !== '0.0.0-git' && version !== 'git-snapshot') {
+        shell.echo(`>>> Checking out tagged version: '${version}'...`);
+        shell.exec(`git -C ${repository} fetch --all --tags`);
+        if (shell.exec(`git -C ${repository} checkout tags/${version} -b ${version}`).code !== 0) {
             shell.exit(1);
         }
-        shell.echo(`<<< Checked out version: ${commitish}.`);
+        shell.echo(`<<< Checked out tagged version: '${commitish}'.`);
     } else if (commitish) {
-        shell.echo(`>>> Checking out commitish: ${commitish}...`);
+        shell.echo(`>>> Checking out commitish from 'package.json': '${commitish}'...`);
         if (shell.exec(`git -C ${repository} checkout ${commitish}`).code !== 0) {
             shell.exit(1);
         }
-        shell.echo(`<<< Checked out commitish: ${commitish}.`);
+        shell.echo(`<<< Checked out commitish from 'package.json': '${commitish}'.`);
+    } else if (versionObject.Commit) {
+        shell.echo(`>>> Checking out commitish from the CLI: '${versionObject.Commit}'...`);
+        if (shell.exec(`git -C ${repository} checkout ${versionObject.Commit}`).code !== 0) {
+            shell.exit(1);
+        }
+        shell.echo(`<<< Checked out commitish from the CLI: '${versionObject.Commit}'.`);
+    } else {
+        shell.echo(`WARN: no 'git checkout'. Generating from the HEAD revision.`);
     }
 
     shell.echo('>>> Generating TS/JS API from:');

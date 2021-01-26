@@ -19,7 +19,7 @@ describe('getExecPath', () => {
     });
 
     it('should resolve clangd', async () => {
-        const actual = await getExecPath('clangd', onError, '--version', os.platform() !== 'win32');
+        const actual = await getExecPath('clangd', onError, '--version', true);
         const expected = os.platform() === 'win32' ? '\\clangd.exe' : '/clangd';
         expect(actual).to.endsWith(expected);
     });

@@ -6,7 +6,7 @@
 (() => {
 
     const DEFAULT_ALS_VERSION = 'nightly';
-    const DEFAULT_CLANGD_VERSION = '9.0.0';
+    const DEFAULT_CLANGD_VERSION = 'snapshot_20210124';
 
     const path = require('path');
     const shell = require('shelljs');
@@ -22,7 +22,7 @@
         .option('clangd-version', {
             alias: 'cv',
             default: DEFAULT_CLANGD_VERSION,
-            choices: ['8.0.1', '9.0.0'],
+            choices: ['snapshot_20210124'],
             describe: `The version of 'clangd' to download. Defaults to ${DEFAULT_CLANGD_VERSION}.`
         })
         .option('force-download', {
@@ -38,35 +38,35 @@
     const { platform, arch } = process;
 
     const build = path.join(__dirname, '..', 'build');
-    const alsTarget = path.join(build, `arduino-language-server${platform === 'win32' ? '.exe' : ''}`);
+    const lsExecutablePath = path.join(build, `arduino-language-server${platform === 'win32' ? '.exe' : ''}`);
 
-    let clangdTarget, alsSuffix, clangdSuffix;
+    let clangdExecutablePath, lsSuffix, clangdPrefix;
     switch (platform) {
         case 'darwin':
-            clangdTarget = path.join(build, 'bin', 'clangd')
-            alsSuffix = 'Darwin_amd64.zip';
-            clangdSuffix = 'macos.zip';
+            clangdExecutablePath = path.join(build, 'bin', 'clangd')
+            lsSuffix = 'macOS_amd64.zip';
+            clangdPrefix = 'mac';
             break;
         case 'linux':
-            clangdTarget = path.join(build, 'bin', 'clangd')
-            alsSuffix = 'Linux_amd64.zip';
-            clangdSuffix = 'linux.zip'
+            clangdExecutablePath = path.join(build, 'bin', 'clangd')
+            lsSuffix = 'Linux_amd64.zip';
+            clangdPrefix = 'linux'
             break;
         case 'win32':
-            clangdTarget = path.join(build, 'clangd.exe')
-            alsSuffix = 'Windows_NT_amd64.zip';
-            clangdSuffix = 'windows.zip';
+            clangdExecutablePath = path.join(build, 'bin', 'clangd.exe')
+            lsSuffix = 'Windows_amd64.zip';
+            clangdPrefix = 'windows';
             break;
     }
-    if (!alsSuffix) {
+    if (!lsSuffix) {
         shell.echo(`The arduino-language-server is not available for ${platform} ${arch}.`);
         shell.exit(1);
     }
 
-    const alsUrl = `https://downloads.arduino.cc/arduino-language-server/${alsVersion === 'nightly' ? 'nightly/arduino-language-server' : 'arduino-language-server_' + alsVersion}_${alsSuffix}`;
-    downloader.downloadUnzipAll(alsUrl, build, alsTarget, force);
+    const alsUrl = `https://downloads.arduino.cc/arduino-language-server/${alsVersion === 'nightly' ? 'nightly/arduino-language-server' : 'arduino-language-server_' + alsVersion}_${lsSuffix}`;
+    downloader.downloadUnzipAll(alsUrl, build, lsExecutablePath, force);
 
-    const clangdUrl = `https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${clangdVersion}_${clangdSuffix}`;
-    downloader.downloadUnzipAll(clangdUrl, build, clangdTarget, force);
+    const clangdUrl = `https://downloads.arduino.cc/arduino-language-server/clangd/clangd-${clangdPrefix}-${clangdVersion}.zip`;
+    downloader.downloadUnzipAll(clangdUrl, build, clangdExecutablePath, force, { strip: 1 }); // `strip`: the new clangd (12.x) is zipped into a folder, so we have to strip the outmost folder.
 
 })();

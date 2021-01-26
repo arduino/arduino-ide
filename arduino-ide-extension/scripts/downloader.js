@@ -79,7 +79,7 @@ exports.downloadUnzipFile = async (url, targetFile, filePrefix, force = false) =
  * @param targetFile {string} Path to the main file expected after decompressing
  * @param force {boolean}     Whether to download even if the target file exists
  */
-exports.downloadUnzipAll = async (url, targetDir, targetFile, force) => {
+exports.downloadUnzipAll = async (url, targetDir, targetFile, force, decompressOptions = undefined) => {
     if (fs.existsSync(targetFile) && !force) {
         shell.echo(`Skipping download because file already exists: ${targetFile}`);
         return;
@@ -96,12 +96,16 @@ exports.downloadUnzipAll = async (url, targetDir, targetFile, force) => {
     shell.echo(`<<< Download succeeded.`);
 
     shell.echo('>>> Decompressing...');
-    const files = await decompress(data, targetDir, {
+    let options = {
         plugins: [
             unzip(),
             untargz()
         ]
-    });
+    };
+    if (decompressOptions) {
+        options = Object.assign(options, decompressOptions)
+    }
+    const files = await decompress(data, targetDir, options);
     if (files.length === 0) {
         shell.echo('Error ocurred while decompressing the archive.');
         shell.exit(1);
