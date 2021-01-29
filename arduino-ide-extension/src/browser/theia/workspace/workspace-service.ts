@@ -9,7 +9,7 @@ import { FocusTracker, Widget } from '@theia/core/lib/browser';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 import { ConfigService } from '../../../common/protocol/config-service';
-import { SketchesService } from '../../../common/protocol/sketches-service';
+import { SketchesService, Sketch } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 
 @injectable()
@@ -85,7 +85,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     protected onCurrentWidgetChange({ newValue }: FocusTracker.IChangedArgs<Widget>): void {
         if (newValue instanceof EditorWidget) {
             const { uri } = newValue.editor;
-            if (uri.toString().endsWith('.ino')) {
+            if (Sketch.isSketchFile(uri.toString())) {
                 this.updateTitle();
             } else {
                 const title = this.workspaceTitle;

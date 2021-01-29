@@ -57,7 +57,8 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
             throw new Error(`Could not retrieve instance from the initialize response.`);
         }
 
-        await this.updateIndexes({ instance, client });
+        // No `await`. The index update event comes later. This way we do not block app startup with index update when invalid proxy is given.
+        this.updateIndexes({ instance, client });
 
         return { instance, client };
     }

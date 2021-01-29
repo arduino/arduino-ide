@@ -47,6 +47,7 @@ import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { OutputService } from '../common/protocol/output-service';
 import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
+import { SaveAsSketch } from './contributions/save-as-sketch';
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
@@ -338,6 +339,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 await this.ensureOpened(uri);
             }
             await this.ensureOpened(mainFileUri, true);
+            if (mainFileUri.endsWith('.pde')) {
+                const message = `The '${sketch.name}' still uses the old \`.pde\` format. Do you want to switch to the new \`.ino\` extension?`;
+                this.messageService.info(message, 'Later', 'Yes').then(async answer => {
+                    if (answer === 'Yes') {
+                        this.commandRegistry.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, { execOnlyIfTemp: false, openAfterMove: true, wipeOriginal: false });
+                    }
+                });
+            }
         } catch (e) {
             console.error(e);
             const message = e instanceof Error ? e.message : JSON.stringify(e);

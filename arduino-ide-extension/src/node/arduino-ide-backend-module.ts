@@ -21,8 +21,6 @@ import { MonitorServiceImpl } from './monitor/monitor-service-impl';
 import { MonitorService, MonitorServicePath, MonitorServiceClient } from '../common/protocol/monitor-service';
 import { MonitorClientProvider } from './monitor/monitor-client-provider';
 import { ConfigServiceImpl } from './config-service-impl';
-import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
-import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
 import { NodeFileSystemExt } from './node-filesystem-ext';
@@ -105,9 +103,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(EnvVariablesServer).toSelf().inSingletonScope();
     rebind(TheiaEnvVariablesServer).toService(EnvVariablesServer);
-
-    bind(HostedPluginReader).toSelf().inSingletonScope();
-    rebind(TheiaHostedPluginReader).toService(HostedPluginReader);
 
     // #endregion Theia customizations
 

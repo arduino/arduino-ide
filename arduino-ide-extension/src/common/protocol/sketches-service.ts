@@ -81,4 +81,10 @@ export namespace Sketch {
         const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
         return [mainFileUri, ...otherSketchFileUris, ...additionalFileUris].indexOf(uri.toString()) !== -1;
     }
+    export function isSketchFile(arg: string | URI): boolean {
+        if (arg instanceof URI) {
+            return isSketchFile(arg.toString());
+        }
+        return Extensions.MAIN.some(ext => arg.endsWith(ext));
+    }
 }

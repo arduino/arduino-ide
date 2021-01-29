@@ -122,7 +122,7 @@ export class OpenSketch extends SketchContribution {
             filters: [
                 {
                     name: 'Sketch',
-                    extensions: ['ino']
+                    extensions: ['ino', 'pde']
                 }
             ]
         });
@@ -138,7 +138,7 @@ export class OpenSketch extends SketchContribution {
         if (sketch) {
             return sketch;
         }
-        if (sketchFileUri.endsWith('.ino')) {
+        if (Sketch.isSketchFile(sketchFileUri)) {
             const name = new URI(sketchFileUri).path.name;
             const nameWithExt = this.labelProvider.getName(new URI(sketchFileUri));
             const { response } = await remote.dialog.showMessageBox({

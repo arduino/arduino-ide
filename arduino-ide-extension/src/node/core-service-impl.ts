@@ -1,12 +1,12 @@
 import { FileUri } from '@theia/core/lib/node/file-uri';
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { dirname } from 'path';
 import { CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { CoreClientProvider } from './core-client-provider';
 import { UploadReq, UploadResp, BurnBootloaderReq, BurnBootloaderResp, UploadUsingProgrammerReq, UploadUsingProgrammerResp } from './cli-protocol/commands/upload_pb';
 import { OutputService } from '../common/protocol/output-service';
-import { NotificationServiceServer, ConfigService } from '../common/protocol';
+import { NotificationServiceServer } from '../common/protocol';
 import { ClientReadableStream } from '@grpc/grpc-js';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
@@ -22,16 +22,6 @@ export class CoreServiceImpl implements CoreService {
 
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
-
-    @inject(ConfigService)
-    protected readonly configService: ConfigService;
-
-    @postConstruct()
-    protected init(): void {
-        this.coreClient().then(({ client, instance }) => {
-
-        });
-    }
 
     async compile(options: CoreService.Compile.Options): Promise<void> {
         this.outputService.append({ name: 'compile', chunk: 'Compile...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
