@@ -11,9 +11,9 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
-import { ConfigService, Config, NotificationServiceServer } from '../common/protocol';
+import { ConfigService, Config, NotificationServiceServer, Network } from '../common/protocol';
 import { spawnCommand } from './exec-util';
-import { RawData, WriteRequest } from './cli-protocol/settings/settings_pb';
+import { WriteRequest, RawData } from './cli-protocol/settings/settings_pb';
 import { SettingsClient } from './cli-protocol/settings/settings_grpc_pb';
 import * as serviceGrpcPb from './cli-protocol/settings/settings_grpc_pb';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
@@ -78,7 +78,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         if (!copyDefaultCliConfig) {
             copyDefaultCliConfig = await this.getFallbackCliConfig();
         }
-        const { additionalUrls, dataDirUri, downloadsDirUri, sketchDirUri } = config;
+        const { additionalUrls, dataDirUri, downloadsDirUri, sketchDirUri, network } = config;
         copyDefaultCliConfig.directories = {
             data: FileUri.fsPath(dataDirUri),
             downloads: FileUri.fsPath(downloadsDirUri),
@@ -89,6 +89,8 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
                 ...additionalUrls
             ]
         };
+        const proxy = Network.stringify(network);
+        copyDefaultCliConfig.network = { proxy };
         const { port } = copyDefaultCliConfig.daemon;
         await this.updateDaemon(port, copyDefaultCliConfig);
         await this.writeDaemonState(port);
@@ -175,11 +177,13 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         if (cliConfig.board_manager && cliConfig.board_manager.additional_urls) {
             additionalUrls.push(...Array.from(new Set(cliConfig.board_manager.additional_urls)));
         }
+        const network = Network.parse(cliConfig.network?.proxy);
         return {
             dataDirUri: FileUri.create(data).toString(),
             sketchDirUri: FileUri.create(user).toString(),
             downloadsDirUri: FileUri.create(downloads).toString(),
             additionalUrls,
+            network
         };
     }
 
@@ -195,7 +199,9 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     protected async updateDaemon(port: string | number, config: DefaultCliConfig): Promise<void> {
         const client = this.createClient(port);
         const data = new RawData();
-        data.setJsondata(JSON.stringify(config, null, 2));
+        const json = JSON.stringify(config, null, 2);
+        data.setJsondata(json);
+        console.log(`Updating daemon with 'data': ${json}`);
         return new Promise<void>((resolve, reject) => {
             client.merge(data, error => {
                 try {

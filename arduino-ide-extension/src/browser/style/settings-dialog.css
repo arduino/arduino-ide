@@ -4,6 +4,7 @@
 
 .arduino-settings-dialog .content {
     padding: 5px;
+    height: 250px;
 }
 
 .arduino-settings-dialog .flex-line {
@@ -25,19 +26,32 @@
     vertical-align: middle;
 }
 
+.arduino-settings-dialog .stretch {
+    width: 100% !important;
+}
+
 .arduino-settings-dialog .flex-line .theia-button.shrink {
     min-width: unset;
 }
 
-.arduino-settings-dialog .theia-input.stretch {
-    width: 100% !important;
+.arduino-settings-dialog .proxy-settings {
+    margin: 5px;
+}
+
+.arduino-settings-dialog input[type="radio"] {
+    margin: 3px !important;
 }
 
 .arduino-settings-dialog .theia-input.small {
-    max-width: 40px;
-    width: 40px;
+    max-width: 50px;
+    width: 50px;
 }
 
 .additional-urls-dialog .link:hover {
     color: var(--theia-textLink-activeForeground);
+}
+
+.arduino-settings-dialog .react-tabs__tab-list {
+    display: flex;
+    justify-content: center;
 }

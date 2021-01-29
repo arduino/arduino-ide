@@ -2,6 +2,9 @@ import * as React from 'react';
 import { injectable, inject, postConstruct } from 'inversify';
 import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import { Disable } from 'react-disable';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
 import { Deferred } from '@theia/core/lib/common/promise-util';
@@ -15,7 +18,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { AbstractDialog, DialogProps, PreferenceService, PreferenceScope, DialogError, ReactWidget } from '@theia/core/lib/browser';
 import { Index } from '../common/types';
-import { ConfigService, FileSystemExt } from '../common/protocol';
+import { ConfigService, FileSystemExt, Network, ProxySettings } from '../common/protocol';
 
 export interface Settings extends Index {
     editorFontSize: number; // `editor.fontSize`
@@ -32,6 +35,7 @@ export interface Settings extends Index {
 
     sketchbookPath: string; // CLI
     additionalUrls: string[]; // CLI
+    network: Network; // CLI
 }
 export namespace Settings {
 
@@ -40,7 +44,6 @@ export namespace Settings {
     }
 
 }
-export type SettingsKey = keyof Settings;
 
 @injectable()
 export class SettingsService {
@@ -101,7 +104,7 @@ export class SettingsService {
             this.preferenceService.get<boolean>('arduino.language.log', true),
             this.configService.getConfiguration()
         ]);
-        const { additionalUrls, sketchDirUri } = cliConfig;
+        const { additionalUrls, sketchDirUri, network } = cliConfig;
         const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
         return {
             editorFontSize,
@@ -115,7 +118,8 @@ export class SettingsService {
             verifyAfterUpload,
             enableLsLogs,
             additionalUrls,
-            sketchbookPath
+            sketchbookPath,
+            network
         };
     }
 
@@ -175,7 +179,8 @@ export class SettingsService {
             verifyAfterUpload,
             enableLsLogs,
             sketchbookPath,
-            additionalUrls
+            additionalUrls,
+            network
         } = this._settings;
         const [config, sketchDirUri] = await Promise.all([
             this.configService.getConfiguration(),
@@ -183,6 +188,7 @@ export class SettingsService {
         ]);
         (config as any).additionalUrls = additionalUrls;
         (config as any).sketchDirUri = sketchDirUri;
+        (config as any).network = network;
 
         await Promise.all([
             this.preferenceService.set('editor.fontSize', editorFontSize, PreferenceScope.User),
@@ -230,6 +236,21 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         if (!this.state) {
             return <div />;
         }
+        return <Tabs>
+            <TabList>
+                <Tab>Settings</Tab>
+                <Tab>Network</Tab>
+            </TabList>
+            <TabPanel>
+                {this.renderSettings()}
+            </TabPanel>
+            <TabPanel>
+                {this.renderNetwork()}
+            </TabPanel>
+        </Tabs>;
+    }
+
+    protected renderSettings(): React.ReactNode {
         return <div className='content noselect'>
             Sketchbook location:
             <div className='flex-line'>
@@ -343,12 +364,106 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         </div>;
     }
 
+    protected renderNetwork(): React.ReactNode {
+        return <div className='content noselect'>
+            <form>
+                <label className='flex-line'>
+                    <input
+                        type='radio'
+                        checked={this.state.network === 'none'}
+                        onChange={this.noProxyDidChange} />
+                    No proxy
+                </label>
+                <label className='flex-line'>
+                    <input
+                        type='radio'
+                        checked={this.state.network !== 'none'}
+                        onChange={this.manualProxyDidChange} />
+                    Manual proxy configuration
+                </label>
+            </form>
+            {this.renderProxySettings()}
+        </div>;
+    }
+
+    protected renderProxySettings(): React.ReactNode {
+        const disabled = this.state.network === 'none';
+        return <Disable disabled={disabled}>
+            <div className='proxy-settings' aria-disabled={disabled}>
+                <form className='flex-line'>
+                    <input
+                        type='radio'
+                        checked={this.state.network === 'none' ? true : this.state.network.protocol === 'http'}
+                        onChange={this.httpProtocolDidChange} />
+                        HTTP
+                    <label className='flex-line'>
+                        <input
+                            type='radio'
+                            checked={this.state.network === 'none' ? false : this.state.network.protocol !== 'http'}
+                            onChange={this.socksProtocolDidChange} />
+                        SOCKS
+                    </label>
+                </form>
+                <div className='flex-line proxy-settings'>
+                    <div className='column'>
+                        <div className='flex-line'>Host name:</div>
+                        <div className='flex-line'>Port number:</div>
+                        <div className='flex-line'>Username:</div>
+                        <div className='flex-line'>Password:</div>
+                    </div>
+                    <div className='column stretch'>
+                        <div className='flex-line'>
+                            <input
+                                className='theia-input stretch with-margin'
+                                type='text'
+                                value={this.state.network === 'none' ? '' : this.state.network.hostname}
+                                onChange={this.hostnameDidChange} />
+                        </div>
+                        <div className='flex-line'>
+                            <input
+                                className='theia-input small with-margin'
+                                type='number'
+                                pattern='[0-9]'
+                                value={this.state.network === 'none' ? '' : this.state.network.port}
+                                onKeyDown={this.numbersOnlyKeyDown}
+                                onChange={this.portDidChange} />
+                        </div>
+                        <div className='flex-line'>
+                            <input
+                                className='theia-input stretch with-margin'
+                                type='text'
+                                value={this.state.network === 'none' ? '' : this.state.network.username}
+                                onChange={this.usernameDidChange} />
+                        </div>
+                        <div className='flex-line'>
+                            <input
+                                className='theia-input stretch with-margin'
+                                type='password'
+                                value={this.state.network === 'none' ? '' : this.state.network.password}
+                                onChange={this.passwordDidChange} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Disable>;
+    }
+
+    private isControlKey(event: React.KeyboardEvent<HTMLInputElement>): boolean {
+        return !!event.key && ['tab', 'delete', 'backspace', 'arrowleft', 'arrowright'].some(key => event.key.toLocaleLowerCase() === key);
+    }
+
     protected noopKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (this.isControlKey(event)) {
+            return;
+        }
         event.nativeEvent.preventDefault();
         event.nativeEvent.returnValue = false;
     }
 
     protected numbersOnlyKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (this.isControlKey(event)) {
+            return;
+        }
         const key = Number(event.key)
         if (isNaN(key) || event.key === null || event.key === ' ') {
             event.nativeEvent.preventDefault();
@@ -443,6 +558,79 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
             this.setState({ sketchbookPath });
         }
     };
+
+    protected noProxyDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.checked) {
+            this.setState({ network: 'none' });
+        } else {
+            this.setState({ network: Network.Default() });
+        }
+    };
+
+    protected manualProxyDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.checked) {
+            this.setState({ network: Network.Default() });
+        } else {
+            this.setState({ network: 'none' });
+        }
+    };
+
+    protected httpProtocolDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.network !== 'none') {
+            const network = this.cloneProxySettings;
+            network.protocol = event.target.checked ? 'http' : 'socks';
+            this.setState({ network });
+        }
+    };
+
+    protected socksProtocolDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.network !== 'none') {
+            const network = this.cloneProxySettings;
+            network.protocol = event.target.checked ? 'socks' : 'http';
+            this.setState({ network });
+        }
+    };
+
+    protected hostnameDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.network !== 'none') {
+            const network = this.cloneProxySettings;
+            network.hostname = event.target.value;
+            this.setState({ network });
+        }
+    };
+
+    protected portDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.network !== 'none') {
+            const network = this.cloneProxySettings;
+            network.port = event.target.value;
+            this.setState({ network });
+        }
+    };
+
+    protected usernameDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.network !== 'none') {
+            const network = this.cloneProxySettings;
+            network.username = event.target.value;
+            this.setState({ network });
+        }
+    };
+
+    protected passwordDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.network !== 'none') {
+            const network = this.cloneProxySettings;
+            network.password = event.target.value;
+            this.setState({ network });
+        }
+    };
+
+    private get cloneProxySettings(): ProxySettings {
+        const { network } = this.state;
+        if (network === 'none') {
+            throw new Error('Must be called when proxy is enabled.');
+        }
+        const copyNetwork = deepClone(network);
+        return copyNetwork;
+    }
 
 }
 export namespace SettingsComponent {

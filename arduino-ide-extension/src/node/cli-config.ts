@@ -92,11 +92,16 @@ export namespace Logging {
 
 }
 
+export interface Network {
+    proxy?: string;
+}
+
 // Arduino CLI config scheme
 export interface CliConfig {
     board_manager?: RecursivePartial<BoardManager>;
     directories?: RecursivePartial<Directories>;
     logging?: RecursivePartial<Logging>;
+    network?: RecursivePartial<Network>;
 }
 
 // Bare minimum required CLI config.
