@@ -58,6 +58,11 @@ export interface SketchesService {
      */
     recentlyOpenedSketches(): Promise<Sketch[]>;
 
+    /**
+     * Archives the sketch, resolves to the archive URI.
+     */
+    archive(sketch: Sketch, destinationUri: string): Promise<string>;
+
 }
 
 export interface Sketch {

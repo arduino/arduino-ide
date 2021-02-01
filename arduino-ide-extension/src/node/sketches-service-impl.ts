@@ -14,7 +14,7 @@ import { firstToLowerCase } from '../common/utils';
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { CoreClientProvider } from './core-client-provider';
-import { LoadSketchReq } from './cli-protocol/commands/commands_pb';
+import { LoadSketchReq, ArchiveSketchReq } from './cli-protocol/commands/commands_pb';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
@@ -322,6 +322,29 @@ void loop() {
             });
         });
         return FileUri.create(destination).toString();
+    }
+
+    async archive(sketch: Sketch, destinationUri: string): Promise<string> {
+        await this.loadSketch(sketch.uri); // sanity check
+        const { client } = await this.coreClient();
+        const archivePath = FileUri.fsPath(destinationUri);
+        // The CLI cannot override existing archives, so we have to wipe it manually: https://github.com/arduino/arduino-cli/issues/1160
+        if (await fs.exists(archivePath)) {
+            await fs.unlink(archivePath);
+        }
+        const req = new ArchiveSketchReq();
+        req.setSketchPath(FileUri.fsPath(sketch.uri));
+        req.setArchivePath(archivePath);
+        await new Promise<string>((resolve, reject) => {
+            client.archiveSketch(req, err => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(destinationUri);
+            });
+        });
+        return destinationUri;
     }
 
     private async coreClient(): Promise<CoreClientProvider.Client> {

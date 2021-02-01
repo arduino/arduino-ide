@@ -139,6 +139,7 @@ import { Help } from './contributions/help';
 import { bindArduinoPreferences } from './arduino-preferences'
 import { SettingsService, SettingsDialog, SettingsWidget, SettingsDialogProps } from './settings';
 import { AddFile } from './contributions/add-file';
+import { ArchiveSketch } from './contributions/archive-sketch';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -346,6 +347,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, OpenRecentSketch);
     Contribution.configure(bind, Help);
     Contribution.configure(bind, AddFile);
+    Contribution.configure(bind, ArchiveSketch);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);
