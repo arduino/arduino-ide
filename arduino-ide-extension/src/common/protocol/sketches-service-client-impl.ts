@@ -43,10 +43,9 @@ export class SketchesServiceClientImpl implements FrontendApplicationContributio
                 this.toDispose.push(this.fileService.watch(new URI(sketchDirUri), { recursive: true, excludes: [] }));
                 this.toDispose.push(this.fileService.onDidFilesChange(async event => {
                     for (const { type, resource } of event.changes) {
-                        // We track main sketch files changes only.
+                        // We track main sketch files changes only. // TODO: check sketch folder changes. One can rename the folder without renaming the `.ino` file.
                         if (sketchbookUri.isEqualOrParent(resource)) {
-                            const { ext } = resource.path; // TODO: add  support for `.pde`.
-                            if (ext === '.ino') {
+                            if (Sketch.isSketchFile(resource)) {
                                 if (type === FileChangeType.ADDED) {
                                     try {
                                         const toAdd = await this.sketchService.loadSketch(resource.parent.toString());

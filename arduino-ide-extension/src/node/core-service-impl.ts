@@ -23,7 +23,7 @@ export class CoreServiceImpl implements CoreService {
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    async compile(options: CoreService.Compile.Options): Promise<void> {
+    async compile(options: CoreService.Compile.Options & { exportBinaries: boolean }): Promise<void> {
         this.outputService.append({ name: 'compile', chunk: 'Compile...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
         const sketchFilePath = FileUri.fsPath(sketchUri);
@@ -42,6 +42,7 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(options.verbose);
         compilerReq.setQuiet(false);
+        compilerReq.setExportBinaries(options.exportBinaries);
 
         const result = client.compile(compilerReq);
         try {
@@ -74,7 +75,7 @@ export class CoreServiceImpl implements CoreService {
         responseHandler: (client: ArduinoCoreClient, req: UploadReq | UploadUsingProgrammerReq) => ClientReadableStream<UploadResp | UploadUsingProgrammerResp>,
         task: string = 'upload'): Promise<void> {
 
-        await this.compile(options);
+        await this.compile(Object.assign(options, { exportBinaries: false }));
         const chunk = firstToUpperCase(task) + '...\n';
         this.outputService.append({ name: 'upload', chunk: chunk + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn, port, programmer } = options;

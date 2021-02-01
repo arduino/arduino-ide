@@ -320,10 +320,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }
         registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
-        registry.registerMenuAction(ArduinoMenus.SKETCH, {
+        registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
             label: 'Optimize for Debugging',
-            order: '1'
+            order: '4'
         });
         registry.registerMenuAction(ArduinoMenus.HELP__CONTROL_GROUP, {
             commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,

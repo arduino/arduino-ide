@@ -26,6 +26,9 @@ export class VerifySketch extends SketchContribution {
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
             execute: () => this.verifySketch()
         });
+        registry.registerCommand(VerifySketch.Commands.EXPORT_BINARIES, {
+            execute: () => this.verifySketch(true)
+        });
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: () => registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id)
@@ -36,7 +39,12 @@ export class VerifySketch extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: VerifySketch.Commands.VERIFY_SKETCH.id,
             label: 'Verify/Compile',
-            order: '2'
+            order: '0'
+        });
+        registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+            commandId: VerifySketch.Commands.EXPORT_BINARIES.id,
+            label: 'Export compiled Binary',
+            order: '3'
         });
     }
 
@@ -44,6 +52,10 @@ export class VerifySketch extends SketchContribution {
         registry.registerKeybinding({
             command: VerifySketch.Commands.VERIFY_SKETCH.id,
             keybinding: 'CtrlCmd+R'
+        });
+        registry.registerKeybinding({
+            command: VerifySketch.Commands.EXPORT_BINARIES.id,
+            keybinding: 'CtrlCmd+Alt+S'
         });
     }
 
@@ -56,7 +68,7 @@ export class VerifySketch extends SketchContribution {
         });
     }
 
-    async verifySketch(): Promise<void> {
+    async verifySketch(exportBinaries: boolean = false): Promise<void> {
         const uri = await this.sketchServiceClient.currentSketchFile();
         if (!uri) {
             return;
@@ -70,7 +82,8 @@ export class VerifySketch extends SketchContribution {
                 sketchUri: uri,
                 fqbn,
                 optimizeForDebug: this.editorMode.compileForDebug,
-                verbose
+                verbose,
+                exportBinaries
             });
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {
@@ -84,6 +97,9 @@ export namespace VerifySketch {
     export namespace Commands {
         export const VERIFY_SKETCH: Command = {
             id: 'arduino-verify-sketch'
+        };
+        export const EXPORT_BINARIES: Command = {
+            id: 'arduino-export-binaries'
         };
         export const VERIFY_SKETCH_TOOLBAR: Command = {
             id: 'arduino-verify-sketch--toolbar'

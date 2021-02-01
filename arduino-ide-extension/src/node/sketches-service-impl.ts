@@ -329,8 +329,8 @@ void loop() {
         const { client } = await this.coreClient();
         const archivePath = FileUri.fsPath(destinationUri);
         // The CLI cannot override existing archives, so we have to wipe it manually: https://github.com/arduino/arduino-cli/issues/1160
-        if (await fs.exists(archivePath)) {
-            await fs.unlink(archivePath);
+        if (await promisify(fs.exists)(archivePath)) {
+            await promisify(fs.unlink)(archivePath);
         }
         const req = new ArchiveSketchReq();
         req.setSketchPath(FileUri.fsPath(sketch.uri));

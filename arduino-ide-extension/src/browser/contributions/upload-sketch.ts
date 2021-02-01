@@ -43,12 +43,12 @@ export class UploadSketch extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
             label: 'Upload',
-            order: '0'
+            order: '1'
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
             label: 'Upload Using Programmer',
-            order: '1'
+            order: '2'
         });
     }
 
