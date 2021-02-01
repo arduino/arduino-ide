@@ -197,9 +197,10 @@ export class SketchesServiceImpl implements SketchesService {
         });
 
         // TODO: no `await` for some reason this blocks the workspace root initialization on Windows inside a bundled electron app.
+        console.log(`Starting to watch sketchbook at '${sketchbookPath}'.`);
         watcher.start()
-            .then(() => console.log(`Initialized NSFW in sketchbook: '${sketchbookPath}. Watching for sketch changes.`))
-            .catch(err => console.error(`Failed to initialize NSFW in sketchbook '${sketchbookPath}'. Cannot track sketch changes.`, err));
+            .then(() => console.log(`Initialized watcher in sketchbook: '${sketchbookPath}. Watching for sketch changes.`))
+            .catch(err => console.error(`Failed to initialize watcher in sketchbook '${sketchbookPath}'. Cannot track sketch changes.`, err));
 
         deferred.resolve(sketches);
         this.sketchbooks.set(sketchbookPath, sketches);
