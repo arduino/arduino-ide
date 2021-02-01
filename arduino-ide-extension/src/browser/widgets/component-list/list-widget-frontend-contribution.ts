@@ -10,4 +10,8 @@ export abstract class ListWidgetFrontendContribution<T extends ArduinoComponent>
     async initializeLayout(): Promise<void> {
     }
 
+    registerMenus(): void {
+        // NOOP
+    }
+
 }
