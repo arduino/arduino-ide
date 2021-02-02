@@ -1,6 +1,7 @@
 import { inject, injectable, postConstruct } from 'inversify';
 import { join, basename } from 'path';
-import * as fs from './fs-extra';
+import * as fs from 'fs';
+import { promisify } from 'util';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { Sketch } from '../common/protocol/sketches-service';
@@ -33,7 +34,7 @@ export class ExamplesServiceImpl implements ExamplesService {
             return this._all;
         }
         const exampleRootPath = join(__dirname, '..', '..', 'Examples');
-        const exampleNames = await fs.readdir(exampleRootPath);
+        const exampleNames = await promisify(fs.readdir)(exampleRootPath);
         this._all = await Promise.all(exampleNames.map(name => join(exampleRootPath, name)).map(path => this.load(path)));
         return this._all;
     }
@@ -70,15 +71,15 @@ export class ExamplesServiceImpl implements ExamplesService {
         if (installDirUri) {
             for (const example of ['example', 'Example', 'EXAMPLE', 'examples', 'Examples', 'EXAMPLES']) {
                 const examplesPath = join(FileUri.fsPath(installDirUri), example);
-                const exists = await fs.exists(examplesPath);
-                const isDir = exists && (await fs.lstat(examplesPath)).isDirectory();
+                const exists = await promisify(fs.exists)(examplesPath);
+                const isDir = exists && (await promisify(fs.lstat)(examplesPath)).isDirectory();
                 if (isDir) {
-                    const fileNames = await fs.readdir(examplesPath);
+                    const fileNames = await promisify(fs.readdir)(examplesPath);
                     const children: ExampleContainer[] = [];
                     const sketches: Sketch[] = [];
                     for (const fileName of fileNames) {
                         const subPath = join(examplesPath, fileName);
-                        const subIsDir = (await fs.lstat(subPath)).isDirectory();
+                        const subIsDir = (await promisify(fs.lstat)(subPath)).isDirectory();
                         if (subIsDir) {
                             const sketch = await this.tryLoadSketch(subPath);
                             if (!sketch) {
@@ -109,18 +110,18 @@ export class ExamplesServiceImpl implements ExamplesService {
 
     // Built-ins are included inside the IDE.
     protected async load(path: string): Promise<ExampleContainer> {
-        if (!await fs.exists(path)) {
+        if (!await promisify(fs.exists)(path)) {
             throw new Error('Examples are not available');
         }
-        const stat = await fs.stat(path);
+        const stat = await promisify(fs.stat)(path);
         if (!stat.isDirectory) {
             throw new Error(`${path} is not a directory.`);
         }
-        const names = await fs.readdir(path);
+        const names = await promisify(fs.readdir)(path);
         const sketches: Sketch[] = [];
         const children: ExampleContainer[] = [];
         for (const p of names.map(name => join(path, name))) {
-            const stat = await fs.stat(p);
+            const stat = await promisify(fs.stat)(p);
             if (stat.isDirectory()) {
                 const sketch = await this.tryLoadSketch(p);
                 if (sketch) {
@@ -142,7 +143,7 @@ export class ExamplesServiceImpl implements ExamplesService {
     protected async group(paths: string[]): Promise<Map<string, fs.Stats>> {
         const map = new Map<string, fs.Stats>();
         for (const path of paths) {
-            const stat = await fs.stat(path);
+            const stat = await promisify(fs.stat)(path);
             map.set(path, stat);
         }
         return map;

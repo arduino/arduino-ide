@@ -1,6 +1,8 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as temp from 'temp';
 import * as yaml from 'js-yaml';
+import { promisify } from 'util';
 import * as grpc from '@grpc/grpc-js';
 import * as deepmerge from 'deepmerge';
 import { injectable, inject, named } from 'inversify';
@@ -10,14 +12,12 @@ import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ConfigService, Config, NotificationServiceServer } from '../common/protocol';
-import * as fs from './fs-extra';
 import { spawnCommand } from './exec-util';
 import { RawData, WriteRequest } from './cli-protocol/settings/settings_pb';
 import { SettingsClient } from './cli-protocol/settings/settings_grpc_pb';
 import * as serviceGrpcPb from './cli-protocol/settings/settings_grpc_pb';
-import { ConfigFileValidator } from './config-file-validator';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
-import { DefaultCliConfig, CLI_CONFIG_SCHEMA_PATH, CLI_CONFIG } from './cli-config';
+import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone } from '@theia/core';
@@ -33,9 +33,6 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
 
     @inject(EnvVariablesServer)
     protected readonly envVariablesServer: EnvVariablesServer;
-
-    @inject(ConfigFileValidator)
-    protected readonly validator: ConfigFileValidator;
 
     @inject(ArduinoDaemonImpl)
     protected readonly daemon: ArduinoDaemonImpl;
@@ -65,10 +62,6 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     async getCliConfigFileUri(): Promise<string> {
         const configDirUri = await this.envVariablesServer.getConfigDirUri();
         return new URI(configDirUri).resolve(CLI_CONFIG).toString();
-    }
-
-    async getConfigurationFileSchemaUri(): Promise<string> {
-        return FileUri.create(CLI_CONFIG_SCHEMA_PATH).toString();
     }
 
     async getConfiguration(): Promise<Config> {
@@ -129,7 +122,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         const cliConfigFileUri = await this.getCliConfigFileUri();
         const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
         try {
-            const content = await fs.readFile(cliConfigPath, { encoding: 'utf8' });
+            const content = await promisify(fs.readFile)(cliConfigPath, { encoding: 'utf8' });
             const model = yaml.safeLoad(content) || {};
             // The CLI can run with partial (missing `port`, `directories`), the app cannot, we merge the default with the user's config.
             const fallbackModel = await this.getFallbackCliConfig();
@@ -152,7 +145,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
             });
         });
         await spawnCommand(`"${cliPath}"`, ['config', 'init', '--dest-dir', `"${throwawayDirPath}"`]);
-        const rawYaml = await fs.readFile(path.join(throwawayDirPath, CLI_CONFIG), { encoding: 'utf-8' });
+        const rawYaml = await promisify(fs.readFile)(path.join(throwawayDirPath, CLI_CONFIG), { encoding: 'utf-8' });
         const model = yaml.safeLoad(rawYaml.trim());
         return model as DefaultCliConfig;
     }
@@ -160,10 +153,10 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
     protected async ensureCliConfigExists(): Promise<void> {
         const cliConfigFileUri = await this.getCliConfigFileUri();
         const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
-        let exists = await fs.exists(cliConfigPath);
+        let exists = await promisify(fs.exists)(cliConfigPath);
         if (!exists) {
             await this.initCliConfigTo(path.dirname(cliConfigPath));
-            exists = await fs.exists(cliConfigPath);
+            exists = await promisify(fs.exists)(cliConfigPath);
             if (!exists) {
                 throw new Error(`Could not initialize the default CLI configuration file at ${cliConfigPath}.`);
             }

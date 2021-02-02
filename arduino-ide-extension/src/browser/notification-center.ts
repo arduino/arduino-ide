@@ -21,7 +21,6 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
     protected readonly libraryInstalledEmitter = new Emitter<{ item: LibraryPackage }>();
     protected readonly libraryUninstalledEmitter = new Emitter<{ item: LibraryPackage }>();
     protected readonly attachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
-    protected readonly sketchbookChangedEmitter = new Emitter<{ created: Sketch[], removed: Sketch[] }>();
     protected readonly recentSketchesChangedEmitter = new Emitter<{ sketches: Sketch[] }>();
 
     protected readonly toDispose = new DisposableCollection(
@@ -33,8 +32,7 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
         this.platformUninstalledEmitter,
         this.libraryInstalledEmitter,
         this.libraryUninstalledEmitter,
-        this.attachedBoardsChangedEmitter,
-        this.sketchbookChangedEmitter
+        this.attachedBoardsChangedEmitter
     );
 
     readonly onIndexUpdated = this.indexUpdatedEmitter.event;
@@ -46,7 +44,6 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
     readonly onLibraryInstalled = this.libraryInstalledEmitter.event;
     readonly onLibraryUninstalled = this.libraryUninstalledEmitter.event;
     readonly onAttachedBoardsChanged = this.attachedBoardsChangedEmitter.event;
-    readonly onSketchbookChanged = this.sketchbookChangedEmitter.event;
     readonly onRecentSketchesChanged = this.recentSketchesChangedEmitter.event;
 
     @postConstruct()
@@ -92,10 +89,6 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
         this.attachedBoardsChangedEmitter.fire(event);
-    }
-
-    notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void {
-        this.sketchbookChangedEmitter.fire(event);
     }
 
     notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void {

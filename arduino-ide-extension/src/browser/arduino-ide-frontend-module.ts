@@ -181,6 +181,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // Sketch list service
     bind(SketchesService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, SketchesServicePath)).inSingletonScope();
     bind(SketchesServiceClientImpl).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(SketchesServiceClientImpl);
 
     // Config service
     bind(ConfigService).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ConfigServicePath)).inSingletonScope();

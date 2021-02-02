@@ -42,10 +42,6 @@ export class NotificationServiceServerImpl implements NotificationServiceServer 
         this.clients.forEach(client => client.notifyConfigChanged(event));
     }
 
-    notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void {
-        this.clients.forEach(client => client.notifySketchbookChanged(event));
-    }
-
     notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void {
         this.clients.forEach(client => client.notifyRecentSketchesChanged(event));
     }

@@ -28,7 +28,7 @@ export class Sketchbook extends SketchContribution {
             this.register(sketches);
             this.mainMenuManager.update();
         });
-        this.notificationCenter.onSketchbookChanged(({ created, removed }) => {
+        this.sketchServiceClient.onSketchbookDidChange(({ created, removed }) => {
             this.unregister(removed);
             this.register(created);
             this.mainMenuManager.update();

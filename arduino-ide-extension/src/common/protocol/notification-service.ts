@@ -12,7 +12,6 @@ export interface NotificationServiceClient {
     notifyLibraryInstalled(event: { item: LibraryPackage }): void;
     notifyLibraryUninstalled(event: { item: LibraryPackage }): void;
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
-    notifySketchbookChanged(event: { created: Sketch[], removed: Sketch[] }): void;
     notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void;
 }
 

@@ -1,9 +1,6 @@
-import { join } from 'path';
 import { RecursivePartial } from '@theia/core/lib/common/types';
 
 export const CLI_CONFIG = 'arduino-cli.yaml';
-export const CLI_CONFIG_SCHEMA = 'arduino-cli.schema.json';
-export const CLI_CONFIG_SCHEMA_PATH = join(__dirname, '..', '..', 'data', 'cli', 'schema', CLI_CONFIG_SCHEMA);
 
 export interface BoardManager {
     readonly additional_urls: Array<string>;

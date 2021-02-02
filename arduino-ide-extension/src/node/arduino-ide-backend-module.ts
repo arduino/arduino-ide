@@ -23,7 +23,6 @@ import { MonitorClientProvider } from './monitor/monitor-client-provider';
 import { ConfigServiceImpl } from './config-service-impl';
 import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
 import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
-import { ConfigFileValidator } from './config-file-validator';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
 import { NodeFileSystemExt } from './node-filesystem-ext';
@@ -43,7 +42,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaBackendApplication).toService(BackendApplication);
 
     // Shared config service
-    bind(ConfigFileValidator).toSelf().inSingletonScope();
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
     bind(ConfigService).toService(ConfigServiceImpl);
     // Note: The config service must start earlier than the daemon, hence the binding order of the BA contribution does matter.

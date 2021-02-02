@@ -4,7 +4,6 @@ export interface ConfigService {
     getVersion(): Promise<Readonly<{ version: string, commit: string, status?: string }>>;
     getConfiguration(): Promise<Config>;
     setConfiguration(config: Config): Promise<void>;
-    getConfigurationFileSchemaUri(): Promise<string>;
     isInDataDir(uri: string): Promise<boolean>;
     isInSketchDir(uri: string): Promise<boolean>;
 }

@@ -12,7 +12,7 @@ export class HostedPluginReader extends TheiaHostedPluginReader {
     protected cliConfigSchemaUri: string;
 
     async onStart(): Promise<void> {
-        this.cliConfigSchemaUri = await this.configService.getConfigurationFileSchemaUri();
+        this.cliConfigSchemaUri = ''; // TODO: this was removed in another PR.
     }
 
     readContribution(plugin: PluginPackage): PluginContribution | undefined {
