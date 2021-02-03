@@ -13,7 +13,7 @@ import { SplashServiceImpl } from '../splash/splash-service-impl';
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
 
-    protected windows: BrowserWindow[] = [];
+    protected _windows: BrowserWindow[] = [];
 
     @inject(SplashServiceImpl)
     protected readonly splashService: SplashServiceImpl;
@@ -34,7 +34,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     async createWindow(asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultBrowserWindowOptions()): Promise<BrowserWindow> {
         const options = await asyncOptions;
         let electronWindow: BrowserWindow | undefined;
-        if (this.windows.length) {
+        if (this._windows.length) {
             electronWindow = new BrowserWindow(options);
         } else {
             const { bounds } = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
@@ -63,14 +63,14 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
                 splashScreenOpts
             }, this.splashService.onCloseRequested);
         }
-        this.windows.push(electronWindow);
+        this._windows.push(electronWindow);
         electronWindow.on('closed', () => {
             if (electronWindow) {
-                const index = this.windows.indexOf(electronWindow);
+                const index = this._windows.indexOf(electronWindow);
                 if (index === -1) {
                     console.warn(`Could not dispose browser window: '${electronWindow.title}'.`);
                 } else {
-                    this.windows.splice(index, 1);
+                    this._windows.splice(index, 1);
                     electronWindow = undefined;
                 }
             }
@@ -146,6 +146,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
                 });
             });
         }
+    }
+
+    get windows(): BrowserWindow[] {
+        return this._windows.slice();
     }
 
 }
