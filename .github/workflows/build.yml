@@ -10,8 +10,8 @@ on:
   pull_request:
     branches:
       - master
-  # schedule:
-  #   - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
+  schedule:
+    - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
 
 jobs:
 
