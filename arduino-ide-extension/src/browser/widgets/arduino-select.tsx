@@ -51,6 +51,7 @@ export class ArduinoSelect<T> extends Select<T> {
         const DropdownIndicator = () => <span className='fa fa-caret-down caret' />;
         return <Select
             {...this.props}
+            className='theia-select'
             components={{ DropdownIndicator }}
             theme={theme}
             styles={styles}

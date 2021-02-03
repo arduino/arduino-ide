@@ -203,12 +203,14 @@ button.theia-button.main {
     width: 100%;
     overflow: hidden;
     margin: 0px 3px 0px 3px;
+    border: 1px solid var(--theia-dropdown-border);
 }
 
 .arduino-boards-dropdown-list {
     border: 3px solid var(--theia-activityBar-background);
-    margin: -3px;
+    margin: -1px;
     z-index: 1;
+    border: 1px solid var(--theia-dropdown-border);
 }
 
 .arduino-boards-dropdown-item {
@@ -218,6 +220,7 @@ button.theia-button.main {
     cursor: pointer;
     color: var(--theia-foreground);
     background: var(--theia-tab-unfocusedActiveBackground);
+    border: 1px solid var(--theia-tab-unfocusedActiveBackground);
 }
 
 .arduino-boards-dropdown-item .fa-check {
@@ -227,5 +230,5 @@ button.theia-button.main {
 
 .arduino-boards-dropdown-item.selected,
 .arduino-boards-dropdown-item:hover {
-    background: var(--theia-list-hoverBackground);
+    border: 1px solid var(--theia-focusBorder);
 }
