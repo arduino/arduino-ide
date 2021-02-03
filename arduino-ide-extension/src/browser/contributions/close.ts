@@ -1,20 +1,50 @@
 import { inject, injectable } from 'inversify';
+import { toArray } from '@phosphor/algorithm';
 import { remote } from 'electron';
-import { ArduinoMenus } from '../menu/arduino-menus';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, URI } from './contribution';
-import { SaveAsSketch } from './save-as-sketch';
-import { EditorManager } from '@theia/editor/lib/browser';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
+import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
+import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { SaveAsSketch } from './save-as-sketch';
+import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, URI } from './contribution';
 
+/**
+ * Closes the `current` closeable editor, or any closeable current widget from the main area, or the current sketch window.
+ */
 @injectable()
-export class CloseSketch extends SketchContribution {
+export class Close extends SketchContribution {
 
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
 
+    protected shell: ApplicationShell;
+
+    onStart(app: FrontendApplication): void {
+        this.shell = app.shell;
+    }
+
     registerCommands(registry: CommandRegistry): void {
-        registry.registerCommand(CloseSketch.Commands.CLOSE_SKETCH, {
+        registry.registerCommand(Close.Commands.CLOSE, {
             execute: async () => {
+
+                // Close current editor if closeable.
+                const { currentEditor } = this.editorManager;
+                if (currentEditor && currentEditor.title.closable) {
+                    currentEditor.close();
+                    return;
+                }
+
+                // Close current widget from the main area if possible.
+                const { currentWidget } = this.shell;
+                if (currentWidget) {
+                    const currentWidgetInMain = toArray(this.shell.mainPanel.widgets()).find(widget => widget === currentWidget);
+                    if (currentWidgetInMain && currentWidgetInMain.title.closable) {
+                        return currentWidgetInMain.close();
+                    }
+                }
+
+                // Close the sketch (window).
                 const sketch = await this.sketchServiceClient.currentSketch();
                 if (!sketch) {
                     return;
@@ -48,7 +78,7 @@ export class CloseSketch extends SketchContribution {
 
     registerMenus(registry: MenuModelRegistry): void {
         registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
-            commandId: CloseSketch.Commands.CLOSE_SKETCH.id,
+            commandId: Close.Commands.CLOSE.id,
             label: 'Close',
             order: '5'
         });
@@ -56,7 +86,7 @@ export class CloseSketch extends SketchContribution {
 
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
-            command: CloseSketch.Commands.CLOSE_SKETCH.id,
+            command: Close.Commands.CLOSE.id,
             keybinding: 'CtrlCmd+W'
         });
     }
@@ -80,10 +110,10 @@ export class CloseSketch extends SketchContribution {
 
 }
 
-export namespace CloseSketch {
+export namespace Close {
     export namespace Commands {
-        export const CLOSE_SKETCH: Command = {
-            id: 'arduino-close-sketch'
+        export const CLOSE: Command = {
+            id: 'arduino-close'
         };
     }
 }

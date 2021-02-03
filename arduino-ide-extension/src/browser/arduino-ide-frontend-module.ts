@@ -85,7 +85,7 @@ import { WorkspaceFrontendContribution, ArduinoFileMenuContribution } from './th
 import { Contribution } from './contributions/contribution';
 import { NewSketch } from './contributions/new-sketch';
 import { OpenSketch } from './contributions/open-sketch';
-import { CloseSketch } from './contributions/close-sketch';
+import { Close } from './contributions/close';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
@@ -326,7 +326,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     Contribution.configure(bind, NewSketch);
     Contribution.configure(bind, OpenSketch);
-    Contribution.configure(bind, CloseSketch);
+    Contribution.configure(bind, Close);
     Contribution.configure(bind, SaveSketch);
     Contribution.configure(bind, SaveAsSketch);
     Contribution.configure(bind, VerifySketch);
