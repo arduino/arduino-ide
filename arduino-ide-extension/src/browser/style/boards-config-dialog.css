@@ -135,18 +135,6 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
     width: 740px;
 }
 
-button.theia-button {
-    height: 31px;
-}
-
-button.theia-button.secondary {
-    background-color: var(--theia-secondaryButton-background);
-    color: var(--theia-foreground);
-}
-
-button.theia-button.main {
-    color: var(--theia-button-foreground);
-}
 
 .dialogControl {
     margin: 0 20px 30px 0;

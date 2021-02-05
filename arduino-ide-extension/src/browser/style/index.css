@@ -36,3 +36,28 @@
     color: var(--theia-warningForeground);
     background-color: var(--theia-warningBackground);
 }
+
+/* Overrule the default Theia CSS button styles. */
+
+button.theia-button,
+.theia-button {
+    border: 1px solid var(--theia-dropdown-border);
+}
+
+button.theia-button:hover,
+.theia-button:hover {
+    border: 1px solid var(--theia-focusBorder);
+}
+
+button.theia-button {
+    height: 31px;
+}
+
+button.theia-button.secondary {
+    background-color: var(--theia-secondaryButton-background);
+    color: var(--theia-foreground);
+}
+
+button.theia-button.main {
+    color: var(--theia-button-foreground);
+}
