@@ -177,7 +177,7 @@ export class LibraryServiceImpl implements LibraryService {
         resp.on('data', (r: LibraryInstallResp) => {
             const prog = r.getProgress();
             if (prog) {
-                this.outputService.append({ name: 'library', chunk: `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n` });
+                this.outputService.append({ chunk: `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n` });
             }
         });
         await new Promise<void>((resolve, reject) => {
@@ -209,7 +209,7 @@ export class LibraryServiceImpl implements LibraryService {
         const resp = client.libraryUninstall(req);
         resp.on('data', (_: LibraryUninstallResp) => {
             if (!logged) {
-                this.outputService.append({ name: 'library', chunk: `uninstalling ${item.name}:${item.installedVersion}%\n` });
+                this.outputService.append({ chunk: `uninstalling ${item.name}:${item.installedVersion}%\n` });
                 logged = true;
             }
         });

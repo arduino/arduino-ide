@@ -53,7 +53,7 @@ export class BurnBootloader extends SketchContribution {
                 this.preferences.get('arduino.upload.verify'),
                 this.preferences.get('arduino.upload.verbose')
             ]);
-            this.outputChannelManager.getChannel('Arduino: bootloader').clear();
+            this.outputChannelManager.getChannel('Arduino').clear();
             await this.coreService.burnBootloader({
                 fqbn,
                 programmer,

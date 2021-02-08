@@ -24,7 +24,7 @@ export class CoreServiceImpl implements CoreService {
     protected readonly notificationService: NotificationServiceServer;
 
     async compile(options: CoreService.Compile.Options & { exportBinaries: boolean }): Promise<void> {
-        this.outputService.append({ name: 'compile', chunk: 'Compile...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
+        this.outputService.append({ chunk: 'Compile...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
         const sketchFilePath = FileUri.fsPath(sketchUri);
         const sketchpath = dirname(sketchFilePath);
@@ -48,15 +48,15 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: CompileResp) => {
-                    this.outputService.append({ name: 'compile', chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
-                    this.outputService.append({ name: 'compile', chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
+                    this.outputService.append({ chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
+                    this.outputService.append({ chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.outputService.append({ name: 'compile', chunk: '\n--------------------------\nCompilation complete.\n' });
+            this.outputService.append({ chunk: '\n--------------------------\nCompilation complete.\n' });
         } catch (e) {
-            this.outputService.append({ name: 'compile', chunk: `Compilation error: ${e}\n`, severity: 'error' });
+            this.outputService.append({ chunk: `Compilation error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
@@ -77,7 +77,7 @@ export class CoreServiceImpl implements CoreService {
 
         await this.compile(Object.assign(options, { exportBinaries: false }));
         const chunk = firstToUpperCase(task) + '...\n';
-        this.outputService.append({ name: 'upload', chunk: chunk + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
+        this.outputService.append({ chunk: chunk + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn, port, programmer } = options;
         const sketchFilePath = FileUri.fsPath(sketchUri);
         const sketchpath = dirname(sketchFilePath);
@@ -104,15 +104,15 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (resp: UploadResp) => {
-                    this.outputService.append({ name: task, chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
-                    this.outputService.append({ name: task, chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                    this.outputService.append({ chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.outputService.append({ chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.outputService.append({ name: 'upload', chunk: '\n--------------------------\n' + firstToLowerCase(task) + ' complete.\n' });
+            this.outputService.append({ chunk: '\n--------------------------\n' + firstToLowerCase(task) + ' complete.\n' });
         } catch (e) {
-            this.outputService.append({ name: 'upload', chunk: `${firstToUpperCase(task)} error: ${e}\n`, severity: 'error' });
+            this.outputService.append({ chunk: `${firstToUpperCase(task)} error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
@@ -138,14 +138,14 @@ export class CoreServiceImpl implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (resp: BurnBootloaderResp) => {
-                    this.outputService.append({ name: 'bootloader', chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
-                    this.outputService.append({ name: 'bootloader', chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                    this.outputService.append({ chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.outputService.append({ chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
         } catch (e) {
-            this.outputService.append({ name: 'bootloader', chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
+            this.outputService.append({ chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
             throw e;
         }
     }

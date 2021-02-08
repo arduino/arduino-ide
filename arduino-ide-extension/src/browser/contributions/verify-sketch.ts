@@ -77,7 +77,7 @@ export class VerifySketch extends SketchContribution {
             const { boardsConfig } = this.boardsServiceClientImpl;
             const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn);
             const verbose = this.preferences.get('arduino.compile.verbose');
-            this.outputChannelManager.getChannel('Arduino: compile').clear();
+            this.outputChannelManager.getChannel('Arduino').clear();
             await this.coreService.compile({
                 sketchUri: uri,
                 fqbn,

@@ -122,7 +122,7 @@ export class UploadSketch extends SketchContribution {
                     verify
                 };
             }
-            this.outputChannelManager.getChannel('Arduino: upload').clear();
+            this.outputChannelManager.getChannel('Arduino').clear();
             if (usingProgrammer) {
                 await this.coreService.uploadUsingProgrammer(options);
             } else {

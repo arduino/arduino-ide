@@ -271,7 +271,7 @@ export class BoardsServiceImpl implements BoardsService {
         resp.on('data', (r: PlatformInstallResp) => {
             const prog = r.getProgress();
             if (prog && prog.getFile()) {
-                this.outputService.append({ name: 'board download', chunk: `downloading ${prog.getFile()}\n` });
+                this.outputService.append({ chunk: `downloading ${prog.getFile()}\n` });
             }
         });
         await new Promise<void>((resolve, reject) => {
@@ -302,7 +302,7 @@ export class BoardsServiceImpl implements BoardsService {
         const resp = client.platformUninstall(req);
         resp.on('data', (_: PlatformUninstallResp) => {
             if (!logged) {
-                this.outputService.append({ name: 'board uninstall', chunk: `uninstalling ${item.id}\n` });
+                this.outputService.append({ chunk: `uninstalling ${item.id}\n` });
                 logged = true;
             }
         })
