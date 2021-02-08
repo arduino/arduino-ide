@@ -300,7 +300,7 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
                     <div className='flex-line'>
                         <select
                             className='theia-select'
-                            value={ThemeService.get().getCurrentTheme().label}
+                            value={ThemeService.get().getThemes().find(({ id }) => id === this.state.themeId)?.label || 'Unknown'}
                             onChange={this.themeDidChange}>
                             {ThemeService.get().getThemes().map(({ id, label }) => <option key={id} value={label}>{label}</option>)}
                         </select>
