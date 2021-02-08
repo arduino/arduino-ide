@@ -1,7 +1,7 @@
 // @ts-check
 const { setup, log } = require('node-log-rotate');
 setup({
-    appName: 'Arduino Pro IDE',
+    appName: 'Arduino IDE',
     maxSize: 10 * 1024 * 1024
 });
 for (const name of ['log', 'trace', 'info', 'warn', 'error']) {
@@ -15,7 +15,7 @@ for (const name of ['log', 'trace', 'info', 'warn', 'error']) {
 const { BackendApplicationConfigProvider } = require('@theia/core/lib/node/backend-application-config-provider');
 const main = require('@theia/core/lib/node/main');
 BackendApplicationConfigProvider.set({
-    "configDirName": ".arduinoProIDE",
+    "configDirName": ".arduinoIDE",
     "singleInstance": true
 });
 

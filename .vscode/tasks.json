@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Arduino Pro IDE - Rebuild Electron App",
+      "label": "Arduino IDE - Rebuild Electron App",
       "type": "shell",
       "command": "yarn rebuild:browser && yarn rebuild:electron",
       "group": "build",
@@ -15,7 +15,7 @@
       }
     },
     {
-      "label": "Arduino Pro IDE - Start Browser App",
+      "label": "Arduino IDE - Start Browser App",
       "type": "shell",
       "command": "yarn --cwd ./browser-app start",
       "group": "build",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "label": "Arduino Pro IDE - Watch IDE Extension",
+      "label": "Arduino IDE - Watch IDE Extension",
       "type": "shell",
       "command": "yarn --cwd ./arduino-ide-extension watch",
       "group": "build",
@@ -37,7 +37,7 @@
       }
     }
     {
-      "label": "Arduino Pro IDE - Watch Browser App",
+      "label": "Arduino IDE - Watch Browser App",
       "type": "shell",
       "command": "yarn --cwd ./browser-app watch",
       "group": "build",
@@ -48,7 +48,7 @@
       }
     },
     {
-      "label": "Arduino Pro IDE - Watch Electron App",
+      "label": "Arduino IDE - Watch Electron App",
       "type": "shell",
       "command": "yarn --cwd ./electron-app watch",
       "group": "build",
@@ -59,19 +59,19 @@
       }
     },
     {
-      "label": "Arduino Pro IDE - Watch All [Browser]",
+      "label": "Arduino IDE - Watch All [Browser]",
       "type": "shell",
       "dependsOn": [
-        "Arduino Pro IDE - Watch IDE Extension",
-        "Arduino Pro IDE - Watch Browser App"
+        "Arduino IDE - Watch IDE Extension",
+        "Arduino IDE - Watch Browser App"
       ]
     },
     {
-      "label": "Arduino Pro IDE - Watch All [Electron]",
+      "label": "Arduino IDE - Watch All [Electron]",
       "type": "shell",
       "dependsOn": [
-        "Arduino Pro IDE - Watch IDE Extension",
-        "Arduino Pro IDE - Watch Electron App"
+        "Arduino IDE - Watch IDE Extension",
+        "Arduino IDE - Watch Electron App"
       ]
     }
   ]

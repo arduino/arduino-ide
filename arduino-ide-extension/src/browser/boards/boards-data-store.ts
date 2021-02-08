@@ -157,7 +157,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
 
     protected getStorageKey(fqbn: string, version: Installable.Version): string {
-        return `.arduinoProIDE-configOptions-${version}-${fqbn}`;
+        return `.arduinoIDE-configOptions-${version}-${fqbn}`;
     }
 
     protected async getBoardDetailsSafe(fqbn: string): Promise<BoardDetails | undefined> {

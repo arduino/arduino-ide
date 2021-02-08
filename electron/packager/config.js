@@ -18,7 +18,7 @@ function artifactName() {
             return getVersion();
         }
     })();
-    const name = 'arduino-pro-ide';
+    const name = 'arduino-ide';
     switch (platform) {
         case 'win32': {
             if (arch === 'x64') {
@@ -99,8 +99,8 @@ function generateTemplate(buildDate) {
     // do `export PUBLISH=true yarn package` if you want to mimic CI build locally.
     // const electronPublish = release || (isCI && currentBranch() === 'master') || process.env.PUBLISH === 'true';
     const version = getVersion();
-    const productName = 'Arduino Pro IDE';
-    const name = 'arduino-pro-ide';
+    const productName = 'Arduino IDE';
+    const name = 'arduino-ide';
     let customizations = {
         name,
         description: productName,

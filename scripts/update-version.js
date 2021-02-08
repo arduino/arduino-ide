@@ -19,7 +19,7 @@ if (!semver.valid(targetVersion)) {
 }
 
 if (!semver.gt(targetVersion, currentVersion)) {
-    console.error(`Target version '${targetVersion}' must be greater than the current version '${currentVersion}.'`);
+    console.error(`Target version '${targetVersion}' must be greater than the current version '${currentVersion}'.`);
     process.exit(1);
 }
 

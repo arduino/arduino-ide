@@ -276,15 +276,15 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
         const filesToCopy = [];
         switch (platform) {
             case 'linux': {
-                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-ide*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             case 'win32': {
-                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{exe,msi,zip}', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-ide*.{exe,msi,zip}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             case 'darwin': {
-                filesToCopy.push(...glob.sync('**/arduino-pro-ide*.{dmg,zip}', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-ide*.{dmg,zip}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             default: {

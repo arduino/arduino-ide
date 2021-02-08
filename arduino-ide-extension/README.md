@@ -1,6 +1,6 @@
 ## Arduino IDE Extension
 
-Arduino Pro IDE is based on Theia, and most of its IDE features, UIs and customizations are implemented in this Theia extension.
+Arduino IDE is based on Theia, and most of its IDE features, UIs and customizations are implemented in this Theia extension.
 
 ### IDE Services
 
