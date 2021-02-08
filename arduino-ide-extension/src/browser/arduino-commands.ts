@@ -20,11 +20,4 @@ export namespace ArduinoCommands {
         id: 'arduino-open-boards-dialog'
     };
 
-    export const TOGGLE_ADVANCED_MODE: Command = {
-        id: 'arduino-toggle-advanced-mode'
-    };
-    export const TOGGLE_ADVANCED_MODE_TOOLBAR: Command = {
-        id: 'arduino-toggle-advanced-mode-toolbar'
-    };
-
 }

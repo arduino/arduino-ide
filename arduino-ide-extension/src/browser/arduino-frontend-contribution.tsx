@@ -269,12 +269,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             command: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR,
             tooltip: 'Serial Monitor'
         });
-        registry.registerItem({
-            id: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
-            command: ArduinoCommands.TOGGLE_ADVANCED_MODE_TOOLBAR.id,
-            tooltip: this.editorMode.proMode ? 'Switch to Classic Mode' : 'Switch to Advanced Mode',
-            text: this.editorMode.proMode ? '$(toggle-on)' : '$(toggle-off)'
-        });
     }
 
     registerCommands(registry: CommandRegistry): void {
@@ -295,39 +289,25 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 }
             }
         });
-        registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE, {
-            isToggled: () => this.editorMode.proMode,
-            execute: () => this.editorMode.toggleProMode()
-        });
-        registry.registerCommand(ArduinoCommands.TOGGLE_ADVANCED_MODE_TOOLBAR, {
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'right',
-            isToggled: () => this.editorMode.proMode,
-            execute: () => this.editorMode.toggleProMode()
-        });
     }
 
     registerMenus(registry: MenuModelRegistry) {
-        if (!this.editorMode.proMode) {
-            const menuId = (menuPath: string[]): string => {
-                const index = menuPath.length - 1;
-                const menuId = menuPath[index];
-                return menuId;
-            }
-            registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(MonacoMenus.SELECTION));
-            registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(EditorMainMenu.GO));
-            registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(TerminalMenus.TERMINAL));
-            registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(CommonMenus.VIEW));
+        const menuId = (menuPath: string[]): string => {
+            const index = menuPath.length - 1;
+            const menuId = menuPath[index];
+            return menuId;
         }
+        registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(MonacoMenus.SELECTION));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(EditorMainMenu.GO));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(TerminalMenus.TERMINAL));
+        registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(CommonMenus.VIEW));
+
         registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
         registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
             label: 'Optimize for Debugging',
             order: '4'
-        });
-        registry.registerMenuAction(ArduinoMenus.HELP__CONTROL_GROUP, {
-            commandId: ArduinoCommands.TOGGLE_ADVANCED_MODE.id,
-            label: 'Advanced Mode'
         });
     }
 
