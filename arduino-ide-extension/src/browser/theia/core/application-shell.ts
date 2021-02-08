@@ -7,15 +7,11 @@ import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import { ConnectionStatusService, ConnectionStatus } from '@theia/core/lib/browser/connection-status-service';
 import { ApplicationShell as TheiaApplicationShell, Widget } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
-import { EditorMode } from '../../editor-mode';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
-
-    @inject(EditorMode)
-    protected readonly editorMode: EditorMode;
 
     @inject(CommandService)
     protected readonly commandService: CommandService;
@@ -34,7 +30,7 @@ export class ApplicationShell extends TheiaApplicationShell {
         if (widget instanceof OutputWidget) {
             widget.title.closable = false; // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
         }
-        if (!this.editorMode.proMode && widget instanceof EditorWidget) {
+        if (widget instanceof EditorWidget) {
             // Make the editor un-closeable asynchronously.
             this.sketchesServiceClient.currentSketch().then(sketch => {
                 if (sketch) {
