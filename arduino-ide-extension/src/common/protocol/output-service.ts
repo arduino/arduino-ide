@@ -1,5 +1,4 @@
 export interface OutputMessage {
-    readonly name: string;
     readonly chunk: string;
     readonly severity?: 'error' | 'warning' | 'info'; // Currently not used!
 }

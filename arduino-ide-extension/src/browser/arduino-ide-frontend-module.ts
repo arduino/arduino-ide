@@ -140,6 +140,8 @@ import { bindArduinoPreferences } from './arduino-preferences'
 import { SettingsService, SettingsDialog, SettingsWidget, SettingsDialogProps } from './settings';
 import { AddFile } from './contributions/add-file';
 import { ArchiveSketch } from './contributions/archive-sketch';
+import { OutputToolbarContribution as TheiaOutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
+import { OutputToolbarContribution } from './theia/output/output-toolbar-contribution';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -312,6 +314,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
     bind(ShellLayoutRestorer).toSelf().inSingletonScope();
     rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
+
+    // No dropdown for the _Output_ view.
+    bind(OutputToolbarContribution).toSelf().inSingletonScope();
+    rebind(TheiaOutputToolbarContribution).toService(OutputToolbarContribution);
 
     bind(ArduinoDaemon).toDynamicValue(context => WebSocketConnectionProvider.createProxy(context.container, ArduinoDaemonPath)).inSingletonScope();
 
