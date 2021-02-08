@@ -1,10 +1,10 @@
-# Arduino Pro IDE
+# Arduino IDE
 
-[![Arduino Pro IDE](https://github.com/bcmi-labs/arduino-editor/workflows/Arduino%20Pro%20IDE/badge.svg)](https://github.com/bcmi-labs/arduino-editor/actions?query=workflow%3A%22Arduino+Pro+IDE%22)
+[![Arduino IDE](https://github.com/bcmi-labs/arduino-editor/workflows/Arduino%20Pro%20IDE/badge.svg)](https://github.com/bcmi-labs/arduino-editor/actions?query=workflow%3A%22Arduino+Pro+IDE%22)
 
 ### Download
 
-You can download the latest version of the Arduino Pro IDE application for the supported platforms from the [GitHub release page](https://github.com/arduino/arduino-pro-ide/releases) or following the links in the following table.
+You can download the latest version of the Arduino IDE application for the supported platforms from the [GitHub release page](https://github.com/arduino/arduino-ide/releases) or following the links in the following table.
 
 #### Latest version
 
@@ -15,16 +15,16 @@ Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]             
 Windows   |                          | [Windows 64 bit installer]<br />[Windows 64 bit MSI]<br />[Windows 64 bit ZIP] |
 macOS     |                          | [macOS 64 bit]                                                                 |
 
-[🚧 Work in progress...]: https://github.com/arduino/arduino-pro-ide/issues/287
-[Linux 64 bit]: https://downloads.arduino.cc/arduino-pro-ide/arduino-pro-ide_latest_Linux_64bit.zip
-[Windows 64 bit installer]: https://downloads.arduino.cc/arduino-pro-ide/arduino-pro-ide_latest_Windows_64bit.exe
-[Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-pro-ide/arduino-pro-ide_latest_Windows_64bit.msi
-[Windows 64 bit ZIP]: https://downloads.arduino.cc/arduino-pro-ide/arduino-pro-ide_latest_Windows_64bit.zip
-[macOS 64 bit]: https://downloads.arduino.cc/arduino-pro-ide/arduino-pro-ide_latest_macOS_64bit.dmg
+[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/287
+[Linux 64 bit]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Linux_64bit.zip
+[Windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Windows_64bit.exe
+[Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Windows_64bit.msi
+[Windows 64 bit ZIP]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Windows_64bit.zip
+[macOS 64 bit]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_macOS_64bit.dmg
 
 #### Previous versions
 
-These are available from the [GitHub releases page](https://github.com/arduino/arduino-pro-ide/releases).
+These are available from the [GitHub releases page](https://github.com/arduino/arduino-ide/releases).
 
 #### Nightly builds
 
@@ -39,12 +39,12 @@ Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]             
 Windows   |                          | [Nightly Windows 64 bit installer]<br />[Nightly Windows 64 bit MSI]<br />[Nightly Windows 64 bit ZIP] |
 macOS     |                          | [Nightly macOS 64 bit]                                                                                 |
 
-[🚧 Work in progress...]: https://github.com/arduino/arduino-pro-ide/issues/287
-[Nightly Linux 64 bit]: https://downloads.arduino.cc/arduino-pro-ide/nightly/arduino-pro-ide_nightly-latest_Linux_64bit.zip
-[Nightly Windows 64 bit installer]: https://downloads.arduino.cc/arduino-pro-ide/nightly/arduino-pro-ide_nightly-latest_Windows_64bit.exe
-[Nightly Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-pro-ide/nightly/arduino-pro-ide_nightly-latest_Windows_64bit.msi
-[Nightly Windows 64 bit ZIP]: https://downloads.arduino.cc/arduino-pro-ide/nightly/arduino-pro-ide_nightly-latest_Windows_64bit.zip
-[Nightly macOS 64 bit]: https://downloads.arduino.cc/arduino-pro-ide/nightly/arduino-pro-ide_nightly-latest_macOS_64bit.dmg
+[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/287
+[Nightly Linux 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
+[Nightly Windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.exe
+[Nightly Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.msi
+[Nightly Windows 64 bit ZIP]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.zip
+[Nightly macOS 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_macOS_64bit.dmg
 
 > These links return an HTTP `302: Found` response, redirecting to latest
   generated builds by replacing `latest` with the latest available build
@@ -54,7 +54,7 @@ macOS     |                          | [Nightly macOS 64 bit]                   
 ### Build from source
 
 If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and if you want to contribute to the
-project, you should be able to build the Arduino Pro IDE locally. Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
+project, you should be able to build the Arduino IDE locally. Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
 
 ### Build
 ```sh
@@ -114,7 +114,7 @@ git add . \
 git tag -a 0.2.0 -m "0.2.0" \
 && git push origin 0.2.0
 ```
- - The release build starts automatically and uploads the artifacts with the changelog to the Pro IDE [release page](https://github.com/arduino/arduino-pro-ide/releases).
+ - The release build starts automatically and uploads the artifacts with the changelog to the Pro IDE [release page](https://github.com/arduino/arduino-ide/releases).
  - If you do not want to release the `EXE` and `MSI` installers, wipe them manually.
  - If you do not like the generated changelog, modify it and update the GH release.
 
@@ -126,9 +126,9 @@ git tag -a 0.2.0 -m "0.2.0" \
 
  - Q: I have understood that not all versions of the CLI is compatible with my version of IDE but how can I manually update the `arduino-cli` inside the IDE?
  - A: [Get](https://arduino.github.io/arduino-cli/installation) the desired version of `arduino-cli` for your platform and manually replace the one inside the IDE. The CLI can be found inside the IDE at:
-   - Windows: `C:\path\to\Arduino Pro IDE\resources\app\node_modules\arduino-ide-extension\build\arduino-cli.exe`,
-   - macOS: `/path/to/Arduino Pro IDE.app/Contents/Resources/app/node_modules/arduino-ide-extension/build/arduino-cli`, and
-   - Linux: `/path/to/Arduino Pro IDE/resources/app/node_modules/arduino-ide-extension/build/arduino-cli`.
+   - Windows: `C:\path\to\Arduino IDE\resources\app\node_modules\arduino-ide-extension\build\arduino-cli.exe`,
+   - macOS: `/path/to/Arduino IDE.app/Contents/Resources/app/node_modules/arduino-ide-extension/build/arduino-cli`, and
+   - Linux: `/path/to/Arduino IDE/resources/app/node_modules/arduino-ide-extension/build/arduino-cli`.
 
 ### Architecture overview
 

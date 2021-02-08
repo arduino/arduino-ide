@@ -23,7 +23,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
 
     protected createOSXMenu(): Electron.MenuItemConstructorOptions {
         const { submenu } = super.createOSXMenu();
-        const label = 'Arduino Pro IDE';
+        const label = 'Arduino IDE';
         if (!!submenu && !(submenu instanceof remote.Menu)) {
             const [/* about */, /* settings */, ...rest] = submenu;
             const about = this.fillMenuTemplate([], this.menuProvider.getMenu(ArduinoMenus.HELP__ABOUT_GROUP));

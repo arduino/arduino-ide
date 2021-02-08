@@ -1,5 +1,5 @@
 {
-  "main": "scripts/arduino-pro-ide-electron-main.js",
+  "main": "scripts/arduino-ide-electron-main.js",
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3"
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arduino/arduino-pro-ide.git"
+    "url": "git+https://github.com/arduino/arduino-ide.git"
   },
   "// Notes:": [
     "The resolution for `fs-extra` was required due to this: https://spectrum.chat/theia/general/our-theia-electron-builder-app-no-longer-starts~f5cf09a0-6d88-448b-8818-24ad0ec2ee7c"
@@ -48,7 +48,7 @@
     }
   },
   "build": {
-    "productName": "Arduino Pro IDE",
+    "productName": "Arduino IDE",
     "asar": false,
     "directories": {
       "buildResources": "resources"
@@ -130,7 +130,7 @@
       {
         "provider": "s3",
         "bucket": "arduino-downloads-prod-beagle",
-        "path": "arduino-pro-ide/nightly"
+        "path": "arduino-ide/nightly"
       }
     ]
   },

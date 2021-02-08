@@ -18,7 +18,7 @@ import { LoadSketchReq, ArchiveSketchReq } from './cli-protocol/commands/command
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
-const prefix = '.arduinoProIDE-unsaved';
+const prefix = '.arduinoIDE-unsaved';
 
 @injectable()
 export class SketchesServiceImpl implements SketchesService {

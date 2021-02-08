@@ -2,7 +2,7 @@
   "private": true,
   "name": "packager",
   "version": "1.0.0",
-  "description": "Packager for the Arduino Pro IDE electron application",
+  "description": "Packager for the Arduino IDE electron application",
   "main": "index.js",
   "scripts": {
     "prepare": "yarn test",

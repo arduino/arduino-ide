@@ -386,7 +386,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     light: 'editorWidget.background',
                     hc: 'editorWidget.background'
                 },
-                description: 'Color of the Arduino Pro IDE foreground which is used for dialogs, such as the Select Board dialog.'
+                description: 'Color of the Arduino IDE foreground which is used for dialogs, such as the Select Board dialog.'
             },
             {
                 id: 'arduino.toolbar.background',

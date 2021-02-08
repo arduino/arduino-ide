@@ -1,4 +1,4 @@
-name: Arduino Pro IDE
+name: Arduino IDE
 
 on:
   push:
@@ -22,7 +22,6 @@ jobs:
           - os: windows-latest
           - os: ubuntu-latest
           - os: macos-latest
-          # - os: rsora-rpi-arm # self-hosted armhf
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 90
 
@@ -98,7 +97,7 @@ jobs:
             if [ "$IS_RELEASE" = true ]; then
               export BODY=$(echo -e "$GIT_LOG")
             else 
-              export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-pro-ide/releases/tag/$LATEST_TAG)")
+              export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-ide/releases/tag/$LATEST_TAG)")
               if [ -z "$GIT_LOG" ]; then
                   export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
               else
@@ -135,7 +134,7 @@ jobs:
         env:
           PLUGIN_SOURCE: "build-artifacts/*"
           PLUGIN_STRIP_PREFIX: "build-artifacts/"
-          PLUGIN_TARGET: "/arduino-pro-ide/nightly"
+          PLUGIN_TARGET: "/arduino-ide/nightly"
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -159,8 +158,7 @@ jobs:
       - name: Publish Release [GitHub]
         uses: svenstaro/upload-release-action@2.2.0
         with:
-          repo_token: ${{ secrets.RELEASE_TOKEN }}
-          repo_name: arduino/arduino-pro-ide
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
           file: build-artifacts/*
           tag: ${{ github.ref }}
@@ -172,7 +170,7 @@ jobs:
         env:
           PLUGIN_SOURCE: "build-artifacts/*"
           PLUGIN_STRIP_PREFIX: "build-artifacts/"
-          PLUGIN_TARGET: "/arduino-pro-ide"
+          PLUGIN_TARGET: "/arduino-ide"
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
