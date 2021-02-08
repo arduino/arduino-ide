@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "browser-app",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "license": "MIT",
   "dependencies": {
     "@theia/core": "next",
@@ -18,7 +18,7 @@
     "@theia/process": "next",
     "@theia/terminal": "next",
     "@theia/workspace": "next",
-    "arduino-ide-extension": "0.1.3"
+    "arduino-ide-extension": "0.1.4"
   },
   "devDependencies": {
     "@theia/cli": "next"
