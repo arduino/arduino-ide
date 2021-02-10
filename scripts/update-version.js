@@ -28,8 +28,7 @@ for (const toUpdate of [
     path.join(repoRootPath, 'package.json'),
     path.join(repoRootPath, 'electron-app', 'package.json'),
     path.join(repoRootPath, 'browser-app', 'package.json'),
-    path.join(repoRootPath, 'arduino-ide-extension', 'package.json'),
-    path.join(repoRootPath, 'arduino-debugger-extension', 'package.json') // Currently unused. The debugger functionality comes from the `cortex.debug` VS Code extension.
+    path.join(repoRootPath, 'arduino-ide-extension', 'package.json')
 ]) {
     process.stdout.write(`  Updating ${toUpdate}'...`);
     const pkg = require(toUpdate);
