@@ -69,4 +69,17 @@ export namespace LibraryPackage {
         return left.name === right.name && left.author === right.author;
     }
 
+    export function groupByLocation(packages: LibraryPackage[]): { user: LibraryPackage[], rest: LibraryPackage[] } {
+        const user: LibraryPackage[] = [];
+        const rest: LibraryPackage[] = [];
+        for (const pkg of packages) {
+            if (pkg.location === LibraryLocation.USER) {
+                user.push(pkg);
+            } else {
+                rest.push(pkg);
+            }
+        }
+        return { user, rest };
+    }
+
 }

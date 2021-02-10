@@ -5,8 +5,8 @@ import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { MenuModelRegistry, MenuPath } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
-import { ArduinoMenus } from '../menu/arduino-menus';
-import { LibraryPackage, LibraryLocation, LibraryService } from '../../common/protocol';
+import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
+import { LibraryPackage, LibraryService } from '../../common/protocol';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { LibraryListWidget } from '../library/library-list-widget';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
@@ -84,19 +84,35 @@ export class IncludeLibrary extends SketchContribution {
             // `Arduino libraries`
             const packageMenuPath = [...includeLibMenuPath, '2_arduino'];
             const userMenuPath = [...includeLibMenuPath, '3_contributed'];
-            for (const library of libraries) {
-                this.toDispose.push(this.registerLibrary(library, library.location === LibraryLocation.USER ? userMenuPath : packageMenuPath));
+            const { user, rest } = LibraryPackage.groupByLocation(libraries);
+            if (rest.length) {
+                (rest as any).unshift('Arduino libraries');
+            }
+            if (user.length) {
+                (user as any).unshift('Contributed libraries');
+            }
+
+            for (const library of user) {
+                this.toDispose.push(this.registerLibrary(library, userMenuPath));
+            }
+            for (const library of rest) {
+                this.toDispose.push(this.registerLibrary(library, packageMenuPath));
             }
 
             this.mainMenuManager.update();
         });
     }
 
-    protected registerLibrary(library: LibraryPackage, menuPath: MenuPath): Disposable {
-        const commandId = `arduino-include-library--${library.name}:${library.author}`;
+    protected registerLibrary(libraryOrPlaceholder: LibraryPackage | string, menuPath: MenuPath): Disposable {
+        if (typeof libraryOrPlaceholder === 'string') {
+            const placeholder = new PlaceholderMenuNode(menuPath, libraryOrPlaceholder);
+            this.menuRegistry.registerMenuNode(menuPath, placeholder);
+            return Disposable.create(() => this.menuRegistry.unregisterMenuNode(placeholder.id));
+        }
+        const commandId = `arduino-include-library--${libraryOrPlaceholder.name}:${libraryOrPlaceholder.author}`;
         const command = { id: commandId };
-        const handler = { execute: () => this.commandRegistry.executeCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY.id, library) };
-        const menuAction = { commandId, label: library.name };
+        const handler = { execute: () => this.commandRegistry.executeCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY.id, libraryOrPlaceholder) };
+        const menuAction = { commandId, label: libraryOrPlaceholder.name };
         this.menuRegistry.registerMenuAction(menuPath, menuAction);
         return new DisposableCollection(
             this.commandRegistry.registerCommand(command, handler),

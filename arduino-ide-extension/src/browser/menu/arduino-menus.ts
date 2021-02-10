@@ -1,6 +1,6 @@
 import { isOSX } from '@theia/core/lib/common/os';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
-import { MAIN_MENU_BAR, MenuModelRegistry, MenuNode } from '@theia/core/lib/common/menu';
+import { MAIN_MENU_BAR, MenuModelRegistry, MenuNode, MenuPath, SubMenuOptions } from '@theia/core/lib/common/menu';
 
 export namespace ArduinoMenus {
 
@@ -98,4 +98,25 @@ export function unregisterSubmenu(menuPath: string[], menuRegistry: MenuModelReg
         throw new Error(`Could not find menu with menu-path: ${JSON.stringify(menuPath)}.`);
     }
     (parent.children as Array<MenuNode>).splice(index, 1);
+}
+
+/**
+ * Special menu node that is not backed by any commands and is always disabled.
+ */
+export class PlaceholderMenuNode implements MenuNode {
+
+    constructor(protected readonly menuPath: MenuPath, readonly label: string, protected options: SubMenuOptions = { order: '0' }) { }
+
+    get icon(): string | undefined {
+        return this.options?.iconClass;
+    }
+
+    get sortString(): string {
+        return this.options?.order || this.label;
+    }
+
+    get id(): string {
+        return [...this.menuPath, 'placeholder'].join('-');
+    }
+
 }

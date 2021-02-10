@@ -1,8 +1,9 @@
 import { injectable } from 'inversify'
 import { remote } from 'electron';
 import { Keybinding } from '@theia/core/lib/common/keybinding';
-import { ElectronMainMenuFactory as TheiaElectronMainMenuFactory } from '@theia/core/lib/electron-browser/menu/electron-main-menu-factory';
-import { ArduinoMenus } from '../../../browser/menu/arduino-menus';
+import { CompositeMenuNode } from '@theia/core/lib/common/menu';
+import { ElectronMainMenuFactory as TheiaElectronMainMenuFactory, ElectronMenuOptions } from '@theia/core/lib/electron-browser/menu/electron-main-menu-factory';
+import { ArduinoMenus, PlaceholderMenuNode } from '../../../browser/menu/arduino-menus';
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
@@ -40,6 +41,17 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
             };
         }
         return { label, submenu };
+    }
+
+    protected handleDefault(menuNode: CompositeMenuNode, args: any[] = [], options?: ElectronMenuOptions): Electron.MenuItemConstructorOptions[] {
+        if (menuNode instanceof PlaceholderMenuNode) {
+            return [{
+                label: menuNode.label,
+                enabled: false,
+                visible: true
+            }];
+        }
+        return [];
     }
 
 }
