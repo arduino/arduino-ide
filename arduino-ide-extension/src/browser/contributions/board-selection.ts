@@ -2,12 +2,13 @@ import { inject, injectable } from 'inversify';
 import { remote } from 'electron';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { DisposableCollection, Disposable } from '@theia/core/lib/common/disposable';
+import { firstToUpperCase } from '../../common/utils';
 import { BoardsConfig } from '../boards/boards-config';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsListWidget } from '../boards/boards-list-widget';
 import { NotificationCenter } from '../notification-center';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
+import { ArduinoMenus, PlaceholderMenuNode, unregisterSubmenu } from '../menu/arduino-menus';
 import { BoardsService, InstalledBoardWithPackage, AvailablePorts, Port } from '../../common/protocol';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 
@@ -150,38 +151,60 @@ PID: ${PID}`;
         }
 
         // Installed ports
-        for (const address of Object.keys(availablePorts)) {
-            if (!!availablePorts[address]) {
-                const [port, boards] = availablePorts[address];
-                if (!boards.length) {
-                    boards.push({
-                        name: ''
-                    });
-                }
-                for (const { name, fqbn } of boards) {
-                    const id = `arduino-select-port--${address}${fqbn ? `--${fqbn}` : ''}`;
-                    const command = { id };
-                    const handler = {
-                        execute: () => {
-                            if (!Port.equals(port, this.boardsServiceProvider.boardsConfig.selectedPort)) {
-                                this.boardsServiceProvider.boardsConfig = {
-                                    selectedBoard: this.boardsServiceProvider.boardsConfig.selectedBoard,
-                                    selectedPort: port
+        const registerPorts = (ports: AvailablePorts) => {
+            const addresses = Object.keys(ports);
+            if (!addresses.length) {
+                return;
+            }
+
+            // Register placeholder for protocol
+            const [port] = ports[addresses[0]];
+            const protocol = port.protocol;
+            const menuPath = [...portsSubmenuPath, protocol];
+            const placeholder = new PlaceholderMenuNode(menuPath, `${firstToUpperCase(port.protocol)} ports`);
+            this.menuModelRegistry.registerMenuNode(menuPath, placeholder);
+            this.toDisposeBeforeMenuRebuild.push(Disposable.create(() => this.menuModelRegistry.unregisterMenuNode(placeholder.id)));
+
+            for (const address of addresses) {
+                if (!!ports[address]) {
+                    const [port, boards] = ports[address];
+                    if (!boards.length) {
+                        boards.push({
+                            name: ''
+                        });
+                    }
+                    for (const { name, fqbn } of boards) {
+                        const id = `arduino-select-port--${address}${fqbn ? `--${fqbn}` : ''}`;
+                        const command = { id };
+                        const handler = {
+                            execute: () => {
+                                if (!Port.equals(port, this.boardsServiceProvider.boardsConfig.selectedPort)) {
+                                    this.boardsServiceProvider.boardsConfig = {
+                                        selectedBoard: this.boardsServiceProvider.boardsConfig.selectedBoard,
+                                        selectedPort: port
+                                    }
                                 }
-                            }
-                        },
-                        isToggled: () => Port.equals(port, this.boardsServiceProvider.boardsConfig.selectedPort)
-                    };
-                    const menuAction = {
-                        commandId: id,
-                        label: `${address}${name ? ` (${name})` : ''}`
-                    };
-                    this.commandRegistry.registerCommand(command, handler);
-                    this.toDisposeBeforeMenuRebuild.push(Disposable.create(() => this.commandRegistry.unregisterCommand(command)));
-                    this.menuModelRegistry.registerMenuAction(portsSubmenuPath, menuAction);
+                            },
+                            isToggled: () => Port.equals(port, this.boardsServiceProvider.boardsConfig.selectedPort)
+                        };
+                        const label = `${address}${name ? ` (${name})` : ''}`;
+                        const menuAction = {
+                            commandId: id,
+                            label,
+                            order: `1${label}` // `1` comes after the placeholder which has order `0`
+                        };
+                        this.commandRegistry.registerCommand(command, handler);
+                        this.toDisposeBeforeMenuRebuild.push(Disposable.create(() => this.commandRegistry.unregisterCommand(command)));
+                        this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
+                    }
                 }
             }
         }
+
+        const { serial, network, unknown } = AvailablePorts.groupByProtocol(availablePorts);
+        registerPorts(serial);
+        registerPorts(network);
+        registerPorts(unknown);
 
         this.mainMenuManager.update();
     }

@@ -3,12 +3,13 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { MenuPath, CompositeMenuNode } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
-import { ArduinoMenus } from '../menu/arduino-menus';
+import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { ExamplesService, ExampleContainer } from '../../common/protocol/examples-service';
 import { SketchContribution, CommandRegistry, MenuModelRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
+import { Board } from '../../common/protocol';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -32,10 +33,10 @@ export abstract class Examples extends SketchContribution {
 
     @postConstruct()
     init(): void {
-        this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) => this.handleBoardChanged(selectedBoard?.fqbn));
+        this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) => this.handleBoardChanged(selectedBoard));
     }
 
-    protected handleBoardChanged(fqbn: string | undefined): void {
+    protected handleBoardChanged(board: Board | undefined): void {
         // NOOP
     }
 
@@ -58,27 +59,33 @@ export abstract class Examples extends SketchContribution {
     }
 
     registerRecursively(
-        exampleContainer: ExampleContainer,
+        exampleContainerOrPlaceholder: ExampleContainer | string,
         menuPath: MenuPath,
         pushToDispose: DisposableCollection = new DisposableCollection()): void {
 
-        const { label, sketches, children } = exampleContainer;
-        const submenuPath = [...menuPath, label];
-        this.menuRegistry.registerSubmenu(submenuPath, label);
-        children.forEach(child => this.registerRecursively(child, submenuPath, pushToDispose));
-        for (const sketch of sketches) {
-            const { uri } = sketch;
-            const commandId = `arduino-open-example-${submenuPath.join(':')}--${uri}`;
-            const command = { id: commandId };
-            const handler = {
-                execute: async () => {
-                    const sketch = await this.sketchService.cloneExample(uri);
-                    this.commandService.executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch);
-                }
-            };
-            pushToDispose.push(this.commandRegistry.registerCommand(command, handler));
-            this.menuRegistry.registerMenuAction(submenuPath, { commandId, label: sketch.name });
-            pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+        if (typeof exampleContainerOrPlaceholder === 'string') {
+            const placeholder = new PlaceholderMenuNode(menuPath, exampleContainerOrPlaceholder);
+            this.menuRegistry.registerMenuNode(menuPath, placeholder);
+            pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuNode(placeholder.id)));
+        } else {
+            const { label, sketches, children } = exampleContainerOrPlaceholder;
+            const submenuPath = [...menuPath, label];
+            this.menuRegistry.registerSubmenu(submenuPath, label);
+            children.forEach(child => this.registerRecursively(child, submenuPath, pushToDispose));
+            for (const sketch of sketches) {
+                const { uri } = sketch;
+                const commandId = `arduino-open-example-${submenuPath.join(':')}--${uri}`;
+                const command = { id: commandId };
+                const handler = {
+                    execute: async () => {
+                        const sketch = await this.sketchService.cloneExample(uri);
+                        this.commandService.executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch);
+                    }
+                };
+                pushToDispose.push(this.commandRegistry.registerCommand(command, handler));
+                this.menuRegistry.registerMenuAction(submenuPath, { commandId, label: sketch.name });
+                pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+            }
         }
     }
 
@@ -101,10 +108,12 @@ export class BuiltInExamples extends Examples {
             return;
         }
         this.toDispose.dispose();
-        for (const container of exampleContainers) {
+        for (const container of ['Built-in examples', ...exampleContainers]) {
             this.registerRecursively(container, ArduinoMenus.EXAMPLES__BUILT_IN_GROUP, this.toDispose);
         }
         this.menuManager.update();
+        // TODO: remove
+        console.log(typeof this.menuRegistry);
     }
 
 }
@@ -123,17 +132,27 @@ export class LibraryExamples extends Examples {
         this.notificationCenter.onLibraryUninstalled(() => this.register());
     }
 
-    protected handleBoardChanged(fqbn: string | undefined): void {
-        this.register(fqbn);
+    protected handleBoardChanged(board: Board | undefined): void {
+        this.register(board);
     }
 
-    protected async register(fqbn: string | undefined = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn) {
+    protected async register(board: Board | undefined = this.boardsServiceClient.boardsConfig.selectedBoard) {
         return this.queue.add(async () => {
             this.toDispose.dispose();
-            if (!fqbn) {
+            if (!board || !board.fqbn) {
                 return;
             }
+            const { fqbn, name } = board;
             const { user, current, any } = await this.examplesService.installed({ fqbn });
+            if (user.length) {
+                (user as any).unshift('Examples from Custom Libraries');
+            }
+            if (current.length) {
+                (current as any).unshift(`Examples for ${name}`);
+            }
+            if (any.length) {
+                (any as any).unshift('Examples for any board');
+            }
             for (const container of user) {
                 this.registerRecursively(container, ArduinoMenus.EXAMPLES__USER_LIBS_GROUP, this.toDispose);
             }
