@@ -1,6 +1,6 @@
 # Arduino IDE
 
-[![Arduino IDE](https://github.com/bcmi-labs/arduino-editor/workflows/Arduino%20Pro%20IDE/badge.svg)](https://github.com/bcmi-labs/arduino-editor/actions?query=workflow%3A%22Arduino+Pro+IDE%22)
+[![Arduino IDE](https://github.com/arduino/arduino-ide/workflows/Arduino%20IDE/badge.svg)](https://github.com/arduino/arduino-ide/actions?query=workflow%3A%22Arduino+IDE%22)
 
 ### Download
 
