@@ -17,13 +17,13 @@ export const ArduinoConfigSchema: PreferenceSchema = {
         },
         'arduino.compile.verbose': {
             'type': 'boolean',
-            'description': 'True for verbose compile output.',
-            'default': true
+            'description': 'True for verbose compile output. False by default',
+            'default': false
         },
         'arduino.upload.verbose': {
             'type': 'boolean',
-            'description': 'True for verbose upload output.',
-            'default': true
+            'description': 'True for verbose upload output. False by default.',
+            'default': false
         },
         'arduino.upload.verify': {
             'type': 'boolean',
