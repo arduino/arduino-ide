@@ -32,11 +32,10 @@ export class About extends Contribution {
     }
 
     async showAbout(): Promise<void> {
-        const ideStatus = FrontendApplicationConfigProvider.get()['status'];
         const { version, commit, status: cliStatus } = await this.configService.getVersion();
         const buildDate = this.buildDate;
-        const detail = (useAgo: boolean) => `Version: ${remote.app.getVersion()}
-Date: ${buildDate ? buildDate : 'dev build'}${buildDate && useAgo ? ` (${this.ago(buildDate)})` : ''}
+        const detail = (showAll: boolean) => `Version: ${remote.app.getVersion()}
+Date: ${buildDate ? buildDate : 'dev build'}${buildDate && showAll ? ` (${this.ago(buildDate)})` : ''}
 CLI Version: ${version}${cliStatus ? ` ${cliStatus}` : ''} [${commit}]
 
 Copyright © ${new Date().getFullYear()} Arduino SA
@@ -45,8 +44,8 @@ Copyright © ${new Date().getFullYear()} Arduino SA
         const copy = 'Copy';
         const buttons = !isWindows && !isOSX ? [copy, ok] : [ok, copy];
         const { response } = await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-            message: `${this.applicationName}${ideStatus ? ` – ${ideStatus}` : ''}`,
-            title: `${this.applicationName}${ideStatus ? ` – ${ideStatus}` : ''}`,
+            message: `${this.applicationName}`,
+            title: `${this.applicationName}`,
             type: 'info',
             detail: detail(true),
             buttons,
