@@ -38,7 +38,7 @@ export class About extends Contribution {
 Date: ${buildDate ? buildDate : 'dev build'}${buildDate && showAll ? ` (${this.ago(buildDate)})` : ''}
 CLI Version: ${version}${cliStatus ? ` ${cliStatus}` : ''} [${commit}]
 
-Copyright © ${new Date().getFullYear()} Arduino SA
+${showAll ? `Copyright © ${new Date().getFullYear()} Arduino SA` : ''}
 `;
         const ok = 'OK';
         const copy = 'Copy';
@@ -55,7 +55,7 @@ Copyright © ${new Date().getFullYear()} Arduino SA
         });
 
         if (buttons[response] === copy) {
-            await this.clipboardService.writeText(detail(false));
+            await this.clipboardService.writeText(detail(false).trim());
         }
     }
 
