@@ -97,7 +97,7 @@ function currentCommitish() {
 
 function generateTemplate(buildDate) {
     // do `export PUBLISH=true yarn package` if you want to mimic CI build locally.
-    // const electronPublish = release || (isCI && currentBranch() === 'master') || process.env.PUBLISH === 'true';
+    // const electronPublish = release || (isCI && currentBranch() === 'main') || process.env.PUBLISH === 'true';
     const version = getVersion();
     const productName = 'Arduino IDE';
     const name = 'arduino-ide';

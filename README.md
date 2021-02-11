@@ -28,7 +28,7 @@ These are available from the [GitHub releases page](https://github.com/arduino/a
 
 #### Nightly builds
 
-These builds are generated every day at 03:00 GMT from the `master` branch and
+These builds are generated every day at 03:00 GMT from the `main` branch and
 should be considered unstable. In order to get the latest nightly build
 available for the supported platform, use the following links:
 
@@ -75,8 +75,8 @@ yarn start
 
 This project is built on [GitHub Actions](https://github.com/bcmi-labs/arduino-editor/actions?query=workflow%3A%22Arduino+Pro+IDE%22).
 
- - _Snapshot_ builds run when changes are pushed to the `master` branch, or when a PR is created against the `master` branch. For the sake of the review and verification process, the build artifacts can be downloaded from the GitHub Actions page. Note: [due to a limitation](https://github.com/actions/upload-artifact/issues/80#issuecomment-630030144) with the GH Actions UI, you cannot download a particular build, but you have to get all together inside the `build-artifacts.zip`.
- - _Nightly_ builds run every day at 03:00 GMT from the `master` branch.
+ - _Snapshot_ builds run when changes are pushed to the `main` branch, or when a PR is created against the `main` branch. For the sake of the review and verification process, the build artifacts can be downloaded from the GitHub Actions page. Note: [due to a limitation](https://github.com/actions/upload-artifact/issues/80#issuecomment-630030144) with the GH Actions UI, you cannot download a particular build, but you have to get all together inside the `build-artifacts.zip`.
+ - _Nightly_ builds run every day at 03:00 GMT from the `main` branch.
  - _Release_ builds run when a new tag is pushed to the remote. The tag must follow the [semver](https://semver.org/). For instance, `1.2.3` is a correct tag, but `v2.3.4` won't work. Steps to trigger a new release build:
    - Create a local tag:
     ```sh
@@ -90,7 +90,7 @@ This project is built on [GitHub Actions](https://github.com/bcmi-labs/arduino-e
 ### Creating a GH release
 This section guides you through how to create a new release. Let's assume the current version is `0.1.3` and you want to release `0.2.0`.
 
- - Make sure the `master` state represents what you want to release and you're on `master`.
+ - Make sure the `main` state represents what you want to release and you're on `main`.
  - Prepare a release-candidate build on a branch:
 ```bash
 git branch 0.2.0-rc \
@@ -108,7 +108,7 @@ git add . \
 && git push
 ```
  - Create the GH PR the workflow starts automatically.
- - Once you're happy with the RC, merge the changes to the `master`.
+ - Once you're happy with the RC, merge the changes to the `main`.
  - Create a tag and push it:
 ```bash
 git tag -a 0.2.0 -m "0.2.0" \
