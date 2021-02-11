@@ -69,21 +69,25 @@ export class VerifySketch extends SketchContribution {
     }
 
     async verifySketch(exportBinaries: boolean = false): Promise<void> {
-        const uri = await this.sketchServiceClient.currentSketchFile();
-        if (!uri) {
+        const sketch = await this.sketchServiceClient.currentSketch();
+        if (!sketch) {
             return;
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            const fqbn = await this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn);
+            const [fqbn, sourceOverride] = await Promise.all([
+                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
+                this.sourceOverride()
+            ]);
             const verbose = this.preferences.get('arduino.compile.verbose');
             this.outputChannelManager.getChannel('Arduino').clear();
             await this.coreService.compile({
-                sketchUri: uri,
+                sketchUri: sketch.uri,
                 fqbn,
                 optimizeForDebug: this.editorMode.compileForDebug,
                 verbose,
-                exportBinaries
+                exportBinaries,
+                sourceOverride
             });
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {

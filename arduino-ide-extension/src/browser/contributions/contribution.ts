@@ -1,9 +1,11 @@
 import { inject, injectable, interfaces } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { Saveable } from '@theia/core/lib/browser/saveable';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
+import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
@@ -84,6 +86,23 @@ export abstract class SketchContribution extends Contribution {
 
     @inject(ArduinoPreferences)
     protected readonly preferences: ArduinoPreferences;
+
+    @inject(EditorManager)
+    protected readonly editorManager: EditorManager;
+
+    protected async sourceOverride(): Promise<Record<string, string>> {
+        const override: Record<string, string> = {};
+        const sketch = await this.sketchServiceClient.currentSketch();
+        if (sketch) {
+            for (const editor of this.editorManager.all) {
+                const uri = editor.editor.uri;
+                if (Saveable.isDirty(editor) && Sketch.isInSketch(uri, sketch)) {
+                    override[uri.toString()] = editor.editor.document.getText();
+                }
+            }
+        }
+        return override;
+    }
 
 }
 

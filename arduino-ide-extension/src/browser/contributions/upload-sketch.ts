@@ -73,8 +73,8 @@ export class UploadSketch extends SketchContribution {
     }
 
     async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
-        const uri = await this.sketchServiceClient.currentSketchFile();
-        if (!uri) {
+        const sketch = await this.sketchServiceClient.currentSketch();
+        if (!sketch) {
             return;
         }
         let shouldAutoConnect = false;
@@ -88,15 +88,16 @@ export class UploadSketch extends SketchContribution {
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            const [fqbn, { selectedProgrammer }, verify, verbose] = await Promise.all([
+            const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] = await Promise.all([
                 this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
                 this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
                 this.preferences.get('arduino.upload.verify'),
-                this.preferences.get('arduino.upload.verbose')
+                this.preferences.get('arduino.upload.verbose'),
+                this.sourceOverride()
             ]);
 
             let options: CoreService.Upload.Options | undefined = undefined;
-            const sketchUri = uri;
+            const sketchUri = sketch.uri;
             const optimizeForDebug = this.editorMode.compileForDebug;
             const { selectedPort } = boardsConfig;
             const port = selectedPort?.address;
@@ -110,7 +111,8 @@ export class UploadSketch extends SketchContribution {
                     programmer,
                     port,
                     verbose,
-                    verify
+                    verify,
+                    sourceOverride
                 };
             } else {
                 options = {
@@ -119,7 +121,8 @@ export class UploadSketch extends SketchContribution {
                     optimizeForDebug,
                     port,
                     verbose,
-                    verify
+                    verify,
+                    sourceOverride
                 };
             }
             this.outputChannelManager.getChannel('Arduino').clear();

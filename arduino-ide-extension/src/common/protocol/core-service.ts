@@ -13,10 +13,14 @@ export namespace CoreService {
 
     export namespace Compile {
         export interface Options {
+            /**
+             * `file` URI to the sketch folder.
+             */
             readonly sketchUri: string;
             readonly fqbn?: string | undefined;
             readonly optimizeForDebug: boolean;
             readonly verbose: boolean;
+            readonly sourceOverride: Record<string, string>;
         }
     }
 

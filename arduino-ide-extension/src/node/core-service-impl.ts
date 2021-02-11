@@ -1,6 +1,7 @@
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from 'inversify';
-import { dirname } from 'path';
+import { relative } from 'path';
+import * as jspb from 'google-protobuf';
 import { CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { CoreClientProvider } from './core-client-provider';
@@ -24,17 +25,15 @@ export class CoreServiceImpl implements CoreService {
     protected readonly notificationService: NotificationServiceServer;
 
     async compile(options: CoreService.Compile.Options & { exportBinaries: boolean }): Promise<void> {
-        this.outputService.append({ chunk: 'Compile...\n' + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn } = options;
-        const sketchFilePath = FileUri.fsPath(sketchUri);
-        const sketchpath = dirname(sketchFilePath);
+        const sketchPath = FileUri.fsPath(sketchUri);
 
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const compilerReq = new CompileReq();
         compilerReq.setInstance(instance);
-        compilerReq.setSketchpath(sketchpath);
+        compilerReq.setSketchpath(sketchPath);
         if (fqbn) {
             compilerReq.setFqbn(fqbn);
         }
@@ -43,6 +42,7 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setVerbose(options.verbose);
         compilerReq.setQuiet(false);
         compilerReq.setExportBinaries(options.exportBinaries);
+        this.mergeSourceOverrides(compilerReq, options);
 
         const result = client.compile(compilerReq);
         try {
@@ -76,18 +76,15 @@ export class CoreServiceImpl implements CoreService {
         task: string = 'upload'): Promise<void> {
 
         await this.compile(Object.assign(options, { exportBinaries: false }));
-        const chunk = firstToUpperCase(task) + '...\n';
-        this.outputService.append({ chunk: chunk + JSON.stringify(options, null, 2) + '\n--------------------------\n' });
         const { sketchUri, fqbn, port, programmer } = options;
-        const sketchFilePath = FileUri.fsPath(sketchUri);
-        const sketchpath = dirname(sketchFilePath);
+        const sketchPath = FileUri.fsPath(sketchUri);
 
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const req = requestProvider();
         req.setInstance(instance);
-        req.setSketchPath(sketchpath);
+        req.setSketchPath(sketchPath);
         if (fqbn) {
             req.setFqbn(fqbn);
         }
@@ -167,6 +164,17 @@ export class CoreServiceImpl implements CoreService {
             });
         });
         return coreClient;
+    }
+
+    private mergeSourceOverrides(req: { getSourceOverrideMap(): jspb.Map<string, string> }, options: CoreService.Compile.Options): void {
+        const sketchPath = FileUri.fsPath(options.sketchUri);
+        for (const uri of Object.keys(options.sourceOverride)) {
+            const content = options.sourceOverride[uri];
+            if (content) {
+                const relativePath = relative(sketchPath, FileUri.fsPath(uri));
+                req.getSourceOverrideMap().set(relativePath, content);
+            }
+        }
     }
 
 }
