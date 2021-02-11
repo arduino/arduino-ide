@@ -36,7 +36,6 @@
       "config": {
         "applicationName": "Arduino IDE",
         "defaultTheme": "arduino-theme",
-        "status": "Beta",
         "preferences": {
           "editor.autoSave": "on",
           "editor.minimap.enabled": false,
