@@ -6,13 +6,13 @@ import { ThemeConfig } from 'react-select/src/theme';
 
 export class ArduinoSelect<T> extends Select<T> {
 
-    constructor(props: Readonly<Props<T>>) {
+    constructor(props: Readonly<Props<T, false>>) {
         super(props);
     }
 
     render(): React.ReactNode {
         const controlHeight = 27; // from `monitor.css` -> `.serial-monitor-container .head` (`height: 27px;`)
-        const styles: Styles = {
+        const styles: Styles<T, false> = {
             control: styles => ({
                 ...styles,
                 minWidth: 120,
