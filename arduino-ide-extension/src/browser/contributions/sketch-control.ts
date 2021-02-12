@@ -40,8 +40,8 @@ export class SketchControl extends SketchContribution {
                     return;
                 }
 
-                const { mainFileUri, otherSketchFileUris, additionalFileUris } = await this.sketchService.loadSketch(sketch.uri);
-                const uris = [mainFileUri, ...otherSketchFileUris, ...additionalFileUris];
+                const { mainFileUri, rootFolderFileUris } = await this.sketchService.loadSketch(sketch.uri);
+                const uris = [mainFileUri, ...rootFolderFileUris];
                 for (let i = 0; i < uris.length; i++) {
                     const uri = new URI(uris[i]);
                     const command = { id: `arduino-focus-file--${uri.toString()}` };

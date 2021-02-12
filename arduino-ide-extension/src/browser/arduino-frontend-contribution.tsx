@@ -314,8 +314,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected async openSketchFiles(uri: URI): Promise<void> {
         try {
             const sketch = await this.sketchService.loadSketch(uri.toString());
-            const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
-            for (const uri of [mainFileUri, ...otherSketchFileUris, ...additionalFileUris]) {
+            const { mainFileUri, rootFolderFileUris } = sketch;
+            for (const uri of [mainFileUri, ...rootFolderFileUris]) {
                 await this.ensureOpened(uri);
             }
             await this.ensureOpened(mainFileUri, true);

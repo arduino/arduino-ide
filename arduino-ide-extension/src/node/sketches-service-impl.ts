@@ -94,6 +94,7 @@ export class SketchesServiceImpl implements SketchesService {
                     mainFileUri: FileUri.create(resp.getMainFile()).toString(),
                     otherSketchFileUris: resp.getOtherSketchFilesList().map(p => FileUri.create(p).toString()),
                     additionalFileUris: resp.getAdditionalFilesList().map(p => FileUri.create(p).toString()),
+                    rootFolderFileUris: resp.getRootFolderFilesList().map(p => FileUri.create(p).toString()),
                     mtimeMs
                 });
             });
