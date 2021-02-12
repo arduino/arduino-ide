@@ -5,6 +5,7 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
+import * as google_protobuf_wrappers_pb from "google-protobuf/google/protobuf/wrappers_pb";
 import * as commands_common_pb from "../commands/common_pb";
 import * as commands_lib_pb from "../commands/lib_pb";
 
@@ -67,15 +68,18 @@ export class CompileReq extends jspb.Message {
     getClean(): boolean;
     setClean(value: boolean): CompileReq;
 
-    getExportBinaries(): boolean;
-    setExportBinaries(value: boolean): CompileReq;
-
     getCreateCompilationDatabaseOnly(): boolean;
     setCreateCompilationDatabaseOnly(value: boolean): CompileReq;
 
 
     getSourceOverrideMap(): jspb.Map<string, string>;
     clearSourceOverrideMap(): void;
+
+
+    hasExportBinaries(): boolean;
+    clearExportBinaries(): void;
+    getExportBinaries(): google_protobuf_wrappers_pb.BoolValue | undefined;
+    setExportBinaries(value?: google_protobuf_wrappers_pb.BoolValue): CompileReq;
 
 
     serializeBinary(): Uint8Array;
@@ -107,10 +111,10 @@ export namespace CompileReq {
         optimizefordebug: boolean,
         exportDir: string,
         clean: boolean,
-        exportBinaries: boolean,
         createCompilationDatabaseOnly: boolean,
 
         sourceOverrideMap: Array<[string, string]>,
+        exportBinaries?: google_protobuf_wrappers_pb.BoolValue.AsObject,
     }
 }
 

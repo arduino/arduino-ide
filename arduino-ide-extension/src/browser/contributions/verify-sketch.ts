@@ -68,7 +68,7 @@ export class VerifySketch extends SketchContribution {
         });
     }
 
-    async verifySketch(exportBinaries: boolean = false): Promise<void> {
+    async verifySketch(exportBinaries?: boolean): Promise<void> {
         const sketch = await this.sketchServiceClient.currentSketch();
         if (!sketch) {
             return;

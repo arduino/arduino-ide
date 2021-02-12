@@ -512,6 +512,11 @@ export class LoadSketchResp extends jspb.Message {
     setAdditionalFilesList(value: Array<string>): LoadSketchResp;
     addAdditionalFiles(value: string, index?: number): string;
 
+    clearRootFolderFilesList(): void;
+    getRootFolderFilesList(): Array<string>;
+    setRootFolderFilesList(value: Array<string>): LoadSketchResp;
+    addRootFolderFiles(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LoadSketchResp.AsObject;
@@ -529,6 +534,7 @@ export namespace LoadSketchResp {
         locationPath: string,
         otherSketchFilesList: Array<string>,
         additionalFilesList: Array<string>,
+        rootFolderFilesList: Array<string>,
     }
 }
 

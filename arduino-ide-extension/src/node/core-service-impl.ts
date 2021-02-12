@@ -11,6 +11,7 @@ import { NotificationServiceServer } from '../common/protocol';
 import { ClientReadableStream } from '@grpc/grpc-js';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
+import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 
 @injectable()
 export class CoreServiceImpl implements CoreService {
@@ -24,7 +25,7 @@ export class CoreServiceImpl implements CoreService {
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    async compile(options: CoreService.Compile.Options & { exportBinaries: boolean }): Promise<void> {
+    async compile(options: CoreService.Compile.Options & { exportBinaries?: boolean }): Promise<void> {
         const { sketchUri, fqbn } = options;
         const sketchPath = FileUri.fsPath(sketchUri);
 
@@ -41,7 +42,11 @@ export class CoreServiceImpl implements CoreService {
         compilerReq.setPreprocess(false);
         compilerReq.setVerbose(options.verbose);
         compilerReq.setQuiet(false);
-        compilerReq.setExportBinaries(options.exportBinaries);
+        if (typeof options.exportBinaries === 'boolean') {
+            const exportBinaries = new BoolValue();
+            exportBinaries.setValue(options.exportBinaries);
+            compilerReq.setExportBinaries(exportBinaries);
+        }
         this.mergeSourceOverrides(compilerReq, options);
 
         const result = client.compile(compilerReq);
