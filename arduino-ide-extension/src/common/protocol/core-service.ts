@@ -3,7 +3,7 @@ import { Programmer } from './boards-service';
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
-    compile(options: CoreService.Compile.Options & Readonly<{ exportBinaries: boolean }>): Promise<void>;
+    compile(options: CoreService.Compile.Options & Readonly<{ exportBinaries?: boolean }>): Promise<void>;
     upload(options: CoreService.Upload.Options): Promise<void>;
     uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
     burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;

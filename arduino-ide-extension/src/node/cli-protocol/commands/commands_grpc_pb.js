@@ -1175,7 +1175,7 @@ libraryInstall: {
     responseSerialize: serialize_cc_arduino_cli_commands_LibraryInstallResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_LibraryInstallResp,
   },
-  // Install a library from a Zip File 
+  // Install a library from a Zip File
 zipLibraryInstall: {
     path: '/cc.arduino.cli.commands.ArduinoCore/ZipLibraryInstall',
     requestStream: false,

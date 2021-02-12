@@ -14,6 +14,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var google_protobuf_wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
+goog.object.extend(proto, google_protobuf_wrappers_pb);
 var commands_common_pb = require('../commands/common_pb.js');
 goog.object.extend(proto, commands_common_pb);
 var commands_lib_pb = require('../commands/lib_pb.js');
@@ -140,9 +142,9 @@ proto.cc.arduino.cli.commands.CompileReq.toObject = function(includeInstance, ms
     optimizefordebug: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
     exportDir: jspb.Message.getFieldWithDefault(msg, 18, ""),
     clean: jspb.Message.getBooleanFieldWithDefault(msg, 19, false),
-    exportBinaries: jspb.Message.getBooleanFieldWithDefault(msg, 20, false),
     createCompilationDatabaseOnly: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
-    sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : []
+    sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : [],
+    exportBinaries: (f = msg.getExportBinaries()) && google_protobuf_wrappers_pb.BoolValue.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -248,10 +250,6 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setClean(value);
       break;
-    case 20:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setExportBinaries(value);
-      break;
     case 21:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setCreateCompilationDatabaseOnly(value);
@@ -261,6 +259,11 @@ proto.cc.arduino.cli.commands.CompileReq.deserializeBinaryFromReader = function(
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
+      break;
+    case 23:
+      var value = new google_protobuf_wrappers_pb.BoolValue;
+      reader.readMessage(value,google_protobuf_wrappers_pb.BoolValue.deserializeBinaryFromReader);
+      msg.setExportBinaries(value);
       break;
     default:
       reader.skipField();
@@ -411,13 +414,6 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getExportBinaries();
-  if (f) {
-    writer.writeBool(
-      20,
-      f
-    );
-  }
   f = message.getCreateCompilationDatabaseOnly();
   if (f) {
     writer.writeBool(
@@ -428,6 +424,14 @@ proto.cc.arduino.cli.commands.CompileReq.serializeBinaryToWriter = function(mess
   f = message.getSourceOverrideMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(22, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getExportBinaries();
+  if (f != null) {
+    writer.writeMessage(
+      23,
+      f,
+      google_protobuf_wrappers_pb.BoolValue.serializeBinaryToWriter
+    );
   }
 };
 
@@ -796,24 +800,6 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.setClean = function(value) {
 
 
 /**
- * optional bool export_binaries = 20;
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.getExportBinaries = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 20, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
- */
-proto.cc.arduino.cli.commands.CompileReq.prototype.setExportBinaries = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 20, value);
-};
-
-
-/**
  * optional bool create_compilation_database_only = 21;
  * @return {boolean}
  */
@@ -851,6 +837,43 @@ proto.cc.arduino.cli.commands.CompileReq.prototype.getSourceOverrideMap = functi
 proto.cc.arduino.cli.commands.CompileReq.prototype.clearSourceOverrideMap = function() {
   this.getSourceOverrideMap().clear();
   return this;};
+
+
+/**
+ * optional google.protobuf.BoolValue export_binaries = 23;
+ * @return {?proto.google.protobuf.BoolValue}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.getExportBinaries = function() {
+  return /** @type{?proto.google.protobuf.BoolValue} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_wrappers_pb.BoolValue, 23));
+};
+
+
+/**
+ * @param {?proto.google.protobuf.BoolValue|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
+*/
+proto.cc.arduino.cli.commands.CompileReq.prototype.setExportBinaries = function(value) {
+  return jspb.Message.setWrapperField(this, 23, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.CompileReq} returns this
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.clearExportBinaries = function() {
+  return this.setExportBinaries(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.CompileReq.prototype.hasExportBinaries = function() {
+  return jspb.Message.getField(this, 23) != null;
+};
 
 
 

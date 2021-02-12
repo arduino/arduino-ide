@@ -3639,7 +3639,7 @@ proto.cc.arduino.cli.commands.LoadSketchReq.prototype.setSketchPath = function(v
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.LoadSketchResp.repeatedFields_ = [3,4];
+proto.cc.arduino.cli.commands.LoadSketchResp.repeatedFields_ = [3,4,5];
 
 
 
@@ -3675,7 +3675,8 @@ proto.cc.arduino.cli.commands.LoadSketchResp.toObject = function(includeInstance
     mainFile: jspb.Message.getFieldWithDefault(msg, 1, ""),
     locationPath: jspb.Message.getFieldWithDefault(msg, 2, ""),
     otherSketchFilesList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
-    additionalFilesList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f
+    additionalFilesList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
+    rootFolderFilesList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -3727,6 +3728,10 @@ proto.cc.arduino.cli.commands.LoadSketchResp.deserializeBinaryFromReader = funct
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.addAdditionalFiles(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addRootFolderFiles(value);
       break;
     default:
       reader.skipField();
@@ -3782,6 +3787,13 @@ proto.cc.arduino.cli.commands.LoadSketchResp.serializeBinaryToWriter = function(
   if (f.length > 0) {
     writer.writeRepeatedString(
       4,
+      f
+    );
+  }
+  f = message.getRootFolderFilesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      5,
       f
     );
   }
@@ -3895,6 +3907,43 @@ proto.cc.arduino.cli.commands.LoadSketchResp.prototype.addAdditionalFiles = func
  */
 proto.cc.arduino.cli.commands.LoadSketchResp.prototype.clearAdditionalFilesList = function() {
   return this.setAdditionalFilesList([]);
+};
+
+
+/**
+ * repeated string root_folder_files = 5;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.LoadSketchResp.prototype.getRootFolderFilesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 5));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.LoadSketchResp} returns this
+ */
+proto.cc.arduino.cli.commands.LoadSketchResp.prototype.setRootFolderFilesList = function(value) {
+  return jspb.Message.setField(this, 5, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.LoadSketchResp} returns this
+ */
+proto.cc.arduino.cli.commands.LoadSketchResp.prototype.addRootFolderFiles = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 5, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.LoadSketchResp} returns this
+ */
+proto.cc.arduino.cli.commands.LoadSketchResp.prototype.clearRootFolderFilesList = function() {
+  return this.setRootFolderFilesList([]);
 };
 
 
