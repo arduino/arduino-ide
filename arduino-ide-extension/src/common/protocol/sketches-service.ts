@@ -71,6 +71,7 @@ export interface Sketch {
     readonly mainFileUri: string; // `MainFile`
     readonly otherSketchFileUris: string[]; // `OtherSketchFiles`
     readonly additionalFileUris: string[]; // `AdditionalFiles`
+    readonly rootFolderFileUris: string[]; // `RootFolderFiles` (does not include the main sketch file)
 }
 export namespace Sketch {
     export function is(arg: any): arg is Sketch {
