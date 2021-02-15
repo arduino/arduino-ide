@@ -294,8 +294,8 @@ export class SerialMonitorOutput extends React.Component<SerialMonitorOutput.Pro
     componentDidMount(): void {
         this.scrollToBottom();
         this.toDisposeBeforeUnmount.pushAll([
-            this.props.monitorConnection.onRead(({ data }) => {
-                const rawLines = data.split('\n');
+            this.props.monitorConnection.onRead(({ message }) => {
+                const rawLines = message.split('\n');
                 const lines: string[] = []
                 const timestamp = () => this.state.timestamp ? `${dateFormat(new Date(), 'H:M:ss.l')} -> ` : '';
                 for (let i = 0; i < rawLines.length; i++) {

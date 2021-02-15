@@ -2,6 +2,7 @@ import { ClientDuplexStream } from '@grpc/grpc-js';
 import { TextDecoder, TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
+import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MonitorService, MonitorServiceClient, MonitorConfig, MonitorError, Status } from '../../common/protocol/monitor-service';
 import { StreamingOpenReq, StreamingOpenResp, MonitorConfig as GrpcMonitorConfig } from '../cli-protocol/monitor/monitor_pb';
@@ -46,6 +47,8 @@ export class MonitorServiceImpl implements MonitorService {
 
     protected client?: MonitorServiceClient;
     protected connection?: { duplex: ClientDuplexStream<StreamingOpenReq, StreamingOpenResp>, config: MonitorConfig };
+    protected messages: string[] = [];
+    protected onMessageDidReadEmitter = new Emitter<void>();
 
     setClient(client: MonitorServiceClient | undefined): void {
         this.client = client;
@@ -86,11 +89,10 @@ export class MonitorServiceImpl implements MonitorService {
         }).bind(this));
 
         duplex.on('data', ((resp: StreamingOpenResp) => {
-            if (this.client) {
-                const raw = resp.getData();
-                const data = typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
-                this.client.notifyRead({ data });
-            }
+            const raw = resp.getData();
+            const message = typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
+            this.messages.push(message);
+            this.onMessageDidReadEmitter.fire();
         }).bind(this));
 
         const { type, port } = config;
@@ -116,27 +118,31 @@ export class MonitorServiceImpl implements MonitorService {
     }
 
     async disconnect(reason?: MonitorError): Promise<Status> {
-        if (!this.connection && reason && reason.code === MonitorError.ErrorCodes.CLIENT_CANCEL) {
+        try {
+            if (!this.connection && reason && reason.code === MonitorError.ErrorCodes.CLIENT_CANCEL) {
+                return Status.OK;
+            }
+            this.logger.info(`>>> Disposing monitor connection...`);
+            if (!this.connection) {
+                this.logger.warn(`<<< Not connected. Nothing to dispose.`);
+                return Status.NOT_CONNECTED;
+            }
+            const { duplex, config } = this.connection;
+            duplex.cancel();
+            this.logger.info(`<<< Disposed monitor connection for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
+            this.connection = undefined;
             return Status.OK;
+        } finally {
+            this.messages.length = 0;
         }
-        this.logger.info(`>>> Disposing monitor connection...`);
-        if (!this.connection) {
-            this.logger.warn(`<<< Not connected. Nothing to dispose.`);
-            return Status.NOT_CONNECTED;
-        }
-        const { duplex, config } = this.connection;
-        duplex.cancel();
-        this.logger.info(`<<< Disposed monitor connection for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
-        this.connection = undefined;
-        return Status.OK;
     }
 
-    async send(data: string): Promise<Status> {
+    async send(message: string): Promise<Status> {
         if (!this.connection) {
             return Status.NOT_CONNECTED;
         }
         const req = new StreamingOpenReq();
-        req.setData(new TextEncoder().encode(data));
+        req.setData(new TextEncoder().encode(message));
         return new Promise<Status>(resolve => {
             if (this.connection) {
                 this.connection.duplex.write(req, () => {
@@ -145,6 +151,19 @@ export class MonitorServiceImpl implements MonitorService {
                 return;
             }
             this.disconnect().then(() => resolve(Status.NOT_CONNECTED));
+        });
+    }
+
+    async request(): Promise<{ message: string }> {
+        const message = this.messages.shift();
+        if (message) {
+            return { message };
+        }
+        return new Promise<{ message: string }>(resolve => {
+            const toDispose = this.onMessageDidReadEmitter.event(() => {
+                toDispose.dispose();
+                resolve(this.request());
+            });
         });
     }
 
