@@ -2398,7 +2398,8 @@ proto.cc.arduino.cli.commands.PlatformListReq.prototype.toObject = function(opt_
 proto.cc.arduino.cli.commands.PlatformListReq.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
-    updatableOnly: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
+    updatableOnly: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    all: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -2444,6 +2445,10 @@ proto.cc.arduino.cli.commands.PlatformListReq.deserializeBinaryFromReader = func
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setUpdatableOnly(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setAll(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2485,6 +2490,13 @@ proto.cc.arduino.cli.commands.PlatformListReq.serializeBinaryToWriter = function
   if (f) {
     writer.writeBool(
       2,
+      f
+    );
+  }
+  f = message.getAll();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -2543,6 +2555,24 @@ proto.cc.arduino.cli.commands.PlatformListReq.prototype.getUpdatableOnly = funct
  */
 proto.cc.arduino.cli.commands.PlatformListReq.prototype.setUpdatableOnly = function(value) {
   return jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * optional bool all = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.PlatformListReq.prototype.getAll = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.PlatformListReq} returns this
+ */
+proto.cc.arduino.cli.commands.PlatformListReq.prototype.setAll = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
@@ -2753,7 +2783,8 @@ proto.cc.arduino.cli.commands.Platform.toObject = function(includeInstance, msg)
     website: jspb.Message.getFieldWithDefault(msg, 6, ""),
     email: jspb.Message.getFieldWithDefault(msg, 7, ""),
     boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
-    proto.cc.arduino.cli.commands.Board.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.Board.toObject, includeInstance),
+    manuallyinstalled: jspb.Message.getBooleanFieldWithDefault(msg, 9, false)
   };
 
   if (includeInstance) {
@@ -2822,6 +2853,10 @@ proto.cc.arduino.cli.commands.Platform.deserializeBinaryFromReader = function(ms
       var value = new proto.cc.arduino.cli.commands.Board;
       reader.readMessage(value,proto.cc.arduino.cli.commands.Board.deserializeBinaryFromReader);
       msg.addBoards(value);
+      break;
+    case 9:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setManuallyinstalled(value);
       break;
     default:
       reader.skipField();
@@ -2907,6 +2942,13 @@ proto.cc.arduino.cli.commands.Platform.serializeBinaryToWriter = function(messag
       8,
       f,
       proto.cc.arduino.cli.commands.Board.serializeBinaryToWriter
+    );
+  }
+  f = message.getManuallyinstalled();
+  if (f) {
+    writer.writeBool(
+      9,
+      f
     );
   }
 };
@@ -3073,6 +3115,24 @@ proto.cc.arduino.cli.commands.Platform.prototype.addBoards = function(opt_value,
  */
 proto.cc.arduino.cli.commands.Platform.prototype.clearBoardsList = function() {
   return this.setBoardsList([]);
+};
+
+
+/**
+ * optional bool ManuallyInstalled = 9;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.Platform.prototype.getManuallyinstalled = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 9, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.Platform.prototype.setManuallyinstalled = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 9, value);
 };
 
 
