@@ -3,7 +3,7 @@ import { deepClone } from '@theia/core/lib/common/objects';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { MonitorService, MonitorConfig, MonitorError, Status, MonitorReadEvent } from '../../common/protocol/monitor-service';
+import { MonitorService, MonitorConfig, MonitorError, Status } from '../../common/protocol/monitor-service';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { Port, Board, BoardsService, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
@@ -48,7 +48,7 @@ export class MonitorConnection {
     /**
      * This emitter forwards all read events **iff** the connection is established.
      */
-    protected readonly onReadEmitter = new Emitter<MonitorReadEvent>();
+    protected readonly onReadEmitter = new Emitter<{ message: string }>();
 
     /**
      * Array for storing previous monitor errors received from the server, and based on the number of elements in this array,
@@ -60,12 +60,6 @@ export class MonitorConnection {
 
     @postConstruct()
     protected init(): void {
-        // Forward the messages from the board **iff** connected.
-        this.monitorServiceClient.onRead(event => {
-            if (this.connected) {
-                this.onReadEmitter.fire(event);
-            }
-        });
         this.monitorServiceClient.onError(async error => {
             let shouldReconnect = false;
             if (this.state) {
@@ -179,6 +173,15 @@ export class MonitorConnection {
         console.info(`>>> Creating serial monitor connection for ${Board.toString(config.board)} on port ${Port.toString(config.port)}...`);
         const connectStatus = await this.monitorService.connect(config);
         if (Status.isOK(connectStatus)) {
+            const requestMessage = () => {
+                this.monitorService.request().then(({ message }) => {
+                    if (this.connected) {
+                        this.onReadEmitter.fire({ message });
+                        requestMessage();
+                    }
+                });
+            }
+            requestMessage();
             this.state = { config };
             console.info(`<<< Serial monitor connection created for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
         }
@@ -225,7 +228,7 @@ export class MonitorConnection {
         return this.onConnectionChangedEmitter.event;
     }
 
-    get onRead(): Event<MonitorReadEvent> {
+    get onRead(): Event<{ message: string }> {
         return this.onReadEmitter.event;
     }
 

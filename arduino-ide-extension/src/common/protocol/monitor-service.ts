@@ -20,7 +20,8 @@ export const MonitorService = Symbol('MonitorService');
 export interface MonitorService extends JsonRpcServer<MonitorServiceClient> {
     connect(config: MonitorConfig): Promise<Status>;
     disconnect(): Promise<Status>;
-    send(data: string | Uint8Array): Promise<Status>;
+    send(message: string): Promise<Status>;
+    request(): Promise<{ message: string }>;
 }
 
 export interface MonitorConfig {
@@ -51,12 +52,7 @@ export namespace MonitorConfig {
 
 export const MonitorServiceClient = Symbol('MonitorServiceClient');
 export interface MonitorServiceClient {
-    notifyRead(event: MonitorReadEvent): void;
     notifyError(event: MonitorError): void;
-}
-
-export interface MonitorReadEvent {
-    readonly data: string;
 }
 
 export interface MonitorError {
