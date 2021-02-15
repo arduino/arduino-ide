@@ -326,6 +326,9 @@ export class PlatformListReq extends jspb.Message {
     getUpdatableOnly(): boolean;
     setUpdatableOnly(value: boolean): PlatformListReq;
 
+    getAll(): boolean;
+    setAll(value: boolean): PlatformListReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformListReq.AsObject;
@@ -341,6 +344,7 @@ export namespace PlatformListReq {
     export type AsObject = {
         instance?: commands_common_pb.Instance.AsObject,
         updatableOnly: boolean,
+        all: boolean,
     }
 }
 
@@ -394,6 +398,9 @@ export class Platform extends jspb.Message {
     setBoardsList(value: Array<Board>): Platform;
     addBoards(value?: Board, index?: number): Board;
 
+    getManuallyinstalled(): boolean;
+    setManuallyinstalled(value: boolean): Platform;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -415,6 +422,7 @@ export namespace Platform {
         website: string,
         email: string,
         boardsList: Array<Board.AsObject>,
+        manuallyinstalled: boolean,
     }
 }
 
