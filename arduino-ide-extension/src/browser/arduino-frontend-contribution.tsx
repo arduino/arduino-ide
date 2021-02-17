@@ -1,4 +1,4 @@
-const debounce = require('lodash.debounce');
+import { Mutex } from 'async-mutex';
 import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService, ILogger } from '@theia/core';
 import {
     ContextMenuRenderer,
@@ -201,7 +201,6 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             if (selectedBoard) {
                 const { name, fqbn } = selectedBoard;
                 if (fqbn) {
-                    await this.hostedPluginSupport.didStart;
                     this.startLanguageServer(fqbn, name);
                 }
             }
@@ -225,33 +224,44 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         });
     }
 
-    protected startLanguageServer = debounce((fqbn: string, name: string | undefined) => this.doStartLanguageServer(fqbn, name));
-    protected async doStartLanguageServer(fqbn: string, name: string | undefined): Promise<void> {
-        this.logger.info(`Starting language server: ${fqbn}`);
-        const log = this.arduinoPreferences.get('arduino.language.log');
-        let currentSketchPath: string | undefined = undefined;
-        if (log) {
-            const currentSketch = await this.sketchServiceClient.currentSketch();
-            if (currentSketch) {
-                currentSketchPath = await this.fileSystem.fsPath(new URI(currentSketch.uri));
+    protected languageServerFqbn?: string;
+    protected languageServerStartMutex = new Mutex();
+    protected async startLanguageServer(fqbn: string, name: string | undefined): Promise<void> {
+        const release = await this.languageServerStartMutex.acquire();
+        try {
+            if (fqbn === this.languageServerFqbn) {
+                // NOOP
+                return;
             }
+            await this.hostedPluginSupport.didStart;
+            this.logger.info(`Starting language server: ${fqbn}`);
+            const log = this.arduinoPreferences.get('arduino.language.log');
+            let currentSketchPath: string | undefined = undefined;
+            if (log) {
+                const currentSketch = await this.sketchServiceClient.currentSketch();
+                if (currentSketch) {
+                    currentSketchPath = await this.fileSystem.fsPath(new URI(currentSketch.uri));
+                }
+            }
+            const { clangdUri, cliUri, lsUri } = await this.executableService.list();
+            const [clangdPath, cliPath, lsPath] = await Promise.all([
+                this.fileSystem.fsPath(new URI(clangdUri)),
+                this.fileSystem.fsPath(new URI(cliUri)),
+                this.fileSystem.fsPath(new URI(lsUri)),
+            ]);
+            this.languageServerFqbn = await this.commandRegistry.executeCommand('arduino.languageserver.start', {
+                lsPath,
+                cliPath,
+                clangdPath,
+                log: currentSketchPath ? currentSketchPath : log,
+                board: {
+                    fqbn,
+                    name: name ? `"${name}"` : undefined
+                }
+            });
+        } finally {
+            release();
         }
-        const { clangdUri, cliUri, lsUri } = await this.executableService.list();
-        const [clangdPath, cliPath, lsPath] = await Promise.all([
-            this.fileSystem.fsPath(new URI(clangdUri)),
-            this.fileSystem.fsPath(new URI(cliUri)),
-            this.fileSystem.fsPath(new URI(lsUri)),
-        ]);
-        this.commandRegistry.executeCommand('arduino.languageserver.start', {
-            lsPath,
-            cliPath,
-            clangdPath,
-            log: currentSketchPath ? currentSketchPath : log,
-            board: {
-                fqbn,
-                name: name ? `"${name}"` : undefined
-            }
-        });
     }
 
     registerToolbarItems(registry: TabBarToolbarRegistry): void {
