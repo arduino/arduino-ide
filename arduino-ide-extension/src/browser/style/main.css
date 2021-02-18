@@ -12,6 +12,10 @@
     align-items: center;
     height: 24px;
     width: 24px;
+    background: var(--theia-foreground);
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item.enabled > div {
     background: var(--theia-arduino-toolbar-background);
 }
 
