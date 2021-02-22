@@ -167,3 +167,30 @@ export namespace CoreClientProvider {
         readonly instance: Instance;
     }
 }
+
+@injectable()
+export abstract class CoreClientAware {
+
+    @inject(CoreClientProvider)
+    protected readonly coreClientProvider: CoreClientProvider;
+
+    protected async coreClient(): Promise<CoreClientProvider.Client> {
+        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
+            const client = await this.coreClientProvider.client();
+            if (client) {
+                resolve(client);
+                return;
+            }
+            const toDispose = this.coreClientProvider.onClientReady(async () => {
+                const client = await this.coreClientProvider.client();
+                if (client) {
+                    toDispose.dispose();
+                    resolve(client);
+                    return;
+                }
+            });
+        });
+        return coreClient;
+    }
+
+}

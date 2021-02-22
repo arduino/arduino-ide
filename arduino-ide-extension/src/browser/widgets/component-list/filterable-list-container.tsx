@@ -81,11 +81,11 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
     }
 
     protected async install(item: T, version: Installable.Version): Promise<void> {
-        const { installable, searchable, itemLabel } = this.props;
+        const { install, searchable, itemLabel } = this.props;
         const dialog = new InstallationProgressDialog(itemLabel(item), version);
-        dialog.open();
         try {
-            await installable.install({ item, version });
+            dialog.open();
+            await install({ item, version });
             const items = await searchable.search({ query: this.state.filterText });
             this.setState({ items: this.sort(items) });
         } finally {
@@ -94,20 +94,20 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
     }
 
     protected async uninstall(item: T): Promise<void> {
-        const uninstall = await new ConfirmDialog({
+        const ok = await new ConfirmDialog({
             title: 'Uninstall',
             msg: `Do you want to uninstall ${item.name}?`,
             ok: 'Yes',
             cancel: 'No'
         }).open();
-        if (!uninstall) {
+        if (!ok) {
             return;
         }
-        const { installable, searchable, itemLabel } = this.props;
+        const { uninstall, searchable, itemLabel } = this.props;
         const dialog = new UninstallationProgressDialog(itemLabel(item));
-        dialog.open();
         try {
-            await installable.uninstall({ item });
+            dialog.open();
+            await uninstall({ item });
             const items = await searchable.search({ query: this.state.filterText });
             this.setState({ items: this.sort(items) });
         } finally {
@@ -121,13 +121,14 @@ export namespace FilterableListContainer {
 
     export interface Props<T extends ArduinoComponent> {
         readonly container: ListWidget<T>;
-        readonly installable: Installable<T>;
         readonly searchable: Searchable<T>;
         readonly itemLabel: (item: T) => string;
         readonly itemRenderer: ListItemRenderer<T>;
         readonly resolveContainer: (element: HTMLElement) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
         readonly filterTextChangeEvent: Event<string | undefined>;
+        readonly install: ({ item, version }: { item: T, version: Installable.Version }) => Promise<void>;
+        readonly uninstall: ({ item }: { item: T }) => Promise<void>;
     }
 
     export interface State<T> {

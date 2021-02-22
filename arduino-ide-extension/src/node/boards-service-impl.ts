@@ -11,12 +11,12 @@ import {
     PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
 import { BoardDiscovery } from './board-discovery';
-import { CoreClientProvider } from './core-client-provider';
+import { CoreClientAware } from './core-client-provider';
 import { BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
 import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
 
 @injectable()
-export class BoardsServiceImpl implements BoardsService {
+export class BoardsServiceImpl extends CoreClientAware implements BoardsService {
 
     @inject(ILogger)
     protected logger: ILogger;
@@ -24,9 +24,6 @@ export class BoardsServiceImpl implements BoardsService {
     @inject(ILogger)
     @named('discovery')
     protected discoveryLogger: ILogger;
-
-    @inject(CoreClientProvider)
-    protected readonly coreClientProvider: CoreClientProvider;
 
     @inject(OutputService)
     protected readonly outputService: OutputService;
@@ -47,25 +44,6 @@ export class BoardsServiceImpl implements BoardsService {
 
     async getAvailablePorts(): Promise<Port[]> {
         return this.boardDiscovery.getAvailablePorts();
-    }
-
-    private async coreClient(): Promise<CoreClientProvider.Client> {
-        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
-            const client = await this.coreClientProvider.client();
-            if (client) {
-                resolve(client);
-                return;
-            }
-            const toDispose = this.coreClientProvider.onClientReady(async () => {
-                const client = await this.coreClientProvider.client();
-                if (client) {
-                    toDispose.dispose();
-                    resolve(client);
-                    return;
-                }
-            });
-        });
-        return coreClient;
     }
 
     async getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined> {

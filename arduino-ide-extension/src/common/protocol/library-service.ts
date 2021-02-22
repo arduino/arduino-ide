@@ -6,6 +6,15 @@ export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
 export interface LibraryService extends Installable<LibraryPackage>, Searchable<LibraryPackage> {
     list(options: LibraryService.List.Options): Promise<LibraryPackage[]>;
+    /**
+     * When `installDependencies` is not set, it is `true` by default. If you want to skip the installation of required dependencies, set it to `false`.
+     */
+    install(options: { item: LibraryPackage, version?: Installable.Version, installDependencies?: boolean }): Promise<void>;
+    /**
+     * Set `filterSelf` to `true` if you want to avoid having `item` in the result set.
+     * Note: as of today (22.02.2021), the CLI works like this: `./arduino-cli lib deps Adaino@0.1.0 ✕ Adaino 0.1.0 must be installed.`.
+     */
+    listDependencies({ item, version, filterSelf }: { item: LibraryPackage, version: Installable.Version, filterSelf?: boolean }): Promise<LibraryDependency[]>;
 }
 
 export namespace LibraryService {
@@ -82,4 +91,10 @@ export namespace LibraryPackage {
         return { user, rest };
     }
 
+}
+
+export interface LibraryDependency {
+    readonly name: string;
+    readonly requiredVersion: Installable.Version;
+    readonly installedVersion: Installable.Version;
 }

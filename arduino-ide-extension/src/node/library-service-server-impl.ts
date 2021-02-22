@@ -1,6 +1,6 @@
-import { injectable, inject, postConstruct } from 'inversify';
-import { LibraryPackage, LibraryService } from '../common/protocol/library-service';
-import { CoreClientProvider } from './core-client-provider';
+import { injectable, inject } from 'inversify';
+import { LibraryDependency, LibraryPackage, LibraryService } from '../common/protocol/library-service';
+import { CoreClientAware } from './core-client-provider';
 import {
     LibrarySearchReq,
     LibrarySearchResp,
@@ -12,22 +12,19 @@ import {
     LibraryInstallResp,
     LibraryUninstallReq,
     LibraryUninstallResp,
-    Library
+    Library,
+    LibraryResolveDependenciesReq
 } from './cli-protocol/commands/lib_pb';
 import { Installable } from '../common/protocol/installable';
 import { ILogger, notEmpty } from '@theia/core';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 import { FileUri } from '@theia/core/lib/node';
 import { OutputService, NotificationServiceServer } from '../common/protocol';
 
 @injectable()
-export class LibraryServiceImpl implements LibraryService {
+export class LibraryServiceImpl extends CoreClientAware implements LibraryService {
 
     @inject(ILogger)
     protected logger: ILogger;
-
-    @inject(CoreClientProvider)
-    protected readonly coreClientProvider: CoreClientProvider;
 
     @inject(OutputService)
     protected readonly outputService: OutputService;
@@ -35,25 +32,8 @@ export class LibraryServiceImpl implements LibraryService {
     @inject(NotificationServiceServer)
     protected readonly notificationServer: NotificationServiceServer;
 
-    protected ready = new Deferred<void>();
-
-    @postConstruct()
-    protected init(): void {
-        this.coreClientProvider.client().then(client => {
-            if (client) {
-                this.ready.resolve();
-            } else {
-                this.coreClientProvider.onClientReady(() => this.ready.resolve());
-            }
-        })
-    }
-
     async search(options: { query?: string }): Promise<LibraryPackage[]> {
-        await this.ready.promise;
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return [];
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const listReq = new LibraryListReq();
@@ -96,12 +76,7 @@ export class LibraryServiceImpl implements LibraryService {
     }
 
     async list({ fqbn }: { fqbn?: string | undefined }): Promise<LibraryPackage[]> {
-        await this.ready.promise;
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return [];
-        }
-
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new LibraryListReq();
         req.setInstance(instance);
@@ -157,20 +132,42 @@ export class LibraryServiceImpl implements LibraryService {
         }).filter(notEmpty);
     }
 
-    async install(options: { item: LibraryPackage, version?: Installable.Version }): Promise<void> {
-        await this.ready.promise;
+    async listDependencies({ item, version, filterSelf }: { item: LibraryPackage, version: Installable.Version, filterSelf?: boolean }): Promise<LibraryDependency[]> {
+        const coreClient = await this.coreClient();
+        const { client, instance } = coreClient;
+        const req = new LibraryResolveDependenciesReq();
+        req.setInstance(instance);
+        req.setName(item.name);
+        req.setVersion(version);
+        const dependencies = await new Promise<LibraryDependency[]>((resolve, reject) => {
+            client.libraryResolveDependencies(req, (error, resp) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(resp.getDependenciesList().map(dep => <LibraryDependency>{
+                    name: dep.getName(),
+                    installedVersion: dep.getVersioninstalled(),
+                    requiredVersion: dep.getVersionrequired()
+                }));
+            })
+        });
+        return filterSelf ? dependencies.filter(({ name }) => name !== item.name) : dependencies;
+    }
+
+    async install(options: { item: LibraryPackage, version?: Installable.Version, installDependencies?: boolean }): Promise<void> {
         const item = options.item;
         const version = !!options.version ? options.version : item.availableVersions[0];
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return;
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const req = new LibraryInstallReq();
         req.setInstance(instance);
         req.setName(item.name);
         req.setVersion(version);
+        if (options.installDependencies === false) {
+            req.setNodeps(true);
+        }
 
         console.info('>>> Starting library package installation...', item);
         const resp = client.libraryInstall(req);
@@ -193,10 +190,7 @@ export class LibraryServiceImpl implements LibraryService {
 
     async uninstall(options: { item: LibraryPackage }): Promise<void> {
         const item = options.item;
-        const coreClient = await this.coreClientProvider.client();
-        if (!coreClient) {
-            return;
-        }
+        const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
         const req = new LibraryUninstallReq();
