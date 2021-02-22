@@ -124,7 +124,11 @@
   ],
   "arduino": {
     "cli": {
-      "version": "0.16.0"
+      "version": {
+        "owner": "arduino",
+        "repo": "arduino-cli",
+        "commitish": "scerza/lib-install-deps"
+      }
     }
   }
 }

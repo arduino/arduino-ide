@@ -965,7 +965,8 @@ proto.cc.arduino.cli.commands.LibraryInstallReq.toObject = function(includeInsta
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    version: jspb.Message.getFieldWithDefault(msg, 3, "")
+    version: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    nodeps: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -1015,6 +1016,10 @@ proto.cc.arduino.cli.commands.LibraryInstallReq.deserializeBinaryFromReader = fu
       var value = /** @type {string} */ (reader.readString());
       msg.setVersion(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setNodeps(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1063,6 +1068,13 @@ proto.cc.arduino.cli.commands.LibraryInstallReq.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getNodeps();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -1139,6 +1151,24 @@ proto.cc.arduino.cli.commands.LibraryInstallReq.prototype.getVersion = function(
  */
 proto.cc.arduino.cli.commands.LibraryInstallReq.prototype.setVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool noDeps = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.LibraryInstallReq.prototype.getNodeps = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.LibraryInstallReq} returns this
+ */
+proto.cc.arduino.cli.commands.LibraryInstallReq.prototype.setNodeps = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 

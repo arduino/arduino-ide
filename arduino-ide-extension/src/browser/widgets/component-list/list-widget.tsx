@@ -67,6 +67,14 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
 
     protected onFocusResolved = (element: HTMLElement | undefined) => {
         this.focusNode = element;
+    };
+
+    protected async install({ item, version }: { item: T, version: Installable.Version }): Promise<void> {
+        return this.options.installable.install({ item, version });
+    }
+
+    protected async uninstall({ item }: { item: T }): Promise<void> {
+        return this.options.installable.uninstall({ item });
     }
 
     render(): React.ReactNode {
@@ -75,7 +83,8 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
             resolveContainer={this.deferredContainer.resolve}
             resolveFocus={this.onFocusResolved}
             searchable={this.options.searchable}
-            installable={this.options.installable}
+            install={this.install.bind(this)}
+            uninstall={this.uninstall.bind(this)}
             itemLabel={this.options.itemLabel}
             itemRenderer={this.options.itemRenderer}
             filterTextChangeEvent={this.filterTextChangeEmitter.event} />;

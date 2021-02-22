@@ -4,7 +4,7 @@ import { relative } from 'path';
 import * as jspb from 'google-protobuf';
 import { CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
-import { CoreClientProvider } from './core-client-provider';
+import { CoreClientAware } from './core-client-provider';
 import { UploadReq, UploadResp, BurnBootloaderReq, BurnBootloaderResp, UploadUsingProgrammerReq, UploadUsingProgrammerResp } from './cli-protocol/commands/upload_pb';
 import { OutputService } from '../common/protocol/output-service';
 import { NotificationServiceServer } from '../common/protocol';
@@ -14,10 +14,7 @@ import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 
 @injectable()
-export class CoreServiceImpl implements CoreService {
-
-    @inject(CoreClientProvider)
-    protected readonly coreClientProvider: CoreClientProvider;
+export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     @inject(OutputService)
     protected readonly outputService: OutputService;
@@ -150,25 +147,6 @@ export class CoreServiceImpl implements CoreService {
             this.outputService.append({ chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
             throw e;
         }
-    }
-
-    private async coreClient(): Promise<CoreClientProvider.Client> {
-        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
-            const client = await this.coreClientProvider.client();
-            if (client) {
-                resolve(client);
-                return;
-            }
-            const toDispose = this.coreClientProvider.onClientReady(async () => {
-                const client = await this.coreClientProvider.client();
-                if (client) {
-                    toDispose.dispose();
-                    resolve(client);
-                    return;
-                }
-            });
-        });
-        return coreClient;
     }
 
     private mergeSourceOverrides(req: { getSourceOverrideMap(): jspb.Map<string, string> }, options: CoreService.Compile.Options): void {

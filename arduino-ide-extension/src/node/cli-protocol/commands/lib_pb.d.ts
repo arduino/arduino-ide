@@ -76,6 +76,9 @@ export class LibraryInstallReq extends jspb.Message {
     getVersion(): string;
     setVersion(value: string): LibraryInstallReq;
 
+    getNodeps(): boolean;
+    setNodeps(value: boolean): LibraryInstallReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryInstallReq.AsObject;
@@ -92,6 +95,7 @@ export namespace LibraryInstallReq {
         instance?: commands_common_pb.Instance.AsObject,
         name: string,
         version: string,
+        nodeps: boolean,
     }
 }
 
