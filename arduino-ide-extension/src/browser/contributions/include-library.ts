@@ -47,6 +47,17 @@ export class IncludeLibrary extends SketchContribution {
         this.notificationCenter.onLibraryUninstalled(() => this.updateMenuActions());
     }
 
+    registerMenus(registry: MenuModelRegistry): void {
+        // `Include Library` submenu
+        const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];
+        registry.registerSubmenu(includeLibMenuPath, 'Include Library', { order: '1' });
+        // `Manage Libraries...` group.
+        registry.registerMenuAction([...includeLibMenuPath, '0_manage'], {
+            commandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
+            label: 'Manage Libraries...'
+        });
+    }
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY, {
             execute: async arg => {
@@ -68,16 +79,7 @@ export class IncludeLibrary extends SketchContribution {
                 libraries.push(...await this.libraryService.list({ fqbn }));
             }
 
-            // `Include Library` submenu
             const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];
-            this.menuRegistry.registerSubmenu(includeLibMenuPath, 'Include Library', { order: '1' });
-            // `Manage Libraries...` group.
-            this.menuRegistry.registerMenuAction([...includeLibMenuPath, '0_manage'], {
-                commandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-                label: 'Manage Libraries...'
-            });
-            this.toDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction({ commandId: `${LibraryListWidget.WIDGET_ID}:toggle` })));
-
             // `Add .ZIP Library...`
             // TODO: implement it
 
