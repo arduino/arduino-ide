@@ -142,6 +142,7 @@ import { AddFile } from './contributions/add-file';
 import { ArchiveSketch } from './contributions/archive-sketch';
 import { OutputToolbarContribution as TheiaOutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
 import { OutputToolbarContribution } from './theia/output/output-toolbar-contribution';
+import { AddZipLibrary } from './contributions/add-zip-library';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -354,6 +355,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     Contribution.configure(bind, Help);
     Contribution.configure(bind, AddFile);
     Contribution.configure(bind, ArchiveSketch);
+    Contribution.configure(bind, AddZipLibrary);
 
     bind(OutputServiceImpl).toSelf().inSingletonScope().onActivation(({ container }, outputService) => {
         WebSocketConnectionProvider.createProxy(container, OutputServicePath, outputService);

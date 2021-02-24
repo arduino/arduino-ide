@@ -1,4 +1,5 @@
 import { injectable, inject } from 'inversify';
+import * as path from 'path';
 import { LibraryDependency, LibraryPackage, LibraryService } from '../common/protocol/library-service';
 import { CoreClientAware } from './core-client-provider';
 import {
@@ -13,12 +14,15 @@ import {
     LibraryUninstallReq,
     LibraryUninstallResp,
     Library,
-    LibraryResolveDependenciesReq
+    LibraryResolveDependenciesReq,
+    ZipLibraryInstallReq,
+    ZipLibraryInstallResp
 } from './cli-protocol/commands/lib_pb';
 import { Installable } from '../common/protocol/installable';
 import { ILogger, notEmpty } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node';
 import { OutputService, NotificationServiceServer } from '../common/protocol';
+
 
 @injectable()
 export class LibraryServiceImpl extends CoreClientAware implements LibraryService {
@@ -186,6 +190,37 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         const updated = items.find(other => LibraryPackage.equals(other, item)) || item;
         this.notificationServer.notifyLibraryInstalled({ item: updated });
         console.info('<<< Library package installation done.', item);
+    }
+
+    async installZip({ zipUri }: { zipUri: string }): Promise<void> {
+        const coreClient = await this.coreClient();
+        const { client, instance } = coreClient;
+        const req = new ZipLibraryInstallReq();
+        req.setPath(FileUri.fsPath(zipUri));
+        req.setInstance(instance);
+        const resp = client.zipLibraryInstall(req);
+        resp.on('data', (r: ZipLibraryInstallResp) => {
+            const task = r.getTaskProgress();
+            if (task && task.getMessage()) {
+                this.outputService.append({ chunk: task.getMessage() });
+            }
+        });
+        await new Promise<void>((resolve, reject) => {
+            resp.on('end', resolve);
+            resp.on('error', error => {
+                // This is a hack to have better error messages for the user. We try to get the name of the library from this:
+                // Request installZip failed with error: 2 UNKNOWN: copying library: destination /path/to/lib already exists
+                const match = error.message.match(/destination (.*?) already exists/);
+                if (match && match.length >= 2) {
+                    const name = path.basename(match[1].trim());
+                    if (name) {
+                        reject(new Error(`A library named ${name} already exists.`));
+                        return;
+                    }
+                }
+                reject(error);
+            });
+        });
     }
 
     async uninstall(options: { item: LibraryPackage }): Promise<void> {

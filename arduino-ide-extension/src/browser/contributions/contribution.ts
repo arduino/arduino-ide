@@ -9,6 +9,7 @@ import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
+import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
 import { MenuModelRegistry, MenuContribution } from '@theia/core/lib/common/menu';
 import { KeybindingRegistry, KeybindingContribution } from '@theia/core/lib/browser/keybinding';
 import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
@@ -89,6 +90,9 @@ export abstract class SketchContribution extends Contribution {
 
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
+
+    @inject(OutputChannelManager)
+    protected readonly outputChannelManager: OutputChannelManager;
 
     protected async sourceOverride(): Promise<Record<string, string>> {
         const override: Record<string, string> = {};

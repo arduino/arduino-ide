@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -22,9 +21,6 @@ export class UploadSketch extends SketchContribution {
 
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceClientImpl: BoardsServiceProvider;
-
-    @inject(OutputChannelManager)
-    protected readonly outputChannelManager: OutputChannelManager;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
