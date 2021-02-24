@@ -2,7 +2,7 @@ import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from 'inversify';
 import { relative } from 'path';
 import * as jspb from 'google-protobuf';
-import { CoreService } from '../common/protocol/core-service';
+import { CompilerWarnings, CoreService } from '../common/protocol/core-service';
 import { CompileReq, CompileResp } from './cli-protocol/commands/compile_pb';
 import { CoreClientAware } from './core-client-provider';
 import { UploadReq, UploadResp, BurnBootloaderReq, BurnBootloaderResp, UploadUsingProgrammerReq, UploadUsingProgrammerResp } from './cli-protocol/commands/upload_pb';
@@ -22,31 +22,34 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    async compile(options: CoreService.Compile.Options & { exportBinaries?: boolean }): Promise<void> {
-        const { sketchUri, fqbn } = options;
+    async compile(options: CoreService.Compile.Options & { exportBinaries?: boolean, compilerWarnings?: CompilerWarnings }): Promise<void> {
+        const { sketchUri, fqbn, compilerWarnings } = options;
         const sketchPath = FileUri.fsPath(sketchUri);
 
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
-        const compilerReq = new CompileReq();
-        compilerReq.setInstance(instance);
-        compilerReq.setSketchpath(sketchPath);
+        const compileReq = new CompileReq();
+        compileReq.setInstance(instance);
+        compileReq.setSketchpath(sketchPath);
         if (fqbn) {
-            compilerReq.setFqbn(fqbn);
+            compileReq.setFqbn(fqbn);
         }
-        compilerReq.setOptimizefordebug(options.optimizeForDebug);
-        compilerReq.setPreprocess(false);
-        compilerReq.setVerbose(options.verbose);
-        compilerReq.setQuiet(false);
+        if (compilerWarnings) {
+            compileReq.setWarnings(compilerWarnings.toLowerCase());
+        }
+        compileReq.setOptimizefordebug(options.optimizeForDebug);
+        compileReq.setPreprocess(false);
+        compileReq.setVerbose(options.verbose);
+        compileReq.setQuiet(false);
         if (typeof options.exportBinaries === 'boolean') {
             const exportBinaries = new BoolValue();
             exportBinaries.setValue(options.exportBinaries);
-            compilerReq.setExportBinaries(exportBinaries);
+            compileReq.setExportBinaries(exportBinaries);
         }
-        this.mergeSourceOverrides(compilerReq, options);
+        this.mergeSourceOverrides(compileReq, options);
 
-        const result = client.compile(compilerReq);
+        const result = client.compile(compileReq);
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: CompileResp) => {
