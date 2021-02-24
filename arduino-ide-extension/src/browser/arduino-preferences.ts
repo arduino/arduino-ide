@@ -1,11 +1,6 @@
 import { interfaces } from 'inversify';
-import {
-    createPreferenceProxy,
-    PreferenceProxy,
-    PreferenceService,
-    PreferenceContribution,
-    PreferenceSchema
-} from '@theia/core/lib/browser/preferences';
+import { createPreferenceProxy, PreferenceProxy, PreferenceService, PreferenceContribution, PreferenceSchema } from '@theia/core/lib/browser/preferences';
+import { CompilerWarningLiterals, CompilerWarnings } from '../common/protocol';
 
 export const ArduinoConfigSchema: PreferenceSchema = {
     'type': 'object',
@@ -19,6 +14,11 @@ export const ArduinoConfigSchema: PreferenceSchema = {
             'type': 'boolean',
             'description': 'True for verbose compile output. False by default',
             'default': false
+        },
+        'arduino.compile.warnings': {
+            'enum': [...CompilerWarningLiterals],
+            'description': "Tells gcc which warning level to use. It's 'None' by default",
+            'default': 'None'
         },
         'arduino.upload.verbose': {
             'type': 'boolean',
@@ -50,6 +50,7 @@ export const ArduinoConfigSchema: PreferenceSchema = {
 export interface ArduinoConfiguration {
     'arduino.language.log': boolean;
     'arduino.compile.verbose': boolean;
+    'arduino.compile.warnings': CompilerWarnings;
     'arduino.upload.verbose': boolean;
     'arduino.upload.verify': boolean;
     'arduino.window.autoScale': boolean;

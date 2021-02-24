@@ -80,6 +80,7 @@ export class VerifySketch extends SketchContribution {
                 this.sourceOverride()
             ]);
             const verbose = this.preferences.get('arduino.compile.verbose');
+            const compilerWarnings = this.preferences.get('arduino.compile.warnings');
             this.outputChannelManager.getChannel('Arduino').clear();
             await this.coreService.compile({
                 sketchUri: sketch.uri,
@@ -87,7 +88,8 @@ export class VerifySketch extends SketchContribution {
                 optimizeForDebug: this.editorMode.compileForDebug,
                 verbose,
                 exportBinaries,
-                sourceOverride
+                sourceOverride,
+                compilerWarnings
             });
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {

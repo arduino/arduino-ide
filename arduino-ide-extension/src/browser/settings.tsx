@@ -18,7 +18,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { AbstractDialog, DialogProps, PreferenceService, PreferenceScope, DialogError, ReactWidget } from '@theia/core/lib/browser';
 import { Index } from '../common/types';
-import { ConfigService, FileSystemExt, Network, ProxySettings } from '../common/protocol';
+import { CompilerWarnings, CompilerWarningLiterals, ConfigService, FileSystemExt, Network, ProxySettings } from '../common/protocol';
 
 export interface Settings extends Index {
     editorFontSize: number; // `editor.fontSize`
@@ -29,6 +29,7 @@ export interface Settings extends Index {
     interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
     checkForUpdates?: boolean; // `arduino.ide.autoUpdate`
     verboseOnCompile: boolean; // `arduino.compile.verbose`
+    compilerWarnings: CompilerWarnings; // `arduino.compile.warnings`
     verboseOnUpload: boolean; // `arduino.upload.verbose`
     verifyAfterUpload: boolean; // `arduino.upload.verify`
     enableLsLogs: boolean; // `arduino.language.log`
@@ -87,6 +88,7 @@ export class SettingsService {
             interfaceScale,
             // checkForUpdates,
             verboseOnCompile,
+            compilerWarnings,
             verboseOnUpload,
             verifyAfterUpload,
             enableLsLogs,
@@ -99,6 +101,7 @@ export class SettingsService {
             this.preferenceService.get<number>('arduino.window.zoomLevel', 0),
             // this.preferenceService.get<string>('arduino.ide.autoUpdate', true),
             this.preferenceService.get<boolean>('arduino.compile.verbose', true),
+            this.preferenceService.get<any>('arduino.compile.warnings', 'None'),
             this.preferenceService.get<boolean>('arduino.upload.verbose', true),
             this.preferenceService.get<boolean>('arduino.upload.verify', true),
             this.preferenceService.get<boolean>('arduino.language.log', true),
@@ -114,6 +117,7 @@ export class SettingsService {
             interfaceScale,
             // checkForUpdates,
             verboseOnCompile,
+            compilerWarnings,
             verboseOnUpload,
             verifyAfterUpload,
             enableLsLogs,
@@ -175,6 +179,7 @@ export class SettingsService {
             interfaceScale,
             // checkForUpdates,
             verboseOnCompile,
+            compilerWarnings,
             verboseOnUpload,
             verifyAfterUpload,
             enableLsLogs,
@@ -198,6 +203,7 @@ export class SettingsService {
             this.preferenceService.set('arduino.window.zoomLevel', interfaceScale, PreferenceScope.User),
             // this.preferenceService.set('arduino.ide.autoUpdate', checkForUpdates, PreferenceScope.User),
             this.preferenceService.set('arduino.compile.verbose', verboseOnCompile, PreferenceScope.User),
+            this.preferenceService.set('arduino.compile.warnings', compilerWarnings, PreferenceScope.User),
             this.preferenceService.set('arduino.upload.verbose', verboseOnUpload, PreferenceScope.User),
             this.preferenceService.set('arduino.upload.verify', verifyAfterUpload, PreferenceScope.User),
             this.preferenceService.set('arduino.language.log', enableLsLogs, PreferenceScope.User),
@@ -267,6 +273,7 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
                     <div className='flex-line'>Interface scale:</div>
                     <div className='flex-line'>Theme:</div>
                     <div className='flex-line'>Show verbose output during:</div>
+                    <div className='flex-line'>Compiler warnings:</div>
                 </div>
                 <div className='column'>
                     <div className='flex-line'>
@@ -320,6 +327,14 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
                                 onChange={this.verboseOnUploadDidChange} />
                             upload
                         </label>
+                    </div>
+                    <div className='flex-line'>
+                        <select
+                            className='theia-select'
+                            value={this.state.compilerWarnings}
+                            onChange={this.compilerWarningsDidChange}>
+                            {CompilerWarningLiterals.map(value => <option key={value} value={value}>{value}</option>)}
+                        </select>
                     </div>
                 </div>
             </div>
@@ -541,6 +556,14 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         const theme = ThemeService.get().getThemes()[selectedIndex];
         if (theme) {
             this.setState({ themeId: theme.id });
+        }
+    };
+
+    protected compilerWarningsDidChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const { selectedIndex } = event.target.options;
+        const compilerWarnings = CompilerWarningLiterals[selectedIndex];
+        if (compilerWarnings) {
+            this.setState({ compilerWarnings });
         }
     };
 
