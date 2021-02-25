@@ -234,6 +234,16 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             if (!details) {
                 // Core is not installed for the selected board.
                 console.info(`Could not start language server for ${fqbn}. The core is not installed for the board.`);
+                if (this.languageServerFqbn) {
+                    try {
+                        await this.commandRegistry.executeCommand('arduino.languageserver.stop');
+                        console.info(`Stopped language server process for ${this.languageServerFqbn}.`);
+                        this.languageServerFqbn = undefined;
+                    } catch (e) {
+                        console.error(`Failed to start language server process for ${this.languageServerFqbn}`, e);
+                        throw e;
+                    }
+                }
                 return;
             }
             if (fqbn === this.languageServerFqbn) {
