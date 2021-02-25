@@ -229,11 +229,17 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected async startLanguageServer(fqbn: string, name: string | undefined): Promise<void> {
         const release = await this.languageServerStartMutex.acquire();
         try {
+            await this.hostedPluginSupport.didStart;
+            const details = await this.boardsService.getBoardDetails({ fqbn });
+            if (!details) {
+                // Core is not installed for the selected board.
+                console.info(`Could not start language server for ${fqbn}. The core is not installed for the board.`);
+                return;
+            }
             if (fqbn === this.languageServerFqbn) {
                 // NOOP
                 return;
             }
-            await this.hostedPluginSupport.didStart;
             this.logger.info(`Starting language server: ${fqbn}`);
             const log = this.arduinoPreferences.get('arduino.language.log');
             let currentSketchPath: string | undefined = undefined;
@@ -249,16 +255,22 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 this.fileSystem.fsPath(new URI(cliUri)),
                 this.fileSystem.fsPath(new URI(lsUri)),
             ]);
-            this.languageServerFqbn = await this.commandRegistry.executeCommand('arduino.languageserver.start', {
-                lsPath,
-                cliPath,
-                clangdPath,
-                log: currentSketchPath ? currentSketchPath : log,
-                board: {
-                    fqbn,
-                    name: name ? `"${name}"` : undefined
-                }
-            });
+            this.languageServerFqbn = await Promise.race([
+                new Promise<undefined>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${20_000} ms.`)), 20_000)),
+                this.commandRegistry.executeCommand<string>('arduino.languageserver.start', {
+                    lsPath,
+                    cliPath,
+                    clangdPath,
+                    log: currentSketchPath ? currentSketchPath : log,
+                    board: {
+                        fqbn,
+                        name: name ? `"${name}"` : undefined
+                    }
+                })
+            ]);
+        } catch (e) {
+            console.log(`Failed to start language server for ${fqbn}`, e);
+            this.languageServerFqbn = undefined;
         } finally {
             release();
         }
