@@ -78,6 +78,9 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
                     installDependencies = false;
                 }
             }
+        } else {
+            // The lib does not have any dependencies.
+            installDependencies = false;
         }
 
         if (typeof installDependencies === 'boolean') {
