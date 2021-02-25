@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide-extension",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "MIT",
   "scripts": {
@@ -124,11 +124,7 @@
   ],
   "arduino": {
     "cli": {
-      "version": {
-        "owner": "arduino",
-        "repo": "arduino-cli",
-        "commitish": "scerza/lib-install-deps"
-      }
+      "version": "0.16.1"
     }
   }
 }
