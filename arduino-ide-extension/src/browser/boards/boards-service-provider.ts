@@ -139,6 +139,17 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         if (selectedBoard && selectedBoard.fqbn) {
             const uninstalledBoard = event.item.boards.find(({ name }) => name === selectedBoard.name);
             if (uninstalledBoard && uninstalledBoard.fqbn === selectedBoard.fqbn) {
+                // We should not unset the FQBN, if the selected board is an attached, recognized board.
+                // Attach Uno and install AVR, select Uno. Uninstall the AVR core while Uno is selected. We do not want to discard the FQBN of the Uno board.
+                // Dev note: We cannot assume the `selectedBoard` is a type of `AvailableBoard`.
+                // When the user selects an `AvailableBoard` it works, but between app start/stops,
+                // it is just a FQBN, so we need to find the `selected` board among the `AvailableBoards`
+                const selectedAvailableBoard = AvailableBoard.is(selectedBoard)
+                    ? selectedBoard
+                    : this._availableBoards.find(availableBoard => Board.sameAs(availableBoard, selectedBoard));
+                if (selectedAvailableBoard && selectedAvailableBoard.selected && selectedAvailableBoard.state === AvailableBoard.State.recognized) {
+                    return;
+                }
                 this.logger.info(`Board package ${event.item.id} was uninstalled. Discarding the FQBN of the currently selected ${selectedBoard.name} board.`);
                 const selectedBoardWithoutFqbn = {
                     name: selectedBoard.name
