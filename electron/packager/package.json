@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "Arduino SA",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@types/file-type": "^10.9.1",
     "@types/temp": "^0.8.32",
