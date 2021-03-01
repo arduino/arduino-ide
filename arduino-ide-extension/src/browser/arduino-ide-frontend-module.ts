@@ -143,6 +143,8 @@ import { ArchiveSketch } from './contributions/archive-sketch';
 import { OutputToolbarContribution as TheiaOutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
 import { OutputToolbarContribution } from './theia/output/output-toolbar-contribution';
 import { AddZipLibrary } from './contributions/add-zip-library';
+import { WorkspaceVariableContribution as TheiaWorkspaceVariableContribution } from '@theia/workspace/lib/browser/workspace-variable-contribution';
+import { WorkspaceVariableContribution } from './theia/workspace/workspace-variable-contribution';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -257,6 +259,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(WorkspaceService).toSelf().inSingletonScope();
     rebind(TheiaWorkspaceService).toService(WorkspaceService);
+    bind(WorkspaceVariableContribution).toSelf().inSingletonScope();
+    rebind(TheiaWorkspaceVariableContribution).toService(WorkspaceVariableContribution);
 
     // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
     bind(EditorMode).toSelf().inSingletonScope();
