@@ -8,7 +8,7 @@ This repository contains the source code of the Arduino IDE 2.x, which is curren
 
 The Arduino IDE 2.x is a major rewrite, sharing no code with the IDE 1.x. It is based on the [Theia IDE](https://theia-ide.org/) framework and built with [Electron](https://www.electronjs.org/). The backend operations such as compilation and uploading are offloaded to an [arduino-cli](https://github.com/arduino/arduino-cli) instance running in daemon mode. This new IDE was developed with the goal of preserving the same interface and user experience of the previous major version in order to provide a frictionless upgrade.
 
-> ⚠️ This is **beta** software. Help us testing it!
+> ⚠️ This is **beta** software. Help us test it!
 
 ![](static/screenshot.png)
 
@@ -41,7 +41,7 @@ macOS     |                          | [Nightly macOS 64 bit]                   
 
 ## Support
 
-If you need assistance, see the [Help Center](https://support.arduino.cc/) and browse the [forum](https://forum.arduino.cc).
+If you need assistance, see the [Help Center](https://support.arduino.cc/hc/en-us/categories/360002212660-Software-and-Downloads) and browse the [forum](https://forum.arduino.cc/index.php?board=150.0).
 
 ## Bugs & Issues
 
