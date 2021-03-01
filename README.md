@@ -14,7 +14,7 @@ The Arduino IDE 2.x is a major rewrite, sharing no code with the IDE 1.x. It is 
 
 ## Download
 
-You can download the latest version from the [software download page on the Arduino website](https://www.arduino.cc/en/software).
+You can download the latest version from the [software download page on the Arduino website](https://www.arduino.cc/en/software#experimental-software).
 ### Nightly builds
 
 These builds are generated every day at 03:00 GMT from the `main` branch and
