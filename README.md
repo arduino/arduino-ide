@@ -15,7 +15,7 @@ Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]             
 Windows   |                          | [Windows 64 bit installer]<br />[Windows 64 bit MSI]<br />[Windows 64 bit ZIP] |
 macOS     |                          | [macOS 64 bit]                                                                 |
 
-[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/287
+[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/107
 [Linux 64 bit]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Linux_64bit.zip
 [Windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Windows_64bit.exe
 [Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-ide/arduino-ide_latest_Windows_64bit.msi
@@ -39,7 +39,7 @@ Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]             
 Windows   |                          | [Nightly Windows 64 bit installer]<br />[Nightly Windows 64 bit MSI]<br />[Nightly Windows 64 bit ZIP] |
 macOS     |                          | [Nightly macOS 64 bit]                                                                                 |
 
-[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/287
+[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/107
 [Nightly Linux 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
 [Nightly Windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.exe
 [Nightly Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.msi
