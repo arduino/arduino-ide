@@ -106,9 +106,11 @@ export class Debug extends SketchContribution {
         if (!sketch) {
             return;
         }
-        const [cliPath, sketchPath] = await Promise.all([
+        const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(sketch);
+        const [cliPath, sketchPath, configPath] = await Promise.all([
             this.fileService.fsPath(new URI(executables.cliUri)),
-            this.fileService.fsPath(new URI(sketch.uri))
+            this.fileService.fsPath(new URI(sketch.uri)),
+            this.fileService.fsPath(new URI(ideTempFolderUri)),
         ])
         const config = {
             cliPath,
@@ -116,7 +118,8 @@ export class Debug extends SketchContribution {
                 fqbn,
                 name
             },
-            sketchPath
+            sketchPath,
+            configPath
         };
         return this.commandService.executeCommand('arduino.debug.start', config);
     }

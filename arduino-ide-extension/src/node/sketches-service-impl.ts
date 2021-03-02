@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as temp from 'temp';
 import * as path from 'path';
+import * as crypto from 'crypto';
 import { ncp } from 'ncp';
 import { promisify } from 'util';
 import URI from '@theia/core/lib/common/uri';
@@ -13,7 +14,7 @@ import { SketchesService, Sketch } from '../common/protocol/sketches-service';
 import { firstToLowerCase } from '../common/utils';
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { CoreClientProvider } from './core-client-provider';
+import { CoreClientAware } from './core-client-provider';
 import { LoadSketchReq, ArchiveSketchReq } from './cli-protocol/commands/commands_pb';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
@@ -21,13 +22,10 @@ const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 const prefix = '.arduinoIDE-unsaved';
 
 @injectable()
-export class SketchesServiceImpl implements SketchesService {
+export class SketchesServiceImpl extends CoreClientAware implements SketchesService {
 
     @inject(ConfigService)
     protected readonly configService: ConfigService;
-
-    @inject(CoreClientProvider)
-    protected readonly coreClientProvider: CoreClientProvider;
 
     @inject(NotificationServiceServerImpl)
     protected readonly notificationService: NotificationServiceServerImpl;
@@ -348,23 +346,16 @@ void loop() {
         return destinationUri;
     }
 
-    private async coreClient(): Promise<CoreClientProvider.Client> {
-        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
-            const client = await this.coreClientProvider.client();
-            if (client) {
-                resolve(client);
-                return;
-            }
-            const toDispose = this.coreClientProvider.onClientReady(async () => {
-                const client = await this.coreClientProvider.client();
-                if (client) {
-                    toDispose.dispose();
-                    resolve(client);
-                    return;
-                }
-            });
-        });
-        return coreClient;
+    async getIdeTempFolderUri(sketch: Sketch): Promise<string> {
+        const genBuildPath = await this.getIdeTempFolderPath(sketch);
+        return FileUri.create(genBuildPath).toString();
+    }
+
+    async getIdeTempFolderPath(sketch: Sketch): Promise<string> {
+        const sketchPath = FileUri.fsPath(sketch.uri);
+        await fs.promises.readdir(sketchPath); // Validates the sketch folder and rejects if not accessible.
+        const suffix = crypto.createHash('md5').update(sketchPath).digest('hex');
+        return path.join(os.tmpdir(), `arduino-ide2-${suffix}`);
     }
 
 }
