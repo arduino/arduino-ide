@@ -145,6 +145,8 @@ import { OutputToolbarContribution } from './theia/output/output-toolbar-contrib
 import { AddZipLibrary } from './contributions/add-zip-library';
 import { WorkspaceVariableContribution as TheiaWorkspaceVariableContribution } from '@theia/workspace/lib/browser/workspace-variable-contribution';
 import { WorkspaceVariableContribution } from './theia/workspace/workspace-variable-contribution';
+import { DebugConfigurationManager } from './theia/debug/debug-configuration-manager';
+import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -394,6 +396,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // To remove the `Run` menu item from the application menu.
     bind(DebugFrontendApplicationContribution).toSelf().inSingletonScope();
     rebind(TheiaDebugFrontendApplicationContribution).toService(DebugFrontendApplicationContribution);
+    // To be able to use a `launch.json` from outside of the workspace.
+    bind(DebugConfigurationManager).toSelf().inSingletonScope();
+    rebind(TheiaDebugConfigurationManager).toService(DebugConfigurationManager);
 
     // Preferences
     bindArduinoPreferences(bind);

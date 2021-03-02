@@ -63,6 +63,12 @@ export interface SketchesService {
      */
     archive(sketch: Sketch, destinationUri: string): Promise<string>;
 
+    /**
+     * Counterpart of the CLI's `genBuildPath` functionality.
+     * Based on https://github.com/arduino/arduino-cli/blob/550179eefd2d2bca299d50a4af9e9bfcfebec649/arduino/builder/builder.go#L30-L38
+     */
+    getIdeTempFolderUri(sketch: Sketch): Promise<string>;
+
 }
 
 export interface Sketch {
