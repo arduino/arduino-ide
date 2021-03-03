@@ -3,7 +3,11 @@ const { notarize } = require('electron-notarize');
 
 exports.default = async function notarizing(context) {
     if (!isCI) {
-        console.log('Skipping notarization: not on CI.');
+        console.log('Skipping the app notarization: not on CI.');
+        return;
+    }
+    if (typeof process.env.IS_FORK === 'true') {
+        console.log('Skipping the app notarization: building from a fork.');
         return;
     }
     const { electronPlatformName, appOutDir } = context;

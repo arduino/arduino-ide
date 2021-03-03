@@ -50,21 +50,26 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
+          IS_FORK: ${{ github.actor != 'arduino' }}
         run: |
             # See: https://www.electron.build/code-signing
-            if [ "${{ runner.OS }}" = "macOS" ]; then
-              export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
-              # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
-              # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
-              echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "$CSC_LINK"
+            if [ $IS_FORK = true ]; then
+              echo "Skipping the app signing: building from a fork."
+            else
+              if [ "${{ runner.OS }}" = "macOS" ]; then
+                export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
+                # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+                # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+                echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "$CSC_LINK"
 
-              export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
+                export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
 
-            elif [ "${{ runner.OS }}" = "Windows" ]; then
-              export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
-              echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
+              elif [ "${{ runner.OS }}" = "Windows" ]; then
+                export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
+                echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
 
-              export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
+                export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
+              fi
             fi
 
             yarn --cwd ./electron/packager/
@@ -120,7 +125,7 @@ jobs:
 
   publish:
     needs: changelog
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    if: github.actor != 'arduino' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     steps:
       - name: Download [GitHub Actions]
@@ -141,7 +146,7 @@ jobs:
 
   release:
     needs: changelog
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.actor != 'arduino' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Download [GitHub Actions]
