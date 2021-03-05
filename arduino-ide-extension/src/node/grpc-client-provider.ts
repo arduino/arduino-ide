@@ -59,7 +59,7 @@ export abstract class GrpcClientProvider<C> {
                 const client = await this.createClient(this._port);
                 this._client = client;
             } catch (error) {
-                this.logger.error('Could create client for gRPC.', error)
+                this.logger.error('Could not create client for gRPC.', error)
             }
         }
     }
