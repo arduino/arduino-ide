@@ -50,6 +50,14 @@ If you want to report an issue, you can submit it to the [issue tracker](https:/
 * Before posting, please check if the same problem has been already reported by someone else to avoid duplicates.
 * Remember to include as much detail as you can about your hardware set-up, code and steps for reproducing the issue. Make sure you're using an original Arduino board.
 
+### Security
+
+If you think you found a vulnerability or other security-related bug in this project, please read our
+[security policy](https://github.com/arduino/arduino-ide/security/policy) and report the bug to our Security Team 🛡️
+Thank you!
+
+e-mail contact: security@arduino.cc
+
 ## Contributions and development
 
 Contributions are very welcome! You can browse the list of open issues to see what's needed and then you can submit your code using a Pull Request. Please provide detailed descriptions. We also appreciate any help in testing issues and patches contributed by other users.
