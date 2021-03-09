@@ -22,13 +22,16 @@ export class VerifySketch extends SketchContribution {
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
-            execute: () => this.verifySketch()
+            execute: () => this.verifySketch(),
+            isEnabled: () => !this.verifyInProgress,
         });
         registry.registerCommand(VerifySketch.Commands.EXPORT_BINARIES, {
-            execute: () => this.verifySketch(true)
+            execute: () => this.verifySketch(true),
+            isEnabled: () => !this.verifyInProgress,
         });
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: () => !this.verifyInProgress,
             isToggled: () => this.verifyInProgress,
             execute: () => registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id)
         });
@@ -69,10 +72,11 @@ export class VerifySketch extends SketchContribution {
 
     async verifySketch(exportBinaries?: boolean): Promise<void> {
 
+        // toggle the toolbar button and menu item state.
+        // verifyInProgress will be set to false whether the compilation fails or not
         this.verifyInProgress = true;
         const sketch = await this.sketchServiceClient.currentSketch();
-        this.verifyInProgress = false;
-
+        
         if (!sketch) {
             return;
         }
@@ -97,6 +101,8 @@ export class VerifySketch extends SketchContribution {
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {
             this.messageService.error(e.toString());
+        } finally {
+            this.verifyInProgress = false;
         }
     }
 
