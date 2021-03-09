@@ -24,6 +24,14 @@
     border-radius: 12px;
 }
 
+.item.arduino-tool-item.toggled {
+  background-color: unset;
+}
+
+.item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar {
+  background-color: rgb(255,204,0) !important;
+}
+
 .arduino-tool-icon {
     height: 24px;
     width: 24px;

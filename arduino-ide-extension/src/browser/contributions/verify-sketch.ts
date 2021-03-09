@@ -18,6 +18,8 @@ export class VerifySketch extends SketchContribution {
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
+    verifyInProgress = false;
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
             execute: () => this.verifySketch()
@@ -27,6 +29,7 @@ export class VerifySketch extends SketchContribution {
         });
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isToggled: () => this.verifyInProgress,
             execute: () => registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id)
         });
     }
@@ -65,7 +68,11 @@ export class VerifySketch extends SketchContribution {
     }
 
     async verifySketch(exportBinaries?: boolean): Promise<void> {
+
+        this.verifyInProgress = true;
         const sketch = await this.sketchServiceClient.currentSketch();
+        this.verifyInProgress = false;
+
         if (!sketch) {
             return;
         }

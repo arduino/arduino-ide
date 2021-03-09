@@ -13,6 +13,7 @@ export namespace ArduinoToolbarComponent {
         commands: CommandRegistry,
         labelParser: LabelParser,
         commandIsEnabled: (id: string) => boolean,
+        commandIsToggled: (id: string) => boolean,
         executeCommand: (e: React.MouseEvent<HTMLElement>) => void
     }
     export interface State {
@@ -39,7 +40,7 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
             }
         }
         const command = this.props.commands.getCommand(item.command);
-        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''}`
+        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''} ${command && this.props.commandIsToggled(command.id) ? 'toggled' : ''}`
         return <div key={item.id} className={cls} >
             <div className={item.id}>
                 <div
@@ -112,6 +113,10 @@ export class ArduinoToolbar extends ReactWidget {
     protected commandIsEnabled(command: string): boolean {
         return this.commands.isEnabled(command, this);
     }
+    protected readonly doCommandIsToggled = (id: string) => this.commandIsToggled(id);
+    protected commandIsToggled(command: string): boolean {
+      return this.commands.isToggled(command, this);
+  }
 
     protected render(): React.ReactNode {
         return <ArduinoToolbarComponent
@@ -121,6 +126,7 @@ export class ArduinoToolbar extends ReactWidget {
             items={[...this.items.values()]}
             commands={this.commands}
             commandIsEnabled={this.doCommandIsEnabled}
+            commandIsToggled={this.doCommandIsToggled}
             executeCommand={this.executeCommand}
         />
     }
