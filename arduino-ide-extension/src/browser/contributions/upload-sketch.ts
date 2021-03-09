@@ -22,15 +22,21 @@ export class UploadSketch extends SketchContribution {
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
+    uploadInProgress = false;
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
-            execute: () => this.uploadSketch()
+            execute: () => this.uploadSketch(),
+            isEnabled: () => !this.uploadInProgress,
         });
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER, {
-            execute: () => this.uploadSketch(true)
+            execute: () => this.uploadSketch(true),
+            isEnabled: () => !this.uploadInProgress,
         });
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: () => !this.uploadInProgress,
+            isToggled: () => this.uploadInProgress,
             execute: () => registry.executeCommand(UploadSketch.Commands.UPLOAD_SKETCH.id)
         });
     }
@@ -69,6 +75,11 @@ export class UploadSketch extends SketchContribution {
     }
 
     async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
+        
+        // toggle the toolbar button and menu item state.
+        // uploadInProgress will be set to false whether the upload fails or not
+        this.uploadInProgress = true;
+        
         const sketch = await this.sketchServiceClient.currentSketch();
         if (!sketch) {
             return;
@@ -131,6 +142,7 @@ export class UploadSketch extends SketchContribution {
         } catch (e) {
             this.messageService.error(e.toString());
         } finally {
+            this.uploadInProgress = false;
             if (monitorConfig) {
                 const { board, port } = monitorConfig;
                 try {
