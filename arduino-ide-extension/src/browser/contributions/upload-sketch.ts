@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { Emitter } from '@theia/core/lib/common/event';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -22,15 +23,24 @@ export class UploadSketch extends SketchContribution {
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
+    protected readonly onDidChangeEmitter = new Emitter<Readonly<void>>();
+    readonly onDidChange = this.onDidChangeEmitter.event;
+
+    protected uploadInProgress = false;
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
-            execute: () => this.uploadSketch()
+            execute: () => this.uploadSketch(),
+            isEnabled: () => !this.uploadInProgress,
         });
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER, {
-            execute: () => this.uploadSketch(true)
+            execute: () => this.uploadSketch(true),
+            isEnabled: () => !this.uploadInProgress,
         });
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: () => !this.uploadInProgress,
+            isToggled: () => this.uploadInProgress,
             execute: () => registry.executeCommand(UploadSketch.Commands.UPLOAD_SKETCH.id)
         });
     }
@@ -64,11 +74,22 @@ export class UploadSketch extends SketchContribution {
             id: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
             command: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
             tooltip: 'Upload',
-            priority: 1
+            priority: 1,
+            onDidChange: this.onDidChange
         });
     }
 
     async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
+        
+        // even with buttons disabled, better to double check if an upload is already in progress
+        if (this.uploadInProgress) {
+            return;
+        }
+
+        // toggle the toolbar button and menu item state.
+        // uploadInProgress will be set to false whether the upload fails or not
+        this.uploadInProgress = true;
+        this.onDidChangeEmitter.fire();
         const sketch = await this.sketchServiceClient.currentSketch();
         if (!sketch) {
             return;
@@ -131,6 +152,9 @@ export class UploadSketch extends SketchContribution {
         } catch (e) {
             this.messageService.error(e.toString());
         } finally {
+            this.uploadInProgress = false;
+            this.onDidChangeEmitter.fire();
+
             if (monitorConfig) {
                 const { board, port } = monitorConfig;
                 try {
