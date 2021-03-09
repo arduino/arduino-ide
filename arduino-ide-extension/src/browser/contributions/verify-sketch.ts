@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { Emitter } from '@theia/core/lib/common/event';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -18,15 +19,24 @@ export class VerifySketch extends SketchContribution {
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
+    protected readonly onDidChangeEmitter = new Emitter<Readonly<void>>();
+    readonly onDidChange = this.onDidChangeEmitter.event;
+
+    protected verifyInProgress = false;
+
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
-            execute: () => this.verifySketch()
+            execute: () => this.verifySketch(),
+            isEnabled: () => !this.verifyInProgress,
         });
         registry.registerCommand(VerifySketch.Commands.EXPORT_BINARIES, {
-            execute: () => this.verifySketch(true)
+            execute: () => this.verifySketch(true),
+            isEnabled: () => !this.verifyInProgress,
         });
         registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: () => !this.verifyInProgress,
+            isToggled: () => this.verifyInProgress,
             execute: () => registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id)
         });
     }
@@ -60,12 +70,24 @@ export class VerifySketch extends SketchContribution {
             id: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
             command: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
             tooltip: 'Verify',
-            priority: 0
+            priority: 0,
+            onDidChange: this.onDidChange
         });
     }
 
     async verifySketch(exportBinaries?: boolean): Promise<void> {
+
+        // even with buttons disabled, better to double check if a verify is already in progress
+        if (this.verifyInProgress) {
+            return;
+        }
+        
+        // toggle the toolbar button and menu item state.
+        // verifyInProgress will be set to false whether the compilation fails or not
+        this.verifyInProgress = true;
+        this.onDidChangeEmitter.fire();
         const sketch = await this.sketchServiceClient.currentSketch();
+        
         if (!sketch) {
             return;
         }
@@ -90,6 +112,9 @@ export class VerifySketch extends SketchContribution {
             this.messageService.info('Done compiling.', { timeout: 1000 });
         } catch (e) {
             this.messageService.error(e.toString());
+        } finally {
+            this.verifyInProgress = false;
+            this.onDidChangeEmitter.fire();
         }
     }
 

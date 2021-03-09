@@ -15,13 +15,23 @@
     background: var(--theia-arduino-toolbar-background);
 }
 
-.p-TabBar-toolbar .item.arduino-tool-item > div:hover {
-    background: (--theia-arduino-toolbar-hoverBackground);
+.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div {
+    background: var(--theia-arduino-toolbar-hoverBackground);
 }
 
 .arduino-verify-sketch--toolbar,
 .arduino-upload-sketch--toolbar {
     border-radius: 12px;
+}
+
+.item.arduino-tool-item.toggled {
+  background-color: unset;
+  opacity: 1;
+  border: none;
+}
+
+.item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar {
+  background-color: var(--theia-arduino-toolbar-toggleBackground) !important;
 }
 
 .arduino-tool-icon {
