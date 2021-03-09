@@ -76,6 +76,11 @@ export class UploadSketch extends SketchContribution {
 
     async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
         
+        // even with buttons disabled, better to double check if an upload is already in progress
+        if (this.uploadInProgress) {
+            return;
+        }
+
         // toggle the toolbar button and menu item state.
         // uploadInProgress will be set to false whether the upload fails or not
         this.uploadInProgress = true;

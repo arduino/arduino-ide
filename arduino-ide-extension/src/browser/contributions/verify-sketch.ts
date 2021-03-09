@@ -72,6 +72,11 @@ export class VerifySketch extends SketchContribution {
 
     async verifySketch(exportBinaries?: boolean): Promise<void> {
 
+        // even with buttons disabled, better to double check if a verify is already in progress
+        if (this.verifyInProgress) {
+            return;
+        }
+
         // toggle the toolbar button and menu item state.
         // verifyInProgress will be set to false whether the compilation fails or not
         this.verifyInProgress = true;
