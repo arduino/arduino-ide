@@ -15,8 +15,8 @@
     background: var(--theia-arduino-toolbar-background);
 }
 
-.p-TabBar-toolbar .item.arduino-tool-item > div:hover {
-    background: (--theia-arduino-toolbar-hoverBackground);
+.p-TabBar-toolbar .item.arduino-tool-item:hover > div {
+    background: white;
 }
 
 .arduino-verify-sketch--toolbar,
