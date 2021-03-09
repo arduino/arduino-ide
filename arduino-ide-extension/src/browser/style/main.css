@@ -26,6 +26,7 @@
 
 .item.arduino-tool-item.toggled {
   background-color: unset;
+  opacity: 1;
 }
 
 .item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar {
