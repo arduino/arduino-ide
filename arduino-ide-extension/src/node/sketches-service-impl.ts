@@ -1,4 +1,5 @@
 import { injectable, inject } from 'inversify';
+import * as minimatch from 'minimatch';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as temp from 'temp';
@@ -10,7 +11,7 @@ import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node';
 import { isWindows } from '@theia/core/lib/common/os';
 import { ConfigService } from '../common/protocol/config-service';
-import { SketchesService, Sketch } from '../common/protocol/sketches-service';
+import { SketchesService, Sketch, SketchContainer } from '../common/protocol/sketches-service';
 import { firstToLowerCase } from '../common/utils';
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
@@ -32,8 +33,8 @@ export class SketchesServiceImpl extends CoreClientAware implements SketchesServ
 
     @inject(EnvVariablesServer)
     protected readonly envVariableServer: EnvVariablesServer;
-
-    async getSketches(uri?: string): Promise<SketchWithDetails[]> {
+    async getSketches({ uri, exclude }: { uri?: string, exclude?: string[] }): Promise<SketchContainerWithDetails> {
+        const start = Date.now();
         let sketchbookPath: undefined | string;
         if (!uri) {
             const { sketchDirUri } = await this.configService.getConfiguration();
@@ -44,33 +45,65 @@ export class SketchesServiceImpl extends CoreClientAware implements SketchesServ
         } else {
             sketchbookPath = FileUri.fsPath(uri);
         }
+        const container: SketchContainerWithDetails = {
+            label: uri ? path.basename(sketchbookPath) : 'Sketchbook',
+            sketches: [],
+            children: []
+        };
         if (!await promisify(fs.exists)(sketchbookPath)) {
-            return [];
+            return container;
         }
         const stat = await promisify(fs.stat)(sketchbookPath);
         if (!stat.isDirectory()) {
-            return [];
+            return container;
         }
 
-        const sketches: Array<SketchWithDetails> = [];
-        const filenames = await promisify(fs.readdir)(sketchbookPath);
-        for (const fileName of filenames) {
-            const filePath = path.join(sketchbookPath, fileName);
-            const sketch = await this._isSketchFolder(FileUri.create(filePath).toString());
-            if (sketch) {
+        const recursivelyLoad = async (fsPath: string, containerToLoad: SketchContainerWithDetails) => {
+            const filenames = await promisify(fs.readdir)(fsPath);
+            for (const name of filenames) {
+                const childFsPath = path.join(fsPath, name);
+                let skip = false;
+                for (const pattern of exclude || ['**/libraries/**', '**/hardware/**']) {
+                    if (!skip && minimatch(childFsPath, pattern)) {
+                        skip = true;
+                    }
+                }
+                if (skip) {
+                    continue;
+                }
                 try {
-                    const stat = await promisify(fs.stat)(filePath);
-                    sketches.push({
-                        ...sketch,
-                        mtimeMs: stat.mtimeMs
-                    });
+                    const stat = await promisify(fs.stat)(childFsPath);
+                    if (stat.isDirectory()) {
+                        const sketch = await this._isSketchFolder(FileUri.create(childFsPath).toString());
+                        if (sketch) {
+                            containerToLoad.sketches.push({
+                                ...sketch,
+                                mtimeMs: stat.mtimeMs
+                            });
+                        } else {
+                            const childContainer: SketchContainerWithDetails = {
+                                label: name,
+                                children: [],
+                                sketches: []
+                            };
+                            await recursivelyLoad(childFsPath, childContainer);
+                            if (!SketchContainer.isEmpty(childContainer)) {
+                                containerToLoad.children.push(childContainer);
+                            }
+                        }
+                    }
                 } catch {
-                    console.warn(`Could not load sketch from ${filePath}.`);
+                    console.warn(`Could not load sketch from ${childFsPath}.`);
                 }
             }
+            containerToLoad.sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
+            return containerToLoad;
         }
-        sketches.sort((left, right) => right.mtimeMs - left.mtimeMs);
-        return sketches;
+
+        await recursivelyLoad(sketchbookPath, container);
+        SketchContainer.prune(container);
+        console.debug(`Loading the sketches from ${sketchbookPath} took ${Date.now() - start} ms.`);
+        return container;
     }
 
     async loadSketch(uri: string): Promise<SketchWithDetails> {
@@ -362,4 +395,9 @@ void loop() {
 
 interface SketchWithDetails extends Sketch {
     readonly mtimeMs: number;
+}
+interface SketchContainerWithDetails extends SketchContainer {
+    readonly label: string;
+    readonly children: SketchContainerWithDetails[];
+    readonly sketches: SketchWithDetails[];
 }

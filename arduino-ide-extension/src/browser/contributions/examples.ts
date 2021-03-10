@@ -1,15 +1,15 @@
 import * as PQueue from 'p-queue';
 import { inject, injectable, postConstruct } from 'inversify';
-import { MenuPath, CompositeMenuNode } from '@theia/core/lib/common/menu';
+import { MenuPath, CompositeMenuNode, SubMenuOptions } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { ExamplesService, ExampleContainer } from '../../common/protocol/examples-service';
+import { ExamplesService } from '../../common/protocol/examples-service';
 import { SketchContribution, CommandRegistry, MenuModelRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
-import { Board } from '../../common/protocol';
+import { Board, Sketch, SketchContainer } from '../../common/protocol';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -59,18 +59,35 @@ export abstract class Examples extends SketchContribution {
     }
 
     registerRecursively(
-        exampleContainerOrPlaceholder: ExampleContainer | string,
+        sketchContainerOrPlaceholder: SketchContainer | (Sketch | SketchContainer)[] | string,
         menuPath: MenuPath,
-        pushToDispose: DisposableCollection = new DisposableCollection()): void {
+        pushToDispose: DisposableCollection = new DisposableCollection(),
+        subMenuOptions?: SubMenuOptions | undefined): void {
 
-        if (typeof exampleContainerOrPlaceholder === 'string') {
-            const placeholder = new PlaceholderMenuNode(menuPath, exampleContainerOrPlaceholder);
+        if (typeof sketchContainerOrPlaceholder === 'string') {
+            const placeholder = new PlaceholderMenuNode(menuPath, sketchContainerOrPlaceholder);
             this.menuRegistry.registerMenuNode(menuPath, placeholder);
             pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuNode(placeholder.id)));
         } else {
-            const { label, sketches, children } = exampleContainerOrPlaceholder;
-            const submenuPath = [...menuPath, label];
-            this.menuRegistry.registerSubmenu(submenuPath, label);
+            const sketches: Sketch[] = [];
+            const children: SketchContainer[] = [];
+            let submenuPath = menuPath;
+
+            if (SketchContainer.is(sketchContainerOrPlaceholder)) {
+                const { label } = sketchContainerOrPlaceholder;
+                submenuPath = [...menuPath, label];
+                this.menuRegistry.registerSubmenu(submenuPath, label, subMenuOptions);
+                sketches.push(...sketchContainerOrPlaceholder.sketches);
+                children.push(...sketchContainerOrPlaceholder.children);
+            } else {
+                for (const sketchOrContainer of sketchContainerOrPlaceholder) {
+                    if (SketchContainer.is(sketchOrContainer)) {
+                        children.push(sketchOrContainer);
+                    } else {
+                        sketches.push(sketchOrContainer);
+                    }
+                }
+            }
             children.forEach(child => this.registerRecursively(child, submenuPath, pushToDispose));
             for (const sketch of sketches) {
                 const { uri } = sketch;
@@ -98,22 +115,20 @@ export class BuiltInExamples extends Examples {
         this.register(); // no `await`
     }
 
-    protected async register() {
-        let exampleContainers: ExampleContainer[] | undefined;
+    protected async register(): Promise<void> {
+        let sketchContainers: SketchContainer[] | undefined;
         try {
-            exampleContainers = await this.examplesService.builtIns();
+            sketchContainers = await this.examplesService.builtIns();
         } catch (e) {
             console.error('Could not initialize built-in examples.', e);
             this.messageService.error('Could not initialize built-in examples.');
             return;
         }
         this.toDispose.dispose();
-        for (const container of ['Built-in examples', ...exampleContainers]) {
+        for (const container of ['Built-in examples', ...sketchContainers]) {
             this.registerRecursively(container, ArduinoMenus.EXAMPLES__BUILT_IN_GROUP, this.toDispose);
         }
         this.menuManager.update();
-        // TODO: remove
-        console.log(typeof this.menuRegistry);
     }
 
 }
@@ -136,7 +151,7 @@ export class LibraryExamples extends Examples {
         this.register(board);
     }
 
-    protected async register(board: Board | undefined = this.boardsServiceClient.boardsConfig.selectedBoard) {
+    protected async register(board: Board | undefined = this.boardsServiceClient.boardsConfig.selectedBoard): Promise<void> {
         return this.queue.add(async () => {
             this.toDispose.dispose();
             if (!board || !board.fqbn) {

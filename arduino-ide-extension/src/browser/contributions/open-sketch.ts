@@ -8,6 +8,8 @@ import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { SketchContribution, Sketch, URI, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
 import { ExamplesService } from '../../common/protocol/examples-service';
 import { BuiltInExamples } from './examples';
+import { Sketchbook } from './sketchbook';
+import { SketchContainer } from '../../common/protocol';
 
 @injectable()
 export class OpenSketch extends SketchContribution {
@@ -24,7 +26,10 @@ export class OpenSketch extends SketchContribution {
     @inject(ExamplesService)
     protected readonly examplesService: ExamplesService;
 
-    protected readonly toDisposeBeforeCreateNewContextMenu = new DisposableCollection();
+    @inject(Sketchbook)
+    protected readonly sketchbook: Sketchbook;
+
+    protected readonly toDispose = new DisposableCollection();
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(OpenSketch.Commands.OPEN_SKETCH, {
@@ -33,11 +38,11 @@ export class OpenSketch extends SketchContribution {
         registry.registerCommand(OpenSketch.Commands.OPEN_SKETCH__TOOLBAR, {
             isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
             execute: async (_: Widget, target: EventTarget) => {
-                const sketches = await this.sketchService.getSketches();
-                if (!sketches.length) {
+                const container = await this.sketchService.getSketches({ exclude: ['**/hardware/**'] });
+                if (SketchContainer.isEmpty(container)) {
                     this.openSketch();
                 } else {
-                    this.toDisposeBeforeCreateNewContextMenu.dispose();
+                    this.toDispose.dispose();
                     if (!(target instanceof HTMLElement)) {
                         return;
                     }
@@ -50,21 +55,12 @@ export class OpenSketch extends SketchContribution {
                         commandId: OpenSketch.Commands.OPEN_SKETCH.id,
                         label: 'Open...'
                     });
-                    this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(OpenSketch.Commands.OPEN_SKETCH)));
-                    for (const sketch of sketches) {
-                        const command = { id: `arduino-open-sketch--${sketch.uri}` };
-                        const handler = { execute: () => this.openSketch(sketch) };
-                        this.toDisposeBeforeCreateNewContextMenu.push(registry.registerCommand(command, handler));
-                        this.menuRegistry.registerMenuAction(ArduinoMenus.OPEN_SKETCH__CONTEXT__RECENT_GROUP, {
-                            commandId: command.id,
-                            label: sketch.name
-                        });
-                        this.toDisposeBeforeCreateNewContextMenu.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
-                    }
+                    this.toDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(OpenSketch.Commands.OPEN_SKETCH)));
+                    this.sketchbook.registerRecursively([...container.children, ...container.sketches], ArduinoMenus.OPEN_SKETCH__CONTEXT__RECENT_GROUP, this.toDispose);
                     try {
                         const containers = await this.examplesService.builtIns();
                         for (const container of containers) {
-                            this.builtInExamples.registerRecursively(container, ArduinoMenus.OPEN_SKETCH__CONTEXT__EXAMPLES_GROUP, this.toDisposeBeforeCreateNewContextMenu);
+                            this.builtInExamples.registerRecursively(container, ArduinoMenus.OPEN_SKETCH__CONTEXT__EXAMPLES_GROUP, this.toDispose);
                         }
                     } catch (e) {
                         console.error('Error when collecting built-in examples.', e);

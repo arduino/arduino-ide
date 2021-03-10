@@ -8,7 +8,7 @@ import { FrontendApplication } from '@theia/core/lib/browser/frontend-applicatio
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
-import { SketchesService, Sketch } from '../../../common/protocol/sketches-service';
+import { SketchesService, Sketch, SketchContainer } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 
 @injectable()
@@ -50,7 +50,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
                 const hash = window.location.hash;
                 const [recentWorkspaces, recentSketches] = await Promise.all([
                     this.server.getRecentWorkspaces(),
-                    this.sketchService.getSketches().then(sketches => sketches.map(s => s.uri))
+                    this.sketchService.getSketches({}).then(container => SketchContainer.toArray(container).map(s => s.uri))
                 ]);
                 const toOpen = await new ArduinoWorkspaceRootResolver({
                     isValid: this.isValid.bind(this)
