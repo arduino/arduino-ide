@@ -5,6 +5,8 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import { Emitter } from '@theia/core/lib/common/event';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
+import { CommandService } from '@theia/core/lib/common/command';
+import { MessageService } from '@theia/core/lib/common/message-service';
 import { Installable } from '../../../common/protocol/installable';
 import { Searchable } from '../../../common/protocol/searchable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
@@ -14,6 +16,12 @@ import { NotificationCenter } from '../../notification-center';
 
 @injectable()
 export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget {
+
+    @inject(MessageService)
+    protected readonly messageService: MessageService;
+
+    @inject(CommandService)
+    protected readonly commandService: CommandService;
 
     @inject(NotificationCenter)
     protected readonly notificationCenter: NotificationCenter;
@@ -87,7 +95,9 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
             uninstall={this.uninstall.bind(this)}
             itemLabel={this.options.itemLabel}
             itemRenderer={this.options.itemRenderer}
-            filterTextChangeEvent={this.filterTextChangeEmitter.event} />;
+            filterTextChangeEvent={this.filterTextChangeEmitter.event}
+            messageService={this.messageService}
+            commandService={this.commandService} />;
     }
 
     /**
