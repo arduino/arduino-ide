@@ -254,7 +254,11 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         });
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
-            resp.on('error', reject);
+            resp.on('error', error => {
+                this.outputService.append({ chunk: `Failed to install platform: ${item.id}.\n` });
+                this.outputService.append({ chunk: error.toString() });
+                reject(error);
+            });
         });
 
         const items = await this.search({});

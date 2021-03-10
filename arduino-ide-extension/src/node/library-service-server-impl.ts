@@ -183,7 +183,11 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         });
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
-            resp.on('error', reject);
+            resp.on('error', error => {
+                this.outputService.append({ chunk: `Failed to install library: ${item.name}${version ? `:${version}` : ''}.\n` });
+                this.outputService.append({ chunk: error.toString() });
+                reject(error);
+            });
         });
 
         const items = await this.search({});

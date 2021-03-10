@@ -1,6 +1,9 @@
 import * as React from 'react';
 import debounce = require('lodash.debounce');
 import { Event } from '@theia/core/lib/common/event';
+import { CommandService } from '@theia/core/lib/common/command';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { OutputCommands } from '@theia/output/lib/browser/output-commands';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { Searchable } from '../../../common/protocol/searchable';
 import { Installable } from '../../../common/protocol/installable';
@@ -85,9 +88,13 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         const dialog = new InstallationProgressDialog(itemLabel(item), version);
         try {
             dialog.open();
+            await this.clearArduinoChannel();
             await install({ item, version });
             const items = await searchable.search({ query: this.state.filterText });
             this.setState({ items: this.sort(items) });
+        } catch (error) {
+            this.props.messageService.error(error instanceof Error ? error.message : String(error));
+            throw error;
         } finally {
             dialog.close();
         }
@@ -106,6 +113,7 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         const { uninstall, searchable, itemLabel } = this.props;
         const dialog = new UninstallationProgressDialog(itemLabel(item));
         try {
+            await this.clearArduinoChannel();
             dialog.open();
             await uninstall({ item });
             const items = await searchable.search({ query: this.state.filterText });
@@ -113,6 +121,10 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         } finally {
             dialog.close();
         }
+    }
+
+    private async clearArduinoChannel(): Promise<void> {
+        return this.props.commandService.executeCommand(OutputCommands.CLEAR.id, { name: 'Arduino' });
     }
 
 }
@@ -129,6 +141,8 @@ export namespace FilterableListContainer {
         readonly filterTextChangeEvent: Event<string | undefined>;
         readonly install: ({ item, version }: { item: T, version: Installable.Version }) => Promise<void>;
         readonly uninstall: ({ item }: { item: T }) => Promise<void>;
+        readonly messageService: MessageService;
+        readonly commandService: CommandService;
     }
 
     export interface State<T> {
