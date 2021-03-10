@@ -9,6 +9,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { ConfigService } from './config-service';
 import { DisposableCollection, Emitter } from '@theia/core';
 import { FileChangeType } from '@theia/filesystem/lib/browser';
+import { SketchContainer } from './sketches-service';
 
 @injectable()
 export class SketchesServiceClientImpl implements FrontendApplicationContribution {
@@ -35,9 +36,9 @@ export class SketchesServiceClientImpl implements FrontendApplicationContributio
 
     onStart(): void {
         this.configService.getConfiguration().then(({ sketchDirUri }) => {
-            this.sketchService.getSketches(sketchDirUri).then(sketches => {
+            this.sketchService.getSketches({ uri: sketchDirUri }).then(container => {
                 const sketchbookUri = new URI(sketchDirUri);
-                for (const sketch of sketches) {
+                for (const sketch of SketchContainer.toArray(container)) {
                     this.sketches.set(sketch.uri, sketch);
                 }
                 this.toDispose.push(this.fileService.watch(new URI(sketchDirUri), { recursive: true, excludes: [] }));

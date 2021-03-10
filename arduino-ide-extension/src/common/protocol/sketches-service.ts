@@ -5,10 +5,11 @@ export const SketchesService = Symbol('SketchesService');
 export interface SketchesService {
 
     /**
-     * Returns with the direct sketch folders from the location of the `fileStat`.
-     * The sketches returns with inverse-chronological order, the first item is the most recent one.
+     * Resolves to a sketch container representing the hierarchical structure of the sketches.
+     * If `uri` is not given, `directories.user` will be user instead. Specify `exclude` global patterns to filter folders from the sketch container.
+     * If `exclude` is not set `['**\/libraries\/**', '**\/hardware\/**']` will be used instead.
      */
-    getSketches(uri?: string): Promise<Sketch[]>;
+    getSketches({ uri, exclude }: { uri?: string, exclude?: string[] }): Promise<SketchContainer>;
 
     /**
      * This is the TS implementation of `SketchLoad` from the CLI and should be replaced with a gRPC call eventually.
@@ -99,4 +100,52 @@ export namespace Sketch {
         }
         return Extensions.MAIN.some(ext => arg.endsWith(ext));
     }
+}
+
+export interface SketchContainer {
+    readonly label: string;
+    readonly children: SketchContainer[];
+    readonly sketches: Sketch[];
+}
+export namespace SketchContainer {
+
+    export function is(arg: any): arg is SketchContainer {
+        return !!arg
+            && 'label' in arg && typeof arg.label === 'string'
+            && 'children' in arg && Array.isArray(arg.children)
+            && 'sketches' in arg && Array.isArray(arg.sketches);
+    }
+
+    /**
+     * `false` if the `container` recursively contains at least one sketch. Otherwise, `true`.
+     */
+    export function isEmpty(container: SketchContainer): boolean {
+        const hasSketch = (parent: SketchContainer) => {
+            if (parent.sketches.length || parent.children.some(child => hasSketch(child))) {
+                return true;
+            }
+            return false;
+        }
+        return !hasSketch(container);
+    }
+
+    export function prune<T extends SketchContainer>(container: T): T {
+        for (let i = container.children.length - 1; i >= 0; i--) {
+            if (isEmpty(container.children[i])) {
+                container.children.splice(i, 1);
+            }
+        }
+        return container;
+    }
+
+    export function toArray(container: SketchContainer): Sketch[] {
+        const visit = (parent: SketchContainer, toPushSketch: Sketch[]) => {
+            toPushSketch.push(...parent.sketches);
+            parent.children.map(child => visit(child, toPushSketch));
+        }
+        const sketches: Sketch[] = [];
+        visit(container, sketches);
+        return sketches;
+    }
+
 }
