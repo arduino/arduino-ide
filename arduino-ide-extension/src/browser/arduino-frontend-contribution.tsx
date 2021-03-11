@@ -222,6 +222,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 webContents.setZoomLevel(event.newValue || 0);
             }
         });
+        app.shell.leftPanelHandler.removeMenu('settings-menu');
     }
 
     protected languageServerFqbn?: string;
