@@ -15,15 +15,9 @@ import {
 } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
-import { compareAnything } from '../theia/monaco/comparers';
 import { NotificationCenter } from '../notification-center';
 import { CommandService } from '@theia/core';
 import { ArduinoCommands } from '../arduino-commands';
-
-interface BoardMatch {
-    readonly board: BoardWithPackage;
-    readonly matches: monaco.filters.IMatch[] | undefined;
-}
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -205,38 +199,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         }
     }
 
-    async searchBoards({ query, cores }: { query?: string, cores?: string[] }): Promise<Array<BoardWithPackage>> {
-        const boards = await this.boardsService.allBoards({});
-        const coresFilter = !!cores && cores.length
-            ? ((toFilter: BoardWithPackage) => cores.some(core => core === toFilter.packageName || core === toFilter.packageId))
-            : () => true;
-        if (!query) {
-            return boards.filter(coresFilter).sort(Board.compare);
-        }
-        const toMatch = ((toFilter: BoardWithPackage) => (({ board: toFilter, matches: monaco.filters.matchesFuzzy(query, toFilter.name, true) })));
-        const compareEntries = (left: BoardMatch, right: BoardMatch, lookFor: string) => {
-            const leftMatches = left.matches || [];
-            const rightMatches = right.matches || [];
-            if (leftMatches.length && !rightMatches.length) {
-                return -1;
-            }
-            if (!leftMatches.length && rightMatches.length) {
-                return 1;
-            }
-            if (leftMatches.length === 0 && rightMatches.length === 0) {
-                return 0;
-            }
-            const leftLabel = left.board.name.replace(/\r?\n/g, ' ');
-            const rightLabel = right.board.name.replace(/\r?\n/g, ' ');
-            return compareAnything(leftLabel, rightLabel, lookFor);
-        }
-        const normalizedQuery = query.toLowerCase();
-        return boards
-            .filter(coresFilter)
-            .map(toMatch)
-            .filter(({ matches }) => !!matches)
-            .sort((left, right) => compareEntries(left, right, normalizedQuery))
-            .map(({ board }) => board);
+    async searchBoards({ query, cores }: { query?: string, cores?: string[] }): Promise<BoardWithPackage[]> {
+        const boards = await this.boardsService.searchBoards({ query });
+        return boards;
     }
 
     get boardsConfig(): BoardsConfig.Config {

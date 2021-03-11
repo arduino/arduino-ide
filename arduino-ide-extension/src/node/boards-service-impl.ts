@@ -10,11 +10,11 @@ import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
     PlatformListResp, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
+import { Platform } from './cli-protocol/commands/common_pb';
 import { BoardDiscovery } from './board-discovery';
 import { CoreClientAware } from './core-client-provider';
-import { BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
+import { BoardDetailsReq, BoardDetailsResp, BoardSearchReq } from './cli-protocol/commands/board_pb';
 import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
-import { Platform } from './cli-protocol/commands/common_pb';
 
 @injectable()
 export class BoardsServiceImpl extends CoreClientAware implements BoardsService {
@@ -145,10 +145,33 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         return packages.find(({ boards }) => boards.some(({ fqbn }) => fqbn === expectedFqbn));
     }
 
-    async allBoards(options: {}): Promise<Array<BoardWithPackage>> {
-        const results = await this.search(options);
-        return results.map(item => item.boards.map(board => ({ ...board, packageName: item.name, packageId: item.id })))
-            .reduce((acc, curr) => acc.concat(curr), []);
+    async searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]> {
+        const { instance, client } = await this.coreClient();
+        const req = new BoardSearchReq();
+        req.setSearchArgs(query || '');
+        req.setInstance(instance);
+        const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
+            client.boardSearch(req, (error, resp) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                const boards: Array<BoardWithPackage> = [];
+                for (const board of resp.getBoardsList()) {
+                    const platform = board.getPlatform();
+                    if (platform) {
+                        boards.push({
+                            name: board.getName(),
+                            fqbn: board.getFqbn(),
+                            packageId: platform.getId(),
+                            packageName: platform.getName()
+                        });
+                    }
+                }
+                resolve(boards);
+            })
+        });
+        return boards;
     }
 
     async search(options: { query?: string }): Promise<BoardsPackage[]> {

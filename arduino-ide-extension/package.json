@@ -116,15 +116,12 @@
       "frontendElectron": "lib/electron-browser/theia/core/electron-menu-module"
     },
     {
-      "frontend": "lib/browser/boards/quick-open/boards-quick-open-module"
-    },
-    {
       "electronMain": "lib/electron-main/arduino-electron-main-module"
     }
   ],
   "arduino": {
     "cli": {
-      "version": "20210315"
+      "version": "20210317"
     }
   }
 }

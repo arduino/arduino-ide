@@ -121,9 +121,7 @@ export interface BoardsService extends Installable<BoardsPackage>, Searchable<Bo
     getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
     getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
     getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
-    // The CLI cannot do fuzzy search. This method provides all boards and we do the fuzzy search (with monaco) on the frontend.
-    // https://github.com/arduino/arduino-cli/issues/629
-    allBoards(options: {}): Promise<Array<BoardWithPackage>>;
+    searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
 }
 
 export interface Port {
