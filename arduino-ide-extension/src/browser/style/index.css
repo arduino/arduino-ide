@@ -37,8 +37,13 @@
     background-color: var(--theia-warningBackground);
 }
 
-/* Overrule the default Theia CSS button styles. */
+/* Makes the sidepanel a bit wider when opening the widget */ 
+.p-DockPanel-widget {
+    min-width: 200px;
+    min-height: 200px;
+}
 
+/* Overrule the default Theia CSS button styles. */
 button.theia-button,
 .theia-button {
     border: 1px solid var(--theia-dropdown-border);
