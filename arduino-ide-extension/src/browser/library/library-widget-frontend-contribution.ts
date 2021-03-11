@@ -14,7 +14,7 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
             widgetName: LibraryListWidget.WIDGET_LABEL,
             defaultWidgetOptions: {
                 area: 'left',
-                rank: 700
+                rank: 3
             },
             toggleCommandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
             toggleKeybinding: 'CtrlCmd+Shift+I'

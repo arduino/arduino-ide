@@ -12,7 +12,7 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
             widgetName: BoardsListWidget.WIDGET_LABEL,
             defaultWidgetOptions: {
                 area: 'left',
-                rank: 600
+                rank: 2
             },
             toggleCommandId: `${BoardsListWidget.WIDGET_ID}:toggle`,
             toggleKeybinding: 'CtrlCmd+Shift+B'

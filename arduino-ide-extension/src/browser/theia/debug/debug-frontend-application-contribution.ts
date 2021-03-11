@@ -6,6 +6,11 @@ import { unregisterSubmenu } from '../../menu/arduino-menus';
 @injectable()
 export class DebugFrontendApplicationContribution extends TheiaDebugFrontendApplicationContribution {
 
+    constructor() {
+        super()
+        this.options.defaultWidgetOptions.rank = 4;
+    }
+
     registerMenus(registry: MenuModelRegistry): void {
         super.registerMenus(registry);
         unregisterSubmenu(DebugMenus.DEBUG, registry);
