@@ -15,6 +15,11 @@ env:
 
 jobs:
   check-certificates:
+    # Only run when the workflow will have access to the certificate secrets.
+    if: >
+      (github.event_name != 'pull_request' && github.repository == 'arduino/arduino-ide') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'arduino/arduino-ide')
+    
     runs-on: ubuntu-latest
 
     strategy:
