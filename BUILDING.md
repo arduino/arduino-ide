@@ -73,6 +73,22 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
     git push origin 1.2.3
    ```
 
+## Notes for macOS contributors
+Beginning in macOS 10.14.5, the software [must be notarized to run](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution). The signing and notarization processes for the Arduino IDE are managed by our Continuous Integration (CI) workflows, implemented with GitHub Actions. On every push and pull request, the Arduino IDE is built and saved to a workflow artifact. These artifacts can be used by contributors and beta testers who don't want to set up a build system locally.
+For security reasons, signing and notarization are disabled for workflow runs for pull requests from forks of this repository. This means that macOS will block you from running those artifacts.
+Due to this limitation, Mac users have two options for testing contributions from forks:
+
+### The Safe approach (recommended)
+
+Follow [the instructions above](#build-from-source) to create the build environment locally, then build the code you want to test.
+
+### The Risky approach
+
+*Please note that this approach is risky as you are lowering the security on your system, therefore we strongly discourage you from following it.*
+1. Use [this guide](https://help.apple.com/xcode/mac/10.2/index.html?localePath=en.lproj#/dev9b7736b0e), in order to disable Gatekeeper (at your own risk!).
+1. Download the unsigned artifact provided by the CI workflow run related to the Pull Request at each push.
+1. Re-enable Gatekeeper after tests are done, following the guide linked above.
+
 ### Creating a release
 
 You will not need to create a new release yourself as the Arduino team takes care of this on a regular basis, but we are documenting the process here. Let's assume the current version is `0.1.3` and you want to release `0.2.0`.
