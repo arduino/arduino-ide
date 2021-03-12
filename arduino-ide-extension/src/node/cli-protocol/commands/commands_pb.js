@@ -2667,7 +2667,7 @@ proto.cc.arduino.cli.commands.OutdatedResp.toObject = function(includeInstance, 
     outdatedLibraryList: jspb.Message.toObjectList(msg.getOutdatedLibraryList(),
     commands_lib_pb.InstalledLibrary.toObject, includeInstance),
     outdatedPlatformList: jspb.Message.toObjectList(msg.getOutdatedPlatformList(),
-    commands_core_pb.Platform.toObject, includeInstance)
+    commands_common_pb.Platform.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -2710,8 +2710,8 @@ proto.cc.arduino.cli.commands.OutdatedResp.deserializeBinaryFromReader = functio
       msg.addOutdatedLibrary(value);
       break;
     case 2:
-      var value = new commands_core_pb.Platform;
-      reader.readMessage(value,commands_core_pb.Platform.deserializeBinaryFromReader);
+      var value = new commands_common_pb.Platform;
+      reader.readMessage(value,commands_common_pb.Platform.deserializeBinaryFromReader);
       msg.addOutdatedPlatform(value);
       break;
     default:
@@ -2756,7 +2756,7 @@ proto.cc.arduino.cli.commands.OutdatedResp.serializeBinaryToWriter = function(me
     writer.writeRepeatedMessage(
       2,
       f,
-      commands_core_pb.Platform.serializeBinaryToWriter
+      commands_common_pb.Platform.serializeBinaryToWriter
     );
   }
 };
@@ -2806,7 +2806,7 @@ proto.cc.arduino.cli.commands.OutdatedResp.prototype.clearOutdatedLibraryList = 
  */
 proto.cc.arduino.cli.commands.OutdatedResp.prototype.getOutdatedPlatformList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.Platform>} */ (
-    jspb.Message.getRepeatedWrapperField(this, commands_core_pb.Platform, 2));
+    jspb.Message.getRepeatedWrapperField(this, commands_common_pb.Platform, 2));
 };
 
 

@@ -1,5 +1,4 @@
 import { injectable, inject } from 'inversify';
-import * as path from 'path';
 import { LibraryDependency, LibraryPackage, LibraryService } from '../common/protocol/library-service';
 import { CoreClientAware } from './core-client-provider';
 import {
@@ -196,12 +195,15 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         console.info('<<< Library package installation done.', item);
     }
 
-    async installZip({ zipUri }: { zipUri: string }): Promise<void> {
+    async installZip({ zipUri, overwrite }: { zipUri: string, overwrite?: boolean }): Promise<void> {
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new ZipLibraryInstallReq();
         req.setPath(FileUri.fsPath(zipUri));
         req.setInstance(instance);
+        if (typeof overwrite === 'boolean') {
+            req.setOverwrite(overwrite);
+        }
         const resp = client.zipLibraryInstall(req);
         resp.on('data', (r: ZipLibraryInstallResp) => {
             const task = r.getTaskProgress();
@@ -211,19 +213,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         });
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
-            resp.on('error', error => {
-                // This is a hack to have better error messages for the user. We try to get the name of the library from this:
-                // Request installZip failed with error: 2 UNKNOWN: copying library: destination /path/to/lib already exists
-                const match = error.message.match(/destination (.*?) already exists/);
-                if (match && match.length >= 2) {
-                    const name = path.basename(match[1].trim());
-                    if (name) {
-                        reject(new Error(`A library named ${name} already exists.`));
-                        return;
-                    }
-                }
-                reject(error);
-            });
+            resp.on('error', reject);
         });
     }
 

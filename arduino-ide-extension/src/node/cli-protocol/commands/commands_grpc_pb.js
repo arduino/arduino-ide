@@ -157,6 +157,28 @@ function deserialize_cc_arduino_cli_commands_BoardListWatchResp(buffer_arg) {
   return commands_board_pb.BoardListWatchResp.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_BoardSearchReq(arg) {
+  if (!(arg instanceof commands_board_pb.BoardSearchReq)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.BoardSearchReq');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_BoardSearchReq(buffer_arg) {
+  return commands_board_pb.BoardSearchReq.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_BoardSearchResp(arg) {
+  if (!(arg instanceof commands_board_pb.BoardSearchResp)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.BoardSearchResp');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_BoardSearchResp(buffer_arg) {
+  return commands_board_pb.BoardSearchResp.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_BurnBootloaderReq(arg) {
   if (!(arg instanceof commands_upload_pb.BurnBootloaderReq)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.BurnBootloaderReq');
@@ -1003,6 +1025,18 @@ boardListAll: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_BoardListAllReq,
     responseSerialize: serialize_cc_arduino_cli_commands_BoardListAllResp,
     responseDeserialize: deserialize_cc_arduino_cli_commands_BoardListAllResp,
+  },
+  // Search boards in installed and not installed Platforms.
+boardSearch: {
+    path: '/cc.arduino.cli.commands.ArduinoCore/BoardSearch',
+    requestStream: false,
+    responseStream: false,
+    requestType: commands_board_pb.BoardSearchReq,
+    responseType: commands_board_pb.BoardSearchResp,
+    requestSerialize: serialize_cc_arduino_cli_commands_BoardSearchReq,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_BoardSearchReq,
+    responseSerialize: serialize_cc_arduino_cli_commands_BoardSearchResp,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_BoardSearchResp,
   },
   // List boards connection and disconnected events.
 boardListWatch: {

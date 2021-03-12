@@ -8,12 +8,13 @@ import {
 } from '../common/protocol';
 import {
     PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
-    PlatformListResp, Platform, PlatformUninstallResp, PlatformUninstallReq
+    PlatformListResp, PlatformUninstallResp, PlatformUninstallReq
 } from './cli-protocol/commands/core_pb';
 import { BoardDiscovery } from './board-discovery';
 import { CoreClientAware } from './core-client-provider';
 import { BoardDetailsReq, BoardDetailsResp } from './cli-protocol/commands/board_pb';
 import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
+import { Platform } from './cli-protocol/commands/common_pb';
 
 @injectable()
 export class BoardsServiceImpl extends CoreClientAware implements BoardsService {

@@ -121,3 +121,83 @@ export namespace Programmer {
         name: string,
     }
 }
+
+export class Platform extends jspb.Message { 
+    getId(): string;
+    setId(value: string): Platform;
+
+    getInstalled(): string;
+    setInstalled(value: string): Platform;
+
+    getLatest(): string;
+    setLatest(value: string): Platform;
+
+    getName(): string;
+    setName(value: string): Platform;
+
+    getMaintainer(): string;
+    setMaintainer(value: string): Platform;
+
+    getWebsite(): string;
+    setWebsite(value: string): Platform;
+
+    getEmail(): string;
+    setEmail(value: string): Platform;
+
+    clearBoardsList(): void;
+    getBoardsList(): Array<Board>;
+    setBoardsList(value: Array<Board>): Platform;
+    addBoards(value?: Board, index?: number): Board;
+
+    getManuallyinstalled(): boolean;
+    setManuallyinstalled(value: boolean): Platform;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Platform.AsObject;
+    static toObject(includeInstance: boolean, msg: Platform): Platform.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Platform, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Platform;
+    static deserializeBinaryFromReader(message: Platform, reader: jspb.BinaryReader): Platform;
+}
+
+export namespace Platform {
+    export type AsObject = {
+        id: string,
+        installed: string,
+        latest: string,
+        name: string,
+        maintainer: string,
+        website: string,
+        email: string,
+        boardsList: Array<Board.AsObject>,
+        manuallyinstalled: boolean,
+    }
+}
+
+export class Board extends jspb.Message { 
+    getName(): string;
+    setName(value: string): Board;
+
+    getFqbn(): string;
+    setFqbn(value: string): Board;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Board.AsObject;
+    static toObject(includeInstance: boolean, msg: Board): Board.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Board, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Board;
+    static deserializeBinaryFromReader(message: Board, reader: jspb.BinaryReader): Board;
+}
+
+export namespace Board {
+    export type AsObject = {
+        name: string,
+        fqbn: string,
+    }
+}

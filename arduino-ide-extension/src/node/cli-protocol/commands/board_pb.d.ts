@@ -92,6 +92,9 @@ export class BoardDetailsResp extends jspb.Message {
     getDebuggingSupported(): boolean;
     setDebuggingSupported(value: boolean): BoardDetailsResp;
 
+    getSerialnumber(): string;
+    setSerialnumber(value: string): BoardDetailsResp;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsResp.AsObject;
@@ -119,6 +122,7 @@ export namespace BoardDetailsResp {
         identificationPrefList: Array<IdentificationPref.AsObject>,
         programmersList: Array<commands_common_pb.Programmer.AsObject>,
         debuggingSupported: boolean,
+        serialnumber: string,
     }
 }
 
@@ -535,6 +539,9 @@ export class DetectedPort extends jspb.Message {
     setBoardsList(value: Array<BoardListItem>): DetectedPort;
     addBoards(value?: BoardListItem, index?: number): BoardListItem;
 
+    getSerialNumber(): string;
+    setSerialNumber(value: string): DetectedPort;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DetectedPort.AsObject;
@@ -552,6 +559,7 @@ export namespace DetectedPort {
         protocol: string,
         protocolLabel: string,
         boardsList: Array<BoardListItem.AsObject>,
+        serialNumber: string,
     }
 }
 
@@ -689,6 +697,12 @@ export class BoardListItem extends jspb.Message {
     setPid(value: string): BoardListItem;
 
 
+    hasPlatform(): boolean;
+    clearPlatform(): void;
+    getPlatform(): commands_common_pb.Platform | undefined;
+    setPlatform(value?: commands_common_pb.Platform): BoardListItem;
+
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListItem.AsObject;
     static toObject(includeInstance: boolean, msg: BoardListItem): BoardListItem.AsObject;
@@ -706,5 +720,61 @@ export namespace BoardListItem {
         isHidden: boolean,
         vid: string,
         pid: string,
+        platform?: commands_common_pb.Platform.AsObject,
+    }
+}
+
+export class BoardSearchReq extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): commands_common_pb.Instance | undefined;
+    setInstance(value?: commands_common_pb.Instance): BoardSearchReq;
+
+    getSearchArgs(): string;
+    setSearchArgs(value: string): BoardSearchReq;
+
+    getIncludeHiddenBoards(): boolean;
+    setIncludeHiddenBoards(value: boolean): BoardSearchReq;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BoardSearchReq.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardSearchReq): BoardSearchReq.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BoardSearchReq, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardSearchReq;
+    static deserializeBinaryFromReader(message: BoardSearchReq, reader: jspb.BinaryReader): BoardSearchReq;
+}
+
+export namespace BoardSearchReq {
+    export type AsObject = {
+        instance?: commands_common_pb.Instance.AsObject,
+        searchArgs: string,
+        includeHiddenBoards: boolean,
+    }
+}
+
+export class BoardSearchResp extends jspb.Message { 
+    clearBoardsList(): void;
+    getBoardsList(): Array<BoardListItem>;
+    setBoardsList(value: Array<BoardListItem>): BoardSearchResp;
+    addBoards(value?: BoardListItem, index?: number): BoardListItem;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BoardSearchResp.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardSearchResp): BoardSearchResp.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BoardSearchResp, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardSearchResp;
+    static deserializeBinaryFromReader(message: BoardSearchResp, reader: jspb.BinaryReader): BoardSearchResp;
+}
+
+export namespace BoardSearchResp {
+    export type AsObject = {
+        boardsList: Array<BoardListItem.AsObject>,
     }
 }

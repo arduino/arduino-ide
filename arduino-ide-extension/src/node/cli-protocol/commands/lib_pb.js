@@ -5878,7 +5878,8 @@ proto.cc.arduino.cli.commands.ZipLibraryInstallReq.prototype.toObject = function
 proto.cc.arduino.cli.commands.ZipLibraryInstallReq.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
-    path: jspb.Message.getFieldWithDefault(msg, 2, "")
+    path: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    overwrite: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -5924,6 +5925,10 @@ proto.cc.arduino.cli.commands.ZipLibraryInstallReq.deserializeBinaryFromReader =
       var value = /** @type {string} */ (reader.readString());
       msg.setPath(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOverwrite(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -5965,6 +5970,13 @@ proto.cc.arduino.cli.commands.ZipLibraryInstallReq.serializeBinaryToWriter = fun
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getOverwrite();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -6023,6 +6035,24 @@ proto.cc.arduino.cli.commands.ZipLibraryInstallReq.prototype.getPath = function(
  */
 proto.cc.arduino.cli.commands.ZipLibraryInstallReq.prototype.setPath = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional bool overwrite = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.ZipLibraryInstallReq.prototype.getOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.ZipLibraryInstallReq} returns this
+ */
+proto.cc.arduino.cli.commands.ZipLibraryInstallReq.prototype.setOverwrite = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
@@ -6210,7 +6240,8 @@ proto.cc.arduino.cli.commands.GitLibraryInstallReq.prototype.toObject = function
 proto.cc.arduino.cli.commands.GitLibraryInstallReq.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && commands_common_pb.Instance.toObject(includeInstance, f),
-    url: jspb.Message.getFieldWithDefault(msg, 2, "")
+    url: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    overwrite: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -6256,6 +6287,10 @@ proto.cc.arduino.cli.commands.GitLibraryInstallReq.deserializeBinaryFromReader =
       var value = /** @type {string} */ (reader.readString());
       msg.setUrl(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOverwrite(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -6297,6 +6332,13 @@ proto.cc.arduino.cli.commands.GitLibraryInstallReq.serializeBinaryToWriter = fun
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getOverwrite();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -6355,6 +6397,24 @@ proto.cc.arduino.cli.commands.GitLibraryInstallReq.prototype.getUrl = function()
  */
 proto.cc.arduino.cli.commands.GitLibraryInstallReq.prototype.setUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional bool overwrite = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.GitLibraryInstallReq.prototype.getOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.GitLibraryInstallReq} returns this
+ */
+proto.cc.arduino.cli.commands.GitLibraryInstallReq.prototype.setOverwrite = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
