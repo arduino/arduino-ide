@@ -332,27 +332,47 @@ void loop() {
             await this.loadSketch(sketch.uri); // Sanity check.
             return sketch.uri;
         }
+
+        const copy = async (sourcePath: string, destinationPath: string) => {
+            return new Promise<void>((resolve, reject) => {
+                ncp.ncp(sourcePath, destinationPath, async error => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    const newName = path.basename(destinationPath);
+                    try {
+                        const oldPath = path.join(destinationPath, new URI(sketch.mainFileUri).path.base);
+                        const newPath = path.join(destinationPath, `${newName}.ino`);
+                        if (oldPath !== newPath) {
+                            await promisify(fs.rename)(oldPath, newPath);
+                        }
+                        await this.loadSketch(FileUri.create(destinationPath).toString()); // Sanity check.
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+        }
+        // https://github.com/arduino/arduino-ide/issues/65
+        // When copying `/path/to/sketchbook/sketch_A` to `/path/to/sketchbook/sketch_A/anything` on a non-POSIX filesystem,
+        // `ncp` makes a recursion and copies the folders over and over again. In such cases, we copy the source into a temp folder,
+        // then move it to the desired destination.
         const destination = FileUri.fsPath(destinationUri);
-        await new Promise<void>((resolve, reject) => {
-            ncp.ncp(source, destination, async error => {
-                if (error) {
-                    reject(error);
+        let tempDestination = await new Promise<string>((resolve, reject) => {
+            temp.track().mkdir({ prefix }, async (err, dirPath) => {
+                if (err) {
+                    reject(err);
                     return;
                 }
-                const newName = path.basename(destination);
-                try {
-                    const oldPath = path.join(destination, new URI(sketch.mainFileUri).path.base);
-                    const newPath = path.join(destination, `${newName}.ino`);
-                    if (oldPath !== newPath) {
-                        await promisify(fs.rename)(oldPath, newPath);
-                    }
-                    await this.loadSketch(destinationUri); // Sanity check.
-                    resolve();
-                } catch (e) {
-                    reject(e);
-                }
+                resolve(dirPath);
             });
         });
+        tempDestination = path.join(tempDestination, sketch.name);
+        await fs.promises.mkdir(tempDestination, { recursive: true });
+        await copy(source, tempDestination);
+        await copy(tempDestination, destination);
         return FileUri.create(destination).toString();
     }
 
