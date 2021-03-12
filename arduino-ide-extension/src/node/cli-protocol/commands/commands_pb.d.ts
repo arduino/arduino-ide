@@ -348,9 +348,9 @@ export class OutdatedResp extends jspb.Message {
     addOutdatedLibrary(value?: commands_lib_pb.InstalledLibrary, index?: number): commands_lib_pb.InstalledLibrary;
 
     clearOutdatedPlatformList(): void;
-    getOutdatedPlatformList(): Array<commands_core_pb.Platform>;
-    setOutdatedPlatformList(value: Array<commands_core_pb.Platform>): OutdatedResp;
-    addOutdatedPlatform(value?: commands_core_pb.Platform, index?: number): commands_core_pb.Platform;
+    getOutdatedPlatformList(): Array<commands_common_pb.Platform>;
+    setOutdatedPlatformList(value: Array<commands_common_pb.Platform>): OutdatedResp;
+    addOutdatedPlatform(value?: commands_common_pb.Platform, index?: number): commands_common_pb.Platform;
 
 
     serializeBinary(): Uint8Array;
@@ -366,7 +366,7 @@ export class OutdatedResp extends jspb.Message {
 export namespace OutdatedResp {
     export type AsObject = {
         outdatedLibraryList: Array<commands_lib_pb.InstalledLibrary.AsObject>,
-        outdatedPlatformList: Array<commands_core_pb.Platform.AsObject>,
+        outdatedPlatformList: Array<commands_common_pb.Platform.AsObject>,
     }
 }
 

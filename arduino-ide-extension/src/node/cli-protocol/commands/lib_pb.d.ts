@@ -793,6 +793,9 @@ export class ZipLibraryInstallReq extends jspb.Message {
     getPath(): string;
     setPath(value: string): ZipLibraryInstallReq;
 
+    getOverwrite(): boolean;
+    setOverwrite(value: boolean): ZipLibraryInstallReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ZipLibraryInstallReq.AsObject;
@@ -808,6 +811,7 @@ export namespace ZipLibraryInstallReq {
     export type AsObject = {
         instance?: commands_common_pb.Instance.AsObject,
         path: string,
+        overwrite: boolean,
     }
 }
 
@@ -845,6 +849,9 @@ export class GitLibraryInstallReq extends jspb.Message {
     getUrl(): string;
     setUrl(value: string): GitLibraryInstallReq;
 
+    getOverwrite(): boolean;
+    setOverwrite(value: boolean): GitLibraryInstallReq;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GitLibraryInstallReq.AsObject;
@@ -860,6 +867,7 @@ export namespace GitLibraryInstallReq {
     export type AsObject = {
         instance?: commands_common_pb.Instance.AsObject,
         url: string,
+        overwrite: boolean,
     }
 }
 

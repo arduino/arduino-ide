@@ -30,6 +30,7 @@ interface IArduinoCoreService extends grpc.ServiceDefinition<grpc.UntypedService
     boardAttach: IArduinoCoreService_IBoardAttach;
     boardList: IArduinoCoreService_IBoardList;
     boardListAll: IArduinoCoreService_IBoardListAll;
+    boardSearch: IArduinoCoreService_IBoardSearch;
     boardListWatch: IArduinoCoreService_IBoardListWatch;
     compile: IArduinoCoreService_ICompile;
     platformInstall: IArduinoCoreService_IPlatformInstall;
@@ -187,6 +188,15 @@ interface IArduinoCoreService_IBoardListAll extends grpc.MethodDefinition<comman
     requestDeserialize: grpc.deserialize<commands_board_pb.BoardListAllReq>;
     responseSerialize: grpc.serialize<commands_board_pb.BoardListAllResp>;
     responseDeserialize: grpc.deserialize<commands_board_pb.BoardListAllResp>;
+}
+interface IArduinoCoreService_IBoardSearch extends grpc.MethodDefinition<commands_board_pb.BoardSearchReq, commands_board_pb.BoardSearchResp> {
+    path: "/cc.arduino.cli.commands.ArduinoCore/BoardSearch";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<commands_board_pb.BoardSearchReq>;
+    requestDeserialize: grpc.deserialize<commands_board_pb.BoardSearchReq>;
+    responseSerialize: grpc.serialize<commands_board_pb.BoardSearchResp>;
+    responseDeserialize: grpc.deserialize<commands_board_pb.BoardSearchResp>;
 }
 interface IArduinoCoreService_IBoardListWatch extends grpc.MethodDefinition<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp> {
     path: "/cc.arduino.cli.commands.ArduinoCore/BoardListWatch";
@@ -396,6 +406,7 @@ export interface IArduinoCoreServer {
     boardAttach: grpc.handleServerStreamingCall<commands_board_pb.BoardAttachReq, commands_board_pb.BoardAttachResp>;
     boardList: grpc.handleUnaryCall<commands_board_pb.BoardListReq, commands_board_pb.BoardListResp>;
     boardListAll: grpc.handleUnaryCall<commands_board_pb.BoardListAllReq, commands_board_pb.BoardListAllResp>;
+    boardSearch: grpc.handleUnaryCall<commands_board_pb.BoardSearchReq, commands_board_pb.BoardSearchResp>;
     boardListWatch: grpc.handleBidiStreamingCall<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     compile: grpc.handleServerStreamingCall<commands_compile_pb.CompileReq, commands_compile_pb.CompileResp>;
     platformInstall: grpc.handleServerStreamingCall<commands_core_pb.PlatformInstallReq, commands_core_pb.PlatformInstallResp>;
@@ -459,6 +470,9 @@ export interface IArduinoCoreClient {
     boardListAll(request: commands_board_pb.BoardListAllReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
+    boardSearch(request: commands_board_pb.BoardSearchReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardSearchResp) => void): grpc.ClientUnaryCall;
+    boardSearch(request: commands_board_pb.BoardSearchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardSearchResp) => void): grpc.ClientUnaryCall;
+    boardSearch(request: commands_board_pb.BoardSearchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardSearchResp) => void): grpc.ClientUnaryCall;
     boardListWatch(): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     boardListWatch(options: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     boardListWatch(metadata: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
@@ -551,6 +565,9 @@ export class ArduinoCoreClient extends grpc.Client implements IArduinoCoreClient
     public boardListAll(request: commands_board_pb.BoardListAllReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     public boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
     public boardListAll(request: commands_board_pb.BoardListAllReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardListAllResp) => void): grpc.ClientUnaryCall;
+    public boardSearch(request: commands_board_pb.BoardSearchReq, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardSearchResp) => void): grpc.ClientUnaryCall;
+    public boardSearch(request: commands_board_pb.BoardSearchReq, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardSearchResp) => void): grpc.ClientUnaryCall;
+    public boardSearch(request: commands_board_pb.BoardSearchReq, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: commands_board_pb.BoardSearchResp) => void): grpc.ClientUnaryCall;
     public boardListWatch(options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     public boardListWatch(metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<commands_board_pb.BoardListWatchReq, commands_board_pb.BoardListWatchResp>;
     public compile(request: commands_compile_pb.CompileReq, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<commands_compile_pb.CompileResp>;

@@ -6,6 +6,7 @@ import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import URI from '@theia/core/lib/common/uri';
 import { InstallationProgressDialog } from '../widgets/progress-dialog';
 import { LibraryService } from '../../common/protocol';
+import { ConfirmDialog } from '@theia/core/lib/browser';
 
 @injectable()
 export class AddZipLibrary extends SketchContribution {
@@ -49,17 +50,56 @@ export class AddZipLibrary extends SketchContribution {
         });
         if (!canceled && filePaths.length) {
             const zipUri = await this.fileSystemExt.getUri(filePaths[0]);
-            const dialog = new InstallationProgressDialog('Installing library', 'zip');
             try {
-                this.outputChannelManager.getChannel('Arduino').clear();
-                dialog.open();
-                await this.libraryService.installZip({ zipUri });
-            } catch (e) {
-                this.messageService.error(e.toString());
-            } finally {
-                dialog.close();
+                await this.doInstall(zipUri);
+            } catch (error) {
+                if (error instanceof AlreadyInstalledError) {
+                    const result = await new ConfirmDialog({
+                        msg: error.message,
+                        title: 'Do you want to overwrite the existing library?',
+                        ok: 'Yes',
+                        cancel: 'No'
+                    }).open();
+                    if (result) {
+                        await this.doInstall(zipUri, true);
+                    }
+                }
             }
         }
+    }
+
+    private async doInstall(zipUri: string, overwrite?: boolean): Promise<void> {
+        const dialog = new InstallationProgressDialog('Installing library', 'zip');
+        try {
+            this.outputChannelManager.getChannel('Arduino').clear();
+            dialog.open();
+            await this.libraryService.installZip({ zipUri, overwrite });
+        } catch (error) {
+            if (error instanceof Error) {
+                const match = error.message.match(/library (.*?) already installed/);
+                if (match && match.length >= 2) {
+                    const name = match[1].trim();
+                    if (name) {
+                        throw new AlreadyInstalledError(`A library folder named ${name} already exists. Do you want to overwrite it?`, name);
+                    } else {
+                        throw new AlreadyInstalledError(`A library already exists. Do you want to overwrite it?`);
+                    }
+                }
+            }
+            this.messageService.error(error.toString());
+            throw error;
+        } finally {
+            dialog.close();
+        }
+    }
+
+}
+
+class AlreadyInstalledError extends Error {
+
+    constructor(message: string, readonly libraryName?: string) {
+        super(message);
+        Object.setPrototypeOf(this, AlreadyInstalledError.prototype);
     }
 
 }
