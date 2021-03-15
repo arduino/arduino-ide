@@ -100,7 +100,7 @@ export abstract class Examples extends SketchContribution {
                     }
                 };
                 pushToDispose.push(this.commandRegistry.registerCommand(command, handler));
-                this.menuRegistry.registerMenuAction(submenuPath, { commandId, label: sketch.name });
+                this.menuRegistry.registerMenuAction(submenuPath, { commandId, label: sketch.name, order: sketch.name.toLocaleLowerCase() });
                 pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
             }
         }
