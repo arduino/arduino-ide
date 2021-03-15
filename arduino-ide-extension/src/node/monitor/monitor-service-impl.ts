@@ -122,9 +122,9 @@ export class MonitorServiceImpl implements MonitorService {
             if (!this.connection && reason && reason.code === MonitorError.ErrorCodes.CLIENT_CANCEL) {
                 return Status.OK;
             }
-            this.logger.info(`>>> Disposing monitor connection...`);
+            this.logger.info('>>> Disposing monitor connection...');
             if (!this.connection) {
-                this.logger.warn(`<<< Not connected. Nothing to dispose.`);
+                this.logger.warn('<<< Not connected. Nothing to dispose.');
                 return Status.NOT_CONNECTED;
             }
             const { duplex, config } = this.connection;

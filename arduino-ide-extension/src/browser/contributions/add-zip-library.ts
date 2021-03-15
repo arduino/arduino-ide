@@ -82,7 +82,7 @@ export class AddZipLibrary extends SketchContribution {
                     if (name) {
                         throw new AlreadyInstalledError(`A library folder named ${name} already exists. Do you want to overwrite it?`, name);
                     } else {
-                        throw new AlreadyInstalledError(`A library already exists. Do you want to overwrite it?`);
+                        throw new AlreadyInstalledError('A library already exists. Do you want to overwrite it?');
                     }
                 }
             }

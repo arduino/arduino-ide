@@ -53,7 +53,7 @@ export class NotificationServiceServerImpl implements NotificationServiceServer 
     disposeClient(client: NotificationServiceClient): void {
         const index = this.clients.indexOf(client);
         if (index === -1) {
-            console.warn(`Could not dispose notification service client. It was not registered.`);
+            console.warn('Could not dispose notification service client. It was not registered.');
             return;
         }
         this.clients.splice(index, 1);

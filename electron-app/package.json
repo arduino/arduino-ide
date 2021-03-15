@@ -40,7 +40,12 @@
           "editor.autoSave": "on",
           "editor.minimap.enabled": false,
           "editor.tabSize": 2,
-          "editor.scrollBeyondLastLine": false
+          "editor.scrollBeyondLastLine": false,
+          "editor.quickSuggestions": {
+            "other": false,
+            "comments": false,
+            "strings": false
+          }
         }
       }
     },

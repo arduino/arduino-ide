@@ -15,6 +15,7 @@
       "check-else",
       "check-whitespace"
     ],
+    "quotemark": [true, "single", "jsx-single", "avoid-escape", "avoid-template"],
     "radix": true,
     "trailing-comma": [false],
     "triple-equals": [true, "allow-null-check"],
