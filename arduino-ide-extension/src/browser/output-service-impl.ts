@@ -14,7 +14,7 @@ export class OutputServiceImpl implements OutputService {
 
     append(message: OutputMessage): void {
         const { chunk } = message;
-        const channel = this.outputChannelManager.getChannel(`Arduino`);
+        const channel = this.outputChannelManager.getChannel('Arduino');
         channel.show({ preserveFocus: true });
         channel.append(chunk);
     }

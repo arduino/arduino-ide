@@ -87,7 +87,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         if (!AttachedBoardsChangeEvent.isEmpty(event)) {
             this.logger.info('Attached boards and available ports changed:');
             this.logger.info(AttachedBoardsChangeEvent.toString(event));
-            this.logger.info(`------------------------------------------`);
+            this.logger.info('------------------------------------------');
         }
         this._attachedBoards = event.newState.boards;
         this._availablePorts = event.newState.ports;

@@ -1,9 +1,9 @@
-import { FrontendApplicationContribution, FrontendApplication, Widget, Message } from "@theia/core/lib/browser";
-import { injectable, inject } from "inversify";
-import { ArduinoToolbar } from "./arduino-toolbar";
-import { TabBarToolbarRegistry } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
-import { CommandRegistry } from "@theia/core";
-import { LabelParser } from "@theia/core/lib/browser/label-parser";
+import { FrontendApplicationContribution, FrontendApplication, Widget, Message } from '@theia/core/lib/browser';
+import { injectable, inject } from 'inversify';
+import { ArduinoToolbar } from './arduino-toolbar';
+import { TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { CommandRegistry } from '@theia/core';
+import { LabelParser } from '@theia/core/lib/browser/label-parser';
 
 export class ArduinoToolbarContainer extends Widget {
 

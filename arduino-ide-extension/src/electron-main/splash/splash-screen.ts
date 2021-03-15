@@ -28,7 +28,7 @@ SOFTWARE.
  */
 
 import { Event } from '@theia/core/lib/common/event';
-import { BrowserWindow } from "electron";
+import { BrowserWindow } from 'electron';
 
 /**
  * When splashscreen was shown.
@@ -126,11 +126,11 @@ export const initSplashScreen = (config: Config, onCloseRequested?: Event<void>)
     const window = new BrowserWindow(xConfig.windowOpts);
     splashScreen = new BrowserWindow(xConfig.splashScreenOpts);
     splashScreen.loadURL(`file://${xConfig.templateUrl}`);
-    xConfig.closeWindow && splashScreen.on("close", () => {
+    xConfig.closeWindow && splashScreen.on('close', () => {
         done || window.close();
     });
     // Splashscreen is fully loaded and ready to view.
-    splashScreen.webContents.on("did-finish-load", () => {
+    splashScreen.webContents.on('did-finish-load', () => {
         splashScreenReady = true;
         showSplash();
     });

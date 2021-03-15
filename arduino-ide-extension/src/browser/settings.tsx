@@ -24,6 +24,7 @@ export interface Settings extends Index {
     editorFontSize: number; // `editor.fontSize`
     themeId: string; // `workbench.colorTheme`
     autoSave: 'on' | 'off'; // `editor.autoSave`
+    quickSuggestions: Record<'other'|'comments'|'strings', boolean>; // `editor.quickSuggestions`
 
     autoScaleInterface: boolean; // `arduino.window.autoScale`
     interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
@@ -84,6 +85,7 @@ export class SettingsService {
             editorFontSize,
             themeId,
             autoSave,
+            quickSuggestions,
             autoScaleInterface,
             interfaceScale,
             // checkForUpdates,
@@ -97,6 +99,11 @@ export class SettingsService {
             this.preferenceService.get<number>('editor.fontSize', 12),
             this.preferenceService.get<string>('workbench.colorTheme', 'arduino-theme'),
             this.preferenceService.get<'on' | 'off'>('editor.autoSave', 'on'),
+            this.preferenceService.get<object>('editor.quickSuggestion', {
+              'other': false,
+              'comments': false,
+              'strings': false
+            }),
             this.preferenceService.get<boolean>('arduino.window.autoScale', true),
             this.preferenceService.get<number>('arduino.window.zoomLevel', 0),
             // this.preferenceService.get<string>('arduino.ide.autoUpdate', true),
@@ -113,6 +120,7 @@ export class SettingsService {
             editorFontSize,
             themeId,
             autoSave,
+            quickSuggestions,
             autoScaleInterface,
             interfaceScale,
             // checkForUpdates,
@@ -155,10 +163,10 @@ export class SettingsService {
                 return `Invalid sketchbook location: ${sketchbookPath}`;
             }
             if (editorFontSize <= 0) {
-                return `Invalid editor font size. It must be a positive integer.`;
+                return 'Invalid editor font size. It must be a positive integer.';
             }
             if (!ThemeService.get().getThemes().find(({ id }) => id === themeId)) {
-                return `Invalid theme.`;
+                return 'Invalid theme.';
             }
             return true;
         } catch (err) {
@@ -175,6 +183,7 @@ export class SettingsService {
             editorFontSize,
             themeId,
             autoSave,
+            quickSuggestions,
             autoScaleInterface,
             interfaceScale,
             // checkForUpdates,
@@ -199,6 +208,7 @@ export class SettingsService {
             this.preferenceService.set('editor.fontSize', editorFontSize, PreferenceScope.User),
             this.preferenceService.set('workbench.colorTheme', themeId, PreferenceScope.User),
             this.preferenceService.set('editor.autoSave', autoSave, PreferenceScope.User),
+            this.preferenceService.set('editor.quickSuggestions', quickSuggestions, PreferenceScope.User),
             this.preferenceService.set('arduino.window.autoScale', autoScaleInterface, PreferenceScope.User),
             this.preferenceService.set('arduino.window.zoomLevel', interfaceScale, PreferenceScope.User),
             // this.preferenceService.set('arduino.ide.autoUpdate', checkForUpdates, PreferenceScope.User),
@@ -359,6 +369,13 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
                     checked={this.state.autoSave === 'on'}
                     onChange={this.autoSaveDidChange} />
                 Auto save
+            </label>
+            <label className='flex-line'>
+                <input
+                    type='checkbox'
+                    checked={this.state.quickSuggestions.other === true}
+                    onChange={this.quickSuggestionsOtherDidChange} />
+                Editor Quick Suggestions
             </label>
             <label className='flex-line'>
                 <input
@@ -549,6 +566,21 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
 
     protected autoSaveDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({ autoSave: event.target.checked ? 'on' : 'off' });
+    };
+
+    protected quickSuggestionsOtherDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      
+      // need to persist react events through lifecycle https://reactjs.org/docs/events.html#event-pooling
+      const newVal = event.target.checked ? true : false
+      
+      this.setState(prevState => {
+        return {
+          quickSuggestions: {
+            ...prevState.quickSuggestions,
+            other: newVal
+          }
+        }
+      });
     };
 
     protected themeDidChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
