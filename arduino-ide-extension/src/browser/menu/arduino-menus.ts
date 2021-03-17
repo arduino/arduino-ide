@@ -8,8 +8,12 @@ export namespace ArduinoMenus {
     // -- File
     export const FILE__SKETCH_GROUP = [...CommonMenus.FILE, '0_sketch'];
     export const FILE__PRINT_GROUP = [...CommonMenus.FILE, '1_print'];
-    // XXX: on macOS, the settings group is not under `File`
-    export const FILE__SETTINGS_GROUP = [...(isOSX ? MAIN_MENU_BAR : CommonMenus.FILE), '2_settings'];
+    // XXX: on macOS, the "Preferences" and "Advanced" group is not under `File`
+    // The empty path ensures no top level menu is created for the preferences, even if they contains sub menus
+    export const FILE__PREFERENCES_GROUP = [...(isOSX ? [''] : CommonMenus.FILE), '2_preferences'];
+    export const FILE__ADVANCED_GROUP = [...(isOSX ? [''] : CommonMenus.FILE), '3_advanced'];
+    export const FILE__ADVANCED_SUBMENU = [...FILE__ADVANCED_GROUP, '0_advanced_sub'];
+
     export const FILE__QUIT_GROUP = [...CommonMenus.FILE, '3_quit'];
 
     // -- File / Open Recent
