@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide-extension",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "AGPL-3.0-or-later",
   "scripts": {
@@ -121,7 +121,7 @@
   ],
   "arduino": {
     "cli": {
-      "version": "20210317"
+      "version": "0.17.0"
     }
   }
 }
