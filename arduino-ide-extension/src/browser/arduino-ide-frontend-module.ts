@@ -24,6 +24,8 @@ import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/
 import { ProblemContribution } from './theia/markers/problem-contribution';
 import { FileNavigatorContribution } from './theia/navigator/navigator-contribution';
 import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { KeymapsFrontendContribution } from './theia/keymaps/keymaps-frontend-contribution';
+import { KeymapsFrontendContribution as TheiaKeymapsFrontendContribution } from '@theia/keymaps/lib/browser/keymaps-frontend-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
 import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
 import { EditorContribution } from './theia/editor/editor-contribution';
@@ -278,6 +280,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaOutlineViewContribution).to(OutlineViewContribution).inSingletonScope();
     rebind(TheiaProblemContribution).to(ProblemContribution).inSingletonScope();
     rebind(TheiaFileNavigatorContribution).to(FileNavigatorContribution).inSingletonScope();
+    rebind(TheiaKeymapsFrontendContribution).to(KeymapsFrontendContribution).inSingletonScope();
     rebind(TheiaEditorContribution).to(EditorContribution).inSingletonScope();
     rebind(TheiaMonacoStatusBarContribution).to(MonacoStatusBarContribution).inSingletonScope();
     rebind(TheiaApplicationShell).to(ApplicationShell).inSingletonScope();

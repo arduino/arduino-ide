@@ -33,11 +33,12 @@ export class Settings extends SketchContribution {
     }
 
     registerMenus(registry: MenuModelRegistry): void {
-        registry.registerMenuAction(ArduinoMenus.FILE__SETTINGS_GROUP, {
+        registry.registerMenuAction(ArduinoMenus.FILE__PREFERENCES_GROUP, {
             commandId: Settings.Commands.OPEN.id,
             label: 'Preferences...',
             order: '0'
         });
+        registry.registerSubmenu(ArduinoMenus.FILE__ADVANCED_SUBMENU, 'Advanced');
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
