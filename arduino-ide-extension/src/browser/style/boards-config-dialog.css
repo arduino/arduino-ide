@@ -1,5 +1,5 @@
 div#select-board-dialog {
-    margin: 5px 20px 50px 20px;
+    margin: 5px;
 }
 
 div#select-board-dialog .selectBoardContainer .body {
@@ -7,8 +7,8 @@ div#select-board-dialog .selectBoardContainer .body {
     overflow: hidden;
 }
 
-div.dialogContent.select-board-dialog > div.head {
-    padding-left: 21px;
+.select-board-dialog .head {
+    margin: 5px;
 }
 
 div.dialogContent.select-board-dialog > div.head .title {
@@ -16,11 +16,7 @@ div.dialogContent.select-board-dialog > div.head .title {
     letter-spacing: .02em;
     font-size: 1.2em;
     color: var(--theia-arduino-branding-primary);
-    margin: 17px 0;
-}
-
-div#select-board-dialog .selectBoardContainer .head .text {
-    margin-bottom: 21px;
+    margin-bottom: 10px;
 }
 
 div#select-board-dialog .selectBoardContainer .body .list .item.selected {
@@ -57,6 +53,8 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 #select-board-dialog .selectBoardContainer .body .container {
     flex: 1;
     padding: 0px 10px 0px 0px;
+    min-width: 240px;
+    max-width: 240px;
 }
 
 #select-board-dialog .selectBoardContainer .body .left.container .content {
@@ -82,15 +80,17 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
     color: var(--theia-arduino-branding-secondary);
     padding: 10px 5px 10px 10px;
     text-transform: uppercase;
-    /* The max, min-height comes from `.body .list` 265px + 47px top padding - 2 * 10px top padding */
-    max-height: 292px;
-    min-height: 292px;
+    /* The max, min-height comes from `.body .list` 200px + 47px top padding - 2 * 10px top padding */
+    max-height: 227px;
+    min-height: 227px;
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item {
     padding: 10px 5px 10px 10px;
     display: flex;
     justify-content: end;
+    white-space: nowrap;
+    overflow-x: hidden;
 }
 
 #select-board-dialog .selectBoardContainer .body .list .item .selected-icon {
@@ -114,9 +114,17 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
     background: var(--theia-secondaryButton-hoverBackground);
 }
 
+#select-board-dialog .selectBoardContainer .body .list .label {
+    max-width: 215px;
+    width: 215px;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 #select-board-dialog .selectBoardContainer .body .list {
-    max-height: 265px;
-    min-height: 265px;
+    max-height: 200px;
+    min-height: 200px;
     overflow-y: auto;
 }
 
@@ -132,14 +140,8 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 .p-Widget.dialogOverlay .dialogContent.select-board-dialog {
-    width: 740px;
+    width: 500px;
 }
-
-
-.dialogControl {
-    margin: 0 20px 30px 0;
-}
-
 .arduino-boards-toolbar-item-container {
     margin-left: 3px;
 }

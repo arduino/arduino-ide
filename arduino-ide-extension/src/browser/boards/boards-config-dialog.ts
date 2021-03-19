@@ -69,7 +69,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
             'Select both a Board and a Port if you want to upload a sketch.',
             'If you only select a Board you will be able just to compile, but not to upload your sketch.'
         ]) {
-            const p = document.createElement('p');
+            const p = document.createElement('div');
             p.textContent = paragraph;
             text.appendChild(p);
         }

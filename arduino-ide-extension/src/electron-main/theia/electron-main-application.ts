@@ -82,16 +82,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         return electronWindow;
     }
 
-    protected async getDefaultBrowserWindowOptions(): Promise<TheiaBrowserWindowOptions> {
-        const options = await super.getDefaultBrowserWindowOptions();
-        return {
-            ...options,
-            // Set and use a custom minimum window size: https://github.com/arduino/arduino-pro-ide/issues/337#issuecomment-687017281
-            minWidth: 900,
-            minHeight: 800
-        };
-    }
-
     protected async startBackend(): Promise<number> {
         // Check if we should run everything as one process.
         const noBackendFork = process.argv.indexOf('--no-cluster') !== -1;
