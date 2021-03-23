@@ -61,7 +61,7 @@ export class BurnBootloader extends SketchContribution {
                 verify,
                 verbose
             });
-            this.messageService.info('Done burning bootloader.', { timeout: 1000 });
+            this.messageService.info('Done burning bootloader.', { timeout: 3000 });
         } catch (e) {
             this.messageService.error(e.toString());
         } finally {

@@ -148,7 +148,7 @@ export class UploadSketch extends SketchContribution {
             } else {
                 await this.coreService.upload(options);
             }
-            this.messageService.info('Done uploading.', { timeout: 1000 });
+            this.messageService.info('Done uploading.', { timeout: 3000 });
         } catch (e) {
             this.messageService.error(e.toString());
         } finally {
