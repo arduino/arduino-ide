@@ -183,3 +183,36 @@ jobs:
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  artifacts:
+    name: ${{ matrix.artifact.name }} artifact
+    needs: build
+    if: always() && needs.build.result != 'skipped'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        artifact:
+          - path: "*Linux_64bit.zip"
+            name: Linux_X86-64
+          - path: "*macOS_64bit.dmg"
+            name: macOS
+          - path: "*Windows_64bit.exe"
+            name: Windows_X86-64_interactive_installer
+          - path: "*Windows_64bit.msi"
+            name: Windows_X86-64_MSI
+          - path: "*Windows_64bit.zip"
+            name: Windows_X86-64_zip
+
+    steps:
+      - name: Download job transfer artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+      
+      - name: Upload tester build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.artifact.name }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
