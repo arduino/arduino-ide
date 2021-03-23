@@ -175,7 +175,6 @@
 
 #arduino-open-sketch-control--toolbar--container {
     background-color: var(--theia-arduino-toolbar-background);
-    padding: 8px 8px 8px 8px; /* based on pure heuristics */
 }
 
 #arduino-open-sketch-control--toolbar {
@@ -183,6 +182,7 @@
     width: unset;
     line-height: unset;
     color: var(--theia-titleBar-activeBackground);
+    padding: 5px 8px; /* based on pure heuristics */
 }
 
 /* Output */
