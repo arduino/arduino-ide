@@ -13,6 +13,9 @@ on:
   schedule:
     - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
 
+env:
+  JOB_TRANSFER_ARTIFACT: build-artifacts
+
 jobs:
 
   build:
@@ -79,7 +82,7 @@ jobs:
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v2
         with:
-          name: build-artifacts
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: electron/build/dist/build-artifacts/
 
   changelog:
@@ -121,7 +124,7 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
         uses: actions/upload-artifact@v2
         with:
-          name: build-artifacts
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: CHANGELOG.txt
 
   publish:
@@ -132,14 +135,14 @@ jobs:
       - name: Download [GitHub Actions]
         uses: actions/download-artifact@v2
         with:
-          name: build-artifacts
-          path: build-artifacts
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
 
       - name: Publish Nightly [S3]
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: "build-artifacts/*"
-          PLUGIN_STRIP_PREFIX: "build-artifacts/"
+          PLUGIN_SOURCE: "${{ env.JOB_TRANSFER_ARTIFACT }}/*"
+          PLUGIN_STRIP_PREFIX: "${{ env.JOB_TRANSFER_ARTIFACT }}/"
           PLUGIN_TARGET: "/arduino-ide/nightly"
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -153,8 +156,8 @@ jobs:
       - name: Download [GitHub Actions]
         uses: actions/download-artifact@v2
         with:
-          name: build-artifacts
-          path: build-artifacts
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
 
       - name: Get Tag
         id: tag_name
@@ -166,7 +169,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
-          file: build-artifacts/*
+          file: ${{ env.JOB_TRANSFER_ARTIFACT }}/*
           tag: ${{ github.ref }}
           file_glob: true
           body: ${{ needs.changelog.outputs.BODY }}
@@ -174,8 +177,8 @@ jobs:
       - name: Publish Release [S3]
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: "build-artifacts/*"
-          PLUGIN_STRIP_PREFIX: "build-artifacts/"
+          PLUGIN_SOURCE: "${{ env.JOB_TRANSFER_ARTIFACT }}/*"
+          PLUGIN_STRIP_PREFIX: "${{ env.JOB_TRANSFER_ARTIFACT }}/"
           PLUGIN_TARGET: "/arduino-ide"
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
