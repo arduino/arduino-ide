@@ -109,7 +109,7 @@ export class VerifySketch extends SketchContribution {
                 sourceOverride,
                 compilerWarnings
             });
-            this.messageService.info('Done compiling.', { timeout: 1000 });
+            this.messageService.info('Done compiling.', { timeout: 3000 });
         } catch (e) {
             this.messageService.error(e.toString());
         } finally {
