@@ -29,9 +29,10 @@
           "NODE_PRESERVE_SYMLINKS": "1"
         }
       },
-      "program": "${workspaceRoot}/electron-app/src-gen/frontend/electron-main.js",
+      "cwd": "${workspaceFolder}/electron-app",
       "protocol": "inspector",
       "args": [
+        ".",
         "--log-level=debug",
         "--hostname=localhost",
         "--no-cluster",

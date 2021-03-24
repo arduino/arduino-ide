@@ -72,6 +72,9 @@ export class MonitorServiceImpl implements MonitorService {
         if (!client) {
             return Status.NOT_CONNECTED;
         }
+        if (client instanceof Error) {
+            return { message: client.message };
+        }
         const duplex = client.streamingOpen();
         this.connection = { duplex, config };
 
