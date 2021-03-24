@@ -39,6 +39,6 @@
     "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/nightly/vscode-arduino-tools-0.0.1-beta.1.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.7/file/marus25.cortex-debug-0.3.7.vsix"
+    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix"
   }
 }
