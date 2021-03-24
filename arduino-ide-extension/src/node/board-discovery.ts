@@ -2,7 +2,7 @@ import { injectable, inject, postConstruct, named } from 'inversify';
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
-import { CoreClientProvider } from './core-client-provider';
+import { CoreClientAware } from './core-client-provider';
 import { BoardListWatchReq, BoardListWatchResp } from './cli-protocol/commands/board_pb';
 import { Board, Port, NotificationServiceServer, AvailablePorts, AttachedBoardsChangeEvent } from '../common/protocol';
 
@@ -12,14 +12,11 @@ import { Board, Port, NotificationServiceServer, AvailablePorts, AttachedBoardsC
  * Unlike other services, this is not connection scoped.
  */
 @injectable()
-export class BoardDiscovery {
+export class BoardDiscovery extends CoreClientAware {
 
     @inject(ILogger)
     @named('discovery')
     protected discoveryLogger: ILogger;
-
-    @inject(CoreClientProvider)
-    protected readonly coreClientProvider: CoreClientProvider;
 
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
@@ -131,25 +128,6 @@ export class BoardDiscovery {
             availablePorts.push(port);
         }
         return availablePorts;
-    }
-
-    private async coreClient(): Promise<CoreClientProvider.Client> {
-        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
-            const client = await this.coreClientProvider.client();
-            if (client) {
-                resolve(client);
-                return;
-            }
-            const toDispose = this.coreClientProvider.onClientReady(async () => {
-                const client = await this.coreClientProvider.client();
-                if (client) {
-                    toDispose.dispose();
-                    resolve(client);
-                    return;
-                }
-            });
-        });
-        return coreClient;
     }
 
 }

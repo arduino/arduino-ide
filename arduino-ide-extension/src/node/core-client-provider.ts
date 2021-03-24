@@ -1,6 +1,7 @@
 import * as grpc from '@grpc/grpc-js';
 import { inject, injectable } from 'inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreClient } from './cli-protocol/commands/commands_grpc_pb';
 import * as commandsGrpcPb from './cli-protocol/commands/commands_grpc_pb';
@@ -27,7 +28,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     protected async reconcileClient(port: string | undefined): Promise<void> {
         if (port && port === this._port) {
             // No need to create a new gRPC client, but we have to update the indexes.
-            if (this._client) {
+            if (this._client && !(this._client instanceof Error)) {
                 await this.updateIndexes(this._client);
                 this.onClientReadyEmitter.fire();
             }
@@ -48,7 +49,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
             let resp: InitResp | undefined = undefined;
             const stream = client.init(initReq);
             stream.on('data', (data: InitResp) => resp = data);
-            stream.on('end', () => resolve(resp));
+            stream.on('end', () => resolve(resp!));
             stream.on('error', err => reject(err));
         });
 
@@ -175,20 +176,27 @@ export abstract class CoreClientAware {
     protected readonly coreClientProvider: CoreClientProvider;
 
     protected async coreClient(): Promise<CoreClientProvider.Client> {
-        const coreClient = await new Promise<CoreClientProvider.Client>(async resolve => {
+        const coreClient = await new Promise<CoreClientProvider.Client>(async (resolve, reject) => {
+            const handle = (c: CoreClientProvider.Client | Error) => {
+                if (c instanceof Error) {
+                    reject(c);
+                } else {
+                    resolve(c);
+                }
+            }
             const client = await this.coreClientProvider.client();
             if (client) {
-                resolve(client);
+                handle(client);
                 return;
             }
-            const toDispose = this.coreClientProvider.onClientReady(async () => {
+            const toDispose = new DisposableCollection();
+            toDispose.push(this.coreClientProvider.onClientReady(async () => {
                 const client = await this.coreClientProvider.client();
                 if (client) {
-                    toDispose.dispose();
-                    resolve(client);
-                    return;
+                    handle(client);
                 }
-            });
+                toDispose.dispose();
+            }));
         });
         return coreClient;
     }
