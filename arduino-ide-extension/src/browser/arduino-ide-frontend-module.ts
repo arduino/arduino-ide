@@ -67,8 +67,7 @@ import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 import { ArduinoDaemonPath, ArduinoDaemon } from '../common/protocol/arduino-daemon';
-import { EditorManager as TheiaEditorManager, EditorCommandContribution as TheiaEditorCommandContribution } from '@theia/editor/lib/browser';
-import { EditorManager } from './theia/editor/editor-manager';
+import { EditorCommandContribution as TheiaEditorCommandContribution } from '@theia/editor/lib/browser';
 import { FrontendConnectionStatusService, ApplicationConnectionStatusContribution } from './theia/core/connection-status-service';
 import {
     FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
@@ -153,6 +152,8 @@ import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/
 import { SearchInWorkspaceWidget } from './theia/search-in-workspace/search-in-workspace-widget';
 import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
 import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
+import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
+import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -305,6 +306,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaOutputChannelRegistryMainImpl).toService(OutputChannelRegistryMainImpl);
     bind(MonacoTextModelService).toSelf().inSingletonScope();
     rebind(TheiaMonacoTextModelService).toService(MonacoTextModelService);
+    bind(MonacoEditorProvider).toSelf().inSingletonScope();
+    rebind(TheiaMonacoEditorProvider).toService(MonacoEditorProvider);
 
     bind(SearchInWorkspaceWidget).toSelf();
     rebind(TheiaSearchInWorkspaceWidget).toService(SearchInWorkspaceWidget);
@@ -320,10 +323,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaApplicationConnectionStatusContribution).toService(ApplicationConnectionStatusContribution);
     bind(FrontendConnectionStatusService).toSelf().inSingletonScope();
     rebind(TheiaFrontendConnectionStatusService).toService(FrontendConnectionStatusService);
-
-    // Editor customizations. Sets the editor to `readOnly` if under the data dir.
-    bind(EditorManager).toSelf().inSingletonScope();
-    rebind(TheiaEditorManager).toService(EditorManager);
 
     // Decorator customizations
     bind(TabBarDecoratorService).toSelf().inSingletonScope();

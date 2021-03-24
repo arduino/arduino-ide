@@ -1,14 +1,15 @@
 import { inject, injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
+import { Emitter } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { MessageService } from '@theia/core/lib/common/message-service';
+import { FileChangeType } from '@theia/filesystem/lib/common/files';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { Sketch, SketchesService } from '../../common/protocol';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { ConfigService } from './config-service';
-import { DisposableCollection, Emitter } from '@theia/core';
-import { FileChangeType } from '@theia/filesystem/lib/browser';
 import { SketchContainer } from './sketches-service';
 
 @injectable()
@@ -127,6 +128,15 @@ export class SketchesServiceClientImpl implements FrontendApplicationContributio
             this.sketchbookDidChangeEmitter.fire(event);
             this.bufferedSketchbookEvents.length = 0;
         }, 100);
+    }
+
+    /**
+     * `true` if the `uri` is not contained in any of the opened workspaces. Otherwise, `false`.
+     */
+    isReadOnly(uri: URI | monaco.Uri | string): boolean {
+        const toCheck = uri instanceof URI ? uri : new URI(uri);
+        const readOnly = !this.workspaceService.tryGetRoots().some(({ resource }) => resource.isEqualOrParent(toCheck));
+        return readOnly;
     }
 
 }
