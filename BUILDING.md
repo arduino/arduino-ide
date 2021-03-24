@@ -61,7 +61,7 @@ yarn start
 
 This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide/actions).
 
- - _Snapshot_ builds run when changes are pushed to the `main` branch, or when a PR is created against the `main` branch. For the sake of the review and verification process, the build artifacts can be downloaded from the GitHub Actions page. Note: [due to a limitation](https://github.com/actions/upload-artifact/issues/80#issuecomment-630030144) with the GH Actions UI, you cannot download a particular build, but you have to get all together inside the `build-artifacts.zip`.
+ - _Snapshot_ builds run when changes are pushed to the `main` branch, or when a PR is created against the `main` branch. For the sake of the review and verification process, the build artifacts for each operating system can be downloaded from the GitHub Actions page.
  - _Nightly_ builds run every day at 03:00 GMT from the `main` branch.
  - _Release_ builds run when a new tag is pushed to the remote. The tag must follow the [semver](https://semver.org/). For instance, `1.2.3` is a correct tag, but `v2.3.4` won't work. Steps to trigger a new release build:
    - Create a local tag:
