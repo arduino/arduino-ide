@@ -74,8 +74,10 @@ export class BoardDiscovery {
                 // const label = detectedPort.getProtocolLabel();
                 const port = { address, protocol };
                 const boards: Board[] = [];
+                const serialNumber = detectedPort.getSerialNumber();
+
                 for (const item of detectedPort.getBoardsList()) {
-                    boards.push({ fqbn: item.getFqbn(), name: item.getName() || 'unknown', port });
+                    boards.push({ fqbn: item.getFqbn(), name: item.getName() || 'unknown', port, serialNumber });
                 }
 
                 if (eventType === 'add') {
