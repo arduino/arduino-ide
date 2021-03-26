@@ -24,7 +24,7 @@ jobs:
       matrix:
         config:
           - os: windows-latest
-          - os: ubuntu-latest
+          - os: ubuntu-18.04 # https://github.com/arduino/arduino-ide/issues/259
           - os: macos-latest
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 90
