@@ -24,7 +24,7 @@ export interface Settings extends Index {
     editorFontSize: number; // `editor.fontSize`
     themeId: string; // `workbench.colorTheme`
     autoSave: 'on' | 'off'; // `editor.autoSave`
-    quickSuggestions: Record<'other'|'comments'|'strings', boolean>; // `editor.quickSuggestions`
+    quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
 
     autoScaleInterface: boolean; // `arduino.window.autoScale`
     interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
@@ -100,9 +100,9 @@ export class SettingsService {
             this.preferenceService.get<string>('workbench.colorTheme', 'arduino-theme'),
             this.preferenceService.get<'on' | 'off'>('editor.autoSave', 'on'),
             this.preferenceService.get<object>('editor.quickSuggestion', {
-              'other': false,
-              'comments': false,
-              'strings': false
+                'other': false,
+                'comments': false,
+                'strings': false
             }),
             this.preferenceService.get<boolean>('arduino.window.autoScale', true),
             this.preferenceService.get<number>('arduino.window.zoomLevel', 0),
@@ -569,18 +569,18 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
     };
 
     protected quickSuggestionsOtherDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      
-      // need to persist react events through lifecycle https://reactjs.org/docs/events.html#event-pooling
-      const newVal = event.target.checked ? true : false
-      
-      this.setState(prevState => {
-        return {
-          quickSuggestions: {
-            ...prevState.quickSuggestions,
-            other: newVal
-          }
-        }
-      });
+
+        // need to persist react events through lifecycle https://reactjs.org/docs/events.html#event-pooling
+        const newVal = event.target.checked ? true : false
+
+        this.setState(prevState => {
+            return {
+                quickSuggestions: {
+                    ...prevState.quickSuggestions,
+                    other: newVal
+                }
+            }
+        });
     };
 
     protected themeDidChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -823,7 +823,7 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
     }
 
     get value(): string[] {
-        return this.textArea.value.split('\n').map(url => url.trim());
+        return this.textArea.value.split('\n').map(url => url.trim()).filter(url => !!url);
     }
 
     protected onAfterAttach(message: Message): void {
