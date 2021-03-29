@@ -135,6 +135,9 @@ export class SketchesServiceClientImpl implements FrontendApplicationContributio
      */
     isReadOnly(uri: URI | monaco.Uri | string): boolean {
         const toCheck = uri instanceof URI ? uri : new URI(uri);
+        if (toCheck.scheme === 'user-storage') {
+            return false;
+        }
         const readOnly = !this.workspaceService.tryGetRoots().some(({ resource }) => resource.isEqualOrParent(toCheck));
         return readOnly;
     }
