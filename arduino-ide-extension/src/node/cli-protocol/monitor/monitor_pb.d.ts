@@ -23,6 +23,12 @@ export class StreamingOpenReq extends jspb.Message {
     setData(value: Uint8Array | string): StreamingOpenReq;
 
 
+    hasRecvAcknowledge(): boolean;
+    clearRecvAcknowledge(): void;
+    getRecvAcknowledge(): number;
+    setRecvAcknowledge(value: number): StreamingOpenReq;
+
+
     getContentCase(): StreamingOpenReq.ContentCase;
 
     serializeBinary(): Uint8Array;
@@ -39,6 +45,7 @@ export namespace StreamingOpenReq {
     export type AsObject = {
         monitorconfig?: MonitorConfig.AsObject,
         data: Uint8Array | string,
+        recvAcknowledge: number,
     }
 
     export enum ContentCase {
@@ -47,6 +54,8 @@ export namespace StreamingOpenReq {
     MONITORCONFIG = 1,
 
     DATA = 2,
+
+    RECV_ACKNOWLEDGE = 3,
 
     }
 
@@ -65,6 +74,9 @@ export class MonitorConfig extends jspb.Message {
     getAdditionalconfig(): google_protobuf_struct_pb.Struct | undefined;
     setAdditionalconfig(value?: google_protobuf_struct_pb.Struct): MonitorConfig;
 
+    getRecvRateLimitBuffer(): number;
+    setRecvRateLimitBuffer(value: number): MonitorConfig;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorConfig.AsObject;
@@ -81,10 +93,12 @@ export namespace MonitorConfig {
         target: string,
         type: MonitorConfig.TargetType,
         additionalconfig?: google_protobuf_struct_pb.Struct.AsObject,
+        recvRateLimitBuffer: number,
     }
 
     export enum TargetType {
     SERIAL = 0,
+    NULL = 99,
     }
 
 }
@@ -94,6 +108,9 @@ export class StreamingOpenResp extends jspb.Message {
     getData_asU8(): Uint8Array;
     getData_asB64(): string;
     setData(value: Uint8Array | string): StreamingOpenResp;
+
+    getDropped(): number;
+    setDropped(value: number): StreamingOpenResp;
 
 
     serializeBinary(): Uint8Array;
@@ -109,5 +126,6 @@ export class StreamingOpenResp extends jspb.Message {
 export namespace StreamingOpenResp {
     export type AsObject = {
         data: Uint8Array | string,
+        dropped: number,
     }
 }
