@@ -25,7 +25,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         client.client.close();
     }
 
-    protected async reconcileClient(port: string | undefined): Promise<void> {
+    protected async reconcileClient(port: string | number | undefined): Promise<void> {
         if (port && port === this._port) {
             // No need to create a new gRPC client, but we have to update the indexes.
             if (this._client && !(this._client instanceof Error)) {
