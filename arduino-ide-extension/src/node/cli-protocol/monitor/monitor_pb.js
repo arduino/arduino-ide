@@ -2,6 +2,7 @@
 /**
  * @fileoverview
  * @enhanceable
+ * @suppress {missingRequire} reports error on implicit type usages.
  * @suppress {messageConventions} JS Compiler reports an error if a variable or
  *     field starts with 'MSG_' and isn't a translatable message.
  * @public
@@ -93,7 +94,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.cc.arduino.cli.monitor.StreamingOpenReq.oneofGroups_ = [[1,2]];
+proto.cc.arduino.cli.monitor.StreamingOpenReq.oneofGroups_ = [[1,2,3]];
 
 /**
  * @enum {number}
@@ -101,7 +102,8 @@ proto.cc.arduino.cli.monitor.StreamingOpenReq.oneofGroups_ = [[1,2]];
 proto.cc.arduino.cli.monitor.StreamingOpenReq.ContentCase = {
   CONTENT_NOT_SET: 0,
   MONITORCONFIG: 1,
-  DATA: 2
+  DATA: 2,
+  RECV_ACKNOWLEDGE: 3
 };
 
 /**
@@ -143,7 +145,8 @@ proto.cc.arduino.cli.monitor.StreamingOpenReq.prototype.toObject = function(opt_
 proto.cc.arduino.cli.monitor.StreamingOpenReq.toObject = function(includeInstance, msg) {
   var f, obj = {
     monitorconfig: (f = msg.getMonitorconfig()) && proto.cc.arduino.cli.monitor.MonitorConfig.toObject(includeInstance, f),
-    data: msg.getData_asB64()
+    data: msg.getData_asB64(),
+    recvAcknowledge: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -189,6 +192,10 @@ proto.cc.arduino.cli.monitor.StreamingOpenReq.deserializeBinaryFromReader = func
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setData(value);
       break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setRecvAcknowledge(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -230,6 +237,13 @@ proto.cc.arduino.cli.monitor.StreamingOpenReq.serializeBinaryToWriter = function
   if (f != null) {
     writer.writeBytes(
       2,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeInt32(
+      3,
       f
     );
   }
@@ -333,6 +347,42 @@ proto.cc.arduino.cli.monitor.StreamingOpenReq.prototype.hasData = function() {
 };
 
 
+/**
+ * optional int32 recv_acknowledge = 3;
+ * @return {number}
+ */
+proto.cc.arduino.cli.monitor.StreamingOpenReq.prototype.getRecvAcknowledge = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.cc.arduino.cli.monitor.StreamingOpenReq} returns this
+ */
+proto.cc.arduino.cli.monitor.StreamingOpenReq.prototype.setRecvAcknowledge = function(value) {
+  return jspb.Message.setOneofField(this, 3, proto.cc.arduino.cli.monitor.StreamingOpenReq.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.cc.arduino.cli.monitor.StreamingOpenReq} returns this
+ */
+proto.cc.arduino.cli.monitor.StreamingOpenReq.prototype.clearRecvAcknowledge = function() {
+  return jspb.Message.setOneofField(this, 3, proto.cc.arduino.cli.monitor.StreamingOpenReq.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.monitor.StreamingOpenReq.prototype.hasRecvAcknowledge = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
 
 
 
@@ -367,7 +417,8 @@ proto.cc.arduino.cli.monitor.MonitorConfig.toObject = function(includeInstance, 
   var f, obj = {
     target: jspb.Message.getFieldWithDefault(msg, 1, ""),
     type: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    additionalconfig: (f = msg.getAdditionalconfig()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f)
+    additionalconfig: (f = msg.getAdditionalconfig()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f),
+    recvRateLimitBuffer: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -416,6 +467,10 @@ proto.cc.arduino.cli.monitor.MonitorConfig.deserializeBinaryFromReader = functio
       var value = new google_protobuf_struct_pb.Struct;
       reader.readMessage(value,google_protobuf_struct_pb.Struct.deserializeBinaryFromReader);
       msg.setAdditionalconfig(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setRecvRateLimitBuffer(value);
       break;
     default:
       reader.skipField();
@@ -468,6 +523,13 @@ proto.cc.arduino.cli.monitor.MonitorConfig.serializeBinaryToWriter = function(me
       google_protobuf_struct_pb.Struct.serializeBinaryToWriter
     );
   }
+  f = message.getRecvRateLimitBuffer();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
+      f
+    );
+  }
 };
 
 
@@ -475,7 +537,8 @@ proto.cc.arduino.cli.monitor.MonitorConfig.serializeBinaryToWriter = function(me
  * @enum {number}
  */
 proto.cc.arduino.cli.monitor.MonitorConfig.TargetType = {
-  SERIAL: 0
+  SERIAL: 0,
+  NULL: 99
 };
 
 /**
@@ -551,6 +614,24 @@ proto.cc.arduino.cli.monitor.MonitorConfig.prototype.hasAdditionalconfig = funct
 };
 
 
+/**
+ * optional int32 recv_rate_limit_buffer = 4;
+ * @return {number}
+ */
+proto.cc.arduino.cli.monitor.MonitorConfig.prototype.getRecvRateLimitBuffer = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.cc.arduino.cli.monitor.MonitorConfig} returns this
+ */
+proto.cc.arduino.cli.monitor.MonitorConfig.prototype.setRecvRateLimitBuffer = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
 
 
 
@@ -583,7 +664,8 @@ proto.cc.arduino.cli.monitor.StreamingOpenResp.prototype.toObject = function(opt
  */
 proto.cc.arduino.cli.monitor.StreamingOpenResp.toObject = function(includeInstance, msg) {
   var f, obj = {
-    data: msg.getData_asB64()
+    data: msg.getData_asB64(),
+    dropped: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {
@@ -624,6 +706,10 @@ proto.cc.arduino.cli.monitor.StreamingOpenResp.deserializeBinaryFromReader = fun
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setData(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setDropped(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -657,6 +743,13 @@ proto.cc.arduino.cli.monitor.StreamingOpenResp.serializeBinaryToWriter = functio
   if (f.length > 0) {
     writer.writeBytes(
       1,
+      f
+    );
+  }
+  f = message.getDropped();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
       f
     );
   }
@@ -702,6 +795,24 @@ proto.cc.arduino.cli.monitor.StreamingOpenResp.prototype.getData_asU8 = function
  */
 proto.cc.arduino.cli.monitor.StreamingOpenResp.prototype.setData = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
+};
+
+
+/**
+ * optional int32 dropped = 2;
+ * @return {number}
+ */
+proto.cc.arduino.cli.monitor.StreamingOpenResp.prototype.getDropped = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.cc.arduino.cli.monitor.StreamingOpenResp} returns this
+ */
+proto.cc.arduino.cli.monitor.StreamingOpenResp.prototype.setDropped = function(value) {
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 

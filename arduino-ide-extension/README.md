@@ -54,3 +54,7 @@ The Config Service knows about your system, like for example the default sketch 
 ### `"arduino"` configuration in the `package.json`:
  - `"cli"`:
    - `"version"` type `string` | `{ owner: string, repo: string, commitish?: string }`: if the type is a `string` and is a valid semver, it will get the corresponding [released](https://github.com/arduino/arduino-cli/releases) CLI. If the type is `string` and is a [date in `YYYYMMDD`](https://arduino.github.io/arduino-cli/latest/installation/#nightly-builds) format, it will get a nightly CLI. If the type is an object, a CLI, build from the sources in the `owner/repo` will be used. If `commitish` is not defined, the HEAD of the default branch will be used. In any other cases an error is thrown.
+
+#### Rebuild gRPC protocol interfaces
+  - Some CLI updates can bring changes to the gRPC interfaces, as the API might change. gRPC interfaces can be updated running the command
+    `yarn --cwd arduino-ide-extension generate-protocol`
