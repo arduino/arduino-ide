@@ -777,6 +777,11 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
 
     protected onActivateRequest(msg: Message): void {
         super.onActivateRequest(msg);
+
+        // calling settingsService.reset() in order to reload the settings from the preferenceService
+        // and update the UI including changes triggerd from the command palette
+        this.settingsService.reset();
+
         this.widget.activate();
     }
 
