@@ -23,7 +23,38 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         // See: https://github.com/electron-userland/electron-builder/issues/2468
         // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
         app.on('ready', () => app.setName(config.applicationName));
+
+        // Add file associations to the app
+        this.attachFileAssociations();
+
         return super.start(config);
+    }
+
+    attachFileAssociations() {
+
+        // OSX: register open-file event
+        if (process.platform === 'darwin') {
+            app.on('open-file', (event, uri) => {
+                event.preventDefault();
+                // TODO: check if the URI is a .ino file
+                // should I call openSketchFiles(uri) ?
+            });
+        }
+
+        // WIN: read file(s) uri from executable args
+        if (process.platform === 'win32') {
+            if (app.isPackaged) {
+                // workaround for missing executable argument when app is packaged
+                process.argv.unshift('packaged');
+            }
+            // parameters is an array containing any files/folders that your OS will pass to your application
+            const uri = process.argv.slice(2) || null;
+            if (uri) {
+                // TODO: filter out only the first .ino file in the array
+                // should I call openSketchFiles(uri) ?
+            }
+        }
+
     }
 
     /**
