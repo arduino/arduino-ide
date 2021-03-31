@@ -34,6 +34,8 @@ import { NotificationServiceServerImpl } from './notification-service-server';
 import { NotificationServiceServer, NotificationServiceClient, NotificationServicePath } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
+import { DefaultGitInit } from './theia/git/git-init';
+import { GitInit } from '@theia/git/lib/node/init/git-init';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(BackendApplication).toSelf().inSingletonScope();
@@ -163,5 +165,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const parentLogger = ctx.container.get<ILogger>(ILogger);
         return parentLogger.child('monitor-service');
     }).inSingletonScope().whenTargetNamed('monitor-service');
+
+    bind(DefaultGitInit).toSelf();
+    rebind(GitInit).toService(DefaultGitInit);
 
 });
