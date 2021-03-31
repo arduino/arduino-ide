@@ -156,6 +156,8 @@ import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWi
 import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
 import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
+import { DebugEditorModel } from './theia/debug/debug-editor-model';
+import { DebugEditorModelFactory } from '@theia/debug/lib/browser/editor/debug-editor-model';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -416,6 +418,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     // To be able to use a `launch.json` from outside of the workspace.
     bind(DebugConfigurationManager).toSelf().inSingletonScope();
     rebind(TheiaDebugConfigurationManager).toService(DebugConfigurationManager);
+
+    // Patch for the debug hover: https://github.com/eclipse-theia/theia/pull/9256/
+    rebind(DebugEditorModelFactory).toDynamicValue(({ container }) => <DebugEditorModelFactory>(editor =>
+        DebugEditorModel.createModel(container, editor)
+    )).inSingletonScope();
 
     // Preferences
     bindArduinoPreferences(bind);
