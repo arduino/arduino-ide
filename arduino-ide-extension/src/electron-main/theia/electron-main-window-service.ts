@@ -11,7 +11,8 @@ export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowServic
 
     openNewWindow(url: string, { external }: NewWindowOptions): undefined {
         if (!external) {
-            const existing = this.app.windows.find(window => window.webContents.getURL() === url);
+            const sanitizedUrl = this.sanitize(url);
+            const existing = this.app.windows.find(window => this.sanitize(window.webContents.getURL()) === sanitizedUrl);
             if (existing) {
                 existing.focus();
                 return;
@@ -20,5 +21,14 @@ export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowServic
         return super.openNewWindow(url, { external });
     }
 
+    private sanitize(url: string): string {
+        const copy = new URL(url);
+        const searchParams: string[] = [];
+        copy.searchParams.forEach((_, key) => searchParams.push(key));
+        for (const param of searchParams) {
+            copy.searchParams.delete(param);
+        }
+        return copy.toString();
+    }
 
 }
