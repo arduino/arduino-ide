@@ -11,6 +11,8 @@ import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/
 import { ConfigService } from '../../../common/protocol/config-service';
 import { SketchesService, Sketch, SketchContainer } from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { BoardsConfig } from '../../boards/boards-config';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -32,6 +34,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
 
     @inject(FrontendApplicationStateService)
     protected readonly appStateService: FrontendApplicationStateService;
+
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceProvider: BoardsServiceProvider;
 
     private application: FrontendApplication;
     private workspaceUri?: Promise<string | undefined>;
@@ -78,6 +83,13 @@ export class WorkspaceService extends TheiaWorkspaceService {
             }
         })();
         return this.workspaceUri;
+    }
+
+    protected openNewWindow(workspacePath: string): void {
+        const { boardsConfig } = this.boardsServiceProvider;
+        const url = BoardsConfig.Config.setConfig(boardsConfig, new URL(window.location.href)); // Set the current boards config for the new browser window.
+        url.hash = workspacePath;
+        this.windowService.openNewWindow(url.toString());
     }
 
     private async isValid(uri: string): Promise<boolean> {

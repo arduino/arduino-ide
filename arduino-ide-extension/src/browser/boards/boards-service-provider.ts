@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { StorageService } from '@theia/core/lib/browser/storage-service';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { RecursiveRequired } from '../../common/types';
 import {
@@ -16,8 +16,8 @@ import {
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
-import { CommandService } from '@theia/core';
 import { ArduinoCommands } from '../arduino-commands';
+import { StorageWrapper } from '../storage-wrapper';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -28,8 +28,6 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     @inject(MessageService)
     protected messageService: MessageService;
 
-    @inject(StorageService)
-    protected storageService: StorageService;
 
     @inject(BoardsService)
     protected boardsService: BoardsService;
@@ -349,7 +347,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
             return undefined;
         }
         const key = this.getLastSelectedBoardOnPortKey(port);
-        return this.storageService.getData<Board>(key);
+        return this.getData<Board>(key);
     }
 
     protected async saveState(): Promise<void> {
@@ -360,11 +358,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         const { selectedBoard, selectedPort } = this.boardsConfig;
         if (selectedBoard && selectedPort) {
             const key = this.getLastSelectedBoardOnPortKey(selectedPort);
-            await this.storageService.setData(key, selectedBoard);
+            await this.setData(key, selectedBoard);
         }
         await Promise.all([
-            this.storageService.setData('latest-valid-boards-config', this.latestValidBoardsConfig),
-            this.storageService.setData('latest-boards-config', this.latestBoardsConfig)
+            this.setData('latest-valid-boards-config', this.latestValidBoardsConfig),
+            this.setData('latest-boards-config', this.latestBoardsConfig)
         ]);
     }
 
@@ -374,7 +372,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
 
     protected async loadState(): Promise<void> {
-        const storedLatestValidBoardsConfig = await this.storageService.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
+        const storedLatestValidBoardsConfig = await this.getData<RecursiveRequired<BoardsConfig.Config>>('latest-valid-boards-config');
         if (storedLatestValidBoardsConfig) {
             this.latestValidBoardsConfig = storedLatestValidBoardsConfig;
             if (this.canUploadTo(this.latestValidBoardsConfig)) {
@@ -382,12 +380,24 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
             }
         } else {
             // If we could not restore the latest valid config, try to restore something, the board at least.
-            const storedLatestBoardsConfig = await this.storageService.getData<BoardsConfig.Config | undefined>('latest-boards-config');
+            let storedLatestBoardsConfig = await this.getData<BoardsConfig.Config | undefined>('latest-boards-config');
+            // Try to get from the URL if it was not persisted.
+            if (!storedLatestBoardsConfig) {
+                storedLatestBoardsConfig = BoardsConfig.Config.getConfig(new URL(window.location.href));
+            }
             if (storedLatestBoardsConfig) {
                 this.latestBoardsConfig = storedLatestBoardsConfig;
                 this.boardsConfig = this.latestBoardsConfig;
             }
         }
+    }
+
+    private setData<T>(key: string, value: T): Promise<void> {
+        return this.commandService.executeCommand(StorageWrapper.Commands.SET_DATA.id, key, value);
+    }
+
+    private getData<T>(key: string): Promise<T | undefined> {
+        return this.commandService.executeCommand<T>(StorageWrapper.Commands.GET_DATA.id, key);
     }
 }
 

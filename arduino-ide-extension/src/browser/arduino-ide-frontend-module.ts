@@ -158,6 +158,7 @@ import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
 import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
 import { DebugEditorModel } from './theia/debug/debug-editor-model';
 import { DebugEditorModelFactory } from '@theia/debug/lib/browser/editor/debug-editor-model';
+import { StorageWrapper } from './storage-wrapper';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -435,4 +436,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(SettingsDialogProps).toConstantValue({
         title: 'Preferences'
     });
+
+    bind(StorageWrapper).toSelf().inSingletonScope();
+    bind(CommandContribution).toService(StorageWrapper);
 });
