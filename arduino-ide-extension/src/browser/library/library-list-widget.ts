@@ -84,7 +84,8 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
         }
 
         if (typeof installDependencies === 'boolean') {
-            return this.service.install({ item, version, installDependencies });
+            await this.service.install({ item, version, installDependencies });
+            this.messageService.info(`Successfully installed library ${item.name}:${version}.`, { timeout: 3000 });
         }
     }
 
