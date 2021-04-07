@@ -154,15 +154,14 @@ export class LibraryExamples extends Examples {
     protected async register(board: Board | undefined = this.boardsServiceClient.boardsConfig.selectedBoard): Promise<void> {
         return this.queue.add(async () => {
             this.toDispose.dispose();
-            if (!board || !board.fqbn) {
-                return;
-            }
-            const { fqbn, name } = board;
+            const fqbn = board?.fqbn;
+            const name = board?.name;
+            // Shows all examples when no board is selected, or the platform of the currently selected board is not installed.
             const { user, current, any } = await this.examplesService.installed({ fqbn });
             if (user.length) {
                 (user as any).unshift('Examples from Custom Libraries');
             }
-            if (current.length) {
+            if (name && fqbn && current.length) {
                 (current as any).unshift(`Examples for ${name}`);
             }
             if (any.length) {
