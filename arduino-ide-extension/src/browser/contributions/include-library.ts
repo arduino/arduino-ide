@@ -74,10 +74,9 @@ export class IncludeLibrary extends SketchContribution {
             this.mainMenuManager.update();
             const libraries: LibraryPackage[] = []
             const fqbn = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn;
-            // Do not show board specific examples, when no board is selected.
-            if (fqbn) {
-                libraries.push(...await this.libraryService.list({ fqbn }));
-            }
+            // Show all libraries, when no board is selected.
+            // Otherwise, show libraries only for the selected board.
+            libraries.push(...await this.libraryService.list({ fqbn }));
 
             const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];
             // `Add .ZIP Library...`
