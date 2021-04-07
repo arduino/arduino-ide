@@ -33,4 +33,9 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
         ]);
     }
 
+    async install({ item, version }: { item: BoardsPackage; version: string; }): Promise<void> {
+        await super.install({ item, version });
+        this.messageService.info(`Successfully installed platform ${item.name}:${version}.`, { timeout: 3000 });
+    }
+
 }
