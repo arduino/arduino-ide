@@ -40,22 +40,20 @@ export class ExamplesServiceImpl implements ExamplesService {
     }
 
     // TODO: decide whether it makes sense to cache them. Keys should be: `fqbn` + version of containing core/library.
-    async installed({ fqbn }: { fqbn: string }): Promise<{ user: SketchContainer[], current: SketchContainer[], any: SketchContainer[] }> {
+    async installed({ fqbn }: { fqbn?: string }): Promise<{ user: SketchContainer[], current: SketchContainer[], any: SketchContainer[] }> {
         const user: SketchContainer[] = [];
         const current: SketchContainer[] = [];
         const any: SketchContainer[] = [];
-        if (fqbn) {
-            const packages: LibraryPackage[] = await this.libraryService.list({ fqbn });
-            for (const pkg of packages) {
-                const container = await this.tryGroupExamples(pkg);
-                const { location } = pkg;
-                if (location === LibraryLocation.USER) {
-                    user.push(container);
-                } else if (location === LibraryLocation.PLATFORM_BUILTIN || LibraryLocation.REFERENCED_PLATFORM_BUILTIN) {
-                    current.push(container);
-                } else {
-                    any.push(container);
-                }
+        const packages: LibraryPackage[] = await this.libraryService.list({ fqbn });
+        for (const pkg of packages) {
+            const container = await this.tryGroupExamples(pkg);
+            const { location } = pkg;
+            if (location === LibraryLocation.USER) {
+                user.push(container);
+            } else if (location === LibraryLocation.PLATFORM_BUILTIN || LibraryLocation.REFERENCED_PLATFORM_BUILTIN) {
+                current.push(container);
+            } else {
+                any.push(container);
             }
         }
         return { user, current, any };
