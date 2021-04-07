@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex';
-import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService, ILogger } from '@theia/core';
+import { MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, SelectionService, ILogger, DisposableCollection } from '@theia/core';
 import {
     ContextMenuRenderer,
     FrontendApplication, FrontendApplicationContribution,
@@ -12,7 +12,7 @@ import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/li
 import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import URI from '@theia/core/lib/common/uri';
-import { EditorMainMenu, EditorManager } from '@theia/editor/lib/browser';
+import { EditorMainMenu, EditorManager, EditorOpenerOptions } from '@theia/editor/lib/browser';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
@@ -26,7 +26,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import * as React from 'react';
 import { remote } from 'electron';
 import { MainMenuManager } from '../common/main-menu-manager';
-import { BoardsService, CoreService, Port, SketchesService, ExecutableService } from '../common/protocol';
+import { BoardsService, CoreService, Port, SketchesService, ExecutableService, Sketch } from '../common/protocol';
 import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
 import { FileSystemExt } from '../common/protocol/filesystem-ext';
@@ -48,6 +48,8 @@ import { OutputService } from '../common/protocol/output-service';
 import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
+import { FileChangeType } from '@theia/filesystem/lib/browser';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class ArduinoFrontendContribution implements FrontendApplicationContribution,
@@ -81,7 +83,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     protected readonly fileDialogService: FileDialogService;
 
     @inject(FileService)
-    protected readonly fileSystem: FileService;
+    protected readonly fileService: FileService;
 
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
@@ -158,7 +160,11 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(SketchesServiceClientImpl)
     protected readonly sketchServiceClient: SketchesServiceClientImpl;
 
+    @inject(FrontendApplicationStateService)
+    protected readonly appStateService: FrontendApplicationStateService;
+
     protected invalidConfigPopup: Promise<void | 'No' | 'Yes' | undefined> | undefined;
+    protected toDisposeOnStop = new DisposableCollection();
 
     @postConstruct()
     protected async init(): Promise<void> {
@@ -182,6 +188,23 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }
         this.boardsServiceClientImpl.onBoardsConfigChanged(updateStatusBar);
         updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
+        this.appStateService.reachedState('ready').then(async () => {
+            const sketch = await this.sketchServiceClient.currentSketch();
+            if (sketch && (!await this.sketchService.isTemp(sketch))) {
+                this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
+                this.toDisposeOnStop.push(this.fileService.onDidFilesChange(async event => {
+                    for (const { type, resource } of event.changes) {
+                        if (type === FileChangeType.ADDED && resource.parent.toString() === sketch.uri) {
+                            const reloadedSketch = await this.sketchService.loadSketch(sketch.uri)
+                            if (Sketch.isInSketch(resource, reloadedSketch)) {
+                                this.ensureOpened(resource.toString(), true, { mode: 'open' });
+                            }
+                        }
+                    }
+                }));
+            }
+        });
+
     }
 
     onStart(app: FrontendApplication): void {
@@ -225,6 +248,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         app.shell.leftPanelHandler.removeMenu('settings-menu');
     }
 
+    onStop(): void {
+        this.toDisposeOnStop.dispose();
+    }
+
     protected languageServerFqbn?: string;
     protected languageServerStartMutex = new Mutex();
     protected async startLanguageServer(fqbn: string, name: string | undefined): Promise<void> {
@@ -257,14 +284,14 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
             if (log) {
                 const currentSketch = await this.sketchServiceClient.currentSketch();
                 if (currentSketch) {
-                    currentSketchPath = await this.fileSystem.fsPath(new URI(currentSketch.uri));
+                    currentSketchPath = await this.fileService.fsPath(new URI(currentSketch.uri));
                 }
             }
             const { clangdUri, cliUri, lsUri } = await this.executableService.list();
             const [clangdPath, cliPath, lsPath] = await Promise.all([
-                this.fileSystem.fsPath(new URI(clangdUri)),
-                this.fileSystem.fsPath(new URI(cliUri)),
-                this.fileSystem.fsPath(new URI(lsUri)),
+                this.fileService.fsPath(new URI(clangdUri)),
+                this.fileService.fsPath(new URI(cliUri)),
+                this.fileService.fsPath(new URI(lsUri)),
             ]);
             this.languageServerFqbn = await Promise.race([
                 new Promise<undefined>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${20_000} ms.`)), 20_000)),
@@ -367,10 +394,10 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
         }
     }
 
-    protected async ensureOpened(uri: string, forceOpen: boolean = false): Promise<any> {
+    protected async ensureOpened(uri: string, forceOpen: boolean = false, options?: EditorOpenerOptions | undefined): Promise<any> {
         const widget = this.editorManager.all.find(widget => widget.editor.uri.toString() === uri);
         if (!widget || forceOpen) {
-            return this.editorManager.open(new URI(uri));
+            return this.editorManager.open(new URI(uri), options);
         }
     }
 
@@ -420,13 +447,13 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 description: 'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.'
             },
             {
-              id: 'arduino.toolbar.toggleBackground',
-              defaults: {
-                  dark: 'editor.selectionBackground',
-                  light: 'editor.selectionBackground',
-                  hc: 'textPreformat.foreground'
-              },
-              description: 'Toggle color of the toolbar items when they are currently toggled (the command is in progress)'
+                id: 'arduino.toolbar.toggleBackground',
+                defaults: {
+                    dark: 'editor.selectionBackground',
+                    light: 'editor.selectionBackground',
+                    hc: 'textPreformat.foreground'
+                },
+                description: 'Toggle color of the toolbar items when they are currently toggled (the command is in progress)'
             },
             {
                 id: 'arduino.output.foreground',
