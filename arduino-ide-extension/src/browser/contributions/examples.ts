@@ -1,5 +1,6 @@
 import * as PQueue from 'p-queue';
 import { inject, injectable, postConstruct } from 'inversify';
+import { CommandHandler } from '@theia/core/lib/common/command';
 import { MenuPath, CompositeMenuNode, SubMenuOptions } from '@theia/core/lib/common/menu';
 import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
@@ -93,15 +94,19 @@ export abstract class Examples extends SketchContribution {
                 const { uri } = sketch;
                 const commandId = `arduino-open-example-${submenuPath.join(':')}--${uri}`;
                 const command = { id: commandId };
-                const handler = {
-                    execute: async () => {
-                        const sketch = await this.sketchService.cloneExample(uri);
-                        this.commandService.executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch);
-                    }
-                };
+                const handler = this.createHandler(uri);
                 pushToDispose.push(this.commandRegistry.registerCommand(command, handler));
                 this.menuRegistry.registerMenuAction(submenuPath, { commandId, label: sketch.name, order: sketch.name.toLocaleLowerCase() });
                 pushToDispose.push(Disposable.create(() => this.menuRegistry.unregisterMenuAction(command)));
+            }
+        }
+    }
+
+    protected createHandler(uri: string): CommandHandler {
+        return {
+            execute: async () => {
+                const sketch = await this.sketchService.cloneExample(uri);
+                return this.commandService.executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch);
             }
         }
     }

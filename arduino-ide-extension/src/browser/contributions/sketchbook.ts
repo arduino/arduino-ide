@@ -1,10 +1,12 @@
 import { inject, injectable } from 'inversify';
+import { CommandHandler } from '@theia/core/lib/common/command';
 import { CommandRegistry, MenuModelRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { NotificationCenter } from '../notification-center';
 import { Examples } from './examples';
 import { SketchContainer } from '../../common/protocol';
+import { OpenSketch } from './open-sketch';
 
 @injectable()
 export class Sketchbook extends Examples {
@@ -41,6 +43,15 @@ export class Sketchbook extends Examples {
     protected register(container: SketchContainer): void {
         this.toDispose.dispose();
         this.registerRecursively([...container.children, ...container.sketches], ArduinoMenus.FILE__SKETCHBOOK_SUBMENU, this.toDispose);
+    }
+
+    protected createHandler(uri: string): CommandHandler {
+        return {
+            execute: async () => {
+                const sketch = await this.sketchService.loadSketch(uri);
+                return this.commandService.executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch);
+            }
+        }
     }
 
 }
