@@ -3,7 +3,7 @@ import { ClientDuplexStream } from '@grpc/grpc-js';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { CoreClientAware } from './core-client-provider';
-import { BoardListWatchReq, BoardListWatchResp } from './cli-protocol/commands/board_pb';
+import { BoardListWatchRequest, BoardListWatchResponse } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import { Board, Port, NotificationServiceServer, AvailablePorts, AttachedBoardsChangeEvent } from '../common/protocol';
 
 /**
@@ -21,7 +21,7 @@ export class BoardDiscovery extends CoreClientAware {
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    protected boardWatchDuplex: ClientDuplexStream<BoardListWatchReq, BoardListWatchResp> | undefined;
+    protected boardWatchDuplex: ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse> | undefined;
 
     /**
      * Keys are the `address` of the ports. \
@@ -43,10 +43,10 @@ export class BoardDiscovery extends CoreClientAware {
     protected async init(): Promise<void> {
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
-        const req = new BoardListWatchReq();
+        const req = new BoardListWatchRequest();
         req.setInstance(instance);
         this.boardWatchDuplex = client.boardListWatch();
-        this.boardWatchDuplex.on('data', (resp: BoardListWatchResp) => {
+        this.boardWatchDuplex.on('data', (resp: BoardListWatchResponse) => {
             const detectedPort = resp.getPort();
             if (detectedPort) {
 

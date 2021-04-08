@@ -7,14 +7,14 @@ import {
     BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AvailablePorts, BoardWithPackage
 } from '../common/protocol';
 import {
-    PlatformSearchReq, PlatformSearchResp, PlatformInstallReq, PlatformInstallResp, PlatformListReq,
-    PlatformListResp, PlatformUninstallResp, PlatformUninstallReq
-} from './cli-protocol/commands/core_pb';
-import { Platform } from './cli-protocol/commands/common_pb';
+    PlatformInstallRequest, PlatformInstallResponse, PlatformListRequest, PlatformListResponse, PlatformSearchRequest,
+    PlatformSearchResponse, PlatformUninstallRequest, PlatformUninstallResponse
+} from './cli-protocol/cc/arduino/cli/commands/v1/core_pb';
+import { Platform } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { BoardDiscovery } from './board-discovery';
 import { CoreClientAware } from './core-client-provider';
-import { BoardDetailsReq, BoardDetailsResp, BoardSearchReq } from './cli-protocol/commands/board_pb';
-import { ListProgrammersAvailableForUploadReq, ListProgrammersAvailableForUploadResp } from './cli-protocol/commands/upload_pb';
+import { BoardDetailsRequest, BoardDetailsResponse, BoardSearchRequest } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
+import { ListProgrammersAvailableForUploadRequest, ListProgrammersAvailableForUploadResponse } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 
 @injectable()
 export class BoardsServiceImpl extends CoreClientAware implements BoardsService {
@@ -51,10 +51,10 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const { fqbn } = options;
-        const detailsReq = new BoardDetailsReq();
+        const detailsReq = new BoardDetailsRequest();
         detailsReq.setInstance(instance);
         detailsReq.setFqbn(fqbn);
-        const detailsResp = await new Promise<BoardDetailsResp | undefined>((resolve, reject) => client.boardDetails(detailsReq, (err, resp) => {
+        const detailsResp = await new Promise<BoardDetailsResponse | undefined>((resolve, reject) => client.boardDetails(detailsReq, (err, resp) => {
             if (err) {
                 // Required cores are not installed manually: https://github.com/arduino/arduino-cli/issues/954
                 if ((err.message.indexOf('missing platform release') !== -1 && err.message.indexOf('referenced by board') !== -1)
@@ -75,7 +75,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         const debuggingSupported = detailsResp.getDebuggingSupported();
 
-        const requiredTools = detailsResp.getToolsdependenciesList().map(t => <Tool>{
+        const requiredTools = detailsResp.getToolsDependenciesList().map(t => <Tool>{
             name: t.getName(),
             packager: t.getPackager(),
             version: t.getVersion()
@@ -91,10 +91,10 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
             })
         });
 
-        const listReq = new ListProgrammersAvailableForUploadReq();
+        const listReq = new ListProgrammersAvailableForUploadRequest();
         listReq.setInstance(instance);
         listReq.setFqbn(fqbn);
-        const listResp = await new Promise<ListProgrammersAvailableForUploadResp>((resolve, reject) => client.listProgrammersAvailableForUpload(listReq, (err, resp) => {
+        const listResp = await new Promise<ListProgrammersAvailableForUploadResponse>((resolve, reject) => client.listProgrammersAvailableForUpload(listReq, (err, resp) => {
             if (err) {
                 reject(err);
                 return;
@@ -110,7 +110,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         let VID = 'N/A';
         let PID = 'N/A';
-        const usbId = detailsResp.getIdentificationPrefList().map(item => item.getUsbid()).find(notEmpty);
+        const usbId = detailsResp.getIdentificationPrefsList().map(item => item.getUsbId()).find(notEmpty);
         if (usbId) {
             VID = usbId.getVid();
             PID = usbId.getPid();
@@ -147,7 +147,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
     async searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]> {
         const { instance, client } = await this.coreClient();
-        const req = new BoardSearchReq();
+        const req = new BoardSearchRequest();
         req.setSearchArgs(query || '');
         req.setInstance(instance);
         const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
@@ -178,18 +178,18 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
-        const installedPlatformsReq = new PlatformListReq();
+        const installedPlatformsReq = new PlatformListRequest();
         installedPlatformsReq.setInstance(instance);
-        const installedPlatformsResp = await new Promise<PlatformListResp>((resolve, reject) =>
+        const installedPlatformsResp = await new Promise<PlatformListResponse>((resolve, reject) =>
             client.platformList(installedPlatformsReq, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp))
         );
-        const installedPlatforms = installedPlatformsResp.getInstalledPlatformList();
+        const installedPlatforms = installedPlatformsResp.getInstalledPlatformsList();
 
-        const req = new PlatformSearchReq();
+        const req = new PlatformSearchRequest();
         req.setSearchArgs(options.query || '');
         req.setAllVersions(true);
         req.setInstance(instance);
-        const resp = await new Promise<PlatformSearchResp>((resolve, reject) => client.platformSearch(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
+        const resp = await new Promise<PlatformSearchResponse>((resolve, reject) => client.platformSearch(req, (err, resp) => (!!err ? reject : resolve)(!!err ? err : resp)));
         const packages = new Map<string, BoardsPackage>();
         const toPackage = (platform: Platform) => {
             let installedVersion: string | undefined;
@@ -262,7 +262,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         const [platform, architecture] = item.id.split(':');
 
-        const req = new PlatformInstallReq();
+        const req = new PlatformInstallRequest();
         req.setInstance(instance);
         req.setArchitecture(architecture);
         req.setPlatformPackage(platform);
@@ -270,7 +270,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         console.info('>>> Starting boards package installation...', item);
         const resp = client.platformInstall(req);
-        resp.on('data', (r: PlatformInstallResp) => {
+        resp.on('data', (r: PlatformInstallResponse) => {
             const prog = r.getProgress();
             if (prog && prog.getFile()) {
                 this.outputService.append({ chunk: `downloading ${prog.getFile()}\n` });
@@ -298,7 +298,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         const [platform, architecture] = item.id.split(':');
 
-        const req = new PlatformUninstallReq();
+        const req = new PlatformUninstallRequest();
         req.setInstance(instance);
         req.setArchitecture(architecture);
         req.setPlatformPackage(platform);
@@ -306,7 +306,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         console.info('>>> Starting boards package uninstallation...', item);
         let logged = false;
         const resp = client.platformUninstall(req);
-        resp.on('data', (_: PlatformUninstallResp) => {
+        resp.on('data', (_: PlatformUninstallResponse) => {
             if (!logged) {
                 this.outputService.append({ chunk: `uninstalling ${item.id}\n` });
                 logged = true;

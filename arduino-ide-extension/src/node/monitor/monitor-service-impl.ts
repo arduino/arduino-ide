@@ -5,7 +5,7 @@ import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MonitorService, MonitorServiceClient, MonitorConfig, MonitorError, Status } from '../../common/protocol/monitor-service';
-import { StreamingOpenReq, StreamingOpenResp, MonitorConfig as GrpcMonitorConfig } from '../cli-protocol/monitor/monitor_pb';
+import { StreamingOpenRequest, StreamingOpenResponse, MonitorConfig as GrpcMonitorConfig } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
 
@@ -46,7 +46,7 @@ export class MonitorServiceImpl implements MonitorService {
     protected readonly monitorClientProvider: MonitorClientProvider;
 
     protected client?: MonitorServiceClient;
-    protected connection?: { duplex: ClientDuplexStream<StreamingOpenReq, StreamingOpenResp>, config: MonitorConfig };
+    protected connection?: { duplex: ClientDuplexStream<StreamingOpenRequest, StreamingOpenResponse>, config: MonitorConfig };
     protected messages: string[] = [];
     protected onMessageDidReadEmitter = new Emitter<void>();
 
@@ -91,7 +91,7 @@ export class MonitorServiceImpl implements MonitorService {
             });
         }).bind(this));
 
-        duplex.on('data', ((resp: StreamingOpenResp) => {
+        duplex.on('data', ((resp: StreamingOpenResponse) => {
             const raw = resp.getData();
             const message = typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
             this.messages.push(message);
@@ -99,14 +99,14 @@ export class MonitorServiceImpl implements MonitorService {
         }).bind(this));
 
         const { type, port } = config;
-        const req = new StreamingOpenReq();
+        const req = new StreamingOpenRequest();
         const monitorConfig = new GrpcMonitorConfig();
         monitorConfig.setType(this.mapType(type));
         monitorConfig.setTarget(port.address);
         if (config.baudRate !== undefined) {
-            monitorConfig.setAdditionalconfig(Struct.fromJavaScript({ 'BaudRate': config.baudRate }));
+            monitorConfig.setAdditionalConfig(Struct.fromJavaScript({ 'BaudRate': config.baudRate }));
         }
-        req.setMonitorconfig(monitorConfig);
+        req.setConfig(monitorConfig);
 
         return new Promise<Status>(resolve => {
             if (this.connection) {
@@ -144,7 +144,7 @@ export class MonitorServiceImpl implements MonitorService {
         if (!this.connection) {
             return Status.NOT_CONNECTED;
         }
-        const req = new StreamingOpenReq();
+        const req = new StreamingOpenRequest();
         req.setData(new TextEncoder().encode(message));
         return new Promise<Status>(resolve => {
             if (this.connection) {
@@ -172,8 +172,8 @@ export class MonitorServiceImpl implements MonitorService {
 
     protected mapType(type?: MonitorConfig.ConnectionType): GrpcMonitorConfig.TargetType {
         switch (type) {
-            case MonitorConfig.ConnectionType.SERIAL: return GrpcMonitorConfig.TargetType.SERIAL;
-            default: return GrpcMonitorConfig.TargetType.SERIAL;
+            case MonitorConfig.ConnectionType.SERIAL: return GrpcMonitorConfig.TargetType.TARGET_TYPE_SERIAL;
+            default: return GrpcMonitorConfig.TargetType.TARGET_TYPE_SERIAL;
         }
     }
 

@@ -13,9 +13,9 @@ import { Event, Emitter } from '@theia/core/lib/common/event';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ConfigService, Config, NotificationServiceServer, Network } from '../common/protocol';
 import { spawnCommand } from './exec-util';
-import { WriteRequest, RawData } from './cli-protocol/settings/settings_pb';
-import { SettingsClient } from './cli-protocol/settings/settings_grpc_pb';
-import * as serviceGrpcPb from './cli-protocol/settings/settings_grpc_pb';
+import { MergeRequest, WriteRequest } from './cli-protocol/cc/arduino/cli/settings/v1/settings_pb';
+import { SettingsServiceClient } from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
+import * as serviceGrpcPb from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
@@ -198,12 +198,12 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
 
     protected async updateDaemon(port: string | number, config: DefaultCliConfig): Promise<void> {
         const client = this.createClient(port);
-        const data = new RawData();
+        const req = new MergeRequest();
         const json = JSON.stringify(config, null, 2);
-        data.setJsondata(json);
+        req.setJsonData(json);
         console.log(`Updating daemon with 'data': ${json}`);
         return new Promise<void>((resolve, reject) => {
-            client.merge(data, error => {
+            client.merge(req, error => {
                 try {
                     if (error) {
                         reject(error);
@@ -222,7 +222,7 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         const req = new WriteRequest();
         const cliConfigUri = await this.getCliConfigFileUri();
         const cliConfigPath = FileUri.fsPath(cliConfigUri);
-        req.setFilepath(cliConfigPath);
+        req.setFilePath(cliConfigPath);
         return new Promise<void>((resolve, reject) => {
             client.write(req, error => {
                 try {
@@ -238,11 +238,11 @@ export class ConfigServiceImpl implements BackendApplicationContribution, Config
         });
     }
 
-    private createClient(port: string | number): SettingsClient {
+    private createClient(port: string | number): SettingsServiceClient {
         // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
         // @ts-ignore
-        const SettingsClient = grpc.makeClientConstructor(serviceGrpcPb['cc.arduino.cli.settings.Settings'], 'SettingsService') as any;
-        return new SettingsClient(`localhost:${port}`, grpc.credentials.createInsecure()) as SettingsClient;
+        const SettingsClient = grpc.makeClientConstructor(serviceGrpcPb['cc.arduino.cli.settings.v1.SettingsService'], 'SettingsServiceService') as any;
+        return new SettingsClient(`localhost:${port}`, grpc.credentials.createInsecure()) as SettingsServiceClient;
     }
 
 }
