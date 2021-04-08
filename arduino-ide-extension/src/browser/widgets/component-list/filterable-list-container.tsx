@@ -3,16 +3,15 @@ import debounce = require('lodash.debounce');
 import { Event } from '@theia/core/lib/common/event';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { OutputCommands } from '@theia/output/lib/browser/output-commands';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { Searchable } from '../../../common/protocol/searchable';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
-import { InstallationProgressDialog, UninstallationProgressDialog } from '../progress-dialog';
 import { SearchBar } from './search-bar';
 import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
+import { ResponseServiceImpl } from '../../response-service-impl';
 
 export class FilterableListContainer<T extends ArduinoComponent> extends React.Component<FilterableListContainer.Props<T>, FilterableListContainer.State<T>> {
 
@@ -84,20 +83,14 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
     }
 
     protected async install(item: T, version: Installable.Version): Promise<void> {
-        const { install, searchable, itemLabel } = this.props;
-        const dialog = new InstallationProgressDialog(itemLabel(item), version);
-        try {
-            dialog.open();
-            await this.clearArduinoChannel();
-            await install({ item, version });
-            const items = await searchable.search({ query: this.state.filterText });
-            this.setState({ items: this.sort(items) });
-        } catch (error) {
-            this.props.messageService.error(error instanceof Error ? error.message : String(error));
-            throw error;
-        } finally {
-            dialog.close();
-        }
+        const { install, searchable } = this.props;
+        await Installable.doWithProgress({
+            ...this.props,
+            progressText: `Processing ${item.name}:${version}`,
+            run: ({ progressId }) => install({ item, progressId, version })
+        });
+        const items = await searchable.search({ query: this.state.filterText });
+        this.setState({ items: this.sort(items) });
     }
 
     protected async uninstall(item: T): Promise<void> {
@@ -110,21 +103,14 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
         if (!ok) {
             return;
         }
-        const { uninstall, searchable, itemLabel } = this.props;
-        const dialog = new UninstallationProgressDialog(itemLabel(item));
-        try {
-            await this.clearArduinoChannel();
-            dialog.open();
-            await uninstall({ item });
-            const items = await searchable.search({ query: this.state.filterText });
-            this.setState({ items: this.sort(items) });
-        } finally {
-            dialog.close();
-        }
-    }
-
-    private async clearArduinoChannel(): Promise<void> {
-        return this.props.commandService.executeCommand(OutputCommands.CLEAR.id, { name: 'Arduino' });
+        const { uninstall, searchable } = this.props;
+        await Installable.doWithProgress({
+            ...this.props,
+            progressText: `Processing ${item.name}${item.installedVersion ? `:${item.installedVersion}` : ''}`,
+            run: ({ progressId }) => uninstall({ item, progressId })
+        });
+        const items = await searchable.search({ query: this.state.filterText });
+        this.setState({ items: this.sort(items) });
     }
 
 }
@@ -139,9 +125,10 @@ export namespace FilterableListContainer {
         readonly resolveContainer: (element: HTMLElement) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;
         readonly filterTextChangeEvent: Event<string | undefined>;
-        readonly install: ({ item, version }: { item: T, version: Installable.Version }) => Promise<void>;
-        readonly uninstall: ({ item }: { item: T }) => Promise<void>;
         readonly messageService: MessageService;
+        readonly responseService: ResponseServiceImpl;
+        readonly install: ({ item, progressId, version }: { item: T, progressId: string, version: Installable.Version }) => Promise<void>;
+        readonly uninstall: ({ item, progressId }: { item: T, progressId: string }) => Promise<void>;
         readonly commandService: CommandService;
     }
 

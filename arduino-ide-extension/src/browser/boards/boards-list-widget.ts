@@ -33,9 +33,14 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
         ]);
     }
 
-    async install({ item, version }: { item: BoardsPackage; version: string; }): Promise<void> {
-        await super.install({ item, version });
-        this.messageService.info(`Successfully installed platform ${item.name}:${version}.`, { timeout: 3000 });
+    protected async install({ item, progressId, version }: { item: BoardsPackage, progressId: string, version: string; }): Promise<void> {
+        await super.install({ item, progressId, version });
+        this.messageService.info(`Successfully installed platform ${item.name}:${version}`, { timeout: 3000 });
+    }
+
+    protected async uninstall({ item, progressId }: { item: BoardsPackage, progressId: string }): Promise<void> {
+        await super.uninstall({ item, progressId });
+        this.messageService.info(`Successfully uninstalled platform ${item.name}:${item.installedVersion}`, { timeout: 3000 });
     }
 
 }

@@ -11,5 +11,5 @@ export * from './searchable';
 export * from './sketches-service';
 export * from './examples-service';
 export * from './executable-service';
-export * from './output-service';
+export * from './response-service';
 export * from './notification-service';

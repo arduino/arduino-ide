@@ -37,7 +37,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
         ]);
     }
 
-    protected async install({ item, version }: { item: LibraryPackage, version: Installable.Version }): Promise<void> {
+    protected async install({ item, progressId, version }: { item: LibraryPackage, progressId: string, version: Installable.Version }): Promise<void> {
         const dependencies = await this.service.listDependencies({ item, version, filterSelf: true });
         let installDependencies: boolean | undefined = undefined;
         if (dependencies.length) {
@@ -84,9 +84,14 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
         }
 
         if (typeof installDependencies === 'boolean') {
-            await this.service.install({ item, version, installDependencies });
-            this.messageService.info(`Successfully installed library ${item.name}:${version}.`, { timeout: 3000 });
+            await this.service.install({ item, version, progressId, installDependencies });
+            this.messageService.info(`Successfully installed library ${item.name}:${version}`, { timeout: 3000 });
         }
+    }
+
+    protected async uninstall({ item, progressId }: { item: LibraryPackage, progressId: string }): Promise<void> {
+        await super.uninstall({ item, progressId });
+        this.messageService.info(`Successfully uninstalled library ${item.name}:${item.installedVersion}`, { timeout: 3000 });
     }
 
 }
