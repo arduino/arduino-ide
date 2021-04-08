@@ -44,7 +44,7 @@ import { WorkspaceService } from './theia/workspace/workspace-service';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { OutputService } from '../common/protocol/output-service';
+import { ResponseService } from '../common/protocol/response-service';
 import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
@@ -151,8 +151,8 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
     @inject(ExecutableService)
     protected executableService: ExecutableService;
 
-    @inject(OutputService)
-    protected readonly outputService: OutputService;
+    @inject(ResponseService)
+    protected readonly responseService: ResponseService;
 
     @inject(ArduinoPreferences)
     protected readonly arduinoPreferences: ArduinoPreferences;

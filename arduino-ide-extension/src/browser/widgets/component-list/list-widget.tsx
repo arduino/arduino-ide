@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { injectable, postConstruct, inject } from 'inversify';
+import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { Emitter } from '@theia/core/lib/common/event';
@@ -7,12 +8,11 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { Installable } from '../../../common/protocol/installable';
-import { Searchable } from '../../../common/protocol/searchable';
-import { ArduinoComponent } from '../../../common/protocol/arduino-component';
+import { Installable, Searchable, ArduinoComponent } from '../../../common/protocol';
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
+import { ResponseServiceImpl } from '../../response-service-impl';
 
 @injectable()
 export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget {
@@ -22,6 +22,9 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
 
     @inject(CommandService)
     protected readonly commandService: CommandService;
+
+    @inject(ResponseServiceImpl)
+    protected readonly responseService: ResponseServiceImpl;
 
     @inject(NotificationCenter)
     protected readonly notificationCenter: NotificationCenter;
@@ -63,26 +66,31 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
         return this.deferredContainer.promise;
     }
 
-    protected onActivateRequest(msg: Message): void {
-        super.onActivateRequest(msg);
+    protected onActivateRequest(message: Message): void {
+        super.onActivateRequest(message);
         (this.focusNode || this.node).focus();
     }
 
-    protected onUpdateRequest(msg: Message): void {
-        super.onUpdateRequest(msg);
+    protected onUpdateRequest(message: Message): void {
+        super.onUpdateRequest(message);
         this.render();
+    }
+
+    protected onResize(message: Widget.ResizeMessage): void {
+        super.onResize(message);
+        this.updateScrollBar();
     }
 
     protected onFocusResolved = (element: HTMLElement | undefined) => {
         this.focusNode = element;
     };
 
-    protected async install({ item, version }: { item: T, version: Installable.Version }): Promise<void> {
-        return this.options.installable.install({ item, version });
+    protected async install({ item, progressId, version }: { item: T, progressId: string, version: Installable.Version }): Promise<void> {
+        return this.options.installable.install({ item, progressId, version });
     }
 
-    protected async uninstall({ item }: { item: T }): Promise<void> {
-        return this.options.installable.uninstall({ item });
+    protected async uninstall({ item, progressId }: { item: T, progressId: string }): Promise<void> {
+        return this.options.installable.uninstall({ item, progressId });
     }
 
     render(): React.ReactNode {
@@ -97,7 +105,8 @@ export abstract class ListWidget<T extends ArduinoComponent> extends ReactWidget
             itemRenderer={this.options.itemRenderer}
             filterTextChangeEvent={this.filterTextChangeEmitter.event}
             messageService={this.messageService}
-            commandService={this.commandService} />;
+            commandService={this.commandService}
+            responseService={this.responseService} />;
     }
 
     /**

@@ -4,17 +4,18 @@ import { notEmpty } from '@theia/core/lib/common/objects';
 import {
     BoardsService,
     Installable,
-    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, OutputService, NotificationServiceServer, AvailablePorts, BoardWithPackage
+    BoardsPackage, Board, Port, BoardDetails, Tool, ConfigOption, ConfigValue, Programmer, ResponseService, NotificationServiceServer, AvailablePorts, BoardWithPackage
 } from '../common/protocol';
 import {
-    PlatformInstallRequest, PlatformInstallResponse, PlatformListRequest, PlatformListResponse, PlatformSearchRequest,
-    PlatformSearchResponse, PlatformUninstallRequest, PlatformUninstallResponse
+    PlatformInstallRequest, PlatformListRequest, PlatformListResponse, PlatformSearchRequest,
+    PlatformSearchResponse, PlatformUninstallRequest
 } from './cli-protocol/cc/arduino/cli/commands/v1/core_pb';
 import { Platform } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { BoardDiscovery } from './board-discovery';
 import { CoreClientAware } from './core-client-provider';
 import { BoardDetailsRequest, BoardDetailsResponse, BoardSearchRequest } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import { ListProgrammersAvailableForUploadRequest, ListProgrammersAvailableForUploadResponse } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
+import { InstallWithProgress } from './grpc-installable';
 
 @injectable()
 export class BoardsServiceImpl extends CoreClientAware implements BoardsService {
@@ -26,8 +27,8 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
     @named('discovery')
     protected discoveryLogger: ILogger;
 
-    @inject(OutputService)
-    protected readonly outputService: OutputService;
+    @inject(ResponseService)
+    protected readonly responseService: ResponseService;
 
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
@@ -254,7 +255,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         return [...packages.values()];
     }
 
-    async install(options: { item: BoardsPackage, version?: Installable.Version }): Promise<void> {
+    async install(options: { item: BoardsPackage, progressId?: string, version?: Installable.Version }): Promise<void> {
         const item = options.item;
         const version = !!options.version ? options.version : item.availableVersions[0];
         const coreClient = await this.coreClient();
@@ -270,17 +271,12 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         console.info('>>> Starting boards package installation...', item);
         const resp = client.platformInstall(req);
-        resp.on('data', (r: PlatformInstallResponse) => {
-            const prog = r.getProgress();
-            if (prog && prog.getFile()) {
-                this.outputService.append({ chunk: `downloading ${prog.getFile()}\n` });
-            }
-        });
+        resp.on('data', InstallWithProgress.createDataCallback({ progressId: options.progressId, responseService: this.responseService }));
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', error => {
-                this.outputService.append({ chunk: `Failed to install platform: ${item.id}.\n` });
-                this.outputService.append({ chunk: error.toString() });
+                this.responseService.appendToOutput({ chunk: `Failed to install platform: ${item.id}.\n` });
+                this.responseService.appendToOutput({ chunk: error.toString() });
                 reject(error);
             });
         });
@@ -291,8 +287,8 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         console.info('<<< Boards package installation done.', item);
     }
 
-    async uninstall(options: { item: BoardsPackage }): Promise<void> {
-        const item = options.item;
+    async uninstall(options: { item: BoardsPackage, progressId?: string }): Promise<void> {
+        const { item, progressId } = options;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -304,14 +300,8 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
         req.setPlatformPackage(platform);
 
         console.info('>>> Starting boards package uninstallation...', item);
-        let logged = false;
         const resp = client.platformUninstall(req);
-        resp.on('data', (_: PlatformUninstallResponse) => {
-            if (!logged) {
-                this.outputService.append({ chunk: `uninstalling ${item.id}\n` });
-                logged = true;
-            }
-        })
+        resp.on('data', InstallWithProgress.createDataCallback({ progressId, responseService: this.responseService }));
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', reject);

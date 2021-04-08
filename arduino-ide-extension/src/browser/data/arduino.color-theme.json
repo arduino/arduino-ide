@@ -82,6 +82,7 @@
   "colors": {
     "list.highlightForeground": "#005c5f",
     "list.activeSelectionBackground": "#005c5f",
+    "progressBar.background": "#005c5f",
     "editor.background": "#ffffff",
     "editorCursor.foreground": "#434f54",
     "editor.foreground": "#434f54",

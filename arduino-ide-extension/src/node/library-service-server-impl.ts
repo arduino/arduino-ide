@@ -2,14 +2,15 @@ import { injectable, inject } from 'inversify';
 import { LibraryDependency, LibraryLocation, LibraryPackage, LibraryService } from '../common/protocol/library-service';
 import { CoreClientAware } from './core-client-provider';
 import {
-    InstalledLibrary, Library, LibraryInstallRequest, LibraryInstallResponse, LibraryListRequest, LibraryListResponse, LibraryLocation as GrpcLibraryLocation, LibraryRelease,
-    LibraryResolveDependenciesRequest, LibraryUninstallRequest, LibraryUninstallResponse, ZipLibraryInstallRequest, ZipLibraryInstallResponse, LibrarySearchRequest,
+    InstalledLibrary, Library, LibraryInstallRequest, LibraryListRequest, LibraryListResponse, LibraryLocation as GrpcLibraryLocation, LibraryRelease,
+    LibraryResolveDependenciesRequest, LibraryUninstallRequest, ZipLibraryInstallRequest, LibrarySearchRequest,
     LibrarySearchResponse
 } from './cli-protocol/cc/arduino/cli/commands/v1/lib_pb';
 import { Installable } from '../common/protocol/installable';
 import { ILogger, notEmpty } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node';
-import { OutputService, NotificationServiceServer } from '../common/protocol';
+import { ResponseService, NotificationServiceServer } from '../common/protocol';
+import { InstallWithProgress } from './grpc-installable';
 
 @injectable()
 export class LibraryServiceImpl extends CoreClientAware implements LibraryService {
@@ -17,8 +18,8 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
     @inject(ILogger)
     protected logger: ILogger;
 
-    @inject(OutputService)
-    protected readonly outputService: OutputService;
+    @inject(ResponseService)
+    protected readonly responseService: ResponseService;
 
     @inject(NotificationServiceServer)
     protected readonly notificationServer: NotificationServiceServer;
@@ -157,7 +158,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         return filterSelf ? dependencies.filter(({ name }) => name !== item.name) : dependencies;
     }
 
-    async install(options: { item: LibraryPackage, version?: Installable.Version, installDependencies?: boolean }): Promise<void> {
+    async install(options: { item: LibraryPackage, progressId?: string, version?: Installable.Version, installDependencies?: boolean }): Promise<void> {
         const item = options.item;
         const version = !!options.version ? options.version : item.availableVersions[0];
         const coreClient = await this.coreClient();
@@ -173,17 +174,12 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
 
         console.info('>>> Starting library package installation...', item);
         const resp = client.libraryInstall(req);
-        resp.on('data', (r: LibraryInstallResponse) => {
-            const prog = r.getProgress();
-            if (prog) {
-                this.outputService.append({ chunk: `downloading ${prog.getFile()}: ${prog.getCompleted()}%\n` });
-            }
-        });
+        resp.on('data', InstallWithProgress.createDataCallback({ progressId: options.progressId, responseService: this.responseService }));
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', error => {
-                this.outputService.append({ chunk: `Failed to install library: ${item.name}${version ? `:${version}` : ''}.\n` });
-                this.outputService.append({ chunk: error.toString() });
+                this.responseService.appendToOutput({ chunk: `Failed to install library: ${item.name}${version ? `:${version}` : ''}.\n` });
+                this.responseService.appendToOutput({ chunk: error.toString() });
                 reject(error);
             });
         });
@@ -194,7 +190,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         console.info('<<< Library package installation done.', item);
     }
 
-    async installZip({ zipUri, overwrite }: { zipUri: string, overwrite?: boolean }): Promise<void> {
+    async installZip({ zipUri, progressId, overwrite }: { zipUri: string, progressId?: string, overwrite?: boolean }): Promise<void> {
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new ZipLibraryInstallRequest();
@@ -204,20 +200,15 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
             req.setOverwrite(overwrite);
         }
         const resp = client.zipLibraryInstall(req);
-        resp.on('data', (r: ZipLibraryInstallResponse) => {
-            const task = r.getTaskProgress();
-            if (task && task.getMessage()) {
-                this.outputService.append({ chunk: task.getMessage() });
-            }
-        });
+        resp.on('data', InstallWithProgress.createDataCallback({ progressId, responseService: this.responseService }));
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', reject);
         });
     }
 
-    async uninstall(options: { item: LibraryPackage }): Promise<void> {
-        const item = options.item;
+    async uninstall(options: { item: LibraryPackage, progressId?: string }): Promise<void> {
+        const { item, progressId } = options;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -227,14 +218,8 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
         req.setVersion(item.installedVersion!);
 
         console.info('>>> Starting library package uninstallation...', item);
-        let logged = false;
         const resp = client.libraryUninstall(req);
-        resp.on('data', (_: LibraryUninstallResponse) => {
-            if (!logged) {
-                this.outputService.append({ chunk: `uninstalling ${item.name}:${item.installedVersion}%\n` });
-                logged = true;
-            }
-        });
+        resp.on('data', InstallWithProgress.createDataCallback({ progressId, responseService: this.responseService }));
         await new Promise<void>((resolve, reject) => {
             resp.on('end', resolve);
             resp.on('error', reject);

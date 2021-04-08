@@ -2,22 +2,22 @@ import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from 'inversify';
 import { relative } from 'path';
 import * as jspb from 'google-protobuf';
+import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
+import { ClientReadableStream } from '@grpc/grpc-js';
 import { CompilerWarnings, CoreService } from '../common/protocol/core-service';
 import { CompileRequest, CompileResponse } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 import { CoreClientAware } from './core-client-provider';
 import { BurnBootloaderRequest, BurnBootloaderResponse, UploadRequest, UploadResponse, UploadUsingProgrammerRequest, UploadUsingProgrammerResponse } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
-import { OutputService } from '../common/protocol/output-service';
+import { ResponseService } from '../common/protocol/response-service';
 import { NotificationServiceServer } from '../common/protocol';
-import { ClientReadableStream } from '@grpc/grpc-js';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
-import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
-    @inject(OutputService)
-    protected readonly outputService: OutputService;
+    @inject(ResponseService)
+    protected readonly responseService: ResponseService;
 
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
@@ -53,15 +53,15 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (cr: CompileResponse) => {
-                    this.outputService.append({ chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
-                    this.outputService.append({ chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
+                    this.responseService.appendToOutput({ chunk: Buffer.from(cr.getOutStream_asU8()).toString() });
+                    this.responseService.appendToOutput({ chunk: Buffer.from(cr.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.outputService.append({ chunk: '\n--------------------------\nCompilation complete.\n' });
+            this.responseService.appendToOutput({ chunk: '\n--------------------------\nCompilation complete.\n' });
         } catch (e) {
-            this.outputService.append({ chunk: `Compilation error: ${e}\n`, severity: 'error' });
+            this.responseService.appendToOutput({ chunk: `Compilation error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
@@ -107,15 +107,15 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (resp: UploadResponse) => {
-                    this.outputService.append({ chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
-                    this.outputService.append({ chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                    this.responseService.appendToOutput({ chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.responseService.appendToOutput({ chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
-            this.outputService.append({ chunk: '\n--------------------------\n' + firstToLowerCase(task) + ' complete.\n' });
+            this.responseService.appendToOutput({ chunk: '\n--------------------------\n' + firstToLowerCase(task) + ' complete.\n' });
         } catch (e) {
-            this.outputService.append({ chunk: `${firstToUpperCase(task)} error: ${e}\n`, severity: 'error' });
+            this.responseService.appendToOutput({ chunk: `${firstToUpperCase(task)} error: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
@@ -141,14 +141,14 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         try {
             await new Promise<void>((resolve, reject) => {
                 result.on('data', (resp: BurnBootloaderResponse) => {
-                    this.outputService.append({ chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
-                    this.outputService.append({ chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
+                    this.responseService.appendToOutput({ chunk: Buffer.from(resp.getOutStream_asU8()).toString() });
+                    this.responseService.appendToOutput({ chunk: Buffer.from(resp.getErrStream_asU8()).toString() });
                 });
                 result.on('error', error => reject(error));
                 result.on('end', () => resolve());
             });
         } catch (e) {
-            this.outputService.append({ chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
+            this.responseService.appendToOutput({ chunk: `Error while burning the bootloader: ${e}\n`, severity: 'error' });
             throw e;
         }
     }
