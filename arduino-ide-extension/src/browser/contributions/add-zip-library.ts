@@ -1,18 +1,21 @@
 import { inject, injectable } from 'inversify';
 import { remote } from 'electron';
-import { ArduinoMenus } from '../menu/arduino-menus';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry } from './contribution';
-import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import URI from '@theia/core/lib/common/uri';
-import { InstallationProgressDialog } from '../widgets/progress-dialog';
-import { LibraryService } from '../../common/protocol';
-import { ConfirmDialog } from '@theia/core/lib/browser';
+import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { ResponseServiceImpl } from '../response-service-impl';
+import { Installable, LibraryService } from '../../common/protocol';
+import { SketchContribution, Command, CommandRegistry, MenuModelRegistry } from './contribution';
 
 @injectable()
 export class AddZipLibrary extends SketchContribution {
 
     @inject(EnvVariablesServer)
     protected readonly envVariableServer: EnvVariablesServer;
+
+    @inject(ResponseServiceImpl)
+    protected readonly responseService: ResponseServiceImpl;
 
     @inject(LibraryService)
     protected readonly libraryService: LibraryService;
@@ -69,11 +72,14 @@ export class AddZipLibrary extends SketchContribution {
     }
 
     private async doInstall(zipUri: string, overwrite?: boolean): Promise<void> {
-        const dialog = new InstallationProgressDialog('Installing library', 'zip');
         try {
-            this.outputChannelManager.getChannel('Arduino').clear();
-            dialog.open();
-            await this.libraryService.installZip({ zipUri, overwrite });
+            await Installable.doWithProgress({
+                messageService: this.messageService,
+                progressText: `Processing ${new URI(zipUri).path.base}`,
+                responseService: this.responseService,
+                run: () => this.libraryService.installZip({ zipUri, overwrite })
+            });
+            this.messageService.info(`Successfully installed library from ${new URI(zipUri).path.base} archive`, { timeout: 3000 });
         } catch (error) {
             if (error instanceof Error) {
                 const match = error.message.match(/library (.*?) already installed/);
@@ -88,8 +94,6 @@ export class AddZipLibrary extends SketchContribution {
             }
             this.messageService.error(error.toString());
             throw error;
-        } finally {
-            dialog.close();
         }
     }
 

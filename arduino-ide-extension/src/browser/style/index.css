@@ -67,3 +67,20 @@ button.theia-button.secondary {
 button.theia-button.main {
     color: var(--theia-button-foreground);
 }
+
+/* To make the progress-bar slightly thicker, and use the color from the status bar */
+.theia-progress-bar-container {
+    width: 100%;
+    height: 4px;
+}
+
+.theia-progress-bar {
+    height: 4px;
+    width: 3%;
+    animation: progress-animation 1.3s 0s infinite cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.theia-notification-item-progressbar {
+    height: 4px;
+    width: 66%;
+}

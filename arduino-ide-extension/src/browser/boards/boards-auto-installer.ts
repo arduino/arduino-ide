@@ -4,8 +4,9 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { BoardsService, BoardsPackage } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
-import { InstallationProgressDialog } from '../widgets/progress-dialog';
 import { BoardsConfig } from './boards-config';
+import { Installable } from '../../common/protocol';
+import { ResponseServiceImpl } from '../response-service-impl';
 
 /**
  * Listens on `BoardsConfig.Config` changes, if a board is selected which does not
@@ -22,6 +23,9 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
 
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceClient: BoardsServiceProvider;
+
+    @inject(ResponseServiceImpl)
+    protected readonly responseService: ResponseServiceImpl;
 
     @inject(BoardsListWidgetFrontendContribution)
     protected readonly boardsManagerFrontendContribution: BoardsListWidgetFrontendContribution;
@@ -42,13 +46,13 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
                     // tslint:disable-next-line:max-line-length
                     this.messageService.info(`The \`"${candidate.name}"\` core has to be installed for the currently selected \`"${selectedBoard.name}"\` board. Do you want to install it now?`, 'Install Manually', 'Yes').then(async answer => {
                         if (answer === 'Yes') {
-                            const dialog = new InstallationProgressDialog(candidate.name, candidate.availableVersions[0]);
-                            dialog.open();
-                            try {
-                                await this.boardsService.install({ item: candidate });
-                            } finally {
-                                dialog.close();
-                            }
+                            await Installable.installWithProgress({
+                                installable: this.boardsService,
+                                item: candidate,
+                                messageService: this.messageService,
+                                responseService: this.responseService,
+                                version: candidate.availableVersions[0]
+                            });
                         }
                         if (answer) {
                             this.boardsManagerFrontendContribution.openView({ reveal: true }).then(widget => widget.refresh(candidate.name.toLocaleLowerCase()));

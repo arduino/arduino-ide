@@ -24,7 +24,7 @@ export abstract class GrpcClientProvider<C> {
         const updateClient = () => {
             const cliConfig = this.configService.cliConfiguration;
             this.reconcileClient(cliConfig ? cliConfig.daemon.port : undefined);
-        }
+        };
         this.configService.onConfigChange(updateClient);
         this.daemon.ready.then(updateClient);
         this.daemon.onDaemonStopped(() => {
@@ -33,7 +33,7 @@ export abstract class GrpcClientProvider<C> {
             }
             this._client = undefined;
             this._port = undefined;
-        })
+        });
     }
 
     async client(): Promise<C | Error | undefined> {
