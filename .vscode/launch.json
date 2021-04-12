@@ -36,9 +36,10 @@
         "--log-level=debug",
         "--hostname=localhost",
         "--no-cluster",
+        "--app-project-path=${workspaceRoot}/electron-app",
         "--remote-debugging-port=9222",
         "--no-app-auto-install",
-        "--plugins=local-dir:plugins"
+        "--plugins=local-dir:../plugins"
       ],
       "env": {
         "NODE_ENV": "development"
