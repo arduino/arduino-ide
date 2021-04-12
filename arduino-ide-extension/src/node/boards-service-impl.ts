@@ -64,6 +64,11 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
                     resolve(undefined);
                     return;
                 }
+                // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
+                if (err.message.indexOf('unknown package') !== -1) {
+                    resolve(undefined);
+                    return;
+                }
                 reject(err);
                 return;
             }
