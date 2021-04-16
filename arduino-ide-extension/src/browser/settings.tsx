@@ -507,7 +507,7 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
     protected browseSketchbookDidClick = async () => {
         const uri = await this.props.fileDialogService.showOpenDialog({
             title: 'Select new sketchbook location',
-            openLabel: 'Chose',
+            openLabel: 'Choose',
             canSelectFiles: false,
             canSelectMany: false,
             canSelectFolders: true
