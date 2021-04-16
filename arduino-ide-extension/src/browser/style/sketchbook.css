@@ -1,0 +1,38 @@
+.sketchbook-tab-icon {
+    -webkit-mask: url('./sketchbook.svg');
+    mask: url('./sketchbook.svg');
+}
+
+.sketch-folder-icon {
+    background: url('./sketch-folder-icon.svg') center center no-repeat;
+    background-position-x: 1px;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+}
+
+.sketchbook-tree-icon {
+    background: url('./sketchbook-tree-icon.svg') center center no-repeat;
+    width: 19px !important;
+    height: var(--theia-icon-size);
+}
+
+.sketchbook-trees-container {
+    height: 100%;
+}
+
+.sketchbook-tree__opts {
+  background: url('./sketchbook-opts-icon.svg') center center no-repeat;
+  width: var(--theia-icon-size);
+  height: var(--theia-icon-size);
+}
+
+.active-sketch {
+  font-weight: 500;
+  background-color: var(--theia-button-disabledBackground) !important;
+  color: var(--theia-list-inactiveSelectionForeground) !important;
+
+}
+
+#arduino-sketchbook-tree-widget .theia-TreeNodeSegmentGrow {
+  flex: 1;
+}

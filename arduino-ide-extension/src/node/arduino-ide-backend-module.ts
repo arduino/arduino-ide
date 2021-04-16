@@ -74,6 +74,12 @@ import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
 import { DefaultGitInit } from './theia/git/git-init';
 import { GitInit } from '@theia/git/lib/node/init/git-init';
+import { AuthenticationServiceImpl } from './auth/authentication-service-impl';
+import {
+    AuthenticationService,
+    AuthenticationServiceClient,
+    AuthenticationServicePath,
+} from '../common/protocol/authentication-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(BackendApplication).toSelf().inSingletonScope();
@@ -280,4 +286,28 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
     bind(DefaultGitInit).toSelf();
     rebind(GitInit).toService(DefaultGitInit);
+
+    // Remote sketchbook bindings
+    bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
+    bind(AuthenticationService).toService(AuthenticationServiceImpl);
+    bind(BackendApplicationContribution).toService(AuthenticationServiceImpl);
+    bind(ConnectionHandler)
+        .toDynamicValue(
+            (context) =>
+                new JsonRpcConnectionHandler<AuthenticationServiceClient>(
+                    AuthenticationServicePath,
+                    (client) => {
+                        const server =
+                            context.container.get<AuthenticationServiceImpl>(
+                                AuthenticationServiceImpl
+                            );
+                        server.setClient(client);
+                        client.onDidCloseConnection(() =>
+                            server.disposeClient(client)
+                        );
+                        return server;
+                    }
+                )
+        )
+        .inSingletonScope();
 });

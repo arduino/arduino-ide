@@ -4,7 +4,6 @@ import * as temp from 'temp';
 import * as yaml from 'js-yaml';
 import { promisify } from 'util';
 import * as grpc from '@grpc/grpc-js';
-import * as deepmerge from 'deepmerge';
 import { injectable, inject, named } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -30,6 +29,7 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone } from '@theia/core';
 
+const deepmerge = require('deepmerge');
 const track = temp.track();
 
 @injectable()

@@ -2,7 +2,7 @@
   "name": "arduino-ide",
   "version": "2.0.0-beta.7",
   "description": "Arduino IDE",
-  "repository": "https://github.com/bcmi-labs/arduino-editor.git",
+  "repository": "https://github.com/arduino/arduino-ide.git",
   "author": "Arduino SA",
   "license": "AGPL-3.0-or-later",
   "private": true,

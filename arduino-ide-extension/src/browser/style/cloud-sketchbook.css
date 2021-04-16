@@ -1,0 +1,184 @@
+.sign-in-title {
+    margin: 20px 0;
+    font-weight: bold;
+}
+.sign-in-desc {
+    margin: 20px;
+    line-height: 150%;
+}
+.sign-in-cta {
+    margin-left: 0 !important;
+}
+.sign-in-learnmore {
+    margin-bottom: 20px;
+}
+
+
+.cloud-sketchbook-tree-icon {
+    background: url("./cloud-sketchbook-tree-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+    background-size: auto 90%;
+}
+
+.sketchbook-trees-container
+.p-TabBar[data-orientation="horizontal"]
+> .p-TabBar-content {
+    justify-content: center;
+    border-bottom: 1px solid var(--theia-tree-indentGuidesStroke);
+}
+
+.sketchbook-trees-container
+.p-Widget.p-TabBar.p-DockPanel-tabBar
+> ul
+> li.p-TabBar-tab
+> div.p-TabBar-tabLabel {
+    display: none;
+    width: 0px;
+    max-width: 0px;
+}
+
+.sketchbook-trees-container
+.p-Widget.p-TabBar.p-DockPanel-tabBar
+> ul
+> li.p-TabBar-tab
+> div.p-TabBar-tabCloseIcon {
+    display: none;
+    width: 0px;
+    max-width: 0px;
+}
+
+.sketchbook-trees-container
+.p-TabBar[data-orientation="horizontal"]
+.p-TabBar-tab {
+    min-width: 55px;
+}
+
+.sketchbook-trees-container
+.p-Widget.p-TabBar.p-DockPanel-tabBar
+> ul
+> li.p-TabBar-tab {
+    padding-left: 20px;
+}
+
+.sketchbook-trees-container
+.p-Widget.p-TabBar.p-DockPanel-tabBar
+> ul
+> li.p-TabBar-tab.p-mod-current {
+    border-bottom: 2px solid var(--theia-statusBar-background);
+}
+
+.sketchbook-trees-container .center {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.cloud-sketchbook-welcome {
+    flex-direction: column;
+    text-align: center;
+}
+
+.cloud-sketchbook-welcome > .item {
+    align-items: flex-end;
+}
+
+.cloud-sketchbook-welcome > .item .link {
+    cursor: pointer;
+    color: var(--theia-arduino-branding-primary);
+}
+
+.pull-sketch-icon {
+    background: url("./pull-sketch-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+}
+
+.push-sketch-icon {
+    background: url("./push-sketch-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+}
+
+.account-icon {
+    background: url("./account-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.account-icon > img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.connected-status-icon {
+    background: url("./connected-status-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+}
+
+.offline-status-icon {
+    background: url("./offline-status-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+}
+
+.refresh-icon {
+    background: url("./refresh-icon.svg") center center no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.rotating {
+    animation: rotating 1s ease-in-out infinite;
+}
+
+.cloud-connection-status {
+    border-top: 1px solid var(--theia-tree-indentGuidesStroke);
+    border-bottom: none;
+}
+
+.cloud-connection-status .item {
+    padding: 8px;
+}
+
+.cloud-connection-status .status {
+    flex-grow: 2;
+}
+
+.cloud-connection-status .actions {
+    border-left: 1px solid var(--theia-tree-indentGuidesStroke);
+    border-right: 1px solid var(--theia-tree-indentGuidesStroke);
+}
+
+.composite-node {
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.composite-node .tree-container {
+    height: 100%;
+}
+
+.arduino-share-sketch-dialog .sketch-link {
+    display: flex;
+}
+
+.arduino-share-sketch-dialog .sketch-link input {
+    flex: 1;
+}
+
+.arduino-share-sketch-dialog .sketch-link-embed textarea {
+    width: 100%;
+}
