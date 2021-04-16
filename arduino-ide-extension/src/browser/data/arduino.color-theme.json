@@ -85,7 +85,11 @@
   ],
   "colors": {
     "list.highlightForeground": "#005c5f",
-    "list.activeSelectionBackground": "#005c5f",
+    "list.activeSelectionForeground": "#424242",
+    "list.activeSelectionBackground": "#DAE3E3",
+    "list.inactiveSelectionForeground": "#424242",
+    "list.inactiveSelectionBackground": "#DAE3E3",
+    "list.hoverBackground": "#ECF1F1",
     "progressBar.background": "#005c5f",
     "editor.background": "#ffffff",
     "editorCursor.foreground": "#434f54",

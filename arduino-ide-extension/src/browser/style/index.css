@@ -8,6 +8,7 @@
 @import './editor.css';
 @import './settings-dialog.css';
 @import './debug.css';
+@import './sketchbook.css';
 
 .theia-input.warning:focus {
     outline-width: 1px;

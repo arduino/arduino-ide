@@ -2,15 +2,9 @@ import { inject, injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { open } from '@theia/core/lib/browser/opener-service';
 import { FileStat } from '@theia/filesystem/lib/common/files';
-import {
-    CommandRegistry,
-    CommandService,
-} from '@theia/core/lib/common/command';
-import {
-    WorkspaceCommandContribution as TheiaWorkspaceCommandContribution,
-    WorkspaceCommands,
-} from '@theia/workspace/lib/browser/workspace-commands';
-import { Sketch } from '../../../common/protocol';
+import { CommandRegistry, CommandService } from '@theia/core/lib/common/command';
+import { WorkspaceCommandContribution as TheiaWorkspaceCommandContribution, WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
+import { Sketch, SketchesService } from '../../../common/protocol';
 import { WorkspaceInputDialog } from './workspace-input-dialog';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
@@ -18,28 +12,26 @@ import { SingleTextInputDialog } from '@theia/core/lib/browser';
 
 @injectable()
 export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribution {
+
     @inject(SketchesServiceClientImpl)
     protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
+    @inject(SketchesService)
+    protected readonly sketchService: SketchesService;
+
     registerCommands(registry: CommandRegistry): void {
         super.registerCommands(registry);
         registry.unregisterCommand(WorkspaceCommands.NEW_FILE);
-        registry.registerCommand(
-            WorkspaceCommands.NEW_FILE,
-            this.newWorkspaceRootUriAwareCommandHandler({
-                execute: (uri) => this.newFile(uri),
-            })
-        );
+        registry.registerCommand(WorkspaceCommands.NEW_FILE, this.newWorkspaceRootUriAwareCommandHandler({
+            execute: uri => this.newFile(uri)
+        }));
         registry.unregisterCommand(WorkspaceCommands.FILE_RENAME);
-        registry.registerCommand(
-            WorkspaceCommands.FILE_RENAME,
-            this.newUriAwareCommandHandler({
-                execute: (uri) => this.renameFile(uri),
-            })
-        );
+        registry.registerCommand(WorkspaceCommands.FILE_RENAME, this.newUriAwareCommandHandler({
+            execute: uri => this.renameFile(uri)
+        }));
     }
 
     protected async newFile(uri: URI | undefined): Promise<void> {
@@ -52,14 +44,11 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         }
 
         const parentUri = parent.resource;
-        const dialog = new WorkspaceInputDialog(
-            {
-                title: 'Name for new file',
-                parentUri,
-                validate: (name) => this.validateFileName(name, parent, true),
-            },
-            this.labelProvider
-        );
+        const dialog = new WorkspaceInputDialog({
+            title: 'Name for new file',
+            parentUri,
+            validate: name => this.validateFileName(name, parent, true)
+        }, this.labelProvider);
 
         const name = await dialog.open();
         const nameWithExt = this.maybeAppendInoExt(name);
@@ -71,20 +60,12 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         }
     }
 
-    protected async validateFileName(
-        name: string,
-        parent: FileStat,
-        recursive = false
-    ): Promise<string> {
+    protected async validateFileName(name: string, parent: FileStat, recursive = false): Promise<string> {
         // In the Java IDE the followings are the rules:
         //  - `name` without an extension should default to `name.ino`.
         //  - `name` with a single trailing `.` also defaults to `name.ino`.
         const nameWithExt = this.maybeAppendInoExt(name);
-        const errorMessage = await super.validateFileName(
-            nameWithExt,
-            parent,
-            recursive
-        );
+        const errorMessage = await super.validateFileName(nameWithExt, parent, recursive);
         if (errorMessage) {
             return errorMessage;
         }
@@ -104,10 +85,10 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         }
         if (name.trim().length) {
             if (name.indexOf('.') === -1) {
-                return `${name}.ino`;
+                return `${name}.ino`
             }
             if (name.lastIndexOf('.') === name.length - 1) {
-                return `${name.slice(0, -1)}.ino`;
+                return `${name.slice(0, -1)}.ino`
             }
         }
         return name;
@@ -121,16 +102,20 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         if (!sketch) {
             return;
         }
+
+        // file belongs to another sketch, do not allow rename
+        const parentsketch = await this.sketchService.getSketchFolder(uri.toString());
+        if (parentsketch && parentsketch.uri !== sketch.uri) {
+            return;
+        }
+
         if (uri.toString() === sketch.mainFileUri) {
             const options = {
                 execOnlyIfTemp: false,
                 openAfterMove: true,
-                wipeOriginal: true,
+                wipeOriginal: true
             };
-            await this.commandService.executeCommand(
-                SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-                options
-            );
+            await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, options);
             return;
         }
         const parent = await this.getParent(uri);
@@ -143,14 +128,14 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
             initialValue,
             initialSelectionRange: {
                 start: 0,
-                end: uri.path.name.length,
+                end: uri.path.name.length
             },
             validate: (name, mode) => {
                 if (initialValue === name && mode === 'preview') {
                     return false;
                 }
                 return this.validateFileName(name, parent, false);
-            },
+            }
         });
         const newName = await dialog.open();
         const newNameWithExt = this.maybeAppendInoExt(newName);
@@ -160,4 +145,5 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
             this.fileService.move(oldUri, newUri);
         }
     }
+
 }

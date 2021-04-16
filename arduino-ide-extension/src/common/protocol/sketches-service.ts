@@ -24,6 +24,11 @@ export interface SketchesService {
     loadSketch(uri: string): Promise<Sketch>;
 
     /**
+     * Unlike `loadSketch`, this method gracefully resolves to `undefined` instead or rejecting if the `uri` is not a sketch folder.
+     */
+    maybeLoadSketch(uri: string): Promise<Sketch | undefined>;
+
+    /**
      * Creates a new sketch folder in the temp location.
      */
     createNewSketch(): Promise<Sketch>;

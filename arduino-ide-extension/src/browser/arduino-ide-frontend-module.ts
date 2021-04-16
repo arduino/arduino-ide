@@ -217,6 +217,10 @@ import { NotificationManager } from './theia/messages/notifications-manager';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/messages/lib/browser/notifications-renderer';
 import { NotificationsRenderer } from './theia/messages/notifications-renderer';
+import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
+import { SketchbookWidget } from './widgets/sketchbook/sketchbook-widget';
+import { SketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-widget';
+import { createSketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-container';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -653,4 +657,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaNotificationManager).toService(NotificationManager);
     bind(NotificationsRenderer).toSelf().inSingletonScope();
     rebind(TheiaNotificationsRenderer).toService(NotificationsRenderer);
+
+    // UI for the Sketchbook
+    bind(SketchbookWidget).toSelf();
+    bindViewContribution(bind, SketchbookWidgetContribution);
+    bind(FrontendApplicationContribution).toService(SketchbookWidgetContribution);
+    bind(WidgetFactory).toDynamicValue(({ container }) => ({
+        id: 'arduino-sketchbook-widget',
+        createWidget: () => container.get(SketchbookWidget)
+    }));
+    bind(SketchbookTreeWidget).toDynamicValue(({ container }) => createSketchbookTreeWidget(container));
 });
