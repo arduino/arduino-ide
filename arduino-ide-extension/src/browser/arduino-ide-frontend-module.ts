@@ -217,6 +217,25 @@ import { NotificationManager } from './theia/messages/notifications-manager';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/messages/lib/browser/notifications-renderer';
 import { NotificationsRenderer } from './theia/messages/notifications-renderer';
+import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
+import { LocalCacheFsProvider } from './local-cache/local-cache-fs-provider';
+import { CloudSketchbookWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-widget';
+import { CloudSketchbookTreeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-tree-widget';
+import { createCloudSketchbookTreeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-tree-container';
+import { CreateApi } from './create/create-api';
+import { ShareSketchDialog } from './dialogs.ts/cloud-share-sketch-dialog';
+import { AuthenticationClientService } from './auth/authentication-client-service';
+import {
+    AuthenticationService,
+    AuthenticationServicePath,
+} from '../common/protocol/authentication-service';
+import { CreateFsProvider } from './create/create-fs-provider';
+import { FileServiceContribution } from '@theia/filesystem/lib/browser/file-service';
+import { CloudSketchbookContribution } from './widgets/cloud-sketchbook/cloud-sketchbook-contributions';
+import { CloudSketchbookCompositeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-composite-widget';
+import { SketchbookWidget } from './widgets/sketchbook/sketchbook-widget';
+import { SketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-widget';
+import { createSketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-container';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -653,4 +672,51 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaNotificationManager).toService(NotificationManager);
     bind(NotificationsRenderer).toSelf().inSingletonScope();
     rebind(TheiaNotificationsRenderer).toService(NotificationsRenderer);
+
+    // UI for the Sketchbook
+    bind(SketchbookWidget).toSelf();
+    bind(SketchbookTreeWidget).toDynamicValue(({ container }) =>
+        createSketchbookTreeWidget(container)
+    );
+    bindViewContribution(bind, SketchbookWidgetContribution);
+    bind(FrontendApplicationContribution).toService(
+        SketchbookWidgetContribution
+    );
+    bind(WidgetFactory).toDynamicValue(({ container }) => ({
+        id: 'arduino-sketchbook-widget',
+        createWidget: () => container.get(SketchbookWidget),
+    }));
+
+    bind(CloudSketchbookWidget).toSelf();
+    rebind(SketchbookWidget).toService(CloudSketchbookWidget);
+    bind(CloudSketchbookTreeWidget).toDynamicValue(({ container }) =>
+        createCloudSketchbookTreeWidget(container)
+    );
+    bind(CreateApi).toSelf().inSingletonScope();
+    bind(ShareSketchDialog).toSelf().inSingletonScope();
+    bind(AuthenticationClientService).toSelf().inSingletonScope();
+    bind(CommandContribution).toService(AuthenticationClientService);
+    bind(FrontendApplicationContribution).toService(
+        AuthenticationClientService
+    );
+    bind(AuthenticationService)
+        .toDynamicValue((context) =>
+            WebSocketConnectionProvider.createProxy(
+                context.container,
+                AuthenticationServicePath
+            )
+        )
+        .inSingletonScope();
+    bind(CreateFsProvider).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(CreateFsProvider);
+    bind(FileServiceContribution).toService(CreateFsProvider);
+    bind(CloudSketchbookContribution).toSelf().inSingletonScope();
+    bind(CommandContribution).toService(CloudSketchbookContribution);
+    bind(LocalCacheFsProvider).toSelf().inSingletonScope();
+    bind(FileServiceContribution).toService(LocalCacheFsProvider);
+    bind(CloudSketchbookCompositeWidget).toSelf();
+    bind<WidgetFactory>(WidgetFactory).toDynamicValue((ctx) => ({
+        id: 'cloud-sketchbook-composite-widget',
+        createWidget: () => ctx.container.get(CloudSketchbookCompositeWidget),
+    }));
 });

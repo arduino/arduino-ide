@@ -175,6 +175,10 @@ export class SketchesServiceImpl
         return sketch;
     }
 
+    async maybeLoadSketch(uri: string): Promise<Sketch | undefined> {
+        return this._isSketchFolder(uri);
+    }
+
     private get recentSketchesFsPath(): Promise<string> {
         return this.envVariableServer
             .getConfigDirUri()

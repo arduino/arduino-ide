@@ -8,6 +8,8 @@
 @import './editor.css';
 @import './settings-dialog.css';
 @import './debug.css';
+@import './sketchbook.css';
+@import './cloud-sketchbook.css';
 
 .theia-input.warning:focus {
     outline-width: 1px;
@@ -61,7 +63,7 @@ button.theia-button {
 
 button.theia-button.secondary {
     background-color: var(--theia-secondaryButton-background);
-    color: var(--theia-foreground);
+    color: var(--theia-secondaryButton-foreground);
 }
 
 button.theia-button.main {
@@ -83,4 +85,10 @@ button.theia-button.main {
 .theia-notification-item-progressbar {
     height: 4px;
     width: 66%;
+}
+
+.flex-line {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
 }

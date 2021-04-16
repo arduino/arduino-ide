@@ -55,6 +55,62 @@ export const ArduinoConfigSchema: PreferenceSchema = {
                 'True to enable automatic update checks. The IDE will check for updates automatically and periodically.',
             default: true,
         },
+        'arduino.sketchbook.showAllFiles': {
+            type: 'boolean',
+            description:
+                'True to show all sketch files inside the sketch. It is false by default.',
+            default: false,
+        },
+        'arduino.cloud.enabled': {
+            type: 'boolean',
+            description:
+                'True if the sketch sync functions are enabled. Defaults to true.',
+            default: true,
+        },
+        'arduino.cloud.pull.warn': {
+            type: 'boolean',
+            description:
+                'True if users should be warned before pulling a cloud sketch. Defaults to true.',
+            default: true,
+        },
+        'arduino.cloud.push.warn': {
+            type: 'boolean',
+            description:
+                'True if users should be warned before pushing a cloud sketch. Defaults to true.',
+            default: true,
+        },
+        'arduino.cloud.pushpublic.warn': {
+            type: 'boolean',
+            description:
+                'True if users should be warned before pushing a public sketch to the cloud. Defaults to true.',
+            default: true,
+        },
+        'arduino.cloud.sketchSyncEnpoint': {
+            type: 'string',
+            description:
+                'The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.',
+            default: 'https://api2.arduino.cc/create',
+        },
+        'arduino.auth.clientID': {
+            type: 'string',
+            description: 'The OAuth2 client ID.',
+            default: 'C34Ya6ex77jTNxyKWj01lCe1vAHIaPIo',
+        },
+        'arduino.auth.domain': {
+            type: 'string',
+            description: 'The OAuth2 domain.',
+            default: 'login.arduino.cc',
+        },
+        'arduino.auth.audience': {
+            type: 'string',
+            description: 'The 0Auth2 audience.',
+            default: 'https://api.arduino.cc',
+        },
+        'arduino.auth.registerUri': {
+            type: 'string',
+            description: 'The URI used to register a new user.',
+            default: 'https://auth.arduino.cc/login#/register',
+        },
     },
 };
 
@@ -67,6 +123,16 @@ export interface ArduinoConfiguration {
     'arduino.window.autoScale': boolean;
     'arduino.window.zoomLevel': number;
     'arduino.ide.autoUpdate': boolean;
+    'arduino.sketchbook.showAllFiles': boolean;
+    'arduino.cloud.enabled': boolean;
+    'arduino.cloud.pull.warn': boolean;
+    'arduino.cloud.push.warn': boolean;
+    'arduino.cloud.pushpublic.warn': boolean;
+    'arduino.cloud.sketchSyncEnpoint': string;
+    'arduino.auth.clientID': string;
+    'arduino.auth.domain': string;
+    'arduino.auth.audience': string;
+    'arduino.auth.registerUri': string;
 }
 
 export const ArduinoPreferences = Symbol('ArduinoPreferences');

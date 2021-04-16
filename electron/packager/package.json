@@ -18,7 +18,7 @@
     "7zip-min": "^1.1.1",
     "chai": "^4.2.0",
     "dateformat": "^3.0.3",
-    "deepmerge": "^4.2.2",
+    "deepmerge": "2.01",
     "depcheck": "^0.9.2",
     "file-type": "^14.1.4",
     "glob": "^7.1.6",
