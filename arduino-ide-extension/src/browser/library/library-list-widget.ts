@@ -24,6 +24,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
             searchable: service,
             installable: service,
             itemLabel: (item: LibraryPackage) => item.name,
+            itemDeprecated: (item: LibraryPackage) => item.deprecated,
             itemRenderer
         });
     }

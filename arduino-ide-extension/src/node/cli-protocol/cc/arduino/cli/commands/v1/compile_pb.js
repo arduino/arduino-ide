@@ -93,7 +93,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.CompileRequest.repeatedFields_ = [8,15];
+proto.cc.arduino.cli.commands.v1.CompileRequest.repeatedFields_ = [8,15,24];
 
 
 
@@ -145,7 +145,8 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     clean: jspb.Message.getBooleanFieldWithDefault(msg, 19, false),
     createCompilationDatabaseOnly: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
     sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : [],
-    exportBinaries: (f = msg.getExportBinaries()) && google_protobuf_wrappers_pb.BoolValue.toObject(includeInstance, f)
+    exportBinaries: (f = msg.getExportBinaries()) && google_protobuf_wrappers_pb.BoolValue.toObject(includeInstance, f),
+    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -265,6 +266,10 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
       var value = new google_protobuf_wrappers_pb.BoolValue;
       reader.readMessage(value,google_protobuf_wrappers_pb.BoolValue.deserializeBinaryFromReader);
       msg.setExportBinaries(value);
+      break;
+    case 24:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addLibrary(value);
       break;
     default:
       reader.skipField();
@@ -432,6 +437,13 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
       23,
       f,
       google_protobuf_wrappers_pb.BoolValue.serializeBinaryToWriter
+    );
+  }
+  f = message.getLibraryList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      24,
+      f
     );
   }
 };
@@ -874,6 +886,43 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.clearExportBinaries = 
  */
 proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.hasExportBinaries = function() {
   return jspb.Message.getField(this, 23) != null;
+};
+
+
+/**
+ * repeated string library = 24;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getLibraryList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 24));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setLibraryList = function(value) {
+  return jspb.Message.setField(this, 24, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.addLibrary = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 24, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.clearLibraryList = function() {
+  return this.setLibraryList([]);
 };
 
 

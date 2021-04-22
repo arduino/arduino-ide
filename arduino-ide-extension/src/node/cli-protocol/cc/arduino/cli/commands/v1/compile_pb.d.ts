@@ -81,6 +81,11 @@ export class CompileRequest extends jspb.Message {
     getExportBinaries(): google_protobuf_wrappers_pb.BoolValue | undefined;
     setExportBinaries(value?: google_protobuf_wrappers_pb.BoolValue): CompileRequest;
 
+    clearLibraryList(): void;
+    getLibraryList(): Array<string>;
+    setLibraryList(value: Array<string>): CompileRequest;
+    addLibrary(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -115,6 +120,7 @@ export namespace CompileRequest {
 
         sourceOverrideMap: Array<[string, string]>,
         exportBinaries?: google_protobuf_wrappers_pb.BoolValue.AsObject,
+        libraryList: Array<string>,
     }
 }
 
