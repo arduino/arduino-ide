@@ -56,10 +56,11 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
     }
 
     protected renderComponentList(): React.ReactNode {
-        const { itemLabel, resolveContainer, itemRenderer } = this.props;
+        const { itemLabel, itemDeprecated, resolveContainer, itemRenderer } = this.props;
         return <ComponentList<T>
             items={this.state.items}
             itemLabel={itemLabel}
+            itemDeprecated={itemDeprecated}
             itemRenderer={itemRenderer}
             install={this.install.bind(this)}
             uninstall={this.uninstall.bind(this)}
@@ -78,8 +79,17 @@ export class FilterableListContainer<T extends ArduinoComponent> extends React.C
     }
 
     protected sort(items: T[]): T[] {
-        const { itemLabel } = this.props;
-        return items.sort((left, right) => itemLabel(left).localeCompare(itemLabel(right)));
+        // debugger;
+        const { itemLabel, itemDeprecated } = this.props;
+        return items.sort((left, right) => {
+
+            // always put deprecated items at the bottom of the list
+            if (itemDeprecated(left)) {
+                return 1;
+            }
+
+            return itemLabel(left).localeCompare(itemLabel(right))
+        });
     }
 
     protected async install(item: T, version: Installable.Version): Promise<void> {
@@ -121,6 +131,7 @@ export namespace FilterableListContainer {
         readonly container: ListWidget<T>;
         readonly searchable: Searchable<T>;
         readonly itemLabel: (item: T) => string;
+        readonly itemDeprecated: (item: T) => boolean;
         readonly itemRenderer: ListItemRenderer<T>;
         readonly resolveContainer: (element: HTMLElement) => void;
         readonly resolveFocus: (element: HTMLElement | undefined) => void;

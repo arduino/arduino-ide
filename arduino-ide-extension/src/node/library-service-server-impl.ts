@@ -249,6 +249,7 @@ function toLibrary(pkg: Partial<LibraryPackage>, lib: LibraryRelease | Library, 
         label: '',
         exampleUris: [],
         installable: false,
+        deprecated: false,
         location: 0,
         ...pkg,
 

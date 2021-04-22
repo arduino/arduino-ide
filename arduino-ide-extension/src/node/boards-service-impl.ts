@@ -210,6 +210,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
                 availableVersions: [platform.getLatest()],
                 description: platform.getBoardsList().map(b => b.getName()).join(', '),
                 installable: true,
+                deprecated: platform.getDeprecated(),
                 summary: 'Boards included in this package:',
                 installedVersion,
                 boards: platform.getBoardsList().map(b => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),

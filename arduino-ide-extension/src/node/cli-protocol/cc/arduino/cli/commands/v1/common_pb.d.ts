@@ -152,6 +152,9 @@ export class Platform extends jspb.Message {
     getManuallyInstalled(): boolean;
     setManuallyInstalled(value: boolean): Platform;
 
+    getDeprecated(): boolean;
+    setDeprecated(value: boolean): Platform;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -174,6 +177,7 @@ export namespace Platform {
         email: string,
         boardsList: Array<Board.AsObject>,
         manuallyInstalled: boolean,
+        deprecated: boolean,
     }
 }
 

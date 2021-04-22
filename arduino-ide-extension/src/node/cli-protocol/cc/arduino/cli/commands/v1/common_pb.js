@@ -955,7 +955,8 @@ proto.cc.arduino.cli.commands.v1.Platform.toObject = function(includeInstance, m
     email: jspb.Message.getFieldWithDefault(msg, 7, ""),
     boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
     proto.cc.arduino.cli.commands.v1.Board.toObject, includeInstance),
-    manuallyInstalled: jspb.Message.getBooleanFieldWithDefault(msg, 9, false)
+    manuallyInstalled: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
+    deprecated: jspb.Message.getBooleanFieldWithDefault(msg, 10, false)
   };
 
   if (includeInstance) {
@@ -1028,6 +1029,10 @@ proto.cc.arduino.cli.commands.v1.Platform.deserializeBinaryFromReader = function
     case 9:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setManuallyInstalled(value);
+      break;
+    case 10:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDeprecated(value);
       break;
     default:
       reader.skipField();
@@ -1119,6 +1124,13 @@ proto.cc.arduino.cli.commands.v1.Platform.serializeBinaryToWriter = function(mes
   if (f) {
     writer.writeBool(
       9,
+      f
+    );
+  }
+  f = message.getDeprecated();
+  if (f) {
+    writer.writeBool(
+      10,
       f
     );
   }
@@ -1304,6 +1316,24 @@ proto.cc.arduino.cli.commands.v1.Platform.prototype.getManuallyInstalled = funct
  */
 proto.cc.arduino.cli.commands.v1.Platform.prototype.setManuallyInstalled = function(value) {
   return jspb.Message.setProto3BooleanField(this, 9, value);
+};
+
+
+/**
+ * optional bool deprecated = 10;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.getDeprecated = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 10, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.setDeprecated = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 10, value);
 };
 
 

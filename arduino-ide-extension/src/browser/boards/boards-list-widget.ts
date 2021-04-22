@@ -20,6 +20,7 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
             searchable: service,
             installable: service,
             itemLabel: (item: BoardsPackage) => item.name,
+            itemDeprecated: (item: BoardsPackage) => item.deprecated,
             itemRenderer
         });
     }

@@ -2,6 +2,7 @@ import { Installable } from './installable';
 
 export interface ArduinoComponent {
     readonly name: string;
+    readonly deprecated: boolean;
     readonly author: string;
     readonly summary: string;
     readonly description: string;
