@@ -5,7 +5,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
-import { InitRequest, InitResponse, UpdateIndexRequest, UpdateIndexResponse, UpdateLibrariesIndexRequest, UpdateLibrariesIndexResponse } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { CreateRequest, CreateResponse, InitRequest, InitResponse, UpdateIndexRequest, UpdateIndexResponse, UpdateLibrariesIndexRequest, UpdateLibrariesIndexResponse } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
 
@@ -30,6 +30,8 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
             // No need to create a new gRPC client, but we have to update the indexes.
             if (this._client && !(this._client instanceof Error)) {
                 await this.updateIndexes(this._client);
+                // We must initialize the client again to get the updated indexes.
+                await this.initInstance(this._client);
                 this.onClientReadyEmitter.fire();
             }
         } else {
@@ -43,23 +45,59 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         // @ts-ignore
         const ArduinoCoreServiceClient = grpc.makeClientConstructor(commandsGrpcPb['cc.arduino.cli.commands.v1.ArduinoCoreService'], 'ArduinoCoreServiceService') as any;
         const client = new ArduinoCoreServiceClient(`localhost:${port}`, grpc.credentials.createInsecure(), this.channelOptions) as ArduinoCoreServiceClient;
-        const initReq = new InitRequest();
-        initReq.setLibraryManagerOnly(false);
-        const initResp = await new Promise<InitResponse>((resolve, reject) => {
-            let resp: InitResponse | undefined = undefined;
-            const stream = client.init(initReq);
-            stream.on('data', (data: InitResponse) => resp = data);
-            stream.on('end', () => resolve(resp!));
-            stream.on('error', err => reject(err));
+        
+        const createRes = await new Promise<CreateResponse>((resolve, reject) => {
+            client.create(new CreateRequest(), (err, res: CreateResponse) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(res);
+            });
         });
 
-        const instance = initResp.getInstance();
+        const instance = createRes.getInstance()
         if (!instance) {
             throw new Error('Could not retrieve instance from the initialize response.');
         }
+
+        // Update indexes before init
         await this.updateIndexes({ instance, client });
 
+        // Initialize instance by loading indexes, platforms and libraries
+        await this.initInstance({instance, client})
+
         return { instance, client };
+    }
+
+    protected async initInstance({client, instance}: CoreClientProvider.Client): Promise<void> {
+        const initReq = new InitRequest();
+        initReq.setInstance(instance);
+        await new Promise<void>((resolve, reject) => {
+            const stream = client.init(initReq)
+            stream.on('data', (res: InitResponse) => {
+                const progress = res.getInitProgress();
+                if (progress) {
+                    const downloadProgress = progress.getDownloadProgress();
+                    if (downloadProgress && downloadProgress.getCompleted()) {
+                        const file = downloadProgress.getFile();
+                        console.log(`Downloaded ${file}`);
+                    }
+                    const taskProgress = progress.getTaskProgress();
+                    if (taskProgress && taskProgress.getCompleted()) {
+                        const name = taskProgress.getName();
+                        console.log(`Completed ${name}`);
+                    }
+                }
+
+                const err = res.getError()
+                if (err) {
+                    console.error(err.getMessage())
+                }
+            });
+            stream.on('error', (err) => reject(err));
+            stream.on('end', resolve);
+        })
     }
 
     protected async updateIndexes({ client, instance }: CoreClientProvider.Client): Promise<void> {
