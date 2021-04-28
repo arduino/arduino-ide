@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { GrpcClientProvider } from './grpc-client-provider';
@@ -25,19 +25,31 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         client.client.close();
     }
 
-    protected async reconcileClient(port: string | number | undefined): Promise<void> {
-        if (port && port === this._port) {
-            // No need to create a new gRPC client, but we have to update the indexes.
+    @postConstruct()
+    protected async init(): Promise<void> {
+        this.daemon.ready.then(async () => {
+            const cliConfig = this.configService.cliConfiguration;
+            // First create the client and the instance synchronously
+            // and notify client is ready.
+            // TODO: Creation failure should probably be handled here
+            await this.reconcileClient(cliConfig ? cliConfig.daemon.port : undefined)
+                .then(() => { this.onClientReadyEmitter.fire(); });
+
+            // If client has been created correctly update indexes and initialize
+            // its instance by loading platforms and cores.
             if (this._client && !(this._client instanceof Error)) {
-                await this.updateIndexes(this._client);
-                // We must initialize the client again to get the updated indexes.
-                await this.initInstance(this._client);
-                this.onClientReadyEmitter.fire();
+                await this.updateIndexes(this._client)
+                    .then(this.initInstance);
             }
-        } else {
-            await super.reconcileClient(port);
-            this.onClientReadyEmitter.fire();
-        }
+        });
+
+        this.daemon.onDaemonStopped(() => {
+            if (this._client && !(this._client instanceof Error)) {
+                this.close(this._client);
+            }
+            this._client = undefined;
+            this._port = undefined;
+        })
     }
 
     protected async createClient(port: string | number): Promise<CoreClientProvider.Client> {
@@ -45,7 +57,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         // @ts-ignore
         const ArduinoCoreServiceClient = grpc.makeClientConstructor(commandsGrpcPb['cc.arduino.cli.commands.v1.ArduinoCoreService'], 'ArduinoCoreServiceService') as any;
         const client = new ArduinoCoreServiceClient(`localhost:${port}`, grpc.credentials.createInsecure(), this.channelOptions) as ArduinoCoreServiceClient;
-        
+
         const createRes = await new Promise<CreateResponse>((resolve, reject) => {
             client.create(new CreateRequest(), (err, res: CreateResponse) => {
                 if (err) {
@@ -60,12 +72,6 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         if (!instance) {
             throw new Error('Could not retrieve instance from the initialize response.');
         }
-
-        // Update indexes before init
-        await this.updateIndexes({ instance, client });
-
-        // Initialize instance by loading indexes, platforms and libraries
-        await this.initInstance({instance, client})
 
         return { instance, client };
     }
@@ -100,7 +106,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         })
     }
 
-    protected async updateIndexes({ client, instance }: CoreClientProvider.Client): Promise<void> {
+    protected async updateIndexes({ client, instance }: CoreClientProvider.Client): Promise<CoreClientProvider.Client> {
         // in a separate promise, try and update the index
         let indexUpdateSucceeded = true;
         for (let i = 0; i < 10; i++) {
@@ -133,6 +139,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
             this.notificationService.notifyIndexUpdated();
         }
+        return { client, instance }
     }
 
     protected async updateLibraryIndex({ client, instance }: CoreClientProvider.Client): Promise<void> {
