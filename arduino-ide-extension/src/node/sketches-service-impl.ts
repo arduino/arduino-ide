@@ -107,6 +107,7 @@ export class SketchesServiceImpl extends CoreClientAware implements SketchesServ
     }
 
     async loadSketch(uri: string): Promise<SketchWithDetails> {
+        await this.coreClientProvider.initialized;
         const { client, instance } = await this.coreClient();
         const req = new LoadSketchRequest();
         req.setSketchPath(FileUri.fsPath(uri));
@@ -378,6 +379,7 @@ void loop() {
 
     async archive(sketch: Sketch, destinationUri: string): Promise<string> {
         await this.loadSketch(sketch.uri); // sanity check
+        await this.coreClientProvider.initialized;
         const { client } = await this.coreClient();
         const archivePath = FileUri.fsPath(destinationUri);
         // The CLI cannot override existing archives, so we have to wipe it manually: https://github.com/arduino/arduino-cli/issues/1160

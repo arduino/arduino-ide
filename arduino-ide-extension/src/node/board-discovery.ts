@@ -41,6 +41,7 @@ export class BoardDiscovery extends CoreClientAware {
 
     @postConstruct()
     protected async init(): Promise<void> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new BoardListWatchRequest();

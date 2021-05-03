@@ -1,13 +1,12 @@
 import * as grpc from '@grpc/grpc-js';
 import { inject, injectable, postConstruct } from 'inversify';
-import { Event, Emitter } from '@theia/core/lib/common/event';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { CreateRequest, CreateResponse, InitRequest, InitResponse, UpdateIndexRequest, UpdateIndexResponse, UpdateLibrariesIndexRequest, UpdateLibrariesIndexResponse } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -15,14 +14,23 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    protected readonly onClientReadyEmitter = new Emitter<void>();
+    protected _created = new Deferred<void>();
+    protected _initialized = new Deferred<void>();
 
-    get onClientReady(): Event<void> {
-        return this.onClientReadyEmitter.event;
+    get created(): Promise<void> {
+        return this._created.promise;
+    }
+
+    get initialized(): Promise<void> {
+        return this._initialized.promise
     }
 
     close(client: CoreClientProvider.Client): void {
         client.client.close();
+        this._created.reject();
+        this._initialized.reject();
+        this._created = new Deferred<void>();
+        this._initialized = new Deferred<void>();
     }
 
     @postConstruct()
@@ -33,13 +41,14 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
             // and notify client is ready.
             // TODO: Creation failure should probably be handled here
             await this.reconcileClient(cliConfig ? cliConfig.daemon.port : undefined)
-                .then(() => { this.onClientReadyEmitter.fire(); });
+                .then(() => { this._created.resolve() });
 
             // If client has been created correctly update indexes and initialize
             // its instance by loading platforms and cores.
             if (this._client && !(this._client instanceof Error)) {
                 await this.updateIndexes(this._client)
-                    .then(this.initInstance);
+                    .then(this.initInstance)
+                    .then(() => { this._initialized.resolve(); });
             }
         });
 
@@ -219,29 +228,13 @@ export abstract class CoreClientAware {
     protected readonly coreClientProvider: CoreClientProvider;
 
     protected async coreClient(): Promise<CoreClientProvider.Client> {
-        const coreClient = await new Promise<CoreClientProvider.Client>(async (resolve, reject) => {
-            const handle = (c: CoreClientProvider.Client | Error) => {
-                if (c instanceof Error) {
-                    reject(c);
-                } else {
-                    resolve(c);
-                }
+        return await new Promise<CoreClientProvider.Client>(async (resolve, reject) => {
+            const client = await this.coreClientProvider.client()
+            if (client && client instanceof Error) {
+                reject(client)
+            } else if (client) {
+                return resolve(client);
             }
-            const client = await this.coreClientProvider.client();
-            if (client) {
-                handle(client);
-                return;
-            }
-            const toDispose = new DisposableCollection();
-            toDispose.push(this.coreClientProvider.onClientReady(async () => {
-                const client = await this.coreClientProvider.client();
-                if (client) {
-                    handle(client);
-                }
-                toDispose.dispose();
-            }));
         });
-        return coreClient;
     }
-
 }
