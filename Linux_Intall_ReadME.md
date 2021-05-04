@@ -18,10 +18,10 @@ This bash script installs the Arduino IDE 2.0 on Linux Desktop..
 	usystem - uninstalls the IDE system wide from all users
 	
 3). go to Show Application ( button in lower left corner - or hit Home/Windows key )
-4). type Arduino in the search bar - you should see an icon for Arduino 2.0
-5). you can click on the icon to run the IDE - or right-click to add a it to the dock.
+4). type Arduino in the search bar - you should see an icon for Arduino 2.0   <img src="https://raw.githubusercontent.com/ArduinoShop/arduino-ide/Linux_Install/arduino2.png">
+5). click on the icon to run the IDE - or right-click to add a it to the dock.
 
-<img src="https://raw.githubusercontent.com/ArduinoShop/arduino-ide/Linux_Install/arduino2.png">
+
 
 
 	
