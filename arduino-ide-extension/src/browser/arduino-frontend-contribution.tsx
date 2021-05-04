@@ -288,10 +288,11 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                 }
             }
             const { clangdUri, cliUri, lsUri } = await this.executableService.list();
-            const [clangdPath, cliPath, lsPath] = await Promise.all([
+            const [clangdPath, cliPath, lsPath, cliConfigPath] = await Promise.all([
                 this.fileService.fsPath(new URI(clangdUri)),
                 this.fileService.fsPath(new URI(cliUri)),
                 this.fileService.fsPath(new URI(lsUri)),
+                this.fileService.fsPath(new URI(await this.configService.getCliConfigFileUri()))
             ]);
             this.languageServerFqbn = await Promise.race([
                 new Promise<undefined>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${20_000} ms.`)), 20_000)),
@@ -300,6 +301,7 @@ export class ArduinoFrontendContribution implements FrontendApplicationContribut
                     cliPath,
                     clangdPath,
                     log: currentSketchPath ? currentSketchPath : log,
+                    cliConfigPath,
                     board: {
                         fqbn,
                         name: name ? `"${name}"` : undefined

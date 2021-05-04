@@ -2,6 +2,7 @@ export const ConfigServicePath = '/services/config-service';
 export const ConfigService = Symbol('ConfigService');
 export interface ConfigService {
     getVersion(): Promise<Readonly<{ version: string, commit: string, status?: string }>>;
+    getCliConfigFileUri(): Promise<string>;
     getConfiguration(): Promise<Config>;
     setConfiguration(config: Config): Promise<void>;
     isInDataDir(uri: string): Promise<boolean>;
