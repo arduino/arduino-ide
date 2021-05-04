@@ -28,7 +28,8 @@
       "scope": [
         "meta.function.c",
         "entity.name.function",
-        "meta.function-call.c"
+        "meta.function-call.c",
+        "variable.other"
       ],
       "settings": {
         "foreground": "#D35400"
@@ -42,16 +43,19 @@
         "meta.block.c",
         "meta.function.c",
         "entity.name.function.preprocessor.c",
-        "meta.preprocessor.macro.c"
+        "meta.preprocessor.macro.c",
+        "variable",
+        "variable.name"
       ],
       "settings": {
         "foreground": "#434f54"
       }
     },
     {
-      "name": "strings",
+      "name": "constants",
       "scope": [
-        "string.quoted.double"
+        "string.quoted.double",
+        "constant"
       ],
       "settings": {
         "foreground": "#005C5F"
