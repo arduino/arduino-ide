@@ -24,6 +24,10 @@ This bash script installs the Arduino IDE 2.0 on the Linux Desktop..
 
 5). click on the icon to run the IDE - or right-click to add it to the dock.
 
+NoTE: for LXQt/Lubuntu - the IDE will be accessible from the menu under "Programming"
+	  an icon will also appear on the desktop with a warning symbol
+	  you can delete the icon or right-click to enable "trusted mode"
+
 
 ====================================================================================================================
 

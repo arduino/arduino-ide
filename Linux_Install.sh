@@ -4,16 +4,17 @@
 ##  Linux install script for Arduino IDE 2.0 - contributed by Art Sayler  ##
 ##  https://github.com/arduinoshop                                        ##
 ##
-##
+##	version 1.00
 ############################################################################
-
-echo "\nLinux install script for the Arduino IDE 2.0 ${SCRIPT_PATH}\n"
 
 MODE=U
 YN=n
 RESOURCE_NAME=arduino-arduinoide2
 RED='\033[0;31m'
 NOCOLOR='\033[0m'
+VERSION="1.00"
+
+echo "\nLinux_Install.sh ver. $VERSION for the Arduino IDE 2.0\n"
 
 if [ -z $1 ]
 then
@@ -53,10 +54,21 @@ LIB_PATH=$SCRIPT_PATH
 EXE_PATH=$SCRIPT_PATH
 # echo S_PATH = $SCRIPT_PATH
 
-# Install by simply copying desktop file (fallback)
-simple_install_f() {
-	echo
-#	 Using Simple - MODE = $MODE
+
+read -p "$MSG (Y/N) " YN
+
+if [ -z $YN ]
+then
+	echo OK - exiting
+	exit	
+elif [ $YN = n ]
+then
+	echo OK - No is No... exiting
+	exit
+fi	
+
+echo
+
 ###### Remove local user installation
 	
 	if [ $MODE = u ]
@@ -79,19 +91,14 @@ simple_install_f() {
 		elif [ $YN = YES ]
 		then
 			echo "Removing Directory ${SCRIPT_PATH}"
+			cd ..
+			rm -rf ${SCRIPT_PATH}
 		fi
 	fi
 
 ###### Perform local user only installation	
 	if [ $MODE = U ]
 	then
-		echo "For a more professional installation...  and to remove clutter"
-		echo "in ${SCRIPT_PATH}\nyou have the option to move these files."
-		read -p "Move downloaded files to ~/.local/bin and lib ? (Y/N) " YN
-		if [ -z $YN ]
-		then
-			YN=n; echo "Installion files will not be copied."
-		fi
 		
 		LIB_PATH=${HOME}/.local/lib/${RESOURCE_NAME}
 		EXE_PATH=${HOME}/.local/bin
@@ -121,14 +128,11 @@ simple_install_f() {
 		echo "Installing Launcher and Icon\n"
 		
 		echo "Launcher and Icon Installed\n"
-		echo "Go to \"Show Application\" ( button in lower left / \"Windows Key\")"
-		echo "Search for \"Arduino\" - you will see an Icon labeled \"2.0 system\""
+		echo "Go to \"Show Application\" ( button in lower left or hit \"Super/Windows Key\")"
+		echo "Search for \"Arduino\" - you will see an Icon labeled \"2.0 $1\""
 		echo "click on this icon to run the IDE or right-click to add it to the Dock\n"
   
-		# mkdir -p "${HOME}/.local/share/metainfo"
-		# cp "${SCRIPT_PATH}/lib/appdata.xml" "${HOME}/.local/share/metainfo/${RESOURCE_NAME}.appdata.xml"
-
-		# Clean up temp dir
+# Clean up temp dir
 		rm "${TMP_DIR}/${RESOURCE_NAME}l.desktop"
 		rmdir "${TMP_DIR}"
 	fi
@@ -180,6 +184,8 @@ simple_install_f() {
 			echo "Directory ${SCRIPT_PATH} will not be removed"
 		else
 			echo "Removing Directory ${SCRIPT_PATH}"
+			cd ..
+			rm -rf ${SCRIPT_PATH}			
 		fi
 	fi
 
@@ -206,8 +212,8 @@ simple_install_f() {
 		mkdir -p "${HOME}/.local/share/applications"
 		cp "${TMP_DIR}/${RESOURCE_NAME}.desktop" "/usr/local/share/applications/"
 		echo "Launcher and Icon Installed\n"
-		echo "Go to \"Show Application\" ( button in lower left / \"Windows Key\")"
-		echo "Search for \"Arduino\" - you will see an Icon labeled \"2.0 system\""
+		echo "Go to \"Show Application\" ( button in lower left or hit \"Super/Windows Key\")"
+		echo "Search for \"Arduino\" - you will see an Icon labeled \"2.0 $1\""
 		echo "click on this icon to run the IDE or right-click to add it to the Dock\n"
   
 		# mkdir -p "${HOME}/.local/share/metainfo"
@@ -217,22 +223,5 @@ simple_install_f() {
 		rm "${TMP_DIR}/${RESOURCE_NAME}.desktop"
 		rmdir "${TMP_DIR}"
 	fi
- }
-
-# --- main Script starts here ---
-
-read -p "$MSG (Y/N) " YN
-
-if [ -z $YN ]
-then
-	echo OK - exiting
-	exit	
-elif [ $YN = n ]
-then
-	echo OK - No is No... exiting
-	exit
-fi	
-
-simple_install_f
 
 exit
