@@ -3,7 +3,10 @@
 
 This bash script installs the Arduino IDE 2.0 on the Linux Desktop..
 
---  May 4 2021 - testing on Ubuntu 21.04 ( Hippo )
+--  May 5 2021 - tested on Gnome3 / Ubuntu  21.04 ( Hippo )
+--  May 6 2021 - tested on Gnome3 / Ubuntu  20.10 ( Gorilla )
+--  May 6 2021 - tested on Gnome3 / Debian  10    ( Buster )
+--  May 7 2021 - tested on LXQt   / Lubuntu 21.04 ( Hippo )
 
 # Instructions
 
