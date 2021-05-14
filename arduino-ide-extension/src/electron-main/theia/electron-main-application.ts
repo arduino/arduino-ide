@@ -1,19 +1,28 @@
 import { inject, injectable } from 'inversify';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, screen } from 'electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, Display, screen } from 'electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join } from 'path';
 import { initSplashScreen } from '../splash/splash-screen';
+import { isOSX } from '@theia/core/lib/common/os';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
 import { ElectronMainApplication as TheiaElectronMainApplication, TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
 
+interface ArduinoWindow {
+    readonly window: BrowserWindow;
+    readonly state: State;
+}
+interface State {
+    lastFocusTime: number;
+}
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
 
-    protected _windows: BrowserWindow[] = [];
+    protected _windows: ArduinoWindow[] = [];
 
     @inject(SplashServiceImpl)
     protected readonly splashService: SplashServiceImpl;
@@ -63,10 +72,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
                 splashScreenOpts
             }, this.splashService.onCloseRequested);
         }
-        this._windows.push(electronWindow);
+        this._windows.push({ window: electronWindow, state: { lastFocusTime: -1 } });
         electronWindow.on('closed', () => {
             if (electronWindow) {
-                const index = this._windows.indexOf(electronWindow);
+                const index = this._windows.findIndex(candidate => candidate.window === electronWindow);
                 if (index === -1) {
                     console.warn(`Could not dispose browser window: '${electronWindow.title}'.`);
                 } else {
@@ -74,7 +83,17 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
                     electronWindow = undefined;
                 }
             }
-        })
+        });
+        electronWindow.on('focus', () => {
+            if (electronWindow) {
+                const index = this._windows.findIndex(candidate => candidate.window === electronWindow);
+                if (index === -1) {
+                    console.warn(`Could not refresh last focus time on browser window: '${electronWindow.title}'.`);
+                } else {
+                    this._windows[index].state.lastFocusTime = Date.now();
+                }
+            }
+        });
         this.attachReadyToShow(electronWindow);
         this.attachSaveWindowState(electronWindow);
         this.attachGlobalShortcuts(electronWindow);
@@ -139,7 +158,92 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
 
     get windows(): BrowserWindow[] {
-        return this._windows.slice();
+        return this._windows.map(({ window }) => window);
+    }
+
+    get lastActiveWindow(): ArduinoWindow | undefined {
+        const maxLastFocusTime = Math.max(...this._windows.map(candidate => candidate.state.lastFocusTime));
+        return this._windows.find(candidate => candidate.state.lastFocusTime === maxLastFocusTime);
+    }
+
+    protected async getDefaultBrowserWindowOptions(): Promise<TheiaBrowserWindowOptions> {
+        const windowOptionsFromConfig = this.config.electron?.windowOptions || {};
+        let windowState: TheiaBrowserWindowOptions | undefined = this.electronStore.get('windowstate', undefined);
+        if (!windowState) {
+            windowState = this.getDefaultWindowState();
+        }
+        return {
+            ...(windowState.isMaximized ? windowState : this.ensureNoOverlap(windowState)),
+            show: false,
+            title: this.config.applicationName,
+            minWidth: 200,
+            minHeight: 120,
+            webPreferences: {
+                // https://github.com/eclipse-theia/theia/issues/2018
+                nodeIntegration: true,
+                // Setting the following option to `true` causes some features to break, somehow.
+                // Issue: https://github.com/eclipse-theia/theia/issues/8577
+                nodeIntegrationInWorker: false,
+            },
+            ...windowOptionsFromConfig,
+        };
+    }
+
+    // tslint:disable-next-line:max-line-length
+    // Based on https://github.com/microsoft/vscode/blob/27966a2521da538a5e2731e70155efa47af1a801/src/vs/platform/windows/electron-main/windowsStateHandler.ts#L304-L342
+    protected getDefaultWindowState(): BrowserWindowConstructorOptions {
+        // We want the new window to open on the same display that the last active one is in
+        let displayToUse: Display | undefined;
+        const displays = screen.getAllDisplays();
+        const lastActive = this.lastActiveWindow;
+
+        // Single Display
+        if (displays.length === 1) {
+            displayToUse = displays[0];
+        } else {
+            // Multi Display
+            // on mac there is 1 menu per window so we need to use the monitor where the cursor currently is
+            if (isOSX) {
+                const cursorPoint = screen.getCursorScreenPoint();
+                displayToUse = screen.getDisplayNearestPoint(cursorPoint);
+            }
+
+            // if we have a last active window, use that display for the new window
+            if (!displayToUse && lastActive) {
+                displayToUse = screen.getDisplayMatching(lastActive.window.getBounds());
+            }
+
+            // fallback to primary display or first display
+            if (!displayToUse) {
+                displayToUse = screen.getPrimaryDisplay() || displays[0];
+            }
+        }
+
+        const { bounds } = displayToUse;
+        const height = Math.floor(bounds.height * (2 / 3));
+        const width = Math.floor(bounds.width * (2 / 3));
+        const y = Math.floor(bounds.y + (bounds.height - height) / 2);
+        const x = Math.floor(bounds.x + (bounds.width - width) / 2);
+        return { width, height, x, y };
+    }
+
+    // tslint:disable-next-line:max-line-length
+    // Based on https://github.com/microsoft/vscode/blob/27966a2521da538a5e2731e70155efa47af1a801/src/vs/platform/windows/electron-main/windowsStateHandler.ts#L375-L389
+    protected ensureNoOverlap(state: BrowserWindowConstructorOptions): BrowserWindowConstructorOptions {
+        if (this._windows.length === 0) {
+            return state;
+        }
+
+        state.x = typeof state.x === 'number' ? state.x : 0;
+        state.y = typeof state.y === 'number' ? state.y : 0;
+
+        const existingWindowBounds = this._windows.map(window => window.window.getBounds());
+        while (existingWindowBounds.some(b => b.x === state.x || b.y === state.y)) {
+            state.x += 30;
+            state.y += 30;
+        }
+
+        return state;
     }
 
 }
