@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "electron-app",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0-beta.7",
   "license": "AGPL-3.0-or-later",
   "main": "src-gen/frontend/electron-main.js",
   "dependencies": {
@@ -21,7 +21,7 @@
     "@theia/process": "next",
     "@theia/terminal": "next",
     "@theia/workspace": "next",
-    "arduino-ide-extension": "2.0.0-beta.6"
+    "arduino-ide-extension": "2.0.0-beta.7"
   },
   "devDependencies": {
     "@theia/cli": "next"

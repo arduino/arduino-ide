@@ -1,6 +1,6 @@
 {
-  "name": "arduino-editor",
-  "version": "2.0.0-beta.6",
+  "name": "arduino-ide",
+  "version": "2.0.0-beta.7",
   "description": "Arduino IDE",
   "repository": "https://github.com/bcmi-labs/arduino-editor.git",
   "author": "Arduino SA",
