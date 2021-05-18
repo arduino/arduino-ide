@@ -1,7 +1,7 @@
 // @ts-check
 
 // The version to use.
-const version = '1.9.0';
+const version = '1.9.1';
 
 (async () => {
 
