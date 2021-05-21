@@ -270,6 +270,7 @@ export interface Board {
     readonly name: string;
     readonly fqbn?: string;
     readonly port?: Port;
+    readonly serialNumber?: string;
 }
 
 export interface BoardWithPackage extends Board {

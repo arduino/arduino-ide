@@ -56,7 +56,8 @@ export class BoardSelection extends SketchContribution {
                     const { VID, PID } = boardDetails;
                     const detail = `BN: ${selectedBoard.name}
 VID: ${VID}
-PID: ${PID}`;
+PID: ${PID}
+S/N: ${selectedBoard.serialNumber}`;
                     await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
                         message: 'Board Info',
                         title: 'Board Info',
