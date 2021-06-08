@@ -95,7 +95,9 @@ jobs:
       matrix:
         artifact:
           - path: "*Linux_64bit.zip"
-            name: Linux_X86-64
+            name: Linux_X86-64_zip
+          - path: "*Linux_64bit.deb"
+            name: Linux_X86-64_deb
           - path: "*macOS_64bit.dmg"
             name: macOS
           - path: "*Windows_64bit.exe"

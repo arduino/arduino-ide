@@ -1,6 +1,6 @@
 {
   "main": "scripts/arduino-ide-electron-main.js",
-  "author": "Arduino SA",
+  "author": "Arduino SA <arduino@sa.cc>",
   "resolutions": {
     "**/fs-extra": "^4.0.3"
   },
@@ -91,9 +91,8 @@
     },
     "linux": {
       "target": [
-        {
-          "target": "zip"
-        }
+        "zip",
+        "deb"
       ],
       "category": "Development",
       "icon": "resources/icons"

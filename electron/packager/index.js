@@ -276,7 +276,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
         const filesToCopy = [];
         switch (platform) {
             case 'linux': {
-                filesToCopy.push(...glob.sync('**/arduino-ide*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
+                filesToCopy.push(...glob.sync('**/arduino-ide*.{zip,deb}', { cwd }).map(p => join(cwd, p)));
                 break;
             }
             case 'win32': {
