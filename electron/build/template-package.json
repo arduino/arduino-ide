@@ -2,7 +2,8 @@
   "main": "scripts/arduino-ide-electron-main.js",
   "author": "Arduino SA",
   "resolutions": {
-    "**/fs-extra": "^4.0.3"
+    "**/fs-extra": "^4.0.3",
+    "electron-builder": "22.7.0"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
@@ -10,7 +11,7 @@
   "devDependencies": {
     "@theia/cli": "next",
     "cross-env": "^7.0.2",
-    "electron-builder": "^22.4.1",
+    "electron-builder": "22.7.0",
     "electron-notarize": "^0.3.0",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
