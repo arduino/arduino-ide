@@ -5,11 +5,15 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { MonitorConnection } from '../monitor/monitor-connection';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry } from './contribution';
+import {
+    SketchContribution,
+    Command,
+    CommandRegistry,
+    MenuModelRegistry,
+} from './contribution';
 
 @injectable()
 export class BurnBootloader extends SketchContribution {
-
     @inject(CoreService)
     protected readonly coreService: CoreService;
 
@@ -27,7 +31,7 @@ export class BurnBootloader extends SketchContribution {
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(BurnBootloader.Commands.BURN_BOOTLOADER, {
-            execute: () => this.burnBootloader()
+            execute: () => this.burnBootloader(),
         });
     }
 
@@ -35,7 +39,7 @@ export class BurnBootloader extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP, {
             commandId: BurnBootloader.Commands.BURN_BOOTLOADER.id,
             label: 'Burn Bootloader',
-            order: 'z99'
+            order: 'z99',
         });
     }
 
@@ -47,21 +51,28 @@ export class BurnBootloader extends SketchContribution {
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
             const port = boardsConfig.selectedPort?.address;
-            const [fqbn, { selectedProgrammer: programmer }, verify, verbose] = await Promise.all([
-                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
-                this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
-                this.preferences.get('arduino.upload.verify'),
-                this.preferences.get('arduino.upload.verbose')
-            ]);
+            const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
+                await Promise.all([
+                    this.boardsDataStore.appendConfigToFqbn(
+                        boardsConfig.selectedBoard?.fqbn
+                    ),
+                    this.boardsDataStore.getData(
+                        boardsConfig.selectedBoard?.fqbn
+                    ),
+                    this.preferences.get('arduino.upload.verify'),
+                    this.preferences.get('arduino.upload.verbose'),
+                ]);
             this.outputChannelManager.getChannel('Arduino').clear();
             await this.coreService.burnBootloader({
                 fqbn,
                 programmer,
                 port,
                 verify,
-                verbose
+                verbose,
             });
-            this.messageService.info('Done burning bootloader.', { timeout: 3000 });
+            this.messageService.info('Done burning bootloader.', {
+                timeout: 3000,
+            });
         } catch (e) {
             this.messageService.error(e.toString());
         } finally {
@@ -70,13 +81,12 @@ export class BurnBootloader extends SketchContribution {
             }
         }
     }
-
 }
 
 export namespace BurnBootloader {
     export namespace Commands {
         export const BURN_BOOTLOADER: Command = {
-            id: 'arduino-burn-bootloader'
+            id: 'arduino-burn-bootloader',
         };
     }
 }

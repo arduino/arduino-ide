@@ -6,7 +6,6 @@ import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-ser
 
 @injectable()
 export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContribution {
-
     @inject(SketchesServiceClientImpl)
     protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
@@ -14,7 +13,10 @@ export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContrib
 
     @postConstruct()
     protected init(): void {
-        this.sketchesServiceClient.currentSketch().then().then(sketch => this.currentSketch = sketch);
+        this.sketchesServiceClient
+            .currentSketch()
+            .then()
+            .then((sketch) => (this.currentSketch = sketch));
     }
 
     getResourceUri(): URI | undefined {

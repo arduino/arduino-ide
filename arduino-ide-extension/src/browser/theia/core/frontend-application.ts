@@ -8,7 +8,6 @@ import { ArduinoCommands } from '../../arduino-commands';
 
 @injectable()
 export class FrontendApplication extends TheiaFrontendApplication {
-
     @inject(FileService)
     protected readonly fileService: FileService;
 
@@ -27,10 +26,14 @@ export class FrontendApplication extends TheiaFrontendApplication {
         for (const root of roots) {
             const exists = await this.fileService.exists(root.resource);
             if (exists) {
-                this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
-                await this.commandService.executeCommand(ArduinoCommands.OPEN_SKETCH_FILES.id, root.resource);
+                this.sketchesService.markAsRecentlyOpened(
+                    root.resource.toString()
+                ); // no await, will get the notification later and rebuild the menu
+                await this.commandService.executeCommand(
+                    ArduinoCommands.OPEN_SKETCH_FILES.id,
+                    root.resource
+                );
             }
         }
     }
-
 }

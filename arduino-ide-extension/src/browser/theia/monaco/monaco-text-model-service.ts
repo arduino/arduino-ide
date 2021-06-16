@@ -10,42 +10,52 @@ import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-ser
 
 @injectable()
 export class MonacoTextModelService extends TheiaMonacoTextModelService {
-
     @inject(SketchesServiceClientImpl)
     protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-    protected async createModel(resource: Resource): Promise<MonacoEditorModel> {
-        const factory = this.factories.getContributions().find(({ scheme }) => resource.uri.scheme === scheme);
+    protected async createModel(
+        resource: Resource
+    ): Promise<MonacoEditorModel> {
+        const factory = this.factories
+            .getContributions()
+            .find(({ scheme }) => resource.uri.scheme === scheme);
         const readOnly = this.sketchesServiceClient.isReadOnly(resource.uri);
-        return factory ? factory.createModel(resource) : new MaybeReadonlyMonacoEditorModel(resource, this.m2p, this.p2m, this.logger, undefined, readOnly);
+        return factory
+            ? factory.createModel(resource)
+            : new MaybeReadonlyMonacoEditorModel(
+                  resource,
+                  this.m2p,
+                  this.p2m,
+                  this.logger,
+                  undefined,
+                  readOnly
+              );
     }
-
 }
 
 // https://github.com/eclipse-theia/theia/pull/8491
 class SilentMonacoEditorModel extends MonacoEditorModel {
-
     protected trace(loggable: Loggable): void {
         if (this.logger) {
             this.logger.trace((log: Log) =>
-                loggable((message, ...params) => log(message, ...params, this.resource.uri.toString(true)))
+                loggable((message, ...params) =>
+                    log(message, ...params, this.resource.uri.toString(true))
+                )
             );
         }
     }
-
 }
 
 class MaybeReadonlyMonacoEditorModel extends SilentMonacoEditorModel {
-
     constructor(
         protected readonly resource: Resource,
         protected readonly m2p: MonacoToProtocolConverter,
         protected readonly p2m: ProtocolToMonacoConverter,
         protected readonly logger?: ILogger,
         protected readonly editorPreferences?: EditorPreferences,
-        protected readonly _readOnly?: boolean,
+        protected readonly _readOnly?: boolean
     ) {
-        super(resource, m2p, p2m, logger, editorPreferences)
+        super(resource, m2p, p2m, logger, editorPreferences);
     }
 
     get readOnly(): boolean {
@@ -69,6 +79,4 @@ class MaybeReadonlyMonacoEditorModel extends SilentMonacoEditorModel {
         }
         this.onDirtyChangedEmitter.fire(undefined);
     }
-
-
 }

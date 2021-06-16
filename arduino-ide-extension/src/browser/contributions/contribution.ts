@@ -10,22 +10,59 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
 import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
-import { MenuModelRegistry, MenuContribution } from '@theia/core/lib/common/menu';
-import { KeybindingRegistry, KeybindingContribution } from '@theia/core/lib/browser/keybinding';
-import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { FrontendApplicationContribution, FrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { Command, CommandRegistry, CommandContribution, CommandService } from '@theia/core/lib/common/command';
+import {
+    MenuModelRegistry,
+    MenuContribution,
+} from '@theia/core/lib/common/menu';
+import {
+    KeybindingRegistry,
+    KeybindingContribution,
+} from '@theia/core/lib/browser/keybinding';
+import {
+    TabBarToolbarContribution,
+    TabBarToolbarRegistry,
+} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import {
+    FrontendApplicationContribution,
+    FrontendApplication,
+} from '@theia/core/lib/browser/frontend-application';
+import {
+    Command,
+    CommandRegistry,
+    CommandContribution,
+    CommandService,
+} from '@theia/core/lib/common/command';
 import { EditorMode } from '../editor-mode';
 import { SettingsService } from '../settings';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
-import { SketchesService, ConfigService, FileSystemExt, Sketch } from '../../common/protocol';
+import {
+    SketchesService,
+    ConfigService,
+    FileSystemExt,
+    Sketch,
+} from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
 
-export { Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry, URI, Sketch, open };
+export {
+    Command,
+    CommandRegistry,
+    MenuModelRegistry,
+    KeybindingRegistry,
+    TabBarToolbarRegistry,
+    URI,
+    Sketch,
+    open,
+};
 
 @injectable()
-export abstract class Contribution implements CommandContribution, MenuContribution, KeybindingContribution, TabBarToolbarContribution, FrontendApplicationContribution {
-
+export abstract class Contribution
+    implements
+        CommandContribution,
+        MenuContribution,
+        KeybindingContribution,
+        TabBarToolbarContribution,
+        FrontendApplicationContribution
+{
     @inject(ILogger)
     protected readonly logger: ILogger;
 
@@ -47,26 +84,19 @@ export abstract class Contribution implements CommandContribution, MenuContribut
     @inject(SettingsService)
     protected readonly settingsService: SettingsService;
 
-    onStart(app: FrontendApplication): MaybePromise<void> {
-    }
+    onStart(app: FrontendApplication): MaybePromise<void> {}
 
-    registerCommands(registry: CommandRegistry): void {
-    }
+    registerCommands(registry: CommandRegistry): void {}
 
-    registerMenus(registry: MenuModelRegistry): void {
-    }
+    registerMenus(registry: MenuModelRegistry): void {}
 
-    registerKeybindings(registry: KeybindingRegistry): void {
-    }
+    registerKeybindings(registry: KeybindingRegistry): void {}
 
-    registerToolbarItems(registry: TabBarToolbarRegistry): void {
-    }
-
+    registerToolbarItems(registry: TabBarToolbarRegistry): void {}
 }
 
 @injectable()
 export abstract class SketchContribution extends Contribution {
-
     @inject(FileService)
     protected readonly fileService: FileService;
 
@@ -100,18 +130,23 @@ export abstract class SketchContribution extends Contribution {
         if (sketch) {
             for (const editor of this.editorManager.all) {
                 const uri = editor.editor.uri;
-                if (Saveable.isDirty(editor) && Sketch.isInSketch(uri, sketch)) {
+                if (
+                    Saveable.isDirty(editor) &&
+                    Sketch.isInSketch(uri, sketch)
+                ) {
                     override[uri.toString()] = editor.editor.document.getText();
                 }
             }
         }
         return override;
     }
-
 }
 
 export namespace Contribution {
-    export function configure<T>(bind: interfaces.Bind, serviceIdentifier: typeof Contribution): void {
+    export function configure<T>(
+        bind: interfaces.Bind,
+        serviceIdentifier: typeof Contribution
+    ): void {
         bind(serviceIdentifier).toSelf().inSingletonScope();
         bind(CommandContribution).toService(serviceIdentifier);
         bind(MenuContribution).toService(serviceIdentifier);

@@ -5,22 +5,20 @@ import { ListWidgetFrontendContribution } from '../widgets/component-list/list-w
 
 @injectable()
 export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<BoardsPackage> {
-
     constructor() {
         super({
             widgetId: BoardsListWidget.WIDGET_ID,
             widgetName: BoardsListWidget.WIDGET_LABEL,
             defaultWidgetOptions: {
                 area: 'left',
-                rank: 2
+                rank: 2,
             },
             toggleCommandId: `${BoardsListWidget.WIDGET_ID}:toggle`,
-            toggleKeybinding: 'CtrlCmd+Shift+B'
+            toggleKeybinding: 'CtrlCmd+Shift+B',
         });
     }
 
     async initializeLayout(): Promise<void> {
         this.openView();
     }
-
 }

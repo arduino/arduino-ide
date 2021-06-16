@@ -1,49 +1,66 @@
 import { injectable } from 'inversify';
-import { NotificationServiceServer, NotificationServiceClient, AttachedBoardsChangeEvent, BoardsPackage, LibraryPackage, Config, Sketch } from '../common/protocol';
+import {
+    NotificationServiceServer,
+    NotificationServiceClient,
+    AttachedBoardsChangeEvent,
+    BoardsPackage,
+    LibraryPackage,
+    Config,
+    Sketch,
+} from '../common/protocol';
 
 @injectable()
-export class NotificationServiceServerImpl implements NotificationServiceServer {
-
+export class NotificationServiceServerImpl
+    implements NotificationServiceServer
+{
     protected readonly clients: NotificationServiceClient[] = [];
 
     notifyIndexUpdated(): void {
-        this.clients.forEach(client => client.notifyIndexUpdated());
+        this.clients.forEach((client) => client.notifyIndexUpdated());
     }
 
     notifyDaemonStarted(): void {
-        this.clients.forEach(client => client.notifyDaemonStarted());
+        this.clients.forEach((client) => client.notifyDaemonStarted());
     }
 
     notifyDaemonStopped(): void {
-        this.clients.forEach(client => client.notifyDaemonStopped());
+        this.clients.forEach((client) => client.notifyDaemonStopped());
     }
 
     notifyPlatformInstalled(event: { item: BoardsPackage }): void {
-        this.clients.forEach(client => client.notifyPlatformInstalled(event));
+        this.clients.forEach((client) => client.notifyPlatformInstalled(event));
     }
 
     notifyPlatformUninstalled(event: { item: BoardsPackage }): void {
-        this.clients.forEach(client => client.notifyPlatformUninstalled(event));
+        this.clients.forEach((client) =>
+            client.notifyPlatformUninstalled(event)
+        );
     }
 
     notifyLibraryInstalled(event: { item: LibraryPackage }): void {
-        this.clients.forEach(client => client.notifyLibraryInstalled(event));
+        this.clients.forEach((client) => client.notifyLibraryInstalled(event));
     }
 
     notifyLibraryUninstalled(event: { item: LibraryPackage }): void {
-        this.clients.forEach(client => client.notifyLibraryUninstalled(event));
+        this.clients.forEach((client) =>
+            client.notifyLibraryUninstalled(event)
+        );
     }
 
     notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
-        this.clients.forEach(client => client.notifyAttachedBoardsChanged(event));
+        this.clients.forEach((client) =>
+            client.notifyAttachedBoardsChanged(event)
+        );
     }
 
     notifyConfigChanged(event: { config: Config | undefined }): void {
-        this.clients.forEach(client => client.notifyConfigChanged(event));
+        this.clients.forEach((client) => client.notifyConfigChanged(event));
     }
 
     notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void {
-        this.clients.forEach(client => client.notifyRecentSketchesChanged(event));
+        this.clients.forEach((client) =>
+            client.notifyRecentSketchesChanged(event)
+        );
     }
 
     setClient(client: NotificationServiceClient): void {
@@ -53,7 +70,9 @@ export class NotificationServiceServerImpl implements NotificationServiceServer 
     disposeClient(client: NotificationServiceClient): void {
         const index = this.clients.indexOf(client);
         if (index === -1) {
-            console.warn('Could not dispose notification service client. It was not registered.');
+            console.warn(
+                'Could not dispose notification service client. It was not registered.'
+            );
             return;
         }
         this.clients.splice(index, 1);
@@ -65,5 +84,4 @@ export class NotificationServiceServerImpl implements NotificationServiceServer 
         }
         this.clients.length = 0;
     }
-
 }

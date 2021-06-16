@@ -1,6 +1,11 @@
 import { LibraryPackage } from './library-service';
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
-import { Sketch, Config, BoardsPackage, AttachedBoardsChangeEvent } from '../protocol';
+import {
+    Sketch,
+    Config,
+    BoardsPackage,
+    AttachedBoardsChangeEvent,
+} from '../protocol';
 
 export interface NotificationServiceClient {
     notifyIndexUpdated(): void;
@@ -17,6 +22,8 @@ export interface NotificationServiceClient {
 
 export const NotificationServicePath = '/services/notification-service';
 export const NotificationServiceServer = Symbol('NotificationServiceServer');
-export interface NotificationServiceServer extends Required<NotificationServiceClient>, JsonRpcServer<NotificationServiceClient> {
+export interface NotificationServiceServer
+    extends Required<NotificationServiceClient>,
+        JsonRpcServer<NotificationServiceClient> {
     disposeClient(client: NotificationServiceClient): void;
 }

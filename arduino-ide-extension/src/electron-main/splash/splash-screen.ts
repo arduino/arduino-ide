@@ -34,7 +34,7 @@ import { BrowserWindow } from 'electron';
  * When splashscreen was shown.
  * @ignore
  */
-let splashScreenTimestamp: number = 0;
+let splashScreenTimestamp = 0;
 /**
  * Splashscreen is loaded and ready to show.
  * @ignore
@@ -111,14 +111,17 @@ let splashScreen: Electron.BrowserWindow | null;
  * @param config - Configures splashscreen
  * @returns {BrowserWindow} the main browser window ready for loading
  */
-export const initSplashScreen = (config: Config, onCloseRequested?: Event<void>): BrowserWindow => {
+export const initSplashScreen = (
+    config: Config,
+    onCloseRequested?: Event<void>
+): BrowserWindow => {
     const xConfig: Required<Config> = {
         windowOpts: config.windowOpts,
         templateUrl: config.templateUrl,
         splashScreenOpts: config.splashScreenOpts,
         delay: config.delay ?? 500,
         minVisible: config.minVisible ?? 500,
-        closeWindow: config.closeWindow ?? true
+        closeWindow: config.closeWindow ?? true,
     };
     xConfig.splashScreenOpts.center = true;
     xConfig.splashScreenOpts.frame = false;
@@ -126,9 +129,10 @@ export const initSplashScreen = (config: Config, onCloseRequested?: Event<void>)
     const window = new BrowserWindow(xConfig.windowOpts);
     splashScreen = new BrowserWindow(xConfig.splashScreenOpts);
     splashScreen.loadURL(`file://${xConfig.templateUrl}`);
-    xConfig.closeWindow && splashScreen.on('close', () => {
-        done || window.close();
-    });
+    xConfig.closeWindow &&
+        splashScreen.on('close', () => {
+            done || window.close();
+        });
     // Splashscreen is fully loaded and ready to view.
     splashScreen.webContents.on('did-finish-load', () => {
         splashScreenReady = true;
@@ -163,7 +167,9 @@ export interface DynamicSplashScreen {
  * @param config - Configures splashscreen
  * @returns {DynamicSplashScreen} the main browser window and the created splashscreen
  */
-export const initDynamicSplashScreen = (config: Config): DynamicSplashScreen => {
+export const initDynamicSplashScreen = (
+    config: Config
+): DynamicSplashScreen => {
     return {
         main: initSplashScreen(config),
         // initSplashScreen initializes splashscreen so this is a safe cast.

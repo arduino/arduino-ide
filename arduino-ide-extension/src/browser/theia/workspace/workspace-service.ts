@@ -9,14 +9,17 @@ import { FocusTracker, Widget } from '@theia/core/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
-import { SketchesService, Sketch, SketchContainer } from '../../../common/protocol/sketches-service';
+import {
+    SketchesService,
+    Sketch,
+    SketchContainer,
+} from '../../../common/protocol/sketches-service';
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
-
     @inject(SketchesService)
     protected readonly sketchService: SketchesService;
 
@@ -46,8 +49,12 @@ export class WorkspaceService extends TheiaWorkspaceService {
         this.application = application;
         const info = await this.applicationServer.getApplicationInfo();
         this.version = info?.version;
-        application.shell.onDidChangeCurrentWidget(this.onCurrentWidgetChange.bind(this));
-        const newValue = application.shell.currentWidget ? application.shell.currentWidget : null;
+        application.shell.onDidChangeCurrentWidget(
+            this.onCurrentWidgetChange.bind(this)
+        );
+        const newValue = application.shell.currentWidget
+            ? application.shell.currentWidget
+            : null;
         this.onCurrentWidgetChange({ newValue, oldValue: null });
     }
 
@@ -61,10 +68,14 @@ export class WorkspaceService extends TheiaWorkspaceService {
                 const hash = window.location.hash;
                 const [recentWorkspaces, recentSketches] = await Promise.all([
                     this.server.getRecentWorkspaces(),
-                    this.sketchService.getSketches({}).then(container => SketchContainer.toArray(container).map(s => s.uri))
+                    this.sketchService
+                        .getSketches({})
+                        .then((container) =>
+                            SketchContainer.toArray(container).map((s) => s.uri)
+                        ),
                 ]);
                 const toOpen = await new ArduinoWorkspaceRootResolver({
-                    isValid: this.isValid.bind(this)
+                    isValid: this.isValid.bind(this),
                 }).resolve({ hash, recentWorkspaces, recentSketches });
                 if (toOpen) {
                     const { uri } = toOpen;
@@ -73,12 +84,17 @@ export class WorkspaceService extends TheiaWorkspaceService {
                 }
                 return (await this.sketchService.createNewSketch()).uri;
             } catch (err) {
-                this.appStateService.reachedState('ready').then(() => this.application.shell.update());
-                this.logger.fatal(`Failed to determine the sketch directory: ${err}`)
+                this.appStateService
+                    .reachedState('ready')
+                    .then(() => this.application.shell.update());
+                this.logger.fatal(
+                    `Failed to determine the sketch directory: ${err}`
+                );
                 this.messageService.error(
                     'There was an error creating the sketch directory. ' +
-                    'See the log for more details. ' +
-                    'The application will probably not work as expected.');
+                        'See the log for more details. ' +
+                        'The application will probably not work as expected.'
+                );
                 return super.getDefaultWorkspaceUri();
             }
         })();
@@ -87,7 +103,10 @@ export class WorkspaceService extends TheiaWorkspaceService {
 
     protected openNewWindow(workspacePath: string): void {
         const { boardsConfig } = this.boardsServiceProvider;
-        const url = BoardsConfig.Config.setConfig(boardsConfig, new URL(window.location.href)); // Set the current boards config for the new browser window.
+        const url = BoardsConfig.Config.setConfig(
+            boardsConfig,
+            new URL(window.location.href)
+        ); // Set the current boards config for the new browser window.
         url.hash = workspacePath;
         this.windowService.openNewWindow(url.toString());
     }
@@ -100,7 +119,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
         return this.sketchService.isSketchFolder(uri);
     }
 
-    protected onCurrentWidgetChange({ newValue }: FocusTracker.IChangedArgs<Widget>): void {
+    protected onCurrentWidgetChange({
+        newValue,
+    }: FocusTracker.IChangedArgs<Widget>): void {
         if (newValue instanceof EditorWidget) {
             const { uri } = newValue.editor;
             if (Sketch.isSketchFile(uri.toString())) {
@@ -108,7 +129,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
             } else {
                 const title = this.workspaceTitle;
                 const fileName = this.labelProvider.getName(uri);
-                document.title = this.formatTitle(title ? `${title} - ${fileName}` : fileName);
+                document.title = this.formatTitle(
+                    title ? `${title} - ${fileName}` : fileName
+                );
             }
         } else {
             this.updateTitle();
@@ -126,5 +149,4 @@ export class WorkspaceService extends TheiaWorkspaceService {
             return this.labelProvider.getName(this.workspace.resource);
         }
     }
-
 }

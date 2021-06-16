@@ -6,7 +6,6 @@ import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-ser
 
 @injectable()
 export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
-
     @inject(SketchesServiceClientImpl)
     protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
@@ -16,15 +15,26 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
             return;
         }
         // Deleting the main sketch file.
-        if (uris.map(uri => uri.toString()).some(uri => uri === sketch.mainFileUri)) {
+        if (
+            uris
+                .map((uri) => uri.toString())
+                .some((uri) => uri === sketch.mainFileUri)
+        ) {
             const { response } = await remote.dialog.showMessageBox({
                 title: 'Delete',
                 type: 'question',
                 buttons: ['Cancel', 'OK'],
-                message: 'Do you want to delete the current sketch?'
+                message: 'Do you want to delete the current sketch?',
             });
-            if (response === 1) { // OK
-                await Promise.all([...sketch.additionalFileUris, ...sketch.otherSketchFileUris, sketch.mainFileUri].map(uri => this.closeWithoutSaving(new URI(uri))));
+            if (response === 1) {
+                // OK
+                await Promise.all(
+                    [
+                        ...sketch.additionalFileUris,
+                        ...sketch.otherSketchFileUris,
+                        sketch.mainFileUri,
+                    ].map((uri) => this.closeWithoutSaving(new URI(uri)))
+                );
                 await this.fileService.delete(new URI(sketch.uri));
                 window.close();
             }
@@ -32,5 +42,4 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
         }
         return super.execute(uris);
     }
-
 }

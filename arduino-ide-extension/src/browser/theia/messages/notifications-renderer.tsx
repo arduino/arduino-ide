@@ -7,12 +7,16 @@ import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/mess
 
 @injectable()
 export class NotificationsRenderer extends TheiaNotificationsRenderer {
-
     protected render(): void {
-        ReactDOM.render(<div>
-            <NotificationToastsComponent manager={this.manager} corePreferences={this.corePreferences} />
-            <NotificationCenterComponent manager={this.manager} />
-        </div>, this.container);
+        ReactDOM.render(
+            <div>
+                <NotificationToastsComponent
+                    manager={this.manager}
+                    corePreferences={this.corePreferences}
+                />
+                <NotificationCenterComponent manager={this.manager} />
+            </div>,
+            this.container
+        );
     }
-
 }

@@ -11,11 +11,20 @@
   },
   "devDependencies": {
     "@theia/cli": "next",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "cross-env": "^7.0.2",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^6.0.0",
     "lerna": "^3.20.2",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.1",
     "rimraf": "^2.6.1",
     "semver": "^7.3.2",
-    "tslint": "^5.5.0",
     "typescript": "^3.9.2"
   },
   "scripts": {
@@ -27,6 +36,16 @@
     "test": "lerna run test",
     "download:plugins": "theia download:plugins",
     "update:version": "node ./scripts/update-version.js"
+  },
+  "lint-staged": {
+    "./arduino-ide-extension/**/*.{ts,tsx}": [
+      "eslint --fix --quiet"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "workspaces": [
     "arduino-ide-extension",

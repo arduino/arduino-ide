@@ -8,7 +8,6 @@ import { SketchesService, Sketch } from '../../../common/protocol';
 
 @injectable()
 export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
-
     @inject(SketchesService)
     protected readonly sketchesService: SketchesService;
 
@@ -23,16 +22,19 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
         return this.maybeUpdateCaption(widget);
     }
 
-    protected async maybeUpdateCaption(widget: EditorWidget): Promise<EditorWidget> {
+    protected async maybeUpdateCaption(
+        widget: EditorWidget
+    ): Promise<EditorWidget> {
         const sketch = await this.sketchesServiceClient.currentSketch();
         const { uri } = widget.editor;
         if (sketch && Sketch.isInSketch(uri, sketch)) {
             const isTemp = await this.sketchesService.isTemp(sketch);
             if (isTemp) {
-                widget.title.caption = `Unsaved – ${this.labelProvider.getName(uri)}`;
+                widget.title.caption = `Unsaved – ${this.labelProvider.getName(
+                    uri
+                )}`;
             }
         }
         return widget;
     }
-
 }

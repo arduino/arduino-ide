@@ -1,19 +1,29 @@
 import { Programmer } from './boards-service';
 
-export const CompilerWarningLiterals = ['None', 'Default', 'More', 'All'] as const;
+export const CompilerWarningLiterals = [
+    'None',
+    'Default',
+    'More',
+    'All',
+] as const;
 export type CompilerWarnings = typeof CompilerWarningLiterals[number];
 
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
-    compile(options: CoreService.Compile.Options & Readonly<{ exportBinaries?: boolean, compilerWarnings?: CompilerWarnings }>): Promise<void>;
+    compile(
+        options: CoreService.Compile.Options &
+            Readonly<{
+                exportBinaries?: boolean;
+                compilerWarnings?: CompilerWarnings;
+            }>
+    ): Promise<void>;
     upload(options: CoreService.Upload.Options): Promise<void>;
     uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
     burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;
 }
 
 export namespace CoreService {
-
     export namespace Compile {
         export interface Options {
             /**
@@ -44,5 +54,4 @@ export namespace CoreService {
             readonly verify: boolean;
         }
     }
-
 }

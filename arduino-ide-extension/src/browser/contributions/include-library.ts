@@ -4,7 +4,10 @@ import URI from '@theia/core/lib/common/uri';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { MenuModelRegistry, MenuPath } from '@theia/core/lib/common/menu';
-import { Disposable, DisposableCollection } from '@theia/core/lib/common/disposable';
+import {
+    Disposable,
+    DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { LibraryPackage, LibraryService } from '../../common/protocol';
 import { MainMenuManager } from '../../common/main-menu-manager';
@@ -15,7 +18,6 @@ import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
-
     @inject(CommandRegistry)
     protected readonly commandRegistry: CommandRegistry;
 
@@ -42,29 +44,40 @@ export class IncludeLibrary extends SketchContribution {
 
     onStart(): void {
         this.updateMenuActions();
-        this.boardsServiceClient.onBoardsConfigChanged(() => this.updateMenuActions())
-        this.notificationCenter.onLibraryInstalled(() => this.updateMenuActions());
-        this.notificationCenter.onLibraryUninstalled(() => this.updateMenuActions());
+        this.boardsServiceClient.onBoardsConfigChanged(() =>
+            this.updateMenuActions()
+        );
+        this.notificationCenter.onLibraryInstalled(() =>
+            this.updateMenuActions()
+        );
+        this.notificationCenter.onLibraryUninstalled(() =>
+            this.updateMenuActions()
+        );
     }
 
     registerMenus(registry: MenuModelRegistry): void {
         // `Include Library` submenu
-        const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];
-        registry.registerSubmenu(includeLibMenuPath, 'Include Library', { order: '1' });
+        const includeLibMenuPath = [
+            ...ArduinoMenus.SKETCH__UTILS_GROUP,
+            '0_include',
+        ];
+        registry.registerSubmenu(includeLibMenuPath, 'Include Library', {
+            order: '1',
+        });
         // `Manage Libraries...` group.
         registry.registerMenuAction([...includeLibMenuPath, '0_manage'], {
             commandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-            label: 'Manage Libraries...'
+            label: 'Manage Libraries...',
         });
     }
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY, {
-            execute: async arg => {
+            execute: async (arg) => {
                 if (LibraryPackage.is(arg)) {
                     this.includeLibrary(arg);
                 }
-            }
+            },
         });
     }
 
@@ -72,13 +85,17 @@ export class IncludeLibrary extends SketchContribution {
         return this.queue.add(async () => {
             this.toDispose.dispose();
             this.mainMenuManager.update();
-            const libraries: LibraryPackage[] = []
-            const fqbn = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn;
+            const libraries: LibraryPackage[] = [];
+            const fqbn =
+                this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn;
             // Show all libraries, when no board is selected.
             // Otherwise, show libraries only for the selected board.
-            libraries.push(...await this.libraryService.list({ fqbn }));
+            libraries.push(...(await this.libraryService.list({ fqbn })));
 
-            const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];
+            const includeLibMenuPath = [
+                ...ArduinoMenus.SKETCH__UTILS_GROUP,
+                '0_include',
+            ];
             // `Add .ZIP Library...`
             // TODO: implement it
 
@@ -94,30 +111,50 @@ export class IncludeLibrary extends SketchContribution {
             }
 
             for (const library of user) {
-                this.toDispose.push(this.registerLibrary(library, userMenuPath));
+                this.toDispose.push(
+                    this.registerLibrary(library, userMenuPath)
+                );
             }
             for (const library of rest) {
-                this.toDispose.push(this.registerLibrary(library, packageMenuPath));
+                this.toDispose.push(
+                    this.registerLibrary(library, packageMenuPath)
+                );
             }
 
             this.mainMenuManager.update();
         });
     }
 
-    protected registerLibrary(libraryOrPlaceholder: LibraryPackage | string, menuPath: MenuPath): Disposable {
+    protected registerLibrary(
+        libraryOrPlaceholder: LibraryPackage | string,
+        menuPath: MenuPath
+    ): Disposable {
         if (typeof libraryOrPlaceholder === 'string') {
-            const placeholder = new PlaceholderMenuNode(menuPath, libraryOrPlaceholder);
+            const placeholder = new PlaceholderMenuNode(
+                menuPath,
+                libraryOrPlaceholder
+            );
             this.menuRegistry.registerMenuNode(menuPath, placeholder);
-            return Disposable.create(() => this.menuRegistry.unregisterMenuNode(placeholder.id));
+            return Disposable.create(() =>
+                this.menuRegistry.unregisterMenuNode(placeholder.id)
+            );
         }
         const commandId = `arduino-include-library--${libraryOrPlaceholder.name}:${libraryOrPlaceholder.author}`;
         const command = { id: commandId };
-        const handler = { execute: () => this.commandRegistry.executeCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY.id, libraryOrPlaceholder) };
+        const handler = {
+            execute: () =>
+                this.commandRegistry.executeCommand(
+                    IncludeLibrary.Commands.INCLUDE_LIBRARY.id,
+                    libraryOrPlaceholder
+                ),
+        };
         const menuAction = { commandId, label: libraryOrPlaceholder.name };
         this.menuRegistry.registerMenuAction(menuPath, menuAction);
         return new DisposableCollection(
             this.commandRegistry.registerCommand(command, handler),
-            Disposable.create(() => this.menuRegistry.unregisterMenuAction(menuAction)),
+            Disposable.create(() =>
+                this.menuRegistry.unregisterMenuAction(menuAction)
+            )
         );
     }
 
@@ -131,13 +168,19 @@ export class IncludeLibrary extends SketchContribution {
         let codeEditor: monaco.editor.IStandaloneCodeEditor | undefined;
         const editor = this.editorManager.currentEditor?.editor;
         if (editor instanceof MonacoEditor) {
-            if (sketch.additionalFileUris.some(uri => uri === editor.uri.toString())) {
+            if (
+                sketch.additionalFileUris.some(
+                    (uri) => uri === editor.uri.toString()
+                )
+            ) {
                 codeEditor = editor.getControl();
             }
         }
 
         if (!codeEditor) {
-            const widget = await this.editorManager.open(new URI(sketch.mainFileUri));
+            const widget = await this.editorManager.open(
+                new URI(sketch.mainFileUri)
+            );
             if (widget.editor instanceof MonacoEditor) {
                 codeEditor = widget.editor.getControl();
             }
@@ -155,22 +198,29 @@ export class IncludeLibrary extends SketchContribution {
         const eol = textModel.getEOL();
         const includes = library.includes.slice();
         includes.push(''); // For the trailing new line.
-        const text = includes.map(include => include ? `#include <${include}>` : eol).join(eol);
+        const text = includes
+            .map((include) => (include ? `#include <${include}>` : eol))
+            .join(eol);
         textModel.pushStackElement(); // Start a fresh operation.
-        textModel.pushEditOperations(cursorState, [{
-            range: new monaco.Range(1, 1, 1, 1),
-            text,
-            forceMoveMarkers: true
-        }], () => cursorState);
+        textModel.pushEditOperations(
+            cursorState,
+            [
+                {
+                    range: new monaco.Range(1, 1, 1, 1),
+                    text,
+                    forceMoveMarkers: true,
+                },
+            ],
+            () => cursorState
+        );
         textModel.pushStackElement(); // Make it undoable.
     }
-
 }
 
 export namespace IncludeLibrary {
     export namespace Commands {
         export const INCLUDE_LIBRARY: Command = {
-            id: 'arduino-include-library'
+            id: 'arduino-include-library',
         };
     }
 }

@@ -9,7 +9,6 @@ import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class BoardsConfigDialogWidget extends ReactWidget {
-
     @inject(BoardsService)
     protected readonly boardsService: BoardsService;
 
@@ -20,7 +19,8 @@ export class BoardsConfigDialogWidget extends ReactWidget {
     protected readonly notificationCenter: NotificationCenter;
 
     protected readonly onFilterTextDidChangeEmitter = new Emitter<string>();
-    protected readonly onBoardConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
+    protected readonly onBoardConfigChangedEmitter =
+        new Emitter<BoardsConfig.Config>();
     readonly onBoardConfigChanged = this.onBoardConfigChangedEmitter.event;
 
     protected focusNode: HTMLElement | undefined;
@@ -30,7 +30,7 @@ export class BoardsConfigDialogWidget extends ReactWidget {
         this.id = 'select-board-dialog';
         this.toDispose.pushAll([
             this.onBoardConfigChangedEmitter,
-            this.onFilterTextDidChangeEmitter
+            this.onFilterTextDidChangeEmitter,
         ]);
     }
 
@@ -40,21 +40,26 @@ export class BoardsConfigDialogWidget extends ReactWidget {
 
     protected fireConfigChanged = (config: BoardsConfig.Config) => {
         this.onBoardConfigChangedEmitter.fire(config);
-    }
+    };
 
     protected setFocusNode = (element: HTMLElement | undefined) => {
         this.focusNode = element;
-    }
+    };
 
     protected render(): React.ReactNode {
-        return <div className='selectBoardContainer'>
-            <BoardsConfig
-                boardsServiceProvider={this.boardsServiceClient}
-                notificationCenter={this.notificationCenter}
-                onConfigChange={this.fireConfigChanged}
-                onFocusNodeSet={this.setFocusNode}
-                onFilteredTextDidChangeEvent={this.onFilterTextDidChangeEmitter.event} />
-        </div>;
+        return (
+            <div className="selectBoardContainer">
+                <BoardsConfig
+                    boardsServiceProvider={this.boardsServiceClient}
+                    notificationCenter={this.notificationCenter}
+                    onConfigChange={this.fireConfigChanged}
+                    onFocusNodeSet={this.setFocusNode}
+                    onFilteredTextDidChangeEvent={
+                        this.onFilterTextDidChangeEmitter.event
+                    }
+                />
+            </div>
+        );
     }
 
     protected onActivateRequest(msg: Message): void {
@@ -64,5 +69,4 @@ export class BoardsConfigDialogWidget extends ReactWidget {
         }
         (this.focusNode || this.node).focus();
     }
-
 }

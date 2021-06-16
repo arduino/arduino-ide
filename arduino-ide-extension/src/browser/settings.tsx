@@ -16,9 +16,23 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/file-dialog-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { AbstractDialog, DialogProps, PreferenceService, PreferenceScope, DialogError, ReactWidget } from '@theia/core/lib/browser';
+import {
+    AbstractDialog,
+    DialogProps,
+    PreferenceService,
+    PreferenceScope,
+    DialogError,
+    ReactWidget,
+} from '@theia/core/lib/browser';
 import { Index } from '../common/types';
-import { CompilerWarnings, CompilerWarningLiterals, ConfigService, FileSystemExt, Network, ProxySettings } from '../common/protocol';
+import {
+    CompilerWarnings,
+    CompilerWarningLiterals,
+    ConfigService,
+    FileSystemExt,
+    Network,
+    ProxySettings,
+} from '../common/protocol';
 
 export interface Settings extends Index {
     editorFontSize: number; // `editor.fontSize`
@@ -40,16 +54,13 @@ export interface Settings extends Index {
     network: Network; // CLI
 }
 export namespace Settings {
-
     export function belongsToCli<K extends keyof Settings>(key: K): boolean {
         return key === 'sketchbookPath' || key === 'additionalUrls';
     }
-
 }
 
 @injectable()
 export class SettingsService {
-
     @inject(FileService)
     protected readonly fileService: FileService;
 
@@ -94,28 +105,42 @@ export class SettingsService {
             verboseOnUpload,
             verifyAfterUpload,
             enableLsLogs,
-            cliConfig
+            cliConfig,
         ] = await Promise.all([
             this.preferenceService.get<number>('editor.fontSize', 12),
-            this.preferenceService.get<string>('workbench.colorTheme', 'arduino-theme'),
+            this.preferenceService.get<string>(
+                'workbench.colorTheme',
+                'arduino-theme'
+            ),
             this.preferenceService.get<'on' | 'off'>('editor.autoSave', 'on'),
-            this.preferenceService.get<object>('editor.quickSuggestion', {
-                'other': false,
-                'comments': false,
-                'strings': false
-            }),
-            this.preferenceService.get<boolean>('arduino.window.autoScale', true),
+            this.preferenceService.get<Record<string, unknown>>(
+                'editor.quickSuggestion',
+                {
+                    other: false,
+                    comments: false,
+                    strings: false,
+                }
+            ),
+            this.preferenceService.get<boolean>(
+                'arduino.window.autoScale',
+                true
+            ),
             this.preferenceService.get<number>('arduino.window.zoomLevel', 0),
             // this.preferenceService.get<string>('arduino.ide.autoUpdate', true),
-            this.preferenceService.get<boolean>('arduino.compile.verbose', true),
+            this.preferenceService.get<boolean>(
+                'arduino.compile.verbose',
+                true
+            ),
             this.preferenceService.get<any>('arduino.compile.warnings', 'None'),
             this.preferenceService.get<boolean>('arduino.upload.verbose', true),
             this.preferenceService.get<boolean>('arduino.upload.verify', true),
             this.preferenceService.get<boolean>('arduino.language.log', true),
-            this.configService.getConfiguration()
+            this.configService.getConfiguration(),
         ]);
         const { additionalUrls, sketchDirUri, network } = cliConfig;
-        const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
+        const sketchbookPath = await this.fileService.fsPath(
+            new URI(sketchDirUri)
+        );
         return {
             editorFontSize,
             themeId,
@@ -131,7 +156,7 @@ export class SettingsService {
             enableLsLogs,
             additionalUrls,
             sketchbookPath,
-            network
+            network,
         };
     }
 
@@ -140,7 +165,7 @@ export class SettingsService {
         return this._settings;
     }
 
-    async update(settings: Settings, fireDidChange: boolean = false): Promise<void> {
+    async update(settings: Settings, fireDidChange = false): Promise<void> {
         await this.ready.promise;
         for (const key of Object.keys(settings)) {
             this._settings[key] = settings[key];
@@ -155,17 +180,25 @@ export class SettingsService {
         return this.update(settings, true);
     }
 
-    async validate(settings: MaybePromise<Settings> = this.settings()): Promise<string | true> {
+    async validate(
+        settings: MaybePromise<Settings> = this.settings()
+    ): Promise<string | true> {
         try {
             const { sketchbookPath, editorFontSize, themeId } = await settings;
-            const sketchbookDir = await this.fileSystemExt.getUri(sketchbookPath);
-            if (!await this.fileService.exists(new URI(sketchbookDir))) {
+            const sketchbookDir = await this.fileSystemExt.getUri(
+                sketchbookPath
+            );
+            if (!(await this.fileService.exists(new URI(sketchbookDir)))) {
                 return `Invalid sketchbook location: ${sketchbookPath}`;
             }
             if (editorFontSize <= 0) {
                 return 'Invalid editor font size. It must be a positive integer.';
             }
-            if (!ThemeService.get().getThemes().find(({ id }) => id === themeId)) {
+            if (
+                !ThemeService.get()
+                    .getThemes()
+                    .find(({ id }) => id === themeId)
+            ) {
                 return 'Invalid theme.';
             }
             return true;
@@ -194,54 +227,112 @@ export class SettingsService {
             enableLsLogs,
             sketchbookPath,
             additionalUrls,
-            network
+            network,
         } = this._settings;
         const [config, sketchDirUri] = await Promise.all([
             this.configService.getConfiguration(),
-            this.fileSystemExt.getUri(sketchbookPath)
+            this.fileSystemExt.getUri(sketchbookPath),
         ]);
         (config as any).additionalUrls = additionalUrls;
         (config as any).sketchDirUri = sketchDirUri;
         (config as any).network = network;
 
         await Promise.all([
-            this.preferenceService.set('editor.fontSize', editorFontSize, PreferenceScope.User),
-            this.preferenceService.set('workbench.colorTheme', themeId, PreferenceScope.User),
-            this.preferenceService.set('editor.autoSave', autoSave, PreferenceScope.User),
-            this.preferenceService.set('editor.quickSuggestions', quickSuggestions, PreferenceScope.User),
-            this.preferenceService.set('arduino.window.autoScale', autoScaleInterface, PreferenceScope.User),
-            this.preferenceService.set('arduino.window.zoomLevel', interfaceScale, PreferenceScope.User),
+            this.preferenceService.set(
+                'editor.fontSize',
+                editorFontSize,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'workbench.colorTheme',
+                themeId,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'editor.autoSave',
+                autoSave,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'editor.quickSuggestions',
+                quickSuggestions,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'arduino.window.autoScale',
+                autoScaleInterface,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'arduino.window.zoomLevel',
+                interfaceScale,
+                PreferenceScope.User
+            ),
             // this.preferenceService.set('arduino.ide.autoUpdate', checkForUpdates, PreferenceScope.User),
-            this.preferenceService.set('arduino.compile.verbose', verboseOnCompile, PreferenceScope.User),
-            this.preferenceService.set('arduino.compile.warnings', compilerWarnings, PreferenceScope.User),
-            this.preferenceService.set('arduino.upload.verbose', verboseOnUpload, PreferenceScope.User),
-            this.preferenceService.set('arduino.upload.verify', verifyAfterUpload, PreferenceScope.User),
-            this.preferenceService.set('arduino.language.log', enableLsLogs, PreferenceScope.User),
-            this.configService.setConfiguration(config)
+            this.preferenceService.set(
+                'arduino.compile.verbose',
+                verboseOnCompile,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'arduino.compile.warnings',
+                compilerWarnings,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'arduino.upload.verbose',
+                verboseOnUpload,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'arduino.upload.verify',
+                verifyAfterUpload,
+                PreferenceScope.User
+            ),
+            this.preferenceService.set(
+                'arduino.language.log',
+                enableLsLogs,
+                PreferenceScope.User
+            ),
+            this.configService.setConfiguration(config),
         ]);
         this.onDidChangeEmitter.fire(this._settings);
         return true;
     }
-
 }
 
-export class SettingsComponent extends React.Component<SettingsComponent.Props, SettingsComponent.State> {
-
+export class SettingsComponent extends React.Component<
+    SettingsComponent.Props,
+    SettingsComponent.State
+> {
     readonly toDispose = new DisposableCollection();
 
     constructor(props: SettingsComponent.Props) {
         super(props);
     }
 
-    componentDidUpdate(_: SettingsComponent.Props, prevState: SettingsComponent.State): void {
-        if (this.state && prevState && JSON.stringify(this.state) !== JSON.stringify(prevState)) {
+    componentDidUpdate(
+        _: SettingsComponent.Props,
+        prevState: SettingsComponent.State
+    ): void {
+        if (
+            this.state &&
+            prevState &&
+            JSON.stringify(this.state) !== JSON.stringify(prevState)
+        ) {
             this.props.settingsService.update(this.state, true);
         }
     }
 
     componentDidMount(): void {
-        this.props.settingsService.settings().then(settings => this.setState(settings));
-        this.toDispose.push(this.props.settingsService.onDidChange(settings => this.setState(settings)));
+        this.props.settingsService
+            .settings()
+            .then((settings) => this.setState(settings));
+        this.toDispose.push(
+            this.props.settingsService.onDidChange((settings) =>
+                this.setState(settings)
+            )
+        );
     }
 
     componentWillUnmount(): void {
@@ -252,236 +343,320 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         if (!this.state) {
             return <div />;
         }
-        return <Tabs>
-            <TabList>
-                <Tab>Settings</Tab>
-                <Tab>Network</Tab>
-            </TabList>
-            <TabPanel>
-                {this.renderSettings()}
-            </TabPanel>
-            <TabPanel>
-                {this.renderNetwork()}
-            </TabPanel>
-        </Tabs>;
+        return (
+            <Tabs>
+                <TabList>
+                    <Tab>Settings</Tab>
+                    <Tab>Network</Tab>
+                </TabList>
+                <TabPanel>{this.renderSettings()}</TabPanel>
+                <TabPanel>{this.renderNetwork()}</TabPanel>
+            </Tabs>
+        );
     }
 
     protected renderSettings(): React.ReactNode {
-        return <div className='content noselect'>
-            Sketchbook location:
-            <div className='flex-line'>
-                <input
-                    className='theia-input stretch'
-                    type='text'
-                    value={this.state.sketchbookPath}
-                    onChange={this.sketchpathDidChange} />
-                <button className='theia-button shrink' onClick={this.browseSketchbookDidClick}>Browse</button>
-            </div>
-            <div className='flex-line'>
-                <div className='column'>
-                    <div className='flex-line'>Editor font size:</div>
-                    <div className='flex-line'>Interface scale:</div>
-                    <div className='flex-line'>Theme:</div>
-                    <div className='flex-line'>Show verbose output during:</div>
-                    <div className='flex-line'>Compiler warnings:</div>
+        return (
+            <div className="content noselect">
+                Sketchbook location:
+                <div className="flex-line">
+                    <input
+                        className="theia-input stretch"
+                        type="text"
+                        value={this.state.sketchbookPath}
+                        onChange={this.sketchpathDidChange}
+                    />
+                    <button
+                        className="theia-button shrink"
+                        onClick={this.browseSketchbookDidClick}
+                    >
+                        Browse
+                    </button>
                 </div>
-                <div className='column'>
-                    <div className='flex-line'>
-                        <input
-                            className='theia-input small'
-                            type='number'
-                            step={1}
-                            pattern='[0-9]+'
-                            onKeyDown={this.numbersOnlyKeyDown}
-                            value={this.state.editorFontSize}
-                            onChange={this.editorFontSizeDidChange} />
+                <div className="flex-line">
+                    <div className="column">
+                        <div className="flex-line">Editor font size:</div>
+                        <div className="flex-line">Interface scale:</div>
+                        <div className="flex-line">Theme:</div>
+                        <div className="flex-line">
+                            Show verbose output during:
+                        </div>
+                        <div className="flex-line">Compiler warnings:</div>
                     </div>
-                    <div className='flex-line'>
-                        <label className='flex-line'>
+                    <div className="column">
+                        <div className="flex-line">
                             <input
-                                type='checkbox'
-                                checked={this.state.autoScaleInterface}
-                                onChange={this.autoScaleInterfaceDidChange} />
-                            Automatic
-                        </label>
-                        <input
-                            className='theia-input small with-margin'
-                            type='number'
-                            step={20}
-                            pattern='[0-9]+'
-                            onKeyDown={this.noopKeyDown}
-                            value={100 + this.state.interfaceScale * 20}
-                            onChange={this.interfaceScaleDidChange} />
-                        %
-                    </div>
-                    <div className='flex-line'>
-                        <select
-                            className='theia-select'
-                            value={ThemeService.get().getThemes().find(({ id }) => id === this.state.themeId)?.label || 'Unknown'}
-                            onChange={this.themeDidChange}>
-                            {ThemeService.get().getThemes().map(({ id, label }) => <option key={id} value={label}>{label}</option>)}
-                        </select>
-                    </div>
-                    <div className='flex-line'>
-                        <label className='flex-line'>
+                                className="theia-input small"
+                                type="number"
+                                step={1}
+                                pattern="[0-9]+"
+                                onKeyDown={this.numbersOnlyKeyDown}
+                                value={this.state.editorFontSize}
+                                onChange={this.editorFontSizeDidChange}
+                            />
+                        </div>
+                        <div className="flex-line">
+                            <label className="flex-line">
+                                <input
+                                    type="checkbox"
+                                    checked={this.state.autoScaleInterface}
+                                    onChange={this.autoScaleInterfaceDidChange}
+                                />
+                                Automatic
+                            </label>
                             <input
-                                type='checkbox'
-                                checked={this.state.verboseOnCompile}
-                                onChange={this.verboseOnCompileDidChange} />
-                            compile
-                        </label>
-                        <label className='flex-line'>
-                            <input
-                                type='checkbox'
-                                checked={this.state.verboseOnUpload}
-                                onChange={this.verboseOnUploadDidChange} />
-                            upload
-                        </label>
-                    </div>
-                    <div className='flex-line'>
-                        <select
-                            className='theia-select'
-                            value={this.state.compilerWarnings}
-                            onChange={this.compilerWarningsDidChange}>
-                            {CompilerWarningLiterals.map(value => <option key={value} value={value}>{value}</option>)}
-                        </select>
+                                className="theia-input small with-margin"
+                                type="number"
+                                step={20}
+                                pattern="[0-9]+"
+                                onKeyDown={this.noopKeyDown}
+                                value={100 + this.state.interfaceScale * 20}
+                                onChange={this.interfaceScaleDidChange}
+                            />
+                            %
+                        </div>
+                        <div className="flex-line">
+                            <select
+                                className="theia-select"
+                                value={
+                                    ThemeService.get()
+                                        .getThemes()
+                                        .find(
+                                            ({ id }) =>
+                                                id === this.state.themeId
+                                        )?.label || 'Unknown'
+                                }
+                                onChange={this.themeDidChange}
+                            >
+                                {ThemeService.get()
+                                    .getThemes()
+                                    .map(({ id, label }) => (
+                                        <option key={id} value={label}>
+                                            {label}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        <div className="flex-line">
+                            <label className="flex-line">
+                                <input
+                                    type="checkbox"
+                                    checked={this.state.verboseOnCompile}
+                                    onChange={this.verboseOnCompileDidChange}
+                                />
+                                compile
+                            </label>
+                            <label className="flex-line">
+                                <input
+                                    type="checkbox"
+                                    checked={this.state.verboseOnUpload}
+                                    onChange={this.verboseOnUploadDidChange}
+                                />
+                                upload
+                            </label>
+                        </div>
+                        <div className="flex-line">
+                            <select
+                                className="theia-select"
+                                value={this.state.compilerWarnings}
+                                onChange={this.compilerWarningsDidChange}
+                            >
+                                {CompilerWarningLiterals.map((value) => (
+                                    <option key={value} value={value}>
+                                        {value}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
+                <label className="flex-line">
+                    <input
+                        type="checkbox"
+                        checked={this.state.verifyAfterUpload}
+                        onChange={this.verifyAfterUploadDidChange}
+                    />
+                    Verify code after upload
+                </label>
+                <label className="flex-line">
+                    <input
+                        type="checkbox"
+                        checked={this.state.checkForUpdates}
+                        onChange={this.checkForUpdatesDidChange}
+                        disabled={true}
+                    />
+                    Check for updates on startup
+                </label>
+                <label className="flex-line">
+                    <input
+                        type="checkbox"
+                        checked={this.state.autoSave === 'on'}
+                        onChange={this.autoSaveDidChange}
+                    />
+                    Auto save
+                </label>
+                <label className="flex-line">
+                    <input
+                        type="checkbox"
+                        checked={this.state.quickSuggestions.other === true}
+                        onChange={this.quickSuggestionsOtherDidChange}
+                    />
+                    Editor Quick Suggestions
+                </label>
+                <label className="flex-line">
+                    <input
+                        type="checkbox"
+                        checked={this.state.enableLsLogs}
+                        onChange={this.enableLsLogsDidChange}
+                    />
+                    Enable language server logging
+                </label>
+                <div className="flex-line">
+                    Additional boards manager URLs:
+                    <input
+                        className="theia-input stretch with-margin"
+                        type="text"
+                        value={this.state.additionalUrls.join(',')}
+                        onChange={this.additionalUrlsDidChange}
+                    />
+                    <i
+                        className="fa fa-window-restore theia-button shrink"
+                        onClick={this.editAdditionalUrlDidClick}
+                    />
+                </div>
             </div>
-            <label className='flex-line'>
-                <input
-                    type='checkbox'
-                    checked={this.state.verifyAfterUpload}
-                    onChange={this.verifyAfterUploadDidChange} />
-                Verify code after upload
-            </label>
-            <label className='flex-line'>
-                <input
-                    type='checkbox'
-                    checked={this.state.checkForUpdates}
-                    onChange={this.checkForUpdatesDidChange}
-                    disabled={true} />
-                Check for updates on startup
-            </label>
-            <label className='flex-line'>
-                <input
-                    type='checkbox'
-                    checked={this.state.autoSave === 'on'}
-                    onChange={this.autoSaveDidChange} />
-                Auto save
-            </label>
-            <label className='flex-line'>
-                <input
-                    type='checkbox'
-                    checked={this.state.quickSuggestions.other === true}
-                    onChange={this.quickSuggestionsOtherDidChange} />
-                Editor Quick Suggestions
-            </label>
-            <label className='flex-line'>
-                <input
-                    type='checkbox'
-                    checked={this.state.enableLsLogs}
-                    onChange={this.enableLsLogsDidChange} />
-                Enable language server logging
-            </label>
-            <div className='flex-line'>
-                Additional boards manager URLs:
-                <input
-                    className='theia-input stretch with-margin'
-                    type='text'
-                    value={this.state.additionalUrls.join(',')}
-                    onChange={this.additionalUrlsDidChange} />
-                <i className='fa fa-window-restore theia-button shrink' onClick={this.editAdditionalUrlDidClick} />
-            </div>
-        </div>;
+        );
     }
 
     protected renderNetwork(): React.ReactNode {
-        return <div className='content noselect'>
-            <form>
-                <label className='flex-line'>
-                    <input
-                        type='radio'
-                        checked={this.state.network === 'none'}
-                        onChange={this.noProxyDidChange} />
-                    No proxy
-                </label>
-                <label className='flex-line'>
-                    <input
-                        type='radio'
-                        checked={this.state.network !== 'none'}
-                        onChange={this.manualProxyDidChange} />
-                    Manual proxy configuration
-                </label>
-            </form>
-            {this.renderProxySettings()}
-        </div>;
+        return (
+            <div className="content noselect">
+                <form>
+                    <label className="flex-line">
+                        <input
+                            type="radio"
+                            checked={this.state.network === 'none'}
+                            onChange={this.noProxyDidChange}
+                        />
+                        No proxy
+                    </label>
+                    <label className="flex-line">
+                        <input
+                            type="radio"
+                            checked={this.state.network !== 'none'}
+                            onChange={this.manualProxyDidChange}
+                        />
+                        Manual proxy configuration
+                    </label>
+                </form>
+                {this.renderProxySettings()}
+            </div>
+        );
     }
 
     protected renderProxySettings(): React.ReactNode {
         const disabled = this.state.network === 'none';
-        return <Disable disabled={disabled}>
-            <div className='proxy-settings' aria-disabled={disabled}>
-                <form className='flex-line'>
-                    <input
-                        type='radio'
-                        checked={this.state.network === 'none' ? true : this.state.network.protocol === 'http'}
-                        onChange={this.httpProtocolDidChange} />
-                        HTTP
-                    <label className='flex-line'>
+        return (
+            <Disable disabled={disabled}>
+                <div className="proxy-settings" aria-disabled={disabled}>
+                    <form className="flex-line">
                         <input
-                            type='radio'
-                            checked={this.state.network === 'none' ? false : this.state.network.protocol !== 'http'}
-                            onChange={this.socksProtocolDidChange} />
-                        SOCKS
-                    </label>
-                </form>
-                <div className='flex-line proxy-settings'>
-                    <div className='column'>
-                        <div className='flex-line'>Host name:</div>
-                        <div className='flex-line'>Port number:</div>
-                        <div className='flex-line'>Username:</div>
-                        <div className='flex-line'>Password:</div>
-                    </div>
-                    <div className='column stretch'>
-                        <div className='flex-line'>
+                            type="radio"
+                            checked={
+                                this.state.network === 'none'
+                                    ? true
+                                    : this.state.network.protocol === 'http'
+                            }
+                            onChange={this.httpProtocolDidChange}
+                        />
+                        HTTP
+                        <label className="flex-line">
                             <input
-                                className='theia-input stretch with-margin'
-                                type='text'
-                                value={this.state.network === 'none' ? '' : this.state.network.hostname}
-                                onChange={this.hostnameDidChange} />
+                                type="radio"
+                                checked={
+                                    this.state.network === 'none'
+                                        ? false
+                                        : this.state.network.protocol !== 'http'
+                                }
+                                onChange={this.socksProtocolDidChange}
+                            />
+                            SOCKS
+                        </label>
+                    </form>
+                    <div className="flex-line proxy-settings">
+                        <div className="column">
+                            <div className="flex-line">Host name:</div>
+                            <div className="flex-line">Port number:</div>
+                            <div className="flex-line">Username:</div>
+                            <div className="flex-line">Password:</div>
                         </div>
-                        <div className='flex-line'>
-                            <input
-                                className='theia-input small with-margin'
-                                type='number'
-                                pattern='[0-9]'
-                                value={this.state.network === 'none' ? '' : this.state.network.port}
-                                onKeyDown={this.numbersOnlyKeyDown}
-                                onChange={this.portDidChange} />
-                        </div>
-                        <div className='flex-line'>
-                            <input
-                                className='theia-input stretch with-margin'
-                                type='text'
-                                value={this.state.network === 'none' ? '' : this.state.network.username}
-                                onChange={this.usernameDidChange} />
-                        </div>
-                        <div className='flex-line'>
-                            <input
-                                className='theia-input stretch with-margin'
-                                type='password'
-                                value={this.state.network === 'none' ? '' : this.state.network.password}
-                                onChange={this.passwordDidChange} />
+                        <div className="column stretch">
+                            <div className="flex-line">
+                                <input
+                                    className="theia-input stretch with-margin"
+                                    type="text"
+                                    value={
+                                        this.state.network === 'none'
+                                            ? ''
+                                            : this.state.network.hostname
+                                    }
+                                    onChange={this.hostnameDidChange}
+                                />
+                            </div>
+                            <div className="flex-line">
+                                <input
+                                    className="theia-input small with-margin"
+                                    type="number"
+                                    pattern="[0-9]"
+                                    value={
+                                        this.state.network === 'none'
+                                            ? ''
+                                            : this.state.network.port
+                                    }
+                                    onKeyDown={this.numbersOnlyKeyDown}
+                                    onChange={this.portDidChange}
+                                />
+                            </div>
+                            <div className="flex-line">
+                                <input
+                                    className="theia-input stretch with-margin"
+                                    type="text"
+                                    value={
+                                        this.state.network === 'none'
+                                            ? ''
+                                            : this.state.network.username
+                                    }
+                                    onChange={this.usernameDidChange}
+                                />
+                            </div>
+                            <div className="flex-line">
+                                <input
+                                    className="theia-input stretch with-margin"
+                                    type="password"
+                                    value={
+                                        this.state.network === 'none'
+                                            ? ''
+                                            : this.state.network.password
+                                    }
+                                    onChange={this.passwordDidChange}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </Disable>;
+            </Disable>
+        );
     }
 
-    private isControlKey(event: React.KeyboardEvent<HTMLInputElement>): boolean {
-        return !!event.key && ['tab', 'delete', 'backspace', 'arrowleft', 'arrowright'].some(key => event.key.toLocaleLowerCase() === key);
+    private isControlKey(
+        event: React.KeyboardEvent<HTMLInputElement>
+    ): boolean {
+        return (
+            !!event.key &&
+            ['tab', 'delete', 'backspace', 'arrowleft', 'arrowright'].some(
+                (key) => event.key.toLocaleLowerCase() === key
+            )
+        );
     }
 
     protected noopKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -490,19 +665,21 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
         event.nativeEvent.preventDefault();
         event.nativeEvent.returnValue = false;
-    }
+    };
 
-    protected numbersOnlyKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    protected numbersOnlyKeyDown = (
+        event: React.KeyboardEvent<HTMLInputElement>
+    ) => {
         if (this.isControlKey(event)) {
             return;
         }
-        const key = Number(event.key)
+        const key = Number(event.key);
         if (isNaN(key) || event.key === null || event.key === ' ') {
             event.nativeEvent.preventDefault();
             event.nativeEvent.returnValue = false;
             return;
         }
-    }
+    };
 
     protected browseSketchbookDidClick = async () => {
         const uri = await this.props.fileDialogService.showOpenDialog({
@@ -510,7 +687,7 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
             openLabel: 'Choose',
             canSelectFiles: false,
             canSelectMany: false,
-            canSelectFolders: true
+            canSelectFolders: true,
         });
         if (uri) {
             const sketchbookPath = await this.props.fileService.fsPath(uri);
@@ -519,71 +696,97 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
     };
 
     protected editAdditionalUrlDidClick = async () => {
-        const additionalUrls = await new AdditionalUrlsDialog(this.state.additionalUrls, this.props.windowService).open();
+        const additionalUrls = await new AdditionalUrlsDialog(
+            this.state.additionalUrls,
+            this.props.windowService
+        ).open();
         if (additionalUrls) {
             this.setState({ additionalUrls });
         }
     };
 
-    protected editorFontSizeDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected editorFontSizeDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const { value } = event.target;
         if (value) {
             this.setState({ editorFontSize: parseInt(value, 10) });
         }
     };
 
-    protected additionalUrlsDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ additionalUrls: event.target.value.split(',').map(url => url.trim()) });
+    protected additionalUrlsDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        this.setState({
+            additionalUrls: event.target.value
+                .split(',')
+                .map((url) => url.trim()),
+        });
     };
 
-    protected autoScaleInterfaceDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected autoScaleInterfaceDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ autoScaleInterface: event.target.checked });
     };
 
-    protected enableLsLogsDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected enableLsLogsDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ enableLsLogs: event.target.checked });
     };
 
-    protected interfaceScaleDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected interfaceScaleDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const { value } = event.target;
         const percentage = parseInt(value, 10);
         if (isNaN(percentage)) {
             return;
         }
-        let interfaceScale = (percentage - 100) / 20;
+        const interfaceScale = (percentage - 100) / 20;
         if (!isNaN(interfaceScale)) {
             this.setState({ interfaceScale });
         }
     };
 
-    protected verifyAfterUploadDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected verifyAfterUploadDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ verifyAfterUpload: event.target.checked });
     };
 
-    protected checkForUpdatesDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected checkForUpdatesDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ checkForUpdates: event.target.checked });
     };
 
-    protected autoSaveDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected autoSaveDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ autoSave: event.target.checked ? 'on' : 'off' });
     };
 
-    protected quickSuggestionsOtherDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
+    protected quickSuggestionsOtherDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         // need to persist react events through lifecycle https://reactjs.org/docs/events.html#event-pooling
-        const newVal = event.target.checked ? true : false
+        const newVal = event.target.checked ? true : false;
 
-        this.setState(prevState => {
+        this.setState((prevState) => {
             return {
                 quickSuggestions: {
                     ...prevState.quickSuggestions,
-                    other: newVal
-                }
-            }
+                    other: newVal,
+                },
+            };
         });
     };
 
-    protected themeDidChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    protected themeDidChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
         const { selectedIndex } = event.target.options;
         const theme = ThemeService.get().getThemes()[selectedIndex];
         if (theme) {
@@ -591,7 +794,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected compilerWarningsDidChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    protected compilerWarningsDidChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
         const { selectedIndex } = event.target.options;
         const compilerWarnings = CompilerWarningLiterals[selectedIndex];
         if (compilerWarnings) {
@@ -599,22 +804,30 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected verboseOnCompileDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected verboseOnCompileDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ verboseOnCompile: event.target.checked });
     };
 
-    protected verboseOnUploadDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected verboseOnUploadDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         this.setState({ verboseOnUpload: event.target.checked });
     };
 
-    protected sketchpathDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected sketchpathDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const sketchbookPath = event.target.value;
         if (sketchbookPath) {
             this.setState({ sketchbookPath });
         }
     };
 
-    protected noProxyDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected noProxyDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (event.target.checked) {
             this.setState({ network: 'none' });
         } else {
@@ -622,7 +835,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected manualProxyDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected manualProxyDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (event.target.checked) {
             this.setState({ network: Network.Default() });
         } else {
@@ -630,7 +845,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected httpProtocolDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected httpProtocolDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (this.state.network !== 'none') {
             const network = this.cloneProxySettings;
             network.protocol = event.target.checked ? 'http' : 'socks';
@@ -638,7 +855,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected socksProtocolDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected socksProtocolDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (this.state.network !== 'none') {
             const network = this.cloneProxySettings;
             network.protocol = event.target.checked ? 'socks' : 'http';
@@ -646,7 +865,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected hostnameDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected hostnameDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (this.state.network !== 'none') {
             const network = this.cloneProxySettings;
             network.hostname = event.target.value;
@@ -662,7 +883,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected usernameDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected usernameDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (this.state.network !== 'none') {
             const network = this.cloneProxySettings;
             network.username = event.target.value;
@@ -670,7 +893,9 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         }
     };
 
-    protected passwordDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    protected passwordDidChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         if (this.state.network !== 'none') {
             const network = this.cloneProxySettings;
             network.password = event.target.value;
@@ -686,7 +911,6 @@ export class SettingsComponent extends React.Component<SettingsComponent.Props, 
         const copyNetwork = deepClone(network);
         return copyNetwork;
     }
-
 }
 export namespace SettingsComponent {
     export interface Props {
@@ -695,12 +919,11 @@ export namespace SettingsComponent {
         readonly fileDialogService: FileDialogService;
         readonly windowService: WindowService;
     }
-    export interface State extends Settings { }
+    export type State = Settings;
 }
 
 @injectable()
 export class SettingsWidget extends ReactWidget {
-
     @inject(SettingsService)
     protected readonly settingsService: SettingsService;
 
@@ -714,29 +937,32 @@ export class SettingsWidget extends ReactWidget {
     protected readonly windowService: WindowService;
 
     protected render(): React.ReactNode {
-        return <SettingsComponent
-            settingsService={this.settingsService}
-            fileService={this.fileService}
-            fileDialogService={this.fileDialogService}
-            windowService={this.windowService} />;
+        return (
+            <SettingsComponent
+                settingsService={this.settingsService}
+                fileService={this.fileService}
+                fileDialogService={this.fileDialogService}
+                windowService={this.windowService}
+            />
+        );
     }
-
 }
 
 @injectable()
-export class SettingsDialogProps extends DialogProps {
-}
+export class SettingsDialogProps extends DialogProps {}
 
 @injectable()
 export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
-
     @inject(SettingsService)
     protected readonly settingsService: SettingsService;
 
     @inject(SettingsWidget)
     protected readonly widget: SettingsWidget;
 
-    constructor(@inject(SettingsDialogProps) protected readonly props: SettingsDialogProps) {
+    constructor(
+        @inject(SettingsDialogProps)
+        protected readonly props: SettingsDialogProps
+    ) {
         super(props);
         this.contentNode.classList.add('arduino-settings-dialog');
         this.appendCloseButton('CANCEL');
@@ -745,7 +971,9 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
 
     @postConstruct()
     protected init(): void {
-        this.toDispose.push(this.settingsService.onDidChange(this.validate.bind(this)));
+        this.toDispose.push(
+            this.settingsService.onDidChange(this.validate.bind(this))
+        );
     }
 
     protected async isValid(settings: Promise<Settings>): Promise<DialogError> {
@@ -765,7 +993,9 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
             Widget.detach(this.widget);
         }
         Widget.attach(this.widget, this.contentNode);
-        this.toDisposeOnDetach.push(this.settingsService.onDidChange(() => this.update()));
+        this.toDisposeOnDetach.push(
+            this.settingsService.onDidChange(() => this.update())
+        );
         super.onAfterAttach(msg);
         this.update();
     }
@@ -784,12 +1014,9 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
 
         this.widget.activate();
     }
-
 }
 
-
 export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
-
     protected readonly textArea: HTMLTextAreaElement;
 
     constructor(urls: string[], windowService: WindowService) {
@@ -805,7 +1032,10 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
         this.textArea = document.createElement('textarea');
         this.textArea.className = 'theia-input';
         this.textArea.setAttribute('style', 'flex: 0;');
-        this.textArea.value = urls.filter(url => url.trim()).filter(url => !!url).join('\n');
+        this.textArea.value = urls
+            .filter((url) => url.trim())
+            .filter((url) => !!url)
+            .join('\n');
         this.textArea.wrap = 'soft';
         this.textArea.cols = 90;
         this.textArea.rows = 5;
@@ -813,13 +1043,15 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
 
         const anchor = document.createElement('div');
         anchor.classList.add('link');
-        anchor.textContent = 'Click for a list of unofficial board support URLs';
+        anchor.textContent =
+            'Click for a list of unofficial board support URLs';
         anchor.style.marginTop = '5px';
         anchor.style.cursor = 'pointer';
-        this.addEventListener(
-            anchor,
-            'click',
-            () => windowService.openNewWindow('https://github.com/arduino/Arduino/wiki/Unofficial-list-of-3rd-party-boards-support-urls', { external: true })
+        this.addEventListener(anchor, 'click', () =>
+            windowService.openNewWindow(
+                'https://github.com/arduino/Arduino/wiki/Unofficial-list-of-3rd-party-boards-support-urls',
+                { external: true }
+            )
         );
         this.contentNode.appendChild(anchor);
 
@@ -828,7 +1060,10 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
     }
 
     get value(): string[] {
-        return this.textArea.value.split('\n').map(url => url.trim()).filter(url => !!url);
+        return this.textArea.value
+            .split('\n')
+            .map((url) => url.trim())
+            .filter((url) => !!url);
     }
 
     protected onAfterAttach(message: Message): void {
@@ -847,5 +1082,4 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
         }
         return false;
     }
-
 }

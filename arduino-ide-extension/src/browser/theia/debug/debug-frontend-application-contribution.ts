@@ -1,13 +1,15 @@
 import { injectable } from 'inversify';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
-import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution, DebugMenus } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
+import {
+    DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution,
+    DebugMenus,
+} from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 import { unregisterSubmenu } from '../../menu/arduino-menus';
 
 @injectable()
 export class DebugFrontendApplicationContribution extends TheiaDebugFrontendApplicationContribution {
-
     constructor() {
-        super()
+        super();
         this.options.defaultWidgetOptions.rank = 4;
     }
 
@@ -15,5 +17,4 @@ export class DebugFrontendApplicationContribution extends TheiaDebugFrontendAppl
         super.registerMenus(registry);
         unregisterSubmenu(DebugMenus.DEBUG, registry);
     }
-
 }

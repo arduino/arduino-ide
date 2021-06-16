@@ -4,18 +4,15 @@ import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/
 
 @injectable()
 export class OutlineViewContribution extends TheiaOutlineViewContribution {
-
     constructor() {
         super();
         this.options.defaultWidgetOptions = {
             area: 'left',
-            rank: 500
+            rank: 500,
         };
     }
 
     async initializeLayout(app: FrontendApplication): Promise<void> {
         // NOOP
     }
-
 }
-

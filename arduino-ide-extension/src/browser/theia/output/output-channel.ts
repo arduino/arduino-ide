@@ -4,11 +4,13 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import { OutputUri } from '@theia/output/lib/common/output-uri';
 import { IReference } from '@theia/monaco/lib/browser/monaco-text-model-service';
 import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';
-import { OutputChannelManager as TheiaOutputChannelManager, OutputChannel as TheiaOutputChannel } from '@theia/output/lib/common/output-channel';
+import {
+    OutputChannelManager as TheiaOutputChannelManager,
+    OutputChannel as TheiaOutputChannel,
+} from '@theia/output/lib/common/output-channel';
 
 @injectable()
 export class OutputChannelManager extends TheiaOutputChannelManager {
-
     getChannel(name: string): TheiaOutputChannel {
         const existing = this.channels.get(name);
         if (existing) {
@@ -21,26 +23,31 @@ export class OutputChannelManager extends TheiaOutputChannelManager {
         let resource = this.resources.get(name);
         if (!resource) {
             const uri = OutputUri.create(name);
-            const editorModelRef = new Deferred<IReference<MonacoEditorModel>>();
+            const editorModelRef = new Deferred<
+                IReference<MonacoEditorModel>
+            >();
             resource = this.createResource({ uri, editorModelRef });
             this.resources.set(name, resource);
-            this.textModelService.createModelReference(uri).then(ref => editorModelRef.resolve(ref));
+            this.textModelService
+                .createModelReference(uri)
+                .then((ref) => editorModelRef.resolve(ref));
         }
 
         const channel = new OutputChannel(resource, this.preferences);
         this.channels.set(name, channel);
-        this.toDisposeOnChannelDeletion.set(name, this.registerListeners(channel));
+        this.toDisposeOnChannelDeletion.set(
+            name,
+            this.registerListeners(channel)
+        );
         this.channelAddedEmitter.fire(channel);
         if (!this.selectedChannel) {
             this.selectedChannel = channel;
         }
         return channel;
     }
-
 }
 
 export class OutputChannel extends TheiaOutputChannel {
-
     dispose(): void {
         super.dispose();
         if ((this as any).disposed) {
@@ -49,5 +56,4 @@ export class OutputChannel extends TheiaOutputChannel {
             textModifyQueue.clear();
         }
     }
-
 }

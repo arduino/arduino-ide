@@ -6,12 +6,18 @@ import { OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl } f
 
 @injectable()
 export class OutputChannelRegistryMainImpl extends TheiaOutputChannelRegistryMainImpl {
-
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
-    $append(name: string, text: string, pluginInfo: PluginInfo): PromiseLike<void> {
-        this.commandService.executeCommand(OutputCommands.APPEND.id, { name, text });
+    $append(
+        name: string,
+        text: string,
+        pluginInfo: PluginInfo
+    ): PromiseLike<void> {
+        this.commandService.executeCommand(OutputCommands.APPEND.id, {
+            name,
+            text,
+        });
         return Promise.resolve();
     }
 
@@ -27,12 +33,14 @@ export class OutputChannelRegistryMainImpl extends TheiaOutputChannelRegistryMai
 
     async $reveal(name: string, preserveFocus: boolean): Promise<void> {
         const options = { preserveFocus };
-        this.commandService.executeCommand(OutputCommands.SHOW.id, { name, options });
+        this.commandService.executeCommand(OutputCommands.SHOW.id, {
+            name,
+            options,
+        });
     }
 
     $close(name: string): PromiseLike<void> {
         this.commandService.executeCommand(OutputCommands.HIDE.id, { name });
         return Promise.resolve();
     }
-
 }

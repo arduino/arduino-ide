@@ -6,18 +6,20 @@ import { LibraryListWidget } from './library-list-widget';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 @injectable()
-export class LibraryListWidgetFrontendContribution extends AbstractViewContribution<LibraryListWidget> implements FrontendApplicationContribution {
-
+export class LibraryListWidgetFrontendContribution
+    extends AbstractViewContribution<LibraryListWidget>
+    implements FrontendApplicationContribution
+{
     constructor() {
         super({
             widgetId: LibraryListWidget.WIDGET_ID,
             widgetName: LibraryListWidget.WIDGET_LABEL,
             defaultWidgetOptions: {
                 area: 'left',
-                rank: 3
+                rank: 3,
             },
             toggleCommandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-            toggleKeybinding: 'CtrlCmd+Shift+I'
+            toggleKeybinding: 'CtrlCmd+Shift+I',
         });
     }
 
@@ -30,9 +32,8 @@ export class LibraryListWidgetFrontendContribution extends AbstractViewContribut
             menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
                 commandId: this.toggleCommand.id,
                 label: 'Manage Libraries...',
-                order: '3'
+                order: '3',
             });
         }
     }
-
 }

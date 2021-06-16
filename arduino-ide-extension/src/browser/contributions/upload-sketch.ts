@@ -6,11 +6,17 @@ import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { MonitorConnection } from '../monitor/monitor-connection';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry, TabBarToolbarRegistry } from './contribution';
+import {
+    SketchContribution,
+    Command,
+    CommandRegistry,
+    MenuModelRegistry,
+    KeybindingRegistry,
+    TabBarToolbarRegistry,
+} from './contribution';
 
 @injectable()
 export class UploadSketch extends SketchContribution {
-
     @inject(CoreService)
     protected readonly coreService: CoreService;
 
@@ -33,15 +39,20 @@ export class UploadSketch extends SketchContribution {
             execute: () => this.uploadSketch(),
             isEnabled: () => !this.uploadInProgress,
         });
-        registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER, {
-            execute: () => this.uploadSketch(true),
-            isEnabled: () => !this.uploadInProgress,
-        });
+        registry.registerCommand(
+            UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER,
+            {
+                execute: () => this.uploadSketch(true),
+                isEnabled: () => !this.uploadInProgress,
+            }
+        );
         registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR, {
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
+            isVisible: (widget) =>
+                ArduinoToolbar.is(widget) && widget.side === 'left',
             isEnabled: () => !this.uploadInProgress,
             isToggled: () => this.uploadInProgress,
-            execute: () => registry.executeCommand(UploadSketch.Commands.UPLOAD_SKETCH.id)
+            execute: () =>
+                registry.executeCommand(UploadSketch.Commands.UPLOAD_SKETCH.id),
         });
     }
 
@@ -49,23 +60,23 @@ export class UploadSketch extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
             label: 'Upload',
-            order: '1'
+            order: '1',
         });
         registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
             commandId: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
             label: 'Upload Using Programmer',
-            order: '2'
+            order: '2',
         });
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: UploadSketch.Commands.UPLOAD_SKETCH.id,
-            keybinding: 'CtrlCmd+U'
+            keybinding: 'CtrlCmd+U',
         });
         registry.registerKeybinding({
             command: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
-            keybinding: 'CtrlCmd+Shift+U'
+            keybinding: 'CtrlCmd+Shift+U',
         });
     }
 
@@ -75,12 +86,11 @@ export class UploadSketch extends SketchContribution {
             command: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
             tooltip: 'Upload',
             priority: 1,
-            onDidChange: this.onDidChange
+            onDidChange: this.onDidChange,
         });
     }
 
-    async uploadSketch(usingProgrammer: boolean = false): Promise<void> {
-        
+    async uploadSketch(usingProgrammer = false): Promise<void> {
         // even with buttons disabled, better to double check if an upload is already in progress
         if (this.uploadInProgress) {
             return;
@@ -105,12 +115,20 @@ export class UploadSketch extends SketchContribution {
         }
         try {
             const { boardsConfig } = this.boardsServiceClientImpl;
-            const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] = await Promise.all([
-                this.boardsDataStore.appendConfigToFqbn(boardsConfig.selectedBoard?.fqbn),
+            const [
+                fqbn,
+                { selectedProgrammer },
+                verify,
+                verbose,
+                sourceOverride,
+            ] = await Promise.all([
+                this.boardsDataStore.appendConfigToFqbn(
+                    boardsConfig.selectedBoard?.fqbn
+                ),
                 this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
                 this.preferences.get('arduino.upload.verify'),
                 this.preferences.get('arduino.upload.verbose'),
-                this.sourceOverride()
+                this.sourceOverride(),
             ]);
 
             let options: CoreService.Upload.Options | undefined = undefined;
@@ -129,7 +147,7 @@ export class UploadSketch extends SketchContribution {
                     port,
                     verbose,
                     verify,
-                    sourceOverride
+                    sourceOverride,
                 };
             } else {
                 options = {
@@ -139,7 +157,7 @@ export class UploadSketch extends SketchContribution {
                     port,
                     verbose,
                     verify,
-                    sourceOverride
+                    sourceOverride,
                 };
             }
             this.outputChannelManager.getChannel('Arduino').clear();
@@ -158,7 +176,10 @@ export class UploadSketch extends SketchContribution {
             if (monitorConfig) {
                 const { board, port } = monitorConfig;
                 try {
-                    await this.boardsServiceClientImpl.waitUntilAvailable(Object.assign(board, { port }), 10_000);
+                    await this.boardsServiceClientImpl.waitUntilAvailable(
+                        Object.assign(board, { port }),
+                        10_000
+                    );
                     if (shouldAutoConnect) {
                         // Enabling auto-connect will trigger a connect.
                         this.monitorConnection.autoConnect = true;
@@ -166,24 +187,25 @@ export class UploadSketch extends SketchContribution {
                         await this.monitorConnection.connect(monitorConfig);
                     }
                 } catch (waitError) {
-                    this.messageService.error(`Could not reconnect to serial monitor. ${waitError.toString()}`);
+                    this.messageService.error(
+                        `Could not reconnect to serial monitor. ${waitError.toString()}`
+                    );
                 }
             }
         }
     }
-
 }
 
 export namespace UploadSketch {
     export namespace Commands {
         export const UPLOAD_SKETCH: Command = {
-            id: 'arduino-upload-sketch'
+            id: 'arduino-upload-sketch',
         };
         export const UPLOAD_SKETCH_USING_PROGRAMMER: Command = {
-            id: 'arduino-upload-sketch-using-programmer'
+            id: 'arduino-upload-sketch-using-programmer',
         };
         export const UPLOAD_SKETCH_TOOLBAR: Command = {
-            id: 'arduino-upload-sketch--toolbar'
+            id: 'arduino-upload-sketch--toolbar',
         };
     }
 }

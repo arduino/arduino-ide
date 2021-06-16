@@ -1,6 +1,8 @@
 import * as psTree from 'ps-tree';
 const kill = require('tree-kill');
-const [theiaPid, daemonPid] = process.argv.slice(2).map(id => Number.parseInt(id, 10));
+const [theiaPid, daemonPid] = process.argv
+    .slice(2)
+    .map((id) => Number.parseInt(id, 10));
 
 setInterval(() => {
     try {

@@ -5,9 +5,7 @@ import { StatusBarAlignment } from '@theia/core/lib/browser';
 
 @injectable()
 export class EditorContribution extends TheiaEditorContribution {
-
-    protected updateLanguageStatus(editor: TextEditor | undefined): void {
-    }
+    protected updateLanguageStatus(editor: TextEditor | undefined): void {}
 
     protected setCursorPositionStatus(editor: TextEditor | undefined): void {
         if (!editor) {
@@ -18,8 +16,7 @@ export class EditorContribution extends TheiaEditorContribution {
         this.statusBar.setElement('editor-status-cursor-position', {
             text: `${cursor.line + 1}`,
             alignment: StatusBarAlignment.LEFT,
-            priority: 100
+            priority: 100,
         });
     }
-
 }
