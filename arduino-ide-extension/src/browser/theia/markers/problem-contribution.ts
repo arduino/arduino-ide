@@ -6,7 +6,6 @@ import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/
 
 @injectable()
 export class ProblemContribution extends TheiaProblemContribution {
-
     async initializeLayout(app: FrontendApplication): Promise<void> {
         // NOOP
     }
@@ -19,9 +18,8 @@ export class ProblemContribution extends TheiaProblemContribution {
         if (this.toggleCommand) {
             keybindings.registerKeybinding({
                 command: this.toggleCommand.id,
-                keybinding: 'ctrlcmd+alt+shift+m'
+                keybinding: 'ctrlcmd+alt+shift+m',
             });
         }
     }
-
 }

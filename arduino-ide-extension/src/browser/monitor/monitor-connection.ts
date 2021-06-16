@@ -3,9 +3,19 @@ import { deepClone } from '@theia/core/lib/common/objects';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { MonitorService, MonitorConfig, MonitorError, Status } from '../../common/protocol/monitor-service';
+import {
+    MonitorService,
+    MonitorConfig,
+    MonitorError,
+    Status,
+} from '../../common/protocol/monitor-service';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { Port, Board, BoardsService, AttachedBoardsChangeEvent } from '../../common/protocol/boards-service';
+import {
+    Port,
+    Board,
+    BoardsService,
+    AttachedBoardsChangeEvent,
+} from '../../common/protocol/boards-service';
 import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
@@ -13,7 +23,6 @@ import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class MonitorConnection {
-
     @inject(MonitorModel)
     protected readonly monitorModel: MonitorModel;
 
@@ -43,8 +52,10 @@ export class MonitorConnection {
      * Note: The idea is to toggle this property from the UI (`Monitor` view)
      * and the boards config and the boards attachment/detachment logic can be at on place, here.
      */
-    protected _autoConnect: boolean = false;
-    protected readonly onConnectionChangedEmitter = new Emitter<MonitorConnection.State | undefined>();
+    protected _autoConnect = false;
+    protected readonly onConnectionChangedEmitter = new Emitter<
+        MonitorConnection.State | undefined
+    >();
     /**
      * This emitter forwards all read events **iff** the connection is established.
      */
@@ -60,7 +71,7 @@ export class MonitorConnection {
 
     @postConstruct()
     protected init(): void {
-        this.monitorServiceClient.onError(async error => {
+        this.monitorServiceClient.onError(async (error) => {
             let shouldReconnect = false;
             if (this.state) {
                 const { code, config } = error;
@@ -68,21 +79,40 @@ export class MonitorConnection {
                 const options = { timeout: 3000 };
                 switch (code) {
                     case MonitorError.ErrorCodes.CLIENT_CANCEL: {
-                        console.debug(`Connection was canceled by client: ${MonitorConnection.State.toString(this.state)}.`);
+                        console.debug(
+                            `Connection was canceled by client: ${MonitorConnection.State.toString(
+                                this.state
+                            )}.`
+                        );
                         break;
                     }
                     case MonitorError.ErrorCodes.DEVICE_BUSY: {
-                        this.messageService.warn(`Connection failed. Serial port is busy: ${Port.toString(port)}.`, options);
+                        this.messageService.warn(
+                            `Connection failed. Serial port is busy: ${Port.toString(
+                                port
+                            )}.`,
+                            options
+                        );
                         shouldReconnect = this.autoConnect;
                         this.monitorErrors.push(error);
                         break;
                     }
                     case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
-                        this.messageService.info(`Disconnected ${Board.toString(board, { useFqbn: false })} from ${Port.toString(port)}.`, options);
+                        this.messageService.info(
+                            `Disconnected ${Board.toString(board, {
+                                useFqbn: false,
+                            })} from ${Port.toString(port)}.`,
+                            options
+                        );
                         break;
                     }
                     case undefined: {
-                        this.messageService.error(`Unexpected error. Reconnecting ${Board.toString(board)} on port ${Port.toString(port)}.`, options);
+                        this.messageService.error(
+                            `Unexpected error. Reconnecting ${Board.toString(
+                                board
+                            )} on port ${Port.toString(port)}.`,
+                            options
+                        );
                         console.error(JSON.stringify(error));
                         shouldReconnect = this.connected && this.autoConnect;
                         break;
@@ -93,32 +123,62 @@ export class MonitorConnection {
                 this.onConnectionChangedEmitter.fire(this.state);
                 if (shouldReconnect) {
                     if (this.monitorErrors.length >= 10) {
-                        this.messageService.warn(`Failed to reconnect ${Board.toString(board, { useFqbn: false })} to the the serial-monitor after 10 consecutive attempts. The ${Port.toString(port)} serial port is busy. after 10 consecutive attempts.`);
+                        this.messageService.warn(
+                            `Failed to reconnect ${Board.toString(board, {
+                                useFqbn: false,
+                            })} to the the serial-monitor after 10 consecutive attempts. The ${Port.toString(
+                                port
+                            )} serial port is busy. after 10 consecutive attempts.`
+                        );
                         this.monitorErrors.length = 0;
                     } else {
-                        const attempts = (this.monitorErrors.length || 1);
+                        const attempts = this.monitorErrors.length || 1;
                         if (this.reconnectTimeout !== undefined) {
                             // Clear the previous timer.
                             window.clearTimeout(this.reconnectTimeout);
                         }
                         const timeout = attempts * 1000;
-                        this.messageService.warn(`Reconnecting ${Board.toString(board, { useFqbn: false })} to ${Port.toString(port)} in ${attempts} seconds...`, { timeout });
-                        this.reconnectTimeout = window.setTimeout(() => this.connect(oldState.config), timeout);
+                        this.messageService.warn(
+                            `Reconnecting ${Board.toString(board, {
+                                useFqbn: false,
+                            })} to ${Port.toString(
+                                port
+                            )} in ${attempts} seconds...`,
+                            { timeout }
+                        );
+                        this.reconnectTimeout = window.setTimeout(
+                            () => this.connect(oldState.config),
+                            timeout
+                        );
                     }
                 }
             }
         });
-        this.boardsServiceProvider.onBoardsConfigChanged(this.handleBoardConfigChange.bind(this));
-        this.notificationCenter.onAttachedBoardsChanged(event => {
+        this.boardsServiceProvider.onBoardsConfigChanged(
+            this.handleBoardConfigChange.bind(this)
+        );
+        this.notificationCenter.onAttachedBoardsChanged((event) => {
             if (this.autoConnect && this.connected) {
                 const { boardsConfig } = this.boardsServiceProvider;
-                if (this.boardsServiceProvider.canUploadTo(boardsConfig, { silent: false })) {
+                if (
+                    this.boardsServiceProvider.canUploadTo(boardsConfig, {
+                        silent: false,
+                    })
+                ) {
                     const { attached } = AttachedBoardsChangeEvent.diff(event);
-                    if (attached.boards.some(board => !!board.port && BoardsConfig.Config.sameAs(boardsConfig, board))) {
-                        const { selectedBoard: board, selectedPort: port } = boardsConfig;
+                    if (
+                        attached.boards.some(
+                            (board) =>
+                                !!board.port &&
+                                BoardsConfig.Config.sameAs(boardsConfig, board)
+                        )
+                    ) {
+                        const { selectedBoard: board, selectedPort: port } =
+                            boardsConfig;
                         const { baudRate } = this.monitorModel;
-                        this.disconnect()
-                            .then(() => this.connect({ board, port, baudRate }));
+                        this.disconnect().then(() =>
+                            this.connect({ board, port, baudRate })
+                        );
                     }
                 }
             }
@@ -151,10 +211,12 @@ export class MonitorConnection {
         if (!oldValue && value) {
             // We have to make sure the previous boards config has been restored.
             // Otherwise, we might start the auto-connection without configured boards.
-            this.applicationState.reachedState('started_contributions').then(() => {
-                const { boardsConfig } = this.boardsServiceProvider;
-                this.handleBoardConfigChange(boardsConfig);
-            });
+            this.applicationState
+                .reachedState('started_contributions')
+                .then(() => {
+                    const { boardsConfig } = this.boardsServiceProvider;
+                    this.handleBoardConfigChange(boardsConfig);
+                });
         } else if (oldValue && !value) {
             if (this.reconnectTimeout !== undefined) {
                 window.clearTimeout(this.reconnectTimeout);
@@ -170,7 +232,11 @@ export class MonitorConnection {
                 return disconnectStatus;
             }
         }
-        console.info(`>>> Creating serial monitor connection for ${Board.toString(config.board)} on port ${Port.toString(config.port)}...`);
+        console.info(
+            `>>> Creating serial monitor connection for ${Board.toString(
+                config.board
+            )} on port ${Port.toString(config.port)}...`
+        );
         const connectStatus = await this.monitorService.connect(config);
         if (Status.isOK(connectStatus)) {
             const requestMessage = () => {
@@ -180,10 +246,15 @@ export class MonitorConnection {
                         requestMessage();
                     }
                 });
-            }
+            };
             requestMessage();
             this.state = { config };
-            console.info(`<<< Serial monitor connection created for ${Board.toString(config.board, { useFqbn: false })} on port ${Port.toString(config.port)}.`);
+            console.info(
+                `<<< Serial monitor connection created for ${Board.toString(
+                    config.board,
+                    { useFqbn: false }
+                )} on port ${Port.toString(config.port)}.`
+            );
         }
         this.onConnectionChangedEmitter.fire(this.state);
         return Status.isOK(connectStatus);
@@ -200,9 +271,17 @@ export class MonitorConnection {
         console.log('>>> Disposing existing monitor connection...');
         const status = await this.monitorService.disconnect();
         if (Status.isOK(status)) {
-            console.log(`<<< Disposed connection. Was: ${MonitorConnection.State.toString(stateCopy)}`);
+            console.log(
+                `<<< Disposed connection. Was: ${MonitorConnection.State.toString(
+                    stateCopy
+                )}`
+            );
         } else {
-            console.warn(`<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(stateCopy)}`);
+            console.warn(
+                `<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(
+                    stateCopy
+                )}`
+            );
         }
         this.state = undefined;
         this.onConnectionChangedEmitter.fire(this.state);
@@ -218,8 +297,9 @@ export class MonitorConnection {
         if (!this.connected) {
             return Status.NOT_CONNECTED;
         }
-        return new Promise<Status>(resolve => {
-            this.monitorService.send(data + this.monitorModel.lineEnding)
+        return new Promise<Status>((resolve) => {
+            this.monitorService
+                .send(data + this.monitorModel.lineEnding)
                 .then(() => resolve(Status.OK));
         });
     }
@@ -232,14 +312,24 @@ export class MonitorConnection {
         return this.onReadEmitter.event;
     }
 
-    protected async handleBoardConfigChange(boardsConfig: BoardsConfig.Config): Promise<void> {
+    protected async handleBoardConfigChange(
+        boardsConfig: BoardsConfig.Config
+    ): Promise<void> {
         if (this.autoConnect) {
-            if (this.boardsServiceProvider.canUploadTo(boardsConfig, { silent: false })) {
+            if (
+                this.boardsServiceProvider.canUploadTo(boardsConfig, {
+                    silent: false,
+                })
+            ) {
                 // Instead of calling `getAttachedBoards` and filtering for `AttachedSerialBoard` we have to check the available ports.
                 // The connected board might be unknown. See: https://github.com/arduino/arduino-pro-ide/issues/127#issuecomment-563251881
-                this.boardsService.getAvailablePorts().then(ports => {
-                    if (ports.some(port => Port.equals(port, boardsConfig.selectedPort))) {
-                        new Promise<void>(resolve => {
+                this.boardsService.getAvailablePorts().then((ports) => {
+                    if (
+                        ports.some((port) =>
+                            Port.equals(port, boardsConfig.selectedPort)
+                        )
+                    ) {
+                        new Promise<void>((resolve) => {
                             // First, disconnect if connected.
                             if (this.connected) {
                                 this.disconnect().then(() => resolve());
@@ -248,7 +338,8 @@ export class MonitorConnection {
                             resolve();
                         }).then(() => {
                             // Then (re-)connect.
-                            const { selectedBoard: board, selectedPort: port } = boardsConfig;
+                            const { selectedBoard: board, selectedPort: port } =
+                                boardsConfig;
                             const { baudRate } = this.monitorModel;
                             this.connect({ board, port, baudRate });
                         });
@@ -257,11 +348,9 @@ export class MonitorConnection {
             }
         }
     }
-
 }
 
 export namespace MonitorConnection {
-
     export interface State {
         readonly config: MonitorConfig;
     }
@@ -273,5 +362,4 @@ export namespace MonitorConnection {
             return `${Board.toString(board)} ${Port.toString(port)}`;
         }
     }
-
 }

@@ -1,18 +1,21 @@
 import { injectable, inject, postConstruct } from 'inversify';
 import { Message } from '@phosphor/messaging';
-import { AbstractDialog, DialogProps, Widget, DialogError } from '@theia/core/lib/browser';
+import {
+    AbstractDialog,
+    DialogProps,
+    Widget,
+    DialogError,
+} from '@theia/core/lib/browser';
 import { BoardsConfig } from './boards-config';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
 
 @injectable()
-export class BoardsConfigDialogProps extends DialogProps {
-}
+export class BoardsConfigDialogProps extends DialogProps {}
 
 @injectable()
 export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
-
     @inject(BoardsConfigDialogWidget)
     protected readonly widget: BoardsConfigDialogWidget;
 
@@ -24,7 +27,10 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
 
     protected config: BoardsConfig.Config = {};
 
-    constructor(@inject(BoardsConfigDialogProps) protected readonly props: BoardsConfigDialogProps) {
+    constructor(
+        @inject(BoardsConfigDialogProps)
+        protected readonly props: BoardsConfigDialogProps
+    ) {
         super(props);
 
         this.contentNode.classList.add('select-board-dialog');
@@ -36,16 +42,20 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
 
     @postConstruct()
     protected init(): void {
-        this.toDispose.push(this.boardsServiceClient.onBoardsConfigChanged(config => {
-            this.config = config;
-            this.update();
-        }));
+        this.toDispose.push(
+            this.boardsServiceClient.onBoardsConfigChanged((config) => {
+                this.config = config;
+                this.update();
+            })
+        );
     }
 
     /**
      * Pass in an empty string if you want to reset the search term. Using `undefined` has no effect.
      */
-    async open(query: string | undefined = undefined): Promise<BoardsConfig.Config | undefined> {
+    async open(
+        query: string | undefined = undefined
+    ): Promise<BoardsConfig.Config | undefined> {
         if (typeof query === 'string') {
             this.widget.search(query);
         }
@@ -67,7 +77,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
 
         for (const paragraph of [
             'Select both a Board and a Port if you want to upload a sketch.',
-            'If you only select a Board you will be able just to compile, but not to upload your sketch.'
+            'If you only select a Board you will be able just to compile, but not to upload your sketch.',
         ]) {
             const p = document.createElement('div');
             p.textContent = paragraph;
@@ -82,10 +92,12 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
             Widget.detach(this.widget);
         }
         Widget.attach(this.widget, this.contentNode);
-        this.toDisposeOnDetach.push(this.widget.onBoardConfigChanged(config => {
-            this.config = config;
-            this.update();
-        }));
+        this.toDisposeOnDetach.push(
+            this.widget.onBoardConfigChanged((config) => {
+                this.config = config;
+                this.update();
+            })
+        );
         super.onAfterAttach(msg);
         this.update();
     }
@@ -119,5 +131,4 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     get value(): BoardsConfig.Config {
         return this.config;
     }
-
 }

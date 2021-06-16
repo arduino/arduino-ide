@@ -3,8 +3,17 @@ import { ClientDuplexStream } from '@grpc/grpc-js';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { CoreClientAware } from './core-client-provider';
-import { BoardListWatchRequest, BoardListWatchResponse } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
-import { Board, Port, NotificationServiceServer, AvailablePorts, AttachedBoardsChangeEvent } from '../common/protocol';
+import {
+    BoardListWatchRequest,
+    BoardListWatchResponse,
+} from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
+import {
+    Board,
+    Port,
+    NotificationServiceServer,
+    AvailablePorts,
+    AttachedBoardsChangeEvent,
+} from '../common/protocol';
 
 /**
  * Singleton service for tracking the available ports and board and broadcasting the
@@ -13,7 +22,6 @@ import { Board, Port, NotificationServiceServer, AvailablePorts, AttachedBoardsC
  */
 @injectable()
 export class BoardDiscovery extends CoreClientAware {
-
     @inject(ILogger)
     @named('discovery')
     protected discoveryLogger: ILogger;
@@ -21,7 +29,9 @@ export class BoardDiscovery extends CoreClientAware {
     @inject(NotificationServiceServer)
     protected readonly notificationService: NotificationServiceServer;
 
-    protected boardWatchDuplex: ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse> | undefined;
+    protected boardWatchDuplex:
+        | ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse>
+        | undefined;
 
     /**
      * Keys are the `address` of the ports. \
@@ -49,7 +59,6 @@ export class BoardDiscovery extends CoreClientAware {
         this.boardWatchDuplex.on('data', (resp: BoardListWatchResponse) => {
             const detectedPort = resp.getPort();
             if (detectedPort) {
-
                 let eventType: 'add' | 'remove' | 'unknown' = 'unknown';
                 if (resp.getEventType() === 'add') {
                     eventType = 'add';
@@ -60,30 +69,46 @@ export class BoardDiscovery extends CoreClientAware {
                 }
 
                 if (eventType === 'unknown') {
-                    throw new Error(`Unexpected event type: '${resp.getEventType()}'`);
+                    throw new Error(
+                        `Unexpected event type: '${resp.getEventType()}'`
+                    );
                 }
 
                 const oldState = deepClone(this._state);
                 const newState = deepClone(this._state);
 
                 const address = detectedPort.getAddress();
-                const protocol = Port.Protocol.toProtocol(detectedPort.getProtocol());
+                const protocol = Port.Protocol.toProtocol(
+                    detectedPort.getProtocol()
+                );
                 // const label = detectedPort.getProtocolLabel();
                 const port = { address, protocol };
                 const boards: Board[] = [];
                 for (const item of detectedPort.getBoardsList()) {
-                    boards.push({ fqbn: item.getFqbn(), name: item.getName() || 'unknown', port });
+                    boards.push({
+                        fqbn: item.getFqbn(),
+                        name: item.getName() || 'unknown',
+                        port,
+                    });
                 }
 
                 if (eventType === 'add') {
                     if (newState[port.address] !== undefined) {
                         const [, knownBoards] = newState[port.address];
-                        console.warn(`Port '${port.address}' was already available. Known boards before override: ${JSON.stringify(knownBoards)}`);
+                        console.warn(
+                            `Port '${
+                                port.address
+                            }' was already available. Known boards before override: ${JSON.stringify(
+                                knownBoards
+                            )}`
+                        );
                     }
                     newState[port.address] = [port, boards];
                 } else if (eventType === 'remove') {
                     if (newState[port.address] === undefined) {
-                        console.warn(`Port '${port.address}' was not available. Skipping`);
+                        console.warn(
+                            `Port '${port.address}' was not available. Skipping`
+                        );
                         return;
                     }
                     delete newState[port.address];
@@ -96,12 +121,12 @@ export class BoardDiscovery extends CoreClientAware {
                 const event: AttachedBoardsChangeEvent = {
                     oldState: {
                         ports: oldAvailablePorts,
-                        boards: oldAttachedBoards
+                        boards: oldAttachedBoards,
                     },
                     newState: {
                         ports: newAvailablePorts,
-                        boards: newAttachedBoards
-                    }
+                        boards: newAttachedBoards,
+                    },
                 };
 
                 this._state = newState;
@@ -124,10 +149,9 @@ export class BoardDiscovery extends CoreClientAware {
         const availablePorts: Port[] = [];
         for (const address of Object.keys(state)) {
             // tslint:disable-next-line: whitespace
-            const [port,] = state[address];
+            const [port] = state[address];
             availablePorts.push(port);
         }
         return availablePorts;
     }
-
 }

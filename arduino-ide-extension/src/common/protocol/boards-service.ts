@@ -6,7 +6,11 @@ import { ArduinoComponent } from './arduino-component';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
-    export function groupByProtocol(availablePorts: AvailablePorts): { serial: AvailablePorts, network: AvailablePorts, unknown: AvailablePorts } {
+    export function groupByProtocol(availablePorts: AvailablePorts): {
+        serial: AvailablePorts;
+        network: AvailablePorts;
+        unknown: AvailablePorts;
+    } {
         const serial: AvailablePorts = {};
         const network: AvailablePorts = {};
         const unknown: AvailablePorts = {};
@@ -26,44 +30,61 @@ export namespace AvailablePorts {
 }
 
 export interface AttachedBoardsChangeEvent {
-    readonly oldState: Readonly<{ boards: Board[], ports: Port[] }>;
-    readonly newState: Readonly<{ boards: Board[], ports: Port[] }>;
+    readonly oldState: Readonly<{ boards: Board[]; ports: Port[] }>;
+    readonly newState: Readonly<{ boards: Board[]; ports: Port[] }>;
 }
 export namespace AttachedBoardsChangeEvent {
-
     export function isEmpty(event: AttachedBoardsChangeEvent): boolean {
         const { detached, attached } = diff(event);
-        return !!detached.boards.length && !!detached.ports.length && !!attached.boards.length && !!attached.ports.length;
+        return (
+            !!detached.boards.length &&
+            !!detached.ports.length &&
+            !!attached.boards.length &&
+            !!attached.ports.length
+        );
     }
 
     export function toString(event: AttachedBoardsChangeEvent): string {
-        let rows: string[] = [];
+        const rows: string[] = [];
         if (!isEmpty(event)) {
             const { attached, detached } = diff(event);
             const visitedAttachedPorts: Port[] = [];
             const visitedDetachedPorts: Port[] = [];
             for (const board of attached.boards) {
-                const port = board.port ? ` on ${Port.toString(board.port, { useLabel: true })}` : '';
+                const port = board.port
+                    ? ` on ${Port.toString(board.port, { useLabel: true })}`
+                    : '';
                 rows.push(` - Attached board: ${Board.toString(board)}${port}`);
                 if (board.port) {
                     visitedAttachedPorts.push(board.port);
                 }
             }
             for (const board of detached.boards) {
-                const port = board.port ? ` from ${Port.toString(board.port, { useLabel: true })}` : '';
+                const port = board.port
+                    ? ` from ${Port.toString(board.port, { useLabel: true })}`
+                    : '';
                 rows.push(` - Detached board: ${Board.toString(board)}${port}`);
                 if (board.port) {
                     visitedDetachedPorts.push(board.port);
                 }
             }
             for (const port of attached.ports) {
-                if (!visitedAttachedPorts.find(p => Port.sameAs(port, p))) {
-                    rows.push(` - New port is available on ${Port.toString(port, { useLabel: true })}`);
+                if (!visitedAttachedPorts.find((p) => Port.sameAs(port, p))) {
+                    rows.push(
+                        ` - New port is available on ${Port.toString(port, {
+                            useLabel: true,
+                        })}`
+                    );
                 }
             }
             for (const port of detached.ports) {
-                if (!visitedDetachedPorts.find(p => Port.sameAs(port, p))) {
-                    rows.push(` - Port is no longer available on ${Port.toString(port, { useLabel: true })}`);
+                if (!visitedDetachedPorts.find((p) => Port.sameAs(port, p))) {
+                    rows.push(
+                        ` - Port is no longer available on ${Port.toString(
+                            port,
+                            { useLabel: true }
+                        )}`
+                    );
                 }
             }
         }
@@ -72,41 +93,51 @@ export namespace AttachedBoardsChangeEvent {
 
     export function diff(event: AttachedBoardsChangeEvent): Readonly<{
         attached: {
-            boards: Board[],
-            ports: Port[]
-        },
+            boards: Board[];
+            ports: Port[];
+        };
         detached: {
-            boards: Board[],
-            ports: Port[]
-        }
+            boards: Board[];
+            ports: Port[];
+        };
     }> {
         // In `lefts` AND not in `rights`.
-        const diff = <T>(lefts: T[], rights: T[], sameAs: (left: T, right: T) => boolean) => {
-            return lefts.filter(left => rights.findIndex(right => sameAs(left, right)) === -1);
-        }
+        const diff = <T>(
+            lefts: T[],
+            rights: T[],
+            sameAs: (left: T, right: T) => boolean
+        ) => {
+            return lefts.filter(
+                (left) =>
+                    rights.findIndex((right) => sameAs(left, right)) === -1
+            );
+        };
         const { boards: newBoards } = event.newState;
         const { boards: oldBoards } = event.oldState;
         const { ports: newPorts } = event.newState;
         const { ports: oldPorts } = event.oldState;
-        const boardSameAs = (left: Board, right: Board) => Board.sameAs(left, right);
-        const portSameAs = (left: Port, right: Port) => Port.sameAs(left, right);
+        const boardSameAs = (left: Board, right: Board) =>
+            Board.sameAs(left, right);
+        const portSameAs = (left: Port, right: Port) =>
+            Port.sameAs(left, right);
         return {
             detached: {
                 boards: diff(oldBoards, newBoards, boardSameAs),
-                ports: diff(oldPorts, newPorts, portSameAs)
+                ports: diff(oldPorts, newPorts, portSameAs),
             },
             attached: {
                 boards: diff(newBoards, oldBoards, boardSameAs),
-                ports: diff(newPorts, oldPorts, portSameAs)
-            }
+                ports: diff(newPorts, oldPorts, portSameAs),
+            },
         };
     }
-
 }
 
 export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
-export interface BoardsService extends Installable<BoardsPackage>, Searchable<BoardsPackage> {
+export interface BoardsService
+    extends Installable<BoardsPackage>,
+        Searchable<BoardsPackage> {
     /**
      * Deprecated. `getState` should be used to correctly map a board with a port.
      * @deprecated
@@ -118,9 +149,15 @@ export interface BoardsService extends Installable<BoardsPackage>, Searchable<Bo
      */
     getAvailablePorts(): Promise<Port[]>;
     getState(): Promise<AvailablePorts>;
-    getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
-    getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
-    getContainerBoardPackage(options: { fqbn: string }): Promise<BoardsPackage | undefined>;
+    getBoardDetails(options: {
+        fqbn: string;
+    }): Promise<BoardDetails | undefined>;
+    getBoardPackage(options: {
+        id: string;
+    }): Promise<BoardsPackage | undefined>;
+    getContainerBoardPackage(options: {
+        fqbn: string;
+    }): Promise<BoardsPackage | undefined>;
     searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
 }
 
@@ -133,7 +170,6 @@ export interface Port {
     readonly label?: string;
 }
 export namespace Port {
-
     export type Protocol = 'serial' | 'network' | 'unknown';
     export namespace Protocol {
         export function toProtocol(protocol: string | undefined): Protocol {
@@ -148,12 +184,21 @@ export namespace Port {
     }
 
     export function is(arg: any): arg is Port {
-        return !!arg && 'address' in arg && typeof arg['address'] === 'string' && 'protocol' in arg && typeof arg['protocol'] === 'string';
+        return (
+            !!arg &&
+            'address' in arg &&
+            typeof arg['address'] === 'string' &&
+            'protocol' in arg &&
+            typeof arg['protocol'] === 'string'
+        );
     }
 
-    export function toString(port: Port, options: { useLabel: boolean } = { useLabel: false }): string {
+    export function toString(
+        port: Port,
+        options: { useLabel: boolean } = { useLabel: false }
+    ): string {
         if (options.useLabel && port.label) {
-            return `${port.address} ${port.label}`
+            return `${port.address} ${port.label}`;
         }
         return port.address;
     }
@@ -166,7 +211,10 @@ export namespace Port {
         if (!isBoardPort(left) && isBoardPort(right)) {
             return 1;
         }
-        let result = naturalCompare(left.protocol.toLocaleLowerCase(), right.protocol.toLocaleLowerCase());
+        let result = naturalCompare(
+            left.protocol.toLocaleLowerCase(),
+            right.protocol.toLocaleLowerCase()
+        );
         if (result !== 0) {
             return result;
         }
@@ -177,16 +225,21 @@ export namespace Port {
         return naturalCompare(left.label || '', right.label || '');
     }
 
-    export function equals(left: Port | undefined, right: Port | undefined): boolean {
+    export function equals(
+        left: Port | undefined,
+        right: Port | undefined
+    ): boolean {
         if (left && right) {
-            return left.address === right.address
-                && left.protocol === right.protocol
-                && (left.label || '') === (right.label || '');
+            return (
+                left.address === right.address &&
+                left.protocol === right.protocol &&
+                (left.label || '') === (right.label || '')
+            );
         }
         return left === right;
     }
 
-    // Based on: https://github.com/arduino/Arduino/blob/93581b03d723e55c60caedb4729ffc6ea808fe78/arduino-core/src/processing/app/SerialPortList.java#L48-L74   
+    // Based on: https://github.com/arduino/Arduino/blob/93581b03d723e55c60caedb4729ffc6ea808fe78/arduino-core/src/processing/app/SerialPortList.java#L48-L74
     export function isBoardPort(port: Port): boolean {
         const address = port.address.toLocaleLowerCase();
         if (isWindows) {
@@ -195,7 +248,7 @@ export namespace Port {
         }
         // On macOS and Linux, the port should start with `/dev/`.
         if (!address.startsWith('/dev/')) {
-            return false
+            return false;
         }
         if (isOSX) {
             // Example: `/dev/cu.usbmodem14401`
@@ -203,16 +256,25 @@ export namespace Port {
                 return [
                     '/dev/cu.MALS',
                     '/dev/cu.SOC',
-                    '/dev/cu.Bluetooth-Incoming-Port'
-                ].map(a => a.toLocaleLowerCase()).every(a => a !== address);
+                    '/dev/cu.Bluetooth-Incoming-Port',
+                ]
+                    .map((a) => a.toLocaleLowerCase())
+                    .every((a) => a !== address);
             }
         }
 
         // Example: `/dev/ttyACM0`
-        if (/(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}/i.test(address.substring('/dev/'.length))) {
+        if (
+            /(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}/i.test(
+                address.substring('/dev/'.length)
+            )
+        ) {
             // Default ports were `/dev/ttyS0` -> `/dev/ttyS31` on Ubuntu 16.04.2.
             if (address.startsWith('/dev/ttyS')) {
-                const index = Number.parseInt(address.substring('/dev/ttyS'.length), 10);
+                const index = Number.parseInt(
+                    address.substring('/dev/ttyS'.length),
+                    10
+                );
                 if (!Number.isNaN(index) && 0 <= index && 31 >= index) {
                     return false;
                 }
@@ -223,22 +285,36 @@ export namespace Port {
         return false;
     }
 
-    export function sameAs(left: Port | undefined, right: Port | string | undefined) {
+    export function sameAs(
+        left: Port | undefined,
+        right: Port | string | undefined
+    ) {
         if (left && right) {
             if (left.protocol !== 'serial') {
-                console.log(`Unexpected protocol for 'left' port: ${JSON.stringify(left)}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(right)}.`);
+                console.log(
+                    `Unexpected protocol for 'left' port: ${JSON.stringify(
+                        left
+                    )}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(
+                        right
+                    )}.`
+                );
             }
             if (typeof right === 'string') {
                 return left.address === right;
             }
             if (right.protocol !== 'serial') {
-                console.log(`Unexpected protocol for 'right' port: ${JSON.stringify(right)}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(left)}.`);
+                console.log(
+                    `Unexpected protocol for 'right' port: ${JSON.stringify(
+                        right
+                    )}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(
+                        left
+                    )}.`
+                );
             }
             return left.address === right.address;
         }
         return false;
     }
-
 }
 
 export interface BoardsPackage extends ArduinoComponent {
@@ -246,13 +322,15 @@ export interface BoardsPackage extends ArduinoComponent {
     readonly boards: Board[];
 }
 export namespace BoardsPackage {
-
     export function equals(left: BoardsPackage, right: BoardsPackage): boolean {
         return left.id === right.id;
     }
 
-    export function contains(selectedBoard: Board, { id, boards }: BoardsPackage): boolean {
-        if (boards.some(board => Board.sameAs(board, selectedBoard))) {
+    export function contains(
+        selectedBoard: Board,
+        { id, boards }: BoardsPackage
+    ): boolean {
+        if (boards.some((board) => Board.sameAs(board, selectedBoard))) {
             return true;
         }
         if (selectedBoard.fqbn) {
@@ -263,7 +341,6 @@ export namespace BoardsPackage {
         }
         return false;
     }
-
 }
 
 export interface Board {
@@ -277,22 +354,22 @@ export interface BoardWithPackage extends Board {
     readonly packageId: string;
 }
 export namespace BoardWithPackage {
-
-    export function is(board: Board & Partial<{ packageName: string, packageId: string }>): board is BoardWithPackage {
+    export function is(
+        board: Board & Partial<{ packageName: string; packageId: string }>
+    ): board is BoardWithPackage {
         return !!board.packageId && !!board.packageName;
     }
-
 }
 
 export interface InstalledBoardWithPackage extends BoardWithPackage {
     readonly fqbn: string;
 }
 export namespace InstalledBoardWithPackage {
-
-    export function is(boardWithPackage: BoardWithPackage): boardWithPackage is InstalledBoardWithPackage {
+    export function is(
+        boardWithPackage: BoardWithPackage
+    ): boardWithPackage is InstalledBoardWithPackage {
         return !!boardWithPackage.fqbn;
     }
-
 }
 
 export interface BoardDetails {
@@ -317,10 +394,16 @@ export interface ConfigOption {
     readonly values: ConfigValue[];
 }
 export namespace ConfigOption {
-
     export function is(arg: any): arg is ConfigOption {
-        return !!arg && 'option' in arg && 'label' in arg && 'values' in arg
-            && typeof arg['option'] === 'string' && typeof arg['label'] === 'string' && Array.isArray(arg['values'])
+        return (
+            !!arg &&
+            'option' in arg &&
+            'label' in arg &&
+            'values' in arg &&
+            typeof arg['option'] === 'string' &&
+            typeof arg['label'] === 'string' &&
+            Array.isArray(arg['values'])
+        );
     }
 
     /**
@@ -328,7 +411,10 @@ export namespace ConfigOption {
      * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
      * The provided output format is always segment(':'segment)*(':'option'='value(','option'='value)*)?
      */
-    export function decorate(fqbn: string, configOptions: ConfigOption[]): string {
+    export function decorate(
+        fqbn: string,
+        configOptions: ConfigOption[]
+    ): string {
         if (!configOptions.length) {
             return fqbn;
         }
@@ -336,7 +422,11 @@ export namespace ConfigOption {
         const toValue = (values: ConfigValue[]) => {
             const selectedValue = values.find(({ selected }) => selected);
             if (!selectedValue) {
-                console.warn(`None of the config values was selected. Values were: ${JSON.stringify(values)}`);
+                console.warn(
+                    `None of the config values was selected. Values were: ${JSON.stringify(
+                        values
+                    )}`
+                );
                 return undefined;
             }
             return selectedValue.value;
@@ -357,8 +447,11 @@ export namespace ConfigOption {
         }
     }
 
-    export const LABEL_COMPARATOR = (left: ConfigOption, right: ConfigOption) => naturalCompare(left.label.toLocaleLowerCase(), right.label.toLocaleLowerCase());
-
+    export const LABEL_COMPARATOR = (left: ConfigOption, right: ConfigOption) =>
+        naturalCompare(
+            left.label.toLocaleLowerCase(),
+            right.label.toLocaleLowerCase()
+        );
 }
 
 export interface ConfigValue {
@@ -373,21 +466,25 @@ export interface Programmer {
     readonly id: string;
 }
 export namespace Programmer {
-
-    export function equals(left: Programmer | undefined, right: Programmer | undefined): boolean {
+    export function equals(
+        left: Programmer | undefined,
+        right: Programmer | undefined
+    ): boolean {
         if (!left) {
             return !right;
         }
         if (!right) {
             return !left;
         }
-        return left.id === right.id && left.name === right.name && left.platform === right.platform;
+        return (
+            left.id === right.id &&
+            left.name === right.name &&
+            left.platform === right.platform
+        );
     }
-
 }
 
 export namespace Board {
-
     export function is(board: any): board is Board {
         return !!board && 'name' in board;
     }
@@ -404,7 +501,10 @@ export namespace Board {
         if (left.fqbn && other.fqbn) {
             return left.fqbn === other.fqbn;
         }
-        return left.name.replace('/Genuino', '') === other.name.replace('/Genuino', '');
+        return (
+            left.name.replace('/Genuino', '') ===
+            other.name.replace('/Genuino', '')
+        );
     }
 
     export function compare(left: Board, right: Board): number {
@@ -419,15 +519,27 @@ export namespace Board {
         return !!board.fqbn;
     }
 
-    export function toString(board: Board, options: { useFqbn: boolean } = { useFqbn: true }): string {
-        const fqbn = options && options.useFqbn && board.fqbn ? ` [${board.fqbn}]` : '';
+    export function toString(
+        board: Board,
+        options: { useFqbn: boolean } = { useFqbn: true }
+    ): string {
+        const fqbn =
+            options && options.useFqbn && board.fqbn ? ` [${board.fqbn}]` : '';
         return `${board.name}${fqbn}`;
     }
 
-    export type Detailed = Board & Readonly<{ selected: boolean, missing: boolean, packageName: string, packageId: string, details?: string }>;
+    export type Detailed = Board &
+        Readonly<{
+            selected: boolean;
+            missing: boolean;
+            packageName: string;
+            packageId: string;
+            details?: string;
+        }>;
     export function decorateBoards(
         selectedBoard: Board | undefined,
-        boards: Array<BoardWithPackage>): Array<Detailed> {
+        boards: Array<BoardWithPackage>
+    ): Array<Detailed> {
         // Board names are not unique. We show the corresponding core name as a detail.
         // https://github.com/arduino/arduino-cli/pull/294#issuecomment-513764948
         const distinctBoardNames = new Map<string, number>();
@@ -441,22 +553,29 @@ export namespace Board {
             if (!!selectedBoard) {
                 if (Board.equals(board, selectedBoard)) {
                     if ('packageName' in selectedBoard) {
-                        return board.packageName === (selectedBoard as any).packageName;
+                        return (
+                            board.packageName ===
+                            (selectedBoard as any).packageName
+                        );
                     }
                     if ('packageId' in selectedBoard) {
-                        return board.packageId === (selectedBoard as any).packageId;
+                        return (
+                            board.packageId === (selectedBoard as any).packageId
+                        );
                     }
                     return true;
                 }
             }
             return false;
-        }
-        return boards.map(board => ({
+        };
+        return boards.map((board) => ({
             ...board,
-            details: (distinctBoardNames.get(board.name) || 0) > 1 ? ` - ${board.packageName}` : undefined,
+            details:
+                (distinctBoardNames.get(board.name) || 0) > 1
+                    ? ` - ${board.packageName}`
+                    : undefined,
             selected: selected(board),
-            missing: !installed(board)
+            missing: !installed(board),
         }));
     }
-
 }

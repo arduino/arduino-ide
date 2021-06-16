@@ -6,11 +6,15 @@ import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ResponseServiceImpl } from '../response-service-impl';
 import { Installable, LibraryService } from '../../common/protocol';
-import { SketchContribution, Command, CommandRegistry, MenuModelRegistry } from './contribution';
+import {
+    SketchContribution,
+    Command,
+    CommandRegistry,
+    MenuModelRegistry,
+} from './contribution';
 
 @injectable()
 export class AddZipLibrary extends SketchContribution {
-
     @inject(EnvVariablesServer)
     protected readonly envVariableServer: EnvVariablesServer;
 
@@ -22,18 +26,23 @@ export class AddZipLibrary extends SketchContribution {
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(AddZipLibrary.Commands.ADD_ZIP_LIBRARY, {
-            execute: () => this.addZipLibrary()
+            execute: () => this.addZipLibrary(),
         });
     }
 
     registerMenus(registry: MenuModelRegistry): void {
-        const includeLibMenuPath = [...ArduinoMenus.SKETCH__UTILS_GROUP, '0_include'];
+        const includeLibMenuPath = [
+            ...ArduinoMenus.SKETCH__UTILS_GROUP,
+            '0_include',
+        ];
         // TODO: do we need it? calling `registerSubmenu` multiple times is noop, so it does not hurt.
-        registry.registerSubmenu(includeLibMenuPath, 'Include Library', { order: '1' });
+        registry.registerSubmenu(includeLibMenuPath, 'Include Library', {
+            order: '1',
+        });
         registry.registerMenuAction([...includeLibMenuPath, '1_install'], {
             commandId: AddZipLibrary.Commands.ADD_ZIP_LIBRARY.id,
             label: 'Add .ZIP Library...',
-            order: '1'
+            order: '1',
         });
     }
 
@@ -47,9 +56,9 @@ export class AddZipLibrary extends SketchContribution {
             filters: [
                 {
                     name: 'Library',
-                    extensions: ['zip']
-                }
-            ]
+                    extensions: ['zip'],
+                },
+            ],
         });
         if (!canceled && filePaths.length) {
             const zipUri = await this.fileSystemExt.getUri(filePaths[0]);
@@ -61,7 +70,7 @@ export class AddZipLibrary extends SketchContribution {
                         msg: error.message,
                         title: 'Do you want to overwrite the existing library?',
                         ok: 'Yes',
-                        cancel: 'No'
+                        cancel: 'No',
                     }).open();
                     if (result) {
                         await this.doInstall(zipUri, true);
@@ -71,24 +80,40 @@ export class AddZipLibrary extends SketchContribution {
         }
     }
 
-    private async doInstall(zipUri: string, overwrite?: boolean): Promise<void> {
+    private async doInstall(
+        zipUri: string,
+        overwrite?: boolean
+    ): Promise<void> {
         try {
             await Installable.doWithProgress({
                 messageService: this.messageService,
                 progressText: `Processing ${new URI(zipUri).path.base}`,
                 responseService: this.responseService,
-                run: () => this.libraryService.installZip({ zipUri, overwrite })
+                run: () =>
+                    this.libraryService.installZip({ zipUri, overwrite }),
             });
-            this.messageService.info(`Successfully installed library from ${new URI(zipUri).path.base} archive`, { timeout: 3000 });
+            this.messageService.info(
+                `Successfully installed library from ${
+                    new URI(zipUri).path.base
+                } archive`,
+                { timeout: 3000 }
+            );
         } catch (error) {
             if (error instanceof Error) {
-                const match = error.message.match(/library (.*?) already installed/);
+                const match = error.message.match(
+                    /library (.*?) already installed/
+                );
                 if (match && match.length >= 2) {
                     const name = match[1].trim();
                     if (name) {
-                        throw new AlreadyInstalledError(`A library folder named ${name} already exists. Do you want to overwrite it?`, name);
+                        throw new AlreadyInstalledError(
+                            `A library folder named ${name} already exists. Do you want to overwrite it?`,
+                            name
+                        );
                     } else {
-                        throw new AlreadyInstalledError('A library already exists. Do you want to overwrite it?');
+                        throw new AlreadyInstalledError(
+                            'A library already exists. Do you want to overwrite it?'
+                        );
                     }
                 }
             }
@@ -96,22 +121,19 @@ export class AddZipLibrary extends SketchContribution {
             throw error;
         }
     }
-
 }
 
 class AlreadyInstalledError extends Error {
-
     constructor(message: string, readonly libraryName?: string) {
         super(message);
         Object.setPrototypeOf(this, AlreadyInstalledError.prototype);
     }
-
 }
 
 export namespace AddZipLibrary {
     export namespace Commands {
         export const ADD_ZIP_LIBRARY: Command = {
-            id: 'arduino-add-zip-library'
+            id: 'arduino-add-zip-library',
         };
     }
 }

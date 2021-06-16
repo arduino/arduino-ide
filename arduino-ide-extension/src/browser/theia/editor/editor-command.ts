@@ -3,19 +3,21 @@ import { EditorCommandContribution as TheiaEditorCommandContribution } from '@th
 
 @injectable()
 export class EditorCommandContribution extends TheiaEditorCommandContribution {
-
     @postConstruct()
     protected init(): void {
         // Workaround for https://github.com/eclipse-theia/theia/issues/8722.
-        this.editorPreferences.onPreferenceChanged(({ preferenceName, newValue, oldValue }) => {
-            if (preferenceName === 'editor.autoSave') {
-                const autoSaveWasOnBeforeChange = !oldValue || oldValue === 'on';
-                const autoSaveIsOnAfterChange = !newValue || newValue === 'on';
-                if (!autoSaveWasOnBeforeChange && autoSaveIsOnAfterChange) {
-                    this.shell.saveAll();
+        this.editorPreferences.onPreferenceChanged(
+            ({ preferenceName, newValue, oldValue }) => {
+                if (preferenceName === 'editor.autoSave') {
+                    const autoSaveWasOnBeforeChange =
+                        !oldValue || oldValue === 'on';
+                    const autoSaveIsOnAfterChange =
+                        !newValue || newValue === 'on';
+                    if (!autoSaveWasOnBeforeChange && autoSaveIsOnAfterChange) {
+                        this.shell.saveAll();
+                    }
                 }
             }
-        });
+        );
     }
-
 }

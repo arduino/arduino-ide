@@ -4,14 +4,13 @@ import { StatusBarAlignment } from '@theia/core/lib/browser/status-bar/status-ba
 import {
     FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
     ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution,
-    ConnectionStatus
+    ConnectionStatus,
 } from '@theia/core/lib/browser/connection-status-service';
 import { ArduinoDaemon } from '../../../common/protocol';
 import { NotificationCenter } from '../../notification-center';
 
 @injectable()
 export class FrontendConnectionStatusService extends TheiaFrontendConnectionStatusService {
-
     @inject(ArduinoDaemon)
     protected readonly daemon: ArduinoDaemon;
 
@@ -25,20 +24,18 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
         this.schedulePing();
         try {
             this.isRunning = await this.daemon.isRunning();
-        } catch { }
-        this.notificationCenter.onDaemonStarted(() => this.isRunning = true);
-        this.notificationCenter.onDaemonStopped(() => this.isRunning = false);
+        } catch {}
+        this.notificationCenter.onDaemonStarted(() => (this.isRunning = true));
+        this.notificationCenter.onDaemonStopped(() => (this.isRunning = false));
         this.wsConnectionProvider.onIncomingMessageActivity(() => {
             this.updateStatus(this.isRunning);
             this.schedulePing();
         });
     }
-
 }
 
 @injectable()
 export class ApplicationConnectionStatusContribution extends TheiaApplicationConnectionStatusContribution {
-
     @inject(ArduinoDaemon)
     protected readonly daemon: ArduinoDaemon;
 
@@ -51,9 +48,9 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
     protected async init(): Promise<void> {
         try {
             this.isRunning = await this.daemon.isRunning();
-        } catch { }
-        this.notificationCenter.onDaemonStarted(() => this.isRunning = true);
-        this.notificationCenter.onDaemonStopped(() => this.isRunning = false);
+        } catch {}
+        this.notificationCenter.onDaemonStarted(() => (this.isRunning = true));
+        this.notificationCenter.onDaemonStopped(() => (this.isRunning = false));
     }
 
     protected onStateChange(state: ConnectionStatus): void {
@@ -67,12 +64,21 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
         this.statusBar.setElement('connection-status', {
             alignment: StatusBarAlignment.LEFT,
             text: this.isRunning ? 'Offline' : '$(bolt) CLI Daemon Offline',
-            tooltip: this.isRunning ? 'Cannot connect to the backend.' : 'Cannot connect to the CLI daemon.',
-            priority: 5000
+            tooltip: this.isRunning
+                ? 'Cannot connect to the backend.'
+                : 'Cannot connect to the CLI daemon.',
+            priority: 5000,
         });
-        this.toDisposeOnOnline.push(Disposable.create(() => this.statusBar.removeElement('connection-status')));
+        this.toDisposeOnOnline.push(
+            Disposable.create(() =>
+                this.statusBar.removeElement('connection-status')
+            )
+        );
         document.body.classList.add('theia-mod-offline');
-        this.toDisposeOnOnline.push(Disposable.create(() => document.body.classList.remove('theia-mod-offline')));
+        this.toDisposeOnOnline.push(
+            Disposable.create(() =>
+                document.body.classList.remove('theia-mod-offline')
+            )
+        );
     }
-
 }

@@ -4,7 +4,6 @@ import { StatusBarEntry } from '@theia/core/lib/browser/status-bar/status-bar';
 
 @injectable()
 export class ScmContribution extends TheiaScmContribution {
-
     async initializeLayout(): Promise<void> {
         // NOOP
     }
@@ -12,5 +11,4 @@ export class ScmContribution extends TheiaScmContribution {
     protected setStatusBarEntry(id: string, entry: StatusBarEntry): void {
         // NOOP
     }
-
 }

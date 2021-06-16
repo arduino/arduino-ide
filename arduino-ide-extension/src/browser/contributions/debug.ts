@@ -5,11 +5,16 @@ import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { NotificationCenter } from '../notification-center';
 import { Board, BoardsService, ExecutableService } from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { URI, Command, CommandRegistry, SketchContribution, TabBarToolbarRegistry } from './contribution';
+import {
+    URI,
+    Command,
+    CommandRegistry,
+    SketchContribution,
+    TabBarToolbarRegistry,
+} from './contribution';
 
 @injectable()
 export class Debug extends SketchContribution {
-
     @inject(HostedPluginSupport)
     protected hostedPluginSupport: HostedPluginSupport;
 
@@ -29,8 +34,11 @@ export class Debug extends SketchContribution {
      * If `undefined`, debugging is enabled. Otherwise, the reason why it's disabled.
      */
     protected _disabledMessages?: string = 'No board selected'; // Initial pessimism.
-    protected disabledMessageDidChangeEmitter = new Emitter<string | undefined>();
-    protected onDisabledMessageDidChange = this.disabledMessageDidChangeEmitter.event;
+    protected disabledMessageDidChangeEmitter = new Emitter<
+        string | undefined
+    >();
+    protected onDisabledMessageDidChange =
+        this.disabledMessageDidChangeEmitter.event;
 
     protected get disabledMessage(): string | undefined {
         return this._disabledMessages;
@@ -43,14 +51,28 @@ export class Debug extends SketchContribution {
     protected readonly debugToolbarItem = {
         id: Debug.Commands.START_DEBUGGING.id,
         command: Debug.Commands.START_DEBUGGING.id,
-        tooltip: `${this.disabledMessage ? `Debug - ${this.disabledMessage}` : 'Start Debugging'}`,
+        tooltip: `${
+            this.disabledMessage
+                ? `Debug - ${this.disabledMessage}`
+                : 'Start Debugging'
+        }`,
         priority: 3,
-        onDidChange: this.onDisabledMessageDidChange as Event<void>
+        onDidChange: this.onDisabledMessageDidChange as Event<void>,
     };
 
     onStart(): void {
-        this.onDisabledMessageDidChange(() => this.debugToolbarItem.tooltip = `${this.disabledMessage ? `Debug - ${this.disabledMessage}` : 'Start Debugging'}`);
-        const refreshState = async (board: Board | undefined = this.boardsServiceProvider.boardsConfig.selectedBoard) => {
+        this.onDisabledMessageDidChange(
+            () =>
+                (this.debugToolbarItem.tooltip = `${
+                    this.disabledMessage
+                        ? `Debug - ${this.disabledMessage}`
+                        : 'Start Debugging'
+                }`)
+        );
+        const refreshState = async (
+            board: Board | undefined = this.boardsServiceProvider.boardsConfig
+                .selectedBoard
+        ) => {
             if (!board) {
                 this.disabledMessage = 'No board selected';
                 return;
@@ -71,8 +93,10 @@ export class Debug extends SketchContribution {
             } else {
                 this.disabledMessage = undefined;
             }
-        }
-        this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) => refreshState(selectedBoard));
+        };
+        this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
+            refreshState(selectedBoard)
+        );
         this.notificationCenter.onPlatformInstalled(() => refreshState());
         this.notificationCenter.onPlatformUninstalled(() => refreshState());
         refreshState();
@@ -81,8 +105,9 @@ export class Debug extends SketchContribution {
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(Debug.Commands.START_DEBUGGING, {
             execute: () => this.startDebug(),
-            isVisible: widget => ArduinoToolbar.is(widget) && widget.side === 'left',
-            isEnabled: () => !this.disabledMessage
+            isVisible: (widget) =>
+                ArduinoToolbar.is(widget) && widget.side === 'left',
+            isEnabled: () => !this.disabledMessage,
         });
     }
 
@@ -90,7 +115,10 @@ export class Debug extends SketchContribution {
         registry.registerItem(this.debugToolbarItem);
     }
 
-    protected async startDebug(board: Board | undefined = this.boardsServiceProvider.boardsConfig.selectedBoard): Promise<void> {
+    protected async startDebug(
+        board: Board | undefined = this.boardsServiceProvider.boardsConfig
+            .selectedBoard
+    ): Promise<void> {
         if (!board) {
             return;
         }
@@ -101,29 +129,33 @@ export class Debug extends SketchContribution {
         await this.hostedPluginSupport.didStart;
         const [sketch, executables] = await Promise.all([
             this.sketchServiceClient.currentSketch(),
-            this.executableService.list()
+            this.executableService.list(),
         ]);
         if (!sketch) {
             return;
         }
-        const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(sketch);
+        const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(
+            sketch
+        );
         const [cliPath, sketchPath, configPath] = await Promise.all([
             this.fileService.fsPath(new URI(executables.cliUri)),
             this.fileService.fsPath(new URI(sketch.uri)),
             this.fileService.fsPath(new URI(ideTempFolderUri)),
-        ])
+        ]);
         const config = {
             cliPath,
             board: {
                 fqbn,
-                name
+                name,
             },
             sketchPath,
-            configPath
+            configPath,
         };
-        return this.commandService.executeCommand('arduino.debug.start', config);
+        return this.commandService.executeCommand(
+            'arduino.debug.start',
+            config
+        );
     }
-
 }
 
 export namespace Debug {
@@ -131,7 +163,7 @@ export namespace Debug {
         export const START_DEBUGGING: Command = {
             id: 'arduino-start-debug',
             label: 'Start Debugging',
-            category: 'Arduino'
-        }
+            category: 'Arduino',
+        };
     }
 }

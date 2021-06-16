@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { TabBarToolbar, TabBarToolbarRegistry, TabBarToolbarItem, ReactTabBarToolbarItem } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import {
+    TabBarToolbar,
+    TabBarToolbarRegistry,
+    TabBarToolbarItem,
+    ReactTabBarToolbarItem,
+} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { ReactWidget } from '@theia/core/lib/browser';
 import { LabelParser, LabelIcon } from '@theia/core/lib/browser/label-parser';
@@ -8,20 +13,22 @@ export const ARDUINO_TOOLBAR_ITEM_CLASS = 'arduino-tool-item';
 
 export namespace ArduinoToolbarComponent {
     export interface Props {
-        side: 'left' | 'right',
-        items: (TabBarToolbarItem | ReactTabBarToolbarItem)[],
-        commands: CommandRegistry,
-        labelParser: LabelParser,
-        commandIsEnabled: (id: string) => boolean,
-        commandIsToggled: (id: string) => boolean,
-        executeCommand: (e: React.MouseEvent<HTMLElement>) => void
+        side: 'left' | 'right';
+        items: (TabBarToolbarItem | ReactTabBarToolbarItem)[];
+        commands: CommandRegistry;
+        labelParser: LabelParser;
+        commandIsEnabled: (id: string) => boolean;
+        commandIsToggled: (id: string) => boolean;
+        executeCommand: (e: React.MouseEvent<HTMLElement>) => void;
     }
     export interface State {
-        tooltip: string
+        tooltip: string;
     }
 }
-export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarComponent.Props, ArduinoToolbarComponent.State> {
-
+export class ArduinoToolbarComponent extends React.Component<
+    ArduinoToolbarComponent.Props,
+    ArduinoToolbarComponent.State
+> {
     constructor(props: ArduinoToolbarComponent.Props) {
         super(props);
         this.state = { tooltip: '' };
@@ -40,42 +47,66 @@ export class ArduinoToolbarComponent extends React.Component<ArduinoToolbarCompo
             }
         }
         const command = this.props.commands.getCommand(item.command);
-        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} ${command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''} ${command && this.props.commandIsToggled(command.id) ? 'toggled' : ''}`
-        return <div key={item.id} className={cls} >
-            <div className={item.id}>
-                <div
-                    key={item.id + '-icon'}
-                    id={item.id}
-                    className={className}
-                    onClick={this.props.executeCommand}
-                    onMouseOver={() => this.setState({ tooltip: item.tooltip || '' })}
-                    onMouseOut={() => this.setState({ tooltip: '' })}
-                    title={item.tooltip}>
-                    {innerText}
+        const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${
+            TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM
+        } ${
+            command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''
+        } ${
+            command && this.props.commandIsToggled(command.id) ? 'toggled' : ''
+        }`;
+        return (
+            <div key={item.id} className={cls}>
+                <div className={item.id}>
+                    <div
+                        key={item.id + '-icon'}
+                        id={item.id}
+                        className={className}
+                        onClick={this.props.executeCommand}
+                        onMouseOver={() =>
+                            this.setState({ tooltip: item.tooltip || '' })
+                        }
+                        onMouseOut={() => this.setState({ tooltip: '' })}
+                        title={item.tooltip}
+                    >
+                        {innerText}
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        );
+    };
 
     render(): React.ReactNode {
-        const tooltip = <div key='arduino-toolbar-tooltip' className={'arduino-toolbar-tooltip'}>{this.state.tooltip}</div>;
+        const tooltip = (
+            <div
+                key="arduino-toolbar-tooltip"
+                className={'arduino-toolbar-tooltip'}
+            >
+                {this.state.tooltip}
+            </div>
+        );
         const items = [
             <React.Fragment key={this.props.side + '-arduino-toolbar-tooltip'}>
-                {[...this.props.items].map(item => TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render())}
-            </React.Fragment>
-        ]
+                {[...this.props.items].map((item) =>
+                    TabBarToolbarItem.is(item)
+                        ? this.renderItem(item)
+                        : item.render()
+                )}
+            </React.Fragment>,
+        ];
         if (this.props.side === 'left') {
             items.unshift(tooltip);
         } else {
-            items.push(tooltip)
+            items.push(tooltip);
         }
         return items;
     }
 }
 
 export class ArduinoToolbar extends ReactWidget {
-
-    protected items = new Map<string, TabBarToolbarItem | ReactTabBarToolbarItem>();
+    protected items = new Map<
+        string,
+        TabBarToolbarItem | ReactTabBarToolbarItem
+    >();
 
     constructor(
         protected readonly tabBarToolbarRegistry: TabBarToolbarRegistry,
@@ -90,9 +121,13 @@ export class ArduinoToolbar extends ReactWidget {
         this.tabBarToolbarRegistry.onDidChange(() => this.updateToolbar());
     }
 
-    protected updateItems(items: Array<TabBarToolbarItem | ReactTabBarToolbarItem>): void {
+    protected updateItems(
+        items: Array<TabBarToolbarItem | ReactTabBarToolbarItem>
+    ): void {
         this.items.clear();
-        const revItems = items.sort(TabBarToolbarItem.PRIORITY_COMPARATOR).reverse();
+        const revItems = items
+            .sort(TabBarToolbarItem.PRIORITY_COMPARATOR)
+            .reverse();
         for (const item of revItems) {
             this.items.set(item.id, item);
         }
@@ -109,26 +144,30 @@ export class ArduinoToolbar extends ReactWidget {
         this.update();
     }
 
-    protected readonly doCommandIsEnabled = (id: string) => this.commandIsEnabled(id);
+    protected readonly doCommandIsEnabled = (id: string) =>
+        this.commandIsEnabled(id);
     protected commandIsEnabled(command: string): boolean {
         return this.commands.isEnabled(command, this);
     }
-    protected readonly doCommandIsToggled = (id: string) => this.commandIsToggled(id);
+    protected readonly doCommandIsToggled = (id: string) =>
+        this.commandIsToggled(id);
     protected commandIsToggled(command: string): boolean {
-      return this.commands.isToggled(command, this);
-  }
+        return this.commands.isToggled(command, this);
+    }
 
     protected render(): React.ReactNode {
-        return <ArduinoToolbarComponent
-            key='arduino-toolbar-component'
-            side={this.side}
-            labelParser={this.labelParser}
-            items={[...this.items.values()]}
-            commands={this.commands}
-            commandIsEnabled={this.doCommandIsEnabled}
-            commandIsToggled={this.doCommandIsToggled}
-            executeCommand={this.executeCommand}
-        />
+        return (
+            <ArduinoToolbarComponent
+                key="arduino-toolbar-component"
+                side={this.side}
+                labelParser={this.labelParser}
+                items={[...this.items.values()]}
+                commands={this.commands}
+                commandIsEnabled={this.doCommandIsEnabled}
+                commandIsToggled={this.doCommandIsToggled}
+                executeCommand={this.executeCommand}
+            />
+        );
     }
 
     protected executeCommand = (e: React.MouseEvent<HTMLElement>) => {
@@ -136,11 +175,13 @@ export class ArduinoToolbar extends ReactWidget {
         if (TabBarToolbarItem.is(item)) {
             this.commands.executeCommand(item.command, this, e.target);
         }
-    }
+    };
 }
 
 export namespace ArduinoToolbar {
-    export function is(maybeToolbarWidget: any): maybeToolbarWidget is ArduinoToolbar {
+    export function is(
+        maybeToolbarWidget: any
+    ): maybeToolbarWidget is ArduinoToolbar {
         return maybeToolbarWidget instanceof ArduinoToolbar;
     }
 }

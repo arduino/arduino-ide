@@ -1,7 +1,9 @@
 export const ConfigServicePath = '/services/config-service';
 export const ConfigService = Symbol('ConfigService');
 export interface ConfigService {
-    getVersion(): Promise<Readonly<{ version: string, commit: string, status?: string }>>;
+    getVersion(): Promise<
+        Readonly<{ version: string; commit: string; status?: string }>
+    >;
     getCliConfigFileUri(): Promise<string>;
     getConfiguration(): Promise<Config>;
     setConfiguration(config: Config): Promise<void>;
@@ -18,15 +20,14 @@ export interface ProxySettings {
 }
 export type Network = 'none' | ProxySettings;
 export namespace Network {
-
     export function Default(): Network {
         return {
             protocol: 'http',
             hostname: '',
             port: '',
             username: '',
-            password: ''
-        }
+            password: '',
+        };
     }
 
     export function parse(raw: string | undefined): Network {
@@ -35,18 +36,20 @@ export namespace Network {
         }
         try {
             // Patter: PROTOCOL://USER:PASS@HOSTNAME:PORT/
-            const { protocol, hostname, password, username, port } = new URL(raw);
+            const { protocol, hostname, password, username, port } = new URL(
+                raw
+            );
             return {
                 protocol,
                 hostname,
                 password,
                 username,
-                port
+                port,
             };
         } catch {
             return 'none';
         }
-    };
+    }
 
     export function stringify(network: Network): string | undefined {
         if (network === 'none') {
@@ -54,8 +57,16 @@ export namespace Network {
         }
         const { protocol, hostname, password, username, port } = network;
         try {
-            const defaultUrl = new URL(`${protocol ? protocol : 'http'}://${hostname ? hostname : '_'}`);
-            return Object.assign(defaultUrl, { protocol, hostname, password, username, port }).toString();
+            const defaultUrl = new URL(
+                `${protocol ? protocol : 'http'}://${hostname ? hostname : '_'}`
+            );
+            return Object.assign(defaultUrl, {
+                protocol,
+                hostname,
+                password,
+                username,
+                port,
+            }).toString();
         } catch {
             return undefined;
         }
@@ -68,12 +79,13 @@ export namespace Network {
         if (right === 'none') {
             return false;
         }
-        return left.hostname === right.hostname
-            && left.password === right.password
-            && left.protocol === right.protocol
-            && left.username === right.username;
-    };
-
+        return (
+            left.hostname === right.hostname &&
+            left.password === right.password &&
+            left.protocol === right.protocol &&
+            left.username === right.username
+        );
+    }
 }
 
 export interface Config {
@@ -95,9 +107,11 @@ export namespace Config {
                 return false;
             }
         }
-        return left.dataDirUri === right.dataDirUri
-            && left.downloadsDirUri === right.downloadsDirUri
-            && left.sketchDirUri === right.sketchDirUri
-            && Network.sameAs(left.network, right.network);
+        return (
+            left.dataDirUri === right.dataDirUri &&
+            left.downloadsDirUri === right.downloadsDirUri &&
+            left.sketchDirUri === right.sketchDirUri &&
+            Network.sameAs(left.network, right.network)
+        );
     }
 }

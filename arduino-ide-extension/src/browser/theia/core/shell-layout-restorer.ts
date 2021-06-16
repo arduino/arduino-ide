@@ -4,7 +4,6 @@ import { ShellLayoutRestorer as TheiaShellLayoutRestorer } from '@theia/core/lib
 
 @injectable()
 export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
-
     // Workaround for https://github.com/eclipse-theia/theia/issues/6579.
     async storeLayoutAsync(app: FrontendApplication): Promise<void> {
         if (this.shouldStoreLayout) {
@@ -12,13 +11,20 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
                 this.logger.info('>>> Storing the layout...');
                 const layoutData = app.shell.getLayoutData();
                 const serializedLayoutData = this.deflate(layoutData);
-                await this.storageService.setData(this.storageKey, serializedLayoutData);
-                this.logger.info('<<< The layout has been successfully stored.');
+                await this.storageService.setData(
+                    this.storageKey,
+                    serializedLayoutData
+                );
+                this.logger.info(
+                    '<<< The layout has been successfully stored.'
+                );
             } catch (error) {
                 await this.storageService.setData(this.storageKey, undefined);
-                this.logger.error('Error during serialization of layout data', error);
+                this.logger.error(
+                    'Error during serialization of layout data',
+                    error
+                );
             }
         }
     }
-
 }

@@ -5,14 +5,16 @@ import { ElectronMainApplication } from './electron-main-application';
 
 @injectable()
 export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowService {
-
     @inject(ElectronMainApplication)
     protected readonly app: ElectronMainApplication;
 
     openNewWindow(url: string, { external }: NewWindowOptions): undefined {
         if (!external) {
             const sanitizedUrl = this.sanitize(url);
-            const existing = this.app.windows.find(window => this.sanitize(window.webContents.getURL()) === sanitizedUrl);
+            const existing = this.app.windows.find(
+                (window) =>
+                    this.sanitize(window.webContents.getURL()) === sanitizedUrl
+            );
             if (existing) {
                 existing.focus();
                 return;
@@ -30,5 +32,4 @@ export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowServic
         }
         return copy.toString();
     }
-
 }

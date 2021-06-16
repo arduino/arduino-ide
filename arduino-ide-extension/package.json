@@ -10,7 +10,7 @@
     "download-ls": "node ./scripts/download-ls.js",
     "download-examples": "node ./scripts/download-examples.js",
     "generate-protocol": "node ./scripts/generate-protocol.js",
-    "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
+    "lint": "eslint",
     "build": "tsc && ncp ./src/node/cli-protocol/ ./lib/node/cli-protocol/ && yarn lint",
     "watch": "tsc -w",
     "test": "mocha \"./lib/test/**/*.test.js\"",

@@ -1,10 +1,15 @@
 import { injectable } from 'inversify';
-import { BrowserMainMenuFactory as TheiaBrowserMainMenuFactory, MenuBarWidget } from '@theia/core/lib/browser/menu/browser-menu-plugin';
+import {
+    BrowserMainMenuFactory as TheiaBrowserMainMenuFactory,
+    MenuBarWidget,
+} from '@theia/core/lib/browser/menu/browser-menu-plugin';
 import { MainMenuManager } from '../../../common/main-menu-manager';
 
 @injectable()
-export class BrowserMainMenuFactory extends TheiaBrowserMainMenuFactory implements MainMenuManager {
-
+export class BrowserMainMenuFactory
+    extends TheiaBrowserMainMenuFactory
+    implements MainMenuManager
+{
     protected menuBar: MenuBarWidget | undefined;
 
     createMenuBar(): MenuBarWidget {
@@ -18,5 +23,4 @@ export class BrowserMainMenuFactory extends TheiaBrowserMainMenuFactory implemen
             this.fillMenuBar(this.menuBar);
         }
     }
-
 }

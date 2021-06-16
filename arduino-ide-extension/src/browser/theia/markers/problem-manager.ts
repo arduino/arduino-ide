@@ -8,7 +8,6 @@ import { ConfigService } from '../../../common/protocol/config-service';
 
 @injectable()
 export class ProblemManager extends TheiaProblemManager {
-
     @inject(ConfigService)
     protected readonly configService: ConfigService;
 
@@ -20,16 +19,24 @@ export class ProblemManager extends TheiaProblemManager {
     @postConstruct()
     protected init(): void {
         super.init();
-        this.configService.getConfiguration()
-            .then(({ dataDirUri }) => this.dataDirUri = new URI(dataDirUri))
-            .catch(err => this.logger.error(`Failed to determine the data directory: ${err}`));
+        this.configService
+            .getConfiguration()
+            .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
+            .catch((err) =>
+                this.logger.error(
+                    `Failed to determine the data directory: ${err}`
+                )
+            );
     }
 
-    setMarkers(uri: URI, owner: string, data: Diagnostic[]): Marker<Diagnostic>[] {
+    setMarkers(
+        uri: URI,
+        owner: string,
+        data: Diagnostic[]
+    ): Marker<Diagnostic>[] {
         if (this.dataDirUri && this.dataDirUri.isEqualOrParent(uri)) {
             return [];
         }
         return super.setMarkers(uri, owner, data);
     }
-
 }

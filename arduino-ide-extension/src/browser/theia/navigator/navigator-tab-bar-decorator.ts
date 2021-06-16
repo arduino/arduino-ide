@@ -8,7 +8,6 @@ import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@thei
  */
 @injectable()
 export class NavigatorTabBarDecorator extends TheiaNavigatorTabBarDecorator {
-
     onStart(): void {
         // NOOP
     }
@@ -17,5 +16,4 @@ export class NavigatorTabBarDecorator extends TheiaNavigatorTabBarDecorator {
         // Does not decorate anything.
         return [];
     }
-
 }

@@ -6,12 +6,18 @@ import { DebugEditor } from '@theia/debug/lib/browser/editor/debug-editor';
 import { DebugVariable } from '@theia/debug/lib/browser/console/debug-console-items';
 import { DebugExpressionProvider } from '@theia/debug/lib/browser/editor/debug-expression-provider';
 import { DebugHoverSource as TheiaDebugHoverSource } from '@theia/debug/lib/browser/editor/debug-hover-source';
-import { DebugHoverWidget as TheiaDebugHoverWidget, ShowDebugHoverOptions } from '@theia/debug/lib/browser/editor/debug-hover-widget';
+import {
+    DebugHoverWidget as TheiaDebugHoverWidget,
+    ShowDebugHoverOptions,
+} from '@theia/debug/lib/browser/editor/debug-hover-widget';
 import { DebugHoverSource } from './debug-hover-source';
 
-export function createDebugHoverWidgetContainer(parent: interfaces.Container, editor: DebugEditor): Container {
+export function createDebugHoverWidgetContainer(
+    parent: interfaces.Container,
+    editor: DebugEditor
+): Container {
     const child = SourceTreeWidget.createContainer(parent, {
-        virtualized: false
+        virtualized: false,
     });
     child.bind(DebugEditor).toConstantValue(editor);
     child.bind(TheiaDebugHoverSource).toSelf();
@@ -28,8 +34,9 @@ export function createDebugHoverWidgetContainer(parent: interfaces.Container, ed
 // TODO: remove patch after https://github.com/eclipse-theia/theia/pull/9256/
 @injectable()
 export class DebugHoverWidget extends TheiaDebugHoverWidget {
-
-    protected async doShow(options: ShowDebugHoverOptions | undefined = this.options): Promise<void> {
+    protected async doShow(
+        options: ShowDebugHoverOptions | undefined = this.options
+    ): Promise<void> {
         if (!this.isEditorFrame()) {
             this.hide();
             return;
@@ -38,7 +45,10 @@ export class DebugHoverWidget extends TheiaDebugHoverWidget {
             this.hide();
             return;
         }
-        if (this.options && this.options.selection.equalsRange(options.selection)) {
+        if (
+            this.options &&
+            this.options.selection.equalsRange(options.selection)
+        ) {
             return;
         }
         if (!this.isAttached) {
@@ -46,19 +56,26 @@ export class DebugHoverWidget extends TheiaDebugHoverWidget {
         }
 
         this.options = options;
-        const matchingExpression = this.expressionProvider.get(this.editor.getControl().getModel()!, options.selection);
+        const matchingExpression = this.expressionProvider.get(
+            this.editor.getControl().getModel()!,
+            options.selection
+        );
         if (!matchingExpression) {
             this.hide();
             return;
         }
         const toFocus = new DisposableCollection();
         if (this.options.focus === true) {
-            toFocus.push(this.model.onNodeRefreshed(() => {
-                toFocus.dispose();
-                this.activate();
-            }));
+            toFocus.push(
+                this.model.onNodeRefreshed(() => {
+                    toFocus.dispose();
+                    this.activate();
+                })
+            );
         }
-        const expression = await (this.hoverSource as DebugHoverSource).evaluate2(matchingExpression);
+        const expression = await (
+            this.hoverSource as DebugHoverSource
+        ).evaluate2(matchingExpression);
         if (!expression || !expression.value) {
             toFocus.dispose();
             this.hide();
@@ -66,13 +83,19 @@ export class DebugHoverWidget extends TheiaDebugHoverWidget {
         }
 
         this.contentNode.hidden = false;
-        ['number', 'boolean', 'string'].forEach(token => this.titleNode.classList.remove(token));
+        ['number', 'boolean', 'string'].forEach((token) =>
+            this.titleNode.classList.remove(token)
+        );
         this.domNode.classList.remove('complex-value');
         if (expression.hasElements) {
             this.domNode.classList.add('complex-value');
         } else {
             this.contentNode.hidden = true;
-            if (expression.type === 'number' || expression.type === 'boolean' || expression.type === 'string') {
+            if (
+                expression.type === 'number' ||
+                expression.type === 'boolean' ||
+                expression.type === 'string'
+            ) {
                 this.titleNode.classList.add(expression.type);
             } else if (!isNaN(+expression.value)) {
                 this.titleNode.classList.add('number');
@@ -85,12 +108,15 @@ export class DebugHoverWidget extends TheiaDebugHoverWidget {
 
         // super.show(); // Here we cannot call `super.show()` but have to call `show` on the `Widget` prototype.
         Widget.prototype.show.call(this);
-        await new Promise<void>(resolve => {
-            setTimeout(() => window.requestAnimationFrame(() => {
-                this.editor.getControl().layoutContentWidget(this);
-                resolve();
-            }), 0);
+        await new Promise<void>((resolve) => {
+            setTimeout(
+                () =>
+                    window.requestAnimationFrame(() => {
+                        this.editor.getControl().layoutContentWidget(this);
+                        resolve();
+                    }),
+                0
+            );
         });
     }
-
 }

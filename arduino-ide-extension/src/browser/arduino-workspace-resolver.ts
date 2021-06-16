@@ -7,7 +7,7 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 /**
  * Class for determining the default workspace location from the
  * `location.hash`, the historical workspace locations, and recent sketch files.
- * 
+ *
  * The following logic is used for determining the default workspace location:
  * - `hash` points to an existing location?
  *  - Yes
@@ -24,20 +24,24 @@ namespace ArduinoWorkspaceRootResolver {
         readonly isValid: (uri: string) => MaybePromise<boolean>;
     }
     export interface ResolveOptions {
-        readonly hash?: string
+        readonly hash?: string;
         readonly recentWorkspaces: string[];
         // Gathered from the default sketch folder. The default sketch folder is defined by the CLI.
         readonly recentSketches: string[];
     }
 }
 export class ArduinoWorkspaceRootResolver {
+    constructor(protected options: ArduinoWorkspaceRootResolver.InitOptions) {}
 
-    constructor(protected options: ArduinoWorkspaceRootResolver.InitOptions) {
-    }
-
-    async resolve(options: ArduinoWorkspaceRootResolver.ResolveOptions): Promise<{ uri: string } | undefined> {
+    async resolve(
+        options: ArduinoWorkspaceRootResolver.ResolveOptions
+    ): Promise<{ uri: string } | undefined> {
         const { hash, recentWorkspaces, recentSketches } = options;
-        for (const uri of [this.hashToUri(hash), ...recentWorkspaces, ...recentSketches].filter(notEmpty)) {
+        for (const uri of [
+            this.hashToUri(hash),
+            ...recentWorkspaces,
+            ...recentSketches,
+        ].filter(notEmpty)) {
             const valid = await this.isValid(uri);
             if (valid) {
                 return { uri };
@@ -56,13 +60,14 @@ export class ArduinoWorkspaceRootResolver {
     // - https://github.com/eclipse-theia/theia/blob/8196e9dcf9c8de8ea0910efeb5334a974f426966/packages/workspace/src/browser/workspace-service.ts#L143 and
     // - https://github.com/eclipse-theia/theia/blob/8196e9dcf9c8de8ea0910efeb5334a974f426966/packages/workspace/src/browser/workspace-service.ts#L423
     protected hashToUri(hash: string | undefined): string | undefined {
-        if (hash
-            && hash.length > 1
-            && hash.startsWith('#')) {
+        if (hash && hash.length > 1 && hash.startsWith('#')) {
             const path = hash.slice(1); // Trim the leading `#`.
-            return new URI(toUnix(path.slice(isWindows && hash.startsWith('/') ? 1 : 0))).withScheme('file').toString();
+            return new URI(
+                toUnix(path.slice(isWindows && hash.startsWith('/') ? 1 : 0))
+            )
+                .withScheme('file')
+                .toString();
         }
         return undefined;
     }
-
 }

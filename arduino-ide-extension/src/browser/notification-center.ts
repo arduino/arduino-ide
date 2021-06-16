@@ -3,25 +3,48 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { NotificationServiceClient, NotificationServiceServer } from '../common/protocol/notification-service';
-import { AttachedBoardsChangeEvent, BoardsPackage, LibraryPackage, Config, Sketch } from '../common/protocol';
+import {
+    NotificationServiceClient,
+    NotificationServiceServer,
+} from '../common/protocol/notification-service';
+import {
+    AttachedBoardsChangeEvent,
+    BoardsPackage,
+    LibraryPackage,
+    Config,
+    Sketch,
+} from '../common/protocol';
 
 @injectable()
-export class NotificationCenter implements NotificationServiceClient, FrontendApplicationContribution {
-
+export class NotificationCenter
+    implements NotificationServiceClient, FrontendApplicationContribution
+{
     @inject(NotificationServiceServer)
     protected readonly server: JsonRpcProxy<NotificationServiceServer>;
 
     protected readonly indexUpdatedEmitter = new Emitter<void>();
     protected readonly daemonStartedEmitter = new Emitter<void>();
     protected readonly daemonStoppedEmitter = new Emitter<void>();
-    protected readonly configChangedEmitter = new Emitter<{ config: Config | undefined }>();
-    protected readonly platformInstalledEmitter = new Emitter<{ item: BoardsPackage }>();
-    protected readonly platformUninstalledEmitter = new Emitter<{ item: BoardsPackage }>();
-    protected readonly libraryInstalledEmitter = new Emitter<{ item: LibraryPackage }>();
-    protected readonly libraryUninstalledEmitter = new Emitter<{ item: LibraryPackage }>();
-    protected readonly attachedBoardsChangedEmitter = new Emitter<AttachedBoardsChangeEvent>();
-    protected readonly recentSketchesChangedEmitter = new Emitter<{ sketches: Sketch[] }>();
+    protected readonly configChangedEmitter = new Emitter<{
+        config: Config | undefined;
+    }>();
+    protected readonly platformInstalledEmitter = new Emitter<{
+        item: BoardsPackage;
+    }>();
+    protected readonly platformUninstalledEmitter = new Emitter<{
+        item: BoardsPackage;
+    }>();
+    protected readonly libraryInstalledEmitter = new Emitter<{
+        item: LibraryPackage;
+    }>();
+    protected readonly libraryUninstalledEmitter = new Emitter<{
+        item: LibraryPackage;
+    }>();
+    protected readonly attachedBoardsChangedEmitter =
+        new Emitter<AttachedBoardsChangeEvent>();
+    protected readonly recentSketchesChangedEmitter = new Emitter<{
+        sketches: Sketch[];
+    }>();
 
     protected readonly toDispose = new DisposableCollection(
         this.indexUpdatedEmitter,
@@ -94,5 +117,4 @@ export class NotificationCenter implements NotificationServiceClient, FrontendAp
     notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void {
         this.recentSketchesChangedEmitter.fire(event);
     }
-
 }

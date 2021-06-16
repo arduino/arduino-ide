@@ -1,11 +1,16 @@
 import { inject, injectable } from 'inversify';
-import { Command, MenuModelRegistry, CommandRegistry, SketchContribution, KeybindingRegistry } from './contribution';
+import {
+    Command,
+    MenuModelRegistry,
+    CommandRegistry,
+    SketchContribution,
+    KeybindingRegistry,
+} from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { Settings as Preferences, SettingsDialog } from '../settings';
 
 @injectable()
 export class Settings extends SketchContribution {
-
     @inject(SettingsDialog)
     protected readonly settingsDialog: SettingsDialog;
 
@@ -28,7 +33,7 @@ export class Settings extends SketchContribution {
                     await this.settingsService.reset();
                 }
             },
-            isEnabled: () => !this.settingsOpened
+            isEnabled: () => !this.settingsOpened,
         });
     }
 
@@ -36,9 +41,12 @@ export class Settings extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.FILE__PREFERENCES_GROUP, {
             commandId: Settings.Commands.OPEN.id,
             label: 'Preferences...',
-            order: '0'
+            order: '0',
         });
-        registry.registerSubmenu(ArduinoMenus.FILE__ADVANCED_SUBMENU, 'Advanced');
+        registry.registerSubmenu(
+            ArduinoMenus.FILE__ADVANCED_SUBMENU,
+            'Advanced'
+        );
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
@@ -47,7 +55,6 @@ export class Settings extends SketchContribution {
             keybinding: 'CtrlCmd+,',
         });
     }
-
 }
 
 export namespace Settings {
@@ -55,7 +62,7 @@ export namespace Settings {
         export const OPEN: Command = {
             id: 'arduino-settings-open',
             label: 'Open Preferences...',
-            category: 'Arduino'
-        }
+            category: 'Arduino',
+        };
     }
 }

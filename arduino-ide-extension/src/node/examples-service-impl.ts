@@ -7,12 +7,15 @@ import { notEmpty } from '@theia/core/lib/common/objects';
 import { Sketch, SketchContainer } from '../common/protocol/sketches-service';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import { ExamplesService } from '../common/protocol/examples-service';
-import { LibraryLocation, LibraryPackage, LibraryService } from '../common/protocol';
+import {
+    LibraryLocation,
+    LibraryPackage,
+    LibraryService,
+} from '../common/protocol';
 import { ConfigServiceImpl } from './config-service-impl';
 
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
-
     @inject(SketchesServiceImpl)
     protected readonly sketchesService: SketchesServiceImpl;
 
@@ -35,22 +38,35 @@ export class ExamplesServiceImpl implements ExamplesService {
         }
         const exampleRootPath = join(__dirname, '..', '..', 'Examples');
         const exampleNames = await promisify(fs.readdir)(exampleRootPath);
-        this._all = await Promise.all(exampleNames.map(name => join(exampleRootPath, name)).map(path => this.load(path)));
+        this._all = await Promise.all(
+            exampleNames
+                .map((name) => join(exampleRootPath, name))
+                .map((path) => this.load(path))
+        );
         return this._all;
     }
 
     // TODO: decide whether it makes sense to cache them. Keys should be: `fqbn` + version of containing core/library.
-    async installed({ fqbn }: { fqbn?: string }): Promise<{ user: SketchContainer[], current: SketchContainer[], any: SketchContainer[] }> {
+    async installed({ fqbn }: { fqbn?: string }): Promise<{
+        user: SketchContainer[];
+        current: SketchContainer[];
+        any: SketchContainer[];
+    }> {
         const user: SketchContainer[] = [];
         const current: SketchContainer[] = [];
         const any: SketchContainer[] = [];
-        const packages: LibraryPackage[] = await this.libraryService.list({ fqbn });
+        const packages: LibraryPackage[] = await this.libraryService.list({
+            fqbn,
+        });
         for (const pkg of packages) {
             const container = await this.tryGroupExamples(pkg);
             const { location } = pkg;
             if (location === LibraryLocation.USER) {
                 user.push(container);
-            } else if (location === LibraryLocation.PLATFORM_BUILTIN || LibraryLocation.REFERENCED_PLATFORM_BUILTIN) {
+            } else if (
+                location === LibraryLocation.PLATFORM_BUILTIN ||
+                LibraryLocation.REFERENCED_PLATFORM_BUILTIN
+            ) {
                 current.push(container);
             } else {
                 any.push(container);
@@ -64,25 +80,46 @@ export class ExamplesServiceImpl implements ExamplesService {
      * folder hierarchy. This method tries to workaround it by falling back to the `installDirUri` and manually creating the
      * location of the examples. Otherwise it creates the example container from the direct examples FS paths.
      */
-    protected async tryGroupExamples({ label, exampleUris, installDirUri }: LibraryPackage): Promise<SketchContainer> {
-        const paths = exampleUris.map(uri => FileUri.fsPath(uri));
+    protected async tryGroupExamples({
+        label,
+        exampleUris,
+        installDirUri,
+    }: LibraryPackage): Promise<SketchContainer> {
+        const paths = exampleUris.map((uri) => FileUri.fsPath(uri));
         if (installDirUri) {
-            for (const example of ['example', 'Example', 'EXAMPLE', 'examples', 'Examples', 'EXAMPLES']) {
-                const examplesPath = join(FileUri.fsPath(installDirUri), example);
+            for (const example of [
+                'example',
+                'Example',
+                'EXAMPLE',
+                'examples',
+                'Examples',
+                'EXAMPLES',
+            ]) {
+                const examplesPath = join(
+                    FileUri.fsPath(installDirUri),
+                    example
+                );
                 const exists = await promisify(fs.exists)(examplesPath);
-                const isDir = exists && (await promisify(fs.lstat)(examplesPath)).isDirectory();
+                const isDir =
+                    exists &&
+                    (await promisify(fs.lstat)(examplesPath)).isDirectory();
                 if (isDir) {
                     const fileNames = await promisify(fs.readdir)(examplesPath);
                     const children: SketchContainer[] = [];
                     const sketches: Sketch[] = [];
                     for (const fileName of fileNames) {
                         const subPath = join(examplesPath, fileName);
-                        const subIsDir = (await promisify(fs.lstat)(subPath)).isDirectory();
+                        const subIsDir = (
+                            await promisify(fs.lstat)(subPath)
+                        ).isDirectory();
                         if (subIsDir) {
                             const sketch = await this.tryLoadSketch(subPath);
                             if (!sketch) {
                                 const container = await this.load(subPath);
-                                if (container.children.length || container.sketches.length) {
+                                if (
+                                    container.children.length ||
+                                    container.sketches.length
+                                ) {
                                     children.push(container);
                                 }
                             } else {
@@ -93,22 +130,24 @@ export class ExamplesServiceImpl implements ExamplesService {
                     return {
                         label,
                         children,
-                        sketches
+                        sketches,
                     };
                 }
             }
         }
-        const sketches = await Promise.all(paths.map(path => this.tryLoadSketch(path)));
+        const sketches = await Promise.all(
+            paths.map((path) => this.tryLoadSketch(path))
+        );
         return {
             label,
             children: [],
-            sketches: sketches.filter(notEmpty)
+            sketches: sketches.filter(notEmpty),
         };
     }
 
     // Built-ins are included inside the IDE.
     protected async load(path: string): Promise<SketchContainer> {
-        if (!await promisify(fs.exists)(path)) {
+        if (!(await promisify(fs.exists)(path))) {
             throw new Error('Examples are not available');
         }
         const stat = await promisify(fs.stat)(path);
@@ -118,7 +157,7 @@ export class ExamplesServiceImpl implements ExamplesService {
         const names = await promisify(fs.readdir)(path);
         const sketches: Sketch[] = [];
         const children: SketchContainer[] = [];
-        for (const p of names.map(name => join(path, name))) {
+        for (const p of names.map((name) => join(path, name))) {
             const stat = await promisify(fs.stat)(p);
             if (stat.isDirectory()) {
                 const sketch = await this.tryLoadSketch(p);
@@ -134,7 +173,7 @@ export class ExamplesServiceImpl implements ExamplesService {
         return {
             label,
             children,
-            sketches
+            sketches,
         };
     }
 
@@ -149,11 +188,12 @@ export class ExamplesServiceImpl implements ExamplesService {
 
     protected async tryLoadSketch(path: string): Promise<Sketch | undefined> {
         try {
-            const sketch = await this.sketchesService.loadSketch(FileUri.create(path).toString());
+            const sketch = await this.sketchesService.loadSketch(
+                FileUri.create(path).toString()
+            );
             return sketch;
         } catch {
             return undefined;
         }
     }
-
 }

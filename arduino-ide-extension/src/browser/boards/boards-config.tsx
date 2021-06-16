@@ -3,12 +3,16 @@ import { Event } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { Board, Port, AttachedBoardsChangeEvent, BoardWithPackage } from '../../common/protocol/boards-service';
+import {
+    Board,
+    Port,
+    AttachedBoardsChangeEvent,
+    BoardWithPackage,
+} from '../../common/protocol/boards-service';
 import { NotificationCenter } from '../notification-center';
 import { BoardsServiceProvider } from './boards-service-provider';
 
 export namespace BoardsConfig {
-
     export interface Config {
         selectedBoard?: Board;
         selectedPort?: Port;
@@ -28,18 +32,16 @@ export namespace BoardsConfig {
         showAllPorts: boolean;
         query: string;
     }
-
 }
 
 export abstract class Item<T> extends React.Component<{
-    item: T,
-    label: string,
-    selected: boolean,
-    onClick: (item: T) => void,
-    missing?: boolean,
-    details?: string
+    item: T;
+    label: string;
+    selected: boolean;
+    onClick: (item: T) => void;
+    missing?: boolean;
+    details?: string;
 }> {
-
     render(): React.ReactNode {
         const { selected, label, missing, details } = this.props;
         const classNames = ['item'];
@@ -47,25 +49,36 @@ export abstract class Item<T> extends React.Component<{
             classNames.push('selected');
         }
         if (missing === true) {
-            classNames.push('missing')
+            classNames.push('missing');
         }
-        return <div onClick={this.onClick} className={classNames.join(' ')} title={`${label}${!details ? '' : details}`}>
-            <div className='label'>
-                {label}
+        return (
+            <div
+                onClick={this.onClick}
+                className={classNames.join(' ')}
+                title={`${label}${!details ? '' : details}`}
+            >
+                <div className="label">{label}</div>
+                {!details ? '' : <div className="details">{details}</div>}
+                {!selected ? (
+                    ''
+                ) : (
+                    <div className="selected-icon">
+                        <i className="fa fa-check" />
+                    </div>
+                )}
             </div>
-            {!details ? '' : <div className='details'>{details}</div>}
-            {!selected ? '' : <div className='selected-icon'><i className='fa fa-check' /></div>}
-        </div>;
+        );
     }
 
     protected onClick = () => {
         this.props.onClick(this.props.item);
-    }
-
+    };
 }
 
-export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConfig.State> {
-
+export class BoardsConfig extends React.Component<
+    BoardsConfig.Props,
+    BoardsConfig.State
+> {
     protected toDispose = new DisposableCollection();
 
     constructor(props: BoardsConfig.Props) {
@@ -77,24 +90,51 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
             knownPorts: [],
             showAllPorts: false,
             query: '',
-            ...boardsConfig
-        }
+            ...boardsConfig,
+        };
     }
 
     componentDidMount() {
         this.updateBoards();
-        this.updatePorts(this.props.boardsServiceProvider.availableBoards.map(({ port }) => port).filter(notEmpty));
+        this.updatePorts(
+            this.props.boardsServiceProvider.availableBoards
+                .map(({ port }) => port)
+                .filter(notEmpty)
+        );
         this.toDispose.pushAll([
-            this.props.notificationCenter.onAttachedBoardsChanged(event => this.updatePorts(event.newState.ports, AttachedBoardsChangeEvent.diff(event).detached.ports)),
-            this.props.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard, selectedPort }) => {
-                this.setState({ selectedBoard, selectedPort }, () => this.fireConfigChanged());
-            }),
-            this.props.notificationCenter.onPlatformInstalled(() => this.updateBoards(this.state.query)),
-            this.props.notificationCenter.onPlatformUninstalled(() => this.updateBoards(this.state.query)),
-            this.props.notificationCenter.onIndexUpdated(() => this.updateBoards(this.state.query)),
-            this.props.notificationCenter.onDaemonStarted(() => this.updateBoards(this.state.query)),
-            this.props.notificationCenter.onDaemonStopped(() => this.setState({ searchResults: [] })),
-            this.props.onFilteredTextDidChangeEvent(query => this.setState({ query }, () => this.updateBoards(this.state.query)))
+            this.props.notificationCenter.onAttachedBoardsChanged((event) =>
+                this.updatePorts(
+                    event.newState.ports,
+                    AttachedBoardsChangeEvent.diff(event).detached.ports
+                )
+            ),
+            this.props.boardsServiceProvider.onBoardsConfigChanged(
+                ({ selectedBoard, selectedPort }) => {
+                    this.setState({ selectedBoard, selectedPort }, () =>
+                        this.fireConfigChanged()
+                    );
+                }
+            ),
+            this.props.notificationCenter.onPlatformInstalled(() =>
+                this.updateBoards(this.state.query)
+            ),
+            this.props.notificationCenter.onPlatformUninstalled(() =>
+                this.updateBoards(this.state.query)
+            ),
+            this.props.notificationCenter.onIndexUpdated(() =>
+                this.updateBoards(this.state.query)
+            ),
+            this.props.notificationCenter.onDaemonStarted(() =>
+                this.updateBoards(this.state.query)
+            ),
+            this.props.notificationCenter.onDaemonStopped(() =>
+                this.setState({ searchResults: [] })
+            ),
+            this.props.onFilteredTextDidChangeEvent((query) =>
+                this.setState({ query }, () =>
+                    this.updateBoards(this.state.query)
+                )
+            ),
         ]);
     }
 
@@ -107,73 +147,96 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         this.props.onConfigChange({ selectedBoard, selectedPort });
     }
 
-    protected updateBoards = (eventOrQuery: React.ChangeEvent<HTMLInputElement> | string = '') => {
-        const query = typeof eventOrQuery === 'string'
-            ? eventOrQuery
-            : eventOrQuery.target.value.toLowerCase();
+    protected updateBoards = (
+        eventOrQuery: React.ChangeEvent<HTMLInputElement> | string = ''
+    ) => {
+        const query =
+            typeof eventOrQuery === 'string'
+                ? eventOrQuery
+                : eventOrQuery.target.value.toLowerCase();
         this.setState({ query });
-        this.queryBoards({ query }).then(searchResults => this.setState({ searchResults }));
-    }
+        this.queryBoards({ query }).then((searchResults) =>
+            this.setState({ searchResults })
+        );
+    };
 
     protected updatePorts = (ports: Port[] = [], removedPorts: Port[] = []) => {
         this.queryPorts(Promise.resolve(ports)).then(({ knownPorts }) => {
             let { selectedPort } = this.state;
             // If the currently selected port is not available anymore, unset the selected port.
-            if (removedPorts.some(port => Port.equals(port, selectedPort))) {
+            if (removedPorts.some((port) => Port.equals(port, selectedPort))) {
                 selectedPort = undefined;
             }
-            this.setState({ knownPorts, selectedPort }, () => this.fireConfigChanged());
+            this.setState({ knownPorts, selectedPort }, () =>
+                this.fireConfigChanged()
+            );
         });
-    }
+    };
 
-    protected queryBoards = (options: { query?: string } = {}): Promise<Array<BoardWithPackage>> => {
+    protected queryBoards = (
+        options: { query?: string } = {}
+    ): Promise<Array<BoardWithPackage>> => {
         return this.props.boardsServiceProvider.searchBoards(options);
-    }
+    };
 
     protected get availablePorts(): MaybePromise<Port[]> {
-        return this.props.boardsServiceProvider.availableBoards.map(({ port }) => port).filter(notEmpty);
+        return this.props.boardsServiceProvider.availableBoards
+            .map(({ port }) => port)
+            .filter(notEmpty);
     }
 
-    protected queryPorts = async (availablePorts: MaybePromise<Port[]> = this.availablePorts) => {
+    protected queryPorts = async (
+        availablePorts: MaybePromise<Port[]> = this.availablePorts
+    ) => {
         const ports = await availablePorts;
         return { knownPorts: ports.sort(Port.compare) };
-    }
+    };
 
     protected toggleFilterPorts = () => {
         this.setState({ showAllPorts: !this.state.showAllPorts });
-    }
+    };
 
     protected selectPort = (selectedPort: Port | undefined) => {
         this.setState({ selectedPort }, () => this.fireConfigChanged());
-    }
+    };
 
     protected selectBoard = (selectedBoard: BoardWithPackage | undefined) => {
         this.setState({ selectedBoard }, () => this.fireConfigChanged());
-    }
+    };
 
     protected focusNodeSet = (element: HTMLElement | null) => {
         this.props.onFocusNodeSet(element || undefined);
-    }
+    };
 
     render(): React.ReactNode {
-        return <div className='body'>
-            {this.renderContainer('boards', this.renderBoards.bind(this))}
-            {this.renderContainer('ports', this.renderPorts.bind(this), this.renderPortsFooter.bind(this))}
-        </div>;
+        return (
+            <div className="body">
+                {this.renderContainer('boards', this.renderBoards.bind(this))}
+                {this.renderContainer(
+                    'ports',
+                    this.renderPorts.bind(this),
+                    this.renderPortsFooter.bind(this)
+                )}
+            </div>
+        );
     }
 
-    protected renderContainer(title: string, contentRenderer: () => React.ReactNode, footerRenderer?: () => React.ReactNode): React.ReactNode {
-        return <div className='container'>
-            <div className='content'>
-                <div className='title'>
-                    {title}
-                </div>
-                {contentRenderer()}
-                <div className='footer'>
-                    {(footerRenderer ? footerRenderer() : '')}
+    protected renderContainer(
+        title: string,
+        contentRenderer: () => React.ReactNode,
+        footerRenderer?: () => React.ReactNode
+    ): React.ReactNode {
+        return (
+            <div className="container">
+                <div className="content">
+                    <div className="title">{title}</div>
+                    {contentRenderer()}
+                    <div className="footer">
+                        {footerRenderer ? footerRenderer() : ''}
+                    </div>
                 </div>
             </div>
-        </div>;
+        );
     }
 
     protected renderBoards(): React.ReactNode {
@@ -181,98 +244,111 @@ export class BoardsConfig extends React.Component<BoardsConfig.Props, BoardsConf
         // Board names are not unique per core https://github.com/arduino/arduino-pro-ide/issues/262#issuecomment-661019560
         // It is tricky when the core is not yet installed, no FQBNs are available.
         const distinctBoards = new Map<string, Board.Detailed>();
-        const toKey = ({ name, packageName, fqbn }: Board.Detailed) => !!fqbn ? `${name}-${packageName}-${fqbn}` : `${name}-${packageName}`;
-        for (const board of Board.decorateBoards(selectedBoard, searchResults)) {
+        const toKey = ({ name, packageName, fqbn }: Board.Detailed) =>
+            !!fqbn
+                ? `${name}-${packageName}-${fqbn}`
+                : `${name}-${packageName}`;
+        for (const board of Board.decorateBoards(
+            selectedBoard,
+            searchResults
+        )) {
             const key = toKey(board);
             if (!distinctBoards.has(key)) {
                 distinctBoards.set(key, board);
             }
         }
 
-        return <React.Fragment>
-            <div className='search'>
-                <input
-                    type='search'
-                    value={query}
-                    className='theia-input'
-                    placeholder='SEARCH BOARD'
-                    onChange={this.updateBoards}
-                    ref={this.focusNodeSet}
-                />
-                <i className='fa fa-search'></i>
-            </div>
-            <div className='boards list'>
-                {Array.from(distinctBoards.values()).map(board => <Item<BoardWithPackage>
-                    key={`${board.name}-${board.packageName}`}
-                    item={board}
-                    label={board.name}
-                    details={board.details}
-                    selected={board.selected}
-                    onClick={this.selectBoard}
-                    missing={board.missing}
-                />)}
-            </div>
-        </React.Fragment>;
+        return (
+            <React.Fragment>
+                <div className="search">
+                    <input
+                        type="search"
+                        value={query}
+                        className="theia-input"
+                        placeholder="SEARCH BOARD"
+                        onChange={this.updateBoards}
+                        ref={this.focusNodeSet}
+                    />
+                    <i className="fa fa-search"></i>
+                </div>
+                <div className="boards list">
+                    {Array.from(distinctBoards.values()).map((board) => (
+                        <Item<BoardWithPackage>
+                            key={`${board.name}-${board.packageName}`}
+                            item={board}
+                            label={board.name}
+                            details={board.details}
+                            selected={board.selected}
+                            onClick={this.selectBoard}
+                            missing={board.missing}
+                        />
+                    ))}
+                </div>
+            </React.Fragment>
+        );
     }
 
     protected renderPorts(): React.ReactNode {
         const filter = this.state.showAllPorts ? () => true : Port.isBoardPort;
         const ports = this.state.knownPorts.filter(filter);
-        return !ports.length ?
-            (
-                <div className='loading noselect'>
-                    No ports discovered
-                </div>
-            ) :
-            (
-                <div className='ports list'>
-                    {ports.map(port => <Item<Port>
+        return !ports.length ? (
+            <div className="loading noselect">No ports discovered</div>
+        ) : (
+            <div className="ports list">
+                {ports.map((port) => (
+                    <Item<Port>
                         key={Port.toString(port)}
                         item={port}
                         label={Port.toString(port)}
                         selected={Port.equals(this.state.selectedPort, port)}
                         onClick={this.selectPort}
-                    />)}
-                </div>
-            );
+                    />
+                ))}
+            </div>
+        );
     }
 
     protected renderPortsFooter(): React.ReactNode {
-        return <div className='noselect'>
-            <label
-                title='Shows all available ports when enabled'>
-                <input
-                    type='checkbox'
-                    defaultChecked={this.state.showAllPorts}
-                    onChange={this.toggleFilterPorts}
-                />
-                <span>Show all ports</span>
-            </label>
-        </div>;
+        return (
+            <div className="noselect">
+                <label title="Shows all available ports when enabled">
+                    <input
+                        type="checkbox"
+                        defaultChecked={this.state.showAllPorts}
+                        onChange={this.toggleFilterPorts}
+                    />
+                    <span>Show all ports</span>
+                </label>
+            </div>
+        );
     }
-
 }
 
 export namespace BoardsConfig {
-
     export namespace Config {
-
         export function sameAs(config: Config, other: Config | Board): boolean {
             const { selectedBoard, selectedPort } = config;
             if (Board.is(other)) {
-                return !!selectedBoard
-                    && Board.equals(other, selectedBoard)
-                    && Port.sameAs(selectedPort, other.port);
+                return (
+                    !!selectedBoard &&
+                    Board.equals(other, selectedBoard) &&
+                    Port.sameAs(selectedPort, other.port)
+                );
             }
             return sameAs(config, other);
         }
 
         export function equals(left: Config, right: Config): boolean {
-            return left.selectedBoard === right.selectedBoard
-                && left.selectedPort === right.selectedPort;
+            return (
+                left.selectedBoard === right.selectedBoard &&
+                left.selectedPort === right.selectedPort
+            );
         }
 
-        export function toString(config: Config, options: { default: string } = { default: '' }): string {
+        export function toString(
+            config: Config,
+            options: { default: string } = { default: '' }
+        ): string {
             const { selectedBoard, selectedPort: port } = config;
             if (!selectedBoard) {
                 return options.default;
@@ -281,17 +357,33 @@ export namespace BoardsConfig {
             return `${name}${port ? ' at ' + Port.toString(port) : ''}`;
         }
 
-        export function setConfig(config: Config | undefined, urlToAttachTo: URL): URL {
+        export function setConfig(
+            config: Config | undefined,
+            urlToAttachTo: URL
+        ): URL {
             const copy = new URL(urlToAttachTo.toString());
             if (!config) {
                 copy.searchParams.delete('boards-config');
                 return copy;
             }
 
-            const selectedBoard = config.selectedBoard ? { name: config.selectedBoard.name, fqbn: config.selectedBoard.fqbn } : undefined;
-            const selectedPort = config.selectedPort ? { protocol: config.selectedPort.protocol, address: config.selectedPort.address } : undefined;
+            const selectedBoard = config.selectedBoard
+                ? {
+                      name: config.selectedBoard.name,
+                      fqbn: config.selectedBoard.fqbn,
+                  }
+                : undefined;
+            const selectedPort = config.selectedPort
+                ? {
+                      protocol: config.selectedPort.protocol,
+                      address: config.selectedPort.address,
+                  }
+                : undefined;
             const jsonConfig = JSON.stringify({ selectedBoard, selectedPort });
-            copy.searchParams.set('boards-config', encodeURIComponent(jsonConfig));
+            copy.searchParams.set(
+                'boards-config',
+                encodeURIComponent(jsonConfig)
+            );
             return copy;
         }
 
@@ -306,14 +398,14 @@ export namespace BoardsConfig {
                 if (typeof candidate === 'object') {
                     return candidate;
                 }
-                console.warn(`Expected candidate to be an object. It was ${typeof candidate}. URL was: ${url}`);
+                console.warn(
+                    `Expected candidate to be an object. It was ${typeof candidate}. URL was: ${url}`
+                );
                 return undefined;
             } catch (e) {
                 console.log(`Could not get board config from URL: ${url}.`, e);
                 return undefined;
             }
         }
-
     }
-
 }

@@ -6,10 +6,8 @@ import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/out
 // Remove this module after ATL-222 and the Theia update.
 @injectable()
 export class OutputWidget extends TheiaOutputWidget {
-
     protected onAfterShow(msg: Message): void {
         super.onAfterShow(msg);
         this.onResize(Widget.ResizeMessage.UnknownSize);
     }
-
 }

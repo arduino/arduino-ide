@@ -1,8 +1,8 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Board, Port } from './boards-service';
 
-export interface Status { }
-export interface OK extends Status { }
+export interface Status {}
+export type OK = Status;
 export interface ErrorStatus extends Status {
     readonly message: string;
 }
@@ -12,7 +12,9 @@ export namespace Status {
     }
     export const OK: OK = {};
     export const NOT_CONNECTED: ErrorStatus = { message: 'Not connected.' };
-    export const ALREADY_CONNECTED: ErrorStatus = { message: 'Already connected.' };
+    export const ALREADY_CONNECTED: ErrorStatus = {
+        message: 'Already connected.',
+    };
 }
 
 export const MonitorServicePath = '/services/serial-monitor';
@@ -35,19 +37,25 @@ export interface MonitorConfig {
      * Defaults to `9600`.
      */
     readonly baudRate?: MonitorConfig.BaudRate;
-
 }
 export namespace MonitorConfig {
-
-    export type BaudRate = 300 | 1200 | 2400 | 4800 | 9600 | 19200 | 38400 | 57600 | 115200;
+    export type BaudRate =
+        | 300
+        | 1200
+        | 2400
+        | 4800
+        | 9600
+        | 19200
+        | 38400
+        | 57600
+        | 115200;
     export namespace BaudRate {
         export const DEFAULT: BaudRate = 9600;
     }
 
     export enum ConnectionType {
-        SERIAL = 0
+        SERIAL = 0,
     }
-
 }
 
 export const MonitorServiceClient = Symbol('MonitorServiceClient');

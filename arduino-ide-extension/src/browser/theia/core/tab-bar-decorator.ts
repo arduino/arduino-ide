@@ -9,7 +9,6 @@ import { ConfigService } from '../../../common/protocol/config-service';
 
 @injectable()
 export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
-
     @inject(ConfigService)
     protected readonly configService: ConfigService;
 
@@ -20,19 +19,26 @@ export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
 
     @postConstruct()
     protected init(): void {
-        this.configService.getConfiguration()
-            .then(({ dataDirUri }) => this.dataDirUri = new URI(dataDirUri))
-            .catch(err => this.logger.error(`Failed to determine the data directory: ${err}`));
+        this.configService
+            .getConfiguration()
+            .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
+            .catch((err) =>
+                this.logger.error(
+                    `Failed to determine the data directory: ${err}`
+                )
+            );
     }
 
     getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
         if (title.owner instanceof EditorWidget) {
             const editor = title.owner.editor;
-            if (this.dataDirUri && this.dataDirUri.isEqualOrParent(editor.uri)) {
+            if (
+                this.dataDirUri &&
+                this.dataDirUri.isEqualOrParent(editor.uri)
+            ) {
                 return [];
             }
         }
         return super.getDecorations(title);
     }
-
 }

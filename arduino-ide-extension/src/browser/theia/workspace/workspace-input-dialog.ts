@@ -2,15 +2,18 @@ import { inject } from 'inversify';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { DialogError, DialogMode } from '@theia/core/lib/browser/dialogs';
-import { WorkspaceInputDialog as TheiaWorkspaceInputDialog, WorkspaceInputDialogProps } from '@theia/workspace/lib/browser/workspace-input-dialog';
+import {
+    WorkspaceInputDialog as TheiaWorkspaceInputDialog,
+    WorkspaceInputDialogProps,
+} from '@theia/workspace/lib/browser/workspace-input-dialog';
 
 export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
-
     protected wasTouched = false;
 
     constructor(
-        @inject(WorkspaceInputDialogProps) protected readonly props: WorkspaceInputDialogProps,
-        @inject(LabelProvider) protected readonly labelProvider: LabelProvider,
+        @inject(WorkspaceInputDialogProps)
+        protected readonly props: WorkspaceInputDialogProps,
+        @inject(LabelProvider) protected readonly labelProvider: LabelProvider
     ) {
         super(props, labelProvider);
         this.appendCloseButton('Cancel');
@@ -35,5 +38,4 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
             this.errorMessageNode.innerText = DialogError.getMessage(error);
         }
     }
-
 }

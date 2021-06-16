@@ -11,15 +11,24 @@ import { WorkspacePreferences } from '@theia/workspace/lib/browser/workspace-pre
 
 @injectable()
 export class FileNavigatorContribution extends TheiaFileNavigatorContribution {
-
     constructor(
-        @inject(FileNavigatorPreferences) protected readonly fileNavigatorPreferences: FileNavigatorPreferences,
+        @inject(FileNavigatorPreferences)
+        protected readonly fileNavigatorPreferences: FileNavigatorPreferences,
         @inject(OpenerService) protected readonly openerService: OpenerService,
-        @inject(FileNavigatorFilter) protected readonly fileNavigatorFilter: FileNavigatorFilter,
-        @inject(WorkspaceService) protected readonly workspaceService: WorkspaceService,
-        @inject(WorkspacePreferences) protected readonly workspacePreferences: WorkspacePreferences
+        @inject(FileNavigatorFilter)
+        protected readonly fileNavigatorFilter: FileNavigatorFilter,
+        @inject(WorkspaceService)
+        protected readonly workspaceService: WorkspaceService,
+        @inject(WorkspacePreferences)
+        protected readonly workspacePreferences: WorkspacePreferences
     ) {
-        super(fileNavigatorPreferences, openerService, fileNavigatorFilter, workspaceService, workspacePreferences);
+        super(
+            fileNavigatorPreferences,
+            openerService,
+            fileNavigatorFilter,
+            workspaceService,
+            workspacePreferences
+        );
         this.options.defaultWidgetOptions.rank = 1;
     }
 
@@ -29,10 +38,8 @@ export class FileNavigatorContribution extends TheiaFileNavigatorContribution {
 
     registerKeybindings(registry: KeybindingRegistry): void {
         super.registerKeybindings(registry);
-        [
-            WorkspaceCommands.FILE_RENAME,
-            WorkspaceCommands.FILE_DELETE
-        ].forEach(registry.unregisterKeybinding.bind(registry));
+        [WorkspaceCommands.FILE_RENAME, WorkspaceCommands.FILE_DELETE].forEach(
+            registry.unregisterKeybinding.bind(registry)
+        );
     }
-
 }

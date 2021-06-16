@@ -2,14 +2,20 @@ import { injectable } from 'inversify';
 import { remote } from 'electron';
 import * as dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { SketchContribution, URI, Command, CommandRegistry, MenuModelRegistry, KeybindingRegistry } from './contribution';
+import {
+    SketchContribution,
+    URI,
+    Command,
+    CommandRegistry,
+    MenuModelRegistry,
+    KeybindingRegistry,
+} from './contribution';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
-
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
-            execute: args => this.saveAs(args)
+            execute: (args) => this.saveAs(args),
         });
     }
 
@@ -17,21 +23,27 @@ export class SaveAsSketch extends SketchContribution {
         registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
             commandId: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
             label: 'Save As...',
-            order: '7'
+            order: '7',
         });
     }
 
     registerKeybindings(registry: KeybindingRegistry): void {
         registry.registerKeybinding({
             command: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-            keybinding: 'CtrlCmd+Shift+S'
+            keybinding: 'CtrlCmd+Shift+S',
         });
     }
 
     /**
      * Resolves `true` if the sketch was successfully saved as something.
      */
-    async saveAs({ execOnlyIfTemp, openAfterMove, wipeOriginal }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT): Promise<boolean> {
+    async saveAs(
+        {
+            execOnlyIfTemp,
+            openAfterMove,
+            wipeOriginal,
+        }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
+    ): Promise<boolean> {
         const sketch = await this.sketchServiceClient.currentSketch();
         if (!sketch) {
             return false;
@@ -44,13 +56,29 @@ export class SaveAsSketch extends SketchContribution {
 
         // If target does not exist, propose a `directories.user`/${sketch.name} path
         // If target exists, propose `directories.user`/${sketch.name}_copy_${yyyymmddHHMMss}
-        const sketchDirUri = new URI((await this.configService.getConfiguration()).sketchDirUri);
-        const exists = await this.fileService.exists(sketchDirUri.resolve(sketch.name));
+        const sketchDirUri = new URI(
+            (await this.configService.getConfiguration()).sketchDirUri
+        );
+        const exists = await this.fileService.exists(
+            sketchDirUri.resolve(sketch.name)
+        );
         const defaultUri = exists
-            ? sketchDirUri.resolve(sketchDirUri.resolve(`${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`).toString())
+            ? sketchDirUri.resolve(
+                  sketchDirUri
+                      .resolve(
+                          `${sketch.name}_copy_${dateFormat(
+                              new Date(),
+                              'yyyymmddHHMMss'
+                          )}`
+                      )
+                      .toString()
+              )
             : sketchDirUri.resolve(sketch.name);
         const defaultPath = await this.fileService.fsPath(defaultUri);
-        const { filePath, canceled } = await remote.dialog.showSaveDialog({ title: 'Save sketch folder as...', defaultPath });
+        const { filePath, canceled } = await remote.dialog.showSaveDialog({
+            title: 'Save sketch folder as...',
+            defaultPath,
+        });
         if (!filePath || canceled) {
             return false;
         }
@@ -58,24 +86,31 @@ export class SaveAsSketch extends SketchContribution {
         if (!destinationUri) {
             return false;
         }
-        const workspaceUri = await this.sketchService.copy(sketch, { destinationUri });
+        const workspaceUri = await this.sketchService.copy(sketch, {
+            destinationUri,
+        });
         if (workspaceUri && openAfterMove) {
             if (wipeOriginal || (openAfterMove && execOnlyIfTemp)) {
                 try {
-                    await this.fileService.delete(new URI(sketch.uri), { recursive: true });
-                } catch { /* NOOP: from time to time, it's not possible to wipe the old resource from the temp dir on Windows */ }
+                    await this.fileService.delete(new URI(sketch.uri), {
+                        recursive: true,
+                    });
+                } catch {
+                    /* NOOP: from time to time, it's not possible to wipe the old resource from the temp dir on Windows */
+                }
             }
-            this.workspaceService.open(new URI(workspaceUri), { preserveWindow: true });
+            this.workspaceService.open(new URI(workspaceUri), {
+                preserveWindow: true,
+            });
         }
         return !!workspaceUri;
     }
-
 }
 
 export namespace SaveAsSketch {
     export namespace Commands {
         export const SAVE_AS_SKETCH: Command = {
-            id: 'arduino-save-as-sketch'
+            id: 'arduino-save-as-sketch',
         };
     }
     export interface Options {
@@ -90,7 +125,7 @@ export namespace SaveAsSketch {
         export const DEFAULT: Options = {
             execOnlyIfTemp: false,
             openAfterMove: true,
-            wipeOriginal: false
+            wipeOriginal: false,
         };
     }
 }

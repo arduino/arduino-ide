@@ -3,13 +3,18 @@ import URI from '@theia/core/lib/common/uri';
 export const SketchesServicePath = '/services/sketches-service';
 export const SketchesService = Symbol('SketchesService');
 export interface SketchesService {
-
     /**
      * Resolves to a sketch container representing the hierarchical structure of the sketches.
      * If `uri` is not given, `directories.user` will be user instead. Specify `exclude` global patterns to filter folders from the sketch container.
      * If `exclude` is not set `['**\/libraries\/**', '**\/hardware\/**']` will be used instead.
      */
-    getSketches({ uri, exclude }: { uri?: string, exclude?: string[] }): Promise<SketchContainer>;
+    getSketches({
+        uri,
+        exclude,
+    }: {
+        uri?: string;
+        exclude?: string[];
+    }): Promise<SketchContainer>;
 
     /**
      * This is the TS implementation of `SketchLoad` from the CLI and should be replaced with a gRPC call eventually.
@@ -69,7 +74,6 @@ export interface SketchesService {
      * Based on https://github.com/arduino/arduino-cli/blob/550179eefd2d2bca299d50a4af9e9bfcfebec649/arduino/builder/builder.go#L30-L38
      */
     getIdeTempFolderUri(sketch: Sketch): Promise<string>;
-
 }
 
 export interface Sketch {
@@ -82,23 +86,47 @@ export interface Sketch {
 }
 export namespace Sketch {
     export function is(arg: any): arg is Sketch {
-        return !!arg && 'name' in arg && 'uri' in arg && typeof arg.name === 'string' && typeof arg.uri === 'string';
+        return (
+            !!arg &&
+            'name' in arg &&
+            'uri' in arg &&
+            typeof arg.name === 'string' &&
+            typeof arg.uri === 'string'
+        );
     }
     export namespace Extensions {
         export const MAIN = ['.ino', '.pde'];
         export const SOURCE = ['.c', '.cpp', '.s'];
-        export const ADDITIONAL = ['.h', '.c', '.hpp', '.hh', '.cpp', '.S', '.json', '.md', '.adoc'];
-        export const ALL = Array.from(new Set([...MAIN, ...SOURCE, ...ADDITIONAL]));
+        export const ADDITIONAL = [
+            '.h',
+            '.c',
+            '.hpp',
+            '.hh',
+            '.cpp',
+            '.S',
+            '.json',
+            '.md',
+            '.adoc',
+        ];
+        export const ALL = Array.from(
+            new Set([...MAIN, ...SOURCE, ...ADDITIONAL])
+        );
     }
     export function isInSketch(uri: string | URI, sketch: Sketch): boolean {
         const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
-        return [mainFileUri, ...otherSketchFileUris, ...additionalFileUris].indexOf(uri.toString()) !== -1;
+        return (
+            [
+                mainFileUri,
+                ...otherSketchFileUris,
+                ...additionalFileUris,
+            ].indexOf(uri.toString()) !== -1
+        );
     }
     export function isSketchFile(arg: string | URI): boolean {
         if (arg instanceof URI) {
             return isSketchFile(arg.toString());
         }
-        return Extensions.MAIN.some(ext => arg.endsWith(ext));
+        return Extensions.MAIN.some((ext) => arg.endsWith(ext));
     }
 }
 
@@ -108,12 +136,16 @@ export interface SketchContainer {
     readonly sketches: Sketch[];
 }
 export namespace SketchContainer {
-
     export function is(arg: any): arg is SketchContainer {
-        return !!arg
-            && 'label' in arg && typeof arg.label === 'string'
-            && 'children' in arg && Array.isArray(arg.children)
-            && 'sketches' in arg && Array.isArray(arg.sketches);
+        return (
+            !!arg &&
+            'label' in arg &&
+            typeof arg.label === 'string' &&
+            'children' in arg &&
+            Array.isArray(arg.children) &&
+            'sketches' in arg &&
+            Array.isArray(arg.sketches)
+        );
     }
 
     /**
@@ -121,11 +153,14 @@ export namespace SketchContainer {
      */
     export function isEmpty(container: SketchContainer): boolean {
         const hasSketch = (parent: SketchContainer) => {
-            if (parent.sketches.length || parent.children.some(child => hasSketch(child))) {
+            if (
+                parent.sketches.length ||
+                parent.children.some((child) => hasSketch(child))
+            ) {
                 return true;
             }
             return false;
-        }
+        };
         return !hasSketch(container);
     }
 
@@ -141,11 +176,10 @@ export namespace SketchContainer {
     export function toArray(container: SketchContainer): Sketch[] {
         const visit = (parent: SketchContainer, toPushSketch: Sketch[]) => {
             toPushSketch.push(...parent.sketches);
-            parent.children.map(child => visit(child, toPushSketch));
-        }
+            parent.children.map((child) => visit(child, toPushSketch));
+        };
         const sketches: Sketch[] = [];
         visit(container, sketches);
         return sketches;
     }
-
 }

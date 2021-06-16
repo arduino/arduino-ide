@@ -3,14 +3,22 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import { FrontendApplicationContribution, LocalStorageService } from '@theia/core/lib/browser';
+import {
+    FrontendApplicationContribution,
+    LocalStorageService,
+} from '@theia/core/lib/browser';
 import { notEmpty } from '../../common/utils';
-import { BoardsService, ConfigOption, Installable, BoardDetails, Programmer } from '../../common/protocol';
+import {
+    BoardsService,
+    ConfigOption,
+    Installable,
+    BoardDetails,
+    Programmer,
+} from '../../common/protocol';
 import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class BoardsDataStore implements FrontendApplicationContribution {
-
     @inject(ILogger)
     @named('store')
     protected readonly logger: ILogger;
@@ -33,9 +41,14 @@ export class BoardsDataStore implements FrontendApplicationContribution {
                 return;
             }
             let shouldFireChanged = false;
-            for (const fqbn of item.boards.map(({ fqbn }) => fqbn).filter(notEmpty).filter(fqbn => !!fqbn)) {
+            for (const fqbn of item.boards
+                .map(({ fqbn }) => fqbn)
+                .filter(notEmpty)
+                .filter((fqbn) => !!fqbn)) {
                 const key = this.getStorageKey(fqbn, version);
-                let data = await this.storageService.getData<ConfigOption[] | undefined>(key);
+                let data = await this.storageService.getData<
+                    ConfigOption[] | undefined
+                >(key);
                 if (!data || !data.length) {
                     const details = await this.getBoardDetailsSafe(fqbn);
                     if (details) {
@@ -59,20 +72,27 @@ export class BoardsDataStore implements FrontendApplicationContribution {
 
     async appendConfigToFqbn(
         fqbn: string | undefined,
-        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<string | undefined> {
-
+        boardsPackageVersion: MaybePromise<
+            Installable.Version | undefined
+        > = this.getBoardsPackageVersion(fqbn)
+    ): Promise<string | undefined> {
         if (!fqbn) {
             return undefined;
         }
 
-        const { configOptions } = await this.getData(fqbn, boardsPackageVersion);
+        const { configOptions } = await this.getData(
+            fqbn,
+            boardsPackageVersion
+        );
         return ConfigOption.decorate(fqbn, configOptions);
     }
 
     async getData(
         fqbn: string | undefined,
-        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<BoardsDataStore.Data> {
-
+        boardsPackageVersion: MaybePromise<
+            Installable.Version | undefined
+        > = this.getBoardsPackageVersion(fqbn)
+    ): Promise<BoardsDataStore.Data> {
         if (!fqbn) {
             return BoardsDataStore.Data.EMPTY;
         }
@@ -82,7 +102,9 @@ export class BoardsDataStore implements FrontendApplicationContribution {
             return BoardsDataStore.Data.EMPTY;
         }
         const key = this.getStorageKey(fqbn, version);
-        let data = await this.storageService.getData<BoardsDataStore.Data | undefined>(key, undefined);
+        let data = await this.storageService.getData<
+            BoardsDataStore.Data | undefined
+        >(key, undefined);
         if (BoardsDataStore.Data.is(data)) {
             return data;
         }
@@ -92,18 +114,28 @@ export class BoardsDataStore implements FrontendApplicationContribution {
             return BoardsDataStore.Data.EMPTY;
         }
 
-        data = { configOptions: boardDetails.configOptions, programmers: boardDetails.programmers };
+        data = {
+            configOptions: boardDetails.configOptions,
+            programmers: boardDetails.programmers,
+        };
         await this.storageService.setData(key, data);
         return data;
     }
 
     async selectProgrammer(
-        { fqbn, selectedProgrammer }: { fqbn: string, selectedProgrammer: Programmer },
-        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<boolean> {
-
+        {
+            fqbn,
+            selectedProgrammer,
+        }: { fqbn: string; selectedProgrammer: Programmer },
+        boardsPackageVersion: MaybePromise<
+            Installable.Version | undefined
+        > = this.getBoardsPackageVersion(fqbn)
+    ): Promise<boolean> {
         const data = deepClone(await this.getData(fqbn, boardsPackageVersion));
         const { programmers } = data;
-        if (!programmers.find(p => Programmer.equals(selectedProgrammer, p))) {
+        if (
+            !programmers.find((p) => Programmer.equals(selectedProgrammer, p))
+        ) {
             return false;
         }
 
@@ -112,18 +144,28 @@ export class BoardsDataStore implements FrontendApplicationContribution {
             return false;
         }
 
-        await this.setData({ fqbn, data: { ...data, selectedProgrammer }, version });
+        await this.setData({
+            fqbn,
+            data: { ...data, selectedProgrammer },
+            version,
+        });
         this.fireChanged();
         return true;
     }
 
     async selectConfigOption(
-        { fqbn, option, selectedValue }: { fqbn: string, option: string, selectedValue: string },
-        boardsPackageVersion: MaybePromise<Installable.Version | undefined> = this.getBoardsPackageVersion(fqbn)): Promise<boolean> {
-
+        {
+            fqbn,
+            option,
+            selectedValue,
+        }: { fqbn: string; option: string; selectedValue: string },
+        boardsPackageVersion: MaybePromise<
+            Installable.Version | undefined
+        > = this.getBoardsPackageVersion(fqbn)
+    ): Promise<boolean> {
         const data = deepClone(await this.getData(fqbn, boardsPackageVersion));
         const { configOptions } = data;
-        const configOption = configOptions.find(c => c.option === option);
+        const configOption = configOptions.find((c) => c.option === option);
         if (!configOption) {
             return false;
         }
@@ -149,26 +191,46 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         return true;
     }
 
-    protected async setData(
-        { fqbn, data, version }: { fqbn: string, data: BoardsDataStore.Data, version: Installable.Version }): Promise<void> {
-
+    protected async setData({
+        fqbn,
+        data,
+        version,
+    }: {
+        fqbn: string;
+        data: BoardsDataStore.Data;
+        version: Installable.Version;
+    }): Promise<void> {
         const key = this.getStorageKey(fqbn, version);
         return this.storageService.setData(key, data);
     }
 
-    protected getStorageKey(fqbn: string, version: Installable.Version): string {
+    protected getStorageKey(
+        fqbn: string,
+        version: Installable.Version
+    ): string {
         return `.arduinoIDE-configOptions-${version}-${fqbn}`;
     }
 
-    protected async getBoardDetailsSafe(fqbn: string): Promise<BoardDetails | undefined> {
+    protected async getBoardDetailsSafe(
+        fqbn: string
+    ): Promise<BoardDetails | undefined> {
         try {
             const details = this.boardsService.getBoardDetails({ fqbn });
             return details;
         } catch (err) {
-            if (err instanceof Error && err.message.includes('loading board data') && err.message.includes('is not installed')) {
-                this.logger.warn(`The boards package is not installed for board with FQBN: ${fqbn}`);
+            if (
+                err instanceof Error &&
+                err.message.includes('loading board data') &&
+                err.message.includes('is not installed')
+            ) {
+                this.logger.warn(
+                    `The boards package is not installed for board with FQBN: ${fqbn}`
+                );
             } else {
-                this.logger.error(`An unexpected error occurred while retrieving the board details for ${fqbn}.`, err);
+                this.logger.error(
+                    `An unexpected error occurred while retrieving the board details for ${fqbn}.`,
+                    err
+                );
             }
             return undefined;
         }
@@ -178,17 +240,20 @@ export class BoardsDataStore implements FrontendApplicationContribution {
         this.onChangedEmitter.fire();
     }
 
-    protected async getBoardsPackageVersion(fqbn: string | undefined): Promise<Installable.Version | undefined> {
+    protected async getBoardsPackageVersion(
+        fqbn: string | undefined
+    ): Promise<Installable.Version | undefined> {
         if (!fqbn) {
             return undefined;
         }
-        const boardsPackage = await this.boardsService.getContainerBoardPackage({ fqbn });
+        const boardsPackage = await this.boardsService.getContainerBoardPackage(
+            { fqbn }
+        );
         if (!boardsPackage) {
             return undefined;
         }
         return boardsPackage.installedVersion;
     }
-
 }
 
 export namespace BoardsDataStore {
@@ -200,12 +265,16 @@ export namespace BoardsDataStore {
     export namespace Data {
         export const EMPTY: Data = {
             configOptions: [],
-            programmers: []
+            programmers: [],
         };
         export function is(arg: any): arg is Data {
-            return !!arg
-                && 'configOptions' in arg && Array.isArray(arg['configOptions'])
-                && 'programmers' in arg && Array.isArray(arg['programmers'])
+            return (
+                !!arg &&
+                'configOptions' in arg &&
+                Array.isArray(arg['configOptions']) &&
+                'programmers' in arg &&
+                Array.isArray(arg['programmers'])
+            );
         }
     }
 }

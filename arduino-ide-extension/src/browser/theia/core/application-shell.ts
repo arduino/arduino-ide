@@ -1,18 +1,22 @@
-
 import { injectable, inject } from 'inversify';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { OutputWidget } from '@theia/output/lib/browser/output-widget';
-import { ConnectionStatusService, ConnectionStatus } from '@theia/core/lib/browser/connection-status-service';
-import { ApplicationShell as TheiaApplicationShell, Widget } from '@theia/core/lib/browser';
+import {
+    ConnectionStatusService,
+    ConnectionStatus,
+} from '@theia/core/lib/browser/connection-status-service';
+import {
+    ApplicationShell as TheiaApplicationShell,
+    Widget,
+} from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
-
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
@@ -32,7 +36,7 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
         if (widget instanceof EditorWidget) {
             // Make the editor un-closeable asynchronously.
-            this.sketchesServiceClient.currentSketch().then(sketch => {
+            this.sketchesServiceClient.currentSketch().then((sketch) => {
                 if (sketch) {
                     if (Sketch.isInSketch(widget.editor.uri, sketch)) {
                         widget.title.closable = false;
@@ -42,15 +46,20 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
     }
 
-    async addWidget(widget: Widget, options: Readonly<TheiaApplicationShell.WidgetOptions> = {}): Promise<void> {
+    async addWidget(
+        widget: Widget,
+        options: Readonly<TheiaApplicationShell.WidgetOptions> = {}
+    ): Promise<void> {
         // By default, Theia open a widget **next** to the currently active in the target area.
         // Instead of this logic, we want to open the new widget after the last of the target area.
         if (!widget.id) {
-            console.error('Widgets added to the application shell must have a unique id property.');
+            console.error(
+                'Widgets added to the application shell must have a unique id property.'
+            );
             return;
         }
         let ref: Widget | undefined = options.ref;
-        let area: TheiaApplicationShell.Area = options.area || 'main';
+        const area: TheiaApplicationShell.Area = options.area || 'main';
         if (!ref && (area === 'main' || area === 'bottom')) {
             const tabBar = this.getTabBarFor(area);
             if (tabBar) {
@@ -64,13 +73,20 @@ export class ApplicationShell extends TheiaApplicationShell {
     }
 
     async saveAll(): Promise<void> {
-        if (this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE) {
-            this.messageService.error('Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.');
+        if (
+            this.connectionStatusService.currentStatus ===
+            ConnectionStatus.OFFLINE
+        ) {
+            this.messageService.error(
+                'Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.'
+            );
             return; // Theia does not reject on failed save: https://github.com/eclipse-theia/theia/pull/8803
         }
         await super.saveAll();
         const options = { execOnlyIfTemp: true, openAfterMove: true };
-        await this.commandService.executeCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH.id, options);
+        await this.commandService.executeCommand(
+            SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+            options
+        );
     }
-
 }

@@ -6,7 +6,6 @@ import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 
 @injectable()
 export abstract class GrpcClientProvider<C> {
-
     @inject(ILogger)
     protected readonly logger: ILogger;
 
@@ -45,7 +44,9 @@ export abstract class GrpcClientProvider<C> {
         }
     }
 
-    protected async reconcileClient(port: string | number | undefined): Promise<void> {
+    protected async reconcileClient(
+        port: string | number | undefined
+    ): Promise<void> {
         if (this._port === port) {
             return; // Nothing to do.
         }
@@ -59,7 +60,7 @@ export abstract class GrpcClientProvider<C> {
                 const client = await this.createClient(this._port);
                 this._client = client;
             } catch (error) {
-                this.logger.error('Could not create client for gRPC.', error)
+                this.logger.error('Could not create client for gRPC.', error);
                 this._client = error;
             }
         }
@@ -69,11 +70,10 @@ export abstract class GrpcClientProvider<C> {
 
     protected abstract close(client: C): void;
 
-    protected get channelOptions(): object {
+    protected get channelOptions(): Record<string, unknown> {
         return {
             'grpc.max_send_message_length': 512 * 1024 * 1024,
-            'grpc.max_receive_message_length': 512 * 1024 * 1024
+            'grpc.max_receive_message_length': 512 * 1024 * 1024,
         };
     }
-
 }
