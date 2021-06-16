@@ -25,6 +25,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
     protected readonly notificationServer: NotificationServiceServer;
 
     async search(options: { query?: string }): Promise<LibraryPackage[]> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -68,6 +69,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
     }
 
     async list({ fqbn }: { fqbn?: string | undefined }): Promise<LibraryPackage[]> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new LibraryListRequest();
@@ -143,6 +145,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
     }
 
     async listDependencies({ item, version, filterSelf }: { item: LibraryPackage, version: Installable.Version, filterSelf?: boolean }): Promise<LibraryDependency[]> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new LibraryResolveDependenciesRequest();
@@ -168,6 +171,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
     async install(options: { item: LibraryPackage, progressId?: string, version?: Installable.Version, installDependencies?: boolean }): Promise<void> {
         const item = options.item;
         const version = !!options.version ? options.version : item.availableVersions[0];
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -198,6 +202,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
     }
 
     async installZip({ zipUri, progressId, overwrite }: { zipUri: string, progressId?: string, overwrite?: boolean }): Promise<void> {
+        await this.coreClientProvider.created;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new ZipLibraryInstallRequest();
@@ -216,6 +221,7 @@ export class LibraryServiceImpl extends CoreClientAware implements LibraryServic
 
     async uninstall(options: { item: LibraryPackage, progressId?: string }): Promise<void> {
         const { item, progressId } = options;
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 

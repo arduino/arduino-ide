@@ -49,6 +49,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
     }
 
     async getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const { fqbn } = options;
@@ -152,6 +153,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
     }
 
     async searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]> {
+        await this.coreClientProvider.initialized;
         const { instance, client } = await this.coreClient();
         const req = new BoardSearchRequest();
         req.setSearchArgs(query || '');
@@ -181,6 +183,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
     }
 
     async search(options: { query?: string }): Promise<BoardsPackage[]> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -264,6 +267,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
     async install(options: { item: BoardsPackage, progressId?: string, version?: Installable.Version }): Promise<void> {
         const item = options.item;
         const version = !!options.version ? options.version : item.availableVersions[0];
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -295,6 +299,7 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
     async uninstall(options: { item: BoardsPackage, progressId?: string }): Promise<void> {
         const { item, progressId } = options;
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 

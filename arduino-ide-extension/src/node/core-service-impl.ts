@@ -26,6 +26,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         const { sketchUri, fqbn, compilerWarnings } = options;
         const sketchPath = FileUri.fsPath(sketchUri);
 
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -85,6 +86,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         const { sketchUri, fqbn, port, programmer } = options;
         const sketchPath = FileUri.fsPath(sketchUri);
 
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -121,6 +123,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
 
     async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const { fqbn, port, programmer } = options;

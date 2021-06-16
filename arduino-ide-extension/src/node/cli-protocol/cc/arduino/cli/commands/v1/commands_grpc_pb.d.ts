@@ -7,6 +7,7 @@
 import * as grpc from "@grpc/grpc-js";
 import {handleClientStreamingCall} from "@grpc/grpc-js/build/src/server-call";
 import * as cc_arduino_cli_commands_v1_commands_pb from "../../../../../cc/arduino/cli/commands/v1/commands_pb";
+import * as google_rpc_status_pb from "../../../../../google/rpc/status_pb";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_board_pb from "../../../../../cc/arduino/cli/commands/v1/board_pb";
 import * as cc_arduino_cli_commands_v1_compile_pb from "../../../../../cc/arduino/cli/commands/v1/compile_pb";
@@ -15,9 +16,9 @@ import * as cc_arduino_cli_commands_v1_upload_pb from "../../../../../cc/arduino
 import * as cc_arduino_cli_commands_v1_lib_pb from "../../../../../cc/arduino/cli/commands/v1/lib_pb";
 
 interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
+    create: IArduinoCoreServiceService_ICreate;
     init: IArduinoCoreServiceService_IInit;
     destroy: IArduinoCoreServiceService_IDestroy;
-    rescan: IArduinoCoreServiceService_IRescan;
     updateIndex: IArduinoCoreServiceService_IUpdateIndex;
     updateLibrariesIndex: IArduinoCoreServiceService_IUpdateLibrariesIndex;
     updateCoreLibrariesIndex: IArduinoCoreServiceService_IUpdateCoreLibrariesIndex;
@@ -54,6 +55,15 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     libraryList: IArduinoCoreServiceService_ILibraryList;
 }
 
+interface IArduinoCoreServiceService_ICreate extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.CreateRequest, cc_arduino_cli_commands_v1_commands_pb.CreateResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Create";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.CreateRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.CreateRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.CreateResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.CreateResponse>;
+}
 interface IArduinoCoreServiceService_IInit extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.InitRequest, cc_arduino_cli_commands_v1_commands_pb.InitResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Init";
     requestStream: false;
@@ -71,15 +81,6 @@ interface IArduinoCoreServiceService_IDestroy extends grpc.MethodDefinition<cc_a
     requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.DestroyRequest>;
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.DestroyResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.DestroyResponse>;
-}
-interface IArduinoCoreServiceService_IRescan extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.RescanRequest, cc_arduino_cli_commands_v1_commands_pb.RescanResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Rescan";
-    requestStream: false;
-    responseStream: false;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.RescanRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.RescanRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.RescanResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.RescanResponse>;
 }
 interface IArduinoCoreServiceService_IUpdateIndex extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/UpdateIndex";
@@ -391,9 +392,9 @@ interface IArduinoCoreServiceService_ILibraryList extends grpc.MethodDefinition<
 export const ArduinoCoreServiceService: IArduinoCoreServiceService;
 
 export interface IArduinoCoreServiceServer {
+    create: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.CreateRequest, cc_arduino_cli_commands_v1_commands_pb.CreateResponse>;
     init: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.InitRequest, cc_arduino_cli_commands_v1_commands_pb.InitResponse>;
     destroy: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, cc_arduino_cli_commands_v1_commands_pb.DestroyResponse>;
-    rescan: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.RescanRequest, cc_arduino_cli_commands_v1_commands_pb.RescanResponse>;
     updateIndex: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     updateLibrariesIndex: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
     updateCoreLibrariesIndex: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
@@ -431,14 +432,14 @@ export interface IArduinoCoreServiceServer {
 }
 
 export interface IArduinoCoreServiceClient {
+    create(request: cc_arduino_cli_commands_v1_commands_pb.CreateRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CreateResponse) => void): grpc.ClientUnaryCall;
+    create(request: cc_arduino_cli_commands_v1_commands_pb.CreateRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CreateResponse) => void): grpc.ClientUnaryCall;
+    create(request: cc_arduino_cli_commands_v1_commands_pb.CreateRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CreateResponse) => void): grpc.ClientUnaryCall;
     init(request: cc_arduino_cli_commands_v1_commands_pb.InitRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.InitResponse>;
     init(request: cc_arduino_cli_commands_v1_commands_pb.InitRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.InitResponse>;
     destroy(request: cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.DestroyResponse) => void): grpc.ClientUnaryCall;
     destroy(request: cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.DestroyResponse) => void): grpc.ClientUnaryCall;
     destroy(request: cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.DestroyResponse) => void): grpc.ClientUnaryCall;
-    rescan(request: cc_arduino_cli_commands_v1_commands_pb.RescanRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.RescanResponse) => void): grpc.ClientUnaryCall;
-    rescan(request: cc_arduino_cli_commands_v1_commands_pb.RescanRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.RescanResponse) => void): grpc.ClientUnaryCall;
-    rescan(request: cc_arduino_cli_commands_v1_commands_pb.RescanRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.RescanResponse) => void): grpc.ClientUnaryCall;
     updateIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     updateIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     updateLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
@@ -526,14 +527,14 @@ export interface IArduinoCoreServiceClient {
 
 export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCoreServiceClient {
     constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
+    public create(request: cc_arduino_cli_commands_v1_commands_pb.CreateRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CreateResponse) => void): grpc.ClientUnaryCall;
+    public create(request: cc_arduino_cli_commands_v1_commands_pb.CreateRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CreateResponse) => void): grpc.ClientUnaryCall;
+    public create(request: cc_arduino_cli_commands_v1_commands_pb.CreateRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CreateResponse) => void): grpc.ClientUnaryCall;
     public init(request: cc_arduino_cli_commands_v1_commands_pb.InitRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.InitResponse>;
     public init(request: cc_arduino_cli_commands_v1_commands_pb.InitRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.InitResponse>;
     public destroy(request: cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.DestroyResponse) => void): grpc.ClientUnaryCall;
     public destroy(request: cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.DestroyResponse) => void): grpc.ClientUnaryCall;
     public destroy(request: cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.DestroyResponse) => void): grpc.ClientUnaryCall;
-    public rescan(request: cc_arduino_cli_commands_v1_commands_pb.RescanRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.RescanResponse) => void): grpc.ClientUnaryCall;
-    public rescan(request: cc_arduino_cli_commands_v1_commands_pb.RescanRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.RescanResponse) => void): grpc.ClientUnaryCall;
-    public rescan(request: cc_arduino_cli_commands_v1_commands_pb.RescanRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.RescanResponse) => void): grpc.ClientUnaryCall;
     public updateIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     public updateIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     public updateLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
