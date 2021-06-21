@@ -35,7 +35,7 @@
         "panel": "new",
         "clear": false
       }
-    }
+    },
     {
       "label": "Arduino IDE - Watch Browser App",
       "type": "shell",
