@@ -19,6 +19,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unused-imports": "^1.1.1",
     "husky": "^6.0.0",
     "lerna": "^3.20.2",
     "lint-staged": "^11.0.0",
