@@ -13,7 +13,7 @@ import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
 
-@injectable()
+@injectable()   
 export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
     @inject(CommandRegistry)
     protected readonly commandRegistry: CommandRegistry;

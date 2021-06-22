@@ -217,6 +217,8 @@ import { NotificationManager } from './theia/messages/notifications-manager';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/messages/lib/browser/notifications-renderer';
 import { NotificationsRenderer } from './theia/messages/notifications-renderer';
+import { NewVersionNotification } from './contributions/new-version-notification'
+import { UpdatesRetriever } from './updates/updates-retriever';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -653,4 +655,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TheiaNotificationManager).toService(NotificationManager);
     bind(NotificationsRenderer).toSelf().inSingletonScope();
     rebind(TheiaNotificationsRenderer).toService(NotificationsRenderer);
+
+    bind(NewVersionNotification).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(NewVersionNotification);
+
+    bind(UpdatesRetriever).toSelf().inSingletonScope();
 });
