@@ -386,6 +386,14 @@ export class SettingsComponent extends React.Component<
                         Browse
                     </button>
                 </div>
+                <label className="flex-line">
+                    <input
+                        type="checkbox"
+                        checked={this.state.sketchbookShowAllFiles === true}
+                        onChange={this.sketchbookShowAllFilesDidChange}
+                    />
+                    Show files inside Sketches
+                </label>
                 <div className="flex-line">
                     <div className="column">
                         <div className="flex-line">Editor font size:</div>
@@ -507,14 +515,6 @@ export class SettingsComponent extends React.Component<
                         onChange={this.autoSaveDidChange}
                     />
                     Auto save
-                </label>
-                <label className="flex-line">
-                    <input
-                        type="checkbox"
-                        checked={this.state.sketchbookShowAllFiles === true}
-                        onChange={this.sketchbookShowAllFilesDidChange}
-                    />
-                    Sketchbook show files
                 </label>
                 <label className="flex-line">
                     <input
