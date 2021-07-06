@@ -29,11 +29,7 @@ import { CreateUri } from './create-uri';
 import { SketchesService } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
 
-export const REMOTE_ONLY_FILES = [
-    'sketch.json',
-    'thingsProperties.h',
-    'thingProperties.h',
-];
+export const REMOTE_ONLY_FILES = ['sketch.json'];
 
 @injectable()
 export class CreateFsProvider
