@@ -245,7 +245,7 @@ export class CreateApi {
         mode: 'add' | 'remove'
     ) {
         const includeString = `#include "${Create.arduino_secrets_file}"`;
-        const includeRegexp = new RegExp(includeString + 's*', 'g');
+        const includeRegexp = new RegExp(includeString + '\\s*', 'g');
 
         const basename = createPaths.basename(path);
         if (mode === 'add') {
