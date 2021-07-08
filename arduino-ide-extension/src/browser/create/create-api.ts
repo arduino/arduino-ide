@@ -32,15 +32,18 @@ export class CreateApi {
         return this;
     }
 
-    async findSketchByPath(
-        path: string,
+    public sketchCompareByPath = (param: string) => {
+        return (sketch: Create.Sketch) => {
+            const [, spath] = splitSketchPath(sketch.path);
+            return param === spath;
+        };
+    };
+
+    async findSketchInCache(
+        compareFn: (sketch: Create.Sketch) => boolean,
         trustCache = true
     ): Promise<Create.Sketch | undefined> {
-        const skatches = sketchCache;
-        const sketch = skatches.find((sketch) => {
-            const [, spath] = splitSketchPath(sketch.path);
-            return path === spath;
-        });
+        const sketch = sketchCache.find((sketch) => compareFn(sketch));
         if (trustCache) {
             return Promise.resolve(sketch);
         }
@@ -148,7 +151,9 @@ export class CreateApi {
                         }
 
                         const [, spath] = createPaths.splitSketchPath(res.path);
-                        const sketch = await this.findSketchByPath(spath);
+                        const sketch = await this.findSketchInCache(
+                            this.sketchCompareByPath(spath)
+                        );
                         if (
                             sketch &&
                             sketch.secrets &&
@@ -159,7 +164,9 @@ export class CreateApi {
                     });
 
                     if (posixPath !== posix.sep) {
-                        const sketch = await this.findSketchByPath(posixPath);
+                        const sketch = await this.findSketchInCache(
+                            this.sketchCompareByPath(posixPath)
+                        );
                         if (
                             sketch &&
                             sketch.secrets &&
@@ -214,7 +221,9 @@ export class CreateApi {
 
         let resources;
         if (basename === Create.arduino_secrets_file) {
-            const sketch = await this.findSketchByPath(parentPosixPath);
+            const sketch = await this.findSketchInCache(
+                this.sketchCompareByPath(parentPosixPath)
+            );
             resources = sketch ? [this.getSketchSecretStat(sketch)] : [];
         } else {
             resources = await this.readDirectory(parentPosixPath, {
@@ -230,12 +239,51 @@ export class CreateApi {
         return resource;
     }
 
+    private async toggleSecretsInclude(
+        path: string,
+        data: string,
+        mode: 'add' | 'remove'
+    ) {
+        const includeString = `#include "${Create.arduino_secrets_file}"`;
+        const includeRegexp = new RegExp(includeString + '\\s*', 'g');
+
+        const basename = createPaths.basename(path);
+        if (mode === 'add') {
+            const doesIncludeSecrets = includeRegexp.test(data);
+
+            if (doesIncludeSecrets) {
+                return data;
+            }
+
+            const sketch = await this.findSketchInCache((sketch) => {
+                const [, spath] = splitSketchPath(sketch.path);
+                return spath === createPaths.parentPosix(path);
+            }, true);
+
+            if (
+                sketch &&
+                (sketch.name + '.ino' === basename ||
+                    sketch.name + '.pde' === basename) &&
+                sketch.secrets &&
+                sketch.secrets.length > 0
+            ) {
+                return includeString + '\n' + data;
+            }
+        } else if (mode === 'remove') {
+            return data.replace(includeRegexp, '');
+        }
+        return data;
+    }
+
     async readFile(posixPath: string): Promise<string> {
         const basename = createPaths.basename(posixPath);
 
         if (basename === Create.arduino_secrets_file) {
             const parentPosixPath = createPaths.parentPosix(posixPath);
-            const sketch = await this.findSketchByPath(parentPosixPath, false);
+            const sketch = await this.findSketchInCache(
+                this.sketchCompareByPath(parentPosixPath),
+                false
+            );
 
             let file = '';
             if (sketch && sketch.secrets) {
@@ -250,12 +298,15 @@ export class CreateApi {
             `${this.domain()}/files/f/$HOME/sketches_v2${posixPath}`
         );
         const headers = await this.headers();
-        const result = await this.run<{ data: string }>(url, {
+        const result = await this.run<{ data: string; path: string }>(url, {
             method: 'GET',
             headers,
         });
-        const { data } = result;
-        return atob(data);
+        let { data } = result;
+
+        // add includes to main arduino file
+        data = await this.toggleSecretsInclude(posixPath, atob(data), 'add');
+        return data;
     }
 
     async writeFile(
@@ -266,7 +317,9 @@ export class CreateApi {
 
         if (basename === Create.arduino_secrets_file) {
             const parentPosixPath = createPaths.parentPosix(posixPath);
-            const sketch = await this.findSketchByPath(parentPosixPath);
+            const sketch = await this.findSketchInCache(
+                this.sketchCompareByPath(parentPosixPath)
+            );
             if (sketch) {
                 const url = new URL(`${this.domain()}/sketches/${sketch.id}`);
                 const headers = await this.headers();
@@ -300,7 +353,7 @@ export class CreateApi {
                             );
                         }
 
-                        if (name.length === 0 || value.length === 0) {
+                        if (name.length === 0) {
                             return prev;
                         }
 
@@ -331,12 +384,14 @@ export class CreateApi {
             `${this.domain()}/files/f/$HOME/sketches_v2${posixPath}`
         );
         const headers = await this.headers();
-        const data = btoa(
+
+        let data: string =
             typeof content === 'string'
                 ? content
-                : new TextDecoder().decode(content)
-        );
-        const payload = { data };
+                : new TextDecoder().decode(content);
+        data = await this.toggleSecretsInclude(posixPath, data, 'remove');
+
+        const payload = { data: btoa(data) };
         const init = {
             method: 'POST',
             body: JSON.stringify(payload),
