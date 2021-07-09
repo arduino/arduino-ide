@@ -1,40 +1,37 @@
 import { inject, injectable } from 'inversify';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { Command } from '@theia/core/lib/common/command';
-import { TreeNode, CompositeTreeNode } from '@theia/core/lib/browser/tree';
-import {
-  DirNode,
-  FileStatNode,
-  FileTree,
-} from '@theia/filesystem/lib/browser/file-tree';
+import { CompositeTreeNode, TreeNode } from '@theia/core/lib/browser/tree';
+import { DirNode, FileStatNode } from '@theia/filesystem/lib/browser/file-tree';
 import { SketchesService } from '../../../common/protocol';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { SketchbookCommands } from './sketchbook-commands';
+import {
+  FileNavigatorTree,
+  WorkspaceNode,
+} from '@theia/navigator/lib/browser/navigator-tree';
+import { ArduinoPreferences } from '../../arduino-preferences';
 
 @injectable()
-export class SketchbookTree extends FileTree {
+export class SketchbookTree extends FileNavigatorTree {
   @inject(LabelProvider)
   protected readonly labelProvider: LabelProvider;
 
   @inject(SketchesService)
   protected readonly sketchesService: SketchesService;
 
+  @inject(ArduinoPreferences)
+  protected readonly arduinoPreferences: ArduinoPreferences;
+
   async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
-    if (!FileStatNode.is(parent)) {
-      return super.resolveChildren(parent);
-    }
-    const { root } = this;
-    if (!root) {
-      return [];
-    }
-    if (!SketchbookTree.RootNode.is(root)) {
-      return [];
-    }
+    const showAllFiles =
+      this.arduinoPreferences['arduino.sketchbook.showAllFiles'];
+
     const children = (
       await Promise.all(
         (
           await super.resolveChildren(parent)
-        ).map((node) => this.maybeDecorateNode(node, root.showAllFiles))
+        ).map((node) => this.maybeDecorateNode(node, showAllFiles))
       )
     ).filter((node) => {
       // filter out hidden nodes
@@ -43,7 +40,9 @@ export class SketchbookTree extends FileTree {
       }
       return true;
     });
-    if (SketchbookTree.RootNode.is(parent)) {
+
+    // filter out hardware and libraries
+    if (WorkspaceNode.is(parent.parent)) {
       return children
         .filter(DirNode.is)
         .filter(
@@ -53,10 +52,14 @@ export class SketchbookTree extends FileTree {
             ) === -1
         );
     }
-    if (SketchbookTree.SketchDirNode.is(parent)) {
-      return children.filter(FileStatNode.is);
+
+    // return the Arduino directory containing all user sketches
+    if (WorkspaceNode.is(parent)) {
+      return children;
     }
+
     return children;
+    // return this.filter.filter(super.resolveChildren(parent));
   }
 
   protected async maybeDecorateNode(
@@ -74,6 +77,9 @@ export class SketchbookTree extends FileTree {
         });
         if (!showAllFiles) {
           delete (node as any).expanded;
+          node.children = [];
+        } else {
+          node.expanded = false;
         }
         return node;
       }

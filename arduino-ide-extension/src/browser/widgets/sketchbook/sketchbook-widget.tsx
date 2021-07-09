@@ -38,6 +38,10 @@ export class SketchbookWidget extends BaseWidget {
     );
   }
 
+  getTreeWidget(): SketchbookTreeWidget {
+    return this.localSketchbookTreeWidget;
+  }
+
   protected onActivateRequest(message: Message): void {
     super.onActivateRequest(message);
 
