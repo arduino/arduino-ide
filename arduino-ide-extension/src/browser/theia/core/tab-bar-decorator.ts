@@ -9,36 +9,31 @@ import { ConfigService } from '../../../common/protocol/config-service';
 
 @injectable()
 export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
-    @inject(ConfigService)
-    protected readonly configService: ConfigService;
+  @inject(ConfigService)
+  protected readonly configService: ConfigService;
 
-    @inject(ILogger)
-    protected readonly logger: ILogger;
+  @inject(ILogger)
+  protected readonly logger: ILogger;
 
-    protected dataDirUri: URI | undefined;
+  protected dataDirUri: URI | undefined;
 
-    @postConstruct()
-    protected init(): void {
-        this.configService
-            .getConfiguration()
-            .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
-            .catch((err) =>
-                this.logger.error(
-                    `Failed to determine the data directory: ${err}`
-                )
-            );
+  @postConstruct()
+  protected init(): void {
+    this.configService
+      .getConfiguration()
+      .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
+      .catch((err) =>
+        this.logger.error(`Failed to determine the data directory: ${err}`)
+      );
+  }
+
+  getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
+    if (title.owner instanceof EditorWidget) {
+      const editor = title.owner.editor;
+      if (this.dataDirUri && this.dataDirUri.isEqualOrParent(editor.uri)) {
+        return [];
+      }
     }
-
-    getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
-        if (title.owner instanceof EditorWidget) {
-            const editor = title.owner.editor;
-            if (
-                this.dataDirUri &&
-                this.dataDirUri.isEqualOrParent(editor.uri)
-            ) {
-                return [];
-            }
-        }
-        return super.getDecorations(title);
-    }
+    return super.getDecorations(title);
+  }
 }

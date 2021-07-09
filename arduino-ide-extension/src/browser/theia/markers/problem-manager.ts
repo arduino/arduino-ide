@@ -8,35 +8,33 @@ import { ConfigService } from '../../../common/protocol/config-service';
 
 @injectable()
 export class ProblemManager extends TheiaProblemManager {
-    @inject(ConfigService)
-    protected readonly configService: ConfigService;
+  @inject(ConfigService)
+  protected readonly configService: ConfigService;
 
-    @inject(ILogger)
-    protected readonly logger: ILogger;
+  @inject(ILogger)
+  protected readonly logger: ILogger;
 
-    protected dataDirUri: URI | undefined;
+  protected dataDirUri: URI | undefined;
 
-    @postConstruct()
-    protected init(): void {
-        super.init();
-        this.configService
-            .getConfiguration()
-            .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
-            .catch((err) =>
-                this.logger.error(
-                    `Failed to determine the data directory: ${err}`
-                )
-            );
+  @postConstruct()
+  protected init(): void {
+    super.init();
+    this.configService
+      .getConfiguration()
+      .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
+      .catch((err) =>
+        this.logger.error(`Failed to determine the data directory: ${err}`)
+      );
+  }
+
+  setMarkers(
+    uri: URI,
+    owner: string,
+    data: Diagnostic[]
+  ): Marker<Diagnostic>[] {
+    if (this.dataDirUri && this.dataDirUri.isEqualOrParent(uri)) {
+      return [];
     }
-
-    setMarkers(
-        uri: URI,
-        owner: string,
-        data: Diagnostic[]
-    ): Marker<Diagnostic>[] {
-        if (this.dataDirUri && this.dataDirUri.isEqualOrParent(uri)) {
-            return [];
-        }
-        return super.setMarkers(uri, owner, data);
-    }
+    return super.setMarkers(uri, owner, data);
+  }
 }

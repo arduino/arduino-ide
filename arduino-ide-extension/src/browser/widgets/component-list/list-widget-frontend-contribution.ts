@@ -6,12 +6,12 @@ import { ListWidget } from './list-widget';
 
 @injectable()
 export abstract class ListWidgetFrontendContribution<T extends ArduinoComponent>
-    extends AbstractViewContribution<ListWidget<T>>
-    implements FrontendApplicationContribution
+  extends AbstractViewContribution<ListWidget<T>>
+  implements FrontendApplicationContribution
 {
-    async initializeLayout(): Promise<void> {}
+  async initializeLayout(): Promise<void> {}
 
-    registerMenus(): void {
-        // NOOP
-    }
+  registerMenus(): void {
+    // NOOP
+  }
 }

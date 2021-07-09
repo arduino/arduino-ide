@@ -1,76 +1,76 @@
 import type * as keytarType from 'keytar';
 
 export type KeychainConfig = {
-    credentialsSection: string;
-    account: string;
+  credentialsSection: string;
+  account: string;
 };
 
 type Keytar = {
-    getPassword: typeof keytarType['getPassword'];
-    setPassword: typeof keytarType['setPassword'];
-    deletePassword: typeof keytarType['deletePassword'];
+  getPassword: typeof keytarType['getPassword'];
+  setPassword: typeof keytarType['setPassword'];
+  deletePassword: typeof keytarType['deletePassword'];
 };
 
 export class Keychain {
-    credentialsSection: string;
-    account: string;
+  credentialsSection: string;
+  account: string;
 
-    constructor(config: KeychainConfig) {
-        this.credentialsSection = config.credentialsSection;
-        this.account = config.account;
-    }
+  constructor(config: KeychainConfig) {
+    this.credentialsSection = config.credentialsSection;
+    this.account = config.account;
+  }
 
-    getKeytar(): Keytar | undefined {
-        try {
-            return require('keytar');
-        } catch (err) {
-            console.log(err);
-        }
-        return undefined;
+  getKeytar(): Keytar | undefined {
+    try {
+      return require('keytar');
+    } catch (err) {
+      console.log(err);
     }
+    return undefined;
+  }
 
-    async getStoredCredentials(): Promise<string | undefined | null> {
-        const keytar = this.getKeytar();
-        if (!keytar) {
-            return undefined;
-        }
-        try {
-            return keytar.getPassword(this.credentialsSection, this.account);
-        } catch {
-            return undefined;
-        }
+  async getStoredCredentials(): Promise<string | undefined | null> {
+    const keytar = this.getKeytar();
+    if (!keytar) {
+      return undefined;
     }
+    try {
+      return keytar.getPassword(this.credentialsSection, this.account);
+    } catch {
+      return undefined;
+    }
+  }
 
-    async storeCredentials(stringifiedToken: string): Promise<boolean> {
-        const keytar = this.getKeytar();
-        if (!keytar) {
-            return false;
-        }
-        try {
-            await keytar.setPassword(
-                this.credentialsSection,
-                this.account,
-                stringifiedToken
-            );
-            return true;
-        } catch {
-            return false;
-        }
+  async storeCredentials(stringifiedToken: string): Promise<boolean> {
+    const keytar = this.getKeytar();
+    if (!keytar) {
+      return false;
     }
+    try {
+      await keytar.setPassword(
+        this.credentialsSection,
+        this.account,
+        stringifiedToken
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
 
-    async deleteCredentials(): Promise<boolean> {
-        const keytar = this.getKeytar();
-        if (!keytar) {
-            return false;
-        }
-        try {
-            const result = await keytar.deletePassword(
-                this.credentialsSection,
-                this.account
-            );
-            return result;
-        } catch {
-            return false;
-        }
+  async deleteCredentials(): Promise<boolean> {
+    const keytar = this.getKeytar();
+    if (!keytar) {
+      return false;
     }
+    try {
+      const result = await keytar.deletePassword(
+        this.credentialsSection,
+        this.account
+      );
+      return result;
+    } catch {
+      return false;
+    }
+  }
 }

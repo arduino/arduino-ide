@@ -4,8 +4,8 @@ import { BrowserMenuBarContribution } from '@theia/core/lib/browser/menu/browser
 
 @injectable()
 export class ArduinoMenuContribution extends BrowserMenuBarContribution {
-    onStart(app: FrontendApplication): void {
-        const menu = this.factory.createMenuBar();
-        app.shell.addWidget(menu, { area: 'top' });
-    }
+  onStart(app: FrontendApplication): void {
+    const menu = this.factory.createMenuBar();
+    app.shell.addWidget(menu, { area: 'top' });
+  }
 }

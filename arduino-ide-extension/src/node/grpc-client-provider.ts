@@ -6,74 +6,74 @@ import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 
 @injectable()
 export abstract class GrpcClientProvider<C> {
-    @inject(ILogger)
-    protected readonly logger: ILogger;
+  @inject(ILogger)
+  protected readonly logger: ILogger;
 
-    @inject(ArduinoDaemonImpl)
-    protected readonly daemon: ArduinoDaemonImpl;
+  @inject(ArduinoDaemonImpl)
+  protected readonly daemon: ArduinoDaemonImpl;
 
-    @inject(ConfigServiceImpl)
-    protected readonly configService: ConfigServiceImpl;
+  @inject(ConfigServiceImpl)
+  protected readonly configService: ConfigServiceImpl;
 
-    protected _port: string | number | undefined;
-    protected _client: C | Error | undefined;
+  protected _port: string | number | undefined;
+  protected _client: C | Error | undefined;
 
-    @postConstruct()
-    protected init(): void {
-        const updateClient = () => {
-            const cliConfig = this.configService.cliConfiguration;
-            this.reconcileClient(cliConfig ? cliConfig.daemon.port : undefined);
-        };
-        this.configService.onConfigChange(updateClient);
-        this.daemon.ready.then(updateClient);
-        this.daemon.onDaemonStopped(() => {
-            if (this._client && !(this._client instanceof Error)) {
-                this.close(this._client);
-            }
-            this._client = undefined;
-            this._port = undefined;
-        });
+  @postConstruct()
+  protected init(): void {
+    const updateClient = () => {
+      const cliConfig = this.configService.cliConfiguration;
+      this.reconcileClient(cliConfig ? cliConfig.daemon.port : undefined);
+    };
+    this.configService.onConfigChange(updateClient);
+    this.daemon.ready.then(updateClient);
+    this.daemon.onDaemonStopped(() => {
+      if (this._client && !(this._client instanceof Error)) {
+        this.close(this._client);
+      }
+      this._client = undefined;
+      this._port = undefined;
+    });
+  }
+
+  async client(): Promise<C | Error | undefined> {
+    try {
+      await this.daemon.ready;
+      return this._client;
+    } catch (error) {
+      return error;
     }
+  }
 
-    async client(): Promise<C | Error | undefined> {
-        try {
-            await this.daemon.ready;
-            return this._client;
-        } catch (error) {
-            return error;
-        }
+  protected async reconcileClient(
+    port: string | number | undefined
+  ): Promise<void> {
+    if (this._port === port) {
+      return; // Nothing to do.
     }
-
-    protected async reconcileClient(
-        port: string | number | undefined
-    ): Promise<void> {
-        if (this._port === port) {
-            return; // Nothing to do.
-        }
-        this._port = port;
-        if (this._client && !(this._client instanceof Error)) {
-            this.close(this._client);
-            this._client = undefined;
-        }
-        if (this._port) {
-            try {
-                const client = await this.createClient(this._port);
-                this._client = client;
-            } catch (error) {
-                this.logger.error('Could not create client for gRPC.', error);
-                this._client = error;
-            }
-        }
+    this._port = port;
+    if (this._client && !(this._client instanceof Error)) {
+      this.close(this._client);
+      this._client = undefined;
     }
-
-    protected abstract createClient(port: string | number): MaybePromise<C>;
-
-    protected abstract close(client: C): void;
-
-    protected get channelOptions(): Record<string, unknown> {
-        return {
-            'grpc.max_send_message_length': 512 * 1024 * 1024,
-            'grpc.max_receive_message_length': 512 * 1024 * 1024,
-        };
+    if (this._port) {
+      try {
+        const client = await this.createClient(this._port);
+        this._client = client;
+      } catch (error) {
+        this.logger.error('Could not create client for gRPC.', error);
+        this._client = error;
+      }
     }
+  }
+
+  protected abstract createClient(port: string | number): MaybePromise<C>;
+
+  protected abstract close(client: C): void;
+
+  protected get channelOptions(): Record<string, unknown> {
+    return {
+      'grpc.max_send_message_length': 512 * 1024 * 1024,
+      'grpc.max_receive_message_length': 512 * 1024 * 1024,
+    };
+  }
 }

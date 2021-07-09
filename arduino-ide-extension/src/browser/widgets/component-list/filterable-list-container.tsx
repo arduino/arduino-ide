@@ -14,170 +14,168 @@ import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceImpl } from '../../response-service-impl';
 
 export class FilterableListContainer<
-    T extends ArduinoComponent
+  T extends ArduinoComponent
 > extends React.Component<
-    FilterableListContainer.Props<T>,
-    FilterableListContainer.State<T>
+  FilterableListContainer.Props<T>,
+  FilterableListContainer.State<T>
 > {
-    constructor(props: Readonly<FilterableListContainer.Props<T>>) {
-        super(props);
-        this.state = {
-            filterText: '',
-            items: [],
-        };
-    }
-
-    componentDidMount(): void {
-        this.search = debounce(this.search, 500);
-        this.handleFilterTextChange('');
-        this.props.filterTextChangeEvent(
-            this.handleFilterTextChange.bind(this)
-        );
-    }
-
-    componentDidUpdate(): void {
-        // See: arduino/arduino-pro-ide#101
-        // Resets the top of the perfect scroll-bar's thumb.
-        this.props.container.updateScrollBar();
-    }
-
-    render(): React.ReactNode {
-        return (
-            <div className={'filterable-list-container'}>
-                {this.renderSearchFilter()}
-                {this.renderSearchBar()}
-                {this.renderComponentList()}
-            </div>
-        );
-    }
-
-    protected renderSearchFilter(): React.ReactNode {
-        return undefined;
-    }
-
-    protected renderSearchBar(): React.ReactNode {
-        return (
-            <SearchBar
-                resolveFocus={this.props.resolveFocus}
-                filterText={this.state.filterText}
-                onFilterTextChanged={this.handleFilterTextChange}
-            />
-        );
-    }
-
-    protected renderComponentList(): React.ReactNode {
-        const { itemLabel, itemDeprecated, resolveContainer, itemRenderer } =
-            this.props;
-        return (
-            <ComponentList<T>
-                items={this.state.items}
-                itemLabel={itemLabel}
-                itemDeprecated={itemDeprecated}
-                itemRenderer={itemRenderer}
-                install={this.install.bind(this)}
-                uninstall={this.uninstall.bind(this)}
-                resolveContainer={resolveContainer}
-            />
-        );
-    }
-
-    protected handleFilterTextChange = (
-        filterText: string = this.state.filterText
-    ) => {
-        this.setState({ filterText });
-        this.search(filterText);
+  constructor(props: Readonly<FilterableListContainer.Props<T>>) {
+    super(props);
+    this.state = {
+      filterText: '',
+      items: [],
     };
+  }
 
-    protected search(query: string): void {
-        const { searchable } = this.props;
-        searchable
-            .search({ query: query.trim() })
-            .then((items) => this.setState({ items: this.sort(items) }));
+  componentDidMount(): void {
+    this.search = debounce(this.search, 500);
+    this.handleFilterTextChange('');
+    this.props.filterTextChangeEvent(this.handleFilterTextChange.bind(this));
+  }
+
+  componentDidUpdate(): void {
+    // See: arduino/arduino-pro-ide#101
+    // Resets the top of the perfect scroll-bar's thumb.
+    this.props.container.updateScrollBar();
+  }
+
+  render(): React.ReactNode {
+    return (
+      <div className={'filterable-list-container'}>
+        {this.renderSearchFilter()}
+        {this.renderSearchBar()}
+        {this.renderComponentList()}
+      </div>
+    );
+  }
+
+  protected renderSearchFilter(): React.ReactNode {
+    return undefined;
+  }
+
+  protected renderSearchBar(): React.ReactNode {
+    return (
+      <SearchBar
+        resolveFocus={this.props.resolveFocus}
+        filterText={this.state.filterText}
+        onFilterTextChanged={this.handleFilterTextChange}
+      />
+    );
+  }
+
+  protected renderComponentList(): React.ReactNode {
+    const { itemLabel, itemDeprecated, resolveContainer, itemRenderer } =
+      this.props;
+    return (
+      <ComponentList<T>
+        items={this.state.items}
+        itemLabel={itemLabel}
+        itemDeprecated={itemDeprecated}
+        itemRenderer={itemRenderer}
+        install={this.install.bind(this)}
+        uninstall={this.uninstall.bind(this)}
+        resolveContainer={resolveContainer}
+      />
+    );
+  }
+
+  protected handleFilterTextChange = (
+    filterText: string = this.state.filterText
+  ) => {
+    this.setState({ filterText });
+    this.search(filterText);
+  };
+
+  protected search(query: string): void {
+    const { searchable } = this.props;
+    searchable
+      .search({ query: query.trim() })
+      .then((items) => this.setState({ items: this.sort(items) }));
+  }
+
+  protected sort(items: T[]): T[] {
+    // debugger;
+    const { itemLabel, itemDeprecated } = this.props;
+    return items.sort((left, right) => {
+      // always put deprecated items at the bottom of the list
+      if (itemDeprecated(left)) {
+        return 1;
+      }
+
+      return itemLabel(left).localeCompare(itemLabel(right));
+    });
+  }
+
+  protected async install(
+    item: T,
+    version: Installable.Version
+  ): Promise<void> {
+    const { install, searchable } = this.props;
+    await Installable.doWithProgress({
+      ...this.props,
+      progressText: `Processing ${item.name}:${version}`,
+      run: ({ progressId }) => install({ item, progressId, version }),
+    });
+    const items = await searchable.search({ query: this.state.filterText });
+    this.setState({ items: this.sort(items) });
+  }
+
+  protected async uninstall(item: T): Promise<void> {
+    const ok = await new ConfirmDialog({
+      title: 'Uninstall',
+      msg: `Do you want to uninstall ${item.name}?`,
+      ok: 'Yes',
+      cancel: 'No',
+    }).open();
+    if (!ok) {
+      return;
     }
-
-    protected sort(items: T[]): T[] {
-        // debugger;
-        const { itemLabel, itemDeprecated } = this.props;
-        return items.sort((left, right) => {
-            // always put deprecated items at the bottom of the list
-            if (itemDeprecated(left)) {
-                return 1;
-            }
-
-            return itemLabel(left).localeCompare(itemLabel(right));
-        });
-    }
-
-    protected async install(
-        item: T,
-        version: Installable.Version
-    ): Promise<void> {
-        const { install, searchable } = this.props;
-        await Installable.doWithProgress({
-            ...this.props,
-            progressText: `Processing ${item.name}:${version}`,
-            run: ({ progressId }) => install({ item, progressId, version }),
-        });
-        const items = await searchable.search({ query: this.state.filterText });
-        this.setState({ items: this.sort(items) });
-    }
-
-    protected async uninstall(item: T): Promise<void> {
-        const ok = await new ConfirmDialog({
-            title: 'Uninstall',
-            msg: `Do you want to uninstall ${item.name}?`,
-            ok: 'Yes',
-            cancel: 'No',
-        }).open();
-        if (!ok) {
-            return;
-        }
-        const { uninstall, searchable } = this.props;
-        await Installable.doWithProgress({
-            ...this.props,
-            progressText: `Processing ${item.name}${
-                item.installedVersion ? `:${item.installedVersion}` : ''
-            }`,
-            run: ({ progressId }) => uninstall({ item, progressId }),
-        });
-        const items = await searchable.search({ query: this.state.filterText });
-        this.setState({ items: this.sort(items) });
-    }
+    const { uninstall, searchable } = this.props;
+    await Installable.doWithProgress({
+      ...this.props,
+      progressText: `Processing ${item.name}${
+        item.installedVersion ? `:${item.installedVersion}` : ''
+      }`,
+      run: ({ progressId }) => uninstall({ item, progressId }),
+    });
+    const items = await searchable.search({ query: this.state.filterText });
+    this.setState({ items: this.sort(items) });
+  }
 }
 
 export namespace FilterableListContainer {
-    export interface Props<T extends ArduinoComponent> {
-        readonly container: ListWidget<T>;
-        readonly searchable: Searchable<T>;
-        readonly itemLabel: (item: T) => string;
-        readonly itemDeprecated: (item: T) => boolean;
-        readonly itemRenderer: ListItemRenderer<T>;
-        readonly resolveContainer: (element: HTMLElement) => void;
-        readonly resolveFocus: (element: HTMLElement | undefined) => void;
-        readonly filterTextChangeEvent: Event<string | undefined>;
-        readonly messageService: MessageService;
-        readonly responseService: ResponseServiceImpl;
-        readonly install: ({
-            item,
-            progressId,
-            version,
-        }: {
-            item: T;
-            progressId: string;
-            version: Installable.Version;
-        }) => Promise<void>;
-        readonly uninstall: ({
-            item,
-            progressId,
-        }: {
-            item: T;
-            progressId: string;
-        }) => Promise<void>;
-        readonly commandService: CommandService;
-    }
+  export interface Props<T extends ArduinoComponent> {
+    readonly container: ListWidget<T>;
+    readonly searchable: Searchable<T>;
+    readonly itemLabel: (item: T) => string;
+    readonly itemDeprecated: (item: T) => boolean;
+    readonly itemRenderer: ListItemRenderer<T>;
+    readonly resolveContainer: (element: HTMLElement) => void;
+    readonly resolveFocus: (element: HTMLElement | undefined) => void;
+    readonly filterTextChangeEvent: Event<string | undefined>;
+    readonly messageService: MessageService;
+    readonly responseService: ResponseServiceImpl;
+    readonly install: ({
+      item,
+      progressId,
+      version,
+    }: {
+      item: T;
+      progressId: string;
+      version: Installable.Version;
+    }) => Promise<void>;
+    readonly uninstall: ({
+      item,
+      progressId,
+    }: {
+      item: T;
+      progressId: string;
+    }) => Promise<void>;
+    readonly commandService: CommandService;
+  }
 
-    export interface State<T> {
-        filterText: string;
-        items: T[];
-    }
+  export interface State<T> {
+    filterText: string;
+    items: T[];
+  }
 }
