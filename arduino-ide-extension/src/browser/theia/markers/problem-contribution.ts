@@ -6,20 +6,20 @@ import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/
 
 @injectable()
 export class ProblemContribution extends TheiaProblemContribution {
-    async initializeLayout(app: FrontendApplication): Promise<void> {
-        // NOOP
-    }
+  async initializeLayout(app: FrontendApplication): Promise<void> {
+    // NOOP
+  }
 
-    protected setStatusBarElement(problemStat: ProblemStat): void {
-        // NOOP
-    }
+  protected setStatusBarElement(problemStat: ProblemStat): void {
+    // NOOP
+  }
 
-    registerKeybindings(keybindings: KeybindingRegistry): void {
-        if (this.toggleCommand) {
-            keybindings.registerKeybinding({
-                command: this.toggleCommand.id,
-                keybinding: 'ctrlcmd+alt+shift+m',
-            });
-        }
+  registerKeybindings(keybindings: KeybindingRegistry): void {
+    if (this.toggleCommand) {
+      keybindings.registerKeybinding({
+        command: this.toggleCommand.id,
+        keybinding: 'ctrlcmd+alt+shift+m',
+      });
     }
+  }
 }

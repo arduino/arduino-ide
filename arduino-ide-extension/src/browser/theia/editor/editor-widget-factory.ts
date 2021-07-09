@@ -8,33 +8,31 @@ import { SketchesService, Sketch } from '../../../common/protocol';
 
 @injectable()
 export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
-    @inject(SketchesService)
-    protected readonly sketchesService: SketchesService;
+  @inject(SketchesService)
+  protected readonly sketchesService: SketchesService;
 
-    @inject(SketchesServiceClientImpl)
-    protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  @inject(SketchesServiceClientImpl)
+  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-    @inject(LabelProvider)
-    protected readonly labelProvider: LabelProvider;
+  @inject(LabelProvider)
+  protected readonly labelProvider: LabelProvider;
 
-    protected async createEditor(uri: URI): Promise<EditorWidget> {
-        const widget = await super.createEditor(uri);
-        return this.maybeUpdateCaption(widget);
+  protected async createEditor(uri: URI): Promise<EditorWidget> {
+    const widget = await super.createEditor(uri);
+    return this.maybeUpdateCaption(widget);
+  }
+
+  protected async maybeUpdateCaption(
+    widget: EditorWidget
+  ): Promise<EditorWidget> {
+    const sketch = await this.sketchesServiceClient.currentSketch();
+    const { uri } = widget.editor;
+    if (sketch && Sketch.isInSketch(uri, sketch)) {
+      const isTemp = await this.sketchesService.isTemp(sketch);
+      if (isTemp) {
+        widget.title.caption = `Unsaved – ${this.labelProvider.getName(uri)}`;
+      }
     }
-
-    protected async maybeUpdateCaption(
-        widget: EditorWidget
-    ): Promise<EditorWidget> {
-        const sketch = await this.sketchesServiceClient.currentSketch();
-        const { uri } = widget.editor;
-        if (sketch && Sketch.isInSketch(uri, sketch)) {
-            const isTemp = await this.sketchesService.isTemp(sketch);
-            if (isTemp) {
-                widget.title.caption = `Unsaved – ${this.labelProvider.getName(
-                    uri
-                )}`;
-            }
-        }
-        return widget;
-    }
+    return widget;
+  }
 }

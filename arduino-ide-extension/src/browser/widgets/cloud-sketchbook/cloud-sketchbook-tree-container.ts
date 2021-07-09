@@ -8,22 +8,22 @@ import { SketchbookTreeModel } from '../sketchbook/sketchbook-tree-model';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
 
 function createCloudSketchbookTreeContainer(
-    parent: interfaces.Container
+  parent: interfaces.Container
 ): Container {
-    const child = createSketchbookTreeContainer(parent);
-    child.bind(CloudSketchbookTree).toSelf();
-    child.rebind(SketchbookTree).toService(CloudSketchbookTree);
-    child.bind(CloudSketchbookTreeModel).toSelf();
-    child.rebind(SketchbookTreeModel).toService(CloudSketchbookTreeModel);
-    child.bind(CloudSketchbookTreeWidget).toSelf();
-    child.rebind(SketchbookTreeWidget).toService(CloudSketchbookTreeWidget);
-    return child;
+  const child = createSketchbookTreeContainer(parent);
+  child.bind(CloudSketchbookTree).toSelf();
+  child.rebind(SketchbookTree).toService(CloudSketchbookTree);
+  child.bind(CloudSketchbookTreeModel).toSelf();
+  child.rebind(SketchbookTreeModel).toService(CloudSketchbookTreeModel);
+  child.bind(CloudSketchbookTreeWidget).toSelf();
+  child.rebind(SketchbookTreeWidget).toService(CloudSketchbookTreeWidget);
+  return child;
 }
 
 export function createCloudSketchbookTreeWidget(
-    parent: interfaces.Container
+  parent: interfaces.Container
 ): CloudSketchbookTreeWidget {
-    return createCloudSketchbookTreeContainer(parent).get(
-        CloudSketchbookTreeWidget
-    );
+  return createCloudSketchbookTreeContainer(parent).get(
+    CloudSketchbookTreeWidget
+  );
 }

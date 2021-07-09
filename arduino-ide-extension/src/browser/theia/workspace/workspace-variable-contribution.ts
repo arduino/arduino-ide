@@ -6,26 +6,26 @@ import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-ser
 
 @injectable()
 export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContribution {
-    @inject(SketchesServiceClientImpl)
-    protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  @inject(SketchesServiceClientImpl)
+  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-    protected currentSketch?: Sketch;
+  protected currentSketch?: Sketch;
 
-    @postConstruct()
-    protected init(): void {
-        this.sketchesServiceClient
-            .currentSketch()
-            .then()
-            .then((sketch) => (this.currentSketch = sketch));
+  @postConstruct()
+  protected init(): void {
+    this.sketchesServiceClient
+      .currentSketch()
+      .then()
+      .then((sketch) => (this.currentSketch = sketch));
+  }
+
+  getResourceUri(): URI | undefined {
+    const resourceUri = super.getResourceUri();
+    // https://github.com/arduino/arduino-ide/issues/46
+    // `currentWidget` can be an editor representing a file outside of the workspace. The current sketch should be a fallback.
+    if (!resourceUri && this.currentSketch?.uri) {
+      return new URI(this.currentSketch.uri);
     }
-
-    getResourceUri(): URI | undefined {
-        const resourceUri = super.getResourceUri();
-        // https://github.com/arduino/arduino-ide/issues/46
-        // `currentWidget` can be an editor representing a file outside of the workspace. The current sketch should be a fallback.
-        if (!resourceUri && this.currentSketch?.uri) {
-            return new URI(this.currentSketch.uri);
-        }
-        return resourceUri;
-    }
+    return resourceUri;
+  }
 }

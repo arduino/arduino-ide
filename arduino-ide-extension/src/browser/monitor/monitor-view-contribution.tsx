@@ -4,153 +4,153 @@ import { AbstractViewContribution } from '@theia/core/lib/browser';
 import { MonitorWidget } from './monitor-widget';
 import { MenuModelRegistry, Command, CommandRegistry } from '@theia/core';
 import {
-    TabBarToolbarContribution,
-    TabBarToolbarRegistry,
+  TabBarToolbarContribution,
+  TabBarToolbarRegistry,
 } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { MonitorModel } from './monitor-model';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 export namespace SerialMonitor {
-    export namespace Commands {
-        export const AUTOSCROLL: Command = {
-            id: 'serial-monitor-autoscroll',
-            label: 'Autoscroll',
-        };
-        export const TIMESTAMP: Command = {
-            id: 'serial-monitor-timestamp',
-            label: 'Timestamp',
-        };
-        export const CLEAR_OUTPUT: Command = {
-            id: 'serial-monitor-clear-output',
-            label: 'Clear Output',
-            iconClass: 'clear-all',
-        };
-    }
+  export namespace Commands {
+    export const AUTOSCROLL: Command = {
+      id: 'serial-monitor-autoscroll',
+      label: 'Autoscroll',
+    };
+    export const TIMESTAMP: Command = {
+      id: 'serial-monitor-timestamp',
+      label: 'Timestamp',
+    };
+    export const CLEAR_OUTPUT: Command = {
+      id: 'serial-monitor-clear-output',
+      label: 'Clear Output',
+      iconClass: 'clear-all',
+    };
+  }
 }
 
 @injectable()
 export class MonitorViewContribution
-    extends AbstractViewContribution<MonitorWidget>
-    implements TabBarToolbarContribution
+  extends AbstractViewContribution<MonitorWidget>
+  implements TabBarToolbarContribution
 {
-    static readonly TOGGLE_SERIAL_MONITOR = MonitorWidget.ID + ':toggle';
-    static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
-        MonitorWidget.ID + ':toggle-toolbar';
+  static readonly TOGGLE_SERIAL_MONITOR = MonitorWidget.ID + ':toggle';
+  static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
+    MonitorWidget.ID + ':toggle-toolbar';
 
-    @inject(MonitorModel) protected readonly model: MonitorModel;
+  @inject(MonitorModel) protected readonly model: MonitorModel;
 
-    constructor() {
-        super({
-            widgetId: MonitorWidget.ID,
-            widgetName: 'Serial Monitor',
-            defaultWidgetOptions: {
-                area: 'bottom',
-            },
-            toggleCommandId: MonitorViewContribution.TOGGLE_SERIAL_MONITOR,
-            toggleKeybinding: 'CtrlCmd+Shift+M',
-        });
+  constructor() {
+    super({
+      widgetId: MonitorWidget.ID,
+      widgetName: 'Serial Monitor',
+      defaultWidgetOptions: {
+        area: 'bottom',
+      },
+      toggleCommandId: MonitorViewContribution.TOGGLE_SERIAL_MONITOR,
+      toggleKeybinding: 'CtrlCmd+Shift+M',
+    });
+  }
+
+  registerMenus(menus: MenuModelRegistry): void {
+    if (this.toggleCommand) {
+      menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
+        commandId: this.toggleCommand.id,
+        label: 'Serial Monitor',
+        order: '5',
+      });
     }
+  }
 
-    registerMenus(menus: MenuModelRegistry): void {
-        if (this.toggleCommand) {
-            menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
-                commandId: this.toggleCommand.id,
-                label: 'Serial Monitor',
-                order: '5',
-            });
+  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+    registry.registerItem({
+      id: 'monitor-autoscroll',
+      render: () => this.renderAutoScrollButton(),
+      isVisible: (widget) => widget instanceof MonitorWidget,
+      onDidChange: this.model.onChange as any, // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
+    });
+    registry.registerItem({
+      id: 'monitor-timestamp',
+      render: () => this.renderTimestampButton(),
+      isVisible: (widget) => widget instanceof MonitorWidget,
+      onDidChange: this.model.onChange as any, // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
+    });
+    registry.registerItem({
+      id: SerialMonitor.Commands.CLEAR_OUTPUT.id,
+      command: SerialMonitor.Commands.CLEAR_OUTPUT.id,
+      tooltip: 'Clear Output',
+    });
+  }
+
+  registerCommands(commands: CommandRegistry): void {
+    commands.registerCommand(SerialMonitor.Commands.CLEAR_OUTPUT, {
+      isEnabled: (widget) => widget instanceof MonitorWidget,
+      isVisible: (widget) => widget instanceof MonitorWidget,
+      execute: (widget) => {
+        if (widget instanceof MonitorWidget) {
+          widget.clearConsole();
         }
-    }
-
-    registerToolbarItems(registry: TabBarToolbarRegistry): void {
-        registry.registerItem({
-            id: 'monitor-autoscroll',
-            render: () => this.renderAutoScrollButton(),
-            isVisible: (widget) => widget instanceof MonitorWidget,
-            onDidChange: this.model.onChange as any, // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
-        });
-        registry.registerItem({
-            id: 'monitor-timestamp',
-            render: () => this.renderTimestampButton(),
-            isVisible: (widget) => widget instanceof MonitorWidget,
-            onDidChange: this.model.onChange as any, // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
-        });
-        registry.registerItem({
-            id: SerialMonitor.Commands.CLEAR_OUTPUT.id,
-            command: SerialMonitor.Commands.CLEAR_OUTPUT.id,
-            tooltip: 'Clear Output',
-        });
-    }
-
-    registerCommands(commands: CommandRegistry): void {
-        commands.registerCommand(SerialMonitor.Commands.CLEAR_OUTPUT, {
-            isEnabled: (widget) => widget instanceof MonitorWidget,
-            isVisible: (widget) => widget instanceof MonitorWidget,
-            execute: (widget) => {
-                if (widget instanceof MonitorWidget) {
-                    widget.clearConsole();
-                }
-            },
-        });
-        if (this.toggleCommand) {
-            commands.registerCommand(this.toggleCommand, {
-                execute: () => this.toggle(),
-            });
-            commands.registerCommand(
-                { id: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR },
-                {
-                    isVisible: (widget) =>
-                        ArduinoToolbar.is(widget) && widget.side === 'right',
-                    execute: () => this.toggle(),
-                }
-            );
+      },
+    });
+    if (this.toggleCommand) {
+      commands.registerCommand(this.toggleCommand, {
+        execute: () => this.toggle(),
+      });
+      commands.registerCommand(
+        { id: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR },
+        {
+          isVisible: (widget) =>
+            ArduinoToolbar.is(widget) && widget.side === 'right',
+          execute: () => this.toggle(),
         }
+      );
     }
+  }
 
-    protected async toggle(): Promise<void> {
-        const widget = this.tryGetWidget();
-        if (widget) {
-            widget.dispose();
-        } else {
-            await this.openView({ activate: true, reveal: true });
-        }
+  protected async toggle(): Promise<void> {
+    const widget = this.tryGetWidget();
+    if (widget) {
+      widget.dispose();
+    } else {
+      await this.openView({ activate: true, reveal: true });
     }
+  }
 
-    protected renderAutoScrollButton(): React.ReactNode {
-        return (
-            <React.Fragment key="autoscroll-toolbar-item">
-                <div
-                    title="Toggle Autoscroll"
-                    className={`item enabled fa fa-angle-double-down arduino-monitor ${
-                        this.model.autoscroll ? 'toggled' : ''
-                    }`}
-                    onClick={this.toggleAutoScroll}
-                ></div>
-            </React.Fragment>
-        );
-    }
+  protected renderAutoScrollButton(): React.ReactNode {
+    return (
+      <React.Fragment key="autoscroll-toolbar-item">
+        <div
+          title="Toggle Autoscroll"
+          className={`item enabled fa fa-angle-double-down arduino-monitor ${
+            this.model.autoscroll ? 'toggled' : ''
+          }`}
+          onClick={this.toggleAutoScroll}
+        ></div>
+      </React.Fragment>
+    );
+  }
 
-    protected readonly toggleAutoScroll = () => this.doToggleAutoScroll();
-    protected async doToggleAutoScroll(): Promise<void> {
-        this.model.toggleAutoscroll();
-    }
+  protected readonly toggleAutoScroll = () => this.doToggleAutoScroll();
+  protected async doToggleAutoScroll(): Promise<void> {
+    this.model.toggleAutoscroll();
+  }
 
-    protected renderTimestampButton(): React.ReactNode {
-        return (
-            <React.Fragment key="line-ending-toolbar-item">
-                <div
-                    title="Toggle Timestamp"
-                    className={`item enabled fa fa-clock-o arduino-monitor ${
-                        this.model.timestamp ? 'toggled' : ''
-                    }`}
-                    onClick={this.toggleTimestamp}
-                ></div>
-            </React.Fragment>
-        );
-    }
+  protected renderTimestampButton(): React.ReactNode {
+    return (
+      <React.Fragment key="line-ending-toolbar-item">
+        <div
+          title="Toggle Timestamp"
+          className={`item enabled fa fa-clock-o arduino-monitor ${
+            this.model.timestamp ? 'toggled' : ''
+          }`}
+          onClick={this.toggleTimestamp}
+        ></div>
+      </React.Fragment>
+    );
+  }
 
-    protected readonly toggleTimestamp = () => this.doToggleTimestamp();
-    protected async doToggleTimestamp(): Promise<void> {
-        this.model.toggleTimestamp();
-    }
+  protected readonly toggleTimestamp = () => this.doToggleTimestamp();
+  protected async doToggleTimestamp(): Promise<void> {
+    this.model.toggleTimestamp();
+  }
 }

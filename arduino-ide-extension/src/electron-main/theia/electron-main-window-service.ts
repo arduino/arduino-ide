@@ -5,31 +5,30 @@ import { ElectronMainApplication } from './electron-main-application';
 
 @injectable()
 export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowService {
-    @inject(ElectronMainApplication)
-    protected readonly app: ElectronMainApplication;
+  @inject(ElectronMainApplication)
+  protected readonly app: ElectronMainApplication;
 
-    openNewWindow(url: string, { external }: NewWindowOptions): undefined {
-        if (!external) {
-            const sanitizedUrl = this.sanitize(url);
-            const existing = this.app.windows.find(
-                (window) =>
-                    this.sanitize(window.webContents.getURL()) === sanitizedUrl
-            );
-            if (existing) {
-                existing.focus();
-                return;
-            }
-        }
-        return super.openNewWindow(url, { external });
+  openNewWindow(url: string, { external }: NewWindowOptions): undefined {
+    if (!external) {
+      const sanitizedUrl = this.sanitize(url);
+      const existing = this.app.windows.find(
+        (window) => this.sanitize(window.webContents.getURL()) === sanitizedUrl
+      );
+      if (existing) {
+        existing.focus();
+        return;
+      }
     }
+    return super.openNewWindow(url, { external });
+  }
 
-    private sanitize(url: string): string {
-        const copy = new URL(url);
-        const searchParams: string[] = [];
-        copy.searchParams.forEach((_, key) => searchParams.push(key));
-        for (const param of searchParams) {
-            copy.searchParams.delete(param);
-        }
-        return copy.toString();
+  private sanitize(url: string): string {
+    const copy = new URL(url);
+    const searchParams: string[] = [];
+    copy.searchParams.forEach((_, key) => searchParams.push(key));
+    for (const param of searchParams) {
+      copy.searchParams.delete(param);
     }
+    return copy.toString();
+  }
 }
