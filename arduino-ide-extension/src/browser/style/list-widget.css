@@ -113,7 +113,7 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 
 .component-list-item[min-width~="170px"] .footer {
     padding: 5px 5px 0px 0px;
-    min-height: 26px; /* 21 + 5 from the footer margin top */
+    min-height: 30px;
     display: flex;
     flex-direction: row-reverse;
 }
