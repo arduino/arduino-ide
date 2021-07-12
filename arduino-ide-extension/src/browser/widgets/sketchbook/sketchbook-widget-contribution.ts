@@ -1,4 +1,4 @@
-import { shell } from 'electron';
+import { remote } from 'electron';
 import { inject, injectable } from 'inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
@@ -22,6 +22,7 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { URI } from '../../contributions/contribution';
 
 export const SKETCHBOOK__CONTEXT = ['arduino-sketchbook--context'];
 
@@ -104,8 +105,16 @@ export class SketchbookWidgetContribution
     });
 
     registry.registerCommand(SketchbookCommands.REVEAL_IN_FINDER, {
-      execute: (arg) => {
-        shell.openPath(arg.node.id);
+      execute: async (arg) => {
+        if (arg.node.uri) {
+          const exists = await this.fileService.exists(new URI(arg.node.uri));
+          if (exists) {
+            const fsPath = await this.fileService.fsPath(new URI(arg.node.uri));
+            if (fsPath) {
+              remote.shell.openPath(fsPath);
+            }
+          }
+        }
       },
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
