@@ -48,21 +48,9 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   @postConstruct()
   protected async init(): Promise<void> {
     super.init();
-    this.toDispose.push(
-      this.arduinoPreferences.onPreferenceChanged(({ preferenceName }) => {
-        if (preferenceName === 'arduino.sketchbook.showAllFiles') {
-          this.updateModel();
-        }
-      })
-    );
-    this.updateModel();
     // cache the current open sketch uri
     const currentSketch = await this.sketchServiceClient.currentSketch();
     this.currentSketchUri = (currentSketch && currentSketch.uri) || '';
-  }
-
-  async updateModel(): Promise<void> {
-    return this.model.updateRoot();
   }
 
   protected createNodeClassNames(node: TreeNode, props: NodeProps): string[] {
