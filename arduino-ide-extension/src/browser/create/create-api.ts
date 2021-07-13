@@ -1,8 +1,9 @@
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import * as createPaths from './create-paths';
-import { posix, splitSketchPath } from './create-paths';
+import { posix } from './create-paths';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { ArduinoPreferences } from '../arduino-preferences';
+import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
 
 export interface ResponseResultProvider {
   (response: Response): Promise<any>;
@@ -15,10 +16,11 @@ export namespace ResponseResultProvider {
 
 type ResourceType = 'f' | 'd';
 
-export let sketchCache: Create.Sketch[] = [];
-
 @injectable()
 export class CreateApi {
+  @inject(SketchCache)
+  protected readonly sketchCache: SketchCache;
+
   protected authenticationService: AuthenticationClientService;
   protected arduinoPreferences: ArduinoPreferences;
 
@@ -32,48 +34,24 @@ export class CreateApi {
     return this;
   }
 
-  public sketchCompareByPath = (param: string) => {
-    return (sketch: Create.Sketch) => {
-      const [, spath] = splitSketchPath(sketch.path);
-      return param === spath;
-    };
-  };
-
-  async findSketchInCache(
-    compareFn: (sketch: Create.Sketch) => boolean,
-    trustCache = true
-  ): Promise<Create.Sketch | undefined> {
-    const sketch = sketchCache.find((sketch) => compareFn(sketch));
-    if (trustCache) {
-      return Promise.resolve(sketch);
-    }
-    return await this.sketch({ id: sketch?.id });
+  public wipeCache(): void {
+    this.sketchCache.init();
   }
 
   getSketchSecretStat(sketch: Create.Sketch): Create.Resource {
     return {
       href: `${sketch.href}${posix.sep}${Create.arduino_secrets_file}`,
       modified_at: sketch.modified_at,
+      created_at: sketch.created_at,
       name: `${Create.arduino_secrets_file}`,
       path: `${sketch.path}${posix.sep}${Create.arduino_secrets_file}`,
       mimetype: 'text/x-c++src; charset=utf-8',
       type: 'file',
-      sketchId: sketch.id,
     };
   }
 
-  async sketch(opt: {
-    id?: string;
-    path?: string;
-  }): Promise<Create.Sketch | undefined> {
-    let url;
-    if (opt.id) {
-      url = new URL(`${this.domain()}/sketches/byID/${opt.id}`);
-    } else if (opt.path) {
-      url = new URL(`${this.domain()}/sketches/byPath${opt.path}`);
-    } else {
-      return;
-    }
+  async sketch(id: string): Promise<Create.Sketch | undefined> {
+    const url = new URL(`${this.domain()}/sketches/byID/${id}`);
 
     url.searchParams.set('user_id', 'me');
     const headers = await this.headers();
@@ -92,7 +70,7 @@ export class CreateApi {
       method: 'GET',
       headers,
     });
-    sketchCache = result.sketches;
+    result.sketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
     return result.sketches;
   }
 
@@ -118,7 +96,7 @@ export class CreateApi {
 
   async readDirectory(
     posixPath: string,
-    options: { recursive?: boolean; match?: string; secrets?: boolean } = {}
+    options: { recursive?: boolean; match?: string } = {}
   ): Promise<Create.Resource[]> {
     const url = new URL(
       `${this.domain()}/files/d/$HOME/sketches_v2${posixPath}`
@@ -131,58 +109,21 @@ export class CreateApi {
     }
     const headers = await this.headers();
 
-    const sketchProm = options.secrets
-      ? this.sketches()
-      : Promise.resolve(sketchCache);
+    return this.run<Create.RawResource[]>(url, {
+      method: 'GET',
+      headers,
+    })
+      .then(async (result) => {
+        // add arduino_secrets.h to the results, when reading a sketch main folder
+        if (posixPath.length && posixPath !== posix.sep) {
+          const sketch = this.sketchCache.getSketch(posixPath);
 
-    return Promise.all([
-      this.run<Create.RawResource[]>(url, {
-        method: 'GET',
-        headers,
-      }),
-      sketchProm,
-    ])
-      .then(async ([result, sketches]) => {
-        if (options.secrets) {
-          // for every sketch with secrets, create a fake arduino_secrets.h
-          result.forEach(async (res) => {
-            if (res.type !== 'sketch') {
-              return;
-            }
-
-            const [, spath] = createPaths.splitSketchPath(res.path);
-            const sketch = await this.findSketchInCache(
-              this.sketchCompareByPath(spath)
-            );
-            if (sketch && sketch.secrets && sketch.secrets.length > 0) {
-              result.push(this.getSketchSecretStat(sketch));
-            }
-          });
-
-          if (posixPath !== posix.sep) {
-            const sketch = await this.findSketchInCache(
-              this.sketchCompareByPath(posixPath)
-            );
-            if (sketch && sketch.secrets && sketch.secrets.length > 0) {
-              result.push(this.getSketchSecretStat(sketch));
-            }
+          if (sketch && sketch.secrets && sketch.secrets.length > 0) {
+            result.push(this.getSketchSecretStat(sketch));
           }
         }
-        const sketchesMap: Record<string, Create.Sketch> = sketches.reduce(
-          (prev, curr) => {
-            return { ...prev, [curr.path]: curr };
-          },
-          {}
-        );
 
-        // add the sketch id and isPublic to the resource
-        return result.map((resource) => {
-          return {
-            ...resource,
-            sketchId: sketchesMap[resource.path]?.id || '',
-            isPublic: sketchesMap[resource.path]?.is_public || false,
-          };
-        });
+        return result;
       })
       .catch((reason) => {
         if (reason?.status === 404) return [] as Create.Resource[];
@@ -214,18 +155,16 @@ export class CreateApi {
 
     let resources;
     if (basename === Create.arduino_secrets_file) {
-      const sketch = await this.findSketchInCache(
-        this.sketchCompareByPath(parentPosixPath)
-      );
+      const sketch = this.sketchCache.getSketch(parentPosixPath);
       resources = sketch ? [this.getSketchSecretStat(sketch)] : [];
     } else {
       resources = await this.readDirectory(parentPosixPath, {
         match: basename,
       });
     }
-
-    resources.sort((left, right) => left.path.length - right.path.length);
-    const resource = resources.find(({ name }) => name === basename);
+    const resource = resources.find(
+      ({ path }) => createPaths.splitSketchPath(path)[1] === posixPath
+    );
     if (!resource) {
       throw new CreateError(`Not found: ${posixPath}.`, 404);
     }
@@ -248,10 +187,7 @@ export class CreateApi {
         return data;
       }
 
-      const sketch = await this.findSketchInCache((sketch) => {
-        const [, spath] = splitSketchPath(sketch.path);
-        return spath === createPaths.parentPosix(path);
-      }, true);
+      const sketch = this.sketchCache.getSketch(createPaths.parentPosix(path));
 
       if (
         sketch &&
@@ -273,14 +209,25 @@ export class CreateApi {
 
     if (basename === Create.arduino_secrets_file) {
       const parentPosixPath = createPaths.parentPosix(posixPath);
-      const sketch = await this.findSketchInCache(
-        this.sketchCompareByPath(parentPosixPath),
-        false
-      );
+
+      //retrieve the sketch id from the cache
+      const cacheSketch = this.sketchCache.getSketch(parentPosixPath);
+      if (!cacheSketch) {
+        throw new Error(`Unable to find sketch ${parentPosixPath} in cache`);
+      }
+
+      // get a fresh copy of the sketch in order to guarantee fresh secrets
+      const sketch = await this.sketch(cacheSketch.id);
+      if (!sketch) {
+        throw new Error(
+          `Unable to get a fresh copy of the sketch ${cacheSketch.id}`
+        );
+      }
+      this.sketchCache.addSketch(sketch);
 
       let file = '';
       if (sketch && sketch.secrets) {
-        for (const item of sketch?.secrets) {
+        for (const item of sketch.secrets) {
           file += `#define ${item.name} "${item.value}"\r\n`;
         }
       }
@@ -310,9 +257,9 @@ export class CreateApi {
 
     if (basename === Create.arduino_secrets_file) {
       const parentPosixPath = createPaths.parentPosix(posixPath);
-      const sketch = await this.findSketchInCache(
-        this.sketchCompareByPath(parentPosixPath)
-      );
+
+      const sketch = this.sketchCache.getSketch(parentPosixPath);
+
       if (sketch) {
         const url = new URL(`${this.domain()}/sketches/${sketch.id}`);
         const headers = await this.headers();
@@ -357,8 +304,7 @@ export class CreateApi {
         };
 
         // replace the sketch in the cache, so other calls will not overwrite each other
-        sketchCache = sketchCache.filter((skt) => skt.id !== sketch.id);
-        sketchCache.push({ ...sketch, secrets });
+        this.sketchCache.addSketch(sketch);
 
         const init = {
           method: 'POST',
@@ -543,8 +489,9 @@ export namespace Create {
      */
     readonly path: string;
     readonly type: ResourceType;
-    readonly sketchId: string;
+    readonly sketchId?: string;
     readonly modified_at: string; // As an ISO-8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`
+    readonly created_at: string; // As an ISO-8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`
     readonly children?: number; // For 'sketch' and 'folder' types.
     readonly size?: number; // For 'sketch' type only.
     readonly isPublic?: boolean; // For 'sketch' type only.

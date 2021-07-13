@@ -16,6 +16,15 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     super.init();
   }
 
+  getTreeWidget(): any {
+    const widget: any = this.sketchbookTreesContainer.selectedWidgets().next();
+
+    if (widget && typeof widget.getTreeWidget !== 'undefined') {
+      return (widget as CloudSketchbookCompositeWidget).getTreeWidget();
+    }
+    return widget;
+  }
+
   checkCloudEnabled() {
     if (this.arduinoPreferences['arduino.cloud.enabled']) {
       this.sketchbookTreesContainer.activateWidget(this.widget);

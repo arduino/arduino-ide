@@ -103,7 +103,7 @@ export class LocalCacheFsProvider
     });
   }
 
-  private get currentUserUri(): URI {
+  public get currentUserUri(): URI {
     const { session } = this.authenticationService;
     if (!session) {
       throw new FileSystemProviderError(

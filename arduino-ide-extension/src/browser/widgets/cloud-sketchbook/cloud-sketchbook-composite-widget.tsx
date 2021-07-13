@@ -35,6 +35,10 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     this.id = 'cloud-sketchbook-composite-widget';
   }
 
+  public getTreeWidget(): CloudSketchbookTreeWidget {
+    return this.cloudSketchbookTreeWidget;
+  }
+
   protected onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     Widget.attach(this.cloudSketchbookTreeWidget, this.compositeNode);

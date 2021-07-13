@@ -100,10 +100,7 @@ export class SketchbookWidgetContribution
 
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
       execute: async (arg) => {
-        const underlying = await this.fileService.toUnderlyingResource(
-          arg.node.uri
-        );
-        return this.workspaceService.open(underlying);
+        return this.workspaceService.open(arg.node.uri);
       },
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
@@ -214,7 +211,8 @@ export class SketchbookWidgetContribution
     if (Navigatable.is(widget)) {
       const resourceUri = widget.getResourceUri();
       if (resourceUri) {
-        const { model } = (await this.widget).getTreeWidget();
+        const treeWidget = (await this.widget).getTreeWidget();
+        const { model } = treeWidget;
         const node = await model.revealFile(resourceUri);
         if (SelectableTreeNode.is(node)) {
           model.selectNode(node);

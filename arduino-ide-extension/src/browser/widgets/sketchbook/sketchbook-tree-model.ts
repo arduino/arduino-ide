@@ -34,7 +34,7 @@ export class SketchbookTreeModel extends FileTreeModel {
   protected readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
+  public readonly commandRegistry: CommandRegistry;
 
   @inject(ConfigService)
   protected readonly configService: ConfigService;
@@ -162,32 +162,22 @@ export class SketchbookTreeModel extends FileTreeModel {
 
   protected async createRoot(): Promise<TreeNode | undefined> {
     const config = await this.configService.getConfiguration();
-    const stat = await this.fileService.resolve(new URI(config.sketchDirUri));
+    const rootFileStats = await this.fileService.resolve(
+      new URI(config.sketchDirUri)
+    );
 
-    if (this.workspaceService.opened) {
-      const isMulti = stat ? !stat.isDirectory : false;
-      const workspaceNode = isMulti
-        ? this.createMultipleRootNode()
-        : WorkspaceNode.createRoot();
-      workspaceNode.children.push(
-        await this.tree.createWorkspaceRoot(stat, workspaceNode)
-      );
+    if (this.workspaceService.opened && rootFileStats.children) {
+      // filter out libraries and hardware
 
-      return workspaceNode;
+      if (this.workspaceService.opened) {
+        const workspaceNode = WorkspaceNode.createRoot();
+        workspaceNode.children.push(
+          await this.tree.createWorkspaceRoot(rootFileStats, workspaceNode)
+        );
+
+        return workspaceNode;
+      }
     }
-  }
-
-  /**
-   * Create multiple root node used to display
-   * the multiple root workspace name.
-   *
-   * @returns `WorkspaceNode`
-   */
-  protected createMultipleRootNode(): WorkspaceNode {
-    const workspace = this.workspaceService.workspace;
-    let name = workspace ? workspace.resource.path.name : 'untitled';
-    name += ' (Workspace)';
-    return WorkspaceNode.createRoot(name);
   }
 
   /**

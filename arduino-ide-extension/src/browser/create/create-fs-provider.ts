@@ -106,10 +106,7 @@ export class CreateFsProvider
 
   async readdir(uri: URI): Promise<[string, FileType][]> {
     const resources = await this.getCreateApi.readDirectory(
-      uri.path.toString(),
-      {
-        secrets: true,
-      }
+      uri.path.toString()
     );
     return resources
       .filter((res) => !REMOTE_ONLY_FILES.includes(res.name))
