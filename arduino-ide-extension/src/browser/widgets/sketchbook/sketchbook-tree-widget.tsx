@@ -125,11 +125,12 @@ export class SketchbookTreeWidget extends FileTreeWidget {
 
   protected renderInlineCommand(
     commandId: string,
-    node: SketchbookTree.SketchDirNode
+    node: SketchbookTree.SketchDirNode,
+    options?: any
   ): React.ReactNode {
     const command = this.commandRegistry.getCommand(commandId);
     const icon = command?.iconClass;
-    const args = { model: this.model, node: node };
+    const args = { model: this.model, node: node, ...options };
     if (
       command &&
       icon &&
