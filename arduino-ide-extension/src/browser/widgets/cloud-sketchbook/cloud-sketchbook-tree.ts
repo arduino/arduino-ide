@@ -32,6 +32,7 @@ import { firstToUpperCase } from '../../../common/utils';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { FileStat } from '@theia/filesystem/lib/common/files';
+import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
@@ -263,6 +264,33 @@ export class CloudSketchbookTree extends SketchbookTree {
       }
       await this.refresh(node);
     }
+  }
+
+  async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
+    return (await super.resolveChildren(parent)).sort((a, b) => {
+      if (
+        WorkspaceNode.is(parent) &&
+        FileStatNode.is(a) &&
+        FileStatNode.is(b)
+      ) {
+        const syncNodeA =
+          CloudSketchbookTree.CloudSketchTreeNode.is(a) &&
+          CloudSketchbookTree.CloudSketchTreeNode.isSynced(a);
+        const syncNodeB =
+          CloudSketchbookTree.CloudSketchTreeNode.is(b) &&
+          CloudSketchbookTree.CloudSketchTreeNode.isSynced(b);
+
+        const syncComparison = Number(syncNodeB) - Number(syncNodeA);
+
+        // same sync status, compare on modified time
+        if (syncComparison === 0) {
+          return (a.fileStat.mtime || 0) - (b.fileStat.mtime || 0);
+        }
+        return syncComparison;
+      }
+
+      return 0;
+    });
   }
 
   /**
