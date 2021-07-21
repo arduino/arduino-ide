@@ -94,7 +94,6 @@ export class FilterableListContainer<
   }
 
   protected sort(items: T[]): T[] {
-    // debugger;
     const { itemLabel, itemDeprecated } = this.props;
     return items.sort((left, right) => {
       // always put deprecated items at the bottom of the list

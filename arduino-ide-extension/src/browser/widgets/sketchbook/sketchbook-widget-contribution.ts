@@ -14,7 +14,10 @@ import { SketchbookCommands } from './sketchbook-commands';
 import { WorkspaceService } from '../../theia/workspace/workspace-service';
 import {
   ContextMenuRenderer,
+  Navigatable,
   RenderContextMenuOptions,
+  SelectableTreeNode,
+  Widget,
 } from '@theia/core/lib/browser';
 import {
   Disposable,
@@ -77,6 +80,10 @@ export class SketchbookWidgetContribution
   }
 
   onStart(): void {
+    this.shell.currentChanged.connect(() =>
+      this.onCurrentWidgetChangedHandler()
+    );
+
     this.arduinoPreferences.onPreferenceChanged(({ preferenceName }) => {
       if (preferenceName === 'arduino.sketchbook.showAllFiles') {
         this.mainMenuManager.update();
@@ -195,5 +202,28 @@ export class SketchbookWidgetContribution
       label: SketchbookCommands.REVEAL_IN_FINDER.label,
       order: '0',
     });
+  }
+
+  /**
+   * Reveals and selects node in the file navigator to which given widget is related.
+   * Does nothing if given widget undefined or doesn't have related resource.
+   *
+   * @param widget widget file resource of which should be revealed and selected
+   */
+  async selectWidgetFileNode(widget: Widget | undefined): Promise<void> {
+    if (Navigatable.is(widget)) {
+      const resourceUri = widget.getResourceUri();
+      if (resourceUri) {
+        const { model } = (await this.widget).getTreeWidget();
+        const node = await model.revealFile(resourceUri);
+        if (SelectableTreeNode.is(node)) {
+          model.selectNode(node);
+        }
+      }
+    }
+  }
+
+  protected onCurrentWidgetChangedHandler(): void {
+    this.selectWidgetFileNode(this.shell.currentWidget);
   }
 }
