@@ -236,6 +236,7 @@ import { CloudSketchbookCompositeWidget } from './widgets/cloud-sketchbook/cloud
 import { SketchbookWidget } from './widgets/sketchbook/sketchbook-widget';
 import { SketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-widget';
 import { createSketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-container';
+import { SketchCache } from './widgets/cloud-sketchbook/cloud-sketch-cache';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -686,6 +687,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     createCloudSketchbookTreeWidget(container)
   );
   bind(CreateApi).toSelf().inSingletonScope();
+  bind(SketchCache).toSelf().inSingletonScope();
+
   bind(ShareSketchDialog).toSelf().inSingletonScope();
   bind(AuthenticationClientService).toSelf().inSingletonScope();
   bind(CommandContribution).toService(AuthenticationClientService);

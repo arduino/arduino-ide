@@ -24,10 +24,11 @@ import {
   FileServiceContribution,
 } from '@theia/filesystem/lib/browser/file-service';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
-import { Create, CreateApi } from './create-api';
+import { CreateApi } from './create-api';
 import { CreateUri } from './create-uri';
 import { SketchesService } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
+import { Create } from './typings';
 
 export const REMOTE_ONLY_FILES = ['sketch.json'];
 
@@ -106,10 +107,7 @@ export class CreateFsProvider
 
   async readdir(uri: URI): Promise<[string, FileType][]> {
     const resources = await this.getCreateApi.readDirectory(
-      uri.path.toString(),
-      {
-        secrets: true,
-      }
+      uri.path.toString()
     );
     return resources
       .filter((res) => !REMOTE_ONLY_FILES.includes(res.name))

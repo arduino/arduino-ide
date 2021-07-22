@@ -1,7 +1,7 @@
 import { URI as Uri } from 'vscode-uri';
 import URI from '@theia/core/lib/common/uri';
-import { Create } from './create-api';
 import { toPosixPath, parentPosix, posix } from './create-paths';
+import { Create } from './typings';
 
 export namespace CreateUri {
   export const scheme = 'arduino-create';

@@ -166,11 +166,11 @@ export class CloudSketchbookContribution extends Contribution {
       isEnabled: (arg) =>
         CloudSketchbookCommands.Arg.is(arg) &&
         CloudSketchbookTree.CloudSketchDirNode.is(arg.node) &&
-        !!arg.node.synced,
+        CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node),
       isVisible: (arg) =>
         CloudSketchbookCommands.Arg.is(arg) &&
         CloudSketchbookTree.CloudSketchDirNode.is(arg.node) &&
-        !!arg.node.synced,
+        CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node),
     });
 
     registry.registerCommand(CloudSketchbookCommands.OPEN_IN_CLOUD_EDITOR, {
@@ -257,18 +257,10 @@ export class CloudSketchbookContribution extends Contribution {
 
           const currentSketch = await this.sketchServiceClient.currentSketch();
 
-          const localUri = await arg.model.cloudSketchbookTree.localUri(
-            arg.node
-          );
-          let underlying = null;
-          if (arg.node && localUri) {
-            underlying = await this.fileService.toUnderlyingResource(localUri);
-          }
-
           // disable the "open sketch" command for the current sketch and for those not in sync
           if (
-            !underlying ||
-            (currentSketch && currentSketch.uri === underlying.toString())
+            !CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node) ||
+            (currentSketch && currentSketch.uri === arg.node.uri.toString())
           ) {
             const placeholder = new PlaceholderMenuNode(
               SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP,
@@ -284,7 +276,6 @@ export class CloudSketchbookContribution extends Contribution {
               )
             );
           } else {
-            arg.node.uri = localUri;
             this.menuRegistry.registerMenuAction(
               SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP,
               {

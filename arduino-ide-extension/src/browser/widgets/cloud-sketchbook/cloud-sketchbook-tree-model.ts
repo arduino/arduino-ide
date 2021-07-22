@@ -1,66 +1,61 @@
 import { inject, injectable, postConstruct } from 'inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree';
-import { toPosixPath, posixSegments, posix } from '../../create/create-paths';
-import { CreateApi, Create } from '../../create/create-api';
+import { posixSegments, splitSketchPath } from '../../create/create-paths';
+import { CreateApi } from '../../create/create-api';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
-import {
-  LocalCacheFsProvider,
-  LocalCacheUri,
-} from '../../local-cache/local-cache-fs-provider';
-import { CommandRegistry } from '@theia/core/lib/common/command';
 import { SketchbookTreeModel } from '../sketchbook/sketchbook-tree-model';
 import { ArduinoPreferences } from '../../arduino-preferences';
-import { ConfigService } from '../../../common/protocol';
+import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
+import { CreateUri } from '../../create/create-uri';
+import { FileStat } from '@theia/filesystem/lib/common/files';
+import { LocalCacheFsProvider } from '../../local-cache/local-cache-fs-provider';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import URI from '@theia/core/lib/common/uri';
+import { SketchCache } from './cloud-sketch-cache';
+import { Create } from '../../create/typings';
 
-export type CreateCache = Record<string, Create.Resource>;
-export namespace CreateCache {
-  export function build(resources: Create.Resource[]): CreateCache {
-    const treeData: CreateCache = {};
-    treeData[posix.sep] = CloudSketchbookTree.rootResource;
-    for (const resource of resources) {
-      const { path } = resource;
-      const posixPath = toPosixPath(path);
-      if (treeData[posixPath] !== undefined) {
-        throw new Error(
-          `Already visited resource for path: ${posixPath}.\nData: ${JSON.stringify(
-            treeData,
-            null,
-            2
-          )}`
-        );
-      }
-      treeData[posixPath] = resource;
-    }
-    return treeData;
+export function sketchBaseDir(sketch: Create.Sketch): FileStat {
+  // extract the sketch path
+  const [, path] = splitSketchPath(sketch.path);
+  const dirs = posixSegments(path);
+
+  const mtime = Date.parse(sketch.modified_at);
+  const ctime = Date.parse(sketch.created_at);
+  const createPath = CreateUri.toUri(dirs[0]);
+  const baseDir: FileStat = {
+    name: dirs[0],
+    isDirectory: true,
+    isFile: false,
+    isSymbolicLink: false,
+    resource: createPath,
+    mtime,
+    ctime,
+  };
+  return baseDir;
+}
+
+export function sketchesToFileStats(sketches: Create.Sketch[]): FileStat[] {
+  const sketchesBaseDirs: Record<string, FileStat> = {};
+
+  for (const sketch of sketches) {
+    const sketchBaseDirFileStat = sketchBaseDir(sketch);
+    sketchesBaseDirs[sketchBaseDirFileStat.resource.toString()] =
+      sketchBaseDirFileStat;
   }
 
-  export function childrenOf(
-    resource: Create.Resource,
-    cache: CreateCache
-  ): Create.Resource[] | undefined {
-    if (resource.type === 'file') {
-      return undefined;
-    }
-    const posixPath = toPosixPath(resource.path);
-    const childSegmentCount = posixSegments(posixPath).length + 1;
-    return Object.keys(cache)
-      .filter(
-        (key) =>
-          key.startsWith(posixPath) &&
-          posixSegments(key).length === childSegmentCount
-      )
-      .map((childPosixPath) => cache[childPosixPath]);
-  }
+  return Object.keys(sketchesBaseDirs).map(
+    (dirUri) => sketchesBaseDirs[dirUri]
+  );
 }
 
 @injectable()
 export class CloudSketchbookTreeModel extends SketchbookTreeModel {
+  @inject(FileService)
+  protected readonly fileService: FileService;
+
   @inject(AuthenticationClientService)
   protected readonly authenticationService: AuthenticationClientService;
-
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
 
   @inject(CreateApi)
   protected readonly createApi: CreateApi;
@@ -68,14 +63,14 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   @inject(CloudSketchbookTree)
   protected readonly cloudSketchbookTree: CloudSketchbookTree;
 
+  @inject(ArduinoPreferences)
+  protected readonly arduinoPreferences: ArduinoPreferences;
+
   @inject(LocalCacheFsProvider)
   protected readonly localCacheFsProvider: LocalCacheFsProvider;
 
-  @inject(CommandRegistry)
-  public readonly commandRegistry: CommandRegistry;
-
-  @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
+  @inject(SketchCache)
+  protected readonly sketchCache: SketchCache;
 
   @postConstruct()
   protected init(): void {
@@ -85,56 +80,25 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
     );
   }
 
-  async updateRoot(): Promise<void> {
+  async createRoot(): Promise<TreeNode | undefined> {
     const { session } = this.authenticationService;
     if (!session) {
       this.tree.root = undefined;
       return;
     }
     this.createApi.init(this.authenticationService, this.arduinoPreferences);
-
-    const resources = await this.createApi.readDirectory(posix.sep, {
-      recursive: true,
-      secrets: true,
-    });
-
-    const cache = CreateCache.build(resources);
-
-    // also read local files
-    for await (const path of Object.keys(cache)) {
-      if (cache[path].type === 'sketch') {
-        const localUri = LocalCacheUri.root.resolve(path);
-        const exists = await this.fileService.exists(localUri);
-        if (exists) {
-          const fileStat = await this.fileService.resolve(localUri);
-          // add every missing file
-          fileStat.children
-            ?.filter(
-              (child) =>
-                !Object.keys(cache).includes(path + posix.sep + child.name)
-            )
-            .forEach((child) => {
-              const localChild: Create.Resource = {
-                modified_at: '',
-                href: cache[path].href + posix.sep + child.name,
-                mimetype: '',
-                name: child.name,
-                path: cache[path].path + posix.sep + child.name,
-                sketchId: '',
-                type: child.isFile ? 'file' : 'folder',
-              };
-              cache[path + posix.sep + child.name] = localChild;
-            });
-        }
+    this.sketchCache.init();
+    const sketches = await this.createApi.sketches();
+    const rootFileStats = sketchesToFileStats(sketches);
+    if (this.workspaceService.opened) {
+      const workspaceNode = WorkspaceNode.createRoot('Remote');
+      for await (const stat of rootFileStats) {
+        workspaceNode.children.push(
+          await this.tree.createWorkspaceRoot(stat, workspaceNode)
+        );
       }
+      return workspaceNode;
     }
-
-    const showAllFiles =
-      this.arduinoPreferences['arduino.sketchbook.showAllFiles'];
-    this.tree.root = CloudSketchbookTree.CloudRootNode.create(
-      cache,
-      showAllFiles
-    );
   }
 
   sketchbookTree(): CloudSketchbookTree {
@@ -143,9 +107,6 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
 
   protected recursivelyFindSketchRoot(node: TreeNode): any {
     if (node && CloudSketchbookTree.CloudSketchDirNode.is(node)) {
-      if (node.hasOwnProperty('underlying')) {
-        return { ...node, uri: node.underlying };
-      }
       return node;
     }
 
@@ -155,5 +116,16 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
 
     // can't find a root, return false
     return false;
+  }
+
+  async revealFile(uri: URI): Promise<TreeNode | undefined> {
+    // we use remote uris as keys for the tree
+    // convert local URIs
+    const remoteuri = this.localCacheFsProvider.from(uri);
+    if (remoteuri) {
+      return super.revealFile(remoteuri);
+    } else {
+      return super.revealFile(uri);
+    }
   }
 }

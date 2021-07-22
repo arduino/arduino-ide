@@ -91,7 +91,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
       CloudSketchbookTree.CloudSketchDirNode.is(node) &&
       node.commands &&
       (node.id === this.hoveredNodeId ||
-        this.currentSketchUri === node.underlying?.toString())
+        this.currentSketchUri === node.uri.toString())
     ) {
       return Array.from(new Set(node.commands)).map((command) =>
         this.renderInlineCommand(command.id, node)
@@ -135,37 +135,17 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     );
   }
 
-  protected async handleClickEvent(
-    node: any,
+  protected handleDblClickEvent(
+    node: TreeNode,
     event: React.MouseEvent<HTMLElement>
-  ) {
+  ): void {
     event.persist();
 
-    let uri = node.uri;
-    // overwrite the uri using the local-cache
-    const localUri = await this.cloudSketchbookTree.localUri(node);
-    if (node && localUri) {
-      const underlying = await this.fileService.toUnderlyingResource(localUri);
-      uri = underlying;
-    }
-
-    super.handleClickEvent({ ...node, uri }, event);
-  }
-
-  protected async handleDblClickEvent(
-    node: any,
-    event: React.MouseEvent<HTMLElement>
-  ) {
-    event.persist();
-
-    let uri = node.uri;
-    // overwrite the uri using the local-cache
-    // if the localURI does not exists, ignore the double click, so that the sketch is not opened
-    const localUri = await this.cloudSketchbookTree.localUri(node);
-    if (node && localUri) {
-      const underlying = await this.fileService.toUnderlyingResource(localUri);
-      uri = underlying;
-      super.handleDblClickEvent({ ...node, uri }, event);
+    if (
+      CloudSketchbookTree.CloudSketchTreeNode.is(node) &&
+      CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)
+    ) {
+      super.handleDblClickEvent(node, event);
     }
   }
 }
