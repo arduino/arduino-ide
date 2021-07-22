@@ -1,25 +1,25 @@
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { injectable } from 'inversify';
-import { Create } from '../../create/create-api';
 import { toPosixPath } from '../../create/create-paths';
+import { Create } from '../../create/typings';
 
 @injectable()
 export class SketchCache {
   sketches: Record<string, Create.Sketch> = {};
-  filestats: Record<string, FileStat> = {};
+  fileStats: Record<string, FileStat> = {};
 
   init(): void {
     // reset the data
     this.sketches = {};
-    this.filestats = {};
+    this.fileStats = {};
   }
 
   addItem(item: FileStat): void {
-    this.filestats[item.resource.path.toString()] = item;
+    this.fileStats[item.resource.path.toString()] = item;
   }
 
   getItem(path: string): FileStat | null {
-    return this.filestats[path] || null;
+    return this.fileStats[path] || null;
   }
 
   addSketch(sketch: Create.Sketch): void {

@@ -4,6 +4,7 @@ import { posix } from './create-paths';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
+import { Create, CreateError } from './typings';
 
 export interface ResponseResultProvider {
   (response: Response): Promise<any>;
@@ -19,7 +20,7 @@ type ResourceType = 'f' | 'd';
 @injectable()
 export class CreateApi {
   @inject(SketchCache)
-  protected readonly sketchCache: SketchCache;
+  protected sketchCache: SketchCache;
 
   protected authenticationService: AuthenticationClientService;
   protected arduinoPreferences: ArduinoPreferences;
@@ -34,10 +35,6 @@ export class CreateApi {
     return this;
   }
 
-  public wipeCache(): void {
-    this.sketchCache.init();
-  }
-
   getSketchSecretStat(sketch: Create.Sketch): Create.Resource {
     return {
       href: `${sketch.href}${posix.sep}${Create.arduino_secrets_file}`,
@@ -50,7 +47,7 @@ export class CreateApi {
     };
   }
 
-  async sketch(id: string): Promise<Create.Sketch | undefined> {
+  async sketch(id: string): Promise<Create.Sketch> {
     const url = new URL(`${this.domain()}/sketches/byID/${id}`);
 
     url.searchParams.set('user_id', 'me');
@@ -303,7 +300,9 @@ export class CreateApi {
           secrets: { data: secrets },
         };
 
-        // replace the sketch in the cache, so other calls will not overwrite each other
+        // replace the sketch in the cache with the one we are pushing
+        // TODO: we should do a get after the POST, in order to be sure the cache
+        // is updated the most recent metadata
         this.sketchCache.addSketch(sketch);
 
         const init = {
@@ -313,6 +312,14 @@ export class CreateApi {
         };
         await this.run(url, init);
       }
+      return;
+    }
+
+    // do not upload "do_not_sync" files/directoris and their descendants
+    const segments = posixPath.split(posix.sep) || [];
+    if (
+      segments.some((segment) => Create.do_not_sync_files.includes(segment))
+    ) {
       return;
     }
 
@@ -457,77 +464,4 @@ void loop() {
 }
 
 `;
-}
-
-export namespace Create {
-  export interface Sketch {
-    readonly name: string;
-    readonly path: string;
-    readonly modified_at: string;
-    readonly created_at: string;
-
-    readonly secrets?: { name: string; value: string }[];
-
-    readonly id: string;
-    readonly is_public: boolean;
-    // readonly board_fqbn: '',
-    // readonly board_name: '',
-    // readonly board_type: 'serial' | 'network' | 'cloud' | '',
-    readonly href?: string;
-    readonly libraries: string[];
-    // readonly tutorials: string[] | null;
-    // readonly types: string[] | null;
-    // readonly user_id: string;
-  }
-
-  export type ResourceType = 'sketch' | 'folder' | 'file';
-  export const arduino_secrets_file = 'arduino_secrets.h';
-  export interface Resource {
-    readonly name: string;
-    /**
-     * Note: this path is **not** the POSIX path we use. It has the leading segments with the `user_id`.
-     */
-    readonly path: string;
-    readonly type: ResourceType;
-    readonly sketchId?: string;
-    readonly modified_at: string; // As an ISO-8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`
-    readonly created_at: string; // As an ISO-8601 formatted string: `YYYY-MM-DDTHH:mm:ss.sssZ`
-    readonly children?: number; // For 'sketch' and 'folder' types.
-    readonly size?: number; // For 'sketch' type only.
-    readonly isPublic?: boolean; // For 'sketch' type only.
-
-    readonly mimetype?: string; // For 'file' type.
-    readonly href?: string;
-  }
-  export namespace Resource {
-    export function is(arg: any): arg is Resource {
-      return (
-        !!arg &&
-        'name' in arg &&
-        typeof arg['name'] === 'string' &&
-        'path' in arg &&
-        typeof arg['path'] === 'string' &&
-        'type' in arg &&
-        typeof arg['type'] === 'string' &&
-        'modified_at' in arg &&
-        typeof arg['modified_at'] === 'string' &&
-        (arg['type'] === 'sketch' ||
-          arg['type'] === 'folder' ||
-          arg['type'] === 'file')
-      );
-    }
-  }
-
-  export type RawResource = Omit<Resource, 'sketchId' | 'isPublic'>;
-}
-
-export class CreateError extends Error {
-  constructor(
-    message: string,
-    readonly status: number,
-    readonly details?: string
-  ) {
-    super(message);
-    Object.setPrototypeOf(this, CreateError.prototype);
-  }
 }

@@ -1,7 +1,7 @@
 import { inject, injectable, postConstruct } from 'inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { posixSegments, splitSketchPath } from '../../create/create-paths';
-import { CreateApi, Create } from '../../create/create-api';
+import { CreateApi } from '../../create/create-api';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { SketchbookTreeModel } from '../sketchbook/sketchbook-tree-model';
@@ -12,6 +12,8 @@ import { FileStat } from '@theia/filesystem/lib/common/files';
 import { LocalCacheFsProvider } from '../../local-cache/local-cache-fs-provider';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import URI from '@theia/core/lib/common/uri';
+import { SketchCache } from './cloud-sketch-cache';
+import { Create } from '../../create/typings';
 
 export function sketchBaseDir(sketch: Create.Sketch): FileStat {
   // extract the sketch path
@@ -67,6 +69,9 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   @inject(LocalCacheFsProvider)
   protected readonly localCacheFsProvider: LocalCacheFsProvider;
 
+  @inject(SketchCache)
+  protected readonly sketchCache: SketchCache;
+
   @postConstruct()
   protected init(): void {
     super.init();
@@ -82,7 +87,7 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
       return;
     }
     this.createApi.init(this.authenticationService, this.arduinoPreferences);
-    this.createApi.wipeCache();
+    this.sketchCache.init();
     const sketches = await this.createApi.sketches();
     const rootFileStats = sketchesToFileStats(sketches);
     if (this.workspaceService.opened) {
