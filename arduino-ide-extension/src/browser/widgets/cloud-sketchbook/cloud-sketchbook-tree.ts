@@ -127,6 +127,11 @@ export class CloudSketchbookTree extends SketchbookTree {
       const commandsCopy = node.commands;
       node.commands = [];
 
+      const localUri = await this.fileService.toUnderlyingResource(
+        LocalCacheUri.root.resolve(node.remoteUri.path)
+      );
+      await this.treeDiff(node.remoteUri, localUri);
+
       // check if the sketch dir already exist
       if (CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
         const filesToPull = (
@@ -223,6 +228,69 @@ export class CloudSketchbookTree extends SketchbookTree {
         timeout: MESSAGE_TIMEOUT,
       });
     });
+  }
+
+  async recursiveURIs(uri: URI): Promise<URI[]> {
+    const fileStat = await this.fileService.resolve(uri, {
+      resolveMetadata: false,
+    });
+
+    if (!fileStat.children || !fileStat.isDirectory) {
+      return [fileStat.resource];
+    }
+
+    let childrenUris: URI[] = [];
+
+    for await (const child of fileStat.children) {
+      childrenUris = [
+        ...childrenUris,
+        ...(await this.recursiveURIs(child.resource)),
+      ];
+    }
+
+    return [fileStat.resource, ...childrenUris];
+  }
+
+  private URIsToMap(uris: URI[], basepath: string): Record<string, URI> {
+    return uris.reduce((prev: Record<string, URI>, curr) => {
+      const path = curr.toString().split(basepath);
+
+      if (path.length !== 2 || path[1].length === 0) {
+        return prev;
+      }
+
+      return { ...prev, [path[1]]: curr };
+    }, {});
+  }
+
+  async treeDiff(source: URI, dest: URI) {
+    const sourceBase = source.toString();
+    const sourceExists = await this.fileService.exists(source);
+    const sourceURIs =
+      (sourceExists &&
+        this.URIsToMap(await this.recursiveURIs(source), sourceBase)) ||
+      {};
+
+    const destBase = dest.toString();
+    const destExists = await this.fileService.exists(dest);
+    const destURIs =
+      (destExists &&
+        this.URIsToMap(await this.recursiveURIs(dest), destBase)) ||
+      {};
+
+    const toWrite: URI[][] = [];
+
+    Object.keys(sourceURIs).forEach((path) => {
+      const destUri = destURIs[path] || new URI(destBase + path);
+
+      toWrite.push([sourceURIs[path], destUri]);
+      delete destURIs[path];
+    });
+
+    const toDelete = Object.values(destURIs);
+
+    debugger;
+    return { toWrite, toDelete };
   }
 
   async refresh(
