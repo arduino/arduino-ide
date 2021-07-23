@@ -32,6 +32,7 @@ import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
+import { splitSketchPath } from '../../create/create-paths';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
@@ -229,6 +230,17 @@ export class CloudSketchbookTree extends SketchbookTree {
   }
 
   async recursiveURIs(uri: URI): Promise<URI[]> {
+    // remote resources can be fetched one-shot via api
+    if (CreateUri.is(uri)) {
+      const resources = await this.createApi.readDirectory(
+        uri.path.toString(),
+        { recursive: true }
+      );
+      return resources.map((resource) =>
+        CreateUri.toUri(splitSketchPath(resource.path)[1])
+      );
+    }
+
     const fileStat = await this.fileService.resolve(uri, {
       resolveMetadata: false,
     });
@@ -261,21 +273,21 @@ export class CloudSketchbookTree extends SketchbookTree {
     }, {});
   }
 
+  async getUrisMap(uri: URI) {
+    const basepath = uri.toString();
+    const exists = await this.fileService.exists(uri);
+    const uris =
+      (exists && this.URIsToMap(await this.recursiveURIs(uri), basepath)) || {};
+    return uris;
+  }
+
   async treeDiff(source: URI, dest: URI): Promise<FilesToSync> {
-    const sourceBase = source.toString();
-    const sourceExists = await this.fileService.exists(source);
-    const sourceURIs =
-      (sourceExists &&
-        this.URIsToMap(await this.recursiveURIs(source), sourceBase)) ||
-      {};
+    const [sourceURIs, destURIs] = await Promise.all([
+      this.getUrisMap(source),
+      this.getUrisMap(dest),
+    ]);
 
     const destBase = dest.toString();
-    const destExists = await this.fileService.exists(dest);
-    const destURIs =
-      (destExists &&
-        this.URIsToMap(await this.recursiveURIs(dest), destBase)) ||
-      {};
-
     const filesToWrite: FilesToWrite[] = [];
 
     Object.keys(sourceURIs).forEach((path) => {
@@ -332,9 +344,7 @@ export class CloudSketchbookTree extends SketchbookTree {
   }
 
   async sync(source: URI, dest: URI) {
-    debugger;
     const { filesToWrite, filesToDelete } = await this.treeDiff(source, dest);
-    debugger;
     await Promise.all(
       filesToWrite.map(async ({ source, dest }) => {
         if ((await this.fileService.resolve(source)).isFile) {
