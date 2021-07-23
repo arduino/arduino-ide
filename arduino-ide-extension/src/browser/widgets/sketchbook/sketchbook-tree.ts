@@ -45,7 +45,7 @@ export class SketchbookTree extends FileNavigatorTree {
       return true;
     });
 
-    if (children.length === 0) {
+    if (DirNode.is(parent) && children.length === 0) {
       delete (parent as any).expanded;
     }
 
@@ -84,9 +84,9 @@ export class SketchbookTree extends FileNavigatorTree {
 
       if (!showAllFiles) {
         delete (node as any).expanded;
-        (node as any).children = [];
+        node.children = [];
       } else {
-        (node as any).expanded = false;
+        node.expanded = 'expanded' in node ? node.expanded : false;
       }
     }
     return node;
