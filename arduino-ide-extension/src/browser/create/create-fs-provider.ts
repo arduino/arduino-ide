@@ -111,8 +111,6 @@ export class CreateFsProvider
   }
 
   async delete(uri: URI, opts: FileDeleteOptions): Promise<void> {
-    return;
-
     if (!opts.recursive) {
       throw new Error(
         'Arduino Create file-system provider does not support non-recursive deletion.'

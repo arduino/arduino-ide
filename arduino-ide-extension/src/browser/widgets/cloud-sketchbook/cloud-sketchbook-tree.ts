@@ -138,45 +138,6 @@ export class CloudSketchbookTree extends SketchbookTree {
       );
       await this.sync(node.remoteUri, localUri);
 
-      // check if the sketch dir already exist
-      // if (CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
-      //   const filesToPull = (
-      //     await this.createApi.readDirectory(node.remoteUri.path.toString())
-      //   ).filter((file: any) => !REMOTE_ONLY_FILES.includes(file.name));
-
-      //   await Promise.all(
-      //     filesToPull.map((file: any) => {
-      //       const uri = CreateUri.toUri(file);
-      //       return this.sync(uri, LocalCacheUri.root.resolve(uri.path));
-      //     })
-      //   );
-
-      // open the pulled files in the current workspace
-      // const currentSketch = await this.sketchServiceClient.currentSketch();
-
-      //   if (
-      //     !CreateUri.is(node.uri) &&
-      //     currentSketch &&
-      //     currentSketch.uri === node.uri.toString()
-      //   ) {
-      //     filesToPull.forEach(async (file) => {
-      //       const localUri = LocalCacheUri.root.resolve(
-      //         CreateUri.toUri(file).path
-      //       );
-      //       const underlying = await this.fileService.toUnderlyingResource(
-      //         localUri
-      //       );
-
-      //       model.open(underlying);
-      //     });
-      //   }
-      // } else {
-      //   await this.sync(
-      //     node.remoteUri,
-      //     LocalCacheUri.root.resolve(node.uri.path)
-      //   );
-      // }
-
       node.commands = commandsCopy;
       this.messageService.info(`Done pulling ‘${node.fileStat.name}’.`, {
         timeout: MESSAGE_TIMEOUT,
@@ -222,7 +183,12 @@ export class CloudSketchbookTree extends SketchbookTree {
       }
       const commandsCopy = node.commands;
       node.commands = [];
-      await this.sync(node.uri, node.remoteUri);
+
+      const localUri = await this.fileService.toUnderlyingResource(
+        LocalCacheUri.root.resolve(node.remoteUri.path)
+      );
+      await this.sync(localUri, node.remoteUri);
+
       node.commands = commandsCopy;
       this.messageService.info(`Done pushing ‘${node.name}’.`, {
         timeout: MESSAGE_TIMEOUT,
@@ -365,7 +331,9 @@ export class CloudSketchbookTree extends SketchbookTree {
     );
 
     await Promise.all(
-      filesToDelete.map((file) => this.fileService.delete(file))
+      filesToDelete.map((file) =>
+        this.fileService.delete(file, { recursive: true })
+      )
     );
   }
 
