@@ -93,7 +93,11 @@ export class CreateApi {
 
   async readDirectory(
     posixPath: string,
-    options: { recursive?: boolean; match?: string } = {}
+    options: {
+      recursive?: boolean;
+      match?: string;
+      skipSketchCache?: boolean;
+    } = {}
   ): Promise<Create.Resource[]> {
     const url = new URL(
       `${this.domain()}/files/d/$HOME/sketches_v2${posixPath}`
@@ -106,21 +110,29 @@ export class CreateApi {
     }
     const headers = await this.headers();
 
-    return this.run<Create.RawResource[]>(url, {
-      method: 'GET',
-      headers,
-    })
-      .then(async (result) => {
-        // add arduino_secrets.h to the results, when reading a sketch main folder
-        if (posixPath.length && posixPath !== posix.sep) {
-          const sketch = this.sketchCache.getSketch(posixPath);
+    const cachedSketch = this.sketchCache.getSketch(posixPath);
 
+    const sketchPromise = options.skipSketchCache
+      ? (cachedSketch && this.sketch(cachedSketch.id)) || Promise.resolve(null)
+      : Promise.resolve(this.sketchCache.getSketch(posixPath));
+
+    return Promise.all([
+      sketchPromise,
+      this.run<Create.RawResource[]>(url, {
+        method: 'GET',
+        headers,
+      }),
+    ])
+      .then(async ([sketch, result]) => {
+        if (posixPath.length && posixPath !== posix.sep) {
           if (sketch && sketch.secrets && sketch.secrets.length > 0) {
             result.push(this.getSketchSecretStat(sketch));
           }
         }
 
-        return result;
+        return result.filter(
+          (res) => !Create.do_not_sync_files.includes(res.name)
+        );
       })
       .catch((reason) => {
         if (reason?.status === 404) return [] as Create.Resource[];

@@ -30,8 +30,6 @@ import { SketchesService } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { Create } from './typings';
 
-export const REMOTE_ONLY_FILES = ['sketch.json'];
-
 @injectable()
 export class CreateFsProvider
   implements
@@ -109,9 +107,7 @@ export class CreateFsProvider
     const resources = await this.getCreateApi.readDirectory(
       uri.path.toString()
     );
-    return resources
-      .filter((res) => !REMOTE_ONLY_FILES.includes(res.name))
-      .map(({ name, type }) => [name, this.toFileType(type)]);
+    return resources.map(({ name, type }) => [name, this.toFileType(type)]);
   }
 
   async delete(uri: URI, opts: FileDeleteOptions): Promise<void> {

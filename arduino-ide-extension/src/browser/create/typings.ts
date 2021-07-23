@@ -21,7 +21,7 @@ export namespace Create {
 
   export type ResourceType = 'sketch' | 'folder' | 'file';
   export const arduino_secrets_file = 'arduino_secrets.h';
-  export const do_not_sync_files = ['.theia'];
+  export const do_not_sync_files = ['.theia', 'sketch.json'];
   export interface Resource {
     readonly name: string;
     /**

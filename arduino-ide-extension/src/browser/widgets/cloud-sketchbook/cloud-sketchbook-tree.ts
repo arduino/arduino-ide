@@ -32,7 +32,8 @@ import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
-import { splitSketchPath } from '../../create/create-paths';
+import { posix, splitSketchPath } from '../../create/create-paths';
+import { Create } from '../../create/typings';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
@@ -234,7 +235,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     if (CreateUri.is(uri)) {
       const resources = await this.createApi.readDirectory(
         uri.path.toString(),
-        { recursive: true }
+        { recursive: true, skipSketchCache: true }
       );
       return resources.map((resource) =>
         CreateUri.toUri(splitSketchPath(resource.path)[1])
@@ -266,6 +267,14 @@ export class CloudSketchbookTree extends SketchbookTree {
       const path = curr.toString().split(basepath);
 
       if (path.length !== 2 || path[1].length === 0) {
+        return prev;
+      }
+
+      // do not map "do_not_sync" files/directoris and their descendants
+      const segments = path[1].split(posix.sep) || [];
+      if (
+        segments.some((segment) => Create.do_not_sync_files.includes(segment))
+      ) {
         return prev;
       }
 
