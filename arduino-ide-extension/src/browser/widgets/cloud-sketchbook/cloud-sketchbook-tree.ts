@@ -284,7 +284,7 @@ export class CloudSketchbookTree extends SketchbookTree {
 
         // same sync status, compare on modified time
         if (syncComparison === 0) {
-          return (a.fileStat.mtime || 0) - (b.fileStat.mtime || 0);
+          return (b.fileStat.mtime || 0) - (a.fileStat.mtime || 0);
         }
         return syncComparison;
       }
