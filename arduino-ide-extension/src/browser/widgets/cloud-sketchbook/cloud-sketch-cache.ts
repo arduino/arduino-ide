@@ -22,6 +22,14 @@ export class SketchCache {
     return this.fileStats[path] || null;
   }
 
+  purgeByPath(path: string): void {
+    for (const itemPath in this.fileStats) {
+      if (itemPath.indexOf(path) === 0) {
+        delete this.fileStats[itemPath];
+      }
+    }
+  }
+
   addSketch(sketch: Create.Sketch): void {
     const { path } = sketch;
     const posixPath = toPosixPath(path);

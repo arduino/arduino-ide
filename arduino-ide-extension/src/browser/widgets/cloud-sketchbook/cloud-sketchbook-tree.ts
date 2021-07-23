@@ -138,6 +138,8 @@ export class CloudSketchbookTree extends SketchbookTree {
       );
       await this.sync(node.remoteUri, localUri);
 
+      this.sketchCache.purgeByPath(node.remoteUri.path.toString());
+
       node.commands = commandsCopy;
       this.messageService.info(`Done pulling ‘${node.fileStat.name}’.`, {
         timeout: MESSAGE_TIMEOUT,
@@ -366,7 +368,7 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   /**
    * Retrieve fileStats for the given node, merging the local and remote childrens
-   * Local children take prevedence over remote ones
+   * Local children take precedence over remote ones
    * @param node
    * @returns
    */
@@ -447,6 +449,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     const node = this.getNode(id);
     if (fileStat.isDirectory) {
       if (DirNode.is(node)) {
+        node.uri = uri;
         node.fileStat = fileStat;
         return node;
       }
@@ -462,6 +465,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     }
     if (FileNode.is(node)) {
       node.fileStat = fileStat;
+      node.uri = uri;
       return node;
     }
     return <FileNode>{
