@@ -12,6 +12,12 @@ import { Sketch, SketchesService } from '../../common/protocol';
 import { ConfigService } from './config-service';
 import { SketchContainer } from './sketches-service';
 
+const READ_ONLY_FILES = [
+  'thingProperties.h',
+  'thingsProperties.h',
+  'sketch.json',
+];
+
 @injectable()
 export class SketchesServiceClientImpl
   implements FrontendApplicationContribution
@@ -171,6 +177,9 @@ export class SketchesServiceClientImpl
     const toCheck = uri instanceof URI ? uri : new URI(uri);
     if (toCheck.scheme === 'user-storage') {
       return false;
+    }
+    if (READ_ONLY_FILES.includes(toCheck?.path?.base)) {
+      return true;
     }
     const readOnly = !this.workspaceService
       .tryGetRoots()
