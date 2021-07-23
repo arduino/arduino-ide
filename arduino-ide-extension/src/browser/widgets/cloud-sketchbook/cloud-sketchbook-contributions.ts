@@ -176,7 +176,7 @@ export class CloudSketchbookContribution extends Contribution {
     registry.registerCommand(CloudSketchbookCommands.OPEN_IN_CLOUD_EDITOR, {
       execute: (arg) => {
         this.windowService.openNewWindow(
-          `https://create.arduino.cc/editor/${arg.node.sketchId}`,
+          `https://create.arduino.cc/editor/${arg.username}/${arg.node.sketchId}`,
           { external: true }
         );
       },

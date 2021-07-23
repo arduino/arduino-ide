@@ -94,7 +94,9 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
         this.currentSketchUri === node.uri.toString())
     ) {
       return Array.from(new Set(node.commands)).map((command) =>
-        this.renderInlineCommand(command.id, node)
+        this.renderInlineCommand(command.id, node, {
+          username: this.authenticationService.session?.account?.label,
+        })
       );
     }
     return undefined;
