@@ -192,7 +192,7 @@ export class CloudSketchbookTree extends SketchbookTree {
       await this.sync(localUri, node.remoteUri);
 
       node.commands = commandsCopy;
-      this.messageService.info(`Done pushing ‘${node.name}’.`, {
+      this.messageService.info(`Done pushing ‘${node.fileStat.name}’.`, {
         timeout: MESSAGE_TIMEOUT,
       });
     });
