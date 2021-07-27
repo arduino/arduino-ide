@@ -191,6 +191,8 @@ export class CloudSketchbookTree extends SketchbookTree {
       );
       await this.sync(localUri, node.remoteUri);
 
+      this.sketchCache.purgeByPath(node.remoteUri.path.toString());
+
       node.commands = commandsCopy;
       this.messageService.info(`Done pushing ‘${node.fileStat.name}’.`, {
         timeout: MESSAGE_TIMEOUT,
@@ -243,6 +245,11 @@ export class CloudSketchbookTree extends SketchbookTree {
       if (
         segments.some((segment) => Create.do_not_sync_files.includes(segment))
       ) {
+        return prev;
+      }
+
+      // skip when the filename is a hidden file (starts with `.`)
+      if (segments[segments.length - 1].indexOf('.') === 0) {
         return prev;
       }
 
