@@ -17,7 +17,6 @@ import {
   PreferenceScope,
 } from '@theia/core/lib/browser/preferences/preference-service';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { REMOTE_ONLY_FILES } from './../../create/create-fs-provider';
 import { CreateApi } from '../../create/create-api';
 import { CreateUri } from '../../create/create-uri';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
@@ -33,10 +32,17 @@ import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
+import { posix, splitSketchPath } from '../../create/create-paths';
+import { Create } from '../../create/typings';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
 
+type FilesToWrite = { source: URI; dest: URI };
+type FilesToSync = {
+  filesToWrite: FilesToWrite[];
+  filesToDelete: URI[];
+};
 @injectable()
 export class CloudSketchbookTree extends SketchbookTree {
   @inject(FileService)
@@ -94,7 +100,7 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   async pull(arg: any): Promise<void> {
     const {
-      model,
+      // model,
       node,
     }: {
       model: CloudSketchbookTreeModel;
@@ -127,47 +133,12 @@ export class CloudSketchbookTree extends SketchbookTree {
       const commandsCopy = node.commands;
       node.commands = [];
 
-      // check if the sketch dir already exist
-      if (CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
-        const filesToPull = (
-          await this.createApi.readDirectory(node.remoteUri.path.toString())
-        ).filter((file: any) => !REMOTE_ONLY_FILES.includes(file.name));
+      const localUri = await this.fileService.toUnderlyingResource(
+        LocalCacheUri.root.resolve(node.remoteUri.path)
+      );
+      await this.sync(node.remoteUri, localUri);
 
-        await Promise.all(
-          filesToPull.map((file: any) => {
-            const uri = CreateUri.toUri(file);
-            this.fileService.copy(uri, LocalCacheUri.root.resolve(uri.path), {
-              overwrite: true,
-            });
-          })
-        );
-
-        // open the pulled files in the current workspace
-        const currentSketch = await this.sketchServiceClient.currentSketch();
-
-        if (
-          !CreateUri.is(node.uri) &&
-          currentSketch &&
-          currentSketch.uri === node.uri.toString()
-        ) {
-          filesToPull.forEach(async (file) => {
-            const localUri = LocalCacheUri.root.resolve(
-              CreateUri.toUri(file).path
-            );
-            const underlying = await this.fileService.toUnderlyingResource(
-              localUri
-            );
-
-            model.open(underlying);
-          });
-        }
-      } else {
-        await this.fileService.copy(
-          node.remoteUri,
-          LocalCacheUri.root.resolve(node.uri.path),
-          { overwrite: true }
-        );
-      }
+      this.sketchCache.purgeByPath(node.remoteUri.path.toString());
 
       node.commands = commandsCopy;
       this.messageService.info(`Done pulling ‘${node.fileStat.name}’.`, {
@@ -214,15 +185,105 @@ export class CloudSketchbookTree extends SketchbookTree {
       }
       const commandsCopy = node.commands;
       node.commands = [];
-      // delete every first level file, then push everything
-      const result = await this.fileService.copy(node.uri, node.remoteUri, {
-        overwrite: true,
-      });
+
+      const localUri = await this.fileService.toUnderlyingResource(
+        LocalCacheUri.root.resolve(node.remoteUri.path)
+      );
+      await this.sync(localUri, node.remoteUri);
+
+      this.sketchCache.purgeByPath(node.remoteUri.path.toString());
+
       node.commands = commandsCopy;
-      this.messageService.info(`Done pushing ‘${result.name}’.`, {
+      this.messageService.info(`Done pushing ‘${node.fileStat.name}’.`, {
         timeout: MESSAGE_TIMEOUT,
       });
     });
+  }
+
+  async recursiveURIs(uri: URI): Promise<URI[]> {
+    // remote resources can be fetched one-shot via api
+    if (CreateUri.is(uri)) {
+      const resources = await this.createApi.readDirectory(
+        uri.path.toString(),
+        { recursive: true, skipSketchCache: true }
+      );
+      return resources.map((resource) =>
+        CreateUri.toUri(splitSketchPath(resource.path)[1])
+      );
+    }
+
+    const fileStat = await this.fileService.resolve(uri, {
+      resolveMetadata: false,
+    });
+
+    if (!fileStat.children || !fileStat.isDirectory) {
+      return [fileStat.resource];
+    }
+
+    let childrenUris: URI[] = [];
+
+    for await (const child of fileStat.children) {
+      childrenUris = [
+        ...childrenUris,
+        ...(await this.recursiveURIs(child.resource)),
+      ];
+    }
+
+    return [fileStat.resource, ...childrenUris];
+  }
+
+  private URIsToMap(uris: URI[], basepath: string): Record<string, URI> {
+    return uris.reduce((prev: Record<string, URI>, curr) => {
+      const path = curr.toString().split(basepath);
+
+      if (path.length !== 2 || path[1].length === 0) {
+        return prev;
+      }
+
+      // do not map "do_not_sync" files/directoris and their descendants
+      const segments = path[1].split(posix.sep) || [];
+      if (
+        segments.some((segment) => Create.do_not_sync_files.includes(segment))
+      ) {
+        return prev;
+      }
+
+      // skip when the filename is a hidden file (starts with `.`)
+      if (segments[segments.length - 1].indexOf('.') === 0) {
+        return prev;
+      }
+
+      return { ...prev, [path[1]]: curr };
+    }, {});
+  }
+
+  async getUrisMap(uri: URI) {
+    const basepath = uri.toString();
+    const exists = await this.fileService.exists(uri);
+    const uris =
+      (exists && this.URIsToMap(await this.recursiveURIs(uri), basepath)) || {};
+    return uris;
+  }
+
+  async treeDiff(source: URI, dest: URI): Promise<FilesToSync> {
+    const [sourceURIs, destURIs] = await Promise.all([
+      this.getUrisMap(source),
+      this.getUrisMap(dest),
+    ]);
+
+    const destBase = dest.toString();
+    const filesToWrite: FilesToWrite[] = [];
+
+    Object.keys(sourceURIs).forEach((path) => {
+      const destUri = destURIs[path] || new URI(destBase + path);
+
+      filesToWrite.push({ source: sourceURIs[path], dest: destUri });
+      delete destURIs[path];
+    });
+
+    const filesToDelete = Object.values(destURIs);
+
+    return { filesToWrite, filesToDelete };
   }
 
   async refresh(
@@ -266,6 +327,25 @@ export class CloudSketchbookTree extends SketchbookTree {
     }
   }
 
+  async sync(source: URI, dest: URI) {
+    const { filesToWrite, filesToDelete } = await this.treeDiff(source, dest);
+    await Promise.all(
+      filesToWrite.map(async ({ source, dest }) => {
+        if ((await this.fileService.resolve(source)).isFile) {
+          const content = await this.fileService.read(source);
+          return this.fileService.write(dest, content.value);
+        }
+        return this.fileService.createFolder(dest);
+      })
+    );
+
+    await Promise.all(
+      filesToDelete.map((file) =>
+        this.fileService.delete(file, { recursive: true })
+      )
+    );
+  }
+
   async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
     return (await super.resolveChildren(parent)).sort((a, b) => {
       if (
@@ -295,7 +375,7 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   /**
    * Retrieve fileStats for the given node, merging the local and remote childrens
-   * Local children take prevedence over remote ones
+   * Local children take precedence over remote ones
    * @param node
    * @returns
    */
@@ -376,6 +456,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     const node = this.getNode(id);
     if (fileStat.isDirectory) {
       if (DirNode.is(node)) {
+        node.uri = uri;
         node.fileStat = fileStat;
         return node;
       }
@@ -391,6 +472,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     }
     if (FileNode.is(node)) {
       node.fileStat = fileStat;
+      node.uri = uri;
       return node;
     }
     return <FileNode>{
