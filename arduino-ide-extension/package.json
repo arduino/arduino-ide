@@ -4,9 +4,10 @@
   "description": "An extension for Theia building the Arduino IDE",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "prepare": "yarn download-cli && yarn download-ls && yarn clean && yarn download-examples && yarn build",
+    "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn clean && yarn download-examples && yarn build",
     "clean": "rimraf lib",
     "download-cli": "node ./scripts/download-cli.js",
+    "download-fwuploader": "node ./scripts/download-fwuploader.js",
     "download-ls": "node ./scripts/download-ls.js",
     "download-examples": "node ./scripts/download-examples.js",
     "generate-protocol": "node ./scripts/generate-protocol.js",
@@ -137,6 +138,9 @@
   "arduino": {
     "cli": {
       "version": "0.18.3"
+    },
+    "fwuploader": {
+      "version": "1.0.2"
     }
   }
 }
