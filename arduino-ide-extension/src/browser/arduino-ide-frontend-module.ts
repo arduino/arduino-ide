@@ -241,6 +241,7 @@ import { UploadFirmware } from './contributions/upload-firmware';
 import {
   UploadFirmwareDialog,
   UploadFirmwareDialogProps,
+  UploadFirmwareDialogWidget,
 } from './dialogs/upload-firmware-dialog';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -719,6 +720,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     id: 'cloud-sketchbook-composite-widget',
     createWidget: () => ctx.container.get(CloudSketchbookCompositeWidget),
   }));
+
+  bind(UploadFirmwareDialogWidget).toSelf().inSingletonScope();
   bind(UploadFirmwareDialog).toSelf().inSingletonScope();
   bind(UploadFirmwareDialogProps).toConstantValue({
     title: 'UploadFirmware',

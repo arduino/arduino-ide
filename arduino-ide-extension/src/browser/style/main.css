@@ -171,6 +171,14 @@
 
 .p-Widget.dialogOverlay .dialogBlock {
     background-color: var(--theia-arduino-foreground);
+    border-radius: 3px;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogTitle {
+    background-color: transparent;
+    min-height: 54px;
+    font-size: var(--theia-ui-font-size2);
+    color: var(--theia-list-inactiveSelectionForeground);
 }
 
 #arduino-open-sketch-control--toolbar--container {
