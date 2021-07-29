@@ -15,7 +15,7 @@ import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { CloudUserCommands } from '../../auth/cloud-user-commands';
-import { ShareSketchDialog } from '../../dialogs.ts/cloud-share-sketch-dialog';
+import { ShareSketchDialog } from '../../dialogs/cloud-share-sketch-dialog';
 import { CreateApi } from '../../create/create-api';
 import {
   PreferenceService,

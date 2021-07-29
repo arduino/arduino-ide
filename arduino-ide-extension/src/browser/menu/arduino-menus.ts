@@ -86,8 +86,13 @@ export namespace ArduinoMenus {
 
   // -- Tools
   export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
-  // `Auto Format`, `Library Manager...`, `Boards Manager...`
+  // `Auto Format`, `Archive Sketch`, `Manage Libraries...`, `Serial Monitor`
   export const TOOLS__MAIN_GROUP = [...TOOLS, '0_main'];
+  // `Connectivity Firmware Updater`
+  export const TOOLS__FIRMWARE_UPLOADER_GROUP = [
+    ...TOOLS,
+    '1_firmware_uploader',
+  ];
   // `Board`, `Port`, and `Get Board Info`.
   export const TOOLS__BOARD_SELECTION_GROUP = [...TOOLS, '2_board_selection'];
   // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`

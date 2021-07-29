@@ -223,7 +223,7 @@ import { CloudSketchbookWidget } from './widgets/cloud-sketchbook/cloud-sketchbo
 import { CloudSketchbookTreeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-tree-widget';
 import { createCloudSketchbookTreeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-tree-container';
 import { CreateApi } from './create/create-api';
-import { ShareSketchDialog } from './dialogs.ts/cloud-share-sketch-dialog';
+import { ShareSketchDialog } from './dialogs/cloud-share-sketch-dialog';
 import { AuthenticationClientService } from './auth/authentication-client-service';
 import {
   AuthenticationService,
@@ -237,6 +237,11 @@ import { SketchbookWidget } from './widgets/sketchbook/sketchbook-widget';
 import { SketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-widget';
 import { createSketchbookTreeWidget } from './widgets/sketchbook/sketchbook-tree-container';
 import { SketchCache } from './widgets/cloud-sketchbook/cloud-sketch-cache';
+import { UploadFirmware } from './contributions/upload-firmware';
+import {
+  UploadFirmwareDialog,
+  UploadFirmwareDialogProps,
+} from './dialogs/upload-firmware-dialog';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -571,6 +576,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, About);
   Contribution.configure(bind, Debug);
   Contribution.configure(bind, Sketchbook);
+  Contribution.configure(bind, UploadFirmware);
   Contribution.configure(bind, BoardSelection);
   Contribution.configure(bind, OpenRecentSketch);
   Contribution.configure(bind, Help);
@@ -713,4 +719,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     id: 'cloud-sketchbook-composite-widget',
     createWidget: () => ctx.container.get(CloudSketchbookCompositeWidget),
   }));
+  bind(UploadFirmwareDialog).toSelf().inSingletonScope();
+  bind(UploadFirmwareDialogProps).toConstantValue({
+    title: 'UploadFirmware',
+  });
 });
