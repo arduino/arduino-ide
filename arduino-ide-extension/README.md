@@ -35,7 +35,7 @@ The Core Service is responsible for building your sketches and uploading them to
 The Monitor Service allows getting information back from sketches running on your Arduino boards.
 
 - [src/common/protocol/monitor-service.ts](./src/common/protocol/monitor-service.ts) implements the common classes and interfaces
-- [src/node/monitor-service-impl.ts](./src/node/monitor-service-impl.ts) implements the service backend:
+- [src/node/monitor/monitor-service-impl.ts](./src/node/monitor/monitor-service-impl.ts) implements the service backend:
   - connecting to / disconnecting from a board
   - receiving and sending data
 - [src/browser/monitor/monitor-widget.tsx](./src/browser/monitor/monitor-widget.tsx) implements the serial monitor front-end:
