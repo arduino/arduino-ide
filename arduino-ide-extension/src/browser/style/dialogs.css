@@ -1,0 +1,48 @@
+.p-Widget.dialogOverlay .dialogBlock {
+    border-radius: 3px;
+    padding: 0 28px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    min-height: 0px;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogTitle {
+    padding: 36px 0 28px;
+    font-weight: 500;
+    background-color: transparent;
+    font-size: var(--theia-ui-font-size2);
+    color: var(--theia-list-inactiveSelectionForeground);
+    min-height: 0;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogControl {
+    padding: 0 0 36px;
+    min-height: 0;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent {
+    padding: 0;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent > div {
+    padding: 0 0 12px;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection {
+    margin-top: 28px;
+}
+.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection:first-child {
+    margin-top: 0;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+}
+.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow:first-child {
+    margin-top: 0px;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow .fl1{
+    flex: 1;
+}

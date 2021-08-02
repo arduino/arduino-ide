@@ -242,7 +242,13 @@ import {
   UploadFirmwareDialog,
   UploadFirmwareDialogProps,
   UploadFirmwareDialogWidget,
-} from './dialogs/upload-firmware-dialog';
+} from './dialogs/firmware-uploader/upload-firmware-dialog';
+import {
+  UploadCertificateDialog,
+  UploadCertificateDialogProps,
+  UploadCertificateDialogWidget,
+} from './dialogs/certificate-uploader/upload-certificate-dialog';
+import { UploadCertificate } from './contributions/upload-certificate';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -578,6 +584,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Debug);
   Contribution.configure(bind, Sketchbook);
   Contribution.configure(bind, UploadFirmware);
+  Contribution.configure(bind, UploadCertificate);
   Contribution.configure(bind, BoardSelection);
   Contribution.configure(bind, OpenRecentSketch);
   Contribution.configure(bind, Help);
@@ -725,5 +732,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(UploadFirmwareDialog).toSelf().inSingletonScope();
   bind(UploadFirmwareDialogProps).toConstantValue({
     title: 'UploadFirmware',
+  });
+  bind(UploadCertificateDialogWidget).toSelf().inSingletonScope();
+  bind(UploadCertificateDialog).toSelf().inSingletonScope();
+  bind(UploadCertificateDialogProps).toConstantValue({
+    title: 'UploadCertificate',
   });
 });

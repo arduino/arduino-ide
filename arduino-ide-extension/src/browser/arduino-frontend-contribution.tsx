@@ -367,16 +367,15 @@ export class ArduinoFrontendContribution
       }
       const { clangdUri, cliUri, lsUri, fwuploaderUri } =
         await this.executableService.list();
-      const [clangdPath, cliPath, lsPath, cliConfigPath, fwuploaderPath] =
-        await Promise.all([
-          this.fileService.fsPath(new URI(clangdUri)),
-          this.fileService.fsPath(new URI(cliUri)),
-          this.fileService.fsPath(new URI(lsUri)),
-          this.fileService.fsPath(
-            new URI(await this.configService.getCliConfigFileUri())
-          ),
-          this.fileService.fsPath(new URI(fwuploaderUri)),
-        ]);
+      const [clangdPath, cliPath, lsPath, cliConfigPath] = await Promise.all([
+        this.fileService.fsPath(new URI(clangdUri)),
+        this.fileService.fsPath(new URI(cliUri)),
+        this.fileService.fsPath(new URI(lsUri)),
+        this.fileService.fsPath(
+          new URI(await this.configService.getCliConfigFileUri())
+        ),
+        this.fileService.fsPath(new URI(fwuploaderUri)),
+      ]);
       this.languageServerFqbn = await Promise.race([
         new Promise<undefined>((_, reject) =>
           setTimeout(

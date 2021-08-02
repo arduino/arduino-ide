@@ -6,17 +6,17 @@ import {
   Contribution,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { UploadFirmwareDialog } from '../dialogs/firmware-uploader/upload-firmware-dialog';
+import { UploadCertificateDialog } from '../dialogs/certificate-uploader/upload-certificate-dialog';
 
 @injectable()
-export class UploadFirmware extends Contribution {
-  @inject(UploadFirmwareDialog)
-  protected readonly dialog: UploadFirmwareDialog;
+export class UploadCertificate extends Contribution {
+  @inject(UploadCertificateDialog)
+  protected readonly dialog: UploadCertificateDialog;
 
   protected dialogOpened = false;
 
   registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(UploadFirmware.Commands.OPEN, {
+    registry.registerCommand(UploadCertificate.Commands.OPEN, {
       execute: async () => {
         try {
           this.dialogOpened = true;
@@ -31,18 +31,18 @@ export class UploadFirmware extends Contribution {
 
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__FIRMWARE_UPLOADER_GROUP, {
-      commandId: UploadFirmware.Commands.OPEN.id,
-      label: UploadFirmware.Commands.OPEN.label,
-      order: '0',
+      commandId: UploadCertificate.Commands.OPEN.id,
+      label: UploadCertificate.Commands.OPEN.label,
+      order: '1',
     });
   }
 }
 
-export namespace UploadFirmware {
+export namespace UploadCertificate {
   export namespace Commands {
     export const OPEN: Command = {
-      id: 'arduino-upload-firmware-open',
-      label: 'Connectivity Firmware Updater',
+      id: 'arduino-upload-certificate-open',
+      label: 'Upload SSL Root Certificates',
       category: 'Arduino',
     };
   }
