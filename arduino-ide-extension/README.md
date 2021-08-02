@@ -58,3 +58,13 @@ The Config Service knows about your system, like for example the default sketch 
 #### Rebuild gRPC protocol interfaces
   - Some CLI updates can bring changes to the gRPC interfaces, as the API might change. gRPC interfaces can be updated running the command
     `yarn --cwd arduino-ide-extension generate-protocol`
+
+### Customize Icons
+ArduinoIde uses a customized version of FontAwesome.
+In order to update/replace icons follow the following steps:
+  - import the file `arduino-icons.json` in [Icomoon](https://icomoon.io/app/#/projects)
+  - load it
+  - edit the icons as needed
+  - !! download the **new** `arduino-icons.json` file and put it in this repo
+  - Click on "Generate Font" in Icomoon, then download
+  - place the updated fonts in the `src/style/fonts` directory

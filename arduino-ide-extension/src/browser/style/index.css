@@ -7,9 +7,11 @@
 @import './terminal.css';
 @import './editor.css';
 @import './settings-dialog.css';
+@import './fwuploader-dialog.css';
 @import './debug.css';
 @import './sketchbook.css';
 @import './cloud-sketchbook.css';
+@import './fonts.css';
 
 .theia-input.warning:focus {
     outline-width: 1px;

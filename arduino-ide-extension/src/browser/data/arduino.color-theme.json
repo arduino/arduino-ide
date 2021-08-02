@@ -97,6 +97,7 @@
     "editorWhitespace.foreground": "#bfbfbf",
     "editor.lineHighlightBackground": "#434f5410",
     "editor.selectionBackground": "#ffcb00",
+    "editorWidget.background": "#F7F9F9",
     "focusBorder": "#7fcbcd99",
     "menubar.selectionBackground": "#ffffff",
     "menubar.selectionForeground": "#212121",

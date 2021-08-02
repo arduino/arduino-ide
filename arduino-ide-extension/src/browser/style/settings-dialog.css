@@ -50,7 +50,9 @@
 .additional-urls-dialog .link:hover {
     color: var(--theia-textLink-activeForeground);
 }
-
+.arduino-settings-dialog .react-tabs__tab-panel {
+    padding-bottom: 25px;
+}
 .arduino-settings-dialog .react-tabs__tab-list {
     display: flex;
     justify-content: center;

@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { inject, injectable } from 'inversify';
-import {
-  AbstractDialog,
-  DialogError,
-  DialogProps,
-} from '@theia/core/lib/browser/dialogs';
+import { AbstractDialog, DialogProps } from '@theia/core/lib/browser/dialogs';
 import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
@@ -21,7 +17,7 @@ export const FirmwareUploaderComponent = ({
     value: string;
   } | null>(null);
 
-  const [disabled, setdisabled] = React.useState(true);
+  const [placeholder, setPlaceholder] = React.useState('');
 
   const [portsboards, setportsboards] = React.useState<
     {
@@ -32,39 +28,42 @@ export const FirmwareUploaderComponent = ({
 
   React.useEffect(() => {
     boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
-      let disabled = false;
+      let placeholderTxt = 'Select a board...';
       let selectedBoard = -1;
-      let boardsList = availableBoards
-        .filter((board) => !!board.port)
+      const boardsList = availableBoards
+        .filter((board) => !!board.fqbn)
         .map((board, i) => {
           if (board.selected) {
             selectedBoard = i;
           }
           return {
-            label: board.name,
+            label: `${board.name} at ${board.port?.address}`,
             value: board.port?.address || '',
           };
         });
 
       if (boardsList.length === 0) {
-        disabled = true;
-        boardsList = [
-          { label: 'No board connected to serial port', value: '' },
-        ];
-        selectedBoard = 0;
+        placeholderTxt = 'No board connected to serial port';
       }
 
-      setdisabled(disabled);
+      setPlaceholder(placeholderTxt);
       setportsboards(boardsList);
       setdefaultValue(boardsList[selectedBoard] || null);
     });
   }, [boardsServiceClient]);
   return (
-    <div id="widget-container firmware-uploader">
+    <div id="widget-container">
       <ArduinoSelect
-        isDisabled={disabled}
+        isDisabled={portsboards.length === 0}
+        placeholder={placeholder}
         options={portsboards}
         value={defaultValue}
+        tabSelectsValue={false}
+        onChange={(value) => {
+          if (value) {
+            setdefaultValue(value);
+          }
+        }}
       />
     </div>
   );
@@ -81,11 +80,11 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   protected render(): React.ReactNode {
     return (
-      <div className="selectBoardContainer">
+      <form>
         <FirmwareUploaderComponent
           boardsServiceClient={this.boardsServiceClient}
         />
-      </div>
+      </form>
     );
   }
 }
@@ -103,12 +102,8 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     protected readonly props: UploadFirmwareDialogProps
   ) {
     super({ title: 'Connectivity Firmware Updater' });
-  }
-
-  protected setErrorMessage(error: DialogError): void {
-    if (this.acceptButton) {
-      this.acceptButton.disabled = !DialogError.getResult(error);
-    }
+    this.contentNode.classList.add('firmware-uploader-dialog');
+    this.acceptButton = undefined;
   }
 
   get value(): void {
@@ -132,5 +127,9 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
   protected onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
+  }
+
+  protected handleEnter(event: KeyboardEvent): boolean | void {
+    return false;
   }
 }

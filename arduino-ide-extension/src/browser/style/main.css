@@ -170,13 +170,21 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock {
-    background-color: var(--theia-arduino-foreground);
     border-radius: 3px;
+    padding: 0 28px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    min-height: 400px;
+}
+.p-Widget.dialogOverlay .dialogBlock .dialogTitle,
+.p-Widget.dialogOverlay .dialogBlock .dialogContent {
+    padding: 0;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogTitle {
+    font-weight: 500;
     background-color: transparent;
-    min-height: 54px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     font-size: var(--theia-ui-font-size2);
     color: var(--theia-list-inactiveSelectionForeground);
 }

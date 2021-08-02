@@ -1,0 +1,7 @@
+.firmware-uploader-dialog > div {
+  flex: 1;
+}
+
+.firmware-uploader-dialog .arduino-select__control {
+  background: var(--theia-menubar-selectionBackground) !important;
+}
