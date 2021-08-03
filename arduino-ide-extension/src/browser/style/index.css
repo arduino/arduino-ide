@@ -8,7 +8,8 @@
 @import './terminal.css';
 @import './editor.css';
 @import './settings-dialog.css';
-@import './fwuploader-dialog.css';
+@import './firmware-uploader-dialog.css';
+@import './certificate-uploader-dialog.css';
 @import './debug.css';
 @import './sketchbook.css';
 @import './cloud-sketchbook.css';

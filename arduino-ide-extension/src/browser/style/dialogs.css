@@ -43,6 +43,6 @@
     margin-top: 0px;
 }
 
-.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow .fl1{
+.fl1{
     flex: 1;
 }

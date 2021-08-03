@@ -242,17 +242,18 @@ import {
   UploadFirmwareDialog,
   UploadFirmwareDialogProps,
   UploadFirmwareDialogWidget,
-} from './dialogs/firmware-uploader/upload-firmware-dialog';
-import {
-  UploadCertificateDialog,
-  UploadCertificateDialogProps,
-  UploadCertificateDialogWidget,
-} from './dialogs/certificate-uploader/upload-certificate-dialog';
+} from './dialogs/firmware-uploader/firmware-uploader-dialog';
+
 import { UploadCertificate } from './contributions/upload-certificate';
 import {
   ArduinoFirmwareUploader,
   ArduinoFirmwareUploaderPath,
 } from '../common/protocol/arduino-firmware-uploader';
+import {
+  UploadCertificateDialog,
+  UploadCertificateDialogProps,
+  UploadCertificateDialogWidget,
+} from './dialogs/certificate-uploader/certificate-uploader-dialog';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 

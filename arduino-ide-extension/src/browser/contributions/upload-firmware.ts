@@ -6,7 +6,7 @@ import {
   Contribution,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { UploadFirmwareDialog } from '../dialogs/firmware-uploader/upload-firmware-dialog';
+import { UploadFirmwareDialog } from '../dialogs/firmware-uploader/firmware-uploader-dialog';
 
 @injectable()
 export class UploadFirmware extends Contribution {

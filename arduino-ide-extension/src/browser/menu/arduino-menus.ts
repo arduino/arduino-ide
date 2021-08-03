@@ -148,6 +148,11 @@ export namespace ArduinoMenus {
     ...SKETCH_CONTROL__CONTEXT,
     '2_resources',
   ];
+
+  // -- ROOT SSL CERTIFICATES
+  export const ROOT_CERTIFICATES__CONTEXT = [
+    'arduino-root-certificates--context',
+  ];
 }
 
 /**

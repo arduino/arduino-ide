@@ -40,6 +40,10 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
     return JSON.parse(raw);
   }
 
+  async uploadCertificates(command: string): Promise<any> {
+    return await this.runCommand(['certificates', 'flash', command]);
+  }
+
   async list(fqbn?: string): Promise<FirmwareInfo[]> {
     const fqbnFlag = fqbn ? ['--fqbn', fqbn] : [];
     return await this.runCommand([

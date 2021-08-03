@@ -1,0 +1,43 @@
+.certificate-uploader-dialog {
+  width: 600px;
+}
+
+.certificate-uploader-dialog .theia-select {
+  border: none !important;
+}
+.certificate-uploader-dialog .arduino-select__control {
+  height: 31px;
+  background: var(--theia-menubar-selectionBackground) !important;
+}
+
+.certificate-uploader-dialog .dialogRow > button{
+  margin-right: 3px;
+}
+
+.certificate-uploader-dialog .certificate-list {
+  border: 1px solid #BDC7C7;
+  border-radius: 2px;;
+  background: var(--theia-menubar-selectionBackground) !important;
+  overflow: auto;
+  height: 120px;
+  flex: 1;
+}
+.certificate-uploader-dialog .certificate-list .certificate-row {
+  display: flex;
+  padding: 6px 10px 5px 10px
+}
+.certificate-uploader-dialog .certificate-list .certificate-row:hover {
+  background-color: var(--theia-list-hoverBackground);
+}
+
+.certificate-uploader-dialog  .success {
+  color: #1DA086;
+}
+
+.certificate-uploader-dialog  .warn {
+  color: #C11F09;
+}
+
+.certificate-uploader-dialog  .status-icon {
+  margin-right: 10px;
+}

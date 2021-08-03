@@ -11,6 +11,7 @@ export type FirmwareInfo = {
 export interface ArduinoFirmwareUploader {
   list(fqbn?: string): Promise<FirmwareInfo[]>;
   flash(firmware: FirmwareInfo, port: string): Promise<string>;
+  uploadCertificates(command: string): Promise<any>;
   updatableBoards(): Promise<string[]>;
   availableFirmwares(fqbn: string): Promise<FirmwareInfo[]>;
 }
