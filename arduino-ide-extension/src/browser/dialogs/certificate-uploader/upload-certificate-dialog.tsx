@@ -9,6 +9,7 @@ import {
   BoardsServiceProvider,
 } from '../../boards/boards-service-provider';
 import { ArduinoSelect } from '../../widgets/arduino-select';
+import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
 
 export const CertificateUploaderComponent = ({
   boardsServiceClient,
@@ -22,7 +23,6 @@ export const CertificateUploaderComponent = ({
   const [installFeedback, setInstallFeedback] = React.useState<
     'ok' | 'fail' | null
   >(null);
-
   const [selectedBoard, setSelectedBoard] = React.useState<{
     label: string;
     value: string;
@@ -265,6 +265,9 @@ export const CertificateUploaderComponent = ({
 export class UploadCertificateDialogWidget extends ReactWidget {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
+
+  @inject(ArduinoFirmwareUploader)
+  protected readonly firmware: ArduinoFirmwareUploader;
 
   constructor() {
     super();

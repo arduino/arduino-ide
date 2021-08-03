@@ -249,6 +249,10 @@ import {
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/upload-certificate-dialog';
 import { UploadCertificate } from './contributions/upload-certificate';
+import {
+  ArduinoFirmwareUploader,
+  ArduinoFirmwareUploaderPath,
+} from '../common/protocol/arduino-firmware-uploader';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -530,6 +534,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       WebSocketConnectionProvider.createProxy(
         context.container,
         ArduinoDaemonPath
+      )
+    )
+    .inSingletonScope();
+
+  bind(ArduinoFirmwareUploader)
+    .toDynamicValue((context) =>
+      WebSocketConnectionProvider.createProxy(
+        context.container,
+        ArduinoFirmwareUploaderPath
       )
     )
     .inSingletonScope();
