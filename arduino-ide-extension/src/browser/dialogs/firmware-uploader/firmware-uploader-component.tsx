@@ -1,78 +1,42 @@
 import * as React from 'react';
 import {
-  AvailableBoard,
-  BoardsServiceProvider,
-} from '../../boards/boards-service-provider';
+  ArduinoFirmwareUploader,
+  FirmwareInfo,
+} from '../../../common/protocol/arduino-firmware-uploader';
+import { AvailableBoard } from '../../boards/boards-service-provider';
 import { ArduinoSelect } from '../../widgets/arduino-select';
+import { SelectBoardComponent } from '../certificate-uploader/select-board-components';
+
+type FirmwareOption = { value: string; label: string };
 
 export const FirmwareUploaderComponent = ({
-  boardsServiceClient,
+  availableBoards,
+  firmwareUploader,
+  updatableFqbns,
 }: {
-  boardsServiceClient: BoardsServiceProvider;
+  availableBoards: AvailableBoard[];
+  firmwareUploader: ArduinoFirmwareUploader;
+  updatableFqbns: string[];
 }): React.ReactElement => {
   // boolean states for buttons
-  const [boardsFetching, setBoardsFetching] = React.useState(false);
   const [firmwaresFetching, setFirmwaresFetching] = React.useState(false);
   const [installingFw, setInstallingFw] = React.useState(false);
   const [installFeedback, setInstallFeedback] = React.useState<
     'ok' | 'fail' | null
   >(null);
 
-  const [selectedBoard, setSelectedBoard] = React.useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  const [selectedBoard, setSelectedBoard] =
+    React.useState<AvailableBoard | null>(null);
 
-  const [selectBoardPlaceholder, setSelectBoardPlaceholder] =
-    React.useState('');
-  const [availableBoards, setAvailableBoards] = React.useState<
-    {
-      label: string;
-      value: string;
-    }[]
-  >([]);
-
-  const [selectedFirmware, setSelectedFirmware] = React.useState<{
-    label: string;
-    value: string;
-  } | null>(null);
   const [availableFirmwares, setAvailableFirmwares] = React.useState<
-    {
-      label: string;
-      value: string;
-    }[]
+    FirmwareInfo[]
   >([]);
+  const [selectedFirmware, setSelectedFirmware] =
+    React.useState<FirmwareOption | null>(null);
 
-  React.useEffect(() => {
-    boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
-      setBoardsFetching(true);
-      let placeholderTxt = 'Select a board...';
-      let selectedBoard = -1;
-      const boardsList = availableBoards
-        .filter(
-          (board) =>
-            !!board.fqbn && board.state === AvailableBoard.State.recognized
-        )
-        .map((board, i) => {
-          if (board.selected) {
-            selectedBoard = i;
-          }
-          return {
-            label: `${board.name} at ${board.port?.address}`,
-            value: board.port?.address || '',
-          };
-        });
-
-      if (boardsList.length === 0) {
-        placeholderTxt = 'No board connected to serial port';
-      }
-
-      setSelectBoardPlaceholder(placeholderTxt);
-      setAvailableBoards(boardsList);
-      setSelectedBoard(boardsList[selectedBoard] || null);
-      setBoardsFetching(false);
-    });
-  }, [boardsServiceClient]);
+  const [firmwareOptions, setFirmwareOptions] = React.useState<
+    FirmwareOption[]
+  >([]);
 
   const fetchFirmwares = React.useCallback(async () => {
     setInstallFeedback(null);
@@ -82,30 +46,41 @@ export const FirmwareUploaderComponent = ({
     }
 
     // fetch the firmwares for the selected board
-    // const firmwares = await Promise.resolve([]);
+    const firmwaresForFqbn = await firmwareUploader.availableFirmwares(
+      selectedBoard.fqbn || ''
+    );
+    setAvailableFirmwares(firmwaresForFqbn);
 
-    setAvailableFirmwares([
-      {
-        label: 'a',
-        value: 'a',
-      },
-      {
-        label: 'b',
-        value: 'b',
-      },
-    ]);
+    const firmwaresOpts = firmwaresForFqbn.map((f) => ({
+      label: f.firmware_version,
+      value: f.firmware_version,
+    }));
+
+    setFirmwareOptions(firmwaresOpts);
+
+    if (firmwaresForFqbn.length > 0) setSelectedFirmware(firmwaresOpts[0]);
     setFirmwaresFetching(false);
-  }, [selectedBoard]);
+  }, [firmwareUploader, selectedBoard]);
 
   const installFirmware = React.useCallback(async () => {
     setInstallFeedback(null);
     setInstallingFw(true);
 
-    const installStatus = await Promise.resolve(true);
+    const firmwareToFlash = availableFirmwares.find(
+      (firmware) => firmware.firmware_version === selectedFirmware?.value
+    );
+
+    const installStatus =
+      !!firmwareToFlash &&
+      !!selectedBoard?.port &&
+      (await firmwareUploader.flash(
+        firmwareToFlash,
+        selectedBoard?.port.address
+      ));
 
     setInstallFeedback((installStatus && 'ok') || 'fail');
     setInstallingFw(false);
-  }, []);
+  }, [firmwareUploader, selectedBoard, selectedFirmware]);
 
   return (
     <>
@@ -115,30 +90,24 @@ export const FirmwareUploaderComponent = ({
         </div>
         <div className="dialogRow">
           <div className="fl1">
-            <ArduinoSelect
-              id="board-select"
-              menuPosition="fixed"
-              isDisabled={availableBoards.length === 0 || boardsFetching}
-              placeholder={selectBoardPlaceholder}
-              options={availableBoards}
-              value={selectedBoard}
-              tabSelectsValue={false}
-              onChange={(value) => {
-                if (value) {
+            <SelectBoardComponent
+              availableBoards={availableBoards}
+              updatableFqbns={updatableFqbns}
+              onBoardSelect={(board) => {
+                if (board) {
                   // clear previously available firmwares for the board
                   setInstallFeedback(null);
                   setAvailableFirmwares([]);
-                  setSelectedBoard(value);
+                  setSelectedBoard(board);
                 }
               }}
+              selectedBoard={selectedBoard}
             />
           </div>
           <button
             type="button"
             className="theia-button secondary"
-            disabled={
-              selectedBoard === null || firmwaresFetching || boardsFetching
-            }
+            disabled={selectedBoard === null || firmwaresFetching}
             onClick={fetchFirmwares}
           >
             Check Updates
@@ -155,12 +124,8 @@ export const FirmwareUploaderComponent = ({
               <ArduinoSelect
                 id="firmware-select"
                 menuPosition="fixed"
-                isDisabled={
-                  availableBoards.length === 0 ||
-                  firmwaresFetching ||
-                  installingFw
-                }
-                options={availableFirmwares}
+                isDisabled={!selectedBoard || firmwaresFetching || installingFw}
+                options={firmwareOptions}
                 value={selectedFirmware}
                 tabSelectsValue={false}
                 onChange={(value) => {

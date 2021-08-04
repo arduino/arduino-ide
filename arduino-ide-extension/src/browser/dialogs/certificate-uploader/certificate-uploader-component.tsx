@@ -1,21 +1,20 @@
 import * as React from 'react';
-import {
-  AvailableBoard,
-  BoardsServiceProvider,
-} from '../../boards/boards-service-provider';
-import { ArduinoSelect } from '../../widgets/arduino-select';
+import { AvailableBoard } from '../../boards/boards-service-provider';
 import { CertificateListComponent } from './certificate-list';
+import { SelectBoardComponent } from './select-board-components';
 
 export const CertificateUploaderComponent = ({
-  boardsServiceClient,
+  availableBoards,
   certificates,
   // addCertificate,
+  updatableFqbns,
   uploadCertificates,
   openContextMenu,
 }: {
-  boardsServiceClient: BoardsServiceProvider;
+  availableBoards: AvailableBoard[];
   certificates: string[];
   addCertificate: (cert: string) => void;
+  updatableFqbns: string[];
   uploadCertificates: (
     fqbn: string,
     address: string,
@@ -29,55 +28,11 @@ export const CertificateUploaderComponent = ({
 
   const [selectedCerts, setSelectedCerts] = React.useState<string[]>([]);
 
-  const [selectedBoard, setSelectedBoard] = React.useState<{
-    label: string;
-    value: AvailableBoard;
-  } | null>(null);
-
-  const [selectBoardPlaceholder, setSelectBoardPlaceholder] =
-    React.useState('');
-  const [availableBoards, setAvailableBoards] = React.useState<
-    {
-      label: string;
-      value: AvailableBoard;
-    }[]
-  >([]);
-
-  React.useEffect(() => {
-    boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
-      let placeholderTxt = 'Select a board...';
-      let selectedBoard = -1;
-      const boardsList = availableBoards
-        .filter(
-          (board) =>
-            !!board.fqbn && board.state === AvailableBoard.State.recognized
-        )
-        .map((board, i) => {
-          if (board.selected) {
-            selectedBoard = i;
-          }
-          return {
-            label: `${board.name} at ${board.port?.address}`,
-            value: board,
-          };
-        });
-
-      if (boardsList.length === 0) {
-        placeholderTxt = 'No board connected to serial port';
-      }
-
-      setSelectBoardPlaceholder(placeholderTxt);
-      setAvailableBoards(boardsList);
-      setSelectedBoard(boardsList[selectedBoard] || null);
-    });
-  }, [boardsServiceClient]);
+  const [selectedBoard, setSelectedBoard] =
+    React.useState<AvailableBoard | null>(null);
 
   const installCertificates = async () => {
-    if (
-      !selectedBoard?.value ||
-      !selectedBoard.value.fqbn ||
-      !selectedBoard.value.port
-    ) {
+    if (!selectedBoard || !selectedBoard.fqbn || !selectedBoard.port) {
       return;
     }
 
@@ -85,8 +40,8 @@ export const CertificateUploaderComponent = ({
 
     try {
       await uploadCertificates(
-        selectedBoard.value.fqbn,
-        selectedBoard.value.port.address,
+        selectedBoard.fqbn,
+        selectedBoard.port.address,
         selectedCerts
       );
       setInstallFeedback('ok');
@@ -119,31 +74,23 @@ export const CertificateUploaderComponent = ({
         </div>
         <div className="dialogRow">
           <div className="fl1">
-            <ArduinoSelect
-              id="board-select"
-              menuPosition="fixed"
-              isDisabled={availableBoards.length === 0}
-              placeholder={selectBoardPlaceholder}
-              options={availableBoards}
-              value={selectedBoard}
-              tabSelectsValue={false}
-              onChange={(value) => {
-                if (value) {
+            <SelectBoardComponent
+              availableBoards={availableBoards}
+              updatableFqbns={updatableFqbns}
+              onBoardSelect={(board) => {
+                if (board) {
                   setInstallFeedback(null);
-                  setSelectedBoard(value);
+                  setSelectedBoard(board);
                 }
               }}
+              selectedBoard={selectedBoard}
             />
           </div>
           <button
             type="button"
             className="theia-button primary"
             onClick={installCertificates}
-            disabled={
-              selectedCerts.length === 0 ||
-              availableBoards.length === 0 ||
-              !selectedBoard
-            }
+            disabled={selectedCerts.length === 0 || !selectedBoard}
           >
             Upload
           </button>

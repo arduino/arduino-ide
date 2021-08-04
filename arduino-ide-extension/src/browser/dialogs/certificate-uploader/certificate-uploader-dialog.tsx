@@ -4,7 +4,10 @@ import { AbstractDialog, DialogProps } from '@theia/core/lib/browser/dialogs';
 import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
-import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import {
+  AvailableBoard,
+  BoardsServiceProvider,
+} from '../../boards/boards-service-provider';
 import { CertificateUploaderComponent } from './certificate-uploader-component';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import {
@@ -13,6 +16,7 @@ import {
 } from '@theia/core/lib/browser/preferences/preference-service';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { certificateList, sanifyCertString } from './utils';
+import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
 
 @injectable()
 export class UploadCertificateDialogWidget extends ReactWidget {
@@ -28,7 +32,12 @@ export class UploadCertificateDialogWidget extends ReactWidget {
   @inject(CommandRegistry)
   protected readonly commandRegistry: CommandRegistry;
 
+  @inject(ArduinoFirmwareUploader)
+  protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
+
   protected certificates: string[] = [];
+  protected updatableFqbns: string[] = [];
+  protected availableBoards: AvailableBoard[] = [];
 
   constructor() {
     super();
@@ -49,6 +58,16 @@ export class UploadCertificateDialogWidget extends ReactWidget {
         this.certificates = certificateList(event.newValue);
         this.update();
       }
+    });
+
+    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+      this.updatableFqbns = fqbns;
+      this.update();
+    });
+
+    this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
+      this.availableBoards = availableBoards;
+      this.update();
     });
   }
 
@@ -88,8 +107,9 @@ export class UploadCertificateDialogWidget extends ReactWidget {
   protected render(): React.ReactNode {
     return (
       <CertificateUploaderComponent
-        boardsServiceClient={this.boardsServiceClient}
+        availableBoards={this.availableBoards}
         certificates={this.certificates}
+        updatableFqbns={this.updatableFqbns}
         addCertificate={this.addCertificate.bind(this)}
         uploadCertificates={this.uploadCertificates.bind(this)}
         openContextMenu={this.openContextMenu.bind(this)}
