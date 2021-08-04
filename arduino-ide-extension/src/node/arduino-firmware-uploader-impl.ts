@@ -46,13 +46,15 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
 
   async list(fqbn?: string): Promise<FirmwareInfo[]> {
     const fqbnFlag = fqbn ? ['--fqbn', fqbn] : [];
-    return await this.runCommand([
-      'firmware',
-      'list',
-      '--format',
-      'json',
-      ...fqbnFlag,
-    ]);
+    const firmwares: FirmwareInfo[] =
+      (await this.runCommand([
+        'firmware',
+        'list',
+        '--format',
+        'json',
+        ...fqbnFlag,
+      ])) || [];
+    return firmwares.reverse();
   }
 
   async updatableBoards(): Promise<string[]> {
