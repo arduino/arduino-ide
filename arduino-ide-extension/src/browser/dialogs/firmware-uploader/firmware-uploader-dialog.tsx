@@ -8,7 +8,10 @@ import {
   AvailableBoard,
   BoardsServiceProvider,
 } from '../../boards/boards-service-provider';
-import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
+import {
+  ArduinoFirmwareUploader,
+  FirmwareInfo,
+} from '../../../common/protocol/arduino-firmware-uploader';
 import { FirmwareUploaderComponent } from './firmware-uploader-component';
 import { UploadFirmware } from '../../contributions/upload-firmware';
 
@@ -22,6 +25,10 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   protected updatableFqbns: string[] = [];
   protected availableBoards: AvailableBoard[] = [];
+
+  public busyCallback = (busy: boolean) => {
+    return;
+  };
 
   constructor() {
     super();
@@ -40,12 +47,20 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
     });
   }
 
+  protected flashFirmware(firmware: FirmwareInfo, port: string): Promise<any> {
+    this.busyCallback(true);
+    return this.arduinoFirmwareUploader
+      .flash(firmware, port)
+      .finally(() => this.busyCallback(false));
+  }
+
   protected render(): React.ReactNode {
     return (
       <form>
         <FirmwareUploaderComponent
           availableBoards={this.availableBoards}
           firmwareUploader={this.arduinoFirmwareUploader}
+          flashFirmware={this.flashFirmware.bind(this)}
           updatableFqbns={this.updatableFqbns}
         />
       </form>
@@ -60,6 +75,8 @@ export class UploadFirmwareDialogProps extends DialogProps {}
 export class UploadFirmwareDialog extends AbstractDialog<void> {
   @inject(UploadFirmwareDialogWidget)
   protected readonly widget: UploadFirmwareDialogWidget;
+
+  private busy = false;
 
   constructor(
     @inject(UploadFirmwareDialogProps)
@@ -79,6 +96,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
       Widget.detach(this.widget);
     }
     Widget.attach(this.widget, this.contentNode);
+    this.widget.busyCallback = this.busyCallback.bind(this);
     super.onAfterAttach(msg);
     this.update();
   }
@@ -95,5 +113,21 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
 
   protected handleEnter(event: KeyboardEvent): boolean | void {
     return false;
+  }
+
+  close(): void {
+    if (this.busy) {
+      return;
+    }
+    super.close();
+  }
+
+  busyCallback(busy: boolean): void {
+    this.busy = busy;
+    if (busy) {
+      this.closeCrossNode.classList.add('disabled');
+    } else {
+      this.closeCrossNode.classList.remove('disabled');
+    }
   }
 }

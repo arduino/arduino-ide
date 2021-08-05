@@ -13,10 +13,12 @@ export const FirmwareUploaderComponent = ({
   availableBoards,
   firmwareUploader,
   updatableFqbns,
+  flashFirmware,
 }: {
   availableBoards: AvailableBoard[];
   firmwareUploader: ArduinoFirmwareUploader;
   updatableFqbns: string[];
+  flashFirmware: (firmware: FirmwareInfo, port: string) => Promise<any>;
 }): React.ReactElement => {
   // boolean states for buttons
   const [firmwaresFetching, setFirmwaresFetching] = React.useState(false);
@@ -73,10 +75,7 @@ export const FirmwareUploaderComponent = ({
       const installStatus =
         !!firmwareToFlash &&
         !!selectedBoard?.port &&
-        (await firmwareUploader.flash(
-          firmwareToFlash,
-          selectedBoard?.port.address
-        ));
+        (await flashFirmware(firmwareToFlash, selectedBoard?.port.address));
 
       setInstallFeedback((installStatus && 'ok') || 'fail');
     } catch {

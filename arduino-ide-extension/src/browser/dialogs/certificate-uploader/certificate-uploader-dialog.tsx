@@ -39,6 +39,10 @@ export class UploadCertificateDialogWidget extends ReactWidget {
   protected updatableFqbns: string[] = [];
   protected availableBoards: AvailableBoard[] = [];
 
+  public busyCallback = (busy: boolean) => {
+    return;
+  };
+
   constructor() {
     super();
   }
@@ -97,11 +101,14 @@ export class UploadCertificateDialogWidget extends ReactWidget {
     address: string,
     urls: string[]
   ): Promise<any> {
-    return this.commandRegistry.executeCommand('arduino-certificate-upload', {
-      fqbn,
-      address,
-      urls,
-    });
+    this.busyCallback(true);
+    return this.commandRegistry
+      .executeCommand('arduino-certificate-upload', {
+        fqbn,
+        address,
+        urls,
+      })
+      .finally(() => this.busyCallback(false));
   }
 
   protected render(): React.ReactNode {
@@ -126,6 +133,8 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
   @inject(UploadCertificateDialogWidget)
   protected readonly widget: UploadCertificateDialogWidget;
 
+  private busy = false;
+
   constructor(
     @inject(UploadCertificateDialogProps)
     protected readonly props: UploadCertificateDialogProps
@@ -144,6 +153,7 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
       Widget.detach(this.widget);
     }
     Widget.attach(this.widget, this.contentNode);
+    this.widget.busyCallback = this.busyCallback.bind(this);
     super.onAfterAttach(msg);
     this.update();
   }
@@ -160,5 +170,21 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
 
   protected handleEnter(event: KeyboardEvent): boolean | void {
     return false;
+  }
+
+  close(): void {
+    if (this.busy) {
+      return;
+    }
+    super.close();
+  }
+
+  busyCallback(busy: boolean): void {
+    this.busy = busy;
+    if (busy) {
+      this.closeCrossNode.classList.add('disabled');
+    } else {
+      this.closeCrossNode.classList.remove('disabled');
+    }
   }
 }
