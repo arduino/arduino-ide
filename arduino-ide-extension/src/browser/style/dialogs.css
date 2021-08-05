@@ -39,6 +39,14 @@
     display: flex;
     align-items: center;
 }
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow .spinner {
+    background: var(--theia-icon-loading) center center no-repeat;
+    animation: theia-spin 1.25s linear infinite;
+    width: 30px;
+    height: 30px;
+}
+
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow:first-child {
     margin-top: 0px;
 }

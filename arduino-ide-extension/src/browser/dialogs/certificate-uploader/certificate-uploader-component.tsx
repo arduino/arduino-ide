@@ -124,22 +124,22 @@ export const CertificateUploaderComponent = ({
         <div className="dialogRow">
           <div className="upload-status">
             {installFeedback === 'installing' && (
-              <span className="success">
-                <i className="fa fa-info status-icon" />
+              <div className="success">
+                <div className="spinner" />
                 Uploading certificates...
-              </span>
+              </div>
             )}
             {installFeedback === 'ok' && (
-              <span className="success">
+              <div className="success">
                 <i className="fa fa-info status-icon" />
                 Certificates succesfully installed.
-              </span>
+              </div>
             )}
             {installFeedback === 'fail' && (
-              <span className="warn">
+              <div className="warn">
                 <i className="fa fa-exclamation status-icon" />
                 Upload failed. Please try again.
-              </span>
+              </div>
             )}
           </div>
           <button

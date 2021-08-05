@@ -35,8 +35,9 @@
   align-items: center;
   flex: 1;
 }
-
 .certificate-uploader-dialog  .success {
+  display: flex;
+  align-items: center;
   color: #1DA086;
 }
 

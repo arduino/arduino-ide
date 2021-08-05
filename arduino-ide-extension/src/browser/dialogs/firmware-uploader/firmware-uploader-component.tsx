@@ -175,7 +175,7 @@ export const FirmwareUploaderComponent = ({
             )}
             {installFeedback === 'installing' && (
               <div className="dialogRow success">
-                <i className="fa fa-info status-icon" />
+                <div className="spinner" />
                 Installing firmware...
               </div>
             )}
