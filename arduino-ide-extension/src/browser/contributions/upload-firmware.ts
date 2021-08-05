@@ -42,7 +42,7 @@ export namespace UploadFirmware {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-upload-firmware-open',
-      label: 'Connectivity Firmware Updater',
+      label: 'WiFi101 /  WiFiNINA Firmware Updater',
       category: 'Arduino',
     };
   }

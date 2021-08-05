@@ -35,7 +35,7 @@ export const SelectBoardComponent = ({
     let placeholderTxt = 'Select a board...';
     let selBoard = -1;
     const updatableBoards = availableBoards.filter(
-      (board) => board.fqbn && updatableFqbns.includes(board.fqbn)
+      (board) => board.port && board.fqbn && updatableFqbns.includes(board.fqbn)
     );
     const boardsList: BoardOption[] = updatableBoards.map((board, i) => {
       if (board.selected) {
@@ -48,14 +48,20 @@ export const SelectBoardComponent = ({
     });
 
     if (boardsList.length === 0) {
-      placeholderTxt = 'No board connected to serial port';
+      placeholderTxt = 'No supported board connected';
     }
 
     setSelectBoardPlaceholder(placeholderTxt);
     setSelectOptions(boardsList);
 
-    selectOption(boardsList[selBoard]);
-  }, [availableBoards, onBoardSelect, selectOption, updatableFqbns]);
+    if (selectedBoard) {
+      selBoard = boardsList
+        .map((boardOpt) => boardOpt.value)
+        .indexOf(selectedBoard.fqbn || '');
+    }
+
+    selectOption(boardsList[selBoard] || null);
+  }, [availableBoards, selectOption, updatableFqbns, selectedBoard]);
 
   return (
     <ArduinoSelect

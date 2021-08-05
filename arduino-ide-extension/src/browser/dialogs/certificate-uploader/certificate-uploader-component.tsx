@@ -50,6 +50,19 @@ export const CertificateUploaderComponent = ({
     }
   };
 
+  const onBoardSelect = React.useCallback(
+    (board: AvailableBoard) => {
+      const newFqbn = (board && board.fqbn) || null;
+      const prevFqbn = (selectedBoard && selectedBoard.fqbn) || null;
+
+      if (newFqbn !== prevFqbn) {
+        setInstallFeedback(null);
+        setSelectedBoard(board);
+      }
+    },
+    [selectedBoard]
+  );
+
   return (
     <>
       <div className="dialogSection">
@@ -77,12 +90,7 @@ export const CertificateUploaderComponent = ({
             <SelectBoardComponent
               availableBoards={availableBoards}
               updatableFqbns={updatableFqbns}
-              onBoardSelect={(board) => {
-                if (board) {
-                  setInstallFeedback(null);
-                  setSelectedBoard(board);
-                }
-              }}
+              onBoardSelect={onBoardSelect}
               selectedBoard={selectedBoard}
             />
           </div>

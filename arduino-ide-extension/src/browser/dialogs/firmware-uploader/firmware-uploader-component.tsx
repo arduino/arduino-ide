@@ -80,7 +80,21 @@ export const FirmwareUploaderComponent = ({
 
     setInstallFeedback((installStatus && 'ok') || 'fail');
     setInstallingFw(false);
-  }, [firmwareUploader, selectedBoard, selectedFirmware]);
+  }, [firmwareUploader, selectedBoard, selectedFirmware, availableFirmwares]);
+
+  const onBoardSelect = React.useCallback(
+    (board: AvailableBoard) => {
+      const newFqbn = (board && board.fqbn) || null;
+      const prevFqbn = (selectedBoard && selectedBoard.fqbn) || null;
+
+      if (newFqbn !== prevFqbn) {
+        setInstallFeedback(null);
+        setAvailableFirmwares([]);
+        setSelectedBoard(board);
+      }
+    },
+    [selectedBoard]
+  );
 
   return (
     <>
@@ -93,14 +107,7 @@ export const FirmwareUploaderComponent = ({
             <SelectBoardComponent
               availableBoards={availableBoards}
               updatableFqbns={updatableFqbns}
-              onBoardSelect={(board) => {
-                if (board) {
-                  // clear previously available firmwares for the board
-                  setInstallFeedback(null);
-                  setAvailableFirmwares([]);
-                  setSelectedBoard(board);
-                }
-              }}
+              onBoardSelect={onBoardSelect}
               selectedBoard={selectedBoard}
             />
           </div>

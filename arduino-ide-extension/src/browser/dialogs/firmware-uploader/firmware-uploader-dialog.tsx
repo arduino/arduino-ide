@@ -10,6 +10,7 @@ import {
 } from '../../boards/boards-service-provider';
 import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
 import { FirmwareUploaderComponent } from './firmware-uploader-component';
+import { UploadFirmware } from '../../contributions/upload-firmware';
 
 @injectable()
 export class UploadFirmwareDialogWidget extends ReactWidget {
@@ -64,7 +65,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     @inject(UploadFirmwareDialogProps)
     protected readonly props: UploadFirmwareDialogProps
   ) {
-    super({ title: 'Wireless Module Firmware Updater' });
+    super({ title: UploadFirmware.Commands.OPEN.label || '' });
     this.contentNode.classList.add('firmware-uploader-dialog');
     this.acceptButton = undefined;
   }
