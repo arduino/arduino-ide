@@ -70,16 +70,21 @@ export const FirmwareUploaderComponent = ({
       (firmware) => firmware.firmware_version === selectedFirmware?.value
     );
 
-    const installStatus =
-      !!firmwareToFlash &&
-      !!selectedBoard?.port &&
-      (await firmwareUploader.flash(
-        firmwareToFlash,
-        selectedBoard?.port.address
-      ));
+    try {
+      const installStatus =
+        !!firmwareToFlash &&
+        !!selectedBoard?.port &&
+        (await firmwareUploader.flash(
+          firmwareToFlash,
+          selectedBoard?.port.address
+        ));
 
-    setInstallFeedback((installStatus && 'ok') || 'fail');
-    setInstallingFw(false);
+      setInstallFeedback((installStatus && 'ok') || 'fail');
+      setInstallingFw(false);
+    } catch {
+      setInstallFeedback('fail');
+      setInstallingFw(false);
+    }
   }, [firmwareUploader, selectedBoard, selectedFirmware, availableFirmwares]);
 
   const onBoardSelect = React.useCallback(

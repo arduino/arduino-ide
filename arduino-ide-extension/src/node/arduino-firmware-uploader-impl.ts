@@ -32,12 +32,7 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
 
   async runCommand(args: string[]): Promise<any> {
     const execPath = await this.getExecPath();
-    const raw = await spawnCommand(
-      `"${execPath}"`,
-      args,
-      this.onError.bind(this)
-    );
-    return JSON.parse(raw);
+    return await spawnCommand(`"${execPath}"`, args, this.onError.bind(this));
   }
 
   async uploadCertificates(command: string): Promise<any> {
@@ -47,13 +42,15 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
   async list(fqbn?: string): Promise<FirmwareInfo[]> {
     const fqbnFlag = fqbn ? ['--fqbn', fqbn] : [];
     const firmwares: FirmwareInfo[] =
-      (await this.runCommand([
-        'firmware',
-        'list',
-        '--format',
-        'json',
-        ...fqbnFlag,
-      ])) || [];
+      JSON.parse(
+        await this.runCommand([
+          'firmware',
+          'list',
+          ...fqbnFlag,
+          '--format',
+          'json',
+        ])
+      ) || [];
     return firmwares.reverse();
   }
 
