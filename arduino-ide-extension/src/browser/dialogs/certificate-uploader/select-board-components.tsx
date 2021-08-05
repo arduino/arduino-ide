@@ -9,11 +9,13 @@ export const SelectBoardComponent = ({
   updatableFqbns,
   onBoardSelect,
   selectedBoard,
+  busy,
 }: {
   availableBoards: AvailableBoard[];
   updatableFqbns: string[];
   onBoardSelect: (board: AvailableBoard | null) => void;
   selectedBoard: AvailableBoard | null;
+  busy: boolean;
 }): React.ReactElement => {
   const [selectOptions, setSelectOptions] = React.useState<BoardOption[]>([]);
 
@@ -32,6 +34,11 @@ export const SelectBoardComponent = ({
   );
 
   React.useEffect(() => {
+    // if there is activity going on, skip updating the boards (avoid flickering)
+    if (busy) {
+      return;
+    }
+
     let placeholderTxt = 'Select a board...';
     let selBoard = -1;
     const updatableBoards = availableBoards.filter(
@@ -61,13 +68,13 @@ export const SelectBoardComponent = ({
     }
 
     selectOption(boardsList[selBoard] || null);
-  }, [availableBoards, selectOption, updatableFqbns, selectedBoard]);
+  }, [busy, availableBoards, selectOption, updatableFqbns, selectedBoard]);
 
   return (
     <ArduinoSelect
       id="board-select"
       menuPosition="fixed"
-      isDisabled={selectOptions.length === 0}
+      isDisabled={selectOptions.length === 0 || busy}
       placeholder={selectBoardPlaceholder}
       options={selectOptions}
       value={

@@ -117,11 +117,14 @@ export const CertificateUploaderComponent = ({
               updatableFqbns={updatableFqbns}
               onBoardSelect={onBoardSelect}
               selectedBoard={selectedBoard}
+              busy={installFeedback === 'installing'}
             />
           </div>
+        </div>
+        <div className="dialogRow">
           <button
             type="button"
-            className="theia-button primary"
+            className="theia-button primary install-cert-btn"
             onClick={installCertificates}
             disabled={selectedCerts.length === 0 || !selectedBoard}
           >

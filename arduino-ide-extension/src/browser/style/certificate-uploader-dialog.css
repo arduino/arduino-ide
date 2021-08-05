@@ -14,6 +14,11 @@
   margin-right: 3px;
 }
 
+
+.certificate-uploader-dialog .dialogRow .install-cert-btn {
+  margin-left: auto;
+}
+
 .certificate-uploader-dialog .certificate-list {
   border: 1px solid #BDC7C7;
   border-radius: 2px;;
