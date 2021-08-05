@@ -1,12 +1,14 @@
 import * as React from 'react';
+import Tippy from '@tippyjs/react';
 import { AvailableBoard } from '../../boards/boards-service-provider';
 import { CertificateListComponent } from './certificate-list';
 import { SelectBoardComponent } from './select-board-components';
+import { CertificateAddComponent } from './certificate-add-new';
 
 export const CertificateUploaderComponent = ({
   availableBoards,
   certificates,
-  // addCertificate,
+  addCertificate,
   updatableFqbns,
   uploadCertificates,
   openContextMenu,
@@ -25,6 +27,8 @@ export const CertificateUploaderComponent = ({
   const [installFeedback, setInstallFeedback] = React.useState<
     'ok' | 'fail' | 'installing' | null
   >(null);
+
+  const [showAdd, setShowAdd] = React.useState(false);
 
   const [selectedCerts, setSelectedCerts] = React.useState<string[]>([]);
 
@@ -68,9 +72,30 @@ export const CertificateUploaderComponent = ({
       <div className="dialogSection">
         <div className="dialogRow">
           <strong className="fl1">1. Select certificate to upload</strong>
-          {/* <button type="button" className="theia-button primary">
-            Add New
-          </button> */}
+          <Tippy
+            content={
+              <CertificateAddComponent
+                addCertificate={(cert) => {
+                  addCertificate(cert);
+                  setShowAdd(false);
+                }}
+              />
+            }
+            placement="bottom-end"
+            onClickOutside={() => setShowAdd(false)}
+            visible={showAdd}
+            interactive={true}
+          >
+            <button
+              type="button"
+              className="theia-button primary add-cert-btn"
+              onClick={() => {
+                showAdd ? setShowAdd(false) : setShowAdd(true);
+              }}
+            >
+              Add New <span className="fa fa-caret-down caret"></span>
+            </button>
+          </Tippy>
         </div>
         <div className="dialogRow">
           <CertificateListComponent

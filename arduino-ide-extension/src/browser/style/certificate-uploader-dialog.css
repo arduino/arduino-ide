@@ -27,7 +27,7 @@
   padding: 6px 10px 5px 10px
 }
 .certificate-uploader-dialog .certificate-list .certificate-row:hover {
-  background-color: var(--theia-list-hoverBackground);
+  background-color: var(--theia-list-activeSelectionBackground);
 }
 
 .certificate-uploader-dialog  .success {
@@ -40,4 +40,28 @@
 
 .certificate-uploader-dialog  .status-icon {
   margin-right: 10px;
+}
+
+.certificate-uploader-dialog .add-cert-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.certificate-uploader-dialog .add-cert-btn .caret {
+  margin-left: 6px;
+}
+
+.certificate-add {
+  padding: 16px;
+  background-color: var(--theia-list-hoverBackground);
+  border-radius: 3px;
+  border: 1px solid #BDC7C7;
+}
+
+.certificate-add input {
+  margin-top: 12px;
+  padding: 0 12px;
+  width: 100%;
+  box-sizing: border-box;
+
 }
