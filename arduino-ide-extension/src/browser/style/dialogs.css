@@ -46,3 +46,8 @@
 .fl1{
     flex: 1;
 }
+
+.status-icon {
+    margin-right: 6px;
+    font-size: 17px;
+}
