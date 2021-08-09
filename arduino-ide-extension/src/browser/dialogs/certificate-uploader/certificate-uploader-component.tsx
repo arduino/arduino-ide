@@ -126,13 +126,13 @@ export const CertificateUploaderComponent = ({
             {installFeedback === 'installing' && (
               <div className="success">
                 <div className="spinner" />
-                Uploading certificates...
+                Uploading certificates.
               </div>
             )}
             {installFeedback === 'ok' && (
               <div className="success">
                 <i className="fa fa-info status-icon" />
-                Certificates succesfully installed.
+                Cetificates uploaded.
               </div>
             )}
             {installFeedback === 'fail' && (

@@ -176,7 +176,7 @@ export const FirmwareUploaderComponent = ({
             {installFeedback === 'installing' && (
               <div className="dialogRow success">
                 <div className="spinner" />
-                Installing firmware...
+                Installing firmware.
               </div>
             )}
             {installFeedback === 'ok' && (
