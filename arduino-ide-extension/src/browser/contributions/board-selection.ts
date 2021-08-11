@@ -178,12 +178,14 @@ PID: ${PID}`;
 
     // Installed boards
     for (const board of installedBoards) {
-      const { packageId, packageName, fqbn, name } = board;
+      const { packageId, packageName, fqbn, name, manuallyInstalled } = board;
 
+      const packageLabel =
+        packageName + `${manuallyInstalled ? ' (in Sketchbook)' : ''}`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
       // Note: Registering the same submenu twice is a noop. No need to group the boards per platform.
-      this.menuModelRegistry.registerSubmenu(platformMenuPath, packageName);
+      this.menuModelRegistry.registerSubmenu(platformMenuPath, packageLabel);
 
       const id = `arduino-select-board--${fqbn}`;
       const command = { id };

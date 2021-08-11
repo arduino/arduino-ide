@@ -345,6 +345,7 @@ export interface Board {
 export interface BoardWithPackage extends Board {
   readonly packageName: string;
   readonly packageId: string;
+  readonly manuallyInstalled: boolean;
 }
 export namespace BoardWithPackage {
   export function is(
@@ -527,6 +528,7 @@ export namespace Board {
       packageName: string;
       packageId: string;
       details?: string;
+      manuallyInstalled: boolean;
     }>;
   export function decorateBoards(
     selectedBoard: Board | undefined,
