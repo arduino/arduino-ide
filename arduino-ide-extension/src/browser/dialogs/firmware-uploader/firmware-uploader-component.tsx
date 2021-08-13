@@ -14,11 +14,13 @@ export const FirmwareUploaderComponent = ({
   firmwareUploader,
   updatableFqbns,
   flashFirmware,
+  isOpen,
 }: {
   availableBoards: AvailableBoard[];
   firmwareUploader: ArduinoFirmwareUploader;
   updatableFqbns: string[];
   flashFirmware: (firmware: FirmwareInfo, port: string) => Promise<any>;
+  isOpen: any;
 }): React.ReactElement => {
   // boolean states for buttons
   const [firmwaresFetching, setFirmwaresFetching] = React.useState(false);
@@ -33,6 +35,9 @@ export const FirmwareUploaderComponent = ({
   const [availableFirmwares, setAvailableFirmwares] = React.useState<
     FirmwareInfo[]
   >([]);
+  React.useEffect(() => {
+    setAvailableFirmwares([]);
+  }, [isOpen]);
   const [selectedFirmware, setSelectedFirmware] =
     React.useState<FirmwareOption | null>(null);
 

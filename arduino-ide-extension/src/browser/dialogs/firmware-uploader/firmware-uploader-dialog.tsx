@@ -25,6 +25,7 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   protected updatableFqbns: string[] = [];
   protected availableBoards: AvailableBoard[] = [];
+  protected isOpen = new Object();
 
   public busyCallback = (busy: boolean) => {
     return;
@@ -54,6 +55,11 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
       .finally(() => this.busyCallback(false));
   }
 
+  onCloseRequest(msg: Message): void {
+    super.onCloseRequest(msg);
+    this.isOpen = new Object();
+  }
+
   protected render(): React.ReactNode {
     return (
       <form>
@@ -62,6 +68,7 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
           firmwareUploader={this.arduinoFirmwareUploader}
           flashFirmware={this.flashFirmware.bind(this)}
           updatableFqbns={this.updatableFqbns}
+          isOpen={this.isOpen}
         />
       </form>
     );
@@ -119,6 +126,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     if (this.busy) {
       return;
     }
+    this.widget.close();
     super.close();
   }
 
