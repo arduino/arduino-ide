@@ -2,6 +2,12 @@ name: Check Certificates
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 on:
+  push:
+    paths:
+      - ".github/workflows/check-certificates.ya?ml"
+  pull_request:
+    paths:
+      - ".github/workflows/check-certificates.ya?ml"
   schedule:
     # run every 10 hours
     - cron: "0 */10 * * *"
