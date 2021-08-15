@@ -74,7 +74,7 @@ jobs:
             :warning::warning::warning::warning:
           SLACK_COLOR: danger
           MSG_MINIMAL: true
-        uses: rtCamp/action-slack-notify@v2.1.0
+        uses: rtCamp/action-slack-notify@v2
 
       - name: Get days remaining before certificate expiration date
         env:
@@ -128,4 +128,4 @@ jobs:
             :warning::warning::warning::warning:
           SLACK_COLOR: danger
           MSG_MINIMAL: true
-        uses: rtCamp/action-slack-notify@v2.1.0
+        uses: rtCamp/action-slack-notify@v2
