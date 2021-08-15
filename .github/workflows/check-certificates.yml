@@ -20,6 +20,7 @@ env:
 
 jobs:
   check-certificates:
+    name: ${{ matrix.certificate.identifier }}
     # Only run when the workflow will have access to the certificate secrets.
     if: >
       (github.event_name != 'pull_request' && github.repository == 'arduino/arduino-ide') ||
