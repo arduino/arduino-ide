@@ -1,13 +1,12 @@
 name: Check Certificates
 
+# See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 on:
   schedule:
     # run every 10 hours
     - cron: "0 */10 * * *"
-  # workflow_dispatch event allows the workflow to be triggered manually.
-  # This could be used to run an immediate check after updating certificate secrets.
-  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:
+  repository_dispatch:
 
 env:
   # Begin notifications when there are less than this many days remaining before expiration
