@@ -1,4 +1,4 @@
-name: Check for issues with signing certificates
+name: Check Certificates
 
 on:
   schedule:
