@@ -4,13 +4,13 @@ name: Check Certificates
 on:
   push:
     paths:
-      - ".github/workflows/check-certificates.ya?ml"
+      - '.github/workflows/check-certificates.ya?ml'
   pull_request:
     paths:
-      - ".github/workflows/check-certificates.ya?ml"
+      - '.github/workflows/check-certificates.ya?ml'
   schedule:
     # Run every 10 hours.
-    - cron: "0 */10 * * *"
+    - cron: '0 */10 * * *'
   workflow_dispatch:
   repository_dispatch:
 
@@ -25,9 +25,7 @@ jobs:
     if: >
       (github.event_name != 'pull_request' && github.repository == 'arduino/arduino-ide') ||
       (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'arduino/arduino-ide')
-    
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
 
@@ -68,7 +66,6 @@ jobs:
 
       - name: Slack notification of certificate verification failure
         if: failure()
-        uses: rtCamp/action-slack-notify@v2.1.0
         env:
           SLACK_WEBHOOK: ${{ secrets.TEAM_TOOLING_CHANNEL_SLACK_WEBHOOK }}
           SLACK_MESSAGE: |
@@ -77,6 +74,7 @@ jobs:
             :warning::warning::warning::warning:
           SLACK_COLOR: danger
           MSG_MINIMAL: true
+        uses: rtCamp/action-slack-notify@v2.1.0
 
       - name: Get days remaining before certificate expiration date
         env:
@@ -122,7 +120,6 @@ jobs:
       - name: Slack notification of pending certificate expiration
         # Don't send spurious expiration notification if verification fails.
         if: failure() && steps.check-expiration.outcome == 'failure'
-        uses: rtCamp/action-slack-notify@v2.1.0
         env:
           SLACK_WEBHOOK: ${{ secrets.TEAM_TOOLING_CHANNEL_SLACK_WEBHOOK }}
           SLACK_MESSAGE: |
@@ -131,3 +128,4 @@ jobs:
             :warning::warning::warning::warning:
           SLACK_COLOR: danger
           MSG_MINIMAL: true
+        uses: rtCamp/action-slack-notify@v2.1.0
