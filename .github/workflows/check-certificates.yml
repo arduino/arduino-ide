@@ -1,3 +1,4 @@
+# Source: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/check-certificates.md
 name: Check Certificates
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
