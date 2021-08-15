@@ -67,7 +67,7 @@ jobs:
       - name: Slack notification of certificate verification failure
         if: failure()
         env:
-          SLACK_WEBHOOK: ${{ secrets.TEAM_TOOLING_CHANNEL_SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: |
             :warning::warning::warning::warning:
             WARNING: ${{ github.repository }} ${{ matrix.certificate.identifier }} verification failed!!!
@@ -121,7 +121,7 @@ jobs:
         # Don't send spurious expiration notification if verification fails.
         if: failure() && steps.check-expiration.outcome == 'failure'
         env:
-          SLACK_WEBHOOK: ${{ secrets.TEAM_TOOLING_CHANNEL_SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: |
             :warning::warning::warning::warning:
             WARNING: ${{ github.repository }} ${{ matrix.certificate.identifier }} will expire in ${{ steps.get-days-before-expiration.outputs.days }} days!!!
