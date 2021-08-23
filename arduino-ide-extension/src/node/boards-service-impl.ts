@@ -233,6 +233,7 @@ export class BoardsServiceImpl
               fqbn: board.getFqbn(),
               packageId: platform.getId(),
               packageName: platform.getName(),
+              manuallyInstalled: platform.getManuallyInstalled(),
             });
           }
         }
