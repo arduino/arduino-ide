@@ -172,4 +172,13 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   get windows(): BrowserWindow[] {
     return this._windows.slice();
   }
+
+  /**
+   * "Gently" close all windows, application will not stop if a `beforeunload` handler returns `false`.
+   */
+  requestStop(): void {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  }
 }
