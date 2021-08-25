@@ -25,7 +25,7 @@ import {
   LocalCacheUri,
 } from '../../local-cache/local-cache-fs-provider';
 import { CloudSketchbookCommands } from './cloud-sketchbook-contributions';
-import { DoNotAskAgainConfirmDialog } from '../../dialogs.ts/dialogs';
+import { DoNotAskAgainConfirmDialog } from '../../dialogs/do-not-ask-again-dialog';
 import { SketchbookTree } from '../sketchbook/sketchbook-tree';
 import { firstToUpperCase } from '../../../common/utils';
 import { ArduinoPreferences } from '../../arduino-preferences';

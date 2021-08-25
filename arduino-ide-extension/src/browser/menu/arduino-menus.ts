@@ -86,8 +86,13 @@ export namespace ArduinoMenus {
 
   // -- Tools
   export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
-  // `Auto Format`, `Library Manager...`, `Boards Manager...`
+  // `Auto Format`, `Archive Sketch`, `Manage Libraries...`, `Serial Monitor`
   export const TOOLS__MAIN_GROUP = [...TOOLS, '0_main'];
+  // `WiFi101 /  WiFiNINA Firmware Updater`
+  export const TOOLS__FIRMWARE_UPLOADER_GROUP = [
+    ...TOOLS,
+    '1_firmware_uploader',
+  ];
   // `Board`, `Port`, and `Get Board Info`.
   export const TOOLS__BOARD_SELECTION_GROUP = [...TOOLS, '2_board_selection'];
   // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`
@@ -142,6 +147,11 @@ export namespace ArduinoMenus {
   export const SKETCH_CONTROL__CONTEXT__RESOURCES_GROUP = [
     ...SKETCH_CONTROL__CONTEXT,
     '2_resources',
+  ];
+
+  // -- ROOT SSL CERTIFICATES
+  export const ROOT_CERTIFICATES__CONTEXT = [
+    'arduino-root-certificates--context',
   ];
 }
 

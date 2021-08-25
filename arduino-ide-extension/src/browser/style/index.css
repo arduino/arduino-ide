@@ -1,15 +1,19 @@
 @import './list-widget.css';
 @import './boards-config-dialog.css';
 @import './main.css';
+@import './dialogs.css';
 @import './monitor.css';
 @import './arduino-select.css';
 @import './status-bar.css';
 @import './terminal.css';
 @import './editor.css';
 @import './settings-dialog.css';
+@import './firmware-uploader-dialog.css';
+@import './certificate-uploader-dialog.css';
 @import './debug.css';
 @import './sketchbook.css';
 @import './cloud-sketchbook.css';
+@import './fonts.css';
 
 .theia-input.warning:focus {
     outline-width: 1px;

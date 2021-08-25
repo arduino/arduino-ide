@@ -169,10 +169,6 @@
     margin-left: 10px;
 }
 
-.p-Widget.dialogOverlay .dialogBlock {
-    background-color: var(--theia-arduino-foreground);
-}
-
 #arduino-open-sketch-control--toolbar--container {
     background-color: var(--theia-arduino-toolbar-background);
 }

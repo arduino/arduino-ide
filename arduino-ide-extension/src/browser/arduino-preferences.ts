@@ -55,6 +55,11 @@ export const ArduinoConfigSchema: PreferenceSchema = {
         'True to enable automatic update checks. The IDE will check for updates automatically and periodically.',
       default: true,
     },
+    'arduino.board.certificates': {
+      type: 'string',
+      description: 'List of certificates that can be uploaded to boards',
+      default: '',
+    },
     'arduino.sketchbook.showAllFiles': {
       type: 'boolean',
       description:
@@ -123,6 +128,7 @@ export interface ArduinoConfiguration {
   'arduino.window.autoScale': boolean;
   'arduino.window.zoomLevel': number;
   'arduino.ide.autoUpdate': boolean;
+  'arduino.board.certificates': string;
   'arduino.sketchbook.showAllFiles': boolean;
   'arduino.cloud.enabled': boolean;
   'arduino.cloud.pull.warn': boolean;

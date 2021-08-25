@@ -8,7 +8,7 @@ import {
 } from '@theia/core/lib/browser/dialogs';
 
 @injectable()
-export class DoNotAskAgainConfirmDialogProps extends ConfirmDialogProps {
+export class DoNotAskAgainDialogProps extends ConfirmDialogProps {
   readonly onAccept: () => Promise<void>;
 }
 
@@ -17,8 +17,8 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
   protected readonly doNotAskAgainCheckbox: HTMLInputElement;
 
   constructor(
-    @inject(DoNotAskAgainConfirmDialogProps)
-    protected readonly props: DoNotAskAgainConfirmDialogProps
+    @inject(DoNotAskAgainDialogProps)
+    protected readonly props: DoNotAskAgainDialogProps
   ) {
     super(props);
     this.controlPanel.removeChild(this.errorMessageNode);

@@ -42,10 +42,6 @@ export const ShareSketchComponent = ({
   createApi: CreateApi;
   domain?: string;
 }): React.ReactElement => {
-  // const [publicVisibility, setPublicVisibility] = React.useState<boolean>(
-  //     treeNode.isPublic
-  // );
-
   const [loading, setloading] = React.useState<boolean>(false);
 
   const radioChangeHandler = async (event: React.BaseSyntheticEvent) => {

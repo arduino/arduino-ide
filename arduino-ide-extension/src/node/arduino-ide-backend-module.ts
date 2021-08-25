@@ -1,5 +1,10 @@
 import { ContainerModule } from 'inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
+import {
+  ArduinoFirmwareUploader,
+  ArduinoFirmwareUploaderPath,
+} from '../common/protocol/arduino-firmware-uploader';
+
 import { ILogger } from '@theia/core/lib/common/logger';
 import {
   BackendApplicationContribution,
@@ -80,6 +85,7 @@ import {
   AuthenticationServiceClient,
   AuthenticationServicePath,
 } from '../common/protocol/authentication-service';
+import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -245,6 +251,18 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
 
+  bind(ArduinoFirmwareUploaderImpl).toSelf().inSingletonScope();
+  bind(ArduinoFirmwareUploader).toService(ArduinoFirmwareUploaderImpl);
+  bind(BackendApplicationContribution).toService(ArduinoFirmwareUploaderImpl);
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      (context) =>
+        new JsonRpcConnectionHandler(ArduinoFirmwareUploaderPath, () =>
+          context.container.get(ArduinoFirmwareUploader)
+        )
+    )
+    .inSingletonScope();
+
   // Logger for the Arduino daemon
   bind(ILogger)
     .toDynamicValue((ctx) => {
@@ -253,6 +271,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope()
     .whenTargetNamed('daemon');
+
+  // Logger for the Arduino daemon
+  bind(ILogger)
+    .toDynamicValue((ctx) => {
+      const parentLogger = ctx.container.get<ILogger>(ILogger);
+      return parentLogger.child('fwuploader');
+    })
+    .inSingletonScope()
+    .whenTargetNamed('fwuploader');
 
   // Logger for the "serial discovery".
   bind(ILogger)
