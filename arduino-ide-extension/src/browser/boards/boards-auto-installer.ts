@@ -44,9 +44,10 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
   }
 
   protected ensureCoreExists(config: BoardsConfig.Config): void {
-    const { selectedBoard } = config;
+    const { selectedBoard, selectedPort } = config;
     if (
       selectedBoard &&
+      selectedPort &&
       !this.notifications.find((board) => Board.sameAs(board, selectedBoard))
     ) {
       this.notifications.push(selectedBoard);
