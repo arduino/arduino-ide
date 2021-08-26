@@ -186,7 +186,7 @@ PID: ${PID}`;
       const platformMenuPath = [...boardsPackagesGroup, packageId];
       // Note: Registering the same submenu twice is a noop. No need to group the boards per platform.
       this.menuModelRegistry.registerSubmenu(platformMenuPath, packageLabel, {
-        order: packageName,
+        order: packageName.toLowerCase(),
       });
 
       const id = `arduino-select-board--${fqbn}`;
