@@ -154,7 +154,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           try {
             // If we forked the process for the clusters, we need to manually terminate it.
             // See: https://github.com/eclipse-theia/theia/issues/835
-            process.kill(backendProcess.pid);
+            if (backendProcess.pid) {
+              process.kill(backendProcess.pid);
+            }
           } catch (e) {
             if (e.code === 'ESRCH') {
               console.log(
