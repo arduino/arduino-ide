@@ -1,10 +1,10 @@
 import { injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
-import { MEMORY_TEXT } from '@theia/search-in-workspace/lib/browser/in-memory-text-resource';
 import {
   SearchInWorkspaceFileNode,
   SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget,
 } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
+import { MEMORY_TEXT } from '@theia/core/lib/common/resource';
 
 /**
  * Workaround for https://github.com/eclipse-theia/theia/pull/9192/.

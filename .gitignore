@@ -7,7 +7,8 @@ build/
 Examples/
 !electron/build/
 src-gen/
-*webpack.config.js
+!webpack.config.js
+gen-webpack.config.js
 .DS_Store
 # switching from `electron` to `browser` in dev mode.
 .browser_modules
