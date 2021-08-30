@@ -9,6 +9,7 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import {
   ApplicationShell as TheiaApplicationShell,
+  Panel,
   Widget,
 } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
@@ -70,6 +71,13 @@ export class ApplicationShell extends TheiaApplicationShell {
       }
     }
     return super.addWidget(widget, { ...options, ref });
+  }
+
+  // Avoid hiding top panel as we use it for arduino toolbar
+  protected createTopPanel(): Panel {
+    const topPanel = super.createTopPanel();
+    topPanel.show();
+    return topPanel;
   }
 
   async saveAll(): Promise<void> {
