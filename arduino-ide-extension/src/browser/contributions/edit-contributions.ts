@@ -82,16 +82,6 @@ export class EditContributions extends Contribution {
       execute: async () => {
         const value = await this.currentValue();
         if (value !== undefined) {
-          this.clipboardService.writeText(`[code]
-${value}
-[/code]`);
-        }
-      },
-    });
-    registry.registerCommand(EditContributions.Commands.COPY_FOR_GITHUB, {
-      execute: async () => {
-        const value = await this.currentValue();
-        if (value !== undefined) {
           this.clipboardService.writeText(`\`\`\`cpp
 ${value}
 \`\`\``);
@@ -111,26 +101,21 @@ ${value}
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.COPY_FOR_FORUM.id,
-      label: 'Copy for Forum',
+      label: 'Copy for Forum (Markdown)',
       order: '2',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-      commandId: EditContributions.Commands.COPY_FOR_GITHUB.id,
-      label: 'Copy for GitHub',
+      commandId: CommonCommands.PASTE.id,
       order: '3',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-      commandId: CommonCommands.PASTE.id,
-      order: '4',
-    });
-    registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: CommonCommands.SELECT_ALL.id,
-      order: '5',
+      order: '4',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.GO_TO_LINE.id,
       label: 'Go to Line...',
-      order: '6',
+      order: '5',
     });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
@@ -193,11 +178,6 @@ ${value}
     registry.registerKeybinding({
       command: EditContributions.Commands.COPY_FOR_FORUM.id,
       keybinding: 'CtrlCmd+Shift+C',
-      when: 'editorFocus',
-    });
-    registry.registerKeybinding({
-      command: EditContributions.Commands.COPY_FOR_GITHUB.id,
-      keybinding: 'CtrlCmd+Alt+C',
       when: 'editorFocus',
     });
     registry.registerKeybinding({
@@ -279,9 +259,6 @@ export namespace EditContributions {
   export namespace Commands {
     export const COPY_FOR_FORUM: Command = {
       id: 'arduino-copy-for-forum',
-    };
-    export const COPY_FOR_GITHUB: Command = {
-      id: 'arduino-copy-for-github',
     };
     export const GO_TO_LINE: Command = {
       id: 'arduino-go-to-line',
