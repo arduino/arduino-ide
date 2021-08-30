@@ -57,7 +57,7 @@ export class VerifySketch extends SketchContribution {
     });
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: VerifySketch.Commands.EXPORT_BINARIES.id,
-      label: 'Export compiled Binary',
+      label: 'Export Compiled Binary',
       order: '3',
     });
   }
