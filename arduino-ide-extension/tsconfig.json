@@ -12,10 +12,10 @@
     "emitDecoratorMetadata": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es5",
+    "target": "ES2017",
     "outDir": "lib",
     "lib": [
-      "es6",
+      "ES2017",
       "dom"
     ],
     "jsx": "react",

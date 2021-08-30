@@ -325,7 +325,7 @@ export class ArduinoFrontendContribution
         webContents.setZoomLevel(event.newValue || 0);
       }
     });
-    app.shell.leftPanelHandler.removeMenu('settings-menu');
+    app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
   }
 
   onStop(): void {

@@ -39,7 +39,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
    * @param options
    */
   async createWindow(
-    asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultBrowserWindowOptions()
+    asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
     const options = await asyncOptions;
     let electronWindow: BrowserWindow | undefined;
