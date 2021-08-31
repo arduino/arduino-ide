@@ -173,7 +173,6 @@ export class SketchbookWidgetContribution
           );
         }
 
-        debugger;
         const options: RenderContextMenuOptions = {
           menuPath: SKETCHBOOK__CONTEXT,
           anchor: {
