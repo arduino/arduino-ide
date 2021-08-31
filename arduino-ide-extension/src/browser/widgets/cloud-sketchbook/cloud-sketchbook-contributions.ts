@@ -298,7 +298,7 @@ export class CloudSketchbookContribution extends Contribution {
               x: container.getBoundingClientRect().left,
               y: container.getBoundingClientRect().top + container.offsetHeight,
             },
-            args: arg,
+            args: [arg],
           };
           this.contextMenuRenderer.render(options);
         },
@@ -345,7 +345,7 @@ export class CloudSketchbookContribution extends Contribution {
               container.getBoundingClientRect().top -
               3.5 * container.offsetHeight,
           },
-          args: arg,
+          args: [arg],
         };
         this.contextMenuRenderer.render(options);
       },

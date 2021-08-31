@@ -173,13 +173,14 @@ export class SketchbookWidgetContribution
           );
         }
 
+        debugger;
         const options: RenderContextMenuOptions = {
           menuPath: SKETCHBOOK__CONTEXT,
           anchor: {
             x: container.getBoundingClientRect().left,
             y: container.getBoundingClientRect().top + container.offsetHeight,
           },
-          args: arg,
+          args: [arg],
         };
         this.contextMenuRenderer.render(options);
       },
