@@ -24,6 +24,9 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fa-reload:before {
+  content: "\e900";
+}
 .fa-asterisk:before {
   content: "\f069";
 }
