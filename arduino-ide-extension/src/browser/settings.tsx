@@ -115,14 +115,13 @@ export class SettingsService {
         'arduino-theme'
       ),
       this.preferenceService.get<'on' | 'off'>('editor.autoSave', 'on'),
-      this.preferenceService.get<Record<string, unknown>>(
-        'editor.quickSuggestion',
-        {
-          other: false,
-          comments: false,
-          strings: false,
-        }
-      ),
+      this.preferenceService.get<
+        Record<'other' | 'comments' | 'strings', boolean>
+      >('editor.quickSuggestions', {
+        other: false,
+        comments: false,
+        strings: false,
+      }),
       this.preferenceService.get<boolean>('arduino.window.autoScale', true),
       this.preferenceService.get<number>('arduino.window.zoomLevel', 0),
       // this.preferenceService.get<string>('arduino.ide.autoUpdate', true),
