@@ -63,7 +63,7 @@ export class UserStatus extends React.Component<
         </div>
         <div className="actions item flex-line">
           <div
-            className={`refresh-icon ${
+            className={`fa fa-reload ${
               (this.state.refreshing && 'rotating') || ''
             }`}
             style={{ cursor: 'pointer' }}

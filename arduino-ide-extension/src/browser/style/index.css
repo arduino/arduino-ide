@@ -96,3 +96,7 @@ button.theia-button.main {
     align-items: center;
     white-space: nowrap;
 }
+
+.fa-reload {
+    font-size: 14px;
+}
