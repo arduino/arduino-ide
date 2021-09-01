@@ -11,6 +11,7 @@ import {
   ContextMenuRenderer,
   FrontendApplication,
   FrontendApplicationContribution,
+  LocalStorageService,
   OpenerService,
   StatusBar,
   StatusBarAlignment,
@@ -78,6 +79,8 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { FileChangeType } from '@theia/filesystem/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
+
+const INIT_AVR_PACKAGES = 'initializedAvrPackages';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -199,6 +202,9 @@ export class ArduinoFrontendContribution
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
 
+  @inject(LocalStorageService)
+  protected readonly localStorageService: LocalStorageService;
+
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
     | undefined;
@@ -206,6 +212,16 @@ export class ArduinoFrontendContribution
 
   @postConstruct()
   protected async init(): Promise<void> {
+    const notFirstStartup = await this.localStorageService.getData(
+      INIT_AVR_PACKAGES
+    );
+    if (!notFirstStartup) {
+      await this.localStorageService.setData(INIT_AVR_PACKAGES, true);
+      const avrPackage = await this.boardsService.getBoardPackage({
+        id: 'arduino:avr',
+      });
+      avrPackage && (await this.boardsService.install({ item: avrPackage }));
+    }
     if (!window.navigator.onLine) {
       // tslint:disable-next-line:max-line-length
       this.messageService.warn(
