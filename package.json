@@ -10,7 +10,7 @@
     "node": ">=12.14.1 <13"
   },
   "devDependencies": {
-    "@theia/cli": "1.17.0",
+    "@theia/cli": "1.17.1",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "cross-env": "^7.0.2",
