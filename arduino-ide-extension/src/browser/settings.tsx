@@ -34,6 +34,27 @@ import {
   ProxySettings,
 } from '../common/protocol';
 
+const EDITOR_SETTING = 'editor';
+const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
+const AUTO_SAVE_SETTING = `${EDITOR_SETTING}.autoSave`;
+const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
+const ARDUINO_SETTING = 'arduino';
+const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
+// const IDE_SETTING = `${ARDUINO_SETTING}.ide`;
+const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
+const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
+const LANGUAGE_SETTING = `${ARDUINO_SETTING}.language`;
+const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
+const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
+const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
+// const AUTO_UPDATE_SETTING = `${IDE_SETTING}.autoUpdate`;
+const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
+const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
+const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
+const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
+const LANGUAGE_LOG_SETTING = `${LANGUAGE_SETTING}.log`;
+const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
+
 export interface Settings extends Index {
   editorFontSize: number; // `editor.fontSize`
   themeId: string; // `workbench.colorTheme`
@@ -109,31 +130,28 @@ export class SettingsService {
       sketchbookShowAllFiles,
       cliConfig,
     ] = await Promise.all([
-      this.preferenceService.get<number>('editor.fontSize', 12),
+      this.preferenceService.get<number>(FONT_SIZE_SETTING, 12),
       this.preferenceService.get<string>(
         'workbench.colorTheme',
         'arduino-theme'
       ),
-      this.preferenceService.get<'on' | 'off'>('editor.autoSave', 'on'),
+      this.preferenceService.get<'on' | 'off'>(AUTO_SAVE_SETTING, 'on'),
       this.preferenceService.get<
         Record<'other' | 'comments' | 'strings', boolean>
-      >('editor.quickSuggestions', {
+      >(QUICK_SUGGESTIONS_SETTING, {
         other: false,
         comments: false,
         strings: false,
       }),
-      this.preferenceService.get<boolean>('arduino.window.autoScale', true),
-      this.preferenceService.get<number>('arduino.window.zoomLevel', 0),
-      // this.preferenceService.get<string>('arduino.ide.autoUpdate', true),
-      this.preferenceService.get<boolean>('arduino.compile.verbose', true),
-      this.preferenceService.get<any>('arduino.compile.warnings', 'None'),
-      this.preferenceService.get<boolean>('arduino.upload.verbose', true),
-      this.preferenceService.get<boolean>('arduino.upload.verify', true),
-      this.preferenceService.get<boolean>('arduino.language.log', true),
-      this.preferenceService.get<boolean>(
-        'arduino.sketchbook.showAllFiles',
-        false
-      ),
+      this.preferenceService.get<boolean>(AUTO_SCALE_SETTING, true),
+      this.preferenceService.get<number>(ZOOM_LEVEL_SETTING, 0),
+      // this.preferenceService.get<string>(AUTO_UPDATE_SETTING, true),
+      this.preferenceService.get<boolean>(COMPILE_VERBOSE_SETTING, true),
+      this.preferenceService.get<any>(COMPILE_WARNINGS_SETTING, 'None'),
+      this.preferenceService.get<boolean>(UPLOAD_VERBOSE_SETTING, true),
+      this.preferenceService.get<boolean>(UPLOAD_VERIFY_SETTING, true),
+      this.preferenceService.get<boolean>(LANGUAGE_LOG_SETTING, true),
+      this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
       this.configService.getConfiguration(),
     ]);
     const { additionalUrls, sketchDirUri, network } = cliConfig;
@@ -256,43 +274,43 @@ export class SettingsService {
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.window.autoScale',
+        AUTO_SCALE_SETTING,
         autoScaleInterface,
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.window.zoomLevel',
+        ZOOM_LEVEL_SETTING,
         interfaceScale,
         PreferenceScope.User
       ),
-      // this.preferenceService.set('arduino.ide.autoUpdate', checkForUpdates, PreferenceScope.User),
+      // this.preferenceService.set(AUTO_UPDATE_SETTING, checkForUpdates, PreferenceScope.User),
       this.preferenceService.set(
-        'arduino.compile.verbose',
+        COMPILE_VERBOSE_SETTING,
         verboseOnCompile,
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.compile.warnings',
+        COMPILE_WARNINGS_SETTING,
         compilerWarnings,
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.upload.verbose',
+        UPLOAD_VERBOSE_SETTING,
         verboseOnUpload,
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.upload.verify',
+        UPLOAD_VERIFY_SETTING,
         verifyAfterUpload,
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.language.log',
+        LANGUAGE_LOG_SETTING,
         enableLsLogs,
         PreferenceScope.User
       ),
       this.preferenceService.set(
-        'arduino.sketchbook.showAllFiles',
+        SHOW_ALL_FILES_SETTING,
         sketchbookShowAllFiles,
         PreferenceScope.User
       ),
