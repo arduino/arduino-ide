@@ -63,6 +63,7 @@
       "!node_modules/@theia/**/test/*",
       "!node_modules/@theia/**/src/*.ts",
       "!node_modules/@theia/**/lib/*browser/*",
+      "node_modules/@theia/core/lib/browser/*",
       "!node_modules/@typefox/monaco-editor-core/*",
       "!node_modules/oniguruma/*",
       "!node_modules/onigasm/*"
