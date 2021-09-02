@@ -63,7 +63,7 @@ export class UserStatus extends React.Component<
         </div>
         <div className="actions item flex-line">
           <div
-            className={`refresh-icon ${
+            className={`fa fa-reload ${
               (this.state.refreshing && 'rotating') || ''
             }`}
             style={{ cursor: 'pointer' }}
@@ -100,7 +100,10 @@ export class UserStatus extends React.Component<
 
   private onDidClickRefresh = () => {
     this.setState({ refreshing: true });
-    this.props.model.updateRoot().then(() => {
+    Promise.all([
+      this.props.model.updateRoot(),
+      new Promise((resolve) => setTimeout(() => resolve(true), 1000)),
+    ]).then(() => {
       this.props.model.sketchbookTree().refresh();
       this.setState({ refreshing: false });
     });
