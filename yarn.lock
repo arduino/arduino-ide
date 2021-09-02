@@ -6035,7 +6035,7 @@ electron-rebuild@^1.8.6:
     detect-libc "^1.0.3"
     fs-extra "^8.1.0"
     node-abi "^2.11.0"
-    node-gyp "^6.0.1"
+    node-gyp "^7.0.0"
     ora "^3.4.0"
     spawn-rx "^3.0.0"
     yargs "^14.2.0"
@@ -10027,7 +10027,7 @@ npm-lifecycle@^3.1.2:
   dependencies:
     byline "^5.0.0"
     graceful-fs "^4.1.15"
-    node-gyp "^5.0.2"
+    node-gyp "^7.0.0"
     resolve-from "^4.0.0"
     slide "^1.1.6"
     uid-number "0.0.6"

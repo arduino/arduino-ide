@@ -70,6 +70,7 @@ jobs:
 
               elif [ "${{ runner.OS }}" = "Windows" ]; then
                 export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
+                npm config set msvs_version 2017 --global
                 echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
 
                 export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
