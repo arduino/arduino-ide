@@ -117,10 +117,10 @@ export class BoardsServiceImpl extends CoreClientAware implements BoardsService 
 
         let VID = 'N/A';
         let PID = 'N/A';
-        const usbId = detailsResp.getIdentificationPrefsList().map(item => item.getUsbId()).find(notEmpty);
-        if (usbId) {
-            VID = usbId.getVid();
-            PID = usbId.getPid();
+        const prop = detailsResp.getIdentificationPropertiesList().map(item => item.getPropertiesMap()).find(notEmpty);
+        if (prop) {
+            VID = prop.get('vid') || '';
+            PID = prop.get('pid') || '';
         }
 
         return {
