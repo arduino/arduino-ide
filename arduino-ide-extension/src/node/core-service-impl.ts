@@ -97,13 +97,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         if (fqbn) {
             req.setFqbn(fqbn);
         }
+        const p = new Port();
         if (port) {
-            const p = new Port();
             p.setAddress(port.address);
             p.setLabel(port.label || '');
             p.setProtocol(port.protocol);
-            req.setPort(p);
         }
+        req.setPort(p);
         if (programmer) {
             req.setProgrammer(programmer.id);
         }
@@ -137,13 +137,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         if (fqbn) {
             burnReq.setFqbn(fqbn);
         }
+        const p = new Port();
         if (port) {
-            const p = new Port();
             p.setAddress(port.address);
             p.setLabel(port.label || '');
             p.setProtocol(port.protocol);
-            burnReq.setPort(p);
         }
+        burnReq.setPort(p);
         if (programmer) {
             burnReq.setProgrammer(programmer.id);
         }
