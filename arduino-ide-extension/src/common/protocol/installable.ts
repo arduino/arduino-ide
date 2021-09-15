@@ -7,7 +7,7 @@ import {
 import { naturalCompare } from './../utils';
 import { ArduinoComponent } from './arduino-component';
 import { MessageService } from '@theia/core';
-import { ResponseServiceImpl } from '../../browser/response-service-impl';
+import { ResponseServiceArduino } from './response-service';
 
 export interface Installable<T extends ArduinoComponent> {
   /**
@@ -44,7 +44,7 @@ export namespace Installable {
   >(options: {
     installable: Installable<T>;
     messageService: MessageService;
-    responseService: ResponseServiceImpl;
+    responseService: ResponseServiceArduino;
     item: T;
     version: Installable.Version;
   }): Promise<void> {
@@ -66,7 +66,7 @@ export namespace Installable {
   >(options: {
     installable: Installable<T>;
     messageService: MessageService;
-    responseService: ResponseServiceImpl;
+    responseService: ResponseServiceArduino;
     item: T;
   }): Promise<void> {
     const { item } = options;
@@ -86,7 +86,7 @@ export namespace Installable {
   export async function doWithProgress(options: {
     run: ({ progressId }: { progressId: string }) => Promise<void>;
     messageService: MessageService;
-    responseService: ResponseServiceImpl;
+    responseService: ResponseServiceArduino;
     progressText: string;
   }): Promise<void> {
     return withProgress(

@@ -79,6 +79,8 @@
       "args": [
         "--require",
         "reflect-metadata/Reflect",
+        "--require",
+        "ignore-styles",
         "--no-timeouts",
         "--colors",
         "**/${fileBasenameNoExtension}.js"

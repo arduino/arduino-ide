@@ -11,7 +11,7 @@ import { SearchBar } from './search-bar';
 import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
-import { ResponseServiceImpl } from '../../response-service-impl';
+import { ResponseServiceArduino } from '../../../common/protocol';
 
 export class FilterableListContainer<
   T extends ArduinoComponent
@@ -153,7 +153,7 @@ export namespace FilterableListContainer {
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
     readonly filterTextChangeEvent: Event<string | undefined>;
     readonly messageService: MessageService;
-    readonly responseService: ResponseServiceImpl;
+    readonly responseService: ResponseServiceArduino;
     readonly install: ({
       item,
       progressId,
