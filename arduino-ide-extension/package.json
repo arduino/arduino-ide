@@ -22,6 +22,7 @@
     "@theia/application-package": "1.17.1",
     "@theia/core": "1.17.1",
     "@theia/editor": "1.17.1",
+		"@theia/editor-preview": "1.17.1",
     "@theia/filesystem": "1.17.1",
     "@theia/git": "1.17.1",
     "@theia/keymaps": "1.17.1",

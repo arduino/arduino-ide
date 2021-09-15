@@ -2297,6 +2297,15 @@
     unzip-stream "^0.3.0"
     vscode-debugprotocol "^1.32.0"
 
+"@theia/editor-preview@1.17.1":
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/@theia/editor-preview/-/editor-preview-1.17.1.tgz#2c802cc71fe62d1a9d6c16078d888b3b5c8d84ec"
+  integrity sha512-Stvc0Rxj+Y3MUSryF7G976JUbRxkwKtFnBv0pTw2573pWvxAsyNxhKKbEGnsHJ8NYPtiviwjIeA3lj8zolHdTA==
+  dependencies:
+    "@theia/core" "1.17.1"
+    "@theia/editor" "1.17.1"
+    "@theia/navigator" "1.17.1"
+
 "@theia/editor@1.17.1":
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/@theia/editor/-/editor-1.17.1.tgz#cf8a0e971f22c5b05b10f73f109236385126f98e"

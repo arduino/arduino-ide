@@ -42,8 +42,8 @@ import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@th
 import { KeymapsFrontendContribution } from './theia/keymaps/keymaps-frontend-contribution';
 import { KeymapsFrontendContribution as TheiaKeymapsFrontendContribution } from '@theia/keymaps/lib/browser/keymaps-frontend-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
-import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { EditorContribution } from './theia/editor/editor-contribution';
+import { EditorPreviewContribution as TheiaEditorPreviewContribution } from '@theia/editor-preview/lib/browser/editor-preview-contribution';
+import { EditorPreviewContribution } from './theia/editor/editor-contribution';
 import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
@@ -438,7 +438,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaKeymapsFrontendContribution)
     .to(KeymapsFrontendContribution)
     .inSingletonScope();
-  rebind(TheiaEditorContribution).to(EditorContribution).inSingletonScope();
+  rebind(TheiaEditorPreviewContribution)
+    .to(EditorPreviewContribution)
+    .inSingletonScope();
   rebind(TheiaMonacoStatusBarContribution)
     .to(MonacoStatusBarContribution)
     .inSingletonScope();
