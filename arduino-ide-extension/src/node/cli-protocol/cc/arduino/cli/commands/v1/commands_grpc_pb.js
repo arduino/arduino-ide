@@ -18,6 +18,7 @@
 //
 'use strict';
 var cc_arduino_cli_commands_v1_commands_pb = require('../../../../../cc/arduino/cli/commands/v1/commands_pb.js');
+var google_rpc_status_pb = require('../../../../../google/rpc/status_pb.js');
 var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cli/commands/v1/common_pb.js');
 var cc_arduino_cli_commands_v1_board_pb = require('../../../../../cc/arduino/cli/commands/v1/board_pb.js');
 var cc_arduino_cli_commands_v1_compile_pb = require('../../../../../cc/arduino/cli/commands/v1/compile_pb.js');
@@ -221,6 +222,28 @@ function serialize_cc_arduino_cli_commands_v1_CompileResponse(arg) {
 
 function deserialize_cc_arduino_cli_commands_v1_CompileResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_compile_pb.CompileResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_CreateRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.CreateRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.CreateRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_CreateRequest(buffer_arg) {
+  return cc_arduino_cli_commands_v1_commands_pb.CreateRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_CreateResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.CreateResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.CreateResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_CreateResponse(buffer_arg) {
+  return cc_arduino_cli_commands_v1_commands_pb.CreateResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_cc_arduino_cli_commands_v1_DestroyRequest(arg) {
@@ -641,28 +664,6 @@ function deserialize_cc_arduino_cli_commands_v1_PlatformUpgradeResponse(buffer_a
   return cc_arduino_cli_commands_v1_core_pb.PlatformUpgradeResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_cc_arduino_cli_commands_v1_RescanRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.RescanRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.RescanRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_RescanRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.RescanRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_RescanResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.RescanResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.RescanResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_RescanResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.RescanResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.UpdateCoreLibrariesIndexRequest');
@@ -842,7 +843,20 @@ function deserialize_cc_arduino_cli_commands_v1_ZipLibraryInstallResponse(buffer
 
 // The main Arduino Platform service API
 var ArduinoCoreServiceService = exports['cc.arduino.cli.commands.v1.ArduinoCoreService'] = {
-  // Start a new instance of the Arduino Core Service
+  // Create a new Arduino Core instance
+create: {
+    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Create',
+    requestStream: false,
+    responseStream: false,
+    requestType: cc_arduino_cli_commands_v1_commands_pb.CreateRequest,
+    responseType: cc_arduino_cli_commands_v1_commands_pb.CreateResponse,
+    requestSerialize: serialize_cc_arduino_cli_commands_v1_CreateRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_CreateRequest,
+    responseSerialize: serialize_cc_arduino_cli_commands_v1_CreateResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_CreateResponse,
+  },
+  // Initializes an existing Arduino Core instance by loading platforms and
+// libraries
 init: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Init',
     requestStream: false,
@@ -865,18 +879,6 @@ destroy: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_DestroyRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_DestroyResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_DestroyResponse,
-  },
-  // Rescan instance of the Arduino Core Service
-rescan: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Rescan',
-    requestStream: false,
-    responseStream: false,
-    requestType: cc_arduino_cli_commands_v1_commands_pb.RescanRequest,
-    responseType: cc_arduino_cli_commands_v1_commands_pb.RescanResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_RescanRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_RescanRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_RescanResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_RescanResponse,
   },
   // Update package index of the Arduino Core Service
 updateIndex: {

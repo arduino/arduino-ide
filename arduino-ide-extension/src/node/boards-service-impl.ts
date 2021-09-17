@@ -75,6 +75,7 @@ export class BoardsServiceImpl
   async getBoardDetails(options: {
     fqbn: string;
   }): Promise<BoardDetails | undefined> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
     const { fqbn } = options;
@@ -165,13 +166,13 @@ export class BoardsServiceImpl
 
     let VID = 'N/A';
     let PID = 'N/A';
-    const usbId = detailsResp
-      .getIdentificationPrefsList()
-      .map((item) => item.getUsbId())
+    const prop = detailsResp
+      .getIdentificationPropertiesList()
+      .map((item) => item.getPropertiesMap())
       .find(notEmpty);
-    if (usbId) {
-      VID = usbId.getVid();
-      PID = usbId.getPid();
+    if (prop) {
+      VID = prop.get('vid') || '';
+      PID = prop.get('pid') || '';
     }
 
     return {
@@ -214,6 +215,7 @@ export class BoardsServiceImpl
   }: {
     query?: string;
   }): Promise<BoardWithPackage[]> {
+    await this.coreClientProvider.initialized;
     const { instance, client } = await this.coreClient();
     const req = new BoardSearchRequest();
     req.setSearchArgs(query || '');
@@ -244,6 +246,7 @@ export class BoardsServiceImpl
   }
 
   async search(options: { query?: string }): Promise<BoardsPackage[]> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 
@@ -361,6 +364,7 @@ export class BoardsServiceImpl
     const version = !!options.version
       ? options.version
       : item.availableVersions[0];
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 
@@ -406,6 +410,7 @@ export class BoardsServiceImpl
     progressId?: string;
   }): Promise<void> {
     const { item, progressId } = options;
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 

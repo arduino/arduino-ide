@@ -51,6 +51,7 @@ export class BoardDiscovery extends CoreClientAware {
 
   @postConstruct()
   protected async init(): Promise<void> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
     const req = new BoardListWatchRequest();
@@ -75,12 +76,14 @@ export class BoardDiscovery extends CoreClientAware {
         const oldState = deepClone(this._state);
         const newState = deepClone(this._state);
 
-        const address = detectedPort.getAddress();
-        const protocol = Port.Protocol.toProtocol(detectedPort.getProtocol());
+        const address = (detectedPort as any).getPort().getAddress();
+        const protocol = Port.Protocol.toProtocol(
+          (detectedPort as any).getPort().getProtocol()
+        );
         // const label = detectedPort.getProtocolLabel();
         const port = { address, protocol };
         const boards: Board[] = [];
-        for (const item of detectedPort.getBoardsList()) {
+        for (const item of detectedPort.getMatchingBoardsList()) {
           boards.push({
             fqbn: item.getFqbn(),
             name: item.getName() || 'unknown',

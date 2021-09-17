@@ -41,6 +41,7 @@ export class LibraryServiceImpl
   protected readonly notificationServer: NotificationServiceServer;
 
   async search(options: { query?: string }): Promise<LibraryPackage[]> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 
@@ -107,6 +108,7 @@ export class LibraryServiceImpl
   }: {
     fqbn?: string | undefined;
   }): Promise<LibraryPackage[]> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
     const req = new LibraryListRequest();
@@ -212,6 +214,7 @@ export class LibraryServiceImpl
     version: Installable.Version;
     filterSelf?: boolean;
   }): Promise<LibraryDependency[]> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
     const req = new LibraryResolveDependenciesRequest();
@@ -253,6 +256,7 @@ export class LibraryServiceImpl
     const version = !!options.version
       ? options.version
       : item.availableVersions[0];
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 
@@ -304,6 +308,7 @@ export class LibraryServiceImpl
     progressId?: string;
     overwrite?: boolean;
   }): Promise<void> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
     const req = new ZipLibraryInstallRequest();
@@ -331,6 +336,7 @@ export class LibraryServiceImpl
     progressId?: string;
   }): Promise<void> {
     const { item, progressId } = options;
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 

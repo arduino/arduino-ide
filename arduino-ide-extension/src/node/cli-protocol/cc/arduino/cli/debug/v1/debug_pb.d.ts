@@ -6,6 +6,7 @@
 
 import * as jspb from "google-protobuf";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
+import * as cc_arduino_cli_commands_v1_port_pb from "../../../../../cc/arduino/cli/commands/v1/port_pb";
 
 export class DebugRequest extends jspb.Message { 
 
@@ -54,8 +55,11 @@ export class DebugConfigRequest extends jspb.Message {
     getSketchPath(): string;
     setSketchPath(value: string): DebugConfigRequest;
 
-    getPort(): string;
-    setPort(value: string): DebugConfigRequest;
+
+    hasPort(): boolean;
+    clearPort(): void;
+    getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
+    setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): DebugConfigRequest;
 
     getInterpreter(): string;
     setInterpreter(value: string): DebugConfigRequest;
@@ -82,7 +86,7 @@ export namespace DebugConfigRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         fqbn: string,
         sketchPath: string,
-        port: string,
+        port?: cc_arduino_cli_commands_v1_port_pb.Port.AsObject,
         interpreter: string,
         importDir: string,
         programmer: string,

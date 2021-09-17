@@ -6,6 +6,7 @@
 
 import * as jspb from "google-protobuf";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
+import * as cc_arduino_cli_commands_v1_port_pb from "../../../../../cc/arduino/cli/commands/v1/port_pb";
 
 export class BoardDetailsRequest extends jspb.Message { 
 
@@ -79,11 +80,6 @@ export class BoardDetailsResponse extends jspb.Message {
     setConfigOptionsList(value: Array<ConfigOption>): BoardDetailsResponse;
     addConfigOptions(value?: ConfigOption, index?: number): ConfigOption;
 
-    clearIdentificationPrefsList(): void;
-    getIdentificationPrefsList(): Array<IdentificationPref>;
-    setIdentificationPrefsList(value: Array<IdentificationPref>): BoardDetailsResponse;
-    addIdentificationPrefs(value?: IdentificationPref, index?: number): IdentificationPref;
-
     clearProgrammersList(): void;
     getProgrammersList(): Array<cc_arduino_cli_commands_v1_common_pb.Programmer>;
     setProgrammersList(value: Array<cc_arduino_cli_commands_v1_common_pb.Programmer>): BoardDetailsResponse;
@@ -91,6 +87,11 @@ export class BoardDetailsResponse extends jspb.Message {
 
     getDebuggingSupported(): boolean;
     setDebuggingSupported(value: boolean): BoardDetailsResponse;
+
+    clearIdentificationPropertiesList(): void;
+    getIdentificationPropertiesList(): Array<BoardIdentificationProperties>;
+    setIdentificationPropertiesList(value: Array<BoardIdentificationProperties>): BoardDetailsResponse;
+    addIdentificationProperties(value?: BoardIdentificationProperties, index?: number): BoardIdentificationProperties;
 
 
     serializeBinary(): Uint8Array;
@@ -116,58 +117,32 @@ export namespace BoardDetailsResponse {
         platform?: BoardPlatform.AsObject,
         toolsDependenciesList: Array<ToolsDependencies.AsObject>,
         configOptionsList: Array<ConfigOption.AsObject>,
-        identificationPrefsList: Array<IdentificationPref.AsObject>,
         programmersList: Array<cc_arduino_cli_commands_v1_common_pb.Programmer.AsObject>,
         debuggingSupported: boolean,
+        identificationPropertiesList: Array<BoardIdentificationProperties.AsObject>,
     }
 }
 
-export class IdentificationPref extends jspb.Message { 
+export class BoardIdentificationProperties extends jspb.Message { 
 
-    hasUsbId(): boolean;
-    clearUsbId(): void;
-    getUsbId(): USBID | undefined;
-    setUsbId(value?: USBID): IdentificationPref;
+    getPropertiesMap(): jspb.Map<string, string>;
+    clearPropertiesMap(): void;
 
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): IdentificationPref.AsObject;
-    static toObject(includeInstance: boolean, msg: IdentificationPref): IdentificationPref.AsObject;
+    toObject(includeInstance?: boolean): BoardIdentificationProperties.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardIdentificationProperties): BoardIdentificationProperties.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: IdentificationPref, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): IdentificationPref;
-    static deserializeBinaryFromReader(message: IdentificationPref, reader: jspb.BinaryReader): IdentificationPref;
+    static serializeBinaryToWriter(message: BoardIdentificationProperties, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardIdentificationProperties;
+    static deserializeBinaryFromReader(message: BoardIdentificationProperties, reader: jspb.BinaryReader): BoardIdentificationProperties;
 }
 
-export namespace IdentificationPref {
+export namespace BoardIdentificationProperties {
     export type AsObject = {
-        usbId?: USBID.AsObject,
-    }
-}
 
-export class USBID extends jspb.Message { 
-    getVid(): string;
-    setVid(value: string): USBID;
-
-    getPid(): string;
-    setPid(value: string): USBID;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): USBID.AsObject;
-    static toObject(includeInstance: boolean, msg: USBID): USBID.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: USBID, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): USBID;
-    static deserializeBinaryFromReader(message: USBID, reader: jspb.BinaryReader): USBID;
-}
-
-export namespace USBID {
-    export type AsObject = {
-        vid: string,
-        pid: string,
+        propertiesMap: Array<[string, string]>,
     }
 }
 
@@ -480,6 +455,9 @@ export class BoardListRequest extends jspb.Message {
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardListRequest;
 
+    getTimeout(): number;
+    setTimeout(value: number): BoardListRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListRequest.AsObject;
@@ -494,6 +472,7 @@ export class BoardListRequest extends jspb.Message {
 export namespace BoardListRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        timeout: number,
     }
 }
 
@@ -521,22 +500,16 @@ export namespace BoardListResponse {
 }
 
 export class DetectedPort extends jspb.Message { 
-    getAddress(): string;
-    setAddress(value: string): DetectedPort;
+    clearMatchingBoardsList(): void;
+    getMatchingBoardsList(): Array<BoardListItem>;
+    setMatchingBoardsList(value: Array<BoardListItem>): DetectedPort;
+    addMatchingBoards(value?: BoardListItem, index?: number): BoardListItem;
 
-    getProtocol(): string;
-    setProtocol(value: string): DetectedPort;
 
-    getProtocolLabel(): string;
-    setProtocolLabel(value: string): DetectedPort;
-
-    clearBoardsList(): void;
-    getBoardsList(): Array<BoardListItem>;
-    setBoardsList(value: Array<BoardListItem>): DetectedPort;
-    addBoards(value?: BoardListItem, index?: number): BoardListItem;
-
-    getSerialNumber(): string;
-    setSerialNumber(value: string): DetectedPort;
+    hasPort(): boolean;
+    clearPort(): void;
+    getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
+    setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): DetectedPort;
 
 
     serializeBinary(): Uint8Array;
@@ -551,11 +524,8 @@ export class DetectedPort extends jspb.Message {
 
 export namespace DetectedPort {
     export type AsObject = {
-        address: string,
-        protocol: string,
-        protocolLabel: string,
-        boardsList: Array<BoardListItem.AsObject>,
-        serialNumber: string,
+        matchingBoardsList: Array<BoardListItem.AsObject>,
+        port?: cc_arduino_cli_commands_v1_port_pb.Port.AsObject,
     }
 }
 
@@ -686,12 +656,6 @@ export class BoardListItem extends jspb.Message {
     getIsHidden(): boolean;
     setIsHidden(value: boolean): BoardListItem;
 
-    getVid(): string;
-    setVid(value: string): BoardListItem;
-
-    getPid(): string;
-    setPid(value: string): BoardListItem;
-
 
     hasPlatform(): boolean;
     clearPlatform(): void;
@@ -714,8 +678,6 @@ export namespace BoardListItem {
         name: string,
         fqbn: string,
         isHidden: boolean,
-        vid: string,
-        pid: string,
         platform?: cc_arduino_cli_commands_v1_common_pb.Platform.AsObject,
     }
 }

@@ -19,6 +19,7 @@
 'use strict';
 var cc_arduino_cli_debug_v1_debug_pb = require('../../../../../cc/arduino/cli/debug/v1/debug_pb.js');
 var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cli/commands/v1/common_pb.js');
+var cc_arduino_cli_commands_v1_port_pb = require('../../../../../cc/arduino/cli/commands/v1/port_pb.js');
 
 function serialize_cc_arduino_cli_debug_v1_DebugConfigRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_debug_v1_debug_pb.DebugConfigRequest)) {
@@ -91,4 +92,3 @@ debug: {
     responseDeserialize: deserialize_cc_arduino_cli_debug_v1_GetDebugConfigResponse,
   },
 };
-
