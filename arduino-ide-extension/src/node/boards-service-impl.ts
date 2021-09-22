@@ -42,8 +42,7 @@ import { InstallWithProgress } from './grpc-installable';
 @injectable()
 export class BoardsServiceImpl
   extends CoreClientAware
-  implements BoardsService
-{
+  implements BoardsService {
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -386,7 +385,10 @@ export class BoardsServiceImpl
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.startBoardListWatch(coreClient)
+        resolve();
+      });
       resp.on('error', (error) => {
         this.responseService.appendToOutput({
           chunk: `Failed to install platform: ${item.id}.\n`,
@@ -431,7 +433,10 @@ export class BoardsServiceImpl
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.startBoardListWatch(coreClient)
+        resolve();
+      });
       resp.on('error', reject);
     });
 

@@ -6,6 +6,7 @@ import {
   LibraryService,
 } from '../common/protocol/library-service';
 import { CoreClientAware } from './core-client-provider';
+import { BoardDiscovery } from './board-discovery';
 import {
   InstalledLibrary,
   Library,
@@ -29,13 +30,15 @@ import { InstallWithProgress } from './grpc-installable';
 @injectable()
 export class LibraryServiceImpl
   extends CoreClientAware
-  implements LibraryService
-{
+  implements LibraryService {
   @inject(ILogger)
   protected logger: ILogger;
 
   @inject(ResponseService)
   protected readonly responseService: ResponseService;
+
+  @inject(BoardDiscovery)
+  protected readonly boardDiscovery: BoardDiscovery;
 
   @inject(NotificationServiceServer)
   protected readonly notificationServer: NotificationServiceServer;
@@ -278,12 +281,14 @@ export class LibraryServiceImpl
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.startBoardListWatch(coreClient)
+        resolve();
+      });
       resp.on('error', (error) => {
         this.responseService.appendToOutput({
-          chunk: `Failed to install library: ${item.name}${
-            version ? `:${version}` : ''
-          }.\n`,
+          chunk: `Failed to install library: ${item.name}${version ? `:${version}` : ''
+            }.\n`,
         });
         this.responseService.appendToOutput({
           chunk: error.toString(),
@@ -326,7 +331,10 @@ export class LibraryServiceImpl
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.startBoardListWatch(coreClient)
+        resolve();
+      });
       resp.on('error', reject);
     });
   }
@@ -355,7 +363,10 @@ export class LibraryServiceImpl
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.startBoardListWatch(coreClient)
+        resolve();
+      });
       resp.on('error', reject);
     });
 
