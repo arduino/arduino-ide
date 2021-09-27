@@ -4,8 +4,11 @@ import URI from '@theia/core/lib/common/uri';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { ResponseServiceImpl } from '../response-service-impl';
-import { Installable, LibraryService } from '../../common/protocol';
+import {
+  Installable,
+  LibraryService,
+  ResponseServiceArduino,
+} from '../../common/protocol';
 import {
   SketchContribution,
   Command,
@@ -18,8 +21,8 @@ export class AddZipLibrary extends SketchContribution {
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
 
-  @inject(ResponseServiceImpl)
-  protected readonly responseService: ResponseServiceImpl;
+  @inject(ResponseServiceArduino)
+  protected readonly responseService: ResponseServiceArduino;
 
   @inject(LibraryService)
   protected readonly libraryService: LibraryService;

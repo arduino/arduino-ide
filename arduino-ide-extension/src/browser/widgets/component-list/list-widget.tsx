@@ -12,11 +12,11 @@ import {
   Installable,
   Searchable,
   ArduinoComponent,
+  ResponseServiceArduino,
 } from '../../../common/protocol';
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
-import { ResponseServiceImpl } from '../../response-service-impl';
 
 @injectable()
 export abstract class ListWidget<
@@ -28,8 +28,8 @@ export abstract class ListWidget<
   @inject(CommandService)
   protected readonly commandService: CommandService;
 
-  @inject(ResponseServiceImpl)
-  protected readonly responseService: ResponseServiceImpl;
+  @inject(ResponseServiceArduino)
+  protected readonly responseService: ResponseServiceArduino;
 
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
