@@ -94,7 +94,7 @@ export class ArduinoDaemonImpl
   }
 
   async stopDaemon(): Promise<void> {
-    this.toDispose.dispose();
+    this.toDispose.dispose(); 
   }
 
   get onDaemonStarted(): Event<void> {

@@ -1,5 +1,6 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Board, Port } from './boards-service';
+import { Event } from '@theia/core/lib/common/event';
 
 export interface Status {}
 export type OK = Status;
@@ -61,6 +62,7 @@ export namespace MonitorConfig {
 export const MonitorServiceClient = Symbol('MonitorServiceClient');
 export interface MonitorServiceClient {
   notifyError(event: MonitorError): void;
+  onError: Event<MonitorError>;
 }
 
 export interface MonitorError {

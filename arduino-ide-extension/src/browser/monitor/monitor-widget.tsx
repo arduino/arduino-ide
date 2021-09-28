@@ -20,7 +20,6 @@ import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { ArduinoSelect } from '../widgets/arduino-select';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
-import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -31,9 +30,6 @@ export class MonitorWidget extends ReactWidget {
 
   @inject(MonitorConnection)
   protected readonly monitorConnection: MonitorConnection;
-
-  @inject(MonitorServiceClientImpl)
-  protected readonly monitorServiceClient: MonitorServiceClientImpl;
 
   protected widgetHeight: number;
 
@@ -303,7 +299,7 @@ export namespace SerialMonitorOutput {
     readonly clearConsoleEvent: Event<void>;
   }
   export interface State {
-    content: string;
+    lines: string[];
     timestamp: boolean;
   }
 }
@@ -321,7 +317,7 @@ export class SerialMonitorOutput extends React.Component<
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
     this.state = {
-      content: '',
+      lines: [],
       timestamp: this.props.monitorModel.timestamp,
     };
   }
@@ -330,7 +326,7 @@ export class SerialMonitorOutput extends React.Component<
     return (
       <React.Fragment>
         <div style={{ whiteSpace: 'pre', fontFamily: 'monospace' }}>
-          {this.state.content}
+          {this.state.lines.map((l) => `${l}\n`)}
         </div>
         <div
           style={{ float: 'left', clear: 'both' }}
@@ -353,16 +349,18 @@ export class SerialMonitorOutput extends React.Component<
             ? `${dateFormat(new Date(), 'H:M:ss.l')} -> `
             : '';
         for (let i = 0; i < rawLines.length; i++) {
-          if (i === 0 && this.state.content.length !== 0) {
+          if (
+            i === 0
+            // &&  this.state.content.length !== 0
+          ) {
             lines.push(rawLines[i]);
           } else {
             lines.push(timestamp() + rawLines[i]);
           }
         }
-        const content = this.state.content + lines.join('\n');
-        this.setState({ content });
+        this.setState({ lines: this.state.lines.concat(lines) });
       }),
-      this.props.clearConsoleEvent(() => this.setState({ content: '' })),
+      this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
           const { timestamp } = this.props.monitorModel;

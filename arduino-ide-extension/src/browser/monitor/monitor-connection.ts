@@ -8,6 +8,7 @@ import {
   MonitorConfig,
   MonitorError,
   Status,
+  MonitorServiceClient,
 } from '../../common/protocol/monitor-service';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
@@ -16,7 +17,6 @@ import {
   BoardsService,
   AttachedBoardsChangeEvent,
 } from '../../common/protocol/boards-service';
-import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { NotificationCenter } from '../notification-center';
@@ -29,8 +29,8 @@ export class MonitorConnection {
   @inject(MonitorService)
   protected readonly monitorService: MonitorService;
 
-  @inject(MonitorServiceClientImpl)
-  protected readonly monitorServiceClient: MonitorServiceClientImpl;
+  @inject(MonitorServiceClient)
+  protected readonly monitorServiceClient: MonitorServiceClient;
 
   @inject(BoardsService)
   protected readonly boardsService: BoardsService;
