@@ -20,6 +20,8 @@ import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { ArduinoSelect } from '../widgets/arduino-select';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
+import { FixedSizeList as List } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -299,7 +301,7 @@ export namespace SerialMonitorOutput {
     readonly clearConsoleEvent: Event<void>;
   }
   export interface State {
-    lines: string[];
+    lines: any;
     timestamp: boolean;
   }
 }
@@ -322,14 +324,32 @@ export class SerialMonitorOutput extends React.Component<
     };
   }
 
+  listRef: any = React.createRef();
+
   render(): React.ReactNode {
     return (
       <React.Fragment>
-        <div style={{ whiteSpace: 'pre', fontFamily: 'monospace' }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              className="List"
+              height={height}
+              itemData={this.state.lines}
+              itemCount={this.state.lines.length}
+              itemSize={30}
+              width={width}
+              ref={this.listRef}
+              onItemsRendered={() => this.scrollToBottom()}
+            >
+              {Row}
+            </List>
+          )}
+        </AutoSizer>
+        {/* <div style={{ whiteSpace: 'pre', fontFamily: 'monospace' }}>
           {this.state.lines.map((line, i) => (
             <MonitorTextLine text={line} key={i} />
           ))}
-        </div>
+        </div> */}
         <div
           style={{ float: 'left', clear: 'both' }}
           ref={(element) => {
@@ -340,11 +360,16 @@ export class SerialMonitorOutput extends React.Component<
     );
   }
 
+  shouldComponentUpdate(): boolean {
+    return true;
+  }
+
   componentDidMount(): void {
-    this.scrollToBottom();
+    // this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.monitorConnection.onRead(({ messages }) => {
-        messages.forEach((message) => {
+        const linesToAdd: string[] = [];
+        for (const message of messages) {
           const rawLines = message.split('\n');
           const lines: string[] = [];
           const timestamp = () =>
@@ -359,14 +384,14 @@ export class SerialMonitorOutput extends React.Component<
               lines.push(timestamp() + rawLines[i]);
             }
           }
-
-          this.setState((prevState) => ({
-            lines: [...prevState.lines, lines.join('\n')],
-          }));
+          linesToAdd.push(lines.join('\n'));
 
           // const content = this.state.content + lines.join('\n');
           // this.setState({ content });
-        });
+        }
+        this.setState((prevState) => ({
+          lines: [...prevState.lines, ...linesToAdd],
+        }));
       }),
       this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
       this.props.monitorModel.onChange(({ property }) => {
@@ -378,9 +403,9 @@ export class SerialMonitorOutput extends React.Component<
     ]);
   }
 
-  componentDidUpdate(): void {
-    this.scrollToBottom();
-  }
+  // componentDidUpdate(): void {
+  //   this.scrollToBottom();
+  // }
 
   componentWillUnmount(): void {
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
@@ -389,7 +414,8 @@ export class SerialMonitorOutput extends React.Component<
 
   protected scrollToBottom(): void {
     if (this.props.monitorModel.autoscroll && this.anchor) {
-      this.anchor.scrollIntoView();
+      // this.anchor.scrollIntoView();
+      this.listRef.current.scrollToItem(this.state.lines.length);
     }
   }
 }
@@ -398,6 +424,16 @@ const _MonitorTextLine = ({ text }: { text: string }): React.ReactElement => {
   return <div>{text}</div>;
 };
 export const MonitorTextLine = React.memo(_MonitorTextLine);
+
+const Row = ({
+  index,
+  style,
+  data,
+}: {
+  index: number;
+  style: any;
+  data: string;
+}) => <div style={style}>{data[index]}</div>;
 
 export interface SelectOption<T> {
   readonly label: string;

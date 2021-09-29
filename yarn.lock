@@ -826,6 +826,13 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
+"@babel/runtime@^7.0.0":
+  version "7.15.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.15.4.tgz#fd17d16bfdf878e6dd02d19753a39fa8a8d9c84a"
+  integrity sha512-99catp6bHCaxr4sJ/DbTGgHS4+Rs2RVd2g7iOap6SLGPDknRK9ztKNsE/Fg6QhSeh1FGE5f6gHGQmvvn3I3xhw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.10.0", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.13.10"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.10.tgz#47d42a57b6095f4468da440388fdbad8bebf0d7d"
@@ -3013,12 +3020,26 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-virtualized-auto-sizer@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.1.tgz#b3187dae1dfc4c15880c9cfc5b45f2719ea6ebd4"
+  integrity sha512-GH8sAnBEM5GV9LTeiz56r4ZhMOUSrP43tAQNSRVxNexDjcNKLCEtnxusAItg1owFUFE6k0NslV26gqVClVvong==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-virtualized@^9.18.3":
   version "9.21.11"
   resolved "https://registry.yarnpkg.com/@types/react-virtualized/-/react-virtualized-9.21.11.tgz#8eb60ed12ef0b2625769819f9fd10ad4bb1bdce0"
   integrity sha512-ngNe2AY/2CHuZQstOS0Jo5jnSjeyKTdSgqrXCQEltRMXLp9rwPUpJdgkoWzES6wn427Z8zo8dkBN8Sx7hlRmig==
   dependencies:
     "@types/prop-types" "*"
+    "@types/react" "*"
+
+"@types/react-window@^1.8.5":
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/@types/react-window/-/react-window-1.8.5.tgz#285fcc5cea703eef78d90f499e1457e9b5c02fc1"
+  integrity sha512-V9q3CvhC9Jk9bWBOysPGaWy/Z0lxYcTXLtLipkt2cnRj1JOSFNF7wqGpkScSXMgBwC+fnVRg/7shwgddBG5ICw==
+  dependencies:
     "@types/react" "*"
 
 "@types/react@*":
@@ -11364,6 +11385,11 @@ mem@^4.0.0:
     mimic-fn "^2.0.0"
     p-is-promise "^2.0.0"
 
+"memoize-one@>=3.1.1 <6":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
+  integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
+
 memoize-one@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
@@ -13916,6 +13942,11 @@ react-transition-group@^4.3.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-virtualized-auto-sizer@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.6.tgz#66c5b1c9278064c5ef1699ed40a29c11518f97ca"
+  integrity sha512-7tQ0BmZqfVF6YYEWcIGuoR3OdYe8I/ZFbNclFlGOC3pMqunkYF/oL30NCjSGl9sMEb17AnzixDz98Kqc3N76HQ==
+
 react-virtualized@^9.20.0:
   version "9.22.3"
   resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-9.22.3.tgz#f430f16beb0a42db420dbd4d340403c0de334421"
@@ -13927,6 +13958,14 @@ react-virtualized@^9.20.0:
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
+
+react-window@^1.8.6:
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
+  integrity sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    memoize-one ">=3.1.1 <6"
 
 react@^16.8.0:
   version "16.14.0"

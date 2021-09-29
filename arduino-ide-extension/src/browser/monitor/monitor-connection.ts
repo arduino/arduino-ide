@@ -73,17 +73,9 @@ export class MonitorConnection {
   protected init(): void {
     this.monitorServiceClient.onMessage(async (port) => {
       const w = new WebSocket(`ws://localhost:${port}`);
-      let h = 0;
       w.onmessage = (res) => {
         const messages = JSON.parse(res.data);
-        h += messages.length;
-
-        if (h > 1000) {
-          h = 0;
-          console.log('read 1000 messages');
-        }
-        // console.log(`received ${messages.length} messages`);
-        // this.onReadEmitter.fire({ messages });
+        this.onReadEmitter.fire({ messages });
       };
     });
 
