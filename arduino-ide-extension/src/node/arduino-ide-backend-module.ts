@@ -200,6 +200,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       bind(MonitorClientProvider).toSelf().inSingletonScope();
       bind(MonitorServiceImpl).toSelf().inSingletonScope();
       bind(MonitorService).toService(MonitorServiceImpl);
+
       bindBackendService<MonitorService, MonitorServiceClient>(
         MonitorServicePath,
         MonitorService,

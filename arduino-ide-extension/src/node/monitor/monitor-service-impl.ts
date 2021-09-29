@@ -1,5 +1,5 @@
 import { ClientDuplexStream } from '@grpc/grpc-js';
-import { TextDecoder, TextEncoder } from 'util';
+import { TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import { Emitter } from '@theia/core/lib/common/event';
@@ -18,6 +18,7 @@ import {
 } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
+import * as WebSocket from 'ws';
 
 interface ErrorWithCode extends Error {
   readonly code: number;
@@ -74,6 +75,13 @@ export class MonitorServiceImpl implements MonitorService {
   protected messages: string[] = [];
   protected onMessageDidReadEmitter = new Emitter<void>();
 
+  private rand = 0;
+
+  constructor() {
+    this.rand = Math.floor(1000 * Math.random());
+    console.log(`Spawning ${this.rand}`);
+  }
+
   setClient(client: MonitorServiceClient | undefined): void {
     this.client = client;
   }
@@ -122,14 +130,36 @@ export class MonitorServiceImpl implements MonitorService {
       }).bind(this)
     );
 
+    const ws = new WebSocket.Server({ port: 0 });
+    const address: any = ws.address();
+    this.client?.notifyMessage(address.port);
+    let wsConn: WebSocket | null = null;
+    ws.on('connection', (ws) => {
+      wsConn = ws;
+    });
+
+    const emptyTheQueue = () => {
+      if (this.messages.length) {
+        wsConn?.send(JSON.stringify(this.messages));
+        this.messages = [];
+      }
+    };
+
+    // empty the queue every 16ms (~60fps)
+    setInterval(emptyTheQueue, 32);
+
     duplex.on(
       'data',
       ((resp: StreamingOpenResponse) => {
+        // eslint-disable-next-line unused-imports/no-unused-vars
         const raw = resp.getData();
+
         const message =
           typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
+        // this.client?.notifyMessage(message);
         this.messages.push(message);
-        this.onMessageDidReadEmitter.fire();
+        // this.onMessageDidReadEmitter.fire();
+        // wsConn?.send(message);
       }).bind(this)
     );
 
@@ -207,12 +237,14 @@ export class MonitorServiceImpl implements MonitorService {
     });
   }
 
-  async request(): Promise<{ message: string }> {
-    const message = this.messages.shift();
-    if (message) {
-      return { message };
+  async request(): Promise<{ messages: string[] }> {
+    // const messages = this.messages.shift();
+    const messages = this.messages;
+    if (messages.length) {
+      this.messages = [];
+      return { messages };
     }
-    return new Promise<{ message: string }>((resolve) => {
+    return new Promise<{ messages: string[] }>((resolve) => {
       const toDispose = this.onMessageDidReadEmitter.event(() => {
         toDispose.dispose();
         resolve(this.request());

@@ -397,9 +397,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     createWidget: () => context.container.get(MonitorWidget),
   }));
   // Frontend binding for the serial monitor service
+  // bind(MonitorServiceClient)
+  //   .toDynamicValue((context) => {
+  //     const client = context.container.get(MonitorServiceClientImpl);
+  //     WebSocketConnectionProvider.createProxy(
+  //       context.container,
+  //       MonitorServicePath,
+  //       client
+  //     );
+  //     return client;
+  //   })
+  //   .inSingletonScope();
   bind(MonitorService)
     .toDynamicValue((context) => {
-      debugger;
       const connection = context.container.get(WebSocketConnectionProvider);
       const client =
         context.container.get<MonitorServiceClient>(MonitorServiceClient);

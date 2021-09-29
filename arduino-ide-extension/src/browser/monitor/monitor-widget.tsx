@@ -326,7 +326,9 @@ export class SerialMonitorOutput extends React.Component<
     return (
       <React.Fragment>
         <div style={{ whiteSpace: 'pre', fontFamily: 'monospace' }}>
-          {this.state.lines.map((l) => `${l}\n`)}
+          {this.state.lines.map((line, i) => (
+            <MonitorTextLine text={line} key={i} />
+          ))}
         </div>
         <div
           style={{ float: 'left', clear: 'both' }}
@@ -341,24 +343,30 @@ export class SerialMonitorOutput extends React.Component<
   componentDidMount(): void {
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
-      this.props.monitorConnection.onRead(({ message }) => {
-        const rawLines = message.split('\n');
-        const lines: string[] = [];
-        const timestamp = () =>
-          this.state.timestamp
-            ? `${dateFormat(new Date(), 'H:M:ss.l')} -> `
-            : '';
-        for (let i = 0; i < rawLines.length; i++) {
-          if (
-            i === 0
-            // &&  this.state.content.length !== 0
-          ) {
-            lines.push(rawLines[i]);
-          } else {
-            lines.push(timestamp() + rawLines[i]);
+      this.props.monitorConnection.onRead(({ messages }) => {
+        messages.forEach((message) => {
+          const rawLines = message.split('\n');
+          const lines: string[] = [];
+          const timestamp = () =>
+            this.state.timestamp
+              ? `${dateFormat(new Date(), 'H:M:ss.l')} -> `
+              : '';
+
+          for (let i = 0; i < rawLines.length; i++) {
+            if (i === 0 && this.state.lines.length !== 0) {
+              lines.push(rawLines[i]);
+            } else {
+              lines.push(timestamp() + rawLines[i]);
+            }
           }
-        }
-        this.setState({ lines: this.state.lines.concat(lines) });
+
+          this.setState((prevState) => ({
+            lines: [...prevState.lines, lines.join('\n')],
+          }));
+
+          // const content = this.state.content + lines.join('\n');
+          // this.setState({ content });
+        });
       }),
       this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
       this.props.monitorModel.onChange(({ property }) => {
@@ -385,6 +393,11 @@ export class SerialMonitorOutput extends React.Component<
     }
   }
 }
+
+const _MonitorTextLine = ({ text }: { text: string }): React.ReactElement => {
+  return <div>{text}</div>;
+};
+export const MonitorTextLine = React.memo(_MonitorTextLine);
 
 export interface SelectOption<T> {
   readonly label: string;

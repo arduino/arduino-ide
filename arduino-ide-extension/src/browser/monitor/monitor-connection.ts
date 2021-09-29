@@ -59,7 +59,7 @@ export class MonitorConnection {
   /**
    * This emitter forwards all read events **iff** the connection is established.
    */
-  protected readonly onReadEmitter = new Emitter<{ message: string }>();
+  protected readonly onReadEmitter = new Emitter<{ messages: string[] }>();
 
   /**
    * Array for storing previous monitor errors received from the server, and based on the number of elements in this array,
@@ -71,6 +71,31 @@ export class MonitorConnection {
 
   @postConstruct()
   protected init(): void {
+    this.monitorServiceClient.onMessage(async (port) => {
+      const w = new WebSocket(`ws://localhost:${port}`);
+      let h = 0;
+      w.onmessage = (res) => {
+        const messages = JSON.parse(res.data);
+        h += messages.length;
+
+        if (h > 1000) {
+          h = 0;
+          console.log('read 1000 messages');
+        }
+        // console.log(`received ${messages.length} messages`);
+        // this.onReadEmitter.fire({ messages });
+      };
+    });
+
+    // let i = 0;
+    // this.monitorServiceClient.onMessage(async (msg) => {
+    //   // msg received
+    //   i++;
+    //   if (i % 1000 === 0) {
+    //     // console.log(msg);
+    //   }
+    // });
+
     this.monitorServiceClient.onError(async (error) => {
       let shouldReconnect = false;
       if (this.state) {
@@ -231,15 +256,22 @@ export class MonitorConnection {
     );
     const connectStatus = await this.monitorService.connect(config);
     if (Status.isOK(connectStatus)) {
+      let j = 0;
       const requestMessage = () => {
-        this.monitorService.request().then(({ message }) => {
+        this.monitorService.request().then(({ messages }) => {
           if (this.connected) {
-            this.onReadEmitter.fire({ message });
+            // this.onReadEmitter.fire({ messages });
+            j += messages.length;
+            if (j > 1000) {
+              j = 0;
+              // console.log(`read more than 1000 messages`);
+            }
+
             requestMessage();
           }
         });
       };
-      requestMessage();
+      // requestMessage();
       this.state = { config };
       console.info(
         `<<< Serial monitor connection created for ${Board.toString(
@@ -300,7 +332,7 @@ export class MonitorConnection {
     return this.onConnectionChangedEmitter.event;
   }
 
-  get onRead(): Event<{ message: string }> {
+  get onRead(): Event<{ messages: string[] }> {
     return this.onReadEmitter.event;
   }
 
