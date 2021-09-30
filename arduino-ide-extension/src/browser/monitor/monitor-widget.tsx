@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as dateFormat from 'dateformat';
 import { postConstruct, injectable, inject } from 'inversify';
 import { OptionsType } from 'react-select/src/types';
 import { isOSX } from '@theia/core/lib/common/os';
@@ -22,6 +21,7 @@ import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import dateFormat = require('dateformat');
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -300,11 +300,13 @@ export namespace SerialMonitorOutput {
     readonly monitorConnection: MonitorConnection;
     readonly clearConsoleEvent: Event<void>;
   }
+
   export interface State {
-    lines: any;
+    lines: Line[];
     timestamp: boolean;
   }
 }
+export type Line = { message: string; timestamp?: Date };
 
 export class SerialMonitorOutput extends React.Component<
   SerialMonitorOutput.Props,
@@ -319,12 +321,10 @@ export class SerialMonitorOutput extends React.Component<
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
     this.state = {
-      lines: [],
+      lines: [{ message: '' }],
       timestamp: this.props.monitorModel.timestamp,
     };
   }
-
-  listRef: any = React.createRef();
 
   render(): React.ReactNode {
     return (
@@ -334,12 +334,15 @@ export class SerialMonitorOutput extends React.Component<
             <List
               className="List"
               height={height}
-              itemData={this.state.lines}
+              itemData={
+                {
+                  lines: this.state.lines,
+                  timestamp: this.state.timestamp,
+                } as any
+              }
               itemCount={this.state.lines.length}
-              itemSize={30}
+              itemSize={20}
               width={width}
-              ref={this.listRef}
-              onItemsRendered={() => this.scrollToBottom()}
             >
               {Row}
             </List>
@@ -364,36 +367,41 @@ export class SerialMonitorOutput extends React.Component<
     return true;
   }
 
+  messageToLines(
+    messages: string[],
+    prevLines: Line[],
+    separator = '\n'
+  ): Line[] {
+    const linesToAdd: Line[] = [this.state.lines[this.state.lines.length - 1]];
+
+    for (const message of messages) {
+      const lastLine = linesToAdd[linesToAdd.length - 1];
+
+      if (lastLine.message.charAt(lastLine.message.length - 1) === separator) {
+        linesToAdd.push({ message, timestamp: new Date() });
+      } else {
+        linesToAdd[linesToAdd.length - 1].message += message;
+        if (!linesToAdd[linesToAdd.length - 1].timestamp) {
+          linesToAdd[linesToAdd.length - 1].timestamp = new Date();
+        }
+      }
+    }
+
+    prevLines.splice(prevLines.length - 1, 1, ...linesToAdd);
+    return prevLines;
+  }
+
   componentDidMount(): void {
-    // this.scrollToBottom();
+    this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.monitorConnection.onRead(({ messages }) => {
-        const linesToAdd: string[] = [];
-        for (const message of messages) {
-          const rawLines = message.split('\n');
-          const lines: string[] = [];
-          const timestamp = () =>
-            this.state.timestamp
-              ? `${dateFormat(new Date(), 'H:M:ss.l')} -> `
-              : '';
+        const newLines = this.messageToLines(messages, this.state.lines);
 
-          for (let i = 0; i < rawLines.length; i++) {
-            if (i === 0 && this.state.lines.length !== 0) {
-              lines.push(rawLines[i]);
-            } else {
-              lines.push(timestamp() + rawLines[i]);
-            }
-          }
-          linesToAdd.push(lines.join('\n'));
-
-          // const content = this.state.content + lines.join('\n');
-          // this.setState({ content });
-        }
-        this.setState((prevState) => ({
-          lines: [...prevState.lines, ...linesToAdd],
-        }));
+        this.setState({ lines: newLines });
       }),
-      this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
+      this.props.clearConsoleEvent(() =>
+        this.setState({ lines: [{ message: '' }] })
+      ),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
           const { timestamp } = this.props.monitorModel;
@@ -403,9 +411,9 @@ export class SerialMonitorOutput extends React.Component<
     ]);
   }
 
-  // componentDidUpdate(): void {
-  //   this.scrollToBottom();
-  // }
+  componentDidUpdate(): void {
+    this.scrollToBottom();
+  }
 
   componentWillUnmount(): void {
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
@@ -414,16 +422,11 @@ export class SerialMonitorOutput extends React.Component<
 
   protected scrollToBottom(): void {
     if (this.props.monitorModel.autoscroll && this.anchor) {
-      // this.anchor.scrollIntoView();
-      this.listRef.current.scrollToItem(this.state.lines.length);
+      this.anchor.scrollIntoView();
+      // this.listRef.current.scrollToItem(this.state.lines.length);
     }
   }
 }
-
-const _MonitorTextLine = ({ text }: { text: string }): React.ReactElement => {
-  return <div>{text}</div>;
-};
-export const MonitorTextLine = React.memo(_MonitorTextLine);
 
 const Row = ({
   index,
@@ -432,8 +435,19 @@ const Row = ({
 }: {
   index: number;
   style: any;
-  data: string;
-}) => <div style={style}>{data[index]}</div>;
+  data: { lines: Line[]; timestamp: boolean };
+}) => {
+  const timestamp =
+    (data.timestamp &&
+      `${dateFormat(data.lines[index].timestamp, 'H:M:ss.l')} -> `) ||
+    '';
+  return (
+    <div style={style}>
+      {timestamp}
+      {data.lines[index].message}
+    </div>
+  );
+};
 
 export interface SelectOption<T> {
   readonly label: string;

@@ -148,6 +148,27 @@ export class MonitorServiceImpl implements MonitorService {
     // empty the queue every 16ms (~60fps)
     setInterval(emptyTheQueue, 32);
 
+    // converts 'ab\nc\nd' => [ab\n,c\n,d]
+    const stringToArray = (string: string, separator = '\n') => {
+      const retArray: string[] = [];
+
+      let prevChar = separator;
+
+      for (let i = 0; i < string.length; i++) {
+        const currChar = string[i];
+
+        if (prevChar === separator) {
+          retArray.push(currChar);
+        } else {
+          const lastWord = retArray[retArray.length - 1];
+          retArray[retArray.length - 1] = lastWord + currChar;
+        }
+
+        prevChar = currChar;
+      }
+      return retArray;
+    };
+
     duplex.on(
       'data',
       ((resp: StreamingOpenResponse) => {
@@ -156,10 +177,10 @@ export class MonitorServiceImpl implements MonitorService {
 
         const message =
           typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
-        // this.client?.notifyMessage(message);
-        this.messages.push(message);
-        // this.onMessageDidReadEmitter.fire();
-        // wsConn?.send(message);
+
+        // split the message if it contains more lines
+        const messages = stringToArray(message);
+        this.messages.push(...messages);
       }).bind(this)
     );
 
