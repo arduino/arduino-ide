@@ -130,7 +130,7 @@ export class UploadSketch extends SketchContribution {
       const sketchUri = sketch.uri;
       const optimizeForDebug = this.editorMode.compileForDebug;
       const { selectedPort } = boardsConfig;
-      const port = selectedPort?.address;
+      const port = selectedPort;
 
       if (usingProgrammer) {
         const programmer = selectedProgrammer;

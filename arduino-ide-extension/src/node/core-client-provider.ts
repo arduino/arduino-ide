@@ -1,11 +1,12 @@
 import * as grpc from '@grpc/grpc-js';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
+  CreateRequest,
+  CreateResponse,
   InitRequest,
   InitResponse,
   UpdateIndexRequest,
@@ -15,6 +16,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -23,12 +25,27 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
 
   protected readonly onClientReadyEmitter = new Emitter<void>();
 
+  protected _created = new Deferred<void>();
+  protected _initialized = new Deferred<void>();
+
+  get created(): Promise<void> {
+    return this._created.promise;
+  }
+
+  get initialized(): Promise<void> {
+    return this._initialized.promise;
+  }
+
   get onClientReady(): Event<void> {
     return this.onClientReadyEmitter.event;
   }
 
   close(client: CoreClientProvider.Client): void {
     client.client.close();
+    this._created.reject();
+    this._initialized.reject();
+    this._created = new Deferred<void>();
+    this._initialized = new Deferred<void>();
   }
 
   protected async reconcileClient(
@@ -46,6 +63,39 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     }
   }
 
+  @postConstruct()
+  protected async init(): Promise<void> {
+    this.daemon.ready.then(async () => {
+      const cliConfig = this.configService.cliConfiguration;
+      // First create the client and the instance synchronously
+      // and notify client is ready.
+      // TODO: Creation failure should probably be handled here
+      await this.reconcileClient(
+        cliConfig ? cliConfig.daemon.port : undefined
+      ).then(() => {
+        this._created.resolve();
+      });
+
+      // If client has been created correctly update indexes and initialize
+      // its instance by loading platforms and cores.
+      if (this._client && !(this._client instanceof Error)) {
+        await this.updateIndexes(this._client)
+          .then(this.initInstance)
+          .then(() => {
+            this._initialized.resolve();
+          });
+      }
+    });
+
+    this.daemon.onDaemonStopped(() => {
+      if (this._client && !(this._client instanceof Error)) {
+        this.close(this._client);
+      }
+      this._client = undefined;
+      this._port = undefined;
+    });
+  }
+
   protected async createClient(
     port: string | number
   ): Promise<CoreClientProvider.Client> {
@@ -60,31 +110,64 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       grpc.credentials.createInsecure(),
       this.channelOptions
     ) as ArduinoCoreServiceClient;
-    const initReq = new InitRequest();
-    initReq.setLibraryManagerOnly(false);
-    const initResp = await new Promise<InitResponse>((resolve, reject) => {
-      let resp: InitResponse | undefined = undefined;
-      const stream = client.init(initReq);
-      stream.on('data', (data: InitResponse) => (resp = data));
-      stream.on('end', () => resolve(resp!));
-      stream.on('error', (err) => reject(err));
+
+    const createRes = await new Promise<CreateResponse>((resolve, reject) => {
+      client.create(new CreateRequest(), (err, res: CreateResponse) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(res);
+      });
     });
 
-    const instance = initResp.getInstance();
+    const instance = createRes.getInstance();
     if (!instance) {
       throw new Error(
         'Could not retrieve instance from the initialize response.'
       );
     }
-    await this.updateIndexes({ instance, client });
 
     return { instance, client };
+  }
+
+  protected async initInstance({
+    client,
+    instance,
+  }: CoreClientProvider.Client): Promise<void> {
+    const initReq = new InitRequest();
+    initReq.setInstance(instance);
+    await new Promise<void>((resolve, reject) => {
+      const stream = client.init(initReq);
+      stream.on('data', (res: InitResponse) => {
+        const progress = res.getInitProgress();
+        if (progress) {
+          const downloadProgress = progress.getDownloadProgress();
+          if (downloadProgress && downloadProgress.getCompleted()) {
+            const file = downloadProgress.getFile();
+            console.log(`Downloaded ${file}`);
+          }
+          const taskProgress = progress.getTaskProgress();
+          if (taskProgress && taskProgress.getCompleted()) {
+            const name = taskProgress.getName();
+            console.log(`Completed ${name}`);
+          }
+        }
+
+        const err = res.getError();
+        if (err) {
+          console.error(err.getMessage());
+        }
+      });
+      stream.on('error', (err) => reject(err));
+      stream.on('end', resolve);
+    });
   }
 
   protected async updateIndexes({
     client,
     instance,
-  }: CoreClientProvider.Client): Promise<void> {
+  }: CoreClientProvider.Client): Promise<CoreClientProvider.Client> {
     // in a separate promise, try and update the index
     let indexUpdateSucceeded = true;
     for (let i = 0; i < 10; i++) {
@@ -119,6 +202,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
       this.notificationService.notifyIndexUpdated();
     }
+    return { client, instance };
   }
 
   protected async updateLibraryIndex({
@@ -202,32 +286,15 @@ export abstract class CoreClientAware {
   protected readonly coreClientProvider: CoreClientProvider;
 
   protected async coreClient(): Promise<CoreClientProvider.Client> {
-    const coreClient = await new Promise<CoreClientProvider.Client>(
+    return await new Promise<CoreClientProvider.Client>(
       async (resolve, reject) => {
-        const handle = (c: CoreClientProvider.Client | Error) => {
-          if (c instanceof Error) {
-            reject(c);
-          } else {
-            resolve(c);
-          }
-        };
         const client = await this.coreClientProvider.client();
-        if (client) {
-          handle(client);
-          return;
+        if (client && client instanceof Error) {
+          reject(client);
+        } else if (client) {
+          return resolve(client);
         }
-        const toDispose = new DisposableCollection();
-        toDispose.push(
-          this.coreClientProvider.onClientReady(async () => {
-            const client = await this.coreClientProvider.client();
-            if (client) {
-              handle(client);
-            }
-            toDispose.dispose();
-          })
-        );
       }
     );
-    return coreClient;
   }
 }

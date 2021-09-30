@@ -22,6 +22,7 @@ import { ResponseService } from '../common/protocol/response-service';
 import { NotificationServiceServer } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
+import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -40,6 +41,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const { sketchUri, fqbn, compilerWarnings } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 
@@ -122,6 +124,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const { sketchUri, fqbn, port, programmer } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
 
@@ -131,9 +134,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     if (fqbn) {
       req.setFqbn(fqbn);
     }
+    const p = new Port();
     if (port) {
-      req.setPort(port);
+      p.setAddress(port.address);
+      p.setLabel(port.label || '');
+      p.setProtocol(port.protocol);
     }
+    req.setPort(p);
     if (programmer) {
       req.setProgrammer(programmer.id);
     }
@@ -170,6 +177,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
     const { fqbn, port, programmer } = options;
@@ -178,9 +186,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     if (fqbn) {
       burnReq.setFqbn(fqbn);
     }
+    const p = new Port();
     if (port) {
-      burnReq.setPort(port);
+      p.setAddress(port.address);
+      p.setLabel(port.label || '');
+      p.setProtocol(port.protocol);
     }
+    burnReq.setPort(p);
     if (programmer) {
       burnReq.setProgrammer(programmer.id);
     }
