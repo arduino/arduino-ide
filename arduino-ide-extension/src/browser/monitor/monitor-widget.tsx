@@ -294,18 +294,6 @@ export class SerialMonitorSendInput extends React.Component<
   }
 }
 
-export namespace SerialMonitorOutput {
-  export interface Props {
-    readonly monitorModel: MonitorModel;
-    readonly monitorConnection: MonitorConnection;
-    readonly clearConsoleEvent: Event<void>;
-  }
-
-  export interface State {
-    lines: Line[];
-    timestamp: boolean;
-  }
-}
 export type Line = { message: string; timestamp?: Date };
 
 export class SerialMonitorOutput extends React.Component<
@@ -321,8 +309,9 @@ export class SerialMonitorOutput extends React.Component<
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
     this.state = {
-      lines: [{ message: '' }],
+      lines: [],
       timestamp: this.props.monitorModel.timestamp,
+      charCount: 0,
     };
   }
 
@@ -367,41 +356,25 @@ export class SerialMonitorOutput extends React.Component<
     return true;
   }
 
-  messageToLines(
-    messages: string[],
-    prevLines: Line[],
-    separator = '\n'
-  ): Line[] {
-    const linesToAdd: Line[] = [this.state.lines[this.state.lines.length - 1]];
-
-    for (const message of messages) {
-      const lastLine = linesToAdd[linesToAdd.length - 1];
-
-      if (lastLine.message.charAt(lastLine.message.length - 1) === separator) {
-        linesToAdd.push({ message, timestamp: new Date() });
-      } else {
-        linesToAdd[linesToAdd.length - 1].message += message;
-        if (!linesToAdd[linesToAdd.length - 1].timestamp) {
-          linesToAdd[linesToAdd.length - 1].timestamp = new Date();
-        }
-      }
-    }
-
-    prevLines.splice(prevLines.length - 1, 1, ...linesToAdd);
-    return prevLines;
-  }
-
   componentDidMount(): void {
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.monitorConnection.onRead(({ messages }) => {
-        const newLines = this.messageToLines(messages, this.state.lines);
+        const [newLines, charsToAddCount] = messageToLines(
+          messages,
+          this.state.lines
+        );
+        const [lines, charCount] = truncateLines(
+          newLines,
+          this.state.charCount + charsToAddCount
+        );
 
-        this.setState({ lines: newLines });
+        this.setState({
+          lines,
+          charCount,
+        });
       }),
-      this.props.clearConsoleEvent(() =>
-        this.setState({ lines: [{ message: '' }] })
-      ),
+      this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
           const { timestamp } = this.props.monitorModel;
@@ -452,4 +425,64 @@ const Row = ({
 export interface SelectOption<T> {
   readonly label: string;
   readonly value: T;
+}
+
+export namespace SerialMonitorOutput {
+  export interface Props {
+    readonly monitorModel: MonitorModel;
+    readonly monitorConnection: MonitorConnection;
+    readonly clearConsoleEvent: Event<void>;
+  }
+
+  export interface State {
+    lines: Line[];
+    timestamp: boolean;
+    charCount: number;
+  }
+
+  export const MAX_CHARACTERS = 1_000_000;
+}
+
+function messageToLines(
+  messages: string[],
+  prevLines: Line[],
+  separator = '\n'
+): [Line[], number] {
+  const linesToAdd: Line[] = prevLines.length
+    ? [prevLines[prevLines.length - 1]]
+    : [{ message: '' }];
+  let charCount = 0;
+
+  for (const message of messages) {
+    charCount += message.length;
+    const lastLine = linesToAdd[linesToAdd.length - 1];
+
+    if (lastLine.message.charAt(lastLine.message.length - 1) === separator) {
+      linesToAdd.push({ message, timestamp: new Date() });
+    } else {
+      linesToAdd[linesToAdd.length - 1].message += message;
+      if (!linesToAdd[linesToAdd.length - 1].timestamp) {
+        linesToAdd[linesToAdd.length - 1].timestamp = new Date();
+      }
+    }
+  }
+
+  prevLines.splice(prevLines.length - 1, 1, ...linesToAdd);
+  return [prevLines, charCount];
+}
+
+function truncateLines(lines: Line[], charCount: number): [Line[], number] {
+  let charsToDelete = charCount - SerialMonitorOutput.MAX_CHARACTERS;
+  while (charsToDelete > 0) {
+    const firstLineLength = lines[0]?.message?.length;
+    const newFirstLine = lines[0]?.message?.substring(charsToDelete);
+    const deletedCharsCount = firstLineLength - newFirstLine.length;
+    charCount -= deletedCharsCount;
+    charsToDelete -= deletedCharsCount;
+    lines[0].message = newFirstLine;
+    if (!newFirstLine?.length) {
+      lines.shift();
+    }
+  }
+  return [lines, charCount];
 }
