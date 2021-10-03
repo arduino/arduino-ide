@@ -8,7 +8,7 @@ import { MonitorConnection } from './monitor-connection';
 import dateFormat = require('dateformat');
 import { messageToLines, truncateLines } from './monitor-utils';
 
-export type Line = { message: string; timestamp?: Date };
+export type Line = { message: string; timestamp?: Date; lineLen: number };
 
 export class SerialMonitorOutput extends React.Component<
   SerialMonitorOutput.Props,
@@ -17,11 +17,12 @@ export class SerialMonitorOutput extends React.Component<
   /**
    * Do not touch it. It is used to be able to "follow" the serial monitor log.
    */
-  protected anchor: HTMLElement | null;
   protected toDisposeBeforeUnmount = new DisposableCollection();
+  private listRef: React.RefObject<any>;
 
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
+    this.listRef = React.createRef();
     this.state = {
       lines: [],
       timestamp: this.props.monitorModel.timestamp,
@@ -35,7 +36,7 @@ export class SerialMonitorOutput extends React.Component<
         <AutoSizer>
           {({ height, width }) => (
             <List
-              className="List"
+              className="serial-monitor-messages"
               height={height}
               itemData={
                 {
@@ -46,22 +47,13 @@ export class SerialMonitorOutput extends React.Component<
               itemCount={this.state.lines.length}
               itemSize={20}
               width={width}
+              ref={this.listRef}
+              onItemsRendered={this.scrollToBottom}
             >
               {Row}
             </List>
           )}
         </AutoSizer>
-        {/* <div style={{ whiteSpace: 'pre', fontFamily: 'monospace' }}>
-          {this.state.lines.map((line, i) => (
-            <MonitorTextLine text={line} key={i} />
-          ))}
-        </div> */}
-        <div
-          style={{ float: 'left', clear: 'both' }}
-          ref={(element) => {
-            this.anchor = element;
-          }}
-        />
       </React.Fragment>
     );
   }
@@ -94,12 +86,11 @@ export class SerialMonitorOutput extends React.Component<
           const { timestamp } = this.props.monitorModel;
           this.setState({ timestamp });
         }
+        if (property === 'autoscroll') {
+          this.scrollToBottom();
+        }
       }),
     ]);
-  }
-
-  componentDidUpdate(): void {
-    this.scrollToBottom();
   }
 
   componentWillUnmount(): void {
@@ -107,12 +98,11 @@ export class SerialMonitorOutput extends React.Component<
     this.toDisposeBeforeUnmount.dispose();
   }
 
-  protected scrollToBottom(): void {
-    if (this.props.monitorModel.autoscroll && this.anchor) {
-      this.anchor.scrollIntoView();
-      // this.listRef.current.scrollToItem(this.state.lines.length);
+  scrollToBottom = ((): void => {
+    if (this.listRef.current && this.props.monitorModel.autoscroll) {
+      this.listRef.current.scrollToItem(this.state.lines.length, 'end');
     }
-  }
+  }).bind(this);
 }
 
 const Row = ({
@@ -129,10 +119,13 @@ const Row = ({
       `${dateFormat(data.lines[index].timestamp, 'H:M:ss.l')} -> `) ||
     '';
   return (
-    <div style={style}>
-      {timestamp}
-      {data.lines[index].message}
-    </div>
+    (data.lines[index].lineLen && (
+      <div style={style}>
+        {timestamp}
+        {data.lines[index].message}
+      </div>
+    )) ||
+    null
   );
 };
 
