@@ -11,6 +11,8 @@
   },
   "devDependencies": {
     "@theia/cli": "1.17.2",
+    "@types/sinon": "^2.3.5",
+    "@types/jsdom": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "cross-env": "^7.0.2",
@@ -21,12 +23,15 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unused-imports": "^1.1.1",
     "husky": "^6.0.0",
+    "ignore-styles": "^5.0.1",
     "lerna": "^3.20.2",
     "lint-staged": "^11.0.0",
     "prettier": "^2.3.1",
+    "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
     "semver": "^7.3.2",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.2",
+    "jsdom": "^11.5.1"
   },
   "scripts": {
     "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",

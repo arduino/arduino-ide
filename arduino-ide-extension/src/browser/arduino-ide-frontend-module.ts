@@ -165,8 +165,9 @@ import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/mo
 import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
 import { ResponseServiceImpl } from './response-service-impl';
 import {
-  ResponseServicePath,
   ResponseService,
+  ResponseServiceArduino,
+  ResponseServicePath,
 } from '../common/protocol/response-service';
 import { NotificationCenter } from './notification-center';
 import {
@@ -617,7 +618,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       );
       return responseService;
     });
+
   bind(ResponseService).toService(ResponseServiceImpl);
+  bind(ResponseServiceArduino).toService(ResponseServiceImpl);
 
   bind(NotificationCenter).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(NotificationCenter);

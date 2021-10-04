@@ -2,7 +2,7 @@ import { injectable, inject, postConstruct, named } from 'inversify';
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
-import { CoreClientAware } from './core-client-provider';
+import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 import {
   BoardListWatchRequest,
   BoardListWatchResponse,
@@ -29,6 +29,10 @@ export class BoardDiscovery extends CoreClientAware {
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
 
+  // Used to know if the board watch process is already running to avoid
+  // starting it multiple times
+  private watching: boolean;
+
   protected boardWatchDuplex:
     | ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse>
     | undefined;
@@ -51,11 +55,26 @@ export class BoardDiscovery extends CoreClientAware {
 
   @postConstruct()
   protected async init(): Promise<void> {
+    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
+    this.startBoardListWatch(coreClient);
+  }
+
+  startBoardListWatch(coreClient: CoreClientProvider.Client): void {
+    if (this.watching) {
+      // We want to avoid starting the board list watch process multiple
+      // times to meet unforseen consequences
+      return
+    }
+    this.watching = true;
     const { client, instance } = coreClient;
     const req = new BoardListWatchRequest();
     req.setInstance(instance);
     this.boardWatchDuplex = client.boardListWatch();
+    this.boardWatchDuplex.on('end', () => {
+      this.watching = false;
+      console.info('board watch ended')
+    })
     this.boardWatchDuplex.on('data', (resp: BoardListWatchResponse) => {
       const detectedPort = resp.getPort();
       if (detectedPort) {
@@ -75,12 +94,14 @@ export class BoardDiscovery extends CoreClientAware {
         const oldState = deepClone(this._state);
         const newState = deepClone(this._state);
 
-        const address = detectedPort.getAddress();
-        const protocol = Port.Protocol.toProtocol(detectedPort.getProtocol());
+        const address = (detectedPort as any).getPort().getAddress();
+        const protocol = Port.Protocol.toProtocol(
+          (detectedPort as any).getPort().getProtocol()
+        );
         // const label = detectedPort.getProtocolLabel();
         const port = { address, protocol };
         const boards: Board[] = [];
-        for (const item of detectedPort.getBoardsList()) {
+        for (const item of detectedPort.getMatchingBoardsList()) {
           boards.push({
             fqbn: item.getFqbn(),
             name: item.getName() || 'unknown',
@@ -92,9 +113,7 @@ export class BoardDiscovery extends CoreClientAware {
           if (newState[port.address] !== undefined) {
             const [, knownBoards] = newState[port.address];
             console.warn(
-              `Port '${
-                port.address
-              }' was already available. Known boards before override: ${JSON.stringify(
+              `Port '${port.address}' was already available. Known boards before override: ${JSON.stringify(
                 knownBoards
               )}`
             );

@@ -194,6 +194,23 @@ export namespace PlatformUninstallResponse {
     }
 }
 
+export class AlreadyAtLatestVersionError extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): AlreadyAtLatestVersionError.AsObject;
+    static toObject(includeInstance: boolean, msg: AlreadyAtLatestVersionError): AlreadyAtLatestVersionError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: AlreadyAtLatestVersionError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AlreadyAtLatestVersionError;
+    static deserializeBinaryFromReader(message: AlreadyAtLatestVersionError, reader: jspb.BinaryReader): AlreadyAtLatestVersionError;
+}
+
+export namespace AlreadyAtLatestVersionError {
+    export type AsObject = {
+    }
+}
+
 export class PlatformUpgradeRequest extends jspb.Message { 
 
     hasInstance(): boolean;

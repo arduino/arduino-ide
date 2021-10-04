@@ -50,7 +50,7 @@ export class BurnBootloader extends SketchContribution {
     }
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
-      const port = boardsConfig.selectedPort?.address;
+      const port = boardsConfig.selectedPort;
       const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
         await Promise.all([
           this.boardsDataStore.appendConfigToFqbn(

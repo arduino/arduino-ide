@@ -7,10 +7,9 @@ import {
   Board,
 } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
-import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
 import { BoardsConfig } from './boards-config';
-import { Installable } from '../../common/protocol';
-import { ResponseServiceImpl } from '../response-service-impl';
+import { Installable, ResponseServiceArduino } from '../../common/protocol';
+import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
 
 /**
  * Listens on `BoardsConfig.Config` changes, if a board is selected which does not
@@ -27,8 +26,8 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
 
-  @inject(ResponseServiceImpl)
-  protected readonly responseService: ResponseServiceImpl;
+  @inject(ResponseServiceArduino)
+  protected readonly responseService: ResponseServiceArduino;
 
   @inject(BoardsListWidgetFrontendContribution)
   protected readonly boardsManagerFrontendContribution: BoardsListWidgetFrontendContribution;
@@ -106,7 +105,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
                 });
                 return;
               }
-              if (answer) {
+              if (answer === 'Install Manually') {
                 this.boardsManagerFrontendContribution
                   .openView({ reveal: true })
                   .then((widget) =>

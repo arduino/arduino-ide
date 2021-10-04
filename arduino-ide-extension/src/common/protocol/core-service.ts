@@ -1,3 +1,4 @@
+import { Port } from '../../common/protocol/boards-service';
 import { Programmer } from './boards-service';
 
 export const CompilerWarningLiterals = [
@@ -39,7 +40,7 @@ export namespace CoreService {
 
   export namespace Upload {
     export interface Options extends Compile.Options {
-      readonly port?: string | undefined;
+      readonly port?: Port | undefined;
       readonly programmer?: Programmer | undefined;
       readonly verify: boolean;
     }
@@ -48,7 +49,7 @@ export namespace CoreService {
   export namespace Bootloader {
     export interface Options {
       readonly fqbn?: string | undefined;
-      readonly port?: string | undefined;
+      readonly port?: Port | undefined;
       readonly programmer?: Programmer | undefined;
       readonly verbose: boolean;
       readonly verify: boolean;
