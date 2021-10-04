@@ -23,7 +23,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
     super({
       id: LibraryListWidget.WIDGET_ID,
       label: LibraryListWidget.WIDGET_LABEL,
-      iconClass: 'library-tab-icon',
+      iconClass: 'fa fa-arduino-library',
       searchable: service,
       installable: service,
       itemLabel: (item: LibraryPackage) => item.name,

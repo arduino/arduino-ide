@@ -19,7 +19,7 @@ export class SketchbookWidget extends BaseWidget {
     this.id = 'arduino-sketchbook-widget';
     this.title.caption = 'Sketchbook';
     this.title.label = 'Sketchbook';
-    this.title.iconClass = 'sketchbook-tab-icon';
+    this.title.iconClass = 'fa fa-arduino-folder';
     this.title.closable = true;
     this.node.tabIndex = 0;
     this.sketchbookTreesContainer = this.createTreesContainer();
