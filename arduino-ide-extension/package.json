@@ -102,6 +102,7 @@
     "download": "^7.1.0",
     "grpc_tools_node_protoc_ts": "^4.1.0",
     "mocha": "^7.0.0",
+    "mockdate": "^3.0.5",
     "moment": "^2.24.0",
     "protoc": "^1.0.4",
     "shelljs": "^0.8.3",

@@ -1,14 +1,14 @@
 import { Line, SerialMonitorOutput } from './serial-monitor-send-output';
 
-export function messageToLines(
+export function messagesToLines(
   messages: string[],
-  prevLines: Line[],
+  prevLines: Line[] = [],
+  charCount = 0,
   separator = '\n'
 ): [Line[], number] {
   const linesToAdd: Line[] = prevLines.length
     ? [prevLines[prevLines.length - 1]]
     : [{ message: '', lineLen: 0 }];
-  let charCount = 0;
 
   for (const message of messages) {
     const messageLen = message.length;
@@ -38,11 +38,12 @@ export function messageToLines(
 
 export function truncateLines(
   lines: Line[],
-  charCount: number
+  charCount: number,
+  maxCharacters: number = SerialMonitorOutput.MAX_CHARACTERS
 ): [Line[], number] {
-  let charsToDelete = charCount - SerialMonitorOutput.MAX_CHARACTERS;
+  let charsToDelete = charCount - maxCharacters;
   let lineIndex = 0;
-  while (charsToDelete > 0) {
+  while (charsToDelete > 0 || lineIndex > 0) {
     const firstLineLength = lines[lineIndex]?.lineLen;
 
     if (charsToDelete >= firstLineLength) {
@@ -55,6 +56,7 @@ export function truncateLines(
 
     // delete all previous lines
     lines.splice(0, lineIndex);
+    lineIndex = 0;
 
     const newFirstLine = lines[0]?.message?.substring(charsToDelete);
     const deletedCharsCount = firstLineLength - newFirstLine.length;

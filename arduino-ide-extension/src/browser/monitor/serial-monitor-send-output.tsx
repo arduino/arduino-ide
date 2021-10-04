@@ -6,7 +6,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import dateFormat = require('dateformat');
-import { messageToLines, truncateLines } from './monitor-utils';
+import { messagesToLines, truncateLines } from './monitor-utils';
 
 export type Line = { message: string; timestamp?: Date; lineLen: number };
 
@@ -66,14 +66,12 @@ export class SerialMonitorOutput extends React.Component<
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.monitorConnection.onRead(({ messages }) => {
-        const [newLines, charsToAddCount] = messageToLines(
+        const [newLines, totalCharCount] = messagesToLines(
           messages,
-          this.state.lines
+          this.state.lines,
+          this.state.charCount
         );
-        const [lines, charCount] = truncateLines(
-          newLines,
-          this.state.charCount + charsToAddCount
-        );
+        const [lines, charCount] = truncateLines(newLines, totalCharCount);
 
         this.setState({
           lines,
