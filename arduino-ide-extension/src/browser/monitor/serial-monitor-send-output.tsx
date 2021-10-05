@@ -44,7 +44,6 @@ export class SerialMonitorOutput extends React.Component<
         itemSize={18}
         width={'100%'}
         ref={this.listRef}
-        onItemsRendered={this.scrollToBottom}
       >
         {Row}
       </List>
@@ -70,6 +69,7 @@ export class SerialMonitorOutput extends React.Component<
           lines,
           charCount,
         });
+        this.scrollToBottom();
       }),
       this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
       this.props.monitorModel.onChange(({ property }) => {
