@@ -3,11 +3,8 @@ import { inject, injectable } from 'inversify';
 import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 import { clipboard } from 'electron';
-import {
-  AbstractDialog,
-  ReactWidget,
-  DialogProps,
-} from '@theia/core/lib/browser';
+import { ReactWidget, DialogProps } from '@theia/core/lib/browser';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { CreateApi } from '../create/create-api';
 
 const RadioButton = (props: {

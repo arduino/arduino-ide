@@ -9,7 +9,7 @@
   font-display: block;
 }
 
-i {
+.fa {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'FontAwesome' !important;
   speak: never;

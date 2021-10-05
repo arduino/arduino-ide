@@ -1,7 +1,8 @@
 import { injectable, postConstruct, inject } from 'inversify';
 import { Message } from '@phosphor/messaging';
 import { addEventListener } from '@theia/core/lib/browser/widgets/widget';
-import { AbstractDialog, DialogProps } from '@theia/core/lib/browser/dialogs';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
 import {
   LibraryPackage,
   LibraryService,

@@ -17,7 +17,6 @@ import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/fil
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
-  AbstractDialog,
   DialogProps,
   PreferenceService,
   PreferenceScope,
@@ -33,6 +32,7 @@ import {
   Network,
   ProxySettings,
 } from '../common/protocol';
+import { AbstractDialog } from './theia/dialogs/dialogs';
 
 const EDITOR_SETTING = 'editor';
 const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;

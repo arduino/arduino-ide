@@ -1,11 +1,7 @@
 import { injectable, inject, postConstruct } from 'inversify';
 import { Message } from '@phosphor/messaging';
-import {
-  AbstractDialog,
-  DialogProps,
-  Widget,
-  DialogError,
-} from '@theia/core/lib/browser';
+import { DialogProps, Widget, DialogError } from '@theia/core/lib/browser';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { BoardsConfig } from './boards-config';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
