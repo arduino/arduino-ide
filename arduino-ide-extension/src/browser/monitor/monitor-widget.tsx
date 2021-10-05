@@ -191,6 +191,7 @@ export class MonitorWidget extends ReactWidget {
             monitorModel={this.monitorModel}
             monitorConnection={this.monitorConnection}
             clearConsoleEvent={this.clearOutputEmitter.event}
+            height={Math.floor(this.widgetHeight - 50)}
           />
         </div>
       </div>

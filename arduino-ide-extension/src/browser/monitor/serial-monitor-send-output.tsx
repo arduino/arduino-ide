@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import { areEqual, FixedSizeList as List } from 'react-window';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import dateFormat = require('dateformat');
@@ -32,29 +31,23 @@ export class SerialMonitorOutput extends React.Component<
 
   render(): React.ReactNode {
     return (
-      <div style={{ height: '100%' }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <List
-              className="serial-monitor-messages"
-              height={height}
-              itemData={
-                {
-                  lines: this.state.lines,
-                  timestamp: this.state.timestamp,
-                } as any
-              }
-              itemCount={this.state.lines.length}
-              itemSize={20}
-              width={width}
-              ref={this.listRef}
-              onItemsRendered={this.scrollToBottom}
-            >
-              {Row}
-            </List>
-          )}
-        </AutoSizer>
-      </div>
+      <List
+        className="serial-monitor-messages"
+        height={this.props.height}
+        itemData={
+          {
+            lines: this.state.lines,
+            timestamp: this.state.timestamp,
+          } as any
+        }
+        itemCount={this.state.lines.length}
+        itemSize={18}
+        width={'100%'}
+        ref={this.listRef}
+        onItemsRendered={this.scrollToBottom}
+      >
+        {Row}
+      </List>
     );
   }
 
@@ -105,7 +98,7 @@ export class SerialMonitorOutput extends React.Component<
   }).bind(this);
 }
 
-const Row = ({
+const _Row = ({
   index,
   style,
   data,
@@ -128,12 +121,14 @@ const Row = ({
     null
   );
 };
+const Row = React.memo(_Row, areEqual);
 
 export namespace SerialMonitorOutput {
   export interface Props {
     readonly monitorModel: MonitorModel;
     readonly monitorConnection: MonitorConnection;
     readonly clearConsoleEvent: Event<void>;
+    readonly height: number;
   }
 
   export interface State {
