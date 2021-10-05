@@ -32,7 +32,7 @@ export class SerialMonitorOutput extends React.Component<
 
   render(): React.ReactNode {
     return (
-      <React.Fragment>
+      <div style={{ height: '100%' }}>
         <AutoSizer>
           {({ height, width }) => (
             <List
@@ -54,7 +54,7 @@ export class SerialMonitorOutput extends React.Component<
             </List>
           )}
         </AutoSizer>
-      </React.Fragment>
+      </div>
     );
   }
 
