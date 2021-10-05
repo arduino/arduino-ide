@@ -84,7 +84,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return (
       <React.Fragment>
         {super.renderTailDecorations(node, props)}
-        {this.renderInlineCommands(node, props)}
+        {this.renderInlineCommands(node)}
       </React.Fragment>
     );
   }
@@ -107,15 +107,8 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     };
   }
 
-  protected renderInlineCommands(
-    node: TreeNode,
-    props: NodeProps
-  ): React.ReactNode {
-    if (
-      SketchbookTree.SketchDirNode.is(node) &&
-      ((node.commands && node.id === this.hoveredNodeId) ||
-        this.currentSketchUri === node?.uri.toString())
-    ) {
+  protected renderInlineCommands(node: TreeNode): React.ReactNode {
+    if (SketchbookTree.SketchDirNode.is(node) && node.commands) {
       return Array.from(new Set(node.commands)).map((command) =>
         this.renderInlineCommand(command.id, node)
       );
@@ -142,6 +135,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
         TREE_NODE_TAIL_CLASS,
         icon,
         'theia-tree-view-inline-action',
+        'sketchbook-commands-icons',
       ].join(' ');
       return (
         <div
