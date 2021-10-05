@@ -1,5 +1,5 @@
 import { ClientDuplexStream } from '@grpc/grpc-js';
-import { TextDecoder, TextEncoder } from 'util';
+import { TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import { Emitter } from '@theia/core/lib/common/event';
@@ -18,6 +18,7 @@ import {
 } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
+import * as WebSocket from 'ws';
 
 interface ErrorWithCode extends Error {
   readonly code: number;
@@ -122,14 +123,55 @@ export class MonitorServiceImpl implements MonitorService {
       }).bind(this)
     );
 
+    const ws = new WebSocket.Server({ port: 0 });
+    const address: any = ws.address();
+    this.client?.notifyMessage(address.port);
+    let wsConn: WebSocket | null = null;
+    ws.on('connection', (ws) => {
+      wsConn = ws;
+    });
+
+    const flushMessagesToFrontend = () => {
+      if (this.messages.length) {
+        wsConn?.send(JSON.stringify(this.messages));
+        this.messages = [];
+      }
+    };
+
+    // empty the queue every 16ms (~60fps)
+    setInterval(flushMessagesToFrontend, 32);
+
+    // converts 'ab\nc\nd' => [ab\n,c\n,d]
+    const stringToArray = (string: string, separator = '\n') => {
+      const retArray: string[] = [];
+
+      let prevChar = separator;
+
+      for (let i = 0; i < string.length; i++) {
+        const currChar = string[i];
+
+        if (prevChar === separator) {
+          retArray.push(currChar);
+        } else {
+          const lastWord = retArray[retArray.length - 1];
+          retArray[retArray.length - 1] = lastWord + currChar;
+        }
+
+        prevChar = currChar;
+      }
+      return retArray;
+    };
+
     duplex.on(
       'data',
       ((resp: StreamingOpenResponse) => {
         const raw = resp.getData();
         const message =
           typeof raw === 'string' ? raw : new TextDecoder('utf8').decode(raw);
-        this.messages.push(message);
-        this.onMessageDidReadEmitter.fire();
+
+        // split the message if it contains more lines
+        const messages = stringToArray(message);
+        this.messages.push(...messages);
       }).bind(this)
     );
 
@@ -204,19 +246,6 @@ export class MonitorServiceImpl implements MonitorService {
         return;
       }
       this.disconnect().then(() => resolve(Status.NOT_CONNECTED));
-    });
-  }
-
-  async request(): Promise<{ message: string }> {
-    const message = this.messages.shift();
-    if (message) {
-      return { message };
-    }
-    return new Promise<{ message: string }>((resolve) => {
-      const toDispose = this.onMessageDidReadEmitter.event(() => {
-        toDispose.dispose();
-        resolve(this.request());
-      });
     });
   }
 

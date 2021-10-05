@@ -9,6 +9,11 @@
     flex-direction: column;
 }
 
+.serial-monitor-messages {
+    white-space: 'pre';
+    font-family: monospace
+}
+
 .serial-monitor .head {
     display: flex;
     padding: 5px;

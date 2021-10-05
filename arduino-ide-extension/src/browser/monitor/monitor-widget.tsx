@@ -1,26 +1,20 @@
 import * as React from 'react';
-import * as dateFormat from 'dateformat';
 import { postConstruct, injectable, inject } from 'inversify';
 import { OptionsType } from 'react-select/src/types';
-import { isOSX } from '@theia/core/lib/common/os';
-import { Event, Emitter } from '@theia/core/lib/common/event';
-import { Key, KeyCode } from '@theia/core/lib/browser/keys';
-import {
-  DisposableCollection,
-  Disposable,
-} from '@theia/core/lib/common/disposable';
+import { Emitter } from '@theia/core/lib/common/event';
+import { Disposable } from '@theia/core/lib/common/disposable';
 import {
   ReactWidget,
   Message,
   Widget,
   MessageLoop,
 } from '@theia/core/lib/browser/widgets';
-import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { ArduinoSelect } from '../widgets/arduino-select';
 import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
-import { MonitorServiceClientImpl } from './monitor-service-client-impl';
+import { SerialMonitorSendInput } from './serial-monitor-send-input';
+import { SerialMonitorOutput } from './serial-monitor-send-output';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -31,9 +25,6 @@ export class MonitorWidget extends ReactWidget {
 
   @inject(MonitorConnection)
   protected readonly monitorConnection: MonitorConnection;
-
-  @inject(MonitorServiceClientImpl)
-  protected readonly monitorServiceClient: MonitorServiceClientImpl;
 
   protected widgetHeight: number;
 
@@ -122,7 +113,9 @@ export class MonitorWidget extends ReactWidget {
     );
   };
 
-  protected get lineEndings(): OptionsType<SelectOption<MonitorModel.EOL>> {
+  protected get lineEndings(): OptionsType<
+    SerialMonitorOutput.SelectOption<MonitorModel.EOL>
+  > {
     return [
       {
         label: 'No Line Ending',
@@ -143,7 +136,9 @@ export class MonitorWidget extends ReactWidget {
     ];
   }
 
-  protected get baudRates(): OptionsType<SelectOption<MonitorConfig.BaudRate>> {
+  protected get baudRates(): OptionsType<
+    SerialMonitorOutput.SelectOption<MonitorConfig.BaudRate>
+  > {
     const baudRates: Array<MonitorConfig.BaudRate> = [
       300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
     ];
@@ -196,6 +191,7 @@ export class MonitorWidget extends ReactWidget {
             monitorModel={this.monitorModel}
             monitorConnection={this.monitorConnection}
             clearConsoleEvent={this.clearOutputEmitter.event}
+            height={Math.floor(this.widgetHeight - 50)}
           />
         </div>
       </div>
@@ -208,187 +204,14 @@ export class MonitorWidget extends ReactWidget {
   }
 
   protected readonly onChangeLineEnding = (
-    option: SelectOption<MonitorModel.EOL>
+    option: SerialMonitorOutput.SelectOption<MonitorModel.EOL>
   ) => {
     this.monitorModel.lineEnding = option.value;
   };
 
   protected readonly onChangeBaudRate = (
-    option: SelectOption<MonitorConfig.BaudRate>
+    option: SerialMonitorOutput.SelectOption<MonitorConfig.BaudRate>
   ) => {
     this.monitorModel.baudRate = option.value;
   };
-}
-
-export namespace SerialMonitorSendInput {
-  export interface Props {
-    readonly monitorConfig?: MonitorConfig;
-    readonly onSend: (text: string) => void;
-    readonly resolveFocus: (element: HTMLElement | undefined) => void;
-  }
-  export interface State {
-    text: string;
-  }
-}
-
-export class SerialMonitorSendInput extends React.Component<
-  SerialMonitorSendInput.Props,
-  SerialMonitorSendInput.State
-> {
-  constructor(props: Readonly<SerialMonitorSendInput.Props>) {
-    super(props);
-    this.state = { text: '' };
-    this.onChange = this.onChange.bind(this);
-    this.onSend = this.onSend.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-  }
-
-  render(): React.ReactNode {
-    return (
-      <input
-        ref={this.setRef}
-        type="text"
-        className={`theia-input ${this.props.monitorConfig ? '' : 'warning'}`}
-        placeholder={this.placeholder}
-        value={this.state.text}
-        onChange={this.onChange}
-        onKeyDown={this.onKeyDown}
-      />
-    );
-  }
-
-  protected get placeholder(): string {
-    const { monitorConfig } = this.props;
-    if (!monitorConfig) {
-      return 'Not connected. Select a board and a port to connect automatically.';
-    }
-    const { board, port } = monitorConfig;
-    return `Message (${
-      isOSX ? '⌘' : 'Ctrl'
-    }+Enter to send message to '${Board.toString(board, {
-      useFqbn: false,
-    })}' on '${Port.toString(port)}')`;
-  }
-
-  protected setRef = (element: HTMLElement | null) => {
-    if (this.props.resolveFocus) {
-      this.props.resolveFocus(element || undefined);
-    }
-  };
-
-  protected onChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    this.setState({ text: event.target.value });
-  }
-
-  protected onSend(): void {
-    this.props.onSend(this.state.text);
-    this.setState({ text: '' });
-  }
-
-  protected onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
-    const keyCode = KeyCode.createKeyCode(event.nativeEvent);
-    if (keyCode) {
-      const { key, meta, ctrl } = keyCode;
-      if (key === Key.ENTER && ((isOSX && meta) || (!isOSX && ctrl))) {
-        this.onSend();
-      }
-    }
-  }
-}
-
-export namespace SerialMonitorOutput {
-  export interface Props {
-    readonly monitorModel: MonitorModel;
-    readonly monitorConnection: MonitorConnection;
-    readonly clearConsoleEvent: Event<void>;
-  }
-  export interface State {
-    content: string;
-    timestamp: boolean;
-  }
-}
-
-export class SerialMonitorOutput extends React.Component<
-  SerialMonitorOutput.Props,
-  SerialMonitorOutput.State
-> {
-  /**
-   * Do not touch it. It is used to be able to "follow" the serial monitor log.
-   */
-  protected anchor: HTMLElement | null;
-  protected toDisposeBeforeUnmount = new DisposableCollection();
-
-  constructor(props: Readonly<SerialMonitorOutput.Props>) {
-    super(props);
-    this.state = {
-      content: '',
-      timestamp: this.props.monitorModel.timestamp,
-    };
-  }
-
-  render(): React.ReactNode {
-    return (
-      <React.Fragment>
-        <div style={{ whiteSpace: 'pre', fontFamily: 'monospace' }}>
-          {this.state.content}
-        </div>
-        <div
-          style={{ float: 'left', clear: 'both' }}
-          ref={(element) => {
-            this.anchor = element;
-          }}
-        />
-      </React.Fragment>
-    );
-  }
-
-  componentDidMount(): void {
-    this.scrollToBottom();
-    this.toDisposeBeforeUnmount.pushAll([
-      this.props.monitorConnection.onRead(({ message }) => {
-        const rawLines = message.split('\n');
-        const lines: string[] = [];
-        const timestamp = () =>
-          this.state.timestamp
-            ? `${dateFormat(new Date(), 'H:M:ss.l')} -> `
-            : '';
-        for (let i = 0; i < rawLines.length; i++) {
-          if (i === 0 && this.state.content.length !== 0) {
-            lines.push(rawLines[i]);
-          } else {
-            lines.push(timestamp() + rawLines[i]);
-          }
-        }
-        const content = this.state.content + lines.join('\n');
-        this.setState({ content });
-      }),
-      this.props.clearConsoleEvent(() => this.setState({ content: '' })),
-      this.props.monitorModel.onChange(({ property }) => {
-        if (property === 'timestamp') {
-          const { timestamp } = this.props.monitorModel;
-          this.setState({ timestamp });
-        }
-      }),
-    ]);
-  }
-
-  componentDidUpdate(): void {
-    this.scrollToBottom();
-  }
-
-  componentWillUnmount(): void {
-    // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
-    this.toDisposeBeforeUnmount.dispose();
-  }
-
-  protected scrollToBottom(): void {
-    if (this.props.monitorModel.autoscroll && this.anchor) {
-      this.anchor.scrollIntoView();
-    }
-  }
-}
-
-export interface SelectOption<T> {
-  readonly label: string;
-  readonly value: T;
 }
