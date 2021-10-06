@@ -179,7 +179,7 @@ export class SketchbookWidgetContribution
             x: container.getBoundingClientRect().left,
             y: container.getBoundingClientRect().top + container.offsetHeight,
           },
-          args: arg,
+          args: [arg],
         };
         this.contextMenuRenderer.render(options);
       },

@@ -258,7 +258,10 @@ export class SketchbookTreeModel extends FileTreeModel {
   }
 
   public open(uri: URI): void {
-    open(this.openerService, uri);
+    open(this.openerService, uri, {
+      mode: 'reveal',
+      preview: false,
+    });
   }
 
   protected async doOpenNode(node: TreeNode): Promise<void> {

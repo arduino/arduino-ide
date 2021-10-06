@@ -42,8 +42,8 @@ import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@th
 import { KeymapsFrontendContribution } from './theia/keymaps/keymaps-frontend-contribution';
 import { KeymapsFrontendContribution as TheiaKeymapsFrontendContribution } from '@theia/keymaps/lib/browser/keymaps-frontend-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
-import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
-import { EditorContribution } from './theia/editor/editor-contribution';
+import { EditorPreviewContribution as TheiaEditorPreviewContribution } from '@theia/editor-preview/lib/browser/editor-preview-contribution';
+import { EditorPreviewContribution } from './theia/editor/editor-contribution';
 import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
@@ -211,8 +211,6 @@ import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWi
 import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
 import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
-import { DebugEditorModel } from './theia/debug/debug-editor-model';
-import { DebugEditorModelFactory } from '@theia/debug/lib/browser/editor/debug-editor-model';
 import { StorageWrapper } from './storage-wrapper';
 import { NotificationManager } from './theia/messages/notifications-manager';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
@@ -431,7 +429,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaKeymapsFrontendContribution)
     .to(KeymapsFrontendContribution)
     .inSingletonScope();
-  rebind(TheiaEditorContribution).to(EditorContribution).inSingletonScope();
+  rebind(TheiaEditorPreviewContribution)
+    .to(EditorPreviewContribution)
+    .inSingletonScope();
   rebind(TheiaMonacoStatusBarContribution)
     .to(MonacoStatusBarContribution)
     .inSingletonScope();
@@ -659,16 +659,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To be able to use a `launch.json` from outside of the workspace.
   bind(DebugConfigurationManager).toSelf().inSingletonScope();
   rebind(TheiaDebugConfigurationManager).toService(DebugConfigurationManager);
-
-  // Patch for the debug hover: https://github.com/eclipse-theia/theia/pull/9256/
-  rebind(DebugEditorModelFactory)
-    .toDynamicValue(
-      ({ container }) =>
-        <DebugEditorModelFactory>(
-          ((editor) => DebugEditorModel.createModel(container, editor))
-        )
-    )
-    .inSingletonScope();
 
   // Preferences
   bindArduinoPreferences(bind);

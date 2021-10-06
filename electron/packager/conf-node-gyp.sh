@@ -1,6 +1,6 @@
 #!/bin/sh
 
-npm install --global node-gyp@6.0.1
+npm install --global node-gyp@7.0.0
 
 if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ]; then
     npm config set node_gyp "`npm prefix -g`\node_modules\node-gyp\bin\node-gyp.js"

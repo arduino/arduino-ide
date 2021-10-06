@@ -10,9 +10,9 @@
     "node": ">=12.14.1 <13"
   },
   "devDependencies": {
-    "@types/jsdom": "^11.0.4",
+    "@theia/cli": "1.17.2",
     "@types/sinon": "^2.3.5",
-    "@theia/cli": "next",
+    "@types/jsdom": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "cross-env": "^7.0.2",
@@ -35,6 +35,7 @@
   },
   "scripts": {
     "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",
+    "cleanup": "npx rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./browser-app/lib ./browser-app/src-gen ./browser-app/gen-webpack.config.js ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js", 
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
     "start": "yarn --cwd ./electron-app start",

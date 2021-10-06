@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { inject, injectable, postConstruct } from 'inversify';
-import { AbstractDialog, DialogProps } from '@theia/core/lib/browser/dialogs';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { AbstractDialog } from '../../theia/dialogs/dialogs';
 import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';

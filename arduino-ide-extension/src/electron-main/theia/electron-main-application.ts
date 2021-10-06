@@ -39,9 +39,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
    * @param options
    */
   async createWindow(
-    asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultBrowserWindowOptions()
+    asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
-    const options = await asyncOptions;
+    let options = await asyncOptions;
+    options = this.avoidOverlap(options);
     let electronWindow: BrowserWindow | undefined;
     if (this._windows.length) {
       electronWindow = new BrowserWindow(options);
@@ -154,7 +155,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           try {
             // If we forked the process for the clusters, we need to manually terminate it.
             // See: https://github.com/eclipse-theia/theia/issues/835
-            process.kill(backendProcess.pid);
+            if (backendProcess.pid) {
+              process.kill(backendProcess.pid);
+            }
           } catch (e) {
             if (e.code === 'ESRCH') {
               console.log(

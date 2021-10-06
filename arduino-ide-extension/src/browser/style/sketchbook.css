@@ -36,3 +36,12 @@
 #arduino-sketchbook-tree-widget .theia-TreeNodeSegmentGrow {
   flex: 1;
 }
+
+.theia-TreeNode .sketchbook-commands-icons {
+  display: none;
+}
+
+.theia-TreeNode:hover .sketchbook-commands-icons,
+.theia-TreeNode.theia-mod-selected .sketchbook-commands-icons {
+  display: block;
+}

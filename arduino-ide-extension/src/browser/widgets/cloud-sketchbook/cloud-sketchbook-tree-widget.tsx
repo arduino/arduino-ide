@@ -86,13 +86,8 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return classNames;
   }
 
-  protected renderInlineCommands(node: any, props: NodeProps): React.ReactNode {
-    if (
-      CloudSketchbookTree.CloudSketchDirNode.is(node) &&
-      node.commands &&
-      (node.id === this.hoveredNodeId ||
-        this.currentSketchUri === node.uri.toString())
-    ) {
+  protected renderInlineCommands(node: any): React.ReactNode {
+    if (CloudSketchbookTree.CloudSketchDirNode.is(node) && node.commands) {
       return Array.from(new Set(node.commands)).map((command) =>
         this.renderInlineCommand(command.id, node, {
           username: this.authenticationService.session?.account?.label,

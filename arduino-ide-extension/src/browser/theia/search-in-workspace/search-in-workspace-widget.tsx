@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable, postConstruct } from 'inversify';
 import * as React from 'react';
 import { Key, KeyCode } from '@theia/core/lib/browser';
 import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-widget';
@@ -8,6 +8,12 @@ import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/
  */
 @injectable()
 export class SearchInWorkspaceWidget extends TheiaSearchInWorkspaceWidget {
+  @postConstruct()
+  protected init(): void {
+    super.init();
+    this.title.iconClass = 'fa fa-arduino-search';
+  }
+
   protected renderGlobField(kind: 'include' | 'exclude'): React.ReactNode {
     const currentValue = this.searchInWorkspaceOptions[kind];
     const value = (currentValue && currentValue.join(', ')) || '';

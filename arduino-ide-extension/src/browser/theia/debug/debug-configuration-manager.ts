@@ -13,6 +13,7 @@ import {
   FileOperationError,
   FileOperationResult,
 } from '@theia/filesystem/lib/common/files';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
 
 @injectable()
 export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
@@ -24,6 +25,9 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
 
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
+
+  @inject(FileService)
+  protected readonly fileService: FileService;
 
   protected onTempContentDidChangeEmitter =
     new Emitter<TheiaDebugConfigurationModel.JsonContent>();

@@ -3,8 +3,8 @@ import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommandHandler } from '@theia/core/lib/common/command';
-import { QuickInputService } from '@theia/core/lib/browser/quick-open/quick-input-service';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { QuickInputService } from '@theia/core/lib/browser/quick-input/quick-input-service';
 import {
   Contribution,
   Command,
@@ -60,7 +60,7 @@ export class Help extends Contribution {
           }
         }
         if (!searchFor) {
-          searchFor = await this.quickInputService.open({
+          searchFor = await this.quickInputService.input({
             prompt: 'Search on Arduino.cc',
             placeHolder: 'Type a keyword',
           });
