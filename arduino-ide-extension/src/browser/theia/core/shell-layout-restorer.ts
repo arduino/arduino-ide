@@ -22,4 +22,30 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
       }
     }
   }
+
+  async restoreLayout(app: FrontendApplication): Promise<boolean> {
+    this.logger.info('>>> Restoring the layout state...');
+    const serializedLayoutData = await this.storageService.getData<string>(
+      this.storageKey
+    );
+    if (serializedLayoutData === undefined) {
+      this.logger.info('<<< Nothing to restore.');
+      return false;
+    }
+
+    const layoutData = await this.inflate(serializedLayoutData);
+    // workaround to remove duplicated tabs
+    if ((layoutData as any)?.mainPanel?.main?.widgets) {
+      (layoutData as any).mainPanel.main.widgets = (
+        layoutData as any
+      ).mainPanel.main.widgets.filter(
+        (widget: any) =>
+          widget.constructionOptions.factoryId !== 'code-editor-opener'
+      );
+    }
+
+    await app.shell.setLayoutData(layoutData);
+    this.logger.info('<<< The layout has been successfully restored.');
+    return true;
+  }
 }

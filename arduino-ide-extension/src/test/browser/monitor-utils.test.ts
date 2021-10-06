@@ -125,7 +125,7 @@ testLines.forEach((t) =>
   )
 );
 
-describe.only('Monitor Utils', () => {
+describe('Monitor Utils', () => {
   beforeEach(() => {
     set(date);
   });
