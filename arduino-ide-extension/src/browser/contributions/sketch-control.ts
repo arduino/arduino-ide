@@ -87,7 +87,7 @@ export class SketchControl extends SketchContribution {
             currentSketch &&
             parentsketch &&
             parentsketch.uri === currentSketch.uri &&
-            (await this.allowRename(parentsketch.uri))
+            this.allowRename(parentsketch.uri)
           ) {
             this.menuRegistry.registerMenuAction(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -124,7 +124,7 @@ export class SketchControl extends SketchContribution {
             currentSketch &&
             parentsketch &&
             parentsketch.uri === currentSketch.uri &&
-            (await this.allowDelete(parentsketch.uri))
+            this.allowDelete(parentsketch.uri)
           ) {
             this.menuRegistry.registerMenuAction(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -249,20 +249,24 @@ export class SketchControl extends SketchContribution {
     });
   }
 
-  protected async isCloudSketch(uri: string) {
-    const cloudCacheLocation = this.localCacheFsProvider.from(new URI(uri));
+  protected isCloudSketch(uri: string): boolean {
+    try {
+      const cloudCacheLocation = this.localCacheFsProvider.from(new URI(uri));
 
-    if (cloudCacheLocation) {
-      return true;
+      if (cloudCacheLocation) {
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
     }
-    return false;
   }
 
-  protected async allowRename(uri: string) {
+  protected allowRename(uri: string): boolean {
     return !this.isCloudSketch(uri);
   }
 
-  protected async allowDelete(uri: string) {
+  protected allowDelete(uri: string): boolean {
     return !this.isCloudSketch(uri);
   }
 }
