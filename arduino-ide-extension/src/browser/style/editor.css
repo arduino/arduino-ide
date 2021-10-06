@@ -4,3 +4,7 @@
     background-size: 13px;
     background-image: var(--theia-icon-circle);
 }
+
+.monaco-list-row.show-file-icons.focused {
+    background-color: #d6ebff;
+}
