@@ -47,7 +47,5 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
     await app.shell.setLayoutData(layoutData);
     this.logger.info('<<< The layout has been successfully restored.');
     return true;
-
-    // return super.restoreLayout(app);
   }
 }
