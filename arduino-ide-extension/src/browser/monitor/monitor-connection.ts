@@ -8,6 +8,7 @@ import {
   MonitorConfig,
   MonitorError,
   Status,
+  MonitorServiceClient,
 } from '../../common/protocol/monitor-service';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
@@ -16,7 +17,6 @@ import {
   BoardsService,
   AttachedBoardsChangeEvent,
 } from '../../common/protocol/boards-service';
-import { MonitorServiceClientImpl } from './monitor-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { NotificationCenter } from '../notification-center';
@@ -29,8 +29,8 @@ export class MonitorConnection {
   @inject(MonitorService)
   protected readonly monitorService: MonitorService;
 
-  @inject(MonitorServiceClientImpl)
-  protected readonly monitorServiceClient: MonitorServiceClientImpl;
+  @inject(MonitorServiceClient)
+  protected readonly monitorServiceClient: MonitorServiceClient;
 
   @inject(BoardsService)
   protected readonly boardsService: BoardsService;
@@ -59,7 +59,7 @@ export class MonitorConnection {
   /**
    * This emitter forwards all read events **iff** the connection is established.
    */
-  protected readonly onReadEmitter = new Emitter<{ message: string }>();
+  protected readonly onReadEmitter = new Emitter<{ messages: string[] }>();
 
   /**
    * Array for storing previous monitor errors received from the server, and based on the number of elements in this array,
@@ -71,112 +71,15 @@ export class MonitorConnection {
 
   @postConstruct()
   protected init(): void {
-    this.monitorServiceClient.onError(async (error) => {
-      let shouldReconnect = false;
-      if (this.state) {
-        const { code, config } = error;
-        const { board, port } = config;
-        const options = { timeout: 3000 };
-        switch (code) {
-          case MonitorError.ErrorCodes.CLIENT_CANCEL: {
-            console.debug(
-              `Connection was canceled by client: ${MonitorConnection.State.toString(
-                this.state
-              )}.`
-            );
-            break;
-          }
-          case MonitorError.ErrorCodes.DEVICE_BUSY: {
-            this.messageService.warn(
-              `Connection failed. Serial port is busy: ${Port.toString(port)}.`,
-              options
-            );
-            shouldReconnect = this.autoConnect;
-            this.monitorErrors.push(error);
-            break;
-          }
-          case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
-            this.messageService.info(
-              `Disconnected ${Board.toString(board, {
-                useFqbn: false,
-              })} from ${Port.toString(port)}.`,
-              options
-            );
-            break;
-          }
-          case undefined: {
-            this.messageService.error(
-              `Unexpected error. Reconnecting ${Board.toString(
-                board
-              )} on port ${Port.toString(port)}.`,
-              options
-            );
-            console.error(JSON.stringify(error));
-            shouldReconnect = this.connected && this.autoConnect;
-            break;
-          }
-        }
-        const oldState = this.state;
-        this.state = undefined;
-        this.onConnectionChangedEmitter.fire(this.state);
-        if (shouldReconnect) {
-          if (this.monitorErrors.length >= 10) {
-            this.messageService.warn(
-              `Failed to reconnect ${Board.toString(board, {
-                useFqbn: false,
-              })} to the the serial-monitor after 10 consecutive attempts. The ${Port.toString(
-                port
-              )} serial port is busy. after 10 consecutive attempts.`
-            );
-            this.monitorErrors.length = 0;
-          } else {
-            const attempts = this.monitorErrors.length || 1;
-            if (this.reconnectTimeout !== undefined) {
-              // Clear the previous timer.
-              window.clearTimeout(this.reconnectTimeout);
-            }
-            const timeout = attempts * 1000;
-            this.messageService.warn(
-              `Reconnecting ${Board.toString(board, {
-                useFqbn: false,
-              })} to ${Port.toString(port)} in ${attempts} seconds...`,
-              { timeout }
-            );
-            this.reconnectTimeout = window.setTimeout(
-              () => this.connect(oldState.config),
-              timeout
-            );
-          }
-        }
-      }
-    });
+    this.monitorServiceClient.onMessage(this.handleMessage.bind(this));
+    this.monitorServiceClient.onError(this.handleError.bind(this));
     this.boardsServiceProvider.onBoardsConfigChanged(
       this.handleBoardConfigChange.bind(this)
     );
-    this.notificationCenter.onAttachedBoardsChanged((event) => {
-      if (this.autoConnect && this.connected) {
-        const { boardsConfig } = this.boardsServiceProvider;
-        if (
-          this.boardsServiceProvider.canUploadTo(boardsConfig, {
-            silent: false,
-          })
-        ) {
-          const { attached } = AttachedBoardsChangeEvent.diff(event);
-          if (
-            attached.boards.some(
-              (board) =>
-                !!board.port && BoardsConfig.Config.sameAs(boardsConfig, board)
-            )
-          ) {
-            const { selectedBoard: board, selectedPort: port } = boardsConfig;
-            const { baudRate } = this.monitorModel;
-            this.disconnect().then(() =>
-              this.connect({ board, port, baudRate })
-            );
-          }
-        }
-      }
-    });
+    this.notificationCenter.onAttachedBoardsChanged(
+      this.handleAttachedBoardsChanged.bind(this)
+    );
+
     // Handles the `baudRate` changes by reconnecting if required.
     this.monitorModel.onChange(({ property }) => {
       if (property === 'baudRate' && this.autoConnect && this.connected) {
@@ -184,6 +87,14 @@ export class MonitorConnection {
         this.handleBoardConfigChange(boardsConfig);
       }
     });
+  }
+
+  async handleMessage(port: string): Promise<void> {
+    const w = new WebSocket(`ws://localhost:${port}`);
+    w.onmessage = (res) => {
+      const messages = JSON.parse(res.data);
+      this.onReadEmitter.fire({ messages });
+    };
   }
 
   get connected(): boolean {
@@ -217,6 +128,109 @@ export class MonitorConnection {
     }
   }
 
+  handleError(error: MonitorError): void {
+    let shouldReconnect = false;
+    if (this.state) {
+      const { code, config } = error;
+      const { board, port } = config;
+      const options = { timeout: 3000 };
+      switch (code) {
+        case MonitorError.ErrorCodes.CLIENT_CANCEL: {
+          console.debug(
+            `Connection was canceled by client: ${MonitorConnection.State.toString(
+              this.state
+            )}.`
+          );
+          break;
+        }
+        case MonitorError.ErrorCodes.DEVICE_BUSY: {
+          this.messageService.warn(
+            `Connection failed. Serial port is busy: ${Port.toString(port)}.`,
+            options
+          );
+          shouldReconnect = this.autoConnect;
+          this.monitorErrors.push(error);
+          break;
+        }
+        case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
+          this.messageService.info(
+            `Disconnected ${Board.toString(board, {
+              useFqbn: false,
+            })} from ${Port.toString(port)}.`,
+            options
+          );
+          break;
+        }
+        case undefined: {
+          this.messageService.error(
+            `Unexpected error. Reconnecting ${Board.toString(
+              board
+            )} on port ${Port.toString(port)}.`,
+            options
+          );
+          console.error(JSON.stringify(error));
+          shouldReconnect = this.connected && this.autoConnect;
+          break;
+        }
+      }
+      const oldState = this.state;
+      this.state = undefined;
+      this.onConnectionChangedEmitter.fire(this.state);
+      if (shouldReconnect) {
+        if (this.monitorErrors.length >= 10) {
+          this.messageService.warn(
+            `Failed to reconnect ${Board.toString(board, {
+              useFqbn: false,
+            })} to the the serial-monitor after 10 consecutive attempts. The ${Port.toString(
+              port
+            )} serial port is busy. after 10 consecutive attempts.`
+          );
+          this.monitorErrors.length = 0;
+        } else {
+          const attempts = this.monitorErrors.length || 1;
+          if (this.reconnectTimeout !== undefined) {
+            // Clear the previous timer.
+            window.clearTimeout(this.reconnectTimeout);
+          }
+          const timeout = attempts * 1000;
+          this.messageService.warn(
+            `Reconnecting ${Board.toString(board, {
+              useFqbn: false,
+            })} to ${Port.toString(port)} in ${attempts} seconds...`,
+            { timeout }
+          );
+          this.reconnectTimeout = window.setTimeout(
+            () => this.connect(oldState.config),
+            timeout
+          );
+        }
+      }
+    }
+  }
+
+  handleAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
+    if (this.autoConnect && this.connected) {
+      const { boardsConfig } = this.boardsServiceProvider;
+      if (
+        this.boardsServiceProvider.canUploadTo(boardsConfig, {
+          silent: false,
+        })
+      ) {
+        const { attached } = AttachedBoardsChangeEvent.diff(event);
+        if (
+          attached.boards.some(
+            (board) =>
+              !!board.port && BoardsConfig.Config.sameAs(boardsConfig, board)
+          )
+        ) {
+          const { selectedBoard: board, selectedPort: port } = boardsConfig;
+          const { baudRate } = this.monitorModel;
+          this.disconnect().then(() => this.connect({ board, port, baudRate }));
+        }
+      }
+    }
+  }
+
   async connect(config: MonitorConfig): Promise<Status> {
     if (this.connected) {
       const disconnectStatus = await this.disconnect();
@@ -231,15 +245,6 @@ export class MonitorConnection {
     );
     const connectStatus = await this.monitorService.connect(config);
     if (Status.isOK(connectStatus)) {
-      const requestMessage = () => {
-        this.monitorService.request().then(({ message }) => {
-          if (this.connected) {
-            this.onReadEmitter.fire({ message });
-            requestMessage();
-          }
-        });
-      };
-      requestMessage();
       this.state = { config };
       console.info(
         `<<< Serial monitor connection created for ${Board.toString(
@@ -300,7 +305,7 @@ export class MonitorConnection {
     return this.onConnectionChangedEmitter.event;
   }
 
-  get onRead(): Event<{ message: string }> {
+  get onRead(): Event<{ messages: string[] }> {
     return this.onReadEmitter.event;
   }
 

@@ -398,24 +398,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(MonitorService)
     .toDynamicValue((context) => {
       const connection = context.container.get(WebSocketConnectionProvider);
-      const client = context.container.get(MonitorServiceClientImpl);
+      const client =
+        context.container.get<MonitorServiceClient>(MonitorServiceClient);
       return connection.createProxy(MonitorServicePath, client);
     })
     .inSingletonScope();
   bind(MonitorConnection).toSelf().inSingletonScope();
   // Serial monitor service client to receive and delegate notifications from the backend.
-  bind(MonitorServiceClientImpl).toSelf().inSingletonScope();
-  bind(MonitorServiceClient)
-    .toDynamicValue((context) => {
-      const client = context.container.get(MonitorServiceClientImpl);
-      WebSocketConnectionProvider.createProxy(
-        context.container,
-        MonitorServicePath,
-        client
-      );
-      return client;
-    })
-    .inSingletonScope();
+  bind(MonitorServiceClient).to(MonitorServiceClientImpl).inSingletonScope();
 
   bind(WorkspaceService).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceService).toService(WorkspaceService);
