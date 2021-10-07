@@ -31,7 +31,7 @@ jobs:
 
             // Get download stats for every release
             for (const rel of releases) {
-              // Names for assets are like `arduino-ide_2.0.0-beta.11_Linux_64bit.zip`,
+              // Names for assets are like `arduino-ide_2.0.0-beta.12_Linux_64bit.zip`,
               // we'll use this later to split the asset file name more easily
               const baseName = `arduino-ide_${rel.name}_`
 
