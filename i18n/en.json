@@ -1,0 +1,10 @@
+{
+  "theia": {
+    "core": {
+      "common": {
+        "example": "This is an example translatable string",
+        "another-example": "This is another example translatable string"
+      }
+    }
+  }
+}
