@@ -13,6 +13,7 @@ import {
   KeybindingRegistry,
   TabBarToolbarRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class VerifySketch extends SketchContribution {
@@ -52,12 +53,15 @@ export class VerifySketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: VerifySketch.Commands.VERIFY_SKETCH.id,
-      label: 'Verify/Compile',
+      label: nls.localize('arduino/sketch/verifyOrCompile', 'Verify/Compile'),
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: VerifySketch.Commands.EXPORT_BINARIES.id,
-      label: 'Export Compiled Binary',
+      label: nls.localize(
+        'arduino/sketch/exportBinary',
+        'Export Compiled Binary'
+      ),
       order: '3',
     });
   }
@@ -77,7 +81,7 @@ export class VerifySketch extends SketchContribution {
     registry.registerItem({
       id: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
       command: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
-      tooltip: 'Verify',
+      tooltip: nls.localize('arduino/sketch/verify', 'Verify'),
       priority: 0,
       onDidChange: this.onDidChange,
     });
@@ -118,7 +122,10 @@ export class VerifySketch extends SketchContribution {
         sourceOverride,
         compilerWarnings,
       });
-      this.messageService.info('Done compiling.', { timeout: 3000 });
+      this.messageService.info(
+        nls.localize('arduino/sketch/doneCompiling', 'Done compiling.'),
+        { timeout: 3000 }
+      );
     } catch (e) {
       this.messageService.error(e.toString());
     } finally {

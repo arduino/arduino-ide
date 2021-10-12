@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/browser/nls';
 import { injectable } from 'inversify';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -27,7 +28,7 @@ export class NewSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: NewSketch.Commands.NEW_SKETCH.id,
-      label: 'New',
+      label: nls.localize('arduino/sketch/new', 'New'),
       order: '0',
     });
   }
@@ -43,7 +44,7 @@ export class NewSketch extends SketchContribution {
     registry.registerItem({
       id: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
       command: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
-      tooltip: 'New',
+      tooltip: nls.localize('arduino/sketch/new', 'New'),
       priority: 3,
     });
   }

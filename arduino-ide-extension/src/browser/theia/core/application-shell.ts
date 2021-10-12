@@ -15,6 +15,7 @@ import {
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
@@ -85,7 +86,10 @@ export class ApplicationShell extends TheiaApplicationShell {
       this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE
     ) {
       this.messageService.error(
-        'Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.'
+        nls.localize(
+          'theia/core/couldNotSave',
+          'Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.'
+        )
       );
       return; // Theia does not reject on failed save: https://github.com/eclipse-theia/theia/pull/8803
     }

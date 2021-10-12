@@ -18,6 +18,7 @@ import {
   certificateList,
 } from '../dialogs/certificate-uploader/utils';
 import { ArduinoFirmwareUploader } from '../../common/protocol/arduino-firmware-uploader';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class UploadCertificate extends Contribution {
@@ -111,25 +112,28 @@ export namespace UploadCertificate {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-upload-certificate-open',
-      label: 'Upload SSL Root Certificates',
+      label: nls.localize(
+        'arduino/certificate/uploadRootCertificates',
+        'Upload SSL Root Certificates'
+      ),
       category: 'Arduino',
     };
 
     export const OPEN_CERT_CONTEXT: Command = {
       id: 'arduino-certificate-open-context',
-      label: 'Open context',
+      label: nls.localize('arduino/certificate/openContext', 'Open context'),
       category: 'Arduino',
     };
 
     export const REMOVE_CERT: Command = {
       id: 'arduino-certificate-remove',
-      label: 'Remove',
+      label: nls.localize('arduino/certificate/remove', 'Remove'),
       category: 'Arduino',
     };
 
     export const UPLOAD_CERT: Command = {
       id: 'arduino-certificate-upload',
-      label: 'Upload',
+      label: nls.localize('arduino/certificate/upload', 'Upload'),
       category: 'Arduino',
     };
   }

@@ -21,6 +21,7 @@ import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class SketchControl extends SketchContribution {
@@ -93,7 +94,7 @@ export class SketchControl extends SketchContribution {
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
               {
                 commandId: WorkspaceCommands.FILE_RENAME.id,
-                label: 'Rename',
+                label: nls.localize('vscode/fileActions/rename', 'Rename'),
                 order: '1',
               }
             );
@@ -107,7 +108,7 @@ export class SketchControl extends SketchContribution {
           } else {
             const renamePlaceholder = new PlaceholderMenuNode(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              'Rename'
+              nls.localize('vscode/fileActions/rename', 'Rename')
             );
             this.menuRegistry.registerMenuNode(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -130,7 +131,7 @@ export class SketchControl extends SketchContribution {
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
               {
                 commandId: WorkspaceCommands.FILE_DELETE.id, // TODO: customize delete. Wipe sketch if deleting main file. Close window.
-                label: 'Delete',
+                label: nls.localize('vscode/fileActions/delete', 'Delete'),
                 order: '2',
               }
             );
@@ -144,7 +145,7 @@ export class SketchControl extends SketchContribution {
           } else {
             const deletePlaceholder = new PlaceholderMenuNode(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              'Delete'
+              nls.localize('vscode/fileActions/delete', 'Delete')
             );
             this.menuRegistry.registerMenuNode(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -204,7 +205,7 @@ export class SketchControl extends SketchContribution {
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
       {
         commandId: WorkspaceCommands.NEW_FILE.id,
-        label: 'New Tab',
+        label: nls.localize('vscode/menubar/mNewTab', 'New Tab'),
         order: '0',
       }
     );
@@ -213,7 +214,7 @@ export class SketchControl extends SketchContribution {
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__NAVIGATION_GROUP,
       {
         commandId: CommonCommands.PREVIOUS_TAB.id,
-        label: 'Previous Tab',
+        label: nls.localize('vscode/menubar/mShowPreviousTab', 'Previous Tab'),
         order: '0',
       }
     );
@@ -221,7 +222,7 @@ export class SketchControl extends SketchContribution {
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__NAVIGATION_GROUP,
       {
         commandId: CommonCommands.NEXT_TAB.id,
-        label: 'Next Tab',
+        label: nls.localize('vscode/menubar/mShowNextTab', 'Next Tab'),
         order: '0',
       }
     );

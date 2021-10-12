@@ -3,6 +3,7 @@ import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { isOSX } from '@theia/core/lib/common/os';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
@@ -44,14 +45,21 @@ export class SerialMonitorSendInput extends React.Component<
   protected get placeholder(): string {
     const { monitorConfig } = this.props;
     if (!monitorConfig) {
-      return 'Not connected. Select a board and a port to connect automatically.';
+      return nls.localize(
+        'arduino/monitor/notConnected',
+        'Not connected. Select a board and a port to connect automatically.'
+      );
     }
     const { board, port } = monitorConfig;
-    return `Message (${
-      isOSX ? '⌘' : 'Ctrl'
-    }+Enter to send message to '${Board.toString(board, {
-      useFqbn: false,
-    })}' on '${Port.toString(port)}')`;
+    return nls.localize(
+      'arduino/monitor/message',
+      "Message ({0} + Enter to send message to '{1}' on '{2}'",
+      isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
+      Board.toString(board, {
+        useFqbn: false,
+      }),
+      Port.toString(port)
+    );
   }
 
   protected setRef = (element: HTMLElement | null) => {

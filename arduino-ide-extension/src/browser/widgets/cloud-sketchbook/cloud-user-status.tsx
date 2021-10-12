@@ -6,8 +6,8 @@ import {
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { CloudUserCommands } from '../../auth/cloud-user-commands';
-import { firstToUpperCase } from '../../../common/utils';
 import { AuthenticationSessionAccountInformation } from '../../../common/protocol/authentication-service';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export class UserStatus extends React.Component<
   UserStatus.Props,
@@ -59,7 +59,9 @@ export class UserStatus extends React.Component<
                 : 'offline-status-icon'
             }`}
           />
-          {firstToUpperCase(this.state.status)}
+          {this.state.status === 'connected'
+            ? nls.localize('arduino/cloud/connected', 'Connected')
+            : nls.localize('arduino/cloud/offline', 'Offline')}
         </div>
         <div className="actions item flex-line">
           <div
@@ -89,7 +91,10 @@ export class UserStatus extends React.Component<
             {this.state.accountInfo?.picture && (
               <img
                 src={this.state.accountInfo?.picture}
-                alt="Profile picture"
+                alt={nls.localize(
+                  'arduino/cloud/profilePicture',
+                  'Profile picture'
+                )}
               />
             )}
           </div>

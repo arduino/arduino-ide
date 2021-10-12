@@ -9,6 +9,7 @@ import {
   CommandRegistry,
   MenuModelRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class ArchiveSketch extends SketchContribution {
@@ -21,7 +22,7 @@ export class ArchiveSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: ArchiveSketch.Commands.ARCHIVE_SKETCH.id,
-      label: 'Archive Sketch',
+      label: nls.localize('arduino/sketch/archiveSketch', 'Archive Sketch'),
       order: '1',
     });
   }
@@ -42,7 +43,10 @@ export class ArchiveSketch extends SketchContribution {
       new URI(config.sketchDirUri).resolve(archiveBasename)
     );
     const { filePath, canceled } = await remote.dialog.showSaveDialog({
-      title: 'Save sketch folder as...',
+      title: nls.localize(
+        'arduino/sketch/saveSketchAs',
+        'Save sketch folder as...'
+      ),
       defaultPath,
     });
     if (!filePath || canceled) {
@@ -53,9 +57,16 @@ export class ArchiveSketch extends SketchContribution {
       return;
     }
     await this.sketchService.archive(sketch, destinationUri.toString());
-    this.messageService.info(`Created archive '${archiveBasename}'.`, {
-      timeout: 2000,
-    });
+    this.messageService.info(
+      nls.localize(
+        'arduino/sketch/createdArchive',
+        "Created archive '{0}'.",
+        archiveBasename
+      ),
+      {
+        timeout: 2000,
+      }
+    );
   }
 }
 

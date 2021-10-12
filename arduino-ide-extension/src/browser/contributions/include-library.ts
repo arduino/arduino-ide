@@ -15,6 +15,7 @@ import { LibraryListWidget } from '../library/library-list-widget';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -59,13 +60,20 @@ export class IncludeLibrary extends SketchContribution {
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
       '0_include',
     ];
-    registry.registerSubmenu(includeLibMenuPath, 'Include Library', {
-      order: '1',
-    });
+    registry.registerSubmenu(
+      includeLibMenuPath,
+      nls.localize('arduino/library/include', 'Include Library'),
+      {
+        order: '1',
+      }
+    );
     // `Manage Libraries...` group.
     registry.registerMenuAction([...includeLibMenuPath, '0_manage'], {
       commandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-      label: 'Manage Libraries...',
+      label: nls.localize(
+        'arduino/library/manageLibraries',
+        'Manage Libraries...'
+      ),
     });
   }
 
@@ -101,10 +109,17 @@ export class IncludeLibrary extends SketchContribution {
       const userMenuPath = [...includeLibMenuPath, '3_contributed'];
       const { user, rest } = LibraryPackage.groupByLocation(libraries);
       if (rest.length) {
-        (rest as any).unshift('Arduino libraries');
+        (rest as any).unshift(
+          nls.localize('arduino/library/arduinoLibraries', 'Arduino libraries')
+        );
       }
       if (user.length) {
-        (user as any).unshift('Contributed libraries');
+        (user as any).unshift(
+          nls.localize(
+            'arduino/library/contributedLibraries',
+            'Contributed libraries'
+          )
+        );
       }
 
       for (const library of user) {

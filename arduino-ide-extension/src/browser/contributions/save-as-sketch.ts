@@ -10,6 +10,7 @@ import {
   MenuModelRegistry,
   KeybindingRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
@@ -22,7 +23,7 @@ export class SaveAsSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-      label: 'Save As...',
+      label: nls.localize('vscode/fileCommands/saveAs', 'Save As...'),
       order: '7',
     });
   }
@@ -73,7 +74,10 @@ export class SaveAsSketch extends SketchContribution {
       : sketchDirUri.resolve(sketch.name);
     const defaultPath = await this.fileService.fsPath(defaultUri);
     const { filePath, canceled } = await remote.dialog.showSaveDialog({
-      title: 'Save sketch folder as...',
+      title: nls.localize(
+        'arduino/sketch/saveFolderAs',
+        'Save sketch folder as...'
+      ),
       defaultPath,
     });
     if (!filePath || canceled) {

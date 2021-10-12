@@ -22,6 +22,7 @@ import {
 } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { Board, Sketch, SketchContainer } from '../../common/protocol';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -69,9 +70,13 @@ export abstract class Examples extends SketchContribution {
     }
     // Registering the same submenu multiple times has no side-effect.
     // TODO: unregister submenu? https://github.com/eclipse-theia/theia/issues/7300
-    registry.registerSubmenu(ArduinoMenus.FILE__EXAMPLES_SUBMENU, 'Examples', {
-      order: '4',
-    });
+    registry.registerSubmenu(
+      ArduinoMenus.FILE__EXAMPLES_SUBMENU,
+      nls.localize('arduino/examples/menu', 'Examples'),
+      {
+        order: '4',
+      }
+    );
   }
 
   registerRecursively(
@@ -166,11 +171,19 @@ export class BuiltInExamples extends Examples {
       sketchContainers = await this.examplesService.builtIns();
     } catch (e) {
       console.error('Could not initialize built-in examples.', e);
-      this.messageService.error('Could not initialize built-in examples.');
+      this.messageService.error(
+        nls.localize(
+          'arduino/examples/couldNotInitializeExamples',
+          'Could not initialize built-in examples.'
+        )
+      );
       return;
     }
     this.toDispose.dispose();
-    for (const container of ['Built-in examples', ...sketchContainers]) {
+    for (const container of [
+      nls.localize('arduino/examples/builtInExamples', 'Built-in examples'),
+      ...sketchContainers,
+    ]) {
       this.registerRecursively(
         container,
         ArduinoMenus.EXAMPLES__BUILT_IN_GROUP,
@@ -211,13 +224,22 @@ export class LibraryExamples extends Examples {
         fqbn,
       });
       if (user.length) {
-        (user as any).unshift('Examples from Custom Libraries');
+        (user as any).unshift(
+          nls.localize(
+            'arduino/examples/customLibrary',
+            'Examples from Custom Libraries'
+          )
+        );
       }
       if (name && fqbn && current.length) {
-        (current as any).unshift(`Examples for ${name}`);
+        (current as any).unshift(
+          nls.localize('arduino/examples/for', 'Examples for {0}', name)
+        );
       }
       if (any.length) {
-        (any as any).unshift('Examples for any board');
+        (any as any).unshift(
+          nls.localize('arduino/examples/forAny', 'Examples for any board')
+        );
       }
       for (const container of user) {
         this.registerRecursively(

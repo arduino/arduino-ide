@@ -3,6 +3,7 @@ import { remote } from 'electron';
 import URI from '@theia/core/lib/common/uri';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
@@ -21,10 +22,16 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
         .some((uri) => uri === sketch.mainFileUri)
     ) {
       const { response } = await remote.dialog.showMessageBox({
-        title: 'Delete',
+        title: nls.localize('vscode/fileActions/delete', 'Delete'),
         type: 'question',
-        buttons: ['Cancel', 'OK'],
-        message: 'Do you want to delete the current sketch?',
+        buttons: [
+          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+          nls.localize('vscode/issueMainService/ok', 'OK'),
+        ],
+        message: nls.localize(
+          'theia/workspace/deleteCurrentSketch',
+          'Do you want to delete the current sketch?'
+        ),
       });
       if (response === 1) {
         // OK

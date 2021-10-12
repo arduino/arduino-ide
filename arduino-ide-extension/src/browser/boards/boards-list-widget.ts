@@ -5,11 +5,12 @@ import {
 } from '../../common/protocol/boards-service';
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class BoardsListWidget extends ListWidget<BoardsPackage> {
   static WIDGET_ID = 'boards-list-widget';
-  static WIDGET_LABEL = 'Boards Manager';
+  static WIDGET_LABEL = nls.localize('arduino/boardsManager', 'Boards Manager');
 
   constructor(
     @inject(BoardsService) protected service: BoardsService,
@@ -52,7 +53,12 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
   }): Promise<void> {
     await super.install({ item, progressId, version });
     this.messageService.info(
-      `Successfully installed platform ${item.name}:${version}`,
+      nls.localize(
+        'arduino/board/succesfullyInstalledPlatform',
+        'Successfully installed platform {0}:{1}',
+        item.name,
+        version
+      ),
       { timeout: 3000 }
     );
   }
@@ -66,7 +72,12 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
   }): Promise<void> {
     await super.uninstall({ item, progressId });
     this.messageService.info(
-      `Successfully uninstalled platform ${item.name}:${item.installedVersion}`,
+      nls.localize(
+        'arduino/board/succesfullyUninstalledPlatform',
+        'Successfully uninstalled platform {0}:{1}',
+        item.name,
+        item.installedVersion!
+      ),
       { timeout: 3000 }
     );
   }

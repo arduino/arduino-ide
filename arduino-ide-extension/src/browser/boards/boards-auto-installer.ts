@@ -10,6 +10,7 @@ import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsConfig } from './boards-config';
 import { Installable, ResponseServiceArduino } from '../../common/protocol';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 /**
  * Listens on `BoardsConfig.Config` changes, if a board is selected which does not
@@ -81,12 +82,23 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
           const version = candidate.availableVersions[0]
             ? `[v ${candidate.availableVersions[0]}]`
             : '';
+          const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
+          const manualInstall = nls.localize(
+            'arduino/board/installManually',
+            'Install Manually'
+          );
           // tslint:disable-next-line:max-line-length
           this.messageService
             .info(
-              `The \`"${candidate.name} ${version}"\` core has to be installed for the currently selected \`"${selectedBoard.name}"\` board. Do you want to install it now?`,
-              'Install Manually',
-              'Yes'
+              nls.localize(
+                'arduino/board/installNow',
+                'The "{0} {1}" core has to be installed for the currently selected "{2}" board. Do you want to install it now?',
+                candidate.name,
+                version,
+                selectedBoard.name
+              ),
+              manualInstall,
+              yes
             )
             .then(async (answer) => {
               const index = this.notifications.findIndex((board) =>
@@ -95,7 +107,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
               if (index !== -1) {
                 this.notifications.splice(index, 1);
               }
-              if (answer === 'Yes') {
+              if (answer === yes) {
                 await Installable.installWithProgress({
                   installable: this.boardsService,
                   item: candidate,
@@ -105,7 +117,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
                 });
                 return;
               }
-              if (answer === 'Install Manually') {
+              if (answer === manualInstall) {
                 this.boardsManagerFrontendContribution
                   .openView({ reveal: true })
                   .then((widget) =>

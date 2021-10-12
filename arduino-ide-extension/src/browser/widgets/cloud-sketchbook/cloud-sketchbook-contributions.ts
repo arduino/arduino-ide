@@ -27,6 +27,7 @@ import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-ser
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export const SKETCHBOOKSYNC__CONTEXT = ['arduino-sketchbook-sync--context'];
 
@@ -60,38 +61,56 @@ export namespace CloudSketchbookCommands {
     }
   }
 
-  export const TOGGLE_CLOUD_SKETCHBOOK: Command = {
-    id: 'arduino-cloud-sketchbook--disable',
-    label: 'Show/Hide Remote Sketchbook',
-  };
+  export const TOGGLE_CLOUD_SKETCHBOOK = Command.toLocalizedCommand(
+    {
+      id: 'arduino-cloud-sketchbook--disable',
+      label: 'Show/Hide Remote Sketchbook',
+    },
+    'arduino/cloud/showHideRemoveSketchbook'
+  );
 
-  export const PULL_SKETCH: Command = {
-    id: 'arduino-cloud-sketchbook--pull-sketch',
-    label: 'Pull Sketch',
-    iconClass: 'pull-sketch-icon',
-  };
+  export const PULL_SKETCH = Command.toLocalizedCommand(
+    {
+      id: 'arduino-cloud-sketchbook--pull-sketch',
+      label: 'Pull Sketch',
+      iconClass: 'pull-sketch-icon',
+    },
+    'arduino/cloud/pullSketch'
+  );
 
-  export const PUSH_SKETCH: Command = {
-    id: 'arduino-cloud-sketchbook--push-sketch',
-    label: 'Push Sketch',
-    iconClass: 'push-sketch-icon',
-  };
+  export const PUSH_SKETCH = Command.toLocalizedCommand(
+    {
+      id: 'arduino-cloud-sketchbook--push-sketch',
+      label: 'Push Sketch',
+      iconClass: 'push-sketch-icon',
+    },
+    'arduino/cloud/pullSketch'
+  );
 
-  export const OPEN_IN_CLOUD_EDITOR: Command = {
-    id: 'arduino-cloud-sketchbook--open-in-cloud-editor',
-    label: 'Open in Cloud Editor',
-  };
+  export const OPEN_IN_CLOUD_EDITOR = Command.toLocalizedCommand(
+    {
+      id: 'arduino-cloud-sketchbook--open-in-cloud-editor',
+      label: 'Open in Cloud Editor',
+    },
+    'arduino/cloud/openInCloudEditor'
+  );
 
-  export const OPEN_SKETCHBOOKSYNC_CONTEXT_MENU: Command = {
-    id: 'arduino-sketchbook-sync--open-sketch-context-menu',
-    label: 'Options...',
-    iconClass: 'sketchbook-tree__opts',
-  };
+  export const OPEN_SKETCHBOOKSYNC_CONTEXT_MENU = Command.toLocalizedCommand(
+    {
+      id: 'arduino-sketchbook-sync--open-sketch-context-menu',
+      label: 'Options...',
+      iconClass: 'sketchbook-tree__opts',
+    },
+    'arduino/cloud/options'
+  );
 
-  export const OPEN_SKETCH_SHARE_DIALOG: Command = {
-    id: 'arduino-cloud-sketchbook--share-modal',
-    label: 'Share...',
-  };
+  export const OPEN_SKETCH_SHARE_DIALOG = Command.toLocalizedCommand(
+    {
+      id: 'arduino-cloud-sketchbook--share-modal',
+      label: 'Share...',
+    },
+    'arduino/cloud/share'
+  );
 
   export const OPEN_PROFILE_CONTEXT_MENU: Command = {
     id: 'arduino-cloud-sketchbook--open-profile-menu',
@@ -192,7 +211,7 @@ export class CloudSketchbookContribution extends Contribution {
       execute: (arg) => {
         new ShareSketchDialog({
           node: arg.node,
-          title: 'Share Sketch',
+          title: nls.localize('arduino/cloud/shareSketch', 'Share Sketch'),
           createApi: this.createApi,
         }).open();
       },

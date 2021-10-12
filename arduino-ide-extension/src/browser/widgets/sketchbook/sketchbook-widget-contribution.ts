@@ -69,7 +69,7 @@ export class SketchbookWidgetContribution
   constructor() {
     super({
       widgetId: 'arduino-sketchbook-widget',
-      widgetName: 'Sketchbook',
+      widgetName: SketchbookWidget.LABEL,
       defaultWidgetOptions: {
         area: 'left',
         rank: 1,

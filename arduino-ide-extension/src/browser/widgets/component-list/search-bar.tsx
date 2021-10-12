@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/browser/nls';
 import * as React from 'react';
 
 export class SearchBar extends React.Component<SearchBar.Props> {
@@ -12,7 +13,10 @@ export class SearchBar extends React.Component<SearchBar.Props> {
         ref={this.setRef}
         className={`theia-input ${SearchBar.Styles.SEARCH_BAR_CLASS}`}
         type="text"
-        placeholder="Filter your search..."
+        placeholder={nls.localize(
+          'arduino/component/filterSearch',
+          'Filter your search...'
+        )}
         size={1}
         value={this.props.filterText}
         onChange={this.handleFilterTextChange}

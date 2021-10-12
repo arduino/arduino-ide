@@ -7,6 +7,7 @@ import { NotificationCenter } from '../notification-center';
 import { Examples } from './examples';
 import { SketchContainer } from '../../common/protocol';
 import { OpenSketch } from './open-sketch';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class Sketchbook extends Examples {
@@ -38,7 +39,7 @@ export class Sketchbook extends Examples {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerSubmenu(
       ArduinoMenus.FILE__SKETCHBOOK_SUBMENU,
-      'Sketchbook',
+      nls.localize('arduino/sketch/sketchbook', 'Sketchbook'),
       { order: '3' }
     );
   }

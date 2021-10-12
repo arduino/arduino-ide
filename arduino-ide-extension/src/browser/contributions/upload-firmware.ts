@@ -7,6 +7,7 @@ import {
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { UploadFirmwareDialog } from '../dialogs/firmware-uploader/firmware-uploader-dialog';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class UploadFirmware extends Contribution {
@@ -42,7 +43,10 @@ export namespace UploadFirmware {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-upload-firmware-open',
-      label: 'WiFi101 /  WiFiNINA Firmware Updater',
+      label: nls.localize(
+        'arduino/firmware/updater',
+        'WiFi101 /  WiFiNINA Firmware Updater'
+      ),
       category: 'Arduino',
     };
   }

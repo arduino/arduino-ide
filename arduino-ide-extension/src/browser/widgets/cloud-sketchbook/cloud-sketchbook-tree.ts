@@ -34,6 +34,7 @@ import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
 import { posix, splitSketchPath } from '../../create/create-paths';
 import { Create } from '../../create/typings';
+import { nls } from '@theia/core/lib/browser/nls';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
@@ -77,10 +78,13 @@ export class CloudSketchbookTree extends SketchbookTree {
 
     if (warn) {
       const ok = await new DoNotAskAgainConfirmDialog({
-        ok: 'Continue',
-        cancel: 'Cancel',
-        title: 'Push Sketch',
-        msg: 'This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.',
+        ok: nls.localize('arduino/cloud/continue', 'Continue'),
+        cancel: nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+        title: nls.localize('arduino/cloud/pushSketch', 'Push Sketch'),
+        msg: nls.localize(
+          'arduino/cloud/pushSketchMsg',
+          'This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.'
+        ),
         maxWidth: 400,
         onAccept: () =>
           this.preferenceService.set(
@@ -113,10 +117,13 @@ export class CloudSketchbookTree extends SketchbookTree {
 
     if (warn) {
       const ok = await new DoNotAskAgainConfirmDialog({
-        ok: 'Pull',
-        cancel: 'Cancel',
-        title: 'Pull Sketch',
-        msg: 'Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?',
+        ok: nls.localize('arduino/cloud/pull', 'Pull'),
+        cancel: nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+        title: nls.localize('arduino/cloud/pullSketch', 'Pull Sketch'),
+        msg: nls.localize(
+          'arduino/cloud/pullSketchMsg',
+          'Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?'
+        ),
         maxWidth: 400,
         onAccept: () =>
           this.preferenceService.set(
@@ -141,15 +148,27 @@ export class CloudSketchbookTree extends SketchbookTree {
       this.sketchCache.purgeByPath(node.remoteUri.path.toString());
 
       node.commands = commandsCopy;
-      this.messageService.info(`Done pulling ‘${node.fileStat.name}’.`, {
-        timeout: MESSAGE_TIMEOUT,
-      });
+      this.messageService.info(
+        nls.localize(
+          'arduino/cloud/donePulling',
+          'Done pulling ‘{0}’.',
+          node.fileStat.name
+        ),
+        {
+          timeout: MESSAGE_TIMEOUT,
+        }
+      );
     });
   }
 
   async push(node: CloudSketchbookTree.CloudSketchDirNode): Promise<void> {
     if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
-      throw new Error('Cannot push to Cloud. It is not yet pulled.');
+      throw new Error(
+        nls.localize(
+          'arduino/cloud/notYetPulled',
+          'Cannot push to Cloud. It is not yet pulled.'
+        )
+      );
     }
 
     const pushPublic = await this.pushPublicWarn(node);
@@ -161,9 +180,9 @@ export class CloudSketchbookTree extends SketchbookTree {
 
     if (warn) {
       const ok = await new DoNotAskAgainConfirmDialog({
-        ok: 'Push',
-        cancel: 'Cancel',
-        title: 'Push Sketch',
+        ok: nls.localize('arduino/cloud/push', 'Push'),
+        cancel: nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+        title: nls.localize('arduino/cloud/pushSketch', 'Push Sketch'),
         msg: 'Pushing this Sketch will overwrite its Cloud version. Are you sure you want to continue?',
         maxWidth: 400,
         onAccept: () =>
@@ -180,7 +199,10 @@ export class CloudSketchbookTree extends SketchbookTree {
     this.runWithState(node, 'pushing', async (node) => {
       if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
         throw new Error(
-          'You have to pull first to be able to push to the Cloud.'
+          nls.localize(
+            'arduino/cloud/pullFirst',
+            'You have to pull first to be able to push to the Cloud.'
+          )
         );
       }
       const commandsCopy = node.commands;
@@ -194,9 +216,16 @@ export class CloudSketchbookTree extends SketchbookTree {
       this.sketchCache.purgeByPath(node.remoteUri.path.toString());
 
       node.commands = commandsCopy;
-      this.messageService.info(`Done pushing ‘${node.fileStat.name}’.`, {
-        timeout: MESSAGE_TIMEOUT,
-      });
+      this.messageService.info(
+        nls.localize(
+          'arduino/cloud/donePushing',
+          'Done pushing ‘{0}’.',
+          node.fileStat.name
+        ),
+        {
+          timeout: MESSAGE_TIMEOUT,
+        }
+      );
     });
   }
 

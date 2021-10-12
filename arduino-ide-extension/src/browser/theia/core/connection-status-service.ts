@@ -8,6 +8,7 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import { ArduinoDaemon } from '../../../common/protocol';
 import { NotificationCenter } from '../../notification-center';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class FrontendConnectionStatusService extends TheiaFrontendConnectionStatusService {
@@ -63,10 +64,19 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
   protected handleOffline(): void {
     this.statusBar.setElement('connection-status', {
       alignment: StatusBarAlignment.LEFT,
-      text: this.isRunning ? 'Offline' : '$(bolt) CLI Daemon Offline',
+      text: this.isRunning
+        ? nls.localize('theia/core/offline', 'Offline')
+        : '$(bolt) ' +
+          nls.localize('theia/core/daemonOffline', 'CLI Daemon Offline'),
       tooltip: this.isRunning
-        ? 'Cannot connect to the backend.'
-        : 'Cannot connect to the CLI daemon.',
+        ? nls.localize(
+            'theia/core/cannotConnectBackend',
+            'Cannot connect to the backend.'
+          )
+        : nls.localize(
+            'theia/core/cannotConnectDaemon',
+            'Cannot connect to the CLI daemon.'
+          ),
       priority: 5000,
     });
     this.toDisposeOnOnline.push(

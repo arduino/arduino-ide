@@ -15,6 +15,7 @@ import {
   KeybindingRegistry,
   URI,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 /**
  * Closes the `current` closeable editor, or any closeable current widget from the main area, or the current sketch window.
@@ -64,10 +65,25 @@ export class Close extends SketchContribution {
         if (isTemp && (await this.wasTouched(uri))) {
           const { response } = await remote.dialog.showMessageBox({
             type: 'question',
-            buttons: ["Don't Save", 'Cancel', 'Save'],
-            message:
-              'Do you want to save changes to this sketch before closing?',
-            detail: "If you don't save, your changes will be lost.",
+            buttons: [
+              nls.localize(
+                'vscode/abstractTaskService/saveBeforeRun.dontSave',
+                "Don't Save"
+              ),
+              nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+              nls.localize(
+                'vscode/abstractTaskService/saveBeforeRun.save',
+                'Save'
+              ),
+            ],
+            message: nls.localize(
+              'arduino/common/saveChangesToSketch',
+              'Do you want to save changes to this sketch before closing?'
+            ),
+            detail: nls.localize(
+              'arduino/common/loseChanges',
+              "If you don't save, your changes will be lost."
+            ),
           });
           if (response === 1) {
             // Cancel
@@ -93,7 +109,7 @@ export class Close extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: Close.Commands.CLOSE.id,
-      label: 'Close',
+      label: nls.localize('vscode/editor.contribution/close', 'Close'),
       order: '5',
     });
   }

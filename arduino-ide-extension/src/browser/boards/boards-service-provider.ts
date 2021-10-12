@@ -18,6 +18,7 @@ import { naturalCompare } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
 import { ArduinoCommands } from '../arduino-commands';
 import { StorageWrapper } from '../storage-wrapper';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -134,14 +135,20 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         selectedBoard.packageId === event.item.id &&
         !installedBoard
       ) {
+        const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
         this.messageService
           .warn(
-            `Could not find previously selected board '${selectedBoard.name}' in installed platform '${event.item.name}'. Please manually reselect the board you want to use. Do you want to reselect it now?`,
-            'Reselect later',
-            'Yes'
+            nls.localize(
+              'arduino/board/couldNotFindPreviouslySelected',
+              "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+              selectedBoard.name,
+              event.item.name
+            ),
+            nls.localize('arduino/board/reselectLater', 'Reselect later'),
+            yes
           )
           .then(async (answer) => {
-            if (answer === 'Yes') {
+            if (answer === yes) {
               this.commandService.executeCommand(
                 ArduinoCommands.OPEN_BOARDS_DIALOG.id,
                 selectedBoard.name
@@ -277,9 +284,12 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
     if (!config.selectedBoard) {
       if (!options.silent) {
-        this.messageService.warn('No boards selected.', {
-          timeout: 3000,
-        });
+        this.messageService.warn(
+          nls.localize('arduino/board/noneSelected', 'No boards selected.'),
+          {
+            timeout: 3000,
+          }
+        );
       }
       return false;
     }
@@ -301,9 +311,16 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const { name } = config.selectedBoard;
     if (!config.selectedPort) {
       if (!options.silent) {
-        this.messageService.warn(`No ports selected for board: '${name}'.`, {
-          timeout: 3000,
-        });
+        this.messageService.warn(
+          nls.localize(
+            'arduino/board/noPortsSelected',
+            "No ports selected for board: '{0}'.",
+            name
+          ),
+          {
+            timeout: 3000,
+          }
+        );
       }
       return false;
     }
@@ -311,7 +328,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     if (!config.selectedBoard.fqbn) {
       if (!options.silent) {
         this.messageService.warn(
-          `The FQBN is not available for the selected board ${name}. Do you have the corresponding core installed?`,
+          nls.localize(
+            'arduino/board/noFQBN',
+            'The FQBN is not available for the selected board "{0}". Do you have the corresponding core installed?',
+            name
+          ),
           { timeout: 3000 }
         );
       }
@@ -407,7 +428,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       }
       if (!board) {
         availableBoards.push({
-          name: 'Unknown',
+          name: nls.localize('arduino/common/unknown', 'Unknown'),
           port: boardPort,
           state,
         });

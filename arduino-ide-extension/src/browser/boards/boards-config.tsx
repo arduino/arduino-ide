@@ -11,6 +11,7 @@ import {
 } from '../../common/protocol/boards-service';
 import { NotificationCenter } from '../notification-center';
 import { BoardsServiceProvider } from './boards-service-provider';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export namespace BoardsConfig {
   export interface Config {
@@ -302,7 +303,12 @@ export class BoardsConfig extends React.Component<
   protected renderPortsFooter(): React.ReactNode {
     return (
       <div className="noselect">
-        <label title="Shows all available ports when enabled">
+        <label
+          title={nls.localize(
+            'arduino/board/showAllAvailablePorts',
+            'Shows all available ports when enabled'
+          )}
+        >
           <input
             type="checkbox"
             defaultChecked={this.state.showAllPorts}

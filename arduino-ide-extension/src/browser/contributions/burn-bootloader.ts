@@ -11,6 +11,7 @@ import {
   CommandRegistry,
   MenuModelRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class BurnBootloader extends SketchContribution {
@@ -38,7 +39,10 @@ export class BurnBootloader extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP, {
       commandId: BurnBootloader.Commands.BURN_BOOTLOADER.id,
-      label: 'Burn Bootloader',
+      label: nls.localize(
+        'arduino/bootloader/burnBootloader',
+        'Burn Bootloader'
+      ),
       order: 'z99',
     });
   }
@@ -68,9 +72,15 @@ export class BurnBootloader extends SketchContribution {
         verify,
         verbose,
       });
-      this.messageService.info('Done burning bootloader.', {
-        timeout: 3000,
-      });
+      this.messageService.info(
+        nls.localize(
+          'arduino/bootloader/doneBurningBootloader',
+          'Done burning bootloader.'
+        ),
+        {
+          timeout: 3000,
+        }
+      );
     } catch (e) {
       this.messageService.error(e.toString());
     } finally {

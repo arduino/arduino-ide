@@ -4,6 +4,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { ComponentListItem } from './component-list-item';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class ListItemRenderer<T extends ArduinoComponent> {
@@ -33,7 +34,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
       const author = <span className="author">{item.author}</span>;
       nameAndAuthor = (
         <span>
-          {name} by {author}
+          {name} {nls.localize('arduino/component/by', 'by')} {author}
         </span>
       );
     } else if (item.name) {
@@ -41,12 +42,22 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     } else if ((item as any).id) {
       nameAndAuthor = <span className="name">{(item as any).id}</span>;
     } else {
-      nameAndAuthor = <span className="name">Unknown</span>;
+      nameAndAuthor = (
+        <span className="name">
+          {nls.localize('arduino/common/unknown', 'Unknown')}
+        </span>
+      );
     }
     const onClickUninstall = () => uninstall(item);
     const installedVersion = !!item.installedVersion && (
       <div className="version-info">
-        <span className="version">Version {item.installedVersion}</span>
+        <span className="version">
+          {nls.localize(
+            'arduino/component/version',
+            'Version {0}',
+            item.installedVersion
+          )}
+        </span>
         <span className="installed" onClick={onClickUninstall} />
       </div>
     );
@@ -56,13 +67,13 @@ export class ListItemRenderer<T extends ArduinoComponent> {
 
     const moreInfo = !!item.moreInfoLink && (
       <a href={item.moreInfoLink} onClick={this.onMoreInfoClick}>
-        More info
+        {nls.localize('arduino/component/moreInfo', 'More info')}
       </a>
     );
     const onClickInstall = () => install(item);
     const installButton = item.installable && (
       <button className="theia-button install" onClick={onClickInstall}>
-        INSTALL
+        {nls.localize('arduino/component/install', 'INSTALL')}
       </button>
     );
 

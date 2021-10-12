@@ -9,6 +9,7 @@ import {
   URI,
 } from './contribution';
 import { FileDialogService } from '@theia/filesystem/lib/browser';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class AddFile extends SketchContribution {
@@ -24,7 +25,7 @@ export class AddFile extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: AddFile.Commands.ADD_FILE.id,
-      label: 'Add File...',
+      label: nls.localize('arduino/contributions/addFile', 'Add File') + '...',
       order: '2',
     });
   }
@@ -35,7 +36,7 @@ export class AddFile extends SketchContribution {
       return;
     }
     const toAddUri = await this.fileDialogService.showOpenDialog({
-      title: 'Add File',
+      title: nls.localize('arduino/contributions/addFile', 'Add File'),
       canSelectFiles: true,
       canSelectFolders: false,
       canSelectMany: false,
@@ -50,9 +51,16 @@ export class AddFile extends SketchContribution {
     if (exists) {
       const { response } = await remote.dialog.showMessageBox({
         type: 'question',
-        title: 'Replace',
-        buttons: ['Cancel', 'OK'],
-        message: `Replace the existing version of ${filename}?`,
+        title: nls.localize('arduino/contributions/replaceTitle', 'Replace'),
+        buttons: [
+          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+          nls.localize('vscode/issueMainService/ok', 'OK'),
+        ],
+        message: nls.localize(
+          'arduino/replaceMsg',
+          'Replace the existing version of {0}?',
+          filename
+        ),
       });
       if (response === 0) {
         // Cancel
@@ -60,9 +68,15 @@ export class AddFile extends SketchContribution {
       }
     }
     await this.fileService.copy(toAddUri, targetUri, { overwrite: true });
-    this.messageService.info('One file added to the sketch.', {
-      timeout: 2000,
-    });
+    this.messageService.info(
+      nls.localize(
+        'arduino/contributions/fileAdded',
+        'One file added to the sketch.'
+      ),
+      {
+        timeout: 2000,
+      }
+    );
   }
 }
 

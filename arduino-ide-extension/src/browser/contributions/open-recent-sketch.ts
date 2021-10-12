@@ -14,6 +14,7 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { OpenSketch } from './open-sketch';
 import { NotificationCenter } from '../notification-center';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class OpenRecentSketch extends SketchContribution {
@@ -48,7 +49,7 @@ export class OpenRecentSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerSubmenu(
       ArduinoMenus.FILE__OPEN_RECENT_SUBMENU,
-      'Open Recent',
+      nls.localize('arduino/sketch/openRecent', 'Open Recent'),
       { order: '2' }
     );
   }

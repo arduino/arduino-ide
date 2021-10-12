@@ -9,6 +9,7 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class QuitApp extends Contribution {
@@ -25,7 +26,7 @@ export class QuitApp extends Contribution {
     if (!isOSX) {
       registry.registerMenuAction(ArduinoMenus.FILE__QUIT_GROUP, {
         commandId: QuitApp.Commands.QUIT_APP.id,
-        label: 'Quit',
+        label: nls.localize('vscode/bulkEditService/quit', 'Quit'),
         order: '0',
       });
     }

@@ -10,6 +10,7 @@ import {
   KeybindingRegistry,
   TabBarToolbarRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class SaveSketch extends SketchContribution {
@@ -28,7 +29,7 @@ export class SaveSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveSketch.Commands.SAVE_SKETCH.id,
-      label: 'Save',
+      label: nls.localize('vscode/fileCommands/save', 'Save'),
       order: '6',
     });
   }
@@ -44,7 +45,7 @@ export class SaveSketch extends SketchContribution {
     registry.registerItem({
       id: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
       command: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
-      tooltip: 'Save',
+      tooltip: nls.localize('vscode/fileCommands/save', 'Save'),
       priority: 5,
     });
   }
