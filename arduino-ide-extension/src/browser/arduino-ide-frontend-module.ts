@@ -253,6 +253,7 @@ import {
   UploadCertificateDialogProps,
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/certificate-uploader-dialog';
+import { PlotterContribution } from './plotter/plotter-contribution';
 import { nls } from '@theia/core/lib/browser/nls';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -597,6 +598,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, AddFile);
   Contribution.configure(bind, ArchiveSketch);
   Contribution.configure(bind, AddZipLibrary);
+  Contribution.configure(bind, PlotterContribution);
 
   bind(ResponseServiceImpl)
     .toSelf()
