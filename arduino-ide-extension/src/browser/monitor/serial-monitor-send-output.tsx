@@ -71,7 +71,9 @@ export class SerialMonitorOutput extends React.Component<
         });
         this.scrollToBottom();
       }),
-      this.props.clearConsoleEvent(() => this.setState({ lines: [] })),
+      this.props.clearConsoleEvent(() =>
+        this.setState({ lines: [], charCount: 0 })
+      ),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
           const { timestamp } = this.props.monitorModel;
