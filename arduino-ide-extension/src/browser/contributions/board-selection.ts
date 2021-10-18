@@ -138,9 +138,7 @@ PID: ${PID}`;
     // The board specific items, and the rest, have order with `z`. We needed something between `0` and `z` with natural-order.
     this.menuModelRegistry.registerSubmenu(
       boardsSubmenuPath,
-      nls.localize('arduino/board/board', 'Board') + !!boardsSubmenuLabel
-        ? `: "${boardsSubmenuLabel}"`
-        : '',
+      nls.localize('arduino/board/board', 'Board{0}', !!boardsSubmenuLabel ? `: "${boardsSubmenuLabel}"` : ''),
       { order: '100' }
     );
     this.toDisposeBeforeMenuRebuild.push(
@@ -157,9 +155,7 @@ PID: ${PID}`;
     const portsSubmenuLabel = config.selectedPort?.address;
     this.menuModelRegistry.registerSubmenu(
       portsSubmenuPath,
-      nls.localize('arduino/board/port', 'Port') + portsSubmenuLabel
-        ? `: "${portsSubmenuLabel}"`
-        : '',
+      nls.localize('arduino/board/port', 'Port{0}', portsSubmenuLabel ? `: "${portsSubmenuLabel}"` : ''),
       { order: '101' }
     );
     this.toDisposeBeforeMenuRebuild.push(
@@ -197,10 +193,9 @@ PID: ${PID}`;
 
       const packageLabel =
         packageName +
-        `${
-          manuallyInstalled
-            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
-            : ''
+        `${manuallyInstalled
+          ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
+          : ''
         }`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
@@ -273,9 +268,8 @@ PID: ${PID}`;
             });
           }
           for (const { name, fqbn } of boards) {
-            const id = `arduino-select-port--${address}${
-              fqbn ? `--${fqbn}` : ''
-            }`;
+            const id = `arduino-select-port--${address}${fqbn ? `--${fqbn}` : ''
+              }`;
             const command = { id };
             const handler = {
               execute: () => {
