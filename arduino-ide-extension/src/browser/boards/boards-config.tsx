@@ -266,7 +266,7 @@ export class BoardsConfig extends React.Component<
         <div className="boards list">
           {Array.from(distinctBoards.values()).map((board) => (
             <Item<BoardWithPackage>
-              key={`${board.name}-${board.packageName}`}
+              key={toKey(board)}
               item={board}
               label={board.name}
               details={board.details}
