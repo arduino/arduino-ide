@@ -1,7 +1,7 @@
 import { inject, injectable, postConstruct } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { BoardUserField, CoreService } from '../../common/protocol';
-import { ArduinoMenus } from '../menu/arduino-menus';
+import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { SerialConnectionManager } from '../serial/serial-connection-manager';
@@ -16,6 +16,7 @@ import {
 } from './contribution';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/browser/nls';
+import { DisposableCollection } from '@theia/core';
 
 @injectable()
 export class UploadSketch extends SketchContribution {
@@ -24,6 +25,9 @@ export class UploadSketch extends SketchContribution {
 
   @inject(SerialConnectionManager)
   protected readonly serialConnection: SerialConnectionManager;
+
+  @inject(MenuModelRegistry)
+  protected readonly menuRegistry: MenuModelRegistry;
 
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;
@@ -42,25 +46,29 @@ export class UploadSketch extends SketchContribution {
   protected uploadInProgress = false;
   protected boardRequiresUserFields = false;
 
+  protected readonly menuActionsDisposables = new DisposableCollection();
+
   @postConstruct()
   protected init(): void {
     this.boardsServiceClientImpl.onBoardsConfigChanged(async () => {
-      const userFields = await this.boardsServiceClientImpl.selectedBoardUserFields();
+      const userFields =
+        await this.boardsServiceClientImpl.selectedBoardUserFields();
       this.boardRequiresUserFields = userFields.length > 0;
-    })
+      this.registerMenus(this.menuRegistry);
+    });
   }
 
   private selectedFqbnAddress(): string {
     const { boardsConfig } = this.boardsServiceClientImpl;
     const fqbn = boardsConfig.selectedBoard?.fqbn;
     if (!fqbn) {
-      return "";
+      return '';
     }
-    const address = boardsConfig.selectedBoard?.port?.address
+    const address = boardsConfig.selectedBoard?.port?.address;
     if (!address) {
-      return "";
+      return '';
     }
-    return fqbn + "|" + address;
+    return fqbn + '|' + address;
   }
 
   registerCommands(registry: CommandRegistry): void {
@@ -72,7 +80,9 @@ export class UploadSketch extends SketchContribution {
         }
         if (this.boardRequiresUserFields && !this.cachedUserFields.has(key)) {
           // Deep clone the array of board fields to avoid editing the cached ones
-          this.userFieldsDialog.value = (await this.boardsServiceClientImpl.selectedBoardUserFields()).map(f => ({ ...f }));
+          this.userFieldsDialog.value = (
+            await this.boardsServiceClientImpl.selectedBoardUserFields()
+          ).map((f) => ({ ...f }));
           const result = await this.userFieldsDialog.open();
           if (!result) {
             return;
@@ -83,29 +93,29 @@ export class UploadSketch extends SketchContribution {
       },
       isEnabled: () => !this.uploadInProgress,
     });
-    registry.registerCommand(
-      UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION,
-      {
-        execute: async () => {
-          const key = this.selectedFqbnAddress();
-          if (!key) {
-            return;
-          }
+    registry.registerCommand(UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION, {
+      execute: async () => {
+        const key = this.selectedFqbnAddress();
+        if (!key) {
+          return;
+        }
 
-          const cached = this.cachedUserFields.get(key);
-          // Deep clone the array of board fields to avoid editing the cached ones
-          this.userFieldsDialog.value = (cached ?? await this.boardsServiceClientImpl.selectedBoardUserFields()).map(f => ({ ...f }));
+        const cached = this.cachedUserFields.get(key);
+        // Deep clone the array of board fields to avoid editing the cached ones
+        this.userFieldsDialog.value = (
+          cached ??
+          (await this.boardsServiceClientImpl.selectedBoardUserFields())
+        ).map((f) => ({ ...f }));
 
-          const result = await this.userFieldsDialog.open()
-          if (!result) {
-            return;
-          }
-          this.cachedUserFields.set(key, result);
-          this.uploadSketch();
-        },
-        isEnabled: () => !this.uploadInProgress && this.boardRequiresUserFields,
-      }
-    );
+        const result = await this.userFieldsDialog.open();
+        if (!result) {
+          return;
+        }
+        this.cachedUserFields.set(key, result);
+        this.uploadSketch();
+      },
+      isEnabled: () => !this.uploadInProgress && this.boardRequiresUserFields,
+    });
     registry.registerCommand(
       UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER,
       {
@@ -124,24 +134,46 @@ export class UploadSketch extends SketchContribution {
   }
 
   registerMenus(registry: MenuModelRegistry): void {
-    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
-      label: nls.localize('arduino/sketch/upload', 'Upload'),
-      order: '1',
-    });
-    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
-      label: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
-      order: '2',
-    });
-    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
-      label: nls.localize(
-        'arduino/sketch/uploadUsingProgrammer',
-        'Upload Using Programmer'
-      ),
-      order: '3',
-    });
+    this.menuActionsDisposables.dispose();
+
+    this.menuActionsDisposables.push(
+      registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+        commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
+        label: nls.localize('arduino/sketch/upload', 'Upload'),
+        order: '1',
+      })
+    );
+    if (this.boardRequiresUserFields) {
+      this.menuActionsDisposables.push(
+        registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+          commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
+          label: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
+          order: '2',
+        })
+      );
+    } else {
+      this.menuActionsDisposables.push(
+        registry.registerMenuNode(
+          ArduinoMenus.SKETCH__MAIN_GROUP,
+          new PlaceholderMenuNode(
+            ArduinoMenus.SKETCH__MAIN_GROUP,
+            // commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
+            UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label!,
+            { order: '2' }
+          )
+        )
+      );
+    }
+    this.menuActionsDisposables.push(
+      registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+        commandId: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
+        label: nls.localize(
+          'arduino/sketch/uploadUsingProgrammer',
+          'Upload Using Programmer'
+        ),
+        order: '3',
+      })
+    );
   }
 
   registerKeybindings(registry: KeybindingRegistry): void {
@@ -200,7 +232,12 @@ export class UploadSketch extends SketchContribution {
       const port = selectedPort;
       const userFields = this.cachedUserFields.get(this.selectedFqbnAddress());
       if (!userFields) {
-        this.messageService.error(nls.localize('arduino/sketch/userFieldsNotFoundError', "Can't find user fields for connected board"));
+        this.messageService.error(
+          nls.localize(
+            'arduino/sketch/userFieldsNotFoundError',
+            "Can't find user fields for connected board"
+          )
+        );
         return;
       }
 
@@ -277,9 +314,12 @@ export namespace UploadSketch {
     };
     export const UPLOAD_WITH_CONFIGURATION: Command = {
       id: 'arduino-upload-with-configuration-sketch',
-      label: nls.localize('arduino/sketch/configureAndUpload', 'Configure And Upload'),
+      label: nls.localize(
+        'arduino/sketch/configureAndUpload',
+        'Configure And Upload'
+      ),
       category: 'Arduino',
-    }
+    };
     export const UPLOAD_SKETCH_USING_PROGRAMMER: Command = {
       id: 'arduino-upload-sketch-using-programmer',
     };
