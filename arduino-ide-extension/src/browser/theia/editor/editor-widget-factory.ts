@@ -5,6 +5,7 @@ import { LabelProvider } from '@theia/core/lib/browser';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SketchesService, Sketch } from '../../../common/protocol';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
@@ -30,7 +31,11 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
     if (sketch && Sketch.isInSketch(uri, sketch)) {
       const isTemp = await this.sketchesService.isTemp(sketch);
       if (isTemp) {
-        widget.title.caption = `Unsaved – ${this.labelProvider.getName(uri)}`;
+        widget.title.caption = nls.localize(
+          'theia/editor/unsavedTitle',
+          'Unsaved – {0}',
+          this.labelProvider.getName(uri)
+        );
       }
     }
     return widget;

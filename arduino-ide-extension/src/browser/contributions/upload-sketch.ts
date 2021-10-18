@@ -14,6 +14,7 @@ import {
   KeybindingRegistry,
   TabBarToolbarRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class UploadSketch extends SketchContribution {
@@ -59,12 +60,15 @@ export class UploadSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
-      label: 'Upload',
+      label: nls.localize('arduino/sketch/upload', 'Upload'),
       order: '1',
     });
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: UploadSketch.Commands.UPLOAD_SKETCH_USING_PROGRAMMER.id,
-      label: 'Upload Using Programmer',
+      label: nls.localize(
+        'arduino/sketch/uploadUsingProgrammer',
+        'Upload Using Programmer'
+      ),
       order: '2',
     });
   }
@@ -84,7 +88,7 @@ export class UploadSketch extends SketchContribution {
     registry.registerItem({
       id: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
       command: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
-      tooltip: 'Upload',
+      tooltip: nls.localize('arduino/sketch/upload', 'Upload'),
       priority: 1,
       onDidChange: this.onDidChange,
     });
@@ -161,7 +165,10 @@ export class UploadSketch extends SketchContribution {
       } else {
         await this.coreService.upload(options);
       }
-      this.messageService.info('Done uploading.', { timeout: 3000 });
+      this.messageService.info(
+        nls.localize('arduino/sketch/doneUploading', 'Done uploading.'),
+        { timeout: 3000 }
+      );
     } catch (e) {
       this.messageService.error(e.toString());
     } finally {
@@ -183,7 +190,11 @@ export class UploadSketch extends SketchContribution {
           }
         } catch (waitError) {
           this.messageService.error(
-            `Could not reconnect to serial monitor. ${waitError.toString()}`
+            nls.localize(
+              'arduino/sketch/couldNotConnectToMonitor',
+              'Could not reconnect to serial monitor. {0}',
+              waitError.toString()
+            )
           );
         }
       }

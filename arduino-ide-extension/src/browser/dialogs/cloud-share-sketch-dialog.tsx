@@ -6,6 +6,7 @@ import { clipboard } from 'electron';
 import { ReactWidget, DialogProps } from '@theia/core/lib/browser';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { CreateApi } from '../create/create-api';
+import { nls } from '@theia/core/lib/browser/nls';
 
 const RadioButton = (props: {
   id: string;
@@ -59,12 +60,20 @@ export const ShareSketchComponent = ({
 
   return (
     <div id="widget-container arduino-sharesketch-dialog">
-      <p>Choose visibility of your Sketch:</p>
+      <p>
+        {nls.localize(
+          'arduino/cloud/chooseSketchVisibility',
+          'Choose visibility of your Sketch:'
+        )}
+      </p>
       <RadioButton
         changed={radioChangeHandler}
         id="1"
         isSelected={treeNode.isPublic === false}
-        label="Private. Only you can view the Sketch."
+        label={nls.localize(
+          'arduino/cloud/privateVisibility',
+          'Private. Only you can view the Sketch.'
+        )}
         value="private"
         isDisabled={loading}
       />
@@ -72,14 +81,17 @@ export const ShareSketchComponent = ({
         changed={radioChangeHandler}
         id="2"
         isSelected={treeNode.isPublic === true}
-        label="Public. Anyone with the link can view the Sketch."
+        label={nls.localize(
+          'arduino/cloud/publicVisibility',
+          'Public. Anyone with the link can view the Sketch.'
+        )}
         value="public"
         isDisabled={loading}
       />
 
       {treeNode.isPublic && (
         <div>
-          <p>Link:</p>
+          <p>{nls.localize('arduino/cloud/link', 'Link:')}</p>
           <div className="sketch-link">
             <input
               type="text"
@@ -92,10 +104,10 @@ export const ShareSketchComponent = ({
               value="copy"
               className="theia-button secondary"
             >
-              Copy
+              {nls.localize('vscode/textInputActions/copy', 'Copy')}
             </button>
           </div>
-          <p>Embed:</p>
+          <p>{nls.localize('arduino/cloud/embed', 'Embed:')}</p>
           <div className="sketch-link-embed">
             <textarea
               readOnly

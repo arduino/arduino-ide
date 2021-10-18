@@ -6,6 +6,7 @@ import { BoardsConfig } from './boards-config';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class BoardsConfigDialogProps extends DialogProps {}
@@ -32,8 +33,10 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     this.contentNode.classList.add('select-board-dialog');
     this.contentNode.appendChild(this.createDescription());
 
-    this.appendCloseButton('CANCEL');
-    this.appendAcceptButton('OK');
+    this.appendCloseButton(
+      nls.localize('vscode/issueMainService/cancel', 'Cancel')
+    );
+    this.appendAcceptButton(nls.localize('vscode/issueMainService/ok', 'OK'));
   }
 
   @postConstruct()
@@ -63,7 +66,10 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     head.classList.add('head');
 
     const title = document.createElement('div');
-    title.textContent = 'Select Other Board & Port';
+    title.textContent = nls.localize(
+      'arduino/board/configDialogTitle',
+      'Select Other Board & Port'
+    );
     title.classList.add('title');
     head.appendChild(title);
 
@@ -72,8 +78,14 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     head.appendChild(text);
 
     for (const paragraph of [
-      'Select both a Board and a Port if you want to upload a sketch.',
-      'If you only select a Board you will be able just to compile, but not to upload your sketch.',
+      nls.localize(
+        'arduino/board/configDialog1',
+        'Select both a Board and a Port if you want to upload a sketch.'
+      ),
+      nls.localize(
+        'arduino/board/configDialog2',
+        'If you only select a Board you will be able just to compile, but not to upload your sketch.'
+      ),
     ]) {
       const p = document.createElement('div');
       p.textContent = paragraph;
@@ -117,7 +129,10 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
   protected isValid(value: BoardsConfig.Config): DialogError {
     if (!value.selectedBoard) {
       if (value.selectedPort) {
-        return 'Please pick a board connected to the port you have selected.';
+        return nls.localize(
+          'arduino/board/pleasePickBoard',
+          'Please pick a board connected to the port you have selected.'
+        );
       }
       return false;
     }

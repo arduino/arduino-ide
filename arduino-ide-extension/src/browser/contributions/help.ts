@@ -12,6 +12,7 @@ import {
   CommandRegistry,
   KeybindingRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class Help extends Contribution {
@@ -61,8 +62,8 @@ export class Help extends Contribution {
         }
         if (!searchFor) {
           searchFor = await this.quickInputService.input({
-            prompt: 'Search on Arduino.cc',
-            placeHolder: 'Type a keyword',
+            prompt: nls.localize('arduino/help/search', 'Search on Arduino.cc'),
+            placeHolder: nls.localize('arduino/help/keyword', 'Type a keyword'),
           });
         }
         if (searchFor) {
@@ -128,37 +129,37 @@ export namespace Help {
   export namespace Commands {
     export const GETTING_STARTED: Command = {
       id: 'arduino-getting-started',
-      label: 'Getting Started',
+      label: nls.localize('arduino/help/gettingStarted', 'Getting Started'),
       category: 'Arduino',
     };
     export const ENVIRONMENT: Command = {
       id: 'arduino-environment',
-      label: 'Environment',
+      label: nls.localize('arduino/help/environment', 'Environment'),
       category: 'Arduino',
     };
     export const TROUBLESHOOTING: Command = {
       id: 'arduino-troubleshooting',
-      label: 'Troubleshooting',
+      label: nls.localize('arduino/help/troubleshooting', 'Troubleshooting'),
       category: 'Arduino',
     };
     export const REFERENCE: Command = {
       id: 'arduino-reference',
-      label: 'Reference',
+      label: nls.localize('arduino/help/reference', 'Reference'),
       category: 'Arduino',
     };
     export const FIND_IN_REFERENCE: Command = {
       id: 'arduino-find-in-reference',
-      label: 'Find in Reference',
+      label: nls.localize('arduino/help/findInReference', 'Find in Reference'),
       category: 'Arduino',
     };
     export const FAQ: Command = {
       id: 'arduino-faq',
-      label: 'Frequently Asked Questions',
+      label: nls.localize('arduino/help/faq', 'Frequently Asked Questions'),
       category: 'Arduino',
     };
     export const VISIT_ARDUINO: Command = {
       id: 'arduino-visit-arduino',
-      label: 'Visit Arduino.cc',
+      label: nls.localize('arduino/help/visit', 'Visit Arduino.cc'),
       category: 'Arduino',
     };
   }

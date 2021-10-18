@@ -4,6 +4,7 @@ import { AvailableBoard } from '../../boards/boards-service-provider';
 import { CertificateListComponent } from './certificate-list';
 import { SelectBoardComponent } from './select-board-components';
 import { CertificateAddComponent } from './certificate-add-new';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export const CertificateUploaderComponent = ({
   availableBoards,
@@ -71,7 +72,12 @@ export const CertificateUploaderComponent = ({
     <>
       <div className="dialogSection">
         <div className="dialogRow">
-          <strong className="fl1">1. Select certificate to upload</strong>
+          <strong className="fl1">
+            {nls.localize(
+              'arduino/certificate/selectCertificateToUpload',
+              '1. Select certificate to upload'
+            )}
+          </strong>
           <Tippy
             content={
               <CertificateAddComponent
@@ -93,7 +99,8 @@ export const CertificateUploaderComponent = ({
                 showAdd ? setShowAdd(false) : setShowAdd(true);
               }}
             >
-              Add New <span className="fa fa-caret-down caret"></span>
+              {nls.localize('arduino/certificate/addNew', 'Add New')}{' '}
+              <span className="fa fa-caret-down caret"></span>
             </button>
           </Tippy>
         </div>
@@ -108,7 +115,12 @@ export const CertificateUploaderComponent = ({
       </div>
       <div className="dialogSection">
         <div className="dialogRow">
-          <strong>2. Select destination board and upload certificate</strong>
+          <strong>
+            {nls.localize(
+              'arduino/certificate/selectDestinationBoardToUpload',
+              '2. Select destination board and upload certificate'
+            )}
+          </strong>
         </div>
         <div className="dialogRow">
           <div className="fl1">
@@ -126,19 +138,28 @@ export const CertificateUploaderComponent = ({
             {installFeedback === 'installing' && (
               <div className="success">
                 <div className="spinner" />
-                Uploading certificates.
+                {nls.localize(
+                  'arduino/certificate/uploadingCertificates',
+                  'Uploading certificates.'
+                )}
               </div>
             )}
             {installFeedback === 'ok' && (
               <div className="success">
                 <i className="fa fa-info status-icon" />
-                Cetificates uploaded.
+                {nls.localize(
+                  'arduino/certificate/certificatesUploaded',
+                  'Certificates uploaded.'
+                )}
               </div>
             )}
             {installFeedback === 'fail' && (
               <div className="warn">
                 <i className="fa fa-exclamation status-icon" />
-                Upload failed. Please try again.
+                {nls.localize(
+                  'arduino/certificate/uploadFailed',
+                  'Upload failed. Please try again.'
+                )}
               </div>
             )}
           </div>
@@ -148,7 +169,7 @@ export const CertificateUploaderComponent = ({
             onClick={installCertificates}
             disabled={selectedCerts.length === 0 || !selectedBoard}
           >
-            Upload
+            {nls.localize('arduino/certificate/upload', 'Upload')}
           </button>
         </div>
       </div>

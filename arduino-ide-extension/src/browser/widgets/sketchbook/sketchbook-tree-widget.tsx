@@ -17,6 +17,7 @@ import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
 import { Sketch } from '../../contributions/contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class SketchbookTreeWidget extends FileTreeWidget {
@@ -41,7 +42,10 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     super(props, model, contextMenuRenderer);
     this.id = 'arduino-sketchbook-tree-widget';
     this.title.iconClass = 'sketchbook-tree-icon';
-    this.title.caption = 'Local Sketchbook';
+    this.title.caption = nls.localize(
+      'arduino/sketch/titleLocalSketchbook',
+      'Local Sketchbook'
+    );
     this.title.closable = false;
   }
 

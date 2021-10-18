@@ -6,6 +6,7 @@ import {
   ConfirmDialogProps,
   DialogError,
 } from '@theia/core/lib/browser/dialogs';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class DoNotAskAgainDialogProps extends ConfirmDialogProps {
@@ -31,7 +32,10 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
     const doNotAskAgainLabel = document.createElement('label');
     doNotAskAgainLabel.classList.add('flex-line');
     doNotAskAgainNode.appendChild(doNotAskAgainLabel);
-    doNotAskAgainLabel.textContent = "Don't ask again";
+    doNotAskAgainLabel.textContent = nls.localize(
+      'arduino/dialog/dontAskAgain',
+      "Don't ask again"
+    );
     this.doNotAskAgainCheckbox = document.createElement('input');
     this.doNotAskAgainCheckbox.setAttribute('align-self', 'center');
     doNotAskAgainLabel.appendChild(this.doNotAskAgainCheckbox);

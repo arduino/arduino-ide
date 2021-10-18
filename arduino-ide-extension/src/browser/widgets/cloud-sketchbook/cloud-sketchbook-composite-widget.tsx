@@ -9,6 +9,7 @@ import { UserStatus } from './cloud-user-status';
 import { CloudSketchbookTreeWidget } from './cloud-sketchbook-tree-widget';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class CloudSketchbookCompositeWidget extends BaseWidget {
@@ -29,7 +30,10 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     this.cloudUserStatusNode.classList.add('cloud-status-node');
     this.compositeNode.appendChild(this.cloudUserStatusNode);
     this.node.appendChild(this.compositeNode);
-    this.title.caption = 'Cloud Sketchbook';
+    this.title.caption = nls.localize(
+      'arduino/cloud/cloudSketchbook',
+      'Cloud Sketchbook'
+    );
     this.title.iconClass = 'cloud-sketchbook-tree-icon';
     this.title.closable = false;
     this.id = 'cloud-sketchbook-composite-widget';

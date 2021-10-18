@@ -23,6 +23,7 @@ import {
   Port,
 } from '../../common/protocol';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class BoardSelection extends SketchContribution {
@@ -53,19 +54,29 @@ export class BoardSelection extends SketchContribution {
           this.boardsServiceProvider.boardsConfig;
         if (!selectedBoard) {
           this.messageService.info(
-            'Please select a board to obtain board info.'
+            nls.localize(
+              'arduino/board/selectBoardForInfo',
+              'Please select a board to obtain board info.'
+            )
           );
           return;
         }
         if (!selectedBoard.fqbn) {
           this.messageService.info(
-            `The platform for the selected '${selectedBoard.name}' board is not installed.`
+            nls.localize(
+              'arduino/board/platformMissing',
+              "The platform for the selected '{0}' board is not installed.",
+              selectedBoard.name
+            )
           );
           return;
         }
         if (!selectedPort) {
           this.messageService.info(
-            'Please select a port to obtain board info.'
+            nls.localize(
+              'arduino/board/selectPortForInfo',
+              'Please select a port to obtain board info.'
+            )
           );
           return;
         }
@@ -78,11 +89,11 @@ export class BoardSelection extends SketchContribution {
 VID: ${VID}
 PID: ${PID}`;
           await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-            message: 'Board Info',
-            title: 'Board Info',
+            message: nls.localize('arduino/board/boardInfo', 'Board Info'),
+            title: nls.localize('arduino/board/boardInfo', 'Board Info'),
             type: 'info',
             detail,
-            buttons: ['OK'],
+            buttons: [nls.localize('vscode/issueMainService/ok', 'OK')],
           });
         }
       },
@@ -127,7 +138,9 @@ PID: ${PID}`;
     // The board specific items, and the rest, have order with `z`. We needed something between `0` and `z` with natural-order.
     this.menuModelRegistry.registerSubmenu(
       boardsSubmenuPath,
-      `Board${!!boardsSubmenuLabel ? `: "${boardsSubmenuLabel}"` : ''}`,
+      nls.localize('arduino/board/board', 'Board') + !!boardsSubmenuLabel
+        ? `: "${boardsSubmenuLabel}"`
+        : '',
       { order: '100' }
     );
     this.toDisposeBeforeMenuRebuild.push(
@@ -144,7 +157,9 @@ PID: ${PID}`;
     const portsSubmenuLabel = config.selectedPort?.address;
     this.menuModelRegistry.registerSubmenu(
       portsSubmenuPath,
-      `Port${!!portsSubmenuLabel ? `: "${portsSubmenuLabel}"` : ''}`,
+      nls.localize('arduino/board/port', 'Port') + portsSubmenuLabel
+        ? `: "${portsSubmenuLabel}"`
+        : '',
       { order: '101' }
     );
     this.toDisposeBeforeMenuRebuild.push(
@@ -155,7 +170,7 @@ PID: ${PID}`;
 
     const getBoardInfo = {
       commandId: BoardSelection.Commands.GET_BOARD_INFO.id,
-      label: 'Get Board Info',
+      label: nls.localize('arduino/board/getBoardInfo', 'Get Board Info'),
       order: '103',
     };
     this.menuModelRegistry.registerMenuAction(
@@ -173,7 +188,7 @@ PID: ${PID}`;
 
     this.menuModelRegistry.registerMenuAction(boardsManagerGroup, {
       commandId: `${BoardsListWidget.WIDGET_ID}:toggle`,
-      label: 'Boards Manager...',
+      label: `${BoardsListWidget.WIDGET_LABEL}...`,
     });
 
     // Installed boards
@@ -181,7 +196,12 @@ PID: ${PID}`;
       const { packageId, packageName, fqbn, name, manuallyInstalled } = board;
 
       const packageLabel =
-        packageName + `${manuallyInstalled ? ' (in Sketchbook)' : ''}`;
+        packageName +
+        `${
+          manuallyInstalled
+            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
+            : ''
+        }`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
       // Note: Registering the same submenu twice is a noop. No need to group the boards per platform.

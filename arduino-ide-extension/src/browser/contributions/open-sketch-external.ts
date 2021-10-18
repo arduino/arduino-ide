@@ -9,6 +9,7 @@ import {
   MenuModelRegistry,
   KeybindingRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class OpenSketchExternal extends SketchContribution {
@@ -21,7 +22,7 @@ export class OpenSketchExternal extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: OpenSketchExternal.Commands.OPEN_EXTERNAL.id,
-      label: 'Show Sketch Folder',
+      label: nls.localize('arduino/sketch/showFolder', 'Show Sketch Folder'),
       order: '0',
     });
   }
@@ -36,7 +37,7 @@ export class OpenSketchExternal extends SketchContribution {
   protected async openExternal(): Promise<void> {
     const uri = await this.sketchServiceClient.currentSketchFile();
     if (uri) {
-      const exists = this.fileService.exists(new URI(uri));
+      const exists = await this.fileService.exists(new URI(uri));
       if (exists) {
         const fsPath = await this.fileService.fsPath(new URI(uri));
         if (fsPath) {

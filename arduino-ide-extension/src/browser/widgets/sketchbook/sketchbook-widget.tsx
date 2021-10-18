@@ -6,9 +6,12 @@ import { Message, MessageLoop } from '@phosphor/messaging';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class SketchbookWidget extends BaseWidget {
+  static LABEL = nls.localize('arduino/sketch/titleSketchbook', 'Sketchbook');
+
   @inject(SketchbookTreeWidget)
   protected readonly localSketchbookTreeWidget: SketchbookTreeWidget;
 
@@ -17,8 +20,8 @@ export class SketchbookWidget extends BaseWidget {
   constructor() {
     super();
     this.id = 'arduino-sketchbook-widget';
-    this.title.caption = 'Sketchbook';
-    this.title.label = 'Sketchbook';
+    this.title.caption = SketchbookWidget.LABEL;
+    this.title.label = SketchbookWidget.LABEL;
     this.title.iconClass = 'fa fa-arduino-folder';
     this.title.closable = true;
     this.node.tabIndex = 0;

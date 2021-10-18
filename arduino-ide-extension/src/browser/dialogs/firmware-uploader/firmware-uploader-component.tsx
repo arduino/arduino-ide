@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/browser/nls';
 import * as React from 'react';
 import {
   ArduinoFirmwareUploader,
@@ -106,7 +107,9 @@ export const FirmwareUploaderComponent = ({
     <>
       <div className="dialogSection">
         <div className="dialogRow">
-          <label htmlFor="board-select">Select board</label>
+          <label htmlFor="board-select">
+            {nls.localize('arduino/firmware/selectBoard', 'Select Board')}
+          </label>
         </div>
         <div className="dialogRow">
           <div className="fl1">
@@ -128,7 +131,7 @@ export const FirmwareUploaderComponent = ({
             }
             onClick={fetchFirmwares}
           >
-            Check Updates
+            {nls.localize('arduino/firmware/checkUpdates', 'Check Updates')}
           </button>
         </div>
       </div>
@@ -137,7 +140,10 @@ export const FirmwareUploaderComponent = ({
           <div className="dialogSection">
             <div className="dialogRow">
               <label htmlFor="firmware-select" className="fl1">
-                Select firmware version
+                {nls.localize(
+                  'arduino/firmware/selectVersion',
+                  'Select firmware version'
+                )}
               </label>
               <ArduinoSelect
                 id="firmware-select"
@@ -167,7 +173,7 @@ export const FirmwareUploaderComponent = ({
                 }
                 onClick={installFirmware}
               >
-                Install
+                {nls.localize('arduino/firmware/install', 'Install')}
               </button>
             </div>
           </div>
@@ -175,25 +181,37 @@ export const FirmwareUploaderComponent = ({
             {installFeedback === null && (
               <div className="dialogRow warn">
                 <i className="fa fa-exclamation status-icon" />
-                Installation will overwrite the Sketch on the board.
+                {nls.localize(
+                  'arduino/firmware/overwriteSketch',
+                  'Installation will overwrite the Sketch on the board.'
+                )}
               </div>
             )}
             {installFeedback === 'installing' && (
               <div className="dialogRow success">
                 <div className="spinner" />
-                Installing firmware.
+                {nls.localize(
+                  'arduino/firmware/installingFirmware',
+                  'Installing firmware.'
+                )}
               </div>
             )}
             {installFeedback === 'ok' && (
               <div className="dialogRow success">
                 <i className="fa fa-info status-icon" />
-                Firmware succesfully installed.
+                {nls.localize(
+                  'arduino/firmware/successfullyInstalled',
+                  'Firmware succesfully installed.'
+                )}
               </div>
             )}
             {installFeedback === 'fail' && (
               <div className="dialogRow warn">
                 <i className="fa fa-exclamation status-icon" />
-                Installation failed. Please try again.
+                {nls.localize(
+                  'arduino/firmware/failedInstall',
+                  'Installation failed. Please try again.'
+                )}
               </div>
             )}
           </div>

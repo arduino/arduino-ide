@@ -253,6 +253,7 @@ import {
   UploadCertificateDialogProps,
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/certificate-uploader-dialog';
+import { nls } from '@theia/core/lib/browser/nls';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -371,7 +372,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
   bind(BoardsConfigDialog).toSelf().inSingletonScope();
   bind(BoardsConfigDialogProps).toConstantValue({
-    title: 'Select Board',
+    title: nls.localize('arduino/common/selectBoard', 'Select Board'),
   });
 
   // Core service

@@ -14,6 +14,7 @@ import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import URI from '@theia/core/lib/common/uri';
 import { SketchCache } from './cloud-sketch-cache';
 import { Create } from '../../create/typings';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export function sketchBaseDir(sketch: Create.Sketch): FileStat {
   // extract the sketch path
@@ -91,7 +92,9 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
     const sketches = await this.createApi.sketches();
     const rootFileStats = sketchesToFileStats(sketches);
     if (this.workspaceService.opened) {
-      const workspaceNode = WorkspaceNode.createRoot('Remote');
+      const workspaceNode = WorkspaceNode.createRoot(
+        nls.localize('arduino/cloud/remote', 'Remote')
+      );
       for await (const stat of rootFileStats) {
         workspaceNode.children.push(
           await this.tree.createWorkspaceRoot(stat, workspaceNode)

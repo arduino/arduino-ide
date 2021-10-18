@@ -4,6 +4,7 @@ import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-con
 import { MenuModelRegistry } from '@theia/core';
 import { LibraryListWidget } from './library-list-widget';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class LibraryListWidgetFrontendContribution
@@ -31,7 +32,10 @@ export class LibraryListWidgetFrontendContribution
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
         commandId: this.toggleCommand.id,
-        label: 'Manage Libraries...',
+        label: nls.localize(
+          'arduino/library/manageLibraries',
+          'Manage Libraries...'
+        ),
         order: '3',
       });
     }

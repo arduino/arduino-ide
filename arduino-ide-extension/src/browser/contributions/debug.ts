@@ -12,6 +12,7 @@ import {
   SketchContribution,
   TabBarToolbarRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class Debug extends SketchContribution {
@@ -33,7 +34,10 @@ export class Debug extends SketchContribution {
   /**
    * If `undefined`, debugging is enabled. Otherwise, the reason why it's disabled.
    */
-  protected _disabledMessages?: string = 'No board selected'; // Initial pessimism.
+  protected _disabledMessages?: string = nls.localize(
+    'arduino/common/noBoardSelected',
+    'No board selected'
+  ); // Initial pessimism.
   protected disabledMessageDidChangeEmitter = new Emitter<string | undefined>();
   protected onDisabledMessageDidChange =
     this.disabledMessageDidChangeEmitter.event;
@@ -51,8 +55,12 @@ export class Debug extends SketchContribution {
     command: Debug.Commands.START_DEBUGGING.id,
     tooltip: `${
       this.disabledMessage
-        ? `Debug - ${this.disabledMessage}`
-        : 'Start Debugging'
+        ? nls.localize(
+            'arduino/debug/debugWithMessage',
+            'Debug - {0}',
+            this.disabledMessage
+          )
+        : Debug.Commands.START_DEBUGGING.label
     }`,
     priority: 3,
     onDidChange: this.onDisabledMessageDidChange as Event<void>,
@@ -63,8 +71,12 @@ export class Debug extends SketchContribution {
       () =>
         (this.debugToolbarItem.tooltip = `${
           this.disabledMessage
-            ? `Debug - ${this.disabledMessage}`
-            : 'Start Debugging'
+            ? nls.localize(
+                'arduino/debug/debugWithMessage',
+                'Debug - {0}',
+                this.disabledMessage
+              )
+            : Debug.Commands.START_DEBUGGING.label
         }`)
     );
     const refreshState = async (
@@ -72,22 +84,37 @@ export class Debug extends SketchContribution {
         .selectedBoard
     ) => {
       if (!board) {
-        this.disabledMessage = 'No board selected';
+        this.disabledMessage = nls.localize(
+          'arduino/common/noBoardSelected',
+          'No board selected'
+        );
         return;
       }
       const fqbn = board.fqbn;
       if (!fqbn) {
-        this.disabledMessage = `Platform is not installed for '${board.name}'`;
+        this.disabledMessage = nls.localize(
+          'arduino/debug/noPlatformInstalledFor',
+          "Platform is not installed for '{0}'",
+          board.name
+        );
         return;
       }
       const details = await this.boardService.getBoardDetails({ fqbn });
       if (!details) {
-        this.disabledMessage = `Platform is not installed for '${board.name}'`;
+        this.disabledMessage = nls.localize(
+          'arduino/debug/noPlatformInstalledFor',
+          "Platform is not installed for '{0}'",
+          board.name
+        );
         return;
       }
       const { debuggingSupported } = details;
       if (!debuggingSupported) {
-        this.disabledMessage = `Debugging is not supported by '${board.name}'`;
+        this.disabledMessage = nls.localize(
+          'arduino/debug/debuggingNotSupported',
+          "Debugging is not supported by '{0}'",
+          board.name
+        );
       } else {
         this.disabledMessage = undefined;
       }
@@ -155,10 +182,13 @@ export class Debug extends SketchContribution {
 
 export namespace Debug {
   export namespace Commands {
-    export const START_DEBUGGING: Command = {
-      id: 'arduino-start-debug',
-      label: 'Start Debugging',
-      category: 'Arduino',
-    };
+    export const START_DEBUGGING = Command.toLocalizedCommand(
+      {
+        id: 'arduino-start-debug',
+        label: 'Start Debugging',
+        category: 'Arduino',
+      },
+      'vscode/debug.contribution/startDebuggingHelp'
+    );
   }
 }

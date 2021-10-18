@@ -15,9 +15,14 @@ import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
+  static readonly LABEL = nls.localize(
+    'arduino/monitor/title',
+    'Serial Monitor'
+  );
   static readonly ID = 'serial-monitor';
 
   @inject(MonitorModel)
@@ -42,7 +47,7 @@ export class MonitorWidget extends ReactWidget {
   constructor() {
     super();
     this.id = MonitorWidget.ID;
-    this.title.label = 'Serial Monitor';
+    this.title.label = MonitorWidget.LABEL;
     this.title.iconClass = 'monitor-tab-icon';
     this.title.closable = true;
     this.scrollOptions = undefined;
@@ -118,19 +123,25 @@ export class MonitorWidget extends ReactWidget {
   > {
     return [
       {
-        label: 'No Line Ending',
+        label: nls.localize('arduino/monitor/noLineEndings', 'No Line Ending'),
         value: '',
       },
       {
-        label: 'New Line',
+        label: nls.localize('arduino/monitor/newLine', 'New Line'),
         value: '\n',
       },
       {
-        label: 'Carriage Return',
+        label: nls.localize(
+          'arduino/monitor/carriageReturn',
+          'Carriage Return'
+        ),
         value: '\r',
       },
       {
-        label: 'Both NL & CR',
+        label: nls.localize(
+          'arduino/monitor/newLineCarriageReturn',
+          'Both NL & CR'
+        ),
         value: '\r\n',
       },
     ];

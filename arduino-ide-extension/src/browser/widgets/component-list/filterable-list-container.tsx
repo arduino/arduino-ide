@@ -12,6 +12,7 @@ import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceArduino } from '../../../common/protocol';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export class FilterableListContainer<
   T extends ArduinoComponent
@@ -112,7 +113,9 @@ export class FilterableListContainer<
     const { install, searchable } = this.props;
     await Installable.doWithProgress({
       ...this.props,
-      progressText: `Processing ${item.name}:${version}`,
+      progressText:
+        nls.localize('arduino/common/processing', 'Processing') +
+        ` ${item.name}:${version}`,
       run: ({ progressId }) => install({ item, progressId, version }),
     });
     const items = await searchable.search({ query: this.state.filterText });
@@ -121,10 +124,14 @@ export class FilterableListContainer<
 
   protected async uninstall(item: T): Promise<void> {
     const ok = await new ConfirmDialog({
-      title: 'Uninstall',
-      msg: `Do you want to uninstall ${item.name}?`,
-      ok: 'Yes',
-      cancel: 'No',
+      title: nls.localize('arduino/component/uninstall', 'Uninstall'),
+      msg: nls.localize(
+        'arduino/component/uninstallMsg',
+        'Do you want to uninstall {0}?',
+        item.name
+      ),
+      ok: nls.localize('vscode/extensionsUtils/yes', 'Yes'),
+      cancel: nls.localize('vscode/extensionsUtils/no', 'No'),
     }).open();
     if (!ok) {
       return;
@@ -132,9 +139,11 @@ export class FilterableListContainer<
     const { uninstall, searchable } = this.props;
     await Installable.doWithProgress({
       ...this.props,
-      progressText: `Processing ${item.name}${
-        item.installedVersion ? `:${item.installedVersion}` : ''
-      }`,
+      progressText:
+        nls.localize('arduino/common/processing', 'Processing') +
+        ` ${item.name}${
+          item.installedVersion ? `:${item.installedVersion}` : ''
+        }`,
       run: ({ progressId }) => uninstall({ item, progressId }),
     });
     const items = await searchable.search({ query: this.state.filterText });

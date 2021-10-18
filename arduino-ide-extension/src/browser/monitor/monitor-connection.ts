@@ -20,6 +20,7 @@ import {
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { NotificationCenter } from '../notification-center';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class MonitorConnection {
@@ -145,7 +146,11 @@ export class MonitorConnection {
         }
         case MonitorError.ErrorCodes.DEVICE_BUSY: {
           this.messageService.warn(
-            `Connection failed. Serial port is busy: ${Port.toString(port)}.`,
+            nls.localize(
+              'arduino/monitor/connectionBusy',
+              'Connection failed. Serial port is busy: {0}',
+              Port.toString(port)
+            ),
             options
           );
           shouldReconnect = this.autoConnect;
@@ -154,18 +159,26 @@ export class MonitorConnection {
         }
         case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
           this.messageService.info(
-            `Disconnected ${Board.toString(board, {
-              useFqbn: false,
-            })} from ${Port.toString(port)}.`,
+            nls.localize(
+              'arduino/monitor/disconnected',
+              'Disconnected {0} from {1}.',
+              Board.toString(board, {
+                useFqbn: false,
+              }),
+              Port.toString(port)
+            ),
             options
           );
           break;
         }
         case undefined: {
           this.messageService.error(
-            `Unexpected error. Reconnecting ${Board.toString(
-              board
-            )} on port ${Port.toString(port)}.`,
+            nls.localize(
+              'arduino/monitor/unexpectedError',
+              'Unexpected error. Reconnecting {0} on port {1}.',
+              Board.toString(board),
+              Port.toString(port)
+            ),
             options
           );
           console.error(JSON.stringify(error));
@@ -179,11 +192,14 @@ export class MonitorConnection {
       if (shouldReconnect) {
         if (this.monitorErrors.length >= 10) {
           this.messageService.warn(
-            `Failed to reconnect ${Board.toString(board, {
-              useFqbn: false,
-            })} to the the serial-monitor after 10 consecutive attempts. The ${Port.toString(
-              port
-            )} serial port is busy. after 10 consecutive attempts.`
+            nls.localize(
+              'arduino/monitor/failedReconnect',
+              'Failed to reconnect {0} to the the serial-monitor after 10 consecutive attempts. The {1} serial port is busy.',
+              Board.toString(board, {
+                useFqbn: false,
+              }),
+              Port.toString(port)
+            )
           );
           this.monitorErrors.length = 0;
         } else {
@@ -194,9 +210,15 @@ export class MonitorConnection {
           }
           const timeout = attempts * 1000;
           this.messageService.warn(
-            `Reconnecting ${Board.toString(board, {
-              useFqbn: false,
-            })} to ${Port.toString(port)} in ${attempts} seconds...`,
+            nls.localize(
+              'arduino/monitor/reconnect',
+              'Reconnecting {0} to {1} in {2] seconds...',
+              Board.toString(board, {
+                useFqbn: false,
+              }),
+              Port.toString(port),
+              attempts.toString()
+            ),
             { timeout }
           );
           this.reconnectTimeout = window.setTimeout(

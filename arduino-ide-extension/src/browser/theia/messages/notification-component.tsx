@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NotificationComponent as TheiaNotificationComponent } from '@theia/messages/lib/browser/notification-component';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export class NotificationComponent extends TheiaNotificationComponent {
   render(): React.ReactNode {
@@ -26,7 +27,11 @@ export class NotificationComponent extends TheiaNotificationComponent {
               {expandable && (
                 <li
                   className={collapsed ? 'expand' : 'collapse'}
-                  title={collapsed ? 'Expand' : 'Collapse'}
+                  title={
+                    collapsed
+                      ? nls.localize('theia/messages/expand', 'Expand')
+                      : nls.localize('theia/messages/collapse', 'Collapse')
+                  }
                   data-message-id={messageId}
                   onClick={this.onToggleExpansion}
                 />
@@ -34,7 +39,7 @@ export class NotificationComponent extends TheiaNotificationComponent {
               {!this.isProgress && (
                 <li
                   className="clear"
-                  title="Clear"
+                  title={nls.localize('vscode/abstractTree/clear', 'Clear')}
                   data-message-id={messageId}
                   onClick={this.onClear}
                 />

@@ -8,6 +8,7 @@ import {
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { Settings as Preferences, SettingsDialog } from '../settings';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class Settings extends SketchContribution {
@@ -40,7 +41,11 @@ export class Settings extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__PREFERENCES_GROUP, {
       commandId: Settings.Commands.OPEN.id,
-      label: 'Preferences...',
+      label:
+        nls.localize(
+          'vscode/preferences.contribution/preferences',
+          'Preferences'
+        ) + '...',
       order: '0',
     });
     registry.registerSubmenu(ArduinoMenus.FILE__ADVANCED_SUBMENU, 'Advanced');
@@ -58,7 +63,11 @@ export namespace Settings {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-settings-open',
-      label: 'Open Preferences...',
+      label:
+        nls.localize(
+          'vscode/preferences.contribution/openSettings2',
+          'Open Preferences'
+        ) + '...',
       category: 'Arduino',
     };
   }

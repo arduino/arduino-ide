@@ -10,22 +10,32 @@ import {
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { MonitorModel } from './monitor-model';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export namespace SerialMonitor {
   export namespace Commands {
-    export const AUTOSCROLL: Command = {
-      id: 'serial-monitor-autoscroll',
-      label: 'Autoscroll',
-    };
-    export const TIMESTAMP: Command = {
-      id: 'serial-monitor-timestamp',
-      label: 'Timestamp',
-    };
-    export const CLEAR_OUTPUT: Command = {
-      id: 'serial-monitor-clear-output',
-      label: 'Clear Output',
-      iconClass: 'clear-all',
-    };
+    export const AUTOSCROLL = Command.toLocalizedCommand(
+      {
+        id: 'serial-monitor-autoscroll',
+        label: 'Autoscroll',
+      },
+      'arduino/monitor/autoscroll'
+    );
+    export const TIMESTAMP = Command.toLocalizedCommand(
+      {
+        id: 'serial-monitor-timestamp',
+        label: 'Timestamp',
+      },
+      'arduino/monitor/timestamp'
+    );
+    export const CLEAR_OUTPUT = Command.toLocalizedCommand(
+      {
+        id: 'serial-monitor-clear-output',
+        label: 'Clear Output',
+        iconClass: 'clear-all',
+      },
+      'vscode/output.contribution/clearOutput.label'
+    );
   }
 }
 
@@ -43,7 +53,7 @@ export class MonitorViewContribution
   constructor() {
     super({
       widgetId: MonitorWidget.ID,
-      widgetName: 'Serial Monitor',
+      widgetName: MonitorWidget.LABEL,
       defaultWidgetOptions: {
         area: 'bottom',
       },
@@ -56,7 +66,7 @@ export class MonitorViewContribution
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
         commandId: this.toggleCommand.id,
-        label: 'Serial Monitor',
+        label: MonitorWidget.LABEL,
         order: '5',
       });
     }
@@ -78,7 +88,10 @@ export class MonitorViewContribution
     registry.registerItem({
       id: SerialMonitor.Commands.CLEAR_OUTPUT.id,
       command: SerialMonitor.Commands.CLEAR_OUTPUT.id,
-      tooltip: 'Clear Output',
+      tooltip: nls.localize(
+        'vscode/output.contribution/clearOutput.label',
+        'Clear Output'
+      ),
     });
   }
 
@@ -120,7 +133,10 @@ export class MonitorViewContribution
     return (
       <React.Fragment key="autoscroll-toolbar-item">
         <div
-          title="Toggle Autoscroll"
+          title={nls.localize(
+            'vscode/output.contribution/toggleAutoScroll',
+            'Toggle Autoscroll'
+          )}
           className={`item enabled fa fa-angle-double-down arduino-monitor ${
             this.model.autoscroll ? 'toggled' : ''
           }`}
@@ -139,7 +155,10 @@ export class MonitorViewContribution
     return (
       <React.Fragment key="line-ending-toolbar-item">
         <div
-          title="Toggle Timestamp"
+          title={nls.localize(
+            'arduino/monitor/toggleTimestamp',
+            'Toggle Timestamp'
+          )}
           className={`item enabled fa fa-clock-o arduino-monitor ${
             this.model.timestamp ? 'toggled' : ''
           }`}

@@ -18,6 +18,7 @@ import {
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { certificateList, sanifyCertString } from './utils';
 import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class UploadCertificateDialogWidget extends ReactWidget {
@@ -140,7 +141,12 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
     @inject(UploadCertificateDialogProps)
     protected readonly props: UploadCertificateDialogProps
   ) {
-    super({ title: 'Upload SSL Root Certificates' });
+    super({
+      title: nls.localize(
+        'arduino/certificate/uploadRootCertificates',
+        'Upload SSL Root Certificates'
+      ),
+    });
     this.contentNode.classList.add('certificate-uploader-dialog');
     this.acceptButton = undefined;
   }

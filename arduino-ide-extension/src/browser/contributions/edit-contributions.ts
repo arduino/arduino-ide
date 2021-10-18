@@ -11,6 +11,7 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/browser/nls';
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
@@ -101,7 +102,10 @@ ${value}
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.COPY_FOR_FORUM.id,
-      label: 'Copy for Forum (Markdown)',
+      label: nls.localize(
+        'arduino/editor/copyForForum',
+        'Copy for Forum (Markdown)'
+      ),
       order: '2',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
@@ -114,62 +118,83 @@ ${value}
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.GO_TO_LINE.id,
-      label: 'Go to Line...',
+      label: nls.localize(
+        'vscode/standaloneStrings/gotoLineActionLabel',
+        'Go to Line...'
+      ),
       order: '5',
     });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.TOGGLE_COMMENT.id,
-      label: 'Comment/Uncomment',
+      label: nls.localize(
+        'arduino/editor/commentUncomment',
+        'Comment/Uncomment'
+      ),
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.INDENT_LINES.id,
-      label: 'Increase Indent',
+      label: nls.localize('arduino/editor/increaseIndent', 'Increase Indent'),
       order: '1',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.OUTDENT_LINES.id,
-      label: 'Decrease Indent',
+      label: nls.localize('arduino/editor/decreaseIndent', 'Decrease Indent'),
       order: '2',
     });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      label: 'Increase Font Size',
+      label: nls.localize(
+        'arduino/editor/increaseFontSize',
+        'Increase Font Size'
+      ),
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      label: 'Decrease Font Size',
+      label: nls.localize(
+        'arduino/editor/decreaseFontSize',
+        'Decrease Font Size'
+      ),
       order: '1',
     });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND.id,
-      label: 'Find',
+      label: nls.localize('vscode/findController/startFindAction', 'Find'),
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND_NEXT.id,
-      label: 'Find Next',
+      label: nls.localize(
+        'vscode/findController/findNextMatchAction',
+        'Find Next'
+      ),
       order: '1',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND_PREVIOUS.id,
-      label: 'Find Previous',
+      label: nls.localize(
+        'vscode/findController/findPreviousMatchAction',
+        'Find Previous'
+      ),
       order: '2',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.USE_FOR_FIND.id,
-      label: 'Use Selection for Find', // XXX: The Java IDE uses `Use Selection For Find`.
+      label: nls.localize(
+        'vscode/findController/startFindWithSelectionAction',
+        'Use Selection for Find'
+      ), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '3',
     });
 
     // `Tools`
     registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: EditContributions.Commands.AUTO_FORMAT.id,
-      label: 'Auto Format', // XXX: The Java IDE uses `Use Selection For Find`.
+      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '0',
     });
   }

@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/browser/nls';
 import * as React from 'react';
 
 export const CertificateAddComponent = ({
@@ -22,10 +23,18 @@ export const CertificateAddComponent = ({
       }}
     >
       <label>
-        <div>Add URL to fetch SSL certificate</div>
+        <div>
+          {nls.localize(
+            'arduino/certificate/addURL',
+            'Add URL to fetch SSL certificate'
+          )}
+        </div>
         <input
           className="theia-input"
-          placeholder="Enter URL"
+          placeholder={nls.localize(
+            'arduino/certificate/enterURL',
+            'Enter URL'
+          )}
           type="text"
           name="add"
           onChange={handleChange}

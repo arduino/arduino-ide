@@ -12,6 +12,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
@@ -115,9 +116,13 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
               ...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP,
               'z02_programmers',
             ];
+            const programmerNls = nls.localize(
+              'arduino/board/programmer',
+              'Programmer'
+            );
             const label = selectedProgrammer
-              ? `Programmer: "${selectedProgrammer.name}"`
-              : 'Programmer';
+              ? `${programmerNls}: "${selectedProgrammer.name}"`
+              : programmerNls;
             this.menuRegistry.registerSubmenu(programmersMenuPath, label);
             this.toDisposeOnBoardChange.push(
               Disposable.create(() =>

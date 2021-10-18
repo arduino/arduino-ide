@@ -17,6 +17,7 @@ import {
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -89,9 +90,10 @@ export class WorkspaceService extends TheiaWorkspaceService {
           .then(() => this.application.shell.update());
         this.logger.fatal(`Failed to determine the sketch directory: ${err}`);
         this.messageService.error(
-          'There was an error creating the sketch directory. ' +
-            'See the log for more details. ' +
-            'The application will probably not work as expected.'
+          nls.localize(
+            'theia/workspace/sketchDirectoryError',
+            'There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected.'
+          )
         );
         return super.getDefaultWorkspaceUri();
       }

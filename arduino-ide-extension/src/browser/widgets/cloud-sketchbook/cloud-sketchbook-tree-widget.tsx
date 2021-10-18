@@ -11,6 +11,7 @@ import { TreeNode } from '@theia/core/lib/browser/tree';
 import { CompositeTreeNode } from '@theia/core/lib/browser';
 import { shell } from 'electron';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
+import { nls } from '@theia/core/lib/browser/nls';
 
 const LEARN_MORE_URL =
   'https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-cloud-sketch-sync';
@@ -44,16 +45,26 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
         <div className="center item">
           <div>
             <p>
-              <b>Your Sketchbook is empty</b>
+              <b>
+                {nls.localize(
+                  'arduino/cloud/emptySketchbook',
+                  'Your Sketchbook is empty'
+                )}
+              </b>
             </p>
-            <p>Visit Arduino Cloud to create Cloud Sketches.</p>
+            <p>
+              {nls.localize(
+                'arduino/cloud/visitArduinoCloud',
+                'Visit Arduino Cloud to create Cloud Sketches.'
+              )}
+            </p>
           </div>
         </div>
         <button
           className="theia-button"
           onClick={() => shell.openExternal('https://create.arduino.cc/editor')}
         >
-          GO TO CLOUD
+          {nls.localize('cloud/GoToCloud', 'GO TO CLOUD')}
         </button>
         <div className="center item"></div>
       </div>
@@ -102,9 +113,17 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
       <div className="cloud-sketchbook-welcome center">
         <div className="center item">
           <div>
-            <p className="sign-in-title">Sign in to Arduino Cloud</p>
+            <p className="sign-in-title">
+              {nls.localize(
+                'arduino/cloud/signInToCloud',
+                'Sign in to Arduino Cloud'
+              )}
+            </p>
             <p className="sign-in-desc">
-              Sync and edit your Arduino Cloud Sketches
+              {nls.localize(
+                'arduino/cloud/syncEditSketches',
+                'Sync and edit your Arduino Cloud Sketches'
+              )}
             </p>
           </div>
         </div>
@@ -114,7 +133,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
             this.commandRegistry.executeCommand(CloudUserCommands.LOGIN.id)
           }
         >
-          SIGN IN
+          {nls.localize('arduino/cloud/signIn', 'SIGN IN')}
         </button>
         <div className="center item">
           <div
@@ -125,7 +144,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
               })
             }
           >
-            Learn more
+            {nls.localize('arduino/cloud/learnMore', 'Learn more')}
           </div>
         </div>
       </div>

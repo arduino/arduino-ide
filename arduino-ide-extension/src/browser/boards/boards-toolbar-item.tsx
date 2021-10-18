@@ -9,6 +9,7 @@ import {
   BoardsServiceProvider,
   AvailableBoard,
 } from './boards-service-provider';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export interface BoardsDropDownListCoords {
   readonly top: number;
@@ -152,7 +153,10 @@ export class BoardsToolBarItem extends React.Component<
     const { coords, availableBoards } = this.state;
     const boardsConfig = this.props.boardsServiceClient.boardsConfig;
     const title = BoardsConfig.Config.toString(boardsConfig, {
-      default: 'no board selected',
+      default: nls.localize(
+        'arduino/common/noBoardSelected',
+        'No board selected'
+      ),
     });
     const decorator = (() => {
       const selectedBoard = availableBoards.find(({ selected }) => selected);

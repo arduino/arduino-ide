@@ -15,6 +15,7 @@ import { WorkspaceInputDialog } from './workspace-input-dialog';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SingleTextInputDialog } from '@theia/core/lib/browser';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribution {
@@ -57,7 +58,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     const parentUri = parent.resource;
     const dialog = new WorkspaceInputDialog(
       {
-        title: 'Name for new file',
+        title: nls.localize('theia/workspace/fileNewName', 'Name for new file'),
         parentUri,
         validate: (name) => this.validateFileName(name, parent, true),
       },
@@ -93,10 +94,17 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     }
     const extension = nameWithExt.split('.').pop();
     if (!extension) {
-      return 'Invalid filename.'; // XXX: this should not happen as we forcefully append `.ino` if it's not there.
+      return nls.localize(
+        'theia/workspace/invalidFilename',
+        'Invalid filename.'
+      ); // XXX: this should not happen as we forcefully append `.ino` if it's not there.
     }
     if (Sketch.Extensions.ALL.indexOf(`.${extension}`) === -1) {
-      return `.${extension} is not a valid extension.`;
+      return nls.localize(
+        'theia/workspace/invalidExtension',
+        '.{0} is not a valid extension',
+        extension
+      );
     }
     return '';
   }
@@ -151,7 +159,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     }
     const initialValue = uri.path.base;
     const dialog = new SingleTextInputDialog({
-      title: 'New name for file',
+      title: nls.localize('theia/workspace/newFileName', 'New name for file'),
       initialValue,
       initialSelectionRange: {
         start: 0,

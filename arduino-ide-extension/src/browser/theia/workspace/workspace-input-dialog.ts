@@ -6,6 +6,7 @@ import {
   WorkspaceInputDialog as TheiaWorkspaceInputDialog,
   WorkspaceInputDialogProps,
 } from '@theia/workspace/lib/browser/workspace-input-dialog';
+import { nls } from '@theia/core/lib/browser/nls';
 
 export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
   protected wasTouched = false;
@@ -16,7 +17,9 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     @inject(LabelProvider) protected readonly labelProvider: LabelProvider
   ) {
     super(props, labelProvider);
-    this.appendCloseButton('Cancel');
+    this.appendCloseButton(
+      nls.localize('vscode/issueMainService/cancel', 'Cancel')
+    );
   }
 
   protected appendParentPath(): void {

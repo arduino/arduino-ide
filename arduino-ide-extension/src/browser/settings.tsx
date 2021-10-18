@@ -33,6 +33,7 @@ import {
   ProxySettings,
 } from '../common/protocol';
 import { AbstractDialog } from './theia/dialogs/dialogs';
+import { nls } from '@theia/core/lib/browser/nls';
 
 const EDITOR_SETTING = 'editor';
 const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
@@ -203,17 +204,27 @@ export class SettingsService {
       const { sketchbookPath, editorFontSize, themeId } = await settings;
       const sketchbookDir = await this.fileSystemExt.getUri(sketchbookPath);
       if (!(await this.fileService.exists(new URI(sketchbookDir)))) {
-        return `Invalid sketchbook location: ${sketchbookPath}`;
+        return nls.localize(
+          'arduino/preferences/invalid.sketchbook.location',
+          'Invalid sketchbook location: {0}',
+          sketchbookPath
+        );
       }
       if (editorFontSize <= 0) {
-        return 'Invalid editor font size. It must be a positive integer.';
+        return nls.localize(
+          'arduino/preferences/invalid.editorFontSize',
+          'Invalid editor font size. It must be a positive integer.'
+        );
       }
       if (
         !ThemeService.get()
           .getThemes()
           .find(({ id }) => id === themeId)
       ) {
-        return 'Invalid theme.';
+        return nls.localize(
+          'arduino/preferences/invalid.theme',
+          'Invalid theme.'
+        );
       }
       return true;
     } catch (err) {
@@ -366,8 +377,8 @@ export class SettingsComponent extends React.Component<
     return (
       <Tabs>
         <TabList>
-          <Tab>Settings</Tab>
-          <Tab>Network</Tab>
+          <Tab>{nls.localize('vscode/settingsTree/settings', 'Settings')}</Tab>
+          <Tab>{nls.localize('arduino/preferences/network', 'Network')}</Tab>
         </TabList>
         <TabPanel>{this.renderSettings()}</TabPanel>
         <TabPanel>{this.renderNetwork()}</TabPanel>
@@ -378,7 +389,10 @@ export class SettingsComponent extends React.Component<
   protected renderSettings(): React.ReactNode {
     return (
       <div className="content noselect">
-        Sketchbook location:
+        {nls.localize(
+          'arduino/preferences/sketchbook.location',
+          'Sketchbook location'
+        ) + ':'}
         <div className="flex-line">
           <input
             className="theia-input stretch"
@@ -390,7 +404,7 @@ export class SettingsComponent extends React.Component<
             className="theia-button shrink"
             onClick={this.browseSketchbookDidClick}
           >
-            Browse
+            {nls.localize('arduino/preferences/browse', 'Browse')}
           </button>
         </div>
         <label className="flex-line">
@@ -399,15 +413,43 @@ export class SettingsComponent extends React.Component<
             checked={this.state.sketchbookShowAllFiles === true}
             onChange={this.sketchbookShowAllFilesDidChange}
           />
-          Show files inside Sketches
+          {nls.localize(
+            'arduino/preferences/files.inside.sketches',
+            'Show files inside Sketches'
+          )}
         </label>
         <div className="flex-line">
           <div className="column">
-            <div className="flex-line">Editor font size:</div>
-            <div className="flex-line">Interface scale:</div>
-            <div className="flex-line">Theme:</div>
-            <div className="flex-line">Show verbose output during:</div>
-            <div className="flex-line">Compiler warnings:</div>
+            <div className="flex-line">
+              {nls.localize(
+                'arduino/preferences/editorFontSize',
+                'Editor font size'
+              ) + ':'}
+            </div>
+            <div className="flex-line">
+              {nls.localize(
+                'arduino/preferences/interfaceScale',
+                'Interface scale'
+              ) + ':'}
+            </div>
+            <div className="flex-line">
+              {nls.localize(
+                'vscode/themes.contribution/selectTheme.label',
+                'Theme'
+              ) + ':'}
+            </div>
+            <div className="flex-line">
+              {nls.localize(
+                'arduino/preferences/showVerbose',
+                'Show verbose output during'
+              )}
+            </div>
+            <div className="flex-line">
+              {nls.localize(
+                'arduino/preferences/compilerWarnings',
+                'Compiler warnings'
+              )}
+            </div>
           </div>
           <div className="column">
             <div className="flex-line">
@@ -428,7 +470,7 @@ export class SettingsComponent extends React.Component<
                   checked={this.state.autoScaleInterface}
                   onChange={this.autoScaleInterfaceDidChange}
                 />
-                Automatic
+                {nls.localize('arduino/preferences/automatic', 'Automatic')}
               </label>
               <input
                 className="theia-input small with-margin"
@@ -448,7 +490,7 @@ export class SettingsComponent extends React.Component<
                   ThemeService.get()
                     .getThemes()
                     .find(({ id }) => id === this.state.themeId)?.label ||
-                  'Unknown'
+                  nls.localize('arduino/common/unknown', 'Unknown')
                 }
                 onChange={this.themeDidChange}
               >
@@ -468,7 +510,7 @@ export class SettingsComponent extends React.Component<
                   checked={this.state.verboseOnCompile}
                   onChange={this.verboseOnCompileDidChange}
                 />
-                compile
+                {nls.localize('arduino/preferences/compile', 'compile')}
               </label>
               <label className="flex-line">
                 <input
@@ -476,7 +518,7 @@ export class SettingsComponent extends React.Component<
                   checked={this.state.verboseOnUpload}
                   onChange={this.verboseOnUploadDidChange}
                 />
-                upload
+                {nls.localize('arduino/preferences/upload', 'upload')}
               </label>
             </div>
             <div className="flex-line">
@@ -500,7 +542,10 @@ export class SettingsComponent extends React.Component<
             checked={this.state.verifyAfterUpload}
             onChange={this.verifyAfterUploadDidChange}
           />
-          Verify code after upload
+          {nls.localize(
+            'arduino/preferences/verifyAfterUpload',
+            'Verify code after upload'
+          )}
         </label>
         <label className="flex-line">
           <input
@@ -509,7 +554,10 @@ export class SettingsComponent extends React.Component<
             onChange={this.checkForUpdatesDidChange}
             disabled={true}
           />
-          Check for updates on startup
+          {nls.localize(
+            'arduino/preferences/checkForUpdates',
+            'Check for updates on startup'
+          )}
         </label>
         <label className="flex-line">
           <input
@@ -517,7 +565,10 @@ export class SettingsComponent extends React.Component<
             checked={this.state.autoSave === 'on'}
             onChange={this.autoSaveDidChange}
           />
-          Auto save
+          {nls.localize(
+            'vscode/fileActions.contribution/miAutoSave',
+            'Auto save'
+          )}
         </label>
         <label className="flex-line">
           <input
@@ -525,7 +576,10 @@ export class SettingsComponent extends React.Component<
             checked={this.state.quickSuggestions.other === true}
             onChange={this.quickSuggestionsOtherDidChange}
           />
-          Editor Quick Suggestions
+          {nls.localize(
+            'arduino/preferences/editorQuickSuggestions',
+            'Editor Quick Suggestions'
+          )}
         </label>
         <label className="flex-line">
           <input
@@ -533,10 +587,16 @@ export class SettingsComponent extends React.Component<
             checked={this.state.enableLsLogs}
             onChange={this.enableLsLogsDidChange}
           />
-          Enable language server logging
+          {nls.localize(
+            'arduino/preferences/languageServerLogging',
+            'Enable language server logging'
+          )}
         </label>
         <div className="flex-line">
-          Additional boards manager URLs:
+          {nls.localize(
+            'arduino/preferences/additionalManagerURLs',
+            'Additional boards manager URLs'
+          ) + ':'}
           <input
             className="theia-input stretch with-margin"
             type="text"
@@ -562,7 +622,7 @@ export class SettingsComponent extends React.Component<
               checked={this.state.network === 'none'}
               onChange={this.noProxyDidChange}
             />
-            No proxy
+            {nls.localize('arduino/preferences/noProxy', 'No proxy')}
           </label>
           <label className="flex-line">
             <input
@@ -570,7 +630,10 @@ export class SettingsComponent extends React.Component<
               checked={this.state.network !== 'none'}
               onChange={this.manualProxyDidChange}
             />
-            Manual proxy configuration
+            {nls.localize(
+              'arduino/preferences/manualProxy',
+              'Manual proxy configuration'
+            )}
           </label>
         </form>
         {this.renderProxySettings()}
@@ -703,8 +766,11 @@ export class SettingsComponent extends React.Component<
 
   protected browseSketchbookDidClick = async () => {
     const uri = await this.props.fileDialogService.showOpenDialog({
-      title: 'Select new sketchbook location',
-      openLabel: 'Choose',
+      title: nls.localize(
+        'arduino/preferences/newSketchbookLocation',
+        'Select new sketchbook location'
+      ),
+      openLabel: nls.localize('arduino/preferences/choose', 'Choose'),
       canSelectFiles: false,
       canSelectMany: false,
       canSelectFolders: true,
@@ -985,8 +1051,10 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
   ) {
     super(props);
     this.contentNode.classList.add('arduino-settings-dialog');
-    this.appendCloseButton('CANCEL');
-    this.appendAcceptButton('OK');
+    this.appendCloseButton(
+      nls.localize('vscode/issueMainService/cancel', 'Cancel')
+    );
+    this.appendAcceptButton(nls.localize('vscode/issueMainService/ok', 'OK'));
   }
 
   @postConstruct()
@@ -1040,12 +1108,20 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
   protected readonly textArea: HTMLTextAreaElement;
 
   constructor(urls: string[], windowService: WindowService) {
-    super({ title: 'Additional Boards Manager URLs' });
+    super({
+      title: nls.localize(
+        'arduino/preferences/additionalManagerURLs',
+        'Additional Boards Manager URLs'
+      ),
+    });
 
     this.contentNode.classList.add('additional-urls-dialog');
 
     const description = document.createElement('div');
-    description.textContent = 'Enter additional URLs, one for each row';
+    description.textContent = nls.localize(
+      'arduino/preferences/enterAdditionalURLs',
+      'Enter additional URLs, one for each row'
+    );
     description.style.marginBottom = '5px';
     this.contentNode.appendChild(description);
 
@@ -1063,7 +1139,10 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
 
     const anchor = document.createElement('div');
     anchor.classList.add('link');
-    anchor.textContent = 'Click for a list of unofficial board support URLs';
+    anchor.textContent = nls.localize(
+      'arduino/preferences/unofficialBoardSupport',
+      'Click for a list of unofficial board support URLs'
+    );
     anchor.style.marginTop = '5px';
     anchor.style.cursor = 'pointer';
     this.addEventListener(anchor, 'click', () =>
@@ -1074,8 +1153,10 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
     );
     this.contentNode.appendChild(anchor);
 
-    this.appendAcceptButton('OK');
-    this.appendCloseButton('Cancel');
+    this.appendAcceptButton(nls.localize('vscode/issueMainService/ok', 'OK'));
+    this.appendCloseButton(
+      nls.localize('vscode/issueMainService/cancel', 'Cancel')
+    );
   }
 
   get value(): string[] {

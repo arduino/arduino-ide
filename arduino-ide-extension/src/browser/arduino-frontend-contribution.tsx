@@ -16,6 +16,7 @@ import {
   StatusBar,
   StatusBarAlignment,
 } from '@theia/core/lib/browser';
+import { nls } from '@theia/core/lib/browser/nls';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
@@ -225,7 +226,10 @@ export class ArduinoFrontendContribution
     if (!window.navigator.onLine) {
       // tslint:disable-next-line:max-line-length
       this.messageService.warn(
-        'You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.'
+        nls.localize(
+          'arduino/common/offlineIndicator',
+          'You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.'
+        )
       );
     }
     const updateStatusBar = ({
@@ -236,15 +240,22 @@ export class ArduinoFrontendContribution
         alignment: StatusBarAlignment.RIGHT,
         text: selectedBoard
           ? `$(microchip) ${selectedBoard.name}`
-          : '$(close) no board selected',
+          : `$(close) ${nls.localize(
+              'arduino/common/noBoardSelected',
+              'No board selected'
+            )}`,
         className: 'arduino-selected-board',
       });
       if (selectedBoard) {
         this.statusBar.setElement('arduino-selected-port', {
           alignment: StatusBarAlignment.RIGHT,
           text: selectedPort
-            ? `on ${Port.toString(selectedPort)}`
-            : '[not connected]',
+            ? nls.localize(
+                'arduino/common/selectedOn',
+                'on {0}',
+                Port.toString(selectedPort)
+              )
+            : nls.localize('arduino/common/notConnected', '[not connected]'),
           className: 'arduino-selected-port',
         });
       }
@@ -437,7 +448,7 @@ export class ArduinoFrontendContribution
     registry.registerItem({
       id: 'toggle-serial-monitor',
       command: MonitorViewContribution.TOGGLE_SERIAL_MONITOR_TOOLBAR,
-      tooltip: 'Serial Monitor',
+      tooltip: nls.localize('arduino/common/serialMonitor', 'Serial Monitor'),
     });
   }
 
@@ -472,11 +483,20 @@ export class ArduinoFrontendContribution
     registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(TerminalMenus.TERMINAL));
     registry.getMenu(MAIN_MENU_BAR).removeNode(menuId(CommonMenus.VIEW));
 
-    registry.registerSubmenu(ArduinoMenus.SKETCH, 'Sketch');
-    registry.registerSubmenu(ArduinoMenus.TOOLS, 'Tools');
+    registry.registerSubmenu(
+      ArduinoMenus.SKETCH,
+      nls.localize('arduino/menu/sketch', 'Sketch')
+    );
+    registry.registerSubmenu(
+      ArduinoMenus.TOOLS,
+      nls.localize('arduino/menu/tools', 'Tools')
+    );
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
-      label: 'Optimize for Debugging',
+      label: nls.localize(
+        'arduino/debug/optimizeForDebugging',
+        'Optimize for Debugging'
+      ),
       order: '4',
     });
   }
@@ -490,11 +510,16 @@ export class ArduinoFrontendContribution
       }
       await this.ensureOpened(mainFileUri, true);
       if (mainFileUri.endsWith('.pde')) {
-        const message = `The '${sketch.name}' still uses the old \`.pde\` format. Do you want to switch to the new \`.ino\` extension?`;
+        const message = nls.localize(
+          'arduino/common/oldFormat',
+          "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
+          sketch.name
+        );
+        const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
         this.messageService
-          .info(message, 'Later', 'Yes')
+          .info(message, nls.localize('arduino/common/later', 'Later'), yes)
           .then(async (answer) => {
-            if (answer === 'Yes') {
+            if (answer === yes) {
               this.commandRegistry.executeCommand(
                 SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
                 {

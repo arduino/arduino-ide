@@ -22,6 +22,7 @@ import { ExamplesService } from '../../common/protocol/examples-service';
 import { BuiltInExamples } from './examples';
 import { Sketchbook } from './sketchbook';
 import { SketchContainer } from '../../common/protocol';
+import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class OpenSketch extends SketchContribution {
@@ -70,7 +71,10 @@ export class OpenSketch extends SketchContribution {
             ArduinoMenus.OPEN_SKETCH__CONTEXT__OPEN_GROUP,
             {
               commandId: OpenSketch.Commands.OPEN_SKETCH.id,
-              label: 'Open...',
+              label: nls.localize(
+                'vscode/workspaceActions/openFileFolder',
+                'Open...'
+              ),
             }
           );
           this.toDispose.push(
@@ -115,7 +119,7 @@ export class OpenSketch extends SketchContribution {
   registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: OpenSketch.Commands.OPEN_SKETCH.id,
-      label: 'Open...',
+      label: nls.localize('vscode/workspaceActions/openFileFolder', 'Open...'),
       order: '1',
     });
   }
@@ -131,7 +135,7 @@ export class OpenSketch extends SketchContribution {
     registry.registerItem({
       id: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
       command: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
-      tooltip: 'Open',
+      tooltip: nls.localize('vscode/dialogMainService/open', 'Open'),
       priority: 4,
     });
   }
@@ -155,7 +159,7 @@ export class OpenSketch extends SketchContribution {
       properties: ['createDirectory', 'openFile'],
       filters: [
         {
-          name: 'Sketch',
+          name: nls.localize('arduino/sketch/sketch', 'Sketch'),
           extensions: ['ino', 'pde'],
         },
       ],
@@ -178,10 +182,18 @@ export class OpenSketch extends SketchContribution {
       const name = new URI(sketchFileUri).path.name;
       const nameWithExt = this.labelProvider.getName(new URI(sketchFileUri));
       const { response } = await remote.dialog.showMessageBox({
-        title: 'Moving',
+        title: nls.localize('arduino/sketch/moving', 'Moving'),
         type: 'question',
-        buttons: ['Cancel', 'OK'],
-        message: `The file "${nameWithExt}" needs to be inside a sketch folder named as "${name}".\nCreate this folder, move the file, and continue?`,
+        buttons: [
+          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+          nls.localize('vscode/issueMainService/ok', 'OK'),
+        ],
+        message: nls.localize(
+          'arduino/sketch/movingMsg',
+          'The file "{0}" needs to be inside a sketch folder named as "{1}".\nCreate this folder, move the file, and continue?',
+          nameWithExt,
+          name
+        ),
       });
       if (response === 1) {
         // OK
@@ -190,8 +202,12 @@ export class OpenSketch extends SketchContribution {
         if (exists) {
           await remote.dialog.showMessageBox({
             type: 'error',
-            title: 'Error',
-            message: `A folder named "${name}" already exists. Can't open sketch.`,
+            title: nls.localize('vscode/dialog/dialogErrorMessage', 'Error'),
+            message: nls.localize(
+              'arduino/sketch/cantOpen',
+              'A folder named "{0}" already exists. Can\'t open sketch.',
+              name
+            ),
           });
           return undefined;
         }
