@@ -253,7 +253,11 @@ import {
   UploadCertificateDialogProps,
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/certificate-uploader-dialog';
-import { PlotterContribution } from './plotter/plotter-contribution';
+import { PlotterFrontendContribution } from './plotter/plotter-frontend-contribution';
+import {
+  PlotterPath,
+  PlotterService,
+} from '../common/protocol/plotter-service';
 import { nls } from '@theia/core/lib/browser/nls';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -598,7 +602,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, AddFile);
   Contribution.configure(bind, ArchiveSketch);
   Contribution.configure(bind, AddZipLibrary);
-  Contribution.configure(bind, PlotterContribution);
+  Contribution.configure(bind, PlotterFrontendContribution);
 
   bind(ResponseServiceImpl)
     .toSelf()
@@ -738,4 +742,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(UploadCertificateDialogProps).toConstantValue({
     title: 'UploadCertificate',
   });
+  bind(PlotterService)
+    .toDynamicValue((ctx) =>
+      ctx.container.get(WebSocketConnectionProvider).createProxy(PlotterPath)
+    )
+    .inSingletonScope();
 });

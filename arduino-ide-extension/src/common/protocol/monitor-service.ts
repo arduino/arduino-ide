@@ -39,16 +39,10 @@ export interface MonitorConfig {
   readonly baudRate?: MonitorConfig.BaudRate;
 }
 export namespace MonitorConfig {
-  export type BaudRate =
-    | 300
-    | 1200
-    | 2400
-    | 4800
-    | 9600
-    | 19200
-    | 38400
-    | 57600
-    | 115200;
+  export const BaudRates = [
+    300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
+  ] as const;
+  export type BaudRate = typeof MonitorConfig.BaudRates[number];
   export namespace BaudRate {
     export const DEFAULT: BaudRate = 9600;
   }

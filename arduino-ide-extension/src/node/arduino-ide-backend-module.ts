@@ -86,6 +86,7 @@ import {
   AuthenticationServicePath,
 } from '../common/protocol/authentication-service';
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
+import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -331,4 +332,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  bind(PlotterBackendContribution).toSelf().inSingletonScope();
+  bind(BackendApplicationContribution).toService(PlotterBackendContribution);
 });

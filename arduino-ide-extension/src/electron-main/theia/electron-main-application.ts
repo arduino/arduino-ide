@@ -104,6 +104,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
             },
           });
           event.newGuest = new BrowserWindow(options);
+          event.newGuest?.on('closed', (e: any) => {
+            electronWindow?.webContents.send('CLOSE_CHILD_WINDOW');
+          });
           event.newGuest?.loadURL(url);
         }
       }

@@ -3,16 +3,13 @@ import {
   MAIN_MENU_BAR,
   MenuContribution,
   MenuModelRegistry,
-  SelectionService,
   ILogger,
   DisposableCollection,
 } from '@theia/core';
 import {
-  ContextMenuRenderer,
   FrontendApplication,
   FrontendApplicationContribution,
   LocalStorageService,
-  OpenerService,
   StatusBar,
   StatusBarAlignment,
 } from '@theia/core/lib/browser';
@@ -35,7 +32,6 @@ import {
   EditorManager,
   EditorOpenerOptions,
 } from '@theia/editor/lib/browser';
-import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
@@ -47,33 +43,25 @@ import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-con
 import { inject, injectable, postConstruct } from 'inversify';
 import * as React from 'react';
 import { remote } from 'electron';
-import { MainMenuManager } from '../common/main-menu-manager';
 import {
   BoardsService,
-  CoreService,
   Port,
   SketchesService,
   ExecutableService,
   Sketch,
 } from '../common/protocol';
-import { ArduinoDaemon } from '../common/protocol/arduino-daemon';
 import { ConfigService } from '../common/protocol/config-service';
-import { FileSystemExt } from '../common/protocol/filesystem-ext';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsConfig } from './boards/boards-config';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
-import { BoardsDataStore } from './boards/boards-data-store';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { EditorMode } from './editor-mode';
 import { ArduinoMenus } from './menu/arduino-menus';
-import { MonitorConnection } from './monitor/monitor-connection';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
-import { WorkspaceService } from './theia/workspace/workspace-service';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { ResponseService } from '../common/protocol/response-service';
 import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
@@ -101,23 +89,11 @@ export class ArduinoFrontendContribution
   @inject(BoardsService)
   protected readonly boardsService: BoardsService;
 
-  @inject(CoreService)
-  protected readonly coreService: CoreService;
-
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
-  @inject(SelectionService)
-  protected readonly selectionService: SelectionService;
-
   @inject(EditorManager)
   protected readonly editorManager: EditorManager;
-
-  @inject(ContextMenuRenderer)
-  protected readonly contextMenuRenderer: ContextMenuRenderer;
-
-  @inject(FileDialogService)
-  protected readonly fileDialogService: FileDialogService;
 
   @inject(FileService)
   protected readonly fileService: FileService;
@@ -128,20 +104,11 @@ export class ArduinoFrontendContribution
   @inject(BoardsConfigDialog)
   protected readonly boardsConfigDialog: BoardsConfigDialog;
 
-  @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
-
   @inject(CommandRegistry)
   protected readonly commandRegistry: CommandRegistry;
 
   @inject(StatusBar)
   protected readonly statusBar: StatusBar;
-
-  @inject(WorkspaceService)
-  protected readonly workspaceService: WorkspaceService;
-
-  @inject(MonitorConnection)
-  protected readonly monitorConnection: MonitorConnection;
 
   @inject(FileNavigatorContribution)
   protected readonly fileNavigatorContributions: FileNavigatorContribution;
@@ -167,23 +134,8 @@ export class ArduinoFrontendContribution
   @inject(EditorMode)
   protected readonly editorMode: EditorMode;
 
-  @inject(ArduinoDaemon)
-  protected readonly daemon: ArduinoDaemon;
-
-  @inject(OpenerService)
-  protected readonly openerService: OpenerService;
-
   @inject(ConfigService)
   protected readonly configService: ConfigService;
-
-  @inject(BoardsDataStore)
-  protected readonly boardsDataStore: BoardsDataStore;
-
-  @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
-
-  @inject(FileSystemExt)
-  protected readonly fileSystemExt: FileSystemExt;
 
   @inject(HostedPluginSupport)
   protected hostedPluginSupport: HostedPluginSupport;
@@ -191,16 +143,12 @@ export class ArduinoFrontendContribution
   @inject(ExecutableService)
   protected executableService: ExecutableService;
 
-  @inject(ResponseService)
-  protected readonly responseService: ResponseService;
-
   @inject(ArduinoPreferences)
   protected readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(SketchesServiceClientImpl)
   protected readonly sketchServiceClient: SketchesServiceClientImpl;
 
-  @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
 
   @inject(LocalStorageService)
