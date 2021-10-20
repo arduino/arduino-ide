@@ -84,7 +84,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       });
     } catch (e) {
       this.responseService.appendToOutput({
-        chunk: `Compilation error: ${e}\n`,
+        chunk: `Compilation error: ${e.details}\n`,
         severity: 'error',
       });
       throw e;
@@ -169,7 +169,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       });
     } catch (e) {
       this.responseService.appendToOutput({
-        chunk: `${firstToUpperCase(task)} error: ${e}\n`,
+        chunk: `${firstToUpperCase(task)} error: ${e.details}\n`,
         severity: 'error',
       });
       throw e;
@@ -214,7 +214,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       });
     } catch (e) {
       this.responseService.appendToOutput({
-        chunk: `Error while burning the bootloader: ${e}\n`,
+        chunk: `Error while burning the bootloader: ${e.details}\n`,
         severity: 'error',
       });
       throw e;
