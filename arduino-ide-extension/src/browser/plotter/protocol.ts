@@ -4,7 +4,7 @@ export namespace SerialPlotter {
     baudrates: number[];
     darkTheme: boolean;
     wsPort: number;
-    generate: boolean;
+    generate?: boolean;
   };
   export namespace Protocol {
     export enum Command {

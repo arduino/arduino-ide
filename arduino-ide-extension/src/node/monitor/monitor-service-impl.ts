@@ -126,14 +126,16 @@ export class MonitorServiceImpl implements MonitorService {
     const ws = new WebSocket.Server({ port: 0 });
     const address: any = ws.address();
     this.client?.notifyMessage(address.port);
-    let wsConn: WebSocket | null = null;
+    const wsConn: WebSocket[] = [];
     ws.on('connection', (ws) => {
-      wsConn = ws;
+      wsConn.push(ws);
     });
 
     const flushMessagesToFrontend = () => {
       if (this.messages.length) {
-        wsConn?.send(JSON.stringify(this.messages));
+        wsConn.forEach((w) => {
+          w.send(JSON.stringify(this.messages));
+        });
         this.messages = [];
       }
     };

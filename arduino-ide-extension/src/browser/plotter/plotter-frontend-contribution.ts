@@ -2,17 +2,18 @@ import { injectable, inject } from 'inversify';
 import {
   Command,
   CommandRegistry,
+  DisposableCollection,
   MaybePromise,
   MenuModelRegistry,
 } from '@theia/core';
 import { MonitorModel } from '../monitor/monitor-model';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { Contribution } from '../contributions/contribution';
-import { PlotterService } from '../../common/protocol/plotter-service';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/core/shared/electron';
-import { SerialPlotter } from './protocol';
 import { MonitorConfig } from '../../common/protocol';
+import { PlotterConnection } from './plotter-connection';
+import { SerialPlotter } from './protocol';
 const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
@@ -29,38 +30,38 @@ export namespace SerialPlotterContribution {
 export class PlotterFrontendContribution extends Contribution {
   protected window: Window | null;
   protected url: string;
-  protected initConfig: SerialPlotter.Config;
+  protected wsPort: number;
+  protected toDispose = new DisposableCollection();
 
   @inject(MonitorModel)
   protected readonly model: MonitorModel;
 
-  @inject(PlotterService)
-  protected readonly plotter: PlotterService;
+  @inject(PlotterConnection)
+  protected readonly plotterConnection: PlotterConnection;
 
   onStart(app: FrontendApplication): MaybePromise<void> {
     this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
-
-    this.initConfig = {
-      baudrates: MonitorConfig.BaudRates.map((b) => b),
-      currentBaudrate: this.model.baudRate,
-      darkTheme: true,
-      wsPort: 0,
-      generate: true,
-    };
 
     ipcRenderer.on('CLOSE_CHILD_WINDOW', () => {
       if (this.window) {
         if (!this.window.closed) this.window?.close();
         this.window = null;
+        this.plotterConnection.autoConnect = false;
       }
     });
+
+    this.toDispose.pushAll([
+      this.plotterConnection.onWebSocketChanged((wsPort) => {
+        this.open(wsPort);
+      }),
+    ]);
 
     return super.onStart(app);
   }
 
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
-      execute: async () => this.open(),
+      execute: async () => (this.plotterConnection.autoConnect = true),
     });
   }
 
@@ -72,14 +73,20 @@ export class PlotterFrontendContribution extends Contribution {
     });
   }
 
-  protected async open(): Promise<void> {
+  protected async open(wsPort: string): Promise<void> {
+    const initConfig: SerialPlotter.Config = {
+      baudrates: MonitorConfig.BaudRates.map((b) => b),
+      currentBaudrate: this.model.baudRate,
+      darkTheme: true,
+      wsPort: parseInt(wsPort, 10),
+    };
     if (this.window) {
       this.window.focus();
     } else {
       const urlWithParams = queryString.stringifyUrl(
         {
           url: this.url,
-          query: this.initConfig,
+          query: initConfig,
         },
         { arrayFormat: 'comma' }
       );

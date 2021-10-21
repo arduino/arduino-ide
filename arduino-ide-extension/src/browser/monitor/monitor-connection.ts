@@ -20,6 +20,7 @@ import {
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { NotificationCenter } from '../notification-center';
+import { Disposable } from '@theia/core';
 import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
@@ -48,7 +49,8 @@ export class MonitorConnection {
   @inject(FrontendApplicationStateService)
   protected readonly applicationState: FrontendApplicationStateService;
 
-  protected state: MonitorConnection.State | undefined;
+  protected _state: MonitorConnection.State | undefined;
+
   /**
    * Note: The idea is to toggle this property from the UI (`Monitor` view)
    * and the boards config and the boards attachment/detachment logic can be at on place, here.
@@ -62,6 +64,8 @@ export class MonitorConnection {
    */
   protected readonly onReadEmitter = new Emitter<{ messages: string[] }>();
 
+  protected toDisposeOnDisconnect: Disposable[] = [];
+
   /**
    * Array for storing previous monitor errors received from the server, and based on the number of elements in this array,
    * we adjust the reconnection delay.
@@ -72,15 +76,6 @@ export class MonitorConnection {
 
   @postConstruct()
   protected init(): void {
-    this.monitorServiceClient.onMessage(this.handleMessage.bind(this));
-    this.monitorServiceClient.onError(this.handleError.bind(this));
-    this.boardsServiceProvider.onBoardsConfigChanged(
-      this.handleBoardConfigChange.bind(this)
-    );
-    this.notificationCenter.onAttachedBoardsChanged(
-      this.handleAttachedBoardsChanged.bind(this)
-    );
-
     // Handles the `baudRate` changes by reconnecting if required.
     this.monitorModel.onChange(({ property }) => {
       if (property === 'baudRate' && this.autoConnect && this.connected) {
@@ -96,6 +91,12 @@ export class MonitorConnection {
       const messages = JSON.parse(res.data);
       this.onReadEmitter.fire({ messages });
     };
+  }
+
+  protected set state(s: MonitorConnection.State | undefined) {
+    this.onConnectionChangedEmitter.fire(this.state);
+    this._state = s;
+    if (!this.connected) this.toDisposeOnDisconnect.forEach((d) => d.dispose());
   }
 
   get connected(): boolean {
@@ -188,7 +189,7 @@ export class MonitorConnection {
       }
       const oldState = this.state;
       this.state = undefined;
-      this.onConnectionChangedEmitter.fire(this.state);
+
       if (shouldReconnect) {
         if (this.monitorErrors.length >= 10) {
           this.messageService.warn(
@@ -254,6 +255,16 @@ export class MonitorConnection {
   }
 
   async connect(config: MonitorConfig): Promise<Status> {
+    this.toDisposeOnDisconnect.push(
+      this.monitorServiceClient.onMessage(this.handleMessage.bind(this)),
+      this.monitorServiceClient.onError(this.handleError.bind(this)),
+      this.boardsServiceProvider.onBoardsConfigChanged(
+        this.handleBoardConfigChange.bind(this)
+      ),
+      this.notificationCenter.onAttachedBoardsChanged(
+        this.handleAttachedBoardsChanged.bind(this)
+      )
+    );
     if (this.connected) {
       const disconnectStatus = await this.disconnect();
       if (!Status.isOK(disconnectStatus)) {
@@ -275,7 +286,7 @@ export class MonitorConnection {
         )} on port ${Port.toString(config.port)}.`
       );
     }
-    this.onConnectionChangedEmitter.fire(this.state);
+
     return Status.isOK(connectStatus);
   }
 
@@ -303,7 +314,7 @@ export class MonitorConnection {
       );
     }
     this.state = undefined;
-    this.onConnectionChangedEmitter.fire(this.state);
+
     return status;
   }
 
