@@ -110,8 +110,9 @@ export class UploadSketch extends SketchContribution {
     }
     let shouldAutoConnect = false;
     const monitorConfig = this.monitorConnection.monitorConfig;
+    const serialConnection = this.monitorConnection.connectionType;
     if (monitorConfig) {
-      await this.monitorConnection.disconnect();
+      await this.monitorConnection.disconnect(serialConnection);
       if (this.monitorConnection.autoConnect) {
         shouldAutoConnect = true;
       }
@@ -182,12 +183,11 @@ export class UploadSketch extends SketchContribution {
             Object.assign(board, { port }),
             10_000
           );
-          if (shouldAutoConnect) {
-            // Enabling auto-connect will trigger a connect.
-            this.monitorConnection.autoConnect = true;
-          } else {
-            await this.monitorConnection.connect(monitorConfig);
-          }
+          this.monitorConnection.connect(
+            serialConnection,
+            monitorConfig,
+            shouldAutoConnect
+          );
         } catch (waitError) {
           this.messageService.error(
             nls.localize(

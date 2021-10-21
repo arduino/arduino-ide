@@ -49,8 +49,10 @@ export class BurnBootloader extends SketchContribution {
 
   async burnBootloader(): Promise<void> {
     const monitorConfig = this.monitorConnection.monitorConfig;
+    const serialConnection = this.monitorConnection.connectionType;
+
     if (monitorConfig) {
-      await this.monitorConnection.disconnect();
+      await this.monitorConnection.disconnect(serialConnection);
     }
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
@@ -85,7 +87,7 @@ export class BurnBootloader extends SketchContribution {
       this.messageService.error(e.toString());
     } finally {
       if (monitorConfig) {
-        await this.monitorConnection.connect(monitorConfig);
+        await this.monitorConnection.connect(serialConnection, monitorConfig);
       }
     }
   }

@@ -23,6 +23,13 @@ import { NotificationCenter } from '../notification-center';
 import { Disposable } from '@theia/core';
 import { nls } from '@theia/core/lib/browser/nls';
 
+export enum SerialType {
+  Monitor = 'Monitor',
+  Plotter = 'Plotter',
+  All = 'All',
+  None = 'None',
+}
+
 @injectable()
 export class MonitorConnection {
   @inject(MonitorModel)
@@ -49,16 +56,21 @@ export class MonitorConnection {
   @inject(FrontendApplicationStateService)
   protected readonly applicationState: FrontendApplicationStateService;
 
-  protected _state: MonitorConnection.State | undefined;
+  @inject(MonitorModel)
+  protected readonly model: MonitorModel;
+
+  protected _state: MonitorConnection.State = {
+    connected: SerialType.None,
+    config: undefined,
+  };
 
   /**
    * Note: The idea is to toggle this property from the UI (`Monitor` view)
    * and the boards config and the boards attachment/detachment logic can be at on place, here.
    */
   protected _autoConnect = false;
-  protected readonly onConnectionChangedEmitter = new Emitter<
-    MonitorConnection.State | undefined
-  >();
+  protected readonly onConnectionChangedEmitter =
+    new Emitter<MonitorConnection.State>();
   /**
    * This emitter forwards all read events **iff** the connection is established.
    */
@@ -74,6 +86,9 @@ export class MonitorConnection {
   protected monitorErrors: MonitorError[] = [];
   protected reconnectTimeout?: number;
 
+  protected wsPort?: number;
+  protected webSocket?: WebSocket;
+
   @postConstruct()
   protected init(): void {
     // Handles the `baudRate` changes by reconnecting if required.
@@ -85,22 +100,46 @@ export class MonitorConnection {
     });
   }
 
-  async handleMessage(port: string): Promise<void> {
-    const w = new WebSocket(`ws://localhost:${port}`);
-    w.onmessage = (res) => {
-      const messages = JSON.parse(res.data);
-      this.onReadEmitter.fire({ messages });
-    };
+  getWsPort() {
+    return this.wsPort;
   }
 
-  protected set state(s: MonitorConnection.State | undefined) {
-    this.onConnectionChangedEmitter.fire(this.state);
+  handleWebSocketChanged(wsPort: number): void {
+    this.wsPort = wsPort;
+  }
+
+  protected createWsConnection(): boolean {
+    if (this.wsPort) {
+      try {
+        this.webSocket = new WebSocket(`ws://localhost:${this.wsPort}`);
+        this.webSocket.onmessage = (res) => {
+          const messages = JSON.parse(res.data);
+          this.onReadEmitter.fire({ messages });
+        };
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  protected set state(s: MonitorConnection.State) {
+    this.onConnectionChangedEmitter.fire(this._state);
     this._state = s;
-    if (!this.connected) this.toDisposeOnDisconnect.forEach((d) => d.dispose());
+    if (!this._state) this.toDisposeOnDisconnect.forEach((d) => d.dispose());
+  }
+
+  protected get state(): MonitorConnection.State {
+    return this._state;
+  }
+
+  get connectionType(): SerialType {
+    return this.state.connected;
   }
 
   get connected(): boolean {
-    return !!this.state;
+    return this.state.connected !== SerialType.None;
   }
 
   get monitorConfig(): MonitorConfig | undefined {
@@ -139,7 +178,7 @@ export class MonitorConnection {
       switch (code) {
         case MonitorError.ErrorCodes.CLIENT_CANCEL: {
           console.debug(
-            `Connection was canceled by client: ${MonitorConnection.State.toString(
+            `Serial connection was canceled by client: ${MonitorConnection.State.toString(
               this.state
             )}.`
           );
@@ -188,14 +227,14 @@ export class MonitorConnection {
         }
       }
       const oldState = this.state;
-      this.state = undefined;
+      this.state = { connected: SerialType.None };
 
       if (shouldReconnect) {
         if (this.monitorErrors.length >= 10) {
           this.messageService.warn(
             nls.localize(
               'arduino/monitor/failedReconnect',
-              'Failed to reconnect {0} to the the serial-monitor after 10 consecutive attempts. The {1} serial port is busy.',
+              'Failed to reconnect {0} to serial after 10 consecutive attempts. The {1} serial port is busy.',
               Board.toString(board, {
                 useFqbn: false,
               }),
@@ -223,7 +262,9 @@ export class MonitorConnection {
             { timeout }
           );
           this.reconnectTimeout = window.setTimeout(
-            () => this.connect(oldState.config),
+            () =>
+              oldState.config &&
+              this.connect(oldState.connected, oldState.config),
             timeout
           );
         }
@@ -248,15 +289,67 @@ export class MonitorConnection {
         ) {
           const { selectedBoard: board, selectedPort: port } = boardsConfig;
           const { baudRate } = this.monitorModel;
-          this.disconnect().then(() => this.connect({ board, port, baudRate }));
+          const connectionType = this.state.connected;
+          this.disconnect(connectionType).then(() =>
+            this.connect(connectionType, { board, port, baudRate })
+          );
         }
       }
     }
   }
 
-  async connect(config: MonitorConfig): Promise<Status> {
+  async connect(
+    type: SerialType,
+    newConfig?: MonitorConfig,
+    autoConnect = false
+  ): Promise<Status> {
+    if (this.connected) {
+      switch (this.state.connected) {
+        case SerialType.All:
+          // const disconnectStatus = await this.disconnect(type);
+          // if (!Status.isOK(disconnectStatus)) {
+          //   return disconnectStatus;
+          // }
+          // break;
+          return Status.OK;
+        case SerialType.Plotter:
+          if (type === SerialType.Monitor) {
+            if (this.createWsConnection()) {
+              this.state = { ...this.state, connected: SerialType.All };
+              return Status.OK;
+            }
+            return Status.NOT_CONNECTED;
+          }
+          return Status.OK;
+        case SerialType.Monitor:
+          if (type === SerialType.Plotter)
+            this.state = { ...this.state, connected: SerialType.All };
+          return SerialType.All;
+      }
+    }
+
+    this.autoConnect = autoConnect;
+    let config = newConfig;
+    if (!config) {
+      const { boardsConfig } = this.boardsServiceProvider;
+      const { selectedBoard: board, selectedPort: port } = boardsConfig;
+      const { baudRate } = this.model;
+      if (!board || !port) {
+        this.messageService.error(
+          `Please select a board and a port to open the serial connection.`
+        );
+        return Status.NOT_CONNECTED;
+      }
+      config = {
+        board,
+        port,
+        baudRate,
+      };
+    }
     this.toDisposeOnDisconnect.push(
-      this.monitorServiceClient.onMessage(this.handleMessage.bind(this)),
+      this.monitorServiceClient.onWebSocketChanged(
+        this.handleWebSocketChanged.bind(this)
+      ),
       this.monitorServiceClient.onError(this.handleError.bind(this)),
       this.boardsServiceProvider.onBoardsConfigChanged(
         this.handleBoardConfigChange.bind(this)
@@ -265,56 +358,72 @@ export class MonitorConnection {
         this.handleAttachedBoardsChanged.bind(this)
       )
     );
-    if (this.connected) {
-      const disconnectStatus = await this.disconnect();
-      if (!Status.isOK(disconnectStatus)) {
-        return disconnectStatus;
-      }
-    }
+
     console.info(
-      `>>> Creating serial monitor connection for ${Board.toString(
+      `>>> Creating serial connection for ${Board.toString(
         config.board
       )} on port ${Port.toString(config.port)}...`
     );
     const connectStatus = await this.monitorService.connect(config);
     if (Status.isOK(connectStatus)) {
-      this.state = { config };
+      this.state = { config, connected: type };
+      if (type === SerialType.Monitor) this.createWsConnection();
       console.info(
-        `<<< Serial monitor connection created for ${Board.toString(
-          config.board,
-          { useFqbn: false }
-        )} on port ${Port.toString(config.port)}.`
+        `<<< Serial connection created for ${Board.toString(config.board, {
+          useFqbn: false,
+        })} on port ${Port.toString(config.port)}.`
       );
     }
 
     return Status.isOK(connectStatus);
   }
 
-  async disconnect(): Promise<Status> {
-    if (!this.connected) {
+  async disconnect(type: SerialType): Promise<Status> {
+    if (!this.connected || type === SerialType.None) {
       return Status.OK;
     }
-    const stateCopy = deepClone(this.state);
-    if (!stateCopy) {
+    let newState = deepClone(this.state);
+
+    if (type === SerialType.All || type === this.state.connected) {
+      newState = { connected: SerialType.None };
+    }
+    if (this.state.connected === SerialType.All) {
+      newState = {
+        ...this.state,
+        connected:
+          type === SerialType.Monitor ? SerialType.Plotter : SerialType.Monitor,
+      };
+    }
+    if (
+      (type === SerialType.All || type === SerialType.Monitor) &&
+      this.webSocket
+    ) {
+      this.webSocket.close();
+      this.webSocket = undefined;
+    }
+
+    if (newState.connected !== SerialType.None) {
       return Status.OK;
     }
-    console.log('>>> Disposing existing monitor connection...');
+
+    console.log('>>> Disposing existing serial connection...');
     const status = await this.monitorService.disconnect();
     if (Status.isOK(status)) {
       console.log(
-        `<<< Disposed connection. Was: ${MonitorConnection.State.toString(
-          stateCopy
+        `<<< Disposed serial connection. Was: ${MonitorConnection.State.toString(
+          newState
         )}`
       );
+      this.wsPort = undefined;
     } else {
       console.warn(
-        `<<< Could not dispose connection. Activate connection: ${MonitorConnection.State.toString(
-          stateCopy
+        `<<< Could not dispose serial connection. Activate connection: ${MonitorConnection.State.toString(
+          newState
         )}`
       );
     }
-    this.state = undefined;
 
+    this.state = newState;
     return status;
   }
 
@@ -334,7 +443,7 @@ export class MonitorConnection {
     });
   }
 
-  get onConnectionChanged(): Event<MonitorConnection.State | undefined> {
+  get onConnectionChanged(): Event<MonitorConnection.State> {
     return this.onConnectionChangedEmitter.event;
   }
 
@@ -353,6 +462,7 @@ export class MonitorConnection {
       ) {
         // Instead of calling `getAttachedBoards` and filtering for `AttachedSerialBoard` we have to check the available ports.
         // The connected board might be unknown. See: https://github.com/arduino/arduino-pro-ide/issues/127#issuecomment-563251881
+        const connectionType = this.state.connected;
         this.boardsService.getAvailablePorts().then((ports) => {
           if (
             ports.some((port) => Port.equals(port, boardsConfig.selectedPort))
@@ -360,7 +470,7 @@ export class MonitorConnection {
             new Promise<void>((resolve) => {
               // First, disconnect if connected.
               if (this.connected) {
-                this.disconnect().then(() => resolve());
+                this.disconnect(connectionType).then(() => resolve());
                 return;
               }
               resolve();
@@ -368,7 +478,7 @@ export class MonitorConnection {
               // Then (re-)connect.
               const { selectedBoard: board, selectedPort: port } = boardsConfig;
               const { baudRate } = this.monitorModel;
-              this.connect({ board, port, baudRate });
+              this.connect(this.state.connected, { board, port, baudRate });
             });
           }
         });
@@ -379,12 +489,14 @@ export class MonitorConnection {
 
 export namespace MonitorConnection {
   export interface State {
-    readonly config: MonitorConfig;
+    readonly config?: MonitorConfig;
+    readonly connected: SerialType;
   }
 
   export namespace State {
     export function toString(state: State): string {
       const { config } = state;
+      if (!config) return '';
       const { board, port } = config;
       return `${Board.toString(board)} ${Port.toString(port)}`;
     }

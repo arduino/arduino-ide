@@ -55,9 +55,9 @@ export namespace MonitorConfig {
 export const MonitorServiceClient = Symbol('MonitorServiceClient');
 export interface MonitorServiceClient {
   onError: Event<MonitorError>;
-  onMessage: Event<string>;
+  onWebSocketChanged: Event<number>;
   notifyError(event: MonitorError): void;
-  notifyMessage(message: string): void;
+  notifyWebSocketChanged(message: number): void;
 }
 
 export interface MonitorError {

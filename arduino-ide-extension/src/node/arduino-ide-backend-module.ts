@@ -87,6 +87,8 @@ import {
 } from '../common/protocol/authentication-service';
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
+import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
+import { WebSocketService } from './web-socket/web-socket-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -169,6 +171,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       bindBackendService(BoardsServicePath, BoardsService);
     })
   );
+
+  // Shared WebSocketService for the backend. This will manage all websocket conenctions
+  bind(WebSocketService).to(WebSocketServiceImpl).inSingletonScope();
 
   // Shared Arduino core client provider service for the backend.
   bind(CoreClientProvider).toSelf().inSingletonScope();

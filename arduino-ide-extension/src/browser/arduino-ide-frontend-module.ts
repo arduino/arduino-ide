@@ -258,7 +258,6 @@ import {
   PlotterPath,
   PlotterService,
 } from '../common/protocol/plotter-service';
-import { PlotterConnection } from './plotter/plotter-connection';
 import { nls } from '@theia/core/lib/browser/nls';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -411,7 +410,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope();
   bind(MonitorConnection).toSelf().inSingletonScope();
-  bind(PlotterConnection).toSelf().inSingletonScope();
+
   // Serial monitor service client to receive and delegate notifications from the backend.
   bind(MonitorServiceClient).to(MonitorServiceClientImpl).inSingletonScope();
 

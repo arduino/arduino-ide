@@ -12,8 +12,9 @@ import { Contribution } from '../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/core/shared/electron';
 import { MonitorConfig } from '../../common/protocol';
-import { PlotterConnection } from './plotter-connection';
+import { MonitorConnection, SerialType } from '../monitor/monitor-connection';
 import { SerialPlotter } from './protocol';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
@@ -36,32 +37,29 @@ export class PlotterFrontendContribution extends Contribution {
   @inject(MonitorModel)
   protected readonly model: MonitorModel;
 
-  @inject(PlotterConnection)
-  protected readonly plotterConnection: PlotterConnection;
+  @inject(MonitorConnection)
+  protected readonly monitorConnection: MonitorConnection;
+
+  @inject(BoardsServiceProvider)
+  protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   onStart(app: FrontendApplication): MaybePromise<void> {
     this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
 
-    ipcRenderer.on('CLOSE_CHILD_WINDOW', () => {
+    ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
       if (this.window) {
-        if (!this.window.closed) this.window?.close();
         this.window = null;
-        this.plotterConnection.autoConnect = false;
+        await this.monitorConnection.disconnect(SerialType.Plotter);
+        this.monitorConnection.autoConnect = false;
       }
     });
-
-    this.toDispose.pushAll([
-      this.plotterConnection.onWebSocketChanged((wsPort) => {
-        this.open(wsPort);
-      }),
-    ]);
 
     return super.onStart(app);
   }
 
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
-      execute: async () => (this.plotterConnection.autoConnect = true),
+      execute: this.connect.bind(this),
     });
   }
 
@@ -73,24 +71,49 @@ export class PlotterFrontendContribution extends Contribution {
     });
   }
 
-  protected async open(wsPort: string): Promise<void> {
+  async connect(): Promise<void> {
+    if (this.monitorConnection.connected) {
+      if (this.window) {
+        this.window.focus();
+        return;
+      }
+    }
+    const { boardsConfig } = this.boardsServiceProvider;
+    const { selectedBoard: board, selectedPort: port } = boardsConfig;
+    const { baudRate } = this.model;
+    if (board && port) {
+      const status = await this.monitorConnection.connect(SerialType.Plotter, {
+        board,
+        port,
+        baudRate,
+      });
+      const wsPort = this.monitorConnection.getWsPort();
+      if (status && wsPort) {
+        this.open(wsPort);
+      } else {
+        this.messageService.error(`Couldn't open serial plotter`);
+      }
+    } else {
+      this.messageService.error(
+        `Please select a board and a port to open the Serial Plotter.`
+      );
+    }
+  }
+
+  protected open(wsPort: number): void {
     const initConfig: SerialPlotter.Config = {
       baudrates: MonitorConfig.BaudRates.map((b) => b),
       currentBaudrate: this.model.baudRate,
       darkTheme: true,
-      wsPort: parseInt(wsPort, 10),
+      wsPort,
     };
-    if (this.window) {
-      this.window.focus();
-    } else {
-      const urlWithParams = queryString.stringifyUrl(
-        {
-          url: this.url,
-          query: initConfig,
-        },
-        { arrayFormat: 'comma' }
-      );
-      this.window = window.open(urlWithParams, 'serialPlotter');
-    }
+    const urlWithParams = queryString.stringifyUrl(
+      {
+        url: this.url,
+        query: initConfig,
+      },
+      { arrayFormat: 'comma' }
+    );
+    this.window = window.open(urlWithParams, 'serialPlotter');
   }
 }

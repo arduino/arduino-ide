@@ -18,7 +18,7 @@ import {
 } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
-import * as WebSocket from 'ws';
+import { WebSocketService } from '../web-socket/web-socket-service';
 
 interface ErrorWithCode extends Error {
   readonly code: number;
@@ -66,6 +66,9 @@ export class MonitorServiceImpl implements MonitorService {
 
   @inject(MonitorClientProvider)
   protected readonly monitorClientProvider: MonitorClientProvider;
+
+  @inject(WebSocketService)
+  protected readonly webSocketService: WebSocketService;
 
   protected client?: MonitorServiceClient;
   protected connection?: {
@@ -123,19 +126,13 @@ export class MonitorServiceImpl implements MonitorService {
       }).bind(this)
     );
 
-    const ws = new WebSocket.Server({ port: 0 });
-    const address: any = ws.address();
-    this.client?.notifyMessage(address.port);
-    const wsConn: WebSocket[] = [];
-    ws.on('connection', (ws) => {
-      wsConn.push(ws);
-    });
+    this.client?.notifyWebSocketChanged(
+      this.webSocketService.getAddress().port
+    );
 
     const flushMessagesToFrontend = () => {
       if (this.messages.length) {
-        wsConn.forEach((w) => {
-          w.send(JSON.stringify(this.messages));
-        });
+        this.webSocketService.sendMessage(JSON.stringify(this.messages));
         this.messages = [];
       }
     };
