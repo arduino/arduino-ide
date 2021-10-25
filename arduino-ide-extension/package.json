@@ -4,10 +4,11 @@
   "description": "An extension for Theia building the Arduino IDE",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn clean && yarn download-examples && yarn build && yarn test",
+    "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn copy-serial-plotter && yarn clean && yarn download-examples && yarn build && yarn test",
     "clean": "rimraf lib",
     "download-cli": "node ./scripts/download-cli.js",
     "download-fwuploader": "node ./scripts/download-fwuploader.js",
+    "copy-serial-plotter": "npx ncp ../node_modules/arduino-serial-plotter-webapp ./build/arduino-serial-plotter-webapp",
     "download-ls": "node ./scripts/download-ls.js",
     "download-examples": "node ./scripts/download-examples.js",
     "generate-protocol": "node ./scripts/generate-protocol.js",
@@ -18,6 +19,7 @@
     "test:watch": "mocha --watch --watch-files lib \"./lib/test/**/*.test.js\""
   },
   "dependencies": {
+    "arduino-serial-plotter-webapp": "0.0.2",
     "@grpc/grpc-js": "^1.3.7",
     "@theia/application-package": "1.18.0",
     "@theia/core": "1.18.0",

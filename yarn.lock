@@ -4109,6 +4109,11 @@ archive-type@^4.0.0:
   dependencies:
     file-type "^4.2.0"
 
+arduino-serial-plotter-webapp@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/arduino-serial-plotter-webapp/-/arduino-serial-plotter-webapp-0.0.1.tgz#a66b512df72432bdb0f48495955351e637190943"
+  integrity sha512-6k+8MF6LtMdEZUSDh1FY/pmrI2wCTpFTVriEt5/sa9vJKnoZxkxwoSZzbYNtsqbJU2D4knzoVyS4J/LjaTbkOg==
+
 are-we-there-yet@~1.1.2:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/are-we-there-yet/-/are-we-there-yet-1.1.5.tgz#4b35c2944f062a8bfcda66410760350fe9ddfc21"

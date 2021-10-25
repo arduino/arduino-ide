@@ -10,21 +10,20 @@ export class PlotterBackendContribution
   async initialize(): Promise<void> {}
 
   configure(app: express.Application): void {
-    app.use(
-      express.static(
-        path.join(
-          __dirname,
-          '../../../node_modules/arduino-serial-plotter-webapp/build'
-        )
-      )
-    );
-    app.get('/plotter', (req, res) =>
-      res.sendFile(
-        path.join(
-          __dirname,
-          '../../../node_modules/arduino-serial-plotter-webapp/build/index.html'
-        )
-      )
-    );
+    const relativePath = [
+      '..',
+      '..',
+      '..',
+      'build',
+      'arduino-serial-plotter-webapp',
+      'build',
+    ];
+    app.use(express.static(path.join(__dirname, ...relativePath)));
+    app.get('/plotter', (req, res) => {
+      console.log(
+        `Serving serial plotter on http://${req.headers.host}${req.url}`
+      );
+      res.sendFile(path.join(__dirname, ...relativePath, 'index.html'));
+    });
   }
 }
