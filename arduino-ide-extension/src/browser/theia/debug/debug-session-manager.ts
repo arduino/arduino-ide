@@ -62,4 +62,8 @@ export class DebugSessionManager extends TheiaDebugSessionManager {
       }
     );
   }
+  async terminateSessions(): Promise<void> {
+    await super.terminateSessions();
+    this.destroy(this.currentSession?.id);
+  }
 }
