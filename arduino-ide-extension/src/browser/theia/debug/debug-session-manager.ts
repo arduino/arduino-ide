@@ -62,4 +62,9 @@ export class DebugSessionManager extends TheiaDebugSessionManager {
       }
     );
   }
+  // TODO: remove as https://github.com/eclipse-theia/theia/issues/10164 is fixed
+  async terminateSessions(): Promise<void> {
+    await super.terminateSessions();
+    this.destroy(this.currentSession?.id);
+  }
 }
