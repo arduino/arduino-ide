@@ -387,7 +387,7 @@ void loop() {
 
   async isTemp(sketch: Sketch): Promise<boolean> {
     let sketchPath = FileUri.fsPath(sketch.uri);
-    let temp = os.tmpdir();
+    let temp = await promisify(fs.realpath)(os.tmpdir());
     // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
     // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
     if (isWindows) {
