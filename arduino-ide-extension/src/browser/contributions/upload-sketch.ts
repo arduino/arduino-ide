@@ -108,16 +108,7 @@ export class UploadSketch extends SketchContribution {
     if (!sketch) {
       return;
     }
-    let shouldAutoConnect = false;
-    const monitorConfig = this.monitorConnection.monitorConfig;
-    const serialConnection = this.monitorConnection.connectionType;
-    if (monitorConfig) {
-      await this.monitorConnection.disconnect(serialConnection);
-      if (this.monitorConnection.autoConnect) {
-        shouldAutoConnect = true;
-      }
-      this.monitorConnection.autoConnect = false;
-    }
+    await this.monitorConnection.disconnect();
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
@@ -176,18 +167,17 @@ export class UploadSketch extends SketchContribution {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();
 
-      if (monitorConfig) {
-        const { board, port } = monitorConfig;
+      if (
+        this.monitorConnection.isSerialOpen() &&
+        this.monitorConnection.monitorConfig
+      ) {
+        const { board, port } = this.monitorConnection.monitorConfig;
         try {
           await this.boardsServiceClientImpl.waitUntilAvailable(
             Object.assign(board, { port }),
             10_000
           );
-          this.monitorConnection.connect(
-            serialConnection,
-            monitorConfig,
-            shouldAutoConnect
-          );
+          await this.monitorConnection.connect();
         } catch (waitError) {
           this.messageService.error(
             nls.localize(

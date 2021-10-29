@@ -57,12 +57,9 @@ export class MonitorWidget extends ReactWidget {
     this.scrollOptions = undefined;
     this.toDispose.push(this.clearOutputEmitter);
     this.toDispose.push(
-      Disposable.create(() => {
-        this.monitorConnection.autoConnect = false;
-        if (this.monitorConnection.connected) {
-          this.monitorConnection.disconnect(SerialType.Monitor);
-        }
-      })
+      Disposable.create(() =>
+        this.monitorConnection.closeSerial(SerialType.Monitor)
+      )
     );
   }
 
@@ -87,7 +84,7 @@ export class MonitorWidget extends ReactWidget {
     super.onAfterAttach(msg);
     // const { boardsConfig } = this.boardsServiceProvider;
 
-    this.monitorConnection.connect(SerialType.Monitor, undefined, true);
+    this.monitorConnection.openSerial(SerialType.Monitor);
   }
 
   onCloseRequest(msg: Message): void {

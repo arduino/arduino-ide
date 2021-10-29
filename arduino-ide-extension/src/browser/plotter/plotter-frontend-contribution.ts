@@ -11,7 +11,7 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import { Contribution } from '../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/core/shared/electron';
-import { MonitorConfig } from '../../common/protocol';
+import { MonitorConfig, Status } from '../../common/protocol';
 import { MonitorConnection, SerialType } from '../monitor/monitor-connection';
 import { SerialPlotter } from './protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
@@ -49,8 +49,7 @@ export class PlotterFrontendContribution extends Contribution {
     ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
       if (this.window) {
         this.window = null;
-        await this.monitorConnection.disconnect(SerialType.Plotter);
-        this.monitorConnection.autoConnect = false;
+        await this.monitorConnection.closeSerial(SerialType.Plotter);
       }
     });
 
@@ -78,25 +77,12 @@ export class PlotterFrontendContribution extends Contribution {
         return;
       }
     }
-    const { boardsConfig } = this.boardsServiceProvider;
-    const { selectedBoard: board, selectedPort: port } = boardsConfig;
-    const { baudRate } = this.model;
-    if (board && port) {
-      const status = await this.monitorConnection.connect(SerialType.Plotter, {
-        board,
-        port,
-        baudRate,
-      });
-      const wsPort = this.monitorConnection.getWsPort();
-      if (status && wsPort) {
-        this.open(wsPort);
-      } else {
-        this.messageService.error(`Couldn't open serial plotter`);
-      }
+    const status = await this.monitorConnection.openSerial(SerialType.Plotter);
+    const wsPort = this.monitorConnection.getWsPort();
+    if (Status.isOK(status) && wsPort) {
+      this.open(wsPort);
     } else {
-      this.messageService.error(
-        `Please select a board and a port to open the Serial Plotter.`
-      );
+      this.messageService.error(`Couldn't open serial plotter`);
     }
   }
 
