@@ -20,6 +20,7 @@ import {
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { NotificationCenter } from '../notification-center';
+import { ThemeService } from '@theia/core/lib/browser/theming';
 import { nls } from '@theia/core/lib/browser/nls';
 
 export enum SerialType {
@@ -56,6 +57,9 @@ export class MonitorConnection {
   @inject(MonitorModel)
   protected readonly model: MonitorModel;
 
+  @inject(ThemeService)
+  protected readonly themeService: ThemeService;
+
   protected _state: MonitorConnection.State = [];
   protected _connected: boolean;
 
@@ -90,20 +94,26 @@ export class MonitorConnection {
   protected init(): void {
     this.monitorServiceClient.onWebSocketChanged(
       this.handleWebSocketChanged.bind(this)
-    ),
-      this.monitorServiceClient.onError(this.handleError.bind(this)),
-      this.boardsServiceProvider.onBoardsConfigChanged(
-        this.handleBoardConfigChange.bind(this)
-      ),
-      this.notificationCenter.onAttachedBoardsChanged(
-        this.handleAttachedBoardsChanged.bind(this)
-      );
+    );
+    this.monitorServiceClient.onError(this.handleError.bind(this));
+    this.boardsServiceProvider.onBoardsConfigChanged(
+      this.handleBoardConfigChange.bind(this)
+    );
+    this.notificationCenter.onAttachedBoardsChanged(
+      this.handleAttachedBoardsChanged.bind(this)
+    );
     // Handles the `baudRate` changes by reconnecting if required.
     this.monitorModel.onChange(({ property }) => {
       if (property === 'baudRate' && this.connected) {
         const { boardsConfig } = this.boardsServiceProvider;
         this.handleBoardConfigChange(boardsConfig);
       }
+    });
+
+    this.themeService.onDidColorThemeChange((theme) => {
+      this.monitorService.updateWsConfigParam({
+        darkTheme: theme.newTheme.type === 'dark',
+      });
     });
   }
 
@@ -411,7 +421,7 @@ export class MonitorConnection {
     }
     return new Promise<Status>((resolve) => {
       this.monitorService
-        .send(data + this.monitorModel.lineEnding)
+        .sendMessageToSerial(data + this.monitorModel.lineEnding)
         .then(() => resolve(Status.OK));
     });
   }
@@ -438,6 +448,10 @@ export class MonitorConnection {
       if (ports.some((port) => Port.equals(port, boardsConfig.selectedPort))) {
         const { selectedBoard: board, selectedPort: port } = boardsConfig;
         const { baudRate } = this.monitorModel;
+        // update the baudrate on the config
+        this.monitorService.updateWsConfigParam({
+          currentBaudrate: baudRate,
+        });
         const newConfig: MonitorConfig = { board, port, baudRate };
         this.setConfig(newConfig);
       }

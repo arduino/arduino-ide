@@ -1,6 +1,7 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Board, Port } from './boards-service';
 import { Event } from '@theia/core/lib/common/event';
+import { SerialPlotter } from '../../browser/plotter/protocol';
 
 export interface Status {}
 export type OK = Status;
@@ -23,7 +24,8 @@ export const MonitorService = Symbol('MonitorService');
 export interface MonitorService extends JsonRpcServer<MonitorServiceClient> {
   connect(config: MonitorConfig): Promise<Status>;
   disconnect(): Promise<Status>;
-  send(message: string): Promise<Status>;
+  sendMessageToSerial(message: string): Promise<Status>;
+  updateWsConfigParam(config: Partial<SerialPlotter.Config>): Promise<void>;
 }
 
 export interface MonitorConfig {

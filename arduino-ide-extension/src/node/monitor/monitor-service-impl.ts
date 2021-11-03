@@ -19,6 +19,7 @@ import {
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { WebSocketService } from '../web-socket/web-socket-service';
+import { SerialPlotter } from '../../browser/plotter/protocol';
 
 interface ErrorWithCode extends Error {
   readonly code: number;
@@ -71,7 +72,7 @@ export class MonitorServiceImpl implements MonitorService {
   protected readonly webSocketService: WebSocketService;
 
   protected client?: MonitorServiceClient;
-  protected connection?: {
+  protected serialConnection?: {
     duplex: ClientDuplexStream<StreamingOpenRequest, StreamingOpenResponse>;
     config: MonitorConfig;
   };
@@ -84,11 +85,21 @@ export class MonitorServiceImpl implements MonitorService {
 
   dispose(): void {
     this.logger.info('>>> Disposing monitor service...');
-    if (this.connection) {
+    if (this.serialConnection) {
       this.disconnect();
     }
     this.logger.info('<<< Disposed monitor service.');
     this.client = undefined;
+  }
+
+  async updateWsConfigParam(
+    config: Partial<SerialPlotter.Config>
+  ): Promise<void> {
+    const msg: SerialPlotter.Protocol.Message = {
+      command: SerialPlotter.Protocol.Command.MIDDLEWARE_CONFIG_CHANGED,
+      data: config,
+    };
+    this.webSocketService.sendMessage(JSON.stringify(msg));
   }
 
   async connect(config: MonitorConfig): Promise<Status> {
@@ -97,7 +108,7 @@ export class MonitorServiceImpl implements MonitorService {
         config.board
       )} on port ${Port.toString(config.port)}...`
     );
-    if (this.connection) {
+    if (this.serialConnection) {
       return Status.ALREADY_CONNECTED;
     }
     const client = await this.monitorClientProvider.client();
@@ -108,7 +119,7 @@ export class MonitorServiceImpl implements MonitorService {
       return { message: client.message };
     }
     const duplex = client.streamingOpen();
-    this.connection = { duplex, config };
+    this.serialConnection = { duplex, config };
 
     duplex.on(
       'error',
@@ -136,6 +147,27 @@ export class MonitorServiceImpl implements MonitorService {
         this.messages = [];
       }
     };
+
+    this.webSocketService.onMessageReceived((msg: string) => {
+      try {
+        const message: SerialPlotter.Protocol.Message = JSON.parse(msg);
+
+        switch (message.command) {
+          case SerialPlotter.Protocol.Command.PLOTTER_SEND_MESSAGE:
+            this.sendMessageToSerial(message.data);
+            break;
+
+          case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
+            break;
+
+          case SerialPlotter.Protocol.Command.PLOTTER_SET_LINE_ENDING:
+            break;
+
+          default:
+            break;
+        }
+      } catch (error) {}
+    });
 
     // empty the queue every 16ms (~60fps)
     setInterval(flushMessagesToFrontend, 32);
@@ -187,8 +219,8 @@ export class MonitorServiceImpl implements MonitorService {
     req.setConfig(monitorConfig);
 
     return new Promise<Status>((resolve) => {
-      if (this.connection) {
-        this.connection.duplex.write(req, () => {
+      if (this.serialConnection) {
+        this.serialConnection.duplex.write(req, () => {
           this.logger.info(
             `<<< Serial monitor connection created for ${Board.toString(
               config.board,
@@ -206,40 +238,40 @@ export class MonitorServiceImpl implements MonitorService {
   async disconnect(reason?: MonitorError): Promise<Status> {
     try {
       if (
-        !this.connection &&
+        !this.serialConnection &&
         reason &&
         reason.code === MonitorError.ErrorCodes.CLIENT_CANCEL
       ) {
         return Status.OK;
       }
       this.logger.info('>>> Disposing monitor connection...');
-      if (!this.connection) {
+      if (!this.serialConnection) {
         this.logger.warn('<<< Not connected. Nothing to dispose.');
         return Status.NOT_CONNECTED;
       }
-      const { duplex, config } = this.connection;
+      const { duplex, config } = this.serialConnection;
       duplex.cancel();
       this.logger.info(
         `<<< Disposed monitor connection for ${Board.toString(config.board, {
           useFqbn: false,
         })} on port ${Port.toString(config.port)}.`
       );
-      this.connection = undefined;
+      this.serialConnection = undefined;
       return Status.OK;
     } finally {
       this.messages.length = 0;
     }
   }
 
-  async send(message: string): Promise<Status> {
-    if (!this.connection) {
+  async sendMessageToSerial(message: string): Promise<Status> {
+    if (!this.serialConnection) {
       return Status.NOT_CONNECTED;
     }
     const req = new StreamingOpenRequest();
     req.setData(new TextEncoder().encode(message));
     return new Promise<Status>((resolve) => {
-      if (this.connection) {
-        this.connection.duplex.write(req, () => {
+      if (this.serialConnection) {
+        this.serialConnection.duplex.write(req, () => {
           resolve(Status.OK);
         });
         return;

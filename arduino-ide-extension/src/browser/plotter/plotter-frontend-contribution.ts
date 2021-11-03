@@ -1,3 +1,4 @@
+import { ThemeService } from '@theia/core/lib/browser/theming';
 import { injectable, inject } from 'inversify';
 import {
   Command,
@@ -36,6 +37,9 @@ export class PlotterFrontendContribution extends Contribution {
 
   @inject(MonitorModel)
   protected readonly model: MonitorModel;
+
+  @inject(ThemeService)
+  protected readonly themeService: ThemeService;
 
   @inject(MonitorConnection)
   protected readonly monitorConnection: MonitorConnection;
@@ -90,7 +94,8 @@ export class PlotterFrontendContribution extends Contribution {
     const initConfig: SerialPlotter.Config = {
       baudrates: MonitorConfig.BaudRates.map((b) => b),
       currentBaudrate: this.model.baudRate,
-      darkTheme: true,
+      currentLineEnding: this.model.lineEnding,
+      darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
     };
     const urlWithParams = queryString.stringifyUrl(
