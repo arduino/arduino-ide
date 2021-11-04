@@ -2,6 +2,7 @@ import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Board, Port } from './boards-service';
 import { Event } from '@theia/core/lib/common/event';
 import { SerialPlotter } from '../../browser/plotter/protocol';
+import { MonitorModel } from '../../browser/monitor/monitor-model';
 
 export interface Status {}
 export type OK = Status;
@@ -58,8 +59,12 @@ export const MonitorServiceClient = Symbol('MonitorServiceClient');
 export interface MonitorServiceClient {
   onError: Event<MonitorError>;
   onWebSocketChanged: Event<number>;
+  onLineEndingChanged: Event<MonitorModel.EOL>;
+  onBaudRateChanged: Event<MonitorConfig.BaudRate>;
   notifyError(event: MonitorError): void;
   notifyWebSocketChanged(message: number): void;
+  notifyLineEndingChanged(message: MonitorModel.EOL): void;
+  notifyBaudRateChanged(message: MonitorConfig.BaudRate): void;
 }
 
 export interface MonitorError {

@@ -69,6 +69,7 @@ export class MonitorWidget extends ReactWidget {
     this.toDispose.push(
       this.monitorConnection.onConnectionChanged(() => this.clearConsole())
     );
+    this.toDispose.push(this.monitorModel.onChange(() => this.update()));
   }
 
   clearConsole(): void {
@@ -183,7 +184,7 @@ export class MonitorWidget extends ReactWidget {
               <ArduinoSelect
                 maxMenuHeight={this.widgetHeight - 40}
                 options={lineEndings}
-                defaultValue={lineEnding}
+                value={lineEnding}
                 onChange={this.onChangeLineEnding}
               />
             </div>
@@ -192,7 +193,7 @@ export class MonitorWidget extends ReactWidget {
                 className="select"
                 maxMenuHeight={this.widgetHeight - 40}
                 options={baudRates}
-                defaultValue={baudRate}
+                value={baudRate}
                 onChange={this.onChangeBaudRate}
               />
             </div>

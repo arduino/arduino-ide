@@ -87,6 +87,17 @@ export class SerialConnectionManager {
     this.monitorServiceClient.onWebSocketChanged(
       this.handleWebSocketChanged.bind(this)
     );
+    this.monitorServiceClient.onBaudRateChanged((baudRate) => {
+      if (this.monitorModel.baudRate !== baudRate) {
+        this.monitorModel.baudRate = baudRate;
+      }
+    });
+    this.monitorServiceClient.onLineEndingChanged((lineending) => {
+      if (this.monitorModel.lineEnding !== lineending) {
+        this.monitorModel.lineEnding = lineending;
+      }
+    });
+
     this.monitorServiceClient.onError(this.handleError.bind(this));
     this.boardsServiceProvider.onBoardsConfigChanged(
       this.handleBoardConfigChange.bind(this)
@@ -100,6 +111,16 @@ export class SerialConnectionManager {
         const { boardsConfig } = this.boardsServiceProvider;
         this.handleBoardConfigChange(boardsConfig);
       }
+
+      // update the current values in the backend and propagate to websocket clients
+      this.monitorService.updateWsConfigParam({
+        ...(property === 'baudRate' && {
+          currentBaudrate: this.monitorModel.baudRate,
+        }),
+        ...(property === 'lineEnding' && {
+          currentLineEnding: this.monitorModel.lineEnding,
+        }),
+      });
     });
 
     this.themeService.onDidColorThemeChange((theme) => {
@@ -452,10 +473,6 @@ export class SerialConnectionManager {
       if (ports.some((port) => Port.equals(port, boardsConfig.selectedPort))) {
         const { selectedBoard: board, selectedPort: port } = boardsConfig;
         const { baudRate } = this.monitorModel;
-        // update the baudrate on the config
-        this.monitorService.updateWsConfigParam({
-          currentBaudrate: baudRate,
-        });
         const newConfig: MonitorConfig = { board, port, baudRate };
         this.setConfig(newConfig);
       }

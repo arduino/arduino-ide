@@ -158,9 +158,13 @@ export class MonitorServiceImpl implements MonitorService {
             break;
 
           case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
+            this.client?.notifyBaudRateChanged(
+              parseInt(message.data, 10) as MonitorConfig.BaudRate
+            );
             break;
 
           case SerialPlotter.Protocol.Command.PLOTTER_SET_LINE_ENDING:
+            this.client?.notifyLineEndingChanged(message.data);
             break;
 
           default:
