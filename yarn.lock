@@ -2136,6 +2136,38 @@
     worker-loader "^3.0.8"
     yargs "^15.3.1"
 
+"@theia/application-manager@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-1.19.0.tgz#e608e55e1bc5252b185e6f8917ea274de2a8dc7a"
+  integrity sha512-h4PspeMtDyHnpz3qELTKwUeWTFmpXe4OzDmET6u6NgXh93ba94gnIh0OZg7xjDD/3vrJLz1yQhVc263FioxBjw==
+  dependencies:
+    "@babel/core" "^7.10.0"
+    "@babel/plugin-transform-classes" "^7.10.0"
+    "@babel/plugin-transform-runtime" "^7.10.0"
+    "@babel/preset-env" "^7.10.0"
+    "@theia/application-package" "1.19.0"
+    "@theia/compression-webpack-plugin" "^3.0.0"
+    "@types/fs-extra" "^4.0.2"
+    babel-loader "^8.2.2"
+    buffer "^6.0.3"
+    circular-dependency-plugin "^5.2.2"
+    copy-webpack-plugin "^8.1.1"
+    css-loader "^6.2.0"
+    electron-rebuild "^1.8.6"
+    font-awesome-webpack "0.0.5-beta.2"
+    fs-extra "^4.0.2"
+    ignore-loader "^0.1.2"
+    less "^3.0.3"
+    setimmediate "^1.0.5"
+    source-map-loader "^2.0.1"
+    source-map-support "^0.5.19"
+    style-loader "^2.0.0"
+    umd-compat-loader "^2.1.2"
+    webpack "^5.48.0"
+    webpack-cli "4.7.0"
+    worker-loader "^3.0.8"
+    yargs "^15.3.1"
+
 "@theia/application-package@1.17.2":
   version "1.17.2"
   resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-1.17.2.tgz#05b1f2c749bbd693013f17cdf8b57d5789cb70fb"
@@ -2157,6 +2189,23 @@
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-1.18.0.tgz#20bb0dd21c52bf58a79c99c73517558e1704bc2c"
   integrity sha512-v8jzr3ItlzyeserrEGfy3MJRB1rH2ewKWfLSu26PGRsR38zip1ZGLsPmk10/v8NVYwPu5enD8tppWlikRWwFzA==
+  dependencies:
+    "@types/fs-extra" "^4.0.2"
+    "@types/request" "^2.0.3"
+    "@types/semver" "^5.4.0"
+    "@types/write-json-file" "^2.2.1"
+    changes-stream "^2.2.0"
+    deepmerge "^4.2.2"
+    fs-extra "^4.0.2"
+    is-electron "^2.1.0"
+    request "^2.82.0"
+    semver "^5.4.1"
+    write-json-file "^2.2.0"
+
+"@theia/application-package@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-1.19.0.tgz#a6045bec3ebcc7acb80dbfbb644c7fd429799aeb"
+  integrity sha512-+WToWAofmvFafuY6kmsNAKz1IRwWwurHmj4U7JYpJ2jgey3H7lcO6qUMd8ZfWt3wK9ckPqlnuasuI7nHTZgcrA==
   dependencies:
     "@types/fs-extra" "^4.0.2"
     "@types/request" "^2.0.3"
@@ -2199,6 +2248,34 @@
     "@theia/application-manager" "1.17.2"
     "@theia/application-package" "1.17.2"
     "@theia/ovsx-client" "1.17.2"
+    "@types/chai" "^4.2.7"
+    "@types/mkdirp" "^0.5.2"
+    "@types/mocha" "^5.2.7"
+    "@types/node-fetch" "^2.5.7"
+    "@types/puppeteer" "^2.0.0"
+    "@types/requestretry" "^1.12.3"
+    "@types/tar" "^4.0.3"
+    chai "^4.2.0"
+    colors "^1.4.0"
+    decompress "^4.2.1"
+    https-proxy-agent "^5.0.0"
+    mocha "^7.0.0"
+    node-fetch "^2.6.0"
+    proxy-from-env "^1.1.0"
+    puppeteer "^2.0.0"
+    puppeteer-to-istanbul "^1.2.2"
+    temp "^0.9.1"
+    yargs "^15.3.1"
+
+"@theia/cli@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-1.19.0.tgz#d9316b5e294ad5e7c4f66fd6d44efd9419d60955"
+  integrity sha512-qMpI4cjVWzYbStN/+9wxyWCimKCVmrP+uSykRqlRFnRJcsLQC1om8ED98//9BgwYW5y3zSwB7rmBd/S0Io8tsQ==
+  dependencies:
+    "@theia/application-manager" "1.19.0"
+    "@theia/application-package" "1.19.0"
+    "@theia/localization-manager" "1.19.0"
+    "@theia/ovsx-client" "1.19.0"
     "@types/chai" "^4.2.7"
     "@types/mkdirp" "^0.5.2"
     "@types/mocha" "^5.2.7"
@@ -2440,6 +2517,17 @@
     ajv "^6.5.3"
     jsonc-parser "^2.2.0"
 
+"@theia/localization-manager@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@theia/localization-manager/-/localization-manager-1.19.0.tgz#6b6eab185c032b376f72c0ddc2a07e6a51ebd4ea"
+  integrity sha512-bzVZNraNU181CyRI7EVKbkFSM7Q/gZ79avXoZISTWNQSZBdU7mHJiSDDZIIl9qzJdjo5fxtml5oUI98TRw0lnA==
+  dependencies:
+    "@types/fs-extra" "^4.0.2"
+    deepmerge "^4.2.2"
+    fs-extra "^4.0.2"
+    glob "^7.2.0"
+    typescript "^4.4.3"
+
 "@theia/markers@1.18.0":
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/@theia/markers/-/markers-1.18.0.tgz#8e1b0c1c55727915f4ea9c384dcf0c7d250774b8"
@@ -2523,6 +2611,15 @@
   version "1.17.2"
   resolved "https://registry.yarnpkg.com/@theia/ovsx-client/-/ovsx-client-1.17.2.tgz#fbf0c404d69f7e06ac4b33c26f642e6ccb68fda1"
   integrity sha512-Is5tYaFfSoti6KOE6TR1eQH9n0Lpgsi2K7MMa1Oe/ETKDzUTf2aq+8bR/BPtqjId8ldNJETQconvQNKhKPL0ew==
+  dependencies:
+    "@types/bent" "^7.0.1"
+    bent "^7.1.0"
+    semver "^5.4.1"
+
+"@theia/ovsx-client@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@theia/ovsx-client/-/ovsx-client-1.19.0.tgz#6d350c831c7e3280a10269b1ce72f4312896d441"
+  integrity sha512-TCdEURZTywMv7TbvFZpYjCF/mrB2ltu+9gVIk49eGAQISbmyWOoq3h9D4p+r+HTC+9TvBwAP6LSkvfHjuu+3tw==
   dependencies:
     "@types/bent" "^7.0.1"
     bent "^7.1.0"
@@ -7571,7 +7668,7 @@ glob@^7.0.0, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.5:
+glob@^7.0.5, glob@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.0.tgz#d15535af7732e02e948f4c41628bd910293f6023"
   integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
@@ -13991,6 +14088,11 @@ typescript@^3.9.2:
   version "3.9.9"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.9.tgz#e69905c54bc0681d0518bd4d587cc6f2d0b1a674"
   integrity sha512-kdMjTiekY+z/ubJCATUPlRDl39vXYiMV9iyeMuEuXZh2we6zz80uovNN2WlAxmmdE/Z/YQe+EbOEXB5RHEED3w==
+
+typescript@^4.4.3:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
+  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
 
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"

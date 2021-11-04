@@ -10,7 +10,7 @@
     "node": ">=12.14.1 <13"
   },
   "devDependencies": {
-    "@theia/cli": "1.17.2",
+    "@theia/cli": "1.19.0",
     "@types/sinon": "^2.3.5",
     "@types/jsdom": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
@@ -43,7 +43,7 @@
     "test": "lerna run test",
     "download:plugins": "theia download:plugins",
     "update:version": "node ./scripts/update-version.js",
-    "i18n:generate": "theia extract -e vscode -p '+(arduino-ide-extension|browser-app|electron|electron-app|plugins)/**/*.ts' -o ./i18n/en.json",
+    "i18n:generate": "theia nls-extract -e vscode -f '+(arduino-ide-extension|browser-app|electron|electron-app|plugins)/**/*.ts' -o ./i18n/en.json",
     "i18n:check": "yarn i18n:generate && git add -N ./i18n && git diff --exit-code ./i18n",
     "i18n:push": "node ./scripts/i18n/transifex-push.js ./i18n/en.json",
     "i18n:pull": "node ./scripts/i18n/transifex-pull.js ./i18n/"
