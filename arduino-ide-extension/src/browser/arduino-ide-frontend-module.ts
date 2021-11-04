@@ -81,7 +81,7 @@ import {
 } from '../common/protocol/config-service';
 import { MonitorWidget } from './monitor/monitor-widget';
 import { MonitorViewContribution } from './monitor/monitor-view-contribution';
-import { MonitorConnection } from './monitor/monitor-connection';
+import { SerialConnectionManager } from './monitor/monitor-connection';
 import { MonitorModel } from './monitor/monitor-model';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
@@ -409,7 +409,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       return connection.createProxy(MonitorServicePath, client);
     })
     .inSingletonScope();
-  bind(MonitorConnection).toSelf().inSingletonScope();
+  bind(SerialConnectionManager).toSelf().inSingletonScope();
 
   // Serial monitor service client to receive and delegate notifications from the backend.
   bind(MonitorServiceClient).to(MonitorServiceClientImpl).inSingletonScope();

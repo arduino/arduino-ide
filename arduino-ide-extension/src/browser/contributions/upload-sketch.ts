@@ -4,7 +4,7 @@ import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { MonitorConnection } from '../monitor/monitor-connection';
+import { SerialConnectionManager } from '../monitor/monitor-connection';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -21,8 +21,8 @@ export class UploadSketch extends SketchContribution {
   @inject(CoreService)
   protected readonly coreService: CoreService;
 
-  @inject(MonitorConnection)
-  protected readonly monitorConnection: MonitorConnection;
+  @inject(SerialConnectionManager)
+  protected readonly monitorConnection: SerialConnectionManager;
 
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;

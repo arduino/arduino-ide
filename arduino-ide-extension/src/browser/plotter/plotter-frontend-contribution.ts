@@ -13,7 +13,7 @@ import { Contribution } from '../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/core/shared/electron';
 import { MonitorConfig, Status } from '../../common/protocol';
-import { MonitorConnection, SerialType } from '../monitor/monitor-connection';
+import { Serial, SerialConnectionManager } from '../monitor/monitor-connection';
 import { SerialPlotter } from './protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 const queryString = require('query-string');
@@ -41,8 +41,8 @@ export class PlotterFrontendContribution extends Contribution {
   @inject(ThemeService)
   protected readonly themeService: ThemeService;
 
-  @inject(MonitorConnection)
-  protected readonly monitorConnection: MonitorConnection;
+  @inject(SerialConnectionManager)
+  protected readonly monitorConnection: SerialConnectionManager;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
@@ -53,7 +53,7 @@ export class PlotterFrontendContribution extends Contribution {
     ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
       if (this.window) {
         this.window = null;
-        await this.monitorConnection.closeSerial(SerialType.Plotter);
+        await this.monitorConnection.closeSerial(Serial.Type.Plotter);
       }
     });
 
@@ -81,7 +81,7 @@ export class PlotterFrontendContribution extends Contribution {
         return;
       }
     }
-    const status = await this.monitorConnection.openSerial(SerialType.Plotter);
+    const status = await this.monitorConnection.openSerial(Serial.Type.Plotter);
     const wsPort = this.monitorConnection.getWsPort();
     if (Status.isOK(status) && wsPort) {
       this.open(wsPort);

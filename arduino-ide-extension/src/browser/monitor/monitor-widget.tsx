@@ -12,7 +12,7 @@ import {
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { ArduinoSelect } from '../widgets/arduino-select';
 import { MonitorModel } from './monitor-model';
-import { MonitorConnection, SerialType } from './monitor-connection';
+import { Serial, SerialConnectionManager } from './monitor-connection';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { nls } from '@theia/core/lib/browser/nls';
@@ -29,8 +29,8 @@ export class MonitorWidget extends ReactWidget {
   @inject(MonitorModel)
   protected readonly monitorModel: MonitorModel;
 
-  @inject(MonitorConnection)
-  protected readonly monitorConnection: MonitorConnection;
+  @inject(SerialConnectionManager)
+  protected readonly monitorConnection: SerialConnectionManager;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
@@ -58,7 +58,7 @@ export class MonitorWidget extends ReactWidget {
     this.toDispose.push(this.clearOutputEmitter);
     this.toDispose.push(
       Disposable.create(() =>
-        this.monitorConnection.closeSerial(SerialType.Monitor)
+        this.monitorConnection.closeSerial(Serial.Type.Monitor)
       )
     );
   }
@@ -82,9 +82,7 @@ export class MonitorWidget extends ReactWidget {
 
   protected onAfterAttach(msg: Message): void {
     super.onAfterAttach(msg);
-    // const { boardsConfig } = this.boardsServiceProvider;
-
-    this.monitorConnection.openSerial(SerialType.Monitor);
+    this.monitorConnection.openSerial(Serial.Type.Monitor);
   }
 
   onCloseRequest(msg: Message): void {

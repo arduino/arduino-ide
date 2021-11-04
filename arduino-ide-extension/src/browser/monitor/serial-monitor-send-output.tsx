@@ -3,7 +3,7 @@ import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
 import { MonitorModel } from './monitor-model';
-import { MonitorConnection } from './monitor-connection';
+import { SerialConnectionManager } from './monitor-connection';
 import dateFormat = require('dateformat');
 import { messagesToLines, truncateLines } from './monitor-utils';
 
@@ -126,7 +126,7 @@ const Row = React.memo(_Row, areEqual);
 export namespace SerialMonitorOutput {
   export interface Props {
     readonly monitorModel: MonitorModel;
-    readonly monitorConnection: MonitorConnection;
+    readonly monitorConnection: SerialConnectionManager;
     readonly clearConsoleEvent: Event<void>;
     readonly height: number;
   }
