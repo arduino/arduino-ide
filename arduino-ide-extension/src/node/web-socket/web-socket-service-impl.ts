@@ -12,9 +12,11 @@ export default class WebSocketServiceImpl implements WebSocketService {
   public readonly onMessageReceived = this.onMessage.event;
 
   constructor() {
-    this.server = new WebSocket.Server({ port: 0 });
-    this.server.on('connection', this.addClient.bind(this));
     this.wsClients = [];
+    this.server = new WebSocket.Server({ port: 0 });
+
+    const addClient = this.addClient.bind(this);
+    this.server.on('connection', addClient);
   }
 
   private addClient(ws: WebSocket): void {
