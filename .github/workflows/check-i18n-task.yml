@@ -31,5 +31,8 @@ jobs:
           node-version: '12.14.1'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Install dependencies
+        run: yarn
+
       - name: Check for errors
         run: yarn i18n:check
