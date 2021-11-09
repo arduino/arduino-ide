@@ -6,26 +6,18 @@ import { ArduinoComponent } from './arduino-component';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
-  export function groupByProtocol(availablePorts: AvailablePorts): {
-    serial: AvailablePorts;
-    network: AvailablePorts;
-    unknown: AvailablePorts;
-  } {
-    const serial: AvailablePorts = {};
-    const network: AvailablePorts = {};
-    const unknown: AvailablePorts = {};
-    for (const key of Object.keys(availablePorts)) {
-      const [port, boards] = availablePorts[key];
-      const { protocol } = port;
-      if (protocol === 'serial') {
-        serial[key] = [port, boards];
-      } else if (protocol === 'network') {
-        network[key] = [port, boards];
-      } else {
-        unknown[key] = [port, boards];
+  export function byProtocol(availablePorts: AvailablePorts): Map<string, AvailablePorts> {
+    const grouped = new Map<string, AvailablePorts>();
+    for (const address of Object.keys(availablePorts)) {
+      const [port, boards] = availablePorts[address];
+      let ports = grouped.get(port.protocol);
+      if (!ports) {
+        ports = {} as AvailablePorts;
       }
+      ports[address] = [port, boards];
+      grouped.set(port.protocol, ports);
     }
-    return { serial, network, unknown };
+    return grouped;
   }
 }
 
