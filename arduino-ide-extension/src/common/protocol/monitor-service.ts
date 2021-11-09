@@ -11,7 +11,7 @@ export interface ErrorStatus extends Status {
 }
 export namespace Status {
   export function isOK(status: Status & { message?: string }): status is OK {
-    return typeof status.message !== 'string';
+    return !!status && typeof status.message !== 'string';
   }
   export const OK: OK = {};
   export const NOT_CONNECTED: ErrorStatus = { message: 'Not connected.' };

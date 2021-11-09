@@ -12,8 +12,8 @@ export class MonitorServiceClientImpl implements MonitorServiceClient {
   protected readonly onErrorEmitter = new Emitter<MonitorError>();
   readonly onError = this.onErrorEmitter.event;
 
-  protected readonly onMessageEmitter = new Emitter<number>();
-  readonly onWebSocketChanged = this.onMessageEmitter.event;
+  protected readonly onWebSocketChangedEmitter = new Emitter<number>();
+  readonly onWebSocketChanged = this.onWebSocketChangedEmitter.event;
 
   protected readonly onBaudEmitter = new Emitter<MonitorConfig.BaudRate>();
   readonly onBaudRateChanged = this.onBaudEmitter.event;
@@ -26,7 +26,7 @@ export class MonitorServiceClientImpl implements MonitorServiceClient {
   }
 
   notifyWebSocketChanged(message: number): void {
-    this.onMessageEmitter.fire(message);
+    this.onWebSocketChangedEmitter.fire(message);
   }
 
   notifyBaudRateChanged(message: MonitorConfig.BaudRate): void {

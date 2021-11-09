@@ -1,4 +1,4 @@
-import { injectable, inject, postConstruct } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -24,31 +24,13 @@ import { nls } from '@theia/core/lib/browser/nls';
 
 @injectable()
 export class SerialConnectionManager {
-  @inject(MonitorModel)
-  protected readonly monitorModel: MonitorModel;
-
-  @inject(MonitorService)
-  protected readonly monitorService: MonitorService;
-
-  @inject(MonitorServiceClient)
-  protected readonly monitorServiceClient: MonitorServiceClient;
-
-  @inject(BoardsService)
-  protected readonly boardsService: BoardsService;
-
-  @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
-
-  @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
-
-  @inject(MessageService)
-  protected messageService: MessageService;
-
-  @inject(ThemeService)
-  protected readonly themeService: ThemeService;
   protected _state: Serial.State = [];
-  protected _connected: boolean;
+  protected _connected = false;
+  protected config: Partial<MonitorConfig> = {
+    board: undefined,
+    port: undefined,
+    baudRate: undefined,
+  };
 
   /**
    * Note: The idea is to toggle this property from the UI (`Monitor` view)
@@ -73,17 +55,21 @@ export class SerialConnectionManager {
    * When the websocket server is up on the backend, we save the port here, so that the client knows how to connect to it
    * */
   protected wsPort?: number;
-
   protected webSocket?: WebSocket;
 
-  protected config: Partial<MonitorConfig> = {
-    board: undefined,
-    port: undefined,
-    baudRate: undefined,
-  };
-
-  @postConstruct()
-  protected init(): void {
+  constructor(
+    @inject(MonitorModel) protected readonly monitorModel: MonitorModel,
+    @inject(MonitorService) protected readonly monitorService: MonitorService,
+    @inject(MonitorServiceClient)
+    protected readonly monitorServiceClient: MonitorServiceClient,
+    @inject(BoardsService) protected readonly boardsService: BoardsService,
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceProvider: BoardsServiceProvider,
+    @inject(NotificationCenter)
+    protected readonly notificationCenter: NotificationCenter,
+    @inject(MessageService) protected messageService: MessageService,
+    @inject(ThemeService) protected readonly themeService: ThemeService
+  ) {
     this.monitorServiceClient.onWebSocketChanged(
       this.handleWebSocketChanged.bind(this)
     );
@@ -136,7 +122,7 @@ export class SerialConnectionManager {
    *
    * @param newConfig the porperties of the config that has changed
    */
-  protected setConfig(newConfig: Partial<MonitorConfig>): void {
+  setConfig(newConfig: Partial<MonitorConfig>): void {
     let configHasChanged = false;
     Object.keys(this.config).forEach((key: keyof MonitorConfig) => {
       if (newConfig[key] && newConfig[key] !== this.config[key]) {
@@ -149,8 +135,16 @@ export class SerialConnectionManager {
     }
   }
 
+  getConfig(): Partial<MonitorConfig> {
+    return this.config;
+  }
+
   getWsPort(): number | undefined {
     return this.wsPort;
+  }
+
+  isWebSocketConnected(): boolean {
+    return !!this.webSocket?.url;
   }
 
   protected handleWebSocketChanged(wsPort: number): void {

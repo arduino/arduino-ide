@@ -64,7 +64,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
    * This even also fires, when the boards package was not available for the currently selected board,
    * and the user installs the board package. Note: installing a board package will set the `fqbn` of the
    * currently selected board.\
-   * This even also emitted when the board package for the currently selected board was uninstalled.
+   * This event is also emitted when the board package for the currently selected board was uninstalled.
    */
   readonly onBoardsConfigChanged = this.onBoardsConfigChangedEmitter.event;
   readonly onAvailableBoardsChanged =

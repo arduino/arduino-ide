@@ -11,51 +11,18 @@ import { MessageService } from '@theia/core';
 import { BoardsServiceProvider } from '../../browser/boards/boards-service-provider';
 import { BoardsListWidgetFrontendContribution } from '../../browser/boards/boards-widget-frontend-contribution';
 import {
-  Board,
   BoardsPackage,
   BoardsService,
-  Port,
   ResponseServiceArduino,
 } from '../../common/protocol';
 import { IMock, It, Mock, Times } from 'typemoq';
 import { Container, ContainerModule } from 'inversify';
 import { BoardsAutoInstaller } from '../../browser/boards/boards-auto-installer';
-import { BoardsConfig } from '../../browser/boards/boards-config';
 import { tick } from '../utils';
 import { ListWidget } from '../../browser/widgets/component-list/list-widget';
+import { aBoardConfig, anInstalledPackage, aPackage } from './fixtures/boards';
 
 disableJSDOM();
-
-const aBoard: Board = {
-  fqbn: 'some:board:fqbn',
-  name: 'Some Arduino Board',
-  port: { address: '/lol/port1234', protocol: 'serial' },
-};
-const aPort: Port = {
-  address: aBoard.port!.address,
-  protocol: aBoard.port!.protocol,
-};
-const aBoardConfig: BoardsConfig.Config = {
-  selectedBoard: aBoard,
-  selectedPort: aPort,
-};
-const aPackage: BoardsPackage = {
-  author: 'someAuthor',
-  availableVersions: ['some.ver.sion', 'some.other.version'],
-  boards: [aBoard],
-  deprecated: false,
-  description: 'Some Arduino Board, Some Other Arduino Board',
-  id: 'some:arduinoCoreId',
-  installable: true,
-  moreInfoLink: 'http://www.some-url.lol/',
-  name: 'Some Arduino Package',
-  summary: 'Boards included in this package:',
-};
-
-const anInstalledPackage: BoardsPackage = {
-  ...aPackage,
-  installedVersion: 'some.ver.sion',
-};
 
 describe('BoardsAutoInstaller', () => {
   let subject: BoardsAutoInstaller;
