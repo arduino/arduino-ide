@@ -95,11 +95,9 @@ export class BoardDiscovery extends CoreClientAware {
         const newState = deepClone(this._state);
 
         const address = (detectedPort as any).getPort().getAddress();
-        const protocol = Port.Protocol.toProtocol(
-          (detectedPort as any).getPort().getProtocol()
-        );
-        // const label = detectedPort.getProtocolLabel();
-        const port = { address, protocol };
+        const protocol = (detectedPort as any).getPort().getProtocol();
+        const label = (detectedPort as any).getPort().getLabel();;
+        const port = { address, protocol, label };
         const boards: Board[] = [];
         for (const item of detectedPort.getMatchingBoardsList()) {
           boards.push({

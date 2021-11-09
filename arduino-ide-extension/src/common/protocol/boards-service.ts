@@ -134,7 +134,7 @@ export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService
   extends Installable<BoardsPackage>,
-    Searchable<BoardsPackage> {
+  Searchable<BoardsPackage> {
   /**
    * Deprecated. `getState` should be used to correctly map a board with a port.
    * @deprecated
@@ -156,26 +156,13 @@ export interface BoardsService
 
 export interface Port {
   readonly address: string;
-  readonly protocol: Port.Protocol;
+  readonly protocol: string;
   /**
    * Optional label for the protocol. For example: `Serial Port (USB)`.
    */
   readonly label?: string;
 }
 export namespace Port {
-  export type Protocol = 'serial' | 'network' | 'unknown';
-  export namespace Protocol {
-    export function toProtocol(protocol: string | undefined): Protocol {
-      if (protocol === 'serial') {
-        return 'serial';
-      } else if (protocol === 'network') {
-        return 'network';
-      } else {
-        return 'unknown';
-      }
-    }
-  }
-
   export function is(arg: any): arg is Port {
     return (
       !!arg &&
