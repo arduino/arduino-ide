@@ -247,17 +247,25 @@ PID: ${PID}`;
     }
 
     // Installed ports
-    const registerPorts = (protocol: string, ports: AvailablePorts) => {
+    const registerPorts = (
+      protocol: string,
+      protocolOrder: number,
+      ports: AvailablePorts
+    ) => {
       const addresses = Object.keys(ports);
       if (!addresses.length) {
         return;
       }
 
       // Register placeholder for protocol
-      const menuPath = [...portsSubmenuPath, protocol];
+      const menuPath = [
+        ...portsSubmenuPath,
+        `${protocolOrder.toString()}_${protocol}`,
+      ];
       const placeholder = new PlaceholderMenuNode(
         menuPath,
-        `${firstToUpperCase(protocol)} ports`
+        `${firstToUpperCase(protocol)} ports`,
+        { order: protocolOrder.toString() }
       );
       this.menuModelRegistry.registerMenuNode(menuPath, placeholder);
       this.toDisposeBeforeMenuRebuild.push(
@@ -266,7 +274,17 @@ PID: ${PID}`;
         )
       );
 
-      for (const address of Object.keys(ports)) {
+      // First we show addresses with recognized boards connected,
+      // then all the rest.
+      const sortedAddresses = Object.keys(ports);
+      sortedAddresses.sort((left: string, right: string): number => {
+        const [, leftBoards] = ports[left];
+        const [, rightBoards] = ports[right];
+        return rightBoards.length - leftBoards.length;
+      });
+
+      for (let i = 0; i < sortedAddresses.length; i++) {
+        const address = sortedAddresses[i];
         const [port, boards] = ports[address];
         if (!boards.length) {
           boards.push({ name: '' });
@@ -301,7 +319,7 @@ PID: ${PID}`;
           const menuAction = {
             commandId: id,
             label,
-            order: `1${label}`, // `1` comes after the placeholder which has order `0`
+            order: `${protocolOrder + i + 1}`,
           };
           this.commandRegistry.registerCommand(command, handler);
           this.toDisposeBeforeMenuRebuild.push(
@@ -315,18 +333,19 @@ PID: ${PID}`;
     };
 
     const grouped = AvailablePorts.byProtocol(availablePorts);
+    let protocolOrder = 100;
     // We first show serial and network ports, then all the rest
     ['serial', 'network'].forEach((protocol) => {
       const ports = grouped.get(protocol);
       if (ports) {
-        registerPorts(protocol, ports);
+        registerPorts(protocol, protocolOrder, ports);
+        grouped.delete(protocol);
+        protocolOrder = protocolOrder + 100;
       }
     });
     grouped.forEach((ports, protocol) => {
-      if (protocol === 'serial' || protocol === 'network') {
-        return;
-      }
-      registerPorts(protocol, ports);
+      registerPorts(protocol, protocolOrder, ports);
+      protocolOrder = protocolOrder + 100;
     });
 
     this.mainMenuManager.update();
