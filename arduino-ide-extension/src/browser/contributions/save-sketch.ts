@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
+import { SaveAsSketch } from './save-as-sketch';
 import {
   SketchContribution,
   Command,
@@ -51,6 +52,22 @@ export class SaveSketch extends SketchContribution {
   }
 
   async saveSketch(): Promise<void> {
+    const sketch = await this.sketchServiceClient.currentSketch();
+    if (!sketch) {
+      return;
+    }
+    const isTemp = await this.sketchService.isTemp(sketch);
+    if (isTemp) {
+      return this.commandService.executeCommand(
+        SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+        {
+          execOnlyIfTemp: false,
+          openAfterMove: true,
+          wipeOriginal: true,
+        }
+      );
+    }
+
     return this.commandService.executeCommand(CommonCommands.SAVE_ALL.id);
   }
 }
