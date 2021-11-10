@@ -262,26 +262,8 @@ export namespace Port {
     right: Port | string | undefined
   ) {
     if (left && right) {
-      if (left.protocol !== 'serial') {
-        console.log(
-          `Unexpected protocol for 'left' port: ${JSON.stringify(
-            left
-          )}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(
-            right
-          )}.`
-        );
-      }
       if (typeof right === 'string') {
         return left.address === right;
-      }
-      if (right.protocol !== 'serial') {
-        console.log(
-          `Unexpected protocol for 'right' port: ${JSON.stringify(
-            right
-          )}. Ignoring 'protocol', comparing 'addresses' with ${JSON.stringify(
-            left
-          )}.`
-        );
       }
       return left.address === right.address;
     }
