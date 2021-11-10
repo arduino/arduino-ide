@@ -286,49 +286,46 @@ PID: ${PID}`;
       for (let i = 0; i < sortedAddresses.length; i++) {
         const address = sortedAddresses[i];
         const [port, boards] = ports[address];
-        if (!boards.length) {
-          boards.push({ name: '' });
+        let label = `${address}`;
+        if (boards.length) {
+          const boardsList = boards.map((board) => board.name).join(', ');
+          label = `${label} (${boardsList})`;
         }
-        for (const { name, fqbn } of boards) {
-          const id = `arduino-select-port--${address}${
-            fqbn ? `--${fqbn}` : ''
-          }`;
-          const command = { id };
-          const handler = {
-            execute: () => {
-              if (
-                !Port.equals(
-                  port,
-                  this.boardsServiceProvider.boardsConfig.selectedPort
-                )
-              ) {
-                this.boardsServiceProvider.boardsConfig = {
-                  selectedBoard:
-                    this.boardsServiceProvider.boardsConfig.selectedBoard,
-                  selectedPort: port,
-                };
-              }
-            },
-            isToggled: () =>
-              Port.equals(
+        const id = `arduino-select-port--${address}`;
+        const command = { id };
+        const handler = {
+          execute: () => {
+            if (
+              !Port.equals(
                 port,
                 this.boardsServiceProvider.boardsConfig.selectedPort
-              ),
-          };
-          const label = `${address}${name ? ` (${name})` : ''}`;
-          const menuAction = {
-            commandId: id,
-            label,
-            order: `${protocolOrder + i + 1}`,
-          };
-          this.commandRegistry.registerCommand(command, handler);
-          this.toDisposeBeforeMenuRebuild.push(
-            Disposable.create(() =>
-              this.commandRegistry.unregisterCommand(command)
-            )
-          );
-          this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
-        }
+              )
+            ) {
+              this.boardsServiceProvider.boardsConfig = {
+                selectedBoard:
+                  this.boardsServiceProvider.boardsConfig.selectedBoard,
+                selectedPort: port,
+              };
+            }
+          },
+          isToggled: () =>
+            Port.equals(
+              port,
+              this.boardsServiceProvider.boardsConfig.selectedPort
+            ),
+        };
+        const menuAction = {
+          commandId: id,
+          label,
+          order: `${protocolOrder + i + 1}`,
+        };
+        this.commandRegistry.registerCommand(command, handler);
+        this.toDisposeBeforeMenuRebuild.push(
+          Disposable.create(() =>
+            this.commandRegistry.unregisterCommand(command)
+          )
+        );
+        this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
       }
     };
 
