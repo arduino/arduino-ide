@@ -19,7 +19,7 @@
     "test:watch": "mocha --watch --watch-files lib \"./lib/test/**/*.test.js\""
   },
   "dependencies": {
-    "arduino-serial-plotter-webapp": "0.0.6",   
+    "arduino-serial-plotter-webapp": "0.0.8",   
     "@grpc/grpc-js": "^1.3.7",
     "@theia/application-package": "1.18.0",
     "@theia/core": "1.18.0",
