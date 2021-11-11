@@ -173,7 +173,7 @@ export class MonitorServiceImpl implements MonitorService {
       } catch (error) {}
     });
 
-    // empty the queue every 16ms (~60fps)
+    // empty the queue every 32ms (~30fps)
     setInterval(flushMessagesToFrontend, 32);
 
     // converts 'ab\nc\nd' => [ab\n,c\n,d]
