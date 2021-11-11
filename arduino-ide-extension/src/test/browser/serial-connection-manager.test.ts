@@ -22,7 +22,6 @@ import {
 } from '../../browser/monitor/monitor-connection';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { MonitorModel } from '../../browser/monitor/monitor-model';
-import { NotificationCenter } from '../../browser/notification-center';
 import {
   aBoardConfig,
   anotherBoardConfig,
@@ -50,7 +49,6 @@ describe.only('SerialConnectionManager', () => {
   let monitorServiceClient: IMock<MonitorServiceClient>;
   let boardsService: IMock<BoardsService>;
   let boardsServiceProvider: IMock<BoardsServiceProvider>;
-  let notificationCenter: IMock<NotificationCenter>;
   let messageService: IMock<MessageService>;
   let themeService: IMock<ThemeService>;
 
@@ -68,7 +66,6 @@ describe.only('SerialConnectionManager', () => {
     monitorServiceClient = Mock.ofType<MonitorServiceClient>();
     boardsService = Mock.ofType<BoardsService>();
     boardsServiceProvider = Mock.ofType<BoardsServiceProvider>();
-    notificationCenter = Mock.ofType<NotificationCenter>();
     messageService = Mock.ofType<MessageService>();
     themeService = Mock.ofType<ThemeService>();
 
@@ -112,7 +109,6 @@ describe.only('SerialConnectionManager', () => {
       monitorServiceClient.object,
       boardsService.object,
       boardsServiceProvider.object,
-      notificationCenter.object,
       messageService.object,
       themeService.object
     );

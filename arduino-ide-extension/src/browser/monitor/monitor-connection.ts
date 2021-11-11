@@ -14,11 +14,9 @@ import {
   Port,
   Board,
   BoardsService,
-  AttachedBoardsChangeEvent,
 } from '../../common/protocol/boards-service';
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
-import { NotificationCenter } from '../notification-center';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { nls } from '@theia/core/lib/browser/nls';
 
@@ -65,8 +63,6 @@ export class SerialConnectionManager {
     @inject(BoardsService) protected readonly boardsService: BoardsService,
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceProvider: BoardsServiceProvider,
-    @inject(NotificationCenter)
-    protected readonly notificationCenter: NotificationCenter,
     @inject(MessageService) protected messageService: MessageService,
     @inject(ThemeService) protected readonly themeService: ThemeService
   ) {
@@ -93,9 +89,7 @@ export class SerialConnectionManager {
     this.boardsServiceProvider.onBoardsConfigChanged(
       this.handleBoardConfigChange.bind(this)
     );
-    this.notificationCenter.onAttachedBoardsChanged(
-      this.handleAttachedBoardsChanged.bind(this)
-    );
+
     // Handles the `baudRate` changes by reconnecting if required.
     this.monitorModel.onChange(({ property }) => {
       if (property === 'baudRate' && this.connected) {
@@ -130,7 +124,7 @@ export class SerialConnectionManager {
   setConfig(newConfig: Partial<MonitorConfig>): void {
     let configHasChanged = false;
     Object.keys(this.config).forEach((key: keyof MonitorConfig) => {
-      if (newConfig[key] && newConfig[key] !== this.config[key]) {
+      if (newConfig[key] !== this.config[key]) {
         configHasChanged = true;
         this.config = { ...this.config, [key]: newConfig[key] };
       }
@@ -222,7 +216,6 @@ export class SerialConnectionManager {
   set connected(c: boolean) {
     this._connected = c;
     this.monitorService.updateWsConfigParam({ connected: c });
-
     this.onConnectionChangedEmitter.fire(this._connected);
   }
   /**
@@ -365,28 +358,6 @@ export class SerialConnectionManager {
     }
   }
 
-  handleAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
-    const { boardsConfig } = this.boardsServiceProvider;
-    if (
-      this.boardsServiceProvider.canUploadTo(boardsConfig, {
-        silent: false,
-      })
-    ) {
-      const { attached } = AttachedBoardsChangeEvent.diff(event);
-      if (
-        attached.boards.some(
-          (board) =>
-            !!board.port && BoardsConfig.Config.sameAs(boardsConfig, board)
-        )
-      ) {
-        const { selectedBoard: board, selectedPort: port } = boardsConfig;
-        const { baudRate } = this.monitorModel;
-        const newConfig = { board, port, baudRate };
-        this.setConfig(newConfig);
-      }
-    }
-  }
-
   async connect(): Promise<Status> {
     if (this.connected) return Status.ALREADY_CONNECTED;
     if (!isMonitorConfig(this.config)) {
@@ -467,21 +438,10 @@ export class SerialConnectionManager {
   protected async handleBoardConfigChange(
     boardsConfig: BoardsConfig.Config
   ): Promise<void> {
-    if (
-      this.boardsServiceProvider.canUploadTo(boardsConfig, {
-        silent: false,
-      })
-    ) {
-      // Instead of calling `getAttachedBoards` and filtering for `AttachedSerialBoard` we have to check the available ports.
-      // The connected board might be unknown. See: https://github.com/arduino/arduino-pro-ide/issues/127#issuecomment-563251881
-      const ports = await this.boardsService.getAvailablePorts();
-      if (ports.some((port) => Port.equals(port, boardsConfig.selectedPort))) {
-        const { selectedBoard: board, selectedPort: port } = boardsConfig;
-        const { baudRate } = this.monitorModel;
-        const newConfig: MonitorConfig = { board, port, baudRate };
-        this.setConfig(newConfig);
-      }
-    }
+    const { selectedBoard: board, selectedPort: port } = boardsConfig;
+    const { baudRate } = this.monitorModel;
+    const newConfig: Partial<MonitorConfig> = { board, port, baudRate };
+    this.setConfig(newConfig);
   }
 }
 
