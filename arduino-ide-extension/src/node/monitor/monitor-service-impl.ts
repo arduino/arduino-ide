@@ -167,6 +167,10 @@ export class MonitorServiceImpl implements MonitorService {
             this.client?.notifyLineEndingChanged(message.data);
             break;
 
+          case SerialPlotter.Protocol.Command.PLOTTER_SET_INTERPOLATE:
+            this.client?.notifyInterpolateChanged(message.data);
+            break;
+
           default:
             break;
         }

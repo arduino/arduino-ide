@@ -24,12 +24,14 @@ export class MonitorModel implements FrontendApplicationContribution {
   protected _timestamp: boolean;
   protected _baudRate: MonitorConfig.BaudRate;
   protected _lineEnding: MonitorModel.EOL;
+  protected _interpolate: boolean;
 
   constructor() {
     this._autoscroll = true;
     this._timestamp = false;
     this._baudRate = MonitorConfig.BaudRate.DEFAULT;
     this._lineEnding = MonitorModel.EOL.DEFAULT;
+    this._interpolate = false;
     this.onChangeEmitter = new Emitter<
       MonitorModel.State.Change<keyof MonitorModel.State>
     >();
@@ -106,11 +108,26 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
+  get interpolate(): boolean {
+    return this._interpolate;
+  }
+
+  set interpolate(i: boolean) {
+    this._interpolate = i;
+    this.storeState().then(() =>
+      this.onChangeEmitter.fire({
+        property: 'interpolate',
+        value: this._interpolate,
+      })
+    );
+  }
+
   protected restoreState(state: MonitorModel.State): void {
     this._autoscroll = state.autoscroll;
     this._timestamp = state.timestamp;
     this._baudRate = state.baudRate;
     this._lineEnding = state.lineEnding;
+    this._interpolate = state.interpolate;
   }
 
   protected async storeState(): Promise<void> {
@@ -119,6 +136,7 @@ export class MonitorModel implements FrontendApplicationContribution {
       timestamp: this._timestamp,
       baudRate: this._baudRate,
       lineEnding: this._lineEnding,
+      interpolate: this._interpolate,
     });
   }
 }
@@ -129,6 +147,7 @@ export namespace MonitorModel {
     timestamp: boolean;
     baudRate: MonitorConfig.BaudRate;
     lineEnding: EOL;
+    interpolate: boolean;
   }
   export namespace State {
     export interface Change<K extends keyof State> {

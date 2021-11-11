@@ -3,7 +3,6 @@ import { injectable, inject } from 'inversify';
 import {
   Command,
   CommandRegistry,
-  DisposableCollection,
   MaybePromise,
   MenuModelRegistry,
 } from '@theia/core';
@@ -33,7 +32,6 @@ export class PlotterFrontendContribution extends Contribution {
   protected window: Window | null;
   protected url: string;
   protected wsPort: number;
-  protected toDispose = new DisposableCollection();
 
   @inject(MonitorModel)
   protected readonly model: MonitorModel;
@@ -51,9 +49,14 @@ export class PlotterFrontendContribution extends Contribution {
     this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
 
     ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
-      if (this.window) {
+      if (!!this.window) {
         this.window = null;
         await this.monitorConnection.closeSerial(Serial.Type.Plotter);
+      }
+    });
+
+    this.monitorConnection.onConnectionChanged((connected) => {
+      if (!!this.window) {
       }
     });
 
@@ -76,7 +79,7 @@ export class PlotterFrontendContribution extends Contribution {
 
   async connect(): Promise<void> {
     if (this.monitorConnection.connected) {
-      if (this.window) {
+      if (!!this.window) {
         this.window.focus();
         return;
       }
@@ -91,12 +94,15 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   protected open(wsPort: number): void {
-    const initConfig: SerialPlotter.Config = {
+    const initConfig: Partial<SerialPlotter.Config> = {
       baudrates: MonitorConfig.BaudRates.map((b) => b),
       currentBaudrate: this.model.baudRate,
       currentLineEnding: this.model.lineEnding,
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
+      interpolate: this.model.interpolate,
+      connected: this.monitorConnection.connected,
+      serialPort: this.boardsServiceProvider.boardsConfig.selectedPort?.address,
     };
     const urlWithParams = queryString.stringifyUrl(
       {

@@ -83,6 +83,11 @@ export class SerialConnectionManager {
         this.monitorModel.lineEnding = lineending;
       }
     });
+    this.monitorServiceClient.onInterpolateChanged((interpolate) => {
+      if (this.monitorModel.interpolate !== interpolate) {
+        this.monitorModel.interpolate = interpolate;
+      }
+    });
 
     this.monitorServiceClient.onError(this.handleError.bind(this));
     this.boardsServiceProvider.onBoardsConfigChanged(
@@ -100,11 +105,11 @@ export class SerialConnectionManager {
 
       // update the current values in the backend and propagate to websocket clients
       this.monitorService.updateWsConfigParam({
-        ...(property === 'baudRate' && {
-          currentBaudrate: this.monitorModel.baudRate,
-        }),
         ...(property === 'lineEnding' && {
           currentLineEnding: this.monitorModel.lineEnding,
+        }),
+        ...(property === 'interpolate' && {
+          interpolate: this.monitorModel.interpolate,
         }),
       });
     });
@@ -131,6 +136,10 @@ export class SerialConnectionManager {
       }
     });
     if (configHasChanged && this.isSerialOpen()) {
+      this.monitorService.updateWsConfigParam({
+        currentBaudrate: this.config.baudRate,
+        serialPort: this.config.port?.address,
+      });
       this.disconnect().then(() => this.connect());
     }
   }
@@ -212,6 +221,8 @@ export class SerialConnectionManager {
 
   set connected(c: boolean) {
     this._connected = c;
+    this.monitorService.updateWsConfigParam({ connected: c });
+
     this.onConnectionChangedEmitter.fire(this._connected);
   }
   /**

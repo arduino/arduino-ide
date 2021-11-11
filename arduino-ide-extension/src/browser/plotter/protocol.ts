@@ -5,12 +5,16 @@ export namespace SerialPlotter {
     currentLineEnding: string;
     darkTheme: boolean;
     wsPort: number;
+    interpolate: boolean;
+    serialPort: string;
+    connected: boolean;
     generate?: boolean;
   };
   export namespace Protocol {
     export enum Command {
       PLOTTER_SET_BAUDRATE = 'PLOTTER_SET_BAUDRATE',
       PLOTTER_SET_LINE_ENDING = 'PLOTTER_SET_LINE_ENDING',
+      PLOTTER_SET_INTERPOLATE = 'PLOTTER_SET_INTERPOLATE',
       PLOTTER_SEND_MESSAGE = 'PLOTTER_SEND_MESSAGE',
       MIDDLEWARE_CONFIG_CHANGED = 'MIDDLEWARE_CONFIG_CHANGED',
     }

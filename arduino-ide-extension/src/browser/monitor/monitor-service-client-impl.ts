@@ -15,11 +15,16 @@ export class MonitorServiceClientImpl implements MonitorServiceClient {
   protected readonly onWebSocketChangedEmitter = new Emitter<number>();
   readonly onWebSocketChanged = this.onWebSocketChangedEmitter.event;
 
-  protected readonly onBaudEmitter = new Emitter<MonitorConfig.BaudRate>();
-  readonly onBaudRateChanged = this.onBaudEmitter.event;
+  protected readonly onBaudRateChangedEmitter =
+    new Emitter<MonitorConfig.BaudRate>();
+  readonly onBaudRateChanged = this.onBaudRateChangedEmitter.event;
 
-  protected readonly onEolEmitter = new Emitter<MonitorModel.EOL>();
-  readonly onLineEndingChanged = this.onEolEmitter.event;
+  protected readonly onLineEndingChangedEmitter =
+    new Emitter<MonitorModel.EOL>();
+  readonly onLineEndingChanged = this.onLineEndingChangedEmitter.event;
+
+  protected readonly onInterpolateChangedEmitter = new Emitter<boolean>();
+  readonly onInterpolateChanged = this.onInterpolateChangedEmitter.event;
 
   notifyError(error: MonitorError): void {
     this.onErrorEmitter.fire(error);
@@ -30,10 +35,14 @@ export class MonitorServiceClientImpl implements MonitorServiceClient {
   }
 
   notifyBaudRateChanged(message: MonitorConfig.BaudRate): void {
-    this.onBaudEmitter.fire(message);
+    this.onBaudRateChangedEmitter.fire(message);
   }
 
   notifyLineEndingChanged(message: MonitorModel.EOL): void {
-    this.onEolEmitter.fire(message);
+    this.onLineEndingChangedEmitter.fire(message);
+  }
+
+  notifyInterpolateChanged(message: boolean): void {
+    this.onInterpolateChangedEmitter.fire(message);
   }
 }

@@ -61,10 +61,12 @@ export interface MonitorServiceClient {
   onWebSocketChanged: Event<number>;
   onLineEndingChanged: Event<MonitorModel.EOL>;
   onBaudRateChanged: Event<MonitorConfig.BaudRate>;
+  onInterpolateChanged: Event<boolean>;
   notifyError(event: MonitorError): void;
   notifyWebSocketChanged(message: number): void;
   notifyLineEndingChanged(message: MonitorModel.EOL): void;
   notifyBaudRateChanged(message: MonitorConfig.BaudRate): void;
+  notifyInterpolateChanged(message: boolean): void;
 }
 
 export interface MonitorError {
