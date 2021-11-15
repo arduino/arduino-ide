@@ -14,7 +14,7 @@ import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import URI from '@theia/core/lib/common/uri';
 import { SketchCache } from './cloud-sketch-cache';
 import { Create } from '../../create/typings';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export function sketchBaseDir(sketch: Create.Sketch): FileStat {
   // extract the sketch path

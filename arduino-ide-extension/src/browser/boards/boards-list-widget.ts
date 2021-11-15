@@ -5,7 +5,7 @@ import {
 } from '../../common/protocol/boards-service';
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsListWidget extends ListWidget<BoardsPackage> {

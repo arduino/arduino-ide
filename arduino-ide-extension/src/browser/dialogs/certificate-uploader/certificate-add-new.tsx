@@ -1,4 +1,4 @@
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 import * as React from 'react';
 
 export const CertificateAddComponent = ({

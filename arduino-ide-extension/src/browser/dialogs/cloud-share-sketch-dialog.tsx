@@ -6,7 +6,7 @@ import { clipboard } from 'electron';
 import { ReactWidget, DialogProps } from '@theia/core/lib/browser';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { CreateApi } from '../create/create-api';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const RadioButton = (props: {
   id: string;

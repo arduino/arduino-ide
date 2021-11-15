@@ -9,7 +9,7 @@ import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
-import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import {
   MenuModelRegistry,
   MenuContribution,

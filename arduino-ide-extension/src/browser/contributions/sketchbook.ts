@@ -7,7 +7,7 @@ import { NotificationCenter } from '../notification-center';
 import { Examples } from './examples';
 import { SketchContainer } from '../../common/protocol';
 import { OpenSketch } from './open-sketch';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class Sketchbook extends Examples {

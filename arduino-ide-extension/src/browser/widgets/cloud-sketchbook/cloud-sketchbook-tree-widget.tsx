@@ -11,7 +11,7 @@ import { TreeNode } from '@theia/core/lib/browser/tree';
 import { CompositeTreeNode } from '@theia/core/lib/browser';
 import { shell } from 'electron';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const LEARN_MORE_URL =
   'https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-cloud-sketch-sync';

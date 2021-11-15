@@ -18,7 +18,7 @@ import {
   certificateList,
 } from '../dialogs/certificate-uploader/utils';
 import { ArduinoFirmwareUploader } from '../../common/protocol/arduino-firmware-uploader';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class UploadCertificate extends Contribution {

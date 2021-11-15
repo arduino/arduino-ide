@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
-import { NewWindowOptions } from '@theia/core/lib/browser/window/window-service';
 import { ElectronMainWindowServiceImpl as TheiaElectronMainWindowService } from '@theia/core/lib/electron-main/electron-main-window-service-impl';
 import { ElectronMainApplication } from './electron-main-application';
+import { NewWindowOptions } from '@theia/core/lib/common/window';
 
 @injectable()
 export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowService {

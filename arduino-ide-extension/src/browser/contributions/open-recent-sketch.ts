@@ -14,7 +14,7 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { OpenSketch } from './open-sketch';
 import { NotificationCenter } from '../notification-center';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class OpenRecentSketch extends SketchContribution {

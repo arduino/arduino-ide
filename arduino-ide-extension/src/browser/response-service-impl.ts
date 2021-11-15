@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
-import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import {
   OutputMessage,
   ProgressMessage,

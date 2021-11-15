@@ -9,7 +9,7 @@ import {
   URI,
 } from './contribution';
 import { FileDialogService } from '@theia/filesystem/lib/browser';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class AddFile extends SketchContribution {

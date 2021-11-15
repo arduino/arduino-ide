@@ -15,7 +15,7 @@ import {
   KeybindingRegistry,
   URI,
 } from './contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 /**
  * Closes the `current` closeable editor, or any closeable current widget from the main area, or the current sketch window.

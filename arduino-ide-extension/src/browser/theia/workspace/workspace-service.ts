@@ -17,7 +17,7 @@ import {
 import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {

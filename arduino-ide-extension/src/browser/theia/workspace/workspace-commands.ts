@@ -15,7 +15,7 @@ import { WorkspaceInputDialog } from './workspace-input-dialog';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SingleTextInputDialog } from '@theia/core/lib/browser';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribution {

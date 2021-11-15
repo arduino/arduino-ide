@@ -20,7 +20,7 @@ import {
 import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { NotificationCenter } from '../notification-center';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class MonitorConnection {

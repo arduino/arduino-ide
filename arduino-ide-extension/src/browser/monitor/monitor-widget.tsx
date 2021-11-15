@@ -15,7 +15,7 @@ import { MonitorModel } from './monitor-model';
 import { MonitorConnection } from './monitor-connection';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {

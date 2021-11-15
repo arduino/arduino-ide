@@ -9,7 +9,7 @@ import { UserStatus } from './cloud-user-status';
 import { CloudSketchbookTreeWidget } from './cloud-sketchbook-tree-widget';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class CloudSketchbookCompositeWidget extends BaseWidget {

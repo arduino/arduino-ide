@@ -18,7 +18,7 @@ import {
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
-  createMenuBar(): Electron.Menu {
+  createElectronMenuBar(): Electron.Menu {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
     const template = this.fillMenuTemplate([], menuModel);
@@ -30,7 +30,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return menu;
   }
 
-  createContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
+  createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
     const menuModel = this.menuProvider.getMenu(menuPath);
     const template = this.fillMenuTemplate([], menuModel, args, {
       showDisabled: false,
@@ -99,7 +99,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return { label, submenu };
   }
 
-  protected handleDefault(
+  protected handleElectronDefault(
     menuNode: CompositeMenuNode,
     args: any[] = [],
     options?: ElectronMenuOptions

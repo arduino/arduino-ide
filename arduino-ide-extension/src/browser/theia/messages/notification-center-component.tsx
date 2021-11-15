@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NotificationComponent } from './notification-component';
 import { NotificationCenterComponent as TheiaNotificationCenterComponent } from '@theia/messages/lib/browser/notification-center-component';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const PerfectScrollbar = require('react-perfect-scrollbar');
 

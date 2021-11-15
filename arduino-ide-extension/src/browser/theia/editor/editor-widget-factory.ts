@@ -5,7 +5,7 @@ import { LabelProvider } from '@theia/core/lib/browser';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SketchesService, Sketch } from '../../../common/protocol';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
