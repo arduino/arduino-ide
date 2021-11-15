@@ -10,7 +10,7 @@ import {
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { MonitorModel } from './monitor-model';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export namespace SerialMonitor {
   export namespace Commands {

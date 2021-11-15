@@ -154,7 +154,7 @@ import {
 } from '../common/protocol/examples-service';
 import { BuiltInExamples, LibraryExamples } from './contributions/examples';
 import { IncludeLibrary } from './contributions/include-library';
-import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import { OutputChannelManager } from './theia/output/output-channel';
 import {
   OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl,
@@ -253,7 +253,7 @@ import {
   UploadCertificateDialogProps,
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/certificate-uploader-dialog';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 

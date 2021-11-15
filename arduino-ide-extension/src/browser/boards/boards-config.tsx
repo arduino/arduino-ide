@@ -11,7 +11,7 @@ import {
 } from '../../common/protocol/boards-service';
 import { NotificationCenter } from '../notification-center';
 import { BoardsServiceProvider } from './boards-service-provider';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export namespace BoardsConfig {
   export interface Config {

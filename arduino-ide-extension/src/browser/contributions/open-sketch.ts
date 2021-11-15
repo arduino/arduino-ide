@@ -22,7 +22,7 @@ import { ExamplesService } from '../../common/protocol/examples-service';
 import { BuiltInExamples } from './examples';
 import { Sketchbook } from './sketchbook';
 import { SketchContainer } from '../../common/protocol';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class OpenSketch extends SketchContribution {

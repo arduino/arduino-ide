@@ -8,7 +8,7 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import { ArduinoDaemon } from '../../../common/protocol';
 import { NotificationCenter } from '../../notification-center';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class FrontendConnectionStatusService extends TheiaFrontendConnectionStatusService {

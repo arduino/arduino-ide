@@ -33,7 +33,7 @@ import {
   ProxySettings,
 } from '../common/protocol';
 import { AbstractDialog } from './theia/dialogs/dialogs';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const EDITOR_SETTING = 'editor';
 const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;

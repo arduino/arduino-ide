@@ -7,7 +7,7 @@ import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { CloudUserCommands } from '../../auth/cloud-user-commands';
 import { AuthenticationSessionAccountInformation } from '../../../common/protocol/authentication-service';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export class UserStatus extends React.Component<
   UserStatus.Props,

@@ -18,7 +18,7 @@ import {
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { certificateList, sanifyCertString } from './utils';
 import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class UploadCertificateDialogWidget extends ReactWidget {

@@ -21,7 +21,7 @@ import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class SketchControl extends SketchContribution {

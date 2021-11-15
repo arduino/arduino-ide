@@ -9,7 +9,7 @@ import {
   CommandRegistry,
   MenuModelRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class ArchiveSketch extends SketchContribution {

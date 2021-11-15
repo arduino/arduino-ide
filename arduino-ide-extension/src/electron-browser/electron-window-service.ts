@@ -7,7 +7,7 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
 import { SplashService } from '../electron-common/splash-service';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class ElectronWindowService extends TheiaElectronWindowService {

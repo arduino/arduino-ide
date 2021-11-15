@@ -27,7 +27,7 @@ import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-ser
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export const SKETCHBOOKSYNC__CONTEXT = ['arduino-sketchbook-sync--context'];
 

@@ -3,7 +3,7 @@ import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { MonitorConfig } from '../../common/protocol/monitor-service';
 import { isOSX } from '@theia/core/lib/common/os';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export namespace SerialMonitorSendInput {
   export interface Props {

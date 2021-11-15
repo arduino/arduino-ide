@@ -6,7 +6,7 @@ import {
   ConfirmDialogProps,
   DialogError,
 } from '@theia/core/lib/browser/dialogs';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class DoNotAskAgainDialogProps extends ConfirmDialogProps {

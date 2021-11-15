@@ -7,7 +7,7 @@ import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model
 import {
   OutputChannelManager as TheiaOutputChannelManager,
   OutputChannel as TheiaOutputChannel,
-} from '@theia/output/lib/common/output-channel';
+} from '@theia/output/lib/browser/output-channel';
 
 @injectable()
 export class OutputChannelManager extends TheiaOutputChannelManager {

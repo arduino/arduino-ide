@@ -1,4 +1,4 @@
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 import * as React from 'react';
 import { AvailableBoard } from '../../boards/boards-service-provider';
 import { ArduinoSelect } from '../../widgets/arduino-select';
