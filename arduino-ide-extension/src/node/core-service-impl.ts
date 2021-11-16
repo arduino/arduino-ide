@@ -32,6 +32,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
 
+  protected uploading = false;
+
   async compile(
     options: CoreService.Compile.Options & {
       exportBinaries?: boolean;
@@ -110,6 +112,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     );
   }
 
+  isUploading(): Promise<boolean> {
+    return Promise.resolve(this.uploading);
+  }
+
   protected async doUpload(
     options: CoreService.Upload.Options,
     requestProvider: () => UploadRequest | UploadUsingProgrammerRequest,
@@ -120,6 +126,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     ) => ClientReadableStream<UploadResponse | UploadUsingProgrammerResponse>,
     task = 'upload'
   ): Promise<void> {
+    this.uploading = true;
     await this.compile(Object.assign(options, { exportBinaries: false }));
     const { sketchUri, fqbn, port, programmer } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
@@ -173,6 +180,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         severity: 'error',
       });
       throw e;
+    } finally {
+      this.uploading = false;
     }
   }
 

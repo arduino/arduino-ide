@@ -19,6 +19,7 @@ import { BoardsConfig } from '../boards/boards-config';
 import { MonitorModel } from './monitor-model';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { nls } from '@theia/core/lib/browser/nls';
+import { CoreService } from '../../common/protocol';
 
 @injectable()
 export class SerialConnectionManager {
@@ -64,7 +65,8 @@ export class SerialConnectionManager {
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceProvider: BoardsServiceProvider,
     @inject(MessageService) protected messageService: MessageService,
-    @inject(ThemeService) protected readonly themeService: ThemeService
+    @inject(ThemeService) protected readonly themeService: ThemeService,
+    @inject(CoreService) protected readonly core: CoreService
   ) {
     this.monitorServiceClient.onWebSocketChanged(
       this.handleWebSocketChanged.bind(this)
@@ -121,7 +123,7 @@ export class SerialConnectionManager {
    *
    * @param newConfig the porperties of the config that has changed
    */
-  setConfig(newConfig: Partial<MonitorConfig>): void {
+  async setConfig(newConfig: Partial<MonitorConfig>): Promise<void> {
     let configHasChanged = false;
     Object.keys(this.config).forEach((key: keyof MonitorConfig) => {
       if (newConfig[key] !== this.config[key]) {
@@ -129,12 +131,17 @@ export class SerialConnectionManager {
         this.config = { ...this.config, [key]: newConfig[key] };
       }
     });
-    if (configHasChanged && this.isSerialOpen()) {
+    if (
+      configHasChanged &&
+      this.isSerialOpen() &&
+      !(await this.core.isUploading())
+    ) {
       this.monitorService.updateWsConfigParam({
         currentBaudrate: this.config.baudRate,
         serialPort: this.config.port?.address,
       });
-      this.disconnect().then(() => this.connect());
+      await this.disconnect();
+      await this.connect();
     }
   }
 
@@ -176,22 +183,25 @@ export class SerialConnectionManager {
   /**
    * Sets the types of connections needed by the client.
    *
-   * @param s The new types of connections (can be 'Monitor', 'Plotter', none or both).
+   * @param newState The new types of connections (can be 'Monitor', 'Plotter', none or both).
    *          If the previuos state was empty and 's' is not, it tries to reconnect to the serial service
    *          If the provios state was NOT empty and now it is, it disconnects to the serial service
    * @returns The status of the operation
    */
-  protected async setState(s: Serial.State): Promise<Status> {
+  protected async setState(newState: Serial.State): Promise<Status> {
     const oldState = deepClone(this._state);
-    this._state = s;
     let status = Status.OK;
 
-    if (this.isSerialOpen(oldState) && !this.isSerialOpen()) {
+    if (this.isSerialOpen(oldState) && !this.isSerialOpen(newState)) {
       status = await this.disconnect();
-    } else if (!this.isSerialOpen(oldState) && this.isSerialOpen()) {
+    } else if (!this.isSerialOpen(oldState) && this.isSerialOpen(newState)) {
+      if (await this.core.isUploading()) {
+        this.messageService.error(`Cannot open serial port when uploading`);
+        return Status.NOT_CONNECTED;
+      }
       status = await this.connect();
     }
-
+    this._state = newState;
     return status;
   }
 
@@ -226,6 +236,12 @@ export class SerialConnectionManager {
    * @returns the status of the operation
    */
   async openSerial(type: Serial.Type): Promise<Status> {
+    if (!isMonitorConfig(this.config)) {
+      this.messageService.error(
+        `Please select a board and a port to open the serial connection.`
+      );
+      return Status.NOT_CONNECTED;
+    }
     if (this.state.includes(type)) return Status.OK;
     const newState = deepClone(this.state);
     newState.push(type);
@@ -360,12 +376,7 @@ export class SerialConnectionManager {
 
   async connect(): Promise<Status> {
     if (this.connected) return Status.ALREADY_CONNECTED;
-    if (!isMonitorConfig(this.config)) {
-      this.messageService.error(
-        `Please select a board and a port to open the serial connection.`
-      );
-      return Status.NOT_CONNECTED;
-    }
+    if (!isMonitorConfig(this.config)) return Status.NOT_CONNECTED;
 
     console.info(
       `>>> Creating serial connection for ${Board.toString(

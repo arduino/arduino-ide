@@ -22,6 +22,7 @@ export interface CoreService {
   upload(options: CoreService.Upload.Options): Promise<void>;
   uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
   burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;
+  isUploading(): Promise<boolean>;
 }
 
 export namespace CoreService {

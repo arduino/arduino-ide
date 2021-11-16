@@ -55,11 +55,6 @@ export class PlotterFrontendContribution extends Contribution {
       }
     });
 
-    this.monitorConnection.onConnectionChanged((connected) => {
-      if (!!this.window) {
-      }
-    });
-
     return super.onStart(app);
   }
 
@@ -78,17 +73,16 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   async connect(): Promise<void> {
-    if (this.monitorConnection.connected) {
-      if (!!this.window) {
-        this.window.focus();
-        return;
-      }
+    if (!!this.window) {
+      this.window.focus();
+      return;
     }
     const status = await this.monitorConnection.openSerial(Serial.Type.Plotter);
     const wsPort = this.monitorConnection.getWsPort();
     if (Status.isOK(status) && wsPort) {
       this.open(wsPort);
     } else {
+      this.monitorConnection.closeSerial(Serial.Type.Plotter);
       this.messageService.error(`Couldn't open serial plotter`);
     }
   }

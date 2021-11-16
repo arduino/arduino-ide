@@ -11,6 +11,7 @@ import { Emitter, MessageService } from '@theia/core';
 import { BoardsServiceProvider } from '../../browser/boards/boards-service-provider';
 import {
   BoardsService,
+  CoreService,
   MonitorService,
   MonitorServiceClient,
   Status,
@@ -51,6 +52,7 @@ describe.only('SerialConnectionManager', () => {
   let boardsServiceProvider: IMock<BoardsServiceProvider>;
   let messageService: IMock<MessageService>;
   let themeService: IMock<ThemeService>;
+  let core: IMock<CoreService>;
 
   let handleBoardConfigChange: (
     boardsConfig: BoardsConfig.Config
@@ -68,6 +70,7 @@ describe.only('SerialConnectionManager', () => {
     boardsServiceProvider = Mock.ofType<BoardsServiceProvider>();
     messageService = Mock.ofType<MessageService>();
     themeService = Mock.ofType<ThemeService>();
+    core = Mock.ofType<CoreService>();
 
     boardsServiceProvider
       .setup((b) => b.boardsConfig)
@@ -103,6 +106,8 @@ describe.only('SerialConnectionManager', () => {
       .setup((m) => m.disconnect())
       .returns(() => Promise.resolve(Status.OK));
 
+    core.setup((u) => u.isUploading()).returns(() => Promise.resolve(false));
+
     subject = new SerialConnectionManager(
       monitorModel.object,
       monitorService.object,
@@ -110,7 +115,8 @@ describe.only('SerialConnectionManager', () => {
       boardsService.object,
       boardsServiceProvider.object,
       messageService.object,
-      themeService.object
+      themeService.object,
+      core.object
     );
   });
 
