@@ -111,6 +111,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
             },
           });
           event.newGuest = new BrowserWindow(options);
+          event.newGuest.setMenu(null);
           event.newGuest?.on('closed', (e: any) => {
             electronWindow?.webContents.send('CLOSE_CHILD_WINDOW');
           });
