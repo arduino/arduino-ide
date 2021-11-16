@@ -97,6 +97,13 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         if (frameName === 'serialPlotter') {
           event.preventDefault();
           Object.assign(options, {
+            width: 800,
+            minWidth: 620,
+            height: 500,
+            minHeight: 320,
+            center: true,
+            x: 100,
+            y: 100,
             webPreferences: {
               devTools: true,
               nativeWindowOpen: true,
