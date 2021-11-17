@@ -2,7 +2,6 @@ import { ClientDuplexStream } from '@grpc/grpc-js';
 import { TextEncoder } from 'util';
 import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
-import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import {
   MonitorService,
@@ -20,6 +19,7 @@ import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { WebSocketService } from '../web-socket/web-socket-service';
 import { SerialPlotter } from '../../browser/plotter/protocol';
+import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 
 interface ErrorWithCode extends Error {
   readonly code: number;
@@ -77,7 +77,7 @@ export class MonitorServiceImpl implements MonitorService {
     config: MonitorConfig;
   };
   protected messages: string[] = [];
-  protected onMessageDidReadEmitter = new Emitter<void>();
+  protected onMessageReceived: Disposable;
 
   setClient(client: MonitorServiceClient | undefined): void {
     this.client = client;
@@ -148,34 +148,36 @@ export class MonitorServiceImpl implements MonitorService {
       }
     };
 
-    this.webSocketService.onMessageReceived((msg: string) => {
-      try {
-        const message: SerialPlotter.Protocol.Message = JSON.parse(msg);
+    this.onMessageReceived = this.webSocketService.onMessageReceived(
+      (msg: string) => {
+        try {
+          const message: SerialPlotter.Protocol.Message = JSON.parse(msg);
 
-        switch (message.command) {
-          case SerialPlotter.Protocol.Command.PLOTTER_SEND_MESSAGE:
-            this.sendMessageToSerial(message.data);
-            break;
+          switch (message.command) {
+            case SerialPlotter.Protocol.Command.PLOTTER_SEND_MESSAGE:
+              this.sendMessageToSerial(message.data);
+              break;
 
-          case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
-            this.client?.notifyBaudRateChanged(
-              parseInt(message.data, 10) as MonitorConfig.BaudRate
-            );
-            break;
+            case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
+              this.client?.notifyBaudRateChanged(
+                parseInt(message.data, 10) as MonitorConfig.BaudRate
+              );
+              break;
 
-          case SerialPlotter.Protocol.Command.PLOTTER_SET_LINE_ENDING:
-            this.client?.notifyLineEndingChanged(message.data);
-            break;
+            case SerialPlotter.Protocol.Command.PLOTTER_SET_LINE_ENDING:
+              this.client?.notifyLineEndingChanged(message.data);
+              break;
 
-          case SerialPlotter.Protocol.Command.PLOTTER_SET_INTERPOLATE:
-            this.client?.notifyInterpolateChanged(message.data);
-            break;
+            case SerialPlotter.Protocol.Command.PLOTTER_SET_INTERPOLATE:
+              this.client?.notifyInterpolateChanged(message.data);
+              break;
 
-          default:
-            break;
-        }
-      } catch (error) {}
-    });
+            default:
+              break;
+          }
+        } catch (error) {}
+      }
+    );
 
     // empty the queue every 32ms (~30fps)
     setInterval(flushMessagesToFrontend, 32);
@@ -245,6 +247,7 @@ export class MonitorServiceImpl implements MonitorService {
 
   async disconnect(reason?: MonitorError): Promise<Status> {
     try {
+      this.onMessageReceived.dispose();
       if (
         !this.serialConnection &&
         reason &&
