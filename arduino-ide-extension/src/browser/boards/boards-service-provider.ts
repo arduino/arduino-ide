@@ -180,8 +180,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         const selectedAvailableBoard = AvailableBoard.is(selectedBoard)
           ? selectedBoard
           : this._availableBoards.find((availableBoard) =>
-              Board.sameAs(availableBoard, selectedBoard)
-            );
+            Board.sameAs(availableBoard, selectedBoard)
+          );
         if (
           selectedAvailableBoard &&
           selectedAvailableBoard.selected &&
@@ -358,14 +358,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const timeoutTask =
       !!timeout && timeout > 0
         ? new Promise<void>((_, reject) =>
-            setTimeout(
-              () => reject(new Error(`Timeout after ${timeout} ms.`)),
-              timeout
-            )
+          setTimeout(
+            () => reject(new Error(`Timeout after ${timeout} ms.`)),
+            timeout
           )
+        )
         : new Promise<void>(() => {
-            /* never */
-          });
+          /* never */
+        });
     const waitUntilTask = new Promise<void>((resolve) => {
       let candidate = find(what, this.availableBoards);
       if (candidate) {
@@ -384,7 +384,6 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   }
 
   protected async reconcileAvailableBoards(): Promise<void> {
-    const attachedBoards = this._attachedBoards;
     const availablePorts = this._availablePorts;
     // Unset the port on the user's config, if it is not available anymore.
     if (
@@ -402,51 +401,64 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const boardsConfig = this.boardsConfig;
     const currentAvailableBoards = this._availableBoards;
     const availableBoards: AvailableBoard[] = [];
-    const availableBoardPorts = availablePorts.filter(Port.isBoardPort);
-    const attachedSerialBoards = attachedBoards.filter(({ port }) => !!port);
+    const attachedBoards = this._attachedBoards.filter(({ port }) => !!port);
+    const availableBoardPorts = availablePorts.filter((port) => {
+      if (port.protocol === "serial") {
+        // We always show all serial ports, even if there
+        // is no recognized board connected to it
+        return true;
+      }
 
-    for (const boardPort of availableBoardPorts) {
-      let state = AvailableBoard.State.incomplete; // Initial pessimism.
-      let board = attachedSerialBoards.find(({ port }) =>
-        Port.sameAs(boardPort, port)
-      );
-      if (board) {
-        state = AvailableBoard.State.recognized;
-      } else {
-        // If the selected board is not recognized because it is a 3rd party board: https://github.com/arduino/arduino-cli/issues/623
-        // We still want to show it without the red X in the boards toolbar: https://github.com/arduino/arduino-pro-ide/issues/198#issuecomment-599355836
-        const lastSelectedBoard = await this.getLastSelectedBoardOnPort(
-          boardPort
-        );
-        if (lastSelectedBoard) {
-          board = {
-            ...lastSelectedBoard,
-            port: boardPort,
-          };
-          state = AvailableBoard.State.guessed;
+      // All other ports with different protocol are
+      // only shown if there is a recognized board
+      // connected
+      for (const board of attachedBoards) {
+        if (board.port?.address === port.address) {
+          return true;
         }
       }
-      if (!board) {
-        availableBoards.push({
+      return false;
+    });
+
+    for (const boardPort of availableBoardPorts) {
+      let board = attachedBoards.find(({ port }) => Port.sameAs(boardPort, port));
+      const lastSelectedBoard = await this.getLastSelectedBoardOnPort(boardPort);
+
+      let availableBoard = {} as AvailableBoard;
+      if (board) {
+        availableBoard = {
+          ...board,
+          state: AvailableBoard.State.recognized,
+          selected: BoardsConfig.Config.sameAs(boardsConfig, board),
+          port: boardPort,
+        };
+      } else if (lastSelectedBoard) {
+        // If the selected board is not recognized because it is a 3rd party board: https://github.com/arduino/arduino-cli/issues/623
+        // We still want to show it without the red X in the boards toolbar: https://github.com/arduino/arduino-pro-ide/issues/198#issuecomment-599355836
+        availableBoard = {
+          ...lastSelectedBoard,
+          state: AvailableBoard.State.guessed,
+          selected: BoardsConfig.Config.sameAs(boardsConfig, lastSelectedBoard),
+          port: boardPort,
+        };
+      } else {
+        availableBoard = {
           name: nls.localize('arduino/common/unknown', 'Unknown'),
           port: boardPort,
-          state,
-        });
-      } else {
-        const selected = BoardsConfig.Config.sameAs(boardsConfig, board);
-        availableBoards.push({
-          ...board,
-          state,
-          selected,
-          port: boardPort,
-        });
+          state: AvailableBoard.State.incomplete,
+        };
       }
+      availableBoards.push(availableBoard);
     }
 
-    if (
-      boardsConfig.selectedBoard &&
-      !availableBoards.some(({ selected }) => selected)
-    ) {
+    if (boardsConfig.selectedBoard && !availableBoards.some(({ selected }) => selected)) {
+      // If the selected board has the same port of an unknown board
+      // that is already in availableBoards we might get a duplicate port.
+      // So we remove the one already in the array and add the selected one.
+      const found = availableBoards.findIndex(board => board.port?.address === boardsConfig.selectedPort?.address);
+      if (found >= 0) {
+        availableBoards.splice(found, 1);
+      }
       availableBoards.push({
         ...boardsConfig.selectedBoard,
         port: boardsConfig.selectedPort,
@@ -455,28 +467,20 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       });
     }
 
-    const sortedAvailableBoards = availableBoards.sort(AvailableBoard.compare);
-    let hasChanged =
-      sortedAvailableBoards.length !== currentAvailableBoards.length;
-    for (let i = 0; !hasChanged && i < sortedAvailableBoards.length; i++) {
-      hasChanged =
-        AvailableBoard.compare(
-          sortedAvailableBoards[i],
-          currentAvailableBoards[i]
-        ) !== 0;
+    availableBoards.sort(AvailableBoard.compare);
+
+    let hasChanged = availableBoards.length !== currentAvailableBoards.length;
+    for (let i = 0; !hasChanged && i < availableBoards.length; i++) {
+      const [left, right] = [availableBoards[i], currentAvailableBoards[i]];
+      hasChanged = !!AvailableBoard.compare(left, right);
     }
     if (hasChanged) {
-      this._availableBoards = sortedAvailableBoards;
+      this._availableBoards = availableBoards;
       this.onAvailableBoardsChangedEmitter.fire(this._availableBoards);
     }
   }
 
-  protected async getLastSelectedBoardOnPort(
-    port: Port | string | undefined
-  ): Promise<Board | undefined> {
-    if (!port) {
-      return undefined;
-    }
+  protected async getLastSelectedBoardOnPort(port: Port): Promise<Board | undefined> {
     const key = this.getLastSelectedBoardOnPortKey(port);
     return this.getData<Board>(key);
   }
@@ -497,11 +501,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     ]);
   }
 
-  protected getLastSelectedBoardOnPortKey(port: Port | string): string {
-    // TODO: we lose the port's `protocol` info (`serial`, `network`, etc.) here if the `port` is a `string`.
-    return `last-selected-board-on-port:${
-      typeof port === 'string' ? port : Port.toString(port)
-    }`;
+  protected getLastSelectedBoardOnPortKey(port: Port): string {
+    return `last-selected-board-on-port:${Port.toString(port)}`;
   }
 
   protected async loadState(): Promise<void> {
@@ -585,35 +586,30 @@ export namespace AvailableBoard {
     return !!board.port;
   }
 
+  // Available boards must be sorted in this order:
+  // 1. Serial with recognized boards
+  // 2. Serial with guessed boards
+  // 3. Serial with incomplete boards
+  // 4. Network with recognized boards
+  // 5. Other protocols with recognized boards
   export const compare = (left: AvailableBoard, right: AvailableBoard) => {
-    if (left.selected && !right.selected) {
+    if (left.port?.protocol === "serial" && right.port?.protocol !== "serial") {
       return -1;
-    }
-    if (right.selected && !left.selected) {
+    } else if (left.port?.protocol !== "serial" && right.port?.protocol === "serial") {
       return 1;
-    }
-    let result = naturalCompare(left.name, right.name);
-    if (result !== 0) {
-      return result;
-    }
-    if (left.fqbn && right.fqbn) {
-      result = naturalCompare(left.fqbn, right.fqbn);
-      if (result !== 0) {
-        return result;
+    } else if (left.port?.protocol === "network" && right.port?.protocol !== "network") {
+      return -1;
+    } else if (left.port?.protocol !== "network" && right.port?.protocol === "network") {
+      return 1;
+    } else if (left.port?.protocol === "serial" && right.port?.protocol === "serial") {
+      // We show all serial ports, including those that have guessed
+      // or unrecognized boards, so we must sort those too.
+      if (left.state < right.state) {
+        return -1;
+      } else if (left.state > right.state) {
+        return 1;
       }
     }
-    if (left.port && right.port) {
-      result = Port.compare(left.port, right.port);
-      if (result !== 0) {
-        return result;
-      }
-    }
-    if (!!left.selected && !right.selected) {
-      return -1;
-    }
-    if (!!right.selected && !left.selected) {
-      return 1;
-    }
-    return left.state - right.state;
-  };
+    return naturalCompare(left.port?.address!, right.port?.address!);
+  }
 }
