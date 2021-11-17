@@ -120,6 +120,8 @@
             "noneSelected": "No boards selected.",
             "noPortsSelected": "No ports selected for board: '{0}'.",
             "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+            "openBoardsConfig": "Select Other Board & Port",
+            "boardListItem": "{0} at {1}",
             "selectBoardForInfo": "Please select a board to obtain board info.",
             "platformMissing": "The platform for the selected '{0}' board is not installed.",
             "selectPortForInfo": "Please select a port to obtain board info.",

@@ -59,12 +59,20 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
         }}
       >
         {this.renderItem({
-          label: 'Select Other Board & Port',
+          label: nls.localize(
+            'arduino/board/openBoardsConfig',
+            'Select Other Board & Port'
+          ),
           onClick: () => this.props.openBoardsConfig(),
         })}
         {items
           .map(({ name, port, selected, onClick }) => ({
-            label: `${name} at ${Port.toString(port)}`,
+            label: nls.localize(
+              'arduino/board/boardListItem',
+              '{0} at {1}',
+              name,
+              Port.toString(port)
+            ),
             selected,
             onClick,
           }))
