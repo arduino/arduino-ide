@@ -1,12 +1,28 @@
 {
     "arduino": {
         "common": {
+            "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
+            "noBoardSelected": "No board selected",
+            "selectedOn": "on {0}",
+            "notConnected": "[not connected]",
+            "serialMonitor": "Serial Monitor",
+            "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
+            "later": "Later",
             "selectBoard": "Select Board",
             "unknown": "Unknown",
             "processing": "Processing",
             "saveChangesToSketch": "Do you want to save changes to this sketch before closing?",
-            "loseChanges": "If you don't save, your changes will be lost.",
-            "noBoardSelected": "No board selected"
+            "loseChanges": "If you don't save, your changes will be lost."
+        },
+        "menu": {
+            "sketch": "Sketch",
+            "tools": "Tools"
+        },
+        "debug": {
+            "optimizeForDebugging": "Optimize for Debugging",
+            "debugWithMessage": "Debug - {0}",
+            "noPlatformInstalledFor": "Platform is not installed for '{0}'",
+            "debuggingNotSupported": "Debugging is not supported by '{0}'"
         },
         "preferences": {
             "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
@@ -26,11 +42,42 @@
             "auth.clientID": "The OAuth2 client ID.",
             "auth.domain": "The OAuth2 domain.",
             "auth.audience": "The OAuth2 audience.",
-            "auth.registerUri": "The URI used to register a new user."
+            "auth.registerUri": "The URI used to register a new user.",
+            "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
+            "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
+            "invalid.theme": "Invalid theme.",
+            "network": "Network",
+            "sketchbook.location": "Sketchbook location",
+            "browse": "Browse",
+            "files.inside.sketches": "Show files inside Sketches",
+            "editorFontSize": "Editor font size",
+            "interfaceScale": "Interface scale",
+            "showVerbose": "Show verbose output during",
+            "compilerWarnings": "Compiler warnings",
+            "automatic": "Automatic",
+            "compile": "compile",
+            "upload": "upload",
+            "verifyAfterUpload": "Verify code after upload",
+            "checkForUpdates": "Check for updates on startup",
+            "editorQuickSuggestions": "Editor Quick Suggestions",
+            "languageServerLogging": "Enable language server logging",
+            "additionalManagerURLs": "Additional Boards Manager URLs",
+            "noProxy": "No proxy",
+            "manualProxy": "Manual proxy configuration",
+            "newSketchbookLocation": "Select new sketchbook location",
+            "choose": "Choose",
+            "enterAdditionalURLs": "Enter additional URLs, one for each row",
+            "unofficialBoardSupport": "Click for a list of unofficial board support URLs"
         },
         "cloud": {
-            "signIn": "Sign in",
+            "signIn": "SIGN IN",
             "signOut": "Sign Out",
+            "chooseSketchVisibility": "Choose visibility of your Sketch:",
+            "privateVisibility": "Private. Only you can view the Sketch.",
+            "publicVisibility": "Public. Anyone with the link can view the Sketch.",
+            "link": "Link:",
+            "embed": "Embed:",
+            "cloudSketchbook": "Cloud Sketchbook",
             "shareSketch": "Share Sketch",
             "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
             "pullSketch": "Pull Sketch",
@@ -38,6 +85,11 @@
             "options": "Options...",
             "share": "Share...",
             "remote": "Remote",
+            "emptySketchbook": "Your Sketchbook is empty",
+            "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches.",
+            "signInToCloud": "Sign in to Arduino Cloud",
+            "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
+            "learnMore": "Learn more",
             "continue": "Continue",
             "pushSketch": "Push Sketch",
             "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
@@ -47,7 +99,10 @@
             "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
             "push": "Push",
             "pullFirst": "You have to pull first to be able to push to the Cloud.",
-            "donePushing": "Done pushing ‘{0}’."
+            "donePushing": "Done pushing ‘{0}’.",
+            "connected": "Connected",
+            "offline": "Offline",
+            "profilePicture": "Profile picture"
         },
         "board": {
             "installManually": "Install Manually",
@@ -56,6 +111,7 @@
             "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
             "configDialog2": "If you only select a Board you will be able just to compile, but not to upload your sketch.",
             "pleasePickBoard": "Please pick a board connected to the port you have selected.",
+            "showAllAvailablePorts": "Shows all available ports when enabled",
             "programmer": "Programmer",
             "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
             "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
@@ -130,16 +186,13 @@
             "doneCompiling": "Done compiling.",
             "openSketchInNewWindow": "Open Sketch in New Window",
             "openFolder": "Open Folder",
+            "titleLocalSketchbook": "Local Sketchbook",
+            "titleSketchbook": "Sketchbook",
             "close": "Are you sure you want to close the sketch?"
         },
         "bootloader": {
             "burnBootloader": "Burn Bootloader",
             "doneBurningBootloader": "Done burning bootloader."
-        },
-        "debug": {
-            "debugWithMessage": "Debug - {0}",
-            "noPlatformInstalledFor": "Platform is not installed for '{0}'",
-            "debuggingNotSupported": "Debugging is not supported by '{0}'"
         },
         "editor": {
             "copyForForum": "Copy for Forum (Markdown)",
@@ -173,10 +226,29 @@
             "uploadRootCertificates": "Upload SSL Root Certificates",
             "openContext": "Open context",
             "remove": "Remove",
-            "upload": "Upload"
+            "upload": "Upload",
+            "addURL": "Add URL to fetch SSL certificate",
+            "enterURL": "Enter URL",
+            "selectCertificateToUpload": "1. Select certificate to upload",
+            "addNew": "Add New",
+            "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
+            "uploadingCertificates": "Uploading certificates.",
+            "certificatesUploaded": "Certificates uploaded.",
+            "uploadFailed": "Upload failed. Please try again.",
+            "selectBoard": "Select a board...",
+            "boardAtPort": "{0} at {1}",
+            "noSupportedBoardConnected": "No supported board connected"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Updater"
+            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "selectBoard": "Select Board",
+            "checkUpdates": "Check Updates",
+            "selectVersion": "Select firmware version",
+            "install": "Install",
+            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+            "installingFirmware": "Installing firmware.",
+            "successfullyInstalled": "Firmware succesfully installed.",
+            "failedInstall": "Installation failed. Please try again."
         },
         "dialog": {
             "dontAskAgain": "Don't ask again"
@@ -186,7 +258,26 @@
             "disconnected": "Disconnected {0} from {1}.",
             "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
             "failedReconnect": "Failed to reconnect {0} to the the serial-monitor after 10 consecutive attempts. The {1} serial port is busy.",
-            "reconnect": "Reconnecting {0} to {1} in {2] seconds..."
+            "reconnect": "Reconnecting {0} to {1} in {2] seconds...",
+            "toggleTimestamp": "Toggle Timestamp",
+            "autoscroll": "Autoscroll",
+            "timestamp": "Timestamp",
+            "title": "Serial Monitor",
+            "noLineEndings": "No Line Ending",
+            "newLine": "New Line",
+            "carriageReturn": "Carriage Return",
+            "newLineCarriageReturn": "Both NL & CR",
+            "notConnected": "Not connected. Select a board and a port to connect automatically.",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'"
+        },
+        "component": {
+            "uninstall": "Uninstall",
+            "uninstallMsg": "Do you want to uninstall {0}?",
+            "by": "by",
+            "version": "Version {0}",
+            "moreInfo": "More info",
+            "install": "INSTALL",
+            "filterSearch": "Filter your search..."
         },
         "electron": {
             "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -209,6 +300,10 @@
         "editor": {
             "unsavedTitle": "Unsaved – {0}"
         },
+        "messages": {
+            "expand": "Expand",
+            "collapse": "Collapse"
+        },
         "workspace": {
             "fileNewName": "Name for new file",
             "invalidFilename": "Invalid filename.",
@@ -217,5 +312,8 @@
             "deleteCurrentSketch": "Do you want to delete the current sketch?",
             "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
         }
+    },
+    "cloud": {
+        "GoToCloud": "GO TO CLOUD"
     }
 }
