@@ -392,14 +392,10 @@ export class ArduinoFrontendContribution
           );
         }
       }
-      const { clangdUri, cliUri, lsUri } = await this.executableService.list();
-      const [clangdPath, cliPath, lsPath, cliConfigPath] = await Promise.all([
+      const { clangdUri, lsUri } = await this.executableService.list();
+      const [clangdPath, lsPath] = await Promise.all([
         this.fileService.fsPath(new URI(clangdUri)),
-        this.fileService.fsPath(new URI(cliUri)),
         this.fileService.fsPath(new URI(lsUri)),
-        this.fileService.fsPath(
-          new URI(await this.configService.getCliConfigFileUri())
-        ),
       ]);
       this.languageServerFqbn = await Promise.race([
         new Promise<undefined>((_, reject) =>
@@ -412,10 +408,10 @@ export class ArduinoFrontendContribution
           'arduino.languageserver.start',
           {
             lsPath,
-            cliPath,
+            cliDaemonAddr: 'localhost:50051',
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
-            cliConfigPath,
+            cliDaemonInstance: '1',
             board: {
               fqbn,
               name: name ? `"${name}"` : undefined,
