@@ -4,9 +4,18 @@ import {
   CommonFrontendContribution as TheiaCommonFrontendContribution,
   CommonCommands,
 } from '@theia/core/lib/browser/common-frontend-contribution';
+import { CommandRegistry } from '@theia/core/lib/common/command';
 
 @injectable()
 export class CommonFrontendContribution extends TheiaCommonFrontendContribution {
+  registerCommands(commandRegistry: CommandRegistry): void {
+    super.registerCommands(commandRegistry);
+
+    for (const command of [CommonCommands.CONFIGURE_DISPLAY_LANGUAGE]) {
+      commandRegistry.unregisterCommand(command);
+    }
+  }
+
   registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     for (const command of [

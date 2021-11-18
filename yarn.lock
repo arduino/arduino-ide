@@ -2104,38 +2104,6 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@theia/application-manager@1.17.2":
-  version "1.17.2"
-  resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-1.17.2.tgz#bcf5b23754705848a81d8a97f9e40ee141a6efc7"
-  integrity sha512-Ev/Rq3Da8pg22YzMPOJ/97rMmovHuvCDT9CLCNba5f9jgkBwX4WgS32q21qfucZ/OX3Y0V0EFSFilVyV7luzKA==
-  dependencies:
-    "@babel/core" "^7.10.0"
-    "@babel/plugin-transform-classes" "^7.10.0"
-    "@babel/plugin-transform-runtime" "^7.10.0"
-    "@babel/preset-env" "^7.10.0"
-    "@theia/application-package" "1.17.2"
-    "@theia/compression-webpack-plugin" "^3.0.0"
-    "@types/fs-extra" "^4.0.2"
-    babel-loader "^8.2.2"
-    buffer "^6.0.3"
-    circular-dependency-plugin "^5.2.2"
-    copy-webpack-plugin "^8.1.1"
-    css-loader "^6.2.0"
-    electron-rebuild "^1.8.6"
-    font-awesome-webpack "0.0.5-beta.2"
-    fs-extra "^4.0.2"
-    ignore-loader "^0.1.2"
-    less "^3.0.3"
-    setimmediate "^1.0.5"
-    source-map-loader "^2.0.1"
-    source-map-support "^0.5.19"
-    style-loader "^2.0.0"
-    umd-compat-loader "^2.1.2"
-    webpack "^5.48.0"
-    webpack-cli "4.7.0"
-    worker-loader "^3.0.8"
-    yargs "^15.3.1"
-
 "@theia/application-manager@1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-1.19.0.tgz#e608e55e1bc5252b185e6f8917ea274de2a8dc7a"
@@ -2167,23 +2135,6 @@
     webpack-cli "4.7.0"
     worker-loader "^3.0.8"
     yargs "^15.3.1"
-
-"@theia/application-package@1.17.2":
-  version "1.17.2"
-  resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-1.17.2.tgz#05b1f2c749bbd693013f17cdf8b57d5789cb70fb"
-  integrity sha512-IKeH+ow5h8tuW9dVV27I551EowcvKe5mBx/U14oKJ7krKZ0eLUqJPGJukNIlRLbhz/9ANJvsGXHw02qMhP7CXQ==
-  dependencies:
-    "@types/fs-extra" "^4.0.2"
-    "@types/request" "^2.0.3"
-    "@types/semver" "^5.4.0"
-    "@types/write-json-file" "^2.2.1"
-    changes-stream "^2.2.0"
-    deepmerge "^4.2.2"
-    fs-extra "^4.0.2"
-    is-electron "^2.1.0"
-    request "^2.82.0"
-    semver "^5.4.1"
-    write-json-file "^2.2.0"
 
 "@theia/application-package@1.19.0":
   version "1.19.0"
@@ -2222,33 +2173,6 @@
     "@theia/editor" "1.19.0"
     "@theia/monaco" "1.19.0"
     ts-md5 "^1.2.2"
-
-"@theia/cli@1.17.2":
-  version "1.17.2"
-  resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-1.17.2.tgz#5558de75d59a1db3be60a54b871cb7e6fc2a9c8e"
-  integrity sha512-5Mwm8WO7smDle3R25i+OEEAT7EP/0Vgv0C6eH5GGS66eBcJEArKF7IxwhDf+qVJt3L/Qj7rePMoD9dVahiESbQ==
-  dependencies:
-    "@theia/application-manager" "1.17.2"
-    "@theia/application-package" "1.17.2"
-    "@theia/ovsx-client" "1.17.2"
-    "@types/chai" "^4.2.7"
-    "@types/mkdirp" "^0.5.2"
-    "@types/mocha" "^5.2.7"
-    "@types/node-fetch" "^2.5.7"
-    "@types/puppeteer" "^2.0.0"
-    "@types/requestretry" "^1.12.3"
-    "@types/tar" "^4.0.3"
-    chai "^4.2.0"
-    colors "^1.4.0"
-    decompress "^4.2.1"
-    https-proxy-agent "^5.0.0"
-    mocha "^7.0.0"
-    node-fetch "^2.6.0"
-    proxy-from-env "^1.1.0"
-    puppeteer "^2.0.0"
-    puppeteer-to-istanbul "^1.2.2"
-    temp "^0.9.1"
-    yargs "^15.3.1"
 
 "@theia/cli@1.19.0":
   version "1.19.0"
@@ -2590,15 +2514,6 @@
     "@theia/monaco" "1.19.0"
     "@types/p-queue" "^2.3.1"
     p-queue "^2.4.2"
-
-"@theia/ovsx-client@1.17.2":
-  version "1.17.2"
-  resolved "https://registry.yarnpkg.com/@theia/ovsx-client/-/ovsx-client-1.17.2.tgz#fbf0c404d69f7e06ac4b33c26f642e6ccb68fda1"
-  integrity sha512-Is5tYaFfSoti6KOE6TR1eQH9n0Lpgsi2K7MMa1Oe/ETKDzUTf2aq+8bR/BPtqjId8ldNJETQconvQNKhKPL0ew==
-  dependencies:
-    "@types/bent" "^7.0.1"
-    bent "^7.1.0"
-    semver "^5.4.1"
 
 "@theia/ovsx-client@1.19.0":
   version "1.19.0"

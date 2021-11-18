@@ -7,7 +7,8 @@ import {
   KeybindingRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { Settings as Preferences, SettingsDialog } from '../settings';
+import { Settings as Preferences } from '../dialogs/settings/settings';
+import { SettingsDialog } from '../dialogs/settings/settings-dialog';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()

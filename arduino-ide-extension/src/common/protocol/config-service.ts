@@ -87,6 +87,7 @@ export namespace Network {
 }
 
 export interface Config {
+  readonly locale: string;
   readonly sketchDirUri: string;
   readonly dataDirUri: string;
   readonly downloadsDirUri: string;
@@ -106,6 +107,7 @@ export namespace Config {
       }
     }
     return (
+      left.locale === right.locale &&
       left.dataDirUri === right.dataDirUri &&
       left.downloadsDirUri === right.downloadsDirUri &&
       left.sketchDirUri === right.sketchDirUri &&

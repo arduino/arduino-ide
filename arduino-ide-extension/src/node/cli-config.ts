@@ -123,6 +123,7 @@ export interface Network {
 
 // Arduino CLI config scheme
 export interface CliConfig {
+  locale?: string;
   board_manager?: RecursivePartial<BoardManager>;
   directories?: RecursivePartial<Directories>;
   logging?: RecursivePartial<Logging>;
