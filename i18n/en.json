@@ -43,9 +43,6 @@
             "auth.domain": "The OAuth2 domain.",
             "auth.audience": "The OAuth2 audience.",
             "auth.registerUri": "The URI used to register a new user.",
-            "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
-            "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
-            "invalid.theme": "Invalid theme.",
             "network": "Network",
             "sketchbook.location": "Sketchbook location",
             "browse": "Browse",
@@ -67,7 +64,10 @@
             "newSketchbookLocation": "Select new sketchbook location",
             "choose": "Choose",
             "enterAdditionalURLs": "Enter additional URLs, one for each row",
-            "unofficialBoardSupport": "Click for a list of unofficial board support URLs"
+            "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+            "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
+            "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
+            "invalid.theme": "Invalid theme."
         },
         "cloud": {
             "signIn": "SIGN IN",

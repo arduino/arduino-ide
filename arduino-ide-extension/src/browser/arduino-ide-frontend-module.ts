@@ -190,12 +190,12 @@ import { BoardSelection } from './contributions/board-selection';
 import { OpenRecentSketch } from './contributions/open-recent-sketch';
 import { Help } from './contributions/help';
 import { bindArduinoPreferences } from './arduino-preferences';
+import { SettingsService } from './dialogs/settings/settings';
 import {
-  SettingsService,
   SettingsDialog,
   SettingsWidget,
   SettingsDialogProps,
-} from './settings';
+} from './dialogs/settings/settings-dialog';
 import { AddFile } from './contributions/add-file';
 import { ArchiveSketch } from './contributions/archive-sketch';
 import { OutputToolbarContribution as TheiaOutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
@@ -670,7 +670,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(SettingsWidget).toSelf().inSingletonScope();
   bind(SettingsDialog).toSelf().inSingletonScope();
   bind(SettingsDialogProps).toConstantValue({
-    title: 'Preferences',
+    title: nls.localize(
+      'vscode/preferences.contribution/preferences',
+      'Preferences'
+    ),
   });
 
   bind(StorageWrapper).toSelf().inSingletonScope();

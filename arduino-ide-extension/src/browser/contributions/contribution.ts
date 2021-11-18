@@ -33,7 +33,7 @@ import {
   CommandService,
 } from '@theia/core/lib/common/command';
 import { EditorMode } from '../editor-mode';
-import { SettingsService } from '../settings';
+import { SettingsService } from '../dialogs/settings/settings';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
 import {
   SketchesService,
