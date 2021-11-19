@@ -472,7 +472,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     let hasChanged = availableBoards.length !== currentAvailableBoards.length;
     for (let i = 0; !hasChanged && i < availableBoards.length; i++) {
       const [left, right] = [availableBoards[i], currentAvailableBoards[i]];
-      hasChanged = !!AvailableBoard.compare(left, right);
+      hasChanged = !!AvailableBoard.compare(left, right) || left.selected !== right.selected;
     }
     if (hasChanged) {
       this._availableBoards = availableBoards;
