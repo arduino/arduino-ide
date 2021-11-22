@@ -1,4 +1,3 @@
-import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { naturalCompare } from './../utils';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
@@ -176,25 +175,20 @@ export namespace Port {
   }
 
   export function compare(left: Port, right: Port): number {
-    // Board ports have higher priorities, they come first.
-    if (isBoardPort(left) && !isBoardPort(right)) {
+    // Ports must be sorted in this order:
+    // 1. Serial
+    // 2. Network
+    // 3. Other protocols
+    if (left.protocol === "serial" && right.protocol !== "serial") {
       return -1;
-    }
-    if (!isBoardPort(left) && isBoardPort(right)) {
+    } else if (left.protocol !== "serial" && right.protocol === "serial") {
+      return 1;
+    } else if (left.protocol === "network" && right.protocol !== "network") {
+      return -1;
+    } else if (left.protocol !== "network" && right.protocol === "network") {
       return 1;
     }
-    let result = naturalCompare(
-      left.protocol.toLocaleLowerCase(),
-      right.protocol.toLocaleLowerCase()
-    );
-    if (result !== 0) {
-      return result;
-    }
-    result = naturalCompare(left.address, right.address);
-    if (result !== 0) {
-      return result;
-    }
-    return naturalCompare(left.label || '', right.label || '');
+    return naturalCompare(left.address!, right.address!);
   }
 
   export function equals(
@@ -209,52 +203,6 @@ export namespace Port {
       );
     }
     return left === right;
-  }
-
-  // Based on: https://github.com/arduino/Arduino/blob/93581b03d723e55c60caedb4729ffc6ea808fe78/arduino-core/src/processing/app/SerialPortList.java#L48-L74
-  export function isBoardPort(port: Port): boolean {
-    const address = port.address.toLocaleLowerCase();
-    if (isWindows) {
-      // `COM1` seems to be the default serial port on Windows.
-      return address !== 'COM1'.toLocaleLowerCase();
-    }
-    // On macOS and Linux, the port should start with `/dev/`.
-    if (!address.startsWith('/dev/')) {
-      return false;
-    }
-    if (isOSX) {
-      // Example: `/dev/cu.usbmodem14401`
-      if (/(tty|cu)\..*/i.test(address.substring('/dev/'.length))) {
-        return [
-          '/dev/cu.MALS',
-          '/dev/cu.SOC',
-          '/dev/cu.Bluetooth-Incoming-Port',
-        ]
-          .map((a) => a.toLocaleLowerCase())
-          .every((a) => a !== address);
-      }
-    }
-
-    // Example: `/dev/ttyACM0`
-    if (
-      /(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}/i.test(
-        address.substring('/dev/'.length)
-      )
-    ) {
-      // Default ports were `/dev/ttyS0` -> `/dev/ttyS31` on Ubuntu 16.04.2.
-      if (address.startsWith('/dev/ttyS')) {
-        const index = Number.parseInt(
-          address.substring('/dev/ttyS'.length),
-          10
-        );
-        if (!Number.isNaN(index) && 0 <= index && 31 >= index) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    return false;
   }
 
   export function sameAs(
