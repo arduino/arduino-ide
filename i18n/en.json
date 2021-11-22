@@ -257,7 +257,7 @@
             "connectionBusy": "Connection failed. Serial port is busy: {0}",
             "disconnected": "Disconnected {0} from {1}.",
             "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
-            "failedReconnect": "Failed to reconnect {0} to the the serial-monitor after 10 consecutive attempts. The {1} serial port is busy.",
+            "failedReconnect": "Failed to reconnect {0} to serial after 10 consecutive attempts. The {1} serial port is busy.",
             "reconnect": "Reconnecting {0} to {1} in {2] seconds...",
             "toggleTimestamp": "Toggle Timestamp",
             "autoscroll": "Autoscroll",
