@@ -42,6 +42,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected readonly onAvailableBoardsChangedEmitter = new Emitter<
     AvailableBoard[]
   >();
+  protected readonly onAvailablePortsChangedEmitter = new Emitter<Port[]>();
 
   /**
    * Used for the auto-reconnecting. Sometimes, the attached board gets disconnected after uploading something to it.
@@ -67,8 +68,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
    * This event is also emitted when the board package for the currently selected board was uninstalled.
    */
   readonly onBoardsConfigChanged = this.onBoardsConfigChangedEmitter.event;
-  readonly onAvailableBoardsChanged =
-    this.onAvailableBoardsChangedEmitter.event;
+  readonly onAvailableBoardsChanged = this.onAvailableBoardsChangedEmitter.event;
+  readonly onAvailablePortsChanged = this.onAvailablePortsChangedEmitter.event;
 
   onStart(): void {
     this.notificationCenter.onAttachedBoardsChanged(
@@ -88,6 +89,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     ]).then(([attachedBoards, availablePorts]) => {
       this._attachedBoards = attachedBoards;
       this._availablePorts = availablePorts;
+      this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
       this.reconcileAvailableBoards().then(() => this.tryReconnect());
     });
   }
@@ -102,6 +104,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
     this._attachedBoards = event.newState.boards;
     this._availablePorts = event.newState.ports;
+    this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
     this.reconcileAvailableBoards().then(() => this.tryReconnect());
   }
 
@@ -601,8 +604,8 @@ export namespace AvailableBoard {
       return -1;
     } else if (left.port?.protocol !== "network" && right.port?.protocol === "network") {
       return 1;
-    } else if (left.port?.protocol === "serial" && right.port?.protocol === "serial") {
-      // We show all serial ports, including those that have guessed
+    } else if (left.port?.protocol === right.port?.protocol) {
+      // We show all ports, including those that have guessed
       // or unrecognized boards, so we must sort those too.
       if (left.state < right.state) {
         return -1;

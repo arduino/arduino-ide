@@ -110,6 +110,9 @@ PID: ${PID}`;
     this.boardsServiceProvider.onAvailableBoardsChanged(
       this.updateMenus.bind(this)
     );
+    this.boardsServiceProvider.onAvailablePortsChanged(
+      this.updateMenus.bind(this)
+    );
   }
 
   protected async updateMenus(): Promise<void> {
