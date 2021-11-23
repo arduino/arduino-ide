@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { Emitter, Event } from '@theia/core/lib/common/event';
-import { MonitorConfig } from '../../common/protocol/monitor-service';
+import { SerialConfig } from '../../common/protocol';
 import {
   FrontendApplicationContribution,
   LocalStorageService,
@@ -8,8 +8,8 @@ import {
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 
 @injectable()
-export class MonitorModel implements FrontendApplicationContribution {
-  protected static STORAGE_ID = 'arduino-monitor-model';
+export class SerialModel implements FrontendApplicationContribution {
+  protected static STORAGE_ID = 'arduino-serial-model';
 
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
@@ -18,28 +18,28 @@ export class MonitorModel implements FrontendApplicationContribution {
   protected readonly boardsServiceClient: BoardsServiceProvider;
 
   protected readonly onChangeEmitter: Emitter<
-    MonitorModel.State.Change<keyof MonitorModel.State>
+    SerialModel.State.Change<keyof SerialModel.State>
   >;
   protected _autoscroll: boolean;
   protected _timestamp: boolean;
-  protected _baudRate: MonitorConfig.BaudRate;
-  protected _lineEnding: MonitorModel.EOL;
+  protected _baudRate: SerialConfig.BaudRate;
+  protected _lineEnding: SerialModel.EOL;
   protected _interpolate: boolean;
 
   constructor() {
     this._autoscroll = true;
     this._timestamp = false;
-    this._baudRate = MonitorConfig.BaudRate.DEFAULT;
-    this._lineEnding = MonitorModel.EOL.DEFAULT;
+    this._baudRate = SerialConfig.BaudRate.DEFAULT;
+    this._lineEnding = SerialModel.EOL.DEFAULT;
     this._interpolate = false;
     this.onChangeEmitter = new Emitter<
-      MonitorModel.State.Change<keyof MonitorModel.State>
+      SerialModel.State.Change<keyof SerialModel.State>
     >();
   }
 
   onStart(): void {
     this.localStorageService
-      .getData<MonitorModel.State>(MonitorModel.STORAGE_ID)
+      .getData<SerialModel.State>(SerialModel.STORAGE_ID)
       .then((state) => {
         if (state) {
           this.restoreState(state);
@@ -47,7 +47,7 @@ export class MonitorModel implements FrontendApplicationContribution {
       });
   }
 
-  get onChange(): Event<MonitorModel.State.Change<keyof MonitorModel.State>> {
+  get onChange(): Event<SerialModel.State.Change<keyof SerialModel.State>> {
     return this.onChangeEmitter.event;
   }
 
@@ -80,11 +80,11 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
-  get baudRate(): MonitorConfig.BaudRate {
+  get baudRate(): SerialConfig.BaudRate {
     return this._baudRate;
   }
 
-  set baudRate(baudRate: MonitorConfig.BaudRate) {
+  set baudRate(baudRate: SerialConfig.BaudRate) {
     this._baudRate = baudRate;
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
@@ -94,11 +94,11 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
-  get lineEnding(): MonitorModel.EOL {
+  get lineEnding(): SerialModel.EOL {
     return this._lineEnding;
   }
 
-  set lineEnding(lineEnding: MonitorModel.EOL) {
+  set lineEnding(lineEnding: SerialModel.EOL) {
     this._lineEnding = lineEnding;
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
@@ -122,7 +122,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
-  protected restoreState(state: MonitorModel.State): void {
+  protected restoreState(state: SerialModel.State): void {
     this._autoscroll = state.autoscroll;
     this._timestamp = state.timestamp;
     this._baudRate = state.baudRate;
@@ -131,7 +131,7 @@ export class MonitorModel implements FrontendApplicationContribution {
   }
 
   protected async storeState(): Promise<void> {
-    return this.localStorageService.setData(MonitorModel.STORAGE_ID, {
+    return this.localStorageService.setData(SerialModel.STORAGE_ID, {
       autoscroll: this._autoscroll,
       timestamp: this._timestamp,
       baudRate: this._baudRate,
@@ -141,11 +141,11 @@ export class MonitorModel implements FrontendApplicationContribution {
   }
 }
 
-export namespace MonitorModel {
+export namespace SerialModel {
   export interface State {
     autoscroll: boolean;
     timestamp: boolean;
-    baudRate: MonitorConfig.BaudRate;
+    baudRate: SerialConfig.BaudRate;
     lineEnding: EOL;
     interpolate: boolean;
   }

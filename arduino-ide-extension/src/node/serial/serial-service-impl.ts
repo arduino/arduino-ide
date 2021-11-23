@@ -4,12 +4,12 @@ import { injectable, inject, named } from 'inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import { ILogger } from '@theia/core/lib/common/logger';
 import {
-  MonitorService,
-  MonitorServiceClient,
-  MonitorConfig,
-  MonitorError,
+  SerialService,
+  SerialServiceClient,
+  SerialConfig,
+  SerialError,
   Status,
-} from '../../common/protocol/monitor-service';
+} from '../../common/protocol/serial-service';
 import {
   StreamingOpenRequest,
   StreamingOpenResponse,
@@ -18,17 +18,19 @@ import {
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board, Port } from '../../common/protocol/boards-service';
 import { WebSocketService } from '../web-socket/web-socket-service';
-import { SerialPlotter } from '../../browser/plotter/protocol';
+import { SerialPlotter } from '../../browser/serial/plotter/protocol';
 import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
+
+export const SerialServiceName = 'serial-service';
 
 interface ErrorWithCode extends Error {
   readonly code: number;
 }
 namespace ErrorWithCode {
-  export function toMonitorError(
+  export function toSerialError(
     error: Error,
-    config: MonitorConfig
-  ): MonitorError {
+    config: SerialConfig
+  ): SerialError {
     const { message } = error;
     let code = undefined;
     if (is(error)) {
@@ -36,15 +38,15 @@ namespace ErrorWithCode {
       const mapping = new Map<string, number>();
       mapping.set(
         '1 CANCELLED: Cancelled on client',
-        MonitorError.ErrorCodes.CLIENT_CANCEL
+        SerialError.ErrorCodes.CLIENT_CANCEL
       );
       mapping.set(
         '2 UNKNOWN: device not configured',
-        MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED
+        SerialError.ErrorCodes.DEVICE_NOT_CONFIGURED
       );
       mapping.set(
-        '2 UNKNOWN: error opening serial monitor: Serial port busy',
-        MonitorError.ErrorCodes.DEVICE_BUSY
+        '2 UNKNOWN: error opening serial connection: Serial port busy',
+        SerialError.ErrorCodes.DEVICE_BUSY
       );
       code = mapping.get(message);
     }
@@ -60,36 +62,36 @@ namespace ErrorWithCode {
 }
 
 @injectable()
-export class MonitorServiceImpl implements MonitorService {
+export class SerialServiceImpl implements SerialService {
+  @named(SerialServiceName)
   @inject(ILogger)
-  @named('monitor-service')
   protected readonly logger: ILogger;
 
   @inject(MonitorClientProvider)
-  protected readonly monitorClientProvider: MonitorClientProvider;
+  protected readonly serialClientProvider: MonitorClientProvider;
 
   @inject(WebSocketService)
   protected readonly webSocketService: WebSocketService;
 
-  protected client?: MonitorServiceClient;
+  protected client?: SerialServiceClient;
   protected serialConnection?: {
     duplex: ClientDuplexStream<StreamingOpenRequest, StreamingOpenResponse>;
-    config: MonitorConfig;
+    config: SerialConfig;
   };
   protected messages: string[] = [];
   protected onMessageReceived: Disposable | null;
   protected flushMessagesInterval: NodeJS.Timeout | null;
 
-  setClient(client: MonitorServiceClient | undefined): void {
+  setClient(client: SerialServiceClient | undefined): void {
     this.client = client;
   }
 
   dispose(): void {
-    this.logger.info('>>> Disposing monitor service...');
+    this.logger.info('>>> Disposing serial service...');
     if (this.serialConnection) {
       this.disconnect();
     }
-    this.logger.info('<<< Disposed monitor service.');
+    this.logger.info('<<< Disposed serial service.');
     this.client = undefined;
   }
 
@@ -103,16 +105,16 @@ export class MonitorServiceImpl implements MonitorService {
     this.webSocketService.sendMessage(JSON.stringify(msg));
   }
 
-  async connect(config: MonitorConfig): Promise<Status> {
+  async connect(config: SerialConfig): Promise<Status> {
     this.logger.info(
-      `>>> Creating serial monitor connection for ${Board.toString(
+      `>>> Creating serial connection for ${Board.toString(
         config.board
       )} on port ${Port.toString(config.port)}...`
     );
     if (this.serialConnection) {
       return Status.ALREADY_CONNECTED;
     }
-    const client = await this.monitorClientProvider.client();
+    const client = await this.serialClientProvider.client();
     if (!client) {
       return Status.NOT_CONNECTED;
     }
@@ -125,12 +127,12 @@ export class MonitorServiceImpl implements MonitorService {
     duplex.on(
       'error',
       ((error: Error) => {
-        const monitorError = ErrorWithCode.toMonitorError(error, config);
-        this.disconnect(monitorError).then(() => {
+        const serialError = ErrorWithCode.toSerialError(error, config);
+        this.disconnect(serialError).then(() => {
           if (this.client) {
-            this.client.notifyError(monitorError);
+            this.client.notifyError(serialError);
           }
-          if (monitorError.code === undefined) {
+          if (serialError.code === undefined) {
             // Log the original, unexpected error.
             this.logger.error(error);
           }
@@ -161,7 +163,7 @@ export class MonitorServiceImpl implements MonitorService {
 
             case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
               this.client?.notifyBaudRateChanged(
-                parseInt(message.data, 10) as MonitorConfig.BaudRate
+                parseInt(message.data, 10) as SerialConfig.BaudRate
               );
               break;
 
@@ -233,10 +235,9 @@ export class MonitorServiceImpl implements MonitorService {
       if (this.serialConnection) {
         this.serialConnection.duplex.write(req, () => {
           this.logger.info(
-            `<<< Serial monitor connection created for ${Board.toString(
-              config.board,
-              { useFqbn: false }
-            )} on port ${Port.toString(config.port)}.`
+            `<<< Serial connection created for ${Board.toString(config.board, {
+              useFqbn: false,
+            })} on port ${Port.toString(config.port)}.`
           );
           resolve(Status.OK);
         });
@@ -246,7 +247,7 @@ export class MonitorServiceImpl implements MonitorService {
     });
   }
 
-  async disconnect(reason?: MonitorError): Promise<Status> {
+  async disconnect(reason?: SerialError): Promise<Status> {
     try {
       if (this.onMessageReceived) {
         this.onMessageReceived.dispose();
@@ -260,11 +261,11 @@ export class MonitorServiceImpl implements MonitorService {
       if (
         !this.serialConnection &&
         reason &&
-        reason.code === MonitorError.ErrorCodes.CLIENT_CANCEL
+        reason.code === SerialError.ErrorCodes.CLIENT_CANCEL
       ) {
         return Status.OK;
       }
-      this.logger.info('>>> Disposing monitor connection...');
+      this.logger.info('>>> Disposing serial connection...');
       if (!this.serialConnection) {
         this.logger.warn('<<< Not connected. Nothing to dispose.');
         return Status.NOT_CONNECTED;
@@ -272,7 +273,7 @@ export class MonitorServiceImpl implements MonitorService {
       const { duplex, config } = this.serialConnection;
       duplex.cancel();
       this.logger.info(
-        `<<< Disposed monitor connection for ${Board.toString(config.board, {
+        `<<< Disposed serial connection for ${Board.toString(config.board, {
           useFqbn: false,
         })} on port ${Port.toString(config.port)}.`
       );
@@ -301,10 +302,10 @@ export class MonitorServiceImpl implements MonitorService {
   }
 
   protected mapType(
-    type?: MonitorConfig.ConnectionType
+    type?: SerialConfig.ConnectionType
   ): GrpcMonitorConfig.TargetType {
     switch (type) {
-      case MonitorConfig.ConnectionType.SERIAL:
+      case SerialConfig.ConnectionType.SERIAL:
         return GrpcMonitorConfig.TargetType.TARGET_TYPE_SERIAL;
       default:
         return GrpcMonitorConfig.TargetType.TARGET_TYPE_SERIAL;

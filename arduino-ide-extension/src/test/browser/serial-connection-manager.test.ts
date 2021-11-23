@@ -7,22 +7,22 @@ FrontendApplicationConfigProvider.set({
   ...ApplicationProps.DEFAULT.frontend.config,
 });
 
-import { Emitter, MessageService } from '@theia/core';
+import { MessageService } from '@theia/core';
 import { BoardsServiceProvider } from '../../browser/boards/boards-service-provider';
 import {
   BoardsService,
   CoreService,
-  MonitorService,
-  MonitorServiceClient,
+  SerialService,
+  SerialServiceClient,
   Status,
 } from '../../common/protocol';
 import { IMock, It, Mock, Times } from 'typemoq';
 import {
   Serial,
   SerialConnectionManager,
-} from '../../browser/monitor/monitor-connection';
+} from '../../browser/serial/serial-connection-manager';
 import { ThemeService } from '@theia/core/lib/browser/theming';
-import { MonitorModel } from '../../browser/monitor/monitor-model';
+import { SerialModel } from '../../browser/serial/serial-model';
 import {
   aBoardConfig,
   anotherBoardConfig,
@@ -45,9 +45,9 @@ global.WebSocket = WebSocketMock as any;
 describe.only('SerialConnectionManager', () => {
   let subject: SerialConnectionManager;
 
-  let monitorModel: IMock<MonitorModel>;
-  let monitorService: IMock<MonitorService>;
-  let monitorServiceClient: IMock<MonitorServiceClient>;
+  let serialModel: IMock<SerialModel>;
+  let serialService: IMock<SerialService>;
+  let serialServiceClient: IMock<SerialServiceClient>;
   let boardsService: IMock<BoardsService>;
   let boardsServiceProvider: IMock<BoardsServiceProvider>;
   let messageService: IMock<MessageService>;
@@ -60,12 +60,10 @@ describe.only('SerialConnectionManager', () => {
   let handleWebSocketChanged: (wsPort: number) => void;
   const wsPort = 1234;
 
-  const onBoardsConfigChangedEmitter = new Emitter<BoardsConfig.Config>();
-  console.log(onBoardsConfigChangedEmitter);
   beforeEach(() => {
-    monitorModel = Mock.ofType<MonitorModel>();
-    monitorService = Mock.ofType<MonitorService>();
-    monitorServiceClient = Mock.ofType<MonitorServiceClient>();
+    serialModel = Mock.ofType<SerialModel>();
+    serialService = Mock.ofType<SerialService>();
+    serialServiceClient = Mock.ofType<SerialServiceClient>();
     boardsService = Mock.ofType<BoardsService>();
     boardsServiceProvider = Mock.ofType<BoardsServiceProvider>();
     messageService = Mock.ofType<MessageService>();
@@ -91,27 +89,27 @@ describe.only('SerialConnectionManager', () => {
       .setup((b) => b.getAvailablePorts())
       .returns(() => Promise.resolve([aPort, anotherPort]));
 
-    monitorModel
+    serialModel
       .setup((m) => m.baudRate)
       .returns(() => aSerialConfig.baudRate || 9600);
 
-    monitorServiceClient
+    serialServiceClient
       .setup((m) => m.onWebSocketChanged(It.isAny()))
       .returns((h) => {
         handleWebSocketChanged = h;
         return { dispose: () => {} };
       });
 
-    monitorService
+    serialService
       .setup((m) => m.disconnect())
       .returns(() => Promise.resolve(Status.OK));
 
     core.setup((u) => u.isUploading()).returns(() => Promise.resolve(false));
 
     subject = new SerialConnectionManager(
-      monitorModel.object,
-      monitorService.object,
-      monitorServiceClient.object,
+      serialModel.object,
+      serialService.object,
+      serialServiceClient.object,
       boardsService.object,
       boardsServiceProvider.object,
       messageService.object,
@@ -126,15 +124,15 @@ describe.only('SerialConnectionManager', () => {
         it('should not try to connect and show an error', async () => {
           await subject.openSerial(Serial.Type.Plotter);
           messageService.verify((m) => m.error(It.isAnyString()), Times.once());
-          monitorService.verify((m) => m.disconnect(), Times.never());
-          monitorService.verify((m) => m.connect(It.isAny()), Times.never());
+          serialService.verify((m) => m.disconnect(), Times.never());
+          serialService.verify((m) => m.connect(It.isAny()), Times.never());
         });
       });
       context('and a serial config is set', () => {
         it('should not try to reconnect', async () => {
           await handleBoardConfigChange(aBoardConfig);
-          monitorService.verify((m) => m.disconnect(), Times.never());
-          monitorService.verify((m) => m.connect(It.isAny()), Times.never());
+          serialService.verify((m) => m.disconnect(), Times.never());
+          serialService.verify((m) => m.connect(It.isAny()), Times.never());
           expect(subject.getConfig()).to.deep.equal(aSerialConfig);
         });
       });
@@ -162,15 +160,15 @@ describe.only('SerialConnectionManager', () => {
             (m) => m.error(It.isAnyString()),
             Times.never()
           );
-          monitorService.verify((m) => m.disconnect(), Times.never());
-          monitorService.verify((m) => m.connect(It.isAny()), Times.never());
+          serialService.verify((m) => m.disconnect(), Times.never());
+          serialService.verify((m) => m.connect(It.isAny()), Times.never());
         });
       });
       context(
         'and the connection to the serial succeeds with the config',
         () => {
           beforeEach(() => {
-            monitorService
+            serialService
               .setup((m) => m.connect(It.isValue(aSerialConfig)))
               .returns(() => {
                 handleWebSocketChanged(wsPort);
@@ -187,8 +185,8 @@ describe.only('SerialConnectionManager', () => {
                 (m) => m.error(It.isAnyString()),
                 Times.never()
               );
-              monitorService.verify((m) => m.disconnect(), Times.never());
-              monitorService.verify((m) => m.connect(It.isAny()), Times.once());
+              serialService.verify((m) => m.disconnect(), Times.never());
+              serialService.verify((m) => m.connect(It.isAny()), Times.once());
               expect(status).to.be.ok;
               expect(subject.connected).to.be.true;
               expect(subject.getWsPort()).to.equal(wsPort);
@@ -205,8 +203,8 @@ describe.only('SerialConnectionManager', () => {
                   (m) => m.error(It.isAnyString()),
                   Times.never()
                 );
-                monitorService.verify((m) => m.disconnect(), Times.never());
-                monitorService.verify(
+                serialService.verify((m) => m.disconnect(), Times.never());
+                serialService.verify(
                   (m) => m.connect(It.isAny()),
                   Times.once()
                 );
@@ -227,8 +225,8 @@ describe.only('SerialConnectionManager', () => {
                     (m) => m.error(It.isAnyString()),
                     Times.never()
                   );
-                  monitorService.verify((m) => m.disconnect(), Times.never());
-                  monitorService.verify(
+                  serialService.verify((m) => m.disconnect(), Times.never());
+                  serialService.verify(
                     (m) => m.connect(It.isAny()),
                     Times.once()
                   );
@@ -250,8 +248,8 @@ describe.only('SerialConnectionManager', () => {
                     (m) => m.error(It.isAnyString()),
                     Times.never()
                   );
-                  monitorService.verify((m) => m.disconnect(), Times.never());
-                  monitorService.verify(
+                  serialService.verify((m) => m.disconnect(), Times.never());
+                  serialService.verify(
                     (m) => m.connect(It.isAny()),
                     Times.once()
                   );
@@ -274,8 +272,8 @@ describe.only('SerialConnectionManager', () => {
                   (m) => m.error(It.isAnyString()),
                   Times.never()
                 );
-                monitorService.verify((m) => m.disconnect(), Times.once());
-                monitorService.verify(
+                serialService.verify((m) => m.disconnect(), Times.once());
+                serialService.verify(
                   (m) => m.connect(It.isAny()),
                   Times.once()
                 );
@@ -296,8 +294,8 @@ describe.only('SerialConnectionManager', () => {
                   (m) => m.error(It.isAnyString()),
                   Times.never()
                 );
-                monitorService.verify((m) => m.disconnect(), Times.once());
-                monitorService.verify(
+                serialService.verify((m) => m.disconnect(), Times.once());
+                serialService.verify(
                   (m) => m.connect(It.isAny()),
                   Times.exactly(2)
                 );
@@ -310,12 +308,12 @@ describe.only('SerialConnectionManager', () => {
         'and the connection to the serial does NOT succeed with the config',
         () => {
           beforeEach(() => {
-            monitorService
+            serialService
               .setup((m) => m.connect(It.isValue(aSerialConfig)))
               .returns(() => {
                 return Promise.resolve(Status.NOT_CONNECTED);
               });
-            monitorService
+            serialService
               .setup((m) => m.connect(It.isValue(anotherSerialConfig)))
               .returns(() => {
                 handleWebSocketChanged(wsPort);
@@ -333,8 +331,8 @@ describe.only('SerialConnectionManager', () => {
                 (m) => m.error(It.isAnyString()),
                 Times.never()
               );
-              monitorService.verify((m) => m.disconnect(), Times.never());
-              monitorService.verify(
+              serialService.verify((m) => m.disconnect(), Times.never());
+              serialService.verify(
                 (m) => m.connect(It.isValue(aSerialConfig)),
                 Times.once()
               );
@@ -357,8 +355,8 @@ describe.only('SerialConnectionManager', () => {
                     (m) => m.error(It.isAnyString()),
                     Times.never()
                   );
-                  monitorService.verify((m) => m.disconnect(), Times.never());
-                  monitorService.verify(
+                  serialService.verify((m) => m.disconnect(), Times.never());
+                  serialService.verify(
                     (m) => m.connect(It.isValue(anotherSerialConfig)),
                     Times.once()
                   );

@@ -69,20 +69,20 @@ import { ScmContribution } from './theia/scm/scm-contribution';
 import { SearchInWorkspaceFrontendContribution as TheiaSearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { SearchInWorkspaceFrontendContribution } from './theia/search-in-workspace/search-in-workspace-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
-import { MonitorServiceClientImpl } from './monitor/monitor-service-client-impl';
+import { SerialServiceClientImpl } from './serial/serial-service-client-impl';
 import {
-  MonitorServicePath,
-  MonitorService,
-  MonitorServiceClient,
-} from '../common/protocol/monitor-service';
+  SerialServicePath,
+  SerialService,
+  SerialServiceClient,
+} from '../common/protocol/serial-service';
 import {
   ConfigService,
   ConfigServicePath,
 } from '../common/protocol/config-service';
-import { MonitorWidget } from './monitor/monitor-widget';
-import { MonitorViewContribution } from './monitor/monitor-view-contribution';
-import { SerialConnectionManager } from './monitor/monitor-connection';
-import { MonitorModel } from './monitor/monitor-model';
+import { MonitorWidget } from './serial/monitor/monitor-widget';
+import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
+import { SerialConnectionManager } from './serial/serial-connection-manager';
+import { SerialModel } from './serial/serial-model';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
@@ -253,7 +253,7 @@ import {
   UploadCertificateDialogProps,
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/certificate-uploader-dialog';
-import { PlotterFrontendContribution } from './plotter/plotter-frontend-contribution';
+import { PlotterFrontendContribution } from './serial/plotter/plotter-frontend-contribution';
 import { nls } from '@theia/core/lib/browser/nls';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -387,8 +387,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
 
   // Serial monitor
-  bind(MonitorModel).toSelf().inSingletonScope();
-  bind(FrontendApplicationContribution).toService(MonitorModel);
+  bind(SerialModel).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(SerialModel);
   bind(MonitorWidget).toSelf();
   bindViewContribution(bind, MonitorViewContribution);
   bind(TabBarToolbarContribution).toService(MonitorViewContribution);
@@ -396,19 +396,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     id: MonitorWidget.ID,
     createWidget: () => context.container.get(MonitorWidget),
   }));
-  // Frontend binding for the serial monitor service
-  bind(MonitorService)
+  // Frontend binding for the serial service
+  bind(SerialService)
     .toDynamicValue((context) => {
       const connection = context.container.get(WebSocketConnectionProvider);
       const client =
-        context.container.get<MonitorServiceClient>(MonitorServiceClient);
-      return connection.createProxy(MonitorServicePath, client);
+        context.container.get<SerialServiceClient>(SerialServiceClient);
+      return connection.createProxy(SerialServicePath, client);
     })
     .inSingletonScope();
   bind(SerialConnectionManager).toSelf().inSingletonScope();
 
-  // Serial monitor service client to receive and delegate notifications from the backend.
-  bind(MonitorServiceClient).to(MonitorServiceClientImpl).inSingletonScope();
+  // Serial service client to receive and delegate notifications from the backend.
+  bind(SerialServiceClient).to(SerialServiceClientImpl).inSingletonScope();
 
   bind(WorkspaceService).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceService).toService(WorkspaceService);

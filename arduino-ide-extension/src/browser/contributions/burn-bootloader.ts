@@ -3,7 +3,7 @@ import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { SerialConnectionManager } from '../monitor/monitor-connection';
+import { SerialConnectionManager } from '../serial/serial-connection-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -19,7 +19,7 @@ export class BurnBootloader extends SketchContribution {
   protected readonly coreService: CoreService;
 
   @inject(SerialConnectionManager)
-  protected readonly monitorConnection: SerialConnectionManager;
+  protected readonly serialConnection: SerialConnectionManager;
 
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;
@@ -48,7 +48,7 @@ export class BurnBootloader extends SketchContribution {
   }
 
   async burnBootloader(): Promise<void> {
-    await this.monitorConnection.disconnect();
+    await this.serialConnection.disconnect();
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
       const port = boardsConfig.selectedPort;
@@ -81,8 +81,8 @@ export class BurnBootloader extends SketchContribution {
     } catch (e) {
       this.messageService.error(e.toString());
     } finally {
-      if (this.monitorConnection.isSerialOpen()) {
-        await this.monitorConnection.connect();
+      if (this.serialConnection.isSerialOpen()) {
+        await this.serialConnection.connect();
       }
     }
   }

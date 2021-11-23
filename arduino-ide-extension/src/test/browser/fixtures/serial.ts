@@ -1,13 +1,13 @@
-import { MonitorConfig } from '../../../common/protocol/monitor-service';
+import { SerialConfig } from '../../../common/protocol/serial-service';
 import { aBoard, anotherBoard, anotherPort, aPort } from './boards';
 
-export const aSerialConfig: MonitorConfig = {
+export const aSerialConfig: SerialConfig = {
   board: aBoard,
   port: aPort,
   baudRate: 9600,
 };
 
-export const anotherSerialConfig: MonitorConfig = {
+export const anotherSerialConfig: SerialConfig = {
   board: anotherBoard,
   port: anotherPort,
   baudRate: 9600,

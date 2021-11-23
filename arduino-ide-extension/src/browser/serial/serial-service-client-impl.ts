@@ -1,32 +1,32 @@
 import { injectable } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import {
-  MonitorServiceClient,
-  MonitorError,
-  MonitorConfig,
-} from '../../common/protocol/monitor-service';
-import { MonitorModel } from './monitor-model';
+  SerialServiceClient,
+  SerialError,
+  SerialConfig,
+} from '../../common/protocol/serial-service';
+import { SerialModel } from './serial-model';
 
 @injectable()
-export class MonitorServiceClientImpl implements MonitorServiceClient {
-  protected readonly onErrorEmitter = new Emitter<MonitorError>();
+export class SerialServiceClientImpl implements SerialServiceClient {
+  protected readonly onErrorEmitter = new Emitter<SerialError>();
   readonly onError = this.onErrorEmitter.event;
 
   protected readonly onWebSocketChangedEmitter = new Emitter<number>();
   readonly onWebSocketChanged = this.onWebSocketChangedEmitter.event;
 
   protected readonly onBaudRateChangedEmitter =
-    new Emitter<MonitorConfig.BaudRate>();
+    new Emitter<SerialConfig.BaudRate>();
   readonly onBaudRateChanged = this.onBaudRateChangedEmitter.event;
 
   protected readonly onLineEndingChangedEmitter =
-    new Emitter<MonitorModel.EOL>();
+    new Emitter<SerialModel.EOL>();
   readonly onLineEndingChanged = this.onLineEndingChangedEmitter.event;
 
   protected readonly onInterpolateChangedEmitter = new Emitter<boolean>();
   readonly onInterpolateChanged = this.onInterpolateChangedEmitter.event;
 
-  notifyError(error: MonitorError): void {
+  notifyError(error: SerialError): void {
     this.onErrorEmitter.fire(error);
   }
 
@@ -34,11 +34,11 @@ export class MonitorServiceClientImpl implements MonitorServiceClient {
     this.onWebSocketChangedEmitter.fire(message);
   }
 
-  notifyBaudRateChanged(message: MonitorConfig.BaudRate): void {
+  notifyBaudRateChanged(message: SerialConfig.BaudRate): void {
     this.onBaudRateChangedEmitter.fire(message);
   }
 
-  notifyLineEndingChanged(message: MonitorModel.EOL): void {
+  notifyLineEndingChanged(message: SerialModel.EOL): void {
     this.onLineEndingChangedEmitter.fire(message);
   }
 

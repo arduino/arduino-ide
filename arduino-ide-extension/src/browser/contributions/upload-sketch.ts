@@ -4,7 +4,7 @@ import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { SerialConnectionManager } from '../monitor/monitor-connection';
+import { SerialConnectionManager } from '../serial/serial-connection-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -22,7 +22,7 @@ export class UploadSketch extends SketchContribution {
   protected readonly coreService: CoreService;
 
   @inject(SerialConnectionManager)
-  protected readonly monitorConnection: SerialConnectionManager;
+  protected readonly serialConnection: SerialConnectionManager;
 
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;
@@ -108,7 +108,7 @@ export class UploadSketch extends SketchContribution {
     if (!sketch) {
       return;
     }
-    await this.monitorConnection.disconnect();
+    await this.serialConnection.disconnect();
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
@@ -168,16 +168,16 @@ export class UploadSketch extends SketchContribution {
       this.onDidChangeEmitter.fire();
 
       if (
-        this.monitorConnection.isSerialOpen() &&
-        this.monitorConnection.monitorConfig
+        this.serialConnection.isSerialOpen() &&
+        this.serialConnection.serialConfig
       ) {
-        const { board, port } = this.monitorConnection.monitorConfig;
+        const { board, port } = this.serialConnection.serialConfig;
         try {
           await this.boardsServiceClientImpl.waitUntilAvailable(
             Object.assign(board, { port }),
             10_000
           );
-          await this.monitorConnection.connect();
+          await this.serialConnection.connect();
         } catch (waitError) {
           this.messageService.error(
             nls.localize(

@@ -3,12 +3,12 @@ import { deepClone } from '@theia/core/lib/common/objects';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import {
-  MonitorService,
-  MonitorConfig,
-  MonitorError,
+  SerialService,
+  SerialConfig,
+  SerialError,
   Status,
-  MonitorServiceClient,
-} from '../../common/protocol/monitor-service';
+  SerialServiceClient,
+} from '../../common/protocol/serial-service';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   Port,
@@ -16,7 +16,7 @@ import {
   BoardsService,
 } from '../../common/protocol/boards-service';
 import { BoardsConfig } from '../boards/boards-config';
-import { MonitorModel } from './monitor-model';
+import { SerialModel } from './serial-model';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import { nls } from '@theia/core/lib/browser/nls';
 import { CoreService } from '../../common/protocol';
@@ -25,16 +25,12 @@ import { CoreService } from '../../common/protocol';
 export class SerialConnectionManager {
   protected _state: Serial.State = [];
   protected _connected = false;
-  protected config: Partial<MonitorConfig> = {
+  protected config: Partial<SerialConfig> = {
     board: undefined,
     port: undefined,
     baudRate: undefined,
   };
 
-  /**
-   * Note: The idea is to toggle this property from the UI (`Monitor` view)
-   * and the boards config and the boards attachment/detachment logic can be at on place, here.
-   */
   protected readonly onConnectionChangedEmitter = new Emitter<boolean>();
 
   /**
@@ -43,11 +39,11 @@ export class SerialConnectionManager {
   protected readonly onReadEmitter = new Emitter<{ messages: string[] }>();
 
   /**
-   * Array for storing previous monitor errors received from the server, and based on the number of elements in this array,
+   * Array for storing previous serial errors received from the server, and based on the number of elements in this array,
    * we adjust the reconnection delay.
    * Super naive way: we wait `array.length * 1000` ms. Once we hit 10 errors, we do not try to reconnect and clean the array.
    */
-  protected monitorErrors: MonitorError[] = [];
+  protected serialErrors: SerialError[] = [];
   protected reconnectTimeout?: number;
 
   /**
@@ -57,10 +53,10 @@ export class SerialConnectionManager {
   protected webSocket?: WebSocket;
 
   constructor(
-    @inject(MonitorModel) protected readonly monitorModel: MonitorModel,
-    @inject(MonitorService) protected readonly monitorService: MonitorService,
-    @inject(MonitorServiceClient)
-    protected readonly monitorServiceClient: MonitorServiceClient,
+    @inject(SerialModel) protected readonly serialModel: SerialModel,
+    @inject(SerialService) protected readonly serialService: SerialService,
+    @inject(SerialServiceClient)
+    protected readonly serialServiceClient: SerialServiceClient,
     @inject(BoardsService) protected readonly boardsService: BoardsService,
     @inject(BoardsServiceProvider)
     protected readonly boardsServiceProvider: BoardsServiceProvider,
@@ -68,50 +64,50 @@ export class SerialConnectionManager {
     @inject(ThemeService) protected readonly themeService: ThemeService,
     @inject(CoreService) protected readonly core: CoreService
   ) {
-    this.monitorServiceClient.onWebSocketChanged(
+    this.serialServiceClient.onWebSocketChanged(
       this.handleWebSocketChanged.bind(this)
     );
-    this.monitorServiceClient.onBaudRateChanged((baudRate) => {
-      if (this.monitorModel.baudRate !== baudRate) {
-        this.monitorModel.baudRate = baudRate;
+    this.serialServiceClient.onBaudRateChanged((baudRate) => {
+      if (this.serialModel.baudRate !== baudRate) {
+        this.serialModel.baudRate = baudRate;
       }
     });
-    this.monitorServiceClient.onLineEndingChanged((lineending) => {
-      if (this.monitorModel.lineEnding !== lineending) {
-        this.monitorModel.lineEnding = lineending;
+    this.serialServiceClient.onLineEndingChanged((lineending) => {
+      if (this.serialModel.lineEnding !== lineending) {
+        this.serialModel.lineEnding = lineending;
       }
     });
-    this.monitorServiceClient.onInterpolateChanged((interpolate) => {
-      if (this.monitorModel.interpolate !== interpolate) {
-        this.monitorModel.interpolate = interpolate;
+    this.serialServiceClient.onInterpolateChanged((interpolate) => {
+      if (this.serialModel.interpolate !== interpolate) {
+        this.serialModel.interpolate = interpolate;
       }
     });
 
-    this.monitorServiceClient.onError(this.handleError.bind(this));
+    this.serialServiceClient.onError(this.handleError.bind(this));
     this.boardsServiceProvider.onBoardsConfigChanged(
       this.handleBoardConfigChange.bind(this)
     );
 
     // Handles the `baudRate` changes by reconnecting if required.
-    this.monitorModel.onChange(({ property }) => {
+    this.serialModel.onChange(({ property }) => {
       if (property === 'baudRate' && this.connected) {
         const { boardsConfig } = this.boardsServiceProvider;
         this.handleBoardConfigChange(boardsConfig);
       }
 
       // update the current values in the backend and propagate to websocket clients
-      this.monitorService.updateWsConfigParam({
+      this.serialService.updateWsConfigParam({
         ...(property === 'lineEnding' && {
-          currentLineEnding: this.monitorModel.lineEnding,
+          currentLineEnding: this.serialModel.lineEnding,
         }),
         ...(property === 'interpolate' && {
-          interpolate: this.monitorModel.interpolate,
+          interpolate: this.serialModel.interpolate,
         }),
       });
     });
 
     this.themeService.onDidColorThemeChange((theme) => {
-      this.monitorService.updateWsConfigParam({
+      this.serialService.updateWsConfigParam({
         darkTheme: theme.newTheme.type === 'dark',
       });
     });
@@ -123,9 +119,9 @@ export class SerialConnectionManager {
    *
    * @param newConfig the porperties of the config that has changed
    */
-  async setConfig(newConfig: Partial<MonitorConfig>): Promise<void> {
+  async setConfig(newConfig: Partial<SerialConfig>): Promise<void> {
     let configHasChanged = false;
-    Object.keys(this.config).forEach((key: keyof MonitorConfig) => {
+    Object.keys(this.config).forEach((key: keyof SerialConfig) => {
       if (newConfig[key] !== this.config[key]) {
         configHasChanged = true;
         this.config = { ...this.config, [key]: newConfig[key] };
@@ -136,7 +132,7 @@ export class SerialConnectionManager {
       this.isSerialOpen() &&
       !(await this.core.isUploading())
     ) {
-      this.monitorService.updateWsConfigParam({
+      this.serialService.updateWsConfigParam({
         currentBaudrate: this.config.baudRate,
         serialPort: this.config.port?.address,
       });
@@ -145,7 +141,7 @@ export class SerialConnectionManager {
     }
   }
 
-  getConfig(): Partial<MonitorConfig> {
+  getConfig(): Partial<SerialConfig> {
     return this.config;
   }
 
@@ -162,7 +158,7 @@ export class SerialConnectionManager {
   }
 
   /**
-   * When the serial monitor is open and the frontend is connected to the serial, we create the websocket here
+   * When the serial is open and the frontend is connected to the serial, we create the websocket here
    */
   protected createWsConnection(): boolean {
     if (this.wsPort) {
@@ -183,8 +179,8 @@ export class SerialConnectionManager {
   /**
    * Sets the types of connections needed by the client.
    *
-   * @param newState The new types of connections (can be 'Monitor', 'Plotter', none or both).
-   *          If the previuos state was empty and 's' is not, it tries to reconnect to the serial service
+   * @param newState The array containing the list of desired connections.
+   *          If the previuos state was empty and 'newState' is not, it tries to reconnect to the serial service
    *          If the provios state was NOT empty and now it is, it disconnects to the serial service
    * @returns The status of the operation
    */
@@ -213,9 +209,9 @@ export class SerialConnectionManager {
     return (state ? state : this._state).length > 0;
   }
 
-  get monitorConfig(): MonitorConfig | undefined {
-    return isMonitorConfig(this.config)
-      ? (this.config as MonitorConfig)
+  get serialConfig(): SerialConfig | undefined {
+    return isSerialConfig(this.config)
+      ? (this.config as SerialConfig)
       : undefined;
   }
 
@@ -225,7 +221,7 @@ export class SerialConnectionManager {
 
   set connected(c: boolean) {
     this._connected = c;
-    this.monitorService.updateWsConfigParam({ connected: c });
+    this.serialService.updateWsConfigParam({ connected: c });
     this.onConnectionChangedEmitter.fire(this._connected);
   }
   /**
@@ -236,7 +232,7 @@ export class SerialConnectionManager {
    * @returns the status of the operation
    */
   async openSerial(type: Serial.Type): Promise<Status> {
-    if (!isMonitorConfig(this.config)) {
+    if (!isSerialConfig(this.config)) {
       this.messageService.error(
         `Please select a board and a port to open the serial connection.`
       );
@@ -277,15 +273,15 @@ export class SerialConnectionManager {
   }
 
   /**
-   * Handles error on the MonitorServiceClient and try to reconnect, eventually
+   * Handles error on the SerialServiceClient and try to reconnect, eventually
    */
-  handleError(error: MonitorError): void {
+  handleError(error: SerialError): void {
     if (!this.connected) return;
     const { code, config } = error;
     const { board, port } = config;
     const options = { timeout: 3000 };
     switch (code) {
-      case MonitorError.ErrorCodes.CLIENT_CANCEL: {
+      case SerialError.ErrorCodes.CLIENT_CANCEL: {
         console.debug(
           `Serial connection was canceled by client: ${Serial.Config.toString(
             this.config
@@ -293,7 +289,7 @@ export class SerialConnectionManager {
         );
         break;
       }
-      case MonitorError.ErrorCodes.DEVICE_BUSY: {
+      case SerialError.ErrorCodes.DEVICE_BUSY: {
         this.messageService.warn(
           nls.localize(
             'arduino/monitor/connectionBusy',
@@ -302,10 +298,10 @@ export class SerialConnectionManager {
           ),
           options
         );
-        this.monitorErrors.push(error);
+        this.serialErrors.push(error);
         break;
       }
-      case MonitorError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
+      case SerialError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
         this.messageService.info(
           nls.localize(
             'arduino/monitor/disconnected',
@@ -336,7 +332,7 @@ export class SerialConnectionManager {
     this.connected = false;
 
     if (this.isSerialOpen()) {
-      if (this.monitorErrors.length >= 10) {
+      if (this.serialErrors.length >= 10) {
         this.messageService.warn(
           nls.localize(
             'arduino/monitor/failedReconnect',
@@ -347,9 +343,9 @@ export class SerialConnectionManager {
             Port.toString(port)
           )
         );
-        this.monitorErrors.length = 0;
+        this.serialErrors.length = 0;
       } else {
-        const attempts = this.monitorErrors.length || 1;
+        const attempts = this.serialErrors.length || 1;
         if (this.reconnectTimeout !== undefined) {
           // Clear the previous timer.
           window.clearTimeout(this.reconnectTimeout);
@@ -376,14 +372,14 @@ export class SerialConnectionManager {
 
   async connect(): Promise<Status> {
     if (this.connected) return Status.ALREADY_CONNECTED;
-    if (!isMonitorConfig(this.config)) return Status.NOT_CONNECTED;
+    if (!isSerialConfig(this.config)) return Status.NOT_CONNECTED;
 
     console.info(
       `>>> Creating serial connection for ${Board.toString(
         this.config.board
       )} on port ${Port.toString(this.config.port)}...`
     );
-    const connectStatus = await this.monitorService.connect(this.config);
+    const connectStatus = await this.serialService.connect(this.config);
     if (Status.isOK(connectStatus)) {
       this.connected = true;
       console.info(
@@ -402,7 +398,7 @@ export class SerialConnectionManager {
     }
 
     console.log('>>> Disposing existing serial connection...');
-    const status = await this.monitorService.disconnect();
+    const status = await this.serialService.disconnect();
     if (Status.isOK(status)) {
       this.connected = false;
       console.log(
@@ -423,7 +419,7 @@ export class SerialConnectionManager {
   }
 
   /**
-   * Sends the data to the connected serial monitor.
+   * Sends the data to the connected serial port.
    * The desired EOL is appended to `data`, you do not have to add it.
    * It is a NOOP if connected.
    */
@@ -432,8 +428,8 @@ export class SerialConnectionManager {
       return Status.NOT_CONNECTED;
     }
     return new Promise<Status>((resolve) => {
-      this.monitorService
-        .sendMessageToSerial(data + this.monitorModel.lineEnding)
+      this.serialService
+        .sendMessageToSerial(data + this.serialModel.lineEnding)
         .then(() => resolve(Status.OK));
     });
   }
@@ -450,8 +446,8 @@ export class SerialConnectionManager {
     boardsConfig: BoardsConfig.Config
   ): Promise<void> {
     const { selectedBoard: board, selectedPort: port } = boardsConfig;
-    const { baudRate } = this.monitorModel;
-    const newConfig: Partial<MonitorConfig> = { board, port, baudRate };
+    const { baudRate } = this.serialModel;
+    const newConfig: Partial<SerialConfig> = { board, port, baudRate };
     this.setConfig(newConfig);
   }
 }
@@ -470,16 +466,14 @@ export namespace Serial {
   export type State = Serial.Type[];
 
   export namespace Config {
-    export function toString(config: Partial<MonitorConfig>): string {
-      if (!isMonitorConfig(config)) return '';
+    export function toString(config: Partial<SerialConfig>): string {
+      if (!isSerialConfig(config)) return '';
       const { board, port } = config;
       return `${Board.toString(board)} ${Port.toString(port)}`;
     }
   }
 }
 
-function isMonitorConfig(
-  config: Partial<MonitorConfig>
-): config is MonitorConfig {
+function isSerialConfig(config: Partial<SerialConfig>): config is SerialConfig {
   return !!config.board && !!config.baudRate && !!config.port;
 }

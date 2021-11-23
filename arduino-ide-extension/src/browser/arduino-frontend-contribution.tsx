@@ -58,7 +58,7 @@ import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { EditorMode } from './editor-mode';
 import { ArduinoMenus } from './menu/arduino-menus';
-import { MonitorViewContribution } from './monitor/monitor-view-contribution';
+import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
