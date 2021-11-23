@@ -21,7 +21,7 @@ import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 @injectable()
 export class MonitorWidget extends ReactWidget {
   static readonly LABEL = nls.localize(
-    'arduino/monitor/title',
+    'arduino/common/serialMonitor',
     'Serial Monitor'
   );
   static readonly ID = 'serial-monitor';
@@ -125,23 +125,20 @@ export class MonitorWidget extends ReactWidget {
   > {
     return [
       {
-        label: nls.localize('arduino/monitor/noLineEndings', 'No Line Ending'),
+        label: nls.localize('arduino/serial/noLineEndings', 'No Line Ending'),
         value: '',
       },
       {
-        label: nls.localize('arduino/monitor/newLine', 'New Line'),
+        label: nls.localize('arduino/serial/newLine', 'New Line'),
         value: '\n',
       },
       {
-        label: nls.localize(
-          'arduino/monitor/carriageReturn',
-          'Carriage Return'
-        ),
+        label: nls.localize('arduino/serial/carriageReturn', 'Carriage Return'),
         value: '\r',
       },
       {
         label: nls.localize(
-          'arduino/monitor/newLineCarriageReturn',
+          'arduino/serial/newLineCarriageReturn',
           'Both NL & CR'
         ),
         value: '\r\n',

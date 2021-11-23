@@ -181,8 +181,8 @@ export class UploadSketch extends SketchContribution {
         } catch (waitError) {
           this.messageService.error(
             nls.localize(
-              'arduino/sketch/couldNotConnectToMonitor',
-              'Could not reconnect to serial monitor. {0}',
+              'arduino/sketch/couldNotConnectToSerial',
+              'Could not reconnect to serial port. {0}',
               waitError.toString()
             )
           );

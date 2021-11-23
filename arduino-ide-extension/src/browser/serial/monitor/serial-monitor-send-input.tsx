@@ -46,13 +46,13 @@ export class SerialMonitorSendInput extends React.Component<
     const { serialConfig } = this.props;
     if (!serialConfig) {
       return nls.localize(
-        'arduino/monitor/notConnected',
+        'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
       );
     }
     const { board, port } = serialConfig;
     return nls.localize(
-      'arduino/monitor/message',
+      'arduino/serial/message',
       "Message ({0} + Enter to send message to '{1}' on '{2}'",
       isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
       Board.toString(board, {

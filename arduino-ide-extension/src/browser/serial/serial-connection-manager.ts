@@ -292,7 +292,7 @@ export class SerialConnectionManager {
       case SerialError.ErrorCodes.DEVICE_BUSY: {
         this.messageService.warn(
           nls.localize(
-            'arduino/monitor/connectionBusy',
+            'arduino/serial/connectionBusy',
             'Connection failed. Serial port is busy: {0}',
             Port.toString(port)
           ),
@@ -304,7 +304,7 @@ export class SerialConnectionManager {
       case SerialError.ErrorCodes.DEVICE_NOT_CONFIGURED: {
         this.messageService.info(
           nls.localize(
-            'arduino/monitor/disconnected',
+            'arduino/serial/disconnected',
             'Disconnected {0} from {1}.',
             Board.toString(board, {
               useFqbn: false,
@@ -318,7 +318,7 @@ export class SerialConnectionManager {
       case undefined: {
         this.messageService.error(
           nls.localize(
-            'arduino/monitor/unexpectedError',
+            'arduino/serial/unexpectedError',
             'Unexpected error. Reconnecting {0} on port {1}.',
             Board.toString(board),
             Port.toString(port)
@@ -335,8 +335,8 @@ export class SerialConnectionManager {
       if (this.serialErrors.length >= 10) {
         this.messageService.warn(
           nls.localize(
-            'arduino/monitor/failedReconnect',
-            'Failed to reconnect {0} to serial after 10 consecutive attempts. The {1} serial port is busy.',
+            'arduino/serial/failedReconnect',
+            'Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.',
             Board.toString(board, {
               useFqbn: false,
             }),
@@ -353,7 +353,7 @@ export class SerialConnectionManager {
         const timeout = attempts * 1000;
         this.messageService.warn(
           nls.localize(
-            'arduino/monitor/reconnect',
+            'arduino/serial/reconnect',
             'Reconnecting {0} to {1} in {2] seconds...',
             Board.toString(board, {
               useFqbn: false,
