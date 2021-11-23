@@ -44,7 +44,8 @@
             "other": false,
             "comments": false,
             "strings": false
-          }
+          },
+          "breadcrumbs.enabled": false
         }
       }
     },
