@@ -4,7 +4,7 @@ import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { MonitorConnection } from '../monitor/monitor-connection';
+import { SerialConnectionManager } from '../serial/serial-connection-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -21,8 +21,8 @@ export class UploadSketch extends SketchContribution {
   @inject(CoreService)
   protected readonly coreService: CoreService;
 
-  @inject(MonitorConnection)
-  protected readonly monitorConnection: MonitorConnection;
+  @inject(SerialConnectionManager)
+  protected readonly serialConnection: SerialConnectionManager;
 
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;
@@ -108,15 +108,7 @@ export class UploadSketch extends SketchContribution {
     if (!sketch) {
       return;
     }
-    let shouldAutoConnect = false;
-    const monitorConfig = this.monitorConnection.monitorConfig;
-    if (monitorConfig) {
-      await this.monitorConnection.disconnect();
-      if (this.monitorConnection.autoConnect) {
-        shouldAutoConnect = true;
-      }
-      this.monitorConnection.autoConnect = false;
-    }
+    await this.serialConnection.disconnect();
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
@@ -175,24 +167,22 @@ export class UploadSketch extends SketchContribution {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();
 
-      if (monitorConfig) {
-        const { board, port } = monitorConfig;
+      if (
+        this.serialConnection.isSerialOpen() &&
+        this.serialConnection.serialConfig
+      ) {
+        const { board, port } = this.serialConnection.serialConfig;
         try {
           await this.boardsServiceClientImpl.waitUntilAvailable(
             Object.assign(board, { port }),
             10_000
           );
-          if (shouldAutoConnect) {
-            // Enabling auto-connect will trigger a connect.
-            this.monitorConnection.autoConnect = true;
-          } else {
-            await this.monitorConnection.connect(monitorConfig);
-          }
+          await this.serialConnection.connect();
         } catch (waitError) {
           this.messageService.error(
             nls.localize(
-              'arduino/sketch/couldNotConnectToMonitor',
-              'Could not reconnect to serial monitor. {0}',
+              'arduino/sketch/couldNotConnectToSerial',
+              'Could not reconnect to serial port. {0}',
               waitError.toString()
             )
           );

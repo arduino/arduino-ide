@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
-import { Board, Port } from '../../common/protocol/boards-service';
-import { MonitorConfig } from '../../common/protocol/monitor-service';
+import { Board, Port } from '../../../common/protocol/boards-service';
+import { SerialConfig } from '../../../common/protocol/serial-service';
 import { isOSX } from '@theia/core/lib/common/os';
 import { nls } from '@theia/core/lib/browser/nls';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
-    readonly monitorConfig?: MonitorConfig;
+    readonly serialConfig?: SerialConfig;
     readonly onSend: (text: string) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
   }
@@ -33,7 +33,7 @@ export class SerialMonitorSendInput extends React.Component<
       <input
         ref={this.setRef}
         type="text"
-        className={`theia-input ${this.props.monitorConfig ? '' : 'warning'}`}
+        className={`theia-input ${this.props.serialConfig ? '' : 'warning'}`}
         placeholder={this.placeholder}
         value={this.state.text}
         onChange={this.onChange}
@@ -43,16 +43,16 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   protected get placeholder(): string {
-    const { monitorConfig } = this.props;
-    if (!monitorConfig) {
+    const { serialConfig } = this.props;
+    if (!serialConfig) {
       return nls.localize(
-        'arduino/monitor/notConnected',
+        'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
       );
     }
-    const { board, port } = monitorConfig;
+    const { board, port } = serialConfig;
     return nls.localize(
-      'arduino/monitor/message',
+      'arduino/serial/message',
       "Message ({0} + Enter to send message to '{1}' on '{2}'",
       isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
       Board.toString(board, {

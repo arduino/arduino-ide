@@ -30,17 +30,20 @@ The Core Service is responsible for building your sketches and uploading them to
   - compiling a sketch for a selected board type
   - uploading a sketch to a connected board
 
-#### Monitor Service
+#### Serial Service
 
-The Monitor Service allows getting information back from sketches running on your Arduino boards.
+The Serial Service allows getting information back from sketches running on your Arduino boards.
 
-- [src/common/protocol/monitor-service.ts](./src/common/protocol/monitor-service.ts) implements the common classes and interfaces
-- [src/node/monitor/monitor-service-impl.ts](./src/node/monitor/monitor-service-impl.ts) implements the service backend:
+- [src/common/protocol/serial-service.ts](./src/common/protocol/serial-service.ts) implements the common classes and interfaces
+- [src/node/serial/serial-service-impl.ts](./src/node/serial/serial-service-impl.ts) implements the service backend:
   - connecting to / disconnecting from a board
   - receiving and sending data
-- [src/browser/monitor/monitor-widget.tsx](./src/browser/monitor/monitor-widget.tsx) implements the serial monitor front-end:
+- [src/browser/serial/serial-connection-manager.ts](./src/browser/serial/serial-connection-manager.ts) handles the serial connection in the frontend
+- [src/browser/serial/monitor/monitor-widget.tsx](./src/browser/serial/monitor/monitor-widget.tsx) implements the serial monitor front-end:
   - viewing the output from a connected board
   - entering data to send to the board
+- [src/browser/serial/plotter/plotter-frontend-contribution.ts](./src/browser/serial/plotter/plotter-frontend-contribution.ts) implements the serial plotter front-end:
+  - opening a new window running the [Serial Plotter Web App](https://github.com/arduino/arduino-serial-plotter-webapp)
 
 #### Config Service
 

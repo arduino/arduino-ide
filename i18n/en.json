@@ -179,7 +179,7 @@
             "upload": "Upload",
             "uploadUsingProgrammer": "Upload Using Programmer",
             "doneUploading": "Done uploading.",
-            "couldNotConnectToMonitor": "Could not reconnect to serial monitor. {0}",
+            "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
             "verifyOrCompile": "Verify/Compile",
             "exportBinary": "Export Compiled Binary",
             "verify": "Verify",
@@ -253,22 +253,21 @@
         "dialog": {
             "dontAskAgain": "Don't ask again"
         },
-        "monitor": {
-            "connectionBusy": "Connection failed. Serial port is busy: {0}",
-            "disconnected": "Disconnected {0} from {1}.",
-            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
-            "failedReconnect": "Failed to reconnect {0} to the the serial-monitor after 10 consecutive attempts. The {1} serial port is busy.",
-            "reconnect": "Reconnecting {0} to {1} in {2] seconds...",
+        "serial": {
             "toggleTimestamp": "Toggle Timestamp",
             "autoscroll": "Autoscroll",
             "timestamp": "Timestamp",
-            "title": "Serial Monitor",
             "noLineEndings": "No Line Ending",
             "newLine": "New Line",
             "carriageReturn": "Carriage Return",
             "newLineCarriageReturn": "Both NL & CR",
             "notConnected": "Not connected. Select a board and a port to connect automatically.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'"
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "connectionBusy": "Connection failed. Serial port is busy: {0}",
+            "disconnected": "Disconnected {0} from {1}.",
+            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
+            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
+            "reconnect": "Reconnecting {0} to {1} in {2] seconds..."
         },
         "component": {
             "uninstall": "Uninstall",
