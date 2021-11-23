@@ -35,13 +35,18 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
 
     const layoutData = await this.inflate(serializedLayoutData);
     // workaround to remove duplicated tabs
+    const filesUri: string[] = [];
     if ((layoutData as any)?.mainPanel?.main?.widgets) {
       (layoutData as any).mainPanel.main.widgets = (
         layoutData as any
-      ).mainPanel.main.widgets.filter(
-        (widget: any) =>
-          widget.constructionOptions.factoryId !== 'code-editor-opener'
-      );
+      ).mainPanel.main.widgets.filter((widget: any) => {
+        const uri = widget.getResourceUri().toString();
+        if (filesUri.includes(uri)) {
+          return false;
+        }
+        filesUri.push(uri);
+        return true;
+      });
     }
 
     await app.shell.setLayoutData(layoutData);

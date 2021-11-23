@@ -508,7 +508,6 @@ export class ArduinoFrontendContribution
       for (const uri of [mainFileUri, ...rootFolderFileUris]) {
         await this.ensureOpened(uri);
       }
-      await this.ensureOpened(mainFileUri, true);
       if (mainFileUri.endsWith('.pde')) {
         const message = nls.localize(
           'arduino/common/oldFormat',
