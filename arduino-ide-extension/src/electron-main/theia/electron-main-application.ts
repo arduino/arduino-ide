@@ -101,7 +101,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
             minWidth: 620,
             height: 500,
             minHeight: 320,
-            center: true,
             x: 100,
             y: 100,
             webPreferences: {

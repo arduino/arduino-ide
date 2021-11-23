@@ -77,7 +77,8 @@ export class MonitorServiceImpl implements MonitorService {
     config: MonitorConfig;
   };
   protected messages: string[] = [];
-  protected onMessageReceived: Disposable;
+  protected onMessageReceived: Disposable | null;
+  protected flushMessagesInterval: NodeJS.Timeout | null;
 
   setClient(client: MonitorServiceClient | undefined): void {
     this.client = client;
@@ -180,7 +181,7 @@ export class MonitorServiceImpl implements MonitorService {
     );
 
     // empty the queue every 32ms (~30fps)
-    setInterval(flushMessagesToFrontend, 32);
+    this.flushMessagesInterval = setInterval(flushMessagesToFrontend, 32);
 
     // converts 'ab\nc\nd' => [ab\n,c\n,d]
     const stringToArray = (string: string, separator = '\n') => {
@@ -247,7 +248,15 @@ export class MonitorServiceImpl implements MonitorService {
 
   async disconnect(reason?: MonitorError): Promise<Status> {
     try {
-      this.onMessageReceived.dispose();
+      if (this.onMessageReceived) {
+        this.onMessageReceived.dispose();
+        this.onMessageReceived = null;
+      }
+      if (this.flushMessagesInterval) {
+        clearInterval(this.flushMessagesInterval);
+        this.flushMessagesInterval = null;
+      }
+
       if (
         !this.serialConnection &&
         reason &&
