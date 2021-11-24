@@ -10,7 +10,6 @@ import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino
 import * as cc_arduino_cli_commands_v1_board_pb from "../../../../../cc/arduino/cli/commands/v1/board_pb";
 import * as cc_arduino_cli_commands_v1_compile_pb from "../../../../../cc/arduino/cli/commands/v1/compile_pb";
 import * as cc_arduino_cli_commands_v1_core_pb from "../../../../../cc/arduino/cli/commands/v1/core_pb";
-import * as cc_arduino_cli_commands_v1_monitor_pb from "../../../../../cc/arduino/cli/commands/v1/monitor_pb";
 import * as cc_arduino_cli_commands_v1_upload_pb from "../../../../../cc/arduino/cli/commands/v1/upload_pb";
 import * as cc_arduino_cli_commands_v1_lib_pb from "../../../../../cc/arduino/cli/commands/v1/lib_pb";
 
@@ -487,59 +486,6 @@ export class VersionResponse extends jspb.Message {
 export namespace VersionResponse {
     export type AsObject = {
         version: string,
-    }
-}
-
-export class NewSketchRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): NewSketchRequest;
-
-    getSketchName(): string;
-    setSketchName(value: string): NewSketchRequest;
-
-    getSketchDir(): string;
-    setSketchDir(value: string): NewSketchRequest;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): NewSketchRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: NewSketchRequest): NewSketchRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: NewSketchRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): NewSketchRequest;
-    static deserializeBinaryFromReader(message: NewSketchRequest, reader: jspb.BinaryReader): NewSketchRequest;
-}
-
-export namespace NewSketchRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        sketchName: string,
-        sketchDir: string,
-    }
-}
-
-export class NewSketchResponse extends jspb.Message { 
-    getMainFile(): string;
-    setMainFile(value: string): NewSketchResponse;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): NewSketchResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: NewSketchResponse): NewSketchResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: NewSketchResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): NewSketchResponse;
-    static deserializeBinaryFromReader(message: NewSketchResponse, reader: jspb.BinaryReader): NewSketchResponse;
-}
-
-export namespace NewSketchResponse {
-    export type AsObject = {
-        mainFile: string,
     }
 }
 

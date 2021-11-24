@@ -12,7 +12,6 @@ import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino
 import * as cc_arduino_cli_commands_v1_board_pb from "../../../../../cc/arduino/cli/commands/v1/board_pb";
 import * as cc_arduino_cli_commands_v1_compile_pb from "../../../../../cc/arduino/cli/commands/v1/compile_pb";
 import * as cc_arduino_cli_commands_v1_core_pb from "../../../../../cc/arduino/cli/commands/v1/core_pb";
-import * as cc_arduino_cli_commands_v1_monitor_pb from "../../../../../cc/arduino/cli/commands/v1/monitor_pb";
 import * as cc_arduino_cli_commands_v1_upload_pb from "../../../../../cc/arduino/cli/commands/v1/upload_pb";
 import * as cc_arduino_cli_commands_v1_lib_pb from "../../../../../cc/arduino/cli/commands/v1/lib_pb";
 
@@ -26,7 +25,6 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     outdated: IArduinoCoreServiceService_IOutdated;
     upgrade: IArduinoCoreServiceService_IUpgrade;
     version: IArduinoCoreServiceService_IVersion;
-    newSketch: IArduinoCoreServiceService_INewSketch;
     loadSketch: IArduinoCoreServiceService_ILoadSketch;
     archiveSketch: IArduinoCoreServiceService_IArchiveSketch;
     boardDetails: IArduinoCoreServiceService_IBoardDetails;
@@ -56,8 +54,6 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     libraryResolveDependencies: IArduinoCoreServiceService_ILibraryResolveDependencies;
     librarySearch: IArduinoCoreServiceService_ILibrarySearch;
     libraryList: IArduinoCoreServiceService_ILibraryList;
-    monitor: IArduinoCoreServiceService_IMonitor;
-    enumerateMonitorPortSettings: IArduinoCoreServiceService_IEnumerateMonitorPortSettings;
 }
 
 interface IArduinoCoreServiceService_ICreate extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.CreateRequest, cc_arduino_cli_commands_v1_commands_pb.CreateResponse> {
@@ -140,15 +136,6 @@ interface IArduinoCoreServiceService_IVersion extends grpc.MethodDefinition<cc_a
     requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.VersionRequest>;
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.VersionResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.VersionResponse>;
-}
-interface IArduinoCoreServiceService_INewSketch extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/NewSketch";
-    requestStream: false;
-    responseStream: false;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse>;
 }
 interface IArduinoCoreServiceService_ILoadSketch extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/LoadSketch";
@@ -411,24 +398,6 @@ interface IArduinoCoreServiceService_ILibraryList extends grpc.MethodDefinition<
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse>;
 }
-interface IArduinoCoreServiceService_IMonitor extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest, cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Monitor";
-    requestStream: true;
-    responseStream: true;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-}
-interface IArduinoCoreServiceService_IEnumerateMonitorPortSettings extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/EnumerateMonitorPortSettings";
-    requestStream: false;
-    responseStream: false;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse>;
-}
 
 export const ArduinoCoreServiceService: IArduinoCoreServiceService;
 
@@ -442,7 +411,6 @@ export interface IArduinoCoreServiceServer {
     outdated: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse>;
     upgrade: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
     version: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.VersionRequest, cc_arduino_cli_commands_v1_commands_pb.VersionResponse>;
-    newSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse>;
     loadSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse>;
     archiveSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse>;
     boardDetails: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse>;
@@ -472,8 +440,6 @@ export interface IArduinoCoreServiceServer {
     libraryResolveDependencies: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_lib_pb.LibraryResolveDependenciesRequest, cc_arduino_cli_commands_v1_lib_pb.LibraryResolveDependenciesResponse>;
     librarySearch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_lib_pb.LibrarySearchRequest, cc_arduino_cli_commands_v1_lib_pb.LibrarySearchResponse>;
     libraryList: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse>;
-    monitor: grpc.handleBidiStreamingCall<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest, cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-    enumerateMonitorPortSettings: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse>;
 }
 
 export interface IArduinoCoreServiceClient {
@@ -499,9 +465,6 @@ export interface IArduinoCoreServiceClient {
     version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
-    newSketch(request: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse) => void): grpc.ClientUnaryCall;
-    newSketch(request: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse) => void): grpc.ClientUnaryCall;
-    newSketch(request: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse) => void): grpc.ClientUnaryCall;
     loadSketch(request: cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse) => void): grpc.ClientUnaryCall;
     loadSketch(request: cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse) => void): grpc.ClientUnaryCall;
     loadSketch(request: cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse) => void): grpc.ClientUnaryCall;
@@ -574,12 +537,6 @@ export interface IArduinoCoreServiceClient {
     libraryList(request: cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse) => void): grpc.ClientUnaryCall;
     libraryList(request: cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse) => void): grpc.ClientUnaryCall;
     libraryList(request: cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse) => void): grpc.ClientUnaryCall;
-    monitor(): grpc.ClientDuplexStream<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest, cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-    monitor(options: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest, cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-    monitor(metadata: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest, cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-    enumerateMonitorPortSettings(request: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse) => void): grpc.ClientUnaryCall;
-    enumerateMonitorPortSettings(request: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse) => void): grpc.ClientUnaryCall;
-    enumerateMonitorPortSettings(request: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCoreServiceClient {
@@ -606,9 +563,6 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     public version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     public version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
-    public newSketch(request: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse) => void): grpc.ClientUnaryCall;
-    public newSketch(request: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse) => void): grpc.ClientUnaryCall;
-    public newSketch(request: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse) => void): grpc.ClientUnaryCall;
     public loadSketch(request: cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse) => void): grpc.ClientUnaryCall;
     public loadSketch(request: cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse) => void): grpc.ClientUnaryCall;
     public loadSketch(request: cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse) => void): grpc.ClientUnaryCall;
@@ -680,8 +634,4 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public libraryList(request: cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse) => void): grpc.ClientUnaryCall;
     public libraryList(request: cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse) => void): grpc.ClientUnaryCall;
     public libraryList(request: cc_arduino_cli_commands_v1_lib_pb.LibraryListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_lib_pb.LibraryListResponse) => void): grpc.ClientUnaryCall;
-    public monitor(metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientDuplexStream<cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest, cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse>;
-    public enumerateMonitorPortSettings(request: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse) => void): grpc.ClientUnaryCall;
-    public enumerateMonitorPortSettings(request: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse) => void): grpc.ClientUnaryCall;
-    public enumerateMonitorPortSettings(request: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse) => void): grpc.ClientUnaryCall;
 }
