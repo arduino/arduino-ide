@@ -257,6 +257,10 @@
         "dialog": {
             "dontAskAgain": "Don't ask again"
         },
+        "userFields": {
+            "cancel": "Cancel",
+            "upload": "Upload"
+        },
         "serial": {
             "toggleTimestamp": "Toggle Timestamp",
             "autoscroll": "Autoscroll",
