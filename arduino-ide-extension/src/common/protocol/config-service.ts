@@ -1,3 +1,5 @@
+import { RecursivePartial } from '@theia/core/lib/common/types';
+
 export const ConfigServicePath = '/services/config-service';
 export const ConfigService = Symbol('ConfigService');
 export interface ConfigService {
@@ -9,6 +11,29 @@ export interface ConfigService {
   setConfiguration(config: Config): Promise<void>;
   isInDataDir(uri: string): Promise<boolean>;
   isInSketchDir(uri: string): Promise<boolean>;
+}
+
+export interface Daemon {
+  readonly port: string | number;
+}
+export namespace Daemon {
+  export function is(
+    daemon: RecursivePartial<Daemon> | undefined
+  ): daemon is Daemon {
+    return !!daemon && !!daemon.port;
+  }
+  export function sameAs(
+    left: RecursivePartial<Daemon> | undefined,
+    right: RecursivePartial<Daemon> | undefined
+  ): boolean {
+    if (left === undefined) {
+      return right === undefined;
+    }
+    if (right === undefined) {
+      return left === undefined;
+    }
+    return String(left.port) === String(right.port);
+  }
 }
 
 export interface ProxySettings {
@@ -93,6 +118,7 @@ export interface Config {
   readonly downloadsDirUri: string;
   readonly additionalUrls: string[];
   readonly network: Network;
+  readonly daemon: Daemon;
 }
 export namespace Config {
   export function sameAs(left: Config, right: Config): boolean {
