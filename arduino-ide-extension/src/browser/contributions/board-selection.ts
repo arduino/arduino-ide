@@ -110,6 +110,9 @@ PID: ${PID}`;
     this.boardsServiceProvider.onAvailableBoardsChanged(
       this.updateMenus.bind(this)
     );
+    this.boardsServiceProvider.onAvailablePortsChanged(
+      this.updateMenus.bind(this)
+    );
   }
 
   protected async updateMenus(): Promise<void> {
@@ -247,19 +250,25 @@ PID: ${PID}`;
     }
 
     // Installed ports
-    const registerPorts = (ports: AvailablePorts) => {
+    const registerPorts = (
+      protocol: string,
+      protocolOrder: number,
+      ports: AvailablePorts
+    ) => {
       const addresses = Object.keys(ports);
       if (!addresses.length) {
         return;
       }
 
       // Register placeholder for protocol
-      const [port] = ports[addresses[0]];
-      const protocol = port.protocol;
-      const menuPath = [...portsSubmenuPath, protocol];
+      const menuPath = [
+        ...portsSubmenuPath,
+        `${protocolOrder.toString()}_${protocol}`,
+      ];
       const placeholder = new PlaceholderMenuNode(
         menuPath,
-        `${firstToUpperCase(port.protocol)} ports`
+        `${firstToUpperCase(protocol)} ports`,
+        { order: protocolOrder.toString() }
       );
       this.menuModelRegistry.registerMenuNode(menuPath, placeholder);
       this.toDisposeBeforeMenuRebuild.push(
@@ -268,63 +277,76 @@ PID: ${PID}`;
         )
       );
 
-      for (const address of addresses) {
-        if (!!ports[address]) {
-          const [port, boards] = ports[address];
-          if (!boards.length) {
-            boards.push({
-              name: '',
-            });
-          }
-          for (const { name, fqbn } of boards) {
-            const id = `arduino-select-port--${address}${
-              fqbn ? `--${fqbn}` : ''
-            }`;
-            const command = { id };
-            const handler = {
-              execute: () => {
-                if (
-                  !Port.equals(
-                    port,
-                    this.boardsServiceProvider.boardsConfig.selectedPort
-                  )
-                ) {
-                  this.boardsServiceProvider.boardsConfig = {
-                    selectedBoard:
-                      this.boardsServiceProvider.boardsConfig.selectedBoard,
-                    selectedPort: port,
-                  };
-                }
-              },
-              isToggled: () =>
-                Port.equals(
-                  port,
-                  this.boardsServiceProvider.boardsConfig.selectedPort
-                ),
-            };
-            const label = `${address}${name ? ` (${name})` : ''}`;
-            const menuAction = {
-              commandId: id,
-              label,
-              order: `1${label}`, // `1` comes after the placeholder which has order `0`
-            };
-            this.commandRegistry.registerCommand(command, handler);
-            this.toDisposeBeforeMenuRebuild.push(
-              Disposable.create(() =>
-                this.commandRegistry.unregisterCommand(command)
-              )
-            );
-            this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
-          }
+      // First we show addresses with recognized boards connected,
+      // then all the rest.
+      const sortedAddresses = Object.keys(ports);
+      sortedAddresses.sort((left: string, right: string): number => {
+        const [, leftBoards] = ports[left];
+        const [, rightBoards] = ports[right];
+        return rightBoards.length - leftBoards.length;
+      });
+
+      for (let i = 0; i < sortedAddresses.length; i++) {
+        const address = sortedAddresses[i];
+        const [port, boards] = ports[address];
+        let label = `${address}`;
+        if (boards.length) {
+          const boardsList = boards.map((board) => board.name).join(', ');
+          label = `${label} (${boardsList})`;
         }
+        const id = `arduino-select-port--${address}`;
+        const command = { id };
+        const handler = {
+          execute: () => {
+            if (
+              !Port.equals(
+                port,
+                this.boardsServiceProvider.boardsConfig.selectedPort
+              )
+            ) {
+              this.boardsServiceProvider.boardsConfig = {
+                selectedBoard:
+                  this.boardsServiceProvider.boardsConfig.selectedBoard,
+                selectedPort: port,
+              };
+            }
+          },
+          isToggled: () =>
+            Port.equals(
+              port,
+              this.boardsServiceProvider.boardsConfig.selectedPort
+            ),
+        };
+        const menuAction = {
+          commandId: id,
+          label,
+          order: `${protocolOrder + i + 1}`,
+        };
+        this.commandRegistry.registerCommand(command, handler);
+        this.toDisposeBeforeMenuRebuild.push(
+          Disposable.create(() =>
+            this.commandRegistry.unregisterCommand(command)
+          )
+        );
+        this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
       }
     };
 
-    const { serial, network, unknown } =
-      AvailablePorts.groupByProtocol(availablePorts);
-    registerPorts(serial);
-    registerPorts(network);
-    registerPorts(unknown);
+    const grouped = AvailablePorts.byProtocol(availablePorts);
+    let protocolOrder = 100;
+    // We first show serial and network ports, then all the rest
+    ['serial', 'network'].forEach((protocol) => {
+      const ports = grouped.get(protocol);
+      if (ports) {
+        registerPorts(protocol, protocolOrder, ports);
+        grouped.delete(protocol);
+        protocolOrder = protocolOrder + 100;
+      }
+    });
+    grouped.forEach((ports, protocol) => {
+      registerPorts(protocol, protocolOrder, ports);
+      protocolOrder = protocolOrder + 100;
+    });
 
     this.mainMenuManager.update();
   }

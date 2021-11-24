@@ -92,3 +92,4 @@ debug: {
     responseDeserialize: deserialize_cc_arduino_cli_debug_v1_GetDebugConfigResponse,
   },
 };
+
