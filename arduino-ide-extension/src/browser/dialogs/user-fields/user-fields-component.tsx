@@ -26,7 +26,7 @@ export const UserFieldsComponent = ({
 
   const updateUserField =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      let newBoardUserFields = [...boardUserFields];
+      const newBoardUserFields = [...boardUserFields];
       newBoardUserFields[index].value = e.target.value;
       setBoardUserFields(newBoardUserFields);
     };
@@ -48,26 +48,30 @@ export const UserFieldsComponent = ({
 
   return (
     <div>
-      {boardUserFields.map((field, index) => {
-        return (
-          <div className="dialogSection" key={index}>
-            <div className="dialogRow">
-              <label className="field-label">{field.label}</label>
-            </div>
-            <div className="dialogRow">
-              <input
-                type={field.secret ? 'password' : 'text'}
-                value={field.value}
-                className="theia-input"
-                placeholder={'Enter ' + field.label}
-                onChange={updateUserField(index)}
-              />
-            </div>
-          </div>
-        );
-      })}
+      <div className="user-fields-container">
+        <div className="user-fields-list">
+          {boardUserFields.map((field, index) => {
+            return (
+              <div className="dialogSection" key={index}>
+                <div className="dialogRow">
+                  <label className="field-label">{field.label}</label>
+                </div>
+                <div className="dialogRow">
+                  <input
+                    type={field.secret ? 'password' : 'text'}
+                    value={field.value}
+                    className="theia-input"
+                    placeholder={'Enter ' + field.label}
+                    onChange={updateUserField(index)}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
       <div className="dialogSection">
-        <div className="dialogRow">
+        <div className="dialogRow button-container">
           <button
             type="button"
             className="theia-button secondary install-cert-btn"
