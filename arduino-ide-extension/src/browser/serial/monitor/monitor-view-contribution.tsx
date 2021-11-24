@@ -7,9 +7,9 @@ import {
   TabBarToolbarContribution,
   TabBarToolbarRegistry,
 } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
-import { MonitorModel } from './monitor-model';
-import { ArduinoMenus } from '../menu/arduino-menus';
+import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
+import { SerialModel } from '../serial-model';
+import { ArduinoMenus } from '../../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
 
 export namespace SerialMonitor {
@@ -19,14 +19,14 @@ export namespace SerialMonitor {
         id: 'serial-monitor-autoscroll',
         label: 'Autoscroll',
       },
-      'arduino/monitor/autoscroll'
+      'arduino/serial/autoscroll'
     );
     export const TIMESTAMP = Command.toLocalizedCommand(
       {
         id: 'serial-monitor-timestamp',
         label: 'Timestamp',
       },
-      'arduino/monitor/timestamp'
+      'arduino/serial/timestamp'
     );
     export const CLEAR_OUTPUT = Command.toLocalizedCommand(
       {
@@ -48,7 +48,7 @@ export class MonitorViewContribution
   static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
     MonitorWidget.ID + ':toggle-toolbar';
 
-  @inject(MonitorModel) protected readonly model: MonitorModel;
+  @inject(SerialModel) protected readonly model: SerialModel;
 
   constructor() {
     super({
@@ -156,7 +156,7 @@ export class MonitorViewContribution
       <React.Fragment key="line-ending-toolbar-item">
         <div
           title={nls.localize(
-            'arduino/monitor/toggleTimestamp',
+            'arduino/serial/toggleTimestamp',
             'Toggle Timestamp'
           )}
           className={`item enabled fa fa-clock-o arduino-monitor ${

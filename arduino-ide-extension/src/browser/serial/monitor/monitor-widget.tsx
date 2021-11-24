@@ -9,27 +9,31 @@ import {
   Widget,
   MessageLoop,
 } from '@theia/core/lib/browser/widgets';
-import { MonitorConfig } from '../../common/protocol/monitor-service';
-import { ArduinoSelect } from '../widgets/arduino-select';
-import { MonitorModel } from './monitor-model';
-import { MonitorConnection } from './monitor-connection';
+import { SerialConfig } from '../../../common/protocol/serial-service';
+import { ArduinoSelect } from '../../widgets/arduino-select';
+import { SerialModel } from '../serial-model';
+import { Serial, SerialConnectionManager } from '../serial-connection-manager';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
   static readonly LABEL = nls.localize(
-    'arduino/monitor/title',
+    'arduino/common/serialMonitor',
     'Serial Monitor'
   );
   static readonly ID = 'serial-monitor';
 
-  @inject(MonitorModel)
-  protected readonly monitorModel: MonitorModel;
+  @inject(SerialModel)
+  protected readonly serialModel: SerialModel;
 
-  @inject(MonitorConnection)
-  protected readonly monitorConnection: MonitorConnection;
+  @inject(SerialConnectionManager)
+  protected readonly serialConnection: SerialConnectionManager;
+
+  @inject(BoardsServiceProvider)
+  protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   protected widgetHeight: number;
 
@@ -53,12 +57,9 @@ export class MonitorWidget extends ReactWidget {
     this.scrollOptions = undefined;
     this.toDispose.push(this.clearOutputEmitter);
     this.toDispose.push(
-      Disposable.create(() => {
-        this.monitorConnection.autoConnect = false;
-        if (this.monitorConnection.connected) {
-          this.monitorConnection.disconnect();
-        }
-      })
+      Disposable.create(() =>
+        this.serialConnection.closeSerial(Serial.Type.Monitor)
+      )
     );
   }
 
@@ -66,8 +67,9 @@ export class MonitorWidget extends ReactWidget {
   protected init(): void {
     this.update();
     this.toDispose.push(
-      this.monitorConnection.onConnectionChanged(() => this.clearConsole())
+      this.serialConnection.onConnectionChanged(() => this.clearConsole())
     );
+    this.toDispose.push(this.serialModel.onChange(() => this.update()));
   }
 
   clearConsole(): void {
@@ -81,7 +83,7 @@ export class MonitorWidget extends ReactWidget {
 
   protected onAfterAttach(msg: Message): void {
     super.onAfterAttach(msg);
-    this.monitorConnection.autoConnect = true;
+    this.serialConnection.openSerial(Serial.Type.Monitor);
   }
 
   onCloseRequest(msg: Message): void {
@@ -119,27 +121,24 @@ export class MonitorWidget extends ReactWidget {
   };
 
   protected get lineEndings(): OptionsType<
-    SerialMonitorOutput.SelectOption<MonitorModel.EOL>
+    SerialMonitorOutput.SelectOption<SerialModel.EOL>
   > {
     return [
       {
-        label: nls.localize('arduino/monitor/noLineEndings', 'No Line Ending'),
+        label: nls.localize('arduino/serial/noLineEndings', 'No Line Ending'),
         value: '',
       },
       {
-        label: nls.localize('arduino/monitor/newLine', 'New Line'),
+        label: nls.localize('arduino/serial/newLine', 'New Line'),
         value: '\n',
       },
       {
-        label: nls.localize(
-          'arduino/monitor/carriageReturn',
-          'Carriage Return'
-        ),
+        label: nls.localize('arduino/serial/carriageReturn', 'Carriage Return'),
         value: '\r',
       },
       {
         label: nls.localize(
-          'arduino/monitor/newLineCarriageReturn',
+          'arduino/serial/newLineCarriageReturn',
           'Both NL & CR'
         ),
         value: '\r\n',
@@ -148,9 +147,9 @@ export class MonitorWidget extends ReactWidget {
   }
 
   protected get baudRates(): OptionsType<
-    SerialMonitorOutput.SelectOption<MonitorConfig.BaudRate>
+    SerialMonitorOutput.SelectOption<SerialConfig.BaudRate>
   > {
-    const baudRates: Array<MonitorConfig.BaudRate> = [
+    const baudRates: Array<SerialConfig.BaudRate> = [
       300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
     ];
     return baudRates.map((baudRate) => ({
@@ -162,17 +161,17 @@ export class MonitorWidget extends ReactWidget {
   protected render(): React.ReactNode {
     const { baudRates, lineEndings } = this;
     const lineEnding =
-      lineEndings.find((item) => item.value === this.monitorModel.lineEnding) ||
+      lineEndings.find((item) => item.value === this.serialModel.lineEnding) ||
       lineEndings[1]; // Defaults to `\n`.
     const baudRate =
-      baudRates.find((item) => item.value === this.monitorModel.baudRate) ||
+      baudRates.find((item) => item.value === this.serialModel.baudRate) ||
       baudRates[4]; // Defaults to `9600`.
     return (
       <div className="serial-monitor">
         <div className="head">
           <div className="send">
             <SerialMonitorSendInput
-              monitorConfig={this.monitorConnection.monitorConfig}
+              serialConfig={this.serialConnection.serialConfig}
               resolveFocus={this.onFocusResolved}
               onSend={this.onSend}
             />
@@ -182,7 +181,7 @@ export class MonitorWidget extends ReactWidget {
               <ArduinoSelect
                 maxMenuHeight={this.widgetHeight - 40}
                 options={lineEndings}
-                defaultValue={lineEnding}
+                value={lineEnding}
                 onChange={this.onChangeLineEnding}
               />
             </div>
@@ -191,7 +190,7 @@ export class MonitorWidget extends ReactWidget {
                 className="select"
                 maxMenuHeight={this.widgetHeight - 40}
                 options={baudRates}
-                defaultValue={baudRate}
+                value={baudRate}
                 onChange={this.onChangeBaudRate}
               />
             </div>
@@ -199,8 +198,8 @@ export class MonitorWidget extends ReactWidget {
         </div>
         <div className="body">
           <SerialMonitorOutput
-            monitorModel={this.monitorModel}
-            monitorConnection={this.monitorConnection}
+            serialModel={this.serialModel}
+            serialConnection={this.serialConnection}
             clearConsoleEvent={this.clearOutputEmitter.event}
             height={Math.floor(this.widgetHeight - 50)}
           />
@@ -211,18 +210,18 @@ export class MonitorWidget extends ReactWidget {
 
   protected readonly onSend = (value: string) => this.doSend(value);
   protected async doSend(value: string): Promise<void> {
-    this.monitorConnection.send(value);
+    this.serialConnection.send(value);
   }
 
   protected readonly onChangeLineEnding = (
-    option: SerialMonitorOutput.SelectOption<MonitorModel.EOL>
+    option: SerialMonitorOutput.SelectOption<SerialModel.EOL>
   ) => {
-    this.monitorModel.lineEnding = option.value;
+    this.serialModel.lineEnding = option.value;
   };
 
   protected readonly onChangeBaudRate = (
-    option: SerialMonitorOutput.SelectOption<MonitorConfig.BaudRate>
+    option: SerialMonitorOutput.SelectOption<SerialConfig.BaudRate>
   ) => {
-    this.monitorModel.baudRate = option.value;
+    this.serialModel.baudRate = option.value;
   };
 }

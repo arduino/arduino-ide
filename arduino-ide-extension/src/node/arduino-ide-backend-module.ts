@@ -40,13 +40,16 @@ import {
   ArduinoDaemon,
   ArduinoDaemonPath,
 } from '../common/protocol/arduino-daemon';
-import { MonitorServiceImpl } from './monitor/monitor-service-impl';
 import {
-  MonitorService,
-  MonitorServicePath,
-  MonitorServiceClient,
-} from '../common/protocol/monitor-service';
-import { MonitorClientProvider } from './monitor/monitor-client-provider';
+  SerialServiceImpl,
+  SerialServiceName,
+} from './serial/serial-service-impl';
+import {
+  SerialService,
+  SerialServicePath,
+  SerialServiceClient,
+} from '../common/protocol/serial-service';
+import { MonitorClientProvider } from './serial/monitor-client-provider';
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
@@ -86,6 +89,9 @@ import {
   AuthenticationServicePath,
 } from '../common/protocol/authentication-service';
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
+import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
+import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
+import { WebSocketService } from './web-socket/web-socket-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -169,6 +175,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
   );
 
+  // Shared WebSocketService for the backend. This will manage all websocket conenctions
+  bind(WebSocketService).to(WebSocketServiceImpl).inSingletonScope();
+
   // Shared Arduino core client provider service for the backend.
   bind(CoreClientProvider).toSelf().inSingletonScope();
 
@@ -198,11 +207,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ConnectionContainerModule).toConstantValue(
     ConnectionContainerModule.create(({ bind, bindBackendService }) => {
       bind(MonitorClientProvider).toSelf().inSingletonScope();
-      bind(MonitorServiceImpl).toSelf().inSingletonScope();
-      bind(MonitorService).toService(MonitorServiceImpl);
-      bindBackendService<MonitorService, MonitorServiceClient>(
-        MonitorServicePath,
-        MonitorService,
+      bind(SerialServiceImpl).toSelf().inSingletonScope();
+      bind(SerialService).toService(SerialServiceImpl);
+      bindBackendService<SerialService, SerialServiceClient>(
+        SerialServicePath,
+        SerialService,
         (service, client) => {
           service.setClient(client);
           client.onDidCloseConnection(() => service.dispose());
@@ -299,14 +308,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope()
     .whenTargetNamed('config');
 
-  // Logger for the monitor service.
+  // Logger for the serial service.
   bind(ILogger)
     .toDynamicValue((ctx) => {
       const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('monitor-service');
+      return parentLogger.child(SerialServiceName);
     })
     .inSingletonScope()
-    .whenTargetNamed('monitor-service');
+    .whenTargetNamed(SerialServiceName);
 
   bind(DefaultGitInit).toSelf();
   rebind(GitInit).toService(DefaultGitInit);
@@ -331,4 +340,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  bind(PlotterBackendContribution).toSelf().inSingletonScope();
+  bind(BackendApplicationContribution).toService(PlotterBackendContribution);
 });

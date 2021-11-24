@@ -18,6 +18,8 @@ import {
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
 
+app.commandLine.appendSwitch('disable-http-cache');
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   protected _windows: BrowserWindow[] = [];
@@ -88,6 +90,35 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         this.splashService.onCloseRequested
       );
     }
+
+    electronWindow.webContents.on(
+      'new-window',
+      (event, url, frameName, disposition, options, additionalFeatures) => {
+        if (frameName === 'serialPlotter') {
+          event.preventDefault();
+          Object.assign(options, {
+            width: 800,
+            minWidth: 620,
+            height: 500,
+            minHeight: 320,
+            x: 100,
+            y: 100,
+            webPreferences: {
+              devTools: true,
+              nativeWindowOpen: true,
+              openerId: electronWindow?.webContents.id,
+            },
+          });
+          event.newGuest = new BrowserWindow(options);
+          event.newGuest.setMenu(null);
+          event.newGuest?.on('closed', (e: any) => {
+            electronWindow?.webContents.send('CLOSE_CHILD_WINDOW');
+          });
+          event.newGuest?.loadURL(url);
+        }
+      }
+    );
+
     this._windows.push(electronWindow);
     electronWindow.on('closed', () => {
       if (electronWindow) {

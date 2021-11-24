@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import {
   messagesToLines,
   truncateLines,
-} from '../../browser/monitor/monitor-utils';
-import { Line } from '../../browser/monitor/serial-monitor-send-output';
+} from '../../browser/serial/monitor/monitor-utils';
+import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
 
 type TestLine = {

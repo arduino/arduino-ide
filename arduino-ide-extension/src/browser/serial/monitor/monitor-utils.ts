@@ -9,6 +9,7 @@ export function messagesToLines(
   const linesToAdd: Line[] = prevLines.length
     ? [prevLines[prevLines.length - 1]]
     : [{ message: '', lineLen: 0 }];
+  if (!(Symbol.iterator in Object(messages))) return [prevLines, charCount];
 
   for (const message of messages) {
     const messageLen = message.length;
