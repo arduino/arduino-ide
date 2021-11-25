@@ -1,3 +1,4 @@
+import { BoardUserField } from '.';
 import { Port } from '../../common/protocol/boards-service';
 import { Programmer } from './boards-service';
 
@@ -44,6 +45,7 @@ export namespace CoreService {
       readonly port?: Port | undefined;
       readonly programmer?: Programmer | undefined;
       readonly verify: boolean;
+      readonly userFields: BoardUserField[];
     }
   }
 

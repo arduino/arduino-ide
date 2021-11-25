@@ -153,6 +153,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
     req.setVerbose(options.verbose);
     req.setVerify(options.verify);
+
+    options.userFields.forEach(e => {
+      req.getUserFieldsMap().set(e.name, e.value);
+    });
+
     const result = responseHandler(client, req);
 
     try {

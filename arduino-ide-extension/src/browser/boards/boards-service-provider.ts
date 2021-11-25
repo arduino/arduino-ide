@@ -12,6 +12,7 @@ import {
   BoardsPackage,
   AttachedBoardsChangeEvent,
   BoardWithPackage,
+  BoardUserField,
 } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
@@ -68,7 +69,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
    * This event is also emitted when the board package for the currently selected board was uninstalled.
    */
   readonly onBoardsConfigChanged = this.onBoardsConfigChangedEmitter.event;
-  readonly onAvailableBoardsChanged = this.onAvailableBoardsChangedEmitter.event;
+  readonly onAvailableBoardsChanged =
+    this.onAvailableBoardsChangedEmitter.event;
   readonly onAvailablePortsChanged = this.onAvailablePortsChangedEmitter.event;
 
   onStart(): void {
@@ -183,8 +185,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         const selectedAvailableBoard = AvailableBoard.is(selectedBoard)
           ? selectedBoard
           : this._availableBoards.find((availableBoard) =>
-            Board.sameAs(availableBoard, selectedBoard)
-          );
+              Board.sameAs(availableBoard, selectedBoard)
+            );
         if (
           selectedAvailableBoard &&
           selectedAvailableBoard.selected &&
@@ -274,6 +276,18 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return boards;
   }
 
+  async selectedBoardUserFields(): Promise<BoardUserField[]> {
+    if (!this._boardsConfig.selectedBoard || !this._boardsConfig.selectedPort) {
+      return [];
+    }
+    const fqbn = this._boardsConfig.selectedBoard.fqbn;
+    if (!fqbn) {
+      return [];
+    }
+    const protocol = this._boardsConfig.selectedPort.protocol;
+    return await this.boardsService.getBoardUserFields({ fqbn, protocol });
+  }
+
   /**
    * `true` if the `config.selectedBoard` is defined; hence can compile against the board. Otherwise, `false`.
    */
@@ -361,14 +375,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const timeoutTask =
       !!timeout && timeout > 0
         ? new Promise<void>((_, reject) =>
-          setTimeout(
-            () => reject(new Error(`Timeout after ${timeout} ms.`)),
-            timeout
+            setTimeout(
+              () => reject(new Error(`Timeout after ${timeout} ms.`)),
+              timeout
+            )
           )
-        )
         : new Promise<void>(() => {
-          /* never */
-        });
+            /* never */
+          });
     const waitUntilTask = new Promise<void>((resolve) => {
       let candidate = find(what, this.availableBoards);
       if (candidate) {
@@ -406,7 +420,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const availableBoards: AvailableBoard[] = [];
     const attachedBoards = this._attachedBoards.filter(({ port }) => !!port);
     const availableBoardPorts = availablePorts.filter((port) => {
-      if (port.protocol === "serial") {
+      if (port.protocol === 'serial') {
         // We always show all serial ports, even if there
         // is no recognized board connected to it
         return true;
@@ -424,8 +438,12 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     });
 
     for (const boardPort of availableBoardPorts) {
-      let board = attachedBoards.find(({ port }) => Port.sameAs(boardPort, port));
-      const lastSelectedBoard = await this.getLastSelectedBoardOnPort(boardPort);
+      const board = attachedBoards.find(({ port }) =>
+        Port.sameAs(boardPort, port)
+      );
+      const lastSelectedBoard = await this.getLastSelectedBoardOnPort(
+        boardPort
+      );
 
       let availableBoard = {} as AvailableBoard;
       if (board) {
@@ -454,11 +472,16 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       availableBoards.push(availableBoard);
     }
 
-    if (boardsConfig.selectedBoard && !availableBoards.some(({ selected }) => selected)) {
+    if (
+      boardsConfig.selectedBoard &&
+      !availableBoards.some(({ selected }) => selected)
+    ) {
       // If the selected board has the same port of an unknown board
       // that is already in availableBoards we might get a duplicate port.
       // So we remove the one already in the array and add the selected one.
-      const found = availableBoards.findIndex(board => board.port?.address === boardsConfig.selectedPort?.address);
+      const found = availableBoards.findIndex(
+        (board) => board.port?.address === boardsConfig.selectedPort?.address
+      );
       if (found >= 0) {
         availableBoards.splice(found, 1);
       }
@@ -475,7 +498,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     let hasChanged = availableBoards.length !== currentAvailableBoards.length;
     for (let i = 0; !hasChanged && i < availableBoards.length; i++) {
       const [left, right] = [availableBoards[i], currentAvailableBoards[i]];
-      hasChanged = !!AvailableBoard.compare(left, right) || left.selected !== right.selected;
+      hasChanged =
+        !!AvailableBoard.compare(left, right) ||
+        left.selected !== right.selected;
     }
     if (hasChanged) {
       this._availableBoards = availableBoards;
@@ -483,7 +508,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
   }
 
-  protected async getLastSelectedBoardOnPort(port: Port): Promise<Board | undefined> {
+  protected async getLastSelectedBoardOnPort(
+    port: Port
+  ): Promise<Board | undefined> {
     const key = this.getLastSelectedBoardOnPortKey(port);
     return this.getData<Board>(key);
   }
@@ -504,8 +531,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     ]);
   }
 
-  protected getLastSelectedBoardOnPortKey(port: Port): string {
-    return `last-selected-board-on-port:${Port.toString(port)}`;
+  protected getLastSelectedBoardOnPortKey(port: Port | string): string {
+    // TODO: we lose the port's `protocol` info (`serial`, `network`, etc.) here if the `port` is a `string`.
+    return `last-selected-board-on-port:${
+      typeof port === 'string' ? port : Port.toString(port)
+    }`;
   }
 
   protected async loadState(): Promise<void> {
@@ -596,13 +626,22 @@ export namespace AvailableBoard {
   // 4. Network with recognized boards
   // 5. Other protocols with recognized boards
   export const compare = (left: AvailableBoard, right: AvailableBoard) => {
-    if (left.port?.protocol === "serial" && right.port?.protocol !== "serial") {
+    if (left.port?.protocol === 'serial' && right.port?.protocol !== 'serial') {
       return -1;
-    } else if (left.port?.protocol !== "serial" && right.port?.protocol === "serial") {
+    } else if (
+      left.port?.protocol !== 'serial' &&
+      right.port?.protocol === 'serial'
+    ) {
       return 1;
-    } else if (left.port?.protocol === "network" && right.port?.protocol !== "network") {
+    } else if (
+      left.port?.protocol === 'network' &&
+      right.port?.protocol !== 'network'
+    ) {
       return -1;
-    } else if (left.port?.protocol !== "network" && right.port?.protocol === "network") {
+    } else if (
+      left.port?.protocol !== 'network' &&
+      right.port?.protocol === 'network'
+    ) {
       return 1;
     } else if (left.port?.protocol === right.port?.protocol) {
       // We show all ports, including those that have guessed
@@ -614,5 +653,5 @@ export namespace AvailableBoard {
       }
     }
     return naturalCompare(left.port?.address!, right.port?.address!);
-  }
+  };
 }
