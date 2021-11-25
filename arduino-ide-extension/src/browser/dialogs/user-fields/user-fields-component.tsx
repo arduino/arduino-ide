@@ -32,13 +32,17 @@ export const UserFieldsComponent = ({
     };
 
   const allFieldsHaveValues = (userFields: BoardUserField[]): boolean => {
-    return userFields
-      .map<boolean>((field: BoardUserField): boolean => {
-        return field.value.length > 0;
-      })
-      .reduce((previous: boolean, current: boolean): boolean => {
-        return previous && current;
-      });
+    return (
+      userFields &&
+      userFields.length > 0 &&
+      userFields
+        .map<boolean>((field: BoardUserField): boolean => {
+          return field.value.length > 0;
+        })
+        .reduce((previous: boolean, current: boolean): boolean => {
+          return previous && current;
+        })
+    );
   };
 
   React.useEffect(() => {
