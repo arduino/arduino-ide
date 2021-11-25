@@ -23,7 +23,6 @@ var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cl
 var cc_arduino_cli_commands_v1_board_pb = require('../../../../../cc/arduino/cli/commands/v1/board_pb.js');
 var cc_arduino_cli_commands_v1_compile_pb = require('../../../../../cc/arduino/cli/commands/v1/compile_pb.js');
 var cc_arduino_cli_commands_v1_core_pb = require('../../../../../cc/arduino/cli/commands/v1/core_pb.js');
-var cc_arduino_cli_commands_v1_monitor_pb = require('../../../../../cc/arduino/cli/commands/v1/monitor_pb.js');
 var cc_arduino_cli_commands_v1_upload_pb = require('../../../../../cc/arduino/cli/commands/v1/upload_pb.js');
 var cc_arduino_cli_commands_v1_lib_pb = require('../../../../../cc/arduino/cli/commands/v1/lib_pb.js');
 
@@ -269,28 +268,6 @@ function deserialize_cc_arduino_cli_commands_v1_DestroyResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_commands_pb.DestroyResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.EnumerateMonitorPortSettingsRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.EnumerateMonitorPortSettingsResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_cc_arduino_cli_commands_v1_GitLibraryInstallRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_lib_pb.GitLibraryInstallRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.GitLibraryInstallRequest');
@@ -531,50 +508,6 @@ function serialize_cc_arduino_cli_commands_v1_LoadSketchResponse(arg) {
 
 function deserialize_cc_arduino_cli_commands_v1_LoadSketchResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_MonitorRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.MonitorRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_MonitorRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_MonitorResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.MonitorResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_MonitorResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_NewSketchRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.NewSketchRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_NewSketchRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_NewSketchResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.NewSketchResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_NewSketchResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_cc_arduino_cli_commands_v1_OutdatedRequest(arg) {
@@ -1041,18 +974,6 @@ version: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_VersionResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_VersionResponse,
   },
-  // Create a new Sketch
-newSketch: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/NewSketch',
-    requestStream: false,
-    responseStream: false,
-    requestType: cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest,
-    responseType: cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_NewSketchRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_NewSketchRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_NewSketchResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_NewSketchResponse,
-  },
   // Returns all files composing a Sketch
 loadSketch: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/LoadSketch',
@@ -1409,30 +1330,6 @@ libraryList: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryListRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_LibraryListResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryListResponse,
-  },
-  // Open a monitor connection to a board port
-monitor: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Monitor',
-    requestStream: true,
-    responseStream: true,
-    requestType: cc_arduino_cli_commands_v1_monitor_pb.MonitorRequest,
-    responseType: cc_arduino_cli_commands_v1_monitor_pb.MonitorResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_MonitorRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_MonitorRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_MonitorResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_MonitorResponse,
-  },
-  // Returns the parameters that can be set in the MonitorRequest calls
-enumerateMonitorPortSettings: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/EnumerateMonitorPortSettings',
-    requestStream: false,
-    responseStream: false,
-    requestType: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsRequest,
-    responseType: cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse,
   },
 };
 

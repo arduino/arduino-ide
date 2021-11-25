@@ -62,7 +62,7 @@ export class VerifySketch extends SketchContribution {
         'arduino/sketch/exportBinary',
         'Export Compiled Binary'
       ),
-      order: '3',
+      order: '4',
     });
   }
 

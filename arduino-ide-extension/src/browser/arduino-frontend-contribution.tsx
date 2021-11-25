@@ -444,7 +444,7 @@ export class ArduinoFrontendContribution
         'arduino/debug/optimizeForDebugging',
         'Optimize for Debugging'
       ),
-      order: '4',
+      order: '5',
     });
   }
 

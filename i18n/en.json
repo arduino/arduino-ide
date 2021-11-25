@@ -180,8 +180,10 @@
             "sketchbook": "Sketchbook",
             "upload": "Upload",
             "uploadUsingProgrammer": "Upload Using Programmer",
+            "userFieldsNotFoundError": "Can't find user fields for connected board",
             "doneUploading": "Done uploading.",
             "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
+            "configureAndUpload": "Configure And Upload",
             "verifyOrCompile": "Verify/Compile",
             "exportBinary": "Export Compiled Binary",
             "verify": "Verify",
@@ -254,6 +256,10 @@
         },
         "dialog": {
             "dontAskAgain": "Don't ask again"
+        },
+        "userFields": {
+            "cancel": "Cancel",
+            "upload": "Upload"
         },
         "serial": {
             "toggleTimestamp": "Toggle Timestamp",

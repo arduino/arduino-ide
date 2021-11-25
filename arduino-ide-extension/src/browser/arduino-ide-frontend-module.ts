@@ -254,6 +254,11 @@ import {
   UploadCertificateDialogWidget,
 } from './dialogs/certificate-uploader/certificate-uploader-dialog';
 import { PlotterFrontendContribution } from './serial/plotter/plotter-frontend-contribution';
+import {
+  UserFieldsDialog,
+  UserFieldsDialogProps,
+  UserFieldsDialogWidget,
+} from './dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/common';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -741,5 +746,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(UploadCertificateDialog).toSelf().inSingletonScope();
   bind(UploadCertificateDialogProps).toConstantValue({
     title: 'UploadCertificate',
+  });
+
+  bind(UserFieldsDialogWidget).toSelf().inSingletonScope();
+  bind(UserFieldsDialog).toSelf().inSingletonScope();
+  bind(UserFieldsDialogProps).toConstantValue({
+    title: 'UserFields',
   });
 });

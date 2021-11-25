@@ -16,6 +16,7 @@ import {
   NotificationServiceServer,
   AvailablePorts,
   BoardWithPackage,
+  BoardUserField,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -36,6 +37,8 @@ import {
 import {
   ListProgrammersAvailableForUploadRequest,
   ListProgrammersAvailableForUploadResponse,
+  SupportedUserFieldsRequest,
+  SupportedUserFieldsResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { InstallWithProgress } from './grpc-installable';
 
@@ -243,6 +246,35 @@ export class BoardsServiceImpl
     });
     return boards;
   }
+
+  async getBoardUserFields(options: { fqbn: string, protocol: string }): Promise<BoardUserField[]> {
+    await this.coreClientProvider.initialized;
+    const coreClient = await this.coreClient();
+    const { client, instance } = coreClient;
+
+    const supportedUserFieldsReq = new SupportedUserFieldsRequest();
+    supportedUserFieldsReq.setInstance(instance);
+    supportedUserFieldsReq.setFqbn(options.fqbn);
+    supportedUserFieldsReq.setProtocol(options.protocol);
+
+    const supportedUserFieldsResp = await new Promise<SupportedUserFieldsResponse>(
+      (resolve, reject) => {
+        client.supportedUserFields(supportedUserFieldsReq, (err, resp) => {
+          (!!err ? reject : resolve)(!!err ? err : resp)
+        })
+      }
+    );
+    return supportedUserFieldsResp.getUserFieldsList().map(e => {
+      return {
+        toolId: e.getToolId(),
+        name: e.getName(),
+        label: e.getLabel(),
+        secret: e.getSecret(),
+        value: "",
+      };
+    });
+  }
+
 
   async search(options: { query?: string }): Promise<BoardsPackage[]> {
     await this.coreClientProvider.initialized;
