@@ -95,11 +95,9 @@ export class BoardDiscovery extends CoreClientAware {
         const newState = deepClone(this._state);
 
         const address = (detectedPort as any).getPort().getAddress();
-        const protocol = Port.Protocol.toProtocol(
-          (detectedPort as any).getPort().getProtocol()
-        );
-        // const label = detectedPort.getProtocolLabel();
-        const port = { address, protocol };
+        const protocol = (detectedPort as any).getPort().getProtocol();
+        const label = (detectedPort as any).getPort().getLabel();;
+        const port = { address, protocol, label };
         const boards: Board[] = [];
         for (const item of detectedPort.getMatchingBoardsList()) {
           boards.push({
@@ -110,7 +108,7 @@ export class BoardDiscovery extends CoreClientAware {
         }
 
         if (eventType === 'add') {
-          if (newState[port.address] !== undefined) {
+          if (newState[port.address]) {
             const [, knownBoards] = newState[port.address];
             console.warn(
               `Port '${port.address}' was already available. Known boards before override: ${JSON.stringify(
@@ -120,7 +118,7 @@ export class BoardDiscovery extends CoreClientAware {
           }
           newState[port.address] = [port, boards];
         } else if (eventType === 'remove') {
-          if (newState[port.address] === undefined) {
+          if (!newState[port.address]) {
             console.warn(`Port '${port.address}' was not available. Skipping`);
             return;
           }
@@ -161,7 +159,6 @@ export class BoardDiscovery extends CoreClientAware {
   getAvailablePorts(state: AvailablePorts = this.state): Port[] {
     const availablePorts: Port[] = [];
     for (const address of Object.keys(state)) {
-      // tslint:disable-next-line: whitespace
       const [port] = state[address];
       availablePorts.push(port);
     }

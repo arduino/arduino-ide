@@ -10,7 +10,11 @@ import {
   BoardWithPackage,
 } from '../../common/protocol/boards-service';
 import { NotificationCenter } from '../notification-center';
-import { BoardsServiceProvider } from './boards-service-provider';
+import {
+  AvailableBoard,
+  BoardsServiceProvider,
+} from './boards-service-provider';
+import { naturalCompare } from '../../common/utils';
 import { nls } from '@theia/core/lib/common';
 
 export namespace BoardsConfig {
@@ -184,11 +188,50 @@ export class BoardsConfig extends React.Component<
       .filter(notEmpty);
   }
 
+  protected get availableBoards(): AvailableBoard[] {
+    return this.props.boardsServiceProvider.availableBoards;
+  }
+
   protected queryPorts = async (
     availablePorts: MaybePromise<Port[]> = this.availablePorts
   ) => {
-    const ports = await availablePorts;
-    return { knownPorts: ports.sort(Port.compare) };
+    // Available ports must be sorted in this order:
+    // 1. Serial with recognized boards
+    // 2. Serial with guessed boards
+    // 3. Serial with incomplete boards
+    // 4. Network with recognized boards
+    // 5. Other protocols with recognized boards
+    const ports = (await availablePorts).sort((left: Port, right: Port) => {
+      if (left.protocol === 'serial' && right.protocol !== 'serial') {
+        return -1;
+      } else if (left.protocol !== 'serial' && right.protocol === 'serial') {
+        return 1;
+      } else if (left.protocol === 'network' && right.protocol !== 'network') {
+        return -1;
+      } else if (left.protocol !== 'network' && right.protocol === 'network') {
+        return 1;
+      } else if (left.protocol === right.protocol) {
+        // We show ports, including those that have guessed
+        // or unrecognized boards, so we must sort those too.
+        const leftBoard = this.availableBoards.find((board) =>
+          Port.sameAs(board.port, left)
+        );
+        const rightBoard = this.availableBoards.find((board) =>
+          Port.sameAs(board.port, right)
+        );
+        if (leftBoard && !rightBoard) {
+          return -1;
+        } else if (!leftBoard && rightBoard) {
+          return 1;
+        } else if (leftBoard?.state! < rightBoard?.state!) {
+          return -1;
+        } else if (leftBoard?.state! > rightBoard?.state!) {
+          return 1;
+        }
+      }
+      return naturalCompare(left.address, right.address);
+    });
+    return { knownPorts: ports };
   };
 
   protected toggleFilterPorts = () => {
@@ -281,8 +324,24 @@ export class BoardsConfig extends React.Component<
   }
 
   protected renderPorts(): React.ReactNode {
-    const filter = this.state.showAllPorts ? () => true : Port.isBoardPort;
-    const ports = this.state.knownPorts.filter(filter);
+    let ports = [] as Port[];
+    if (this.state.showAllPorts) {
+      ports = this.state.knownPorts;
+    } else {
+      ports = this.state.knownPorts.filter((port) => {
+        if (port.protocol === 'serial') {
+          return true;
+        }
+        // All other ports with different protocol are
+        // only shown if there is a recognized board
+        // connected
+        for (const board of this.availableBoards) {
+          if (board.port?.address === port.address) {
+            return true;
+          }
+        }
+      });
+    }
     return !ports.length ? (
       <div className="loading noselect">No ports discovered</div>
     ) : (

@@ -50,6 +50,10 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
     if (coords === 'hidden') {
       return '';
     }
+    const footerLabel = nls.localize(
+      'arduino/board/openBoardsConfig',
+      'Select other board and port…'
+    );
     return (
       <div
         className="arduino-boards-dropdown-list"
@@ -58,17 +62,25 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
           ...coords,
         }}
       >
-        {this.renderItem({
-          label: 'Select Other Board & Port',
-          onClick: () => this.props.openBoardsConfig(),
-        })}
         {items
           .map(({ name, port, selected, onClick }) => ({
-            label: `${name} at ${Port.toString(port)}`,
+            label: nls.localize(
+              'arduino/board/boardListItem',
+              '{0} at {1}',
+              name,
+              Port.toString(port)
+            ),
             selected,
             onClick,
           }))
           .map(this.renderItem)}
+        <div
+          key={footerLabel}
+          className="arduino-boards-dropdown-item arduino-board-dropdown-footer"
+          onClick={() => this.props.openBoardsConfig()}
+        >
+          <div>{footerLabel}</div>
+        </div>
       </div>
     );
   }
