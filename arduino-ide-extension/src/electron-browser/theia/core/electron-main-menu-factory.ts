@@ -15,6 +15,7 @@ import {
   ArduinoMenus,
   PlaceholderMenuNode,
 } from '../../../browser/menu/arduino-menus';
+import electron = require('@theia/core/shared/electron');
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
@@ -28,6 +29,16 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     const menu = remote.Menu.buildFromTemplate(this.escapeAmpersand(template));
     this._menu = menu;
     return menu;
+  }
+
+  async setMenuBar(): Promise<void> {
+    await this.preferencesService.ready;
+    const createdMenuBar = this.createElectronMenuBar();
+    if (isOSX) {
+      electron.remote.Menu.setApplicationMenu(createdMenuBar);
+    } else {
+      electron.remote.getCurrentWindow().setMenu(createdMenuBar);
+    }
   }
 
   createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
