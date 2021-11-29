@@ -246,7 +246,10 @@ export class CloudSketchbookTree extends SketchbookTree {
     });
 
     if (!fileStat.children || !fileStat.isDirectory) {
-      return [fileStat.resource];
+      // Do not push files bigger than 100KB
+      return fileStat.size && fileStat.size > 100 * 1024 /* 100 KB */
+        ? []
+        : [fileStat.resource];
     }
 
     let childrenUris: URI[] = [];
