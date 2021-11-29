@@ -207,6 +207,8 @@ import { DebugConfigurationManager } from './theia/debug/debug-configuration-man
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-widget';
 import { SearchInWorkspaceWidget } from './theia/search-in-workspace/search-in-workspace-widget';
+import { SearchInWorkspaceFactory as TheiaSearchInWorkspaceFactory } from '@theia/search-in-workspace/lib/browser/search-in-workspace-factory';
+import { SearchInWorkspaceFactory } from './theia/search-in-workspace/search-in-workspace-factory';
 import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
 import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
@@ -492,6 +494,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(SearchInWorkspaceWidget).toSelf();
   rebind(TheiaSearchInWorkspaceWidget).toService(SearchInWorkspaceWidget);
+
+  // replace search icon
+  rebind(TheiaSearchInWorkspaceFactory)
+    .to(SearchInWorkspaceFactory)
+    .inSingletonScope();
+
   rebind(TheiaSearchInWorkspaceResultTreeWidget).toDynamicValue(
     ({ container }) => {
       const childContainer = createTreeContainer(container);
