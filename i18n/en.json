@@ -57,7 +57,6 @@
             "verifyAfterUpload": "Verify code after upload",
             "checkForUpdates": "Check for updates on startup",
             "editorQuickSuggestions": "Editor Quick Suggestions",
-            "languageServerLogging": "Enable language server logging",
             "additionalManagerURLs": "Additional Boards Manager URLs",
             "noProxy": "No proxy",
             "manualProxy": "Manual proxy configuration",

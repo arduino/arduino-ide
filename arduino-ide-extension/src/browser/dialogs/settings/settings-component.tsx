@@ -294,17 +294,6 @@ export class SettingsComponent extends React.Component<
             'Editor Quick Suggestions'
           )}
         </label>
-        <label className="flex-line">
-          <input
-            type="checkbox"
-            checked={this.state.enableLsLogs}
-            onChange={this.enableLsLogsDidChange}
-          />
-          {nls.localize(
-            'arduino/preferences/languageServerLogging',
-            'Enable language server logging'
-          )}
-        </label>
         <div className="flex-line">
           {nls.localize(
             'arduino/preferences/additionalManagerURLs',
@@ -525,12 +514,6 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     this.setState({ autoScaleInterface: event.target.checked });
-  };
-
-  protected enableLsLogsDidChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.setState({ enableLsLogs: event.target.checked });
   };
 
   protected interfaceScaleDidChange = (

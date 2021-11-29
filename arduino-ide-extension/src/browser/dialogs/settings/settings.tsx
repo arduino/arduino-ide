@@ -27,7 +27,6 @@ const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
 // const IDE_SETTING = `${ARDUINO_SETTING}.ide`;
 const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
 const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
-const LANGUAGE_SETTING = `${ARDUINO_SETTING}.language`;
 const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
 const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
 const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
@@ -36,7 +35,6 @@ const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
 const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
 const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
 const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
-const LANGUAGE_LOG_SETTING = `${LANGUAGE_SETTING}.log`;
 const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 
 export interface Settings extends Index {
@@ -55,7 +53,6 @@ export interface Settings extends Index {
   compilerWarnings: CompilerWarnings; // `arduino.compile.warnings`
   verboseOnUpload: boolean; // `arduino.upload.verbose`
   verifyAfterUpload: boolean; // `arduino.upload.verify`
-  enableLsLogs: boolean; // `arduino.language.log`
   sketchbookShowAllFiles: boolean; // `arduino.sketchbook.showAllFiles`
 
   sketchbookPath: string; // CLI
@@ -118,7 +115,6 @@ export class SettingsService {
       compilerWarnings,
       verboseOnUpload,
       verifyAfterUpload,
-      enableLsLogs,
       sketchbookShowAllFiles,
       cliConfig,
     ] = await Promise.all([
@@ -144,7 +140,6 @@ export class SettingsService {
       this.preferenceService.get<any>(COMPILE_WARNINGS_SETTING, 'None'),
       this.preferenceService.get<boolean>(UPLOAD_VERBOSE_SETTING, true),
       this.preferenceService.get<boolean>(UPLOAD_VERIFY_SETTING, true),
-      this.preferenceService.get<boolean>(LANGUAGE_LOG_SETTING, true),
       this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
       this.configService.getConfiguration(),
     ]);
@@ -164,7 +159,6 @@ export class SettingsService {
       compilerWarnings,
       verboseOnUpload,
       verifyAfterUpload,
-      enableLsLogs,
       sketchbookShowAllFiles,
       additionalUrls,
       sketchbookPath,
@@ -245,7 +239,6 @@ export class SettingsService {
       compilerWarnings,
       verboseOnUpload,
       verifyAfterUpload,
-      enableLsLogs,
       sketchbookPath,
       additionalUrls,
       network,
@@ -310,11 +303,6 @@ export class SettingsService {
       this.preferenceService.set(
         UPLOAD_VERIFY_SETTING,
         verifyAfterUpload,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        LANGUAGE_LOG_SETTING,
-        enableLsLogs,
         PreferenceScope.User
       ),
       this.preferenceService.set(
