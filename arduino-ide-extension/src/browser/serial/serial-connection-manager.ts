@@ -18,8 +18,8 @@ import {
 import { BoardsConfig } from '../boards/boards-config';
 import { SerialModel } from './serial-model';
 import { ThemeService } from '@theia/core/lib/browser/theming';
-import { nls } from '@theia/core/lib/browser/nls';
 import { CoreService } from '../../common/protocol';
+import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export class SerialConnectionManager {

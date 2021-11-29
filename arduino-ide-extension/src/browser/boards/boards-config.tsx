@@ -14,8 +14,8 @@ import {
   AvailableBoard,
   BoardsServiceProvider,
 } from './boards-service-provider';
-import { nls } from '@theia/core/lib/browser/nls';
 import { naturalCompare } from '../../common/utils';
+import { nls } from '@theia/core/lib/common';
 
 export namespace BoardsConfig {
   export interface Config {

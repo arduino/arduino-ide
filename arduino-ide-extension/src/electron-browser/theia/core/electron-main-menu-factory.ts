@@ -15,10 +15,11 @@ import {
   ArduinoMenus,
   PlaceholderMenuNode,
 } from '../../../browser/menu/arduino-menus';
+import electron = require('@theia/core/shared/electron');
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
-  createMenuBar(): Electron.Menu {
+  createElectronMenuBar(): Electron.Menu {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
     const template = this.fillMenuTemplate([], menuModel);
@@ -30,7 +31,17 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return menu;
   }
 
-  createContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
+  async setMenuBar(): Promise<void> {
+    await this.preferencesService.ready;
+    const createdMenuBar = this.createElectronMenuBar();
+    if (isOSX) {
+      electron.remote.Menu.setApplicationMenu(createdMenuBar);
+    } else {
+      electron.remote.getCurrentWindow().setMenu(createdMenuBar);
+    }
+  }
+
+  createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
     const menuModel = this.menuProvider.getMenu(menuPath);
     const template = this.fillMenuTemplate([], menuModel, args, {
       showDisabled: false,
@@ -99,7 +110,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return { label, submenu };
   }
 
-  protected handleDefault(
+  protected handleElectronDefault(
     menuNode: CompositeMenuNode,
     args: any[] = [],
     options?: ElectronMenuOptions

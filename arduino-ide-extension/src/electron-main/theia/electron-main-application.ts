@@ -17,6 +17,7 @@ import {
   TheiaBrowserWindowOptions,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
+import { ipcMain } from '@theia/core/shared/electron';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -33,6 +34,20 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
     app.on('ready', () => app.setName(config.applicationName));
     return super.start(config);
+  }
+
+  protected getTitleBarStyle(): 'native' | 'custom' {
+    return 'native';
+  }
+
+  protected hookApplicationEvents(): void {
+    app.on('will-quit', this.onWillQuit.bind(this));
+    app.on('second-instance', this.onSecondInstance.bind(this));
+    app.on('window-all-closed', this.onWindowAllClosed.bind(this));
+
+    ipcMain.on('restart', ({ sender }) => {
+      this.restart(sender.id);
+    });
   }
 
   /**

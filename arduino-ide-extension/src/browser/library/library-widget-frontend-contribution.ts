@@ -4,7 +4,7 @@ import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-con
 import { MenuModelRegistry } from '@theia/core';
 import { LibraryListWidget } from './library-list-widget';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class LibraryListWidgetFrontendContribution

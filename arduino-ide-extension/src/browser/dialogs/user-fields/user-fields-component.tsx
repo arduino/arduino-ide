@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { BoardUserField } from '../../../common/protocol';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export const UserFieldsComponent = ({
   initialBoardUserFields,

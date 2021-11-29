@@ -95,6 +95,7 @@ export class ConfigServiceImpl
       downloadsDirUri,
       sketchDirUri,
       network,
+      locale,
     } = config;
     copyDefaultCliConfig.directories = {
       data: FileUri.fsPath(dataDirUri),
@@ -104,6 +105,7 @@ export class ConfigServiceImpl
     copyDefaultCliConfig.board_manager = {
       additional_urls: [...additionalUrls],
     };
+    copyDefaultCliConfig.locale = locale || 'en';
     const proxy = Network.stringify(network);
     copyDefaultCliConfig.network = { proxy };
     const { port } = copyDefaultCliConfig.daemon;
@@ -214,7 +216,7 @@ export class ConfigServiceImpl
   protected async mapCliConfigToAppConfig(
     cliConfig: DefaultCliConfig
   ): Promise<Config> {
-    const { directories } = cliConfig;
+    const { directories, locale = 'en', daemon } = cliConfig;
     const { data, user, downloads } = directories;
     const additionalUrls: Array<string> = [];
     if (cliConfig.board_manager && cliConfig.board_manager.additional_urls) {
@@ -229,6 +231,8 @@ export class ConfigServiceImpl
       downloadsDirUri: FileUri.create(downloads).toString(),
       additionalUrls,
       network,
+      locale,
+      daemon,
     };
   }
 

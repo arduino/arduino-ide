@@ -6,7 +6,7 @@ import { Message, MessageLoop } from '@phosphor/messaging';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class SketchbookWidget extends BaseWidget {

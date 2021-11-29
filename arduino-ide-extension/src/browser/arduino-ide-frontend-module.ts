@@ -154,7 +154,7 @@ import {
 } from '../common/protocol/examples-service';
 import { BuiltInExamples, LibraryExamples } from './contributions/examples';
 import { IncludeLibrary } from './contributions/include-library';
-import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager as TheiaOutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import { OutputChannelManager } from './theia/output/output-channel';
 import {
   OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl,
@@ -190,12 +190,12 @@ import { BoardSelection } from './contributions/board-selection';
 import { OpenRecentSketch } from './contributions/open-recent-sketch';
 import { Help } from './contributions/help';
 import { bindArduinoPreferences } from './arduino-preferences';
+import { SettingsService } from './dialogs/settings/settings';
 import {
-  SettingsService,
   SettingsDialog,
   SettingsWidget,
   SettingsDialogProps,
-} from './settings';
+} from './dialogs/settings/settings-dialog';
 import { AddFile } from './contributions/add-file';
 import { ArchiveSketch } from './contributions/archive-sketch';
 import { OutputToolbarContribution as TheiaOutputToolbarContribution } from '@theia/output/lib/browser/output-toolbar-contribution';
@@ -207,6 +207,8 @@ import { DebugConfigurationManager } from './theia/debug/debug-configuration-man
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-widget';
 import { SearchInWorkspaceWidget } from './theia/search-in-workspace/search-in-workspace-widget';
+import { SearchInWorkspaceFactory as TheiaSearchInWorkspaceFactory } from '@theia/search-in-workspace/lib/browser/search-in-workspace-factory';
+import { SearchInWorkspaceFactory } from './theia/search-in-workspace/search-in-workspace-factory';
 import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
 import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
@@ -259,7 +261,7 @@ import {
   UserFieldsDialogProps,
   UserFieldsDialogWidget,
 } from './dialogs/user-fields/user-fields-dialog';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -492,6 +494,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(SearchInWorkspaceWidget).toSelf();
   rebind(TheiaSearchInWorkspaceWidget).toService(SearchInWorkspaceWidget);
+
+  // replace search icon
+  rebind(TheiaSearchInWorkspaceFactory)
+    .to(SearchInWorkspaceFactory)
+    .inSingletonScope();
+
   rebind(TheiaSearchInWorkspaceResultTreeWidget).toDynamicValue(
     ({ container }) => {
       const childContainer = createTreeContainer(container);
@@ -678,7 +686,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(SettingsWidget).toSelf().inSingletonScope();
   bind(SettingsDialog).toSelf().inSingletonScope();
   bind(SettingsDialogProps).toConstantValue({
-    title: 'Preferences',
+    title: nls.localize(
+      'vscode/preferences.contribution/preferences',
+      'Preferences'
+    ),
   });
 
   bind(StorageWrapper).toSelf().inSingletonScope();

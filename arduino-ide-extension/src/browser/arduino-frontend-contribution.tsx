@@ -1,3 +1,13 @@
+import { inject, injectable, postConstruct } from 'inversify';
+import * as React from 'react';
+import { remote } from 'electron';
+import {
+  BoardsService,
+  Port,
+  SketchesService,
+  ExecutableService,
+  Sketch,
+} from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
   MAIN_MENU_BAR,
@@ -13,7 +23,7 @@ import {
   StatusBar,
   StatusBarAlignment,
 } from '@theia/core/lib/browser';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
@@ -40,16 +50,10 @@ import { OutputContribution } from '@theia/output/lib/browser/output-contributio
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { inject, injectable, postConstruct } from 'inversify';
-import * as React from 'react';
-import { remote } from 'electron';
-import {
-  BoardsService,
-  Port,
-  SketchesService,
-  ExecutableService,
-  Sketch,
-} from '../common/protocol';
+import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { FileChangeType } from '@theia/filesystem/lib/browser';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { ConfigService } from '../common/protocol/config-service';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsConfig } from './boards/boards-config';
@@ -60,13 +64,9 @@ import { EditorMode } from './editor-mode';
 import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
-import { FileChangeType } from '@theia/filesystem/lib/browser';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 
 const INIT_AVR_PACKAGES = 'initializedAvrPackages';
@@ -340,15 +340,14 @@ export class ArduinoFrontendContribution
           );
         }
       }
-      const { clangdUri, cliUri, lsUri } = await this.executableService.list();
-      const [clangdPath, cliPath, lsPath, cliConfigPath] = await Promise.all([
+      const { clangdUri, lsUri } = await this.executableService.list();
+      const [clangdPath, lsPath] = await Promise.all([
         this.fileService.fsPath(new URI(clangdUri)),
-        this.fileService.fsPath(new URI(cliUri)),
         this.fileService.fsPath(new URI(lsUri)),
-        this.fileService.fsPath(
-          new URI(await this.configService.getCliConfigFileUri())
-        ),
       ]);
+
+      const config = await this.configService.getConfiguration();
+
       this.languageServerFqbn = await Promise.race([
         new Promise<undefined>((_, reject) =>
           setTimeout(
@@ -360,10 +359,10 @@ export class ArduinoFrontendContribution
           'arduino.languageserver.start',
           {
             lsPath,
-            cliPath,
+            cliDaemonAddr: `localhost:${config.daemon.port}`,
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
-            cliConfigPath,
+            cliDaemonInstance: '1',
             board: {
               fqbn,
               name: name ? `"${name}"` : undefined,

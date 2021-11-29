@@ -7,7 +7,7 @@ import {
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { UploadFirmwareDialog } from '../dialogs/firmware-uploader/firmware-uploader-dialog';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class UploadFirmware extends Contribution {

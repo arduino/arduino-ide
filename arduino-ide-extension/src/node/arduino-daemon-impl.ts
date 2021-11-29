@@ -12,6 +12,7 @@ import { Event, Emitter } from '@theia/core/lib/common/event';
 import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
+import { LocalizationProvider } from '@theia/core/lib/node/i18n/localization-provider';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { DaemonLog } from './daemon-log';
 import { CLI_CONFIG } from './cli-config';
@@ -30,6 +31,9 @@ export class ArduinoDaemonImpl
 
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
+
+  @inject(LocalizationProvider)
+  protected readonly localizationProvider: LocalizationProvider;
 
   protected readonly toDispose = new DisposableCollection();
   protected readonly onDaemonStartedEmitter = new Emitter<void>();

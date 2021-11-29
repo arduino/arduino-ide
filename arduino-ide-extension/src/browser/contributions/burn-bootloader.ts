@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { BoardsDataStore } from '../boards/boards-data-store';
@@ -11,7 +11,7 @@ import {
   CommandRegistry,
   MenuModelRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BurnBootloader extends SketchContribution {

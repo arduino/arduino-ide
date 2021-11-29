@@ -10,7 +10,7 @@ import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsConfig } from './boards-config';
 import { Installable, ResponseServiceArduino } from '../../common/protocol';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 /**
  * Listens on `BoardsConfig.Config` changes, if a board is selected which does not

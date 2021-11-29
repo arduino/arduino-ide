@@ -12,7 +12,7 @@ import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceArduino } from '../../../common/protocol';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export class FilterableListContainer<
   T extends ArduinoComponent

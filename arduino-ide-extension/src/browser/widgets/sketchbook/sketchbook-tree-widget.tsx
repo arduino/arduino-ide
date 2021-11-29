@@ -17,7 +17,7 @@ import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
 import { Sketch } from '../../contributions/contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class SketchbookTreeWidget extends FileTreeWidget {

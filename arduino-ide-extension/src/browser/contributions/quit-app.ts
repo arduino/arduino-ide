@@ -9,7 +9,7 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class QuitApp extends Contribution {

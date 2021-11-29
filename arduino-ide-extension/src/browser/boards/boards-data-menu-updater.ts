@@ -12,7 +12,7 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsDataMenuUpdater implements FrontendApplicationContribution {

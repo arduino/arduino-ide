@@ -13,7 +13,7 @@ import {
   KeybindingRegistry,
   TabBarToolbarRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class VerifySketch extends SketchContribution {

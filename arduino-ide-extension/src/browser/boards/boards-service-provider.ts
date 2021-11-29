@@ -19,7 +19,7 @@ import { naturalCompare } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
 import { ArduinoCommands } from '../arduino-commands';
 import { StorageWrapper } from '../storage-wrapper';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {

@@ -3,7 +3,7 @@ import { remote } from 'electron';
 import URI from '@theia/core/lib/common/uri';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {

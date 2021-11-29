@@ -4,7 +4,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { ComponentListItem } from './component-list-item';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class ListItemRenderer<T extends ArduinoComponent> {

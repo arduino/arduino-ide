@@ -23,7 +23,7 @@ import {
   Port,
 } from '../../common/protocol';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardSelection extends SketchContribution {

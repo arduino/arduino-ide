@@ -1,4 +1,5 @@
 import { RecursivePartial } from '@theia/core/lib/common/types';
+import { Daemon } from '../common/protocol/config-service';
 
 export const CLI_CONFIG = 'arduino-cli.yaml';
 
@@ -18,29 +19,6 @@ export namespace BoardManager {
       return false;
     }
     return leftUrls.every((url) => rightUrls.indexOf(url) !== -1);
-  }
-}
-
-export interface Daemon {
-  readonly port: string | number;
-}
-export namespace Daemon {
-  export function is(
-    daemon: RecursivePartial<Daemon> | undefined
-  ): daemon is Daemon {
-    return !!daemon && !!daemon.port;
-  }
-  export function sameAs(
-    left: RecursivePartial<Daemon> | undefined,
-    right: RecursivePartial<Daemon> | undefined
-  ): boolean {
-    if (left === undefined) {
-      return right === undefined;
-    }
-    if (right === undefined) {
-      return left === undefined;
-    }
-    return String(left.port) === String(right.port);
   }
 }
 
@@ -123,6 +101,7 @@ export interface Network {
 
 // Arduino CLI config scheme
 export interface CliConfig {
+  locale?: string;
   board_manager?: RecursivePartial<BoardManager>;
   directories?: RecursivePartial<Directories>;
   logging?: RecursivePartial<Logging>;

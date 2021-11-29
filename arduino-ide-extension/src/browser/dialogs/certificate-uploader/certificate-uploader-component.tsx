@@ -4,7 +4,7 @@ import { AvailableBoard } from '../../boards/boards-service-provider';
 import { CertificateListComponent } from './certificate-list';
 import { SelectBoardComponent } from './select-board-components';
 import { CertificateAddComponent } from './certificate-add-new';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export const CertificateUploaderComponent = ({
   availableBoards,

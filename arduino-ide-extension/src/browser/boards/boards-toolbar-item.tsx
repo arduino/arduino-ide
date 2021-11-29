@@ -9,7 +9,7 @@ import {
   BoardsServiceProvider,
   AvailableBoard,
 } from './boards-service-provider';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export interface BoardsDropDownListCoords {
   readonly top: number;

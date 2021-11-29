@@ -34,7 +34,7 @@ import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
 import { posix, splitSketchPath } from '../../create/create-paths';
 import { Create } from '../../create/typings';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;

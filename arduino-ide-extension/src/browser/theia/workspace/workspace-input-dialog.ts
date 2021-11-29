@@ -6,7 +6,7 @@ import {
   WorkspaceInputDialog as TheiaWorkspaceInputDialog,
   WorkspaceInputDialogProps,
 } from '@theia/workspace/lib/browser/workspace-input-dialog';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
   protected wasTouched = false;

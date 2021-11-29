@@ -3,7 +3,7 @@ import { DebugError } from '@theia/debug/lib/common/debug-service';
 import { DebugSession } from '@theia/debug/lib/browser/debug-session';
 import { DebugSessionOptions } from '@theia/debug/lib/browser/debug-session-options';
 import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class DebugSessionManager extends TheiaDebugSessionManager {

@@ -6,7 +6,7 @@ import {
   PreferenceContribution,
   PreferenceSchema,
 } from '@theia/core/lib/browser/preferences';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 import { CompilerWarningLiterals, CompilerWarnings } from '../common/protocol';
 
 export const ArduinoConfigSchema: PreferenceSchema = {

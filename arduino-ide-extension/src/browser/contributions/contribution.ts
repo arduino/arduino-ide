@@ -9,7 +9,7 @@ import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
-import { OutputChannelManager } from '@theia/output/lib/common/output-channel';
+import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import {
   MenuModelRegistry,
   MenuContribution,
@@ -33,7 +33,7 @@ import {
   CommandService,
 } from '@theia/core/lib/common/command';
 import { EditorMode } from '../editor-mode';
-import { SettingsService } from '../settings';
+import { SettingsService } from '../dialogs/settings/settings';
 import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
 import {
   SketchesService,

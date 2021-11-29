@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { NotificationComponent as TheiaNotificationComponent } from '@theia/messages/lib/browser/notification-component';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 export class NotificationComponent extends TheiaNotificationComponent {
   render(): React.ReactNode {

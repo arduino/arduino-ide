@@ -22,7 +22,7 @@ import {
 } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { Board, Sketch, SketchContainer } from '../../common/protocol';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export abstract class Examples extends SketchContribution {

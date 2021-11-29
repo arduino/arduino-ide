@@ -15,7 +15,7 @@ import {
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {

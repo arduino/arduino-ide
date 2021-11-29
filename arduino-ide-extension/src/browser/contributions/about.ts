@@ -12,7 +12,7 @@ import {
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ConfigService } from '../../common/protocol';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class About extends Contribution {

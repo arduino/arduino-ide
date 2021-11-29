@@ -6,7 +6,7 @@ import { BoardsConfig } from './boards-config';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
-import { nls } from '@theia/core/lib/browser/nls';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsConfigDialogProps extends DialogProps {}

@@ -15,8 +15,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
-import { nls } from '@theia/core/lib/browser/nls';
-import { DisposableCollection } from '@theia/core';
+import { DisposableCollection, nls } from '@theia/core/lib/common';
 
 @injectable()
 export class UploadSketch extends SketchContribution {
