@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "browser-app",
-  "version": "2.0.0-beta.12",
+  "version": "2.0.0-rc1",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@theia/core": "1.19.0",
@@ -20,7 +20,7 @@
     "@theia/process": "1.19.0",
     "@theia/terminal": "1.19.0",
     "@theia/workspace": "1.19.0",
-    "arduino-ide-extension": "2.0.0-beta.12"
+    "arduino-ide-extension": "2.0.0-rc1"
   },
   "devDependencies": {
     "@theia/cli": "1.19.0"
