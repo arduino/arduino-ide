@@ -354,7 +354,7 @@ export class SerialConnectionManager {
         this.messageService.warn(
           nls.localize(
             'arduino/serial/reconnect',
-            'Reconnecting {0} to {1} in {2] seconds...',
+            'Reconnecting {0} to {1} in {2} seconds...',
             Board.toString(board, {
               useFqbn: false,
             }),

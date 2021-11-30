@@ -2,6 +2,7 @@ import * as React from 'react';
 import { NotificationComponent } from './notification-component';
 import { NotificationCenterComponent as TheiaNotificationCenterComponent } from '@theia/messages/lib/browser/notification-center-component';
 import { nls } from '@theia/core/lib/common';
+import { codicon } from '@theia/core/lib/browser';
 
 const PerfectScrollbar = require('react-perfect-scrollbar');
 
@@ -28,7 +29,7 @@ export class NotificationCenterComponent extends TheiaNotificationCenterComponen
           <div className="theia-notification-center-header-actions">
             <ul className="theia-notification-actions">
               <li
-                className="collapse"
+                className={codicon('chevron-down', true)}
                 title={nls.localize(
                   'vscode/notificationsStatus/hideNotifications',
                   'Hide Notification Center'
@@ -36,7 +37,7 @@ export class NotificationCenterComponent extends TheiaNotificationCenterComponen
                 onClick={this.onHide}
               />
               <li
-                className="clear-all"
+                className={codicon('clear-all', true)}
                 title={nls.localize(
                   'vscode/notificationsCommands/clearAllNotifications',
                   'Clear All'

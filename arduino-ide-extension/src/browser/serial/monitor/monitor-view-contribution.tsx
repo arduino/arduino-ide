@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { injectable, inject } from 'inversify';
-import { AbstractViewContribution } from '@theia/core/lib/browser';
+import { AbstractViewContribution, codicon } from '@theia/core/lib/browser';
 import { MonitorWidget } from './monitor-widget';
 import { MenuModelRegistry, Command, CommandRegistry } from '@theia/core';
 import {
@@ -32,7 +32,7 @@ export namespace SerialMonitor {
       {
         id: 'serial-monitor-clear-output',
         label: 'Clear Output',
-        iconClass: 'clear-all',
+        iconClass: codicon('clear-all'),
       },
       'vscode/output.contribution/clearOutput.label'
     );
