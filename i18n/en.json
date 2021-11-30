@@ -274,7 +274,7 @@
             "disconnected": "Disconnected {0} from {1}.",
             "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
             "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
-            "reconnect": "Reconnecting {0} to {1} in {2] seconds..."
+            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
         },
         "component": {
             "uninstall": "Uninstall",
