@@ -289,7 +289,7 @@ export class UploadSketch extends SketchContribution {
       this.onDidChangeEmitter.fire();
 
       if (
-        this.serialConnection.isSerialOpen() &&
+        this.serialConnection.widgetsAttached() &&
         this.serialConnection.serialConfig
       ) {
         const { board, port } = this.serialConnection.serialConfig;

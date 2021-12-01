@@ -87,7 +87,7 @@ export class BurnBootloader extends SketchContribution {
       }
       this.messageService.error(errorMessage);
     } finally {
-      if (this.serialConnection.isSerialOpen()) {
+      if (this.serialConnection.widgetsAttached()) {
         await this.serialConnection.connect();
       }
     }

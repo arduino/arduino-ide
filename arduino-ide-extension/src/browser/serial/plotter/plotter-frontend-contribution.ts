@@ -87,7 +87,7 @@ export class PlotterFrontendContribution extends Contribution {
     }
   }
 
-  protected open(wsPort: number): void {
+  protected async open(wsPort: number): Promise<void> {
     const initConfig: Partial<SerialPlotter.Config> = {
       baudrates: SerialConfig.BaudRates.map((b) => b),
       currentBaudrate: this.model.baudRate,
@@ -95,7 +95,7 @@ export class PlotterFrontendContribution extends Contribution {
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
       interpolate: this.model.interpolate,
-      connected: this.serialConnection.connected,
+      connected: await this.serialConnection.isBESerialConnected(),
       serialPort: this.boardsServiceProvider.boardsConfig.selectedPort?.address,
     };
     const urlWithParams = queryString.stringifyUrl(

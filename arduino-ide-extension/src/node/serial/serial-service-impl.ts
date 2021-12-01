@@ -82,6 +82,10 @@ export class SerialServiceImpl implements SerialService {
   protected onMessageReceived: Disposable | null;
   protected flushMessagesInterval: NodeJS.Timeout | null;
 
+  async isSerialPortOpen(): Promise<boolean> {
+    return !!this.serialConnection;
+  }
+
   setClient(client: SerialServiceClient | undefined): void {
     this.client = client;
   }
@@ -139,6 +143,8 @@ export class SerialServiceImpl implements SerialService {
         });
       }).bind(this)
     );
+
+    this.updateWsConfigParam({ connected: !!this.serialConnection });
 
     this.client?.notifyWebSocketChanged(
       this.webSocketService.getAddress().port
@@ -280,6 +286,7 @@ export class SerialServiceImpl implements SerialService {
       this.serialConnection = undefined;
       return Status.OK;
     } finally {
+      this.updateWsConfigParam({ connected: !!this.serialConnection });
       this.messages.length = 0;
     }
   }

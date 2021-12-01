@@ -147,7 +147,7 @@ describe.only('SerialConnectionManager', () => {
         it('should do nothing', async () => {
           const status = await subject.disconnect();
           expect(status).to.be.ok;
-          expect(subject.connected).to.be.false;
+          expect(await subject.isBESerialConnected()).to.be.false;
         });
       });
       context('and the config changes', () => {
@@ -188,9 +188,9 @@ describe.only('SerialConnectionManager', () => {
               serialService.verify((m) => m.disconnect(), Times.never());
               serialService.verify((m) => m.connect(It.isAny()), Times.once());
               expect(status).to.be.ok;
-              expect(subject.connected).to.be.true;
+              expect(await subject.isBESerialConnected()).to.be.true;
               expect(subject.getWsPort()).to.equal(wsPort);
-              expect(subject.isSerialOpen()).to.be.true;
+              expect(subject.widgetsAttached()).to.be.true;
               expect(subject.isWebSocketConnected()).to.be.false;
             });
             context('and it tries to open the serial monitor', () => {
@@ -198,7 +198,7 @@ describe.only('SerialConnectionManager', () => {
               beforeEach(async () => {
                 status = await subject.openSerial(Serial.Type.Monitor);
               });
-              it('should open it using the same serial connection', () => {
+              it('should open it using the same serial connection', async () => {
                 messageService.verify(
                   (m) => m.error(It.isAnyString()),
                   Times.never()
@@ -209,8 +209,8 @@ describe.only('SerialConnectionManager', () => {
                   Times.once()
                 );
                 expect(status).to.be.ok;
-                expect(subject.connected).to.be.true;
-                expect(subject.isSerialOpen()).to.be.true;
+                expect(await subject.isBESerialConnected()).to.be.true;
+                expect(subject.widgetsAttached()).to.be.true;
               });
               it('should create a websocket connection', () => {
                 expect(subject.getWsPort()).to.equal(wsPort);
@@ -220,7 +220,7 @@ describe.only('SerialConnectionManager', () => {
                 beforeEach(async () => {
                   status = await subject.closeSerial(Serial.Type.Plotter);
                 });
-                it('should close the plotter without disconnecting from the serial', () => {
+                it('should close the plotter without disconnecting from the serial', async () => {
                   messageService.verify(
                     (m) => m.error(It.isAnyString()),
                     Times.never()
@@ -231,8 +231,8 @@ describe.only('SerialConnectionManager', () => {
                     Times.once()
                   );
                   expect(status).to.be.ok;
-                  expect(subject.connected).to.be.true;
-                  expect(subject.isSerialOpen()).to.be.true;
+                  expect(await subject.isBESerialConnected()).to.be.true;
+                  expect(subject.widgetsAttached()).to.be.true;
                   expect(subject.getWsPort()).to.equal(wsPort);
                 });
                 it('should not close the websocket connection', () => {
@@ -243,7 +243,7 @@ describe.only('SerialConnectionManager', () => {
                 beforeEach(async () => {
                   status = await subject.closeSerial(Serial.Type.Monitor);
                 });
-                it('should close the monitor without disconnecting from the serial', () => {
+                it('should close the monitor without disconnecting from the serial', async () => {
                   messageService.verify(
                     (m) => m.error(It.isAnyString()),
                     Times.never()
@@ -254,9 +254,9 @@ describe.only('SerialConnectionManager', () => {
                     Times.once()
                   );
                   expect(status).to.be.ok;
-                  expect(subject.connected).to.be.true;
+                  expect(await subject.isBESerialConnected()).to.be.true;
                   expect(subject.getWsPort()).to.equal(wsPort);
-                  expect(subject.isSerialOpen()).to.be.true;
+                  expect(subject.widgetsAttached()).to.be.true;
                 });
                 it('should close the websocket connection', () => {
                   expect(subject.isWebSocketConnected()).to.be.false;
@@ -267,7 +267,7 @@ describe.only('SerialConnectionManager', () => {
               beforeEach(async () => {
                 status = await subject.closeSerial(Serial.Type.Plotter);
               });
-              it('should successfully disconnect from the serial', () => {
+              it('should successfully disconnect from the serial', async () => {
                 messageService.verify(
                   (m) => m.error(It.isAnyString()),
                   Times.never()
@@ -278,9 +278,9 @@ describe.only('SerialConnectionManager', () => {
                   Times.once()
                 );
                 expect(status).to.be.ok;
-                expect(subject.connected).to.be.false;
+                expect(await subject.isBESerialConnected()).to.be.false;
                 expect(subject.getWsPort()).to.be.undefined;
-                expect(subject.isSerialOpen()).to.be.false;
+                expect(subject.widgetsAttached()).to.be.false;
                 expect(subject.isWebSocketConnected()).to.be.false;
               });
             });
@@ -337,9 +337,9 @@ describe.only('SerialConnectionManager', () => {
                 Times.once()
               );
               expect(status).to.be.false;
-              expect(subject.connected).to.be.false;
+              expect(await subject.isBESerialConnected()).to.be.false;
               expect(subject.getWsPort()).to.be.undefined;
-              expect(subject.isSerialOpen()).to.be.true;
+              expect(subject.widgetsAttached()).to.be.true;
             });
 
             context(
@@ -360,9 +360,9 @@ describe.only('SerialConnectionManager', () => {
                     (m) => m.connect(It.isValue(anotherSerialConfig)),
                     Times.once()
                   );
-                  expect(subject.connected).to.be.true;
+                  expect(await subject.isBESerialConnected()).to.be.true;
                   expect(subject.getWsPort()).to.equal(wsPort);
-                  expect(subject.isSerialOpen()).to.be.true;
+                  expect(subject.widgetsAttached()).to.be.true;
                   expect(subject.isWebSocketConnected()).to.be.false;
                 });
               }

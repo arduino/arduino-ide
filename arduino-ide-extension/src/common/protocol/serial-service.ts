@@ -27,6 +27,7 @@ export interface SerialService extends JsonRpcServer<SerialServiceClient> {
   disconnect(): Promise<Status>;
   sendMessageToSerial(message: string): Promise<Status>;
   updateWsConfigParam(config: Partial<SerialPlotter.Config>): Promise<void>;
+  isSerialPortOpen(): Promise<boolean>;
 }
 
 export interface SerialConfig {

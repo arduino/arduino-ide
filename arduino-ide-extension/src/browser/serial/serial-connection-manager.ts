@@ -24,7 +24,6 @@ import { nls } from '@theia/core/lib/common/nls';
 @injectable()
 export class SerialConnectionManager {
   protected _state: Serial.State = [];
-  protected _connected = false;
   protected config: Partial<SerialConfig> = {
     board: undefined,
     port: undefined,
@@ -89,8 +88,11 @@ export class SerialConnectionManager {
     );
 
     // Handles the `baudRate` changes by reconnecting if required.
-    this.serialModel.onChange(({ property }) => {
-      if (property === 'baudRate' && this.connected) {
+    this.serialModel.onChange(async ({ property }) => {
+      if (
+        property === 'baudRate' &&
+        (await this.serialService.isSerialPortOpen())
+      ) {
         const { boardsConfig } = this.boardsServiceProvider;
         this.handleBoardConfigChange(boardsConfig);
       }
@@ -129,7 +131,7 @@ export class SerialConnectionManager {
     });
     if (
       configHasChanged &&
-      this.isSerialOpen() &&
+      this.widgetsAttached() &&
       !(await this.core.isUploading())
     ) {
       this.serialService.updateWsConfigParam({
@@ -188,9 +190,12 @@ export class SerialConnectionManager {
     const oldState = deepClone(this._state);
     let status = Status.OK;
 
-    if (this.isSerialOpen(oldState) && !this.isSerialOpen(newState)) {
+    if (this.widgetsAttached(oldState) && !this.widgetsAttached(newState)) {
       status = await this.disconnect();
-    } else if (!this.isSerialOpen(oldState) && this.isSerialOpen(newState)) {
+    } else if (
+      !this.widgetsAttached(oldState) &&
+      this.widgetsAttached(newState)
+    ) {
       if (await this.core.isUploading()) {
         this.messageService.error(`Cannot open serial port when uploading`);
         return Status.NOT_CONNECTED;
@@ -205,7 +210,7 @@ export class SerialConnectionManager {
     return this._state;
   }
 
-  isSerialOpen(state?: Serial.State): boolean {
+  widgetsAttached(state?: Serial.State): boolean {
     return (state ? state : this._state).length > 0;
   }
 
@@ -215,15 +220,10 @@ export class SerialConnectionManager {
       : undefined;
   }
 
-  get connected(): boolean {
-    return this._connected;
+  async isBESerialConnected(): Promise<boolean> {
+    return await this.serialService.isSerialPortOpen();
   }
 
-  set connected(c: boolean) {
-    this._connected = c;
-    this.serialService.updateWsConfigParam({ connected: c });
-    this.onConnectionChangedEmitter.fire(this._connected);
-  }
   /**
    * Called when a client opens the serial from the GUI
    *
@@ -275,8 +275,8 @@ export class SerialConnectionManager {
   /**
    * Handles error on the SerialServiceClient and try to reconnect, eventually
    */
-  handleError(error: SerialError): void {
-    if (!this.connected) return;
+  async handleError(error: SerialError): Promise<void> {
+    if (!(await this.serialService.isSerialPortOpen())) return;
     const { code, config } = error;
     const { board, port } = config;
     const options = { timeout: 3000 };
@@ -329,9 +329,8 @@ export class SerialConnectionManager {
         break;
       }
     }
-    this.connected = false;
 
-    if (this.isSerialOpen()) {
+    if (this.widgetsAttached()) {
       if (this.serialErrors.length >= 10) {
         this.messageService.warn(
           nls.localize(
@@ -371,7 +370,8 @@ export class SerialConnectionManager {
   }
 
   async connect(): Promise<Status> {
-    if (this.connected) return Status.ALREADY_CONNECTED;
+    if (await this.serialService.isSerialPortOpen())
+      return Status.ALREADY_CONNECTED;
     if (!isSerialConfig(this.config)) return Status.NOT_CONNECTED;
 
     console.info(
@@ -381,7 +381,6 @@ export class SerialConnectionManager {
     );
     const connectStatus = await this.serialService.connect(this.config);
     if (Status.isOK(connectStatus)) {
-      this.connected = true;
       console.info(
         `<<< Serial connection created for ${Board.toString(this.config.board, {
           useFqbn: false,
@@ -393,14 +392,13 @@ export class SerialConnectionManager {
   }
 
   async disconnect(): Promise<Status> {
-    if (!this.connected) {
+    if (!(await this.serialService.isSerialPortOpen())) {
       return Status.OK;
     }
 
     console.log('>>> Disposing existing serial connection...');
     const status = await this.serialService.disconnect();
     if (Status.isOK(status)) {
-      this.connected = false;
       console.log(
         `<<< Disposed serial connection. Was: ${Serial.Config.toString(
           this.config
@@ -424,7 +422,7 @@ export class SerialConnectionManager {
    * It is a NOOP if connected.
    */
   async send(data: string): Promise<Status> {
-    if (!this.connected) {
+    if (!(await this.serialService.isSerialPortOpen())) {
       return Status.NOT_CONNECTED;
     }
     return new Promise<Status>((resolve) => {
