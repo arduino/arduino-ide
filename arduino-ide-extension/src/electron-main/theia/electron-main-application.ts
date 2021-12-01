@@ -108,7 +108,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
     electronWindow.webContents.on(
       'new-window',
-      (event, url, frameName, disposition, options, additionalFeatures) => {
+      (event, url, frameName, disposition, options) => {
         if (frameName === 'serialPlotter') {
           event.preventDefault();
           Object.assign(options, {

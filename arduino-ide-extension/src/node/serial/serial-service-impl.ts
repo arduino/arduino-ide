@@ -73,21 +73,50 @@ export class SerialServiceImpl implements SerialService {
   @inject(WebSocketService)
   protected readonly webSocketService: WebSocketService;
 
-  protected client?: SerialServiceClient;
+  protected theiaFEClient?: SerialServiceClient;
+  protected serialConfig?: SerialConfig;
+
   protected serialConnection?: {
     duplex: ClientDuplexStream<StreamingOpenRequest, StreamingOpenResponse>;
     config: SerialConfig;
   };
   protected messages: string[] = [];
   protected onMessageReceived: Disposable | null;
+  protected onWSClientsNumberChanged: Disposable | null;
+
   protected flushMessagesInterval: NodeJS.Timeout | null;
+
+  uploadInProgress = false;
 
   async isSerialPortOpen(): Promise<boolean> {
     return !!this.serialConnection;
   }
 
   setClient(client: SerialServiceClient | undefined): void {
-    this.client = client;
+    this.theiaFEClient = client;
+
+    this.theiaFEClient?.notifyWebSocketChanged(
+      this.webSocketService.getAddress().port
+    );
+
+    // listen for the number of websocket clients and create or dispose the serial connection
+    this.onWSClientsNumberChanged =
+      this.webSocketService.onClientsNumberChanged(async () => {
+        await this.connectSerialIfRequired();
+      });
+  }
+
+  public async clientsAttached(): Promise<number> {
+    return this.webSocketService.getConnectedClientsNumber.bind(
+      this.webSocketService
+    )();
+  }
+
+  public async connectSerialIfRequired(): Promise<void> {
+    if (this.uploadInProgress) return;
+    const clients = await this.clientsAttached();
+    this.logger.info(`WS clients: ${clients}`);
+    clients > 0 ? await this.connect() : await this.disconnect();
   }
 
   dispose(): void {
@@ -96,7 +125,13 @@ export class SerialServiceImpl implements SerialService {
       this.disconnect();
     }
     this.logger.info('<<< Disposed serial service.');
-    this.client = undefined;
+    this.theiaFEClient = undefined;
+  }
+
+  async setSerialConfig(config: SerialConfig): Promise<void> {
+    this.serialConfig = config;
+    await this.disconnect();
+    await this.connectSerialIfRequired();
   }
 
   async updateWsConfigParam(
@@ -109,12 +144,19 @@ export class SerialServiceImpl implements SerialService {
     this.webSocketService.sendMessage(JSON.stringify(msg));
   }
 
-  async connect(config: SerialConfig): Promise<Status> {
+  async connect(): Promise<Status> {
+    if (!this.serialConfig) {
+      return Status.CONFIG_MISSING;
+    }
+
     this.logger.info(
       `>>> Creating serial connection for ${Board.toString(
-        config.board
-      )} on port ${Port.toString(config.port)}...`
+        this.serialConfig.board
+      )} on port ${Port.toString(this.serialConfig.port)}...`
     );
+
+    // check if the board/port is available
+
     if (this.serialConnection) {
       return Status.ALREADY_CONNECTED;
     }
@@ -126,15 +168,17 @@ export class SerialServiceImpl implements SerialService {
       return { message: client.message };
     }
     const duplex = client.streamingOpen();
-    this.serialConnection = { duplex, config };
+    this.serialConnection = { duplex, config: this.serialConfig };
+
+    const serialConfig = this.serialConfig;
 
     duplex.on(
       'error',
       ((error: Error) => {
-        const serialError = ErrorWithCode.toSerialError(error, config);
+        const serialError = ErrorWithCode.toSerialError(error, serialConfig);
         this.disconnect(serialError).then(() => {
-          if (this.client) {
-            this.client.notifyError(serialError);
+          if (this.theiaFEClient) {
+            this.theiaFEClient.notifyError(serialError);
           }
           if (serialError.code === undefined) {
             // Log the original, unexpected error.
@@ -145,10 +189,6 @@ export class SerialServiceImpl implements SerialService {
     );
 
     this.updateWsConfigParam({ connected: !!this.serialConnection });
-
-    this.client?.notifyWebSocketChanged(
-      this.webSocketService.getAddress().port
-    );
 
     const flushMessagesToFrontend = () => {
       if (this.messages.length) {
@@ -168,17 +208,17 @@ export class SerialServiceImpl implements SerialService {
               break;
 
             case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
-              this.client?.notifyBaudRateChanged(
+              this.theiaFEClient?.notifyBaudRateChanged(
                 parseInt(message.data, 10) as SerialConfig.BaudRate
               );
               break;
 
             case SerialPlotter.Protocol.Command.PLOTTER_SET_LINE_ENDING:
-              this.client?.notifyLineEndingChanged(message.data);
+              this.theiaFEClient?.notifyLineEndingChanged(message.data);
               break;
 
             case SerialPlotter.Protocol.Command.PLOTTER_SET_INTERPOLATE:
-              this.client?.notifyInterpolateChanged(message.data);
+              this.theiaFEClient?.notifyInterpolateChanged(message.data);
               break;
 
             default:
@@ -225,14 +265,14 @@ export class SerialServiceImpl implements SerialService {
       }).bind(this)
     );
 
-    const { type, port } = config;
+    const { type, port } = this.serialConfig;
     const req = new StreamingOpenRequest();
     const monitorConfig = new GrpcMonitorConfig();
     monitorConfig.setType(this.mapType(type));
     monitorConfig.setTarget(port.address);
-    if (config.baudRate !== undefined) {
+    if (this.serialConfig.baudRate !== undefined) {
       monitorConfig.setAdditionalConfig(
-        Struct.fromJavaScript({ BaudRate: config.baudRate })
+        Struct.fromJavaScript({ BaudRate: this.serialConfig.baudRate })
       );
     }
     req.setConfig(monitorConfig);
@@ -240,10 +280,17 @@ export class SerialServiceImpl implements SerialService {
     return new Promise<Status>((resolve) => {
       if (this.serialConnection) {
         this.serialConnection.duplex.write(req, () => {
+          const boardName = this.serialConfig?.board
+            ? Board.toString(this.serialConfig.board, {
+                useFqbn: false,
+              })
+            : 'unknown board';
+
+          const portName = this.serialConfig?.port
+            ? Port.toString(this.serialConfig.port)
+            : 'unknown port';
           this.logger.info(
-            `<<< Serial connection created for ${Board.toString(config.board, {
-              useFqbn: false,
-            })} on port ${Port.toString(config.port)}.`
+            `<<< Serial connection created for ${boardName} on port ${portName}.`
           );
           resolve(Status.OK);
         });
@@ -253,7 +300,7 @@ export class SerialServiceImpl implements SerialService {
     });
   }
 
-  async disconnect(reason?: SerialError): Promise<Status> {
+  public async disconnect(reason?: SerialError): Promise<Status> {
     try {
       if (this.onMessageReceived) {
         this.onMessageReceived.dispose();

@@ -24,6 +24,7 @@ import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { nls } from '@theia/core';
+import { SerialService } from './../common/protocol/serial-service';
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -32,6 +33,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
+
+  @inject(SerialService)
+  protected readonly serialService: SerialService;
 
   protected uploading = false;
 
@@ -132,8 +136,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     ) => ClientReadableStream<UploadResponse | UploadUsingProgrammerResponse>,
     task = 'upload'
   ): Promise<void> {
-    this.uploading = true;
     await this.compile(Object.assign(options, { exportBinaries: false }));
+
+    this.uploading = true;
+    this.serialService.uploadInProgress = true;
+
+    await this.serialService.disconnect();
+
     const { sketchUri, fqbn, port, programmer } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
@@ -160,7 +169,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     req.setVerbose(options.verbose);
     req.setVerify(options.verify);
 
-    options.userFields.forEach(e => {
+    options.userFields.forEach((e) => {
       req.getUserFieldsMap().set(e.name, e.value);
     });
 
@@ -190,7 +199,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         'arduino/upload/error',
         '{0} error: {1}',
         firstToUpperCase(task),
-        e.details,
+        e.details
       );
       this.responseService.appendToOutput({
         chunk: `${errorMessage}\n`,
@@ -199,10 +208,15 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
+      this.serialService.uploadInProgress = false;
     }
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
+    this.uploading = true;
+    this.serialService.uploadInProgress = true;
+    await this.serialService.disconnect();
+
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
@@ -242,13 +256,16 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       const errorMessage = nls.localize(
         'arduino/burnBootloader/error',
         'Error while burning the bootloader: {0}',
-        e.details,
+        e.details
       );
       this.responseService.appendToOutput({
         chunk: `${errorMessage}\n`,
         severity: 'error',
       });
       throw new Error(errorMessage);
+    } finally {
+      this.uploading = false;
+      this.serialService.uploadInProgress = false;
     }
   }
 
