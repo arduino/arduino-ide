@@ -127,7 +127,13 @@ export class VerifySketch extends SketchContribution {
         { timeout: 3000 }
       );
     } catch (e) {
-      this.messageService.error(e.toString());
+      let errorMessage = "";
+      if (typeof e === "string") {
+        errorMessage = e;
+      } else {
+        errorMessage = e.toString();
+      }
+      this.messageService.error(errorMessage);
     } finally {
       this.verifyInProgress = false;
       this.onDidChangeEmitter.fire();
