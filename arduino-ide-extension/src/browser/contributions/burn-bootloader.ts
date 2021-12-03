@@ -79,7 +79,13 @@ export class BurnBootloader extends SketchContribution {
         }
       );
     } catch (e) {
-      this.messageService.error(e.toString());
+      let errorMessage = "";
+      if (typeof e === "string") {
+        errorMessage = e;
+      } else {
+        errorMessage = e.toString();
+      }
+      this.messageService.error(errorMessage);
     } finally {
       if (this.serialConnection.isSerialOpen()) {
         await this.serialConnection.connect();

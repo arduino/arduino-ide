@@ -277,7 +277,13 @@ export class UploadSketch extends SketchContribution {
         { timeout: 3000 }
       );
     } catch (e) {
-      this.messageService.error(e.toString());
+      let errorMessage = "";
+      if (typeof e === "string") {
+        errorMessage = e;
+      } else {
+        errorMessage = e.toString();
+      }
+      this.messageService.error(errorMessage);
     } finally {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();

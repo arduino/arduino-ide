@@ -288,6 +288,15 @@
         "electron": {
             "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
             "unsavedChanges": "Any unsaved changes will not be saved."
+        },
+        "compile": {
+            "error": "Compilation error: {0}"
+        },
+        "upload": {
+            "error": "{0} error: {1}"
+        },
+        "burnBootloader": {
+            "error": "Error while burning the bootloader: {0}"
         }
     },
     "theia": {

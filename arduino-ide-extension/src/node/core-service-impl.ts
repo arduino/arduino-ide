@@ -23,6 +23,7 @@ import { NotificationServiceServer } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { nls } from '@theia/core';
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -85,11 +86,16 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         chunk: '\n--------------------------\nCompilation complete.\n',
       });
     } catch (e) {
+      const errorMessage = nls.localize(
+        'arduino/compile/error',
+        'Compilation error: {0}',
+        e.details
+      );
       this.responseService.appendToOutput({
-        chunk: `Compilation error: ${e.details}\n`,
+        chunk: `${errorMessage}}\n`,
         severity: 'error',
       });
-      throw e;
+      throw new Error(errorMessage);
     }
   }
 
@@ -180,11 +186,17 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           ' complete.\n',
       });
     } catch (e) {
+      const errorMessage = nls.localize(
+        'arduino/upload/error',
+        '{0} error: {1}',
+        firstToUpperCase(task),
+        e.details,
+      );
       this.responseService.appendToOutput({
-        chunk: `${firstToUpperCase(task)} error: ${e.details}\n`,
+        chunk: `${errorMessage}\n`,
         severity: 'error',
       });
-      throw e;
+      throw new Error(errorMessage);
     } finally {
       this.uploading = false;
     }
@@ -227,11 +239,16 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         result.on('end', () => resolve());
       });
     } catch (e) {
+      const errorMessage = nls.localize(
+        'arduino/burnBootloader/error',
+        'Error while burning the bootloader: {0}',
+        e.details,
+      );
       this.responseService.appendToOutput({
-        chunk: `Error while burning the bootloader: ${e.details}\n`,
+        chunk: `${errorMessage}\n`,
         severity: 'error',
       });
-      throw e;
+      throw new Error(errorMessage);
     }
   }
 
