@@ -176,15 +176,18 @@ export class SerialServiceImpl implements SerialService {
       'error',
       ((error: Error) => {
         const serialError = ErrorWithCode.toSerialError(error, serialConfig);
-        this.disconnect(serialError).then(() => {
-          if (this.theiaFEClient) {
-            this.theiaFEClient.notifyError(serialError);
-          }
-          if (serialError.code === undefined) {
-            // Log the original, unexpected error.
-            this.logger.error(error);
-          }
-        });
+        if (serialError.code !== SerialError.ErrorCodes.CLIENT_CANCEL) {
+          this.disconnect(serialError).then(() => {
+            if (this.theiaFEClient) {
+              this.theiaFEClient.notifyError(serialError);
+            }
+          });
+        }
+        if (serialError.code === undefined) {
+          // Log the original, unexpected error.
+          this.logger.error(error);
+        }
+        // });
       }).bind(this)
     );
 
@@ -230,27 +233,6 @@ export class SerialServiceImpl implements SerialService {
 
     // empty the queue every 32ms (~30fps)
     this.flushMessagesInterval = setInterval(flushMessagesToFrontend, 32);
-
-    // converts 'ab\nc\nd' => [ab\n,c\n,d]
-    const stringToArray = (string: string, separator = '\n') => {
-      const retArray: string[] = [];
-
-      let prevChar = separator;
-
-      for (let i = 0; i < string.length; i++) {
-        const currChar = string[i];
-
-        if (prevChar === separator) {
-          retArray.push(currChar);
-        } else {
-          const lastWord = retArray[retArray.length - 1];
-          retArray[retArray.length - 1] = lastWord + currChar;
-        }
-
-        prevChar = currChar;
-      }
-      return retArray;
-    };
 
     duplex.on(
       'data',
@@ -301,41 +283,48 @@ export class SerialServiceImpl implements SerialService {
   }
 
   public async disconnect(reason?: SerialError): Promise<Status> {
-    try {
-      if (this.onMessageReceived) {
-        this.onMessageReceived.dispose();
-        this.onMessageReceived = null;
-      }
-      if (this.flushMessagesInterval) {
-        clearInterval(this.flushMessagesInterval);
-        this.flushMessagesInterval = null;
-      }
+    return new Promise<Status>((resolve, reject) => {
+      try {
+        if (this.onMessageReceived) {
+          this.onMessageReceived.dispose();
+          this.onMessageReceived = null;
+        }
+        if (this.flushMessagesInterval) {
+          clearInterval(this.flushMessagesInterval);
+          this.flushMessagesInterval = null;
+        }
 
-      if (
-        !this.serialConnection &&
-        reason &&
-        reason.code === SerialError.ErrorCodes.CLIENT_CANCEL
-      ) {
-        return Status.OK;
+        if (
+          !this.serialConnection &&
+          reason &&
+          reason.code === SerialError.ErrorCodes.CLIENT_CANCEL
+        ) {
+          return Status.OK;
+        }
+        this.logger.info('>>> Disposing serial connection...');
+        if (!this.serialConnection) {
+          this.logger.warn('<<< Not connected. Nothing to dispose.');
+          return Status.NOT_CONNECTED;
+        }
+        const { duplex, config } = this.serialConnection;
+
+        this.logger.info(
+          `<<< Disposed serial connection for ${Board.toString(config.board, {
+            useFqbn: false,
+          })} on port ${Port.toString(config.port)}.`
+        );
+
+        duplex.cancel();
+      } finally {
+        this.serialConnection = undefined;
+        this.updateWsConfigParam({ connected: !!this.serialConnection });
+        this.messages.length = 0;
+
+        setTimeout(() => {
+          resolve(Status.OK);
+        }, 200);
       }
-      this.logger.info('>>> Disposing serial connection...');
-      if (!this.serialConnection) {
-        this.logger.warn('<<< Not connected. Nothing to dispose.');
-        return Status.NOT_CONNECTED;
-      }
-      const { duplex, config } = this.serialConnection;
-      duplex.cancel();
-      this.logger.info(
-        `<<< Disposed serial connection for ${Board.toString(config.board, {
-          useFqbn: false,
-        })} on port ${Port.toString(config.port)}.`
-      );
-      this.serialConnection = undefined;
-      return Status.OK;
-    } finally {
-      this.updateWsConfigParam({ connected: !!this.serialConnection });
-      this.messages.length = 0;
-    }
+    });
   }
 
   async sendMessageToSerial(message: string): Promise<Status> {
@@ -365,4 +354,25 @@ export class SerialServiceImpl implements SerialService {
         return GrpcMonitorConfig.TargetType.TARGET_TYPE_SERIAL;
     }
   }
+}
+
+// converts 'ab\nc\nd' => [ab\n,c\n,d]
+function stringToArray(string: string, separator = '\n') {
+  const retArray: string[] = [];
+
+  let prevChar = separator;
+
+  for (let i = 0; i < string.length; i++) {
+    const currChar = string[i];
+
+    if (prevChar === separator) {
+      retArray.push(currChar);
+    } else {
+      const lastWord = retArray[retArray.length - 1];
+      retArray[retArray.length - 1] = lastWord + currChar;
+    }
+
+    prevChar = currChar;
+  }
+  return retArray;
 }

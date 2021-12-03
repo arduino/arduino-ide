@@ -57,7 +57,7 @@ export class MonitorWidget extends ReactWidget {
     this.scrollOptions = undefined;
     this.toDispose.push(this.clearOutputEmitter);
     this.toDispose.push(
-      Disposable.create(() => this.serialConnection.closeSerial())
+      Disposable.create(() => this.serialConnection.closeWStoBE())
     );
   }
 
@@ -81,7 +81,7 @@ export class MonitorWidget extends ReactWidget {
 
   protected onAfterAttach(msg: Message): void {
     super.onAfterAttach(msg);
-    this.serialConnection.openSerial();
+    this.serialConnection.openWSToBE();
   }
 
   onCloseRequest(msg: Message): void {
@@ -169,7 +169,7 @@ export class MonitorWidget extends ReactWidget {
         <div className="head">
           <div className="send">
             <SerialMonitorSendInput
-              serialConfig={this.serialConnection.serialConfig}
+              serialConnection={this.serialConnection}
               resolveFocus={this.onFocusResolved}
               onSend={this.onSend}
             />
