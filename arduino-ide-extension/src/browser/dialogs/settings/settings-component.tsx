@@ -263,18 +263,6 @@ export class SettingsComponent extends React.Component<
         <label className="flex-line">
           <input
             type="checkbox"
-            checked={this.state.checkForUpdates}
-            onChange={this.checkForUpdatesDidChange}
-            disabled={true}
-          />
-          {nls.localize(
-            'arduino/preferences/checkForUpdates',
-            'Check for updates on startup'
-          )}
-        </label>
-        <label className="flex-line">
-          <input
-            type="checkbox"
             checked={this.state.autoSave === 'on'}
             onChange={this.autoSaveDidChange}
           />
@@ -534,12 +522,6 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     this.setState({ verifyAfterUpload: event.target.checked });
-  };
-
-  protected checkForUpdatesDidChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.setState({ checkForUpdates: event.target.checked });
   };
 
   protected sketchbookShowAllFilesDidChange = (
