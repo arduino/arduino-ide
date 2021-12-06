@@ -30,7 +30,8 @@ import { InstallWithProgress } from './grpc-installable';
 @injectable()
 export class LibraryServiceImpl
   extends CoreClientAware
-  implements LibraryService {
+  implements LibraryService
+{
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -267,9 +268,7 @@ export class LibraryServiceImpl
     req.setInstance(instance);
     req.setName(item.name);
     req.setVersion(version);
-    if (options.installDependencies === false) {
-      req.setNoDeps(true);
-    }
+    req.setNoDeps(!options.installDependencies);
 
     console.info('>>> Starting library package installation...', item);
     const resp = client.libraryInstall(req);
@@ -282,13 +281,14 @@ export class LibraryServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient)
+        this.boardDiscovery.startBoardListWatch(coreClient);
         resolve();
       });
       resp.on('error', (error) => {
         this.responseService.appendToOutput({
-          chunk: `Failed to install library: ${item.name}${version ? `:${version}` : ''
-            }.\n`,
+          chunk: `Failed to install library: ${item.name}${
+            version ? `:${version}` : ''
+          }.\n`,
         });
         this.responseService.appendToOutput({
           chunk: error.toString(),
@@ -332,7 +332,7 @@ export class LibraryServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient)
+        this.boardDiscovery.startBoardListWatch(coreClient);
         resolve();
       });
       resp.on('error', reject);
@@ -364,7 +364,7 @@ export class LibraryServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient)
+        this.boardDiscovery.startBoardListWatch(coreClient);
         resolve();
       });
       resp.on('error', reject);

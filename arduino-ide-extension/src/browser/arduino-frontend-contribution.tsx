@@ -7,6 +7,7 @@ import {
   SketchesService,
   ExecutableService,
   Sketch,
+  LibraryService,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
@@ -69,7 +70,7 @@ import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-c
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 
-const INIT_AVR_PACKAGES = 'initializedAvrPackages';
+const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -88,6 +89,9 @@ export class ArduinoFrontendContribution
 
   @inject(BoardsService)
   protected readonly boardsService: BoardsService;
+
+  @inject(LibraryService)
+  protected readonly libraryService: LibraryService;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClientImpl: BoardsServiceProvider;
@@ -161,15 +165,26 @@ export class ArduinoFrontendContribution
 
   @postConstruct()
   protected async init(): Promise<void> {
-    const notFirstStartup = await this.localStorageService.getData(
-      INIT_AVR_PACKAGES
-    );
-    if (!notFirstStartup) {
-      await this.localStorageService.setData(INIT_AVR_PACKAGES, true);
+    const isFirstStartup = !(await this.localStorageService.getData(
+      INIT_LIBS_AND_PACKAGES
+    ));
+    if (isFirstStartup) {
+      await this.localStorageService.setData(INIT_LIBS_AND_PACKAGES, true);
       const avrPackage = await this.boardsService.getBoardPackage({
         id: 'arduino:avr',
       });
-      avrPackage && (await this.boardsService.install({ item: avrPackage }));
+      const builtInLibrary = (
+        await this.libraryService.search({
+          query: 'Arduino_BuiltIn',
+        })
+      )[0];
+
+      !!avrPackage && (await this.boardsService.install({ item: avrPackage }));
+      !!builtInLibrary &&
+        (await this.libraryService.install({
+          item: builtInLibrary,
+          installDependencies: true,
+        }));
     }
     if (!window.navigator.onLine) {
       // tslint:disable-next-line:max-line-length
