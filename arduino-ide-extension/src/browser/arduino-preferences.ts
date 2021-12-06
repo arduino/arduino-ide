@@ -188,16 +188,10 @@ export interface ArduinoConfiguration {
 export const ArduinoPreferences = Symbol('ArduinoPreferences');
 export type ArduinoPreferences = PreferenceProxy<ArduinoConfiguration>;
 
-export function createArduinoPreferences(
-  preferences: PreferenceService
-): ArduinoPreferences {
-  return createPreferenceProxy(preferences, ArduinoConfigSchema);
-}
-
 export function bindArduinoPreferences(bind: interfaces.Bind): void {
   bind(ArduinoPreferences).toDynamicValue((ctx) => {
     const preferences = ctx.container.get<PreferenceService>(PreferenceService);
-    return createArduinoPreferences(preferences);
+    return createPreferenceProxy(preferences, ArduinoConfigSchema);
   });
   bind(PreferenceContribution).toConstantValue({
     schema: ArduinoConfigSchema,
