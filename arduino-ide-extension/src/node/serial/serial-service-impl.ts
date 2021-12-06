@@ -63,16 +63,6 @@ namespace ErrorWithCode {
 
 @injectable()
 export class SerialServiceImpl implements SerialService {
-  @named(SerialServiceName)
-  @inject(ILogger)
-  protected readonly logger: ILogger;
-
-  @inject(MonitorClientProvider)
-  protected readonly serialClientProvider: MonitorClientProvider;
-
-  @inject(WebSocketService)
-  protected readonly webSocketService: WebSocketService;
-
   protected theiaFEClient?: SerialServiceClient;
   protected serialConfig?: SerialConfig;
 
@@ -87,6 +77,18 @@ export class SerialServiceImpl implements SerialService {
   protected flushMessagesInterval: NodeJS.Timeout | null;
 
   uploadInProgress = false;
+
+  constructor(
+    @inject(ILogger)
+    @named(SerialServiceName)
+    protected readonly logger: ILogger,
+
+    @inject(MonitorClientProvider)
+    protected readonly serialClientProvider: MonitorClientProvider,
+
+    @inject(WebSocketService)
+    protected readonly webSocketService: WebSocketService
+  ) {}
 
   async isSerialPortOpen(): Promise<boolean> {
     return !!this.serialConnection;
@@ -115,7 +117,6 @@ export class SerialServiceImpl implements SerialService {
   public async connectSerialIfRequired(): Promise<void> {
     if (this.uploadInProgress) return;
     const clients = await this.clientsAttached();
-    this.logger.info(`WS clients: ${clients}`);
     clients > 0 ? await this.connect() : await this.disconnect();
   }
 
@@ -144,7 +145,7 @@ export class SerialServiceImpl implements SerialService {
     this.webSocketService.sendMessage(JSON.stringify(msg));
   }
 
-  async connect(): Promise<Status> {
+  private async connect(): Promise<Status> {
     if (!this.serialConfig) {
       return Status.CONFIG_MISSING;
     }
@@ -154,8 +155,6 @@ export class SerialServiceImpl implements SerialService {
         this.serialConfig.board
       )} on port ${Port.toString(this.serialConfig.port)}...`
     );
-
-    // check if the board/port is available
 
     if (this.serialConnection) {
       return Status.ALREADY_CONNECTED;
@@ -187,7 +186,6 @@ export class SerialServiceImpl implements SerialService {
           // Log the original, unexpected error.
           this.logger.error(error);
         }
-        // });
       }).bind(this)
     );
 
@@ -259,9 +257,19 @@ export class SerialServiceImpl implements SerialService {
     }
     req.setConfig(monitorConfig);
 
-    return new Promise<Status>((resolve) => {
-      if (this.serialConnection) {
-        this.serialConnection.duplex.write(req, () => {
+    if (!this.serialConnection) {
+      return await this.disconnect();
+    }
+
+    const writeTimeout = new Promise<Status>((resolve) => {
+      setTimeout(async () => {
+        resolve(Status.NOT_CONNECTED);
+      }, 1000);
+    });
+
+    const writePromise = (serialConnection: any) => {
+      return new Promise<Status>((resolve) => {
+        serialConnection.duplex.write(req, () => {
           const boardName = this.serialConfig?.board
             ? Board.toString(this.serialConfig.board, {
                 useFqbn: false,
@@ -276,14 +284,23 @@ export class SerialServiceImpl implements SerialService {
           );
           resolve(Status.OK);
         });
-        return;
-      }
-      this.disconnect().then(() => resolve(Status.NOT_CONNECTED));
-    });
+      });
+    };
+
+    const status = await Promise.race([
+      writeTimeout,
+      writePromise(this.serialConnection),
+    ]);
+
+    if (status === Status.NOT_CONNECTED) {
+      this.disconnect();
+    }
+
+    return status;
   }
 
   public async disconnect(reason?: SerialError): Promise<Status> {
-    return new Promise<Status>((resolve, reject) => {
+    return new Promise<Status>((resolve) => {
       try {
         if (this.onMessageReceived) {
           this.onMessageReceived.dispose();
@@ -299,12 +316,14 @@ export class SerialServiceImpl implements SerialService {
           reason &&
           reason.code === SerialError.ErrorCodes.CLIENT_CANCEL
         ) {
-          return Status.OK;
+          resolve(Status.OK);
+          return;
         }
         this.logger.info('>>> Disposing serial connection...');
         if (!this.serialConnection) {
           this.logger.warn('<<< Not connected. Nothing to dispose.');
-          return Status.NOT_CONNECTED;
+          resolve(Status.NOT_CONNECTED);
+          return;
         }
         const { duplex, config } = this.serialConnection;
 

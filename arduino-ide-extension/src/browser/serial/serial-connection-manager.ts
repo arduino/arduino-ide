@@ -169,7 +169,6 @@ export class SerialConnectionManager {
       this.messageService.error(
         `Please select a board and a port to open the serial connection.`
       );
-      return;
     }
 
     if (!this.webSocket && this.wsPort) {
