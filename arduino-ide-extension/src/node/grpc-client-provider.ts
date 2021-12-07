@@ -21,8 +21,7 @@ export abstract class GrpcClientProvider<C> {
   @postConstruct()
   protected init(): void {
     const updateClient = () => {
-      const cliConfig = this.configService.cliConfiguration;
-      this.reconcileClient(cliConfig ? cliConfig.daemon.port : undefined);
+      this.reconcileClient();
     };
     this.configService.onConfigChange(updateClient);
     this.daemon.ready.then(updateClient);
@@ -44,9 +43,9 @@ export abstract class GrpcClientProvider<C> {
     }
   }
 
-  protected async reconcileClient(
-    port: string | number | undefined
-  ): Promise<void> {
+  protected async reconcileClient(): Promise<void> {
+    const port = await this.daemon.getPort();
+
     if (this._port === port) {
       return; // Nothing to do.
     }

@@ -2,21 +2,17 @@ import * as fs from 'fs';
 // import * as net from 'net';
 import * as path from 'path';
 import * as temp from 'temp';
-import { fail } from 'assert';
 import { expect } from 'chai';
 import { ChildProcess } from 'child_process';
 import { safeLoad, safeDump } from 'js-yaml';
-import { DaemonError, ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
+import { ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
 import { spawnCommand } from '../../node/exec-util';
 import { CLI_CONFIG } from '../../node/cli-config';
 
 const track = temp.track();
 
 class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
-  constructor(
-    private port: string | number,
-    private logFormat: 'text' | 'json'
-  ) {
+  constructor(private logFormat: 'text' | 'json') {
     super();
   }
 
@@ -24,7 +20,7 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
     // NOOP
   }
 
-  async spawnDaemonProcess(): Promise<ChildProcess> {
+  async spawnDaemonProcess(): Promise<{ daemon: ChildProcess; port: string }> {
     return super.spawnDaemonProcess();
   }
 
@@ -32,6 +28,10 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
     const cliConfigPath = await this.initCliConfig();
     return [
       'daemon',
+      '--format',
+      'jsonmini',
+      '--port',
+      '0',
       '--config-file',
       cliConfigPath,
       '-v',
@@ -53,7 +53,7 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
       encoding: 'utf8',
     });
     const cliConfig = safeLoad(content) as any;
-    cliConfig.daemon.port = String(this.port);
+    // cliConfig.daemon.port = String(this.port);
     const modifiedContent = safeDump(cliConfig);
     fs.writeFileSync(path.join(destDir, CLI_CONFIG), modifiedContent, {
       encoding: 'utf8',
@@ -113,43 +113,19 @@ describe('arduino-daemon-impl', () => {
   //     }
   // });
 
-  it('should parse an error - unknown address [json]', async () => {
-    try {
-      await new SilentArduinoDaemonImpl('foo', 'json').spawnDaemonProcess();
-      fail('Expected a failure.');
-    } catch (e) {
-      expect(e).to.be.instanceOf(DaemonError);
-      expect(e.code).to.be.equal(DaemonError.UNKNOWN_ADDRESS);
-    }
+  it('should parse the port address when the log format is json', async () => {
+    const instance = await new SilentArduinoDaemonImpl(
+      'json'
+    ).spawnDaemonProcess();
+    expect(instance.port).not.to.be.undefined;
+    expect(instance.port).not.to.be.equal('0');
   });
 
-  it('should parse an error - unknown address [text]', async () => {
-    try {
-      await new SilentArduinoDaemonImpl('foo', 'text').spawnDaemonProcess();
-      fail('Expected a failure.');
-    } catch (e) {
-      expect(e).to.be.instanceOf(DaemonError);
-      expect(e.code).to.be.equal(DaemonError.UNKNOWN_ADDRESS);
-    }
-  });
-
-  it('should parse an error - invalid port [json]', async () => {
-    try {
-      await new SilentArduinoDaemonImpl(-1, 'json').spawnDaemonProcess();
-      fail('Expected a failure.');
-    } catch (e) {
-      expect(e).to.be.instanceOf(DaemonError);
-      expect(e.code).to.be.equal(DaemonError.INVALID_PORT);
-    }
-  });
-
-  it('should parse an error - invalid port [text]', async () => {
-    try {
-      await new SilentArduinoDaemonImpl(-1, 'text').spawnDaemonProcess();
-      fail('Expected a failure.');
-    } catch (e) {
-      expect(e).to.be.instanceOf(DaemonError);
-      expect(e.code).to.be.equal(DaemonError.INVALID_PORT);
-    }
+  it('should parse the port address when the log format is text', async () => {
+    const instance = await new SilentArduinoDaemonImpl(
+      'text'
+    ).spawnDaemonProcess();
+    expect(instance.port).not.to.be.undefined;
+    expect(instance.port).not.to.be.equal('0');
   });
 });

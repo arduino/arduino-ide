@@ -42,6 +42,7 @@ export class ArduinoDaemonImpl
   protected _running = false;
   protected _ready = new Deferred<void>();
   protected _execPath: string | undefined;
+  protected _port: string;
 
   // Backend application lifecycle.
 
@@ -55,12 +56,17 @@ export class ArduinoDaemonImpl
     return Promise.resolve(this._running);
   }
 
+  async getPort(): Promise<string> {
+    return Promise.resolve(this._port);
+  }
+
   async startDaemon(): Promise<void> {
     try {
       this.toDispose.dispose(); // This will `kill` the previously started daemon process, if any.
       const cliPath = await this.getExecPath();
       this.onData(`Starting daemon from ${cliPath}...`);
-      const daemon = await this.spawnDaemonProcess();
+      const { daemon, port } = await this.spawnDaemonProcess();
+      this._port = port;
       // Watchdog process for terminating the daemon process when the backend app terminates.
       spawn(
         process.execPath,
@@ -148,6 +154,10 @@ export class ArduinoDaemonImpl
     const cliConfigPath = join(FileUri.fsPath(configDirUri), CLI_CONFIG);
     return [
       'daemon',
+      '--format',
+      'jsonmini',
+      '--port',
+      '0',
       '--config-file',
       `"${cliConfigPath}"`,
       '-v',
@@ -156,12 +166,15 @@ export class ArduinoDaemonImpl
     ];
   }
 
-  protected async spawnDaemonProcess(): Promise<ChildProcess> {
+  protected async spawnDaemonProcess(): Promise<{
+    daemon: ChildProcess;
+    port: string;
+  }> {
     const [cliPath, args] = await Promise.all([
       this.getExecPath(),
       this.getSpawnArgs(),
     ]);
-    const ready = new Deferred<ChildProcess>();
+    const ready = new Deferred<{ daemon: ChildProcess; port: string }>();
     const options = { shell: true };
     const daemon = spawn(`"${cliPath}"`, args, options);
 
@@ -171,20 +184,37 @@ export class ArduinoDaemonImpl
 
     daemon.stdout.on('data', (data) => {
       const message = data.toString();
+
+      let port = '';
+      let address = '';
+      message
+        .split('\n')
+        .filter((line: string) => line.length)
+        .forEach((line: string) => {
+          try {
+            const parsedLine = JSON.parse(line);
+            if ('Port' in parsedLine) {
+              port = parsedLine.Port;
+            }
+            if ('IP' in parsedLine) {
+              address = parsedLine.IP;
+            }
+          } catch (err) {
+            // ignore
+          }
+        });
+
       this.onData(message);
       if (!grpcServerIsReady) {
         const error = DaemonError.parse(message);
         if (error) {
           ready.reject(error);
+          return;
         }
-        for (const expected of [
-          'Daemon is listening on TCP port',
-          'Daemon is now listening on 127.0.0.1',
-        ]) {
-          if (message.includes(expected)) {
-            grpcServerIsReady = true;
-            ready.resolve(daemon);
-          }
+
+        if (port.length && address.length) {
+          grpcServerIsReady = true;
+          ready.resolve({ daemon, port });
         }
       }
     });
