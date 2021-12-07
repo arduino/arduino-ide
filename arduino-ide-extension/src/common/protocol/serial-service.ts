@@ -18,15 +18,22 @@ export namespace Status {
   export const ALREADY_CONNECTED: ErrorStatus = {
     message: 'Already connected.',
   };
+  export const CONFIG_MISSING: ErrorStatus = {
+    message: 'Serial Config missing.',
+  };
 }
 
 export const SerialServicePath = '/services/serial';
 export const SerialService = Symbol('SerialService');
 export interface SerialService extends JsonRpcServer<SerialServiceClient> {
-  connect(config: SerialConfig): Promise<Status>;
-  disconnect(): Promise<Status>;
+  clientsAttached(): Promise<number>;
+  setSerialConfig(config: SerialConfig): Promise<void>;
   sendMessageToSerial(message: string): Promise<Status>;
   updateWsConfigParam(config: Partial<SerialPlotter.Config>): Promise<void>;
+  isSerialPortOpen(): Promise<boolean>;
+  connectSerialIfRequired(): Promise<void>;
+  disconnect(reason?: SerialError): Promise<Status>;
+  uploadInProgress: boolean;
 }
 
 export interface SerialConfig {

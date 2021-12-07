@@ -11,8 +11,8 @@ import { ArduinoMenus } from '../../menu/arduino-menus';
 import { Contribution } from '../../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/core/shared/electron';
-import { SerialConfig, Status } from '../../../common/protocol';
-import { Serial, SerialConnectionManager } from '../serial-connection-manager';
+import { SerialConfig } from '../../../common/protocol';
+import { SerialConnectionManager } from '../serial-connection-manager';
 import { SerialPlotter } from './protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 const queryString = require('query-string');
@@ -51,10 +51,8 @@ export class PlotterFrontendContribution extends Contribution {
     ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
       if (!!this.window) {
         this.window = null;
-        await this.serialConnection.closeSerial(Serial.Type.Plotter);
       }
     });
-
     return super.onStart(app);
   }
 
@@ -77,17 +75,15 @@ export class PlotterFrontendContribution extends Contribution {
       this.window.focus();
       return;
     }
-    const status = await this.serialConnection.openSerial(Serial.Type.Plotter);
     const wsPort = this.serialConnection.getWsPort();
-    if (Status.isOK(status) && wsPort) {
+    if (wsPort) {
       this.open(wsPort);
     } else {
-      this.serialConnection.closeSerial(Serial.Type.Plotter);
       this.messageService.error(`Couldn't open serial plotter`);
     }
   }
 
-  protected open(wsPort: number): void {
+  protected async open(wsPort: number): Promise<void> {
     const initConfig: Partial<SerialPlotter.Config> = {
       baudrates: SerialConfig.BaudRates.map((b) => b),
       currentBaudrate: this.model.baudRate,
@@ -95,7 +91,7 @@ export class PlotterFrontendContribution extends Contribution {
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
       interpolate: this.model.interpolate,
-      connected: this.serialConnection.connected,
+      connected: await this.serialConnection.isBESerialConnected(),
       serialPort: this.boardsServiceProvider.boardsConfig.selectedPort?.address,
     };
     const urlWithParams = queryString.stringifyUrl(

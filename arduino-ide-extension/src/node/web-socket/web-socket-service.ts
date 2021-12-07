@@ -6,4 +6,6 @@ export interface WebSocketService {
   getAddress(): WebSocket.AddressInfo;
   sendMessage(message: string): void;
   onMessageReceived: Event<string>;
+  onClientsNumberChanged: Event<number>;
+  getConnectedClientsNumber(): number;
 }

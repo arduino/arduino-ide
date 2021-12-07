@@ -1,5 +1,4 @@
 import { injectable, inject } from 'inversify';
-import { deepClone } from '@theia/core/lib/common/objects';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import {
@@ -23,8 +22,6 @@ import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export class SerialConnectionManager {
-  protected _state: Serial.State = [];
-  protected _connected = false;
   protected config: Partial<SerialConfig> = {
     board: undefined,
     port: undefined,
@@ -62,7 +59,9 @@ export class SerialConnectionManager {
     protected readonly boardsServiceProvider: BoardsServiceProvider,
     @inject(MessageService) protected messageService: MessageService,
     @inject(ThemeService) protected readonly themeService: ThemeService,
-    @inject(CoreService) protected readonly core: CoreService
+    @inject(CoreService) protected readonly core: CoreService,
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceClientImpl: BoardsServiceProvider
   ) {
     this.serialServiceClient.onWebSocketChanged(
       this.handleWebSocketChanged.bind(this)
@@ -89,8 +88,11 @@ export class SerialConnectionManager {
     );
 
     // Handles the `baudRate` changes by reconnecting if required.
-    this.serialModel.onChange(({ property }) => {
-      if (property === 'baudRate' && this.connected) {
+    this.serialModel.onChange(async ({ property }) => {
+      if (
+        property === 'baudRate' &&
+        (await this.serialService.isSerialPortOpen())
+      ) {
         const { boardsConfig } = this.boardsServiceProvider;
         this.handleBoardConfigChange(boardsConfig);
       }
@@ -114,8 +116,8 @@ export class SerialConnectionManager {
   }
 
   /**
-   * Set the config passing only the properties that has changed. If some has changed and the serial is open,
-   * we try to reconnect
+   * Updated the config in the BE passing only the properties that has changed.
+   * BE will create a new connection if needed.
    *
    * @param newConfig the porperties of the config that has changed
    */
@@ -127,17 +129,16 @@ export class SerialConnectionManager {
         this.config = { ...this.config, [key]: newConfig[key] };
       }
     });
-    if (
-      configHasChanged &&
-      this.isSerialOpen() &&
-      !(await this.core.isUploading())
-    ) {
+
+    if (configHasChanged) {
       this.serialService.updateWsConfigParam({
         currentBaudrate: this.config.baudRate,
         serialPort: this.config.port?.address,
       });
-      await this.disconnect();
-      await this.connect();
+
+      if (isSerialConfig(this.config)) {
+        this.serialService.setSerialConfig(this.config);
+      }
     }
   }
 
@@ -149,64 +150,8 @@ export class SerialConnectionManager {
     return this.wsPort;
   }
 
-  isWebSocketConnected(): boolean {
-    return !!this.webSocket?.url;
-  }
-
   protected handleWebSocketChanged(wsPort: number): void {
     this.wsPort = wsPort;
-  }
-
-  /**
-   * When the serial is open and the frontend is connected to the serial, we create the websocket here
-   */
-  protected createWsConnection(): boolean {
-    if (this.wsPort) {
-      try {
-        this.webSocket = new WebSocket(`ws://localhost:${this.wsPort}`);
-        this.webSocket.onmessage = (res) => {
-          const messages = JSON.parse(res.data);
-          this.onReadEmitter.fire({ messages });
-        };
-        return true;
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Sets the types of connections needed by the client.
-   *
-   * @param newState The array containing the list of desired connections.
-   *          If the previuos state was empty and 'newState' is not, it tries to reconnect to the serial service
-   *          If the provios state was NOT empty and now it is, it disconnects to the serial service
-   * @returns The status of the operation
-   */
-  protected async setState(newState: Serial.State): Promise<Status> {
-    const oldState = deepClone(this._state);
-    let status = Status.OK;
-
-    if (this.isSerialOpen(oldState) && !this.isSerialOpen(newState)) {
-      status = await this.disconnect();
-    } else if (!this.isSerialOpen(oldState) && this.isSerialOpen(newState)) {
-      if (await this.core.isUploading()) {
-        this.messageService.error(`Cannot open serial port when uploading`);
-        return Status.NOT_CONNECTED;
-      }
-      status = await this.connect();
-    }
-    this._state = newState;
-    return status;
-  }
-
-  protected get state(): Serial.State {
-    return this._state;
-  }
-
-  isSerialOpen(state?: Serial.State): boolean {
-    return (state ? state : this._state).length > 0;
   }
 
   get serialConfig(): SerialConfig | undefined {
@@ -215,68 +160,46 @@ export class SerialConnectionManager {
       : undefined;
   }
 
-  get connected(): boolean {
-    return this._connected;
+  async isBESerialConnected(): Promise<boolean> {
+    return await this.serialService.isSerialPortOpen();
   }
 
-  set connected(c: boolean) {
-    this._connected = c;
-    this.serialService.updateWsConfigParam({ connected: c });
-    this.onConnectionChangedEmitter.fire(this._connected);
-  }
-  /**
-   * Called when a client opens the serial from the GUI
-   *
-   * @param type could be either 'Monitor' or 'Plotter'. If it's 'Monitor' we also connect to the websocket and
-   *             listen to the message events
-   * @returns the status of the operation
-   */
-  async openSerial(type: Serial.Type): Promise<Status> {
+  openWSToBE(): void {
     if (!isSerialConfig(this.config)) {
       this.messageService.error(
         `Please select a board and a port to open the serial connection.`
       );
-      return Status.NOT_CONNECTED;
     }
-    if (this.state.includes(type)) return Status.OK;
-    const newState = deepClone(this.state);
-    newState.push(type);
-    const status = await this.setState(newState);
-    if (Status.isOK(status) && type === Serial.Type.Monitor)
-      this.createWsConnection();
-    return status;
-  }
 
-  /**
-   * Called when a client closes the serial from the GUI
-   *
-   * @param type could be either 'Monitor' or 'Plotter'. If it's 'Monitor' we close the websocket connection
-   * @returns the status of the operation
-   */
-  async closeSerial(type: Serial.Type): Promise<Status> {
-    const index = this.state.indexOf(type);
-    let status = Status.OK;
-    if (index >= 0) {
-      const newState = deepClone(this.state);
-      newState.splice(index, 1);
-      status = await this.setState(newState);
-      if (
-        Status.isOK(status) &&
-        type === Serial.Type.Monitor &&
-        this.webSocket
-      ) {
-        this.webSocket.close();
-        this.webSocket = undefined;
+    if (!this.webSocket && this.wsPort) {
+      try {
+        this.webSocket = new WebSocket(`ws://localhost:${this.wsPort}`);
+        this.webSocket.onmessage = (res) => {
+          const messages = JSON.parse(res.data);
+          this.onReadEmitter.fire({ messages });
+        };
+      } catch {
+        this.messageService.error(`Unable to connect to websocket`);
       }
     }
-    return status;
+  }
+
+  closeWStoBE(): void {
+    if (this.webSocket) {
+      try {
+        this.webSocket.close();
+        this.webSocket = undefined;
+      } catch {
+        this.messageService.error(`Unable to close websocket`);
+      }
+    }
   }
 
   /**
    * Handles error on the SerialServiceClient and try to reconnect, eventually
    */
-  handleError(error: SerialError): void {
-    if (!this.connected) return;
+  async handleError(error: SerialError): Promise<void> {
+    if (!(await this.serialService.isSerialPortOpen())) return;
     const { code, config } = error;
     const { board, port } = config;
     const options = { timeout: 3000 };
@@ -329,9 +252,8 @@ export class SerialConnectionManager {
         break;
       }
     }
-    this.connected = false;
 
-    if (this.isSerialOpen()) {
+    if ((await this.serialService.clientsAttached()) > 0) {
       if (this.serialErrors.length >= 10) {
         this.messageService.warn(
           nls.localize(
@@ -363,59 +285,31 @@ export class SerialConnectionManager {
           )
         );
         this.reconnectTimeout = window.setTimeout(
-          () => this.connect(),
+          () => this.reconnectAfterUpload(),
           timeout
         );
       }
     }
   }
 
-  async connect(): Promise<Status> {
-    if (this.connected) return Status.ALREADY_CONNECTED;
-    if (!isSerialConfig(this.config)) return Status.NOT_CONNECTED;
-
-    console.info(
-      `>>> Creating serial connection for ${Board.toString(
-        this.config.board
-      )} on port ${Port.toString(this.config.port)}...`
-    );
-    const connectStatus = await this.serialService.connect(this.config);
-    if (Status.isOK(connectStatus)) {
-      this.connected = true;
-      console.info(
-        `<<< Serial connection created for ${Board.toString(this.config.board, {
-          useFqbn: false,
-        })} on port ${Port.toString(this.config.port)}.`
+  async reconnectAfterUpload(): Promise<void> {
+    try {
+      if (isSerialConfig(this.config)) {
+        await this.boardsServiceClientImpl.waitUntilAvailable(
+          Object.assign(this.config.board, { port: this.config.port }),
+          10_000
+        );
+        this.serialService.connectSerialIfRequired();
+      }
+    } catch (waitError) {
+      this.messageService.error(
+        nls.localize(
+          'arduino/sketch/couldNotConnectToSerial',
+          'Could not reconnect to serial port. {0}',
+          waitError.toString()
+        )
       );
     }
-
-    return Status.isOK(connectStatus);
-  }
-
-  async disconnect(): Promise<Status> {
-    if (!this.connected) {
-      return Status.OK;
-    }
-
-    console.log('>>> Disposing existing serial connection...');
-    const status = await this.serialService.disconnect();
-    if (Status.isOK(status)) {
-      this.connected = false;
-      console.log(
-        `<<< Disposed serial connection. Was: ${Serial.Config.toString(
-          this.config
-        )}`
-      );
-      this.wsPort = undefined;
-    } else {
-      console.warn(
-        `<<< Could not dispose serial connection. Activate connection: ${Serial.Config.toString(
-          this.config
-        )}`
-      );
-    }
-
-    return status;
   }
 
   /**
@@ -424,7 +318,7 @@ export class SerialConnectionManager {
    * It is a NOOP if connected.
    */
   async send(data: string): Promise<Status> {
-    if (!this.connected) {
+    if (!(await this.serialService.isSerialPortOpen())) {
       return Status.NOT_CONNECTED;
     }
     return new Promise<Status>((resolve) => {
@@ -438,7 +332,7 @@ export class SerialConnectionManager {
     return this.onConnectionChangedEmitter.event;
   }
 
-  get onRead(): Event<{ messages: string[] }> {
+  get onRead(): Event<{ messages: any }> {
     return this.onReadEmitter.event;
   }
 
@@ -453,18 +347,6 @@ export class SerialConnectionManager {
 }
 
 export namespace Serial {
-  export enum Type {
-    Monitor = 'Monitor',
-    Plotter = 'Plotter',
-  }
-
-  /**
-   * The state represents which types of connections are needed by the client, and it should match whether the Serial Monitor
-   * or the Serial Plotter are open or not in the GUI. It's an array cause it's possible to have both, none or only one of
-   * them open
-   */
-  export type State = Serial.Type[];
-
   export namespace Config {
     export function toString(config: Partial<SerialConfig>): string {
       if (!isSerialConfig(config)) return '';

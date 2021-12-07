@@ -210,7 +210,7 @@ export class UploadSketch extends SketchContribution {
     if (!sketch) {
       return;
     }
-    await this.serialConnection.disconnect();
+
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
@@ -288,27 +288,7 @@ export class UploadSketch extends SketchContribution {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();
 
-      if (
-        this.serialConnection.isSerialOpen() &&
-        this.serialConnection.serialConfig
-      ) {
-        const { board, port } = this.serialConnection.serialConfig;
-        try {
-          await this.boardsServiceClientImpl.waitUntilAvailable(
-            Object.assign(board, { port }),
-            10_000
-          );
-          await this.serialConnection.connect();
-        } catch (waitError) {
-          this.messageService.error(
-            nls.localize(
-              'arduino/sketch/couldNotConnectToSerial',
-              'Could not reconnect to serial port. {0}',
-              waitError.toString()
-            )
-          );
-        }
-      }
+      setTimeout(() => this.serialConnection.reconnectAfterUpload(), 5000);
     }
   }
 }

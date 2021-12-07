@@ -12,7 +12,7 @@ import {
 import { SerialConfig } from '../../../common/protocol/serial-service';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 import { SerialModel } from '../serial-model';
-import { Serial, SerialConnectionManager } from '../serial-connection-manager';
+import { SerialConnectionManager } from '../serial-connection-manager';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
@@ -57,9 +57,7 @@ export class MonitorWidget extends ReactWidget {
     this.scrollOptions = undefined;
     this.toDispose.push(this.clearOutputEmitter);
     this.toDispose.push(
-      Disposable.create(() =>
-        this.serialConnection.closeSerial(Serial.Type.Monitor)
-      )
+      Disposable.create(() => this.serialConnection.closeWStoBE())
     );
   }
 
@@ -83,7 +81,7 @@ export class MonitorWidget extends ReactWidget {
 
   protected onAfterAttach(msg: Message): void {
     super.onAfterAttach(msg);
-    this.serialConnection.openSerial(Serial.Type.Monitor);
+    this.serialConnection.openWSToBE();
   }
 
   onCloseRequest(msg: Message): void {
@@ -171,7 +169,7 @@ export class MonitorWidget extends ReactWidget {
         <div className="head">
           <div className="send">
             <SerialMonitorSendInput
-              serialConfig={this.serialConnection.serialConfig}
+              serialConnection={this.serialConnection}
               resolveFocus={this.onFocusResolved}
               onSend={this.onSend}
             />

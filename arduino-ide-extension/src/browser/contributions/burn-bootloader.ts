@@ -48,7 +48,6 @@ export class BurnBootloader extends SketchContribution {
   }
 
   async burnBootloader(): Promise<void> {
-    await this.serialConnection.disconnect();
     try {
       const { boardsConfig } = this.boardsServiceClientImpl;
       const port = boardsConfig.selectedPort;
@@ -87,9 +86,7 @@ export class BurnBootloader extends SketchContribution {
       }
       this.messageService.error(errorMessage);
     } finally {
-      if (this.serialConnection.isSerialOpen()) {
-        await this.serialConnection.connect();
-      }
+      await this.serialConnection.reconnectAfterUpload();
     }
   }
 }

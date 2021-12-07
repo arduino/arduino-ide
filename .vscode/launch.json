@@ -8,10 +8,6 @@
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
-        "env": {
-          "NODE_ENV": "development",
-          "NODE_PRESERVE_SYMLINKS": "1"
-        }
       },
       "cwd": "${workspaceFolder}/electron-app",
       "protocol": "inspector",

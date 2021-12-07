@@ -1,18 +1,20 @@
 import * as React from 'react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board, Port } from '../../../common/protocol/boards-service';
-import { SerialConfig } from '../../../common/protocol/serial-service';
 import { isOSX } from '@theia/core/lib/common/os';
-import { nls } from '@theia/core/lib/common';
+import { DisposableCollection, nls } from '@theia/core/lib/common';
+import { SerialConnectionManager } from '../serial-connection-manager';
+import { SerialPlotter } from '../plotter/protocol';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
-    readonly serialConfig?: SerialConfig;
+    readonly serialConnection: SerialConnectionManager;
     readonly onSend: (text: string) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
   }
   export interface State {
     text: string;
+    connected: boolean;
   }
 }
 
@@ -20,12 +22,37 @@ export class SerialMonitorSendInput extends React.Component<
   SerialMonitorSendInput.Props,
   SerialMonitorSendInput.State
 > {
+  protected toDisposeBeforeUnmount = new DisposableCollection();
+
   constructor(props: Readonly<SerialMonitorSendInput.Props>) {
     super(props);
-    this.state = { text: '' };
+    this.state = { text: '', connected: false };
     this.onChange = this.onChange.bind(this);
     this.onSend = this.onSend.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  componentDidMount(): void {
+    this.props.serialConnection.isBESerialConnected().then((connected) => {
+      this.setState({ connected });
+    });
+
+    this.toDisposeBeforeUnmount.pushAll([
+      this.props.serialConnection.onRead(({ messages }) => {
+        if (
+          messages.command ===
+            SerialPlotter.Protocol.Command.MIDDLEWARE_CONFIG_CHANGED &&
+          'connected' in messages.data
+        ) {
+          this.setState({ connected: messages.data.connected });
+        }
+      }),
+    ]);
+  }
+
+  componentWillUnmount(): void {
+    // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
+    this.toDisposeBeforeUnmount.dispose();
   }
 
   render(): React.ReactNode {
@@ -33,7 +60,7 @@ export class SerialMonitorSendInput extends React.Component<
       <input
         ref={this.setRef}
         type="text"
-        className={`theia-input ${this.props.serialConfig ? '' : 'warning'}`}
+        className={`theia-input ${this.state.connected ? '' : 'warning'}`}
         placeholder={this.placeholder}
         value={this.state.text}
         onChange={this.onChange}
@@ -43,8 +70,8 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   protected get placeholder(): string {
-    const { serialConfig } = this.props;
-    if (!serialConfig) {
+    const serialConfig = this.props.serialConnection.getConfig();
+    if (!this.state.connected || !serialConfig) {
       return nls.localize(
         'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
@@ -55,10 +82,12 @@ export class SerialMonitorSendInput extends React.Component<
       'arduino/serial/message',
       "Message ({0} + Enter to send message to '{1}' on '{2}'",
       isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
-      Board.toString(board, {
-        useFqbn: false,
-      }),
-      Port.toString(port)
+      board
+        ? Board.toString(board, {
+            useFqbn: false,
+          })
+        : 'unknown',
+      port ? Port.toString(port) : 'unknown'
     );
   }
 
