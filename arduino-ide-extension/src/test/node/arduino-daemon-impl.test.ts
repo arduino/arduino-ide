@@ -114,18 +114,22 @@ describe('arduino-daemon-impl', () => {
   // });
 
   it('should parse the port address when the log format is json', async () => {
-    const instance = await new SilentArduinoDaemonImpl(
+    const { daemon, port } = await new SilentArduinoDaemonImpl(
       'json'
     ).spawnDaemonProcess();
-    expect(instance.port).not.to.be.undefined;
-    expect(instance.port).not.to.be.equal('0');
+
+    expect(port).not.to.be.undefined;
+    expect(port).not.to.be.equal('0');
+    daemon.kill();
   });
 
   it('should parse the port address when the log format is text', async () => {
-    const instance = await new SilentArduinoDaemonImpl(
+    const { daemon, port } = await new SilentArduinoDaemonImpl(
       'text'
     ).spawnDaemonProcess();
-    expect(instance.port).not.to.be.undefined;
-    expect(instance.port).not.to.be.equal('0');
+
+    expect(port).not.to.be.undefined;
+    expect(port).not.to.be.equal('0');
+    daemon.kill();
   });
 });
