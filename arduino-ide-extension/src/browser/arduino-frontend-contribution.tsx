@@ -374,7 +374,7 @@ export class ArduinoFrontendContribution
           'arduino.languageserver.start',
           {
             lsPath,
-            cliDaemonAddr: `localhost:${config.daemon.port}`,
+            cliDaemonAddr: `localhost:${config.daemon.port}`, // TODO: verify if this port is coming from the BE
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
             cliDaemonInstance: '1',

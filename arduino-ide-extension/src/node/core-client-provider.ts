@@ -48,9 +48,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     this._initialized = new Deferred<void>();
   }
 
-  protected async reconcileClient(
-    port: string | number | undefined
-  ): Promise<void> {
+  protected async reconcileClient(): Promise<void> {
+    const port = await this.daemon.getPort();
+
     if (port && port === this._port) {
       // No need to create a new gRPC client, but we have to update the indexes.
       if (this._client && !(this._client instanceof Error)) {
@@ -58,7 +58,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         this.onClientReadyEmitter.fire();
       }
     } else {
-      await super.reconcileClient(port);
+      await super.reconcileClient();
       this.onClientReadyEmitter.fire();
     }
   }
@@ -66,13 +66,10 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   @postConstruct()
   protected async init(): Promise<void> {
     this.daemon.ready.then(async () => {
-      const cliConfig = this.configService.cliConfiguration;
       // First create the client and the instance synchronously
       // and notify client is ready.
       // TODO: Creation failure should probably be handled here
-      await this.reconcileClient(
-        cliConfig ? cliConfig.daemon.port : undefined
-      ).then(() => {
+      await this.reconcileClient().then(() => {
         this._created.resolve();
       });
 

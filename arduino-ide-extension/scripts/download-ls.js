@@ -4,7 +4,7 @@
 // - https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${VERSION}_${SUFFIX}
 
 (() => {
-  const DEFAULT_ALS_VERSION = '0.5.0-rc2';
+  const DEFAULT_ALS_VERSION = '0.5.0-rc6';
   const DEFAULT_CLANGD_VERSION = 'snapshot_20210124';
 
   const path = require('path');

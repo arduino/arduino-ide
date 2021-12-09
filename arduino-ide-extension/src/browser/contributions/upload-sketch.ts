@@ -63,7 +63,9 @@ export class UploadSketch extends SketchContribution {
     if (!fqbn) {
       return '';
     }
-    const address = boardsConfig.selectedBoard?.port?.address;
+    const address =
+      boardsConfig.selectedBoard?.port?.address ||
+      boardsConfig.selectedPort?.address;
     if (!address) {
       return '';
     }
@@ -277,8 +279,8 @@ export class UploadSketch extends SketchContribution {
         { timeout: 3000 }
       );
     } catch (e) {
-      let errorMessage = "";
-      if (typeof e === "string") {
+      let errorMessage = '';
+      if (typeof e === 'string') {
         errorMessage = e;
       } else {
         errorMessage = e.toString();
