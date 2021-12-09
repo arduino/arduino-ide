@@ -75,9 +75,11 @@ export class ConfigServiceImpl
 
   async getConfiguration(): Promise<Config> {
     await this.ready.promise;
-    return this.config;
+    await this.daemon.ready;
+    return { ...this.config, daemon: { port: await this.daemon.getPort() } };
   }
 
+  // Used by frontend to update the config.
   async setConfiguration(config: Config): Promise<void> {
     await this.ready.promise;
     if (Config.sameAs(this.config, config)) {
@@ -108,7 +110,9 @@ export class ConfigServiceImpl
     copyDefaultCliConfig.locale = locale || 'en';
     const proxy = Network.stringify(network);
     copyDefaultCliConfig.network = { proxy };
-    const { port } = copyDefaultCliConfig.daemon;
+
+    // always use the port of the daemon
+    const port = await this.daemon.getPort();
     await this.updateDaemon(port, copyDefaultCliConfig);
     await this.writeDaemonState(port);
 
