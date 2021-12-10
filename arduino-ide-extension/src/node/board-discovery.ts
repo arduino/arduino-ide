@@ -60,11 +60,29 @@ export class BoardDiscovery extends CoreClientAware {
     this.startBoardListWatch(coreClient);
   }
 
+  stopBoardListWatch(coreClient: CoreClientProvider.Client): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.boardWatchDuplex) {
+        return resolve();
+      }
+
+      const { instance } = coreClient;
+      const req = new BoardListWatchRequest();
+      req.setInstance(instance);
+      try {
+        this.boardWatchDuplex.write(req.setInterrupt(true), resolve);
+      } catch (e) {
+        this.discoveryLogger.error(e);
+        resolve();
+      }
+    });
+  }
+
   startBoardListWatch(coreClient: CoreClientProvider.Client): void {
     if (this.watching) {
       // We want to avoid starting the board list watch process multiple
       // times to meet unforseen consequences
-      return
+      return;
     }
     this.watching = true;
     const { client, instance } = coreClient;
@@ -73,9 +91,19 @@ export class BoardDiscovery extends CoreClientAware {
     this.boardWatchDuplex = client.boardListWatch();
     this.boardWatchDuplex.on('end', () => {
       this.watching = false;
-      console.info('board watch ended')
-    })
+      console.info('board watch ended');
+    });
+    this.boardWatchDuplex.on('close', () => {
+      this.watching = false;
+      console.info('board watch ended');
+    });
     this.boardWatchDuplex.on('data', (resp: BoardListWatchResponse) => {
+      if (resp.getEventType() === 'quit') {
+        this.watching = false;
+        console.info('board watch ended');
+        return;
+      }
+
       const detectedPort = resp.getPort();
       if (detectedPort) {
         let eventType: 'add' | 'remove' | 'unknown' = 'unknown';
@@ -96,7 +124,7 @@ export class BoardDiscovery extends CoreClientAware {
 
         const address = (detectedPort as any).getPort().getAddress();
         const protocol = (detectedPort as any).getPort().getProtocol();
-        const label = (detectedPort as any).getPort().getLabel();;
+        const label = (detectedPort as any).getPort().getLabel();
         const port = { address, protocol, label };
         const boards: Board[] = [];
         for (const item of detectedPort.getMatchingBoardsList()) {
@@ -111,7 +139,9 @@ export class BoardDiscovery extends CoreClientAware {
           if (newState[port.address]) {
             const [, knownBoards] = newState[port.address];
             console.warn(
-              `Port '${port.address}' was already available. Known boards before override: ${JSON.stringify(
+              `Port '${
+                port.address
+              }' was already available. Known boards before override: ${JSON.stringify(
                 knownBoards
               )}`
             );

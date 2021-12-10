@@ -271,6 +271,10 @@ export class LibraryServiceImpl
     req.setNoDeps(!options.installDependencies);
 
     console.info('>>> Starting library package installation...', item);
+
+    // stop the board discovery
+    await this.boardDiscovery.stopBoardListWatch(coreClient);
+
     const resp = client.libraryInstall(req);
     resp.on(
       'data',
@@ -322,6 +326,10 @@ export class LibraryServiceImpl
     if (typeof overwrite === 'boolean') {
       req.setOverwrite(overwrite);
     }
+
+    // stop the board discovery
+    await this.boardDiscovery.stopBoardListWatch(coreClient);
+
     const resp = client.zipLibraryInstall(req);
     resp.on(
       'data',
@@ -354,6 +362,10 @@ export class LibraryServiceImpl
     req.setVersion(item.installedVersion!);
 
     console.info('>>> Starting library package uninstallation...', item);
+
+    // stop the board discovery
+    await this.boardDiscovery.stopBoardListWatch(coreClient);
+
     const resp = client.libraryUninstall(req);
     resp.on(
       'data',
