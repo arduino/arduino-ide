@@ -45,7 +45,8 @@ import { InstallWithProgress } from './grpc-installable';
 @injectable()
 export class BoardsServiceImpl
   extends CoreClientAware
-  implements BoardsService {
+  implements BoardsService
+{
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -247,7 +248,10 @@ export class BoardsServiceImpl
     return boards;
   }
 
-  async getBoardUserFields(options: { fqbn: string, protocol: string }): Promise<BoardUserField[]> {
+  async getBoardUserFields(options: {
+    fqbn: string;
+    protocol: string;
+  }): Promise<BoardUserField[]> {
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
@@ -257,24 +261,22 @@ export class BoardsServiceImpl
     supportedUserFieldsReq.setFqbn(options.fqbn);
     supportedUserFieldsReq.setProtocol(options.protocol);
 
-    const supportedUserFieldsResp = await new Promise<SupportedUserFieldsResponse>(
-      (resolve, reject) => {
+    const supportedUserFieldsResp =
+      await new Promise<SupportedUserFieldsResponse>((resolve, reject) => {
         client.supportedUserFields(supportedUserFieldsReq, (err, resp) => {
-          (!!err ? reject : resolve)(!!err ? err : resp)
-        })
-      }
-    );
-    return supportedUserFieldsResp.getUserFieldsList().map(e => {
+          (!!err ? reject : resolve)(!!err ? err : resp);
+        });
+      });
+    return supportedUserFieldsResp.getUserFieldsList().map((e) => {
       return {
         toolId: e.getToolId(),
         name: e.getName(),
         label: e.getLabel(),
         secret: e.getSecret(),
-        value: "",
+        value: '',
       };
     });
   }
-
 
   async search(options: { query?: string }): Promise<BoardsPackage[]> {
     await this.coreClientProvider.initialized;
@@ -408,6 +410,10 @@ export class BoardsServiceImpl
     req.setVersion(version);
 
     console.info('>>> Starting boards package installation...', item);
+
+    // stop the board discovery
+    await this.boardDiscovery.stopBoardListWatch(coreClient);
+
     const resp = client.platformInstall(req);
     resp.on(
       'data',
@@ -418,7 +424,7 @@ export class BoardsServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient)
+        this.boardDiscovery.startBoardListWatch(coreClient);
         resolve();
       });
       resp.on('error', (error) => {
@@ -456,6 +462,10 @@ export class BoardsServiceImpl
     req.setPlatformPackage(platform);
 
     console.info('>>> Starting boards package uninstallation...', item);
+
+    // stop the board discovery
+    await this.boardDiscovery.stopBoardListWatch(coreClient);
+
     const resp = client.platformUninstall(req);
     resp.on(
       'data',
@@ -466,7 +476,7 @@ export class BoardsServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient)
+        this.boardDiscovery.startBoardListWatch(coreClient);
         resolve();
       });
       resp.on('error', reject);
