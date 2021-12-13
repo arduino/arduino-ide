@@ -1,0 +1,334 @@
+{
+    "arduino": {
+        "common": {
+            "offlineIndicator": "Il semblerais que vous êtes hors-ligne. Sans connexion internet, l'Arduino CLI sera incapable de télécharger les ressources nécessaire et de communiquer avec le cloud. Merci de vous reconnectez et de redémarrer l'application.",
+            "noBoardSelected": "Aucune carte n'a été sélectionné ",
+            "selectedOn": "sur [0]",
+            "notConnected": "[not connected]",
+            "serialMonitor": "Moniteur série",
+            "oldFormat": "Le \"[0]\" continue d'utiliser l'ancien format `.pde`. Souhaitez-vous utiliser le nouveau format `.ino`?",
+            "later": "Plus tard",
+            "selectBoard": "Selectionner une carte",
+            "unknown": "Inconnu",
+            "processing": "Traitement",
+            "saveChangesToSketch": "Souhaitez-vous enregistrer les modifications apportées au croquis avant la fermeture ?",
+            "loseChanges": "Si vous n'enregistrez pas, les modifications apportées seront perdues."
+        },
+        "menu": {
+            "sketch": "Croquis",
+            "tools": "Outils"
+        },
+        "debug": {
+            "optimizeForDebugging": "Optimisé pour le déboggage.",
+            "debugWithMessage": "Débogage - [0]",
+            "noPlatformInstalledFor": "la plateforme n'est pas installé pour '{0}'",
+            "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'"
+        },
+        "preferences": {
+            "language.log": "Vrai si le serveur de langage Arduino devrait générer des fichiers logs dans le dossier du croquis. Si non faux. La valeur par défaut est faux.",
+            "compile.verbose": "Vrai pour une sortie de compilation verbeuse. Faux par défaut.",
+            "compile.warnings": "Dis à GCC quel niveau d'avertissement à utiliser. Valeur par défaut : 'None'.",
+            "upload.verbose": "Vrai si le téléchargement en mode verbose. Faux par défaut.",
+            "window.autoScale": "Vrai si l'interface utilisateur s'ajuste avec la taille de la police.",
+            "window.zoomLevel": "Ajuste le zoom de la fenêtre. La taille originale est 0 et chaque augmentation  (par exemple 1) ou diminution (par exemple -1) représentent un zoom de plus ou moins 20 %. Vous pouvez également entrer des décimales pour ajuster plus finement le zoom. ",
+            "ide.autoUpdate": "Vrai pour activer les mise à jour automatiques. L'IDE va vérifier automatiquement et de manière périodique les mise à jour.",
+            "board.certificates": "Liste des certificats pouvant être téléversé vers les cartes.",
+            "sketchbook.showAllFiles": "Vrai pour montrer tous les fichiers croquis à l'intérieur du croquis. La valeur par défaut est faux.",
+            "cloud.enabled": "Vrai si les fonctions de synchronisation de croquis est activé. Par défaut, la valeur est vrai.",
+            "cloud.pull.warn": "Vrai si les utilisateurs devrait être averti avant de pull un croquis sur le cloud. Par défaut, la valeur est vrai.",
+            "cloud.push.warn": "Vrai, si les utilisateurs devrait être averti avant de push un croquis sur le cloud. Par défaut, la valeur est vrai.",
+            "cloud.pushpublic.warn": "Vrai si les utilisateurs devrait être avertit avant de publier un croquis public sur le cloud. Vrai par défaut.",
+            "cloud.sketchSyncEnpoint": "L'endpoint est utilisé pour pousser et tirer des croquis à partir du backend. Par défault, il pointe vers l'Arduino Cloud API.",
+            "auth.clientID": "L'identifiant client OAuth2.",
+            "auth.domain": "Le domaine 0Auth2.",
+            "auth.audience": "L'audience OAuth2.",
+            "auth.registerUri": "L'URI utilisé pour créer un nouvel utilisateur.",
+            "network": "Réseau",
+            "sketchbook.location": "Localisation du croquis.",
+            "browse": "Parcourir",
+            "files.inside.sketches": "Afficher les fichiers à l’intérieur de Sketches.",
+            "editorFontSize": "Taille de police de l'éditeur",
+            "interfaceScale": "Échelle de l'interface",
+            "showVerbose": "Afficher la sortie de débogage verbeuse pendant",
+            "compilerWarnings": "Avertissements du compilateur ",
+            "automatic": "Automatique",
+            "compile": "compiler",
+            "upload": "téléverser",
+            "verifyAfterUpload": "Vérifier le code après le téléversement",
+            "checkForUpdates": "Vérifier les mises à jour au démarrage",
+            "editorQuickSuggestions": "Suggestion rapide pour l'éditeur",
+            "additionalManagerURLs": "URL de gestionnaire de cartes supplémentaires",
+            "noProxy": "Aucun proxy",
+            "manualProxy": "Configuration manuelle du proxy",
+            "newSketchbookLocation": "Sélectionner la localisation du nouveau croquis.",
+            "choose": "Choisir",
+            "enterAdditionalURLs": "Entrer des URLs additionnelles, une par colonne",
+            "unofficialBoardSupport": "Cliquer pour la liste non-officielle des URLs des support de cartes",
+            "invalid.sketchbook.location": "Localisation invalide du croquis : {0}",
+            "invalid.editorFontSize": "Police de l'éditeur invalide. La taille doit être un entier positif.",
+            "invalid.theme": "Thème invalide."
+        },
+        "cloud": {
+            "signIn": "Se connecter",
+            "signOut": "Deconnexion",
+            "chooseSketchVisibility": "Choisissez la visibilité du croquis :",
+            "privateVisibility": "Privé. Seulement vous pouvez voir le croquis.",
+            "publicVisibility": "Publique. Tout les personnes disposant du lien pourront consulter le croquis.",
+            "link": "Lien :",
+            "embed": "Embarqué : ",
+            "cloudSketchbook": "Carnet de Croquis Cloud",
+            "shareSketch": "Partager le croquis",
+            "showHideRemoveSketchbook": "Montrer / Cacher le carnet de croquis distant.",
+            "pullSketch": "Pull le croquis",
+            "openInCloudEditor": "Ouvrir le croquis dans l'éditeur du cloud",
+            "options": "Options ...",
+            "share": "Partager...",
+            "remote": "A distance",
+            "emptySketchbook": "Votre carnet de croquis est vide",
+            "visitArduinoCloud": "Visitez Arduino Cloud pour créer des croquis sut le cloud.",
+            "signInToCloud": "Se connecter à Arduino Cloud",
+            "syncEditSketches": "Synchroniser et éditer vos croquis Arduino Cloud.",
+            "learnMore": "En savoir plus",
+            "continue": "Continuer",
+            "pushSketch": "Push le croquis",
+            "pushSketchMsg": "Ceci est un croquis public. Avant de le publier, assurez-vous que les informations sensibles sont bien définies dans le fichier arduino_secrets.h. Vous pouvez rendre priver le croquis à partir du panneau de Partage.",
+            "pull": "Tirer",
+            "pullSketchMsg": "Pousser le croquis à partir du Cloud va écraser la version locale. Êtes-vous sûr de vouloir continuer ?",
+            "donePulling": "Done pulling ‘{0}’.",
+            "notYetPulled": "Impossible de push sur le Cloud. Rien n'a été pull jusque la.",
+            "push": "Push",
+            "pullFirst": "Vous devez tout d'abord pull vos modifications avant de pouvoir de pouvoir push à partir du Cloud.",
+            "donePushing": "Done pushing ‘{0}’.",
+            "connected": "Connecté",
+            "offline": "Hors-ligne",
+            "profilePicture": "Photo de profil"
+        },
+        "board": {
+            "installManually": "Installer manuellement.",
+            "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
+            "configDialogTitle": "Sélectionner une autre carte et un autre port",
+            "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
+            "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez seulement capable de compliquer votre croquis, mais pas de le téléverser.",
+            "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
+            "showAllAvailablePorts": "Affiche les ports disponibles quand activer.",
+            "programmer": "Programmeur",
+            "succesfullyInstalledPlatform": "Plateforme installé avec succès {0}:{1}",
+            "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}",
+            "couldNotFindPreviouslySelected": "Impossible de trouver la carte précédente sélectionnée \"{0}\" dans les plateformes installées \"{1}\". Merci de re-sélectionner manuellement la carte que vous souhaitez utiliser. Souhaitez vous la re-sélectionner maintenant ?",
+            "reselectLater": "Re-sélectionner plus tard",
+            "noneSelected": "Aucune cartes sélectionnée.",
+            "noPortsSelected": "Aucun porte sélectionné pour la carte : '{0}'",
+            "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
+            "openBoardsConfig": "Sélectionner une autre carte et un autre port ...",
+            "boardListItem": "{0} à {1}",
+            "selectBoardForInfo": "Please select a board to obtain board info.",
+            "platformMissing": "La plateforme pour la carte '{0}' sélectionnée n'est pas installée.",
+            "selectPortForInfo": "Please select a port to obtain board info.",
+            "boardInfo": "Information de la carte",
+            "board": "Board{0}",
+            "port": "Port{0}",
+            "getBoardInfo": "Get Board Info",
+            "inSketchbook": " (in Sketchbook)"
+        },
+        "boardsManager": "Gestionnaire de carte",
+        "about": {
+            "label": "About {0}",
+            "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}{4} [{5}]\n\n{6}"
+        },
+        "contributions": {
+            "addFile": "Ajouter un fichier",
+            "replaceTitle": "Replace",
+            "fileAdded": "One file added to the sketch."
+        },
+        "replaceMsg": "Replace the existing version of {0}?",
+        "library": {
+            "addZip": "Ajouter la bibliothèque .ZIP...",
+            "zipLibrary": "Library",
+            "overwriteExistingLibrary": "Souhaitez-vous écraser la librairie existante ?",
+            "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
+            "namedLibraryAlreadyExists": "A library folder named {0} already exists. Do you want to overwrite it?",
+            "libraryAlreadyExists": "Cette librairie existe déjà. Souhaitez-vous l'écraser ?",
+            "include": "Include Library",
+            "manageLibraries": "Manage Libraries...",
+            "arduinoLibraries": "Arduino libraries",
+            "contributedLibraries": "Contributed libraries",
+            "title": "Library Manager",
+            "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
+            "needsMultipleDependencies": "La librairie <b>{0}:{1}</b>à besoin de d'autres dépendantes qui ne sont actuellement pas installé:",
+            "installOneMissingDependency": "Souhaitez-vous installer la dépendance manquante?",
+            "installMissingDependencies": "Souhaitez vous installer toutes les dépendances manquantes ?",
+            "dependenciesForLibrary": "Dépendances pour la libraire {0}:{1}",
+            "installAll": "Tout installer",
+            "installOnly": "Installer {0} seulement",
+            "installedSuccessfully": "Librairie installée avec succès {0}:{1}",
+            "uninstalledSuccessfully": "Librairie désinstallée avec succès {0}:{1}"
+        },
+        "selectZip": "Sélectionnez un fichier zip contenant la bibliothèque que vous souhaitez ajouter",
+        "sketch": {
+            "archiveSketch": "Archiver le croquis",
+            "saveSketchAs": "Sauvegarder un dossier de croquis comme ...",
+            "createdArchive": "Archive créer '{0}'",
+            "new": "Nouveau",
+            "openRecent": "Ouvrir les récents",
+            "showFolder": "Ouvrir le dossier de croquis",
+            "sketch": "Croquis",
+            "moving": "Déplacement",
+            "movingMsg": "Le fichier \"{0}\" à besoin d'être à l'intérieur d'un dossier de croquis appelé \"{1}\".\nCréer ce dossier, déplacer le fichier et continuer ?",
+            "cantOpen": "Un dossier nommé « {0} » existe déjà. Impossible d''ouvrir le croquis.",
+            "saveFolderAs": "Sauvegarder le dossier de croquis en tant que ...",
+            "sketchbook": "Carnet de croquis",
+            "upload": "Téléverser",
+            "uploadUsingProgrammer": "Téléverser en utilisant un programmateur",
+            "userFieldsNotFoundError": "Impossible de trouver un champ utilisateur pour les cartes connectés",
+            "doneUploading": "Téléversement fait.",
+            "configureAndUpload": "Configurer et téléverser",
+            "verifyOrCompile": "Vérifier / Compiler",
+            "exportBinary": "Exporter les binaires compilés",
+            "verify": "Vérifier",
+            "doneCompiling": "Compilation terminée.",
+            "couldNotConnectToSerial": "Impossible de se reconnecter au port série. {0}",
+            "openSketchInNewWindow": "Ouvrir le croquis dans une nouvelle fenêtre",
+            "openFolder": "Ouvrir le dossier",
+            "titleLocalSketchbook": "Localiser le carnet de croquis",
+            "titleSketchbook": "Carnet de croquis",
+            "close": "Êtes-vous sûr de vouloir fermer ce croquis ?"
+        },
+        "bootloader": {
+            "burnBootloader": "Graver la séquence d'initialisation",
+            "doneBurningBootloader": "Le bootloader à été gravé."
+        },
+        "editor": {
+            "copyForForum": "Copier pour le forum (Markdown)",
+            "commentUncomment": "Commenter/Décommenter",
+            "increaseIndent": "Augmenter le retrait",
+            "decreaseIndent": "Diminuer le retrait",
+            "increaseFontSize": "Augmenter la taille de la police",
+            "decreaseFontSize": "Réduire la taille de la police",
+            "autoFormat": "Formatage automatique"
+        },
+        "examples": {
+            "menu": "Exemples",
+            "couldNotInitializeExamples": "Impossible d'initialiser les exemples inclus.",
+            "builtInExamples": "Exemples inclus",
+            "customLibrary": "Exemples des librairies personnalisées",
+            "for": "Exemples pour {0}",
+            "forAny": "Exemples pour n'importe quelle carte"
+        },
+        "help": {
+            "search": "Rechercher sur Arduino.cc",
+            "keyword": "Tapez un mot clé",
+            "gettingStarted": "Commencer",
+            "environment": "Environnement",
+            "troubleshooting": "Dépannage",
+            "reference": "Référence",
+            "findInReference": "Trouver dans Référence",
+            "faq": "Questions fréquemment posées",
+            "visit": "Visitez Arduino.cc"
+        },
+        "certificate": {
+            "uploadRootCertificates": "Téléverser les certificats racine SSL",
+            "openContext": "Open context",
+            "remove": "Supprimer ",
+            "upload": "Téléverser",
+            "addURL": "Add URL to fetch SSL certificate",
+            "enterURL": "Enter URL",
+            "selectCertificateToUpload": "1. Select certificate to upload",
+            "addNew": "Add New",
+            "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
+            "uploadingCertificates": "Uploading certificates.",
+            "certificatesUploaded": "Certificates uploaded.",
+            "uploadFailed": "Upload failed. Please try again.",
+            "selectBoard": "Select a board...",
+            "boardAtPort": "{0} at {1}",
+            "noSupportedBoardConnected": "No supported board connected"
+        },
+        "firmware": {
+            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "selectBoard": "Selectionner une carte",
+            "checkUpdates": "Check Updates",
+            "selectVersion": "Select firmware version",
+            "install": "Installer",
+            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+            "installingFirmware": "Installing firmware.",
+            "successfullyInstalled": "Firmware succesfully installed.",
+            "failedInstall": "Installation failed. Please try again."
+        },
+        "dialog": {
+            "dontAskAgain": "Don't ask again"
+        },
+        "userFields": {
+            "cancel": "Cancel",
+            "upload": "Téléverser"
+        },
+        "serial": {
+            "toggleTimestamp": "Toggle Timestamp",
+            "autoscroll": "Défilement automatique",
+            "timestamp": "Timestamp",
+            "noLineEndings": "Pas de fin de ligne",
+            "newLine": "Nouvelle ligne",
+            "carriageReturn": "Retour chariot",
+            "newLineCarriageReturn": "Les deux, NL et CR",
+            "notConnected": "No connecté. Sélectionnez une carte ainsi qu'un port à connecter automatiquement.",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "connectionBusy": "Connection failed. Serial port is busy: {0}",
+            "disconnected": "{0} déconnecté de {1}.",
+            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
+            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
+            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
+        },
+        "component": {
+            "uninstall": "Uninstall",
+            "uninstallMsg": "Do you want to uninstall {0}?",
+            "by": "by",
+            "version": "Version {0}",
+            "moreInfo": "More info",
+            "install": "Installer",
+            "filterSearch": "Filtrez votre recherche"
+        },
+        "electron": {
+            "couldNotSave": "Impossible d'enregistrer le croquis. Merci de faire une copie de votre travail non-enregistré dans votre éditeur de texte favoris, et redémarrez votre IDE.",
+            "unsavedChanges": "Any unsaved changes will not be saved."
+        },
+        "compile": {
+            "error": "Compilation error: {0}"
+        },
+        "upload": {
+            "error": "{0} error: {1}"
+        },
+        "burnBootloader": {
+            "error": "Error while burning the bootloader: {0}"
+        }
+    },
+    "theia": {
+        "core": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "offline": "Offline",
+            "daemonOffline": "CLI Daemon Offline",
+            "cannotConnectBackend": "Cannot connect to the backend.",
+            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
+        },
+        "debug": {
+            "start": "Start...",
+            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
+            "startError": "Une erreur est survenue lors du démarrage du débogage, consultez les logs pour plus de détails."
+        },
+        "editor": {
+            "unsavedTitle": "Unsaved – {0}"
+        },
+        "messages": {
+            "expand": "Expand",
+            "collapse": "Collapse"
+        },
+        "workspace": {
+            "fileNewName": "Name for new file",
+            "invalidFilename": "Invalid filename.",
+            "invalidExtension": "« .{0} » n''est pas une extension valide.",
+            "newFileName": "New name for file",
+            "deleteCurrentSketch": "Do you want to delete the current sketch?",
+            "sketchDirectoryError": "Une erreur est survenue lors de la création du dossier du croquis. Consultez les logs pour plus de détails. L'application ne fonctionnera probablement pas comme attendu."
+        }
+    },
+    "cloud": {
+        "GoToCloud": "GO TO CLOUD"
+    }
+}
