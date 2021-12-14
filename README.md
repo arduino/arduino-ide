@@ -15,29 +15,30 @@ The Arduino IDE 2.x is a major rewrite, sharing no code with the IDE 1.x. It is 
 ## Download
 
 You can download the latest version from the [software download page on the Arduino website](https://www.arduino.cc/en/software#experimental-software).
+
 ### Nightly builds
 
 These builds are generated every day at 03:00 GMT from the `main` branch and
 should be considered unstable:
 
-Platform  | 32 bit                   | 64 bit                                                                                                 |
---------- | ------------------------ | ------------------------------------------------------------------------------------------------------ |
-Linux     |                          | [Nightly Linux 64 bit]                                                                                 |
-Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]                                                                              |
-Windows   |                          | [Nightly Windows 64 bit installer]<br />[Nightly Windows 64 bit MSI]<br />[Nightly Windows 64 bit ZIP] |
-macOS     |                          | [Nightly macOS 64 bit]                                                                                 |
+| Platform  | 32 bit                   | 64 bit                                                                                                 |
+| --------- | ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Linux     |                          | [Nightly Linux 64 bit]                                                                                 |
+| Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]                                                                               |
+| Windows   |                          | [Nightly Windows 64 bit installer]<br />[Nightly Windows 64 bit MSI]<br />[Nightly Windows 64 bit ZIP] |
+| macOS     |                          | [Nightly macOS 64 bit]                                                                                 |
 
-[🚧 Work in progress...]: https://github.com/arduino/arduino-ide/issues/107
-[Nightly Linux 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
-[Nightly Windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.exe
-[Nightly Windows 64 bit MSI]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.msi
-[Nightly Windows 64 bit ZIP]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.zip
-[Nightly macOS 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_macOS_64bit.dmg
+[🚧 work in progress...]: https://github.com/arduino/arduino-ide/issues/107
+[nightly linux 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
+[nightly windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.exe
+[nightly windows 64 bit msi]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.msi
+[nightly windows 64 bit zip]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.zip
+[nightly macos 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_macOS_64bit.dmg
 
 > These links return an HTTP `302: Found` response, redirecting to latest
-  generated builds by replacing `latest` with the latest available build
-  date, using the format YYYYMMDD (i.e for 2019/Aug/06 `latest` is
-  replaced with `20190806`)
+> generated builds by replacing `latest` with the latest available build
+> date, using the format YYYYMMDD (i.e for 2019/Aug/06 `latest` is
+> replaced with `20190806`)
 
 ## Support
 
@@ -47,8 +48,8 @@ If you need assistance, see the [Help Center](https://support.arduino.cc/hc/en-u
 
 If you want to report an issue, you can submit it to the [issue tracker](https://github.com/arduino/arduino-ide/issues) of this repository. A few rules apply:
 
-* Before posting, please check if the same problem has been already reported by someone else to avoid duplicates.
-* Remember to include as much detail as you can about your hardware set-up, code and steps for reproducing the issue. Make sure you're using an original Arduino board.
+- Before posting, please check if the same problem has been already reported by someone else to avoid duplicates.
+- Remember to include as much detail as you can about your hardware set-up, code and steps for reproducing the issue. Make sure you're using an original Arduino board.
 
 ### Security
 
@@ -64,10 +65,13 @@ Contributions are very welcome! You can browse the list of open issues to see wh
 
 This repository contains the main code, but two more repositories are included during the build process:
 
-* [vscode-arduino-tools](https://github.com/arduino/vscode-arduino-tools): provides support for the language server and the debugger
-* [arduino-language-server](https://github.com/arduino/arduino-language-server): provides the language server that parses Arduino code
+- [vscode-arduino-tools](https://github.com/arduino/vscode-arduino-tools): provides support for the language server and the debugger
+- [arduino-language-server](https://github.com/arduino/arduino-language-server): provides the language server that parses Arduino code
 
 See the [BUILDING.md](BUILDING.md) for a technical overview of the application and instructions for building the code.
+
+You could also help us having Arduino IDE 2.0 in your language, joining [our translation project inside Transifex](https://www.transifex.com/arduino-1/ide2/dashboard/).
+
 ## Donations
 
 This open source code was written by the Arduino team and is maintained on a daily basis with the help of the community. We invest a considerable amount of time in development, testing and optimization. Please consider [donating](https://www.arduino.cc/en/donate/) or [sponsoring](https://github.com/sponsors/arduino) to support our work, as well as [buying original Arduino boards](https://store.arduino.cc/) which is the best way to make sure our effort can continue in the long term.
