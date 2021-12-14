@@ -107,7 +107,7 @@ function generateTemplate(buildDate) {
         version,
         build: {
             productName,
-            appId: 'arduino.ProIDE',
+            appId: 'cc.arduino.IDE2',
             [electronPlatform()]: {
                 artifactName: artifactName()
             }
