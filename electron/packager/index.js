@@ -13,7 +13,7 @@
     const template = require('./config').generateTemplate(new Date().toISOString());
     const utils = require('./utils');
     const merge = require('deepmerge');
-    const { isRelease, isElectronPublish } = utils;
+    const { isRelease, isElectronPublish, getChannelFile } = utils;
     const { version } = template;
     const { productName } = template.build;
 
@@ -276,6 +276,13 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
         const targetFolder = path('..', 'build', 'dist', 'build-artifacts');
         mkdir('-p', targetFolder);
         const filesToCopy = [];
+        const channelFile = getChannelFile(platform);
+        // Channel file might be an empty string if we're not building a
+        // nightly or a full release. This can happen when building a package
+        // locally or a tester build when creating a new PR on GH.
+        if (channelFile) {
+            filesToCopy.push(channelFile)
+        }
         switch (platform) {
             case 'linux': {
                 filesToCopy.push(...glob.sync('**/arduino-ide*.{zip,AppImage}', { cwd }).map(p => join(cwd, p)));
