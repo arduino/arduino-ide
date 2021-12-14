@@ -70,7 +70,7 @@ This repository contains the main code, but two more repositories are included d
 
 See the [BUILDING.md](BUILDING.md) for a technical overview of the application and instructions for building the code.
 
-You could also help us having Arduino IDE 2.0 in your language, joining [our translation project inside Transifex](https://www.transifex.com/arduino-1/ide2/dashboard/).
+You can help with the translation of the Arduino IDE to your language here: [Arduino IDE on Transifex](https://www.transifex.com/arduino-1/ide2/dashboard/).
 
 ## Donations
 
