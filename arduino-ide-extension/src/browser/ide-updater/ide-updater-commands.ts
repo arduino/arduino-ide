@@ -1,32 +1,27 @@
-import { Command, CommandContribution, CommandRegistry } from "@theia/core";
-import { injectable, inject } from "inversify";
-import { CancellationToken } from "electron-updater";
-import { IDEUpdater } from "./ide-updater";
+import { Command, CommandContribution, CommandRegistry } from '@theia/core';
+import { injectable, inject } from 'inversify';
+import { IDEUpdaterService } from '../../common/protocol/ide-updater-service';
 
-// IDEUpdaterCommands register commands used to verify if there
-// are new IDE updates, download them, and install them.
 @injectable()
 export class IDEUpdaterCommands implements CommandContribution {
-  private readonly cancellationToken = new CancellationToken();
-
   constructor(
-    @inject(IDEUpdater) private readonly updater: IDEUpdater
-  ) {
-  }
+    @inject(IDEUpdaterService)
+    private readonly updater: IDEUpdaterService
+  ) {}
 
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(IDEUpdaterCommands.CHECK_FOR_UPDATES, {
-      execute: this.checkForUpdates,
+      execute: this.checkForUpdates.bind(this),
     });
     registry.registerCommand(IDEUpdaterCommands.DOWNLOAD_UPDATE, {
-      execute: this.downloadUpdate,
-    })
+      execute: this.downloadUpdate.bind(this),
+    });
     registry.registerCommand(IDEUpdaterCommands.STOP_DOWNLOAD, {
-      execute: this.stopDownload,
-    })
+      execute: this.stopDownload.bind(this),
+    });
     registry.registerCommand(IDEUpdaterCommands.INSTALL_UPDATE, {
-      execute: this.quitAndInstall,
-    })
+      execute: this.quitAndInstall.bind(this),
+    });
   }
 
   checkForUpdates() {
@@ -34,11 +29,11 @@ export class IDEUpdaterCommands implements CommandContribution {
   }
 
   downloadUpdate() {
-    this.updater.downloadUpdate(this.cancellationToken);
+    this.updater.downloadUpdate();
   }
 
   stopDownload() {
-    this.cancellationToken.cancel();
+    this.updater.stopDownload();
   }
 
   quitAndInstall() {
@@ -48,14 +43,22 @@ export class IDEUpdaterCommands implements CommandContribution {
 export namespace IDEUpdaterCommands {
   export const CHECK_FOR_UPDATES: Command = {
     id: 'arduino-ide-check-for-updates',
+    category: 'Arduino',
+    label: 'Check for Arduino IDE updates',
   };
   export const DOWNLOAD_UPDATE: Command = {
     id: 'arduino-ide-download-update',
+    category: 'Arduino',
+    label: 'Download Arduino IDE updates',
   };
   export const STOP_DOWNLOAD: Command = {
     id: 'arduino-ide-stop-download',
+    category: 'Arduino',
+    label: 'Stop download of Arduino IDE updates',
   };
   export const INSTALL_UPDATE: Command = {
     id: 'arduino-ide-install-update',
+    category: 'Arduino',
+    label: 'Install Arduino IDE updates',
   };
 }

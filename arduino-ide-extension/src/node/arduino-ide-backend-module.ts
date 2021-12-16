@@ -92,6 +92,12 @@ import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
 import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
 import { WebSocketService } from './web-socket/web-socket-service';
+import { IDEUpdaterServiceImpl } from './ide-updater/ide-updater-service-impl';
+import {
+  IDEUpdaterService,
+  IDEUpdaterServiceClient,
+  IDEUpdaterServicePath,
+} from '../common/protocol/ide-updater-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -343,4 +349,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(PlotterBackendContribution).toSelf().inSingletonScope();
   bind(BackendApplicationContribution).toService(PlotterBackendContribution);
+
+  // IDE updater bindings
+  bind(ConnectionContainerModule).toConstantValue(
+    ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+      bind(IDEUpdaterServiceImpl).toSelf().inSingletonScope();
+      bind(IDEUpdaterService).toService(IDEUpdaterServiceImpl);
+      bindBackendService<IDEUpdaterService, IDEUpdaterServiceClient>(
+        IDEUpdaterServicePath,
+        IDEUpdaterService,
+        (service, client) => {
+          service.setClient(client);
+          client.onDidCloseConnection(() => service.dispose());
+          return service;
+        }
+      );
+    })
+  );
 });

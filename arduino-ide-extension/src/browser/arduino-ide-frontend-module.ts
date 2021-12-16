@@ -262,6 +262,13 @@ import {
   UserFieldsDialogWidget,
 } from './dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/common';
+import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
+import {
+  IDEUpdaterService,
+  IDEUpdaterServiceClient,
+  IDEUpdaterServicePath,
+} from '../common/protocol/ide-updater-service';
+import { IDEUpdaterServiceClientImpl } from './ide-updater/ide-updater-service-client-impl';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -761,4 +768,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(UserFieldsDialogProps).toConstantValue({
     title: 'UserFields',
   });
+
+  bind(IDEUpdaterCommands).toSelf().inSingletonScope();
+  bind(CommandContribution).toService(IDEUpdaterCommands);
+
+  // Frontend binding for the IDE Updater service
+  bind(IDEUpdaterService)
+    .toDynamicValue((context) => {
+      const connection = context.container.get(WebSocketConnectionProvider);
+      const client = context.container.get<IDEUpdaterServiceClient>(
+        IDEUpdaterServiceClient
+      );
+      return connection.createProxy(IDEUpdaterServicePath, client);
+    })
+    .inSingletonScope();
+  bind(IDEUpdaterServiceClient)
+    .to(IDEUpdaterServiceClientImpl)
+    .inSingletonScope();
 });
