@@ -15,7 +15,7 @@ export namespace ResponseResultProvider {
   export const JSON: ResponseResultProvider = (response) => response.json();
 }
 
-function Utf8ArrayToStr(array: Uint8Array): string {
+export function Utf8ArrayToStr(array: Uint8Array): string {
   let out, i, c;
   let char2, char3;
 
