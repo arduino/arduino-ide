@@ -140,7 +140,8 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
       .filter((url) => url.trim())
       .filter((url) => !!url)
       .join('\n');
-    this.textArea.wrap = 'soft';
+    this.textArea.wrap = 'off';
+    this.textArea.spellcheck = false;
     this.textArea.cols = 90;
     this.textArea.rows = 5;
     this.contentNode.appendChild(this.textArea);

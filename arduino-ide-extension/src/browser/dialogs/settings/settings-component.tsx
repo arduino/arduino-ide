@@ -83,6 +83,7 @@ export class SettingsComponent extends React.Component<
           <input
             className="theia-input stretch"
             type="text"
+            spellcheck={false}
             value={this.state.sketchbookPath}
             onChange={this.sketchpathDidChange}
           />
@@ -302,6 +303,7 @@ export class SettingsComponent extends React.Component<
           <input
             className="theia-input stretch with-margin"
             type="text"
+            spellCheck={false}
             value={this.state.additionalUrls.join(',')}
             onChange={this.additionalUrlsDidChange}
           />
