@@ -203,7 +203,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // #endregion Theia customizations
 
-  // Monitor client provider per connected frontend.
+  // Serial client provider per connected frontend.
   bind(ConnectionContainerModule).toConstantValue(
     ConnectionContainerModule.create(({ bind, bindBackendService }) => {
       bind(MonitorClientProvider).toSelf().inSingletonScope();
@@ -260,17 +260,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
 
-  bind(ArduinoFirmwareUploaderImpl).toSelf().inSingletonScope();
-  bind(ArduinoFirmwareUploader).toService(ArduinoFirmwareUploaderImpl);
-  bind(BackendApplicationContribution).toService(ArduinoFirmwareUploaderImpl);
-  bind(ConnectionHandler)
-    .toDynamicValue(
-      (context) =>
-        new JsonRpcConnectionHandler(ArduinoFirmwareUploaderPath, () =>
-          context.container.get(ArduinoFirmwareUploader)
-        )
-    )
-    .inSingletonScope();
+  // Singleton per BE, each FE connection gets its proxy.
+  bind(ConnectionContainerModule).toConstantValue(
+    ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+      bind(ArduinoFirmwareUploaderImpl).toSelf().inSingletonScope();
+      bind(ArduinoFirmwareUploader).toService(ArduinoFirmwareUploaderImpl);
+      bindBackendService(ArduinoFirmwareUploaderPath, ArduinoFirmwareUploader);
+    })
+  );
 
   // Logger for the Arduino daemon
   bind(ILogger)
