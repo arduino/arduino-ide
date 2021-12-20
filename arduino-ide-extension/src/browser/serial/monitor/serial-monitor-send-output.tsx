@@ -43,6 +43,7 @@ export class SerialMonitorOutput extends React.Component<
         itemCount={this.state.lines.length}
         itemSize={18}
         width={'100%'}
+        style={{ whiteSpace: 'nowrap' }}
         ref={this.listRef}
       >
         {Row}
