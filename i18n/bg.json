@@ -1,0 +1,334 @@
+{
+    "arduino": {
+        "common": {
+            "offlineIndicator": "Изглежда, че сте офлайн. Без интернет връзка, Arduino CLI може да не успее да изтегли необходимите ресурси и може да причини неизправност. Моля, свържете се с интернет и рестартирайте приложението.",
+            "noBoardSelected": "Не е избрана платка",
+            "selectedOn": "на {0}",
+            "notConnected": "[няма връзка]",
+            "serialMonitor": "Сериен Монитор",
+            "oldFormat": "„{0}“ все още използва стария формат .pde. Искате ли да преминете към новото разширение `.ino`?",
+            "later": "По-късно",
+            "selectBoard": "Изберете платка",
+            "unknown": "Неизвестно",
+            "processing": "Обработва се",
+            "saveChangesToSketch": "Искате ли да запазите промените в тази скица, преди да затворите?",
+            "loseChanges": "Ако не запазите, промените ви ще бъдат загубени."
+        },
+        "menu": {
+            "sketch": "Скица",
+            "tools": "Инструменти"
+        },
+        "debug": {
+            "optimizeForDebugging": "Оптимизиране за отстраняване на грешки",
+            "debugWithMessage": "Отстраняване на грешки - {0}",
+            "noPlatformInstalledFor": "Платформата не е инсталирана за „{0}“",
+            "debuggingNotSupported": "Отстраняването на грешки не се поддържа от „{0}“"
+        },
+        "preferences": {
+            "language.log": "True, ако езиковият сървър на Arduino трябва да генерира лог файлове в папката за скици. В противен случай false. По подразбиране е false.",
+            "compile.verbose": "True за подробен изход за компилиране. False по подразбиране",
+            "compile.warnings": "Указва на gcc кое ниво на предупреждение да използва. По подразбиране е „None“.",
+            "upload.verbose": "True за подробен изход за качване. False по подразбиране.",
+            "window.autoScale": "True , ако потребителският интерфейс автоматично се мащабира с размера на шрифта.",
+            "window.zoomLevel": "Регулирайте нивото на увеличение на прозореца. Оригиналният размер е 0 и всяко увеличение над (напр. 1) или под (напр. -1) представлява увеличение с 20% по-голямо или по-малко. Можете също да въведете десетични знаци, за да регулирате нивото на увеличение по-финно.",
+            "ide.autoUpdate": "True, за да активирате автоматичните проверки за актуализация. IDE ще проверява за актуализации автоматично и периодично.",
+            "board.certificates": "Списък със сертификати, които могат да бъдат качени на платката",
+            "sketchbook.showAllFiles": "True , за да се покажат всички файлове вътре в скицата. По подразбиране е false.",
+            "cloud.enabled": "True , ако функциите за синхронизиране на скицата са активирани. По подразбиране е true.",
+            "cloud.pull.warn": "True е, ако потребителите трябва да бъдат предупредени, преди да се изтегли скица от облака. По подразбиране е true.",
+            "cloud.push.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде пусната скица в облака. По подразбиране е true.",
+            "cloud.pushpublic.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде изпратена публична скица в облака. По подразбиране е true.",
+            "cloud.sketchSyncEnpoint": "Крайната точка, използвана за изпращане и изтегляне на скици от бекенда. По подразбиране той сочи към Arduino Cloud API.",
+            "auth.clientID": "OAuth2 клиентски идентификатор.",
+            "auth.domain": "OAuth2 домейнът.",
+            "auth.audience": "OAuth2 аудиторията.",
+            "auth.registerUri": "URI, използван за регистриране на нов потребител.",
+            "network": "Мрежа",
+            "sketchbook.location": "Местоположение на скицника",
+            "browse": "Прегледай",
+            "files.inside.sketches": "Показване на файлове в Sketches",
+            "editorFontSize": "Размер на шрифта на редактора",
+            "interfaceScale": "Мащаб на интерфейса",
+            "showVerbose": "Показване на подробен изход по време на",
+            "compilerWarnings": "Компилационни предупреждения",
+            "automatic": "Автоматично",
+            "compile": "компилиране",
+            "upload": "качване",
+            "verifyAfterUpload": "Потвърдете кода след качване",
+            "checkForUpdates": "Проверете за актуализации при стартиране",
+            "editorQuickSuggestions": "Бързи предложения на редактора",
+            "additionalManagerURLs": "Допълнителни URL адреси на мениджър на платки",
+            "noProxy": "Без прокси",
+            "manualProxy": "Ръчна конфигурация на прокси",
+            "newSketchbookLocation": "Изберете местоположение за новата скицниката",
+            "choose": "Изберете",
+            "enterAdditionalURLs": "Въведете допълнителни URL адреси, по един за всеки ред",
+            "unofficialBoardSupport": "Щракнете за списък с неофициално поддържаните URL адреси на платки",
+            "invalid.sketchbook.location": "Невалидно местоположение на скицника: {0}",
+            "invalid.editorFontSize": "Невалиден размер на шрифта на редактора. Трябва да е положително цяло число.",
+            "invalid.theme": "Невалидна тема."
+        },
+        "cloud": {
+            "signIn": "ВПИШИ СЕ",
+            "signOut": "Отписване",
+            "chooseSketchVisibility": "Изберете видимост на вашата скица:",
+            "privateVisibility": "Частен. Само вие можете да видите скицата.",
+            "publicVisibility": "Обществени. Всеки с връзката може да види скицата.",
+            "link": "Връзка:",
+            "embed": "Вграждане:",
+            "cloudSketchbook": "Облачен скицник",
+            "shareSketch": "Споделете скица",
+            "showHideRemoveSketchbook": "Показване/скриване на отдалечен скицник",
+            "pullSketch": "Издърпайте скица",
+            "openInCloudEditor": "Отворете в Cloud Editor",
+            "options": "Настроики...",
+            "share": "Сподели...",
+            "remote": "Отдалечен",
+            "emptySketchbook": "Вашият Скицник е празен",
+            "visitArduinoCloud": "Посетете Arduino Cloud, за да създадете облачни скици.",
+            "signInToCloud": "Влезте в Arduino Cloud",
+            "syncEditSketches": "Синхронизирайте и редактирайте на вашите Arduino облачни скици",
+            "learnMore": "Научете повече",
+            "continue": "Продължи",
+            "pushSketch": "Изпрати скица",
+            "pushSketchMsg": "Това е публична скица. Преди да я изпратите, уверете се, че всяка чувствителна информация е дефинирана във файловете arduino_secrets.h. Можете да направите скица частна от панела за споделяне.",
+            "pull": "Изтегли",
+            "pullSketchMsg": "Изтеглянето на тази скица от облака ще презапише нейната локална версия. Сигурен ли си, че искаш да продължиш?",
+            "donePulling": "Изтеглянето на „{0}“ приключи.",
+            "notYetPulled": "Не може да се изпрати към облака. Още не е изтеглен.",
+            "push": "Изпрати",
+            "pullFirst": "Първо трябва да дръпнете, за да можете да изпратите към облака.",
+            "donePushing": "Изпращането на „{0}“ приключи.",
+            "connected": "Свързано",
+            "offline": "Офлайн",
+            "profilePicture": "Снимка на профила"
+        },
+        "board": {
+            "installManually": "Инсталирай ръчно",
+            "installNow": "Ядрото „{0} {1}“ трябва да бъде инсталирано за текущо избраната платка „{2}“. Искате ли да го инсталирате сега?",
+            "configDialogTitle": "Изберете друга платка и порт",
+            "configDialog1": "Изберете както платка, така и порт, ако искате да качите скица.",
+            "configDialog2": "Ако изберете само платка, ще можете само да компилирате, но не и да качвате скицата си.",
+            "pleasePickBoard": "Моля, изберете платка, свързана към порта, който сте избрали.",
+            "showAllAvailablePorts": "Показва всички налични портове, когато е активиран",
+            "programmer": "Програматор",
+            "succesfullyInstalledPlatform": "Успешно инсталирана платформа {0}:{1}",
+            "succesfullyUninstalledPlatform": "Успешно деинсталирана платформа {0}:{1}",
+            "couldNotFindPreviouslySelected": "Не можа да се намери по-рано избрана платка „{0}“ в инсталираната платформа „{1}“. Моля, изберете отново ръчно платката, която искате да използвате. Искате ли да я изберете отново сега?",
+            "reselectLater": "Изберете отново по-късно",
+            "noneSelected": "Няма избрани платка.",
+            "noPortsSelected": "Няма избрани портове за платка: „{0}“.",
+            "noFQBN": "FQBN не е наличен за избраната платка „{0}“. Имате ли инсталирано съответното ядро?",
+            "openBoardsConfig": "Изберете друга платка и порт...",
+            "boardListItem": "{0} в {1}",
+            "selectBoardForInfo": "Моля, изберете платка, за да получите информация за нея.",
+            "platformMissing": "Платформата за избраната платка „{0}“ не е инсталирана.",
+            "selectPortForInfo": "Моля, изберете порт, за да получите информация за платката.",
+            "boardInfo": "Информация за платка",
+            "board": "Платка{0}",
+            "port": "Порт{0}",
+            "getBoardInfo": "Вземи информация за платката",
+            "inSketchbook": "(в Скицника)"
+        },
+        "boardsManager": "Мениджър на платки",
+        "about": {
+            "label": "Относно {0}",
+            "detail": "Версия: {0}\nДата: {1}{2}\nВерсия на CLI: {3}{4} [{5}]\n\n{6}"
+        },
+        "contributions": {
+            "addFile": "Добави файл",
+            "replaceTitle": "Замени",
+            "fileAdded": "Към скицата е добавен един файл."
+        },
+        "replaceMsg": "Да се замени ли съществуващата версия на {0}?",
+        "library": {
+            "addZip": "Добавяне на .ZIP библиотека...",
+            "zipLibrary": "Библиотека",
+            "overwriteExistingLibrary": "Искате ли да презапишете съществуващата библиотека?",
+            "successfullyInstalledZipLibrary": "Успешно инсталирана библиотека от {0} архив",
+            "namedLibraryAlreadyExists": "Библиотечна папка с име {0} вече съществува. Искате ли да я презапишете?",
+            "libraryAlreadyExists": "Библиотека вече съществува. Искате ли да я презапишете?",
+            "include": "Включи библиотека",
+            "manageLibraries": "Управление на библиотеки...",
+            "arduinoLibraries": "Arduino библиотеки",
+            "contributedLibraries": "Допринесени библиотеки",
+            "title": "Управител на библиотеки",
+            "needsOneDependency": "Библиотеката <b>{0}:{1}</b> се нуждае от друга зависимост, която в момента не е инсталирана:",
+            "needsMultipleDependencies": "Библиотеката <b>{0}:{1}</b> се нуждае от някои други зависимости, които в момента не са инсталирани:",
+            "installOneMissingDependency": "Искате ли да инсталирате липсващата зависимост?",
+            "installMissingDependencies": "Искате ли да инсталирате всички липсващи зависимости?",
+            "dependenciesForLibrary": "Зависимости за библиотека {0}:{1}",
+            "installAll": "Инсталирай всички",
+            "installOnly": "Инсталирайте само {0}",
+            "installedSuccessfully": "Успешно инсталирана библиотека {0}:{1}",
+            "uninstalledSuccessfully": "Успешно деинсталирана библиотека {0}:{1}"
+        },
+        "selectZip": "Изберете zip файл, съдържащ библиотеката, която искате да добавите",
+        "sketch": {
+            "archiveSketch": "Архивирай скица",
+            "saveSketchAs": "Запазете папката със скици като...",
+            "createdArchive": "Създаден е архив „{0}“.",
+            "new": "Нов",
+            "openRecent": "Отвори Скорошен",
+            "showFolder": "Показване на папка за скици",
+            "sketch": "Скица",
+            "moving": "Преместване",
+            "movingMsg": "Файлът „{0}“ трябва да бъде в папка на скица, наречена „{1}“.\nСъздай тази папка, премести файла и продължи?",
+            "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
+            "saveFolderAs": "Запазете папката със скица като...",
+            "sketchbook": "Скицник",
+            "upload": "Качване",
+            "uploadUsingProgrammer": "Качване с помощта на програмист",
+            "userFieldsNotFoundError": "Не мога да намеря потребителски полета за свързаната платка",
+            "doneUploading": "Качването приключи.",
+            "configureAndUpload": "Конфигуриране и качване",
+            "verifyOrCompile": "Проверете/компилирайте",
+            "exportBinary": "Експортиране на компилиран двоичен файл",
+            "verify": "Потвърдете",
+            "doneCompiling": "Готово е компилирането.",
+            "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
+            "openSketchInNewWindow": "Open Sketch in New Window",
+            "openFolder": "Open Folder",
+            "titleLocalSketchbook": "Local Sketchbook",
+            "titleSketchbook": "Sketchbook",
+            "close": "Are you sure you want to close the sketch?"
+        },
+        "bootloader": {
+            "burnBootloader": "Burn Bootloader",
+            "doneBurningBootloader": "Done burning bootloader."
+        },
+        "editor": {
+            "copyForForum": "Copy for Forum (Markdown)",
+            "commentUncomment": "Comment/Uncomment",
+            "increaseIndent": "Increase Indent",
+            "decreaseIndent": "Decrease Indent",
+            "increaseFontSize": "Increase Font Size",
+            "decreaseFontSize": "Decrease Font Size",
+            "autoFormat": "Auto Format"
+        },
+        "examples": {
+            "menu": "Examples",
+            "couldNotInitializeExamples": "Could not initialize built-in examples.",
+            "builtInExamples": "Built-in examples",
+            "customLibrary": "Examples from Custom Libraries",
+            "for": "Examples for {0}",
+            "forAny": "Examples for any board"
+        },
+        "help": {
+            "search": "Search on Arduino.cc",
+            "keyword": "Type a keyword",
+            "gettingStarted": "Getting Started",
+            "environment": "Environment",
+            "troubleshooting": "Troubleshooting",
+            "reference": "Reference",
+            "findInReference": "Find in Reference",
+            "faq": "Frequently Asked Questions",
+            "visit": "Visit Arduino.cc"
+        },
+        "certificate": {
+            "uploadRootCertificates": "Upload SSL Root Certificates",
+            "openContext": "Open context",
+            "remove": "Remove",
+            "upload": "Upload",
+            "addURL": "Add URL to fetch SSL certificate",
+            "enterURL": "Enter URL",
+            "selectCertificateToUpload": "1. Select certificate to upload",
+            "addNew": "Add New",
+            "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
+            "uploadingCertificates": "Uploading certificates.",
+            "certificatesUploaded": "Certificates uploaded.",
+            "uploadFailed": "Upload failed. Please try again.",
+            "selectBoard": "Select a board...",
+            "boardAtPort": "{0} at {1}",
+            "noSupportedBoardConnected": "No supported board connected"
+        },
+        "firmware": {
+            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "selectBoard": "Select Board",
+            "checkUpdates": "Check Updates",
+            "selectVersion": "Select firmware version",
+            "install": "Install",
+            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+            "installingFirmware": "Installing firmware.",
+            "successfullyInstalled": "Firmware succesfully installed.",
+            "failedInstall": "Installation failed. Please try again."
+        },
+        "dialog": {
+            "dontAskAgain": "Don't ask again"
+        },
+        "userFields": {
+            "cancel": "Cancel",
+            "upload": "Upload"
+        },
+        "serial": {
+            "toggleTimestamp": "Toggle Timestamp",
+            "autoscroll": "Autoscroll",
+            "timestamp": "Timestamp",
+            "noLineEndings": "No Line Ending",
+            "newLine": "New Line",
+            "carriageReturn": "Carriage Return",
+            "newLineCarriageReturn": "Both NL & CR",
+            "notConnected": "Not connected. Select a board and a port to connect automatically.",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "connectionBusy": "Connection failed. Serial port is busy: {0}",
+            "disconnected": "Disconnected {0} from {1}.",
+            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
+            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
+            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
+        },
+        "component": {
+            "uninstall": "Uninstall",
+            "uninstallMsg": "Do you want to uninstall {0}?",
+            "by": "by",
+            "version": "Version {0}",
+            "moreInfo": "More info",
+            "install": "INSTALL",
+            "filterSearch": "Filter your search..."
+        },
+        "electron": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "unsavedChanges": "Any unsaved changes will not be saved."
+        },
+        "compile": {
+            "error": "Compilation error: {0}"
+        },
+        "upload": {
+            "error": "{0} error: {1}"
+        },
+        "burnBootloader": {
+            "error": "Error while burning the bootloader: {0}"
+        }
+    },
+    "theia": {
+        "core": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "offline": "Offline",
+            "daemonOffline": "CLI Daemon Offline",
+            "cannotConnectBackend": "Cannot connect to the backend.",
+            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
+        },
+        "debug": {
+            "start": "Start...",
+            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
+            "startError": "There was an error starting the debug session, check the logs for more details."
+        },
+        "editor": {
+            "unsavedTitle": "Unsaved – {0}"
+        },
+        "messages": {
+            "expand": "Expand",
+            "collapse": "Collapse"
+        },
+        "workspace": {
+            "fileNewName": "Name for new file",
+            "invalidFilename": "Invalid filename.",
+            "invalidExtension": ".{0} is not a valid extension",
+            "newFileName": "New name for file",
+            "deleteCurrentSketch": "Do you want to delete the current sketch?",
+            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+        }
+    },
+    "cloud": {
+        "GoToCloud": "GO TO CLOUD"
+    }
+}
