@@ -1,5 +1,5 @@
 import { injectable } from '@theia/core/shared/inversify';
-import { AllPublishOptions } from 'builder-util-runtime';
+import { GenericServerOptions } from 'builder-util-runtime';
 import {
   AppUpdater,
   AppImageUpdater,
@@ -21,17 +21,11 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
   protected theiaFEClient?: IDEUpdaterServiceClient;
 
   constructor() {
-    const options: AllPublishOptions = {
-      provider: 's3',
-      bucket: '',
-      region: '',
-      acl: 'public-read',
-      endpoint: 'https://{service}.{region}.amazonaws.com',
-      channel: '',
+    const options: GenericServerOptions = {
+      provider: 'generic',
+      url: 'https://downloads.arduino.cc/arduino-ide/nightly/test/',
+      channel: 'beta',
     };
-    // TODO: Search S3 bucket name for the two channels
-    // https://downloads.arduino.cc/arduino-ide/arduino-ide_2.0.0-rc2_Linux_64bit.zip
-    // https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
 
     this.cancellationToken = new CancellationToken();
     if (process.platform === 'win32') {

@@ -1,4 +1,9 @@
-import { Command, CommandContribution, CommandRegistry } from '@theia/core';
+import {
+  Command,
+  CommandContribution,
+  CommandRegistry,
+  MessageService,
+} from '@theia/core';
 import { injectable, inject } from 'inversify';
 import { IDEUpdaterService } from '../../common/protocol/ide-updater-service';
 
@@ -6,7 +11,9 @@ import { IDEUpdaterService } from '../../common/protocol/ide-updater-service';
 export class IDEUpdaterCommands implements CommandContribution {
   constructor(
     @inject(IDEUpdaterService)
-    private readonly updater: IDEUpdaterService
+    private readonly updater: IDEUpdaterService,
+    @inject(MessageService)
+    protected readonly messageService: MessageService
   ) {}
 
   registerCommands(registry: CommandRegistry): void {
@@ -24,8 +31,9 @@ export class IDEUpdaterCommands implements CommandContribution {
     });
   }
 
-  checkForUpdates() {
-    this.updater.checkForUpdates();
+  async checkForUpdates() {
+    const info = await this.updater.checkForUpdates();
+    this.messageService.info(`version ${info.version} available`);
   }
 
   downloadUpdate() {
