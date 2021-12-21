@@ -66,11 +66,20 @@ export const ArduinoConfigSchema: PreferenceSchema = {
     },
     'arduino.ide.autoUpdate': {
       type: 'boolean',
+      default: true,
       description: nls.localize(
         'arduino/preferences/ide.autoUpdate',
-        'True to enable automatic update checks. The IDE will check for updates automatically and periodically.'
+        'True to enable automatic updates'
       ),
-      default: true,
+    },
+    'arduino.ide.updateChannel': {
+      type: 'string',
+      enum: ['latest', 'nightly', 'none'],
+      default: 'none',
+      description: nls.localize(
+        'arduino/preferences/ide.updateChannel',
+        'Release channel to get updated from. Latest is the stable release, nightly is the latest development build.'
+      ),
     },
     'arduino.board.certificates': {
       type: 'string',
@@ -171,7 +180,8 @@ export interface ArduinoConfiguration {
   'arduino.upload.verify': boolean;
   'arduino.window.autoScale': boolean;
   'arduino.window.zoomLevel': number;
-  'arduino.ide.autoUpdate': boolean;
+  'arduino.window.autoUpdate': boolean;
+  'arduino.ide.updateChannel': 'latest' | 'nightly' | 'none';
   'arduino.board.certificates': string;
   'arduino.sketchbook.showAllFiles': boolean;
   'arduino.cloud.enabled': boolean;

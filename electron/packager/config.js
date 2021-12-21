@@ -83,6 +83,19 @@ function getVersion() {
     return version;
 }
 
+function getChannel() {
+    
+    if (isRelease) {
+        return 'latest';
+    }
+    if (isNightly) {
+        return 'nightly';
+    }
+
+    return 'none';
+    
+}
+
 function timestamp() {
     return dateFormat(new Date(), 'yyyymmdd');
 }
@@ -101,10 +114,18 @@ function generateTemplate(buildDate) {
     const version = getVersion();
     const productName = 'Arduino IDE';
     const name = 'arduino-ide';
+    const updateChannel = getChannel();
     let customizations = {
         name,
         description: productName,
         version,
+        theia: {
+            frontend: {
+                config: {
+                    "arduino.ide.updateChannel": updateChannel
+                }
+            }
+        },
         build: {
             productName,
             appId: 'cc.arduino.IDE2',
