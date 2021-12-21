@@ -69,6 +69,7 @@ import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
+import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 
@@ -157,6 +158,9 @@ export class ArduinoFrontendContribution
 
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
+
+  @inject(IDEUpdaterCommands)
+  protected readonly updater: IDEUpdaterCommands;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -267,6 +271,22 @@ export class ArduinoFrontendContribution
         viewContribution.initializeLayout(app);
       }
     }
+
+    this.updater.checkForUpdates().then((updateInfo) => {
+      if (!updateInfo) return;
+      this.messageService
+        .info(
+          `new version available: ${updateInfo.version}`,
+          'ok install it',
+          'nope, thanks'
+        )
+        .then((result) => {
+          if (result === 'ok install it') {
+            this.updater.downloadUpdate();
+          }
+        });
+    });
+
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {
       if (selectedBoard) {
         const { name, fqbn } = selectedBoard;

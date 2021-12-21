@@ -5,7 +5,10 @@ import {
   MessageService,
 } from '@theia/core';
 import { injectable, inject } from 'inversify';
-import { IDEUpdaterService } from '../../common/protocol/ide-updater-service';
+import {
+  IDEUpdaterService,
+  UpdateInfo,
+} from '../../common/protocol/ide-updater-service';
 
 @injectable()
 export class IDEUpdaterCommands implements CommandContribution {
@@ -31,9 +34,8 @@ export class IDEUpdaterCommands implements CommandContribution {
     });
   }
 
-  async checkForUpdates() {
-    const info = await this.updater.checkForUpdates();
-    this.messageService.info(`version ${info.version} available`);
+  async checkForUpdates(): Promise<UpdateInfo | void> {
+    return await this.updater.checkForUpdates();
   }
 
   downloadUpdate() {

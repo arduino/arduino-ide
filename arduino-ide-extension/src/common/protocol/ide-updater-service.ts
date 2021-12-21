@@ -38,7 +38,7 @@ export const IDEUpdaterServicePath = '/services/ide-updater';
 export const IDEUpdaterService = Symbol('IDEUpdaterService');
 export interface IDEUpdaterService
   extends JsonRpcServer<IDEUpdaterServiceClient> {
-  checkForUpdates(): Promise<UpdateInfo>;
+  checkForUpdates(): Promise<UpdateInfo | void>;
   downloadUpdate(): Promise<void>;
   quitAndInstall(): void;
   stopDownload(): void;

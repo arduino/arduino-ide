@@ -27,7 +27,6 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
       channel: 'beta',
     };
 
-    this.cancellationToken = new CancellationToken();
     if (process.platform === 'win32') {
       this.updater = new NsisUpdater(options);
     } else if (process.platform === 'darwin') {
@@ -63,13 +62,18 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
     throw new Error('Method not implemented.');
   }
 
-  async checkForUpdates(): Promise<UpdateInfo> {
-    const { updateInfo } = await this.updater.checkForUpdates();
-    return updateInfo;
+  async checkForUpdates(): Promise<UpdateInfo | void> {
+    const { updateInfo, cancellationToken } =
+      await this.updater.checkForUpdates();
+    this.cancellationToken = cancellationToken;
+    if (this.updater.currentVersion.compare(updateInfo.version) === -1) {
+      return updateInfo;
+    }
   }
 
   async downloadUpdate(): Promise<void> {
-    await this.updater.downloadUpdate(this.cancellationToken);
+    const result = await this.updater.downloadUpdate(this.cancellationToken);
+    return result;
   }
 
   stopDownload(): void {
