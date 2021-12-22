@@ -159,8 +159,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const p = new Port();
     if (port) {
       p.setAddress(port.address);
-      p.setLabel(port.label || '');
+      p.setLabel(port.addressLabel);
       p.setProtocol(port.protocol);
+      p.setProtocolLabel(port.protocolLabel);
     }
     req.setPort(p);
     if (programmer) {
@@ -229,8 +230,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const p = new Port();
     if (port) {
       p.setAddress(port.address);
-      p.setLabel(port.label || '');
+      p.setLabel(port.addressLabel);
       p.setProtocol(port.protocol);
+      p.setProtocolLabel(port.protocolLabel);
     }
     burnReq.setPort(p);
     if (programmer) {

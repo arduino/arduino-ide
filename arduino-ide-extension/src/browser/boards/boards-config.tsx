@@ -167,7 +167,7 @@ export class BoardsConfig extends React.Component<
     this.queryPorts(Promise.resolve(ports)).then(({ knownPorts }) => {
       let { selectedPort } = this.state;
       // If the currently selected port is not available anymore, unset the selected port.
-      if (removedPorts.some((port) => Port.equals(port, selectedPort))) {
+      if (removedPorts.some((port) => Port.sameAs(port, selectedPort))) {
         selectedPort = undefined;
       }
       this.setState({ knownPorts, selectedPort }, () =>
@@ -213,11 +213,11 @@ export class BoardsConfig extends React.Component<
       } else if (left.protocol === right.protocol) {
         // We show ports, including those that have guessed
         // or unrecognized boards, so we must sort those too.
-        const leftBoard = this.availableBoards.find((board) =>
-          Port.sameAs(board.port, left)
+        const leftBoard = this.availableBoards.find(
+          (board) => board.port === left
         );
-        const rightBoard = this.availableBoards.find((board) =>
-          Port.sameAs(board.port, right)
+        const rightBoard = this.availableBoards.find(
+          (board) => board.port === right
         );
         if (leftBoard && !rightBoard) {
           return -1;
@@ -348,10 +348,10 @@ export class BoardsConfig extends React.Component<
       <div className="ports list">
         {ports.map((port) => (
           <Item<Port>
-            key={Port.toString(port)}
+            key={`${port.id}`}
             item={port}
             label={Port.toString(port)}
-            selected={Port.equals(this.state.selectedPort, port)}
+            selected={Port.sameAs(this.state.selectedPort, port)}
             onClick={this.selectPort}
           />
         ))}
@@ -410,7 +410,7 @@ export namespace BoardsConfig {
         return options.default;
       }
       const { name } = selectedBoard;
-      return `${name}${port ? ' at ' + Port.toString(port) : ''}`;
+      return `${name}${port ? ` at ${port.address}` : ''}`;
     }
 
     export function setConfig(

@@ -86,7 +86,7 @@ describe('SerialServiceImpl', () => {
 
   context('when a disconnection is requested', () => {
     const sandbox = createSandbox();
-    beforeEach(() => {});
+    beforeEach(() => { });
 
     afterEach(function () {
       sandbox.restore();
@@ -132,11 +132,11 @@ describe('SerialServiceImpl', () => {
           return {
             streamingOpen: () => {
               return {
-                on: (str: string, cb: any) => {},
+                on: (str: string, cb: any) => { },
                 write: (chunk: any, cb: any) => {
                   cb();
                 },
-                cancel: () => {},
+                cancel: () => { },
               };
             },
           } as MonitorServiceClient;
@@ -146,7 +146,7 @@ describe('SerialServiceImpl', () => {
 
       await subject.setSerialConfig({
         board: { name: 'test' },
-        port: { address: 'test', protocol: 'test' },
+        port: { id: 'test|test', address: 'test', addressLabel: 'test', protocol: 'test', protocolLabel: 'test' },
       });
     });
 

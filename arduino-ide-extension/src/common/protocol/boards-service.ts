@@ -7,13 +7,13 @@ export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
   export function byProtocol(availablePorts: AvailablePorts): Map<string, AvailablePorts> {
     const grouped = new Map<string, AvailablePorts>();
-    for (const address of Object.keys(availablePorts)) {
-      const [port, boards] = availablePorts[address];
+    for (const portID of Object.keys(availablePorts)) {
+      const [port, boards] = availablePorts[portID];
       let ports = grouped.get(port.protocol);
       if (!ports) {
         ports = {} as AvailablePorts;
       }
-      ports[address] = [port, boards];
+      ports[portID] = [port, boards];
       grouped.set(port.protocol, ports);
     }
     return grouped;
@@ -43,7 +43,7 @@ export namespace AttachedBoardsChangeEvent {
       const visitedDetachedPorts: Port[] = [];
       for (const board of attached.boards) {
         const port = board.port
-          ? ` on ${Port.toString(board.port, { useLabel: true })}`
+          ? ` on ${Port.toString(board.port)}`
           : '';
         rows.push(` - Attached board: ${Board.toString(board)}${port}`);
         if (board.port) {
@@ -52,7 +52,7 @@ export namespace AttachedBoardsChangeEvent {
       }
       for (const board of detached.boards) {
         const port = board.port
-          ? ` from ${Port.toString(board.port, { useLabel: true })}`
+          ? ` from ${Port.toString(board.port)}`
           : '';
         rows.push(` - Detached board: ${Board.toString(board)}${port}`);
         if (board.port) {
@@ -62,18 +62,14 @@ export namespace AttachedBoardsChangeEvent {
       for (const port of attached.ports) {
         if (!visitedAttachedPorts.find((p) => Port.sameAs(port, p))) {
           rows.push(
-            ` - New port is available on ${Port.toString(port, {
-              useLabel: true,
-            })}`
+            ` - New port is available on ${Port.toString(port)}`
           );
         }
       }
       for (const port of detached.ports) {
         if (!visitedDetachedPorts.find((p) => Port.sameAs(port, p))) {
           rows.push(
-            ` - Port is no longer available on ${Port.toString(port, {
-              useLabel: true,
-            })}`
+            ` - Port is no longer available on ${Port.toString(port)}`
           );
         }
       }
@@ -147,12 +143,14 @@ export interface BoardsService
 }
 
 export interface Port {
+  // id is the combination of address and protocol
+  // formatted like "<address>|<protocol>" used
+  // to univocally recognize a port
+  readonly id: string;
   readonly address: string;
+  readonly addressLabel: string;
   readonly protocol: string;
-  /**
-   * Optional label for the protocol. For example: `Serial Port (USB)`.
-   */
-  readonly label?: string;
+  readonly protocolLabel: string;
 }
 export namespace Port {
   export function is(arg: any): arg is Port {
@@ -165,14 +163,8 @@ export namespace Port {
     );
   }
 
-  export function toString(
-    port: Port,
-    options: { useLabel: boolean } = { useLabel: false }
-  ): string {
-    if (options.useLabel && port.label) {
-      return `${port.address} ${port.label}`;
-    }
-    return port.address;
+  export function toString(port: Port): string {
+    return `${port.addressLabel} ${port.protocolLabel}`;
   }
 
   export function compare(left: Port, right: Port): number {
@@ -192,29 +184,12 @@ export namespace Port {
     return naturalCompare(left.address!, right.address!);
   }
 
-  export function equals(
+  export function sameAs(
     left: Port | undefined,
     right: Port | undefined
   ): boolean {
     if (left && right) {
-      return (
-        left.address === right.address &&
-        left.protocol === right.protocol &&
-        (left.label || '') === (right.label || '')
-      );
-    }
-    return left === right;
-  }
-
-  export function sameAs(
-    left: Port | undefined,
-    right: Port | string | undefined
-  ) {
-    if (left && right) {
-      if (typeof right === 'string') {
-        return left.address === right;
-      }
-      return left.address === right.address;
+      return left.address === right.address && left.protocol === right.protocol;
     }
     return false;
   }

@@ -204,10 +204,9 @@ PID: ${PID}`;
 
       const packageLabel =
         packageName +
-        `${
-          manuallyInstalled
-            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
-            : ''
+        `${manuallyInstalled
+          ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
+          : ''
         }`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
@@ -255,8 +254,8 @@ PID: ${PID}`;
       protocolOrder: number,
       ports: AvailablePorts
     ) => {
-      const addresses = Object.keys(ports);
-      if (!addresses.length) {
+      const portIDs = Object.keys(ports);
+      if (!portIDs.length) {
         return;
       }
 
@@ -279,27 +278,27 @@ PID: ${PID}`;
 
       // First we show addresses with recognized boards connected,
       // then all the rest.
-      const sortedAddresses = Object.keys(ports);
-      sortedAddresses.sort((left: string, right: string): number => {
+      const sortedIDs = Object.keys(ports);
+      sortedIDs.sort((left: string, right: string): number => {
         const [, leftBoards] = ports[left];
         const [, rightBoards] = ports[right];
         return rightBoards.length - leftBoards.length;
       });
 
-      for (let i = 0; i < sortedAddresses.length; i++) {
-        const address = sortedAddresses[i];
-        const [port, boards] = ports[address];
-        let label = `${address}`;
+      for (let i = 0; i < sortedIDs.length; i++) {
+        const portID = sortedIDs[i];
+        const [port, boards] = ports[portID];
+        let label = `${port.address}`;
         if (boards.length) {
           const boardsList = boards.map((board) => board.name).join(', ');
           label = `${label} (${boardsList})`;
         }
-        const id = `arduino-select-port--${address}`;
+        const id = `arduino-select-port--${portID}`;
         const command = { id };
         const handler = {
           execute: () => {
             if (
-              !Port.equals(
+              !Port.sameAs(
                 port,
                 this.boardsServiceProvider.boardsConfig.selectedPort
               )
@@ -312,7 +311,7 @@ PID: ${PID}`;
             }
           },
           isToggled: () =>
-            Port.equals(
+            Port.sameAs(
               port,
               this.boardsServiceProvider.boardsConfig.selectedPort
             ),

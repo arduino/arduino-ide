@@ -124,8 +124,22 @@ export class BoardDiscovery extends CoreClientAware {
 
         const address = (detectedPort as any).getPort().getAddress();
         const protocol = (detectedPort as any).getPort().getProtocol();
+        // Different discoveries can detect the same port with different
+        // protocols, so we consider the combination of address and protocol
+        // to be the id of a certain port to distinguish it from others.
+        // If we'd use only the address of a port to store it in a map
+        // we can have conflicts the same port is found with multiple
+        // protocols.
+        const portID = `${address}|${protocol}`;
         const label = (detectedPort as any).getPort().getLabel();
-        const port = { address, protocol, label };
+        const protocolLabel = (detectedPort as any).getPort().getProtocolLabel();
+        const port = {
+          id: portID,
+          address,
+          addressLabel: label,
+          protocol,
+          protocolLabel,
+        };
         const boards: Board[] = [];
         for (const item of detectedPort.getMatchingBoardsList()) {
           boards.push({
@@ -136,23 +150,21 @@ export class BoardDiscovery extends CoreClientAware {
         }
 
         if (eventType === 'add') {
-          if (newState[port.address]) {
-            const [, knownBoards] = newState[port.address];
+          if (newState[portID]) {
+            const [, knownBoards] = newState[portID];
             console.warn(
-              `Port '${
-                port.address
-              }' was already available. Known boards before override: ${JSON.stringify(
+              `Port '${Port.toString(port)}' was already available. Known boards before override: ${JSON.stringify(
                 knownBoards
               )}`
             );
           }
-          newState[port.address] = [port, boards];
+          newState[portID] = [port, boards];
         } else if (eventType === 'remove') {
-          if (!newState[port.address]) {
-            console.warn(`Port '${port.address}' was not available. Skipping`);
+          if (!newState[portID]) {
+            console.warn(`Port '${Port.toString(port)}' was not available. Skipping`);
             return;
           }
-          delete newState[port.address];
+          delete newState[portID];
         }
 
         const oldAvailablePorts = this.getAvailablePorts(oldState);
@@ -179,8 +191,8 @@ export class BoardDiscovery extends CoreClientAware {
 
   getAttachedBoards(state: AvailablePorts = this.state): Board[] {
     const attachedBoards: Board[] = [];
-    for (const address of Object.keys(state)) {
-      const [, boards] = state[address];
+    for (const portID of Object.keys(state)) {
+      const [, boards] = state[portID];
       attachedBoards.push(...boards);
     }
     return attachedBoards;
@@ -188,8 +200,8 @@ export class BoardDiscovery extends CoreClientAware {
 
   getAvailablePorts(state: AvailablePorts = this.state): Port[] {
     const availablePorts: Port[] = [];
-    for (const address of Object.keys(state)) {
-      const [port] = state[address];
+    for (const portID of Object.keys(state)) {
+      const [port] = state[portID];
       availablePorts.push(port);
     }
     return availablePorts;
