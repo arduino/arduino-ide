@@ -16,7 +16,7 @@ import {
   MonitorConfig as GrpcMonitorConfig,
 } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
-import { Board, Port } from '../../common/protocol/boards-service';
+import { Board } from '../../common/protocol/boards-service';
 import { WebSocketService } from '../web-socket/web-socket-service';
 import { SerialPlotter } from '../../browser/serial/plotter/protocol';
 import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
@@ -88,7 +88,7 @@ export class SerialServiceImpl implements SerialService {
 
     @inject(WebSocketService)
     protected readonly webSocketService: WebSocketService
-  ) {}
+  ) { }
 
   async isSerialPortOpen(): Promise<boolean> {
     return !!this.serialConnection;
@@ -153,7 +153,7 @@ export class SerialServiceImpl implements SerialService {
     this.logger.info(
       `>>> Creating serial connection for ${Board.toString(
         this.serialConfig.board
-      )} on port ${Port.toString(this.serialConfig.port)}...`
+      )} on port ${this.serialConfig.port.address}...`
     );
 
     if (this.serialConnection) {
@@ -225,7 +225,7 @@ export class SerialServiceImpl implements SerialService {
             default:
               break;
           }
-        } catch (error) {}
+        } catch (error) { }
       }
     );
 
@@ -272,12 +272,12 @@ export class SerialServiceImpl implements SerialService {
         serialConnection.duplex.write(req, () => {
           const boardName = this.serialConfig?.board
             ? Board.toString(this.serialConfig.board, {
-                useFqbn: false,
-              })
+              useFqbn: false,
+            })
             : 'unknown board';
 
           const portName = this.serialConfig?.port
-            ? Port.toString(this.serialConfig.port)
+            ? this.serialConfig.port.address
             : 'unknown port';
           this.logger.info(
             `<<< Serial connection created for ${boardName} on port ${portName}.`
@@ -330,7 +330,7 @@ export class SerialServiceImpl implements SerialService {
         this.logger.info(
           `<<< Disposed serial connection for ${Board.toString(config.board, {
             useFqbn: false,
-          })} on port ${Port.toString(config.port)}.`
+          })} on port ${config.port.address}.`
         );
 
         duplex.cancel();

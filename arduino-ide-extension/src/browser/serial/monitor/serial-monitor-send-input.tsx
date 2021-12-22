@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
-import { Board, Port } from '../../../common/protocol/boards-service';
+import { Board } from '../../../common/protocol/boards-service';
 import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { SerialConnectionManager } from '../serial-connection-manager';
@@ -87,7 +87,7 @@ export class SerialMonitorSendInput extends React.Component<
             useFqbn: false,
           })
         : 'unknown',
-      port ? Port.toString(port) : 'unknown'
+      port ? port.address : 'unknown'
     );
   }
 
