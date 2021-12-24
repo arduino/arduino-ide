@@ -143,6 +143,8 @@ export const initSplashScreen = (
     slowStartup = true;
     showSplash();
   }, xConfig.delay);
+  // Splashscreen is now on top of the main browser window.
+  window.on('show', () => splashScreen?.setAlwaysOnTop(false));
   if (onCloseRequested) {
     onCloseRequested(() => closeSplashScreen(window, xConfig.minVisible));
   } else {
