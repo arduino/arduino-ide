@@ -155,6 +155,12 @@
     },
     "fwuploader": {
       "version": "2.0.0"
+    },
+    "clangd": {
+      "version": "13.0.0"
+    },
+    "languageServer": {
+      "version": "0.6.0"
     }
   }
 }

@@ -4,12 +4,37 @@
 // - https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${VERSION}_${SUFFIX}
 
 (() => {
-  const DEFAULT_ALS_VERSION = '0.5.0';
-  const DEFAULT_CLANGD_VERSION = 'snapshot_20210124';
-
   const path = require('path');
   const shell = require('shelljs');
   const downloader = require('./downloader');
+
+  const [DEFAULT_ALS_VERSION, DEFAULT_CLANGD_VERSION] = (() => {
+    const pkg = require(path.join(__dirname, '..', 'package.json'));
+    if (!pkg) return undefined;
+
+    const { arduino } = pkg;
+    if (!arduino) return undefined;
+
+    const { languageServer, clangd } = arduino;
+    if (!languageServer) return undefined;
+    if (!clangd) return undefined;
+
+    return [languageServer.version, clangd.version];
+  })();
+
+  if (!DEFAULT_ALS_VERSION) {
+    shell.echo(
+      `Could not retrieve Arduino Language Server version info from the 'package.json'.`
+    );
+    shell.exit(1);
+  }
+
+  if (!DEFAULT_CLANGD_VERSION) {
+    shell.echo(
+      `Could not retrieve clangd version info from the 'package.json'.`
+    );
+    shell.exit(1);
+  }
 
   const yargs = require('yargs')
     .option('ls-version', {
@@ -20,7 +45,7 @@
     .option('clangd-version', {
       alias: 'cv',
       default: DEFAULT_CLANGD_VERSION,
-      choices: ['snapshot_20210124'],
+      choices: [DEFAULT_CLANGD_VERSION, 'snapshot_20210124'],
       describe: `The version of 'clangd' to download. Defaults to ${DEFAULT_CLANGD_VERSION}.`,
     })
     .option('force-download', {
@@ -35,32 +60,32 @@
   const clangdVersion = yargs['clangd-version'];
   const force = yargs['force-download'];
   const { platform, arch } = process;
-
+  const platformArch = platform + '-' + arch;
   const build = path.join(__dirname, '..', 'build');
   const lsExecutablePath = path.join(
     build,
     `arduino-language-server${platform === 'win32' ? '.exe' : ''}`
   );
+  let clangdExecutablePath, lsSuffix, clangdSuffix;
 
-  let clangdExecutablePath, lsSuffix, clangdPrefix;
-  switch (platform) {
-    case 'darwin':
-      clangdExecutablePath = path.join(build, 'bin', 'clangd');
+  switch (platformArch) {
+    case 'darwin-x64':
+      clangdExecutablePath = path.join(build, 'clangd');
       lsSuffix = 'macOS_64bit.tar.gz';
-      clangdPrefix = 'mac';
+      clangdSuffix = 'macOS_64bit';
       break;
-    case 'linux':
-      clangdExecutablePath = path.join(build, 'bin', 'clangd');
+    case 'linux-x64':
+      clangdExecutablePath = path.join(build, 'clangd');
       lsSuffix = 'Linux_64bit.tar.gz';
-      clangdPrefix = 'linux';
+      clangdSuffix = 'Linux_64bit';
       break;
-    case 'win32':
-      clangdExecutablePath = path.join(build, 'bin', 'clangd.exe');
+    case 'win32-x64':
+      clangdExecutablePath = path.join(build, 'clangd.exe');
       lsSuffix = 'Windows_64bit.zip';
-      clangdPrefix = 'windows';
+      clangdSuffix = 'Windows_64bit';
       break;
   }
-  if (!lsSuffix) {
+  if (!lsSuffix || !clangdSuffix) {
     shell.echo(
       `The arduino-language-server is not available for ${platform} ${arch}.`
     );
@@ -74,7 +99,7 @@
   }_${lsSuffix}`;
   downloader.downloadUnzipAll(alsUrl, build, lsExecutablePath, force);
 
-  const clangdUrl = `https://downloads.arduino.cc/arduino-language-server/clangd/clangd-${clangdPrefix}-${clangdVersion}.zip`;
+  const clangdUrl = `https://downloads.arduino.cc/tools/clangd_${clangdVersion}_${clangdSuffix}.tar.bz2`;
   downloader.downloadUnzipAll(clangdUrl, build, clangdExecutablePath, force, {
     strip: 1,
   }); // `strip`: the new clangd (12.x) is zipped into a folder, so we have to strip the outmost folder.
