@@ -34,6 +34,14 @@ export type UpdateInfo = {
   readonly stagingPercentage?: number;
 };
 
+export interface ProgressInfo {
+  total: number;
+  delta: number;
+  transferred: number;
+  percent: number;
+  bytesPerSecond: number;
+}
+
 export const IDEUpdaterServicePath = '/services/ide-updater';
 export const IDEUpdaterService = Symbol('IDEUpdaterService');
 export interface IDEUpdaterService

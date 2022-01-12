@@ -38,15 +38,15 @@ export class IDEUpdaterCommands implements CommandContribution {
     return await this.updater.checkForUpdates();
   }
 
-  downloadUpdate() {
-    this.updater.downloadUpdate();
+  async downloadUpdate(): Promise<void> {
+    await this.updater.downloadUpdate();
   }
 
-  stopDownload() {
-    this.updater.stopDownload();
+  async stopDownload(): Promise<void> {
+    await this.updater.stopDownload();
   }
 
-  quitAndInstall() {
+  quitAndInstall(): void {
     this.updater.quitAndInstall();
   }
 }

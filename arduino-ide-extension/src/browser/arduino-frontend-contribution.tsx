@@ -70,6 +70,8 @@ import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-c
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
+import { IDEUpdaterServiceClient } from '../common/protocol/ide-updater-service';
+import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 
@@ -80,8 +82,7 @@ export class ArduinoFrontendContribution
     TabBarToolbarContribution,
     CommandContribution,
     MenuContribution,
-    ColorContribution
-{
+    ColorContribution {
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -161,6 +162,12 @@ export class ArduinoFrontendContribution
 
   @inject(IDEUpdaterCommands)
   protected readonly updater: IDEUpdaterCommands;
+
+  @inject(IDEUpdaterServiceClient)
+  protected readonly updaterClient: IDEUpdaterServiceClient;
+
+  @inject(IDEUpdaterDialog)
+  protected readonly updaterDialog: IDEUpdaterDialog;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -272,19 +279,31 @@ export class ArduinoFrontendContribution
       }
     }
 
+    this.updaterClient.onError((e) => {
+      console.log('onError', e);
+    });
+    this.updaterClient.onCheckingForUpdate((e) => {
+      console.log('onCheckingForUpdate', e);
+    });
+    this.updaterClient.onUpdateAvailable((e) => {
+      console.log('onUpdateAvailable', e);
+    });
+    this.updaterClient.onUpdateNotAvailable((e) => {
+      console.log('onUpdateNotAvailable', e);
+    });
+    this.updaterClient.onDownloadProgressChanged((e) => {
+      console.log('onDownloadProgressChanged', e);
+    });
+    this.updaterClient.onDownloadFinished((e) => {
+      console.log('onDownloadFinished', e);
+    });
+
     this.updater.checkForUpdates().then((updateInfo) => {
       if (!updateInfo) return;
-      this.messageService
-        .info(
-          `new version available: ${updateInfo.version}`,
-          'ok install it',
-          'nope, thanks'
-        )
-        .then((result) => {
-          if (result === 'ok install it') {
-            this.updater.downloadUpdate();
-          }
-        });
+      this.updaterDialog.open({
+        version: updateInfo.version,
+        changelog: 'lol',
+      });
     });
 
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {

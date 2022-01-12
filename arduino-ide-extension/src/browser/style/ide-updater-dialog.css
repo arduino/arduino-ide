@@ -1,0 +1,43 @@
+.ide-updater-dialog {
+  width: 546px;
+}
+
+.ide-updater-dialog .bold {
+  font-weight: bold;
+}
+
+.ide-updater-dialog--pre-download {
+  display: flex;
+}
+
+.ide-updater-dialog--logo-container {
+  margin-right: 28px;
+}
+
+.ide-updater-dialog--logo {
+  background: url('./ide-logo.png') round;
+  width: 52px;
+  height: 52px;
+}
+
+.dialogContent.ide-updater-dialog
+  .ide-updater-dialog--content
+  .ide-updater-dialog--new-version-text.dialogSection {
+  margin-top: 0;
+}
+
+.ide-updater-dialog textarea {
+  width: 100%;
+  height: 180px;
+  resize: none;
+}
+
+.ide-updater-dialog .buttons-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+.ide-updater-dialog .buttons-container .push {
+  margin-right: auto;
+}

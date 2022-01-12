@@ -269,6 +269,11 @@ import {
   IDEUpdaterServicePath,
 } from '../common/protocol/ide-updater-service';
 import { IDEUpdaterServiceClientImpl } from './ide-updater/ide-updater-service-client-impl';
+import {
+  IDEUpdaterDialog,
+  IDEUpdaterDialogProps,
+  IDEUpdaterDialogWidget,
+} from './dialogs/ide-updater/ide-updater-dialog';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -414,8 +419,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(SerialService)
     .toDynamicValue((context) => {
       const connection = context.container.get(WebSocketConnectionProvider);
-      const client =
-        context.container.get<SerialServiceClient>(SerialServiceClient);
+      const client = context.container.get<SerialServiceClient>(
+        SerialServiceClient
+      );
       return connection.createProxy(SerialServicePath, client);
     })
     .inSingletonScope();
@@ -479,12 +485,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
   rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) =>
-      () => {
-        const container = parentContainer.createChild();
-        container.bind(TabBarToolbar).toSelf().inSingletonScope();
-        return container.get(TabBarToolbar);
-      }
+    ({ container: parentContainer }) => () => {
+      const container = parentContainer.createChild();
+      container.bind(TabBarToolbar).toSelf().inSingletonScope();
+      return container.get(TabBarToolbar);
+    }
   );
   bind(OutputWidget).toSelf().inSingletonScope();
   rebind(TheiaOutputWidget).toService(OutputWidget);
@@ -612,6 +617,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Debug);
   Contribution.configure(bind, Sketchbook);
   Contribution.configure(bind, UploadFirmware);
+  // Contribution.configure(bind, IDEUpdater);
   Contribution.configure(bind, UploadCertificate);
   Contribution.configure(bind, BoardSelection);
   Contribution.configure(bind, OpenRecentSketch);
@@ -649,13 +655,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Enable the dirty indicator on uncloseable widgets.
   rebind(TabBarRendererFactory).toFactory((context) => () => {
-    const contextMenuRenderer =
-      context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
+    const contextMenuRenderer = context.container.get<ContextMenuRenderer>(
+      ContextMenuRenderer
+    );
     const decoratorService = context.container.get<TabBarDecoratorService>(
       TabBarDecoratorService
     );
-    const iconThemeService =
-      context.container.get<IconThemeService>(IconThemeService);
+    const iconThemeService = context.container.get<IconThemeService>(
+      IconThemeService
+    );
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,
@@ -761,6 +769,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(UploadCertificateDialog).toSelf().inSingletonScope();
   bind(UploadCertificateDialogProps).toConstantValue({
     title: 'UploadCertificate',
+  });
+
+  bind(IDEUpdaterDialogWidget).toSelf().inSingletonScope();
+  bind(IDEUpdaterDialog).toSelf().inSingletonScope();
+  bind(IDEUpdaterDialogProps).toConstantValue({
+    title: 'IDEUpdater',
   });
 
   bind(UserFieldsDialogWidget).toSelf().inSingletonScope();

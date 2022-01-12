@@ -35,6 +35,7 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
       this.updater = new AppImageUpdater(options);
     }
     this.updater.autoDownload = false;
+    this.updater.fullChangelog = true;
 
     this.updater.on('checking-for-update', (e) =>
       this.theiaFEClient?.notifyCheckingForUpdate(e)
@@ -46,7 +47,7 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
       this.theiaFEClient?.notifyUpdateNotAvailable(e)
     );
     this.updater.on('download-progress', (e) =>
-      this.theiaFEClient?.notifyDownloadFinished(e)
+      this.theiaFEClient?.notifyDownloadProgressChanged(e)
     );
     this.updater.on('update-downloaded', (e) =>
       this.theiaFEClient?.notifyDownloadFinished(e)
@@ -63,8 +64,12 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
   }
 
   async checkForUpdates(): Promise<UpdateInfo | void> {
-    const { updateInfo, cancellationToken } =
-      await this.updater.checkForUpdates();
+    const {
+      updateInfo,
+      cancellationToken,
+      ...rest
+    } = await this.updater.checkForUpdates();
+    console.log(rest);
     this.cancellationToken = cancellationToken;
     if (this.updater.currentVersion.compare(updateInfo.version) === -1) {
       return updateInfo;
@@ -72,8 +77,12 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
   }
 
   async downloadUpdate(): Promise<void> {
-    const result = await this.updater.downloadUpdate(this.cancellationToken);
-    return result;
+    try {
+      await this.updater.downloadUpdate(this.cancellationToken);
+    } catch (e) {
+      if (e.message === 'cancelled') return;
+      throw e;
+    }
   }
 
   stopDownload(): void {

@@ -9,6 +9,7 @@
 @import './editor.css';
 @import './settings-dialog.css';
 @import './firmware-uploader-dialog.css';
+@import './ide-updater-dialog.css';
 @import './certificate-uploader-dialog.css';
 @import './user-fields-dialog.css';
 @import './debug.css';
@@ -16,6 +17,7 @@
 @import './cloud-sketchbook.css';
 @import './fonts.css';
 @import './custom-codicon.css';
+@import './progress-bar.css';
 
 .theia-input.warning:focus {
   outline-width: 1px;
