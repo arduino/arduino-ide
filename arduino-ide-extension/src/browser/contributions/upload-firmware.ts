@@ -45,7 +45,7 @@ export namespace UploadFirmware {
       id: 'arduino-upload-firmware-open',
       label: nls.localize(
         'arduino/firmware/updater',
-        'WiFi101 /  WiFiNINA Firmware Updater'
+        'WiFi101 / WiFiNINA Firmware Updater'
       ),
       category: 'Arduino',
     };

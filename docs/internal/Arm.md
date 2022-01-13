@@ -2,7 +2,7 @@
 
 Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`):
 
-1. Install Node.js 10.x with [nvm](https://github.com/nvm-sh/nvm#install--update-script):
+1. Install Node.js 12.x with [nvm](https://github.com/nvm-sh/nvm#install--update-script):
     ```
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
     ```

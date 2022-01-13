@@ -117,7 +117,7 @@ git add . \
 git tag -a 0.2.0 -m "0.2.0" \
 && git push origin 0.2.0
 ```
- - The release build starts automatically and uploads the artifacts with the changelog to the  [release page](https://github.com/arduino/arduino-ide/releases).
+ - The release build starts automatically and uploads the artifacts with the changelog to the [release page](https://github.com/arduino/arduino-ide/releases).
  - If you do not want to release the `EXE` and `MSI` installers, wipe them manually.
  - If you do not like the generated changelog, modify it and update the GH release.
 

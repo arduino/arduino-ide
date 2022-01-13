@@ -201,7 +201,7 @@ export const FirmwareUploaderComponent = ({
                 <i className="fa fa-info status-icon" />
                 {nls.localize(
                   'arduino/firmware/successfullyInstalled',
-                  'Firmware succesfully installed.'
+                  'Firmware successfully installed.'
                 )}
               </div>
             )}
