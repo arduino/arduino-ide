@@ -5,13 +5,13 @@
             "noBoardSelected": "Nie wybrano płytki",
             "selectedOn": "on {0}",
             "notConnected": "[nie podłączone]",
-            "serialMonitor": "Serial Monitor",
+            "serialMonitor": "Monitor portu szeregowego",
             "oldFormat": "'{0}' nadal używa starego formatu `.pde`. Czy chcesz się przełączyć na nowe rozszerzenie `.ino`?",
             "later": "Później",
             "selectBoard": "Wybierz płytkę",
             "unknown": "Nieznany",
             "processing": "Przetwarzanie",
-            "saveChangesToSketch": "Do you want to save changes to this sketch before closing?",
+            "saveChangesToSketch": "Czy chcesz zapisać zmiany w tym sketchu przed zamknięciem?",
             "loseChanges": "Jeśli nie zapiszesz, zmiany zostaną utracone."
         },
         "menu": {
@@ -22,18 +22,18 @@
             "optimizeForDebugging": "Optymalizuj pod kątem debugowania",
             "debugWithMessage": "Debug - {0}",
             "noPlatformInstalledFor": "Platforma nie jest zainstalowana dla '{0}'",
-            "debuggingNotSupported": "Debugging is not supported by '{0}'"
+            "debuggingNotSupported": "Debugowanie nie jest wspierane przez '{0}'"
         },
         "preferences": {
-            "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
-            "compile.verbose": "True for verbose compile output. False by default",
-            "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
-            "upload.verbose": "True for verbose upload output. False by default.",
+            "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
+            "compile.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas kompilacji. Fałsz jest wartością domyślną.",
+            "compile.warnings": "Ustawia poziom ostrzeżeń w kompilatorze gcc. Domyślną wartością jest 'Brak'",
+            "upload.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas wgrywania. Fałsz jest wartością domyślną.",
             "window.autoScale": "Prawda, jeśli interfejs użytkownika skaluje się automatycznie z rozmiarem czcionki.",
             "window.zoomLevel": "Dostosuj poziom powiększenia okna. Oryginalny rozmiar to 0, a każdy przyrost powyżej (np. 1) lub poniżej (np. -1) oznacza odpowiednio powiększenie lub pomniejszenie o 20%. Możesz również wprowadzić ułamki dziesiętne, aby dostosować poziom powiększenia z większą dokładnością.",
             "ide.autoUpdate": "Prawda, aby włączyć automatyczne sprawdzanie aktualizacji. IDE będzie automatycznie i okresowo sprawdzać dostępność aktualizacji.",
             "board.certificates": "Lista certyfikatów, które można przesłać do płytki",
-            "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
+            "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze sketcha. Fałsz jest wartością domyślną.",
             "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
             "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
             "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
@@ -322,7 +322,7 @@
         "workspace": {
             "fileNewName": "Nazwa nowego pliku",
             "invalidFilename": "Nieprawidłowa nazwa pliku.",
-            "invalidExtension": ".{0} niw jest prawidłowym rozszerzeniem",
+            "invalidExtension": ".{0} nie jest prawidłowym rozszerzeniem",
             "newFileName": "Nowa nazwa pliku",
             "deleteCurrentSketch": "Do you want to delete the current sketch?",
             "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."

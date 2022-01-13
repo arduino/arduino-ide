@@ -186,149 +186,149 @@
             "exportBinary": "Експортиране на компилиран двоичен файл",
             "verify": "Потвърдете",
             "doneCompiling": "Готово е компилирането.",
-            "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
-            "openSketchInNewWindow": "Open Sketch in New Window",
-            "openFolder": "Open Folder",
-            "titleLocalSketchbook": "Local Sketchbook",
-            "titleSketchbook": "Sketchbook",
-            "close": "Are you sure you want to close the sketch?"
+            "couldNotConnectToSerial": "Не можа да се свърже отново със серийния порт. {0}",
+            "openSketchInNewWindow": "Отвори скицата в нов прозорец",
+            "openFolder": "Отвори папка",
+            "titleLocalSketchbook": "Локален скицник",
+            "titleSketchbook": "Скицник",
+            "close": "Наистина ли искате да затворите скицата?"
         },
         "bootloader": {
-            "burnBootloader": "Burn Bootloader",
-            "doneBurningBootloader": "Done burning bootloader."
+            "burnBootloader": "Запишете буутлоудъра",
+            "doneBurningBootloader": "Записването на буутлоудъра приключи."
         },
         "editor": {
-            "copyForForum": "Copy for Forum (Markdown)",
-            "commentUncomment": "Comment/Uncomment",
-            "increaseIndent": "Increase Indent",
-            "decreaseIndent": "Decrease Indent",
-            "increaseFontSize": "Increase Font Size",
-            "decreaseFontSize": "Decrease Font Size",
-            "autoFormat": "Auto Format"
+            "copyForForum": "Копиране за форум (Markdown)",
+            "commentUncomment": "Коментиране/Премахване на коментар",
+            "increaseIndent": "Увеличете отстъпа",
+            "decreaseIndent": "Намаляване на отстъпа",
+            "increaseFontSize": "Увеличете размера на шрифта",
+            "decreaseFontSize": "Намаляване на размера на шрифта",
+            "autoFormat": "Автоматично форматиране"
         },
         "examples": {
-            "menu": "Examples",
-            "couldNotInitializeExamples": "Could not initialize built-in examples.",
-            "builtInExamples": "Built-in examples",
-            "customLibrary": "Examples from Custom Libraries",
-            "for": "Examples for {0}",
-            "forAny": "Examples for any board"
+            "menu": "Примери",
+            "couldNotInitializeExamples": "Не можа да се инициализира вградените примери.",
+            "builtInExamples": "Вградени примери",
+            "customLibrary": "Примери от персонализирани библиотеки",
+            "for": "Примери за {0}",
+            "forAny": "Примери за всяка платка"
         },
         "help": {
-            "search": "Search on Arduino.cc",
-            "keyword": "Type a keyword",
-            "gettingStarted": "Getting Started",
-            "environment": "Environment",
-            "troubleshooting": "Troubleshooting",
-            "reference": "Reference",
-            "findInReference": "Find in Reference",
-            "faq": "Frequently Asked Questions",
-            "visit": "Visit Arduino.cc"
+            "search": "Търсете в Arduino.cc",
+            "keyword": "Въведете ключова дума",
+            "gettingStarted": "Да започнем",
+            "environment": "Околна среда",
+            "troubleshooting": "Отстраняване на неизправности",
+            "reference": "Референция",
+            "findInReference": "Намерете в Референцията",
+            "faq": "Често задавани въпроси",
+            "visit": "Посетете Arduino.cc"
         },
         "certificate": {
-            "uploadRootCertificates": "Upload SSL Root Certificates",
-            "openContext": "Open context",
-            "remove": "Remove",
-            "upload": "Upload",
-            "addURL": "Add URL to fetch SSL certificate",
-            "enterURL": "Enter URL",
-            "selectCertificateToUpload": "1. Select certificate to upload",
-            "addNew": "Add New",
-            "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
-            "uploadingCertificates": "Uploading certificates.",
-            "certificatesUploaded": "Certificates uploaded.",
-            "uploadFailed": "Upload failed. Please try again.",
-            "selectBoard": "Select a board...",
-            "boardAtPort": "{0} at {1}",
-            "noSupportedBoardConnected": "No supported board connected"
+            "uploadRootCertificates": "Качете SSL коренни сертификати",
+            "openContext": "Отворен контекст",
+            "remove": "Премахване",
+            "upload": "Качване",
+            "addURL": "Добавете URL за извличане на SSL сертификат",
+            "enterURL": "Въведете URL",
+            "selectCertificateToUpload": "1. Изберете сертификат за качване",
+            "addNew": "Добави нов",
+            "selectDestinationBoardToUpload": "2. Изберете платка и качете сертификат",
+            "uploadingCertificates": "Качване на сертификати.",
+            "certificatesUploaded": "Качени сертификати.",
+            "uploadFailed": "Качването не бе успешно. Моля, опитайте отново.",
+            "selectBoard": "Изберете платка,,,",
+            "boardAtPort": "{0} в {1}",
+            "noSupportedBoardConnected": "Няма свързана поддържана платка"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
-            "selectBoard": "Select Board",
-            "checkUpdates": "Check Updates",
-            "selectVersion": "Select firmware version",
-            "install": "Install",
-            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
-            "installingFirmware": "Installing firmware.",
-            "successfullyInstalled": "Firmware succesfully installed.",
-            "failedInstall": "Installation failed. Please try again."
+            "updater": "WiFi101 / WiFiNINA Обновяване на фърмуера",
+            "selectBoard": "Изберете платка",
+            "checkUpdates": "Проверете актуализации",
+            "selectVersion": "Изберете версия на фърмуера",
+            "install": "Инсталирай",
+            "overwriteSketch": "Инсталацията ще презапише скицата на платката.",
+            "installingFirmware": "Инсталиране на фърмуер.",
+            "successfullyInstalled": "Фърмуерът е инсталиран успешно.",
+            "failedInstall": "Неуспешно инсталиране. Моля, опитайте отново."
         },
         "dialog": {
-            "dontAskAgain": "Don't ask again"
+            "dontAskAgain": "Не питай отново"
         },
         "userFields": {
-            "cancel": "Cancel",
-            "upload": "Upload"
+            "cancel": "Отмяна",
+            "upload": "Качване"
         },
         "serial": {
-            "toggleTimestamp": "Toggle Timestamp",
-            "autoscroll": "Autoscroll",
-            "timestamp": "Timestamp",
-            "noLineEndings": "No Line Ending",
-            "newLine": "New Line",
+            "toggleTimestamp": "Превключване на клеймото за време",
+            "autoscroll": "Автоматично превъртане",
+            "timestamp": "Печат за време",
+            "noLineEndings": "Без край на реда",
+            "newLine": "Нов ред",
             "carriageReturn": "Carriage Return",
-            "newLineCarriageReturn": "Both NL & CR",
-            "notConnected": "Not connected. Select a board and a port to connect automatically.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
-            "connectionBusy": "Connection failed. Serial port is busy: {0}",
-            "disconnected": "Disconnected {0} from {1}.",
-            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
-            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
-            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
+            "newLineCarriageReturn": "Както NL, така и CR",
+            "notConnected": "Няма връзка. Изберете платка и порт за автоматично свързване.",
+            "message": "Съобщение ({0} + Enter, за да изпратите съобщение до „{1}“ на „{2}“",
+            "connectionBusy": "Свързването е неуспешно. Серийният порт е зает: {0}",
+            "disconnected": "Прекъснато е връзката на {0} с {1}.",
+            "unexpectedError": "Неочаквана грешка. Повторно свързване на {0} на порт {1}.",
+            "failedReconnect": "Неуспешно свързване на {0} към серийния порт след 10 последователни опита. Серийният порт {1} е зает.",
+            "reconnect": "Повторно свързване на {0} към {1} след {2} секунди..."
         },
         "component": {
-            "uninstall": "Uninstall",
-            "uninstallMsg": "Do you want to uninstall {0}?",
-            "by": "by",
-            "version": "Version {0}",
-            "moreInfo": "More info",
-            "install": "INSTALL",
-            "filterSearch": "Filter your search..."
+            "uninstall": "Деинсталиране",
+            "uninstallMsg": "Искате ли да деинсталирате {0}?",
+            "by": "от",
+            "version": "Версия {0}",
+            "moreInfo": "Повече информация",
+            "install": "ИНСТАЛИРАЙ",
+            "filterSearch": "Филтрирайте търсенето си..."
         },
         "electron": {
-            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "unsavedChanges": "Any unsaved changes will not be saved."
+            "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
+            "unsavedChanges": "Всички незапазени промени няма да бъдат запазени."
         },
         "compile": {
-            "error": "Compilation error: {0}"
+            "error": "Грешка при компилация: {0}"
         },
         "upload": {
-            "error": "{0} error: {1}"
+            "error": "{0} грешка: {1}"
         },
         "burnBootloader": {
-            "error": "Error while burning the bootloader: {0}"
+            "error": "Грешка при записване на зареждащия инструмент: {0}"
         }
     },
     "theia": {
         "core": {
-            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "offline": "Offline",
-            "daemonOffline": "CLI Daemon Offline",
-            "cannotConnectBackend": "Cannot connect to the backend.",
-            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
+            "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
+            "offline": "Офлайн",
+            "daemonOffline": "CLI Daemon офлайн",
+            "cannotConnectBackend": "Не може да се свърже с бекенда.",
+            "cannotConnectDaemon": "Не може да се свърже с демона на CLI."
         },
         "debug": {
-            "start": "Start...",
-            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
-            "startError": "There was an error starting the debug session, check the logs for more details."
+            "start": "Започнете...",
+            "typeNotSupported": "Типът на сесията за отстраняване на грешки „{0}“ не се поддържа.",
+            "startError": "Възникна грешка при стартиране на сесията за отстраняване на грешки, проверете регистрационните файлове за повече подробности."
         },
         "editor": {
-            "unsavedTitle": "Unsaved – {0}"
+            "unsavedTitle": "Незапазено – {0}"
         },
         "messages": {
-            "expand": "Expand",
-            "collapse": "Collapse"
+            "expand": "Разгънете",
+            "collapse": "Свиване"
         },
         "workspace": {
-            "fileNewName": "Name for new file",
-            "invalidFilename": "Invalid filename.",
-            "invalidExtension": ".{0} is not a valid extension",
-            "newFileName": "New name for file",
-            "deleteCurrentSketch": "Do you want to delete the current sketch?",
-            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+            "fileNewName": "Име за нов файл",
+            "invalidFilename": "Невалидно име на файла.",
+            "invalidExtension": ".{0} не е валидно разширение",
+            "newFileName": "Ново име на файла",
+            "deleteCurrentSketch": "Искате ли да изтриете текущата скица?",
+            "sketchDirectoryError": "При създаването на директорията на скицата възникна грешка. Вижте дневника за повече подробности. Приложението вероятно няма да работи според очакванията."
         }
     },
     "cloud": {
-        "GoToCloud": "GO TO CLOUD"
+        "GoToCloud": "КЪМ ОБЛАКА"
     }
 }
