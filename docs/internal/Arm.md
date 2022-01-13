@@ -42,10 +42,10 @@ Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`)
     - `libx11-dev`, and
     - `libxkbfile-dev`
 
-4. [Build it](https://github.com/bcmi-labs/arduino-editor#build-from-source) from the source:
+4. [Build it](../../BUILDING.md#build-from-source) from the source:
     ```
-    git clone https://github.com/bcmi-labs/arduino-editor.git \
-    && cd arduino-editor \
+    git clone https://github.com/arduino/arduino-ide.git \
+    && cd arduino-ide \
     && yarn \
     && yarn rebuild:electron \
     && yarn --cwd ./electron-app start
