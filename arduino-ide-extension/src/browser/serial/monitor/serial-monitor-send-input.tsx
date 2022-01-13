@@ -80,7 +80,7 @@ export class SerialMonitorSendInput extends React.Component<
     const { board, port } = serialConfig;
     return nls.localize(
       'arduino/serial/message',
-      "Message ({0} + Enter to send message to '{1}' on '{2}'",
+      "Message ({0} + Enter to send message to '{1}' on '{2}')",
       isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
       board
         ? Board.toString(board, {

@@ -108,7 +108,7 @@
             "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
             "configDialogTitle": "Select Other Board & Port",
             "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
-            "configDialog2": "If you only select a Board you will be able just to compile, but not to upload your sketch.",
+            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Please pick a board connected to the port you have selected.",
             "showAllAvailablePorts": "Shows all available ports when enabled",
             "programmer": "Programmer",
@@ -173,7 +173,7 @@
             "showFolder": "Show Sketch Folder",
             "sketch": "Sketch",
             "moving": "Moving",
-            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named as \"{1}\".\nCreate this folder, move the file, and continue?",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
             "saveFolderAs": "Save sketch folder as...",
             "sketchbook": "Sketchbook",
@@ -243,14 +243,14 @@
             "noSupportedBoardConnected": "No supported board connected"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
             "selectBoard": "Select Board",
             "checkUpdates": "Check Updates",
             "selectVersion": "Select firmware version",
             "install": "Install",
             "overwriteSketch": "Installation will overwrite the Sketch on the board.",
             "installingFirmware": "Installing firmware.",
-            "successfullyInstalled": "Firmware succesfully installed.",
+            "successfullyInstalled": "Firmware successfully installed.",
             "failedInstall": "Installation failed. Please try again."
         },
         "dialog": {
@@ -269,7 +269,7 @@
             "carriageReturn": "Carriage Return",
             "newLineCarriageReturn": "Both NL & CR",
             "notConnected": "Not connected. Select a board and a port to connect automatically.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
             "connectionBusy": "Connection failed. Serial port is busy: {0}",
             "disconnected": "Disconnected {0} from {1}.",
             "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",

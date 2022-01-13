@@ -6,7 +6,7 @@ Arduino IDE provides a Remote Sketchbook feature that can be used to upload sket
 
 
 In order to use this feature, a user must be registered on [Arduino Cloud](https://store.arduino.cc/digital/create) and logged in.
-This feature is completely optional and can be disabled in the IDE via _"File > Advanced > Hide Remote Sketchbook"_ menu item.
+This feature is completely optional and can be disabled in the IDE via the _"File > Advanced > Hide Remote Sketchbook"_ menu item.
 
 ## Developer guide
 A developer could use the content of this repo to create a customized version of this feature and implement a different remote storage as follows:

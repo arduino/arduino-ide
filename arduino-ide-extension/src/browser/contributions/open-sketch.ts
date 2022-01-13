@@ -190,7 +190,7 @@ export class OpenSketch extends SketchContribution {
         ],
         message: nls.localize(
           'arduino/sketch/movingMsg',
-          'The file "{0}" needs to be inside a sketch folder named as "{1}".\nCreate this folder, move the file, and continue?',
+          'The file "{0}" needs to be inside a sketch folder named "{1}".\nCreate this folder, move the file, and continue?',
           nameWithExt,
           name
         ),
