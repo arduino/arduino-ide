@@ -40,22 +40,32 @@ The _frontend_ is running as an Electron renderer process and can invoke service
 ## Build from source
 
 If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and if you want to contribute to the
-project, you should be able to build the Arduino IDE locally. Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
+project, you should be able to build the Arduino IDE locally.
+Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
 
-### Build
-```sh
-yarn
-```
+Once you have all the tools installed, you can build the editor following these steps
 
-### Rebuild the native dependencies
-```sh
-yarn rebuild:electron
-```
+1. Install the dependencies and build
+    ```sh
+    yarn
+    ```
 
-### Start
-```sh
-yarn start
-```
+2. Rebuild the dependencies
+    ```sh
+    yarn rebuild:browser
+    ```
+
+3. Rebuild the electron dependencies
+    ```sh
+    cd electron-app
+    yarn rebuild:browser
+    cd ..
+    ```
+
+4. Start the application
+    ```sh
+    yarn start
+    ```
 
 ### CI
 
