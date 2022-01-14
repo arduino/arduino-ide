@@ -96,7 +96,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         e.details
       );
       this.responseService.appendToOutput({
-        chunk: `${errorMessage}}\n`,
+        chunk: `${errorMessage}\n`,
         severity: 'error',
       });
       throw new Error(errorMessage);
