@@ -58,7 +58,7 @@ Once you have all the tools installed, you can build the editor following these 
 3. Rebuild the electron dependencies
     ```sh
     cd electron-app
-    yarn rebuild:electron
+    yarn theia rebuild:electron
     cd ..
     ```
 
