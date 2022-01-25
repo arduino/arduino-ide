@@ -10,41 +10,73 @@
   const response = await octokit.rest.repos.listReleases({
     owner: 'arduino',
     repo: 'arduino-ide',
-  });
+  }).catch(err => {
+    console.error(err);
+    process.exit(1);
+  })
 
-  if (!response || response.status !== 200) {
-    console.log('fancù');
-    return;
-  }
   const releases = response.data;
 
   let fullChangelog = releases.reduce((acc, item) => {
-    return acc + `\n\n${item.body}`;
+    // Process each line separately
+    const body = item.body.split('\n').map(processLine).join('\n')
+    // item.name is the name of the release changelog
+    return acc + `# ${item.name}\n\n${body}\n\n---\n\n`;
   }, '');
-
-  fullChangelog = replaceIssueNumber(fullChangelog);
-  fullChangelog = replaceIssueLink(fullChangelog);
-  fullChangelog = replaceCompareLink(fullChangelog);
 
   console.log(fullChangelog);
 })();
 
-const replaceIssueLink = (str) => {
-  const regex =
-    /(https:\/\/github\.com\/arduino\/arduino-ide\/(issues|pull)\/(\d*))/gm;
-  const substr = `[#$3]($1)`;
-  return str.replace(regex, substr);
-};
 
-const replaceIssueNumber = (str) => {
-  const regex = /#(\d+)/gm;
-  const subst = `[#$1](https://github.com/arduino/arduino-ide/pull/$1)`;
-  return str.replace(regex, subst);
-};
+// processLine applies different substitutions to line string.
+// We're assuming that there are no more than one substitution
+// per line to be applied.
+const processLine = (line) => {
+  // Check if a link with one of the following format exists:
+  // * [#123](https://github.com/arduino/arduino-ide/pull/123)
+  // * [#123](https://github.com/arduino/arduino-ide/issues/123)
+  // * [#123](https://github.com/arduino/arduino-ide/pull/123/)
+  // * [#123](https://github.com/arduino/arduino-ide/issues/123/)
+  // If it does return the line as is.
+  let r = /(\(|\[)#\d+(\)|\])(\(|\[)https:\/\/github\.com\/arduino\/arduino-ide\/(pull|issues)\/(\d+)\/?(\)|\])/gm;
+  if (r.test(line)) {
+    return line;
+  }
 
-const replaceCompareLink = (str) => {
-  const regex =
-    /(https:\/\/github.com\/arduino\/arduino-ide\/compare\/(.*))\s/gm;
-  const subst = `[\`$2\`]($1)`;
-  return str.replace(regex, subst);
-};
+  // Check if a issue or PR link with the following format exists:
+  // * #123
+  // If it does it's changed to:
+  // * [#123](https://github.com/arduino/arduino-ide/pull/123)
+  r = /#(\d+)/gm;
+  if (r.test(line)) {
+    return line.replace(r, `[#$1](https://github.com/arduino/arduino-ide/pull/$1)`)
+  }
+
+  // Check if a link with one of the following format exists:
+  // * https://github.com/arduino/arduino-ide/pull/123
+  // * https://github.com/arduino/arduino-ide/issues/123
+  // * https://github.com/arduino/arduino-ide/pull/123/
+  // * https://github.com/arduino/arduino-ide/issues/123/
+  // If it does it's changed respectively to:
+  // * [#123](https://github.com/arduino/arduino-ide/pull/123)
+  // * [#123](https://github.com/arduino/arduino-ide/issues/123)
+  // * [#123](https://github.com/arduino/arduino-ide/pull/123/)
+  // * [#123](https://github.com/arduino/arduino-ide/issues/123/)
+  r = /(https:\/\/github\.com\/arduino\/arduino-ide\/(pull|issues)\/(\d+)\/?)/gm;
+  if (r.test(line)) {
+    return line.replace(r, `[#$3]($1)`);
+  }
+
+  // Check if a link with the following format exists:
+  // * https://github.com/arduino/arduino-ide/compare/2.0.0-rc2...2.0.0-rc3
+  // * https://github.com/arduino/arduino-ide/compare/2.0.0-rc2...2.0.0-rc3/
+  // If it does it's changed to:
+  // * [`2.0.0-rc2...2.0.0-rc3`](https://github.com/arduino/arduino-ide/compare/2.0.0-rc2...2.0.0-rc3)
+  r = /(https:\/\/github\.com\/arduino\/arduino-ide\/compare\/([^\/]*))\/?\s?/gm;
+  if (r.test(line)) {
+    return line.replace(r, '[`$2`]($1)');;
+  }
+
+  // If nothing matches just return the line as is
+  return line;
+}
