@@ -13,6 +13,8 @@ import {
   IDEUpdaterServiceClient,
   ProgressInfo,
 } from '../../../common/protocol/ide-updater-service';
+import { LocalStorageService } from '@theia/core/lib/browser';
+import { SKIP_IDE_VERSION } from '../../arduino-frontend-contribution';
 
 @injectable()
 export class IDEUpdaterDialogWidget extends ReactWidget {
@@ -29,6 +31,9 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
 
   @inject(IDEUpdaterServiceClient)
   protected readonly updaterClient: IDEUpdaterServiceClient;
+
+  @inject(LocalStorageService)
+  protected readonly localStorageService: LocalStorageService;
 
   init(updateInfo: UpdateInfo, onClose: () => void): void {
     this.updateInfo = updateInfo;
@@ -52,7 +57,11 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
     });
   }
 
-  onSkipVersion(): void {
+  async onSkipVersion(): Promise<void> {
+    this.localStorageService.setData<string>(
+      SKIP_IDE_VERSION,
+      this.updateInfo.version
+    );
     this.close();
   }
 

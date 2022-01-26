@@ -74,6 +74,7 @@ import { IDEUpdaterServiceClient } from '../common/protocol/ide-updater-service'
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
+export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -298,8 +299,12 @@ export class ArduinoFrontendContribution
       console.log('onDownloadFinished', e);
     });
 
-    this.updater.checkForUpdates().then((updateInfo) => {
+    this.updater.checkForUpdates().then(async (updateInfo) => {
       if (!updateInfo) return;
+      const versionToSkip = await this.localStorageService.getData<string>(
+        SKIP_IDE_VERSION
+      );
+      if (versionToSkip === updateInfo.version) return;
       this.updaterDialog.open({
         version: updateInfo.version,
         changelog: 'lol',
