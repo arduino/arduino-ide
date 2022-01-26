@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn copy-serial-plotter && yarn clean && yarn download-examples && yarn build && yarn test",
     "clean": "rimraf lib",
+    "compose-changelog": "node ./scripts/compose-changelog.js",
     "download-cli": "node ./scripts/download-cli.js",
     "download-fwuploader": "node ./scripts/download-fwuploader.js",
     "copy-serial-plotter": "npx ncp ../node_modules/arduino-serial-plotter-webapp ./build/arduino-serial-plotter-webapp",

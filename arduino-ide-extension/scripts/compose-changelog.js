@@ -1,7 +1,10 @@
 // @ts-check
 
+
 (async () => {
   const { Octokit } = require('@octokit/rest');
+  const fs = require("fs");
+  const path = require("path");
 
   const octokit = new Octokit({
     userAgent: 'Arduino IDE compose-changelog.js',
@@ -24,7 +27,22 @@
     return acc + `# ${item.name}\n\n${body}\n\n---\n\n`;
   }, '');
 
-  console.log(fullChangelog);
+  const changelogFile = path.resolve(process.argv[process.argv.length - 1]);
+
+  await fs.writeFile(
+    changelogFile,
+    fullChangelog,
+    {
+      flag: "w+",
+    },
+    err => {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+      console.log("Changelog written to", changelogFile);
+    }
+  )
 })();
 
 
