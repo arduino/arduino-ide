@@ -26,7 +26,7 @@ jobs:
           mkdir "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}"
 
           # Get the changelog file name to build
-          CHANGELOG_FILE_NAME="${{ steps.tag_name.outputs.TAG_NAME }}-${date --iso-8601=s}.md"
+          CHANGELOG_FILE_NAME="${{ steps.tag_name.outputs.TAG_NAME }}-$(date --iso-8601=s).md"
 
           # Create manifest file pointing to latest changelog file name
           echo "$CHANGELOG_FILE_NAME" >> "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}/latest.txt"
