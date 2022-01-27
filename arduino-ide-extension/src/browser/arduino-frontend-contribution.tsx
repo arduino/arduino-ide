@@ -264,7 +264,7 @@ export class ArduinoFrontendContribution
     });
   }
 
-  onStart(app: FrontendApplication): void {
+  async onStart(app: FrontendApplication): Promise<void> {
     // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
     for (const viewContribution of [
       this.fileNavigatorContributions,
@@ -299,17 +299,21 @@ export class ArduinoFrontendContribution
       console.log('onDownloadFinished', e);
     });
 
-    this.updater.checkForUpdates().then(async (updateInfo) => {
-      if (!updateInfo) return;
-      const versionToSkip = await this.localStorageService.getData<string>(
-        SKIP_IDE_VERSION
-      );
-      if (versionToSkip === updateInfo.version) return;
-      this.updaterDialog.open({
-        version: updateInfo.version,
-        changelog: 'lol',
+    if (
+      await this.arduinoPreferences.get('arduino.ide.checkForUpdatesOnStartup')
+    ) {
+      this.updater.checkForUpdates().then(async (updateInfo) => {
+        if (!updateInfo) return;
+        const versionToSkip = await this.localStorageService.getData<string>(
+          SKIP_IDE_VERSION
+        );
+        if (versionToSkip === updateInfo.version) return;
+        this.updaterDialog.open({
+          version: updateInfo.version,
+          changelog: 'lol',
+        });
       });
-    });
+    }
 
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {
       if (selectedBoard) {

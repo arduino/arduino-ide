@@ -18,28 +18,31 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
 
-const EDITOR_SETTING = 'editor';
-const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
-const AUTO_SAVE_SETTING = `${EDITOR_SETTING}.autoSave`;
-const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
-const ARDUINO_SETTING = 'arduino';
-const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
-const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
-const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
-const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
-const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
-const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
-const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
-const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
-const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
-const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
-const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
+export const EDITOR_SETTING = 'editor';
+export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
+export const AUTO_SAVE_SETTING = `${EDITOR_SETTING}.autoSave`;
+export const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
+export const ARDUINO_SETTING = 'arduino';
+export const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
+export const IDE_SETTING = `${ARDUINO_SETTING}.ide`;
+export const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
+export const CHECK_FOR_UPDATES_ON_STARTUP_SETTING = `${IDE_SETTING}.checkForUpdatesOnStartup`;
+export const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
+export const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
+export const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
+export const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
+export const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
+export const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
+export const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
+export const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
+export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 
 export interface Settings extends Index {
   editorFontSize: number; // `editor.fontSize`
   themeId: string; // `workbench.colorTheme`
   autoSave: 'on' | 'off'; // `editor.autoSave`
   quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
+  checkForUpdatesOnStartup: boolean;
 
   languages: string[]; // `languages from the plugins`
   currentLanguage: string;
@@ -111,6 +114,7 @@ export class SettingsService {
       verboseOnUpload,
       verifyAfterUpload,
       sketchbookShowAllFiles,
+      checkForUpdatesOnStartup,
       cliConfig,
     ] = await Promise.all([
       ['en', ...(await this.localizationProvider.getAvailableLanguages())],
@@ -135,6 +139,10 @@ export class SettingsService {
       this.preferenceService.get<boolean>(UPLOAD_VERBOSE_SETTING, true),
       this.preferenceService.get<boolean>(UPLOAD_VERIFY_SETTING, true),
       this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
+      this.preferenceService.get<boolean>(
+        CHECK_FOR_UPDATES_ON_STARTUP_SETTING,
+        true
+      ),
       this.configService.getConfiguration(),
     ]);
     const { additionalUrls, sketchDirUri, network } = cliConfig;
@@ -156,6 +164,7 @@ export class SettingsService {
       additionalUrls,
       sketchbookPath,
       network,
+      checkForUpdatesOnStartup,
     };
   }
 
@@ -235,6 +244,7 @@ export class SettingsService {
       additionalUrls,
       network,
       sketchbookShowAllFiles,
+      checkForUpdatesOnStartup,
     } = this._settings;
     const [config, sketchDirUri] = await Promise.all([
       this.configService.getConfiguration(),
@@ -299,6 +309,11 @@ export class SettingsService {
       this.preferenceService.set(
         SHOW_ALL_FILES_SETTING,
         sketchbookShowAllFiles,
+        PreferenceScope.User
+      ),
+      this.preferenceService.set(
+        CHECK_FOR_UPDATES_ON_STARTUP_SETTING,
+        checkForUpdatesOnStartup,
         PreferenceScope.User
       ),
       this.configService.setConfiguration(config),

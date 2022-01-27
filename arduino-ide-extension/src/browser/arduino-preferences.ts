@@ -72,6 +72,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
         'True to enable automatic updates'
       ),
     },
+    'arduino.ide.checkForUpdatesOnStartup': {
+      type: 'boolean',
+      default: true,
+      description: nls.localize(
+        'arduino/preferences/ide.checkForUpdatesOnStartup',
+        'Check for IDE updates on start-up'
+      ),
+    },
     'arduino.ide.updateChannel': {
       type: 'string',
       enum: ['latest', 'nightly', 'none'],
@@ -181,6 +189,7 @@ export interface ArduinoConfiguration {
   'arduino.window.autoScale': boolean;
   'arduino.window.zoomLevel': number;
   'arduino.window.autoUpdate': boolean;
+  'arduino.ide.checkForUpdatesOnStartup': boolean;
   'arduino.ide.updateChannel': 'latest' | 'nightly' | 'none';
   'arduino.board.certificates': string;
   'arduino.sketchbook.showAllFiles': boolean;

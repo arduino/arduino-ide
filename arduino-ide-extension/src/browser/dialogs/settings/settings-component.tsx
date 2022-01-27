@@ -282,6 +282,17 @@ export class SettingsComponent extends React.Component<
             'Editor Quick Suggestions'
           )}
         </label>
+        <label className="flex-line">
+          <input
+            type="checkbox"
+            checked={this.state.checkForUpdatesOnStartup}
+            onChange={this.checkForUpdatesOnStartupChanged}
+          />
+          {nls.localize(
+            'arduino/preferences/checkForUpdatesOnStartup',
+            'Check for IDE updates on start-up'
+          )}
+        </label>
         <div className="flex-line">
           {nls.localize(
             'arduino/preferences/additionalManagerURLs',
@@ -432,7 +443,9 @@ export class SettingsComponent extends React.Component<
     );
   }
 
-  protected noopKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  protected noopKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ): void => {
     if (this.isControlKey(event)) {
       return;
     }
@@ -442,7 +455,7 @@ export class SettingsComponent extends React.Component<
 
   protected numbersOnlyKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (this.isControlKey(event)) {
       return;
     }
@@ -454,7 +467,7 @@ export class SettingsComponent extends React.Component<
     }
   };
 
-  protected browseSketchbookDidClick = async () => {
+  protected browseSketchbookDidClick = async (): Promise<void> => {
     const uri = await this.props.fileDialogService.showOpenDialog({
       title: nls.localize(
         'arduino/preferences/newSketchbookLocation',
@@ -471,7 +484,7 @@ export class SettingsComponent extends React.Component<
     }
   };
 
-  protected editAdditionalUrlDidClick = async () => {
+  protected editAdditionalUrlDidClick = async (): Promise<void> => {
     const additionalUrls = await new AdditionalUrlsDialog(
       this.state.additionalUrls,
       this.props.windowService
@@ -483,7 +496,7 @@ export class SettingsComponent extends React.Component<
 
   protected editorFontSizeDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     const { value } = event.target;
     if (value) {
       this.setState({ editorFontSize: parseInt(value, 10) });
@@ -492,7 +505,7 @@ export class SettingsComponent extends React.Component<
 
   protected additionalUrlsDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({
       additionalUrls: event.target.value.split(',').map((url) => url.trim()),
     });
@@ -500,13 +513,13 @@ export class SettingsComponent extends React.Component<
 
   protected autoScaleInterfaceDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({ autoScaleInterface: event.target.checked });
   };
 
   protected interfaceScaleDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     const { value } = event.target;
     const percentage = parseInt(value, 10);
     if (isNaN(percentage)) {
@@ -520,25 +533,25 @@ export class SettingsComponent extends React.Component<
 
   protected verifyAfterUploadDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({ verifyAfterUpload: event.target.checked });
   };
 
   protected sketchbookShowAllFilesDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({ sketchbookShowAllFiles: event.target.checked });
   };
 
   protected autoSaveDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({ autoSave: event.target.checked ? 'on' : 'off' });
   };
 
   protected quickSuggestionsOtherDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     // need to persist react events through lifecycle https://reactjs.org/docs/events.html#event-pooling
     const newVal = event.target.checked ? true : false;
 
@@ -552,7 +565,9 @@ export class SettingsComponent extends React.Component<
     });
   };
 
-  protected themeDidChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  protected themeDidChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
     const { selectedIndex } = event.target.options;
     const theme = ThemeService.get().getThemes()[selectedIndex];
     if (theme) {
@@ -562,14 +577,14 @@ export class SettingsComponent extends React.Component<
 
   protected languageDidChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  ): void => {
     const selectedLanguage = event.target.value;
     this.setState({ currentLanguage: selectedLanguage });
   };
 
   protected compilerWarningsDidChange = (
     event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  ): void => {
     const { selectedIndex } = event.target.options;
     const compilerWarnings = CompilerWarningLiterals[selectedIndex];
     if (compilerWarnings) {
@@ -579,26 +594,34 @@ export class SettingsComponent extends React.Component<
 
   protected verboseOnCompileDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({ verboseOnCompile: event.target.checked });
   };
 
   protected verboseOnUploadDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     this.setState({ verboseOnUpload: event.target.checked });
+  };
+
+  protected checkForUpdatesOnStartupChanged = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    this.setState({ checkForUpdatesOnStartup: event.target.checked });
   };
 
   protected sketchpathDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     const sketchbookPath = event.target.value;
     if (sketchbookPath) {
       this.setState({ sketchbookPath });
     }
   };
 
-  protected noProxyDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  protected noProxyDidChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     if (event.target.checked) {
       this.setState({ network: 'none' });
     } else {
@@ -608,7 +631,7 @@ export class SettingsComponent extends React.Component<
 
   protected manualProxyDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (event.target.checked) {
       this.setState({ network: Network.Default() });
     } else {
@@ -618,7 +641,7 @@ export class SettingsComponent extends React.Component<
 
   protected httpProtocolDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
       network.protocol = event.target.checked ? 'http' : 'socks';
@@ -628,7 +651,7 @@ export class SettingsComponent extends React.Component<
 
   protected socksProtocolDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
       network.protocol = event.target.checked ? 'socks' : 'http';
@@ -638,7 +661,7 @@ export class SettingsComponent extends React.Component<
 
   protected hostnameDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
       network.hostname = event.target.value;
@@ -646,7 +669,9 @@ export class SettingsComponent extends React.Component<
     }
   };
 
-  protected portDidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  protected portDidChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
       network.port = event.target.value;
@@ -656,7 +681,7 @@ export class SettingsComponent extends React.Component<
 
   protected usernameDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
       network.username = event.target.value;
@@ -666,7 +691,7 @@ export class SettingsComponent extends React.Component<
 
   protected passwordDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
       network.password = event.target.value;
