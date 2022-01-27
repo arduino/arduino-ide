@@ -27,7 +27,12 @@
     return acc + `# ${item.name}\n\n${body}\n\n---\n\n`;
   }, '');
 
-  const changelogFile = path.resolve(process.argv[process.argv.length - 1]);
+  const args = process.argv.slice(2)
+  if (args.length == 0) {
+    console.error("Missing argument to destination file")
+    process.exit(1)
+  }
+  const changelogFile = path.resolve(args[0]);
 
   await fs.writeFile(
     changelogFile,
