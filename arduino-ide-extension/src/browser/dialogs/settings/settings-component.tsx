@@ -282,17 +282,6 @@ export class SettingsComponent extends React.Component<
             'Editor Quick Suggestions'
           )}
         </label>
-        <label className="flex-line">
-          <input
-            type="checkbox"
-            checked={this.state.checkForUpdatesOnStartup}
-            onChange={this.checkForUpdatesOnStartupChanged}
-          />
-          {nls.localize(
-            'arduino/preferences/checkForUpdatesOnStartup',
-            'Check for IDE updates on start-up'
-          )}
-        </label>
         <div className="flex-line">
           {nls.localize(
             'arduino/preferences/additionalManagerURLs',
@@ -602,12 +591,6 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     this.setState({ verboseOnUpload: event.target.checked });
-  };
-
-  protected checkForUpdatesOnStartupChanged = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    this.setState({ checkForUpdatesOnStartup: event.target.checked });
   };
 
   protected sketchpathDidChange = (

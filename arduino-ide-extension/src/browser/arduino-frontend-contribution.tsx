@@ -299,21 +299,17 @@ export class ArduinoFrontendContribution
       console.log('onDownloadFinished', e);
     });
 
-    if (
-      await this.arduinoPreferences.get('arduino.ide.checkForUpdatesOnStartup')
-    ) {
-      this.updater.checkForUpdates().then(async (updateInfo) => {
-        if (!updateInfo) return;
-        const versionToSkip = await this.localStorageService.getData<string>(
-          SKIP_IDE_VERSION
-        );
-        if (versionToSkip === updateInfo.version) return;
-        this.updaterDialog.open({
-          version: updateInfo.version,
-          changelog: 'lol',
-        });
+    this.updater.checkForUpdates().then(async (updateInfo) => {
+      if (!updateInfo) return;
+      const versionToSkip = await this.localStorageService.getData<string>(
+        SKIP_IDE_VERSION
+      );
+      if (versionToSkip === updateInfo.version) return;
+      this.updaterDialog.open({
+        version: updateInfo.version,
+        changelog: 'lol',
       });
-    }
+    });
 
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {
       if (selectedBoard) {

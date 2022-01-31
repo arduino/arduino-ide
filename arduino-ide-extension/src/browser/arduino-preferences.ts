@@ -64,6 +64,7 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: 0,
     },
+    /*
     'arduino.ide.autoUpdate': {
       type: 'boolean',
       default: true,
@@ -80,6 +81,7 @@ export const ArduinoConfigSchema: PreferenceSchema = {
         'Check for IDE updates on start-up'
       ),
     },
+    */
     'arduino.ide.updateChannel': {
       type: 'string',
       enum: ['latest', 'nightly', 'none'],

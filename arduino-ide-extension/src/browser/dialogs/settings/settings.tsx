@@ -42,7 +42,6 @@ export interface Settings extends Index {
   themeId: string; // `workbench.colorTheme`
   autoSave: 'on' | 'off'; // `editor.autoSave`
   quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
-  checkForUpdatesOnStartup: boolean;
 
   languages: string[]; // `languages from the plugins`
   currentLanguage: string;
@@ -114,7 +113,6 @@ export class SettingsService {
       verboseOnUpload,
       verifyAfterUpload,
       sketchbookShowAllFiles,
-      checkForUpdatesOnStartup,
       cliConfig,
     ] = await Promise.all([
       ['en', ...(await this.localizationProvider.getAvailableLanguages())],
@@ -139,10 +137,6 @@ export class SettingsService {
       this.preferenceService.get<boolean>(UPLOAD_VERBOSE_SETTING, true),
       this.preferenceService.get<boolean>(UPLOAD_VERIFY_SETTING, true),
       this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
-      this.preferenceService.get<boolean>(
-        CHECK_FOR_UPDATES_ON_STARTUP_SETTING,
-        true
-      ),
       this.configService.getConfiguration(),
     ]);
     const { additionalUrls, sketchDirUri, network } = cliConfig;
@@ -164,7 +158,6 @@ export class SettingsService {
       additionalUrls,
       sketchbookPath,
       network,
-      checkForUpdatesOnStartup,
     };
   }
 
@@ -244,7 +237,6 @@ export class SettingsService {
       additionalUrls,
       network,
       sketchbookShowAllFiles,
-      checkForUpdatesOnStartup,
     } = this._settings;
     const [config, sketchDirUri] = await Promise.all([
       this.configService.getConfiguration(),
@@ -309,11 +301,6 @@ export class SettingsService {
       this.preferenceService.set(
         SHOW_ALL_FILES_SETTING,
         sketchbookShowAllFiles,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        CHECK_FOR_UPDATES_ON_STARTUP_SETTING,
-        checkForUpdatesOnStartup,
         PreferenceScope.User
       ),
       this.configService.setConfiguration(config),
