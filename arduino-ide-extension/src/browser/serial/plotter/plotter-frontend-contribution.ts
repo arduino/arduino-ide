@@ -10,7 +10,7 @@ import { SerialModel } from '../serial-model';
 import { ArduinoMenus } from '../../menu/arduino-menus';
 import { Contribution } from '../../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
-import { ipcRenderer } from '@theia/core/shared/electron';
+import { ipcRenderer } from '@theia/electron/shared/electron';
 import { SerialConfig } from '../../../common/protocol';
 import { SerialConnectionManager } from '../serial-connection-manager';
 import { SerialPlotter } from './protocol';
