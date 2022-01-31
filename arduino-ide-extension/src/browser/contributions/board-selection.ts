@@ -278,8 +278,7 @@ PID: ${PID}`;
 
       // First we show addresses with recognized boards connected,
       // then all the rest.
-      const sortedIDs = Object.keys(ports);
-      sortedIDs.sort((left: string, right: string): number => {
+      const sortedIDs = Object.keys(ports).sort((left: string, right: string): number => {
         const [, leftBoards] = ports[left];
         const [, rightBoards] = ports[right];
         return rightBoards.length - leftBoards.length;
