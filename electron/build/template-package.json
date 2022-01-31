@@ -26,7 +26,7 @@
     "patch": "ncp ./patch/main.js ./src-gen/backend/main.js"
   },
   "engines": {
-    "node": ">=12.14.1 <13"
+    "node": ">=14.0.0 <15"
   },
   "repository": {
     "type": "git",
