@@ -185,8 +185,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         const selectedAvailableBoard = AvailableBoard.is(selectedBoard)
           ? selectedBoard
           : this._availableBoards.find((availableBoard) =>
-              Board.sameAs(availableBoard, selectedBoard)
-            );
+            Board.sameAs(availableBoard, selectedBoard)
+          );
         if (
           selectedAvailableBoard &&
           selectedAvailableBoard.selected &&
@@ -244,7 +244,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   }
 
   set boardsConfig(config: BoardsConfig.Config) {
-    this.doSetBoardsConfig(config);
+    this.setBoardsConfig(config);
     this.saveState().finally(() =>
       this.reconcileAvailableBoards().finally(() =>
         this.onBoardsConfigChangedEmitter.fire(this._boardsConfig)
@@ -256,7 +256,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._boardsConfig;
   }
 
-  protected doSetBoardsConfig(config: BoardsConfig.Config): void {
+  protected setBoardsConfig(config: BoardsConfig.Config): void {
     this.logger.info('Board config changed: ', JSON.stringify(config));
     this._boardsConfig = config;
     this.latestBoardsConfig = this._boardsConfig;
@@ -370,19 +370,19 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const find = (needle: Board & { port: Port }, haystack: AvailableBoard[]) =>
       haystack.find(
         (board) =>
-          Board.equals(needle, board) && Port.equals(needle.port, board.port)
+          Board.equals(needle, board) && Port.sameAs(needle.port, board.port)
       );
     const timeoutTask =
       !!timeout && timeout > 0
         ? new Promise<void>((_, reject) =>
-            setTimeout(
-              () => reject(new Error(`Timeout after ${timeout} ms.`)),
-              timeout
-            )
+          setTimeout(
+            () => reject(new Error(`Timeout after ${timeout} ms.`)),
+            timeout
           )
+        )
         : new Promise<void>(() => {
-            /* never */
-          });
+          /* never */
+        });
     const waitUntilTask = new Promise<void>((resolve) => {
       let candidate = find(what, this.availableBoards);
       if (candidate) {
@@ -409,7 +409,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         Port.sameAs(port, this.boardsConfig.selectedPort)
       )
     ) {
-      this.doSetBoardsConfig({
+      this.setBoardsConfig({
         selectedBoard: this.boardsConfig.selectedBoard,
         selectedPort: undefined,
       });
@@ -533,9 +533,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
   protected getLastSelectedBoardOnPortKey(port: Port | string): string {
     // TODO: we lose the port's `protocol` info (`serial`, `network`, etc.) here if the `port` is a `string`.
-    return `last-selected-board-on-port:${
-      typeof port === 'string' ? port : Port.toString(port)
-    }`;
+    return `last-selected-board-on-port:${typeof port === 'string' ? port : port.address
+      }`;
   }
 
   protected async loadState(): Promise<void> {

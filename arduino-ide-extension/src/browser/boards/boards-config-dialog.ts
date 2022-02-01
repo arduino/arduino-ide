@@ -84,7 +84,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
       ),
       nls.localize(
         'arduino/board/configDialog2',
-        'If you only select a Board you will be able just to compile, but not to upload your sketch.'
+        'If you only select a Board you will be able to compile, but not to upload your sketch.'
       ),
     ]) {
       const p = document.createElement('div');

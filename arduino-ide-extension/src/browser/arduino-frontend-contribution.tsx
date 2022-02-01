@@ -3,7 +3,6 @@ import * as React from 'react';
 import { remote } from 'electron';
 import {
   BoardsService,
-  Port,
   SketchesService,
   ExecutableService,
   Sketch,
@@ -228,7 +227,7 @@ export class ArduinoFrontendContribution
             ? nls.localize(
                 'arduino/common/selectedOn',
                 'on {0}',
-                Port.toString(selectedPort)
+                selectedPort.address
               )
             : nls.localize('arduino/common/notConnected', '[not connected]'),
           className: 'arduino-selected-port',

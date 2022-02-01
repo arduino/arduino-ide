@@ -1,0 +1,334 @@
+{
+    "arduino": {
+        "common": {
+            "offlineIndicator": "Wygląda na to, że jesteś w trybie offline. Bez połączenia z Internetem Arduino CLI może nie być w stanie pobrać wymaganych zasobów i może spowodować awarię. Połącz się z Internetem i uruchom ponownie aplikację.",
+            "noBoardSelected": "Nie wybrano płytki",
+            "selectedOn": "on {0}",
+            "notConnected": "[nie podłączone]",
+            "serialMonitor": "Monitor portu szeregowego",
+            "oldFormat": "'{0}' nadal używa starego formatu `.pde`. Czy chcesz się przełączyć na nowe rozszerzenie `.ino`?",
+            "later": "Później",
+            "selectBoard": "Wybierz płytkę",
+            "unknown": "Nieznany",
+            "processing": "Przetwarzanie",
+            "saveChangesToSketch": "Czy chcesz zapisać zmiany w tym sketchu przed zamknięciem?",
+            "loseChanges": "Jeśli nie zapiszesz, zmiany zostaną utracone."
+        },
+        "menu": {
+            "sketch": "Sketch",
+            "tools": "Narzędzia"
+        },
+        "debug": {
+            "optimizeForDebugging": "Optymalizuj pod kątem debugowania",
+            "debugWithMessage": "Debug - {0}",
+            "noPlatformInstalledFor": "Platforma nie jest zainstalowana dla '{0}'",
+            "debuggingNotSupported": "Debugowanie nie jest wspierane przez '{0}'"
+        },
+        "preferences": {
+            "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
+            "compile.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas kompilacji. Fałsz jest wartością domyślną.",
+            "compile.warnings": "Ustawia poziom ostrzeżeń w kompilatorze gcc. Domyślną wartością jest 'Brak'",
+            "upload.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas wgrywania. Fałsz jest wartością domyślną.",
+            "window.autoScale": "Prawda, jeśli interfejs użytkownika skaluje się automatycznie z rozmiarem czcionki.",
+            "window.zoomLevel": "Dostosuj poziom powiększenia okna. Oryginalny rozmiar to 0, a każdy przyrost powyżej (np. 1) lub poniżej (np. -1) oznacza odpowiednio powiększenie lub pomniejszenie o 20%. Możesz również wprowadzić ułamki dziesiętne, aby dostosować poziom powiększenia z większą dokładnością.",
+            "ide.autoUpdate": "Prawda, aby włączyć automatyczne sprawdzanie aktualizacji. IDE będzie automatycznie i okresowo sprawdzać dostępność aktualizacji.",
+            "board.certificates": "Lista certyfikatów, które można przesłać do płytki",
+            "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze sketcha. Fałsz jest wartością domyślną.",
+            "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
+            "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
+            "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
+            "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+            "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+            "auth.clientID": "The OAuth2 client ID.",
+            "auth.domain": "The OAuth2 domain.",
+            "auth.audience": "The OAuth2 audience.",
+            "auth.registerUri": "Identyfikator URI używany do zarejestrowania nowego użytkownika.",
+            "network": "Sieć",
+            "sketchbook.location": "Sketchbook location",
+            "browse": "Przeglądaj",
+            "files.inside.sketches": "Show files inside Sketches",
+            "editorFontSize": "Rozmiar czcionki edytora",
+            "interfaceScale": "Skalowanie interfejsu",
+            "showVerbose": "Show verbose output during",
+            "compilerWarnings": "Ostrzeżenia kompilatora",
+            "automatic": "Automatyczne",
+            "compile": "kompilacja",
+            "upload": "przesyłanie",
+            "verifyAfterUpload": "Weryfikuj kod po przesłaniu",
+            "checkForUpdates": "Sprawdź aktualizacje podczas uruchamiania",
+            "editorQuickSuggestions": "Editor Quick Suggestions",
+            "additionalManagerURLs": "Additional Boards Manager URLs",
+            "noProxy": "No proxy",
+            "manualProxy": "Konfiguracja ręczna proxy",
+            "newSketchbookLocation": "Select new sketchbook location",
+            "choose": "Choose",
+            "enterAdditionalURLs": "Wprowadź dodatkowe adresy URL, po jednym adresie w wierszu",
+            "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+            "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
+            "invalid.editorFontSize": "Nieprawidłowy rozmiar czcionki edytora. Musi to być dodatnia liczba całkowita.",
+            "invalid.theme": "Invalid theme."
+        },
+        "cloud": {
+            "signIn": "ZALOGUJ SIĘ",
+            "signOut": "Wyloguj się",
+            "chooseSketchVisibility": "Choose visibility of your Sketch:",
+            "privateVisibility": "Private. Only you can view the Sketch.",
+            "publicVisibility": "Public. Anyone with the link can view the Sketch.",
+            "link": "Link:",
+            "embed": "Embed:",
+            "cloudSketchbook": "Cloud Sketchbook",
+            "shareSketch": "Share Sketch",
+            "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
+            "pullSketch": "Pull Sketch",
+            "openInCloudEditor": "Otwórz w Cloud Editor",
+            "options": "Opcje...",
+            "share": "Share...",
+            "remote": "Remote",
+            "emptySketchbook": "Your Sketchbook is empty",
+            "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches.",
+            "signInToCloud": "Zaloguj się do Arduino Cloud",
+            "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
+            "learnMore": "Dowiedz się więcej",
+            "continue": "Kontynuuj",
+            "pushSketch": "Push Sketch",
+            "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+            "pull": "Zaciągnij",
+            "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
+            "donePulling": "Zakończono zaciąganie ‘{0}’.",
+            "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
+            "push": "Wypchnij",
+            "pullFirst": "You have to pull first to be able to push to the Cloud.",
+            "donePushing": "Done pushing ‘{0}’.",
+            "connected": "Połączony",
+            "offline": "Offline",
+            "profilePicture": "Obrazek profilowy"
+        },
+        "board": {
+            "installManually": "Zainstaluj ręcznie",
+            "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+            "configDialogTitle": "Wybierz inną płytkę i port",
+            "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
+            "configDialog2": "If you only select a Board you will be able just to compile, but not to upload your sketch.",
+            "pleasePickBoard": "Wybierz płytkę podłączoną do wybranego portu.",
+            "showAllAvailablePorts": "Po włączeniu pokazuje wszystkie dostępne porty",
+            "programmer": "Programator",
+            "succesfullyInstalledPlatform": "Pomyślnie zainstalowano platformę {0}:{1}",
+            "succesfullyUninstalledPlatform": "Pomyślnie odinstalowano platformę {0}:{1}",
+            "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+            "reselectLater": "Reselect later",
+            "noneSelected": "Nie wybrano płytki.",
+            "noPortsSelected": "Nie wybrano portu dla płytki: '{0}'.",
+            "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+            "openBoardsConfig": "Wybierz inną płytkę i port...",
+            "boardListItem": "{0} w {1}",
+            "selectBoardForInfo": "Wybierz płytkę, aby uzyskać o niej informacje.",
+            "platformMissing": "Platforma dla wybranej płytki '{0}' nie jest zainstalowana.",
+            "selectPortForInfo": "Wybierz port, aby uzyskać informacje o płytce.",
+            "boardInfo": "Informacje o płytce",
+            "board": "Płytka{0}",
+            "port": "Port{0}",
+            "getBoardInfo": "Pobierz informacje o płytce",
+            "inSketchbook": " (in Sketchbook)"
+        },
+        "boardsManager": "Boards Manager",
+        "about": {
+            "label": "O {0}",
+            "detail": "Wersja: {0}\nData: {1}{2}\nWersja CLI: {3}{4} [{5}]\n\n{6}"
+        },
+        "contributions": {
+            "addFile": "Dodaj plik",
+            "replaceTitle": "Zamień",
+            "fileAdded": "One file added to the sketch."
+        },
+        "replaceMsg": "Czy zamienić istniejącą wersję {0}?",
+        "library": {
+            "addZip": "Dodaj bibliotekę .ZIP...",
+            "zipLibrary": "Biblioteka",
+            "overwriteExistingLibrary": "Czy chcesz nadpisać istniejącą bibliotekę?",
+            "successfullyInstalledZipLibrary": "Pomyślnie zainstalowano bibliotekę z archiwum {0}",
+            "namedLibraryAlreadyExists": "Folder biblioteki o nazwie {0} już istnieje. Czy chcesz go nadpisać?",
+            "libraryAlreadyExists": "Biblioteka już istnieje. Czy chcesz ją nadpisać?",
+            "include": "Dołącz bibliotekę",
+            "manageLibraries": "Zarządzaj bibliotekami...",
+            "arduinoLibraries": "Biblioteki Arduino",
+            "contributedLibraries": "Contributed libraries",
+            "title": "Library Manager",
+            "needsOneDependency": "Biblioteka <b>{0}:{1}</b> wymaga innej zależności, która obecnie nie jest zainstalowana:",
+            "needsMultipleDependencies": "Biblioteka <b>{0}:{1}</b> wymaga innych zależności, które obecnie nie są zainstalowane:",
+            "installOneMissingDependency": "Czy chcesz zainstalować brakującą zależność?",
+            "installMissingDependencies": "Czy chcesz zainstalować wszystkie brakujące zależności?",
+            "dependenciesForLibrary": "Zależności dla biblioteki {0}:{1}",
+            "installAll": "Zainstaluj wszystko",
+            "installOnly": "Zainstaluj tylko {0}",
+            "installedSuccessfully": "Pomyślnie zainstalowano bibliotekę {0}:{1}",
+            "uninstalledSuccessfully": "Pomyślnie odinstalowano bibliotekę {0}:{1}"
+        },
+        "selectZip": "Wybierz plik ZIP zawierający bibliotekę, którą chcesz dodać",
+        "sketch": {
+            "archiveSketch": "Archive Sketch",
+            "saveSketchAs": "Save sketch folder as...",
+            "createdArchive": "Created archive '{0}'.",
+            "new": "Nowy",
+            "openRecent": "Otwórz ostatnie",
+            "showFolder": "Show Sketch Folder",
+            "sketch": "Sketch",
+            "moving": "Moving",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named as \"{1}\".\nCreate this folder, move the file, and continue?",
+            "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
+            "saveFolderAs": "Save sketch folder as...",
+            "sketchbook": "Sketchbook",
+            "upload": "Prześlij",
+            "uploadUsingProgrammer": "Prześlij używając programatora",
+            "userFieldsNotFoundError": "Can't find user fields for connected board",
+            "doneUploading": "Przesyłanie zakończone.",
+            "configureAndUpload": "Configure And Upload",
+            "verifyOrCompile": "Weryfikuj/Kompiluj",
+            "exportBinary": "Export Compiled Binary",
+            "verify": "Weryfikuj",
+            "doneCompiling": "Kompilacja zakończona.",
+            "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
+            "openSketchInNewWindow": "Open Sketch in New Window",
+            "openFolder": "Otwórz folder",
+            "titleLocalSketchbook": "Local Sketchbook",
+            "titleSketchbook": "Sketchbook",
+            "close": "Are you sure you want to close the sketch?"
+        },
+        "bootloader": {
+            "burnBootloader": "Burn Bootloader",
+            "doneBurningBootloader": "Done burning bootloader."
+        },
+        "editor": {
+            "copyForForum": "Copy for Forum (Markdown)",
+            "commentUncomment": "Zakomentuj/Odkomentuj",
+            "increaseIndent": "Zwiększ wcięcie",
+            "decreaseIndent": "Zmniejsz wcięcie",
+            "increaseFontSize": "Zwiększ rozmiar czcionki",
+            "decreaseFontSize": "Zmniejsz rozmiar czcionki",
+            "autoFormat": "Automatyczne formatowanie"
+        },
+        "examples": {
+            "menu": "Przykłady",
+            "couldNotInitializeExamples": "Could not initialize built-in examples.",
+            "builtInExamples": "Wbudowane przykłady",
+            "customLibrary": "Examples from Custom Libraries",
+            "for": "Przykłady dla {0}",
+            "forAny": "Przykłady dla dowolnej płytki"
+        },
+        "help": {
+            "search": "Szukaj na Arduino.cc",
+            "keyword": "Wpisz słowo kluczowe",
+            "gettingStarted": "Getting Started",
+            "environment": "Środowisko",
+            "troubleshooting": "Rozwiązywanie problemów",
+            "reference": "Reference",
+            "findInReference": "Find in Reference",
+            "faq": "Najczęściej zadawane pytania",
+            "visit": "Odwiedź Arduino.cc"
+        },
+        "certificate": {
+            "uploadRootCertificates": "Upload SSL Root Certificates",
+            "openContext": "Open context",
+            "remove": "Usuń",
+            "upload": "Prześlij",
+            "addURL": "Dodaj adres URL, aby pobrać certyfikat SSL",
+            "enterURL": "Wprowadź adres URL",
+            "selectCertificateToUpload": "1. Wybierz certyfikat do przesłania",
+            "addNew": "Dodaj nowy",
+            "selectDestinationBoardToUpload": "2. Wybierz docelową płytkę i prześli certyfikat",
+            "uploadingCertificates": "Przesyłanie certyfikatów.",
+            "certificatesUploaded": "Certyfikaty przesłane.",
+            "uploadFailed": "Przesyłanie nie powiodło się. Spróbuj ponownie.",
+            "selectBoard": "Wybierz płytkę...",
+            "boardAtPort": "{0} at {1}",
+            "noSupportedBoardConnected": "No supported board connected"
+        },
+        "firmware": {
+            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "selectBoard": "Wybierz płytkę",
+            "checkUpdates": "Sprawdź uaktualnienia",
+            "selectVersion": "Select firmware version",
+            "install": "Zainstaluj",
+            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+            "installingFirmware": "Installing firmware.",
+            "successfullyInstalled": "Firmware succesfully installed.",
+            "failedInstall": "Instalacja nie powiodła się. Spróbuj ponownie."
+        },
+        "dialog": {
+            "dontAskAgain": "Nie pytaj ponownie"
+        },
+        "userFields": {
+            "cancel": "Cancel",
+            "upload": "Prześlij"
+        },
+        "serial": {
+            "toggleTimestamp": "Toggle Timestamp",
+            "autoscroll": "Autoscroll",
+            "timestamp": "Timestamp",
+            "noLineEndings": "No Line Ending",
+            "newLine": "Nowa linia",
+            "carriageReturn": "Carriage Return",
+            "newLineCarriageReturn": "Both NL & CR",
+            "notConnected": "Not connected. Select a board and a port to connect automatically.",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "connectionBusy": "Połączenie nie powiodło się. Port szeregowy jest zajęty: {0}",
+            "disconnected": "Disconnected {0} from {1}.",
+            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
+            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
+            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
+        },
+        "component": {
+            "uninstall": "Odinstaluj",
+            "uninstallMsg": "Czy chcesz odinstalować {0}?",
+            "by": "by",
+            "version": "Wersja {0}",
+            "moreInfo": "Więcej informacji",
+            "install": "ZAINSTALUJ",
+            "filterSearch": "Filter your search..."
+        },
+        "electron": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "unsavedChanges": "Any unsaved changes will not be saved."
+        },
+        "compile": {
+            "error": "Błąd kompilacji: {0}"
+        },
+        "upload": {
+            "error": "{0} error: {1}"
+        },
+        "burnBootloader": {
+            "error": "Error while burning the bootloader: {0}"
+        }
+    },
+    "theia": {
+        "core": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "offline": "Offline",
+            "daemonOffline": "CLI Daemon Offline",
+            "cannotConnectBackend": "Cannot connect to the backend.",
+            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
+        },
+        "debug": {
+            "start": "Start...",
+            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
+            "startError": "There was an error starting the debug session, check the logs for more details."
+        },
+        "editor": {
+            "unsavedTitle": "Unsaved – {0}"
+        },
+        "messages": {
+            "expand": "Rozwiń",
+            "collapse": "Zwiń"
+        },
+        "workspace": {
+            "fileNewName": "Nazwa nowego pliku",
+            "invalidFilename": "Nieprawidłowa nazwa pliku.",
+            "invalidExtension": ".{0} nie jest prawidłowym rozszerzeniem",
+            "newFileName": "Nowa nazwa pliku",
+            "deleteCurrentSketch": "Do you want to delete the current sketch?",
+            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+        }
+    },
+    "cloud": {
+        "GoToCloud": "GO TO CLOUD"
+    }
+}

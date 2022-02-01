@@ -1,0 +1,334 @@
+{
+    "arduino": {
+        "common": {
+            "offlineIndicator": "Az internet nem érhető el. Internetkapcsolat nélkül előfordulhat, hogy az Arduino CLI nem tudja letölteni a szükséges erőforrásokat, és hibás működést okozhat. Csatlakozz az internethez és indítsd újra az alkalmazást. ",
+            "noBoardSelected": "Nincsen alappanel kiválasztva",
+            "selectedOn": "{0}-n",
+            "notConnected": "[nem csatlakozik]",
+            "serialMonitor": "Soros monitor",
+            "oldFormat": "A „{0}” továbbra is a régi „.pde” formátumot használja. Szeretnéd átírni az új `.ino` kiterjesztésre? ",
+            "later": "később",
+            "selectBoard": "Alaplap választás",
+            "unknown": "ismeretlen",
+            "processing": "Feldolgozás",
+            "saveChangesToSketch": "Menteni szeretnéd a vázlat módosításait a bezárás előtt? ",
+            "loseChanges": "Ha nem mented, akkor a módosítások elvesznek. "
+        },
+        "menu": {
+            "sketch": "Sketch",
+            "tools": "Eszközök"
+        },
+        "debug": {
+            "optimizeForDebugging": "Optimalizálás hibakereséséhez",
+            "debugWithMessage": "Hibakeresés/Debug - {0}",
+            "noPlatformInstalledFor": "A platform nincs telepítve a következőhöz: „{0}” ",
+            "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja "
+        },
+        "preferences": {
+            "language.log": "Igaz/kipipálva/, ha az Arduino Language Server naplófájlokat generál a vázlat mappába. Ellenkező esetben hamis/nincs kipipálva. Alapértelmezés szerint: hamis. ",
+            "compile.verbose": "Kipipálva: a részletes fordítási üzenetek képernyőre írása. Alapértelmezés szerint: nincs kipipálva.",
+            "compile.warnings": "Beállítja a gcc fordítónak, hogy melyik figyelmeztetési szintet kell használni. Ez alapértelmezés szerint: „Nincs/None”. ",
+            "upload.verbose": "Kipipálva: a részletes feltöltési üzenetek kiírása a képernyőre. Alapértelmezés szerint hamis/nincs kipipálva.",
+            "window.autoScale": "Kipipálva, ha a felhasználói felület automatikusan méreteződik a betűmérettel együtt. ",
+            "window.zoomLevel": "Ablak nagyítási szintjének megadása. Az eredeti méret: 0, és minden lépés növelése (pl. 1) vagy csökkentése (pl. -1) 20%-kal nagyobb vagy kisebb nagyítást jelent. Tizedesjegyeket is meg lehet adni a nagyítási szint finomabb  beállításához. ",
+            "ide.autoUpdate": "Kipipálva: engedélyezi az automatikus frissítést. A keretrendszer automatikusan és rendszeresen ellenőrzi a megjelenő frissítéseket.",
+            "board.certificates": "Az alaplapokra feltölthető tanúsítványok listája",
+            "sketchbook.showAllFiles": "Kipipálva: az összes vázlatfájl/sketch megjelenítése a vázlaton/sketch-en belül. Alapértelmezés szerint: nincs kipipálva.",
+            "cloud.enabled": "Kipipálva: a vázlat/sketch-szinkronizálás engedélyezve van. Alapértelmezés: kipipálva. ",
+            "cloud.pull.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből letöltése  előtt. Alapértelmezés szerint: kipipálva.",
+            "cloud.push.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből való letöltése előtt. Alapértelmezés: kipipálva. ",
+            "cloud.pushpublic.warn": "Kipipálva: figyelmeztetés megjelenítése a nyilvános vázlat/sketch felhőbe küldése előtt. Alapértelmezés szerint: kipipálva.",
+            "cloud.sketchSyncEnpoint": "A végpont/endpoint a vázlatok/sketch-ek háttéből történő letöltésére illetve  publikálására szolgál. Alapértelmezés szerint az Arduino Cloud API-ra mutat. ",
+            "auth.clientID": "OAuth2 client ID.",
+            "auth.domain": "OAuth2 domain.",
+            "auth.audience": "Az OAuth2 közönség/audience. ",
+            "auth.registerUri": "Új felhasználó regisztrálására használt URI.",
+            "network": "Hálózat",
+            "sketchbook.location": "SketchBook elérési helye ",
+            "browse": "Tallóz",
+            "files.inside.sketches": "Fájlok mutatása a Vázlat/Sketch-en belül",
+            "editorFontSize": "Szerkesztő betűméret",
+            "interfaceScale": "Interfész skála",
+            "showVerbose": "Részletes kimenet megjelenítése eközben: ",
+            "compilerWarnings": "Fordítóprogram figyelmeztetései / Compiler warnings",
+            "automatic": "Automatikus",
+            "compile": "fordítás",
+            "upload": "feltöltés",
+            "verifyAfterUpload": "Kód ellenőrzése feltöltés után",
+            "checkForUpdates": "Frissítések ellenőrzése a program indításakor",
+            "editorQuickSuggestions": "Szerkesztői gyorstippek",
+            "additionalManagerURLs": "Kiegészítő alaplapok URL-jei",
+            "noProxy": "Nincs proxy",
+            "manualProxy": "Kézi proxy konfiguráció",
+            "newSketchbookLocation": "Új Vázlatfüzet/Sketchbook elérési út",
+            "choose": "Választás",
+            "enterAdditionalURLs": "Adj meg további URL-eket - soronként egyet ",
+            "unofficialBoardSupport": "Kattints ide a nem hivatalos alaplapok fordítási URL-jeinek listájához ",
+            "invalid.sketchbook.location": "Érvénytelen elérési út a vázlatfüzethez/sketchbook-hoz: {0} ",
+            "invalid.editorFontSize": "A szerkesztő betűmérete érvénytelen. Pozitív egész számnak kell lennie. ",
+            "invalid.theme": "Érvénytelen megjelenési felület/téma. "
+        },
+        "cloud": {
+            "signIn": "BEJELENTKEZÉS",
+            "signOut": "Kijelentkezés",
+            "chooseSketchVisibility": "Válaszd ki a vázlat/sketch láthatóságát: ",
+            "privateVisibility": "Privát. Csak Te láthatod a vázlatot/sketch-et. ",
+            "publicVisibility": "Nyilvános. A link birtokában bárki megtekintheti a vázlatot/sketch-et. ",
+            "link": "Link:",
+            "embed": "Beágyazva:",
+            "cloudSketchbook": "Felhő vázlatfüzet/sketchbook ",
+            "shareSketch": "Vázlat/sketch megosztása",
+            "showHideRemoveSketchbook": "Távoli vázlatfüzet/sketch megjelenítése/elrejtése ",
+            "pullSketch": "Sketch letöltése",
+            "openInCloudEditor": "Megnyitás a Cloud Editorban",
+            "options": "Opciók...",
+            "share": "Megosztás...",
+            "remote": "Távoli",
+            "emptySketchbook": "A vázlatfüzeted/Sketchbook-od üres ",
+            "visitArduinoCloud": "Látogasd meg az Arduino Cloud webhelyet, hogy a felhőben vázlatokat hozhass létre. ",
+            "signInToCloud": "Bejelentkezés az Arduino Cloudba ",
+            "syncEditSketches": "Arduino felhővázlatok szinkronizálása és szerkesztése",
+            "learnMore": "Tudj meg többet",
+            "continue": "Tovább",
+            "pushSketch": "Vázlat/sketch feltöltése",
+            "pushSketchMsg": "Ez egy nyilvános vázlat/sketch. A beküldés előtt győződj meg arról, hogy minden érzékeny információ definiálva van az arduino_secrets.h fájlokban. A vázlatot priváttá tehet tenni a Megosztás panelen. ",
+            "pull": "Letöltés",
+            "pullSketchMsg": "Ennek a vázlatnak a felhőből való letöltése felülírja a helyi verzióját. Biztos, hogy akarod folytatni? ",
+            "donePulling": "Letöltés kész: '{0}'.",
+            "notYetPulled": "Nem küldhető a felhőbe. Még nem lett letöltve. ",
+            "push": "Feltöltés",
+            "pullFirst": "Először le kell töltened, hogy a Felhőbe fel tudd tölteni utána. ",
+            "donePushing": "Feltöltés kész: '{0}'.",
+            "connected": "Kapcsolódva",
+            "offline": "Offline / nincs hálózat",
+            "profilePicture": "Profilkép"
+        },
+        "board": {
+            "installManually": "Kézi telepítés",
+            "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
+            "configDialogTitle": "Egyéb Alaplap és Port választása",
+            "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
+            "configDialog2": "Ha csak az alaplap van kiválasztva, akkor csak lefordítani lehet a vázlatot/sketch-et - feltölteni az alaplapra nem.",
+            "pleasePickBoard": "Válassz alaplapot, amely a kiválasztott porthoz csatlakozik. ",
+            "showAllAvailablePorts": "Elérhető portok mutatása - ha engedélyezett",
+            "programmer": "Programozó",
+            "succesfullyInstalledPlatform": "Sikeresen telepített platform {0}:{1}",
+            "succesfullyUninstalledPlatform": "A platform sikeresen eltávolítva: {0}:{1} ",
+            "couldNotFindPreviouslySelected": "Nem található a korábban kiválasztott  '{0}' alaplap a/az '{1}' telepített platformon. Válaszd ki  újra a használni kívánt alaplapot. Szeretnéd most újra megadni?",
+            "reselectLater": "Később újra válaszd ki",
+            "noneSelected": "Nincs alaplap kiválasztva",
+            "noPortsSelected": "Nincsen port kiválasztva a alaplaphoz: '{0}'. ",
+            "noFQBN": "Az FQBN nem érhető el a kiválasztott „{0}” alaplapon. A megfelelő mag/core telepítve van? ",
+            "openBoardsConfig": "Válassz másik alaplapot és portot… ",
+            "boardListItem": "{0} a/az {1} esetén",
+            "selectBoardForInfo": "Válassz egy alaplapot az információinak megtekintéséhez. ",
+            "platformMissing": "A kiválasztott '{0}' alaplap platformja nincs telepítve. ",
+            "selectPortForInfo": "Válassz egy portot az alaplap információinak megtekintéséhez. ",
+            "boardInfo": "Alaplapi információk",
+            "board": "Alaplap {0}",
+            "port": "Port {0}",
+            "getBoardInfo": "Alaplap információk beszerzése",
+            "inSketchbook": "(a vázlatfüzetben/sketchbook-ban) "
+        },
+        "boardsManager": "Alaplap-kezelő",
+        "about": {
+            "label": "About {0}",
+            "detail": "Verziószám: {0}\nDátum: {1}{2}\nCLI Verziószám: {3}{4} [{5}]\n\n{6}"
+        },
+        "contributions": {
+            "addFile": "Fájl hozzáadása",
+            "replaceTitle": "Csere",
+            "fileAdded": "Egy fájl hozzáadása megtörtént a vázlathoz/sketch-hez. "
+        },
+        "replaceMsg": "Lecseréled a/az {0} meglévő verzióját? ",
+        "library": {
+            "addZip": "ZIP könyvtár hozzáadása...",
+            "zipLibrary": "Könyvtár",
+            "overwriteExistingLibrary": "Felül akarod írni a meglévő könyvtárat? ",
+            "successfullyInstalledZipLibrary": "A könyvtár sikeresen telepítve a/az {0} archívumból ",
+            "namedLibraryAlreadyExists": "A/az {0} nevű könyvtármappa már létezik. Felül akarod írni? ",
+            "libraryAlreadyExists": "Már létezik a könyvtár. Felül akarod írni? ",
+            "include": "Tartalmazza a könyvtárat",
+            "manageLibraries": "Könyvtárak kezelése... ",
+            "arduinoLibraries": "Arduino könyvtárak",
+            "contributedLibraries": "Közreműködő könyvtárak ",
+            "title": "Könyvtárkezelő",
+            "needsOneDependency": "A/az <b>{0}:{1}</b> könyvtárnak egy másik, jelenleg nem telepített függőségre van szüksége: ",
+            "needsMultipleDependencies": "A/az <b>{0}:{1}</b> könyvtárnak további, jelenleg nem telepített függőségekre van szüksége: ",
+            "installOneMissingDependency": "Szeretnéd telepíteni a hiányzó függőséget? ",
+            "installMissingDependencies": "Szeretnéd telepíteni az összes hiányzó függőséget?",
+            "dependenciesForLibrary": "A/az {0} könyvtár függőségei: {1}",
+            "installAll": "Minden telepítése",
+            "installOnly": "Csak {0} telepítése",
+            "installedSuccessfully": "Sikeresen telepített könyvtár {0}:{1}",
+            "uninstalledSuccessfully": "A könyvtár sikeresen eltávolítva: {0}:{1} "
+        },
+        "selectZip": "Válaszd ki a hozzáadni kívánt könyvtárat tartalmazó ZIP-fájlt ",
+        "sketch": {
+            "archiveSketch": "Vázlat/sketch archiválása",
+            "saveSketchAs": "Vázlat-/sketch-mappa mentése másként... ",
+            "createdArchive": "Archívum létrehozva: {0}. ",
+            "new": "Új",
+            "openRecent": "Legutóbbi megnyitása",
+            "showFolder": "Vázlat-/sketch-mappa megjelenítése",
+            "sketch": "Vázlat/sketch",
+            "moving": "Mozgatás",
+            "movingMsg": "A/az {0} fájlnak egy {1} nevű vázlat-/sketch-mappában kell lennie. Létrehozzam ezt a mappát, áthelyezzem a fájlt, és folytassam a műveletet?",
+            "cantOpen": "Már létezik a/az {0} nevű mappa. A vázlat/sketch nem nyitható meg. ",
+            "saveFolderAs": "Vázlat-/sketch-mappa mentése másként... ",
+            "sketchbook": "Vázlatfüzet/sketchbook ",
+            "upload": "Feltöltés",
+            "uploadUsingProgrammer": "Feltöltés programozó segítségével",
+            "userFieldsNotFoundError": "Nem találhatók felhasználói adatok a csatlakoztatott kártyához",
+            "doneUploading": "Feltöltés kész.",
+            "configureAndUpload": "Konfigurálás és feltöltés",
+            "verifyOrCompile": "Ellenőrzés/fordítás",
+            "exportBinary": "Összeállított bináris exportálása",
+            "verify": "Ellenőrzés",
+            "doneCompiling": "Fordítás kész.",
+            "couldNotConnectToSerial": "Nem sikerült újracsatlakozni a {0} soros porthoz.",
+            "openSketchInNewWindow": "Vázlat/sketch megnyitása új ablakban",
+            "openFolder": "Mappa megnyitása",
+            "titleLocalSketchbook": "Helyi vázlatfüzet/sketchbook ",
+            "titleSketchbook": "Vázlatfüzet/sketchbook ",
+            "close": "Biztosan bezárod a vázlatot/sketch-et? "
+        },
+        "bootloader": {
+            "burnBootloader": "Bootloader égetése",
+            "doneBurningBootloader": "Bootloader égetés kész."
+        },
+        "editor": {
+            "copyForForum": "Másolás a fórumba beillesztéshez (formázással)",
+            "commentUncomment": "Megjegyzés / Megjegyzés visszavonása ",
+            "increaseIndent": "Behúzás növelése",
+            "decreaseIndent": "Behúzás csökkentése",
+            "increaseFontSize": "Betűméret növelése",
+            "decreaseFontSize": "Betűméret csökkentése",
+            "autoFormat": "Automatikus formázás"
+        },
+        "examples": {
+            "menu": "Példák",
+            "couldNotInitializeExamples": "Nem sikerült inicializálni/előhívni a beépített példákat. ",
+            "builtInExamples": "Beépített példák",
+            "customLibrary": "Példák egyéni könyvtárakból",
+            "for": "Példák a {0} -hoz",
+            "forAny": "Példák valamennyi alaplapra"
+        },
+        "help": {
+            "search": "Keresés az Arduino.cc oldalon",
+            "keyword": "Írj be egy kulcsszót",
+            "gettingStarted": "Kezdés",
+            "environment": "Környezet",
+            "troubleshooting": "Hibaelhárítás",
+            "reference": "Referencia ",
+            "findInReference": "Keresse meg a Referenciákban",
+            "faq": "Gyakran ismételt kérdések",
+            "visit": "Arduino.cc meglátogatása"
+        },
+        "certificate": {
+            "uploadRootCertificates": "SSL gyökér-/root-tanúsítványok feltöltése ",
+            "openContext": "Nyitott kontextus ",
+            "remove": "Eltávolítás",
+            "upload": "Feltöltés",
+            "addURL": "Adj hozzá URL-t az SSL-tanúsítvány lekéréséhez ",
+            "enterURL": "URL megadása",
+            "selectCertificateToUpload": "1. Válaszd ki a feltölteni kívánt tanúsítványt ",
+            "addNew": "Új hozzáadása",
+            "selectDestinationBoardToUpload": "2. Válaszd ki az alaplapot, és töltsd fel a tanúsítványt ",
+            "uploadingCertificates": "Tanúsítványok feltöltése ",
+            "certificatesUploaded": "Tanúsítáványok feltöltve.",
+            "uploadFailed": "A feltöltés nem sikerült. Próbáld meg újra.",
+            "selectBoard": "Alaplap kiválasztása...",
+            "boardAtPort": "{0} a/az {1} eseténél",
+            "noSupportedBoardConnected": "Nincs támogatott alaplap csatlakoztatva "
+        },
+        "firmware": {
+            "updater": "WiFi101 / WiFiNINA Firmware feltöltés",
+            "selectBoard": "Alaplap választás",
+            "checkUpdates": "Frissítések ellenőrzése",
+            "selectVersion": "Firmware verzió kiválasztása",
+            "install": "Telepítés",
+            "overwriteSketch": "A telepítés felülírja a Sketch-et az alaplapon. ",
+            "installingFirmware": "Firmware telepítése.",
+            "successfullyInstalled": "Firmware telepítése sikeres.",
+            "failedInstall": "A feltöltés nem sikerült. Próbáld meg újra."
+        },
+        "dialog": {
+            "dontAskAgain": "Ne kérdezd meg még egyszer"
+        },
+        "userFields": {
+            "cancel": "Mégsem",
+            "upload": "Feltöltés"
+        },
+        "serial": {
+            "toggleTimestamp": "Időbélyeg váltása",
+            "autoscroll": "Automatikus görgetés",
+            "timestamp": "Időbélyeg",
+            "noLineEndings": "Nincs sorvége ",
+            "newLine": "Új sor",
+            "carriageReturn": "Kocsi vissza",
+            "newLineCarriageReturn": "Mindkettő: Új sor és Kocsi vissza - NL&CR",
+            "notConnected": "Nincs kapcsolat. Válassz ki egy alaplapot és egy portot az automatikus csatlakozáshoz. ",
+            "message": "Üzenet ({0}  + Enter az üzenet elküldéséhez az {1} itt: {2}",
+            "connectionBusy": "Kapcsolat nem jött létre. A {0} soros port foglalt.",
+            "disconnected": "Megszakadt a/az {0} és a/az {1} kapcsolata. ",
+            "unexpectedError": "Váratlan hiba. A/az {0} újracsatlakozása a/az {1} porton. ",
+            "failedReconnect": "10 egymást követő próbálkozás után nem sikerült újracsatlakozni a/az {0} soros porthoz. A/az {1} soros port foglalt. ",
+            "reconnect": "A/az {0} és a/az {1} újracsatlakozása {2} másodperc múlva... "
+        },
+        "component": {
+            "uninstall": "Eltávolítás",
+            "uninstallMsg": "El szeretnéd távolítani a következőt: {0}? ",
+            "by": "által",
+            "version": "Verzió: {0}",
+            "moreInfo": "Több info",
+            "install": "TELEPÍTÉS",
+            "filterSearch": "Keresési eredmény szűrése... "
+        },
+        "electron": {
+            "couldNotSave": "Nem sikerült menteni a vázlatot/sketch-et. Másold át a nem mentett munkát kedvenc szövegszerkesztődbe és indítsd újra az IDE-t. ",
+            "unsavedChanges": "A nem mentett módosítások nem kerülnek mentésre. "
+        },
+        "compile": {
+            "error": "Összeállítási hiba: {0} "
+        },
+        "upload": {
+            "error": "{0} hiba: {1}"
+        },
+        "burnBootloader": {
+            "error": "Hiba a bootloader írása közben: {0} "
+        }
+    },
+    "theia": {
+        "core": {
+            "couldNotSave": "Nem sikerült menteni a vázlatot/sketch-et. Másold át a nem mentett munkát kedvenc szövegszerkesztődbe és indítsd újra az IDE-t. ",
+            "offline": "Offline / nincs hálózat",
+            "daemonOffline": "CLI Daemon offline/elérhetetlen ",
+            "cannotConnectBackend": "Nem lehet csatlakozni a háttérrendszerhez/backend-hez. ",
+            "cannotConnectDaemon": "Nem lehet csatlakozni a CLI daemon-hoz."
+        },
+        "debug": {
+            "start": "Start...",
+            "typeNotSupported": "A {0} hibakeresési munkamenet típusa nem támogatott. ",
+            "startError": "Hiba történt a hibakeresési munkamenet indításakor. További részletekért ellenőrizd a naplókat. "
+        },
+        "editor": {
+            "unsavedTitle": "Nincs mentve – {0}"
+        },
+        "messages": {
+            "expand": "Bővebb",
+            "collapse": "Összecsuk"
+        },
+        "workspace": {
+            "fileNewName": "Az új fájl neve",
+            "invalidFilename": "Hibás fájlnév.",
+            "invalidExtension": "A .{0} nem érvényes kiterjesztés",
+            "newFileName": "A fájl új neve",
+            "deleteCurrentSketch": "Törlöd az aktuális vázlatot/sketch-et? ",
+            "sketchDirectoryError": "Hiba történt a vázlatkönyvtár/sketchbook létrehozásakor. További részletekért lásd a naplót. Az alkalmazás valószínűleg nem fog megfelelően működni. "
+        }
+    },
+    "cloud": {
+        "GoToCloud": "UGRÁS A FELHŐHÖZ "
+    }
+}

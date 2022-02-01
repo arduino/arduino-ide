@@ -2,15 +2,15 @@
     "arduino": {
         "common": {
             "offlineIndicator": "Il semblerais que vous êtes hors-ligne. Sans connexion internet, l'Arduino CLI sera incapable de télécharger les ressources nécessaire et de communiquer avec le cloud. Merci de vous reconnectez et de redémarrer l'application.",
-            "noBoardSelected": "Aucune carte n'a été sélectionné ",
+            "noBoardSelected": "Aucune carte sélectionnée.",
             "selectedOn": "sur [0]",
-            "notConnected": "[not connected]",
+            "notConnected": "[hors ligne]",
             "serialMonitor": "Moniteur série",
             "oldFormat": "Le \"[0]\" continue d'utiliser l'ancien format `.pde`. Souhaitez-vous utiliser le nouveau format `.ino`?",
             "later": "Plus tard",
             "selectBoard": "Selectionner une carte",
             "unknown": "Inconnu",
-            "processing": "Traitement",
+            "processing": "Traitement en cours",
             "saveChangesToSketch": "Souhaitez-vous enregistrer les modifications apportées au croquis avant la fermeture ?",
             "loseChanges": "Si vous n'enregistrez pas, les modifications apportées seront perdues."
         },
@@ -21,7 +21,7 @@
         "debug": {
             "optimizeForDebugging": "Optimisé pour le déboggage.",
             "debugWithMessage": "Débogage - [0]",
-            "noPlatformInstalledFor": "la plateforme n'est pas installé pour '{0}'",
+            "noPlatformInstalledFor": "la plateforme n'est pas installée pour '{0}'",
             "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'"
         },
         "preferences": {
@@ -94,11 +94,11 @@
             "pushSketchMsg": "Ceci est un croquis public. Avant de le publier, assurez-vous que les informations sensibles sont bien définies dans le fichier arduino_secrets.h. Vous pouvez rendre priver le croquis à partir du panneau de Partage.",
             "pull": "Tirer",
             "pullSketchMsg": "Pousser le croquis à partir du Cloud va écraser la version locale. Êtes-vous sûr de vouloir continuer ?",
-            "donePulling": "Done pulling ‘{0}’.",
+            "donePulling": "Récupération de  '{0}' terminée.",
             "notYetPulled": "Impossible de push sur le Cloud. Rien n'a été pull jusque la.",
             "push": "Push",
             "pullFirst": "Vous devez tout d'abord pull vos modifications avant de pouvoir de pouvoir push à partir du Cloud.",
-            "donePushing": "Done pushing ‘{0}’.",
+            "donePushing": "Téléchargement terminé pour '{0}'",
             "connected": "Connecté",
             "offline": "Hors-ligne",
             "profilePicture": "Photo de profil"
@@ -116,52 +116,52 @@
             "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}",
             "couldNotFindPreviouslySelected": "Impossible de trouver la carte précédente sélectionnée \"{0}\" dans les plateformes installées \"{1}\". Merci de re-sélectionner manuellement la carte que vous souhaitez utiliser. Souhaitez vous la re-sélectionner maintenant ?",
             "reselectLater": "Re-sélectionner plus tard",
-            "noneSelected": "Aucune cartes sélectionnée.",
+            "noneSelected": "Aucune carte sélectionnée.",
             "noPortsSelected": "Aucun porte sélectionné pour la carte : '{0}'",
             "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
             "openBoardsConfig": "Sélectionner une autre carte et un autre port ...",
             "boardListItem": "{0} à {1}",
-            "selectBoardForInfo": "Please select a board to obtain board info.",
+            "selectBoardForInfo": "Merci de choisir une carte pour obtenir ses informations.",
             "platformMissing": "La plateforme pour la carte '{0}' sélectionnée n'est pas installée.",
-            "selectPortForInfo": "Please select a port to obtain board info.",
+            "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
             "boardInfo": "Information de la carte",
-            "board": "Board{0}",
+            "board": "Carte{0}",
             "port": "Port{0}",
-            "getBoardInfo": "Get Board Info",
-            "inSketchbook": " (in Sketchbook)"
+            "getBoardInfo": "Obtenir les informations sur la carte",
+            "inSketchbook": "(dans le Croquis)"
         },
         "boardsManager": "Gestionnaire de carte",
         "about": {
-            "label": "About {0}",
-            "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}{4} [{5}]\n\n{6}"
+            "label": "A propos de {0}",
+            "detail": "Version: {0}Date: {1}{2} Version CLI: {3}{4} [{5}]{6}"
         },
         "contributions": {
             "addFile": "Ajouter un fichier",
-            "replaceTitle": "Replace",
-            "fileAdded": "One file added to the sketch."
+            "replaceTitle": "Remplacer",
+            "fileAdded": "Un fichier a été ajouté au croquis"
         },
-        "replaceMsg": "Replace the existing version of {0}?",
+        "replaceMsg": "Remplacer la version existante de {0} ?",
         "library": {
             "addZip": "Ajouter la bibliothèque .ZIP...",
-            "zipLibrary": "Library",
+            "zipLibrary": "Bibliothèque",
             "overwriteExistingLibrary": "Souhaitez-vous écraser la librairie existante ?",
-            "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
-            "namedLibraryAlreadyExists": "A library folder named {0} already exists. Do you want to overwrite it?",
+            "successfullyInstalledZipLibrary": "Bibliothèque correctement installée depuis l'archive {0}",
+            "namedLibraryAlreadyExists": "Un dossier de bibliothèque s'appelant {0} existe déjà. Voulez vous l'écraser ?",
             "libraryAlreadyExists": "Cette librairie existe déjà. Souhaitez-vous l'écraser ?",
-            "include": "Include Library",
-            "manageLibraries": "Manage Libraries...",
-            "arduinoLibraries": "Arduino libraries",
-            "contributedLibraries": "Contributed libraries",
-            "title": "Library Manager",
-            "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
-            "needsMultipleDependencies": "La librairie <b>{0}:{1}</b>à besoin de d'autres dépendantes qui ne sont actuellement pas installé:",
-            "installOneMissingDependency": "Souhaitez-vous installer la dépendance manquante?",
-            "installMissingDependencies": "Souhaitez vous installer toutes les dépendances manquantes ?",
-            "dependenciesForLibrary": "Dépendances pour la libraire {0}:{1}",
+            "include": "Importer une bibliothèque",
+            "manageLibraries": "Gérer les bibliothèques...",
+            "arduinoLibraries": "Bibliothèques Arduino",
+            "contributedLibraries": "Bibliothèques tierce-partie",
+            "title": "Gestionnaire de bibliothèque",
+            "needsOneDependency": "La bibliothèque <b>{0}:{1}</b> dépend d'une autre ressource qui n'est actuellement pas installée :",
+            "needsMultipleDependencies": "La bibliothèque <b>{0}:{1}</b> dépend d'autres ressources qui ne sont actuellement pas installées :",
+            "installOneMissingDependency": "Souhaitez-vous installer la ressource liée manquante?",
+            "installMissingDependencies": "Souhaitez vous installer toutes les ressources liées manquantes ?",
+            "dependenciesForLibrary": "Ressources liées pour la libraire {0}:{1}",
             "installAll": "Tout installer",
             "installOnly": "Installer {0} seulement",
             "installedSuccessfully": "Librairie installée avec succès {0}:{1}",
-            "uninstalledSuccessfully": "Librairie désinstallée avec succès {0}:{1}"
+            "uninstalledSuccessfully": "Bibliothèque désinstallée avec succès {0}:{1}"
         },
         "selectZip": "Sélectionnez un fichier zip contenant la bibliothèque que vous souhaitez ajouter",
         "sketch": {
@@ -227,108 +227,108 @@
         },
         "certificate": {
             "uploadRootCertificates": "Téléverser les certificats racine SSL",
-            "openContext": "Open context",
+            "openContext": "Ouvrir le contexte",
             "remove": "Supprimer ",
             "upload": "Téléverser",
-            "addURL": "Add URL to fetch SSL certificate",
-            "enterURL": "Enter URL",
-            "selectCertificateToUpload": "1. Select certificate to upload",
-            "addNew": "Add New",
-            "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
-            "uploadingCertificates": "Uploading certificates.",
-            "certificatesUploaded": "Certificates uploaded.",
-            "uploadFailed": "Upload failed. Please try again.",
-            "selectBoard": "Select a board...",
-            "boardAtPort": "{0} at {1}",
-            "noSupportedBoardConnected": "No supported board connected"
+            "addURL": "Ajoutez une URL pour récupérer le certificat SSL",
+            "enterURL": "Saisir une URL",
+            "selectCertificateToUpload": "1. Sélectionner le certificat à transférer",
+            "addNew": "Ajouter un nouveau",
+            "selectDestinationBoardToUpload": "2. Sélectionner la carte de destination et transférer le certificat",
+            "uploadingCertificates": "Transfert des certificats",
+            "certificatesUploaded": "Certificats transférés",
+            "uploadFailed": "Erreur de transfert. Merci de réessayer. ",
+            "selectBoard": "Selectionner une carte",
+            "boardAtPort": "{0} à {1}",
+            "noSupportedBoardConnected": "Aucune carte supportée n'est connectée"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "updater": "Mise à jour du Firmware WiFi101 / WiFiNINA",
             "selectBoard": "Selectionner une carte",
-            "checkUpdates": "Check Updates",
-            "selectVersion": "Select firmware version",
+            "checkUpdates": "Vérifier les mises à jour",
+            "selectVersion": "Choisir la version du firmware",
             "install": "Installer",
-            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
-            "installingFirmware": "Installing firmware.",
-            "successfullyInstalled": "Firmware succesfully installed.",
-            "failedInstall": "Installation failed. Please try again."
+            "overwriteSketch": "L'installation va remplacer le croquis présent sur la carte.",
+            "installingFirmware": "Installation du firmware.",
+            "successfullyInstalled": "Firmware installé correctement.",
+            "failedInstall": "Erreur d'installation. Merci de réessayer."
         },
         "dialog": {
-            "dontAskAgain": "Don't ask again"
+            "dontAskAgain": "Ne plus demander."
         },
         "userFields": {
-            "cancel": "Cancel",
+            "cancel": "Annuler",
             "upload": "Téléverser"
         },
         "serial": {
-            "toggleTimestamp": "Toggle Timestamp",
+            "toggleTimestamp": "Activer l'horodatage",
             "autoscroll": "Défilement automatique",
-            "timestamp": "Timestamp",
+            "timestamp": "horodatage",
             "noLineEndings": "Pas de fin de ligne",
             "newLine": "Nouvelle ligne",
             "carriageReturn": "Retour chariot",
             "newLineCarriageReturn": "Les deux, NL et CR",
-            "notConnected": "No connecté. Sélectionnez une carte ainsi qu'un port à connecter automatiquement.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
-            "connectionBusy": "Connection failed. Serial port is busy: {0}",
+            "notConnected": "Déconnecté. Sélectionnez une carte ainsi qu'un port pour vous connecter automatiquement.",
+            "message": "Message ({0} + Entrée pour envoyer le message à '{1}' sur '{2}'",
+            "connectionBusy": "Erreur de connexion. Le port série est occupé : {0}",
             "disconnected": "{0} déconnecté de {1}.",
-            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
-            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
-            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
+            "unexpectedError": "Erreur inattendue. Reconnexion de {0} sur le port {1}.",
+            "failedReconnect": "Impossible de reconnecter {0} au port série après 10 essai consécutif. Le port série {1} est occupé.",
+            "reconnect": "Reconnexion de {0} à {1} dans {2} secondes..."
         },
         "component": {
-            "uninstall": "Uninstall",
-            "uninstallMsg": "Do you want to uninstall {0}?",
-            "by": "by",
+            "uninstall": "Désinstaller",
+            "uninstallMsg": "Voulez vous désinstaller {0}?",
+            "by": "par",
             "version": "Version {0}",
-            "moreInfo": "More info",
-            "install": "Installer",
-            "filterSearch": "Filtrez votre recherche"
+            "moreInfo": "Plus d'information",
+            "install": "INSTALLER",
+            "filterSearch": "Filtrez votre recherche..."
         },
         "electron": {
-            "couldNotSave": "Impossible d'enregistrer le croquis. Merci de faire une copie de votre travail non-enregistré dans votre éditeur de texte favoris, et redémarrez votre IDE.",
-            "unsavedChanges": "Any unsaved changes will not be saved."
+            "couldNotSave": "Impossible d'enregistrer le croquis. Veuillez copier votre travail non enregistré dans votre éditeur de texte favori et redémarrer l'IDE.",
+            "unsavedChanges": "Les modifications non enregistrées seront perdues."
         },
         "compile": {
-            "error": "Compilation error: {0}"
+            "error": "Erreur de compilation : {0}"
         },
         "upload": {
-            "error": "{0} error: {1}"
+            "error": "{0} erreur : {1}"
         },
         "burnBootloader": {
-            "error": "Error while burning the bootloader: {0}"
+            "error": "Erreur lors de la gravure du bootloader : {0}"
         }
     },
     "theia": {
         "core": {
-            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "offline": "Offline",
-            "daemonOffline": "CLI Daemon Offline",
-            "cannotConnectBackend": "Cannot connect to the backend.",
-            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
+            "couldNotSave": "Impossible d'enregistrer le croquis. Veuillez copier votre travail non enregistré dans votre éditeur de texte favori et redémarrer l'IDE.",
+            "offline": "Hors-ligne",
+            "daemonOffline": "CLI Deamon hors ligne",
+            "cannotConnectBackend": "Impossible de se connecter au backend.",
+            "cannotConnectDaemon": "Impossible de se connecter au CLI Deamon."
         },
         "debug": {
-            "start": "Start...",
-            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
+            "start": "Commencer...",
+            "typeNotSupported": "Le type de session de débogage \"{0}\" n'est pas pris en charge.",
             "startError": "Une erreur est survenue lors du démarrage du débogage, consultez les logs pour plus de détails."
         },
         "editor": {
-            "unsavedTitle": "Unsaved – {0}"
+            "unsavedTitle": "Non enregistré – {0}"
         },
         "messages": {
-            "expand": "Expand",
-            "collapse": "Collapse"
+            "expand": "Replier",
+            "collapse": "Replier"
         },
         "workspace": {
-            "fileNewName": "Name for new file",
-            "invalidFilename": "Invalid filename.",
+            "fileNewName": "Nouveau nom pour le fichier",
+            "invalidFilename": "Nom de fichier non valide",
             "invalidExtension": "« .{0} » n''est pas une extension valide.",
-            "newFileName": "New name for file",
-            "deleteCurrentSketch": "Do you want to delete the current sketch?",
+            "newFileName": "Nouveau nom pour le fichier",
+            "deleteCurrentSketch": "Voulez-vous supprimer le croquis en cours ?",
             "sketchDirectoryError": "Une erreur est survenue lors de la création du dossier du croquis. Consultez les logs pour plus de détails. L'application ne fonctionnera probablement pas comme attendu."
         }
     },
     "cloud": {
-        "GoToCloud": "GO TO CLOUD"
+        "GoToCloud": "ALLER AU CLOUD"
     }
 }

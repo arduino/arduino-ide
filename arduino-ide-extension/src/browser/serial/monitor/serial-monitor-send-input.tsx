@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
-import { Board, Port } from '../../../common/protocol/boards-service';
+import { Board } from '../../../common/protocol/boards-service';
 import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { SerialConnectionManager } from '../serial-connection-manager';
@@ -80,14 +80,14 @@ export class SerialMonitorSendInput extends React.Component<
     const { board, port } = serialConfig;
     return nls.localize(
       'arduino/serial/message',
-      "Message ({0} + Enter to send message to '{1}' on '{2}'",
+      "Message ({0} + Enter to send message to '{1}' on '{2}')",
       isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
       board
         ? Board.toString(board, {
             useFqbn: false,
           })
         : 'unknown',
-      port ? Port.toString(port) : 'unknown'
+      port ? port.address : 'unknown'
     );
   }
 

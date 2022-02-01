@@ -40,22 +40,32 @@ The _frontend_ is running as an Electron renderer process and can invoke service
 ## Build from source
 
 If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and if you want to contribute to the
-project, you should be able to build the Arduino IDE locally. Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
+project, you should be able to build the Arduino IDE locally.
+Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
 
-### Build
-```sh
-yarn
-```
+Once you have all the tools installed, you can build the editor following these steps
 
-### Rebuild the native dependencies
-```sh
-yarn rebuild:electron
-```
+1. Install the dependencies and build
+    ```sh
+    yarn
+    ```
 
-### Start
-```sh
-yarn start
-```
+2. Rebuild the dependencies
+    ```sh
+    yarn rebuild:browser
+    ```
+
+3. Rebuild the electron dependencies
+    ```sh
+    cd electron-app
+    yarn theia rebuild:electron
+    cd ..
+    ```
+
+4. Start the application
+    ```sh
+    yarn start
+    ```
 
 ### CI
 
@@ -117,7 +127,7 @@ git add . \
 git tag -a 0.2.0 -m "0.2.0" \
 && git push origin 0.2.0
 ```
- - The release build starts automatically and uploads the artifacts with the changelog to the  [release page](https://github.com/arduino/arduino-ide/releases).
+ - The release build starts automatically and uploads the artifacts with the changelog to the [release page](https://github.com/arduino/arduino-ide/releases).
  - If you do not want to release the `EXE` and `MSI` installers, wipe them manually.
  - If you do not like the generated changelog, modify it and update the GH release.
 

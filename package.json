@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide",
-  "version": "2.0.0-rc2",
+  "version": "2.0.0-rc3",
   "description": "Arduino IDE",
   "repository": "https://github.com/arduino/arduino-ide.git",
   "author": "Arduino SA",
@@ -46,7 +46,8 @@
     "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|browser-app|electron|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
     "i18n:check": "yarn i18n:generate && git add -N ./i18n && git diff --exit-code ./i18n",
     "i18n:push": "node ./scripts/i18n/transifex-push.js ./i18n/en.json",
-    "i18n:pull": "node ./scripts/i18n/transifex-pull.js ./i18n/"
+    "i18n:pull": "node ./scripts/i18n/transifex-pull.js ./i18n/",
+    "compose-changelog": "yarn --cwd ./arduino-ide-extension compose-changelog"
   },
   "lint-staged": {
     "./arduino-ide-extension/**/*.{ts,tsx}": [

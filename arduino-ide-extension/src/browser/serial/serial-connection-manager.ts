@@ -10,7 +10,6 @@ import {
 } from '../../common/protocol/serial-service';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
-  Port,
   Board,
   BoardsService,
 } from '../../common/protocol/boards-service';
@@ -217,7 +216,7 @@ export class SerialConnectionManager {
           nls.localize(
             'arduino/serial/connectionBusy',
             'Connection failed. Serial port is busy: {0}',
-            Port.toString(port)
+            port.address
           ),
           options
         );
@@ -232,7 +231,7 @@ export class SerialConnectionManager {
             Board.toString(board, {
               useFqbn: false,
             }),
-            Port.toString(port)
+            port.address
           ),
           options
         );
@@ -244,7 +243,7 @@ export class SerialConnectionManager {
             'arduino/serial/unexpectedError',
             'Unexpected error. Reconnecting {0} on port {1}.',
             Board.toString(board),
-            Port.toString(port)
+            port.address
           ),
           options
         );
@@ -262,7 +261,7 @@ export class SerialConnectionManager {
             Board.toString(board, {
               useFqbn: false,
             }),
-            Port.toString(port)
+            port.address
           )
         );
         this.serialErrors.length = 0;
@@ -280,7 +279,7 @@ export class SerialConnectionManager {
             Board.toString(board, {
               useFqbn: false,
             }),
-            Port.toString(port),
+            port.address,
             attempts.toString()
           )
         );
@@ -351,7 +350,7 @@ export namespace Serial {
     export function toString(config: Partial<SerialConfig>): string {
       if (!isSerialConfig(config)) return '';
       const { board, port } = config;
-      return `${Board.toString(board)} ${Port.toString(port)}`;
+      return `${Board.toString(board)} ${port.address}`;
     }
   }
 }

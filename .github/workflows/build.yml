@@ -15,9 +15,9 @@ on:
 
 env:
   JOB_TRANSFER_ARTIFACT: build-artifacts
+  CHANGELOG_ARTIFACTS: changelog
 
 jobs:
-
   build:
     if: github.repository == 'arduino/arduino-ide'
     strategy:
@@ -56,29 +56,29 @@ jobs:
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
           IS_FORK: ${{ github.event.pull_request.head.repo.fork == true }}
         run: |
-            # See: https://www.electron.build/code-signing
-            if [ $IS_FORK = true ]; then
-              echo "Skipping the app signing: building from a fork."
-            else
-              if [ "${{ runner.OS }}" = "macOS" ]; then
-                export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
-                # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
-                # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
-                echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "$CSC_LINK"
+          # See: https://www.electron.build/code-signing
+          if [ $IS_FORK = true ]; then
+            echo "Skipping the app signing: building from a fork."
+          else
+            if [ "${{ runner.OS }}" = "macOS" ]; then
+              export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
+              # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+              # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+              echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "$CSC_LINK"
 
-                export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
+              export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
 
-              elif [ "${{ runner.OS }}" = "Windows" ]; then
-                export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
-                npm config set msvs_version 2017 --global
-                echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
+            elif [ "${{ runner.OS }}" = "Windows" ]; then
+              export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
+              npm config set msvs_version 2017 --global
+              echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
 
-                export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
-              fi
+              export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
             fi
+          fi
 
-            yarn --cwd ./electron/packager/
-            yarn --cwd ./electron/packager/ package
+          yarn --cwd ./electron/packager/
+          yarn --cwd ./electron/packager/ package
 
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v2
@@ -95,15 +95,15 @@ jobs:
     strategy:
       matrix:
         artifact:
-          - path: "*Linux_64bit.zip"
+          - path: '*Linux_64bit.zip'
             name: Linux_X86-64
-          - path: "*macOS_64bit.dmg"
+          - path: '*macOS_64bit.dmg'
             name: macOS
-          - path: "*Windows_64bit.exe"
+          - path: '*Windows_64bit.exe'
             name: Windows_X86-64_interactive_installer
-          - path: "*Windows_64bit.msi"
+          - path: '*Windows_64bit.msi'
             name: Windows_X86-64_MSI
-          - path: "*Windows_64bit.zip"
+          - path: '*Windows_64bit.zip'
             name: Windows_X86-64_zip
 
     steps:
@@ -112,7 +112,7 @@ jobs:
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: ${{ env.JOB_TRANSFER_ARTIFACT }}
-      
+
       - name: Upload tester build artifact
         uses: actions/upload-artifact@v2
         with:
@@ -135,24 +135,24 @@ jobs:
         env:
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-            export LATEST_TAG=$(git describe --abbrev=0)
-            export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
-            if [ "$IS_RELEASE" = true ]; then
-              export BODY=$(echo -e "$GIT_LOG")
-            else 
-              export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-ide/releases/tag/$LATEST_TAG)")
-              if [ -z "$GIT_LOG" ]; then
-                  export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
-              else
-                  export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")
-              fi
+          export LATEST_TAG=$(git describe --abbrev=0)
+          export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
+          if [ "$IS_RELEASE" = true ]; then
+            export BODY=$(echo -e "$GIT_LOG")
+          else
+            export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-ide/releases/tag/$LATEST_TAG)")
+            if [ -z "$GIT_LOG" ]; then
+                export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
+            else
+                export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")
             fi
-            echo -e "$BODY"
-            OUTPUT_SAFE_BODY="${BODY//'%'/'%25'}"
-            OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\n'/'%0A'}"
-            OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\r'/'%0D'}"
-            echo "::set-output name=BODY::$OUTPUT_SAFE_BODY"
-            echo "$BODY" > CHANGELOG.txt
+          fi
+          echo -e "$BODY"
+          OUTPUT_SAFE_BODY="${BODY//'%'/'%25'}"
+          OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\n'/'%0A'}"
+          OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\r'/'%0D'}"
+          echo "::set-output name=BODY::$OUTPUT_SAFE_BODY"
+          echo "$BODY" > CHANGELOG.txt
 
       - name: Upload Changelog [GitHub Actions]
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
@@ -175,9 +175,9 @@ jobs:
       - name: Publish Nightly [S3]
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: "${{ env.JOB_TRANSFER_ARTIFACT }}/*"
-          PLUGIN_STRIP_PREFIX: "${{ env.JOB_TRANSFER_ARTIFACT }}/"
-          PLUGIN_TARGET: "/arduino-ide/nightly"
+          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_TARGET: '/arduino-ide/nightly'
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -211,9 +211,9 @@ jobs:
       - name: Publish Release [S3]
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: "${{ env.JOB_TRANSFER_ARTIFACT }}/*"
-          PLUGIN_STRIP_PREFIX: "${{ env.JOB_TRANSFER_ARTIFACT }}/"
-          PLUGIN_TARGET: "/arduino-ide"
+          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_TARGET: '/arduino-ide'
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

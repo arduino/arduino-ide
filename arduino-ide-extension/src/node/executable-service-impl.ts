@@ -17,7 +17,7 @@ export class ExecutableServiceImpl implements ExecutableService {
   }> {
     const [ls, clangd, cli, fwuploader] = await Promise.all([
       getExecPath('arduino-language-server', this.onError.bind(this)),
-      getExecPath('clangd', this.onError.bind(this), undefined, true),
+      getExecPath('clangd', this.onError.bind(this), undefined),
       getExecPath('arduino-cli', this.onError.bind(this)),
       getExecPath('arduino-fwuploader', this.onError.bind(this)),
     ]);
