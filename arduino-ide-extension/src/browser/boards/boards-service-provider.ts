@@ -230,7 +230,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       )) {
         if (
           this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-          this.latestValidBoardsConfig.selectedBoard.name === board.name
+          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
+          this.latestValidBoardsConfig.selectedPort.protocol === board.port?.protocol
         ) {
           this.boardsConfig = {
             ...this.latestValidBoardsConfig,
