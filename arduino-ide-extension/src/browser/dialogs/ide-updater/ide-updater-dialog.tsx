@@ -11,6 +11,7 @@ import { IDEUpdaterCommands } from '../../ide-updater/ide-updater-commands';
 import {
   IDEUpdaterServiceClient,
   ProgressInfo,
+  UpdateInfo,
 } from '../../../common/protocol/ide-updater-service';
 import { LocalStorageService } from '@theia/core/lib/browser';
 import { SKIP_IDE_VERSION } from '../../arduino-frontend-contribution';
@@ -106,11 +107,6 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
 
 @injectable()
 export class IDEUpdaterDialogProps extends DialogProps {}
-
-export type UpdateInfo = {
-  version: string;
-  changelog: any;
-};
 
 @injectable()
 export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {

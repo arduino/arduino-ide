@@ -3,9 +3,11 @@ import { shell } from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import ReactMarkdown from 'react-markdown';
-import { ProgressInfo } from '../../../common/protocol/ide-updater-service';
+import {
+  ProgressInfo,
+  UpdateInfo,
+} from '../../../common/protocol/ide-updater-service';
 import ProgressBar from '../../components/ProgressBar';
-import { UpdateInfo } from './ide-updater-dialog';
 
 export type IDEUpdaterComponentProps = {
   updateInfo: UpdateInfo;
@@ -20,7 +22,7 @@ export type IDEUpdaterComponentProps = {
 };
 
 export const IDEUpdaterComponent = ({
-  updateInfo: { version, changelog },
+  updateInfo: { version, releaseNotes },
   downloadStarted = false,
   downloadFinished = false,
   progress,
@@ -34,7 +36,13 @@ export const IDEUpdaterComponent = ({
     HTMLDivElement
   >;
   React.useEffect(() => {
-    if (!!changelog) {
+    if (!!releaseNotes) {
+      let changelog: string;
+      if (typeof releaseNotes === 'string') changelog = releaseNotes;
+      else
+        changelog = releaseNotes.reduce((acc, item) => {
+          return item.note ? (acc += `${item.note}\n\n`) : acc;
+        }, '');
       ReactDOM.render(
         <ReactMarkdown
           components={{
@@ -50,7 +58,7 @@ export const IDEUpdaterComponent = ({
         changelogDivRef.current
       );
     }
-  }, [changelog]);
+  }, [releaseNotes]);
   const closeButton = (
     <button onClick={onClose} type="button" className="theia-button secondary">
       {nls.localize('arduino/ide-updater/notNowButton', 'Not now')}
@@ -119,7 +127,7 @@ export const IDEUpdaterComponent = ({
                 version
               )}
             </div>
-            {changelog && (
+            {releaseNotes && (
               <div className="dialogRow">
                 <div className="changelog-container" ref={changelogDivRef} />
               </div>
