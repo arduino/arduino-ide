@@ -93,7 +93,7 @@ export const IDEUpdaterComponent = ({
           <div>
             {nls.localize(
               'arduino/ide-updater/downloadingNotice',
-              'Downloading the latest version of the Arduino IDE 2.'
+              'Downloading the latest version of the Arduino IDE.'
             )}
           </div>
           <ProgressBar percent={progress?.percent} showPercentage />
@@ -132,7 +132,7 @@ export const IDEUpdaterComponent = ({
               >
                 {nls.localize(
                   'arduino/ide-updater/skipVersionButton',
-                  'Skip version'
+                  'Skip Version'
                 )}
               </button>
               <div className="push"></div>
