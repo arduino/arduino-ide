@@ -1,6 +1,9 @@
 import { nls } from '@theia/core/lib/common';
 import {} from '@theia/core/shared/react';
+import { shell } from 'electron';
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import ReactMarkdown from 'react-markdown';
 import { ProgressInfo } from '../../../common/protocol/ide-updater-service';
 import ProgressBar from '../../components/ProgressBar';
 import { UpdateInfo } from './ide-updater-dialog';
@@ -28,6 +31,27 @@ export const IDEUpdaterComponent = ({
   onSkipVersion,
   onCloseAndInstall,
 }: IDEUpdaterComponentProps): React.ReactElement => {
+  const changelogDivRef = React.useRef() as React.MutableRefObject<
+    HTMLDivElement
+  >;
+  React.useEffect(() => {
+    if (!!changelog) {
+      ReactDOM.render(
+        <ReactMarkdown
+          components={{
+            a: ({ href, children, ...props }) => (
+              <a onClick={() => href && shell.openExternal(href)} {...props}>
+                {children}
+              </a>
+            ),
+          }}
+        >
+          {changelog}
+        </ReactMarkdown>,
+        changelogDivRef.current
+      );
+    }
+  }, [changelog]);
   const closeButton = (
     <button onClick={onClose} type="button" className="theia-button secondary">
       {nls.localize('arduino/ide-updater/notNowButton', 'Not now')}
@@ -80,9 +104,11 @@ export const IDEUpdaterComponent = ({
                 version
               )}
             </div>
-            <div className="dialogRow">
-              <textarea value={changelog} readOnly />
-            </div>
+            {changelog && (
+              <div className="dialogRow">
+                <div className="changelog-container" ref={changelogDivRef} />
+              </div>
+            )}
             <div className="buttons-container">
               <button
                 onClick={onSkipVersion}

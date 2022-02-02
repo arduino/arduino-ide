@@ -304,9 +304,11 @@ export class ArduinoFrontendContribution
         SKIP_IDE_VERSION
       );
       if (versionToSkip === updateInfo.version) return;
+      const { version, releaseNotes: changelog } = updateInfo;
+
       this.updaterDialog.open({
-        version: updateInfo.version,
-        changelog: 'lol',
+        version,
+        changelog,
       });
     });
 

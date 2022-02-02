@@ -82,6 +82,7 @@
     "ps-tree": "^1.2.0",
     "query-string": "^7.0.1",
     "react-disable": "^0.1.0",
+    "react-markdown": "^8.0.0",
     "react-select": "^3.0.4",
     "react-tabs": "^3.1.2",
     "react-window": "^1.8.6",

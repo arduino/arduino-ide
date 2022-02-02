@@ -26,10 +26,34 @@
   margin-top: 0;
 }
 
-.ide-updater-dialog textarea {
-  width: 100%;
+.ide-updater-dialog .changelog-container {
+  background: white;
+  border: 1px solid #dae3e3;
+  border-radius: 2px;
+  font-size: 12px;
   height: 180px;
-  resize: none;
+  overflow: auto;
+  padding: 0 12px;
+  cursor: text;
+}
+
+.ide-updater-dialog .changelog-container a {
+  color: #018184;
+}
+
+.ide-updater-dialog .changelog-container a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ide-updater-dialog .changelog-container code {
+  background: #ecf1f1;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.ide-updater-dialog .changelog-container a code {
+  color: #018184;
 }
 
 .ide-updater-dialog .buttons-container {

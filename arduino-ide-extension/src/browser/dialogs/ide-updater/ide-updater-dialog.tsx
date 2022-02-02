@@ -148,7 +148,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   async open(
     data: UpdateInfo | undefined = undefined
   ): Promise<UpdateInfo | undefined> {
-    if (data && data.version && data.changelog) {
+    if (data && data.version) {
       this.widget.init(data, this.close.bind(this));
       return super.open();
     }
