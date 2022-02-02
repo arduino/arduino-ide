@@ -61,8 +61,19 @@ export const IDEUpdaterComponent = ({
     <div className="ide-updater-dialog--content">
       {downloadFinished ? (
         <div className="ide-updater-dialog--downloaded">
-          <div>Arduino IDE {version} has been downloaded.</div>
-          <div>Close the software and install the update on your machine.</div>
+          <div>
+            {nls.localize(
+              'arduino/ide-updater/versionDownloaded',
+              'Arduino IDE {0} has been downloaded.',
+              version
+            )}
+          </div>
+          <div>
+            {nls.localize(
+              'arduino/ide-updater/closeToInstallNotice',
+              'Close the software and install the update on your machine.'
+            )}
+          </div>
           <div className="buttons-container">
             {closeButton}
             <button
@@ -79,7 +90,12 @@ export const IDEUpdaterComponent = ({
         </div>
       ) : downloadStarted ? (
         <div className="ide-updater-dialog--downloading">
-          <div>Downloading the latest version of the Arduino IDE 2.</div>
+          <div>
+            {nls.localize(
+              'arduino/ide-updater/downloadingNotice',
+              'Downloading the latest version of the Arduino IDE 2.'
+            )}
+          </div>
           <ProgressBar percent={progress?.percent} showPercentage />
         </div>
       ) : (
