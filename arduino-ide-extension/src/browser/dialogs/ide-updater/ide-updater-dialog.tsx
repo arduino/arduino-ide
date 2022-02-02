@@ -5,8 +5,7 @@ import { AbstractDialog } from '../../theia/dialogs/dialogs';
 import { Widget } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
-import { Command, CommandRegistry, nls } from '@theia/core';
-import { Contribution } from '../../contributions/contribution';
+import { nls } from '@theia/core';
 import { IDEUpdaterComponent } from './ide-updater-component';
 import { IDEUpdaterCommands } from '../../ide-updater/ide-updater-commands';
 import {
@@ -167,40 +166,5 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   close(): void {
     this.widget.dispose();
     super.close();
-  }
-}
-
-@injectable()
-export class IDEUpdater extends Contribution {
-  @inject(IDEUpdaterDialog)
-  protected readonly dialog: IDEUpdaterDialog;
-
-  protected dialogOpened = false;
-
-  registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(IDEUpdater.Commands.OPEN, {
-      execute: async () => {
-        try {
-          this.dialogOpened = true;
-          await this.dialog.open();
-        } finally {
-          this.dialogOpened = false;
-        }
-      },
-      isEnabled: () => !this.dialogOpened,
-    });
-  }
-}
-
-export namespace IDEUpdater {
-  export namespace Commands {
-    export const OPEN: Command = {
-      id: 'arduino-ide-updater-open',
-      label: nls.localize(
-        'arduino/updater/ideUpdaterDialogOpen',
-        'Open Software Update dialog'
-      ),
-      category: 'Arduino',
-    };
   }
 }

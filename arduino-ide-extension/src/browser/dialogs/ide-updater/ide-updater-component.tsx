@@ -1,5 +1,4 @@
 import { nls } from '@theia/core/lib/common';
-import {} from '@theia/core/shared/react';
 import { shell } from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';

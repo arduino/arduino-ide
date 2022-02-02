@@ -617,7 +617,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Debug);
   Contribution.configure(bind, Sketchbook);
   Contribution.configure(bind, UploadFirmware);
-  // Contribution.configure(bind, IDEUpdater);
   Contribution.configure(bind, UploadCertificate);
   Contribution.configure(bind, BoardSelection);
   Contribution.configure(bind, OpenRecentSketch);
