@@ -18,16 +18,16 @@ sudo apt update \
   build-essential \
 && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
 && source ~/.bashrc \
-&& nvm install 12.14.1 \
-&& nvm use 12.14.1 \
-&& nvm alias default 12.14.1 \
+&& nvm install 14 \
+&& nvm use 14 \
+&& nvm alias default 14 \
 && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
 && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
 && sudo apt update && sudo apt install --no-install-recommends yarn \
 && mkdir -p ~/dev/git/ \
 && rm -rf ~/dev/git/arduino-ide \
 && git clone --depth 1 https://github.com/arduino/arduino-ide.git ~/dev/git/arduino-ide \
-&& yarn --cwd ~/dev/git/arduino-ide \
+&& yarn --cwd ~/dev/git/arduino-ide --ignore-engines \
 && yarn --cwd ~/dev/git/arduino-ide rebuild:electron \
 && yarn --cwd ~/dev/git/arduino-ide/electron-app start
 ```
