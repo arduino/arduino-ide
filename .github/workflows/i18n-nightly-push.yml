@@ -19,10 +19,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --ignore-engines
 
       - name: Run i18n:push script
-        run: yarn run i18n:push
+        run: yarn --ignore-engines run i18n:push
         env:
           TRANSIFEX_ORGANIZATION: ${{ secrets.TRANSIFEX_ORGANIZATION }}
           TRANSIFEX_PROJECT: ${{ secrets.TRANSIFEX_PROJECT }}

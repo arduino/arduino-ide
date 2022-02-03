@@ -32,7 +32,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --ignore-engines
 
       - name: Check for errors
-        run: yarn i18n:check
+        run: yarn i18n:check --ignore-engines

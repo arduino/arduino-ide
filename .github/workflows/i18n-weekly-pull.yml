@@ -15,14 +15,14 @@ jobs:
       - name: Install Node.js 12.x
         uses: actions/setup-node@v2
         with:
-          node-version: '14.18.2'
+          node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --ignore-engines
 
       - name: Run i18n:pull script
-        run: yarn run i18n:pull
+        run: yarn --ignore-engines run i18n:pull
         env:
           TRANSIFEX_ORGANIZATION: ${{ secrets.TRANSIFEX_ORGANIZATION }}
           TRANSIFEX_PROJECT: ${{ secrets.TRANSIFEX_PROJECT }}
