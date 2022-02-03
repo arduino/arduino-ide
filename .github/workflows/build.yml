@@ -98,7 +98,9 @@ jobs:
           - path: '*Linux_64bit.zip'
             name: Linux_X86-64
           - path: '*macOS_64bit.dmg'
-            name: macOS
+            name: macOS_dmg
+          - path: '*macOS_64bit.zip'
+            name: macOS_zip
           - path: '*Windows_64bit.exe'
             name: Windows_X86-64_interactive_installer
           - path: '*Windows_64bit.msi'
