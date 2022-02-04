@@ -9,6 +9,11 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { CompilerWarningLiterals, CompilerWarnings } from '../common/protocol';
 
+export enum UpdateChannel {
+  Stable = 'stable',
+  Nightly = 'nightly',
+}
+
 export const ArduinoConfigSchema: PreferenceSchema = {
   type: 'object',
   properties: {
@@ -66,11 +71,11 @@ export const ArduinoConfigSchema: PreferenceSchema = {
     },
     'arduino.ide.updateChannel': {
       type: 'string',
-      enum: ['latest', 'nightly', 'none'],
-      default: 'none',
+      enum: Object.values(UpdateChannel) as UpdateChannel[],
+      default: UpdateChannel.Stable,
       description: nls.localize(
         'arduino/preferences/ide.updateChannel',
-        'Release channel to get updated from. Latest is the stable release, nightly is the latest development build.'
+        "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build."
       ),
     },
     'arduino.board.certificates': {
@@ -172,7 +177,7 @@ export interface ArduinoConfiguration {
   'arduino.upload.verify': boolean;
   'arduino.window.autoScale': boolean;
   'arduino.window.zoomLevel': number;
-  'arduino.ide.updateChannel': 'latest' | 'nightly' | 'none';
+  'arduino.ide.updateChannel': UpdateChannel;
   'arduino.board.certificates': string;
   'arduino.sketchbook.showAllFiles': boolean;
   'arduino.cloud.enabled': boolean;

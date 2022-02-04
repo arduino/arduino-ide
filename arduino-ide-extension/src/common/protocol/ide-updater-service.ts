@@ -1,5 +1,6 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import { Event } from '@theia/core/lib/common/event';
+import { UpdateChannel } from '../../browser/arduino-preferences';
 
 export interface ProgressInfo {
   total: number;
@@ -46,6 +47,7 @@ export const IDEUpdaterServicePath = '/services/ide-updater';
 export const IDEUpdaterService = Symbol('IDEUpdaterService');
 export interface IDEUpdaterService
   extends JsonRpcServer<IDEUpdaterServiceClient> {
+  init(channel: UpdateChannel): void;
   checkForUpdates(): Promise<UpdateInfo | void>;
   downloadUpdate(): Promise<void>;
   quitAndInstall(): void;

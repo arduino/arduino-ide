@@ -70,6 +70,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
+import { IDEUpdaterService } from '../common/protocol/ide-updater-service';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
@@ -164,6 +165,9 @@ export class ArduinoFrontendContribution
 
   @inject(IDEUpdaterDialog)
   protected readonly updaterDialog: IDEUpdaterDialog;
+
+  @inject(IDEUpdaterService)
+  protected readonly updaterService: IDEUpdaterService;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -275,6 +279,9 @@ export class ArduinoFrontendContribution
       }
     }
 
+    this.updaterService.init(
+      this.arduinoPreferences.get('arduino.ide.updateChannel')
+    );
     this.updater.checkForUpdates().then(async (updateInfo) => {
       if (!updateInfo) return;
       const versionToSkip = await this.localStorageService.getData<string>(

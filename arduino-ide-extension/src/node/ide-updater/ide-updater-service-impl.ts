@@ -13,6 +13,7 @@ import {
   IDEUpdaterServiceClient,
 } from '../../common/protocol/ide-updater-service';
 import fetch, { Response } from 'node-fetch';
+import { UpdateChannel } from '../../browser/arduino-preferences';
 
 const CHANGELOG_BASE_URL = 'https://downloads.arduino.cc/arduino-ide/changelog';
 
@@ -22,11 +23,13 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
   private cancellationToken?: CancellationToken;
   protected theiaFEClient?: IDEUpdaterServiceClient;
 
-  constructor() {
-    const options: GenericServerOptions = {
+  init(channel: UpdateChannel) {
+  const options: GenericServerOptions = {
       provider: 'generic',
-      url: 'https://downloads.arduino.cc/arduino-ide/nightly/test/',
-      channel: 'beta',
+      url: `https://downloads.arduino.cc/arduino-ide/${
+        channel === UpdateChannel.Nightly ? 'nightly/test/' : ''
+      }`,
+      channel,
     };
 
     if (process.platform === 'win32') {
