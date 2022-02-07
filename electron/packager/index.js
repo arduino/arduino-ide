@@ -103,7 +103,7 @@
     //-------------------------------------------------------------------------------------------------+
     // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
     //-------------------------------------------------------------------------------------------------+
-    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', workingCopy)} -std=c++17`, `Building the ${productName} application`);
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', workingCopy)}`, `Building the ${productName} application`);
 
     //-------------------------------------------------------------------------------------------------------------------------+
     // Test the application. With this approach, we cannot publish test results to GH Actions but save 6-10 minutes per builds |
@@ -176,8 +176,8 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-------------------------------------------------------------------------------------------+
     // Install all private and public dependencies for the electron application and build Theia. |
     //-------------------------------------------------------------------------------------------+
-    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')} -std=c++17`, 'Installing dependencies');
-    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''} -std=c++17`, `Building the ${productName} application`);
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')}`, 'Installing dependencies');
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''}`, `Building the ${productName} application`);
 
     //------------------------------------------------------------------------------+
     // Create a throw away dotenv file which we use to feed the builder with input. |
