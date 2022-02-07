@@ -20,8 +20,8 @@
   "scripts": {
     "build": "yarn download:plugins && theia build --mode development && yarn patch",
     "build:publish": "yarn download:plugins && theia build --mode production && yarn patch",
-    "package": "cross-env DEBUG=* && electron-builder --publish=never -std=c++14",
-    "package:publish": "cross-env DEBUG=* && electron-builder --publish=always  -std=c++14",
+    "package": "cross-env DEBUG=* CXXFLAGS=\"--std=c++14\" && electron-builder --publish=never",
+    "package:publish": "cross-env DEBUG=* CXXFLAGS=\"--std=c++14\" && electron-builder --publish=always",
     "download:plugins": "theia download:plugins",
     "patch": "ncp ./patch/main.js ./src-gen/backend/main.js"
   },
