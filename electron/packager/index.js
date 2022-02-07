@@ -103,12 +103,12 @@
     //-------------------------------------------------------------------------------------------------+
     // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
     //-------------------------------------------------------------------------------------------------+
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`, `Building the ${productName} application`);
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', workingCopy)} -std=c++17`, `Building the ${productName} application`);
 
     //-------------------------------------------------------------------------------------------------------------------------+
     // Test the application. With this approach, we cannot publish test results to GH Actions but save 6-10 minutes per builds |
     //-------------------------------------------------------------------------------------------------------------------------+
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)} test`, `Testing the ${productName} application`);
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', workingCopy)} test`, `Testing the ${productName} application`);
 
     // Collect all unused dependencies by the backend. We have to remove them from the electron app.
     // The `bundle.js` already contains everything we need for the frontend.
@@ -176,8 +176,8 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-------------------------------------------------------------------------------------------+
     // Install all private and public dependencies for the electron application and build Theia. |
     //-------------------------------------------------------------------------------------------+
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')}`, 'Installing dependencies');
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''}`, `Building the ${productName} application`);
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')} -std=c++17`, 'Installing dependencies');
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''} -std=c++17`, `Building the ${productName} application`);
 
     //------------------------------------------------------------------------------+
     // Create a throw away dotenv file which we use to feed the builder with input. |
@@ -193,7 +193,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-----------------------------------+
     // Package the electron application. |
     //-----------------------------------+
-    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`, `Packaging your ${productName} application`);
+    exec(`yarn --ignore-engines --network-timeout 1000000 --cwd ${path('..', 'build')} package`, `Packaging your ${productName} application`);
 
     //-----------------------------------------------------------------------------------------------------+
     // Copy to another folder. Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |

@@ -25,14 +25,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node.js 12.x
+      - name: Install Node.js 14.x
         uses: actions/setup-node@v2
         with:
-          node-version: '12.14.1'
+          node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --ignore-engines
 
       - name: Check for errors
-        run: yarn i18n:check
+        run: yarn --ignore-engines i18n:check

@@ -2,19 +2,18 @@
 
 Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`):
 
-1. Install Node.js 12.x with [nvm](https://github.com/nvm-sh/nvm#install--update-script):
+1. Install Node.js 14.x with [nvm](https://github.com/nvm-sh/nvm#install--update-script):
     ```
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
     ```
     Restart your shell then:
     ```
-    nvm install 12.14.1
-    nvm use 12.14.1
+    nvm install 14
+    nvm use 14
     ```
     Verify:
     ```
     node -v
-    v12.14.1
     ```
 
 2. Install [Yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable):

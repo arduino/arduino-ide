@@ -1,10 +1,5 @@
 import { inject, injectable } from 'inversify';
-import {
-  app,
-  BrowserWindow,
-  BrowserWindowConstructorOptions,
-  screen,
-} from 'electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen } from '@theia/electron/shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join } from 'path';
@@ -17,7 +12,7 @@ import {
   TheiaBrowserWindowOptions,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
-import { ipcMain } from '@theia/core/shared/electron';
+import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -152,6 +147,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     this.attachSaveWindowState(electronWindow);
     this.attachGlobalShortcuts(electronWindow);
     this.restoreMaximizedState(electronWindow, options);
+    electronRemoteMain.enable(electronWindow.webContents);
     return electronWindow;
   }
 

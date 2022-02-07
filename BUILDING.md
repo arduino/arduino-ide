@@ -47,7 +47,7 @@ Once you have all the tools installed, you can build the editor following these 
 
 1. Install the dependencies and build
     ```sh
-    yarn
+    yarn --ignore-engines
     ```
 
 2. Rebuild the dependencies
@@ -57,9 +57,7 @@ Once you have all the tools installed, you can build the editor following these 
 
 3. Rebuild the electron dependencies
     ```sh
-    cd electron-app
-    yarn theia rebuild:electron
-    cd ..
+    yarn rebuild:electron
     ```
 
 4. Start the application

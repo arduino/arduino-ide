@@ -38,6 +38,13 @@
       "outputCapture": "std"
     },
     {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Electron Frontend",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}/electron-app"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "App (Browser)",
@@ -103,6 +110,15 @@
       "name": "Electron Packager",
       "program": "${workspaceRoot}/electron/packager/index.js",
       "cwd": "${workspaceFolder}/electron/packager"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch Electron Backend & Frontend",
+      "configurations": [
+        "App (Electron)",
+        "Attach to Electron Frontend"
+      ]
     }
   ]
 }

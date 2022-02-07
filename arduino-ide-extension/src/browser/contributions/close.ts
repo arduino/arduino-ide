@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { toArray } from '@phosphor/algorithm';
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';

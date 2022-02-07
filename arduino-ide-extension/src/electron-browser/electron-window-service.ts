@@ -1,5 +1,5 @@
 import { inject, injectable, postConstruct } from 'inversify';
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
   ConnectionStatus,

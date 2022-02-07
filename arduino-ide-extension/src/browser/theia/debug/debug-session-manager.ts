@@ -62,9 +62,15 @@ export class DebugSessionManager extends TheiaDebugSessionManager {
       }
     );
   }
-  // TODO: remove as https://github.com/eclipse-theia/theia/issues/10164 is fixed
-  async terminateSessions(): Promise<void> {
-    await super.terminateSessions();
-    this.destroy(this.currentSession?.id);
+  async terminateSession(session?: DebugSession): Promise<void> {
+    if (!session) {
+        this.updateCurrentSession(this._currentSession);
+        session = this._currentSession;
+    }
+    // The cortex-debug extension does not respond to close requests
+    // So we simply terminate the debug session immediately
+    // Alternatively the `super.terminateSession` call will terminate it after 5 seconds without a response
+    await this.debug.terminateDebugSession(session!.id);
+    await super.terminateSession(session);
   }
 }
