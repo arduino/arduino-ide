@@ -24,10 +24,10 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
   protected theiaFEClient?: IDEUpdaterServiceClient;
 
   init(channel: UpdateChannel) {
-  const options: GenericServerOptions = {
+    const options: GenericServerOptions = {
       provider: 'generic',
       url: `https://downloads.arduino.cc/arduino-ide/${
-        channel === UpdateChannel.Nightly ? 'nightly/test/' : ''
+        channel === UpdateChannel.Nightly ? 'nightly' : ''
       }`,
       channel,
     };
