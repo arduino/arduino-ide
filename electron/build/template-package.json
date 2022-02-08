@@ -51,6 +51,7 @@
   "build": {
     "productName": "Arduino IDE",
     "asar": false,
+    "npmRebuild": false,
     "directories": {
       "buildResources": "resources"
     },
@@ -65,8 +66,7 @@
       "!node_modules/@theia/**/lib/*browser/*",
       "node_modules/@theia/core/lib/browser/*",
       "!node_modules/@typefox/monaco-editor-core/*",
-      "!node_modules/oniguruma/*",
-      "!node_modules/onigasm/*"
+      "!node_modules/electron/**"
     ],
     "extraResources": [
       {
