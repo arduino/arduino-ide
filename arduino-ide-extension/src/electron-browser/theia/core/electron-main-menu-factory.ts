@@ -80,7 +80,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
   protected createOSXMenu(): Electron.MenuItemConstructorOptions {
     const { submenu } = super.createOSXMenu();
     const label = 'Arduino IDE';
-    if (!!submenu && !(submenu instanceof Electron.Menu)) {
+    if (!!submenu && Array.isArray(submenu)) {
       const [, , /* about */ /* preferences */ ...rest] = submenu;
       const about = this.fillMenuTemplate(
         [],
