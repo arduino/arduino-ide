@@ -3,7 +3,7 @@
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3",
-    "electron-builder": "22.7.0"
+    "electron-builder": "22.10.5"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
@@ -11,7 +11,7 @@
   "devDependencies": {
     "@theia/cli": "1.22.1",
     "cross-env": "^7.0.2",
-    "electron-builder": "22.7.0",
+    "electron-builder": "22.10.5",
     "electron-notarize": "^0.3.0",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
@@ -20,8 +20,8 @@
   "scripts": {
     "build": "yarn download:plugins && theia build --mode development && yarn patch",
     "build:publish": "yarn download:plugins && theia build --mode production && yarn patch",
-    "package": "cross-env DEBUG=* CXXFLAGS=\"--std=c++14\" && electron-builder --publish=never",
-    "package:publish": "cross-env DEBUG=* CXXFLAGS=\"--std=c++14\" && electron-builder --publish=always",
+    "package": "cross-env DEBUG=* && electron-builder --publish=never",
+    "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
     "download:plugins": "theia download:plugins",
     "patch": "ncp ./patch/main.js ./src-gen/backend/main.js"
   },
@@ -53,6 +53,7 @@
     "asar": false,
     "detectUpdateChannel": false,
     "generateUpdatesFilesForAllChannels": true,
+    "npmRebuild": false,
     "directories": {
       "buildResources": "resources"
     },
@@ -67,8 +68,7 @@
       "!node_modules/@theia/**/lib/*browser/*",
       "node_modules/@theia/core/lib/browser/*",
       "!node_modules/@typefox/monaco-editor-core/*",
-      "!node_modules/oniguruma/*",
-      "!node_modules/onigasm/*"
+      "!node_modules/electron/**"
     ],
     "extraResources": [
       {
@@ -77,7 +77,11 @@
       }
     ],
     "win": {
-      "target": ["msi", "nsis", "zip"]
+      "target": [
+        "msi",
+        "nsis",
+        "zip"
+      ]
     },
     "mac": {
       "darkModeSupport": true,
@@ -85,7 +89,10 @@
       "gatekeeperAssess": false,
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
-      "target": ["dmg", "zip"]
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "linux": {
       "target": [
