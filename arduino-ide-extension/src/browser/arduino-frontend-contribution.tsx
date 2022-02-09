@@ -68,9 +68,15 @@ import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
+import * as ReactDOM from 'react-dom';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 
+declare global {
+  interface Window {
+    runAxe: () => void;
+  }
+}
 @injectable()
 export class ArduinoFrontendContribution
   implements
@@ -78,8 +84,7 @@ export class ArduinoFrontendContribution
     TabBarToolbarContribution,
     CommandContribution,
     MenuContribution,
-    ColorContribution
-{
+    ColorContribution {
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -164,6 +169,11 @@ export class ArduinoFrontendContribution
 
   @postConstruct()
   protected async init(): Promise<void> {
+    window.runAxe = () => {
+      const axe = require('@axe-core/react');
+      axe(React, ReactDOM);
+    };
+
     const isFirstStartup = !(await this.localStorageService.getData(
       INIT_LIBS_AND_PACKAGES
     ));
