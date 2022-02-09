@@ -74,6 +74,9 @@ export class TaskProgress extends jspb.Message {
     getCompleted(): boolean;
     setCompleted(value: boolean): TaskProgress;
 
+    getPercent(): number;
+    setPercent(value: number): TaskProgress;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TaskProgress.AsObject;
@@ -90,6 +93,7 @@ export namespace TaskProgress {
         name: string,
         message: string,
         completed: boolean,
+        percent: number,
     }
 }
 
@@ -178,6 +182,31 @@ export namespace Platform {
         boardsList: Array<Board.AsObject>,
         manuallyInstalled: boolean,
         deprecated: boolean,
+    }
+}
+
+export class PlatformReference extends jspb.Message { 
+    getId(): string;
+    setId(value: string): PlatformReference;
+
+    getVersion(): string;
+    setVersion(value: string): PlatformReference;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformReference.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformReference): PlatformReference.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformReference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformReference;
+    static deserializeBinaryFromReader(message: PlatformReference, reader: jspb.BinaryReader): PlatformReference;
+}
+
+export namespace PlatformReference {
+    export type AsObject = {
+        id: string,
+        version: string,
     }
 }
 

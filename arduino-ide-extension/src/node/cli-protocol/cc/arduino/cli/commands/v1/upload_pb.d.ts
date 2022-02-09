@@ -371,6 +371,9 @@ export class SupportedUserFieldsRequest extends jspb.Message {
     getProtocol(): string;
     setProtocol(value: string): SupportedUserFieldsRequest;
 
+    getAddress(): string;
+    setAddress(value: string): SupportedUserFieldsRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SupportedUserFieldsRequest.AsObject;
@@ -387,6 +390,7 @@ export namespace SupportedUserFieldsRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         fqbn: string,
         protocol: string,
+        address: string,
     }
 }
 
