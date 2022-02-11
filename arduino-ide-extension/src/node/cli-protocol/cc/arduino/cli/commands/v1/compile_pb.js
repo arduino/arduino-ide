@@ -971,7 +971,10 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.toObject = function(includeInst
     usedLibrariesList: jspb.Message.toObjectList(msg.getUsedLibrariesList(),
     cc_arduino_cli_commands_v1_lib_pb.Library.toObject, includeInstance),
     executableSectionsSizeList: jspb.Message.toObjectList(msg.getExecutableSectionsSizeList(),
-    proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.toObject, includeInstance),
+    boardPlatform: (f = msg.getBoardPlatform()) && cc_arduino_cli_commands_v1_common_pb.PlatformReference.toObject(includeInstance, f),
+    buildPlatform: (f = msg.getBuildPlatform()) && cc_arduino_cli_commands_v1_common_pb.PlatformReference.toObject(includeInstance, f),
+    progress: (f = msg.getProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1029,6 +1032,21 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.deserializeBinaryFromReader = f
       var value = new proto.cc.arduino.cli.commands.v1.ExecutableSectionSize;
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.deserializeBinaryFromReader);
       msg.addExecutableSectionsSize(value);
+      break;
+    case 6:
+      var value = new cc_arduino_cli_commands_v1_common_pb.PlatformReference;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.PlatformReference.deserializeBinaryFromReader);
+      msg.setBoardPlatform(value);
+      break;
+    case 7:
+      var value = new cc_arduino_cli_commands_v1_common_pb.PlatformReference;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.PlatformReference.deserializeBinaryFromReader);
+      msg.setBuildPlatform(value);
+      break;
+    case 8:
+      var value = new cc_arduino_cli_commands_v1_common_pb.TaskProgress;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.TaskProgress.deserializeBinaryFromReader);
+      msg.setProgress(value);
       break;
     default:
       reader.skipField();
@@ -1094,6 +1112,30 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.serializeBinaryToWriter = funct
       5,
       f,
       proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.serializeBinaryToWriter
+    );
+  }
+  f = message.getBoardPlatform();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.PlatformReference.serializeBinaryToWriter
+    );
+  }
+  f = message.getBuildPlatform();
+  if (f != null) {
+    writer.writeMessage(
+      7,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.PlatformReference.serializeBinaryToWriter
+    );
+  }
+  f = message.getProgress();
+  if (f != null) {
+    writer.writeMessage(
+      8,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.TaskProgress.serializeBinaryToWriter
     );
   }
 };
@@ -1274,6 +1316,117 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.addExecutableSections
  */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearExecutableSectionsSizeList = function() {
   return this.setExecutableSectionsSizeList([]);
+};
+
+
+/**
+ * optional PlatformReference board_platform = 6;
+ * @return {?proto.cc.arduino.cli.commands.v1.PlatformReference}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBoardPlatform = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.PlatformReference} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.PlatformReference, 6));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.PlatformReference|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBoardPlatform = function(value) {
+  return jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearBoardPlatform = function() {
+  return this.setBoardPlatform(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasBoardPlatform = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional PlatformReference build_platform = 7;
+ * @return {?proto.cc.arduino.cli.commands.v1.PlatformReference}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBuildPlatform = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.PlatformReference} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.PlatformReference, 7));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.PlatformReference|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBuildPlatform = function(value) {
+  return jspb.Message.setWrapperField(this, 7, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearBuildPlatform = function() {
+  return this.setBuildPlatform(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasBuildPlatform = function() {
+  return jspb.Message.getField(this, 7) != null;
+};
+
+
+/**
+ * optional TaskProgress progress = 8;
+ * @return {?proto.cc.arduino.cli.commands.v1.TaskProgress}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getProgress = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.TaskProgress} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.TaskProgress, 8));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.TaskProgress|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setProgress = function(value) {
+  return jspb.Message.setWrapperField(this, 8, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearProgress = function() {
+  return this.setProgress(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasProgress = function() {
+  return jspb.Message.getField(this, 8) != null;
 };
 
 
