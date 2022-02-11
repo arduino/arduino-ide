@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX } from '@theia/core/lib/common/os';
 import {
   Contribution,

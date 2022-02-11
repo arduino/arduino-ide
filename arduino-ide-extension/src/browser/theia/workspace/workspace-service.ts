@@ -18,6 +18,7 @@ import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
 import { nls } from '@theia/core/lib/common';
+import { URI as VSCodeUri } from '@theia/core/shared/vscode-uri';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -67,7 +68,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.workspaceUri = (async () => {
       try {
         const hash = window.location.hash;
-        const [recentWorkspaces, recentSketches] = await Promise.all([
+        const [recentWorkspacesPaths, recentSketches] = await Promise.all([
           this.server.getRecentWorkspaces(),
           this.sketchService
             .getSketches({})
@@ -75,6 +76,8 @@ export class WorkspaceService extends TheiaWorkspaceService {
               SketchContainer.toArray(container).map((s) => s.uri)
             ),
         ]);
+        // On Dindows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
+        const recentWorkspaces = recentWorkspacesPaths.map(e => VSCodeUri.file(e).toString());
         const toOpen = await new ArduinoWorkspaceRootResolver({
           isValid: this.isValid.bind(this),
         }).resolve({ hash, recentWorkspaces, recentSketches });

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';

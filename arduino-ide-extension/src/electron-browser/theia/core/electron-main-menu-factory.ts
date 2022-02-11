@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX } from '@theia/core/lib/common/os';
 import { Keybinding } from '@theia/core/lib/common/keybinding';
 import {
@@ -15,7 +15,6 @@ import {
   ArduinoMenus,
   PlaceholderMenuNode,
 } from '../../../browser/menu/arduino-menus';
-import electron = require('@theia/core/shared/electron');
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
@@ -35,9 +34,9 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     await this.preferencesService.ready;
     const createdMenuBar = this.createElectronMenuBar();
     if (isOSX) {
-      electron.remote.Menu.setApplicationMenu(createdMenuBar);
+      remote.Menu.setApplicationMenu(createdMenuBar);
     } else {
-      electron.remote.getCurrentWindow().setMenu(createdMenuBar);
+      remote.getCurrentWindow().setMenu(createdMenuBar);
     }
   }
 
@@ -81,7 +80,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
   protected createOSXMenu(): Electron.MenuItemConstructorOptions {
     const { submenu } = super.createOSXMenu();
     const label = 'Arduino IDE';
-    if (!!submenu && !(submenu instanceof remote.Menu)) {
+    if (!!submenu && Array.isArray(submenu)) {
       const [, , /* about */ /* preferences */ ...rest] = submenu;
       const about = this.fillMenuTemplate(
         [],

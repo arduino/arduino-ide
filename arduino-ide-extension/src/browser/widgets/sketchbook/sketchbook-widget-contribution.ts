@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { inject, injectable } from 'inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
@@ -80,7 +80,7 @@ export class SketchbookWidgetContribution
   }
 
   onStart(): void {
-    this.shell.currentChanged.connect(() =>
+    this.shell.onDidChangeCurrentWidget(() =>
       this.onCurrentWidgetChangedHandler()
     );
 

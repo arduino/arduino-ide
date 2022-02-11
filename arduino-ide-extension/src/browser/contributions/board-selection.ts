@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { remote } from 'electron';
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
   DisposableCollection,

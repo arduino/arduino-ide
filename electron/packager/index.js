@@ -178,6 +178,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     //-------------------------------------------------------------------------------------------+
     exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')}`, 'Installing dependencies');
     exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''}`, `Building the ${productName} application`);
+    exec(`yarn --network-timeout 1000000 --cwd ${path('..', 'build')} rebuild`, 'Rebuild native dependencies');
 
     //------------------------------------------------------------------------------+
     // Create a throw away dotenv file which we use to feed the builder with input. |
