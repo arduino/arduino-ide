@@ -1,5 +1,4 @@
-import { toUnix } from 'upath';
-import URI from '@theia/core/lib/common/uri';
+import { URI } from '@theia/core/shared/vscode-uri';
 import { isWindows } from '@theia/core/lib/common/os';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { MaybePromise } from '@theia/core/lib/common/types';
@@ -61,12 +60,8 @@ export class ArduinoWorkspaceRootResolver {
   // - https://github.com/eclipse-theia/theia/blob/8196e9dcf9c8de8ea0910efeb5334a974f426966/packages/workspace/src/browser/workspace-service.ts#L423
   protected hashToUri(hash: string | undefined): string | undefined {
     if (hash && hash.length > 1 && hash.startsWith('#')) {
-      const path = hash.slice(1); // Trim the leading `#`.
-      return new URI(
-        toUnix(path.slice(isWindows && hash.startsWith('/') ? 1 : 0))
-      )
-        .withScheme('file')
-        .toString();
+      const path = decodeURI(hash.slice(1)).replace(/\\/g, '/'); // Trim the leading `#`, decode the URI and replace Windows separators
+      return URI.file(path.slice(isWindows && hash.startsWith('/') ? 1 : 0)).toString();
     }
     return undefined;
   }
