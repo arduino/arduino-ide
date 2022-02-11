@@ -48,7 +48,7 @@ Once you have all the tools installed, you can build the editor following these 
 
 1. Install the dependencies and build
     ```sh
-    yarn --ignore-engines
+    yarn
     ```
 
 2. Rebuild the dependencies

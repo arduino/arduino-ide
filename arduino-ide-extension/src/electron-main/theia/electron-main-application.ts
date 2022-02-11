@@ -1,24 +1,41 @@
 import { inject, injectable } from 'inversify';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen } from '@theia/electron/shared/electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen } from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join } from 'path';
+import * as fs from 'fs-extra';
 import { initSplashScreen } from '../splash/splash-screen';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
 import {
   ElectronMainApplication as TheiaElectronMainApplication,
+  ElectronMainExecutionParams,
   TheiaBrowserWindowOptions,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
+import { URI } from '@theia/core/shared/vscode-uri';
 import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
+interface WorkspaceOptions {
+  file: string
+  x: number
+  y: number
+  width: number
+  height: number
+  isMaximized: boolean
+  isFullScreen: boolean
+  time: number
+}
+
+const WORKSPACES = 'workspaces';
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   protected _windows: BrowserWindow[] = [];
+  protected startup = false;
 
   @inject(SplashServiceImpl)
   protected readonly splashService: SplashServiceImpl;
@@ -29,6 +46,45 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
     app.on('ready', () => app.setName(config.applicationName));
     return super.start(config);
+  }
+
+  protected async launch(params: ElectronMainExecutionParams): Promise<void> {
+    this.startup = true;
+    const workspaces: WorkspaceOptions[] | undefined = this.electronStore.get(WORKSPACES);
+    let useDefault = true;
+    if (workspaces && workspaces.length > 0) {
+      for (const workspace of workspaces) {
+        const file = workspace.file;
+        if (typeof file === 'string' && await fs.pathExists(file)) {
+          useDefault = false;
+          await this.openSketch(workspace);
+        }
+      }
+    }
+    this.startup = false;
+    if (useDefault) {
+      super.launch(params);
+    }
+  }
+
+  protected async openSketch(workspace: WorkspaceOptions): Promise<BrowserWindow> {
+    const options = await this.getLastWindowOptions();
+    options.x = workspace.x;
+    options.y = workspace.y;
+    options.width = workspace.width;
+    options.height = workspace.height;
+    options.isMaximized = workspace.isMaximized;
+    options.isFullScreen = workspace.isFullScreen;
+    const [uri, electronWindow] = await Promise.all([this.createWindowUri(), this.createWindow(options)]);
+    electronWindow.loadURL(uri.withFragment(encodeURI(workspace.file)).toString(true));
+    return electronWindow;
+  }
+
+  protected avoidOverlap(options: TheiaBrowserWindowOptions): TheiaBrowserWindowOptions {
+    if (this.startup) {
+      return options;
+    }
+    return super.avoidOverlap(options);
   }
 
   protected getTitleBarStyle(): 'native' | 'custom' {
@@ -143,6 +199,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         }
       }
     });
+    this.attachClosedWorkspace(electronWindow);
     this.attachReadyToShow(electronWindow);
     this.attachSaveWindowState(electronWindow);
     this.attachGlobalShortcuts(electronWindow);
@@ -212,6 +269,44 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         });
       });
     }
+  }
+
+  protected closedWorkspaces: WorkspaceOptions[] = [];
+
+  protected attachClosedWorkspace(window: BrowserWindow): void {
+    // Since the `before-quit` event is only fired when closing the *last* window
+    // We need to keep track of recently closed windows/workspaces manually
+    window.on('close', () => {
+      const url = window.webContents.getURL();
+      const workspace = URI.parse(url).fragment;
+      if (workspace) {
+        const workspaceUri = URI.file(workspace);
+        const bounds = window.getNormalBounds();
+        this.closedWorkspaces.push({
+          ...bounds,
+          isMaximized: window.isMaximized(),
+          isFullScreen: window.isFullScreen(),
+          file: workspaceUri.fsPath,
+          time: Date.now()
+        })
+      }
+    });
+  }
+
+  protected onWillQuit(event: Electron.Event): void {
+    // Only add workspaces which were closed within the last second (1000 milliseconds)
+    const threshold = Date.now() - 1000;
+    const visited = new Set<string>();
+    const workspaces = this.closedWorkspaces.filter(e => {
+      if (e.time < threshold || visited.has(e.file)) {
+        return false;
+      }
+      visited.add(e.file);
+      return true;
+    }).sort((a, b) => a.file.localeCompare(b.file));
+    this.electronStore.set(WORKSPACES, workspaces);
+
+    super.onWillQuit(event);
   }
 
   get windows(): BrowserWindow[] {

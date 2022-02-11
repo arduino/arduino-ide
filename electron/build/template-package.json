@@ -3,7 +3,9 @@
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3",
-    "electron-builder": "22.10.5"
+    "electron-builder": "22.10.5",
+    "find-git-exec": "0.0.4",
+    "dugite-extra": "0.1.15"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
