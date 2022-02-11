@@ -149,6 +149,24 @@ export class CompileResponse extends jspb.Message {
     addExecutableSectionsSize(value?: ExecutableSectionSize, index?: number): ExecutableSectionSize;
 
 
+    hasBoardPlatform(): boolean;
+    clearBoardPlatform(): void;
+    getBoardPlatform(): cc_arduino_cli_commands_v1_common_pb.PlatformReference | undefined;
+    setBoardPlatform(value?: cc_arduino_cli_commands_v1_common_pb.PlatformReference): CompileResponse;
+
+
+    hasBuildPlatform(): boolean;
+    clearBuildPlatform(): void;
+    getBuildPlatform(): cc_arduino_cli_commands_v1_common_pb.PlatformReference | undefined;
+    setBuildPlatform(value?: cc_arduino_cli_commands_v1_common_pb.PlatformReference): CompileResponse;
+
+
+    hasProgress(): boolean;
+    clearProgress(): void;
+    getProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
+    setProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): CompileResponse;
+
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileResponse.AsObject;
     static toObject(includeInstance: boolean, msg: CompileResponse): CompileResponse.AsObject;
@@ -166,6 +184,9 @@ export namespace CompileResponse {
         buildPath: string,
         usedLibrariesList: Array<cc_arduino_cli_commands_v1_lib_pb.Library.AsObject>,
         executableSectionsSizeList: Array<ExecutableSectionSize.AsObject>,
+        boardPlatform?: cc_arduino_cli_commands_v1_common_pb.PlatformReference.AsObject,
+        buildPlatform?: cc_arduino_cli_commands_v1_common_pb.PlatformReference.AsObject,
+        progress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
     }
 }
 
