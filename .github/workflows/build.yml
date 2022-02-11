@@ -77,8 +77,8 @@ jobs:
             fi
           fi
 
-          yarn --ignore-engines --cwd ./electron/packager/
-          yarn --ignore-engines --cwd ./electron/packager/ package
+          yarn --cwd ./electron/packager/
+          yarn --cwd ./electron/packager/ package
 
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v2

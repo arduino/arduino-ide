@@ -27,7 +27,7 @@ sudo apt update \
 && mkdir -p ~/dev/git/ \
 && rm -rf ~/dev/git/arduino-ide \
 && git clone --depth 1 https://github.com/arduino/arduino-ide.git ~/dev/git/arduino-ide \
-&& yarn --cwd ~/dev/git/arduino-ide --ignore-engines \
+&& yarn --cwd ~/dev/git/arduino-ide \
 && yarn --cwd ~/dev/git/arduino-ide rebuild:electron \
 && yarn --cwd ~/dev/git/arduino-ide/electron-app start
 ```

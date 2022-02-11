@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen } from '@theia/electron/shared/electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen } from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join } from 'path';
