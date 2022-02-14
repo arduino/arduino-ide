@@ -5,10 +5,7 @@ import {
   MessageService,
 } from '@theia/core';
 import { injectable, inject } from 'inversify';
-import {
-  IDEUpdater,
-  UpdateInfo,
-} from '../../common/protocol/ide-updater-service';
+import { IDEUpdater, UpdateInfo } from '../../common/protocol/ide-updater';
 
 @injectable()
 export class IDEUpdaterCommands implements CommandContribution {

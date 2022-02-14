@@ -12,7 +12,7 @@ import {
   IDEUpdaterClient,
   ProgressInfo,
   UpdateInfo,
-} from '../../../common/protocol/ide-updater-service';
+} from '../../../common/protocol/ide-updater';
 import { LocalStorageService } from '@theia/core/lib/browser';
 import { SKIP_IDE_VERSION } from '../../arduino-frontend-contribution';
 

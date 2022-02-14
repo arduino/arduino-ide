@@ -5,7 +5,7 @@ import { UpdateChannel } from '../../browser/arduino-preferences';
 import {
   IDEUpdater,
   IDEUpdaterClient,
-} from '../../common/protocol/ide-updater-service';
+} from '../../common/protocol/ide-updater';
 // import logger from 'electron-log';
 
 // autoUpdater.logger = logger;

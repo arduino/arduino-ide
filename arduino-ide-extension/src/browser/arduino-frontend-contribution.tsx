@@ -70,7 +70,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
-import { IDEUpdater } from '../common/protocol/ide-updater-service';
+import { IDEUpdater } from '../common/protocol/ide-updater';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';

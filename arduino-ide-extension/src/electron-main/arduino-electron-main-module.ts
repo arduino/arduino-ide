@@ -17,8 +17,8 @@ import {
   IDEUpdater,
   IDEUpdaterClient,
   IDEUpdaterPath,
-} from '../common/protocol/ide-updater-service';
-import { IDEUpdaterImpl } from '../node/ide-updater/ide-updater-service-impl';
+} from '../common/protocol/ide-updater';
+import { IDEUpdaterImpl } from '../node/ide-updater/ide-updater-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMainApplication).toSelf().inSingletonScope();

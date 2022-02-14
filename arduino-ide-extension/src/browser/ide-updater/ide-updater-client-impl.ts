@@ -1,7 +1,7 @@
 import { Emitter } from '@theia/core';
 import { injectable } from '@theia/core/shared/inversify';
 import { UpdateInfo, ProgressInfo } from 'electron-updater';
-import { IDEUpdaterClient } from '../../common/protocol/ide-updater-service';
+import { IDEUpdaterClient } from '../../common/protocol/ide-updater';
 
 @injectable()
 export class IDEUpdaterClientImpl implements IDEUpdaterClient {

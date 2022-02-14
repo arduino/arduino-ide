@@ -3,10 +3,7 @@ import { shell } from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import ReactMarkdown from 'react-markdown';
-import {
-  ProgressInfo,
-  UpdateInfo,
-} from '../../../common/protocol/ide-updater-service';
+import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
 
 export type IDEUpdaterComponentProps = {

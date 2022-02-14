@@ -267,8 +267,8 @@ import {
   IDEUpdater,
   IDEUpdaterClient,
   IDEUpdaterPath,
-} from '../common/protocol/ide-updater-service';
-import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-service-client-impl';
+} from '../common/protocol/ide-updater';
+import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-client-impl';
 import {
   IDEUpdaterDialog,
   IDEUpdaterDialogProps,
