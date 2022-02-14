@@ -43,19 +43,19 @@ export interface ProgressInfo {
   bytesPerSecond: number;
 }
 
-export const IDEUpdaterServicePath = '/services/ide-updater';
-export const IDEUpdaterService = Symbol('IDEUpdaterService');
-export interface IDEUpdaterService
-  extends JsonRpcServer<IDEUpdaterServiceClient> {
+export const IDEUpdaterPath = '/services/ide-updater';
+export const IDEUpdater = Symbol('IDEUpdater');
+export interface IDEUpdater extends JsonRpcServer<IDEUpdaterClient> {
   init(channel: UpdateChannel): void;
   checkForUpdates(): Promise<UpdateInfo | void>;
   downloadUpdate(): Promise<void>;
   quitAndInstall(): void;
   stopDownload(): void;
+  disconnectClient(client: IDEUpdaterClient): void;
 }
 
-export const IDEUpdaterServiceClient = Symbol('IDEUpdaterServiceClient');
-export interface IDEUpdaterServiceClient {
+export const IDEUpdaterClient = Symbol('IDEUpdaterClient');
+export interface IDEUpdaterClient {
   onError: Event<Error>;
   onCheckingForUpdate: Event<void>;
   onUpdateAvailable: Event<UpdateInfo>;

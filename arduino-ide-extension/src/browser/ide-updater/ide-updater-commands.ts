@@ -6,15 +6,15 @@ import {
 } from '@theia/core';
 import { injectable, inject } from 'inversify';
 import {
-  IDEUpdaterService,
+  IDEUpdater,
   UpdateInfo,
 } from '../../common/protocol/ide-updater-service';
 
 @injectable()
 export class IDEUpdaterCommands implements CommandContribution {
   constructor(
-    @inject(IDEUpdaterService)
-    private readonly updater: IDEUpdaterService,
+    @inject(IDEUpdater)
+    private readonly updater: IDEUpdater,
     @inject(MessageService)
     protected readonly messageService: MessageService
   ) {}

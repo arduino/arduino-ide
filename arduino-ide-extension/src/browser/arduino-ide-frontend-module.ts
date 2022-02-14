@@ -264,16 +264,17 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
 import {
-  IDEUpdaterService,
-  IDEUpdaterServiceClient,
-  IDEUpdaterServicePath,
+  IDEUpdater,
+  IDEUpdaterClient,
+  IDEUpdaterPath,
 } from '../common/protocol/ide-updater-service';
-import { IDEUpdaterServiceClientImpl } from './ide-updater/ide-updater-service-client-impl';
+import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-service-client-impl';
 import {
   IDEUpdaterDialog,
   IDEUpdaterDialogProps,
   IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
+import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -786,16 +787,16 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(CommandContribution).toService(IDEUpdaterCommands);
 
   // Frontend binding for the IDE Updater service
-  bind(IDEUpdaterService)
+  bind(IDEUpdaterClientImpl).toSelf().inSingletonScope();
+  bind(IDEUpdaterClient).toService(IDEUpdaterClientImpl);
+  bind(IDEUpdater)
     .toDynamicValue((context) => {
-      const connection = context.container.get(WebSocketConnectionProvider);
-      const client = context.container.get<IDEUpdaterServiceClient>(
-        IDEUpdaterServiceClient
+      const client = context.container.get(IDEUpdaterClientImpl);
+      return ElectronIpcConnectionProvider.createProxy(
+        context.container,
+        IDEUpdaterPath,
+        client
       );
-      return connection.createProxy(IDEUpdaterServicePath, client);
     })
-    .inSingletonScope();
-  bind(IDEUpdaterServiceClient)
-    .to(IDEUpdaterServiceClientImpl)
     .inSingletonScope();
 });

@@ -1,10 +1,10 @@
 import { Emitter } from '@theia/core';
 import { injectable } from '@theia/core/shared/inversify';
 import { UpdateInfo, ProgressInfo } from 'electron-updater';
-import { IDEUpdaterServiceClient } from '../../common/protocol/ide-updater-service';
+import { IDEUpdaterClient } from '../../common/protocol/ide-updater-service';
 
 @injectable()
-export class IDEUpdaterServiceClientImpl implements IDEUpdaterServiceClient {
+export class IDEUpdaterClientImpl implements IDEUpdaterClient {
   protected readonly onErrorEmitter = new Emitter<Error>();
   protected readonly onCheckingForUpdateEmitter = new Emitter<void>();
   protected readonly onUpdateAvailableEmitter = new Emitter<UpdateInfo>();

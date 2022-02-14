@@ -9,7 +9,7 @@ import { nls } from '@theia/core';
 import { IDEUpdaterComponent } from './ide-updater-component';
 import { IDEUpdaterCommands } from '../../ide-updater/ide-updater-commands';
 import {
-  IDEUpdaterServiceClient,
+  IDEUpdaterClient,
   ProgressInfo,
   UpdateInfo,
 } from '../../../common/protocol/ide-updater-service';
@@ -29,8 +29,8 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
   @inject(IDEUpdaterCommands)
   protected readonly updater: IDEUpdaterCommands;
 
-  @inject(IDEUpdaterServiceClient)
-  protected readonly updaterClient: IDEUpdaterServiceClient;
+  @inject(IDEUpdaterClient)
+  protected readonly updaterClient: IDEUpdaterClient;
 
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;

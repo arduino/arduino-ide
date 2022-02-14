@@ -1,71 +1,59 @@
 import { injectable } from '@theia/core/shared/inversify';
-import { GenericServerOptions } from 'builder-util-runtime';
-import {
-  AppUpdater,
-  AppImageUpdater,
-  MacUpdater,
-  NsisUpdater,
-  UpdateInfo,
-  CancellationToken,
-} from 'electron-updater';
-import {
-  IDEUpdaterService,
-  IDEUpdaterServiceClient,
-} from '../../common/protocol/ide-updater-service';
+import { UpdateInfo, CancellationToken, autoUpdater } from 'electron-updater';
 import fetch, { Response } from 'node-fetch';
 import { UpdateChannel } from '../../browser/arduino-preferences';
+import {
+  IDEUpdater,
+  IDEUpdaterClient,
+} from '../../common/protocol/ide-updater-service';
+// import logger from 'electron-log';
+
+// autoUpdater.logger = logger;
+
+// autoUpdater.logger?.transports //.transports?.file?.level = 'info';
 
 const CHANGELOG_BASE_URL = 'https://downloads.arduino.cc/arduino-ide/changelog';
-
 @injectable()
-export class IDEUpdaterServiceImpl implements IDEUpdaterService {
-  private updater: AppUpdater;
+export class IDEUpdaterImpl implements IDEUpdater {
+  private updater = autoUpdater;
   private cancellationToken?: CancellationToken;
-  protected theiaFEClient?: IDEUpdaterServiceClient;
+  protected theiaFEClient?: IDEUpdaterClient;
+  protected clients: Array<IDEUpdaterClient> = [];
+  // private initialCheck = true;
+  // private reportOnFirstRegistration = false;
 
   init(channel: UpdateChannel) {
-    const options: GenericServerOptions = {
+    this.updater.channel = channel;
+    this.updater.setFeedURL({
       provider: 'generic',
-      url: `https://downloads.arduino.cc/arduino-ide/${
+      url: `http://10.130.22.107:9000/arduino-downloads-prod-beagle/arduino-ide/${
         channel === UpdateChannel.Nightly ? 'nightly' : ''
       }`,
       channel,
-    };
-
-    if (process.platform === 'win32') {
-      this.updater = new NsisUpdater(options);
-    } else if (process.platform === 'darwin') {
-      this.updater = new MacUpdater(options);
-    } else {
-      this.updater = new AppImageUpdater(options);
-    }
-    this.updater.autoDownload = false;
-    this.updater.fullChangelog = true;
+    });
 
     this.updater.on('checking-for-update', (e) =>
-      this.theiaFEClient?.notifyCheckingForUpdate(e)
+      this.clients.forEach((c) => c.notifyCheckingForUpdate(e))
     );
     this.updater.on('update-available', (e) =>
-      this.theiaFEClient?.notifyUpdateAvailable(e)
+      this.clients.forEach((c) => c.notifyUpdateAvailable(e))
     );
     this.updater.on('update-not-available', (e) =>
-      this.theiaFEClient?.notifyUpdateNotAvailable(e)
+      this.clients.forEach((c) => c.notifyUpdateNotAvailable(e))
     );
     this.updater.on('download-progress', (e) =>
-      this.theiaFEClient?.notifyDownloadProgressChanged(e)
+      this.clients.forEach((c) => c.notifyDownloadProgressChanged(e))
     );
     this.updater.on('update-downloaded', (e) =>
-      this.theiaFEClient?.notifyDownloadFinished(e)
+      this.clients.forEach((c) => c.notifyDownloadFinished(e))
     );
-    this.updater.on('error', (e) => this.theiaFEClient?.notifyError(e));
+    this.updater.on('error', (e) =>
+      this.clients.forEach((c) => c.notifyError(e))
+    );
   }
 
-  setClient(client: IDEUpdaterServiceClient | undefined): void {
-    this.theiaFEClient = client;
-  }
-
-  dispose(): void {
-    throw new Error('Method not implemented.');
+  setClient(client: IDEUpdaterClient | undefined): void {
+    if (client) this.clients.push(client);
   }
 
   async checkForUpdates(): Promise<UpdateInfo | void> {
@@ -130,5 +118,16 @@ export class IDEUpdaterServiceImpl implements IDEUpdaterService {
 
   quitAndInstall(): void {
     this.updater.quitAndInstall();
+  }
+
+  disconnectClient(client: IDEUpdaterClient): void {
+    const index = this.clients.indexOf(client);
+    if (index !== -1) {
+      this.clients.splice(index, 1);
+    }
+  }
+
+  dispose(): void {
+    this.clients.forEach(this.disconnectClient.bind(this));
   }
 }
