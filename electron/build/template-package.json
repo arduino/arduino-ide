@@ -60,6 +60,12 @@
     "directories": {
       "buildResources": "resources"
     },
+    "fileAssociations": [
+      {
+        "ext": "ino",
+        "role": "Editor"
+      }
+    ],
     "files": [
       "src-gen",
       "lib",
