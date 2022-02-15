@@ -6,27 +6,22 @@ import {
   IDEUpdater,
   IDEUpdaterClient,
 } from '../../common/protocol/ide-updater';
-// import logger from 'electron-log';
-
-// autoUpdater.logger = logger;
-
-// autoUpdater.logger?.transports //.transports?.file?.level = 'info';
 
 const CHANGELOG_BASE_URL = 'https://downloads.arduino.cc/arduino-ide/changelog';
+const IDE_DOWNLOAD_BASE_URL = 'https://downloads.arduino.cc/arduino-ide';
+
 @injectable()
 export class IDEUpdaterImpl implements IDEUpdater {
   private updater = autoUpdater;
   private cancellationToken?: CancellationToken;
   protected theiaFEClient?: IDEUpdaterClient;
   protected clients: Array<IDEUpdaterClient> = [];
-  // private initialCheck = true;
-  // private reportOnFirstRegistration = false;
 
   init(channel: UpdateChannel) {
     this.updater.channel = channel;
     this.updater.setFeedURL({
       provider: 'generic',
-      url: `http://10.130.22.107:9000/arduino-downloads-prod-beagle/arduino-ide/${
+      url: `${IDE_DOWNLOAD_BASE_URL}/${
         channel === UpdateChannel.Nightly ? 'nightly' : ''
       }`,
       channel,
