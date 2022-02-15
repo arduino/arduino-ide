@@ -70,9 +70,11 @@ export abstract class GrpcClientProvider<C> {
   protected abstract close(client: C): void;
 
   protected get channelOptions(): Record<string, unknown> {
+    const pjson = require('../../package.json') || { version: '0.0.0' };
     return {
       'grpc.max_send_message_length': 512 * 1024 * 1024,
       'grpc.max_receive_message_length': 512 * 1024 * 1024,
+      'grpc.primary_user_agent': `arduino-ide/${pjson.version}`,
     };
   }
 }
