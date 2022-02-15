@@ -9,7 +9,7 @@
 
 ### Reviewer checklist
 
-* [ ] PR address a single concern.
+* [ ] PR addresses a single concern.
 * [ ] PR title and description are properly filled.
 * [ ] The PR has no duplicates (please search among the [Pull Requests](https://github.com/arduino/arduino-ide/pulls) before creating one)
 * [ ] Docs have been added / updated (for bug fixes / features)
