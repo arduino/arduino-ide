@@ -318,68 +318,19 @@
             "offline": "Offline",
             "daemonOffline": "CLI Daemon Offline",
             "cannotConnectBackend": "Cannot connect to the backend.",
-            "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
-            "highlightModifiedTabs": "Controls whether a top border is drawn on modified (dirty) editor tabs or not.",
-            "silentNotifications": "Controls whether to suppress notification popups.",
-            "quitTitle": "Are you sure you want to quit?",
-            "quitMessage": "Any unsaved changes will not be saved.",
-            "keyboard": {
-                "current": "(current: {0})",
-                "tryDetect": "Try to detect the keyboard layout from browser information and pressed keys.",
-                "mac": "Mac Keyboards",
-                "pc": "PC Keyboards",
-                "chooseLayout": "Choose a keyboard layout",
-                "currentLayout": " - current layout"
-            }
+            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
         },
         "debug": {
             "start": "Start...",
             "typeNotSupported": "The debug session type \"{0}\" is not supported.",
-            "startError": "There was an error starting the debug session, check the logs for more details.",
-            "reveal": "Reveal",
-            "openLeft": "Open Left",
-            "openRight": "Open Right",
-            "openBottom": "Open Bottom",
-            "toggleTracing": "Enable/disable tracing communications with debug adapters",
-            "debugViewLocation": "Controls the location of the debug view.",
-            "threads": "Threads"
+            "startError": "There was an error starting the debug session, check the logs for more details."
         },
         "editor": {
-            "unsavedTitle": "Unsaved – {0}",
-            "reopenDirty": "The file is dirty. Please save it first before reopening it with another encoding.",
-            "splitHorizontal": "Split Editor Horizontal",
-            "splitVertical": "Split Editor Vertical",
-            "ariaLabel": "The aria label for the editor's textarea when focused.",
-            "automaticLayout": "Enable that the editor will install an interval to check if its container dom node size has changed. Enabling this might have a severe performance impact.",
-            "contextmenu": "Controls whether to enable the custom contextmenu.",
-            "disableLayerHinting": "Disable the use of `transform: translate3d(0px, 0px, 0px)` for the editor margin and lines layers. The usage of `transform: translate3d(0px, 0px, 0px)` acts as a hint for browsers to create an extra layer.",
-            "disableMonospaceOptimizations": "Controls whether to enable optimizations for monospace fonts.",
-            "extraEditorClassName": "Additional class name to be added to the editor.",
-            "fixedOverflowWidgets": "Controls whether to display overflow widgets as `fixed`.",
-            "highlightActiveIndentGuide": "Controls whether the editor should highlight the active indent guide.",
-            "lineNumbersMinChars": "Controls the line height. Use 0 to compute the line height from the font size.",
-            "mouseStyle": "Controls the mouse pointer style.",
-            "overviewRulerLanes": "The number of vertical lanes the overview ruler should render.",
-            "readOnly": "Controls whether the editor is readonly.",
-            "renderValidationDecorations": "Controls whether the editor renders validation decorations.",
-            "revealHorizontalRightPadding": "When revealing the cursor, a virtual padding (px) is added to the cursor, turning it into a rectangle. This virtual padding ensures that the cursor gets revealed before hitting the edge of the viewport.",
-            "selectOnLineNumbers": "Controls whether to select the corresponding line when clicking on the line number",
-            "stopRenderingLineAfter": "Performance guard: Stop rendering a line after x characters.",
-            "suggest.insertHighlight": "Controls whether unexpected text modifications while accepting completions should be highlighted, e.g `insertMode` is `replace` but the completion only supports `insert`.",
-            "tabIndex": "Controls the wrapping column of the editor when `#editor.wordWrap#` is `wordWrapColumn` or `bounded`.",
-            "wordWrapBreakAfterCharacters": "Configure word wrapping characters. A break will be introduced after these characters.",
-            "wordWrapBreakBeforeCharacters": "Configure word wrapping characters. A break will be introduced before these characters.",
-            "wordWrapOverride1": "Override the `wordWrap` setting.",
-            "wordWrapOverride2": "Override the `wordWrapOverride1` setting.",
-            "autoSaveSetting": "Controls auto save of dirty files.",
-            "autoSaveDelay": "Configure the auto save delay in milliseconds.",
-            "formatOnSaveTimeout": "Timeout in milliseconds after which the formatting that is run on file save is cancelled.",
-            "persistClosedEditors": "Controls whether to persist closed editor history for the workspace across window reloads."
+            "unsavedTitle": "Unsaved – {0}"
         },
         "messages": {
             "expand": "Expand",
-            "collapse": "Collapse",
-            "notificationTimeout": "Informative notifications will be hidden after this timeout."
+            "collapse": "Collapse"
         },
         "workspace": {
             "fileNewName": "Name for new file",
@@ -387,125 +338,10 @@
             "invalidExtension": ".{0} is not a valid extension",
             "newFileName": "New name for file",
             "deleteCurrentSketch": "Do you want to delete the current sketch?",
-            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected.",
-            "openRecentPlaceholder": "Type the name of the workspace you want to open",
-            "noErasure": "Note: Nothing will be erased from disk",
-            "workspaceFolderAddedTitle": "Folder added to Workspace",
-            "workspaceFolderAdded": "A workspace with multiple roots was created. Do you want to save your workspace configuration as a file?",
-            "confirmDeletePermanently.title": "Error deleting file",
-            "confirmDeletePermanently.description": "Failed to delete \"{0}\" using the Trash. Do you want to permanently delete instead?",
-            "confirmDeletePermanently.solution": "You can disable the use of Trash in the preferences.",
-            "failSaveAs": "Cannot run \"{0}\" for the current widget.",
-            "closeWorkspace": "Do you really want to close the workspace?",
-            "failApply": "Could not apply changes to new file",
-            "preserveWindow": "Enable opening workspaces in current window.",
-            "supportMultiRootWorkspace": "Controls whether multi-root workspace support is enabled."
-        },
-        "scm": {
-            "amendHeadCommit": "HEAD Commit",
-            "amendLastCommit": "Amend last commit",
-            "amend": "Amend",
-            "unamendCommit": "Unamend commit",
-            "unamend": "Unamend",
-            "noRepositoryFound": "No repository found",
-            "changeRepository": "Change Repository..."
-        },
-        "searchResultsView": {
-            "searchFolderMatch.other.label": "Other files"
-        },
-        "search-in-workspace": {
-            "includeIgnoredFiles": "Include Ignored Files",
-            "noFolderSpecified": "You have not opened or specified a folder. Only open files are currently searched.",
-            "resultSubset": "This is only a subset of all results. Use a more specific search term to narrow down the result list.",
-            "searchOnEditorModification": "Search the active editor when modified."
-        },
-        "callhierarchy": {
-            "open": "Open Call Hierarchy"
-        },
-        "filesystem": {
-            "processedOutOf": "Processed {0} out of {1}",
-            "uploadedOutOf": "Uploaded {0} out of {1}",
-            "uploadFiles": "Uploading Files",
-            "filesExclude": "Configure glob patterns for excluding files and folders. For example, the file Explorer decides which files and folders to show or hide based on this setting.",
-            "maxFileSizeMB": "Controls the max file size in MB which is possible to open.",
-            "maxConcurrentUploads": "Maximum number of concurrent files to upload when uploading multiple files. 0 means all files will be uploaded concurrently."
-        },
-        "git": {
-            "toggleBlameAnnotations": "Toggle Blame Annotations",
-            "compareWith": "Compare With...",
-            "noPreviousCommit": "No previous commit to amend",
-            "addSignedOff": "Add Signed-off-by",
-            "gitDecorationsColors": "Use color decoration in the navigator.",
-            "editorDecorationsEnabled": "Show git decorations in the editor.",
-            "dirtyDiffLinesLimit": "Do not show dirty diff decorations, if editor's line count exceeds this limit.",
-            "added": "Added",
-            "unstaged": "Unstaged",
-            "renamed": "Renamed",
-            "copied": "Copied",
-            "conflicted": "Conflicted"
-        },
-        "keybinding-schema-updater": {
-            "deprecation": "Use `when` clause instead."
-        },
-        "markers": {
-            "tabbarDecorationsEnabled": "Show problem decorators (diagnostic markers) in the tab bars."
-        },
-        "monaco": {
-            "typeToSearchForSymbols": "Type to search for symbols",
-            "noSymbolsMatching": "No symbols matching"
-        },
-        "navigator": {
-            "reveal": "Reveal in Explorer",
-            "toggleHiddenFiles": "Toggle Hidden Files"
-        },
-        "output": {
-            "outputChannels": "Output Channels",
-            "hiddenChannels": "Hidden Channels",
-            "maxChannelHistory": "The maximum number of entries in an output channel."
-        },
-        "webview": {
-            "goToReadme": "Go To README",
-            "messageWarning": "            The {0} endpoint's host pattern has been changed to `{1}`; changing the pattern can lead to security vulnerabilities.             See `{2}` for more information."
-        },
-        "plugin-ext": {
-            "webviewTrace": "Controls communication tracing with webviews.",
-            "webviewWarnIfUnsecure": "Warns users that webviews are currently deployed unsecurely."
-        },
-        "terminal": {
-            "terminateActive": "Do you want to terminate the active terminal session?",
-            "terminateActiveMultiple": "Do you want to terminate the {0} active terminal sessions?",
-            "terminate": "Terminate",
-            "enableCopy": "Enable ctrl-c (cmd-c on macOS) to copy selected text",
-            "enablePaste": "Enable ctrl-v (cmd-v on macOS) to paste from clipboard",
-            "shellWindows": "The path of the shell that the terminal uses on Windows. (default: '{0}').",
-            "shellOsx": "The path of the shell that the terminal uses on macOS (default: '{0}'}).",
-            "shellLinux": "The path of the shell that the terminal uses on Linux (default: '{0}'}).",
-            "shellArgsWindows": "The command line arguments to use when on the Windows terminal.",
-            "shellArgsOsx": "The command line arguments to use when on the macOS terminal.",
-            "shellArgsLinux": "The command line arguments to use when on the Linux terminal."
-        },
-        "workspace-service": {
-            "untitled-cleanup": "There appear to be many untitled workspace files. Please check {0} and remove any unused files."
+            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
         }
     },
     "cloud": {
         "GoToCloud": "GO TO CLOUD"
-    },
-    "internalConsoleOptions": "Controls when the internal debug console should open.",
-    "debugType": "Type of configuration.",
-    "debugTypeNotRecognised": "The debug type is not recognized. Make sure that you have a corresponding debug extension installed and that it is enabled.",
-    "node2NotSupported": "\"node2\" is no longer supported, use \"node\" instead and set the \"protocol\" attribute to \"inspector\".",
-    "debugName": "Name of configuration; appears in the launch configuration drop down menu.",
-    "debugRequest": "Request type of configuration. Can be \"launch\" or \"attach\".",
-    "debugServer": "For debug extension development only: if a port is specified VS Code tries to connect to a debug adapter running in server mode",
-    "debugPrelaunchTask": "Task to run before debug session starts.",
-    "debugPostDebugTask": "Task to run after debug session ends.",
-    "debugWindowsConfiguration": "Windows specific launch configuration attributes.",
-    "debugOSXConfiguration": "OS X specific launch configuration attributes.",
-    "debugLinuxConfiguration": "Linux specific launch configuration attributes.",
-    "deprecatedVariables": "'env.', 'config.' and 'command.' are deprecated, use 'env:', 'config:' and 'command:' instead.",
-    "unusualLineTerminators.auto": "Unusual line terminators are automatically removed.",
-    "unusualLineTerminators.off": "Unusual line terminators are ignored.",
-    "unusualLineTerminators.prompt": "Unusual line terminators prompt to be removed.",
-    "search-in-workspace.in-folder": "Find in Folder"
+    }
 }
