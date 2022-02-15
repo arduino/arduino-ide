@@ -1,5 +1,4 @@
 import { inject, injectable, postConstruct } from 'inversify';
-import { app } from 'electron';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ConfigServiceImpl } from './config-service-impl';
@@ -71,10 +70,11 @@ export abstract class GrpcClientProvider<C> {
   protected abstract close(client: C): void;
 
   protected get channelOptions(): Record<string, unknown> {
+    const pjson = require('../../package.json') || { "version": "0.0.0" }
     return {
       'grpc.max_send_message_length': 512 * 1024 * 1024,
       'grpc.max_receive_message_length': 512 * 1024 * 1024,
-      'grpc.primary_user_agent': `arduino-ide/${app.getVersion()}`
+      'grpc.primary_user_agent': `arduino-ide/${pjson.version}`
     };
   }
 }
