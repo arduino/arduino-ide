@@ -60,7 +60,9 @@ jobs:
           if [ $IS_FORK = true ]; then
             echo "Skipping the app signing: building from a fork."
           else
+            export BUILD_SUFFIX="linux";
             if [ "${{ runner.OS }}" = "macOS" ]; then
+              export BUILD_SUFFIX="mac";
               export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
               # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
               # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
@@ -69,6 +71,7 @@ jobs:
               export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
 
             elif [ "${{ runner.OS }}" = "Windows" ]; then
+              export BUILD_SUFFIX="";
               export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
               npm config set msvs_version 2017 --global
               echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
@@ -78,7 +81,15 @@ jobs:
           fi
 
           yarn --cwd ./electron/packager/
-          yarn --cwd ./electron/packager/ package
+          yarn --cwd ./electron/packager/ package 
+
+          export BUILD_PREFIX="stable"
+          if [ "$IS_NIGHTLY" = true ]; then
+            export BUILD_PREFIX="nightly"
+          fi
+
+          mv electron/build/dist/latest-$BUILD_SUFFIX.yml electron/build/dist/$BUILD_PREFIX-$BUILD_SUFFIX.yml
+          rm electron/build/dist/alpha* electron/build/dist/beta*
 
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v2
@@ -98,7 +109,9 @@ jobs:
           - path: '*Linux_64bit.zip'
             name: Linux_X86-64
           - path: '*macOS_64bit.dmg'
-            name: macOS
+            name: macOS_dmg
+          - path: '*macOS_64bit.zip'
+            name: macOS_zip
           - path: '*Windows_64bit.exe'
             name: Windows_X86-64_interactive_installer
           - path: '*Windows_64bit.msi'

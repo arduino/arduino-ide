@@ -31,7 +31,7 @@
             "upload.verbose": "True for verbose upload output. False by default.",
             "window.autoScale": "True if the user interface automatically scales with the font size.",
             "window.zoomLevel": "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity.",
-            "ide.autoUpdate": "True to enable automatic update checks. The IDE will check for updates automatically and periodically.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
             "board.certificates": "List of certificates that can be uploaded to boards",
             "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
             "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
@@ -55,7 +55,6 @@
             "compile": "compile",
             "upload": "upload",
             "verifyAfterUpload": "Verify code after upload",
-            "checkForUpdates": "Check for updates on startup",
             "editorQuickSuggestions": "Editor Quick Suggestions",
             "additionalManagerURLs": "Additional Boards Manager URLs",
             "noProxy": "No proxy",
@@ -255,6 +254,20 @@
         },
         "dialog": {
             "dontAskAgain": "Don't ask again"
+        },
+        "ide-updater": {
+            "notNowButton": "Not now",
+            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+            "closeToInstallNotice": "Close the software and install the update on your machine.",
+            "closeAndInstallButton": "Close and Install",
+            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+            "updateAvailable": "Update Available",
+            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download"
+        },
+        "updater": {
+            "ideUpdaterDialog": "Software Update"
         },
         "userFields": {
             "cancel": "Cancel",

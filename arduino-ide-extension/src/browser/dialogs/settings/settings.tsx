@@ -18,24 +18,22 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
 
-const EDITOR_SETTING = 'editor';
-const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
-const AUTO_SAVE_SETTING = `${EDITOR_SETTING}.autoSave`;
-const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
-const ARDUINO_SETTING = 'arduino';
-const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
-// const IDE_SETTING = `${ARDUINO_SETTING}.ide`;
-const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
-const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
-const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
-const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
-const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
-// const AUTO_UPDATE_SETTING = `${IDE_SETTING}.autoUpdate`;
-const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
-const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
-const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
-const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
-const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
+export const EDITOR_SETTING = 'editor';
+export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
+export const AUTO_SAVE_SETTING = `${EDITOR_SETTING}.autoSave`;
+export const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
+export const ARDUINO_SETTING = 'arduino';
+export const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
+export const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
+export const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
+export const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
+export const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
+export const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
+export const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
+export const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
+export const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
+export const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
+export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 
 export interface Settings extends Index {
   editorFontSize: number; // `editor.fontSize`
@@ -48,7 +46,6 @@ export interface Settings extends Index {
 
   autoScaleInterface: boolean; // `arduino.window.autoScale`
   interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
-  checkForUpdates?: boolean; // `arduino.ide.autoUpdate`
   verboseOnCompile: boolean; // `arduino.compile.verbose`
   compilerWarnings: CompilerWarnings; // `arduino.compile.warnings`
   verboseOnUpload: boolean; // `arduino.upload.verbose`
@@ -93,7 +90,6 @@ export class SettingsService {
 
   @postConstruct()
   protected async init(): Promise<void> {
-    await this.appStateService.reachedState('ready'); // Hack for https://github.com/eclipse-theia/theia/issues/8993
     const settings = await this.loadSettings();
     this._settings = deepClone(settings);
     this.ready.resolve();
@@ -110,7 +106,6 @@ export class SettingsService {
       quickSuggestions,
       autoScaleInterface,
       interfaceScale,
-      // checkForUpdates,
       verboseOnCompile,
       compilerWarnings,
       verboseOnUpload,
@@ -135,7 +130,6 @@ export class SettingsService {
       }),
       this.preferenceService.get<boolean>(AUTO_SCALE_SETTING, true),
       this.preferenceService.get<number>(ZOOM_LEVEL_SETTING, 0),
-      // this.preferenceService.get<string>(AUTO_UPDATE_SETTING, true),
       this.preferenceService.get<boolean>(COMPILE_VERBOSE_SETTING, true),
       this.preferenceService.get<any>(COMPILE_WARNINGS_SETTING, 'None'),
       this.preferenceService.get<boolean>(UPLOAD_VERBOSE_SETTING, true),
@@ -154,7 +148,6 @@ export class SettingsService {
       quickSuggestions,
       autoScaleInterface,
       interfaceScale,
-      // checkForUpdates,
       verboseOnCompile,
       compilerWarnings,
       verboseOnUpload,
@@ -234,7 +227,6 @@ export class SettingsService {
       quickSuggestions,
       autoScaleInterface,
       interfaceScale,
-      // checkForUpdates,
       verboseOnCompile,
       compilerWarnings,
       verboseOnUpload,
@@ -284,7 +276,6 @@ export class SettingsService {
         interfaceScale,
         PreferenceScope.User
       ),
-      // this.preferenceService.set(AUTO_UPDATE_SETTING, checkForUpdates, PreferenceScope.User),
       this.preferenceService.set(
         COMPILE_VERBOSE_SETTING,
         verboseOnCompile,

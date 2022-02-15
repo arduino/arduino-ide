@@ -262,6 +262,19 @@ import {
   UserFieldsDialogWidget,
 } from './dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/common';
+import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
+import {
+  IDEUpdater,
+  IDEUpdaterClient,
+  IDEUpdaterPath,
+} from '../common/protocol/ide-updater';
+import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-client-impl';
+import {
+  IDEUpdaterDialog,
+  IDEUpdaterDialogProps,
+  IDEUpdaterDialogWidget,
+} from './dialogs/ide-updater/ide-updater-dialog';
+import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -407,8 +420,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(SerialService)
     .toDynamicValue((context) => {
       const connection = context.container.get(WebSocketConnectionProvider);
-      const client =
-        context.container.get<SerialServiceClient>(SerialServiceClient);
+      const client = context.container.get<SerialServiceClient>(
+        SerialServiceClient
+      );
       return connection.createProxy(SerialServicePath, client);
     })
     .inSingletonScope();
@@ -472,12 +486,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
   rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) =>
-      () => {
-        const container = parentContainer.createChild();
-        container.bind(TabBarToolbar).toSelf().inSingletonScope();
-        return container.get(TabBarToolbar);
-      }
+    ({ container: parentContainer }) => () => {
+      const container = parentContainer.createChild();
+      container.bind(TabBarToolbar).toSelf().inSingletonScope();
+      return container.get(TabBarToolbar);
+    }
   );
   bind(OutputWidget).toSelf().inSingletonScope();
   rebind(TheiaOutputWidget).toService(OutputWidget);
@@ -642,13 +655,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Enable the dirty indicator on uncloseable widgets.
   rebind(TabBarRendererFactory).toFactory((context) => () => {
-    const contextMenuRenderer =
-      context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
+    const contextMenuRenderer = context.container.get<ContextMenuRenderer>(
+      ContextMenuRenderer
+    );
     const decoratorService = context.container.get<TabBarDecoratorService>(
       TabBarDecoratorService
     );
-    const iconThemeService =
-      context.container.get<IconThemeService>(IconThemeService);
+    const iconThemeService = context.container.get<IconThemeService>(
+      IconThemeService
+    );
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,
@@ -756,9 +771,32 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     title: 'UploadCertificate',
   });
 
+  bind(IDEUpdaterDialogWidget).toSelf().inSingletonScope();
+  bind(IDEUpdaterDialog).toSelf().inSingletonScope();
+  bind(IDEUpdaterDialogProps).toConstantValue({
+    title: 'IDEUpdater',
+  });
+
   bind(UserFieldsDialogWidget).toSelf().inSingletonScope();
   bind(UserFieldsDialog).toSelf().inSingletonScope();
   bind(UserFieldsDialogProps).toConstantValue({
     title: 'UserFields',
   });
+
+  bind(IDEUpdaterCommands).toSelf().inSingletonScope();
+  bind(CommandContribution).toService(IDEUpdaterCommands);
+
+  // Frontend binding for the IDE Updater service
+  bind(IDEUpdaterClientImpl).toSelf().inSingletonScope();
+  bind(IDEUpdaterClient).toService(IDEUpdaterClientImpl);
+  bind(IDEUpdater)
+    .toDynamicValue((context) => {
+      const client = context.container.get(IDEUpdaterClientImpl);
+      return ElectronIpcConnectionProvider.createProxy(
+        context.container,
+        IDEUpdaterPath,
+        client
+      );
+    })
+    .inSingletonScope();
 });

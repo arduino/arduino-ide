@@ -9,6 +9,11 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { CompilerWarningLiterals, CompilerWarnings } from '../common/protocol';
 
+export enum UpdateChannel {
+  Stable = 'stable',
+  Nightly = 'nightly',
+}
+
 export const ArduinoConfigSchema: PreferenceSchema = {
   type: 'object',
   properties: {
@@ -64,13 +69,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: 0,
     },
-    'arduino.ide.autoUpdate': {
-      type: 'boolean',
+    'arduino.ide.updateChannel': {
+      type: 'string',
+      enum: Object.values(UpdateChannel) as UpdateChannel[],
+      default: UpdateChannel.Stable,
       description: nls.localize(
-        'arduino/preferences/ide.autoUpdate',
-        'True to enable automatic update checks. The IDE will check for updates automatically and periodically.'
+        'arduino/preferences/ide.updateChannel',
+        "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build."
       ),
-      default: true,
     },
     'arduino.board.certificates': {
       type: 'string',
@@ -171,7 +177,7 @@ export interface ArduinoConfiguration {
   'arduino.upload.verify': boolean;
   'arduino.window.autoScale': boolean;
   'arduino.window.zoomLevel': number;
-  'arduino.ide.autoUpdate': boolean;
+  'arduino.ide.updateChannel': UpdateChannel;
   'arduino.board.certificates': string;
   'arduino.sketchbook.showAllFiles': boolean;
   'arduino.cloud.enabled': boolean;
@@ -188,16 +194,10 @@ export interface ArduinoConfiguration {
 export const ArduinoPreferences = Symbol('ArduinoPreferences');
 export type ArduinoPreferences = PreferenceProxy<ArduinoConfiguration>;
 
-export function createArduinoPreferences(
-  preferences: PreferenceService
-): ArduinoPreferences {
-  return createPreferenceProxy(preferences, ArduinoConfigSchema);
-}
-
 export function bindArduinoPreferences(bind: interfaces.Bind): void {
   bind(ArduinoPreferences).toDynamicValue((ctx) => {
     const preferences = ctx.container.get<PreferenceService>(PreferenceService);
-    return createArduinoPreferences(preferences);
+    return createPreferenceProxy(preferences, ArduinoConfigSchema);
   });
   bind(PreferenceContribution).toConstantValue({
     schema: ArduinoConfigSchema,

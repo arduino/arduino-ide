@@ -68,8 +68,12 @@ import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
+import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
+import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
+import { IDEUpdater } from '../common/protocol/ide-updater';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
+export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -78,8 +82,7 @@ export class ArduinoFrontendContribution
     TabBarToolbarContribution,
     CommandContribution,
     MenuContribution,
-    ColorContribution
-{
+    ColorContribution {
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -156,6 +159,15 @@ export class ArduinoFrontendContribution
 
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
+
+  @inject(IDEUpdaterCommands)
+  protected readonly updater: IDEUpdaterCommands;
+
+  @inject(IDEUpdaterDialog)
+  protected readonly updaterDialog: IDEUpdaterDialog;
+
+  @inject(IDEUpdater)
+  protected readonly updaterService: IDEUpdater;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -251,7 +263,7 @@ export class ArduinoFrontendContribution
     });
   }
 
-  onStart(app: FrontendApplication): void {
+  async onStart(app: FrontendApplication): Promise<void> {
     // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
     for (const viewContribution of [
       this.fileNavigatorContributions,
@@ -266,6 +278,19 @@ export class ArduinoFrontendContribution
         viewContribution.initializeLayout(app);
       }
     }
+
+    this.updaterService.init(
+      this.arduinoPreferences.get('arduino.ide.updateChannel')
+    );
+    this.updater.checkForUpdates().then(async (updateInfo) => {
+      if (!updateInfo) return;
+      const versionToSkip = await this.localStorageService.getData<string>(
+        SKIP_IDE_VERSION
+      );
+      if (versionToSkip === updateInfo.version) return;
+      this.updaterDialog.open(updateInfo);
+    });
+
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {
       if (selectedBoard) {
         const { name, fqbn } = selectedBoard;
