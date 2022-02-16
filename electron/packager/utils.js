@@ -199,9 +199,9 @@ function git(command) {
 function getChannelFile(platform) {
   let currentChannel = '';
   if (isNightly) {
-    currentChannel = 'nightly';
+    currentChannel = 'beta';
   } else if (isRelease) {
-    currentChannel = 'stable';
+    currentChannel = 'latest';
   } else {
     // We're not creating a nightly build nor releasing
     // a new version, no need for a channel file.
