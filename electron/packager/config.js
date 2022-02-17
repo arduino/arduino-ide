@@ -106,7 +106,7 @@ function getChannel() {
     return 'nightly';
   }
 
-  return 'none';
+  return '';
 }
 
 function timestamp() {
