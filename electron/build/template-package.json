@@ -17,7 +17,9 @@
     "electron-notarize": "^0.3.0",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.3",
+    "crypto": "^1.0.1",
+    "yaml": "^1.10.2"
   },
   "scripts": {
     "build": "yarn download:plugins && theia build --mode development && yarn patch",
@@ -92,19 +94,12 @@
       "gatekeeperAssess": false,
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
-      "target": [
-        "dmg",
-        "zip"
-      ]
+      "target": "default"
     },
     "linux": {
       "target": [
-        {
-          "target": "zip"
-        },
-        {
-          "target": "AppImage"
-        }
+        "zip",
+        "AppImage"
       ],
       "category": "Development",
       "icon": "resources/icons"
