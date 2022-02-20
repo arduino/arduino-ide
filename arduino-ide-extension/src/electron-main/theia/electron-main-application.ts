@@ -128,7 +128,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         x: splashX,
         y: splashY,
         transparent: true,
-        alwaysOnTop: true,
+        alwaysOnTop: false,
         focusable: false,
         minimizable: false,
         maximizable: false,
