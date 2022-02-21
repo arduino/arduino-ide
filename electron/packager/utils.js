@@ -197,15 +197,9 @@ function git(command) {
 // to work correctly.
 // For more information: https://www.electron.build/auto-update
 function getChannelFile(platform) {
-  let currentChannel = '';
-  if (isNightly) {
-    currentChannel = 'beta';
-  } else if (isRelease) {
+  let currentChannel = 'beta';
+  if (isRelease) {
     currentChannel = 'latest';
-  } else {
-    // We're not creating a nightly build nor releasing
-    // a new version, no need for a channel file.
-    return '';
   }
   return (
     currentChannel +

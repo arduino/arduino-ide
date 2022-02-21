@@ -102,8 +102,6 @@ jobs:
             name: Linux_X86-64_app_image
           - path: '*macOS_64bit.dmg'
             name: macOS_dmg
-          - path: '*macOS_64bit.zip'
-            name: macOS_zip
           - path: '*Windows_64bit.exe'
             name: Windows_X86-64_interactive_installer
           - path: '*Windows_64bit.msi'

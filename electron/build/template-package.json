@@ -17,9 +17,7 @@
     "electron-notarize": "^1.1.1",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
-    "shelljs": "^0.8.3",
-    "crypto": "^1.0.1",
-    "yaml": "^1.10.2"
+    "shelljs": "^0.8.3"
   },
   "scripts": {
     "build": "yarn download:plugins && theia build --mode development && yarn patch",
@@ -94,7 +92,9 @@
       "gatekeeperAssess": false,
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
-      "target": "default"
+      "target": [
+        "dmg"
+      ]
     },
     "linux": {
       "target": [

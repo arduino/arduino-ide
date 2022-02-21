@@ -1,10 +1,5 @@
-const fs = require('fs');
 const isCI = require('is-ci');
 const { notarize } = require('electron-notarize');
-const utils = require('../../packager/utils');
-const { getChannelFile } = utils;
-const join = require('path').join;
-const { hashFile } = require('./hash');
 
 exports.default = async function notarizing(context) {
   if (!isCI) {
@@ -34,34 +29,4 @@ exports.default = async function notarizing(context) {
     teamId: process.env.AC_TEAM_ID,
     tool: 'notarytool',
   });
-  return await recalculateHash();
 };
-
-async function recalculateHash() {
-  const { platform } = process;
-  const cwd = join(__dirname, '..', 'build', 'dist');
-  const channelFilePath = join(cwd, getChannelFile(platform));
-  const yaml = require('yaml');
-
-  try {
-    let fileContents = fs.readFileSync(channelFilePath, 'utf8');
-    const newChannelFile = yaml.parse(fileContents);
-    const { files, path } = newChannelFile;
-    const newSha512 = await hashFile(join(cwd, path));
-    newChannelFile.sha512 = newSha512;
-    if (!!files) {
-      const newFiles = [];
-      for (let file of files) {
-        const { url } = file;
-        const { size } = fs.statSync(join(cwd, url));
-        const newSha512 = await hashFile(join(cwd, url));
-        newFiles.push({ ...file, sha512: newSha512, size });
-      }
-      newChannelFile.files = newFiles;
-    }
-    console.log(channelFilePath);
-    fs.writeFileSync(channelFilePath, yaml.stringify(newChannelFile));
-  } catch (e) {
-    console.log(e);
-  }
-}
