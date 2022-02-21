@@ -80,19 +80,12 @@ function getVersion() {
   }
   if (!isRelease) {
     if (isNightly) {
-      version = `${version}-nightly.${timestamp()}`;
+      version = `${version}-nightly-${timestamp()}`;
     } else {
-      version = `${version}-snapshot.${currentCommitish()}`;
+      version = `${version}-snapshot-${currentCommitish()}`;
     }
-    if (!isRelease) {
-      if (isNightly) {
-        version = `${version}-nightly-${timestamp()}`;
-      } else {
-        version = `${version}-snapshot-${currentCommitish()}`;
-      }
-      if (!semver.valid(version)) {
-        throw new Error(`Invalid patched version: '${version}'.`);
-      }
+    if (!semver.valid(version)) {
+      throw new Error(`Invalid patched version: '${version}'.`);
     }
   }
   return version;

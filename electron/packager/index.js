@@ -257,10 +257,12 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
   );
 
   //-----------------------------------------------------------------------------------------------------+
-  // Copy to another folder. Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |
+  // Recalculate artifacts hash and copy to another folder (because they can change after signing them).
+  // Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |
   //-----------------------------------------------------------------------------------------------------+
   if (isCI) {
     try {
+      await recalculateArtifactsHash();
       await copyFilesToBuildArtifacts();
     } catch (e) {
       echo(JSON.stringify(e));
@@ -398,6 +400,67 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
       }
       echo(`👌  >>> Copied ${fileToCopy} to ${targetFolder}.`);
     }
+  }
+
+  async function recalculateArtifactsHash() {
+    echo(`🚢  Detected CI, recalculating artifacts hash...`);
+    const { platform } = process;
+    const cwd = path('..', 'build', 'dist');
+    const channelFilePath = join(cwd, getChannelFile(platform));
+    const yaml = require('yaml');
+
+    try {
+      let fileContents = fs.readFileSync(channelFilePath, 'utf8');
+      const newChannelFile = yaml.parse(fileContents);
+      const { files, path } = newChannelFile;
+      const newSha512 = await hashFile(join(cwd, path));
+      newChannelFile.sha512 = newSha512;
+      if (!!files) {
+        const newFiles = [];
+        for (let file of files) {
+          const { url } = file;
+          const { size } = fs.statSync(join(cwd, url));
+          const newSha512 = await hashFile(join(cwd, url));
+          newFiles.push({ ...file, sha512: newSha512, size });
+        }
+        newChannelFile.files = newFiles;
+      }
+
+      const newChannelFileRaw = yaml.stringify(newChannelFile);
+      fs.writeFileSync(channelFilePath, newChannelFileRaw);
+      echo(`👌  >>> Channel file updated successfully. New channel file:`);
+      echo(newChannelFileRaw);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function hashFile(
+    file,
+    algorithm = 'sha512',
+    encoding = 'base64',
+    options
+  ) {
+    const crypto = require('crypto');
+    return await new Promise((resolve, reject) => {
+      const hash = crypto.createHash(algorithm);
+      hash.on('error', reject).setEncoding(encoding);
+      fs.createReadStream(
+        file,
+        Object.assign({}, options, {
+          highWaterMark: 1024 * 1024,
+          /* better to use more memory but hash faster */
+        })
+      )
+        .on('error', reject)
+        .on('end', () => {
+          hash.end();
+          resolve(hash.read());
+        })
+        .pipe(hash, {
+          end: false,
+        });
+    });
   }
 
   /**

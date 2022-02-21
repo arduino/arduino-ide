@@ -50,6 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AC_USERNAME: ${{ secrets.AC_USERNAME }}
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+          AC_TEAM_ID: ${{ secrets.AC_TEAM_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
@@ -96,11 +97,11 @@ jobs:
       matrix:
         artifact:
           - path: '*Linux_64bit.zip'
-            name: Linux_X86-64
+            name: Linux_X86-64_zip
+          - path: '*Linux_64bit.AppImage'
+            name: Linux_X86-64_app_image
           - path: '*macOS_64bit.dmg'
             name: macOS_dmg
-          - path: '*macOS_64bit.zip'
-            name: macOS_zip
           - path: '*Windows_64bit.exe'
             name: Windows_X86-64_interactive_installer
           - path: '*Windows_64bit.msi'
