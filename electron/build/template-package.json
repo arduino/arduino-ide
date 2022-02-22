@@ -91,10 +91,7 @@
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "resources/entitlements.mac.plist",
-      "entitlementsInherit": "resources/entitlements.mac.plist",
-      "target": [
-        "dmg"
-      ]
+      "entitlementsInherit": "resources/entitlements.mac.plist"
     },
     "linux": {
       "target": [
