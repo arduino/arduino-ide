@@ -227,8 +227,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     'Installing dependencies'
   );
   exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${
-      isElectronPublish ? ':publish' : ''
+    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''
     }`,
     `Building the ${productName} application`
   );
@@ -393,11 +392,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     for (const fileToCopy of filesToCopy) {
       echo(`🚢  >>> Copying ${fileToCopy} to ${targetFolder}.`);
       const isZip = await utils.isZip(fileToCopy);
-      if (isZip) {
-        await utils.adjustArchiveStructure(fileToCopy, targetFolder);
-      } else {
-        cp('-rf', fileToCopy, targetFolder);
-      }
+      cp('-rf', fileToCopy, targetFolder);
       echo(`👌  >>> Copied ${fileToCopy} to ${targetFolder}.`);
     }
   }
@@ -491,8 +486,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     if (expectedVersion) {
       if (!versions.has(expectedVersion)) {
         echo(
-          `Mismatching version configuration. Expected version was: '${expectedVersion}' actual was: '${
-            Array.from(versions)[0]
+          `Mismatching version configuration. Expected version was: '${expectedVersion}' actual was: '${Array.from(versions)[0]
           }'.`
         );
         shell.exit(1);
