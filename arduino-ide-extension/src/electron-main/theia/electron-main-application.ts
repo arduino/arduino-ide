@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen } from '@theia/core/electron-shared/electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen, Event as ElectronEvent } from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import * as fs from 'fs-extra';
 import { initSplashScreen } from '../splash/splash-screen';
 import { MaybePromise } from '@theia/core/lib/common/types';
@@ -16,6 +16,8 @@ import {
 import { SplashServiceImpl } from '../splash/splash-service-impl';
 import { URI } from '@theia/core/shared/vscode-uri';
 import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
+import { Deferred } from '@theia/core/lib/common/promise-util';
+import * as os from '@theia/core/lib/common/os';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -36,6 +38,7 @@ const WORKSPACES = 'workspaces';
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   protected _windows: BrowserWindow[] = [];
   protected startup = false;
+  protected openFilePromise = new Deferred();
 
   @inject(SplashServiceImpl)
   protected readonly splashService: SplashServiceImpl;
@@ -45,17 +48,52 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     // See: https://github.com/electron-userland/electron-builder/issues/2468
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
     app.on('ready', () => app.setName(config.applicationName));
+    this.attachFileAssociations();
     return super.start(config);
   }
 
+  attachFileAssociations() {
+    // OSX: register open-file event
+    if (os.isOSX) {
+      app.on('open-file', async (event, uri) => {
+        event.preventDefault();
+        if (uri.endsWith('.ino') && await fs.pathExists(uri)) {
+          this.openFilePromise.reject();
+          await this.openSketch(dirname(uri));
+        }
+      });
+      setTimeout(() => this.openFilePromise.resolve(), 500);
+    } else {
+      this.openFilePromise.resolve();
+    }
+  }
+
+  protected async isValidSketchPath(uri: string): Promise<boolean | undefined> {
+    return typeof uri === 'string' && await fs.pathExists(uri);
+  }
+
   protected async launch(params: ElectronMainExecutionParams): Promise<void> {
+    try {
+      // When running on MacOS, we either have to wait until
+      // 1. The `open-file` command has been received by the app, rejecting the promise
+      // 2. A short timeout resolves the promise automatically, falling back to the usual app launch
+      await this.openFilePromise.promise;
+    } catch {
+      // Application has received the `open-file` event and will skip the default application launch
+      return;
+    }
+
+    if (!os.isOSX && await this.launchFromArgs(params)) {
+      // Application has received a file in its arguments and will skip the default application launch
+      return;
+    }
+
     this.startup = true;
     const workspaces: WorkspaceOptions[] | undefined = this.electronStore.get(WORKSPACES);
     let useDefault = true;
     if (workspaces && workspaces.length > 0) {
       for (const workspace of workspaces) {
-        const file = workspace.file;
-        if (typeof file === 'string' && await fs.pathExists(file)) {
+        if (await this.isValidSketchPath(workspace.file)) {
           useDefault = false;
           await this.openSketch(workspace);
         }
@@ -67,16 +105,39 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected async openSketch(workspace: WorkspaceOptions): Promise<BrowserWindow> {
+  protected async launchFromArgs(params: ElectronMainExecutionParams): Promise<boolean> {
+    // Copy to prevent manipulation of original array
+    const argCopy = [...params.argv];
+    let uri: string | undefined;
+    for (const possibleUri of argCopy) {
+      if (possibleUri.endsWith('.ino') && await this.isValidSketchPath(possibleUri)) {
+        uri = possibleUri;
+        break;
+      }
+    }
+    if (uri) {
+      await this.openSketch(dirname(uri));
+      return true;
+    }
+    return false;
+  }
+
+  protected async openSketch(workspace: WorkspaceOptions | string): Promise<BrowserWindow> {
     const options = await this.getLastWindowOptions();
-    options.x = workspace.x;
-    options.y = workspace.y;
-    options.width = workspace.width;
-    options.height = workspace.height;
-    options.isMaximized = workspace.isMaximized;
-    options.isFullScreen = workspace.isFullScreen;
+    let file: string;
+    if (typeof workspace === 'object') {
+      options.x = workspace.x;
+      options.y = workspace.y;
+      options.width = workspace.width;
+      options.height = workspace.height;
+      options.isMaximized = workspace.isMaximized;
+      options.isFullScreen = workspace.isFullScreen;
+      file = workspace.file;
+    } else {
+      file = workspace;
+    }
     const [uri, electronWindow] = await Promise.all([this.createWindowUri(), this.createWindow(options)]);
-    electronWindow.loadURL(uri.withFragment(encodeURI(workspace.file)).toString(true));
+    electronWindow.loadURL(uri.withFragment(encodeURI(file)).toString(true));
     return electronWindow;
   }
 
@@ -99,6 +160,14 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     ipcMain.on('restart', ({ sender }) => {
       this.restart(sender.id);
     });
+  }
+
+  protected async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
+    if (!os.isOSX && await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
+      // Application has received a file in its arguments
+      return;
+    }
+    super.onSecondInstance(event, argv, cwd);
   }
 
   /**
