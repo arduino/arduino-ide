@@ -83,7 +83,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       return;
     }
 
-    if (!os.isOSX && await this.launchWindowsOpen(params)) {
+    if (!os.isOSX && await this.launchFromArgs(params)) {
       // Application has received a file in its arguments and will skip the default application launch
       return;
     }
@@ -105,26 +105,19 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected async launchWindowsOpen(params: ElectronMainExecutionParams): Promise<boolean> {
+  protected async launchFromArgs(params: ElectronMainExecutionParams): Promise<boolean> {
     // Copy to prevent manipulation of original array
     const argCopy = [...params.argv];
-    if (app.isPackaged) {
-      // workaround for missing executable argument when app is packaged
-      argCopy.unshift('packaged');
+    let uri: string | undefined;
+    for (const possibleUri of argCopy) {
+      if (possibleUri.endsWith('.ino') && await this.isValidSketchPath(possibleUri)) {
+        uri = possibleUri;
+        break;
+      }
     }
-    const possibleUris = argCopy.slice(2) || null;
-    if (possibleUris) {
-      let uri: string | undefined;
-      for (const possibleUri of possibleUris) {
-        if (possibleUri.endsWith('.ino') && await this.isValidSketchPath(possibleUri)) {
-          uri = possibleUri;
-          break;
-        }
-      }
-      if (uri) {
-        await this.openSketch(dirname(uri));
-        return true;
-      }
+    if (uri) {
+      await this.openSketch(dirname(uri));
+      return true;
     }
     return false;
   }
@@ -170,7 +163,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   protected async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
-    if (!os.isOSX && await this.launchWindowsOpen({ cwd, argv, secondInstance: true })) {
+    if (!os.isOSX && await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
       // Application has received a file in its arguments
       return;
     }
