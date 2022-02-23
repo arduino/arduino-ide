@@ -1,7 +1,7 @@
 import { injectable, inject, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Deferred, timeout } from '@theia/core/lib/common/promise-util';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
@@ -217,6 +217,11 @@ export class SettingsService {
     }
   }
 
+  private async savePreference(name: string, value: unknown): Promise<void> {
+    await this.preferenceService.set(name, value, PreferenceScope.User);
+    await timeout(5);
+  }
+
   async save(): Promise<string | true> {
     await this.ready.promise;
     const {
@@ -245,69 +250,29 @@ export class SettingsService {
     (config as any).network = network;
     (config as any).locale = currentLanguage;
 
-    await Promise.all([
-      this.preferenceService.set(
-        'editor.fontSize',
-        editorFontSize,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        'workbench.colorTheme',
-        themeId,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        'editor.autoSave',
-        autoSave,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        'editor.quickSuggestions',
-        quickSuggestions,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        AUTO_SCALE_SETTING,
-        autoScaleInterface,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        ZOOM_LEVEL_SETTING,
-        interfaceScale,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        COMPILE_VERBOSE_SETTING,
-        verboseOnCompile,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        COMPILE_WARNINGS_SETTING,
-        compilerWarnings,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        UPLOAD_VERBOSE_SETTING,
-        verboseOnUpload,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        UPLOAD_VERIFY_SETTING,
-        verifyAfterUpload,
-        PreferenceScope.User
-      ),
-      this.preferenceService.set(
-        SHOW_ALL_FILES_SETTING,
-        sketchbookShowAllFiles,
-        PreferenceScope.User
-      ),
-      this.configService.setConfiguration(config),
-    ]);
+    await this.savePreference('editor.fontSize', editorFontSize);
+    await this.savePreference('workbench.colorTheme', themeId);
+    await this.savePreference('editor.autoSave', autoSave);
+    await this.savePreference('editor.quickSuggestions', quickSuggestions);
+    await this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface);
+    await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);
+    await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);
+    await this.savePreference(COMPILE_VERBOSE_SETTING, verboseOnCompile);
+    await this.savePreference(COMPILE_WARNINGS_SETTING, compilerWarnings);
+    await this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload);
+    await this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload);
+    await this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles);
+    await this.configService.setConfiguration(config);
     this.onDidChangeEmitter.fire(this._settings);
 
     // after saving all the settings, if we need to change the language we need to perform a reload
-    if (currentLanguage !== nls.locale) {
-      window.localStorage.setItem(nls.localeId, currentLanguage);
+    // Only reload if the language differs from the current locale. `nls.locale === undefined` signals english as well
+    if (currentLanguage !== nls.locale && !(currentLanguage === 'en' && nls.locale === undefined)) {
+      if (currentLanguage === 'en') {
+        window.localStorage.removeItem(nls.localeId);
+      } else {
+        window.localStorage.setItem(nls.localeId, currentLanguage);
+      }
       window.location.reload();
     }
 
