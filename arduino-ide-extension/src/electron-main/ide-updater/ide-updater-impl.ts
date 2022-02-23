@@ -18,6 +18,7 @@ export class IDEUpdaterImpl implements IDEUpdater {
   protected clients: Array<IDEUpdaterClient> = [];
 
   init(channel: UpdateChannel) {
+    this.updater.autoDownload = false;
     this.updater.channel = channel;
     this.updater.setFeedURL({
       provider: 'generic',
@@ -27,24 +28,24 @@ export class IDEUpdaterImpl implements IDEUpdater {
       channel,
     });
 
-    this.updater.on('checking-for-update', (e) =>
-      this.clients.forEach((c) => c.notifyCheckingForUpdate(e))
-    );
-    this.updater.on('update-available', (e) =>
-      this.clients.forEach((c) => c.notifyUpdateAvailable(e))
-    );
-    this.updater.on('update-not-available', (e) =>
-      this.clients.forEach((c) => c.notifyUpdateNotAvailable(e))
-    );
-    this.updater.on('download-progress', (e) =>
-      this.clients.forEach((c) => c.notifyDownloadProgressChanged(e))
-    );
-    this.updater.on('update-downloaded', (e) =>
-      this.clients.forEach((c) => c.notifyDownloadFinished(e))
-    );
-    this.updater.on('error', (e) =>
-      this.clients.forEach((c) => c.notifyError(e))
-    );
+    this.updater.on('checking-for-update', (e) => {
+      this.clients.forEach((c) => c.notifyCheckingForUpdate(e));
+    });
+    this.updater.on('update-available', (e) => {
+      this.clients.forEach((c) => c.notifyUpdateAvailable(e));
+    });
+    this.updater.on('update-not-available', (e) => {
+      this.clients.forEach((c) => c.notifyUpdateNotAvailable(e));
+    });
+    this.updater.on('download-progress', (e) => {
+      this.clients.forEach((c) => c.notifyDownloadProgressChanged(e));
+    });
+    this.updater.on('update-downloaded', (e) => {
+      this.clients.forEach((c) => c.notifyDownloadFinished(e));
+    });
+    this.updater.on('error', (e) => {
+      this.clients.forEach((c) => c.notifyError(e));
+    });
   }
 
   setClient(client: IDEUpdaterClient | undefined): void {
@@ -52,10 +53,8 @@ export class IDEUpdaterImpl implements IDEUpdater {
   }
 
   async checkForUpdates(): Promise<UpdateInfo | void> {
-    const {
-      updateInfo,
-      cancellationToken,
-    } = await this.updater.checkForUpdates();
+    const { updateInfo, cancellationToken } =
+      await this.updater.checkForUpdates();
 
     this.cancellationToken = cancellationToken;
     if (this.updater.currentVersion.compare(updateInfo.version) === -1) {
