@@ -416,7 +416,10 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
           const { url } = file;
           const { size } = fs.statSync(join(cwd, url));
           const newSha512 = await hashFile(join(cwd, url));
-          newFiles.push({ ...file, sha512: newSha512, size });
+
+          if (!newFiles.find((f) => f.sha512 === newSha512)) {
+            newFiles.push({ ...file, sha512: newSha512, size });
+          }
         }
         newChannelFile.files = newFiles;
       }
