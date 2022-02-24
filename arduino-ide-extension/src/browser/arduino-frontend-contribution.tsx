@@ -282,7 +282,7 @@ export class ArduinoFrontendContribution
     this.updaterService.init(
       this.arduinoPreferences.get('arduino.ide.updateChannel')
     );
-    this.updater.checkForUpdates().then(async (updateInfo) => {
+    this.updater.checkForUpdates(true).then(async (updateInfo) => {
       if (!updateInfo) return;
       const versionToSkip = await this.localStorageService.getData<string>(
         SKIP_IDE_VERSION

@@ -12,12 +12,13 @@ const IDE_DOWNLOAD_BASE_URL = 'https://downloads.arduino.cc/arduino-ide';
 
 @injectable()
 export class IDEUpdaterImpl implements IDEUpdater {
+  private isAlreadyChecked = false;
   private updater = autoUpdater;
   private cancellationToken?: CancellationToken;
   protected theiaFEClient?: IDEUpdaterClient;
   protected clients: Array<IDEUpdaterClient> = [];
 
-  init(channel: UpdateChannel) {
+  init(channel: UpdateChannel): void {
     this.updater.autoDownload = false;
     this.updater.channel = channel;
     this.updater.setFeedURL({
@@ -52,9 +53,16 @@ export class IDEUpdaterImpl implements IDEUpdater {
     if (client) this.clients.push(client);
   }
 
-  async checkForUpdates(): Promise<UpdateInfo | void> {
-    const { updateInfo, cancellationToken } =
-      await this.updater.checkForUpdates();
+  async checkForUpdates(initialCheck?: boolean): Promise<UpdateInfo | void> {
+    if (initialCheck) {
+      if (this.isAlreadyChecked) return Promise.resolve();
+      this.isAlreadyChecked = true;
+    }
+
+    const {
+      updateInfo,
+      cancellationToken,
+    } = await this.updater.checkForUpdates();
 
     this.cancellationToken = cancellationToken;
     if (this.updater.currentVersion.compare(updateInfo.version) === -1) {

@@ -31,8 +31,8 @@ export class IDEUpdaterCommands implements CommandContribution {
     });
   }
 
-  async checkForUpdates(): Promise<UpdateInfo | void> {
-    return await this.updater.checkForUpdates();
+  async checkForUpdates(initialCheck?: boolean): Promise<UpdateInfo | void> {
+    return await this.updater.checkForUpdates(initialCheck);
   }
 
   async downloadUpdate(): Promise<void> {
