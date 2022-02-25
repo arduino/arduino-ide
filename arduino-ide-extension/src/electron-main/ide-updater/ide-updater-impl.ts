@@ -8,7 +8,6 @@ import {
 } from '../../common/protocol/ide-updater';
 
 const CHANGELOG_BASE_URL = 'https://downloads.arduino.cc/arduino-ide/changelog';
-const IDE_DOWNLOAD_BASE_URL = 'https://downloads.arduino.cc/arduino-ide';
 
 @injectable()
 export class IDEUpdaterImpl implements IDEUpdater {
@@ -18,14 +17,12 @@ export class IDEUpdaterImpl implements IDEUpdater {
   protected theiaFEClient?: IDEUpdaterClient;
   protected clients: Array<IDEUpdaterClient> = [];
 
-  init(channel: UpdateChannel): void {
+  init(channel: UpdateChannel, baseUrl: string): void {
     this.updater.autoDownload = false;
     this.updater.channel = channel;
     this.updater.setFeedURL({
       provider: 'generic',
-      url: `${IDE_DOWNLOAD_BASE_URL}/${
-        channel === UpdateChannel.Nightly ? 'nightly' : ''
-      }`,
+      url: `${baseUrl}/${channel === UpdateChannel.Nightly ? 'nightly' : ''}`,
       channel,
     });
 

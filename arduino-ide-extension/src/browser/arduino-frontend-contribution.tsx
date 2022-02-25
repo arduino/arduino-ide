@@ -280,7 +280,8 @@ export class ArduinoFrontendContribution
     }
 
     this.updaterService.init(
-      this.arduinoPreferences.get('arduino.ide.updateChannel')
+      this.arduinoPreferences.get('arduino.ide.updateChannel'),
+      this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
     );
     this.updater.checkForUpdates(true).then(async (updateInfo) => {
       if (!updateInfo) return;
