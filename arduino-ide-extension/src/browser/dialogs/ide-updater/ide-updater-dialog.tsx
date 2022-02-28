@@ -7,8 +7,9 @@ import { Message } from '@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { nls } from '@theia/core';
 import { IDEUpdaterComponent } from './ide-updater-component';
-import { IDEUpdaterCommands } from '../../ide-updater/ide-updater-commands';
+
 import {
+  IDEUpdater,
   IDEUpdaterClient,
   ProgressInfo,
   UpdateInfo,
@@ -27,8 +28,8 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
   downloadStarted: boolean;
   onClose: () => void;
 
-  @inject(IDEUpdaterCommands)
-  protected readonly updater: IDEUpdaterCommands;
+  @inject(IDEUpdater)
+  protected readonly updater: IDEUpdater;
 
   @inject(IDEUpdaterClient)
   protected readonly updaterClient: IDEUpdaterClient;

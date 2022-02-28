@@ -13,6 +13,7 @@ import {
   KeybindingRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
 
 @injectable()
 export class Help extends Contribution {
@@ -114,6 +115,10 @@ export class Help extends Contribution {
     registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
       commandId: Help.Commands.VISIT_ARDUINO.id,
       order: '6',
+    });
+    registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
+      commandId: IDEUpdaterCommands.CHECK_FOR_UPDATES.id,
+      order: '7',
     });
   }
 

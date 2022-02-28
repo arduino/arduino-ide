@@ -68,7 +68,6 @@ import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
-import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 
@@ -160,8 +159,8 @@ export class ArduinoFrontendContribution
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
 
-  @inject(IDEUpdaterCommands)
-  protected readonly updater: IDEUpdaterCommands;
+  @inject(IDEUpdater)
+  protected readonly updater: IDEUpdater;
 
   @inject(IDEUpdaterDialog)
   protected readonly updaterDialog: IDEUpdaterDialog;
@@ -283,14 +282,21 @@ export class ArduinoFrontendContribution
       this.arduinoPreferences.get('arduino.ide.updateChannel'),
       this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
     );
-    this.updater.checkForUpdates(true).then(async (updateInfo) => {
-      if (!updateInfo) return;
-      const versionToSkip = await this.localStorageService.getData<string>(
-        SKIP_IDE_VERSION
-      );
-      if (versionToSkip === updateInfo.version) return;
-      this.updaterDialog.open(updateInfo);
-    });
+    this.updater
+      .checkForUpdates(true)
+      .then(async (updateInfo) => {
+        if (!updateInfo) return;
+        const versionToSkip = await this.localStorageService.getData<string>(
+          SKIP_IDE_VERSION
+        );
+        if (versionToSkip === updateInfo.version) return;
+        this.updaterDialog.open(updateInfo);
+      })
+      .catch((e) => {
+        this.messageService.error(
+          `Error while checking for Arduino IDE updates. ${e}`
+        );
+      });
 
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {
       if (selectedBoard) {
