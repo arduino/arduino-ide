@@ -104,7 +104,7 @@ export class IDEUpdaterImpl implements IDEUpdater {
       await this.updater.downloadUpdate(this.cancellationToken);
     } catch (e) {
       if (e.message === 'cancelled') return;
-      throw e;
+      this.clients.forEach((c) => c.notifyError(e));
     }
   }
 
