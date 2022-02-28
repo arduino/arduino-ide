@@ -100,14 +100,29 @@ export class CreateApi {
     return result;
   }
 
-  async sketches(): Promise<Create.Sketch[]> {
+  async sketches(limit = 50): Promise<Create.Sketch[]> {
     const url = new URL(`${this.domain()}/sketches`);
     url.searchParams.set('user_id', 'me');
+    url.searchParams.set('limit', limit.toString());
     const headers = await this.headers();
-    const result = await this.run<{ sketches: Create.Sketch[] }>(url, {
-      method: 'GET',
-      headers,
-    });
+    const result: { sketches: Create.Sketch[] } = { sketches: [] };
+
+    let partialSketches: Create.Sketch[] = [];
+    let currentOffset = 0;
+    do {
+      url.searchParams.set('offset', currentOffset.toString());
+      partialSketches = (
+        await this.run<{ sketches: Create.Sketch[] }>(url, {
+          method: 'GET',
+          headers,
+        })
+      ).sketches;
+      if (partialSketches.length != 0) {
+        result.sketches = result.sketches.concat(partialSketches);
+      }
+      currentOffset = currentOffset + limit;
+    } while (partialSketches.length != 0);
+
     result.sketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
     return result.sketches;
   }
