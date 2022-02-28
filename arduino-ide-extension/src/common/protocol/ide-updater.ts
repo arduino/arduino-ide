@@ -46,7 +46,7 @@ export interface ProgressInfo {
 export const IDEUpdaterPath = '/services/ide-updater';
 export const IDEUpdater = Symbol('IDEUpdater');
 export interface IDEUpdater extends JsonRpcServer<IDEUpdaterClient> {
-  init(channel: UpdateChannel): void;
+  init(channel: UpdateChannel, baseUrl: string): void;
   checkForUpdates(initialCheck?: boolean): Promise<UpdateInfo | void>;
   downloadUpdate(): Promise<void>;
   quitAndInstall(): void;

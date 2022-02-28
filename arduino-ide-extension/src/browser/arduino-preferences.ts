@@ -78,6 +78,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
         "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build."
       ),
     },
+    'arduino.ide.updateBaseUrl': {
+      type: 'string',
+      default: 'https://downloads.arduino.cc/arduino-ide',
+      description: nls.localize(
+        'arduino/preferences/ide.updateBaseUrl',
+        `The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'`
+      ),
+    },
     'arduino.board.certificates': {
       type: 'string',
       description: nls.localize(
@@ -178,6 +186,7 @@ export interface ArduinoConfiguration {
   'arduino.window.autoScale': boolean;
   'arduino.window.zoomLevel': number;
   'arduino.ide.updateChannel': UpdateChannel;
+  'arduino.ide.updateBaseUrl': string;
   'arduino.board.certificates': string;
   'arduino.sketchbook.showAllFiles': boolean;
   'arduino.cloud.enabled': boolean;
