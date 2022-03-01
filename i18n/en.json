@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Do you want to save changes to this sketch before closing?",
             "loseChanges": "If you don't save, your changes will be lost."
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+            "notNowButton": "Not now",
+            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+            "closeToInstallNotice": "Close the software and install the update on your machine.",
+            "closeAndInstallButton": "Close and Install",
+            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+            "updateAvailable": "Update Available",
+            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download",
+            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+            "goToDownloadButton": "Go To Download",
+            "ideUpdaterDialog": "Software Update",
+            "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE"
+        },
         "menu": {
             "sketch": "Sketch",
             "tools": "Tools"
@@ -254,22 +270,6 @@
         },
         "dialog": {
             "dontAskAgain": "Don't ask again"
-        },
-        "ide-updater": {
-            "notNowButton": "Not now",
-            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
-            "closeToInstallNotice": "Close the software and install the update on your machine.",
-            "closeAndInstallButton": "Close and Install",
-            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
-            "updateAvailable": "Update Available",
-            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
-            "skipVersionButton": "Skip Version",
-            "downloadButton": "Download",
-            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
-            "goToDownloadButton": "Go To Download"
-        },
-        "updater": {
-            "ideUpdaterDialog": "Software Update"
         },
         "userFields": {
             "cancel": "Cancel",

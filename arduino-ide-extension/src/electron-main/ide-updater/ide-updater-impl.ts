@@ -17,15 +17,7 @@ export class IDEUpdaterImpl implements IDEUpdater {
   protected theiaFEClient?: IDEUpdaterClient;
   protected clients: Array<IDEUpdaterClient> = [];
 
-  init(channel: UpdateChannel, baseUrl: string): void {
-    this.updater.autoDownload = false;
-    this.updater.channel = channel;
-    this.updater.setFeedURL({
-      provider: 'generic',
-      url: `${baseUrl}/${channel === UpdateChannel.Nightly ? 'nightly' : ''}`,
-      channel,
-    });
-
+  constructor() {
     this.updater.on('checking-for-update', (e) => {
       this.clients.forEach((c) => c.notifyCheckingForUpdate(e));
     });
@@ -43,6 +35,16 @@ export class IDEUpdaterImpl implements IDEUpdater {
     });
     this.updater.on('error', (e) => {
       this.clients.forEach((c) => c.notifyError(e));
+    });
+  }
+
+  async init(channel: UpdateChannel, baseUrl: string): Promise<void> {
+    this.updater.autoDownload = false;
+    this.updater.channel = channel;
+    this.updater.setFeedURL({
+      provider: 'generic',
+      url: `${baseUrl}/${channel === UpdateChannel.Nightly ? 'nightly' : ''}`,
+      channel,
     });
   }
 

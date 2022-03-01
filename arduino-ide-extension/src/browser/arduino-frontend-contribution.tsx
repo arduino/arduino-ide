@@ -68,7 +68,6 @@ import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
-import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 
@@ -160,14 +159,11 @@ export class ArduinoFrontendContribution
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
 
-  @inject(IDEUpdaterCommands)
-  protected readonly updater: IDEUpdaterCommands;
+  @inject(IDEUpdater)
+  protected readonly updater: IDEUpdater;
 
   @inject(IDEUpdaterDialog)
   protected readonly updaterDialog: IDEUpdaterDialog;
-
-  @inject(IDEUpdater)
-  protected readonly updaterService: IDEUpdater;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -279,18 +275,29 @@ export class ArduinoFrontendContribution
       }
     }
 
-    this.updaterService.init(
-      this.arduinoPreferences.get('arduino.ide.updateChannel'),
-      this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
-    );
-    this.updater.checkForUpdates(true).then(async (updateInfo) => {
-      if (!updateInfo) return;
-      const versionToSkip = await this.localStorageService.getData<string>(
-        SKIP_IDE_VERSION
-      );
-      if (versionToSkip === updateInfo.version) return;
-      this.updaterDialog.open(updateInfo);
-    });
+    this.updater
+      .init(
+        this.arduinoPreferences.get('arduino.ide.updateChannel'),
+        this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
+      )
+      .then(() => this.updater.checkForUpdates(true))
+      .then(async (updateInfo) => {
+        if (!updateInfo) return;
+        const versionToSkip = await this.localStorageService.getData<string>(
+          SKIP_IDE_VERSION
+        );
+        if (versionToSkip === updateInfo.version) return;
+        this.updaterDialog.open(updateInfo);
+      })
+      .catch((e) => {
+        this.messageService.error(
+          nls.localize(
+            'arduino/ide-updater/errorCheckingForUpdates',
+            'Error while checking for Arduino IDE updates.\n{0}',
+            e.message
+          )
+        );
+      });
 
     const start = async ({ selectedBoard }: BoardsConfig.Config) => {
       if (selectedBoard) {
@@ -302,11 +309,25 @@ export class ArduinoFrontendContribution
     };
     this.boardsServiceClientImpl.onBoardsConfigChanged(start);
     this.arduinoPreferences.onPreferenceChanged((event) => {
-      if (
-        event.preferenceName === 'arduino.language.log' &&
-        event.newValue !== event.oldValue
-      ) {
-        start(this.boardsServiceClientImpl.boardsConfig);
+      if (event.newValue !== event.oldValue) {
+        switch (event.preferenceName) {
+          case 'arduino.language.log':
+            start(this.boardsServiceClientImpl.boardsConfig);
+            break;
+          case 'arduino.window.zoomLevel':
+            if (typeof event.newValue === 'number') {
+              const webContents = remote.getCurrentWebContents();
+              webContents.setZoomLevel(event.newValue || 0);
+            }
+            break;
+          case 'arduino.ide.updateChannel':
+          case 'arduino.ide.updateBaseUrl':
+            this.updater.init(
+              this.arduinoPreferences.get('arduino.ide.updateChannel'),
+              this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
+            );
+            break;
+        }
       }
     });
     this.arduinoPreferences.ready.then(() => {
@@ -314,16 +335,7 @@ export class ArduinoFrontendContribution
       const zoomLevel = this.arduinoPreferences.get('arduino.window.zoomLevel');
       webContents.setZoomLevel(zoomLevel);
     });
-    this.arduinoPreferences.onPreferenceChanged((event) => {
-      if (
-        event.preferenceName === 'arduino.window.zoomLevel' &&
-        typeof event.newValue === 'number' &&
-        event.newValue !== event.oldValue
-      ) {
-        const webContents = remote.getCurrentWebContents();
-        webContents.setZoomLevel(event.newValue || 0);
-      }
-    });
+
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
   }
 
