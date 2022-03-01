@@ -264,7 +264,9 @@
             "updateAvailable": "Update Available",
             "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
             "skipVersionButton": "Skip Version",
-            "downloadButton": "Download"
+            "downloadButton": "Download",
+            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+            "goToDownloadButton": "Go To Download"
         },
         "updater": {
             "ideUpdaterDialog": "Software Update"

@@ -62,6 +62,17 @@
   margin-top: 28px;
 }
 
+.ide-updater-dialog .buttons-container a.theia-button {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ide-updater-dialog .buttons-container a.theia-button:hover {
+  color: var(--theia-button-foreground);
+}
+
 .ide-updater-dialog .buttons-container .push {
   margin-right: auto;
 }
