@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "yarn test",
     "package": "node index.js",
-    "test": "echo 'No test implemented'"
+    "test": "mocha \"./test/**/*.test.js\""
   },
   "keywords": [],
   "author": "Arduino SA",

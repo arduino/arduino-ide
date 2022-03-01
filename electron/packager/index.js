@@ -392,7 +392,11 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     for (const fileToCopy of filesToCopy) {
       echo(`🚢  >>> Copying ${fileToCopy} to ${targetFolder}.`);
       const isZip = await utils.isZip(fileToCopy);
-      cp('-rf', fileToCopy, targetFolder);
+      if (isZip && platform === 'linux') {
+        await utils.adjustArchiveStructure(fileToCopy, targetFolder);
+      } else {
+        cp('-rf', fileToCopy, targetFolder);
+      }
       echo(`👌  >>> Copied ${fileToCopy} to ${targetFolder}.`);
     }
   }
