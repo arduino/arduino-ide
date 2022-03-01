@@ -1,3 +1,4 @@
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { injectable, inject } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser';
@@ -77,7 +78,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
             ),
         ]);
         // On Dindows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
-        const recentWorkspaces = recentWorkspacesPaths.map(e => VSCodeUri.file(e).toString());
+        const recentWorkspaces = recentWorkspacesPaths.map((e) =>
+          VSCodeUri.file(e).toString()
+        );
         const toOpen = await new ArduinoWorkspaceRootResolver({
           isValid: this.isValid.bind(this),
         }).resolve({ hash, recentWorkspaces, recentSketches });
@@ -127,6 +130,8 @@ export class WorkspaceService extends TheiaWorkspaceService {
   }: FocusTracker.IChangedArgs<Widget>): void {
     if (newValue instanceof EditorWidget) {
       const { uri } = newValue.editor;
+      const currentWindow = remote.getCurrentWindow();
+      currentWindow.setRepresentedFilename(uri.path.toString());
       if (Sketch.isSketchFile(uri.toString())) {
         this.updateTitle();
       } else {
