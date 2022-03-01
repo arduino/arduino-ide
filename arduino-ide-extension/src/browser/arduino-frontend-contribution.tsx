@@ -165,9 +165,6 @@ export class ArduinoFrontendContribution
   @inject(IDEUpdaterDialog)
   protected readonly updaterDialog: IDEUpdaterDialog;
 
-  @inject(IDEUpdater)
-  protected readonly updaterService: IDEUpdater;
-
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
     | undefined;
@@ -278,12 +275,12 @@ export class ArduinoFrontendContribution
       }
     }
 
-    this.updaterService.init(
-      this.arduinoPreferences.get('arduino.ide.updateChannel'),
-      this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
-    );
     this.updater
-      .checkForUpdates(true)
+      .init(
+        this.arduinoPreferences.get('arduino.ide.updateChannel'),
+        this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
+      )
+      .then(() => this.updater.checkForUpdates(true))
       .then(async (updateInfo) => {
         if (!updateInfo) return;
         const versionToSkip = await this.localStorageService.getData<string>(
@@ -308,11 +305,25 @@ export class ArduinoFrontendContribution
     };
     this.boardsServiceClientImpl.onBoardsConfigChanged(start);
     this.arduinoPreferences.onPreferenceChanged((event) => {
-      if (
-        event.preferenceName === 'arduino.language.log' &&
-        event.newValue !== event.oldValue
-      ) {
-        start(this.boardsServiceClientImpl.boardsConfig);
+      if (event.newValue !== event.oldValue) {
+        switch (event.preferenceName) {
+          case 'arduino.language.log':
+            start(this.boardsServiceClientImpl.boardsConfig);
+            break;
+          case 'arduino.window.zoomLevel':
+            if (typeof event.newValue === 'number') {
+              const webContents = remote.getCurrentWebContents();
+              webContents.setZoomLevel(event.newValue || 0);
+            }
+            break;
+          case 'arduino.ide.updateChannel':
+          case 'arduino.ide.updateBaseUrl':
+            this.updater.init(
+              this.arduinoPreferences.get('arduino.ide.updateChannel'),
+              this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
+            );
+            break;
+        }
       }
     });
     this.arduinoPreferences.ready.then(() => {
@@ -320,16 +331,7 @@ export class ArduinoFrontendContribution
       const zoomLevel = this.arduinoPreferences.get('arduino.window.zoomLevel');
       webContents.setZoomLevel(zoomLevel);
     });
-    this.arduinoPreferences.onPreferenceChanged((event) => {
-      if (
-        event.preferenceName === 'arduino.window.zoomLevel' &&
-        typeof event.newValue === 'number' &&
-        event.newValue !== event.oldValue
-      ) {
-        const webContents = remote.getCurrentWebContents();
-        webContents.setZoomLevel(event.newValue || 0);
-      }
-    });
+
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
   }
 

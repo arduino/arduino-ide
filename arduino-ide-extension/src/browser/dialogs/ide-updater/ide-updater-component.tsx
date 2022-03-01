@@ -205,7 +205,6 @@ export const IDEUpdaterComponent = ({
       ) : (
         <PreDownload />
       )}
-      {/* {!!error && <div className="error-container">{error}</div>} */}
     </div>
   );
 };

@@ -38,7 +38,7 @@ export class IDEUpdaterCommands implements CommandContribution {
       return updateInfo;
     } catch (e) {
       this.messageService.error(
-        `Error while checking for Arduino IDE updates. ${e}`
+        `Error while checking for Arduino IDE updates. ${e.message}`
       );
     }
   }
