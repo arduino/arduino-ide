@@ -291,7 +291,11 @@ export class ArduinoFrontendContribution
       })
       .catch((e) => {
         this.messageService.error(
-          `Error while checking for Arduino IDE updates. ${e}`
+          nls.localize(
+            'arduino/ide-updater/errorCheckingForUpdates',
+            'Error while checking for Arduino IDE updates.\n{0}',
+            e.message
+          )
         );
       });
 

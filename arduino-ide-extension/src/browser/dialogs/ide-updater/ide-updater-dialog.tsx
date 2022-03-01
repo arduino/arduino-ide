@@ -126,7 +126,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   ) {
     super({
       title: nls.localize(
-        'arduino/updater/ideUpdaterDialog',
+        'arduino/ide-updater/ideUpdaterDialog',
         'Software Update'
       ),
     });

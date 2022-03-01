@@ -3,6 +3,7 @@ import {
   CommandContribution,
   CommandRegistry,
   MessageService,
+  nls,
 } from '@theia/core';
 import { injectable, inject } from 'inversify';
 import { IDEUpdater, UpdateInfo } from '../../common/protocol/ide-updater';
@@ -32,13 +33,20 @@ export class IDEUpdaterCommands implements CommandContribution {
         this.updaterDialog.open(updateInfo);
       } else {
         this.messageService.info(
-          `There are no recent updates available the Arduino IDE`
+          nls.localize(
+            'arduino/ide-updater/noUpdatesAvailable',
+            'There are no recent updates available for the Arduino IDE'
+          )
         );
       }
       return updateInfo;
     } catch (e) {
       this.messageService.error(
-        `Error while checking for Arduino IDE updates. ${e.message}`
+        nls.localize(
+          'arduino/ide-updater/errorCheckingForUpdates',
+          'Error while checking for Arduino IDE updates.\n{0}',
+          e.message
+        )
       );
     }
   }
