@@ -40,16 +40,8 @@ import {
   ArduinoDaemon,
   ArduinoDaemonPath,
 } from '../common/protocol/arduino-daemon';
-import {
-  SerialServiceImpl,
-  SerialServiceName,
-} from './serial/serial-service-impl';
-import {
-  SerialService,
-  SerialServicePath,
-  SerialServiceClient,
-} from '../common/protocol/serial-service';
-import { MonitorClientProvider } from './serial/monitor-client-provider';
+import { SerialServiceName } from './serial/serial-service-impl';
+
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
@@ -205,19 +197,25 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // #endregion Theia customizations
 
+  // a single MonitorManager is responsible for handling the actual connections to the pluggable monitors
+  bind(MonitorManager).toSelf().inSingletonScope();
+
   // Serial client provider per connected frontend.
   bind(ConnectionContainerModule).toConstantValue(
     ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-      bind(MonitorClientProvider).toSelf().inSingletonScope();
-      bind(SerialServiceImpl).toSelf().inSingletonScope();
-      bind(SerialService).toService(SerialServiceImpl);
-      bindBackendService<SerialService, SerialServiceClient>(
-        SerialServicePath,
-        SerialService,
-        (service, client) => {
-          service.setClient(client);
-          client.onDidCloseConnection(() => service.dispose());
-          return service;
+      bind(MonitorManagerProxyImpl).toSelf().inSingletonScope();
+      bind(MonitorManagerProxy).toService(MonitorManagerProxyImpl);
+      bindBackendService<MonitorManagerProxy, MonitorManagerProxyClient>(
+        MonitorManagerProxyPath,
+        MonitorManagerProxy,
+        (monitorMgrProxy, client) => {
+          monitorMgrProxy.setClient(client);
+          // when the client close the connection, the proxy is disposed.
+          // when the MonitorManagerProxy is disposed, it informs the MonitorManager
+          // telling him that it does not need an address/board anymore.
+          // the MonitorManager will then dispose the actual connection if there are no proxies using it
+          client.onDidCloseConnection(() => monitorMgrProxy.dispose());
+          return monitorMgrProxy;
         }
       );
     })
