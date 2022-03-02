@@ -6,6 +6,8 @@ on:
 
 env:
   CHANGELOG_ARTIFACTS: changelog
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: 14.x
 
 jobs:
   create-changelog:
@@ -15,10 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
 
       - name: Get Tag
