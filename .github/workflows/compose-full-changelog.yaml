@@ -15,6 +15,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Get Tag
         id: tag_name
         run: |
