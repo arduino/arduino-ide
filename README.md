@@ -23,13 +23,14 @@ should be considered unstable:
 
 | Platform  | 32 bit                   | 64 bit                                                                                                 |
 | --------- | ------------------------ | ------------------------------------------------------------------------------------------------------ |
-| Linux     |                          | [Nightly Linux 64 bit]                                                                                 |
+| Linux     |                          | [Nightly Linux AppImage 64 bit]<br />[Nightly Linux ZIP file 64 bit]                                   |
 | Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]                                                                               |
 | Windows   |                          | [Nightly Windows 64 bit installer]<br />[Nightly Windows 64 bit MSI]<br />[Nightly Windows 64 bit ZIP] |
 | macOS     |                          | [Nightly macOS 64 bit]                                                                                 |
 
 [🚧 work in progress...]: https://github.com/arduino/arduino-ide/issues/107
-[nightly linux 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
+[nightly linux appimage 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.AppImage
+[nightly linux zip file 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
 [nightly windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.exe
 [nightly windows 64 bit msi]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.msi
 [nightly windows 64 bit zip]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.zip
