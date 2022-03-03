@@ -84,6 +84,10 @@ export class Help extends Contribution {
       Help.Commands.VISIT_ARDUINO,
       createOpenHandler('https://www.arduino.cc/')
     );
+    registry.registerCommand(
+      Help.Commands.PRIVACY_POLICY,
+      createOpenHandler('https://www.arduino.cc/en/privacy-policy')
+    );
   }
 
   registerMenus(registry: MenuModelRegistry): void {
@@ -117,8 +121,12 @@ export class Help extends Contribution {
       order: '6',
     });
     registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
-      commandId: IDEUpdaterCommands.CHECK_FOR_UPDATES.id,
+      commandId: Help.Commands.PRIVACY_POLICY.id,
       order: '7',
+    });
+    registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
+      commandId: IDEUpdaterCommands.CHECK_FOR_UPDATES.id,
+      order: '8',
     });
   }
 
@@ -165,6 +173,11 @@ export namespace Help {
     export const VISIT_ARDUINO: Command = {
       id: 'arduino-visit-arduino',
       label: nls.localize('arduino/help/visit', 'Visit Arduino.cc'),
+      category: 'Arduino',
+    };
+    export const PRIVACY_POLICY: Command = {
+      id: 'arduino-privacy-policy',
+      label: nls.localize('arduino/help/privacyPolicy', 'Privacy Policy'),
       category: 'Arduino',
     };
   }

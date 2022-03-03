@@ -238,7 +238,8 @@
             "reference": "Reference",
             "findInReference": "Find in Reference",
             "faq": "Frequently Asked Questions",
-            "visit": "Visit Arduino.cc"
+            "visit": "Visit Arduino.cc",
+            "privacyPolicy": "Privacy Policy"
         },
         "certificate": {
             "uploadRootCertificates": "Upload SSL Root Certificates",
