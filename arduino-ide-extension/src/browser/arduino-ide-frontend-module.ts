@@ -275,6 +275,8 @@ import {
   IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
+import { MonitorManagerProxyClient } from '../common/monitor-manager-proxy';
+import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -430,6 +432,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Serial service client to receive and delegate notifications from the backend.
   bind(SerialServiceClient).to(SerialServiceClientImpl).inSingletonScope();
+
+  // Monitor manager proxy client to receive and delegate pluggable monitors
+  // notifications from the backend
+  bind(MonitorManagerProxyClient).to(MonitorManagerProxyClientImpl).inSingletonScope();
 
   bind(WorkspaceService).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceService).toService(WorkspaceService);
