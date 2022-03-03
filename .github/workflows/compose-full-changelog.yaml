@@ -2,7 +2,8 @@ name: Compose full changelog
 
 on:
   release:
-    types: [created, edited]
+    types:
+      - edited
 
 env:
   CHANGELOG_ARTIFACTS: changelog
