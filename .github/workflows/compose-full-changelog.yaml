@@ -6,6 +6,8 @@ on:
 
 env:
   CHANGELOG_ARTIFACTS: changelog
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: 14.x
 
 jobs:
   create-changelog:
@@ -14,6 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Get Tag
         id: tag_name
@@ -26,7 +34,7 @@ jobs:
           mkdir "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}"
 
           # Get the changelog file name to build
-          CHANGELOG_FILE_NAME="${{ steps.tag_name.outputs.TAG_NAME }}-$(date --iso-8601=s).md"
+          CHANGELOG_FILE_NAME="${{ steps.tag_name.outputs.TAG_NAME }}-$(date +%s).md"
 
           # Create manifest file pointing to latest changelog file name
           echo "$CHANGELOG_FILE_NAME" >> "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}/latest.txt"
