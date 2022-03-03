@@ -18,6 +18,7 @@ import { URI } from '@theia/core/shared/vscode-uri';
 import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
+import { RELOAD_REQUESTED_SIGNAL, Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -157,7 +158,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     app.on('second-instance', this.onSecondInstance.bind(this));
     app.on('window-all-closed', this.onWindowAllClosed.bind(this));
 
-    ipcMain.on('restart', ({ sender }) => {
+    ipcMain.on(RELOAD_REQUESTED_SIGNAL, event => this.handleReload(event));
+
+    ipcMain.on(Restart, ({ sender }) => {
       this.restart(sender.id);
     });
   }
