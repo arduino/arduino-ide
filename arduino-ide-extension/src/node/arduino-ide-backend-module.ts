@@ -82,13 +82,15 @@ import {
 } from '../common/protocol/authentication-service';
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
-import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
-import { WebSocketService } from './web-socket/web-socket-service';
 import { ArduinoLocalizationContribution } from './arduino-localization-contribution';
 import { LocalizationContribution } from '@theia/core/lib/node/i18n/localization-contribution';
 import { MonitorManagerProxyImpl } from './monitor-manager-proxy-impl';
 import { MonitorManager } from './monitor-manager';
-import { MonitorManagerProxy, MonitorManagerProxyClient, MonitorManagerProxyPath } from '../common/monitor-manager-proxy';
+import {
+  MonitorManagerProxy,
+  MonitorManagerProxyClient,
+  MonitorManagerProxyPath,
+} from '../common/monitor-manager-proxy';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -171,9 +173,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       bindBackendService(BoardsServicePath, BoardsService);
     })
   );
-
-  // Shared WebSocketService for the backend. This will manage all websocket conenctions
-  bind(WebSocketService).to(WebSocketServiceImpl).inSingletonScope();
 
   // Shared Arduino core client provider service for the backend.
   bind(CoreClientProvider).toSelf().inSingletonScope();

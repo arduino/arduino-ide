@@ -17,7 +17,7 @@ import {
 } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_pb';
 import { MonitorClientProvider } from './monitor-client-provider';
 import { Board } from '../../common/protocol/boards-service';
-import { WebSocketService } from '../web-socket/web-socket-service';
+import { WebSocketProvider } from '../web-socket/web-socket-provider';
 import { SerialPlotter } from '../../browser/serial/plotter/protocol';
 import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 
@@ -86,7 +86,7 @@ export class SerialServiceImpl implements SerialService {
     @inject(MonitorClientProvider)
     protected readonly serialClientProvider: MonitorClientProvider,
 
-    @inject(WebSocketService)
+    @inject(WebSocketProvider)
     protected readonly webSocketService: WebSocketService
   ) { }
 

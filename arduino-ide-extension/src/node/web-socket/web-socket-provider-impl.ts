@@ -1,10 +1,10 @@
 import { Emitter } from '@theia/core';
 import { injectable } from 'inversify';
 import * as WebSocket from 'ws';
-import { WebSocketService } from './web-socket-service';
+import { WebSocketProvider } from './web-socket-provider';
 
 @injectable()
-export default class WebSocketServiceImpl implements WebSocketService {
+export default class WebSocketProviderImpl implements WebSocketProvider {
   protected wsClients: WebSocket[];
   protected server: WebSocket.Server;
 

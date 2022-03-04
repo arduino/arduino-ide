@@ -7,7 +7,7 @@ use(sinonChai);
 
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MonitorClientProvider } from '../../node/serial/monitor-client-provider';
-import { WebSocketService } from '../../node/web-socket/web-socket-service';
+import { WebSocketProvider } from '../../node/web-socket/web-socket-provider';
 import { MonitorServiceClient } from '../../node/cli-protocol/cc/arduino/cli/monitor/v1/monitor_grpc_pb';
 import { Status } from '../../common/protocol';
 
@@ -16,7 +16,7 @@ describe('SerialServiceImpl', () => {
 
   let logger: IMock<ILogger>;
   let serialClientProvider: IMock<MonitorClientProvider>;
-  let webSocketService: IMock<WebSocketService>;
+  let webSocketService: IMock<WebSocketProvider>;
 
   beforeEach(() => {
     logger = Mock.ofType<ILogger>();
@@ -25,7 +25,7 @@ describe('SerialServiceImpl', () => {
     logger.setup((b) => b.error(It.isAnyString()));
 
     serialClientProvider = Mock.ofType<MonitorClientProvider>();
-    webSocketService = Mock.ofType<WebSocketService>();
+    webSocketService = Mock.ofType<WebSocketProvider>();
 
     subject = new SerialServiceImpl(
       logger.object,
