@@ -30,10 +30,11 @@ const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 const prefix = '.arduinoIDE-unsaved';
 
 @injectable()
-export class SketchesServiceImpl
-  extends CoreClientAware
-  implements SketchesService
-{
+export class SketchesServiceImpl extends CoreClientAware
+  implements SketchesService {
+  private sketchSuffixIndex = 1;
+  private lastSketchBaseName: string;
+
   @inject(ConfigService)
   protected readonly configService: ConfigService;
 
@@ -303,22 +304,31 @@ export class SketchesServiceImpl
       monthNames[today.getMonth()]
     }${today.getDate()}`;
     const config = await this.configService.getConfiguration();
-    const user = FileUri.fsPath(config.sketchDirUri);
+    const sketchbookPath = FileUri.fsPath(config.sketchDirUri);
     let sketchName: string | undefined;
-    for (let i = 97; i < 97 + 26; i++) {
-      const sketchNameCandidate = `${sketchBaseName}${String.fromCharCode(i)}`;
-      // Note: we check the future destination folder (`directories.user`) for name collision and not the temp folder!
-      if (await promisify(fs.exists)(path.join(user, sketchNameCandidate))) {
-        continue;
-      }
 
-      sketchName = sketchNameCandidate;
-      break;
+    // If it's another day, reset the count of sketches created today
+    if (this.lastSketchBaseName !== sketchBaseName) this.sketchSuffixIndex = 1;
+
+    let nameFound = false;
+    while (!nameFound) {
+      const sketchNameCandidate = `${sketchBaseName}${sketchIndexToLetters(
+        this.sketchSuffixIndex++
+      )}`;
+      // Note: we check the future destination folder (`directories.user`) for name collision and not the temp folder!
+      const sketchExists = await promisify(fs.exists)(
+        path.join(sketchbookPath, sketchNameCandidate)
+      );
+      if (!sketchExists) {
+        nameFound = true;
+        sketchName = sketchNameCandidate;
+      }
     }
 
     if (!sketchName) {
       throw new Error('Cannot create a unique sketch name');
     }
+    this.lastSketchBaseName = sketchBaseName;
 
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
@@ -506,4 +516,24 @@ interface SketchContainerWithDetails extends SketchContainer {
   readonly label: string;
   readonly children: SketchContainerWithDetails[];
   readonly sketches: SketchWithDetails[];
+}
+
+/*
+ * When a new sketch is created, add a suffix to distinguish it
+ * from other new sketches I created today.
+ * If 'sketch_jul8a' is already used, go with 'sketch_jul8b'.
+ * If 'sketch_jul8b' already used, go with 'sketch_jul8c'.
+ * When it reacheas 'sketch_jul8z', go with 'sketch_jul8aa',
+ * and so on.
+ */
+function sketchIndexToLetters(num: number): string {
+  let out = '';
+  let pow;
+  do {
+    pow = Math.floor(num / 26);
+    const mod = num % 26;
+    out = (mod ? String.fromCharCode(96 + mod) : (--pow, 'z')) + out;
+    num = pow;
+  } while (pow > 0);
+  return out;
 }
