@@ -13,3 +13,4 @@ export * from './examples-service';
 export * from './executable-service';
 export * from './response-service';
 export * from './notification-service';
+export * from './monitor-service';
