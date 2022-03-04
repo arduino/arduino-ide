@@ -60,9 +60,15 @@ export class BurnBootloader extends SketchContribution {
           this.preferences.get('arduino.upload.verify'),
           this.preferences.get('arduino.upload.verbose'),
         ]);
+
+      const board = {
+        ...boardsConfig.selectedBoard,
+        name: boardsConfig.selectedBoard?.name || '',
+        fqbn,
+      }
       this.outputChannelManager.getChannel('Arduino').clear();
       await this.coreService.burnBootloader({
-        fqbn,
+        board,
         programmer,
         port,
         verify,

@@ -226,6 +226,11 @@ export class UploadSketch extends SketchContribution {
           this.sourceOverride(),
         ]);
 
+      const board = {
+        ...boardsConfig.selectedBoard,
+        name: boardsConfig.selectedBoard?.name || '',
+        fqbn,
+      }
       let options: CoreService.Upload.Options | undefined = undefined;
       const sketchUri = sketch.uri;
       const optimizeForDebug = this.editorMode.compileForDebug;
@@ -247,7 +252,7 @@ export class UploadSketch extends SketchContribution {
         const programmer = selectedProgrammer;
         options = {
           sketchUri,
-          fqbn,
+          board,
           optimizeForDebug,
           programmer,
           port,
@@ -259,7 +264,7 @@ export class UploadSketch extends SketchContribution {
       } else {
         options = {
           sketchUri,
-          fqbn,
+          board,
           optimizeForDebug,
           port,
           verbose,
