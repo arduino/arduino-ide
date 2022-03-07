@@ -57,7 +57,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         });
     }
 
-    getWebsocketAddress(): number {
+    getWebsocketAddressPort(): number {
         return this.webSocketProvider.getAddress().port;
     }
 

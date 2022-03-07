@@ -4,8 +4,10 @@ import { Board, Port } from './boards-service';
 export const MonitorManagerProxyPath = '/services/monitor-manager-proxy';
 export const MonitorManagerProxy = Symbol('MonitorManagerProxy');
 export interface MonitorManagerProxy extends JsonRpcServer<MonitorManagerProxyClient> {
-    //set the monitor settings, which includes address, port and other monitor-specific settings
-    setMonitorSettings(board: Board, port: Port, settings: MonitorSettings): Promise<void>;
+    startMonitor(board: Board, port: Port, settings?: MonitorSettings): Promise<void>;
+    changeMonitorSettings(board: Board, port: Port, settings: MonitorSettings): Promise<void>;
+    stopMonitor(board: Board, port: Port): Promise<void>;
+    getSupportedSettings(protocol: string, fqbn: string): Promise<MonitorSettings>;
 }
 
 export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
