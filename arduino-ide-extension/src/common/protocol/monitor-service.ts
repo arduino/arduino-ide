@@ -10,8 +10,8 @@ export interface MonitorManagerProxy extends JsonRpcServer<MonitorManagerProxyCl
 
 export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
 export interface MonitorManagerProxyClient {
-    onWebSocketChanged: Event<string>;
-    notifyWebSocketChanged(message: string): void;
+    onWebSocketChanged: Event<number>;
+    notifyWebSocketChanged(message: number): void;
 }
 
 export interface MonitorSetting {

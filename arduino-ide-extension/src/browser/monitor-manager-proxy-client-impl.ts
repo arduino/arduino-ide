@@ -1,6 +1,6 @@
 import { Emitter } from "@theia/core";
 import { injectable } from "@theia/core/shared/inversify";
-import { MonitorManagerProxyClient } from "../common/monitor-manager-proxy";
+import { MonitorManagerProxyClient } from "../common/protocol/monitor-service";
 
 @injectable()
 export class MonitorManagerProxyClientImpl implements MonitorManagerProxyClient {
