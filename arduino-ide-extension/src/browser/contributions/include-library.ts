@@ -1,5 +1,5 @@
 import * as PQueue from 'p-queue';
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser';
@@ -16,6 +16,7 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
+import * as monaco from '@theia/monaco-editor-core';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {

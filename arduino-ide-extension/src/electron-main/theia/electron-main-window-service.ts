@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { ElectronMainWindowServiceImpl as TheiaElectronMainWindowService } from '@theia/core/lib/electron-main/electron-main-window-service-impl';
 import { ElectronMainApplication } from './electron-main-application';
 import { NewWindowOptions } from '@theia/core/lib/common/window';
@@ -11,7 +11,7 @@ export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowServic
   openNewWindow(url: string, { external }: NewWindowOptions): undefined {
     if (!external) {
       const sanitizedUrl = this.sanitize(url);
-      const existing = this.app.windows.find(
+      const existing = this.app.browserWindows.find(
         (window) => this.sanitize(window.webContents.getURL()) === sanitizedUrl
       );
       if (existing) {

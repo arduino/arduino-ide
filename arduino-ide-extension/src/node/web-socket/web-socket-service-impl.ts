@@ -1,5 +1,5 @@
 import { Emitter } from '@theia/core';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import * as WebSocket from 'ws';
 import { WebSocketService } from './web-socket-service';
 

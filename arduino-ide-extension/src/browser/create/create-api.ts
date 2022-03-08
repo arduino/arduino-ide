@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import * as createPaths from './create-paths';
 import { posix } from './create-paths';
 import { AuthenticationClientService } from '../auth/authentication-client-service';

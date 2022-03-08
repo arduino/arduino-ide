@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { FrontendApplication } from '@theia/core/lib/browser';
 import { BrowserMenuBarContribution } from '@theia/core/lib/browser/menu/browser-menu-plugin';
 

@@ -1,4 +1,8 @@
-import { injectable, inject, postConstruct } from 'inversify';
+import {
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
 import { Deferred, timeout } from '@theia/core/lib/common/promise-util';
@@ -16,12 +20,15 @@ import {
   Network,
 } from '../../../common/protocol';
 import { CommandService, nls } from '@theia/core/lib/common';
-import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import {
+  AsyncLocalizationProvider,
+  LanguageInfo,
+} from '@theia/core/lib/common/i18n/localization';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 
 export const EDITOR_SETTING = 'editor';
 export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
-export const AUTO_SAVE_SETTING = `${EDITOR_SETTING}.autoSave`;
+export const AUTO_SAVE_SETTING = `files.autoSave`;
 export const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
 export const ARDUINO_SETTING = 'arduino';
 export const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
@@ -39,10 +46,10 @@ export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 export interface Settings {
   editorFontSize: number; // `editor.fontSize`
   themeId: string; // `workbench.colorTheme`
-  autoSave: 'on' | 'off'; // `editor.autoSave`
+  autoSave: Settings.AutoSave; // `files.autoSave`
   quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
 
-  languages: string[]; // `languages from the plugins`
+  languages: (string | LanguageInfo)[]; // `languages from the plugins`
   currentLanguage: string;
 
   autoScaleInterface: boolean; // `arduino.window.autoScale`
@@ -60,6 +67,14 @@ export interface Settings {
 export namespace Settings {
   export function belongsToCli<K extends keyof Settings>(key: K): boolean {
     return key === 'sketchbookPath' || key === 'additionalUrls';
+  }
+  export type AutoSave =
+    | 'off'
+    | 'afterDelay'
+    | 'onFocusChange'
+    | 'onWindowChange';
+  export namespace AutoSave {
+    export const DEFAULT_ON: AutoSave = 'afterDelay'; // https://github.com/eclipse-theia/theia/issues/10812
   }
 }
 
@@ -126,7 +141,10 @@ export class SettingsService {
         'workbench.colorTheme',
         'arduino-theme'
       ),
-      this.preferenceService.get<'on' | 'off'>(AUTO_SAVE_SETTING, 'on'),
+      this.preferenceService.get<Settings.AutoSave>(
+        AUTO_SAVE_SETTING,
+        Settings.AutoSave.DEFAULT_ON
+      ),
       this.preferenceService.get<
         Record<'other' | 'comments' | 'strings', boolean>
       >(QUICK_SUGGESTIONS_SETTING, {
@@ -262,7 +280,7 @@ export class SettingsService {
 
     await this.savePreference('editor.fontSize', editorFontSize);
     await this.savePreference('workbench.colorTheme', themeId);
-    await this.savePreference('editor.autoSave', autoSave);
+    await this.savePreference(AUTO_SAVE_SETTING, autoSave);
     await this.savePreference('editor.quickSuggestions', quickSuggestions);
     await this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface);
     await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);

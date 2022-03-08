@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { Widget, ContextMenuRenderer } from '@theia/core/lib/browser';

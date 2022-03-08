@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandHandler } from '@theia/core/lib/common/command';
 import { CommandRegistry, MenuModelRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';

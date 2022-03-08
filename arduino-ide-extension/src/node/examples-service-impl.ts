@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { join, basename } from 'path';
 import * as fs from 'fs';
 import { promisify } from 'util';

@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { CommandService } from '@theia/core/lib/common/command';
 import { OutputCommands } from '@theia/output/lib/browser/output-commands';
 import { PluginInfo } from '@theia/plugin-ext/lib/common/plugin-api-rpc';

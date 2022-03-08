@@ -1,5 +1,5 @@
 import '../../../../src/browser/style/browser-menu.css';
-import { ContainerModule } from 'inversify';
+import { ContainerModule } from '@theia/core/shared/inversify';
 import {
   BrowserMenuBarContribution,
   BrowserMainMenuFactory as TheiaBrowserMainMenuFactory,

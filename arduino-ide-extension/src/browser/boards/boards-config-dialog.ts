@@ -1,5 +1,5 @@
-import { injectable, inject, postConstruct } from 'inversify';
-import { Message } from '@phosphor/messaging';
+import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { DialogProps, Widget, DialogError } from '@theia/core/lib/browser';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { BoardsConfig } from './boards-config';

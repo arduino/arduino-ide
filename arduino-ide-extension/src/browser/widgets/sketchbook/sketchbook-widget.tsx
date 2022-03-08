@@ -1,8 +1,8 @@
-import { inject, injectable, postConstruct } from 'inversify';
-import { toArray } from '@phosphor/algorithm';
-import { IDragEvent } from '@phosphor/dragdrop';
-import { DockPanel, Widget } from '@phosphor/widgets';
-import { Message, MessageLoop } from '@phosphor/messaging';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import { toArray } from '@theia/core/shared/@phosphor/algorithm';
+import { IDragEvent } from '@theia/core/shared/@phosphor/dragdrop';
+import { DockPanel, Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message, MessageLoop } from '@theia/core/shared/@phosphor/messaging';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';

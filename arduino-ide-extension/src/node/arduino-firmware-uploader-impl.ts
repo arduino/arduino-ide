@@ -2,7 +2,7 @@ import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../common/protocol/arduino-firmware-uploader';
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { ExecutableService } from '../common/protocol';
 import { SerialService } from '../common/protocol/serial-service';
 import { getExecPath, spawnCommand } from './exec-util';

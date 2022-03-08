@@ -1,5 +1,5 @@
 import { nls } from '@theia/core/lib/common';
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import {
   ArduinoFirmwareUploader,
   FirmwareInfo,

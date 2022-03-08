@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { Command, CommandRegistry } from '@theia/core/lib/common/command';

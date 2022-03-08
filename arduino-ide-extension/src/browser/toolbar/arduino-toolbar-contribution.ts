@@ -4,7 +4,7 @@ import {
   Widget,
   Message,
 } from '@theia/core/lib/browser';
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { ArduinoToolbar } from './arduino-toolbar';
 import { TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { CommandRegistry } from '@theia/core';

@@ -1,8 +1,8 @@
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { nls } from '@theia/core/lib/common';
 import { shell } from 'electron';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from '@theia/core/shared/react';
+import * as ReactDOM from '@theia/core/shared/react-dom';
 import ReactMarkdown from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';

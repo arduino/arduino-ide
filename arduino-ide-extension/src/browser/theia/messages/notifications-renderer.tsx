@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import * as ReactDOM from '@theia/core/shared/react-dom';
+import { injectable } from '@theia/core/shared/inversify';
 import { NotificationCenterComponent } from './notification-center-component';
 import { NotificationToastsComponent } from './notification-toasts-component';
 import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/messages/lib/browser/notifications-renderer';

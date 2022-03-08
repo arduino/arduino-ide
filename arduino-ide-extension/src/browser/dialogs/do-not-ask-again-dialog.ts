@@ -1,5 +1,5 @@
-import { inject, injectable } from 'inversify';
-import { Widget } from '@phosphor/widgets';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
 import {
   ConfirmDialog,

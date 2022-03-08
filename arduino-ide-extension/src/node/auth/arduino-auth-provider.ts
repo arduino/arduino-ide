@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 
 import { createServer, startServer } from './authentication-server';
 import { Keychain } from './keychain';

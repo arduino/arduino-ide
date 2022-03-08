@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { homedir } from 'os';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { BackendApplicationConfigProvider } from '@theia/core/lib/node/backend-application-config-provider';
 import { EnvVariablesServerImpl as TheiaEnvVariablesServerImpl } from '@theia/core/lib/node/env-variables/env-variables-server';
