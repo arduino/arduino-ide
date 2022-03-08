@@ -20,6 +20,7 @@ import {
   FrontendApplication,
   FrontendApplicationContribution,
   LocalStorageService,
+  SaveableWidget,
   StatusBar,
   StatusBarAlignment,
 } from '@theia/core/lib/browser';
@@ -70,6 +71,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
+import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
@@ -158,6 +160,9 @@ export class ArduinoFrontendContribution
 
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
+
+  @inject(FileSystemFrontendContribution)
+  protected readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
 
   @inject(IDEUpdater)
   protected readonly updater: IDEUpdater;
@@ -337,6 +342,17 @@ export class ArduinoFrontendContribution
     });
 
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
+
+    this.fileSystemFrontendContribution.onDidChangeEditorFile(e => {
+        if (e.type === FileChangeType.DELETED) {
+            const editorWidget = e.editor;
+            if (SaveableWidget.is(editorWidget)) {
+                editorWidget.closeWithoutSaving();
+            } else {
+                editorWidget.close();
+            }
+        }
+    });
   }
 
   onStop(): void {
