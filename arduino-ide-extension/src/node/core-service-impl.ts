@@ -1,5 +1,5 @@
 import { FileUri } from '@theia/core/lib/node/file-uri';
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { relative } from 'path';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';

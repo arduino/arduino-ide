@@ -10,7 +10,7 @@
     "node": ">=14.0.0 <15"
   },
   "devDependencies": {
-    "@theia/cli": "1.22.1",
+    "@theia/cli": "1.25.0",
     "@types/sinon": "^2.3.5",
     "@types/jsdom": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
@@ -26,19 +26,21 @@
     "ignore-styles": "^5.0.1",
     "lerna": "^3.20.2",
     "lint-staged": "^11.0.0",
+    "node-gyp": "^9.0.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
     "semver": "^7.3.2",
-    "typescript": "^3.9.2",
+    "typescript": "~4.5.5",
     "jsdom": "^11.5.1"
   },
   "resolutions": {
     "find-git-exec": "0.0.4",
-    "dugite-extra": "0.1.15"
+    "dugite-extra": "0.1.15",
+    "@types/react": "16.14.25"
   },
   "scripts": {
-    "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",
+    "prepare": "lerna run prepare && yarn download:plugins",
     "cleanup": "npx rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./browser-app/lib ./browser-app/src-gen ./browser-app/gen-webpack.config.js ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",

@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Resource } from '@theia/core/lib/common/resource';
 import { ILogger, Log, Loggable } from '@theia/core/lib/common/logger';
 import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';

@@ -1,5 +1,5 @@
 import { ThemeService } from '@theia/core/lib/browser/theming';
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import {
   Command,
   CommandRegistry,

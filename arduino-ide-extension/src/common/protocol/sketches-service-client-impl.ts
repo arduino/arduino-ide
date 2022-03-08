@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
@@ -15,6 +15,7 @@ import {
   ARDUINO_CLOUD_FOLDER,
   REMOTE_SKETCHBOOK_FOLDER,
 } from '../../browser/utils/constants';
+import * as monaco from '@theia/monaco-editor-core';
 
 const READ_ONLY_FILES = ['sketch.json'];
 const READ_ONLY_FILES_REMOTE = ['thingProperties.h', 'thingsProperties.h'];

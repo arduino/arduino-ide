@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { MonitorServiceClient } from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_grpc_pb';
 import * as monitorGrpcPb from '../cli-protocol/cc/arduino/cli/monitor/v1/monitor_grpc_pb';
 import { GrpcClientProvider } from '../grpc-client-provider';

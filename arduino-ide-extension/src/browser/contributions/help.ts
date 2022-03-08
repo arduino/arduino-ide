@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -15,6 +15,7 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
+import * as monaco from '@theia/monaco-editor-core';
 
 @injectable()
 export class Help extends Contribution {

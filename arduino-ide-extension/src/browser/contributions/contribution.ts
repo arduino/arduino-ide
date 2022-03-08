@@ -1,4 +1,4 @@
-import { inject, injectable, interfaces } from 'inversify';
+import { inject, injectable, interfaces } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Saveable } from '@theia/core/lib/browser/saveable';

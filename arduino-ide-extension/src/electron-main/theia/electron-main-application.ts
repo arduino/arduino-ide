@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen, Event as ElectronEvent } from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
@@ -11,14 +11,13 @@ import { FrontendApplicationConfig } from '@theia/application-package/lib/applic
 import {
   ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainExecutionParams,
-  TheiaBrowserWindowOptions,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
 import { URI } from '@theia/core/shared/vscode-uri';
-import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
-import { RELOAD_REQUESTED_SIGNAL, Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import { Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -37,7 +36,6 @@ const WORKSPACES = 'workspaces';
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
-  protected _windows: BrowserWindow[] = [];
   protected startup = false;
   protected openFilePromise = new Deferred();
 
@@ -93,6 +91,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     const workspaces: WorkspaceOptions[] | undefined = this.electronStore.get(WORKSPACES);
     let useDefault = true;
     if (workspaces && workspaces.length > 0) {
+      console.log(
+        `Restoring workspace roots: ${workspaces.map(({ file }) => file)}`
+      );
       for (const workspace of workspaces) {
         if (await this.isValidSketchPath(workspace.file)) {
           useDefault = false;
@@ -158,8 +159,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     app.on('second-instance', this.onSecondInstance.bind(this));
     app.on('window-all-closed', this.onWindowAllClosed.bind(this));
 
-    ipcMain.on(RELOAD_REQUESTED_SIGNAL, event => this.handleReload(event));
-
     ipcMain.on(Restart, ({ sender }) => {
       this.restart(sender.id);
     });
@@ -184,8 +183,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     let options = await asyncOptions;
     options = this.avoidOverlap(options);
     let electronWindow: BrowserWindow | undefined;
-    if (this._windows.length) {
-      electronWindow = new BrowserWindow(options);
+    if (this.windows.size) {
+      electronWindow = await this.doCreateWindow(options);
     } else {
       const { bounds } = screen.getDisplayNearestPoint(
         screen.getCursorScreenPoint()
@@ -207,7 +206,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         hasShadow: false,
         resizable: false,
       };
-      electronWindow = initSplashScreen(
+      electronWindow = await initSplashScreen(
         {
           windowOpts: options,
           templateUrl: join(
@@ -225,10 +224,22 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           minVisible: 2000,
           splashScreenOpts,
         },
+        (windowOptions) => this.doCreateWindow(windowOptions),
         this.splashService.onCloseRequested
       );
     }
+    return electronWindow;
+  }
 
+  private async doCreateWindow(
+    options: TheiaBrowserWindowOptions
+  ): Promise<BrowserWindow> {
+    const electronWindow = await super.createWindow(options);
+    this.attachListenersToWindow(electronWindow);
+    return electronWindow;
+  }
+
+  private attachListenersToWindow(electronWindow: BrowserWindow) {
     electronWindow.webContents.on(
       'new-window',
       (event, url, frameName, disposition, options) => {
@@ -256,28 +267,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         }
       }
     );
-
-    this._windows.push(electronWindow);
-    electronWindow.on('closed', () => {
-      if (electronWindow) {
-        const index = this._windows.indexOf(electronWindow);
-        if (index === -1) {
-          console.warn(
-            `Could not dispose browser window: '${electronWindow.title}'.`
-          );
-        } else {
-          this._windows.splice(index, 1);
-          electronWindow = undefined;
-        }
-      }
-    });
     this.attachClosedWorkspace(electronWindow);
-    this.attachReadyToShow(electronWindow);
-    this.attachSaveWindowState(electronWindow);
-    this.attachGlobalShortcuts(electronWindow);
-    this.restoreMaximizedState(electronWindow, options);
-    electronRemoteMain.enable(electronWindow.webContents);
-    return electronWindow;
   }
 
   protected async startBackend(): Promise<number> {
@@ -354,12 +344,16 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       if (workspace) {
         const workspaceUri = URI.file(workspace);
         const bounds = window.getNormalBounds();
+        const now = Date.now();
+        console.log(
+          `Marking workspace as a closed sketch. Workspace URI: ${workspaceUri.toString()}. Date: ${now}.`
+        );
         this.closedWorkspaces.push({
           ...bounds,
           isMaximized: window.isMaximized(),
           isFullScreen: window.isFullScreen(),
           file: workspaceUri.fsPath,
-          time: Date.now()
+          time: now
         })
       }
     });
@@ -369,19 +363,34 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     // Only add workspaces which were closed within the last second (1000 milliseconds)
     const threshold = Date.now() - 1000;
     const visited = new Set<string>();
-    const workspaces = this.closedWorkspaces.filter(e => {
-      if (e.time < threshold || visited.has(e.file)) {
-        return false;
-      }
-      visited.add(e.file);
-      return true;
-    }).sort((a, b) => a.file.localeCompare(b.file));
+    const workspaces = this.closedWorkspaces
+      .filter((e) => {
+        if (e.time < threshold) {
+          console.log(
+            `Skipped storing sketch as workspace root. Expected minimum threshold: <${threshold}>. Was: <${e.time}>.`
+          );
+          return false;
+        }
+        if (visited.has(e.file)) {
+          console.log(
+            `Skipped storing sketch as workspace root. Already visited: <${e.file}>.`
+          );
+          return false;
+        }
+        visited.add(e.file);
+        console.log(`Storing the sketch as a workspace root: <${e.file}>.`);
+        return true;
+      })
+      .sort((a, b) => a.file.localeCompare(b.file));
     this.electronStore.set(WORKSPACES, workspaces);
+    console.log(
+      `Stored workspaces roots: ${workspaces.map(({ file }) => file)}`
+    );
 
     super.onWillQuit(event);
   }
 
-  get windows(): BrowserWindow[] {
-    return this._windows.slice();
+  get browserWindows(): BrowserWindow[] {
+    return Array.from(this.windows.values()).map(({ window }) => window);
   }
 }

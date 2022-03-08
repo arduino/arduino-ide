@@ -1,4 +1,4 @@
-import { ContainerModule } from 'inversify';
+import { ContainerModule } from '@theia/core/shared/inversify';
 import { JsonRpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
 import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
 import { ElectronMainWindowService } from '@theia/core/lib/electron-common/electron-main-window-service';

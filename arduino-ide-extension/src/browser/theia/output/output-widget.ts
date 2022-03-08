@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { Message, Widget } from '@theia/core/lib/browser';
 import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/output-widget';
 

@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { injectable, postConstruct, inject } from 'inversify';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import * as React from '@theia/core/shared/react';
+import { injectable, postConstruct, inject } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { Emitter } from '@theia/core/lib/common/event';
 import { MaybePromise } from '@theia/core/lib/common/types';

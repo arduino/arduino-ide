@@ -1,4 +1,4 @@
-import { TabBar } from '@phosphor/widgets';
+import { TabBar } from '@theia/core/shared/@phosphor/widgets';
 import { Saveable } from '@theia/core/lib/browser/saveable';
 import { TabBarRenderer as TheiaTabBarRenderer } from '@theia/core/lib/browser/shell/tab-bars';
 

@@ -1,4 +1,4 @@
-import { inject, injectable, named } from 'inversify';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { ContributionProvider } from '@theia/core/lib/common/contribution-provider';
 import {
   BackendApplication as TheiaBackendApplication,

@@ -18,7 +18,7 @@
 //   ResponseServiceArduino,
 // } from '../../common/protocol';
 // import { IMock, It, Mock, Times } from 'typemoq';
-// import { Container, ContainerModule } from 'inversify';
+// import { Container, ContainerModule } from '@theia/core/shared/inversify';
 // import { BoardsAutoInstaller } from '../../browser/boards/boards-auto-installer';
 // import { BoardsConfig } from '../../browser/boards/boards-config';
 // import { tick } from '../utils';

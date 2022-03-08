@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { Disable } from 'react-disable';
@@ -17,7 +17,10 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { Settings, SettingsService } from './settings';
 import { AdditionalUrlsDialog } from './settings-dialog';
-import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import {
+  AsyncLocalizationProvider,
+  LanguageInfo,
+} from '@theia/core/lib/common/i18n/localization';
 
 export class SettingsComponent extends React.Component<
   SettingsComponent.Props,
@@ -213,11 +216,9 @@ export class SettingsComponent extends React.Component<
                 value={this.state.currentLanguage}
                 onChange={this.languageDidChange}
               >
-                {this.state.languages.map((label) => (
-                  <option key={label} value={label}>
-                    {label}
-                  </option>
-                ))}
+                {this.state.languages.map((label) =>
+                  this.toSelectOptions(label)
+                )}
               </select>
               <span style={{ marginLeft: '5px' }}>
                 (
@@ -275,7 +276,7 @@ export class SettingsComponent extends React.Component<
         <label className="flex-line">
           <input
             type="checkbox"
-            checked={this.state.autoSave === 'on'}
+            checked={this.state.autoSave !== 'off'}
             onChange={this.autoSaveDidChange}
           />
           {nls.localize(
@@ -311,6 +312,24 @@ export class SettingsComponent extends React.Component<
           />
         </div>
       </div>
+    );
+  }
+
+  private toSelectOptions(language: string | LanguageInfo): JSX.Element {
+    const plain = typeof language === 'string';
+    const key = plain ? language : language.languageId;
+    const value = plain ? language : language.languageId;
+    const label = plain
+      ? language === 'en'
+        ? 'English'
+        : language
+      : language.localizedLanguageName ||
+        language.languageName ||
+        language.languageId;
+    return (
+      <option key={key} value={value}>
+        {label}
+      </option>
     );
   }
 
@@ -549,7 +568,9 @@ export class SettingsComponent extends React.Component<
   protected autoSaveDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    this.setState({ autoSave: event.target.checked ? 'on' : 'off' });
+    this.setState({
+      autoSave: event.target.checked ? Settings.AutoSave.DEFAULT_ON : 'off',
+    });
   };
 
   protected quickSuggestionsOtherDidChange = (

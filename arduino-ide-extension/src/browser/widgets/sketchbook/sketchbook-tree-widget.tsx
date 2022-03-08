@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree/tree';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import {

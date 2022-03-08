@@ -1,7 +1,6 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX } from '@theia/core/lib/common/os';
-import { Keybinding } from '@theia/core/lib/common/keybinding';
 import {
   CompositeMenuNode,
   MAIN_MENU_BAR,
@@ -63,18 +62,6 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       }
     }
     return template;
-  }
-
-  protected acceleratorFor(keybinding: Keybinding): string {
-    // TODO: https://github.com/eclipse-theia/theia/issues/8207
-    return this.keybindingRegistry
-      .resolveKeybinding(keybinding)
-      .map((binding) =>
-        this.keybindingRegistry.acceleratorForKeyCode(binding, '+')
-      )
-      .join('')
-      .replace('←', 'Left')
-      .replace('→', 'Right');
   }
 
   protected createOSXMenu(): Electron.MenuItemConstructorOptions {

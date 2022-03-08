@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { inject, injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   AbstractDialog,
   DialogProps,
   ReactWidget,
 } from '@theia/core/lib/browser';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { UploadSketch } from '../../contributions/upload-sketch';
 import { UserFieldsComponent } from './user-fields-component';
 import { BoardUserField } from '../../../common/protocol';

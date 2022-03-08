@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
 import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';

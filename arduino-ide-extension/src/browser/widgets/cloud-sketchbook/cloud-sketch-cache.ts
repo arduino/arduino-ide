@@ -1,5 +1,5 @@
 import { FileStat } from '@theia/filesystem/lib/common/files';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { toPosixPath } from '../../create/create-paths';
 import { Create } from '../../create/typings';
 

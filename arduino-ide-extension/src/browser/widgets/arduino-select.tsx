@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import Select from 'react-select';
 import { Styles } from 'react-select/src/styles';
 import { Props } from 'react-select/src/components';

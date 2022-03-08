@@ -1,5 +1,5 @@
-import { injectable, interfaces, Container } from 'inversify';
-import { Widget } from '@phosphor/widgets';
+import { injectable, interfaces, Container } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { SourceTreeWidget } from '@theia/core/lib/browser/source-tree';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { DebugEditor } from '@theia/debug/lib/browser/editor/debug-editor';

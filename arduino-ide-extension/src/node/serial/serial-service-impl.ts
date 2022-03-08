@@ -1,6 +1,6 @@
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { TextEncoder } from 'util';
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { Struct } from 'google-protobuf/google/protobuf/struct_pb';
 import { ILogger } from '@theia/core/lib/common/logger';
 import {

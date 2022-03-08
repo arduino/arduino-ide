@@ -1,5 +1,5 @@
 import * as PQueue from 'p-queue';
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { CommandHandler } from '@theia/core/lib/common/command';
 import {
   MenuPath,

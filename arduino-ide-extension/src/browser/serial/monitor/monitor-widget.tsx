@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { postConstruct, injectable, inject } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { postConstruct, injectable, inject } from '@theia/core/shared/inversify';
 import { OptionsType } from 'react-select/src/types';
 import { Emitter } from '@theia/core/lib/common/event';
 import { Disposable } from '@theia/core/lib/common/disposable';

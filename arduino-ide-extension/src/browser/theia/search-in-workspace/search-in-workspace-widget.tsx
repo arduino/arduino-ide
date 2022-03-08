@@ -1,5 +1,5 @@
-import { injectable, postConstruct } from 'inversify';
-import * as React from 'react';
+import { injectable, postConstruct } from '@theia/core/shared/inversify';
+import * as React from '@theia/core/shared/react';
 import { Key, KeyCode } from '@theia/core/lib/browser';
 import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-widget';
 
