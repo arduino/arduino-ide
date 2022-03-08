@@ -1,8 +1,8 @@
 import { ClientDuplexStream } from "@grpc/grpc-js";
 import { Disposable, Emitter, ILogger } from "@theia/core";
 import { inject, named } from "@theia/core/shared/inversify";
-import { Board, Port, Status, MonitorSettings } from "../common/protocol";
-import { MonitorPortConfiguration, MonitorPortSetting, MonitorRequest, MonitorResponse } from "./cli-protocol/cc/arduino/cli/commands/v1/monitor_pb";
+import { Board, Port, Status, MonitorSettings, Monitor } from "../common/protocol";
+import { EnumerateMonitorPortSettingsRequest, EnumerateMonitorPortSettingsResponse, MonitorPortConfiguration, MonitorPortSetting, MonitorRequest, MonitorResponse } from "./cli-protocol/cc/arduino/cli/commands/v1/monitor_pb";
 import { CoreClientAware } from "./core-client-provider";
 import { WebSocketProvider } from "./web-socket/web-socket-provider";
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb'
@@ -55,6 +55,11 @@ export class MonitorService extends CoreClientAware implements Disposable {
                 this.dispose();
             }
         });
+
+        // Sets default settings for this monitor
+        this.portMonitorSettings(port.protocol, board.fqbn!).then(
+            settings => this.settings = settings
+        );
     }
 
     getWebsocketAddressPort(): number {
@@ -220,6 +225,51 @@ export class MonitorService extends CoreClientAware implements Disposable {
             }
             this.stop().then(() => resolve(Status.NOT_CONNECTED));
         })
+    }
+
+    /**
+     *
+     * @returns map of current monitor settings
+     */
+    currentSettings(): MonitorSettings {
+        return this.settings;
+    }
+
+    /**
+     * Returns the possible configurations used to connect a monitor
+     * to the board specified by fqbn using the specified protocol
+     * @param protocol the protocol of the monitor we want get settings for
+     * @param fqbn the fqbn of the board we want to monitor
+     * @returns a map of all the settings supported by the monitor
+     */
+    private async portMonitorSettings(protocol: string, fqbn: string): Promise<MonitorSettings> {
+        const coreClient = await this.coreClient();
+        const { client, instance } = coreClient;
+        const req = new EnumerateMonitorPortSettingsRequest();
+        req.setInstance(instance);
+        req.setPortProtocol(protocol);
+        req.setFqbn(fqbn);
+
+        const res = await new Promise<EnumerateMonitorPortSettingsResponse>((resolve, reject) => {
+            client.enumerateMonitorPortSettings(req, (err, resp) => {
+                if (!!err) {
+                    reject(err)
+                }
+                resolve(resp)
+            })
+        });
+
+        let settings: MonitorSettings = {};
+        for (const iterator of res.getSettingsList()) {
+            settings[iterator.getSettingId()] = {
+                'id': iterator.getSettingId(),
+                'label': iterator.getLabel(),
+                'type': iterator.getType(),
+                'values': iterator.getEnumValuesList(),
+                'selectedValue': iterator.getValue(),
+            }
+        }
+        return settings;
     }
 
     /**

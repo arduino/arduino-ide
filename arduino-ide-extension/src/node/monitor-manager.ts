@@ -1,7 +1,6 @@
-import { Emitter, ILogger } from "@theia/core";
+import { ILogger } from "@theia/core";
 import { inject, injectable, named } from "@theia/core/shared/inversify";
-import { Board, Port, Status, MonitorSetting, MonitorSettings } from "../common/protocol";
-import { EnumerateMonitorPortSettingsRequest, EnumerateMonitorPortSettingsResponse } from "./cli-protocol/cc/arduino/cli/commands/v1/monitor_pb";
+import { Board, Port, Status, MonitorSettings } from "../common/protocol";
 import { CoreClientAware } from "./core-client-provider";
 import { MonitorService } from "./monitor-service";
 
@@ -21,43 +20,6 @@ export class MonitorManager extends CoreClientAware {
         protected readonly logger: ILogger,
     ) {
         super();
-    }
-
-    /**
-     * Returns the possible configurations used to connect a monitor
-     * to the board specified by fqbn using the specified protocol
-     * @param protocol the protocol of the monitor we want get settings for
-     * @param fqbn the fqbn of the board we want to monitor
-     * @returns a map of all the settings supported by the monitor
-     */
-    async portMonitorSettings(protocol: string, fqbn: string): Promise<MonitorSettings> {
-        const coreClient = await this.coreClient();
-        const { client, instance } = coreClient;
-        const req = new EnumerateMonitorPortSettingsRequest();
-        req.setInstance(instance);
-        req.setPortProtocol(protocol);
-        req.setFqbn(fqbn);
-
-        const res = await new Promise<EnumerateMonitorPortSettingsResponse>((resolve, reject) => {
-            client.enumerateMonitorPortSettings(req, (err, resp) => {
-                if (!!err) {
-                    reject(err)
-                }
-                resolve(resp)
-            })
-        });
-
-        let settings: MonitorSettings = {};
-        for (const iterator of res.getSettingsList()) {
-            settings[iterator.getSettingId()] = {
-                'id': iterator.getSettingId(),
-                'label': iterator.getLabel(),
-                'type': iterator.getType(),
-                'values': iterator.getEnumValuesList(),
-                'selectedValue': iterator.getValue(),
-            }
-        }
-        return settings;
     }
 
     /**
@@ -178,13 +140,29 @@ export class MonitorManager extends CoreClientAware {
      * @param port port to monitor
      * @param settings monitor settings to change
      */
-    changeMonitorSettings(board: Board, port: Port, settings: Record<string, MonitorSetting>) {
+    changeMonitorSettings(board: Board, port: Port, settings: MonitorSettings) {
         const monitorID = this.monitorID(board, port);
         let monitor = this.monitorServices.get(monitorID);
         if (!monitor) {
             monitor = this.createMonitor(board, port)
             monitor.changeSettings(settings);
         }
+    }
+
+    /**
+     * Returns the settings currently used by the pluggable monitor
+     * that's communicating with the specified board/port combination.
+     * @param board board connected to port
+     * @param port port monitored
+     * @returns map of current monitor settings
+     */
+    currentMonitorSettings(board: Board, port: Port): MonitorSettings {
+        const monitorID = this.monitorID(board, port);
+        const monitor = this.monitorServices.get(monitorID);
+        if (!monitor) {
+            return {};
+        }
+        return monitor.currentSettings();
     }
 
     /**
