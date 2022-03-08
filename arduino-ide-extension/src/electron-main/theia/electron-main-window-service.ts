@@ -11,7 +11,7 @@ export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowServic
   openNewWindow(url: string, { external }: NewWindowOptions): undefined {
     if (!external) {
       const sanitizedUrl = this.sanitize(url);
-      const existing = this.app.windows.find(
+      const existing = this.app.browserWindows.find(
         (window) => this.sanitize(window.webContents.getURL()) === sanitizedUrl
       );
       if (existing) {
