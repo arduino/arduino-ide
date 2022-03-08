@@ -14,6 +14,7 @@ import {
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
+import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 
 @injectable()
 export class Help extends Contribution {
@@ -87,6 +88,10 @@ export class Help extends Contribution {
   }
 
   registerMenus(registry: MenuModelRegistry): void {
+    registry.unregisterMenuAction({
+      commandId: ElectronCommands.TOGGLE_DEVELOPER_TOOLS.id,
+    });
+
     registry.registerMenuAction(ArduinoMenus.HELP__MAIN_GROUP, {
       commandId: Help.Commands.GETTING_STARTED.id,
       order: '0',
