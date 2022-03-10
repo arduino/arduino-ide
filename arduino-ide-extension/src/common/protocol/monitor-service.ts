@@ -7,13 +7,20 @@ export interface MonitorManagerProxy extends JsonRpcServer<MonitorManagerProxyCl
     startMonitor(board: Board, port: Port, settings?: MonitorSettings): Promise<void>;
     changeMonitorSettings(board: Board, port: Port, settings: MonitorSettings): Promise<void>;
     stopMonitor(board: Board, port: Port): Promise<void>;
-    getSupportedSettings(protocol: string, fqbn: string): Promise<MonitorSettings>;
+    getCurrentSettings(board: Board, port: Port): MonitorSettings;
 }
 
 export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
 export interface MonitorManagerProxyClient {
-    onWebSocketChanged: Event<number>;
-    notifyWebSocketChanged(message: number): void;
+    onMessagesReceived: Event<{ messages: string[] }>;
+    connect(addressPort: number): void;
+    disconnect(): void;
+    getWebSocketPort(): number | undefined;
+    isWSConnected(): Promise<boolean>;
+    startMonitor(board: Board, port: Port, settings?: MonitorSettings): Promise<void>;
+    getCurrentSettings(board: Board, port: Port): MonitorSettings;
+    send(message: string): void;
+    changeSettings(settings: MonitorSettings): void
 }
 
 export interface MonitorSetting {
@@ -30,3 +37,34 @@ export interface MonitorSetting {
 }
 
 export type MonitorSettings = Record<string, MonitorSetting>;
+
+export namespace Monitor {
+    export enum Command {
+        SEND_MESSAGE = 'MONITOR_SEND_MESSAGE',
+        CHANGE_SETTINGS = 'MONITOR_CHANGE_SETTINGS',
+    }
+
+    export type Message = {
+        command: Monitor.Command,
+        data: string;
+    }
+}
+
+export interface Status { }
+export type OK = Status;
+export interface ErrorStatus extends Status {
+    readonly message: string;
+}
+export namespace Status {
+    export function isOK(status: Status & { message?: string }): status is OK {
+        return !!status && typeof status.message !== 'string';
+    }
+    export const OK: OK = {};
+    export const NOT_CONNECTED: ErrorStatus = { message: 'Not connected.' };
+    export const ALREADY_CONNECTED: ErrorStatus = {
+        message: 'Already connected.',
+    };
+    export const CONFIG_MISSING: ErrorStatus = {
+        message: 'Serial Config missing.',
+    };
+}

@@ -19,7 +19,7 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
     }
 
     dispose(): void {
-        // NOOP
+        this.client?.disconnect();
     }
 
     /**
@@ -36,7 +36,8 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
         }
         const status = await this.manager.startMonitor(board, port);
         if (status === Status.ALREADY_CONNECTED || status === Status.OK) {
-            this.client.notifyWebSocketChanged(this.manager.getWebsocketAddressPort(board, port));
+            // Monitor started correctly, connect it with the frontend
+            this.client.connect(this.manager.getWebsocketAddressPort(board, port));
         }
     }
 
@@ -65,15 +66,14 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
     }
 
     /**
-     * Returns the settings supported by the pluggable monitor for the specified
-     * protocol, the fqbn is necessary since it's used to tell different monitors
-     * using the same protocol.
-     * @param protocol protocol of a pluggable monitor
-     * @param fqbn unique ID of a board
+     * Returns the current settings by the pluggable monitor connected to specified
+     * by board/port combination.
+     * @param board board connected to port
+     * @param port port monitored
      * @returns a map of MonitorSetting
      */
-    async getSupportedSettings(protocol: string, fqbn: string): Promise<MonitorSettings> {
-        return this.manager.portMonitorSettings(protocol, fqbn);
+    getCurrentSettings(board: Board, port: Port): MonitorSettings {
+        return this.manager.currentMonitorSettings(board, port);
     }
 
     setClient(client: MonitorManagerProxyClient | undefined): void {

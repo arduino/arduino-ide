@@ -321,29 +321,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
         if (!this.onMessageReceived) {
             this.onMessageReceived = this.webSocketProvider.onMessageReceived(
                 (msg: string) => {
-                    const message: SerialPlotter.Protocol.Message = JSON.parse(msg);
+                    const message: Monitor.Message = JSON.parse(msg);
 
                     switch (message.command) {
-                        case SerialPlotter.Protocol.Command.PLOTTER_SEND_MESSAGE:
+                        case Monitor.Command.SEND_MESSAGE:
                             this.send(message.data);
-                            break;
-
-                        case SerialPlotter.Protocol.Command.PLOTTER_SET_BAUDRATE:
-                            this.theiaFEClient?.notifyBaudRateChanged(
-                                parseInt(message.data, 10) as SerialConfig.BaudRate
-                            );
-                            break;
-
-                        case SerialPlotter.Protocol.Command.PLOTTER_SET_LINE_ENDING:
-                            this.theiaFEClient?.notifyLineEndingChanged(message.data);
-                            break;
-
-                        case SerialPlotter.Protocol.Command.PLOTTER_SET_INTERPOLATE:
-                            this.theiaFEClient?.notifyInterpolateChanged(message.data);
-                            break;
-
-                        default:
-                            break;
+                            break
+                        case Monitor.Command.CHANGE_SETTINGS:
+                            const settings: MonitorSettings = JSON.parse(message.data);
+                            this.changeSettings(settings);
+                            break
                     }
                 }
             )
