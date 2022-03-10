@@ -8,9 +8,9 @@ import {
   TabBarToolbarRegistry,
 } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
-import { SerialModel } from '../serial-model';
 import { ArduinoMenus } from '../../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
+import { MonitorModel } from '../../monitor-model';
 
 export namespace SerialMonitor {
   export namespace Commands {
@@ -48,7 +48,8 @@ export class MonitorViewContribution
   static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
     MonitorWidget.ID + ':toggle-toolbar';
 
-  @inject(SerialModel) protected readonly model: SerialModel;
+  @inject(MonitorModel)
+  protected readonly model: MonitorModel;
 
   constructor() {
     super({

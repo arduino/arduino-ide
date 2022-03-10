@@ -40,7 +40,6 @@ import {
   ArduinoDaemon,
   ArduinoDaemonPath,
 } from '../common/protocol/arduino-daemon';
-import { SerialServiceName } from './serial/serial-service-impl';
 
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
@@ -302,15 +301,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope()
     .whenTargetNamed('config');
-
-  // Logger for the serial service.
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child(SerialServiceName);
-    })
-    .inSingletonScope()
-    .whenTargetNamed(SerialServiceName);
 
   bind(DefaultGitInit).toSelf();
   rebind(GitInit).toService(DefaultGitInit);

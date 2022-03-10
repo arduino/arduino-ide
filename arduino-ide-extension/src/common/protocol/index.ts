@@ -6,7 +6,6 @@ export * from './core-service';
 export * from './filesystem-ext';
 export * from './installable';
 export * from './library-service';
-export * from './serial-service';
 export * from './searchable';
 export * from './sketches-service';
 export * from './examples-service';
