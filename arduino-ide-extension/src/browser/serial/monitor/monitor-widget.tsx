@@ -9,14 +9,16 @@ import {
   Widget,
   MessageLoop,
 } from '@theia/core/lib/browser/widgets';
-import { SerialConfig } from '../../../common/protocol/serial-service';
 import { ArduinoSelect } from '../../widgets/arduino-select';
-import { SerialModel } from '../serial-model';
-import { SerialConnectionManager } from '../serial-connection-manager';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { nls } from '@theia/core/lib/common';
+import {
+  MonitorManagerProxyClient,
+  MonitorSettings,
+} from '../../../common/protocol';
+import { MonitorModel } from '../../monitor-model';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -26,11 +28,11 @@ export class MonitorWidget extends ReactWidget {
   );
   static readonly ID = 'serial-monitor';
 
-  @inject(SerialModel)
-  protected readonly serialModel: SerialModel;
+  @inject(MonitorModel)
+  protected readonly monitorModel: MonitorModel;
 
-  @inject(SerialConnectionManager)
-  protected readonly serialConnection: SerialConnectionManager;
+  @inject(MonitorManagerProxyClient)
+  protected readonly monitorManagerProxy: MonitorManagerProxyClient;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
@@ -57,17 +59,27 @@ export class MonitorWidget extends ReactWidget {
     this.scrollOptions = undefined;
     this.toDispose.push(this.clearOutputEmitter);
     this.toDispose.push(
-      Disposable.create(() => this.serialConnection.closeWStoBE())
+      Disposable.create(() => this.monitorManagerProxy.disconnect())
+    );
+
+    this.toDispose.push(
+      this.boardsServiceProvider.onBoardsConfigChanged(
+        async ({ selectedBoard, selectedPort }) => {
+          if (selectedBoard && selectedBoard.fqbn && selectedPort) {
+            await this.monitorManagerProxy.startMonitor(
+              selectedBoard,
+              selectedPort
+            );
+          }
+        }
+      )
     );
   }
 
   @postConstruct()
   protected init(): void {
     this.update();
-    this.toDispose.push(
-      this.serialConnection.onConnectionChanged(() => this.clearConsole())
-    );
-    this.toDispose.push(this.serialModel.onChange(() => this.update()));
+    this.toDispose.push(this.monitorModel.onChange(() => this.update()));
   }
 
   clearConsole(): void {
@@ -77,11 +89,6 @@ export class MonitorWidget extends ReactWidget {
 
   dispose(): void {
     super.dispose();
-  }
-
-  protected onAfterAttach(msg: Message): void {
-    super.onAfterAttach(msg);
-    this.serialConnection.openWSToBE();
   }
 
   onCloseRequest(msg: Message): void {
@@ -119,7 +126,7 @@ export class MonitorWidget extends ReactWidget {
   };
 
   protected get lineEndings(): OptionsType<
-    SerialMonitorOutput.SelectOption<SerialModel.EOL>
+    SerialMonitorOutput.SelectOption<MonitorModel.EOL>
   > {
     return [
       {
@@ -144,32 +151,61 @@ export class MonitorWidget extends ReactWidget {
     ];
   }
 
-  protected get baudRates(): OptionsType<
-    SerialMonitorOutput.SelectOption<SerialConfig.BaudRate>
-  > {
-    const baudRates: Array<SerialConfig.BaudRate> = [
-      300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200,
-    ];
-    return baudRates.map((baudRate) => ({
-      label: baudRate + ' baud',
-      value: baudRate,
-    }));
+  private getCurrentSettings(): MonitorSettings {
+    const board = this.boardsServiceProvider.boardsConfig.selectedBoard;
+    const port = this.boardsServiceProvider.boardsConfig.selectedPort;
+    if (!board || !port) {
+      return {};
+    }
+    return this.monitorManagerProxy.getCurrentSettings(board, port);
+  }
+
+  //////////////////////////////////////////////////
+  ////////////////////IMPORTANT/////////////////////
+  //////////////////////////////////////////////////
+  // baudRates and selectedBaudRates as of now are hardcoded
+  // like this to retrieve the baudrate settings from the ones
+  // received by the monitor.
+  // We're doing it like since the frontend as of now doesn't
+  // support a fully customizable list of options that would
+  // be require to support pluggable monitors completely.
+  // As soon as the frontend UI is updated to support
+  // any custom settings this methods MUST be removed and
+  // made generic.
+  //
+  // This breaks if the user tries to open a monitor that
+  // doesn't support the baudrate setting.
+  protected get baudRates(): string[] {
+    const settings = this.getCurrentSettings();
+    const baudRateSettings = settings['baudrate'];
+    if (!baudRateSettings) {
+      return [];
+    }
+    return baudRateSettings.values;
+  }
+
+  protected get selectedBaudRate(): string {
+    const settings = this.getCurrentSettings();
+    const baudRateSettings = settings['baudrate'];
+    if (!baudRateSettings) {
+      return '';
+    }
+    return baudRateSettings.selectedValue;
   }
 
   protected render(): React.ReactNode {
     const { baudRates, lineEndings } = this;
     const lineEnding =
-      lineEndings.find((item) => item.value === this.serialModel.lineEnding) ||
+      lineEndings.find((item) => item.value === this.monitorModel.lineEnding) ||
       lineEndings[1]; // Defaults to `\n`.
-    const baudRate =
-      baudRates.find((item) => item.value === this.serialModel.baudRate) ||
-      baudRates[4]; // Defaults to `9600`.
+    const baudRate = baudRates.find((item) => item === this.selectedBaudRate);
     return (
       <div className="serial-monitor">
         <div className="head">
           <div className="send">
             <SerialMonitorSendInput
-              serialConnection={this.serialConnection}
+              boardsServiceProvider={this.boardsServiceProvider}
+              monitorManagerProxy={this.monitorManagerProxy}
               resolveFocus={this.onFocusResolved}
               onSend={this.onSend}
             />
@@ -196,8 +232,8 @@ export class MonitorWidget extends ReactWidget {
         </div>
         <div className="body">
           <SerialMonitorOutput
-            serialModel={this.serialModel}
-            serialConnection={this.serialConnection}
+            monitorModel={this.monitorModel}
+            monitorManagerProxy={this.monitorManagerProxy}
             clearConsoleEvent={this.clearOutputEmitter.event}
             height={Math.floor(this.widgetHeight - 50)}
           />
@@ -208,18 +244,18 @@ export class MonitorWidget extends ReactWidget {
 
   protected readonly onSend = (value: string) => this.doSend(value);
   protected async doSend(value: string): Promise<void> {
-    this.serialConnection.send(value);
+    this.monitorManagerProxy.send(value);
   }
 
   protected readonly onChangeLineEnding = (
-    option: SerialMonitorOutput.SelectOption<SerialModel.EOL>
+    option: SerialMonitorOutput.SelectOption<MonitorModel.EOL>
   ) => {
-    this.serialModel.lineEnding = option.value;
+    this.monitorModel.lineEnding = option.value;
   };
 
-  protected readonly onChangeBaudRate = (
-    option: SerialMonitorOutput.SelectOption<SerialConfig.BaudRate>
-  ) => {
-    this.serialModel.baudRate = option.value;
+  protected readonly onChangeBaudRate = (value: string) => {
+    const settings = this.getCurrentSettings();
+    settings['baudrate'].selectedValue = value;
+    this.monitorManagerProxy.changeSettings(settings);
   };
 }

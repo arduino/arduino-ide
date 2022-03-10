@@ -3,12 +3,13 @@ import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board } from '../../../common/protocol/boards-service';
 import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
-import { SerialConnectionManager } from '../serial-connection-manager';
-import { SerialPlotter } from '../plotter/protocol';
+import { MonitorManagerProxyClient } from '../../../common/protocol';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
-    readonly serialConnection: SerialConnectionManager;
+    readonly boardsServiceProvider: BoardsServiceProvider;
+    readonly monitorManagerProxy: MonitorManagerProxyClient;
     readonly onSend: (text: string) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
   }
@@ -33,21 +34,9 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   componentDidMount(): void {
-    this.props.serialConnection.isBESerialConnected().then((connected) => {
+    this.props.monitorManagerProxy.isWSConnected().then((connected) => {
       this.setState({ connected });
     });
-
-    this.toDisposeBeforeUnmount.pushAll([
-      this.props.serialConnection.onRead(({ messages }) => {
-        if (
-          messages.command ===
-            SerialPlotter.Protocol.Command.MIDDLEWARE_CONFIG_CHANGED &&
-          'connected' in messages.data
-        ) {
-          this.setState({ connected: messages.data.connected });
-        }
-      }),
-    ]);
   }
 
   componentWillUnmount(): void {
@@ -70,14 +59,15 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   protected get placeholder(): string {
-    const serialConfig = this.props.serialConnection.getConfig();
-    if (!this.state.connected || !serialConfig) {
+    const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
+    const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
+    if (!this.state.connected || !board || !port) {
       return nls.localize(
         'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
       );
     }
-    const { board, port } = serialConfig;
+
     return nls.localize(
       'arduino/serial/message',
       "Message ({0} + Enter to send message to '{1}' on '{2}')",
