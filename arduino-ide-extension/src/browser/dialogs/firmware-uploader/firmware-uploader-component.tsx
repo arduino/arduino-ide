@@ -1,5 +1,6 @@
 import { nls } from '@theia/core/lib/common';
 import * as React from 'react';
+import { Port } from '../../../common/protocol';
 import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
@@ -20,7 +21,7 @@ export const FirmwareUploaderComponent = ({
   availableBoards: AvailableBoard[];
   firmwareUploader: ArduinoFirmwareUploader;
   updatableFqbns: string[];
-  flashFirmware: (firmware: FirmwareInfo, port: string) => Promise<any>;
+  flashFirmware: (firmware: FirmwareInfo, port: Port) => Promise<any>;
   isOpen: any;
 }): React.ReactElement => {
   // boolean states for buttons
@@ -81,7 +82,7 @@ export const FirmwareUploaderComponent = ({
       const installStatus =
         !!firmwareToFlash &&
         !!selectedBoard?.port &&
-        (await flashFirmware(firmwareToFlash, selectedBoard?.port.address));
+        (await flashFirmware(firmwareToFlash, selectedBoard?.port));
 
       setInstallFeedback((installStatus && 'ok') || 'fail');
     } catch {

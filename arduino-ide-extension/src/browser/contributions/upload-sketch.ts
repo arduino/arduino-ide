@@ -4,7 +4,6 @@ import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { SerialConnectionManager } from '../serial/serial-connection-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -21,9 +20,6 @@ import { DisposableCollection, nls } from '@theia/core/lib/common';
 export class UploadSketch extends SketchContribution {
   @inject(CoreService)
   protected readonly coreService: CoreService;
-
-  @inject(SerialConnectionManager)
-  protected readonly serialConnection: SerialConnectionManager;
 
   @inject(MenuModelRegistry)
   protected readonly menuRegistry: MenuModelRegistry;
@@ -294,8 +290,6 @@ export class UploadSketch extends SketchContribution {
     } finally {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();
-
-      setTimeout(() => this.serialConnection.reconnectAfterUpload(), 5000);
     }
   }
 }

@@ -3,7 +3,6 @@ import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { SerialConnectionManager } from '../serial/serial-connection-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -18,8 +17,6 @@ export class BurnBootloader extends SketchContribution {
   @inject(CoreService)
   protected readonly coreService: CoreService;
 
-  @inject(SerialConnectionManager)
-  protected readonly serialConnection: SerialConnectionManager;
 
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;
@@ -91,8 +88,6 @@ export class BurnBootloader extends SketchContribution {
         errorMessage = e.toString();
       }
       this.messageService.error(errorMessage);
-    } finally {
-      await this.serialConnection.reconnectAfterUpload();
     }
   }
 }

@@ -15,6 +15,7 @@ import {
 } from '../../../common/protocol/arduino-firmware-uploader';
 import { FirmwareUploaderComponent } from './firmware-uploader-component';
 import { UploadFirmware } from '../../contributions/upload-firmware';
+import { Port } from '../../../common/protocol';
 
 @injectable()
 export class UploadFirmwareDialogWidget extends ReactWidget {
@@ -49,7 +50,7 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
     });
   }
 
-  protected flashFirmware(firmware: FirmwareInfo, port: string): Promise<any> {
+  protected flashFirmware(firmware: FirmwareInfo, port: Port): Promise<any> {
     this.busyCallback(true);
     return this.arduinoFirmwareUploader
       .flash(firmware, port)

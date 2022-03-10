@@ -110,12 +110,17 @@ export class VerifySketch extends SketchContribution {
         ),
         this.sourceOverride(),
       ]);
+      const board = {
+        ...boardsConfig.selectedBoard,
+        name: boardsConfig.selectedBoard?.name || '',
+        fqbn,
+      }
       const verbose = this.preferences.get('arduino.compile.verbose');
       const compilerWarnings = this.preferences.get('arduino.compile.warnings');
       this.outputChannelManager.getChannel('Arduino').clear();
       await this.coreService.compile({
         sketchUri: sketch.uri,
-        fqbn,
+        board,
         optimizeForDebug: this.editorMode.compileForDebug,
         verbose,
         exportBinaries,

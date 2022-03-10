@@ -3,10 +3,10 @@ import {
   FirmwareInfo,
 } from '../common/protocol/arduino-firmware-uploader';
 import { injectable, inject, named } from 'inversify';
-import { ExecutableService } from '../common/protocol';
-import { SerialService } from '../common/protocol/serial-service';
+import { ExecutableService, Port } from '../common/protocol';
 import { getExecPath, spawnCommand } from './exec-util';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { MonitorManager } from './monitor-manager';
 
 @injectable()
 export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
@@ -19,8 +19,8 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
   @named('fwuploader')
   protected readonly logger: ILogger;
 
-  @inject(SerialService)
-  protected readonly serialService: SerialService;
+  @inject(MonitorManager)
+  protected readonly monitorManager: MonitorManager;
 
   protected onError(error: any): void {
     this.logger.error(error);
@@ -69,26 +69,28 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
     return await this.list(fqbn);
   }
 
-  async flash(firmware: FirmwareInfo, port: string): Promise<string> {
+  async flash(firmware: FirmwareInfo, port: Port): Promise<string> {
     let output;
+    const board = {
+      name: firmware.board_name,
+      fqbn: firmware.board_fqbn,
+    }
     try {
-      this.serialService.uploadInProgress = true;
-      await this.serialService.disconnect();
+      this.monitorManager.notifyUploadStarted(board, port);
       output = await this.runCommand([
         'firmware',
         'flash',
         '--fqbn',
         firmware.board_fqbn,
         '--address',
-        port,
+        port.address,
         '--module',
         `${firmware.module}@${firmware.firmware_version}`,
       ]);
     } catch (e) {
       throw e;
     } finally {
-      this.serialService.uploadInProgress = false;
-      this.serialService.connectSerialIfRequired();
+      this.monitorManager.notifyUploadFinished(board, port);
       return output;
     }
   }
