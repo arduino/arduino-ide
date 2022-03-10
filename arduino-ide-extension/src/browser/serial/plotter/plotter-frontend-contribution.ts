@@ -6,15 +6,14 @@ import {
   MaybePromise,
   MenuModelRegistry,
 } from '@theia/core';
-import { SerialModel } from '../serial-model';
 import { ArduinoMenus } from '../../menu/arduino-menus';
 import { Contribution } from '../../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/electron/shared/electron';
-import { SerialConfig } from '../../../common/protocol';
-import { SerialConnectionManager } from '../serial-connection-manager';
+import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { SerialPlotter } from './protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { MonitorModel } from '../../monitor-model';
 const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
@@ -33,14 +32,14 @@ export class PlotterFrontendContribution extends Contribution {
   protected url: string;
   protected wsPort: number;
 
-  @inject(SerialModel)
-  protected readonly model: SerialModel;
+  @inject(MonitorModel)
+  protected readonly model: MonitorModel;
 
   @inject(ThemeService)
   protected readonly themeService: ThemeService;
 
-  @inject(SerialConnectionManager)
-  protected readonly serialConnection: SerialConnectionManager;
+  @inject(MonitorManagerProxyClient)
+  protected readonly monitorManagerProxy: MonitorManagerProxyClient;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
@@ -75,7 +74,7 @@ export class PlotterFrontendContribution extends Contribution {
       this.window.focus();
       return;
     }
-    const wsPort = this.serialConnection.getWsPort();
+    const wsPort = this.monitorManagerProxy.getWebSocketPort();
     if (wsPort) {
       this.open(wsPort);
     } else {
@@ -84,14 +83,27 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   protected async open(wsPort: number): Promise<void> {
+    const board = this.boardsServiceProvider.boardsConfig.selectedBoard;
+    const port = this.boardsServiceProvider.boardsConfig.selectedPort;
+    let baudrates: number[] = [];
+    let currentBaudrate = -1;
+    if (board && port) {
+      const settings = this.monitorManagerProxy.getCurrentSettings(board, port);
+      if ('baudrate' in settings) {
+        // Convert from string to numbers
+        baudrates = settings['baudrate'].values.map(b => +b);
+        currentBaudrate = +settings['baudrate'].selectedValue;
+      }
+    }
+
     const initConfig: Partial<SerialPlotter.Config> = {
-      baudrates: SerialConfig.BaudRates.map((b) => b),
-      currentBaudrate: this.model.baudRate,
+      baudrates,
+      currentBaudrate,
       currentLineEnding: this.model.lineEnding,
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
       interpolate: this.model.interpolate,
-      connected: await this.serialConnection.isBESerialConnected(),
+      connected: await this.monitorManagerProxy.isWSConnected(),
       serialPort: this.boardsServiceProvider.boardsConfig.selectedPort?.address,
     };
     const urlWithParams = queryString.stringifyUrl(
