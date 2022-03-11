@@ -79,6 +79,11 @@
       lsSuffix = 'Linux_64bit.tar.gz';
       clangdSuffix = 'Linux_64bit';
       break;
+    case 'linux-arm64':
+      clangdExecutablePath = path.join(build, 'clangd');
+      lsSuffix = 'Linux_ARM64.tar.gz';
+      clangdSuffix = 'Linux_ARM64';
+      break;
     case 'win32-x64':
       clangdExecutablePath = path.join(build, 'clangd.exe');
       lsSuffix = 'Windows_64bit.zip';
