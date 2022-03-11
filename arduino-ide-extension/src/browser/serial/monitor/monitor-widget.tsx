@@ -28,15 +28,6 @@ export class MonitorWidget extends ReactWidget {
   );
   static readonly ID = 'serial-monitor';
 
-  @inject(MonitorModel)
-  protected readonly monitorModel: MonitorModel;
-
-  @inject(MonitorManagerProxyClient)
-  protected readonly monitorManagerProxy: MonitorManagerProxyClient;
-
-  @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
-
   protected widgetHeight: number;
 
   /**
@@ -50,7 +41,16 @@ export class MonitorWidget extends ReactWidget {
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
 
-  constructor() {
+  constructor(
+    @inject(MonitorModel)
+    protected readonly monitorModel: MonitorModel,
+
+    @inject(MonitorManagerProxyClient)
+    protected readonly monitorManagerProxy: MonitorManagerProxyClient,
+
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceProvider: BoardsServiceProvider
+  ) {
     super();
     this.id = MonitorWidget.ID;
     this.title.label = MonitorWidget.LABEL;
@@ -62,6 +62,13 @@ export class MonitorWidget extends ReactWidget {
       Disposable.create(() => this.monitorManagerProxy.disconnect())
     );
 
+    // Start monitor right away if there is already a board/port combination selected
+    const { selectedBoard, selectedPort } =
+      this.boardsServiceProvider.boardsConfig;
+    if (selectedBoard && selectedBoard.fqbn && selectedPort) {
+      this.monitorManagerProxy.startMonitor(selectedBoard, selectedPort);
+    }
+
     this.toDispose.push(
       this.boardsServiceProvider.onBoardsConfigChanged(
         async ({ selectedBoard, selectedPort }) => {
@@ -70,6 +77,7 @@ export class MonitorWidget extends ReactWidget {
               selectedBoard,
               selectedPort
             );
+            this.update();
           }
         }
       )

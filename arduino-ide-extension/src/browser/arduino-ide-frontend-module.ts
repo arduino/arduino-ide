@@ -152,7 +152,7 @@ import {
   OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl,
   OutputChannelRegistryMainImpl,
 } from './theia/plugin-ext/output-channel-registry-main';
-import { ExecutableService, ExecutableServicePath } from '../common/protocol';
+import { ExecutableService, ExecutableServicePath, MonitorManagerProxy, MonitorManagerProxyClient, MonitorManagerProxyPath } from '../common/protocol';
 import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
 import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
 import { ResponseServiceImpl } from './response-service-impl';
@@ -267,7 +267,7 @@ import {
   IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
-import { MonitorManagerProxyClient } from '../common/monitor-manager-proxy';
+import { MonitorModel } from './monitor-model';
 import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
@@ -402,13 +402,23 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Serial monitor
   bind(MonitorWidget).toSelf();
+  bind(MonitorModel).toSelf().inSingletonScope();
   bindViewContribution(bind, MonitorViewContribution);
   bind(TabBarToolbarContribution).toService(MonitorViewContribution);
   bind(WidgetFactory).toDynamicValue((context) => ({
     id: MonitorWidget.ID,
-    createWidget: () => context.container.get(MonitorWidget),
+    createWidget: () => {
+      return new MonitorWidget(
+        context.container.get<MonitorModel>(MonitorModel),
+        context.container.get<MonitorManagerProxyClient>(MonitorManagerProxyClient),
+        context.container.get<BoardsServiceProvider>(BoardsServiceProvider),
+      );
+    }
   }));
 
+  bind(MonitorManagerProxy).toDynamicValue((context) =>
+    WebSocketConnectionProvider.createProxy(context.container, MonitorManagerProxyPath)
+  ).inSingletonScope();
 
   // Monitor manager proxy client to receive and delegate pluggable monitors
   // notifications from the backend
