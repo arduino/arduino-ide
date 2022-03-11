@@ -58,6 +58,20 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     );
   }
 
+  protected onActivateRequest(msg: Message): void {
+    super.onActivateRequest(msg);
+    this.cloudSketchbookTreeWidget.activate();
+
+    /* 
+      Sending a resize message is needed because otherwise the cloudSketchbookTreeWidget
+      would render empty
+    */
+    MessageLoop.sendMessage(
+      this.cloudSketchbookTreeWidget,
+      Widget.ResizeMessage.UnknownSize
+    );
+  }
+
   protected onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     MessageLoop.sendMessage(
