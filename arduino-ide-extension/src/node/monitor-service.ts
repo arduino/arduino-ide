@@ -8,6 +8,8 @@ import { WebSocketProvider } from "./web-socket/web-socket-provider";
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb'
 import WebSocketProviderImpl from "./web-socket/web-socket-provider-impl";
 
+export const MonitorServiceName = 'monitor-service';
+
 export class MonitorService extends CoreClientAware implements Disposable {
     // Bidirectional gRPC stream used to receive and send data from the running
     // pluggable monitor managed by the Arduino CLI.
@@ -39,7 +41,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
     constructor(
         @inject(ILogger)
-        @named("monitor-service")
+        @named(MonitorServiceName)
         protected readonly logger: ILogger,
 
         private readonly board: Board,

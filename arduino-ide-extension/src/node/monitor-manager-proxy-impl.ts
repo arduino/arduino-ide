@@ -1,5 +1,4 @@
-import { ILogger } from "@theia/core";
-import { inject, injectable, named } from "@theia/core/shared/inversify";
+import { inject, injectable } from "@theia/core/shared/inversify";
 import { MonitorManagerProxy, MonitorManagerProxyClient, MonitorSettings, Status } from "../common/protocol";
 import { Board, Port } from "../common/protocol";
 import { MonitorManager } from "./monitor-manager";
@@ -9,10 +8,6 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
     protected client: MonitorManagerProxyClient;
 
     constructor(
-        @inject(ILogger)
-        @named("monitor-manager-proxy")
-        protected readonly logger: ILogger,
-
         @inject(MonitorManager)
         protected readonly manager: MonitorManager,
     ) {

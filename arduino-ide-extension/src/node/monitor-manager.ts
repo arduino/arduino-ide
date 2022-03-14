@@ -6,6 +6,8 @@ import { MonitorService } from "./monitor-service";
 
 type MonitorID = string;
 
+export const MonitorManagerName = 'monitor-manager';
+
 @injectable()
 export class MonitorManager extends CoreClientAware {
     // Map of monitor services that manage the running pluggable monitors.
@@ -16,7 +18,7 @@ export class MonitorManager extends CoreClientAware {
 
     constructor(
         @inject(ILogger)
-        @named('monitor-manager')
+        @named(MonitorManagerName)
         protected readonly logger: ILogger,
     ) {
         super();
