@@ -81,11 +81,9 @@ export class IDEUpdaterImpl implements IDEUpdater {
           ? await fetch(`${CHANGELOG_BASE_URL}/${latestChangelogFileName}`)
           : null;
         const changelog = response?.ok ? await response?.text() : null;
-
+        const currentVersionHeader = `\n\n---\n\n## ${this.updater.currentVersion}\n\n`;
         // We only want to see the release notes of newer versions
-        const currentVersionIndex = changelog?.indexOf(
-          `\r\n\r\n---\r\n\r\n## ${this.updater.currentVersion}\r\n\r\n`
-        );
+        const currentVersionIndex = changelog?.indexOf(currentVersionHeader);
         const newChangelog =
           currentVersionIndex && currentVersionIndex > 0
             ? changelog?.slice(0, currentVersionIndex)
