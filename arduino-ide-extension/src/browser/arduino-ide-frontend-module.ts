@@ -402,6 +402,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Serial monitor
   bind(MonitorWidget).toSelf();
+  bind(FrontendApplicationContribution).toService(MonitorModel);
   bind(MonitorModel).toSelf().inSingletonScope();
   bindViewContribution(bind, MonitorViewContribution);
   bind(TabBarToolbarContribution).toService(MonitorViewContribution);
