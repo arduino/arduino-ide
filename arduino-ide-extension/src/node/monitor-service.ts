@@ -3,7 +3,7 @@ import { Disposable, Emitter, ILogger } from "@theia/core";
 import { inject, named } from "@theia/core/shared/inversify";
 import { Board, Port, Status, MonitorSettings, Monitor } from "../common/protocol";
 import { EnumerateMonitorPortSettingsRequest, EnumerateMonitorPortSettingsResponse, MonitorPortConfiguration, MonitorPortSetting, MonitorRequest, MonitorResponse } from "./cli-protocol/cc/arduino/cli/commands/v1/monitor_pb";
-import { CoreClientAware } from "./core-client-provider";
+import { CoreClientAware, CoreClientProvider } from "./core-client-provider";
 import { WebSocketProvider } from "./web-socket/web-socket-provider";
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb'
 import WebSocketProviderImpl from "./web-socket/web-socket-provider-impl";
@@ -46,6 +46,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
         private readonly board: Board,
         private readonly port: Port,
+        protected readonly coreClientProvider: CoreClientProvider,
     ) {
         super();
 
@@ -98,6 +99,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         }
 
         this.logger.info("starting monitor");
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
 
@@ -151,6 +153,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
                 this.startMessagesHandlers();
                 this.logger.info(`started monitor to ${this.port?.address} using ${this.port?.protocol}`)
                 resolve(Status.OK);
+                return;
             }
             this.logger.warn(`failed starting monitor to ${this.port?.address} using ${this.port?.protocol}`)
             resolve(Status.NOT_CONNECTED);
@@ -212,6 +215,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         if (!this.duplex) {
             return Status.NOT_CONNECTED;
         }
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { instance } = coreClient;
 
@@ -245,6 +249,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
      * @returns a map of all the settings supported by the monitor
      */
     private async portMonitorSettings(protocol: string, fqbn: string): Promise<MonitorSettings> {
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { client, instance } = coreClient;
         const req = new EnumerateMonitorPortSettingsRequest();
@@ -295,6 +300,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         if (!this.duplex) {
             return Status.NOT_CONNECTED;
         }
+        await this.coreClientProvider.initialized;
         const coreClient = await this.coreClient();
         const { instance } = coreClient;
 

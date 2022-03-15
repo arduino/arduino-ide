@@ -179,7 +179,8 @@ export class MonitorManager extends CoreClientAware {
         const monitor = new MonitorService(
             this.logger,
             board,
-            port
+            port,
+            this.coreClientProvider,
         );
         monitor.onDispose((() => {
             this.monitorServices.delete(monitorID);
