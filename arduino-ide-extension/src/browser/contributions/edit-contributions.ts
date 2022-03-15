@@ -43,10 +43,10 @@ export class EditContributions extends Contribution {
       execute: () => this.run('actions.find'),
     });
     registry.registerCommand(EditContributions.Commands.FIND_NEXT, {
-      execute: () => this.run('actions.findWithSelection'),
+      execute: () => this.run('editor.action.nextMatchFindAction'),
     });
     registry.registerCommand(EditContributions.Commands.FIND_PREVIOUS, {
-      execute: () => this.run('editor.action.nextMatchFindAction'),
+      execute: () => this.run('editor.action.previousMatchFindAction'),
     });
     registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, {
       execute: () => this.run('editor.action.previousSelectionMatchFindAction'),
