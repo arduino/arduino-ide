@@ -32,4 +32,8 @@ export namespace SketchbookCommands {
     id: 'arduino-sketchbook--show-files',
     label: 'Contextual menu',
   };
+
+  export const SKETCHBOOK_TOGGLE_VIEW: Command = {
+    id: 'arduino-sketchbook-widget:toggle',
+  };
 }

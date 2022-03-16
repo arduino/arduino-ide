@@ -68,13 +68,13 @@ export class SketchbookWidgetContribution
 
   constructor() {
     super({
-      widgetId: 'arduino-sketchbook-widget',
+      widgetId: SketchbookWidget.ID,
       widgetName: SketchbookWidget.LABEL,
       defaultWidgetOptions: {
         area: 'left',
         rank: 1,
       },
-      toggleCommandId: 'arduino-sketchbook-widget:toggle',
+      toggleCommandId: SketchbookCommands.SKETCHBOOK_TOGGLE_VIEW.id,
       toggleKeybinding: 'CtrlCmd+Shift+B',
     });
   }
@@ -191,7 +191,7 @@ export class SketchbookWidgetContribution
 
     // unregister main menu action
     registry.unregisterMenuAction({
-      commandId: 'arduino-sketchbook-widget:toggle',
+      commandId: SketchbookCommands.SKETCHBOOK_TOGGLE_VIEW.id,
     });
 
     registry.registerMenuAction(SKETCHBOOK__CONTEXT__MAIN_GROUP, {

@@ -420,9 +420,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(SerialService)
     .toDynamicValue((context) => {
       const connection = context.container.get(WebSocketConnectionProvider);
-      const client = context.container.get<SerialServiceClient>(
-        SerialServiceClient
-      );
+      const client =
+        context.container.get<SerialServiceClient>(SerialServiceClient);
       return connection.createProxy(SerialServicePath, client);
     })
     .inSingletonScope();
@@ -486,11 +485,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
   rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) => () => {
-      const container = parentContainer.createChild();
-      container.bind(TabBarToolbar).toSelf().inSingletonScope();
-      return container.get(TabBarToolbar);
-    }
+    ({ container: parentContainer }) =>
+      () => {
+        const container = parentContainer.createChild();
+        container.bind(TabBarToolbar).toSelf().inSingletonScope();
+        return container.get(TabBarToolbar);
+      }
   );
   bind(OutputWidget).toSelf().inSingletonScope();
   rebind(TheiaOutputWidget).toService(OutputWidget);
@@ -655,15 +655,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Enable the dirty indicator on uncloseable widgets.
   rebind(TabBarRendererFactory).toFactory((context) => () => {
-    const contextMenuRenderer = context.container.get<ContextMenuRenderer>(
-      ContextMenuRenderer
-    );
+    const contextMenuRenderer =
+      context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
     const decoratorService = context.container.get<TabBarDecoratorService>(
       TabBarDecoratorService
     );
-    const iconThemeService = context.container.get<IconThemeService>(
-      IconThemeService
-    );
+    const iconThemeService =
+      context.container.get<IconThemeService>(IconThemeService);
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,
@@ -723,7 +721,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bindViewContribution(bind, SketchbookWidgetContribution);
   bind(FrontendApplicationContribution).toService(SketchbookWidgetContribution);
   bind(WidgetFactory).toDynamicValue(({ container }) => ({
-    id: 'arduino-sketchbook-widget',
+    id: SketchbookWidget.ID,
     createWidget: () => container.get(SketchbookWidget),
   }));
 

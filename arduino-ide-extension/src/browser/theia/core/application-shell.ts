@@ -16,6 +16,7 @@ import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
+import { SketchbookWidget } from '../../widgets/sketchbook/sketchbook-widget';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
@@ -30,6 +31,18 @@ export class ApplicationShell extends TheiaApplicationShell {
 
   @inject(ConnectionStatusService)
   protected readonly connectionStatusService: ConnectionStatusService;
+
+  async setLayoutData(
+    layoutData: TheiaApplicationShell.LayoutData
+  ): Promise<void> {
+    layoutData.activeWidgetId = SketchbookWidget.ID;
+    layoutData.leftPanel?.items?.forEach((item) => {
+      if (item?.widget?.id === SketchbookWidget.ID) item.expanded = true;
+      else item.expanded = false;
+    });
+
+    super.setLayoutData(layoutData);
+  }
 
   protected track(widget: Widget): void {
     super.track(widget);

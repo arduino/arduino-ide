@@ -1,15 +1,19 @@
 import { injectable } from 'inversify';
-import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { ShellLayoutRestorer as TheiaShellLayoutRestorer } from '@theia/core/lib/browser/shell/shell-layout-restorer';
+import { inject } from '@theia/core/shared/inversify';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 
 @injectable()
 export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
+  @inject(ApplicationShell)
+  protected readonly shell: ApplicationShell;
+
   // Workaround for https://github.com/eclipse-theia/theia/issues/6579.
-  async storeLayoutAsync(app: FrontendApplication): Promise<void> {
+  async storeLayoutAsync(): Promise<void> {
     if (this.shouldStoreLayout) {
       try {
         this.logger.info('>>> Storing the layout...');
-        const layoutData = app.shell.getLayoutData();
+        const layoutData = this.shell.getLayoutData();
         const serializedLayoutData = this.deflate(layoutData);
         await this.storageService.setData(
           this.storageKey,
@@ -23,7 +27,7 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
     }
   }
 
-  async restoreLayout(app: FrontendApplication): Promise<boolean> {
+  async restoreLayout(): Promise<boolean> {
     this.logger.info('>>> Restoring the layout state...');
     const serializedLayoutData = await this.storageService.getData<string>(
       this.storageKey
@@ -49,7 +53,7 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
       });
     }
 
-    await app.shell.setLayoutData(layoutData);
+    await this.shell.setLayoutData(layoutData);
     this.logger.info('<<< The layout has been successfully restored.');
     return true;
   }

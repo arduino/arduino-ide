@@ -11,6 +11,7 @@ import { nls } from '@theia/core/lib/common';
 @injectable()
 export class SketchbookWidget extends BaseWidget {
   static LABEL = nls.localize('arduino/sketch/titleSketchbook', 'Sketchbook');
+  static ID = 'arduino-sketchbook-widget';
 
   @inject(SketchbookTreeWidget)
   protected readonly localSketchbookTreeWidget: SketchbookTreeWidget;
@@ -19,7 +20,7 @@ export class SketchbookWidget extends BaseWidget {
 
   constructor() {
     super();
-    this.id = 'arduino-sketchbook-widget';
+    this.id = SketchbookWidget.ID;
     this.title.caption = SketchbookWidget.LABEL;
     this.title.label = SketchbookWidget.LABEL;
     this.title.iconClass = 'fa fa-arduino-folder';
