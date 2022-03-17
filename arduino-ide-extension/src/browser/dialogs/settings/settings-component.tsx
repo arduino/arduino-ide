@@ -9,6 +9,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/file-dialog-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import {
+  AdditionalUrls,
   CompilerWarningLiterals,
   Network,
   ProxySettings,
@@ -35,21 +36,32 @@ export class SettingsComponent extends React.Component<
     if (
       this.state &&
       prevState &&
-      JSON.stringify(this.state) !== JSON.stringify(prevState)
+      JSON.stringify(SettingsComponent.State.toSettings(this.state)) !==
+        JSON.stringify(SettingsComponent.State.toSettings(prevState))
     ) {
-      this.props.settingsService.update(this.state, true);
+      this.props.settingsService.update(
+        SettingsComponent.State.toSettings(this.state),
+        true
+      );
     }
   }
 
   componentDidMount(): void {
     this.props.settingsService
       .settings()
-      .then((settings) => this.setState(settings));
-    this.toDispose.push(
+      .then((settings) =>
+        this.setState(SettingsComponent.State.fromSettings(settings))
+      );
+    this.toDispose.pushAll([
       this.props.settingsService.onDidChange((settings) =>
-        this.setState(settings)
-      )
-    );
+        this.setState((prevState) => ({
+          ...SettingsComponent.State.merge(prevState, settings),
+        }))
+      ),
+      this.props.settingsService.onDidReset((settings) =>
+        this.setState(SettingsComponent.State.fromSettings(settings))
+      ),
+    ]);
   }
 
   componentWillUnmount(): void {
@@ -290,8 +302,8 @@ export class SettingsComponent extends React.Component<
           <input
             className="theia-input stretch with-margin"
             type="text"
-            value={this.state.additionalUrls.join(',')}
-            onChange={this.additionalUrlsDidChange}
+            value={this.state.rawAdditionalUrlsValue}
+            onChange={this.rawAdditionalUrlsValueDidChange}
           />
           <i
             className="fa fa-window-restore theia-button shrink"
@@ -475,11 +487,13 @@ export class SettingsComponent extends React.Component<
 
   protected editAdditionalUrlDidClick = async (): Promise<void> => {
     const additionalUrls = await new AdditionalUrlsDialog(
-      this.state.additionalUrls,
+      AdditionalUrls.parse(this.state.rawAdditionalUrlsValue, ','),
       this.props.windowService
     ).open();
     if (additionalUrls) {
-      this.setState({ additionalUrls });
+      this.setState({
+        rawAdditionalUrlsValue: AdditionalUrls.stringify(additionalUrls),
+      });
     }
   };
 
@@ -492,11 +506,11 @@ export class SettingsComponent extends React.Component<
     }
   };
 
-  protected additionalUrlsDidChange = (
+  protected rawAdditionalUrlsValueDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     this.setState({
-      additionalUrls: event.target.value.split(',').map((url) => url.trim()),
+      rawAdditionalUrlsValue: event.target.value,
     });
   };
 
@@ -699,5 +713,48 @@ export namespace SettingsComponent {
     readonly windowService: WindowService;
     readonly localizationProvider: AsyncLocalizationProvider;
   }
-  export type State = Settings & { languages: string[] };
+  export type State = Settings & {
+    rawAdditionalUrlsValue: string;
+  };
+  export namespace State {
+    export function fromSettings(settings: Settings): State {
+      return {
+        ...settings,
+        rawAdditionalUrlsValue: AdditionalUrls.stringify(
+          settings.additionalUrls
+        ),
+      };
+    }
+    export function toSettings(state: State): Settings {
+      const parsedAdditionalUrls = AdditionalUrls.parse(
+        state.rawAdditionalUrlsValue,
+        ','
+      );
+      return {
+        ...state,
+        additionalUrls: AdditionalUrls.sameAs(
+          state.additionalUrls,
+          parsedAdditionalUrls
+        )
+          ? state.additionalUrls
+          : parsedAdditionalUrls,
+      };
+    }
+    export function merge(prevState: State, settings: Settings): State {
+      const prevAdditionalUrls = AdditionalUrls.parse(
+        prevState.rawAdditionalUrlsValue,
+        ','
+      );
+      return {
+        ...settings,
+        rawAdditionalUrlsValue: prevState.rawAdditionalUrlsValue,
+        additionalUrls: AdditionalUrls.sameAs(
+          prevAdditionalUrls,
+          settings.additionalUrls
+        )
+          ? prevAdditionalUrls
+          : settings.additionalUrls,
+      };
+    }
+  }
 }

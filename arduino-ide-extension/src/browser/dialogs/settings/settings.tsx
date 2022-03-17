@@ -8,8 +8,8 @@ import { ThemeService } from '@theia/core/lib/browser/theming';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { PreferenceService, PreferenceScope } from '@theia/core/lib/browser';
-import { Index } from '../../../common/types';
 import {
+  AdditionalUrls,
   CompilerWarnings,
   ConfigService,
   FileSystemExt,
@@ -35,7 +35,7 @@ export const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
 export const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
 export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 
-export interface Settings extends Index {
+export interface Settings {
   editorFontSize: number; // `editor.fontSize`
   themeId: string; // `workbench.colorTheme`
   autoSave: 'on' | 'off'; // `editor.autoSave`
@@ -53,7 +53,7 @@ export interface Settings extends Index {
   sketchbookShowAllFiles: boolean; // `arduino.sketchbook.showAllFiles`
 
   sketchbookPath: string; // CLI
-  additionalUrls: string[]; // CLI
+  additionalUrls: AdditionalUrls; // CLI
   network: Network; // CLI
 }
 export namespace Settings {
@@ -84,6 +84,8 @@ export class SettingsService {
 
   protected readonly onDidChangeEmitter = new Emitter<Readonly<Settings>>();
   readonly onDidChange = this.onDidChangeEmitter.event;
+  protected readonly onDidResetEmitter = new Emitter<Readonly<Settings>>();
+  readonly onDidReset = this.onDidResetEmitter.event;
 
   protected ready = new Deferred<void>();
   protected _settings: Settings;
@@ -167,7 +169,10 @@ export class SettingsService {
   async update(settings: Settings, fireDidChange = false): Promise<void> {
     await this.ready.promise;
     for (const key of Object.keys(settings)) {
-      this._settings[key] = settings[key];
+      if (key in this._settings) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this._settings as any)[key] = (settings as any)[key];
+      }
     }
     if (fireDidChange) {
       this.onDidChangeEmitter.fire(this._settings);
@@ -176,7 +181,8 @@ export class SettingsService {
 
   async reset(): Promise<void> {
     const settings = await this.loadSettings();
-    return this.update(settings, true);
+    await this.update(settings, false);
+    this.onDidResetEmitter.fire(this._settings);
   }
 
   async validate(
@@ -267,7 +273,10 @@ export class SettingsService {
 
     // after saving all the settings, if we need to change the language we need to perform a reload
     // Only reload if the language differs from the current locale. `nls.locale === undefined` signals english as well
-    if (currentLanguage !== nls.locale && !(currentLanguage === 'en' && nls.locale === undefined)) {
+    if (
+      currentLanguage !== nls.locale &&
+      !(currentLanguage === 'en' && nls.locale === undefined)
+    ) {
       if (currentLanguage === 'en') {
         window.localStorage.removeItem(nls.localeId);
       } else {
