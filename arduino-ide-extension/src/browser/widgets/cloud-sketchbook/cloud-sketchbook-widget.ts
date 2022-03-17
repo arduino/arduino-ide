@@ -6,8 +6,11 @@ import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { SketchControl } from '../../contributions/sketch-control';
 import { LocalCacheFsProvider } from '../../local-cache/local-cache-fs-provider';
-import { REMOTE_SKETCHBOOK_FOLDER } from '../../utils/constants';
-
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../../utils/constants';
+import * as path from 'path';
 @injectable()
 export class CloudSketchbookWidget extends SketchbookWidget {
   @inject(CloudSketchbookCompositeWidget)
@@ -47,7 +50,10 @@ export class CloudSketchbookWidget extends SketchbookWidget {
   async checkCloudEnabled(): Promise<void> {
     const currentSketch = await this.sketchesServiceClient.currentSketch();
     const isCloudSketch =
-      currentSketch && currentSketch.uri.includes(REMOTE_SKETCHBOOK_FOLDER);
+      currentSketch &&
+      currentSketch.uri.includes(
+        path.join(REMOTE_SKETCHBOOK_FOLDER, ARDUINO_CLOUD_FOLDER)
+      );
 
     if (this.arduinoPreferences['arduino.cloud.enabled']) {
       this.sketchbookTreesContainer.mode = 'multiple-document';
