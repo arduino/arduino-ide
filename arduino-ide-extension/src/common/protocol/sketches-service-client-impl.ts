@@ -11,12 +11,13 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser/fronten
 import { Sketch, SketchesService } from '../../common/protocol';
 import { ConfigService } from './config-service';
 import { SketchContainer } from './sketches-service';
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../../browser/utils/constants';
 
-const READ_ONLY_FILES = [
-  'thingProperties.h',
-  'thingsProperties.h',
-  'sketch.json',
-];
+const READ_ONLY_FILES = ['sketch.json'];
+const READ_ONLY_FILES_REMOTE = ['thingProperties.h', 'thingsProperties.h'];
 
 @injectable()
 export class SketchesServiceClientImpl
@@ -178,7 +179,17 @@ export class SketchesServiceClientImpl
     if (toCheck.scheme === 'user-storage') {
       return false;
     }
-    if (READ_ONLY_FILES.includes(toCheck?.path?.base)) {
+
+    const isCloudSketch = toCheck
+      .toString()
+      .includes(`${REMOTE_SKETCHBOOK_FOLDER}/${ARDUINO_CLOUD_FOLDER}`);
+
+    const filesToCheck = [
+      ...READ_ONLY_FILES,
+      ...(isCloudSketch ? READ_ONLY_FILES_REMOTE : []),
+    ];
+
+    if (filesToCheck.includes(toCheck?.path?.base)) {
       return true;
     }
     const readOnly = !this.workspaceService
