@@ -1,7 +1,7 @@
-import { Emitter, JsonRpcProxy, MessageService } from "@theia/core";
+import { Emitter, MessageService } from "@theia/core";
 import { inject, injectable } from "@theia/core/shared/inversify";
 import { Board, Port } from "../common/protocol";
-import { Monitor, MonitorManagerProxy, MonitorManagerProxyClient, MonitorSettings } from "../common/protocol/monitor-service";
+import { Monitor, MonitorManagerProxyClient, MonitorManagerProxyFactory, MonitorSettings } from "../common/protocol/monitor-service";
 
 @injectable()
 export class MonitorManagerProxyClientImpl implements MonitorManagerProxyClient {
@@ -26,8 +26,8 @@ export class MonitorManagerProxyClientImpl implements MonitorManagerProxyClient 
         protected messageService: MessageService,
 
         // This is necessary to call the backend methods from the frontend
-        @inject(MonitorManagerProxy)
-        protected server: JsonRpcProxy<MonitorManagerProxy>
+        @inject(MonitorManagerProxyFactory)
+        protected server: MonitorManagerProxyFactory
     ) {
 
     }
@@ -71,11 +71,11 @@ export class MonitorManagerProxyClientImpl implements MonitorManagerProxyClient 
     }
 
     async startMonitor(board: Board, port: Port, settings?: MonitorSettings): Promise<void> {
-        return this.server.startMonitor(board, port, settings);
+        return this.server().startMonitor(board, port, settings);
     }
 
     getCurrentSettings(board: Board, port: Port): MonitorSettings {
-        return this.server.getCurrentSettings(board, port);
+        return this.server().getCurrentSettings(board, port);
     }
 
     send(message: string): void {

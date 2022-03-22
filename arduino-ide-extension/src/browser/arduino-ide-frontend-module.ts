@@ -152,7 +152,7 @@ import {
   OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl,
   OutputChannelRegistryMainImpl,
 } from './theia/plugin-ext/output-channel-registry-main';
-import { ExecutableService, ExecutableServicePath, MonitorManagerProxy, MonitorManagerProxyClient, MonitorManagerProxyPath } from '../common/protocol';
+import { ExecutableService, ExecutableServicePath, MonitorManagerProxy, MonitorManagerProxyClient, MonitorManagerProxyFactory, MonitorManagerProxyPath } from '../common/protocol';
 import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
 import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
 import { ResponseServiceImpl } from './response-service-impl';
@@ -417,8 +417,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     }
   }));
 
+  bind(MonitorManagerProxyFactory).toFactory((context) => () => context.container.get<MonitorManagerProxy>(MonitorManagerProxy))
+
   bind(MonitorManagerProxy).toDynamicValue((context) =>
-    WebSocketConnectionProvider.createProxy(context.container, MonitorManagerProxyPath)
+    WebSocketConnectionProvider.createProxy(context.container, MonitorManagerProxyPath, context.container.get(MonitorManagerProxyClient))
   ).inSingletonScope();
 
   // Monitor manager proxy client to receive and delegate pluggable monitors

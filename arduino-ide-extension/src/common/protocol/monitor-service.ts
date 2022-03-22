@@ -1,6 +1,9 @@
 import { Event, JsonRpcServer } from "@theia/core";
 import { Board, Port } from './boards-service';
 
+export const MonitorManagerProxyFactory = Symbol('MonitorManagerProxyFactory');
+export type MonitorManagerProxyFactory = () => MonitorManagerProxy;
+
 export const MonitorManagerProxyPath = '/services/monitor-manager-proxy';
 export const MonitorManagerProxy = Symbol('MonitorManagerProxy');
 export interface MonitorManagerProxy extends JsonRpcServer<MonitorManagerProxyClient> {
