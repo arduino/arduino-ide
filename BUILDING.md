@@ -82,6 +82,10 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
     git push origin 1.2.3
    ```
 
+## Notes for Windows contributors
+In case the build does not succeded it's possible that you have to install Microsoft Visual C++ (MSVC) compiler toolset. You can download it from the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#other) selecting Build Tools for Visual Studio 20XX. Then you have to install Desktop development with C++.
+
+
 ## Notes for macOS contributors
 Beginning in macOS 10.14.5, the software [must be notarized to run](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution). The signing and notarization processes for the Arduino IDE are managed by our Continuous Integration (CI) workflows, implemented with GitHub Actions. On every push and pull request, the Arduino IDE is built and saved to a workflow artifact. These artifacts can be used by contributors and beta testers who don't want to set up a build system locally.
 For security reasons, signing and notarization are disabled for workflow runs for pull requests from forks of this repository. This means that macOS will block you from running those artifacts.
