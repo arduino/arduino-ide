@@ -83,7 +83,11 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
    ```
 
 ## Notes for Windows contributors
-Windows requires Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine. In case it's not already present, it can be downloaded from the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#other) selecting Build Tools for Visual Studio 20XX. It is important to enable Desktop development with C++ workload during the installation procedure.
+Windows requires the Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine.
+
+In case it's not already present, it can be downloaded from the "**Tools for Visual Studio 20XX**" section of the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) via the "**Build Tools for Visual Studio 20XX**" (e.g., "**Build Tools for Visual Studio 2022**") download link.
+
+Select "**Desktop development with C++**" from the "**Workloads**" tab during the installation procedure.
 
 
 ## Notes for macOS contributors
