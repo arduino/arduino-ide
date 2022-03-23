@@ -83,7 +83,7 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
    ```
 
 ## Notes for Windows contributors
-In case the build does not succeded it's possible that you have to install Microsoft Visual C++ (MSVC) compiler toolset. You can download it from the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#other) selecting Build Tools for Visual Studio 20XX. Then you have to install Desktop development with C++.
+Windows requires Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine. In case it's not already present, it can be downloaded from the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#other) selecting Build Tools for Visual Studio 20XX. It is important to enable Desktop development with C++ workload during the installation procedure.
 
 
 ## Notes for macOS contributors
