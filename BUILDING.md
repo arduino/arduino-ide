@@ -66,6 +66,13 @@ Once you have all the tools installed, you can build the editor following these 
     yarn start
     ```
 
+### Notes for Windows contributors
+Windows requires the Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine.
+
+In case it's not already present, it can be downloaded from the "**Tools for Visual Studio 20XX**" section of the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) via the "**Build Tools for Visual Studio 20XX**" (e.g., "**Build Tools for Visual Studio 2022**") download link.
+
+Select "**Desktop development with C++**" from the "**Workloads**" tab during the installation procedure.
+
 ### CI
 
 This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide/actions).
@@ -81,6 +88,7 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
    ```sh
     git push origin 1.2.3
    ```
+
 
 ## Notes for macOS contributors
 Beginning in macOS 10.14.5, the software [must be notarized to run](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution). The signing and notarization processes for the Arduino IDE are managed by our Continuous Integration (CI) workflows, implemented with GitHub Actions. On every push and pull request, the Arduino IDE is built and saved to a workflow artifact. These artifacts can be used by contributors and beta testers who don't want to set up a build system locally.
