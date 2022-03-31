@@ -70,6 +70,7 @@
 
   switch (platformArch) {
     case 'darwin-x64':
+    case 'darwin-arm64':
       clangdExecutablePath = path.join(build, 'clangd');
       lsSuffix = 'macOS_64bit.tar.gz';
       clangdSuffix = 'macOS_64bit';
