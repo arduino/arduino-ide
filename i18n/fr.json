@@ -1,12 +1,12 @@
 {
     "arduino": {
         "common": {
-            "offlineIndicator": "Il semblerais que vous êtes hors-ligne. Sans connexion internet, l'Arduino CLI sera incapable de télécharger les ressources nécessaire et de communiquer avec le cloud. Merci de vous reconnectez et de redémarrer l'application.",
+            "offlineIndicator": "Il semblerait que vous êtes déconnecté. Sans connexion internet la CLI d'Arduino pourrait ne pas être en mesure de télécharger les resources requises, ce qui pourrait provoquer des dysfonctionnements. Merci de vous connecter à Internet et de redémarrer l'application.",
             "noBoardSelected": "Aucune carte sélectionnée.",
-            "selectedOn": "sur [0]",
+            "selectedOn": "sur {0}",
             "notConnected": "[hors ligne]",
             "serialMonitor": "Moniteur série",
-            "oldFormat": "Le \"[0]\" continue d'utiliser l'ancien format `.pde`. Souhaitez-vous utiliser le nouveau format `.ino`?",
+            "oldFormat": "Le '{0}' utilise toujours l'ancien format `.pde`. Souhaitez-vous utiliser le nouveau format `.ino`?",
             "later": "Plus tard",
             "selectBoard": "Selectionner une carte",
             "unknown": "Inconnu",
@@ -14,14 +14,30 @@
             "saveChangesToSketch": "Souhaitez-vous enregistrer les modifications apportées au croquis avant la fermeture ?",
             "loseChanges": "Si vous n'enregistrez pas, les modifications apportées seront perdues."
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Erreur lors de la vérification de la mise à jour de l'IDE Arduino.\n{0}",
+            "notNowButton": "Pas maintenant",
+            "versionDownloaded": "L'IDE Arduino {0} a été téléchargé.",
+            "closeToInstallNotice": "Fermez le logiciel et installez la mise à jour sur votre machine.",
+            "closeAndInstallButton": "Fermer et installer",
+            "downloadingNotice": "Téléchargement de la dernière version de l'IDE Arduino.",
+            "updateAvailable": "Mise à jour disponible",
+            "newVersionAvailable": "Une nouvelle version de l'IDE Arduino ({0}) est disponible en téléchargement.",
+            "skipVersionButton": "Ignorer la version",
+            "downloadButton": "Télécharger",
+            "goToDownloadPage": "Une mise à jour pour l'IDE Arduino est disponible, mais nous ne sommes pas en mesure de la télécharger et de l'installer automatiquement. Veuillez vous rendre sur la page de téléchargement et télécharger la dernière version à partir de là.",
+            "goToDownloadButton": "Aller au téléchargement",
+            "ideUpdaterDialog": "Mise à jour logicielle",
+            "noUpdatesAvailable": "Il n'y a pas de mises à jour récentes disponibles pour l'IDE Arduino"
+        },
         "menu": {
             "sketch": "Croquis",
             "tools": "Outils"
         },
         "debug": {
             "optimizeForDebugging": "Optimisé pour le déboggage.",
-            "debugWithMessage": "Débogage - [0]",
-            "noPlatformInstalledFor": "la plateforme n'est pas installée pour '{0}'",
+            "debugWithMessage": "Débogage - {0}",
+            "noPlatformInstalledFor": "La plateforme n'est pas installée pour '{0}'",
             "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'"
         },
         "preferences": {
@@ -31,7 +47,7 @@
             "upload.verbose": "Vrai si le téléchargement en mode verbose. Faux par défaut.",
             "window.autoScale": "Vrai si l'interface utilisateur s'ajuste avec la taille de la police.",
             "window.zoomLevel": "Ajuste le zoom de la fenêtre. La taille originale est 0 et chaque augmentation  (par exemple 1) ou diminution (par exemple -1) représentent un zoom de plus ou moins 20 %. Vous pouvez également entrer des décimales pour ajuster plus finement le zoom. ",
-            "ide.autoUpdate": "Vrai pour activer les mise à jour automatiques. L'IDE va vérifier automatiquement et de manière périodique les mise à jour.",
+            "ide.updateChannel": "Canal de mise à jour à partir de 'stable' est la version stable, 'nightly' est la dernière version de développement.",
             "board.certificates": "Liste des certificats pouvant être téléversé vers les cartes.",
             "sketchbook.showAllFiles": "Vrai pour montrer tous les fichiers croquis à l'intérieur du croquis. La valeur par défaut est faux.",
             "cloud.enabled": "Vrai si les fonctions de synchronisation de croquis est activé. Par défaut, la valeur est vrai.",
@@ -55,7 +71,6 @@
             "compile": "compiler",
             "upload": "téléverser",
             "verifyAfterUpload": "Vérifier le code après le téléversement",
-            "checkForUpdates": "Vérifier les mises à jour au démarrage",
             "editorQuickSuggestions": "Suggestion rapide pour l'éditeur",
             "additionalManagerURLs": "URL de gestionnaire de cartes supplémentaires",
             "noProxy": "Aucun proxy",
@@ -108,7 +123,7 @@
             "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
             "configDialogTitle": "Sélectionner une autre carte et un autre port",
             "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
-            "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez seulement capable de compliquer votre croquis, mais pas de le téléverser.",
+            "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez compiler votre croquis, mais pas le téléverser.",
             "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
             "showAllAvailablePorts": "Affiche les ports disponibles quand activer.",
             "programmer": "Programmeur",
@@ -223,7 +238,8 @@
             "reference": "Référence",
             "findInReference": "Trouver dans Référence",
             "faq": "Questions fréquemment posées",
-            "visit": "Visitez Arduino.cc"
+            "visit": "Visitez Arduino.cc",
+            "privacyPolicy": "Politique de confidentialité"
         },
         "certificate": {
             "uploadRootCertificates": "Téléverser les certificats racine SSL",

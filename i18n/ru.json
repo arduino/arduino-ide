@@ -3,16 +3,32 @@
         "common": {
             "offlineIndicator": "Похоже, у Вас нет подключения к Интернету. Без подключения к Интернету Arduino CLI не сможет загрузить необходимые ресурсы и упадет. Подключитесь к Интернету и перезапустите приложение.",
             "noBoardSelected": "Плата не выбрана",
-            "selectedOn": "on {0}",
+            "selectedOn": "вкл. {0}",
             "notConnected": "[не подключено].",
             "serialMonitor": "Монитор порта",
             "oldFormat": "'{0}' использует старый формат `.pde`. Хотите сконвертировать в новый формат `.ino`?",
             "later": "Позже",
             "selectBoard": "Выбрать плату",
             "unknown": "Неизвестно",
-            "processing": "Processing",
+            "processing": "Обработка",
             "saveChangesToSketch": "Сохранить изменения в этом скетче перед закрытием?",
             "loseChanges": "Если не сохранить изменения - они будут потеряны."
+        },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Ошибка при проверке обновлений IDE Arduino.\n{0}",
+            "notNowButton": "Не сейчас",
+            "versionDownloaded": "Arduino IDE {0} был загружен.",
+            "closeToInstallNotice": "Закройте программное обеспечение и установите обновление на вашем компьютере.",
+            "closeAndInstallButton": "Закрыть и установить",
+            "downloadingNotice": "Загрузка последней версии Arduino IDE.",
+            "updateAvailable": "Доступны обновления",
+            "newVersionAvailable": "Новая версия Arduino IDE ({0}) доступна для загрузки.",
+            "skipVersionButton": "Пропустить версию",
+            "downloadButton": "Скачать",
+            "goToDownloadPage": "Доступно обновление для Arduino IDE, но мы не можем загрузить и установить его автоматически. Пожалуйста, перейдите на страницу загрузки и оттуда загрузите последнюю версию.",
+            "goToDownloadButton": "Перейдите к скачиванию",
+            "ideUpdaterDialog": "Обновление программного обеспечения",
+            "noUpdatesAvailable": "Нет обновлений для Arduino IDE"
         },
         "menu": {
             "sketch": "Скетч",
@@ -27,11 +43,11 @@
         "preferences": {
             "language.log": "True - сервер Arduino Language будет создавать файлы журнала в папке скетча. В противном случае - false. По умолчанию - false.",
             "compile.verbose": "True для подробного вывода компилятора. По умолчанию - false.",
-            "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
+            "compile.warnings": "Уровень предупреждений GCC. По умолчанию 'None'.",
             "upload.verbose": "True - подробный вывод при загрузке скетча на плату. По умолчанию - false.",
             "window.autoScale": "True, если пользовательский интерфейс автоматически масштабируется в зависимости от размера шрифта.",
-            "window.zoomLevel": "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity.",
-            "ide.autoUpdate": "True - автоматическая проверка обновлений включена. IDE будет проверять наличие обновлений периодически в автоматическом режиме.",
+            "window.zoomLevel": "Отрегулируйте уровень масштабирования окна. Оригинальный размер равен 0 и каждое изменение выше (например, 1) или ниже (например, -1) представляет собой масштабирование на 20% больше или меньше. Вы также можете войти в десятичные, чтобы настроить уровень масштабирования с более тонкой гранулярностью.",
+            "ide.updateChannel": "Release channel - это канал для обновлений. «stable» - это стабильный выпуск, «Nightly» - это последняя сборка.",
             "board.certificates": "Список сертификатов, которые могут быть загружены в платы",
             "sketchbook.showAllFiles": "True - показывать все файлы внутри скетча. По умолчанию - false.",
             "cloud.enabled": "True, если функции синхронизации скетчей включены. По умолчанию - true.",
@@ -55,17 +71,16 @@
             "compile": "компиляции",
             "upload": "выгрузке на плату",
             "verifyAfterUpload": "Проверять содержимое памяти платы после загрузки",
-            "checkForUpdates": "Проверять обновления при запуске",
             "editorQuickSuggestions": "Быстрые подсказки в редакторе",
             "additionalManagerURLs": "Дополнительные ссылки для Менеджера плат",
             "noProxy": "Не использовать прокси-сервер",
             "manualProxy": "Ручная настройка параметров прокси-сервера",
             "newSketchbookLocation": "Выбрать новое расположение для альбома со скетчами",
-            "choose": "Choose",
+            "choose": "Выбрать",
             "enterAdditionalURLs": "Введите дополнительные URL, по одному в каждой строке",
-            "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+            "unofficialBoardSupport": "Список URL-адресов поддержки неофициальных плат",
             "invalid.sketchbook.location": "Неправильный путь к альбому со скетчами: {0}",
-            "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
+            "invalid.editorFontSize": "Неверный размер шрифта редактора. Это должно быть положительное целое число.",
             "invalid.theme": "Неверная тема."
         },
         "cloud": {
@@ -83,7 +98,7 @@
             "openInCloudEditor": "Открыть в облачном редакторе",
             "options": "Параметры...",
             "share": "Поделиться...",
-            "remote": "Remote",
+            "remote": "Удаленный",
             "emptySketchbook": "Ваш альбом пуст",
             "visitArduinoCloud": "Посетите Arduino Cloud, чтобы создать скетчи в облаке.",
             "signInToCloud": "Войдите в Arduino Cloud",
@@ -99,28 +114,28 @@
             "push": "Push",
             "pullFirst": "You have to pull first to be able to push to the Cloud.",
             "donePushing": "Done pushing ‘{0}’.",
-            "connected": "Connected",
-            "offline": "Offline",
+            "connected": "Подключено",
+            "offline": "Не подключено",
             "profilePicture": "Фотография профиля"
         },
         "board": {
             "installManually": "Установить вручную",
-            "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+            "installNow": "Необходимо установить ядро «{0} {1}»  для выбранной в данный момент «{2}» платы. Вы хотите установить его сейчас?",
             "configDialogTitle": "Выберите другую плату и порт",
             "configDialog1": "Выберите плату и порт, если Вы хотите загрузить скетч в плату.",
-            "configDialog2": "If you only select a Board you will be able just to compile, but not to upload your sketch.",
-            "pleasePickBoard": "Please pick a board connected to the port you have selected.",
-            "showAllAvailablePorts": "Shows all available ports when enabled",
+            "configDialog2": "Если вы выбираете только плату, вы сможете компилировать, но не загружать свой скетч.",
+            "pleasePickBoard": "Пожалуйста, выберите плату, подключенную к выбранному вами порту.",
+            "showAllAvailablePorts": "Показать все доступные порты при включении",
             "programmer": "Программатор",
             "succesfullyInstalledPlatform": "Платформа установлена успешно {0}:{1}",
             "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}",
-            "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+            "couldNotFindPreviouslySelected": "Не удалось найти ранее выбранную плату '{0}' в установленной платформе '{1}'.Пожалуйста,  выберите плату которую хотите использовать вручную повторно. Вы хотите повторно выбрать её сейчас?",
             "reselectLater": "Выборать позже",
             "noneSelected": "Плата не выбрана.",
             "noPortsSelected": "Не выбраны порты для платы: '{0}'.",
             "noFQBN": "FQBN недоступен для выбранной платы \"{0}\". Проверьте наличие необходимого ядра.",
             "openBoardsConfig": "Выберите другую плату и порт...",
-            "boardListItem": "{0} at {1}",
+            "boardListItem": "{0} в {1}",
             "selectBoardForInfo": "Пожалуйста, выберите плату в меню инструментов для получения информации с платы.",
             "platformMissing": "Платформа для выбранной платы '{0}' не установлена.",
             "selectPortForInfo": "Пожалуйста, выберите порт в меню инструментов для получения информации с платы.",
@@ -153,8 +168,8 @@
             "arduinoLibraries": "Библиотеки Arduino",
             "contributedLibraries": "Сторонние библиотеки",
             "title": "Управление библиотеками",
-            "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
-            "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
+            "needsOneDependency": "Нужная библиотеке <b>{0}: {1} </b> другая зависимость в настоящее время не установлена:",
+            "needsMultipleDependencies": "Нужные библиотеке <b> {0}: {1} </b> некоторые другие зависимости в настоящее время не установлены:",
             "installOneMissingDependency": "Установить недостающую зависимость?",
             "installMissingDependencies": "Установить все недостающие зависимости?",
             "dependenciesForLibrary": "Зависимости для библиотеки {0}:{1}",
@@ -172,14 +187,14 @@
             "openRecent": "Открыть предыдущий",
             "showFolder": "Показать папку скетча",
             "sketch": "Скетч",
-            "moving": "Moving",
-            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named as \"{1}\".\nCreate this folder, move the file, and continue?",
+            "moving": "Переместить",
+            "movingMsg": "Файл «{0}» должен быть в папке с именем скетча «{1}». \nСоздать эту папку, переместить файл и продолжить?",
             "cantOpen": "Папка \"{0}\" уже существует. Невозможно открыть скетч.",
             "saveFolderAs": "Сохранить папку со скетчем как...",
             "sketchbook": "Альбом",
             "upload": "Загрузить на плату",
             "uploadUsingProgrammer": "Загрузить на плату при помощи программатора",
-            "userFieldsNotFoundError": "Can't find user fields for connected board",
+            "userFieldsNotFoundError": "Не могу найти пользовательские поля для подключенной платы",
             "doneUploading": "Загрузка завершена.",
             "configureAndUpload": "Настроить и загрузить",
             "verifyOrCompile": "Проверить/Скомпилировать",
@@ -223,19 +238,20 @@
             "reference": "Справочник по функциям",
             "findInReference": "Найти в справочнике",
             "faq": "Часто задаваемые вопросы",
-            "visit": "Перейти на сайт Arduino.cc"
+            "visit": "Перейти на сайт Arduino.cc",
+            "privacyPolicy": "Privacy Policy"
         },
         "certificate": {
             "uploadRootCertificates": "Загрузка корневого сертификата SSL",
             "openContext": "Открыть контекст",
-            "remove": "Remove",
+            "remove": "Удалить",
             "upload": "Загрузка",
             "addURL": "Добавление URL для получения SSL-сертификата",
             "enterURL": "Введите URL",
             "selectCertificateToUpload": "1. Выберите сертификат для загрузки",
-            "addNew": "Add New",
-            "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
-            "uploadingCertificates": "Uploading certificates.",
+            "addNew": "Новый",
+            "selectDestinationBoardToUpload": "2. Выберите плату назначения и загрузите сертификат",
+            "uploadingCertificates": "Загрузка сертификатов.",
             "certificatesUploaded": "Сертификаты зугружены.",
             "uploadFailed": "Загрузка не удалась. Повторите попытку.",
             "selectBoard": "Выберите плату...",
@@ -243,14 +259,14 @@
             "noSupportedBoardConnected": "Не подключено ни одной поддерживаемой платы"
         },
         "firmware": {
-            "updater": "Обновление прошивки WiFi101 /  WiFiNINA",
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
             "selectBoard": "Выбор платы",
             "checkUpdates": "Проверить наличие обновлений",
-            "selectVersion": "Select firmware version",
+            "selectVersion": "Выберите версию прошивки",
             "install": "Установка",
-            "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+            "overwriteSketch": "Установка перезаписывает скетч на плате.",
             "installingFirmware": "Установка прошивки.",
-            "successfullyInstalled": "Прошивка успешно установлена.",
+            "successfullyInstalled": "Firmware successfully installed.",
             "failedInstall": "Не удалось установить прошивку. Повторите попытку."
         },
         "dialog": {
@@ -261,24 +277,24 @@
             "upload": "Загрузка"
         },
         "serial": {
-            "toggleTimestamp": "Toggle Timestamp",
+            "toggleTimestamp": "Переключить отметку времени",
             "autoscroll": "Автопрокрутка",
-            "timestamp": "Timestamp",
+            "timestamp": "Время отметки",
             "noLineEndings": "Нет конца строки",
             "newLine": "Новая строка",
             "carriageReturn": "CR Возврат каретки",
             "newLineCarriageReturn": "NL & CR",
-            "notConnected": "Not connected. Select a board and a port to connect automatically.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "notConnected": "Нет соединения. Выберите плату и порт для автоматического подключения.",
+            "message": "Сообщение ({0} + Enter, чтобы отправить сообщение для '{1}' на '{2}')",
             "connectionBusy": "Не удалось подключиться. Последовательный порт занят: {0}",
-            "disconnected": "Disconnected {0} from {1}.",
-            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
+            "disconnected": "Отключен {0} от {1}",
+            "unexpectedError": "Непредвиденная ошибка. Переподключение {0} на порту {1}.",
             "failedReconnect": "Не удалось переподключиться {0} к последовательному порту после 10 попыток. Последовательный порт {1} занят.",
-            "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
+            "reconnect": "Переподключение {0} к {1} в {2} секунды..."
         },
         "component": {
             "uninstall": "Удалить",
-            "uninstallMsg": "Do you want to uninstall {0}?",
+            "uninstallMsg": "Вы хотите удалить  {0}?",
             "by": "by",
             "version": "Версия {0}",
             "moreInfo": "Дополнительная информация",
@@ -286,14 +302,14 @@
             "filterSearch": "Отфильтровать результаты поиска..."
         },
         "electron": {
-            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "unsavedChanges": "Any unsaved changes will not be saved."
+            "couldNotSave": "Скетч не сохранён. Пожалуйста, скопируйте вашу не сохраненную работу в ваш внешний текстовый редактор и перезапустите IDE.",
+            "unsavedChanges": "Любые не сохраненные изменения не будут сохранены."
         },
         "compile": {
             "error": "Ошибка компиляции: {0}"
         },
         "upload": {
-            "error": "{0} error: {1}"
+            "error": "{0} ошибка: {1}"
         },
         "burnBootloader": {
             "error": "Ошибка при прошивке бутлоадера: {0}"
@@ -301,15 +317,15 @@
     },
     "theia": {
         "core": {
-            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "offline": "Offline",
-            "daemonOffline": "CLI Daemon Offline",
+            "couldNotSave": "Скетч не сохранён. Пожалуйста, скопируйте вашу не сохраненную работу в ваш внешний текстовый редактор и перезапустите IDE.",
+            "offline": "Не подключено",
+            "daemonOffline": "CLI демон не подключен",
             "cannotConnectBackend": "Невозможно подключиться к бэкенду.",
             "cannotConnectDaemon": "Невозможно подключиться к фоновому процессу CLI."
         },
         "debug": {
             "start": "Запуск...",
-            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
+            "typeNotSupported": "Тип сеанса отладки «{0}» не поддерживается.",
             "startError": "Произошла ошибка при запуске отладочной сессии, просмотрите журнал для получения дополнительной информации."
         },
         "editor": {
@@ -325,10 +341,10 @@
             "invalidExtension": "Файлы с расширением \".{0}\" не поддерживаются.",
             "newFileName": "Новое имя файла",
             "deleteCurrentSketch": "Вы хотите удалить текущий скетч?",
-            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+            "sketchDirectoryError": "Ошибка создания каталога скетча. Смотрите журнал для более подробной информации. Вероятно, приложение, не будет работать должным образом."
         }
     },
     "cloud": {
-        "GoToCloud": "GO TO CLOUD"
+        "GoToCloud": "Переход в облако"
     }
 }

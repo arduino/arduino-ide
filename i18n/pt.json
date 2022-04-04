@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Deseja salvar as alterações neste sketch antes de fechar?",
             "loseChanges": "Se você não salvar, as alterações serão perdidas. "
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Erro ao verificar as atualizações do IDE do Arduino. {0}",
+            "notNowButton": "Agora não ",
+            "versionDownloaded": "O Arduino IDE {0} foi baixado. ",
+            "closeToInstallNotice": "Feche o software e instale a atualização em sua máquina. ",
+            "closeAndInstallButton": "Fechar e instalar ",
+            "downloadingNotice": "Baixando a versão mais recente do IDE do Arduino.",
+            "updateAvailable": "Atualização disponível",
+            "newVersionAvailable": "Uma nova versão do Arduino IDE ({0}) está disponível para download.",
+            "skipVersionButton": "Pular versão ",
+            "downloadButton": "Baixar",
+            "goToDownloadPage": "Uma atualização para o Arduino IDE está disponível, mas não podemos baixá-la e instalá-la automaticamente. Por favor, vá para a página de download e baixe a versão mais recente de lá. ",
+            "goToDownloadButton": "Ir Para Baixar",
+            "ideUpdaterDialog": "Atualização de software ",
+            "noUpdatesAvailable": "Não há atualizações recentes disponíveis para o Arduino IDE "
+        },
         "menu": {
             "sketch": "Rascunho",
             "tools": "Ferramentas"
@@ -31,7 +47,7 @@
             "upload.verbose": "Verdadeiro para saída de upload detalhada. Falsa é padrão.",
             "window.autoScale": "Verdadeiro se a interface do usuário for dimensionada automaticamente com o tamanho da fonte.",
             "window.zoomLevel": "Ajuste o nível de zoom da janela. O tamanho original é 0 e cada incremento acima (por exemplo, 1) ou abaixo (por exemplo, -1) representa um zoom 20% maior ou menor. Você também pode inserir decimais para ajustar o nível de zoom para uma maior precisão.",
-            "ide.autoUpdate": "Verdadeiro para habilitar as verificações automáticas de atualização. A IDE verificará se há atualizações automáticas periodicamente.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
             "board.certificates": "Lista de certificados que podem ser carregados nas placas",
             "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de sketch dentro do sketch. Falso é padrão.",
             "cloud.enabled": "Verdadeiro se as funções de sincronização de sketch estiverem ativadas. O padrão é verdadeiro.",
@@ -55,7 +71,6 @@
             "compile": "compilar",
             "upload": "enviar",
             "verifyAfterUpload": "Verificar o código após enviar",
-            "checkForUpdates": "Procurar por atualizações ao iniciar",
             "editorQuickSuggestions": "Dicas do editor",
             "additionalManagerURLs": "URLs Adicionais para Gerenciadores de Placas",
             "noProxy": "Sem proxy",
@@ -108,7 +123,7 @@
             "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
             "configDialogTitle": "Selecionar Outra Placa e Porta",
             "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
-            "configDialog2": "Se você apenas selecionar a placa, poderá apenas compilar, mas não poderá fazer o upload de seu sketch.",
+            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Escolha uma placa conectada à porta que você selecionou.",
             "showAllAvailablePorts": "Mostrar todas as portas disponíveis quando habilitado",
             "programmer": "Programador/Gravador",
@@ -173,7 +188,7 @@
             "showFolder": "Mostrar a pasta de Sketches",
             "sketch": "Sketch",
             "moving": "Movendo",
-            "movingMsg": "O arquivo \"{0}\" deve estar dentro de uma pasta de sketch chamada \"{1}\".\nCriar esta pasta, mover o arquivo e continuar?",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "Directoria chamada \"{0}\" já existe. Não é possível abrir o rascunho.",
             "saveFolderAs": "Salvar a pasta de sketch como...",
             "sketchbook": "Sketchbook",
@@ -223,7 +238,8 @@
             "reference": "Referência",
             "findInReference": "Encontrar em Referência",
             "faq": "Perguntas Frequentes",
-            "visit": "Visitar Arduino.cc"
+            "visit": "Visitar Arduino.cc",
+            "privacyPolicy": "Política de Privacidade "
         },
         "certificate": {
             "uploadRootCertificates": "Enviar certificado Raiz SSL",
@@ -243,14 +259,14 @@
             "noSupportedBoardConnected": "Nenhuma placa compatível conectada"
         },
         "firmware": {
-            "updater": "WiFi101 / WiFiNINA Atualizador de Firmware",
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
             "selectBoard": "Selecionar Placa",
             "checkUpdates": "Verificar Atualizações",
             "selectVersion": "Selecione a versão do firmware",
             "install": "Instalar",
             "overwriteSketch": "A instalação substituirá o sketch na placa.",
             "installingFirmware": "Instalando firmware.",
-            "successfullyInstalled": "Firmware instalado com sucesso.",
+            "successfullyInstalled": "Firmware instalado com sucesso. ",
             "failedInstall": "A instalação falhou. Por favor, tente novamente."
         },
         "dialog": {
@@ -269,7 +285,7 @@
             "carriageReturn": "Retorno de linha",
             "newLineCarriageReturn": "Nova linha e retorno de linha",
             "notConnected": "Não conectado. Selecione uma placa e uma porta para conectar automaticamente.",
-            "message": "Mensagem ({0} + Enter para enviar mensagem para '{1}' em '{2}'",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
             "connectionBusy": "A conexão falhou. A porta serial está ocupada: {0}",
             "disconnected": "Desconectado {0} de {1}.",
             "unexpectedError": "Erro inesperado. Reconectando {0} na porta {1}.",

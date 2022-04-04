@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Θέτε να αποθηκεύσετε τις αλλαγές σε αυτο το σχέδιο πριν κλείσετε; ",
             "loseChanges": "Αν δεν αποθηκεύσετε, οι αλλαγές σας θα χαθούν."
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+            "notNowButton": "Not now",
+            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+            "closeToInstallNotice": "Close the software and install the update on your machine.",
+            "closeAndInstallButton": "Close and Install",
+            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+            "updateAvailable": "Update Available",
+            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download",
+            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+            "goToDownloadButton": "Go To Download",
+            "ideUpdaterDialog": "Software Update",
+            "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE"
+        },
         "menu": {
             "sketch": "Σχέδιο",
             "tools": "Εργαλεία"
@@ -31,7 +47,7 @@
             "upload.verbose": "Αληθές για λεπτομερή έξοδο ανεβάσματος. Ψευδές απο προεπιλογή.",
             "window.autoScale": "Αληθές αν η διεπαφή χρήστη κλιμακλωνεται αυτόματα μαζί με το μέγεθος γραμματοσειράς.",
             "window.zoomLevel": "Ρύθμιση του επιπέδου μεγέθυνσης του παραθύρου. Το αρχικό μέγεθος ειναι 0 και κάθε αύξηση (π.χ. 1) ή μείωση (π.χ. -1) αναπαριστά μεγέθυνση 20% μεγαλύτερη ή μικρότερη. Μπορούν να εισαχθούν και δεκαδικά για προσαρμογή της μεγέθυνσης με μεγαλύτερη λεπτομέρεια.",
-            "ide.autoUpdate": "Αληθές για ενεργοποίηση αυτομάτων ελέγχων ενημερώσεων. Το IDE θα ελέγχει για ενημερώσεις αυτόματα και τακτικά.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
             "board.certificates": "Λίστα πιστοποιητικών που μπορούν να ανέβουν σε πλακέτες",
             "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
             "cloud.enabled": "Αληθές αν οι λειτουγίες συγχονισμού σχεδίου είναι ενεργοποιημένες. Προεπιλογή ως αληθές.",
@@ -55,8 +71,7 @@
             "compile": "μεταγλώττιση",
             "upload": "ανέβασμα",
             "verifyAfterUpload": "Επιβεβαίωση κώδικα μετά το ανέβασμα",
-            "checkForUpdates": "Έλεγχος ενημερώσεων κατά την εκκίνηση",
-            "editorQuickSuggestions": "Editor Quick Suggestions",
+            "editorQuickSuggestions": "Επιμελιτής γρήγορων προτάσεων",
             "additionalManagerURLs": "Πρόσθετοι Σύνδεσμοι Διαχειριστή Πλακετών",
             "noProxy": "No proxy",
             "manualProxy": "Manual proxy configuration",
@@ -108,7 +123,7 @@
             "installNow": "Ο πυρήνας \"{0} {1}\" πρέπει να εγκατασταθεί για την επιλεγμένη πλακέτα {2}. Θέλεις να την εγκαταστήσεις τώρα;",
             "configDialogTitle": "Επιλέξτε Άλλη Πλακέτα & Θύρα",
             "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
-            "configDialog2": "Αν επιλέξεις μονο Πλακέτα θα μπορείς να κάνεις μόνο μεταγγλώτιση, αλλά οχι να ανεβάσεις το σχέδιο.",
+            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Πσρακαλώ επίλεξε μια πλακέτα που συνδέθηκε στην θύρα που έχεις επιλέξει.",
             "showAllAvailablePorts": "Εμφανίζει όλες τις διαθέσιμες θύρες όταν είναι ενεργοποιημένο.",
             "programmer": "Προγραμματιστής",
@@ -136,30 +151,30 @@
             "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}{4} [{5}]\n\n{6}"
         },
         "contributions": {
-            "addFile": "Add File",
-            "replaceTitle": "Replace",
-            "fileAdded": "One file added to the sketch."
+            "addFile": "Προσθήκη αρχείου",
+            "replaceTitle": "Αντικατάσταση",
+            "fileAdded": "Ένα αρχείο προστέθηκε στον κώδικα."
         },
         "replaceMsg": "Replace the existing version of {0}?",
         "library": {
-            "addZip": "Add .ZIP Library...",
-            "zipLibrary": "Library",
-            "overwriteExistingLibrary": "Do you want to overwrite the existing library?",
-            "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
-            "namedLibraryAlreadyExists": "A library folder named {0} already exists. Do you want to overwrite it?",
-            "libraryAlreadyExists": "A library already exists. Do you want to overwrite it?",
-            "include": "Include Library",
-            "manageLibraries": "Manage Libraries...",
-            "arduinoLibraries": "Arduino libraries",
+            "addZip": "Προσθέστε μια βιβλιοθήκη μορφής .ZIP",
+            "zipLibrary": "Διαχειριστής βιβλιοθήκης",
+            "overwriteExistingLibrary": "Θέλετε να αντικαταστήσετε αυτή τη βιβλιοθήκη;",
+            "successfullyInstalledZipLibrary": "Επιτυχής εγκατάσταση βιβλιοθήκης απο το αρχείο {0}",
+            "namedLibraryAlreadyExists": "Μια βιβλιοθήκη με όνομα {0} υπάρχει ήδη. Θέλετε να γίνει αντικατάσταση;",
+            "libraryAlreadyExists": "Μια βιβλιοθήκη υπάρχει ήδη. Θέλετε να την αντικαταστήσετε;",
+            "include": "Συμπεριλάβετε βιβλιοθήκη",
+            "manageLibraries": "Διαχείριση βιβλιοθηκών...",
+            "arduinoLibraries": "Βιβλιοθήκες Arduino",
             "contributedLibraries": "Contributed libraries",
-            "title": "Library Manager",
+            "title": "Διαχειριστής βιβλιοθηκών",
             "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
             "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
             "installOneMissingDependency": "Would you like to install the missing dependency?",
             "installMissingDependencies": "Would you like to install all the missing dependencies?",
             "dependenciesForLibrary": "Dependencies for library {0}:{1}",
-            "installAll": "Install all",
-            "installOnly": "Install {0} only",
+            "installAll": "Εγκατάσταση όλων",
+            "installOnly": "Εγκατάσταση {0} μόνο",
             "installedSuccessfully": "Successfully installed library {0}:{1}",
             "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}"
         },
@@ -168,27 +183,27 @@
             "archiveSketch": "Archive Sketch",
             "saveSketchAs": "Save sketch folder as...",
             "createdArchive": "Created archive '{0}'.",
-            "new": "New",
-            "openRecent": "Open Recent",
+            "new": "Νέο",
+            "openRecent": "Άνοιγμα πρόσφατου",
             "showFolder": "Show Sketch Folder",
-            "sketch": "Sketch",
+            "sketch": "Σχέδιο",
             "moving": "Moving",
-            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named as \"{1}\".\nCreate this folder, move the file, and continue?",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
             "saveFolderAs": "Save sketch folder as...",
             "sketchbook": "Sketchbook",
-            "upload": "Upload",
-            "uploadUsingProgrammer": "Upload Using Programmer",
+            "upload": "Ανέβασμα",
+            "uploadUsingProgrammer": "Ανέβασμα μέσω προγραμματιστή",
             "userFieldsNotFoundError": "Can't find user fields for connected board",
-            "doneUploading": "Done uploading.",
+            "doneUploading": "Ολοκλήρωση ανεβάσματος",
             "configureAndUpload": "Configure And Upload",
-            "verifyOrCompile": "Verify/Compile",
+            "verifyOrCompile": "Επικύρωση",
             "exportBinary": "Export Compiled Binary",
-            "verify": "Verify",
+            "verify": "Επαλήθευση",
             "doneCompiling": "Done compiling.",
             "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
             "openSketchInNewWindow": "Open Sketch in New Window",
-            "openFolder": "Open Folder",
+            "openFolder": "Άνοιγμα φακέλου",
             "titleLocalSketchbook": "Local Sketchbook",
             "titleSketchbook": "Sketchbook",
             "close": "Are you sure you want to close the sketch?"
@@ -207,33 +222,34 @@
             "autoFormat": "Auto Format"
         },
         "examples": {
-            "menu": "Examples",
+            "menu": "Παραδείγματα",
             "couldNotInitializeExamples": "Could not initialize built-in examples.",
             "builtInExamples": "Built-in examples",
             "customLibrary": "Examples from Custom Libraries",
-            "for": "Examples for {0}",
+            "for": "Παραδείγματα για {0}",
             "forAny": "Examples for any board"
         },
         "help": {
-            "search": "Search on Arduino.cc",
+            "search": "Αναζήτηση στο Arduino.cc",
             "keyword": "Type a keyword",
             "gettingStarted": "Getting Started",
-            "environment": "Environment",
+            "environment": "Περιβάλλον",
             "troubleshooting": "Troubleshooting",
             "reference": "Reference",
             "findInReference": "Find in Reference",
             "faq": "Frequently Asked Questions",
-            "visit": "Visit Arduino.cc"
+            "visit": "Επίσκεψη Arduino.cc",
+            "privacyPolicy": "Privacy Policy"
         },
         "certificate": {
             "uploadRootCertificates": "Upload SSL Root Certificates",
             "openContext": "Open context",
-            "remove": "Remove",
-            "upload": "Upload",
+            "remove": "Αφαίρεση",
+            "upload": "Ανέβασμα",
             "addURL": "Add URL to fetch SSL certificate",
             "enterURL": "Enter URL",
             "selectCertificateToUpload": "1. Select certificate to upload",
-            "addNew": "Add New",
+            "addNew": "Προσθήκη Νέου",
             "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
             "uploadingCertificates": "Uploading certificates.",
             "certificatesUploaded": "Certificates uploaded.",
@@ -243,46 +259,46 @@
             "noSupportedBoardConnected": "No supported board connected"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
-            "selectBoard": "Select Board",
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
+            "selectBoard": "Επιλογή Πλακέτας",
             "checkUpdates": "Check Updates",
             "selectVersion": "Select firmware version",
-            "install": "Install",
+            "install": "Εγκατάσταση",
             "overwriteSketch": "Installation will overwrite the Sketch on the board.",
             "installingFirmware": "Installing firmware.",
-            "successfullyInstalled": "Firmware succesfully installed.",
+            "successfullyInstalled": "Firmware successfully installed.",
             "failedInstall": "Installation failed. Please try again."
         },
         "dialog": {
             "dontAskAgain": "Don't ask again"
         },
         "userFields": {
-            "cancel": "Cancel",
-            "upload": "Upload"
+            "cancel": "Ακύρωση",
+            "upload": "Ανέβασμα"
         },
         "serial": {
             "toggleTimestamp": "Toggle Timestamp",
             "autoscroll": "Autoscroll",
             "timestamp": "Timestamp",
             "noLineEndings": "No Line Ending",
-            "newLine": "New Line",
+            "newLine": "Νέα γραμμή",
             "carriageReturn": "Carriage Return",
             "newLineCarriageReturn": "Both NL & CR",
             "notConnected": "Not connected. Select a board and a port to connect automatically.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
             "connectionBusy": "Connection failed. Serial port is busy: {0}",
             "disconnected": "Disconnected {0} from {1}.",
-            "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
+            "unexpectedError": "Απρόσμενο σφάλμα. Επανασύνδεση {0} στην θύρα {1}",
             "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
             "reconnect": "Reconnecting {0} to {1} in {2} seconds..."
         },
         "component": {
-            "uninstall": "Uninstall",
+            "uninstall": "Απεγκατάσταση",
             "uninstallMsg": "Do you want to uninstall {0}?",
-            "by": "by",
-            "version": "Version {0}",
-            "moreInfo": "More info",
-            "install": "INSTALL",
+            "by": "από",
+            "version": "Έκδοση {0}",
+            "moreInfo": "Περισσότερες πληροφορίες",
+            "install": "ΕΓΚΑΤΑΣΤΑΣΗ",
             "filterSearch": "Filter your search..."
         },
         "electron": {
@@ -290,10 +306,10 @@
             "unsavedChanges": "Οι μη αποθηκευμένες αλλαγές θα χαθούν."
         },
         "compile": {
-            "error": "Compilation error: {0}"
+            "error": "Σφάλμα μεταγλώττισης: {0}"
         },
         "upload": {
-            "error": "{0} error: {1}"
+            "error": "{0} σφάλμα: {1}"
         },
         "burnBootloader": {
             "error": "Error while burning the bootloader: {0}"
@@ -320,11 +336,11 @@
             "collapse": "Ελαχιστοποίηση"
         },
         "workspace": {
-            "fileNewName": "Name for new file",
-            "invalidFilename": "Invalid filename.",
+            "fileNewName": "Όνομα για το νεό αρχείο",
+            "invalidFilename": "Μη-έγκυρο όνομα αρχείου",
             "invalidExtension": ".{0} is not a valid extension",
             "newFileName": "Νέο όνομα για το αρχείο",
-            "deleteCurrentSketch": "Do you want to delete the current sketch?",
+            "deleteCurrentSketch": "Θέλεις να διαγράψεις το υπάρχον σχέδιο;",
             "sketchDirectoryError": "Υπήρξε ένα λάθος κατά τη δημιουργία του φακέλου. Για περισσότερες λεπτομέρειες δείτε το αρχείο καταγραφής. Η εφαρμογή πιθανόν δε θα δουλέψει όπως αναμένεται."
         }
     },
