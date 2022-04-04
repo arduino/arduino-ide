@@ -11,6 +11,7 @@ import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/fil
 import { nls } from '@theia/core/lib/common';
 import { SettingsComponent } from './settings-component';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import { AdditionalUrls } from '../../../common/protocol';
 
 @injectable()
 export class SettingsWidget extends ReactWidget {
@@ -96,7 +97,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message) {
+  protected onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
@@ -105,7 +106,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     super.onActivateRequest(msg);
 
     // calling settingsService.reset() in order to reload the settings from the preferenceService
-    // and update the UI including changes triggerd from the command palette
+    // and update the UI including changes triggered from the command palette
     this.settingsService.reset();
 
     this.widget.activate();
@@ -168,10 +169,7 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
   }
 
   get value(): string[] {
-    return this.textArea.value
-      .split('\n')
-      .map((url) => url.trim())
-      .filter((url) => !!url);
+    return AdditionalUrls.parse(this.textArea.value, 'newline');
   }
 
   protected onAfterAttach(message: Message): void {
