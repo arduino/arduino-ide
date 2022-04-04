@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import * as dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -11,9 +11,15 @@ import {
   KeybindingRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { ApplicationShell } from '@theia/core/lib/browser';
+import { timeout } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
+
+  @inject(ApplicationShell)
+  protected readonly applicationShell: ApplicationShell;
+
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
       execute: (args) => this.saveAs(args),
@@ -87,6 +93,8 @@ export class SaveAsSketch extends SketchContribution {
     if (!destinationUri) {
       return false;
     }
+    await this.applicationShell.saveAll();
+    await timeout(20);
     const workspaceUri = await this.sketchService.copy(sketch, {
       destinationUri,
     });
