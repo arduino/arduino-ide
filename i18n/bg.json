@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Искате ли да запазите промените в тази скица, преди да затворите?",
             "loseChanges": "Ако не запазите, промените ви ще бъдат загубени."
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+            "notNowButton": "Not now",
+            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+            "closeToInstallNotice": "Close the software and install the update on your machine.",
+            "closeAndInstallButton": "Close and Install",
+            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+            "updateAvailable": "Update Available",
+            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download",
+            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+            "goToDownloadButton": "Go To Download",
+            "ideUpdaterDialog": "Software Update",
+            "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE"
+        },
         "menu": {
             "sketch": "Скица",
             "tools": "Инструменти"
@@ -31,7 +47,7 @@
             "upload.verbose": "True за подробен изход за качване. False по подразбиране.",
             "window.autoScale": "True , ако потребителският интерфейс автоматично се мащабира с размера на шрифта.",
             "window.zoomLevel": "Регулирайте нивото на увеличение на прозореца. Оригиналният размер е 0 и всяко увеличение над (напр. 1) или под (напр. -1) представлява увеличение с 20% по-голямо или по-малко. Можете също да въведете десетични знаци, за да регулирате нивото на увеличение по-финно.",
-            "ide.autoUpdate": "True, за да активирате автоматичните проверки за актуализация. IDE ще проверява за актуализации автоматично и периодично.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
             "board.certificates": "Списък със сертификати, които могат да бъдат качени на платката",
             "sketchbook.showAllFiles": "True , за да се покажат всички файлове вътре в скицата. По подразбиране е false.",
             "cloud.enabled": "True , ако функциите за синхронизиране на скицата са активирани. По подразбиране е true.",
@@ -55,7 +71,6 @@
             "compile": "компилиране",
             "upload": "качване",
             "verifyAfterUpload": "Потвърдете кода след качване",
-            "checkForUpdates": "Проверете за актуализации при стартиране",
             "editorQuickSuggestions": "Бързи предложения на редактора",
             "additionalManagerURLs": "Допълнителни URL адреси на мениджър на платки",
             "noProxy": "Без прокси",
@@ -108,7 +123,7 @@
             "installNow": "Ядрото „{0} {1}“ трябва да бъде инсталирано за текущо избраната платка „{2}“. Искате ли да го инсталирате сега?",
             "configDialogTitle": "Изберете друга платка и порт",
             "configDialog1": "Изберете както платка, така и порт, ако искате да качите скица.",
-            "configDialog2": "Ако изберете само платка, ще можете само да компилирате, но не и да качвате скицата си.",
+            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Моля, изберете платка, свързана към порта, който сте избрали.",
             "showAllAvailablePorts": "Показва всички налични портове, когато е активиран",
             "programmer": "Програматор",
@@ -173,7 +188,7 @@
             "showFolder": "Показване на папка за скици",
             "sketch": "Скица",
             "moving": "Преместване",
-            "movingMsg": "Файлът „{0}“ трябва да бъде в папка на скица, наречена „{1}“.\nСъздай тази папка, премести файла и продължи?",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
             "saveFolderAs": "Запазете папката със скица като...",
             "sketchbook": "Скицник",
@@ -223,7 +238,8 @@
             "reference": "Референция",
             "findInReference": "Намерете в Референцията",
             "faq": "Често задавани въпроси",
-            "visit": "Посетете Arduino.cc"
+            "visit": "Посетете Arduino.cc",
+            "privacyPolicy": "Privacy Policy"
         },
         "certificate": {
             "uploadRootCertificates": "Качете SSL коренни сертификати",
@@ -243,14 +259,14 @@
             "noSupportedBoardConnected": "Няма свързана поддържана платка"
         },
         "firmware": {
-            "updater": "WiFi101 / WiFiNINA Обновяване на фърмуера",
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
             "selectBoard": "Изберете платка",
             "checkUpdates": "Проверете актуализации",
             "selectVersion": "Изберете версия на фърмуера",
             "install": "Инсталирай",
             "overwriteSketch": "Инсталацията ще презапише скицата на платката.",
             "installingFirmware": "Инсталиране на фърмуер.",
-            "successfullyInstalled": "Фърмуерът е инсталиран успешно.",
+            "successfullyInstalled": "Firmware successfully installed.",
             "failedInstall": "Неуспешно инсталиране. Моля, опитайте отново."
         },
         "dialog": {
@@ -269,7 +285,7 @@
             "carriageReturn": "Carriage Return",
             "newLineCarriageReturn": "Както NL, така и CR",
             "notConnected": "Няма връзка. Изберете платка и порт за автоматично свързване.",
-            "message": "Съобщение ({0} + Enter, за да изпратите съобщение до „{1}“ на „{2}“",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
             "connectionBusy": "Свързването е неуспешно. Серийният порт е зает: {0}",
             "disconnected": "Прекъснато е връзката на {0} с {1}.",
             "unexpectedError": "Неочаквана грешка. Повторно свързване на {0} на порт {1}.",

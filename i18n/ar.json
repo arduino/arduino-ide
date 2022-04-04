@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Do you want to save changes to this sketch before closing?",
             "loseChanges": "If you don't save, your changes will be lost."
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+            "notNowButton": "Not now",
+            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+            "closeToInstallNotice": "Close the software and install the update on your machine.",
+            "closeAndInstallButton": "Close and Install",
+            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+            "updateAvailable": "Update Available",
+            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download",
+            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+            "goToDownloadButton": "Go To Download",
+            "ideUpdaterDialog": "Software Update",
+            "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE"
+        },
         "menu": {
             "sketch": "Sketch",
             "tools": "ادوات"
@@ -31,7 +47,7 @@
             "upload.verbose": "True for verbose upload output. False by default.",
             "window.autoScale": "True if the user interface automatically scales with the font size.",
             "window.zoomLevel": "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity.",
-            "ide.autoUpdate": "True to enable automatic update checks. The IDE will check for updates automatically and periodically.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
             "board.certificates": "List of certificates that can be uploaded to boards",
             "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
             "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
@@ -55,7 +71,6 @@
             "compile": "compile",
             "upload": "upload",
             "verifyAfterUpload": "Verify code after upload",
-            "checkForUpdates": "افحص التحديثات عند التشغيل",
             "editorQuickSuggestions": "Editor Quick Suggestions",
             "additionalManagerURLs": "تدبير عناوين اللوحات الإضافية",
             "noProxy": "No proxy",
@@ -108,7 +123,7 @@
             "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
             "configDialogTitle": "Select Other Board & Port",
             "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
-            "configDialog2": "If you only select a Board you will be able just to compile, but not to upload your sketch.",
+            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Please pick a board connected to the port you have selected.",
             "showAllAvailablePorts": "Shows all available ports when enabled",
             "programmer": "Programmer",
@@ -173,7 +188,7 @@
             "showFolder": "Show Sketch Folder",
             "sketch": "Sketch",
             "moving": "Moving",
-            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named as \"{1}\".\nCreate this folder, move the file, and continue?",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "المجلد المسمى \"{0}\" موجود مسبقا. لا يمكن فتح الشيفرة البرمجية",
             "saveFolderAs": "Save sketch folder as...",
             "sketchbook": "Sketchbook",
@@ -223,7 +238,8 @@
             "reference": "Reference",
             "findInReference": "Find in Reference",
             "faq": "Frequently Asked Questions",
-            "visit": "Visit Arduino.cc"
+            "visit": "Visit Arduino.cc",
+            "privacyPolicy": "Privacy Policy"
         },
         "certificate": {
             "uploadRootCertificates": "Upload SSL Root Certificates",
@@ -243,14 +259,14 @@
             "noSupportedBoardConnected": "No supported board connected"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Updater",
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
             "selectBoard": "Select Board",
             "checkUpdates": "Check Updates",
             "selectVersion": "Select firmware version",
             "install": "تنصيب",
             "overwriteSketch": "Installation will overwrite the Sketch on the board.",
             "installingFirmware": "Installing firmware.",
-            "successfullyInstalled": "Firmware succesfully installed.",
+            "successfullyInstalled": "Firmware successfully installed.",
             "failedInstall": "Installation failed. Please try again."
         },
         "dialog": {
@@ -269,7 +285,7 @@
             "carriageReturn": "اعادة الحمل",
             "newLineCarriageReturn": "كلاهما NL & CR",
             "notConnected": "Not connected. Select a board and a port to connect automatically.",
-            "message": "Message ({0} + Enter to send message to '{1}' on '{2}'",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
             "connectionBusy": "Connection failed. Serial port is busy: {0}",
             "disconnected": "Disconnected {0} from {1}.",
             "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",

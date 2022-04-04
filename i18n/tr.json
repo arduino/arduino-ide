@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Kapatmadan önce bu eskizdeki değişiklikleri kaydetmek istiyor musunuz?",
             "loseChanges": "Kaydetmezseniz değişiklikleriniz kaybolacak."
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Arduino IDE güncellemelerini kontrol ederken hata oluştu.{0}",
+            "notNowButton": "Şimdi değil",
+            "versionDownloaded": "Arduino IDE {0} indirildi.",
+            "closeToInstallNotice": "Yazılımı kapatın ve güncellemeyi makinanıza yükleyin.",
+            "closeAndInstallButton": "Kapat ve Kur",
+            "downloadingNotice": "Arduino IDE'nin son sürümü indiriliyor.",
+            "updateAvailable": "Güncelleme Mevcut",
+            "newVersionAvailable": "Yeni sürüm Arduino IDE ({0}) indirilmeye hazır.",
+            "skipVersionButton": "Sürümü Atla",
+            "downloadButton": "İndir",
+            "goToDownloadPage": "Arduino IDE için bir güncelleme mevcut, ancak otomatik olarak indirip kuramadık. Lütfen indirme sayfasına gidin ve son sürümü oradan indirin.",
+            "goToDownloadButton": "İndirmeye Git",
+            "ideUpdaterDialog": "Yazılım Güncelleme",
+            "noUpdatesAvailable": "Arduino IDE için yeni bir güncelleme bulunmuyor"
+        },
         "menu": {
             "sketch": "Eskiz",
             "tools": "Araçlar"
@@ -31,7 +47,7 @@
             "upload.verbose": " Ayrıntılı yükleme çıktısı için True. Varsayılan: False",
             "window.autoScale": "Kullanıcı arayüzü yazı tipi boyutu ile otomatik olarak ölçeklenecekse True",
             "window.zoomLevel": "Pencerenin yakınlaştırma seviyesini ayarlar. Orijinal boyut 0'dır ve her yukarı artış (örn. 1) veya düşüş (örn. -1) %20 daha büyük veya daha küçük anlamına gelir. Aynı zamanda yakınlaştırma seviyesini daha hassas ayarlamak için ondalıklar da girebilirsiniz.",
-            "ide.autoUpdate": "Otomatik güncelleme kontrollerini açmak için True. IDE güncellemeleri otomatik ve periyodik olarak kontrol eder.",
+            "ide.updateChannel": "Güncelleme yapılacak dağıtım kanalı. 'stable' kararlı sürümdür, 'nightly' ise son geliştirme sürümüdür.",
             "board.certificates": "Kartlara yüklenebilecek sertifikaların listesi",
             "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için True. Varsayılan: false.",
             "cloud.enabled": "Eskiz eşitleme fonksiyonları etkinse True. Varsayılan: True.",
@@ -55,7 +71,6 @@
             "compile": "derle",
             "upload": "yükle",
             "verifyAfterUpload": "Yüklemeden sonra kodu doğrula",
-            "checkForUpdates": "Açılışta güncellemeleri kontrol et",
             "editorQuickSuggestions": "Editör Hızlı Önerileri",
             "additionalManagerURLs": "Ek Kart Yöneticisi URL'leri",
             "noProxy": "Vekil yok",
@@ -223,7 +238,8 @@
             "reference": "Başvuru",
             "findInReference": "Başvuruda Bul",
             "faq": "Sıkça Sorulan Sorular",
-            "visit": "Arduino.cc'yi Ziyaret Et"
+            "visit": "Arduino.cc'yi Ziyaret Et",
+            "privacyPolicy": "Gizlilik Politikası"
         },
         "certificate": {
             "uploadRootCertificates": "SSL Kök Sertifikalarını Yükle",
@@ -243,7 +259,7 @@
             "noSupportedBoardConnected": "Bağlı desteklenen kart yok"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Güncelleyici",
+            "updater": "WiFi101 / WiFiNINA Firmware Güncelleyici",
             "selectBoard": "Kart Seç",
             "checkUpdates": "Güncellemeleri Kontrol Et",
             "selectVersion": "Firmware versiyonunu seç",
@@ -269,7 +285,7 @@
             "carriageReturn": "Satır Başı",
             "newLineCarriageReturn": "NL ve CR ile Birlikte",
             "notConnected": "Bağlı değil. Otomatik olarak bağlanacak bir kart ve bir port seçin.",
-            "message": "Mesaj ({0} + Mesaj göndermek için Enter '{1}' / '{2}'",
+            "message": "Mesaj ({0} + Mesaj göndermek için Enter '{1}' / '{2}')",
             "connectionBusy": "Bağlantı başarısız. Seri Port meşgul: {0}",
             "disconnected": "{1} bağlantısı koptu {0}.",
             "unexpectedError": "Beklenmeyen hata. Yeniden bağlanılıyor {0} / {1}.",

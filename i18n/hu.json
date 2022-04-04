@@ -14,6 +14,22 @@
             "saveChangesToSketch": "Menteni szeretnéd a vázlat módosításait a bezárás előtt? ",
             "loseChanges": "Ha nem mented, akkor a módosítások elvesznek. "
         },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+            "notNowButton": "Not now",
+            "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+            "closeToInstallNotice": "Close the software and install the update on your machine.",
+            "closeAndInstallButton": "Close and Install",
+            "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+            "updateAvailable": "Update Available",
+            "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download",
+            "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+            "goToDownloadButton": "Go To Download",
+            "ideUpdaterDialog": "Software Update",
+            "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE"
+        },
         "menu": {
             "sketch": "Sketch",
             "tools": "Eszközök"
@@ -31,7 +47,7 @@
             "upload.verbose": "Kipipálva: a részletes feltöltési üzenetek kiírása a képernyőre. Alapértelmezés szerint hamis/nincs kipipálva.",
             "window.autoScale": "Kipipálva, ha a felhasználói felület automatikusan méreteződik a betűmérettel együtt. ",
             "window.zoomLevel": "Ablak nagyítási szintjének megadása. Az eredeti méret: 0, és minden lépés növelése (pl. 1) vagy csökkentése (pl. -1) 20%-kal nagyobb vagy kisebb nagyítást jelent. Tizedesjegyeket is meg lehet adni a nagyítási szint finomabb  beállításához. ",
-            "ide.autoUpdate": "Kipipálva: engedélyezi az automatikus frissítést. A keretrendszer automatikusan és rendszeresen ellenőrzi a megjelenő frissítéseket.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
             "board.certificates": "Az alaplapokra feltölthető tanúsítványok listája",
             "sketchbook.showAllFiles": "Kipipálva: az összes vázlatfájl/sketch megjelenítése a vázlaton/sketch-en belül. Alapértelmezés szerint: nincs kipipálva.",
             "cloud.enabled": "Kipipálva: a vázlat/sketch-szinkronizálás engedélyezve van. Alapértelmezés: kipipálva. ",
@@ -55,7 +71,6 @@
             "compile": "fordítás",
             "upload": "feltöltés",
             "verifyAfterUpload": "Kód ellenőrzése feltöltés után",
-            "checkForUpdates": "Frissítések ellenőrzése a program indításakor",
             "editorQuickSuggestions": "Szerkesztői gyorstippek",
             "additionalManagerURLs": "Kiegészítő alaplapok URL-jei",
             "noProxy": "Nincs proxy",
@@ -108,7 +123,7 @@
             "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
             "configDialogTitle": "Egyéb Alaplap és Port választása",
             "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
-            "configDialog2": "Ha csak az alaplap van kiválasztva, akkor csak lefordítani lehet a vázlatot/sketch-et - feltölteni az alaplapra nem.",
+            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Válassz alaplapot, amely a kiválasztott porthoz csatlakozik. ",
             "showAllAvailablePorts": "Elérhető portok mutatása - ha engedélyezett",
             "programmer": "Programozó",
@@ -173,7 +188,7 @@
             "showFolder": "Vázlat-/sketch-mappa megjelenítése",
             "sketch": "Vázlat/sketch",
             "moving": "Mozgatás",
-            "movingMsg": "A/az {0} fájlnak egy {1} nevű vázlat-/sketch-mappában kell lennie. Létrehozzam ezt a mappát, áthelyezzem a fájlt, és folytassam a műveletet?",
+            "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "Már létezik a/az {0} nevű mappa. A vázlat/sketch nem nyitható meg. ",
             "saveFolderAs": "Vázlat-/sketch-mappa mentése másként... ",
             "sketchbook": "Vázlatfüzet/sketchbook ",
@@ -223,7 +238,8 @@
             "reference": "Referencia ",
             "findInReference": "Keresse meg a Referenciákban",
             "faq": "Gyakran ismételt kérdések",
-            "visit": "Arduino.cc meglátogatása"
+            "visit": "Arduino.cc meglátogatása",
+            "privacyPolicy": "Privacy Policy"
         },
         "certificate": {
             "uploadRootCertificates": "SSL gyökér-/root-tanúsítványok feltöltése ",
@@ -269,7 +285,7 @@
             "carriageReturn": "Kocsi vissza",
             "newLineCarriageReturn": "Mindkettő: Új sor és Kocsi vissza - NL&CR",
             "notConnected": "Nincs kapcsolat. Válassz ki egy alaplapot és egy portot az automatikus csatlakozáshoz. ",
-            "message": "Üzenet ({0}  + Enter az üzenet elküldéséhez az {1} itt: {2}",
+            "message": "Üzenet ({0} + Enter az üzenet elküldéséhez az {1} itt: {2})",
             "connectionBusy": "Kapcsolat nem jött létre. A {0} soros port foglalt.",
             "disconnected": "Megszakadt a/az {0} és a/az {1} kapcsolata. ",
             "unexpectedError": "Váratlan hiba. A/az {0} újracsatlakozása a/az {1} porton. ",

@@ -3,7 +3,7 @@
         "common": {
             "offlineIndicator": "Anscheinend bist du offline. Ohne eine aktive Internetverbindung kann das Arduino CLI nicht die nötigen Ressourcen herunterladen, was zu Problemen führen kann. Bitte überprüfe deine Internetverbindung und starte das Programm neu. ",
             "noBoardSelected": "Kein Board ausgewählt",
-            "selectedOn": "bei {0}",
+            "selectedOn": "an {0}",
             "notConnected": "[keine Verbindung]",
             "serialMonitor": "Serieller Monitor",
             "oldFormat": "Der Sketch '{0}' verwendet noch das alte '.pde' Format. Möchtest du auf die neuere '.ino' Endung wechseln?",
@@ -12,7 +12,23 @@
             "unknown": "unbekannt",
             "processing": "Verarbeiten",
             "saveChangesToSketch": "Änderungen zu diesem Sketch vor dem Schließen sichern?",
-            "loseChanges": "Wenn du nicht sicherst, werden deine Änderungen gelöscht."
+            "loseChanges": "Wenn du nicht speicherst, werden deine Änderungen gelöscht."
+        },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Fehler bei der Suche nach IDE Updates{0}",
+            "notNowButton": "Später",
+            "versionDownloaded": "Arduino IDE {0} wurde heruntergeladen",
+            "closeToInstallNotice": "Schließe die Software und installiere das Update auf deinem Computer",
+            "closeAndInstallButton": "Schließen und Installieren",
+            "downloadingNotice": "Die neueste Version der Arduino IDE wird heruntergeladen",
+            "updateAvailable": "Update Verfügbar",
+            "newVersionAvailable": "Eine neue Version der Arduino IDE ({0}) ist zum Download verfügbar",
+            "skipVersionButton": "Version Überspringen",
+            "downloadButton": "Download",
+            "goToDownloadPage": "Eine Update für die Arduino IDE ist verfügbar, konnte aber nicht automatisch heruntergeladen und installiert werden. Bitte gehen sie zur Download-Seite und laden sie dort die neueste Version herunter",
+            "goToDownloadButton": "Zum Download Wechseln",
+            "ideUpdaterDialog": "Software Update",
+            "noUpdatesAvailable": "Es gibt keine neuen Updates für die Arduino IDE"
         },
         "menu": {
             "sketch": "Sketch",
@@ -31,7 +47,7 @@
             "upload.verbose": "Wahr für ausführliche Ausgaben während dem Hochladen. Standardmäßig Falsch.",
             "window.autoScale": "Ist wahr, wenn die Benutzeroberfläche automatisch mit der Schriftgröße skaliert wird.",
             "window.zoomLevel": "Stelle die Zoomstufe des Fensters ein. Der Standardwert ist 0, jede Vergrößerung (z.B.: 1) oder Verringerung (z.B.: -1) um eins steht für 20% Vergrößerung bzw. Verkleinerung des Fensters. Du kannst auch Kommazahlen eingeben, um die Zoomstufe feiner einzustellen.\n ",
-            "ide.autoUpdate": "Wahr, um automatisch auf Updates zu überprüfen. Die IDE wird automatisch regelmäßig auf Updates prüfen.",
+            "ide.updateChannel": "Von welchem Kannal die Updates kommen sollen. 'stabil' ist die stabile Version, 'nächtlich' ist die neueste Entwicklerversion",
             "board.certificates": "Liste der Zertifikate, welche zu den Boards hochgeladen werden können.",
             "sketchbook.showAllFiles": "Wahr, um alle Dateien im Sketch anzuzeigen. Standardmäßig Falsch.",
             "cloud.enabled": "Wahr, wenn die Sketch-Syncfunctionen aktiv sind. Standardeinstellung ist wahr.",
@@ -55,7 +71,6 @@
             "compile": "Kompilieren",
             "upload": "Hochladen",
             "verifyAfterUpload": "Code nach Hochladen überprüfen ",
-            "checkForUpdates": "Beim Start nach Updates suchen",
             "editorQuickSuggestions": "Schnelle Editor Vorschläge",
             "additionalManagerURLs": "Zusätzliche Boardverwalter-URLs",
             "noProxy": "Kein Proxy",
@@ -85,7 +100,7 @@
             "share": "Teilen....",
             "remote": "Remote",
             "emptySketchbook": "Dein Sketchbook ist leer",
-            "visitArduinoCloud": "Besuche Arduino Cloud um Cloud Sketche zu erstellen.",
+            "visitArduinoCloud": "Besuche Arduino Cloud um Cloud Sketche zu erstellen.",
             "signInToCloud": "Anmelden zur Arduino Cloud",
             "syncEditSketches": "Synchronisiere und editiere deine Arduino Cloud Sketches.",
             "learnMore": "Mehr erfahren",
@@ -173,7 +188,7 @@
             "showFolder": "Zeige Sketch Ordner",
             "sketch": "Sketch",
             "moving": "Übertragen...",
-            "movingMsg": "Die Datei \"{0}\" muss sich in einem Sketch Ordner \"{1}\" befinden.\nDiesen Ordner erstellen, Datei verschieben und fortfahren?",
+            "movingMsg": "Die Datei \"{0}\" muss sich in einen Sketch Ordner \"{1}\" befinden.\nOrdner erstellen, Datei verschieben und fortfahren?",
             "cantOpen": "Ein Ordner mit dem Namen \"{0}\" ist bereits vorhanden. Der Sketch kann nicht geöffnet werden.",
             "saveFolderAs": "Sketch Ordner speichern als...",
             "sketchbook": "Sketchbook",
@@ -223,7 +238,8 @@
             "reference": "Referenz",
             "findInReference": "Referenzsuche",
             "faq": "Häufig gestellte Fragen",
-            "visit": "Besuche Arduino.cc"
+            "visit": "Besuche Arduino.cc",
+            "privacyPolicy": "Datenschutzbestimmungen"
         },
         "certificate": {
             "uploadRootCertificates": "SSL Root Zertifikat hochladen",
@@ -243,7 +259,7 @@
             "noSupportedBoardConnected": "Kein unterstütztes Board angeschlossen"
         },
         "firmware": {
-            "updater": "WiFi101 /  WiFiNINA Firmware Aktualisierer",
+            "updater": "WiFi101 / WiFiNINA Firmware Aktualisierer",
             "selectBoard": "Board auswählen",
             "checkUpdates": "Nach Updates Suchen",
             "selectVersion": "Firmware Version wählen",
@@ -269,7 +285,7 @@
             "carriageReturn": "Zeilenumbruch",
             "newLineCarriageReturn": "Sowohl NL als auch CR",
             "notConnected": "Nicht verbunden. Wählen Sie ein Board und einen Port, um automatisch zu verbinden.",
-            "message": "Nachricht ({0} + Enter, um Nachricht an '{1}' auf '{2}' zu senden",
+            "message": "Nachricht ({0} + Enter, um Nachricht an '{1}' auf '{2}') zu senden",
             "connectionBusy": "Verbindung fehlgeschlagen. Serieller port ist belegt: {0}",
             "disconnected": "{0} von {1} getrennt.",
             "unexpectedError": "100%match\nUnerwarteter Fehler. {0} wird am Port {1} erneut verbunden.",
