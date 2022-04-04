@@ -11,7 +11,15 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
   registerCommands(commandRegistry: CommandRegistry): void {
     super.registerCommands(commandRegistry);
 
-    for (const command of [CommonCommands.CONFIGURE_DISPLAY_LANGUAGE]) {
+    for (const command of [
+      CommonCommands.CONFIGURE_DISPLAY_LANGUAGE,
+      CommonCommands.CLOSE_TAB,
+      CommonCommands.CLOSE_SAVED_TABS,
+      CommonCommands.CLOSE_OTHER_TABS,
+      CommonCommands.CLOSE_ALL_TABS,
+      CommonCommands.COLLAPSE_PANEL,
+      CommonCommands.TOGGLE_MAXIMIZED,
+    ]) {
       commandRegistry.unregisterCommand(command);
     }
   }
@@ -32,10 +40,6 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.SELECT_ICON_THEME,
       CommonCommands.SELECT_COLOR_THEME,
       CommonCommands.ABOUT_COMMAND,
-      CommonCommands.CLOSE_TAB,
-      CommonCommands.CLOSE_OTHER_TABS,
-      CommonCommands.CLOSE_ALL_TABS,
-      CommonCommands.COLLAPSE_PANEL,
       CommonCommands.SAVE_WITHOUT_FORMATTING, // Patched for https://github.com/eclipse-theia/theia/pull/8877
     ]) {
       registry.unregisterMenuAction(command);
