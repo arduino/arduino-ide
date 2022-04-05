@@ -9,6 +9,7 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import {
   ApplicationShell as TheiaApplicationShell,
+  DockPanel,
   Panel,
   Widget,
 } from '@theia/core/lib/browser';
@@ -74,6 +75,11 @@ export class ApplicationShell extends TheiaApplicationShell {
     return super.addWidget(widget, { ...options, ref });
   }
 
+  handleEvent(): boolean {
+    // NOOP, dragging has been disabled
+    return false
+  }
+
   // Avoid hiding top panel as we use it for arduino toolbar
   protected createTopPanel(): Panel {
     const topPanel = super.createTopPanel();
@@ -101,3 +107,16 @@ export class ApplicationShell extends TheiaApplicationShell {
     );
   }
 }
+
+const originalHandleEvent = DockPanel.prototype.handleEvent;
+
+DockPanel.prototype.handleEvent = function (event) {
+  switch (event.type) {
+      case 'p-dragenter':
+      case 'p-dragleave':
+      case 'p-dragover':
+      case 'p-drop':
+        return;
+  }
+  originalHandleEvent(event);
+};

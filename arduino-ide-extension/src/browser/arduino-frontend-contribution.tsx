@@ -39,13 +39,14 @@ import {
 import { MessageService } from '@theia/core/lib/common/message-service';
 import URI from '@theia/core/lib/common/uri';
 import {
+  EditorCommands,
   EditorMainMenu,
   EditorManager,
   EditorOpenerOptions,
 } from '@theia/editor/lib/browser';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
-import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import { FileNavigatorCommands, FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
@@ -344,14 +345,14 @@ export class ArduinoFrontendContribution
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
 
     this.fileSystemFrontendContribution.onDidChangeEditorFile(e => {
-        if (e.type === FileChangeType.DELETED) {
-            const editorWidget = e.editor;
-            if (SaveableWidget.is(editorWidget)) {
-                editorWidget.closeWithoutSaving();
-            } else {
-                editorWidget.close();
-            }
+      if (e.type === FileChangeType.DELETED) {
+        const editorWidget = e.editor;
+        if (SaveableWidget.is(editorWidget)) {
+          editorWidget.closeWithoutSaving();
+        } else {
+          editorWidget.close();
         }
+      }
     });
   }
 
@@ -485,6 +486,18 @@ export class ArduinoFrontendContribution
         }
       },
     });
+
+    for (const command of [
+      EditorCommands.SPLIT_EDITOR_DOWN,
+      EditorCommands.SPLIT_EDITOR_LEFT,
+      EditorCommands.SPLIT_EDITOR_RIGHT,
+      EditorCommands.SPLIT_EDITOR_UP,
+      EditorCommands.SPLIT_EDITOR_VERTICAL,
+      EditorCommands.SPLIT_EDITOR_HORIZONTAL,
+      FileNavigatorCommands.REVEAL_IN_NAVIGATOR
+    ]) {
+      registry.unregisterCommand(command);
+    }
   }
 
   registerMenus(registry: MenuModelRegistry) {
