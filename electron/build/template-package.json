@@ -106,6 +106,9 @@
       "category": "Development",
       "icon": "resources/icons"
     },
+    "msi": {
+      "runAfterFinish": false
+    },
     "nsis": {
       "oneClick": false,
       "installerHeaderIcon": "resources/icon.ico",
