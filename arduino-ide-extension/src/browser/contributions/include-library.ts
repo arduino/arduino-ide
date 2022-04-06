@@ -16,6 +16,7 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
+import * as monaco from '@theia/monaco-editor-core';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {

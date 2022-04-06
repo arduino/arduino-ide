@@ -12,6 +12,8 @@ import {
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
+import type { ICodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/browser/editorBrowser';
+import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneCodeEditor';
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
@@ -250,10 +252,10 @@ ${value}
     });
   }
 
-  protected async current(): Promise<monaco.editor.ICodeEditor | undefined> {
+  protected async current(): Promise<ICodeEditor | StandaloneCodeEditor  | undefined> {
     return (
       this.codeEditorService.getFocusedCodeEditor() ||
-      this.codeEditorService.getActiveCodeEditor()
+      this.codeEditorService.getActiveCodeEditor() || undefined
     );
   }
 

@@ -15,6 +15,7 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
+import * as monaco from '@theia/monaco-editor-core';
 
 @injectable()
 export class Help extends Contribution {
