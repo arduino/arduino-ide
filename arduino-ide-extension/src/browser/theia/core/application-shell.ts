@@ -41,6 +41,14 @@ export class ApplicationShell extends TheiaApplicationShell {
       // Make the editor un-closeable asynchronously.
       this.sketchesServiceClient.currentSketch().then((sketch) => {
         if (sketch) {
+          const ignoreFolders = ['.vscode', '.theia', 'src'];
+          let editorPath = widget.editor.uri;
+          while (editorPath.toString().length > sketch.uri.length) {
+            if (ignoreFolders.includes(editorPath.path.base)) {
+              return;
+            }
+            editorPath = editorPath.parent;
+          }
           if (Sketch.isInSketch(widget.editor.uri, sketch)) {
             widget.title.closable = false;
           }
