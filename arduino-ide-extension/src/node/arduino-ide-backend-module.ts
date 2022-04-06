@@ -92,6 +92,8 @@ import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
 import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
 import { WebSocketService } from './web-socket/web-socket-service';
+import { ArduinoLocalizationContribution } from './arduino-localization-contribution';
+import { LocalizationContribution } from '@theia/core/lib/node/i18n/localization-contribution';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -340,4 +342,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(PlotterBackendContribution).toSelf().inSingletonScope();
   bind(BackendApplicationContribution).toService(PlotterBackendContribution);
+  bind(ArduinoLocalizationContribution).toSelf().inSingletonScope();
+  bind(LocalizationContribution).toService(ArduinoLocalizationContribution);
 });
