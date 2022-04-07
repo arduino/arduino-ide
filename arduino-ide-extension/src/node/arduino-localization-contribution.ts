@@ -65,7 +65,7 @@ export class ArduinoLocalizationContribution
     );
 
     registry.registerLocalizationFromRequire(
-      'zh',
+      'zh-cn',
       require('../../build/i18n/zh.json')
     );
 
