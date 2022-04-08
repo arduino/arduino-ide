@@ -5,6 +5,7 @@ import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { timeout } from '@theia/core/lib/common/promise-util';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
@@ -27,16 +28,33 @@ export class SerialMonitorSendInput extends React.Component<
 
   constructor(props: Readonly<SerialMonitorSendInput.Props>) {
     super(props);
-    this.state = { text: '', connected: false };
+    this.state = { text: '', connected: true };
     this.onChange = this.onChange.bind(this);
     this.onSend = this.onSend.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount(): void {
-    this.props.monitorManagerProxy.isWSConnected().then((connected) => {
-      this.setState({ connected });
+    this.setState({ connected: true });
+
+    const checkWSConnection = new Promise<boolean>((resolve) => {
+      this.props.monitorManagerProxy.onWSConnectionChanged((connected) => {
+        this.setState({ connected });
+        resolve(true);
+      });
     });
+
+    const checkWSTimeout = timeout(1000).then(() => false);
+
+    Promise.race<boolean>([checkWSConnection, checkWSTimeout]).then(
+      async (resolved) => {
+        if (!resolved) {
+          const connected =
+            await this.props.monitorManagerProxy.isWSConnected();
+          this.setState({ connected });
+        }
+      }
+    );
   }
 
   componentWillUnmount(): void {
@@ -49,7 +67,7 @@ export class SerialMonitorSendInput extends React.Component<
       <input
         ref={this.setRef}
         type="text"
-        className={`theia-input ${this.state.connected ? '' : 'warning'}`}
+        className={`theia-input ${this.shouldShowWarning() ? 'warning' : ''}`}
         placeholder={this.placeholder}
         value={this.state.text}
         onChange={this.onChange}
@@ -58,16 +76,22 @@ export class SerialMonitorSendInput extends React.Component<
     );
   }
 
-  protected get placeholder(): string {
+  protected shouldShowWarning(): boolean {
     const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
     const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
-    if (!this.state.connected || !board || !port) {
+    return !this.state.connected || !board || !port;
+  }
+
+  protected get placeholder(): string {
+    if (this.shouldShowWarning()) {
       return nls.localize(
         'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
       );
     }
 
+    const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
+    const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
     return nls.localize(
       'arduino/serial/message',
       "Message ({0} + Enter to send message to '{1}' on '{2}')",
