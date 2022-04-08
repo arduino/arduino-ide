@@ -39,10 +39,6 @@ export class AddZipLibrary extends SketchContribution {
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
       '0_include',
     ];
-    // TODO: do we need it? calling `registerSubmenu` multiple times is noop, so it does not hurt.
-    registry.registerSubmenu(includeLibMenuPath, 'Include Library', {
-      order: '1',
-    });
     registry.registerMenuAction([...includeLibMenuPath, '1_install'], {
       commandId: AddZipLibrary.Commands.ADD_ZIP_LIBRARY.id,
       label: nls.localize('arduino/library/addZip', 'Add .ZIP Library...'),

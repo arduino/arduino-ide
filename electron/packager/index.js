@@ -74,6 +74,7 @@
     'yarn.lock',
     'package.json',
     'lerna.json',
+    'i18n'
   ]) {
     cp('-rf', path(rootPath, name), path('..', workingCopy));
   }

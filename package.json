@@ -74,6 +74,12 @@
     "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.2.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix"
+    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix",
+    "vscode-language-pack-nl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-nl/1.48.3/file/MS-CEINTL.vscode-language-pack-nl-1.48.3.vsix",
+    "vscode-language-pack-fr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-fr/1.53.2/file/MS-CEINTL.vscode-language-pack-fr-1.53.2.vsix",
+    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.53.2/file/MS-CEINTL.vscode-language-pack-zh-hans-1.53.2.vsix",
+    "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.53.2/file/MS-CEINTL.vscode-language-pack-de-1.53.2.vsix",
+    "vscode-language-pack-ja":"https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ja/1.53.2/file/MS-CEINTL.vscode-language-pack-ja-1.53.2.vsix",
+    "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.53.2/file/MS-CEINTL.vscode-language-pack-tr-1.53.2.vsix"
   }
 }
