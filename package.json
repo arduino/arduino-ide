@@ -26,6 +26,7 @@
     "ignore-styles": "^5.0.1",
     "lerna": "^3.20.2",
     "lint-staged": "^11.0.0",
+    "node-gyp": "^9.0.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
@@ -38,7 +39,7 @@
     "dugite-extra": "0.1.15"
   },
   "scripts": {
-    "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",
+    "prepare": "lerna run prepare && yarn download:plugins",
     "cleanup": "npx rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./browser-app/lib ./browser-app/src-gen ./browser-app/gen-webpack.config.js ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
