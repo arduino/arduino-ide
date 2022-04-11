@@ -14,7 +14,6 @@ import {
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
 import { URI } from '@theia/core/shared/vscode-uri';
-import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
 import { Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
@@ -37,7 +36,6 @@ const WORKSPACES = 'workspaces';
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
-  protected _windows: BrowserWindow[] = [];
   protected startup = false;
   protected openFilePromise = new Deferred();
 
@@ -179,99 +177,87 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   async createWindow(
     asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
-    let options = await asyncOptions;
-    options = this.avoidOverlap(options);
-    let electronWindow: BrowserWindow | undefined;
-    if (this._windows.length) {
-      electronWindow = await super.createWindow(options);
-    } else {
-      const { bounds } = screen.getDisplayNearestPoint(
-        screen.getCursorScreenPoint()
+    const createRegularWindow = !this.windows.size;
+    const electronWindow = await (createRegularWindow
+      ? super.createWindow(asyncOptions)
+      : this.createSplashScreenWindow(asyncOptions));
+    if (createRegularWindow) {
+      electronWindow.webContents.on(
+        'new-window',
+        (event, url, frameName, disposition, options) => {
+          if (frameName === 'serialPlotter') {
+            event.preventDefault();
+            Object.assign(options, {
+              width: 800,
+              minWidth: 620,
+              height: 500,
+              minHeight: 320,
+              x: 100,
+              y: 100,
+              webPreferences: {
+                devTools: true,
+                nativeWindowOpen: true,
+                openerId: electronWindow?.webContents.id,
+              },
+            });
+            event.newGuest = new BrowserWindow(options);
+            event.newGuest.setMenu(null);
+            event.newGuest?.on('closed', (e: any) => {
+              electronWindow?.webContents.send('CLOSE_CHILD_WINDOW');
+            });
+            event.newGuest?.loadURL(url);
+          }
+        }
       );
-      const splashHeight = 450;
-      const splashWidth = 600;
-      const splashY = Math.floor(bounds.y + (bounds.height - splashHeight) / 2);
-      const splashX = Math.floor(bounds.x + (bounds.width - splashWidth) / 2);
-      const splashScreenOpts: BrowserWindowConstructorOptions = {
-        height: splashHeight,
-        width: splashWidth,
-        x: splashX,
-        y: splashY,
-        transparent: true,
-        alwaysOnTop: true,
-        focusable: false,
-        minimizable: false,
-        maximizable: false,
-        hasShadow: false,
-        resizable: false,
-      };
-      electronWindow = initSplashScreen(
-        {
-          windowOpts: options,
-          templateUrl: join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            'src',
-            'electron-main',
-            'splash',
-            'static',
-            'splash.html'
-          ),
-          delay: 0,
-          minVisible: 2000,
-          splashScreenOpts,
-        },
-        this.splashService.onCloseRequested
-      );
+      this.attachClosedWorkspace(electronWindow);
     }
-
-    electronWindow.webContents.on(
-      'new-window',
-      (event, url, frameName, disposition, options) => {
-        if (frameName === 'serialPlotter') {
-          event.preventDefault();
-          Object.assign(options, {
-            width: 800,
-            minWidth: 620,
-            height: 500,
-            minHeight: 320,
-            x: 100,
-            y: 100,
-            webPreferences: {
-              devTools: true,
-              nativeWindowOpen: true,
-              openerId: electronWindow?.webContents.id,
-            },
-          });
-          event.newGuest = new BrowserWindow(options);
-          event.newGuest.setMenu(null);
-          event.newGuest?.on('closed', (e: any) => {
-            electronWindow?.webContents.send('CLOSE_CHILD_WINDOW');
-          });
-          event.newGuest?.loadURL(url);
-        }
-      }
-    );
-
-    this._windows.push(electronWindow);
-    electronWindow.on('closed', () => {
-      if (electronWindow) {
-        const index = this._windows.indexOf(electronWindow);
-        if (index === -1) {
-          console.warn(
-            `Could not dispose browser window: '${electronWindow.title}'.`
-          );
-        } else {
-          this._windows.splice(index, 1);
-          electronWindow = undefined;
-        }
-      }
-    });
-    this.attachClosedWorkspace(electronWindow);
-    electronRemoteMain.enable(electronWindow.webContents);
     return electronWindow;
+  }
+
+  private async createSplashScreenWindow(
+    asyncOptions: MaybePromise<TheiaBrowserWindowOptions>
+  ): Promise<BrowserWindow> {
+    const options = await asyncOptions;
+    const { bounds } = screen.getDisplayNearestPoint(
+      screen.getCursorScreenPoint()
+    );
+    const splashHeight = 450;
+    const splashWidth = 600;
+    const splashY = Math.floor(bounds.y + (bounds.height - splashHeight) / 2);
+    const splashX = Math.floor(bounds.x + (bounds.width - splashWidth) / 2);
+    const splashScreenOpts: BrowserWindowConstructorOptions = {
+      height: splashHeight,
+      width: splashWidth,
+      x: splashX,
+      y: splashY,
+      transparent: true,
+      alwaysOnTop: true,
+      focusable: false,
+      minimizable: false,
+      maximizable: false,
+      hasShadow: false,
+      resizable: false,
+    };
+    return initSplashScreen(
+      {
+        windowOpts: options,
+        templateUrl: join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'src',
+          'electron-main',
+          'splash',
+          'static',
+          'splash.html'
+        ),
+        delay: 0,
+        minVisible: 2000,
+        splashScreenOpts,
+      },
+      this.splashService.onCloseRequested
+    );
   }
 
   protected async startBackend(): Promise<number> {
@@ -376,6 +362,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   get browserWindows(): BrowserWindow[] {
-      return this._windows;
+    return Array.from(this.windows.values()).map(({ window }) => window);
   }
 }
