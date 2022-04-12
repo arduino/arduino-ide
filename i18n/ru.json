@@ -51,13 +51,13 @@
             "board.certificates": "Список сертификатов, которые могут быть загружены в платы",
             "sketchbook.showAllFiles": "True - показывать все файлы внутри скетча. По умолчанию - false.",
             "cloud.enabled": "True, если функции синхронизации скетчей включены. По умолчанию - true.",
-            "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
-            "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
-            "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
-            "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+            "cloud.pull.warn": "True, если пользователи должны быть предупреждены перед созданием облачного скетча. По умолчанию установлено значение true.",
+            "cloud.push.warn": "True, если пользователи должны быть предупреждены перед запуском облачного эскиза. По умолчанию установлено значение true.",
+            "cloud.pushpublic.warn": "True, если пользователи должны быть предупреждены перед отправкой общедоступного эскиза в облако. По умолчанию установлено значение true.",
+            "cloud.sketchSyncEnpoint": "Конечная точка, используемая для отправки и извлечения скетчей из серверной части. По умолчанию он указывает на Arduino Cloud API.",
             "auth.clientID": "Идентификатор клиента OAuth2.",
             "auth.domain": "Домен OAuth2.",
-            "auth.audience": "The OAuth2 audience.",
+            "auth.audience": "Аудитория OAuth2.",
             "auth.registerUri": "URI, используемый для регистрации нового пользователя.",
             "network": "Сеть",
             "sketchbook.location": "Путь к альбому со скетчами",
@@ -90,11 +90,11 @@
             "privateVisibility": "Приватный. Только автор можешь просматривать скетч.",
             "publicVisibility": "Публичный. Любой, у кого есть ссылка, может посмотреть скетч.",
             "link": "Ссылка:",
-            "embed": "Embed:",
+            "embed": "Встроить:",
             "cloudSketchbook": "Альбом в облаке",
             "shareSketch": "Поделиться скетчем",
             "showHideRemoveSketchbook": "Показать/скрыть удаленный альбом",
-            "pullSketch": "Pull Sketch",
+            "pullSketch": "Вытянуть скетч",
             "openInCloudEditor": "Открыть в облачном редакторе",
             "options": "Параметры...",
             "share": "Поделиться...",
@@ -105,15 +105,15 @@
             "syncEditSketches": "Синхронизировать и редактировать скетчи в Arduino Cloud",
             "learnMore": "Узнать больше",
             "continue": "Продолжить",
-            "pushSketch": "Push Sketch",
-            "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
-            "pull": "Pull",
-            "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
-            "donePulling": "Done pulling ‘{0}’.",
-            "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
-            "push": "Push",
-            "pullFirst": "You have to pull first to be able to push to the Cloud.",
-            "donePushing": "Done pushing ‘{0}’.",
+            "pushSketch": "Выдавить скетч",
+            "pushSketchMsg": "Это Публичный скетч. Перед нажатием убедитесь, что любая конфиденциальная информация определена в файлах arduino_secrets.h. Вы можете сделать скетч приватным на панели общего доступа.",
+            "pull": "Выдавить",
+            "pullSketchMsg": "Извлечение этого скетча из Облака приведет к перезаписи его локальной версии. Вы уверены, что хотите продолжить?",
+            "donePulling": "Закончить вытягивание ‘{0}’.",
+            "notYetPulled": "Не удается отправить в облако. Он еще не вытащен.",
+            "push": "Отправить",
+            "pullFirst": "Вы должны сначала потянуть, чтобы иметь возможность перейти к облаку.",
+            "donePushing": "Отправлено ‘{0}’.",
             "connected": "Подключено",
             "offline": "Не подключено",
             "profilePicture": "Фотография профиля"
@@ -239,7 +239,7 @@
             "findInReference": "Найти в справочнике",
             "faq": "Часто задаваемые вопросы",
             "visit": "Перейти на сайт Arduino.cc",
-            "privacyPolicy": "Privacy Policy"
+            "privacyPolicy": "Политика конфиденциальности"
         },
         "certificate": {
             "uploadRootCertificates": "Загрузка корневого сертификата SSL",
@@ -255,7 +255,7 @@
             "certificatesUploaded": "Сертификаты зугружены.",
             "uploadFailed": "Загрузка не удалась. Повторите попытку.",
             "selectBoard": "Выберите плату...",
-            "boardAtPort": "{0} at {1}",
+            "boardAtPort": "{0}в{1}",
             "noSupportedBoardConnected": "Не подключено ни одной поддерживаемой платы"
         },
         "firmware": {
@@ -266,7 +266,7 @@
             "install": "Установка",
             "overwriteSketch": "Установка перезаписывает скетч на плате.",
             "installingFirmware": "Установка прошивки.",
-            "successfullyInstalled": "Firmware successfully installed.",
+            "successfullyInstalled": "Прошивка успешно установлена.",
             "failedInstall": "Не удалось установить прошивку. Повторите попытку."
         },
         "dialog": {
@@ -295,7 +295,7 @@
         "component": {
             "uninstall": "Удалить",
             "uninstallMsg": "Вы хотите удалить  {0}?",
-            "by": "by",
+            "by": "около",
             "version": "Версия {0}",
             "moreInfo": "Дополнительная информация",
             "install": "Установка",
@@ -329,7 +329,7 @@
             "startError": "Произошла ошибка при запуске отладочной сессии, просмотрите журнал для получения дополнительной информации."
         },
         "editor": {
-            "unsavedTitle": "Unsaved – {0}"
+            "unsavedTitle": "Несохраненный –{0}"
         },
         "messages": {
             "expand": "Развернуть",
