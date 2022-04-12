@@ -17,6 +17,7 @@ import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
+import URI from '@theia/core/lib/common/uri';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
@@ -41,13 +42,8 @@ export class ApplicationShell extends TheiaApplicationShell {
       // Make the editor un-closeable asynchronously.
       this.sketchesServiceClient.currentSketch().then((sketch) => {
         if (sketch) {
-          const ignoreFolders = ['.vscode', '.theia', 'src'];
-          let editorPath = widget.editor.uri;
-          while (editorPath.toString().length > sketch.uri.length) {
-            if (ignoreFolders.includes(editorPath.path.base)) {
+          if (!this.isSketchFile(widget.editor.uri, sketch.uri)) {
               return;
-            }
-            editorPath = editorPath.parent;
           }
           if (Sketch.isInSketch(widget.editor.uri, sketch)) {
             widget.title.closable = false;
@@ -55,6 +51,14 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
       });
     }
+  }
+
+  private isSketchFile(uri: URI, sketchUriString: string): boolean {
+      const sketchUri = new URI(sketchUriString);
+      if (uri.parent.isEqual(sketchUri)) {
+          return true;
+      }
+      return false;
   }
 
   async addWidget(
