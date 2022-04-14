@@ -15,8 +15,9 @@ import {
   FileSystemExt,
   Network,
 } from '../../../common/protocol';
-import { nls } from '@theia/core/lib/common';
+import { CommandService, nls } from '@theia/core/lib/common';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 
 export const EDITOR_SETTING = 'editor';
 export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
@@ -81,6 +82,9 @@ export class SettingsService {
 
   @inject(AsyncLocalizationProvider)
   protected readonly localizationProvider: AsyncLocalizationProvider;
+
+  @inject(CommandService)
+  protected commandService: CommandService;
 
   protected readonly onDidChangeEmitter = new Emitter<Readonly<Settings>>();
   readonly onDidChange = this.onDidChangeEmitter.event;
@@ -282,7 +286,7 @@ export class SettingsService {
       } else {
         window.localStorage.setItem(nls.localeId, currentLanguage);
       }
-      window.location.reload();
+      this.commandService.executeCommand(ElectronCommands.RELOAD.id);
     }
 
     return true;
