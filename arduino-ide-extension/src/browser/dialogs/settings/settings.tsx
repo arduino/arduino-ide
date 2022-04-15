@@ -278,9 +278,9 @@ export class SettingsService {
     // after saving all the settings, if we need to change the language we need to perform a reload
     // Only reload if the language differs from the current locale. `nls.locale === undefined` signals english as well
     if (
-      currentLanguage !== nls.locale &&
-      !(currentLanguage === 'en' && nls.locale === undefined)
+      currentLanguage !== (await this.localizationProvider.getCurrentLanguage())
     ) {
+      await this.localizationProvider.setCurrentLanguage(currentLanguage);
       if (currentLanguage === 'en') {
         window.localStorage.removeItem(nls.localeId);
       } else {
