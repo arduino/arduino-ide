@@ -35,7 +35,7 @@ for (const toUpdate of [
     pkg.version = targetVersion;
     if ('dependencies' in pkg) {
         for (const dep of Object.keys(pkg['dependencies'])) {
-            if (dep.startsWith('arduino-')) {
+            if (dep.startsWith('arduino-ide-')) {
                 pkg['dependencies'][dep] = targetVersion;
             }
         }
