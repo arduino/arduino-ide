@@ -1,4 +1,5 @@
 // @ts-check
+//
 // The links to the downloads as of today (28.08.2019) are the following:
 // - https://downloads.arduino.cc/arduino-language-server/nightly/arduino-language-server_${SUFFIX}
 // - https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${VERSION}_${SUFFIX}
@@ -78,6 +79,11 @@
       clangdExecutablePath = path.join(build, 'clangd');
       lsSuffix = 'Linux_64bit.tar.gz';
       clangdSuffix = 'Linux_64bit';
+      break;
+    case 'linux-arm64':
+      clangdExecutablePath = path.join(build, 'clangd');
+      lsSuffix = 'Linux_ARM64.tar.gz';
+      clangdSuffix = 'Linux_ARM64';
       break;
     case 'win32-x64':
       clangdExecutablePath = path.join(build, 'clangd.exe');
