@@ -91,7 +91,7 @@ jobs:
     name: ${{ matrix.artifact.name }} artifact
     needs: build
     if: always() && needs.build.result != 'skipped'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     strategy:
       matrix:
@@ -126,7 +126,7 @@ jobs:
 
   changelog:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       BODY: ${{ steps.changelog.outputs.BODY }}
     steps:
@@ -169,7 +169,7 @@ jobs:
   publish:
     needs: changelog
     if: github.repository == 'arduino/arduino-ide' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Download [GitHub Actions]
         uses: actions/download-artifact@v2
@@ -190,7 +190,7 @@ jobs:
   release:
     needs: changelog
     if: github.repository == 'arduino/arduino-ide' && startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Download [GitHub Actions]
         uses: actions/download-artifact@v2
@@ -231,7 +231,7 @@ jobs:
       - release
       - artifacts
     if: always() && needs.build.result != 'skipped'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Remove unneeded job transfer artifact
