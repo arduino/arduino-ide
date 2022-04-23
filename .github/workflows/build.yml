@@ -97,9 +97,9 @@ jobs:
       matrix:
         artifact:
           - path: '*Linux_64bit.zip'
-            name: Linux_X86-64_zip
+            name: Linux_ARM64_zip
           - path: '*Linux_64bit.AppImage'
-            name: Linux_X86-64_app_image
+            name: Linux_ARM64_app_image
           - path: '*macOS_64bit.dmg'
             name: macOS_dmg
           - path: '*macOS_64bit.zip'
