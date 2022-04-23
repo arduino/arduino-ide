@@ -1,4 +1,5 @@
 // @ts-check
+//
 // The links to the downloads as of today (28.08.2019) are the following:
 // - https://downloads.arduino.cc/arduino-language-server/nightly/arduino-language-server_${SUFFIX}
 // - https://downloads.arduino.cc/arduino-language-server/clangd/clangd_${VERSION}_${SUFFIX}
