@@ -1,0 +1,350 @@
+{
+    "arduino": {
+        "common": {
+            "offlineIndicator": "Изгледа да сте ван мреже. Без интернет везе, Arduino CLI можда неће моћи да преузме потребне ресурсе и може изазвати квар. Повежите се на Интернет и поново покрените апликацију.",
+            "noBoardSelected": "Плоча није одабрана",
+            "selectedOn": "на {0}",
+            "notConnected": "[није повезано]",
+            "serialMonitor": "Монитор серијског порта",
+            "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
+            "later": "Касније",
+            "selectBoard": "Одабери плочу",
+            "unknown": "Непознато",
+            "processing": "Обрађује се",
+            "saveChangesToSketch": "Да ли желиш да сачуваш рад прије затварања?",
+            "loseChanges": "Уколико не сачуваш, промјене ће бити изгубљене."
+        },
+        "ide-updater": {
+            "errorCheckingForUpdates": "Грешка приликом провере надоградњи за Arduino IDE.\n{0}",
+            "notNowButton": "Не сада",
+            "versionDownloaded": "Arduino IDE {0} је преузет.",
+            "closeToInstallNotice": "Затворите програм и покрените инсталацију надоградње на ваш рачунар.",
+            "closeAndInstallButton": "Затвори и инсталирај",
+            "downloadingNotice": "Преузимање последње верзије Arduino IDE.",
+            "updateAvailable": "Доступна је надоградња",
+            "newVersionAvailable": "Нова верзија Arduino IDE ({0}) је доступна за преузимање.",
+            "skipVersionButton": "Прескочите ову верзију",
+            "downloadButton": "Преузимање",
+            "goToDownloadPage": "Ажурирање за Arduine IDE је доступно, али нисмо у могућности да га аутоматски преузмемо и инсталирамо. Идите на страницу за преузимање и преузмите најновију верзију одатле.",
+            "goToDownloadButton": "Пређите на преузимање",
+            "ideUpdaterDialog": "Надоградња програма",
+            "noUpdatesAvailable": "Нема недавних доступних ажурирања за Arduine IDE"
+        },
+        "menu": {
+            "sketch": "Рад",
+            "tools": "Алатке"
+        },
+        "debug": {
+            "optimizeForDebugging": "Оптимизовано за отклањање грешака",
+            "debugWithMessage": "Отклањање грешака - {0}",
+            "noPlatformInstalledFor": "Платформа није инсталирана за '{0}'",
+            "debuggingNotSupported": "'{0}' не подржава отклањање грешака"
+        },
+        "preferences": {
+            "language.log": "Тачно ако Ардуино језички сервер треба да генерише датотеке евиденције у фасциклу за скице. Иначе, нетачно. Подразумевано је нетачно.",
+            "compile.verbose": "True for verbose compile output. False by default",
+            "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
+            "upload.verbose": "True for verbose upload output. False by default.",
+            "window.autoScale": "True if the user interface automatically scales with the font size.",
+            "window.zoomLevel": "Подесите ниво зумирања прозора. Оригинална величина је 0 и сваки корак изнад (нпр. 1) или испод (нпр. -1) представља зумирање за 20% веће или мање. Такође можете да унесете децимале да бисте подесили ниво зумирања са бољом прецизношћу.",
+            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+            "board.certificates": "Листа сертификата који могу бити спуштени на плоче",
+            "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
+            "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
+            "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
+            "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
+            "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+            "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+            "auth.clientID": "OAuth2 идентификатор клијента.",
+            "auth.domain": "OAuth2 домен.",
+            "auth.audience": "OAuth2 публика.",
+            "auth.registerUri": "URI коришћен за регистровање нових корисника.",
+            "network": "Мрежа",
+            "sketchbook.location": "Локација радне свеске",
+            "browse": "Претражи",
+            "files.inside.sketches": "Прикажи датотеке у радовима",
+            "editorFontSize": "Величина текста уређивача",
+            "interfaceScale": "Величина интерфејса",
+            "showVerbose": "Прикажи детаљан испис током",
+            "compilerWarnings": "Упозорења преводиоца",
+            "automatic": "Аутоматско",
+            "compile": "преведи",
+            "upload": "спусти",
+            "verifyAfterUpload": "Провјери код након спуштања",
+            "editorQuickSuggestions": "Editor Quick Suggestions",
+            "additionalManagerURLs": "Additional Boards Manager URLs",
+            "noProxy": "Без посредника",
+            "manualProxy": "Ручно подешавање посредника",
+            "newSketchbookLocation": "Одабери нову локацију радне свеске",
+            "choose": "Одабери",
+            "enterAdditionalURLs": "Enter additional URLs, one for each row",
+            "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+            "invalid.sketchbook.location": "Неважећа локација радне свеске: {0}",
+            "invalid.editorFontSize": "Неважећа величина текста уређивача. Мора да буде позитиван цијели број.",
+            "invalid.theme": "Неважећа тема."
+        },
+        "cloud": {
+            "signIn": "ПРИЈАВИ СЕ",
+            "signOut": "Одјави се",
+            "chooseSketchVisibility": "Одабери видљивост твог рада:",
+            "privateVisibility": "Приватно. Само ти можеш да видиш рад.",
+            "publicVisibility": "Јавно. Свако са линком може да види рад.",
+            "link": "Линк:",
+            "embed": "Угради:",
+            "cloudSketchbook": "Cloud Sketchbook",
+            "shareSketch": "Подјели рад",
+            "showHideRemoveSketchbook": "Прикажи/Сакриј удаљене радне свеске",
+            "pullSketch": "Pull Sketch",
+            "openInCloudEditor": "Open in Cloud Editor",
+            "options": "Опције...",
+            "share": "Подјели...",
+            "remote": "Удаљени",
+            "emptySketchbook": "Твоја радна свеска је празна",
+            "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches.",
+            "signInToCloud": "Улогујте се на Arduino Cloud",
+            "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
+            "learnMore": "Сазнајте више",
+            "continue": "Наставите",
+            "pushSketch": "Push Sketch",
+            "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+            "pull": "Повуци",
+            "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
+            "donePulling": "Готово повлачење  ‘{0}’.",
+            "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
+            "push": "Гурни",
+            "pullFirst": "You have to pull first to be able to push to the Cloud.",
+            "donePushing": "Done pushing ‘{0}’.",
+            "connected": "Повезан",
+            "offline": "Није на мрежи",
+            "profilePicture": "Фотографија профила"
+        },
+        "board": {
+            "installManually": "Инсталирај ручно",
+            "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+            "configDialogTitle": "Одабери другу плочу или порт",
+            "configDialog1": "Одабери и плочу и порт ако желиш да спустиш рад.",
+            "configDialog2": "Ако одабереш само плочу моћи ћеш само да преведеш, али не и да спустиш рад.",
+            "pleasePickBoard": "Одабери плочу повезану са одабраним портом.",
+            "showAllAvailablePorts": "Приказује све доступне портове када је укључено",
+            "programmer": "Програмер",
+            "succesfullyInstalledPlatform": "Успјешно инсталирана платформа {0}:{1}",
+            "succesfullyUninstalledPlatform": "Успјешно деинсталирана платформа {0}:{1}",
+            "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+            "reselectLater": "Одабери поново касније",
+            "noneSelected": "Ниједна плоча није одабрана.",
+            "noPortsSelected": "Ниједан порт није одабран за плочу: '{0}'.",
+            "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+            "openBoardsConfig": "Одабери другу плочу и порт...",
+            "boardListItem": "{0} на {1}",
+            "selectBoardForInfo": "Одабери плочу да добијеш информације о њој.",
+            "platformMissing": "Платформа за одабрану плочу '{0}' није инсталирана.",
+            "selectPortForInfo": "Одабери порт да добијеш информације о плочи",
+            "boardInfo": "Информације о плочи",
+            "board": "Плоча{0}",
+            "port": "Порт{0}",
+            "getBoardInfo": "Дохвати информације о плочи",
+            "inSketchbook": "(у радној свесци)"
+        },
+        "boardsManager": "Управљач плочама",
+        "about": {
+            "label": "О {0}",
+            "detail": "Верзија: {0}\nДатум: {1}{2}\nCLI верзија: {3}{4} [{5}]\n\n{6}"
+        },
+        "contributions": {
+            "addFile": "Додај датотеку",
+            "replaceTitle": "Замјени",
+            "fileAdded": "Датотека је додата у рад."
+        },
+        "replaceMsg": "Замјени тренутну верзију {0}?",
+        "library": {
+            "addZip": "Додај .ZIP библиотеку...",
+            "zipLibrary": "Библиотека",
+            "overwriteExistingLibrary": "Желиш да препишеш преко већ постојеће библиотеке?",
+            "successfullyInstalledZipLibrary": "Успјешно инсталирана библиотека из архиве {0}",
+            "namedLibraryAlreadyExists": "Директоријум за библиотеку назван {0} већ постоји. Желиш да препишеш преко њега?",
+            "libraryAlreadyExists": "Библиотека већ постоји. Желиш да препишеш преко ње?",
+            "include": "Укључи библиотеку",
+            "manageLibraries": "Управљај библиотекама...",
+            "arduinoLibraries": "Arduino библиотеке",
+            "contributedLibraries": "Contributed libraries",
+            "title": "Управљач библиотекама",
+            "needsOneDependency": "Библиотека <b>{0}:{1}</b> захтјева другу библиотеку која није тренутно инсталирана:",
+            "needsMultipleDependencies": "Библиотека <b>{0}:{1}</b> захтјева друге библиотеке које нису тренутно инсталиране:",
+            "installOneMissingDependency": "Да ли желиш да инсталираш зависну библиотеку?",
+            "installMissingDependencies": "Да ли желиш да инсталираш све зависне библиотеке?",
+            "dependenciesForLibrary": "Зависне библиотеке за библиотеку {0}:{1}",
+            "installAll": "Инсталирај све",
+            "installOnly": "Инсталирај само {0}",
+            "installedSuccessfully": "Успјешно инсталирана библиотека {0}:{1}",
+            "uninstalledSuccessfully": "Успјешно деинсталирана библиотека {0}:{1}"
+        },
+        "selectZip": "Одабери zip датотеку са библиотеком коју желиш да додаш",
+        "sketch": {
+            "archiveSketch": "Архивирај рад",
+            "saveSketchAs": "Сачувај радни фолдер као...",
+            "createdArchive": "Направљена архива '{0}'.",
+            "new": "Нови",
+            "openRecent": "Отвори недавно",
+            "showFolder": "Прикажи радни директоријум",
+            "sketch": "Рад",
+            "moving": "Премјешта се",
+            "movingMsg": "Датотека \"{0}\" мора да буде унутар радног директоријума \"{1}\".\nКреирај овај директоријум, премјести датотеку, и настави?",
+            "cantOpen": "Директоријум \"{0}\" већ постоји. Није могуће отворити рад.",
+            "saveFolderAs": "Сачувај радни директоријум као...",
+            "sketchbook": "Радна свеска",
+            "upload": "Спусти",
+            "uploadUsingProgrammer": "Спусти помоћу програмера",
+            "userFieldsNotFoundError": "Није могуће пронаћи корисничка поља за повезану плочу.",
+            "doneUploading": "Спуштање завршено.",
+            "configureAndUpload": "Конфигуриши и спусти",
+            "verifyOrCompile": "Провјери/Преведи",
+            "exportBinary": "Export Compiled Binary",
+            "verify": "Провјери",
+            "doneCompiling": "Превођење завршено.",
+            "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
+            "openSketchInNewWindow": "Отвори рад у новом прозору",
+            "openFolder": "Отвори директоријум",
+            "titleLocalSketchbook": "Локална радна свеска",
+            "titleSketchbook": "Радна свеска",
+            "close": "Да ли желиш да затвориш рад?"
+        },
+        "bootloader": {
+            "burnBootloader": "Burn Bootloader",
+            "doneBurningBootloader": "Done burning bootloader."
+        },
+        "editor": {
+            "copyForForum": "Копирај за форум (Markdown)",
+            "commentUncomment": "Коментариши/одкоментариши",
+            "increaseIndent": "Повећај увлачење",
+            "decreaseIndent": "Смањи увлачење",
+            "increaseFontSize": "Повећај величину текста",
+            "decreaseFontSize": "Смањи величину текста",
+            "autoFormat": "Аутоматски форматирај"
+        },
+        "examples": {
+            "menu": "Примјери",
+            "couldNotInitializeExamples": "Није могуће иницијализовати уграђене примјере.",
+            "builtInExamples": "Уграђени примјери",
+            "customLibrary": "Примјери библиотека",
+            "for": "Примјери за {0}",
+            "forAny": "Примјери за било коју плочу"
+        },
+        "help": {
+            "search": "Потражи на Arduino.cc",
+            "keyword": "Унеси кључну ријеч",
+            "gettingStarted": "Увод",
+            "environment": "Окружење",
+            "troubleshooting": "Рјешавање проблема",
+            "reference": "Референца",
+            "findInReference": "Потражи у референци",
+            "faq": "Често постављана питања",
+            "visit": "Посјети Arduino.cc",
+            "privacyPolicy": "Политика приватности"
+        },
+        "certificate": {
+            "uploadRootCertificates": "Спусти SSL Root сертификате",
+            "openContext": "Отвори садржај",
+            "remove": "Избаци",
+            "upload": "Спусти",
+            "addURL": "Додај URL за дохватање SSL сертификата",
+            "enterURL": "Унеси URL",
+            "selectCertificateToUpload": "1. Одабери сертификат за спуштање",
+            "addNew": "Додај нови",
+            "selectDestinationBoardToUpload": "2. Одабери одредишну плочу и спусти сертификат",
+            "uploadingCertificates": "Спуштање сертификата.",
+            "certificatesUploaded": "Сертификати су спуштени.",
+            "uploadFailed": "Спуштање није успјело. Покушај поново.",
+            "selectBoard": "Одабери плочу...",
+            "boardAtPort": "{0} на {1}",
+            "noSupportedBoardConnected": "Није повезана ниједна подржана плоча"
+        },
+        "firmware": {
+            "updater": "WiFi101 / WiFiNINA Firmware Updater",
+            "selectBoard": "Одабери плочу",
+            "checkUpdates": "Провјери ажурирања",
+            "selectVersion": "Одаберзи верзију фирмвера",
+            "install": "Инсталирај",
+            "overwriteSketch": "Инсталација ће преписати рад на плочи.",
+            "installingFirmware": "Инсталирање фирмвера.",
+            "successfullyInstalled": "Фирмвер успјешно инсталиран.",
+            "failedInstall": "Инсталирање није успјело. Покушај поново."
+        },
+        "dialog": {
+            "dontAskAgain": "Не питај поново"
+        },
+        "userFields": {
+            "cancel": "Одустани",
+            "upload": "Спусти"
+        },
+        "serial": {
+            "toggleTimestamp": "Укључи/искључи временску ознаку",
+            "autoscroll": "Аутоматско скроловање",
+            "timestamp": "Временска ознака",
+            "noLineEndings": "Без завршетка линије",
+            "newLine": "Нова линија",
+            "carriageReturn": "Carriage Return",
+            "newLineCarriageReturn": "И нова линија и CR",
+            "notConnected": "Није повезано. Одабери плочу и порт за аутоматско повезивање.",
+            "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
+            "connectionBusy": "Повезивање није успјело. Серијски порт је заузет: {0}",
+            "disconnected": "Откачен {0} од {1}.",
+            "unexpectedError": "Неочекивана грешка. Поновно повезивање {0} на порту {1}.",
+            "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
+            "reconnect": "Поновно повезивање {0} на {1} за {2} секунди..."
+        },
+        "component": {
+            "uninstall": "Деинсталирај",
+            "uninstallMsg": "Да ли желиш да деинсталираш {0}? ",
+            "by": "од",
+            "version": "Верзија {0}",
+            "moreInfo": "Више информација",
+            "install": "ИНСТАЛИРАЈ",
+            "filterSearch": "Филтрирај претрагу..."
+        },
+        "electron": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "unsavedChanges": "Ниједна несачувана промјена неће бити сачувана."
+        },
+        "compile": {
+            "error": "Грешка приликом превођења: {0}"
+        },
+        "upload": {
+            "error": "{0} грешка: {1}"
+        },
+        "burnBootloader": {
+            "error": "Error while burning the bootloader: {0}"
+        }
+    },
+    "theia": {
+        "core": {
+            "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+            "offline": "Није на мрежи",
+            "daemonOffline": "CLI Daemon Offline",
+            "cannotConnectBackend": "Cannot connect to the backend.",
+            "cannotConnectDaemon": "Cannot connect to the CLI daemon."
+        },
+        "debug": {
+            "start": "Почни...",
+            "typeNotSupported": "The debug session type \"{0}\" is not supported.",
+            "startError": "There was an error starting the debug session, check the logs for more details."
+        },
+        "editor": {
+            "unsavedTitle": "Несачуван – {0} "
+        },
+        "messages": {
+            "expand": "Прошири",
+            "collapse": "Отвори"
+        },
+        "workspace": {
+            "fileNewName": "Име за нову датотеку",
+            "invalidFilename": "Неважеће име датотеке.",
+            "invalidExtension": ".{0} није валидна екстензија",
+            "newFileName": "Ново име за датотеку",
+            "deleteCurrentSketch": "Да ли желиш да обришеш тренутни рад?",
+            "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+        }
+    },
+    "cloud": {
+        "GoToCloud": "GO TO CLOUD"
+    }
+}

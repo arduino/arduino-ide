@@ -47,7 +47,7 @@
             "upload.verbose": "Verdadeiro para saída de upload detalhada. Falsa é padrão.",
             "window.autoScale": "Verdadeiro se a interface do usuário for dimensionada automaticamente com o tamanho da fonte.",
             "window.zoomLevel": "Ajuste o nível de zoom da janela. O tamanho original é 0 e cada incremento acima (por exemplo, 1) ou abaixo (por exemplo, -1) representa um zoom 20% maior ou menor. Você também pode inserir decimais para ajustar o nível de zoom para uma maior precisão.",
-            "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+            "ide.updateChannel": "Canal de lançamento para se atualizar. 'stable' é o lançamento estável, 'nightly' é o último build de desenvolvimento.",
             "board.certificates": "Lista de certificados que podem ser carregados nas placas",
             "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de sketch dentro do sketch. Falso é padrão.",
             "cloud.enabled": "Verdadeiro se as funções de sincronização de sketch estiverem ativadas. O padrão é verdadeiro.",
@@ -123,7 +123,7 @@
             "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
             "configDialogTitle": "Selecionar Outra Placa e Porta",
             "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
-            "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+            "configDialog2": "Se você somente selecionar uma Placa você será capaz de compilar, mas não de enviar o seu rascunho.",
             "pleasePickBoard": "Escolha uma placa conectada à porta que você selecionou.",
             "showAllAvailablePorts": "Mostrar todas as portas disponíveis quando habilitado",
             "programmer": "Programador/Gravador",
@@ -259,7 +259,7 @@
             "noSupportedBoardConnected": "Nenhuma placa compatível conectada"
         },
         "firmware": {
-            "updater": "WiFi101 / WiFiNINA Firmware Updater",
+            "updater": "Atualizador de Firmware WiFi101 / WiFiNINA",
             "selectBoard": "Selecionar Placa",
             "checkUpdates": "Verificar Atualizações",
             "selectVersion": "Selecione a versão do firmware",
