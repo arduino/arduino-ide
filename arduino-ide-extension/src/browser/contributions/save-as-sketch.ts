@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import * as dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -11,9 +11,22 @@ import {
   KeybindingRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { ApplicationShell, NavigatableWidget, Saveable } from '@theia/core/lib/browser';
+import { EditorManager } from '@theia/editor/lib/browser';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
+
+  @inject(ApplicationShell)
+  protected readonly applicationShell: ApplicationShell;
+
+  @inject(EditorManager)
+  protected readonly editorManager: EditorManager;
+
+  @inject(WindowService)
+  protected readonly windowService: WindowService;
+
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
       execute: (args) => this.saveAs(args),
@@ -90,6 +103,9 @@ export class SaveAsSketch extends SketchContribution {
     const workspaceUri = await this.sketchService.copy(sketch, {
       destinationUri,
     });
+    if (workspaceUri) {
+      await this.saveOntoCopiedSketch(sketch.mainFileUri, sketch.uri, workspaceUri);
+    }
     if (workspaceUri && openAfterMove) {
       if (wipeOriginal || (openAfterMove && execOnlyIfTemp)) {
         try {
@@ -100,11 +116,47 @@ export class SaveAsSketch extends SketchContribution {
           /* NOOP: from time to time, it's not possible to wipe the old resource from the temp dir on Windows */
         }
       }
+      this.windowService.setSafeToShutDown();
       this.workspaceService.open(new URI(workspaceUri), {
         preserveWindow: true,
       });
     }
     return !!workspaceUri;
+  }
+
+  private async saveOntoCopiedSketch(mainFileUri: string, sketchUri: string, newSketchUri: string): Promise<void> {
+    const widgets = this.applicationShell.widgets;
+    const snapshots = new Map<string, object>();
+    for (const widget of widgets) {
+      const saveable = Saveable.getDirty(widget);
+      const uri = NavigatableWidget.getUri(widget);
+      const uriString = uri?.toString();
+      let relativePath: string;
+      if (uri && uriString!.includes(sketchUri) && saveable && saveable.createSnapshot) {
+        // The main file will change its name during the copy process
+        // We need to store the new name in the map
+        if (mainFileUri === uriString) {
+          const lastPart = new URI(newSketchUri).path.base + uri.path.ext;
+          relativePath = '/' + lastPart;
+        } else {
+          relativePath = uri.toString().substring(sketchUri.length);
+        }
+        snapshots.set(relativePath, saveable.createSnapshot());
+      }
+    }
+    await Promise.all(Array.from(snapshots.entries()).map(async ([path, snapshot]) => {
+      const widgetUri = new URI(newSketchUri + path);
+      try {
+        const widget = await this.editorManager.getOrCreateByUri(widgetUri);
+        const saveable = Saveable.get(widget);
+        if (saveable && saveable.applySnapshot) {
+          saveable.applySnapshot(snapshot);
+          await saveable.save();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }));
   }
 }
 
