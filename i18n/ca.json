@@ -1,18 +1,18 @@
 {
     "arduino": {
         "common": {
-            "offlineIndicator": "Dit lyk of jy van af lyn is. Sonder 'n internetverbinding kan die Arduino CLI moontlik nie die nodige hulpbronne aflaai nie en kan dit wanfunksionering veroorsaak. Koppel asseblief aan die internet en herbegin die toepassing.",
-            "noBoardSelected": "Geen bord geselekteer",
-            "selectedOn": "aan {0}",
-            "notConnected": "[nie gekoppel]",
-            "serialMonitor": "Seriaal Monitor",
+            "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
+            "noBoardSelected": "No board selected",
+            "selectedOn": "on {0}",
+            "notConnected": "[not connected]",
+            "serialMonitor": "Serial Monitor",
             "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
             "later": "Later",
-            "selectBoard": "Kies Bord",
-            "unknown": "Onbekend",
-            "processing": "Verwerking",
-            "saveChangesToSketch": "Wil jy veranderinge aan hierdie skets stoor voordat jy toemaak?",
-            "loseChanges": "As jy nie stoor nie, sal jou veranderinge verlore gaan."
+            "selectBoard": "Select Board",
+            "unknown": "Unknown",
+            "processing": "Processing",
+            "saveChangesToSketch": "Do you want to save changes to this sketch before closing?",
+            "loseChanges": "If you don't save, your changes will be lost."
         },
         "ide-updater": {
             "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
@@ -23,21 +23,21 @@
             "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
             "updateAvailable": "Update Available",
             "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
-            "skipVersionButton": "Volgende Weergawe",
-            "downloadButton": "Aflaai",
+            "skipVersionButton": "Skip Version",
+            "downloadButton": "Download",
             "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
             "goToDownloadButton": "Go To Download",
             "ideUpdaterDialog": "Software Update",
             "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE"
         },
         "menu": {
-            "sketch": "Skets",
-            "tools": "Gereedskap"
+            "sketch": "Sketch",
+            "tools": "Tools"
         },
         "debug": {
-            "optimizeForDebugging": "Geoptimaliseerd vir ontfouting",
-            "debugWithMessage": "Ontfouting {0}",
-            "noPlatformInstalledFor": "Platform is nie geïnstalleer vir ' {0} '",
+            "optimizeForDebugging": "Optimize for Debugging",
+            "debugWithMessage": "Debug - {0}",
+            "noPlatformInstalledFor": "Platform is not installed for '{0}'",
             "debuggingNotSupported": "Debugging is not supported by '{0}'"
         },
         "preferences": {
@@ -56,27 +56,27 @@
             "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
             "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
             "auth.clientID": "The OAuth2 client ID.",
-            "auth.domain": "Die OAuth2 domein.",
-            "auth.audience": "Die OAuth2 gehoor.",
-            "auth.registerUri": "Die URI wat gebruik word vir nuwe registrasies.",
-            "network": "Netwerk",
-            "sketchbook.location": "Sketsboek ligging",
-            "browse": "Snuffel",
-            "files.inside.sketches": "Toon lêers binne in Sketse aan",
-            "editorFontSize": "Editor lettertipe grootte",
-            "interfaceScale": "Koppelvlak skaal",
-            "showVerbose": "Wys ontfoutings uitset tydens",
+            "auth.domain": "The OAuth2 domain.",
+            "auth.audience": "The OAuth2 audience.",
+            "auth.registerUri": "The URI used to register a new user.",
+            "network": "Network",
+            "sketchbook.location": "Sketchbook location",
+            "browse": "Browse",
+            "files.inside.sketches": "Show files inside Sketches",
+            "editorFontSize": "Editor font size",
+            "interfaceScale": "Interface scale",
+            "showVerbose": "Show verbose output during",
             "compilerWarnings": "Compiler warnings",
-            "automatic": "Automaties",
-            "compile": "saamstel",
-            "upload": "oplaai",
-            "verifyAfterUpload": "Verifieer kode na oplaai ",
+            "automatic": "Automatic",
+            "compile": "compile",
+            "upload": "upload",
+            "verifyAfterUpload": "Verify code after upload",
             "editorQuickSuggestions": "Editor Quick Suggestions",
             "additionalManagerURLs": "Additional Boards Manager URLs",
             "noProxy": "No proxy",
             "manualProxy": "Manual proxy configuration",
             "newSketchbookLocation": "Select new sketchbook location",
-            "choose": "Kies",
+            "choose": "Choose",
             "enterAdditionalURLs": "Enter additional URLs, one for each row",
             "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
             "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
@@ -84,22 +84,22 @@
             "invalid.theme": "Invalid theme."
         },
         "cloud": {
-            "signIn": "TEKEN AAN",
-            "signOut": "Teken Uit",
+            "signIn": "SIGN IN",
+            "signOut": "Sign Out",
             "chooseSketchVisibility": "Choose visibility of your Sketch:",
             "privateVisibility": "Private. Only you can view the Sketch.",
             "publicVisibility": "Public. Anyone with the link can view the Sketch.",
-            "link": "Skakel:",
+            "link": "Link:",
             "embed": "Embed:",
-            "cloudSketchbook": "Wolk Skets",
+            "cloudSketchbook": "Cloud Sketchbook",
             "shareSketch": "Share Sketch",
             "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
             "pullSketch": "Pull Sketch",
             "openInCloudEditor": "Open in Cloud Editor",
-            "options": "Opsies...",
-            "share": "Deel...",
+            "options": "Options...",
+            "share": "Share...",
             "remote": "Remote",
-            "emptySketchbook": "Jou Sketsboek is leeg",
+            "emptySketchbook": "Your Sketchbook is empty",
             "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches.",
             "signInToCloud": "Sign in to Arduino Cloud",
             "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
@@ -107,16 +107,16 @@
             "continue": "Continue",
             "pushSketch": "Push Sketch",
             "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
-            "pull": "Trek",
+            "pull": "Pull",
             "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
             "donePulling": "Done pulling ‘{0}’.",
             "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
-            "push": "Stoot",
+            "push": "Push",
             "pullFirst": "You have to pull first to be able to push to the Cloud.",
             "donePushing": "Done pushing ‘{0}’.",
             "connected": "Connected",
-            "offline": "Aflyn",
-            "profilePicture": "Profiel foto"
+            "offline": "Offline",
+            "profilePicture": "Profile picture"
         },
         "board": {
             "installManually": "Install Manually",
@@ -126,16 +126,16 @@
             "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
             "pleasePickBoard": "Please pick a board connected to the port you have selected.",
             "showAllAvailablePorts": "Shows all available ports when enabled",
-            "programmer": "Programeerder",
+            "programmer": "Programmer",
             "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
             "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
             "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-            "reselectLater": "Herselekteer later",
-            "noneSelected": "Geen bord gekies nie.",
+            "reselectLater": "Reselect later",
+            "noneSelected": "No boards selected.",
             "noPortsSelected": "No ports selected for board: '{0}'.",
             "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
-            "openBoardsConfig": "Kies ander bord en poort...",
-            "boardListItem": "{0} by {1}",
+            "openBoardsConfig": "Select other board and port…",
+            "boardListItem": "{0} at {1}",
             "selectBoardForInfo": "Please select a board to obtain board info.",
             "platformMissing": "The platform for the selected '{0}' board is not installed.",
             "selectPortForInfo": "Please select a port to obtain board info.",
@@ -152,8 +152,8 @@
         },
         "contributions": {
             "addFile": "Add File",
-            "replaceTitle": "Vervang",
-            "fileAdded": "Een lêer by skets gevoeg"
+            "replaceTitle": "Replace",
+            "fileAdded": "One file added to the sketch."
         },
         "replaceMsg": "Replace the existing version of {0}?",
         "library": {
@@ -186,7 +186,7 @@
             "new": "New",
             "openRecent": "Open Recent",
             "showFolder": "Show Sketch Folder",
-            "sketch": "Skets",
+            "sketch": "Sketch",
             "moving": "Moving",
             "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
             "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
@@ -255,12 +255,12 @@
             "certificatesUploaded": "Certificates uploaded.",
             "uploadFailed": "Upload failed. Please try again.",
             "selectBoard": "Select a board...",
-            "boardAtPort": "{0} by {1}",
+            "boardAtPort": "{0} at {1}",
             "noSupportedBoardConnected": "No supported board connected"
         },
         "firmware": {
             "updater": "WiFi101 / WiFiNINA Firmware Updater",
-            "selectBoard": "Kies Bord",
+            "selectBoard": "Select Board",
             "checkUpdates": "Check Updates",
             "selectVersion": "Select firmware version",
             "install": "Install",
@@ -279,14 +279,14 @@
         "serial": {
             "toggleTimestamp": "Toggle Timestamp",
             "autoscroll": "Autoscroll",
-            "timestamp": "Tydstempel",
+            "timestamp": "Timestamp",
             "noLineEndings": "No Line Ending",
-            "newLine": "Nuwe lyn",
-            "carriageReturn": "Wagterugkeer",
-            "newLineCarriageReturn": "Beide NL & CR",
+            "newLine": "New Line",
+            "carriageReturn": "Carriage Return",
+            "newLineCarriageReturn": "Both NL & CR",
             "notConnected": "Not connected. Select a board and a port to connect automatically.",
             "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
-            "connectionBusy": "Konneksie het gevaal.  Seriaal poort is besig: {0}",
+            "connectionBusy": "Connection failed. Serial port is busy: {0}",
             "disconnected": "Disconnected {0} from {1}.",
             "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}.",
             "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
@@ -296,14 +296,14 @@
             "uninstall": "Uninstall",
             "uninstallMsg": "Do you want to uninstall {0}?",
             "by": "by",
-            "version": "Weergawe {0}",
-            "moreInfo": "Meer inligting",
-            "install": "INSTALLEER",
+            "version": "Version {0}",
+            "moreInfo": "More info",
+            "install": "INSTALL",
             "filterSearch": "Filter your search..."
         },
         "electron": {
             "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "unsavedChanges": "Enige ongestoorde veranderinge sal nie gestoor word nie."
+            "unsavedChanges": "Any unsaved changes will not be saved."
         },
         "compile": {
             "error": "Compilation error: {0}"
@@ -318,13 +318,13 @@
     "theia": {
         "core": {
             "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-            "offline": "Aflyn",
+            "offline": "Offline",
             "daemonOffline": "CLI Daemon Offline",
             "cannotConnectBackend": "Cannot connect to the backend.",
             "cannotConnectDaemon": "Cannot connect to the CLI daemon."
         },
         "debug": {
-            "start": "Begin...",
+            "start": "Start...",
             "typeNotSupported": "The debug session type \"{0}\" is not supported.",
             "startError": "There was an error starting the debug session, check the logs for more details."
         },
@@ -336,15 +336,15 @@
             "collapse": "Collapse"
         },
         "workspace": {
-            "fileNewName": "Naam vir nuwe lêer",
-            "invalidFilename": "Ongeldige lêernaam",
+            "fileNewName": "Name for new file",
+            "invalidFilename": "Invalid filename.",
             "invalidExtension": ".{0} is not a valid extension",
-            "newFileName": "Nuwe naam vir lêer",
-            "deleteCurrentSketch": "Wil jy die huidige skets uitvee?",
+            "newFileName": "New name for file",
+            "deleteCurrentSketch": "Do you want to delete the current sketch?",
             "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
         }
     },
     "cloud": {
-        "GoToCloud": "GAAN NA WOLK"
+        "GoToCloud": "GO TO CLOUD"
     }
 }
