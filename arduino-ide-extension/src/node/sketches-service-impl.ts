@@ -24,14 +24,17 @@ import {
   ArchiveSketchRequest,
   LoadSketchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { duration } from '../common/decorators';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
 const prefix = '.arduinoIDE-unsaved';
 
 @injectable()
-export class SketchesServiceImpl extends CoreClientAware
-  implements SketchesService {
+export class SketchesServiceImpl
+  extends CoreClientAware
+  implements SketchesService
+{
   private sketchSuffixIndex = 1;
   private lastSketchBaseName: string;
 
@@ -43,6 +46,8 @@ export class SketchesServiceImpl extends CoreClientAware
 
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
+
+  @duration()
   async getSketches({
     uri,
     exclude,
@@ -50,7 +55,6 @@ export class SketchesServiceImpl extends CoreClientAware
     uri?: string;
     exclude?: string[];
   }): Promise<SketchContainerWithDetails> {
-    const start = Date.now();
     let sketchbookPath: undefined | string;
     if (!uri) {
       const { sketchDirUri } = await this.configService.getConfiguration();
@@ -128,14 +132,10 @@ export class SketchesServiceImpl extends CoreClientAware
 
     await recursivelyLoad(sketchbookPath, container);
     SketchContainer.prune(container);
-    console.debug(
-      `Loading the sketches from ${sketchbookPath} took ${
-        Date.now() - start
-      } ms.`
-    );
     return container;
   }
 
+  @duration({ name: 'loadSketch' })
   async loadSketch(uri: string): Promise<SketchWithDetails> {
     await this.coreClientProvider.initialized;
     const { client, instance } = await this.coreClient();
