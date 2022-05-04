@@ -32,11 +32,13 @@ body:
     id: os
     attributes:
       label: Operating system
-      description: Which operating system are you using on your computer?
+      description: Which operating system(s) are you using on your computer?
+      multiple: true
       options:
         - Windows
         - Linux
         - macOS
+        - N/A
     validations:
       required: true
   - type: input
