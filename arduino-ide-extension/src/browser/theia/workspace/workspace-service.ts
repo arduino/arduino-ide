@@ -20,6 +20,7 @@ import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
 import { nls } from '@theia/core/lib/common';
 import { URI as VSCodeUri } from '@theia/core/shared/vscode-uri';
+import { duration } from '../../../common/decorators';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -61,6 +62,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.onCurrentWidgetChange({ newValue, oldValue: null });
   }
 
+  @duration()
   protected getDefaultWorkspaceUri(): Promise<string | undefined> {
     if (this.workspaceUri) {
       // Avoid creating a new sketch twice
@@ -70,14 +72,14 @@ export class WorkspaceService extends TheiaWorkspaceService {
       try {
         const hash = window.location.hash;
         const [recentWorkspacesPaths, recentSketches] = await Promise.all([
-          this.server.getRecentWorkspaces(),
+          this.getRecentWorkspaces(),
           this.sketchService
             .getSketches({})
             .then((container) =>
               SketchContainer.toArray(container).map((s) => s.uri)
             ),
         ]);
-        // On Dindows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
+        // On Windows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
         const recentWorkspaces = recentWorkspacesPaths.map((e) =>
           VSCodeUri.file(e).toString()
         );
@@ -105,6 +107,11 @@ export class WorkspaceService extends TheiaWorkspaceService {
       }
     })();
     return this.workspaceUri;
+  }
+
+  @duration()
+  private getRecentWorkspaces(): Promise<string[]> {
+    return this.server.getRecentWorkspaces();
   }
 
   protected openNewWindow(workspacePath: string): void {

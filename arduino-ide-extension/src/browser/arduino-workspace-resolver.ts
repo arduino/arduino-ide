@@ -2,6 +2,7 @@ import { URI } from '@theia/core/shared/vscode-uri';
 import { isWindows } from '@theia/core/lib/common/os';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { MaybePromise } from '@theia/core/lib/common/types';
+import { duration } from '../common/decorators';
 
 /**
  * Class for determining the default workspace location from the
@@ -32,6 +33,7 @@ namespace ArduinoWorkspaceRootResolver {
 export class ArduinoWorkspaceRootResolver {
   constructor(protected options: ArduinoWorkspaceRootResolver.InitOptions) {}
 
+  @duration()
   async resolve(
     options: ArduinoWorkspaceRootResolver.ResolveOptions
   ): Promise<{ uri: string } | undefined> {

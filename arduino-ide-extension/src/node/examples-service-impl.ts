@@ -13,6 +13,7 @@ import {
   LibraryService,
 } from '../common/protocol';
 import { ConfigServiceImpl } from './config-service-impl';
+import { duration } from '../common/decorators';
 
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
@@ -32,6 +33,7 @@ export class ExamplesServiceImpl implements ExamplesService {
     this.builtIns();
   }
 
+  @duration()
   async builtIns(): Promise<SketchContainer[]> {
     if (this._all) {
       return this._all;
@@ -47,6 +49,7 @@ export class ExamplesServiceImpl implements ExamplesService {
   }
 
   // TODO: decide whether it makes sense to cache them. Keys should be: `fqbn` + version of containing core/library.
+  @duration()
   async installed({ fqbn }: { fqbn?: string }): Promise<{
     user: SketchContainer[];
     current: SketchContainer[];
@@ -80,6 +83,7 @@ export class ExamplesServiceImpl implements ExamplesService {
    * folder hierarchy. This method tries to workaround it by falling back to the `installDirUri` and manually creating the
    * location of the examples. Otherwise it creates the example container from the direct examples FS paths.
    */
+  @duration()
   protected async tryGroupExamples({
     label,
     exampleUris,
@@ -137,6 +141,7 @@ export class ExamplesServiceImpl implements ExamplesService {
   }
 
   // Built-ins are included inside the IDE.
+  @duration({ name: 'examples#load' })
   protected async load(path: string): Promise<SketchContainer> {
     if (!(await promisify(fs.exists)(path))) {
       throw new Error('Examples are not available');
@@ -177,6 +182,7 @@ export class ExamplesServiceImpl implements ExamplesService {
     return map;
   }
 
+  @duration()
   protected async tryLoadSketch(path: string): Promise<Sketch | undefined> {
     try {
       const sketch = await this.sketchesService.loadSketch(

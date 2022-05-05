@@ -135,7 +135,7 @@ export class SketchesServiceImpl
     return container;
   }
 
-  @duration({ name: 'loadSketch' })
+  @duration()
   async loadSketch(uri: string): Promise<SketchWithDetails> {
     await this.coreClientProvider.initialized;
     const { client, instance } = await this.coreClient();
@@ -193,6 +193,7 @@ export class SketchesServiceImpl
     return data;
   }
 
+  @duration()
   async markAsRecentlyOpened(uri: string): Promise<void> {
     let sketch: Sketch | undefined = undefined;
     try {
@@ -230,6 +231,7 @@ export class SketchesServiceImpl
     );
   }
 
+  @duration()
   async recentlyOpenedSketches(): Promise<Sketch[]> {
     const configDirUri = await this.envVariableServer.getConfigDirUri();
     const fsPath = path.join(
@@ -365,6 +367,7 @@ void loop() {
     return undefined;
   }
 
+  @duration()
   async isSketchFolder(uri: string): Promise<boolean> {
     const sketch = await this._isSketchFolder(uri);
     return !!sketch;
@@ -395,6 +398,7 @@ void loop() {
     return undefined;
   }
 
+  @duration()
   async isTemp(sketch: Sketch): Promise<boolean> {
     let sketchPath = FileUri.fsPath(sketch.uri);
     let temp = await promisify(fs.realpath)(os.tmpdir());

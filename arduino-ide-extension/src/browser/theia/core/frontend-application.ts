@@ -5,6 +5,7 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { SketchesService } from '../../../common/protocol';
 import { ArduinoCommands } from '../../arduino-commands';
+import { duration } from '../../../common/decorators';
 
 @injectable()
 export class FrontendApplication extends TheiaFrontendApplication {
@@ -20,6 +21,7 @@ export class FrontendApplication extends TheiaFrontendApplication {
   @inject(SketchesService)
   protected readonly sketchesService: SketchesService;
 
+  @duration()
   protected async initializeLayout(): Promise<void> {
     await super.initializeLayout();
     const roots = await this.workspaceService.roots;
