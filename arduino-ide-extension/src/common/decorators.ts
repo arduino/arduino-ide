@@ -29,11 +29,11 @@ export function duration(options?: DurationOptions) {
       const result = await original.apply(this, args);
       const end = performance.now();
       const duration = end - start;
-      // `×` is the multiplication sign (`&#215;`) and not `x` (`&#120;`), so that we will find it in the logs.
-      const message = `××× Calling '${
+      const slow = duration > (options?.timeout ?? 100);
+      const message = `---- ${slow ? '!!!SLOW!!! ' : ''}DURATION: ${
         options?.name ?? String(key)
-      }' took ${duration} ms. Args => ${input} ×××`;
-      if (duration > (options?.timeout ?? 100)) {
+      } took ${duration} ms. Args: [${input}] ----`;
+      if (slow) {
         console.error(message);
       } else {
         console.info(message);
