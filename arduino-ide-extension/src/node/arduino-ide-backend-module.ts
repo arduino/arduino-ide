@@ -126,14 +126,17 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
 
-  // Examples service. One per backend, each connected FE gets a proxy.
-  bind(ConnectionContainerModule).toConstantValue(
-    ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-      bind(ExamplesServiceImpl).toSelf().inSingletonScope();
-      bind(ExamplesService).toService(ExamplesServiceImpl);
-      bindBackendService(ExamplesServicePath, ExamplesService);
-    })
-  );
+  // Shared service for collecting the examples.
+  bind(ExamplesServiceImpl).toSelf().inSingletonScope();
+  bind(ExamplesService).toService(ExamplesServiceImpl);
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      (context) =>
+        new JsonRpcConnectionHandler(ExamplesServicePath, () =>
+          context.container.get(ExamplesService)
+        )
+    )
+    .inSingletonScope();
 
   // Exposes the executable paths/URIs to the frontend
   bind(ExecutableServiceImpl).toSelf().inSingletonScope();
@@ -177,7 +180,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
   );
 
-  // Shared WebSocketService for the backend. This will manage all websocket conenctions
+  // Shared WebSocketService for the backend. This will manage all websocket connections
   bind(WebSocketService).to(WebSocketServiceImpl).inSingletonScope();
 
   // Shared Arduino core client provider service for the backend.
