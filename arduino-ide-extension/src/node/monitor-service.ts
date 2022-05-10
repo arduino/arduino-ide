@@ -121,11 +121,13 @@ export class MonitorService extends CoreClientAware implements Disposable {
     this.duplex = client.monitor();
     this.duplex
       .on('close', () => {
+        this.duplex = null;
         this.logger.info(
           `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
         );
       })
       .on('end', () => {
+        this.duplex = null;
         this.logger.info(
           `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
         );
@@ -218,7 +220,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
       // It's enough to close the connection with the client
       // to stop the monitor process
       this.duplex.end();
-      this.duplex = null;
       this.logger.info(
         `stopped monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
