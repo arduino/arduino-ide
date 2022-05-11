@@ -24,7 +24,7 @@ import {
   ArchiveSketchRequest,
   LoadSketchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
-import { duration } from '../common/decorators';
+// import { duration } from '../common/decorators';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
@@ -47,7 +47,7 @@ export class SketchesServiceImpl
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
 
-  @duration()
+  // @duration()
   async getSketches({
     uri,
     exclude,
@@ -135,7 +135,7 @@ export class SketchesServiceImpl
     return container;
   }
 
-  @duration()
+  // @duration()
   async loadSketch(uri: string): Promise<SketchWithDetails> {
     await this.coreClientProvider.initialized;
     const { client, instance } = await this.coreClient();
@@ -193,7 +193,7 @@ export class SketchesServiceImpl
     return data;
   }
 
-  @duration()
+  // @duration()
   async markAsRecentlyOpened(uri: string): Promise<void> {
     let sketch: Sketch | undefined = undefined;
     try {
@@ -231,7 +231,7 @@ export class SketchesServiceImpl
     );
   }
 
-  @duration()
+  // @duration()
   async recentlyOpenedSketches(): Promise<Sketch[]> {
     const configDirUri = await this.envVariableServer.getConfigDirUri();
     const fsPath = path.join(
@@ -367,7 +367,7 @@ void loop() {
     return undefined;
   }
 
-  @duration()
+  // @duration()
   async isSketchFolder(uri: string): Promise<boolean> {
     const sketch = await this._isSketchFolder(uri);
     return !!sketch;
@@ -398,7 +398,7 @@ void loop() {
     return undefined;
   }
 
-  @duration()
+  // @duration()
   async isTemp(sketch: Sketch): Promise<boolean> {
     let sketchPath = FileUri.fsPath(sketch.uri);
     let temp = await promisify(fs.realpath)(os.tmpdir());

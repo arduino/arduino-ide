@@ -1,0 +1,42 @@
+board_manager:
+  additional_urls:
+  - https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+  - https://raw.githubusercontent.com/MrBlinky/Arduboy-homemade-package/master/package_arduboy_homemade_index.json
+  - https://dl.espressif.com/dl/package_esp32_index.json
+  - http://digistump.com/package_digistump_index.json
+  - https://arduboy.github.io/board-support/package_arduboy_index.json
+  - https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json
+  - https://mcudude.github.io/MightyCore/package_MCUdude_MightyCore_index.json
+  - https://raw.githubusercontent.com/carlosefr/atmega/master/package_carlosefr_atmega_index.json
+  - https://www.retrokits.com/rk002/arduino/package_retrokits_index.json
+  - http://arduino.esp8266.com/stable/package_esp8266com_index.json
+  - https://raw.githubusercontent.com/sparkfun/Arduino_Boards/master/IDE_Board_Manager/package_sparkfun_index.json
+  - https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
+  - https://raw.githubusercontent.com/korginc/nts-1-customizations/master/Arduino/package_nts1_custom_panels_index.json
+  - https://github.com/eddieespinal/atmegazero/raw/master/package_atmegazero_index.json
+  - http://drazzy.com/package_drazzy.com_index.json
+  - https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json
+  - https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+  - https://raw.githubusercontent.com/e-radionicacom/Croduino-Board-Definitions-for-Arduino-IDE/master/package_Croduino_Boards_index.json
+  - https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+daemon:
+  port: "50051"
+directories:
+  data: /Users/a.kitta/Library/Arduino15
+  downloads: /Users/a.kitta/Library/Arduino15/staging
+  user: /Users/a.kitta/Documents/Arduino
+library:
+  enable_unsafe_install: false
+logging:
+  file: ""
+  format: text
+  level: info
+metrics:
+  addr: :9090
+  enabled: true
+output:
+  no_color: false
+sketch:
+  always_export_binaries: false
+updater:
+  enable_notification: true

@@ -7,6 +7,7 @@ import {
   ExecutableService,
   Sketch,
   LibraryService,
+  ArduinoDaemon,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
@@ -46,7 +47,10 @@ import {
 } from '@theia/editor/lib/browser';
 import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
-import { FileNavigatorCommands, FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
+import {
+  FileNavigatorCommands,
+  FileNavigatorContribution,
+} from '@theia/navigator/lib/browser/navigator-contribution';
 import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
 import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
@@ -84,7 +88,8 @@ export class ArduinoFrontendContribution
     TabBarToolbarContribution,
     CommandContribution,
     MenuContribution,
-    ColorContribution {
+    ColorContribution
+{
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -170,6 +175,9 @@ export class ArduinoFrontendContribution
 
   @inject(IDEUpdaterDialog)
   protected readonly updaterDialog: IDEUpdaterDialog;
+
+  @inject(ArduinoDaemon)
+  protected readonly daemon: ArduinoDaemon;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -344,7 +352,7 @@ export class ArduinoFrontendContribution
 
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
 
-    this.fileSystemFrontendContribution.onDidChangeEditorFile(e => {
+    this.fileSystemFrontendContribution.onDidChangeEditorFile((e) => {
       if (e.type === FileChangeType.DELETED) {
         const editorWidget = e.editor;
         if (SaveableWidget.is(editorWidget)) {
@@ -415,7 +423,7 @@ export class ArduinoFrontendContribution
         this.fileService.fsPath(new URI(lsUri)),
       ]);
 
-      const config = await this.configService.getConfiguration();
+      const port = await this.daemon.getPort();
 
       this.languageServerFqbn = await Promise.race([
         new Promise<undefined>((_, reject) =>
@@ -428,7 +436,7 @@ export class ArduinoFrontendContribution
           'arduino.languageserver.start',
           {
             lsPath,
-            cliDaemonAddr: `localhost:${config.daemon.port}`, // TODO: verify if this port is coming from the BE
+            cliDaemonAddr: `localhost:${port}`,
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
             cliDaemonInstance: '1',
@@ -494,7 +502,7 @@ export class ArduinoFrontendContribution
       EditorCommands.SPLIT_EDITOR_UP,
       EditorCommands.SPLIT_EDITOR_VERTICAL,
       EditorCommands.SPLIT_EDITOR_HORIZONTAL,
-      FileNavigatorCommands.REVEAL_IN_NAVIGATOR
+      FileNavigatorCommands.REVEAL_IN_NAVIGATOR,
     ]) {
       registry.unregisterCommand(command);
     }

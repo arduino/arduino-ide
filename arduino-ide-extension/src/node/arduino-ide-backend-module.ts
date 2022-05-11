@@ -126,17 +126,26 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
 
-  // Shared service for collecting the examples.
-  bind(ExamplesServiceImpl).toSelf().inSingletonScope();
-  bind(ExamplesService).toService(ExamplesServiceImpl);
-  bind(ConnectionHandler)
-    .toDynamicValue(
-      (context) =>
-        new JsonRpcConnectionHandler(ExamplesServicePath, () =>
-          context.container.get(ExamplesService)
-        )
-    )
-    .inSingletonScope();
+  // // Shared service for collecting the examples.
+  // bind(ExamplesServiceImpl).toSelf().inSingletonScope();
+  // bind(ExamplesService).toService(ExamplesServiceImpl);
+  // bind(ConnectionHandler)
+  //   .toDynamicValue(
+  //     (context) =>
+  //       new JsonRpcConnectionHandler(ExamplesServicePath, () =>
+  //         context.container.get(ExamplesService)
+  //       )
+  //   )
+  //   .inSingletonScope();
+
+  // Examples service. One per backend, each connected FE gets a proxy.
+  bind(ConnectionContainerModule).toConstantValue(
+    ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+      bind(ExamplesServiceImpl).toSelf().inSingletonScope();
+      bind(ExamplesService).toService(ExamplesServiceImpl);
+      bindBackendService(ExamplesServicePath, ExamplesService);
+    })
+  );
 
   // Exposes the executable paths/URIs to the frontend
   bind(ExecutableServiceImpl).toSelf().inSingletonScope();

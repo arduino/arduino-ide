@@ -36,9 +36,8 @@ export class ArduinoDaemonImpl
   protected readonly onDaemonStoppedEmitter = new Emitter<void>();
 
   protected _running = false;
-  protected _ready = new Deferred<void>();
   protected _execPath: string | undefined;
-  protected _port: string;
+  protected _port = new Deferred<string>();
 
   // Backend application lifecycle.
 
@@ -53,7 +52,7 @@ export class ArduinoDaemonImpl
   }
 
   async getPort(): Promise<string> {
-    return Promise.resolve(this._port);
+    return this._port.promise;
   }
 
   async startDaemon(): Promise<void> {
@@ -62,7 +61,6 @@ export class ArduinoDaemonImpl
       const cliPath = await this.getExecPath();
       this.onData(`Starting daemon from ${cliPath}...`);
       const { daemon, port } = await this.spawnDaemonProcess();
-      this._port = port;
       // Watchdog process for terminating the daemon process when the backend app terminates.
       spawn(
         process.execPath,
@@ -83,7 +81,7 @@ export class ArduinoDaemonImpl
         Disposable.create(() => daemon.kill()),
         Disposable.create(() => this.fireDaemonStopped()),
       ]);
-      this.fireDaemonStarted();
+      this.fireDaemonStarted(port);
       this.onData('Daemon is running.');
     } catch (err) {
       this.onData('Failed to start the daemon.');
@@ -112,7 +110,9 @@ export class ArduinoDaemonImpl
   }
 
   get ready(): Promise<void> {
-    return this._ready.promise;
+    return this._port.promise.then(() => {
+      /**/
+    });
   }
 
   async getExecPath(): Promise<string> {
@@ -240,9 +240,9 @@ export class ArduinoDaemonImpl
     return ready.promise;
   }
 
-  protected fireDaemonStarted(): void {
+  protected fireDaemonStarted(port: string): void {
     this._running = true;
-    this._ready.resolve();
+    this._port.resolve(port);
     this.onDaemonStartedEmitter.fire();
     this.notificationService.notifyDaemonStarted();
   }
@@ -252,8 +252,8 @@ export class ArduinoDaemonImpl
       return;
     }
     this._running = false;
-    this._ready.reject(); // Reject all pending.
-    this._ready = new Deferred<void>();
+    this._port.reject(); // Reject all pending.
+    this._port = new Deferred<string>();
     this.onDaemonStoppedEmitter.fire();
     this.notificationService.notifyDaemonStopped();
   }

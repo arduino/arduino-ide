@@ -49,6 +49,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
         tempContent instanceof URI ? tempContent : tempContent.uri
       );
       // Use the normalized temp folder name. We cannot compare Theia URIs here.
+      // For example, the following paths point to the same location, although they're not equal.
       // /var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T/arduino-ide2-a0337d47f86b24a51df3dbcf2cc17925/launch.json
       // /private/var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T/arduino-ide2-A0337D47F86B24A51DF3DBCF2CC17925/launch.json
       const tempFolderName = (

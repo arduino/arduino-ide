@@ -1,5 +1,4 @@
 import { RecursivePartial } from '@theia/core/lib/common/types';
-import { Daemon } from '../common/protocol/config-service';
 
 export const CLI_CONFIG = 'arduino-cli.yaml';
 
@@ -111,15 +110,12 @@ export interface CliConfig {
 // Bare minimum required CLI config.
 export interface DefaultCliConfig extends CliConfig {
   directories: Directories;
-  daemon: Daemon;
 }
 export namespace DefaultCliConfig {
   export function is(
     config: RecursivePartial<DefaultCliConfig> | undefined
   ): config is DefaultCliConfig {
-    return (
-      !!config && Directories.is(config.directories) && Daemon.is(config.daemon)
-    );
+    return !!config && Directories.is(config.directories);
   }
   export function sameAs(
     left: DefaultCliConfig,
@@ -127,7 +123,6 @@ export namespace DefaultCliConfig {
   ): boolean {
     return (
       Directories.sameAs(left.directories, right.directories) &&
-      Daemon.sameAs(left.daemon, right.daemon) &&
       BoardManager.sameAs(left.board_manager, right.board_manager) &&
       Logging.sameAs(left.logging, right.logging)
     );

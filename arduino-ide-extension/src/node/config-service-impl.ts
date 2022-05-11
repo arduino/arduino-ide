@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as temp from 'temp';
 import * as yaml from 'js-yaml';
 import { promisify } from 'util';
 import * as grpc from '@grpc/grpc-js';
@@ -28,9 +27,9 @@ import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone } from '@theia/core';
+import { duration } from '../common/decorators';
 
 const deepmerge = require('deepmerge');
-const track = temp.track();
 
 @injectable()
 export class ConfigServiceImpl
@@ -54,6 +53,7 @@ export class ConfigServiceImpl
   protected ready = new Deferred<void>();
   protected readonly configChangeEmitter = new Emitter<Config>();
 
+  @duration({ name: 'config-service#onStart' })
   async onStart(): Promise<void> {
     await this.ensureCliConfigExists();
     this.cliConfig = await this.loadCliConfig();
@@ -68,6 +68,7 @@ export class ConfigServiceImpl
     this.fireInvalidConfig();
   }
 
+  @duration()
   async getCliConfigFileUri(): Promise<string> {
     const configDirUri = await this.envVariablesServer.getConfigDirUri();
     return new URI(configDirUri).resolve(CLI_CONFIG).toString();
@@ -76,7 +77,7 @@ export class ConfigServiceImpl
   async getConfiguration(): Promise<Config> {
     await this.ready.promise;
     await this.daemon.ready;
-    return { ...this.config, daemon: { port: await this.daemon.getPort() } };
+    return { ...this.config };
   }
 
   // Used by frontend to update the config.
@@ -147,8 +148,12 @@ export class ConfigServiceImpl
     );
   }
 
+  @duration()
   protected async loadCliConfig(): Promise<DefaultCliConfig | undefined> {
-    const cliConfigFileUri = await this.getCliConfigFileUri();
+    const [cliConfigFileUri, fallbackModel] = await Promise.all([
+      this.getCliConfigFileUri(),
+      this.getFallbackCliConfig(),
+    ]);
     const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
     try {
       const content = await promisify(fs.readFile)(cliConfigPath, {
@@ -156,7 +161,6 @@ export class ConfigServiceImpl
       });
       const model = yaml.safeLoad(content) || {};
       // The CLI can run with partial (missing `port`, `directories`), the app cannot, we merge the default with the user's config.
-      const fallbackModel = await this.getFallbackCliConfig();
       return deepmerge(fallbackModel, model) as DefaultCliConfig;
     } catch (error) {
       this.logger.error(
@@ -167,31 +171,15 @@ export class ConfigServiceImpl
     return undefined;
   }
 
+  @duration()
   protected async getFallbackCliConfig(): Promise<DefaultCliConfig> {
     const cliPath = await this.daemon.getExecPath();
-    const throwawayDirPath = await new Promise<string>((resolve, reject) => {
-      track.mkdir({}, (err, dirPath) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(dirPath);
-      });
-    });
-    await spawnCommand(`"${cliPath}"`, [
-      'config',
-      'init',
-      '--dest-dir',
-      `"${throwawayDirPath}"`,
-    ]);
-    const rawYaml = await promisify(fs.readFile)(
-      path.join(throwawayDirPath, CLI_CONFIG),
-      { encoding: 'utf-8' }
-    );
+    const rawYaml = await spawnCommand(`"${cliPath}"`, ['config', 'dump']);
     const model = yaml.safeLoad(rawYaml.trim());
     return model as DefaultCliConfig;
   }
 
+  @duration()
   protected async ensureCliConfigExists(): Promise<void> {
     const cliConfigFileUri = await this.getCliConfigFileUri();
     const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
@@ -220,7 +208,7 @@ export class ConfigServiceImpl
   protected async mapCliConfigToAppConfig(
     cliConfig: DefaultCliConfig
   ): Promise<Config> {
-    const { directories, locale = 'en', daemon } = cliConfig;
+    const { directories, locale = 'en' } = cliConfig;
     const { data, user, downloads } = directories;
     const additionalUrls: Array<string> = [];
     if (cliConfig.board_manager && cliConfig.board_manager.additional_urls) {
@@ -236,7 +224,6 @@ export class ConfigServiceImpl
       additionalUrls,
       network,
       locale,
-      daemon,
     };
   }
 

@@ -71,24 +71,16 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.workspaceUri = (async () => {
       try {
         const hash = window.location.hash;
-        const [recentWorkspacesPaths, recentSketches] = await Promise.all([
-          this.getRecentWorkspaces(),
-          this.sketchService
-            .getSketches({})
-            .then((container) =>
-              SketchContainer.toArray(container).map((s) => s.uri)
-            ),
-        ]);
-        // On Windows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
-        const recentWorkspaces = recentWorkspacesPaths.map((e) =>
-          VSCodeUri.file(e).toString()
-        );
         const toOpen = await new ArduinoWorkspaceRootResolver({
           isValid: this.isValid.bind(this),
-        }).resolve({ hash, recentWorkspaces, recentSketches });
+        }).resolve({
+          hash,
+          recentWorkspaceUris: () => this.getRecentWorkspaceUris(),
+          recentSketchUris: () => this.getRecentSketchUris(),
+        });
         if (toOpen) {
           const { uri } = toOpen;
-          await this.server.setMostRecentlyUsedWorkspace(uri);
+          await this.setMostRecentlyUsedWorkspace(uri);
           return toOpen.uri;
         }
         return (await this.sketchService.createNewSketch()).uri;
@@ -110,8 +102,29 @@ export class WorkspaceService extends TheiaWorkspaceService {
   }
 
   @duration()
-  private getRecentWorkspaces(): Promise<string[]> {
-    return this.server.getRecentWorkspaces();
+  private setMostRecentlyUsedWorkspace(uri: string) {
+    return this.server.setMostRecentlyUsedWorkspace(uri);
+  }
+
+  @duration()
+  private async getRecentSketchUris(): Promise<string[]> {
+    return this.sketchService
+      .getSketches({})
+      .then((container) =>
+        SketchContainer.toArray(container).map((s) => s.uri)
+      );
+  }
+
+  @duration()
+  private async getRecentWorkspaceUris(): Promise<string[]> {
+    return (
+      this.server
+        .getRecentWorkspaces()
+        // On Windows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method. (akitta: they're not file path but `path` of the URI.))
+        .then((workspaceUris) =>
+          workspaceUris.map(VSCodeUri.file).map(VSCodeUri.toString)
+        )
+    );
   }
 
   protected openNewWindow(workspacePath: string): void {

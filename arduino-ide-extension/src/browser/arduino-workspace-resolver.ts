@@ -25,9 +25,9 @@ namespace ArduinoWorkspaceRootResolver {
   }
   export interface ResolveOptions {
     readonly hash?: string;
-    readonly recentWorkspaces: string[];
+    readonly recentWorkspaceUris: () => MaybePromise<string[]>;
     // Gathered from the default sketch folder. The default sketch folder is defined by the CLI.
-    readonly recentSketches: string[];
+    readonly recentSketchUris: () => MaybePromise<string[]>;
   }
 }
 export class ArduinoWorkspaceRootResolver {
@@ -37,20 +37,51 @@ export class ArduinoWorkspaceRootResolver {
   async resolve(
     options: ArduinoWorkspaceRootResolver.ResolveOptions
   ): Promise<{ uri: string } | undefined> {
-    const { hash, recentWorkspaces, recentSketches } = options;
-    for (const uri of [
-      this.hashToUri(hash),
-      ...recentWorkspaces,
-      ...recentSketches,
-    ].filter(notEmpty)) {
-      const valid = await this.isValid(uri);
-      if (valid) {
+    console.log('%%%% resolve');
+    const { hash, recentWorkspaceUris, recentSketchUris } = options;
+    const uriFromHash = this.hashToUri(hash);
+    let uri = await this.tryResolveUri(uriFromHash);
+    if (uri) {
+      console.log('%%%% hit hash');
+      return { uri };
+    }
+    console.log('%%%% after hash');
+
+    for (const maybeWorkspaceUri of await recentWorkspaceUris()) {
+      console.log('%%%% try resolve old ws root: ' + maybeWorkspaceUri);
+      uri = await this.tryResolveUri(maybeWorkspaceUri);
+      if (uri) {
+        console.log('%%%% hit resolve old ws root: ' + maybeWorkspaceUri);
         return { uri };
+      }
+    }
+
+    for (const maybeWorkspaceUri of await recentSketchUris()) {
+      console.log('%%%% try resolve old sketch: ' + maybeWorkspaceUri);
+      uri = await this.tryResolveUri(maybeWorkspaceUri);
+      if (uri) {
+        console.log('%%%% hit resolve old sketch: ' + maybeWorkspaceUri);
+        return { uri };
+      }
+    }
+
+    return undefined;
+  }
+
+  @duration()
+  private async tryResolveUri(
+    maybeUri: string | undefined
+  ): Promise<string | undefined> {
+    if (notEmpty(maybeUri)) {
+      const valid = await this.options.isValid(maybeUri);
+      if (valid) {
+        return maybeUri;
       }
     }
     return undefined;
   }
 
+  @duration()
   protected isValid(uri: string): MaybePromise<boolean> {
     return this.options.isValid(uri);
   }
@@ -63,7 +94,9 @@ export class ArduinoWorkspaceRootResolver {
   protected hashToUri(hash: string | undefined): string | undefined {
     if (hash && hash.length > 1 && hash.startsWith('#')) {
       const path = decodeURI(hash.slice(1)).replace(/\\/g, '/'); // Trim the leading `#`, decode the URI and replace Windows separators
-      return URI.file(path.slice(isWindows && hash.startsWith('/') ? 1 : 0)).toString();
+      return URI.file(
+        path.slice(isWindows && hash.startsWith('/') ? 1 : 0)
+      ).toString();
     }
     return undefined;
   }
