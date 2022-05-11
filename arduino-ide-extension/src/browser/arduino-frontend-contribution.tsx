@@ -157,6 +157,7 @@ export class ArduinoFrontendContribution
   @inject(SketchesServiceClientImpl)
   protected readonly sketchServiceClient: SketchesServiceClientImpl;
 
+  @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
 
   @inject(LocalStorageService)
