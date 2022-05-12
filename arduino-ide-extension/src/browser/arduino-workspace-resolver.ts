@@ -68,7 +68,6 @@ export class ArduinoWorkspaceRootResolver {
     return undefined;
   }
 
-  @duration()
   private async tryResolveUri(
     maybeUri: string | undefined
   ): Promise<string | undefined> {
@@ -81,7 +80,6 @@ export class ArduinoWorkspaceRootResolver {
     return undefined;
   }
 
-  @duration()
   protected isValid(uri: string): MaybePromise<boolean> {
     return this.options.isValid(uri);
   }

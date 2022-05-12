@@ -275,6 +275,10 @@ import {
   IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
+import { FileService } from './theia/filesystem/file-service';
+import { FileService as TheiaFileService } from '@theia/filesystem/lib/browser/file-service';
+import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-generator';
+import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -420,9 +424,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(SerialService)
     .toDynamicValue((context) => {
       const connection = context.container.get(WebSocketConnectionProvider);
-      const client = context.container.get<SerialServiceClient>(
-        SerialServiceClient
-      );
+      const client =
+        context.container.get<SerialServiceClient>(SerialServiceClient);
       return connection.createProxy(SerialServicePath, client);
     })
     .inSingletonScope();
@@ -486,11 +489,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
   rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) => () => {
-      const container = parentContainer.createChild();
-      container.bind(TabBarToolbar).toSelf().inSingletonScope();
-      return container.get(TabBarToolbar);
-    }
+    ({ container: parentContainer }) =>
+      () => {
+        const container = parentContainer.createChild();
+        container.bind(TabBarToolbar).toSelf().inSingletonScope();
+        return container.get(TabBarToolbar);
+      }
   );
   bind(OutputWidget).toSelf().inSingletonScope();
   rebind(TheiaOutputWidget).toService(OutputWidget);
@@ -578,6 +582,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
 
+  bind(FileService).toSelf().inSingletonScope();
+  rebind(TheiaFileService).toService(FileService);
+
+  bind(PreferenceTreeGenerator).toSelf().inSingletonScope();
+  rebind(TheiaPreferenceTreeGenerator).toService(PreferenceTreeGenerator);
+
   // Examples service@
   bind(ExamplesService)
     .toDynamicValue((context) =>
@@ -655,15 +665,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Enable the dirty indicator on uncloseable widgets.
   rebind(TabBarRendererFactory).toFactory((context) => () => {
-    const contextMenuRenderer = context.container.get<ContextMenuRenderer>(
-      ContextMenuRenderer
-    );
+    const contextMenuRenderer =
+      context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
     const decoratorService = context.container.get<TabBarDecoratorService>(
       TabBarDecoratorService
     );
-    const iconThemeService = context.container.get<IconThemeService>(
-      IconThemeService
-    );
+    const iconThemeService =
+      context.container.get<IconThemeService>(IconThemeService);
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,

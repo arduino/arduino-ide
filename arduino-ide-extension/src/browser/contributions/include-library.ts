@@ -16,6 +16,7 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -40,11 +41,13 @@ export class IncludeLibrary extends SketchContribution {
   @inject(LibraryService)
   protected readonly libraryService: LibraryService;
 
+  @inject(FrontendApplicationStateService)
+  protected readonly appStateService: FrontendApplicationStateService;
+
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
   protected readonly toDispose = new DisposableCollection();
 
   onStart(): void {
-    this.updateMenuActions();
     this.boardsServiceClient.onBoardsConfigChanged(() =>
       this.updateMenuActions()
     );
@@ -52,6 +55,9 @@ export class IncludeLibrary extends SketchContribution {
     this.notificationCenter.onLibraryUninstalled(() =>
       this.updateMenuActions()
     );
+    this.appStateService
+      .reachedState('ready')
+      .then(() => this.updateMenuActions());
   }
 
   registerMenus(registry: MenuModelRegistry): void {

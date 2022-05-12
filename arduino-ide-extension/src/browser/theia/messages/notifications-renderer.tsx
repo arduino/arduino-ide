@@ -7,6 +7,13 @@ import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/mess
 
 @injectable()
 export class NotificationsRenderer extends TheiaNotificationsRenderer {
+  protected init(): void {
+    requestAnimationFrame(() => {
+      this.createOverlayContainer();
+      this.render();
+    });
+  }
+
   protected render(): void {
     ReactDOM.render(
       <div>

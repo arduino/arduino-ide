@@ -539,6 +539,10 @@ export class ArduinoFrontendContribution
 
   protected async openSketchFiles(uri: URI): Promise<void> {
     try {
+      try {
+        // Here we try to load the main sketch file blindly without loading the sketch files;
+        await this.ensureOpened(uri.resolve(uri.path.base + '.ino').toString());
+      } catch {}
       const sketch = await this.sketchService.loadSketch(uri.toString());
       const { mainFileUri, rootFolderFileUris } = sketch;
       for (const uri of [mainFileUri, ...rootFolderFileUris]) {

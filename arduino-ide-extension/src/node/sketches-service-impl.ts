@@ -527,7 +527,7 @@ interface SketchContainerWithDetails extends SketchContainer {
  * from other new sketches I created today.
  * If 'sketch_jul8a' is already used, go with 'sketch_jul8b'.
  * If 'sketch_jul8b' already used, go with 'sketch_jul8c'.
- * When it reacheas 'sketch_jul8z', go with 'sketch_jul8aa',
+ * When it reaches 'sketch_jul8z', go with 'sketch_jul8aa',
  * and so on.
  */
 function sketchIndexToLetters(num: number): string {

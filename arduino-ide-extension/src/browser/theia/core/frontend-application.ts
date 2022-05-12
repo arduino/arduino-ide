@@ -1,16 +1,15 @@
 import { injectable, inject } from 'inversify';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { CommandService } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application';
-import { SketchesService } from '../../../common/protocol';
+import { FileSystemExt, SketchesService } from '../../../common/protocol';
 import { ArduinoCommands } from '../../arduino-commands';
 import { duration } from '../../../common/decorators';
 
 @injectable()
 export class FrontendApplication extends TheiaFrontendApplication {
-  @inject(FileService)
-  protected readonly fileService: FileService;
+  @inject(FileSystemExt)
+  protected readonly fileService: FileSystemExt;
 
   @inject(WorkspaceService)
   protected readonly workspaceService: WorkspaceService;
@@ -23,13 +22,16 @@ export class FrontendApplication extends TheiaFrontendApplication {
 
   @duration()
   protected async initializeLayout(): Promise<void> {
-    await super.initializeLayout();
+    this.openSketchFiles().then(() => super.initializeLayout());
+  }
+
+  private async openSketchFiles(): Promise<void> {
     const roots = await this.workspaceService.roots;
     for (const root of roots) {
-      const exists = await this.fileService.exists(root.resource);
+      const exists = await this.fileService.exists(root.resource.toString());
       if (exists) {
         this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
-        await this.commandService.executeCommand(
+        this.commandService.executeCommand(
           ArduinoCommands.OPEN_SKETCH_FILES.id,
           root.resource
         );

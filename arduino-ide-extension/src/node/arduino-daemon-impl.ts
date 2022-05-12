@@ -16,6 +16,7 @@ import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { DaemonLog } from './daemon-log';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath, spawnCommand } from './exec-util';
+import { duration } from '../common/decorators';
 
 @injectable()
 export class ArduinoDaemonImpl
@@ -55,6 +56,7 @@ export class ArduinoDaemonImpl
     return this._port.promise;
   }
 
+  @duration()
   async startDaemon(): Promise<void> {
     try {
       this.toDispose.dispose(); // This will `kill` the previously started daemon process, if any.

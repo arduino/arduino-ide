@@ -1,6 +1,5 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { injectable, inject } from 'inversify';
-import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -21,9 +20,13 @@ import { BoardsConfig } from '../../boards/boards-config';
 import { nls } from '@theia/core/lib/common';
 import { URI as VSCodeUri } from '@theia/core/shared/vscode-uri';
 import { duration } from '../../../common/decorators';
+import { FileSystemExt } from '../../../common/protocol';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
+  @inject(FileSystemExt)
+  protected readonly fileSystemExt: FileSystemExt;
+
   @inject(SketchesService)
   protected readonly sketchService: SketchesService;
 
@@ -48,6 +51,11 @@ export class WorkspaceService extends TheiaWorkspaceService {
   private application: FrontendApplication;
   private workspaceUri?: Promise<string | undefined>;
   private version?: string;
+
+  @duration({ name: 'workspace-service#init' })
+  protected async init(): Promise<void> {
+    super.init(); // we do not wait here!
+  }
 
   async onStart(application: FrontendApplication): Promise<void> {
     this.application = application;
@@ -80,7 +88,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
         });
         if (toOpen) {
           const { uri } = toOpen;
-          await this.setMostRecentlyUsedWorkspace(uri);
+          this.setMostRecentlyUsedWorkspace(uri); // No await
           return toOpen.uri;
         }
         return (await this.sketchService.createNewSketch()).uri;
@@ -137,12 +145,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.windowService.openNewWindow(url.toString());
   }
 
+  @duration()
   private async isValid(uri: string): Promise<boolean> {
-    const exists = await this.fileService.exists(new URI(uri));
-    if (!exists) {
-      return false;
-    }
-    return this.sketchService.isSketchFolder(uri);
+    return this.fileSystemExt.exists(uri);
   }
 
   protected onCurrentWidgetChange({
