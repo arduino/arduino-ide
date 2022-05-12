@@ -284,7 +284,14 @@ MonacoThemingService.register({
   id: 'arduino-theme',
   label: 'Light (Arduino)',
   uiTheme: 'vs',
-  json: require('../../src/browser/data/arduino.color-theme.json'),
+  json: require('../../src/browser/data/default.color-theme.json'),
+});
+
+MonacoThemingService.register({
+  id: 'arduino-theme-dark',
+  label: 'Dark (Arduino)',
+  uiTheme: 'vs-dark',
+  json: require('../../src/browser/data/dark.color-theme.json'),
 });
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
