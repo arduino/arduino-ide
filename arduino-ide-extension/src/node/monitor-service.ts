@@ -53,6 +53,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
   protected readonly webSocketProvider: WebSocketProvider =
     new WebSocketProviderImpl();
 
+  protected uploadInProgress = false;
+
   constructor(
     @inject(ILogger)
     @named(MonitorServiceName)
@@ -78,6 +80,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
     this.portMonitorSettings(port.protocol, board.fqbn!).then(
       (settings) => (this.settings = settings)
     );
+  }
+
+  setUploadInProgress(status: boolean): void {
+    this.uploadInProgress = status;
   }
 
   getWebsocketAddressPort(): number {
@@ -113,11 +119,14 @@ export class MonitorService extends CoreClientAware implements Disposable {
       return Status.CONFIG_MISSING;
     }
 
+    if (this.uploadInProgress) {
+      return Status.UPLOAD_IN_PROGRESS;
+    }
+
     this.logger.info('starting monitor');
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
-
     this.duplex = client.monitor();
     this.duplex
       .on('close', () => {
@@ -205,7 +214,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * Pauses the currently running monitor, it still closes the gRPC connection
    * with the underlying monitor process but it doesn't stop the message handlers
    * currently running.
-   * This is mainly used to handle upload when to the board/port combination
+   * This is mainly used to handle upload with the board/port combination
    * the monitor is listening to.
    * @returns
    */
@@ -223,7 +232,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
       this.logger.info(
         `stopped monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
-      resolve();
+
+      this.duplex.on('end', resolve);
     });
   }
 

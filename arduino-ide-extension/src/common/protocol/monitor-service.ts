@@ -84,4 +84,7 @@ export namespace Status {
   export const CONFIG_MISSING: ErrorStatus = {
     message: 'Serial Config missing.',
   };
+  export const UPLOAD_IN_PROGRESS: ErrorStatus = {
+    message: 'Upload in progress.',
+  };
 }

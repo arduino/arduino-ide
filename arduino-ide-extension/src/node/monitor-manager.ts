@@ -12,7 +12,7 @@ export const MonitorManagerName = 'monitor-manager';
 export class MonitorManager extends CoreClientAware {
   // Map of monitor services that manage the running pluggable monitors.
   // Each service handles the lifetime of one, and only one, monitor.
-  // If either the board or port managed changes a new service must
+  // If either the board or port managed changes, a new service must
   // be started.
   private monitorServices = new Map<MonitorID, MonitorService>();
 
@@ -109,6 +109,7 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return;
     }
+    monitor.setUploadInProgress(true);
     return await monitor.pause();
   }
 
@@ -132,6 +133,7 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return Status.NOT_CONNECTED;
     }
+    monitor.setUploadInProgress(false);
     return await monitor.start();
   }
 
