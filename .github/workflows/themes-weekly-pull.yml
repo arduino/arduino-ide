@@ -2,8 +2,8 @@ name: themes-weekly-pull
 
 on:
   schedule:
-    # run every friday at 5AM
-    - cron: '0 5 * * 5'
+    # run every monday at 2AM
+    - cron: '0 2 * * 1'
 
 jobs:
   pull-from-jsonbin:
@@ -43,4 +43,3 @@ jobs:
           title: Update themes
           branch: themes/themes-update
           author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          base: ${{ github.head_ref }}
