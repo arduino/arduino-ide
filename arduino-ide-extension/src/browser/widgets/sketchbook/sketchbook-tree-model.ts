@@ -56,9 +56,9 @@ export class SketchbookTreeModel extends FileTreeModel {
 
   @postConstruct()
   protected init(): void {
-    super.init();
-    this.reportBusyProgress();
-    this.initializeRoot();
+    // super.init();
+    // this.reportBusyProgress();
+    // this.initializeRoot();
   }
 
   protected readonly pendingBusyProgress = new Map<string, Deferred<void>>();
