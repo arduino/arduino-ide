@@ -32,7 +32,7 @@ export function duration(options?: DurationOptions) {
       const slow = duration > (options?.timeout ?? 100);
       const message = `---- ${slow ? '!!!SLOW!!! ' : ''}DURATION: ${
         options?.name ?? String(key)
-      } took ${duration} ms. Args: [${input}] ----`;
+      } took ${duration.toFixed(3)} ms. Args: [${input}] ----`;
       if (slow) {
         console.error(message);
       } else {

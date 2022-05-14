@@ -91,6 +91,9 @@ export class ArduinoAuthenticationProvider implements AuthenticationProvider {
 
   public setOptions(authOptions: AuthOptions) {
     this.authOptions = authOptions;
+    if (!this._tokens.length) {
+      this.init();
+    }
   }
 
   public dispose(): void {}

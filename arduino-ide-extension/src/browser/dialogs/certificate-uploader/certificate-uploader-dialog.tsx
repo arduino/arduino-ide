@@ -66,10 +66,10 @@ export class UploadCertificateDialogWidget extends ReactWidget {
       }
     });
 
-    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
-      this.updatableFqbns = fqbns;
-      this.update();
-    });
+    // this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+    //   this.updatableFqbns = fqbns;
+    //   this.update();
+    // });
 
     this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
       this.availableBoards = availableBoards;

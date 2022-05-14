@@ -57,10 +57,11 @@ export class SketchbookTree extends FileNavigatorTree {
   }
 
   protected async isSketchNode(node: DirNode): Promise<boolean> {
-    const sketch = await this.sketchesService.maybeLoadSketch(
-      node.uri.toString()
-    );
-    return !!sketch;
+    // const sketch = await this.sketchesService.maybeLoadSketch(
+    //   node.uri.toString()
+    // );
+    // return !!sketch;
+    return true;
   }
 
   /**

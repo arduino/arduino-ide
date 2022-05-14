@@ -1,3 +1,7 @@
+// import { JsonRpcProxyFactory } from '../common/logging-proxy-factory';
+// import { JsonRpcProxyFactory as TheiaJsonRpcProxyFactory } from '@theia/core/lib/common/messaging/proxy-factory';
+// TheiaJsonRpcProxyFactory.prototype = JsonRpcProxyFactory.prototype;
+
 import { ContainerModule } from 'inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import {

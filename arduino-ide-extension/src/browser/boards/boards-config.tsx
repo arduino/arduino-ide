@@ -100,12 +100,12 @@ export class BoardsConfig extends React.Component<
   }
 
   componentDidMount() {
-    this.updateBoards();
-    this.updatePorts(
-      this.props.boardsServiceProvider.availableBoards
-        .map(({ port }) => port)
-        .filter(notEmpty)
-    );
+    // this.updateBoards();
+    // this.updatePorts(
+    //   this.props.boardsServiceProvider.availableBoards
+    //     .map(({ port }) => port)
+    //     .filter(notEmpty)
+    // );
     this.toDispose.pushAll([
       this.props.notificationCenter.onAttachedBoardsChanged((event) =>
         this.updatePorts(

@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
@@ -47,8 +47,7 @@ export class UploadSketch extends SketchContribution {
 
   protected readonly menuActionsDisposables = new DisposableCollection();
 
-  @postConstruct()
-  protected init(): void {
+  async onReady(): Promise<void> {
     this.boardsServiceClientImpl.onBoardsConfigChanged(async () => {
       const userFields =
         await this.boardsServiceClientImpl.selectedBoardUserFields();

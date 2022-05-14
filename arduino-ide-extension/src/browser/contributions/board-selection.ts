@@ -101,7 +101,6 @@ PID: ${PID}`;
   }
 
   onStart(): void {
-    this.updateMenus();
     this.notificationCenter.onPlatformInstalled(this.updateMenus.bind(this));
     this.notificationCenter.onPlatformUninstalled(this.updateMenus.bind(this));
     this.boardsServiceProvider.onBoardsConfigChanged(
@@ -113,6 +112,10 @@ PID: ${PID}`;
     this.boardsServiceProvider.onAvailablePortsChanged(
       this.updateMenus.bind(this)
     );
+  }
+
+  async onReady(): Promise<void> {
+    this.updateMenus();
   }
 
   protected async updateMenus(): Promise<void> {
@@ -204,9 +207,10 @@ PID: ${PID}`;
 
       const packageLabel =
         packageName +
-        `${manuallyInstalled
-          ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
-          : ''
+        `${
+          manuallyInstalled
+            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
+            : ''
         }`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
@@ -278,11 +282,13 @@ PID: ${PID}`;
 
       // First we show addresses with recognized boards connected,
       // then all the rest.
-      const sortedIDs = Object.keys(ports).sort((left: string, right: string): number => {
-        const [, leftBoards] = ports[left];
-        const [, rightBoards] = ports[right];
-        return rightBoards.length - leftBoards.length;
-      });
+      const sortedIDs = Object.keys(ports).sort(
+        (left: string, right: string): number => {
+          const [, leftBoards] = ports[left];
+          const [, rightBoards] = ports[right];
+          return rightBoards.length - leftBoards.length;
+        }
+      );
 
       for (let i = 0; i < sortedIDs.length; i++) {
         const portID = sortedIDs[i];
@@ -350,8 +356,10 @@ PID: ${PID}`;
   }
 
   protected async installedBoards(): Promise<InstalledBoardWithPackage[]> {
-    const allBoards = await this.boardsService.searchBoards({});
-    return allBoards.filter(InstalledBoardWithPackage.is);
+    // const allBoards = await this.boardsService.searchBoards({});
+    // return allBoards.filter(InstalledBoardWithPackage.is);
+    console.error('NO INSTALLED BOARD SEARCH');
+    return [];
   }
 }
 export namespace BoardSelection {

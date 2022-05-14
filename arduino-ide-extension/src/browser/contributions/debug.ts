@@ -79,52 +79,56 @@ export class Debug extends SketchContribution {
             : Debug.Commands.START_DEBUGGING.label
         }`)
     );
-    const refreshState = async (
-      board: Board | undefined = this.boardsServiceProvider.boardsConfig
-        .selectedBoard
-    ) => {
-      if (!board) {
-        this.disabledMessage = nls.localize(
-          'arduino/common/noBoardSelected',
-          'No board selected'
-        );
-        return;
-      }
-      const fqbn = board.fqbn;
-      if (!fqbn) {
-        this.disabledMessage = nls.localize(
-          'arduino/debug/noPlatformInstalledFor',
-          "Platform is not installed for '{0}'",
-          board.name
-        );
-        return;
-      }
-      const details = await this.boardService.getBoardDetails({ fqbn });
-      if (!details) {
-        this.disabledMessage = nls.localize(
-          'arduino/debug/noPlatformInstalledFor',
-          "Platform is not installed for '{0}'",
-          board.name
-        );
-        return;
-      }
-      const { debuggingSupported } = details;
-      if (!debuggingSupported) {
-        this.disabledMessage = nls.localize(
-          'arduino/debug/debuggingNotSupported',
-          "Debugging is not supported by '{0}'",
-          board.name
-        );
-      } else {
-        this.disabledMessage = undefined;
-      }
-    };
     this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
-      refreshState(selectedBoard)
+      this.refreshState(selectedBoard)
     );
-    this.notificationCenter.onPlatformInstalled(() => refreshState());
-    this.notificationCenter.onPlatformUninstalled(() => refreshState());
-    refreshState();
+    this.notificationCenter.onPlatformInstalled(() => this.refreshState());
+    this.notificationCenter.onPlatformUninstalled(() => this.refreshState());
+  }
+
+  async onReady(): Promise<void> {
+    this.refreshState();
+  }
+
+  private async refreshState(
+    board: Board | undefined = this.boardsServiceProvider.boardsConfig
+      .selectedBoard
+  ): Promise<void> {
+    if (!board) {
+      this.disabledMessage = nls.localize(
+        'arduino/common/noBoardSelected',
+        'No board selected'
+      );
+      return;
+    }
+    const fqbn = board.fqbn;
+    if (!fqbn) {
+      this.disabledMessage = nls.localize(
+        'arduino/debug/noPlatformInstalledFor',
+        "Platform is not installed for '{0}'",
+        board.name
+      );
+      return;
+    }
+    const details = await this.boardService.getBoardDetails({ fqbn });
+    if (!details) {
+      this.disabledMessage = nls.localize(
+        'arduino/debug/noPlatformInstalledFor',
+        "Platform is not installed for '{0}'",
+        board.name
+      );
+      return;
+    }
+    const { debuggingSupported } = details;
+    if (!debuggingSupported) {
+      this.disabledMessage = nls.localize(
+        'arduino/debug/debuggingNotSupported',
+        "Debugging is not supported by '{0}'",
+        board.name
+      );
+    } else {
+      this.disabledMessage = undefined;
+    }
   }
 
   registerCommands(registry: CommandRegistry): void {

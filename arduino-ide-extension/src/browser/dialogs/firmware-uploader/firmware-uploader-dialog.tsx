@@ -38,10 +38,10 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   @postConstruct()
   protected init(): void {
-    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
-      this.updatableFqbns = fqbns;
-      this.update();
-    });
+    // this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+    //   this.updatableFqbns = fqbns;
+    //   this.update();
+    // });
 
     this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
       this.availableBoards = availableBoards;

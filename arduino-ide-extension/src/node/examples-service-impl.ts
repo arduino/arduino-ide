@@ -13,6 +13,7 @@ import {
   LibraryService,
 } from '../common/protocol';
 import { ConfigServiceImpl } from './config-service-impl';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 // import { duration } from '../common/decorators';
 
 @injectable()
@@ -26,26 +27,23 @@ export class ExamplesServiceImpl implements ExamplesService {
   @inject(ConfigServiceImpl)
   protected readonly configService: ConfigServiceImpl;
 
-  protected _all: SketchContainer[] | undefined;
+  protected _all = new Deferred<SketchContainer[]>();
 
   @postConstruct()
-  protected init(): void {
-    this.builtIns();
-  }
-
-  // @duration()
-  async builtIns(): Promise<SketchContainer[]> {
-    if (this._all) {
-      return this._all;
-    }
+  protected async init(): Promise<void> {
     const exampleRootPath = join(__dirname, '..', '..', 'Examples');
     const exampleNames = await promisify(fs.readdir)(exampleRootPath);
-    this._all = await Promise.all(
+    const all = await Promise.all(
       exampleNames
         .map((name) => join(exampleRootPath, name))
         .map((path) => this.load(path))
     );
-    return this._all;
+    this._all.resolve(all);
+  }
+
+  // @duration()
+  async builtIns(): Promise<SketchContainer[]> {
+    return this._all.promise;
   }
 
   // TODO: decide whether it makes sense to cache them. Keys should be: `fqbn` + version of containing core/library.

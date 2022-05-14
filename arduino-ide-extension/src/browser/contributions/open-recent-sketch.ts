@@ -36,14 +36,20 @@ export class OpenRecentSketch extends SketchContribution {
   protected toDisposeBeforeRegister = new Map<string, DisposableCollection>();
 
   onStart(): void {
-    const refreshMenu = (sketches: Sketch[]) => {
-      this.register(sketches);
-      this.mainMenuManager.update();
-    };
     this.notificationCenter.onRecentSketchesChanged(({ sketches }) =>
-      refreshMenu(sketches)
+      this.refreshMenu(sketches)
     );
-    this.sketchService.recentlyOpenedSketches().then(refreshMenu);
+  }
+
+  async onReady(): Promise<void> {
+    this.sketchService
+      .recentlyOpenedSketches()
+      .then(this.refreshMenu.bind(this));
+  }
+
+  private refreshMenu(sketches: Sketch[]): void {
+    this.register(sketches);
+    this.mainMenuManager.update();
   }
 
   registerMenus(registry: MenuModelRegistry): void {

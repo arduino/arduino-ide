@@ -92,7 +92,7 @@ export class SketchbookWidgetContribution
   }
 
   async initializeLayout(): Promise<void> {
-    return this.openView() as Promise<any>;
+    // return this.openView() as Promise<any>;
   }
 
   registerCommands(registry: CommandRegistry): void {

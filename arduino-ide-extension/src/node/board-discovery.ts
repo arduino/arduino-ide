@@ -54,10 +54,10 @@ export class BoardDiscovery extends CoreClientAware {
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
-    this.startBoardListWatch(coreClient);
+  protected init(): void {
+    // this.coreClientProvider.initialized
+    //   .then(() => this.coreClient())
+    //   .then((coreClient) => this.startBoardListWatch(coreClient));
   }
 
   stopBoardListWatch(coreClient: CoreClientProvider.Client): Promise<void> {
@@ -132,7 +132,9 @@ export class BoardDiscovery extends CoreClientAware {
         // protocols.
         const portID = `${address}|${protocol}`;
         const label = (detectedPort as any).getPort().getLabel();
-        const protocolLabel = (detectedPort as any).getPort().getProtocolLabel();
+        const protocolLabel = (detectedPort as any)
+          .getPort()
+          .getProtocolLabel();
         const port = {
           id: portID,
           address,
@@ -153,7 +155,9 @@ export class BoardDiscovery extends CoreClientAware {
           if (newState[portID]) {
             const [, knownBoards] = newState[portID];
             console.warn(
-              `Port '${Port.toString(port)}' was already available. Known boards before override: ${JSON.stringify(
+              `Port '${Port.toString(
+                port
+              )}' was already available. Known boards before override: ${JSON.stringify(
                 knownBoards
               )}`
             );
@@ -161,7 +165,9 @@ export class BoardDiscovery extends CoreClientAware {
           newState[portID] = [port, boards];
         } else if (eventType === 'remove') {
           if (!newState[portID]) {
-            console.warn(`Port '${Port.toString(port)}' was not available. Skipping`);
+            console.warn(
+              `Port '${Port.toString(port)}' was not available. Skipping`
+            );
             return;
           }
           delete newState[portID];

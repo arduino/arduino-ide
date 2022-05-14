@@ -93,6 +93,8 @@ export class WorkspaceService extends TheiaWorkspaceService {
         }
         return (await this.sketchService.createNewSketch()).uri;
       } catch (err) {
+        console.log('ERR', err);
+
         this.appStateService
           .reachedState('ready')
           .then(() => this.application.shell.update());
@@ -130,7 +132,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
         .getRecentWorkspaces()
         // On Windows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method. (akitta: they're not file path but `path` of the URI.))
         .then((workspaceUris) =>
-          workspaceUris.map(VSCodeUri.file).map(VSCodeUri.toString)
+          workspaceUris
+            .map((raw) => VSCodeUri.file(raw))
+            .map((uri) => uri.toString())
         )
     );
   }

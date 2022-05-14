@@ -55,9 +55,10 @@ export class IncludeLibrary extends SketchContribution {
     this.notificationCenter.onLibraryUninstalled(() =>
       this.updateMenuActions()
     );
-    this.appStateService
-      .reachedState('ready')
-      .then(() => this.updateMenuActions());
+  }
+
+  async onReady(): Promise<void> {
+    this.updateMenuActions();
   }
 
   registerMenus(registry: MenuModelRegistry): void {

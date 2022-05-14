@@ -1,5 +1,5 @@
 import * as PQueue from 'p-queue';
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { CommandHandler } from '@theia/core/lib/common/command';
 import {
   MenuPath,
@@ -43,8 +43,7 @@ export abstract class Examples extends SketchContribution {
 
   protected readonly toDispose = new DisposableCollection();
 
-  @postConstruct()
-  init(): void {
+  onStart(): void {
     this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
       this.handleBoardChanged(selectedBoard)
     );

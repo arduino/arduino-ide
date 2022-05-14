@@ -1,4 +1,4 @@
-import { inject, injectable, interfaces } from 'inversify';
+import { inject, injectable, interfaces, postConstruct } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Saveable } from '@theia/core/lib/browser/saveable';
@@ -42,6 +42,7 @@ import {
   Sketch,
 } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 export {
   Command,
@@ -84,6 +85,14 @@ export abstract class Contribution
   @inject(SettingsService)
   protected readonly settingsService: SettingsService;
 
+  @inject(FrontendApplicationStateService)
+  protected readonly appStateService: FrontendApplicationStateService;
+
+  @postConstruct()
+  init(): void {
+    this.appStateService.reachedState('ready').then(this.onReady.bind(this));
+  }
+
   onStart(app: FrontendApplication): MaybePromise<void> {}
 
   registerCommands(registry: CommandRegistry): void {}
@@ -93,6 +102,11 @@ export abstract class Contribution
   registerKeybindings(registry: KeybindingRegistry): void {}
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {}
+
+  /**
+   * This runs asynchronously when the application reaches the `'ready'` state.
+   */
+  async onReady(): Promise<void> {}
 }
 
 @injectable()

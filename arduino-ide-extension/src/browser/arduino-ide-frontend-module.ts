@@ -1,3 +1,7 @@
+// import { JsonRpcProxyFactory } from '../common/logging-proxy-factory';
+// import { JsonRpcProxyFactory as TheiaJsonRpcProxyFactory } from '@theia/core/lib/common/messaging/proxy-factory';
+// TheiaJsonRpcProxyFactory.prototype.co = JsonRpcProxyFactory.prototype;
+
 import '../../src/browser/style/index.css';
 import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
@@ -279,8 +283,12 @@ import { FileService } from './theia/filesystem/file-service';
 import { FileService as TheiaFileService } from '@theia/filesystem/lib/browser/file-service';
 import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-generator';
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
+import { EditorNavigationContribution as TheiaEditorNavigationContribution } from '@theia/editor/lib/browser/editor-navigation-contribution';
+import { EditorNavigationContribution } from './theia/editor/editor-navigation-contribution';
+// import { WebSocketConnectionProvider } from './theia/core/ws-connection-provider';
+// import { WebSocketConnectionProvider as TheiaWebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 
-const ElementQueries = require('css-element-queries/src/ElementQueries');
+// const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -290,8 +298,13 @@ MonacoThemingService.register({
 });
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
-  ElementQueries.listen();
-  ElementQueries.init();
+  // ElementQueries.listen();
+  // ElementQueries.init();
+
+  // bind(WebSocketConnectionProvider).toSelf().inSingletonScope();
+  // rebind(TheiaWebSocketConnectionProvider).toService(
+  //   WebSocketConnectionProvider
+  // );
 
   // Commands and toolbar items
   bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
@@ -678,6 +691,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       iconThemeService
     );
   });
+
+  // Async start navigation service (ctrl(+shift)+-) on macOS to go back and forth
+  bind(EditorNavigationContribution).toSelf().inSingletonScope();
+  rebind(TheiaEditorNavigationContribution).toService(
+    EditorNavigationContribution
+  );
 
   // Workaround for https://github.com/eclipse-theia/theia/issues/8722
   // Do not trigger a save on IDE startup if `"editor.autoSave": "on"` was set as a preference.
