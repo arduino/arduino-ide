@@ -105,6 +105,9 @@ export class SketchesServiceClientImpl
   }
 
   async currentSketch(): Promise<Sketch | undefined> {
+    if ('hack'.length) {
+      return undefined;
+    }
     const sketches = (
       await Promise.all(
         this.workspaceService

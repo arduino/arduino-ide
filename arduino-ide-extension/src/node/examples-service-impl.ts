@@ -8,7 +8,7 @@ import { Sketch, SketchContainer } from '../common/protocol/sketches-service';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import { ExamplesService } from '../common/protocol/examples-service';
 import {
-  LibraryLocation,
+  // LibraryLocation,
   LibraryPackage,
   LibraryService,
 } from '../common/protocol';
@@ -31,14 +31,14 @@ export class ExamplesServiceImpl implements ExamplesService {
 
   @postConstruct()
   protected async init(): Promise<void> {
-    const exampleRootPath = join(__dirname, '..', '..', 'Examples');
-    const exampleNames = await promisify(fs.readdir)(exampleRootPath);
-    const all = await Promise.all(
-      exampleNames
-        .map((name) => join(exampleRootPath, name))
-        .map((path) => this.load(path))
-    );
-    this._all.resolve(all);
+    // const exampleRootPath = join(__dirname, '..', '..', 'Examples');
+    // const exampleNames = await promisify(fs.readdir)(exampleRootPath);
+    // const all = await Promise.all(
+    //   exampleNames
+    //     .map((name) => join(exampleRootPath, name))
+    //     .map((path) => this.load(path))
+    // );
+    this._all.resolve([]);
   }
 
   // @duration()
@@ -56,23 +56,23 @@ export class ExamplesServiceImpl implements ExamplesService {
     const user: SketchContainer[] = [];
     const current: SketchContainer[] = [];
     const any: SketchContainer[] = [];
-    const packages: LibraryPackage[] = await this.libraryService.list({
-      fqbn,
-    });
-    for (const pkg of packages) {
-      const container = await this.tryGroupExamples(pkg);
-      const { location } = pkg;
-      if (location === LibraryLocation.USER) {
-        user.push(container);
-      } else if (
-        location === LibraryLocation.PLATFORM_BUILTIN ||
-        LibraryLocation.REFERENCED_PLATFORM_BUILTIN
-      ) {
-        current.push(container);
-      } else {
-        any.push(container);
-      }
-    }
+    // const packages: LibraryPackage[] = await this.libraryService.list({
+    //   fqbn,
+    // });
+    // for (const pkg of packages) {
+    //   const container = await this.tryGroupExamples(pkg);
+    //   const { location } = pkg;
+    //   if (location === LibraryLocation.USER) {
+    //     user.push(container);
+    //   } else if (
+    //     location === LibraryLocation.PLATFORM_BUILTIN ||
+    //     LibraryLocation.REFERENCED_PLATFORM_BUILTIN
+    //   ) {
+    //     current.push(container);
+    //   } else {
+    //     any.push(container);
+    //   }
+    // }
     return { user, current, any };
   }
 

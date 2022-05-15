@@ -279,6 +279,9 @@ export class BoardsServiceImpl
   }
 
   async search(options: { query?: string }): Promise<BoardsPackage[]> {
+    if ('hack'.length) {
+      return [];
+    }
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;

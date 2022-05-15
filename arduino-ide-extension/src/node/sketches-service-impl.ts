@@ -55,6 +55,9 @@ export class SketchesServiceImpl
     uri?: string;
     exclude?: string[];
   }): Promise<SketchContainerWithDetails> {
+    if ('hack'.length) {
+      return { children: [], label: '', sketches: [] };
+    }
     let sketchbookPath: undefined | string;
     if (!uri) {
       const { sketchDirUri } = await this.configService.getConfiguration();
@@ -137,6 +140,17 @@ export class SketchesServiceImpl
 
   // @duration()
   async loadSketch(uri: string): Promise<SketchWithDetails> {
+    if ('hack'.length) {
+      return {
+        additionalFileUris: [],
+        mainFileUri: uri + '/' + new URI(uri).path.base + '.ino',
+        mtimeMs: 0,
+        name: new URI(uri).path.base,
+        otherSketchFileUris: [],
+        rootFolderFileUris: [],
+        uri: uri,
+      };
+    }
     await this.coreClientProvider.initialized;
     const { client, instance } = await this.coreClient();
     const req = new LoadSketchRequest();
@@ -195,6 +209,9 @@ export class SketchesServiceImpl
 
   // @duration()
   async markAsRecentlyOpened(uri: string): Promise<void> {
+    if ('hack'.length) {
+      return;
+    }
     let sketch: Sketch | undefined = undefined;
     try {
       sketch = await this.loadSketch(uri);
@@ -233,6 +250,9 @@ export class SketchesServiceImpl
 
   // @duration()
   async recentlyOpenedSketches(): Promise<Sketch[]> {
+    if ('hack'.length) {
+      return [];
+    }
     const configDirUri = await this.envVariableServer.getConfigDirUri();
     const fsPath = path.join(
       FileUri.fsPath(configDirUri),

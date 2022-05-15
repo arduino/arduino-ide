@@ -64,19 +64,18 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected init(): void {
     this.daemon.ready.then(async () => {
       // First create the client and the instance synchronously
       // and notify client is ready.
       // TODO: Creation failure should probably be handled here
-      await this.reconcileClient().then(() => {
-        this._created.resolve();
-      });
+      await this.reconcileClient();
+      this._created.resolve();
 
       // If client has been created correctly update indexes and initialize
       // its instance by loading platforms and cores.
       if (this._client && !(this._client instanceof Error)) {
-        await this.updateIndexes(this._client)
+        await Promise.resolve(this._client)
           .then(this.initInstance)
           .then(() => {
             this._initialized.resolve();

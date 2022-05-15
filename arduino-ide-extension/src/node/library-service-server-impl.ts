@@ -45,6 +45,9 @@ export class LibraryServiceImpl
   protected readonly notificationServer: NotificationServiceServer;
 
   async search(options: { query?: string }): Promise<LibraryPackage[]> {
+    if ('hack'.length) {
+      return [];
+    }
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
@@ -112,6 +115,9 @@ export class LibraryServiceImpl
   }: {
     fqbn?: string | undefined;
   }): Promise<LibraryPackage[]> {
+    if ('hack'.length) {
+      return [];
+    }
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
