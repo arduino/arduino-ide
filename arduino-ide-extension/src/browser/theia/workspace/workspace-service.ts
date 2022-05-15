@@ -18,9 +18,11 @@ import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
 import { nls } from '@theia/core/lib/common';
+import { DEFAULT_WINDOW_HASH } from '@theia/core/lib/common/window';
 import { URI as VSCodeUri } from '@theia/core/shared/vscode-uri';
 import { duration } from '../../../common/decorators';
 import { FileSystemExt } from '../../../common/protocol';
+import { URI } from '../../contributions/contribution';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -52,26 +54,58 @@ export class WorkspaceService extends TheiaWorkspaceService {
   private workspaceUri?: Promise<string | undefined>;
   private version?: string;
 
-  @duration({ name: 'workspace-service#init' })
   protected async init(): Promise<void> {
     super.init(); // we do not wait here!
   }
 
   async onStart(application: FrontendApplication): Promise<void> {
-    this.application = application;
-    const info = await this.applicationServer.getApplicationInfo();
-    this.version = info?.version;
-    application.shell.onDidChangeCurrentWidget(
-      this.onCurrentWidgetChange.bind(this)
-    );
-    const newValue = application.shell.currentWidget
-      ? application.shell.currentWidget
-      : null;
-    this.onCurrentWidgetChange({ newValue, oldValue: null });
+    // this.application = application;
+    // const info = await this.applicationServer.getApplicationInfo();
+    // this.version = info?.version;
+    // application.shell.onDidChangeCurrentWidget(
+    //   this.onCurrentWidgetChange.bind(this)
+    // );
+    // const newValue = application.shell.currentWidget
+    //   ? application.shell.currentWidget
+    //   : null;
+    // this.onCurrentWidgetChange({ newValue, oldValue: null });
   }
+
+  protected async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
+
+    // If an empty window is explicitly requested do not restore a previous workspace.
+    // Note: `window.location.hash` includes leading "#" if non-empty.
+    if (window.location.hash === `#${DEFAULT_WINDOW_HASH}`) {
+        window.location.hash = '';
+        return undefined;
+    }
+
+    // Prefer the workspace path specified as the URL fragment, if present.
+    if (window.location.hash.length > 1) {
+        // Remove the leading # and decode the URI.
+        const wpPath = decodeURI(window.location.hash.substring(1));
+        const workspaceUri = new URI().withPath(wpPath).withScheme('file');
+        // let workspaceStat: FileStat | undefined;
+        // try {
+        //     workspaceStat = await this.fileService.resolve(workspaceUri);
+        // } catch { }
+        // if (workspaceStat && !workspaceStat.isDirectory && !this.isWorkspaceFile(workspaceStat)) {
+        //     this.messageService.error(`Not a valid workspace file: ${workspaceUri}`);
+        //     return undefined;
+        // }
+        return workspaceUri.toString();
+    } else {
+        // Else, ask the server for its suggested workspace (usually the one
+        // specified on the CLI, or the most recent).
+        return this.server.getMostRecentlyUsedWorkspace();
+    }
+}
 
   @duration()
   protected getDefaultWorkspaceUri(): Promise<string | undefined> {
+    if ('hack'.length) {
+      return Promise.resolve(super.getDefaultWorkspaceUri());
+    }
     if (this.workspaceUri) {
       // Avoid creating a new sketch twice
       return this.workspaceUri;

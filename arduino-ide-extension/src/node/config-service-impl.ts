@@ -54,18 +54,19 @@ export class ConfigServiceImpl
   protected readonly configChangeEmitter = new Emitter<Config>();
 
   @duration({ name: 'config-service#onStart' })
-  async onStart(): Promise<void> {
-    await this.ensureCliConfigExists();
-    this.cliConfig = await this.loadCliConfig();
-    if (this.cliConfig) {
-      const config = await this.mapCliConfigToAppConfig(this.cliConfig);
-      if (config) {
-        this.config = config;
-        this.ready.resolve();
-        return;
+  onStart(): void {
+    this.ensureCliConfigExists().then(async () => {
+      this.cliConfig = await this.loadCliConfig();
+      if (this.cliConfig) {
+        const config = await this.mapCliConfigToAppConfig(this.cliConfig);
+        if (config) {
+          this.config = config;
+          this.ready.resolve();
+          return;
+        }
       }
-    }
-    this.fireInvalidConfig();
+      this.fireInvalidConfig();
+    });
   }
 
   @duration()
@@ -150,9 +151,9 @@ export class ConfigServiceImpl
 
   @duration()
   protected async loadCliConfig(): Promise<DefaultCliConfig | undefined> {
-    const [cliConfigFileUri, fallbackModel] = await Promise.all([
+    const [cliConfigFileUri] = await Promise.all([
       this.getCliConfigFileUri(),
-      this.getFallbackCliConfig(),
+      // this.getFallbackCliConfig(),
     ]);
     const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
     try {
@@ -161,7 +162,7 @@ export class ConfigServiceImpl
       });
       const model = yaml.safeLoad(content) || {};
       // The CLI can run with partial (missing `port`, `directories`), the app cannot, we merge the default with the user's config.
-      return deepmerge(fallbackModel, model) as DefaultCliConfig;
+      return deepmerge({}, model) as DefaultCliConfig;
     } catch (error) {
       this.logger.error(
         `Error occurred when loading CLI config from ${cliConfigPath}.`,

@@ -285,10 +285,6 @@ import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-gen
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 import { EditorNavigationContribution as TheiaEditorNavigationContribution } from '@theia/editor/lib/browser/editor-navigation-contribution';
 import { EditorNavigationContribution } from './theia/editor/editor-navigation-contribution';
-// import { WebSocketConnectionProvider } from './theia/core/ws-connection-provider';
-// import { WebSocketConnectionProvider as TheiaWebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
-
-// const ElementQueries = require('css-element-queries/src/ElementQueries');
 
 MonacoThemingService.register({
   id: 'arduino-theme',

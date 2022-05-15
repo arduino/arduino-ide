@@ -42,7 +42,7 @@ export class AuthenticationServiceImpl
         this.clients.forEach((client) => this.disposeClient(client))
       ),
     ]);
-    await this.delegate.init();
+    // await this.delegate.init();
   }
 
   setOptions(authOptions: AuthOptions) {
