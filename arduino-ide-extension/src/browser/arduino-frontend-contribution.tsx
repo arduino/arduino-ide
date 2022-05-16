@@ -285,7 +285,7 @@ export class ArduinoFrontendContribution
       this.sketchbookWidgetContribution,
     ] as Array<FrontendApplicationContribution>) {
       if (viewContribution.initializeLayout) {
-        viewContribution.initializeLayout(app);
+        // viewContribution.initializeLayout(app);
       }
     }
 

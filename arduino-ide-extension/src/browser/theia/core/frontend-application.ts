@@ -22,7 +22,7 @@ export class FrontendApplication extends TheiaFrontendApplication {
 
   @duration()
   protected async initializeLayout(): Promise<void> {
-    this.openSketchFiles().then(() => super.initializeLayout());
+    super.initializeLayout().then(() => this.openSketchFiles());
   }
 
   private async openSketchFiles(): Promise<void> {
