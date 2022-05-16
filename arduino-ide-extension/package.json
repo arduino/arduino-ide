@@ -28,7 +28,6 @@
     "@theia/editor-preview": "1.22.1",
     "@theia/electron": "1.22.1",
     "@theia/filesystem": "1.22.1",
-    "@theia/git": "1.22.1",
     "@theia/keymaps": "1.22.1",
     "@theia/markers": "1.22.1",
     "@theia/monaco": "1.22.1",

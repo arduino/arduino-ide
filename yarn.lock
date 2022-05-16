@@ -2497,30 +2497,6 @@
     uuid "^8.0.0"
     vscode-languageserver-textdocument "^1.0.1"
 
-"@theia/git@1.22.1":
-  version "1.22.1"
-  resolved "https://registry.yarnpkg.com/@theia/git/-/git-1.22.1.tgz#902ff74e50d077301e48978c8ba553faa70a5148"
-  integrity sha512-7H2y6X3qA7Zkqez2pWJX01BsYd0gls8ag979i7xwrAjuPV03UDNfFa+m1/89Bq2A3bgM64vJzifYeSz5cY7zBw==
-  dependencies:
-    "@theia/core" "1.22.1"
-    "@theia/editor" "1.22.1"
-    "@theia/filesystem" "1.22.1"
-    "@theia/monaco" "1.22.1"
-    "@theia/navigator" "1.22.1"
-    "@theia/scm" "1.22.1"
-    "@theia/scm-extra" "1.22.1"
-    "@theia/workspace" "1.22.1"
-    "@types/diff" "^3.2.2"
-    "@types/p-queue" "^2.3.1"
-    diff "^3.4.0"
-    dugite-extra "0.1.14"
-    find-git-exec "^0.0.3"
-    find-git-repositories "^0.1.1"
-    moment "2.24.0"
-    octicons "^7.1.0"
-    p-queue "^2.4.2"
-    ts-md5 "^1.2.2"
-
 "@theia/keymaps@1.22.1":
   version "1.22.1"
   resolved "https://registry.yarnpkg.com/@theia/keymaps/-/keymaps-1.22.1.tgz#0eafe7118832e4ca4f82dfc2c7c4eb51e554c448"
@@ -2713,17 +2689,6 @@
     "@theia/core" "1.22.1"
     node-pty "0.11.0-beta17"
     string-argv "^0.1.1"
-
-"@theia/scm-extra@1.22.1":
-  version "1.22.1"
-  resolved "https://registry.yarnpkg.com/@theia/scm-extra/-/scm-extra-1.22.1.tgz#8fef0e067e2422aadc0826ea5397f16689f53d17"
-  integrity sha512-6HQ+4Kzd37LzCSGBe3IKtOwkeBEq4RivYocHUFhXp8IcDIgsyeRpCLELYy50Egjok4rv9w0IyFP8IkFcqBAPxg==
-  dependencies:
-    "@theia/core" "1.22.1"
-    "@theia/editor" "1.22.1"
-    "@theia/filesystem" "1.22.1"
-    "@theia/navigator" "1.22.1"
-    "@theia/scm" "1.22.1"
 
 "@theia/scm@1.22.1":
   version "1.22.1"
@@ -6193,7 +6158,7 @@ drivelist@^9.0.2:
     nan "^2.14.0"
     prebuild-install "^5.2.4"
 
-dugite-extra@0.1.14, dugite-extra@0.1.15:
+dugite-extra@0.1.15:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/dugite-extra/-/dugite-extra-0.1.15.tgz#322406b628ea5515c5c6fcd65e4d040543d6268a"
   integrity sha512-beLmQcIXLA8aXqWQZF/ooECoZvYKpBywIFwgqAoYnV04NdWUXDtZ6mMcjQf5eAz5PjXGXAYSuQ31zkPL8J85+A==
@@ -7112,7 +7077,7 @@ find-cache-dir@^3.3.1:
     make-dir "^3.0.2"
     pkg-dir "^4.1.0"
 
-find-git-exec@0.0.4, find-git-exec@^0.0.3, find-git-exec@^0.0.4:
+find-git-exec@0.0.4, find-git-exec@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/find-git-exec/-/find-git-exec-0.0.4.tgz#f1d0d35f93ad99bc81aacd357388d00ae902bc92"
   integrity sha512-klzQwno+dpdeahtHhvZZ5Yn6K+zme1Aj+YJ4ZD+DywSLrQoyCywTrsubUZa1hHRehmfwBThoeKjS7fsaxhpfNA==
@@ -7120,13 +7085,6 @@ find-git-exec@0.0.4, find-git-exec@^0.0.3, find-git-exec@^0.0.4:
     "@types/node" "^10.14.22"
     "@types/which" "^1.3.2"
     which "^2.0.1"
-
-find-git-repositories@^0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/find-git-repositories/-/find-git-repositories-0.1.3.tgz#4e83e085b20cb3e393c1e091adc3a3eec50b6dda"
-  integrity sha512-6q8ZIQ7loe0eWbz1O79J0gQ2wVpQ1ajsjV64HC2iJ7gOOqlEuDlG/T0xYr5gDYBFSHlS8dah1KGbndiWWdJ0PA==
-  dependencies:
-    nan "^2.14.0"
 
 find-root@^1.1.0:
   version "1.1.0"
@@ -10872,13 +10830,6 @@ object.values@^1.1.4:
     call-bind "^1.0.2"
     define-properties "^1.1.3"
     es-abstract "^1.18.2"
-
-octicons@^7.1.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/octicons/-/octicons-7.4.0.tgz#0be0082ed75b81e680800ef978bf47078b670091"
-  integrity sha512-j53BDX+FpJ4DQwENARbk9hHkwG/Oaq5NPUMNzYdGxRA/R5M6BbPVQEakUVMNKLzvzPue/gEEUTtSj6utFse5QQ==
-  dependencies:
-    object-assign "^4.1.1"
 
 octokit-pagination-methods@^1.1.0:
   version "1.1.0"

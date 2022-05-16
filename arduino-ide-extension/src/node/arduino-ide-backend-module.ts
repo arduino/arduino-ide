@@ -84,8 +84,8 @@ import {
 } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
-import { DefaultGitInit } from './theia/git/git-init';
-import { GitInit } from '@theia/git/lib/node/init/git-init';
+// import { DefaultGitInit } from './theia/git/git-init';
+// import { GitInit } from '@theia/git/lib/node/init/git-init';
 import { AuthenticationServiceImpl } from './auth/authentication-service-impl';
 import {
   AuthenticationService,
@@ -332,8 +332,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope()
     .whenTargetNamed(SerialServiceName);
 
-  bind(DefaultGitInit).toSelf();
-  rebind(GitInit).toService(DefaultGitInit);
+  // bind(DefaultGitInit).toSelf();
+  // rebind(GitInit).toService(DefaultGitInit);
 
   // Remote sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
