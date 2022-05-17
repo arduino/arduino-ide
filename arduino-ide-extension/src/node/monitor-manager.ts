@@ -1,8 +1,9 @@
 import { ILogger } from '@theia/core';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { Board, Port, Status, MonitorSettings } from '../common/protocol';
+import { Board, Port, Status } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
+import { MonitorSettings } from './monitor-settings/monitor-settings-provider';
 
 type MonitorID = string;
 
@@ -54,7 +55,7 @@ export class MonitorManager extends CoreClientAware {
     if (!monitor) {
       monitor = this.createMonitor(board, port);
     }
-    return await monitor.start();
+    return await monitor.start(monitorID);
   }
 
   /**
@@ -134,7 +135,7 @@ export class MonitorManager extends CoreClientAware {
       return Status.NOT_CONNECTED;
     }
     monitor.setUploadInProgress(false);
-    return await monitor.start();
+    return await monitor.start(monitorID);
   }
 
   /**

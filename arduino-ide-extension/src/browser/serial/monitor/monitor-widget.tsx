@@ -14,11 +14,9 @@ import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { nls } from '@theia/core/lib/common';
-import {
-  MonitorManagerProxyClient,
-  MonitorSettings,
-} from '../../../common/protocol';
+import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
+import { MonitorSettings } from '../../../node/monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {

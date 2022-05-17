@@ -91,7 +91,7 @@ export class PlotterFrontendContribution extends Contribution {
       const settings = this.monitorManagerProxy.getCurrentSettings(board, port);
       if ('baudrate' in settings) {
         // Convert from string to numbers
-        baudrates = settings['baudrate'].values.map(b => +b);
+        baudrates = settings['baudrate'].values.map((b) => +b);
         currentBaudrate = +settings['baudrate'].selectedValue;
       }
     }

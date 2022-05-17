@@ -1,4 +1,5 @@
 import { Event, JsonRpcServer } from '@theia/core';
+import { MonitorSettings } from '../../node/monitor-settings/monitor-settings-provider';
 import { Board, Port } from './boards-service';
 
 export const MonitorManagerProxyFactory = Symbol('MonitorManagerProxyFactory');
@@ -52,8 +53,6 @@ export interface MonitorSetting {
   // The selected value
   selectedValue: string;
 }
-
-export type MonitorSettings = Record<string, MonitorSetting>;
 
 export namespace Monitor {
   export enum Command {

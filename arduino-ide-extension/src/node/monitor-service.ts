@@ -1,13 +1,7 @@
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { Disposable, Emitter, ILogger } from '@theia/core';
 import { inject, named } from '@theia/core/shared/inversify';
-import {
-  Board,
-  Port,
-  Status,
-  MonitorSettings,
-  Monitor,
-} from '../common/protocol';
+import { Board, Port, Status, Monitor } from '../common/protocol';
 import {
   EnumerateMonitorPortSettingsRequest,
   EnumerateMonitorPortSettingsResponse,
@@ -20,6 +14,10 @@ import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
+import {
+  MonitorSettings,
+  MonitorSettingsProvider,
+} from './monitor-settings/monitor-settings-provider';
 
 export const MonitorServiceName = 'monitor-service';
 
@@ -50,6 +48,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
   protected readonly onDisposeEmitter = new Emitter<void>();
   readonly onDispose = this.onDisposeEmitter.event;
 
+  @inject(MonitorSettingsProvider)
+  protected readonly monitorSettingsProvider: MonitorSettingsProvider;
+
+  // TODO: use dependency injection
   protected readonly webSocketProvider: WebSocketProvider =
     new WebSocketProviderImpl();
 
@@ -75,11 +77,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
           this.dispose();
         }
       });
-
-    // Sets default settings for this monitor
-    this.portMonitorSettings(port.protocol, board.fqbn!).then(
-      (settings) => (this.settings = settings)
-    );
   }
 
   setUploadInProgress(status: boolean): void {
@@ -108,9 +105,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * Start and connects a monitor using currently set board and port.
    * If a monitor is already started or board fqbn, port address and/or protocol
    * are missing nothing happens.
+   * @param id
    * @returns a status to verify connection has been established.
    */
-  async start(): Promise<Status> {
+  async start(monitorID: string): Promise<Status> {
     if (this.duplex) {
       return Status.ALREADY_CONNECTED;
     }
@@ -124,6 +122,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
 
     this.logger.info('starting monitor');
+    this.settings = await this.monitorSettingsProvider.init(
+      monitorID,
+      this.coreClientProvider
+    );
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
@@ -281,6 +283,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     return this.settings;
   }
 
+  // TODO: move this into MonitoSettingsProvider
   /**
    * Returns the possible configurations used to connect a monitor
    * to the board specified by fqbn using the specified protocol

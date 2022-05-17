@@ -5,8 +5,8 @@ import {
   Monitor,
   MonitorManagerProxyClient,
   MonitorManagerProxyFactory,
-  MonitorSettings,
 } from '../common/protocol/monitor-service';
+import { MonitorSettings } from '../node/monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorManagerProxyClientImpl
