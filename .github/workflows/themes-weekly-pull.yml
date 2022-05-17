@@ -28,8 +28,8 @@ jobs:
       - name: Run themes:pull script
         run: yarn run themes:pull
         env:
-          MASTER_KEY: ${{ secrets.MASTER_KEY }}
-          BIN_ID: ${{ secrets.BIN_ID }}
+          JSONBIN_MASTER_KEY: ${{ secrets.JSONBIN_MASTER_KEY }}
+          JSONBIN_ID: ${{ secrets.JSONBIN_ID }}
 
       - name: Generate dark tokens
         run: npx token-transformer scripts/themes/tokens/arduino-tokens.json scripts/themes/tokens/dark.json core,ide-default,ide-dark,theia core,ide-default,ide-dark
