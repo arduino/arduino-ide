@@ -4,6 +4,12 @@ const fs = require('fs');
 const JSONBIN_MASTER_KEY = process.env.JSONBIN_MASTER_KEY;
 const JSONBIN_ID = process.env.JSONBIN_ID;
 
+const destFolder = './scripts/themes/tokens';
+
+if (!fs.existsSync(destFolder)){
+  fs.mkdirSync(destFolder);
+}
+
 let req = new XMLHttpRequest();
 
 req.open('GET', 'https://api.jsonbin.io/v3/b/'+ JSONBIN_ID +'/latest', true);
@@ -14,7 +20,7 @@ req.onreadystatechange = () => {
   if (req.readyState == XMLHttpRequest.DONE) {
     const tokens = JSON.parse(req.responseText).record.values;
     fs.writeFile(
-      './scripts/themes/tokens/arduino-tokens.json',
+      destFolder + '/arduino-tokens.json',
       JSON.stringify(tokens),
       (err) => {
         if (err) {
