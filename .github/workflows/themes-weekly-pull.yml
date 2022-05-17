@@ -5,6 +5,9 @@ on:
     # run every friday at 5AM
     - cron: '0 5 * * 5'
 
+env:
+  NODE_VERSION: 14.x
+
 jobs:
   pull-from-jsonbin:
     runs-on: ubuntu-latest
@@ -12,10 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Node.js 14.x
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
