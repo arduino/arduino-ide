@@ -285,6 +285,8 @@ import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-gen
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 import { EditorNavigationContribution as TheiaEditorNavigationContribution } from '@theia/editor/lib/browser/editor-navigation-contribution';
 import { EditorNavigationContribution } from './theia/editor/editor-navigation-contribution';
+import { DefaultJsonSchemaContribution as TheiaDefaultJsonSchemaContribution } from '@theia/core/lib/browser/json-schema-store';
+import { DefaultJsonSchemaContribution } from './theia/core/json-schema-store';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -687,6 +689,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       iconThemeService
     );
   });
+
+  // Disable the JSON schema store fetch to Azure
+  // TODO: download the schema at build time and bundle it into the app as a JSON to save ~600m fetch time at FE startup
+  bind(DefaultJsonSchemaContribution).toSelf().inSingletonScope();
+  rebind(TheiaDefaultJsonSchemaContribution).toService(
+    DefaultJsonSchemaContribution
+  );
 
   // Async start navigation service (ctrl(+shift)+-) on macOS to go back and forth
   bind(EditorNavigationContribution).toSelf().inSingletonScope();
