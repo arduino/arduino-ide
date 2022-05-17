@@ -1,7 +1,9 @@
 import { interfaces, Container } from 'inversify';
 import {
+  CompressionToggle,
   createTreeContainer,
   Tree,
+  TreeCompressionService,
   TreeImpl,
   TreeModel,
   TreeModelImpl,
@@ -26,6 +28,9 @@ export function createSketchbookTreeContainer(
 
   child.bind(SketchbookTreeWidget).toSelf();
   child.rebind(TreeWidget).toService(SketchbookTreeWidget);
+
+  child.bind(CompressionToggle).toConstantValue({ compress: false });
+  child.bind(TreeCompressionService).toSelf().inSingletonScope();
 
   return child;
 }

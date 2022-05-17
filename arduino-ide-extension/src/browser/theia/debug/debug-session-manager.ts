@@ -22,6 +22,21 @@ export class DebugSessionManager extends TheiaDebugSessionManager {
           await this.fireWillStartDebugSession();
           const resolved = await this.resolveConfiguration(options);
 
+          //#region "cherry-picked" from https://github.com/eclipse-theia/theia/commit/e6b57ba4edabf797f3b4e67bc2968cdb8cc25b1e#diff-08e04edb57cd2af199382337aaf1dbdb31171b37ae4ab38a38d36cd77bc656c7R196-R208
+          if (!resolved) {
+            // As per vscode API: https://code.visualstudio.com/api/references/vscode-api#DebugConfigurationProvider
+            // "Returning the value 'undefined' prevents the debug session from starting.
+            // Returning the value 'null' prevents the debug session from starting and opens the
+            // underlying debug configuration instead."
+
+            if (resolved === null) {
+              this.debugConfigurationManager.openConfiguration();
+            }
+            return undefined;
+          }
+
+          //#endregion
+
           // preLaunchTask isn't run in case of auto restart as well as postDebugTask
           if (!options.configuration.__restart) {
             const taskRun = await this.runTask(

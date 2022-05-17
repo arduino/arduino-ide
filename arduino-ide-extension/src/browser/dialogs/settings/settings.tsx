@@ -16,7 +16,10 @@ import {
   Network,
 } from '../../../common/protocol';
 import { CommandService, nls } from '@theia/core/lib/common';
-import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import {
+  AsyncLocalizationProvider,
+  LanguageInfo,
+} from '@theia/core/lib/common/i18n/localization';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 
 export const EDITOR_SETTING = 'editor';
@@ -36,14 +39,20 @@ export const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
 export const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
 export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 
+export type AutoSave =
+  | 'off'
+  | 'afterDelay'
+  | 'onFocusChange'
+  | 'onWindowChange';
+
 export interface Settings {
   editorFontSize: number; // `editor.fontSize`
   themeId: string; // `workbench.colorTheme`
-  autoSave: 'on' | 'off'; // `editor.autoSave`
+  autoSave: AutoSave; // `files.autoSave`
   quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
 
-  languages: string[]; // `languages from the plugins`
-  currentLanguage: string;
+  languages: (string | LanguageInfo)[]; // `languages from the plugins`
+  currentLanguage: string; // TODO: how to map this
 
   autoScaleInterface: boolean; // `arduino.window.autoScale`
   interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
@@ -126,7 +135,7 @@ export class SettingsService {
         'workbench.colorTheme',
         'arduino-theme'
       ),
-      this.preferenceService.get<'on' | 'off'>(AUTO_SAVE_SETTING, 'on'),
+      this.preferenceService.get<AutoSave>(AUTO_SAVE_SETTING, 'afterDelay'),
       this.preferenceService.get<
         Record<'other' | 'comments' | 'strings', boolean>
       >(QUICK_SUGGESTIONS_SETTING, {
@@ -150,7 +159,7 @@ export class SettingsService {
       themeId,
       languages,
       currentLanguage,
-      autoSave,
+      autoSave: (autoSave as any) === 'on' ? 'afterDelay' : autoSave,
       quickSuggestions,
       autoScaleInterface,
       interfaceScale,
@@ -262,7 +271,7 @@ export class SettingsService {
 
     await this.savePreference('editor.fontSize', editorFontSize);
     await this.savePreference('workbench.colorTheme', themeId);
-    await this.savePreference('editor.autoSave', autoSave);
+    await this.savePreference('files.autoSave', autoSave);
     await this.savePreference('editor.quickSuggestions', quickSuggestions);
     await this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface);
     await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);

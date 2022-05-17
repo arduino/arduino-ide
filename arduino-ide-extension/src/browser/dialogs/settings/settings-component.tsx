@@ -214,8 +214,15 @@ export class SettingsComponent extends React.Component<
                 onChange={this.languageDidChange}
               >
                 {this.state.languages.map((label) => (
-                  <option key={label} value={label}>
-                    {label}
+                  <option
+                    key={typeof label === 'string' ? label : label.languageId}
+                    value={typeof label === 'string' ? label : label.languageId}
+                  >
+                    {typeof label === 'string'
+                      ? label
+                      : label.localizedLanguageName ||
+                        label.languageName ||
+                        label.languageId}
                   </option>
                 ))}
               </select>
@@ -275,7 +282,7 @@ export class SettingsComponent extends React.Component<
         <label className="flex-line">
           <input
             type="checkbox"
-            checked={this.state.autoSave === 'on'}
+            checked={this.state.autoSave !== 'off'}
             onChange={this.autoSaveDidChange}
           />
           {nls.localize(
@@ -549,7 +556,7 @@ export class SettingsComponent extends React.Component<
   protected autoSaveDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    this.setState({ autoSave: event.target.checked ? 'on' : 'off' });
+    this.setState({ autoSave: event.target.checked ? 'afterDelay' : 'off' });
   };
 
   protected quickSuggestionsOtherDidChange = (

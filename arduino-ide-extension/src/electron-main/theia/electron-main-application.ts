@@ -11,16 +11,24 @@ import { FrontendApplicationConfig } from '@theia/application-package/lib/applic
 import {
   ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainExecutionParams,
-  TheiaBrowserWindowOptions,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { SplashServiceImpl } from '../splash/splash-service-impl';
 import { URI } from '@theia/core/shared/vscode-uri';
 import * as electronRemoteMain from '@theia/core/electron-shared/@electron/remote/main';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
-import { RELOAD_REQUESTED_SIGNAL, Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import { Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
 
 app.commandLine.appendSwitch('disable-http-cache');
+
+/**
+ * Purely a dev thing. If you start the app with the `--nosplash` argument,
+ * then you won't have the splash screen (which is always on top :confused:) and can debug the app at startup.
+ * Note: if you start the app from VS Code with the `App (Electron)` config, the splash screen will be disabled.
+ */
+const APP_STARTED_WITH_NOSPLASH =
+  typeof process !== 'undefined' && process.argv.indexOf('--nosplash') !== -1;
 
 interface WorkspaceOptions {
   file: string
@@ -34,14 +42,6 @@ interface WorkspaceOptions {
 }
 
 const WORKSPACES = 'workspaces';
-
-/**
- * Purely a dev thing. If you start the app with the `--nosplash` argument,
- * then you won't have the splash screen (which is always on top :confused:) and can debug the app at startup.
- * Note: if you start the app from VS Code with the `App (Electron)` config, the splash screen will be disabled.
- */
-const APP_STARTED_WITH_NOSPLASH =
-  typeof process !== 'undefined' && process.argv.indexOf('--nosplash') !== -1;
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
@@ -166,8 +166,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     app.on('second-instance', this.onSecondInstance.bind(this));
     app.on('window-all-closed', this.onWindowAllClosed.bind(this));
 
-    ipcMain.on(RELOAD_REQUESTED_SIGNAL, event => this.handleReload(event));
-
     ipcMain.on(Restart, ({ sender }) => {
       this.restart(sender.id);
     });
@@ -193,7 +191,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     options = this.avoidOverlap(options);
     let electronWindow: BrowserWindow | undefined;
     if (this._windows.length || APP_STARTED_WITH_NOSPLASH) {
-      electronWindow = new BrowserWindow(options);
+      electronWindow = await super.createWindow(options);
     } else {
       const { bounds } = screen.getDisplayNearestPoint(
         screen.getCursorScreenPoint()
@@ -280,10 +278,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       }
     });
     this.attachClosedWorkspace(electronWindow);
-    this.attachReadyToShow(electronWindow);
-    this.attachSaveWindowState(electronWindow);
-    this.attachGlobalShortcuts(electronWindow);
-    this.restoreMaximizedState(electronWindow, options);
     electronRemoteMain.enable(electronWindow.webContents);
     return electronWindow;
   }
@@ -389,7 +383,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     super.onWillQuit(event);
   }
 
-  get windows(): BrowserWindow[] {
-    return this._windows.slice();
+  get browserWindows(): BrowserWindow[] {
+      return this._windows;
   }
 }

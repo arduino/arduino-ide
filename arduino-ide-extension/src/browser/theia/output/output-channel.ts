@@ -2,7 +2,7 @@ import * as PQueue from 'p-queue';
 import { injectable } from 'inversify';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { OutputUri } from '@theia/output/lib/common/output-uri';
-import { IReference } from '@theia/monaco/lib/browser/monaco-text-model-service';
+import { IReference } from '@theia/monaco-editor-core/esm/vs/base/common/lifecycle';
 import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';
 import {
   OutputChannelManager as TheiaOutputChannelManager,
