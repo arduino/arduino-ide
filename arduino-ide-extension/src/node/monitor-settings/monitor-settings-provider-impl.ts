@@ -7,33 +7,40 @@ import {
 
 @injectable()
 export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
+  // this is populated with all settings coming from the CLI. This should never get modified
+  // as it is used to double actual values set by the user
+  private monitorSettings: MonitorSettings;
+
+  // this contains values for setting of the monitorSettings
+  // the key is MonitorSetting.id, the value  should be one of the MonitorSetting.values
+  private monitorSettingsValues: Record<string, any>;
+
   init(
     id: string,
     coreClientProvider: CoreClientProvider
   ): Promise<MonitorSettings> {
     throw new Error('Method not implemented.');
 
-    // query the CLI (via coreClientProvider) and return all available settings for the pluggable monitor.
-    // store these for later checkings
+    // 1. query the CLI (via coreClientProvider) and return all available settings for the pluggable monitor.
+    // store these in `monitorSettings` for later checkings
 
-    // check for the settings file in the user's home directory
-    // if it doesn't exist, create it
-
-    // if it does exist, start searching for the longest prefix matching the id
-
-    // at the end of the search you can have a hit or a miss
-
-    // if you have a miss, create a new entry with the id and all default settings coming from the CLI
-
-    // if you have a hit, check if the existing settings are present in the settings from the CLI
-    //  if they are not present in the CLI, remove from the settings file
-    //  if there are settings in the CLI that are not in the file, add to the file with the default from the CLI
-    // save the updated settings file
+    // 2. check for the settings file in the user's home directory
+    //  a. if it doesn't exist, create it as an empty json file
+    // 3. search the file, looking for the longest prefix matching the id
+    //  a. miss: populate `monitorSettingsValues` with all default settings from `monitorSettings`
+    //  b. hit: populate `monitorSettingsValues` with the result for the search
+    //    i. purge the `monitorSettingsValues` removing keys that are not defined in `monitorSettings`
+    //       and adding those that are missing
+    //    ii. save the `monitorSettingsValues` in the file, using the id as the key
   }
   get(): Promise<MonitorSettings> {
     throw new Error('Method not implemented.');
   }
   set(settings: MonitorSettings): Promise<MonitorSettings> {
     throw new Error('Method not implemented.');
+
+    // 1. parse the settings parameter and remove any setting that is not defined in `monitorSettings`
+    // 2. update `monitorSettingsValues` accordingly
+    // 3. save it to the file
   }
 }
