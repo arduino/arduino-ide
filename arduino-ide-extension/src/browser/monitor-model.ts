@@ -118,6 +118,7 @@ export class MonitorModel implements FrontendApplicationContribution {
   }
 }
 
+// TODO: Move this to /common
 export namespace MonitorModel {
   export interface State {
     autoscroll: boolean;

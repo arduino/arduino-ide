@@ -15,7 +15,7 @@ import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
 import {
-  MonitorSettings,
+  PluggableMonitorSettings,
   MonitorSettingsProvider,
 } from './monitor-settings/monitor-settings-provider';
 
@@ -28,7 +28,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
   // Settings used by the currently running pluggable monitor.
   // They can be freely modified while running.
-  protected settings: MonitorSettings;
+  protected settings: PluggableMonitorSettings;
 
   // List of messages received from the running pluggable monitor.
   // These are flushed from time to time to the frontend.
@@ -279,7 +279,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
    *
    * @returns map of current monitor settings
    */
-  currentSettings(): MonitorSettings {
+  currentSettings(): PluggableMonitorSettings {
     return this.settings;
   }
 
@@ -294,7 +294,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   private async portMonitorSettings(
     protocol: string,
     fqbn: string
-  ): Promise<MonitorSettings> {
+  ): Promise<PluggableMonitorSettings> {
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
@@ -314,7 +314,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       }
     );
 
-    const settings: MonitorSettings = {};
+    const settings: PluggableMonitorSettings = {};
     for (const iterator of res.getSettingsList()) {
       settings[iterator.getSettingId()] = {
         id: iterator.getSettingId(),
@@ -335,7 +335,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * @param settings map of monitor settings to change
    * @returns a status to verify settings have been sent.
    */
-  async changeSettings(settings: MonitorSettings): Promise<Status> {
+  async changeSettings(settings: PluggableMonitorSettings): Promise<Status> {
     const config = new MonitorPortConfiguration();
     for (const id in settings) {
       const s = new MonitorPortSetting();
@@ -384,7 +384,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
               this.send(message.data);
               break;
             case Monitor.Command.CHANGE_SETTINGS:
-              const settings: MonitorSettings = JSON.parse(message.data);
+              const settings: PluggableMonitorSettings = JSON.parse(
+                message.data
+              );
               this.changeSettings(settings);
               break;
           }

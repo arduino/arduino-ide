@@ -182,20 +182,22 @@ export class MonitorWidget extends ReactWidget {
   // This breaks if the user tries to open a monitor that
   // doesn't support the baudrate setting.
   protected get baudRates(): string[] {
-    const settings = this.getCurrentSettings();
-    const baudRateSettings = settings['baudrate'];
-    if (!baudRateSettings) {
+    const { pluggableMonitorSettings } = this.getCurrentSettings();
+    if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate']) {
       return [];
     }
+
+    const baudRateSettings = pluggableMonitorSettings['baudrate'];
+
     return baudRateSettings.values;
   }
 
   protected get selectedBaudRate(): string {
-    const settings = this.getCurrentSettings();
-    const baudRateSettings = settings['baudrate'];
-    if (!baudRateSettings) {
+    const { pluggableMonitorSettings } = this.getCurrentSettings();
+    if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate']) {
       return '';
     }
+    const baudRateSettings = pluggableMonitorSettings['baudrate'];
     return baudRateSettings.selectedValue;
   }
 
@@ -260,8 +262,11 @@ export class MonitorWidget extends ReactWidget {
   };
 
   protected readonly onChangeBaudRate = (value: string) => {
-    const settings = this.getCurrentSettings();
-    settings['baudrate'].selectedValue = value;
-    this.monitorManagerProxy.changeSettings(settings);
+    const { pluggableMonitorSettings } = this.getCurrentSettings();
+    if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate'])
+      return;
+    const baudRateSettings = pluggableMonitorSettings['baudrate'];
+    baudRateSettings.selectedValue = value;
+    this.monitorManagerProxy.changeSettings(pluggableMonitorSettings);
   };
 }

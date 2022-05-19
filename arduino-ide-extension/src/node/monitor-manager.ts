@@ -3,7 +3,7 @@ import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { Board, Port, Status } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
-import { MonitorSettings } from './monitor-settings/monitor-settings-provider';
+import { PluggableMonitorSettings } from './monitor-settings/monitor-settings-provider';
 
 type MonitorID = string;
 
@@ -145,7 +145,11 @@ export class MonitorManager extends CoreClientAware {
    * @param port port to monitor
    * @param settings monitor settings to change
    */
-  changeMonitorSettings(board: Board, port: Port, settings: MonitorSettings) {
+  changeMonitorSettings(
+    board: Board,
+    port: Port,
+    settings: PluggableMonitorSettings
+  ) {
     const monitorID = this.monitorID(board, port);
     let monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
@@ -161,7 +165,7 @@ export class MonitorManager extends CoreClientAware {
    * @param port port monitored
    * @returns map of current monitor settings
    */
-  currentMonitorSettings(board: Board, port: Port): MonitorSettings {
+  currentMonitorSettings(board: Board, port: Port): PluggableMonitorSettings {
     const monitorID = this.monitorID(board, port);
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {

@@ -1,8 +1,9 @@
 import { injectable } from 'inversify';
 import { CoreClientProvider } from '../core-client-provider';
 import {
-  MonitorSettings,
+  PluggableMonitorSettings,
   MonitorSettingsProvider,
+  MonitorSettings,
 } from './monitor-settings-provider';
 
 @injectable()
@@ -18,7 +19,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
   init(
     id: string,
     coreClientProvider: CoreClientProvider
-  ): Promise<MonitorSettings> {
+  ): Promise<PluggableMonitorSettings> {
     throw new Error('Method not implemented.');
 
     // 1. query the CLI (via coreClientProvider) and return all available settings for the pluggable monitor.
@@ -33,10 +34,10 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     //       and adding those that are missing
     //    ii. save the `monitorSettingsValues` in the file, using the id as the key
   }
-  get(): Promise<MonitorSettings> {
+  get(): Promise<PluggableMonitorSettings> {
     throw new Error('Method not implemented.');
   }
-  set(settings: MonitorSettings): Promise<MonitorSettings> {
+  set(settings: PluggableMonitorSettings): Promise<PluggableMonitorSettings> {
     throw new Error('Method not implemented.');
 
     // 1. parse the settings parameter and remove any setting that is not defined in `monitorSettings`

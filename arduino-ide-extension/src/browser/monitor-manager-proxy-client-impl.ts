@@ -6,7 +6,10 @@ import {
   MonitorManagerProxyClient,
   MonitorManagerProxyFactory,
 } from '../common/protocol/monitor-service';
-import { MonitorSettings } from '../node/monitor-settings/monitor-settings-provider';
+import {
+  PluggableMonitorSettings,
+  MonitorSettings,
+} from '../node/monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorManagerProxyClientImpl
@@ -85,7 +88,7 @@ export class MonitorManagerProxyClientImpl
   async startMonitor(
     board: Board,
     port: Port,
-    settings?: MonitorSettings
+    settings?: PluggableMonitorSettings
   ): Promise<void> {
     return this.server().startMonitor(board, port, settings);
   }
@@ -116,6 +119,7 @@ export class MonitorManagerProxyClientImpl
       JSON.stringify({
         command: Monitor.Command.CHANGE_SETTINGS,
         // TODO: This might be wrong, verify if it works
+        // SPOILER: It doesn't
         data: settings,
       })
     );

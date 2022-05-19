@@ -1,5 +1,8 @@
 import { Event, JsonRpcServer } from '@theia/core';
-import { MonitorSettings } from '../../node/monitor-settings/monitor-settings-provider';
+import {
+  PluggableMonitorSettings,
+  MonitorSettings,
+} from '../../node/monitor-settings/monitor-settings-provider';
 import { Board, Port } from './boards-service';
 
 export const MonitorManagerProxyFactory = Symbol('MonitorManagerProxyFactory');
@@ -12,15 +15,15 @@ export interface MonitorManagerProxy
   startMonitor(
     board: Board,
     port: Port,
-    settings?: MonitorSettings
+    settings?: PluggableMonitorSettings
   ): Promise<void>;
   changeMonitorSettings(
     board: Board,
     port: Port,
-    settings: MonitorSettings
+    settings: PluggableMonitorSettings
   ): Promise<void>;
   stopMonitor(board: Board, port: Port): Promise<void>;
-  getCurrentSettings(board: Board, port: Port): MonitorSettings;
+  getCurrentSettings(board: Board, port: Port): PluggableMonitorSettings;
 }
 
 export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
@@ -34,14 +37,14 @@ export interface MonitorManagerProxyClient {
   startMonitor(
     board: Board,
     port: Port,
-    settings?: MonitorSettings
+    settings?: PluggableMonitorSettings
   ): Promise<void>;
   getCurrentSettings(board: Board, port: Port): MonitorSettings;
   send(message: string): void;
   changeSettings(settings: MonitorSettings): void;
 }
 
-export interface MonitorSetting {
+export interface PluggableMonitorSetting {
   // The setting identifier
   readonly id: string;
   // A human-readable label of the setting (to be displayed on the GUI)

@@ -88,11 +88,12 @@ export class PlotterFrontendContribution extends Contribution {
     let baudrates: number[] = [];
     let currentBaudrate = -1;
     if (board && port) {
-      const settings = this.monitorManagerProxy.getCurrentSettings(board, port);
-      if ('baudrate' in settings) {
+      const { pluggableMonitorSettings } =
+        this.monitorManagerProxy.getCurrentSettings(board, port);
+      if (pluggableMonitorSettings && 'baudrate' in pluggableMonitorSettings) {
         // Convert from string to numbers
-        baudrates = settings['baudrate'].values.map((b) => +b);
-        currentBaudrate = +settings['baudrate'].selectedValue;
+        baudrates = pluggableMonitorSettings['baudrate'].values.map((b) => +b);
+        currentBaudrate = +pluggableMonitorSettings['baudrate'].selectedValue;
       }
     }
 

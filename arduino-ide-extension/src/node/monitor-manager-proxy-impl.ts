@@ -6,7 +6,7 @@ import {
 } from '../common/protocol';
 import { Board, Port } from '../common/protocol';
 import { MonitorManager } from './monitor-manager';
-import { MonitorSettings } from './monitor-settings/monitor-settings-provider';
+import { PluggableMonitorSettings } from './monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorManagerProxyImpl implements MonitorManagerProxy {
@@ -32,7 +32,7 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
   async startMonitor(
     board: Board,
     port: Port,
-    settings?: MonitorSettings
+    settings?: PluggableMonitorSettings
   ): Promise<void> {
     if (settings) {
       await this.changeMonitorSettings(board, port, settings);
@@ -54,7 +54,7 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
   async changeMonitorSettings(
     board: Board,
     port: Port,
-    settings: MonitorSettings
+    settings: PluggableMonitorSettings
   ): Promise<void> {
     if (!this.manager.isStarted(board, port)) {
       // Monitor is not running, no need to change settings
@@ -79,7 +79,7 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
    * @param port port monitored
    * @returns a map of MonitorSetting
    */
-  getCurrentSettings(board: Board, port: Port): MonitorSettings {
+  getCurrentSettings(board: Board, port: Port): PluggableMonitorSettings {
     return this.manager.currentMonitorSettings(board, port);
   }
 
