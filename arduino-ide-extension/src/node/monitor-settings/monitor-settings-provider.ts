@@ -1,6 +1,5 @@
 import { MonitorModel } from '../../browser/monitor-model';
 import { PluggableMonitorSetting } from '../../common/protocol';
-import { CoreClientProvider } from '../core-client-provider';
 
 export type PluggableMonitorSettings = Record<string, PluggableMonitorSetting>;
 export interface MonitorSettings {
@@ -10,10 +9,12 @@ export interface MonitorSettings {
 
 export const MonitorSettingsProvider = Symbol('MonitorSettingsProvider');
 export interface MonitorSettingsProvider {
-  init(
-    id: string,
-    coreClientProvider: CoreClientProvider
+  getSettings(
+    monitorId: string,
+    defaultSettings: PluggableMonitorSettings
   ): Promise<PluggableMonitorSettings>;
-  get(): Promise<PluggableMonitorSettings>;
-  set(settings: PluggableMonitorSettings): Promise<PluggableMonitorSettings>;
+  setSettings(
+    monitorId: string,
+    settings: PluggableMonitorSettings
+  ): Promise<PluggableMonitorSettings>;
 }

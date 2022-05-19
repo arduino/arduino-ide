@@ -85,8 +85,14 @@ import { ArduinoLocalizationContribution } from './arduino-localization-contribu
 import { LocalizationContribution } from '@theia/core/lib/node/i18n/localization-contribution';
 import { MonitorManagerProxyImpl } from './monitor-manager-proxy-impl';
 import { MonitorManager, MonitorManagerName } from './monitor-manager';
-import { MonitorManagerProxy, MonitorManagerProxyClient, MonitorManagerProxyPath } from '../common/protocol/monitor-service';
+import {
+  MonitorManagerProxy,
+  MonitorManagerProxyClient,
+  MonitorManagerProxyPath,
+} from '../common/protocol/monitor-service';
 import { MonitorServiceName } from './monitor-service';
+import { MonitorSettingsProvider } from './monitor-settings/monitor-settings-provider';
+import { MonitorSettingsProviderImpl } from './monitor-settings/monitor-settings-provider-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -197,6 +203,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // a single MonitorManager is responsible for handling the actual connections to the pluggable monitors
   bind(MonitorManager).toSelf().inSingletonScope();
+
+  bind(MonitorSettingsProviderImpl).toSelf().inSingletonScope();
+  bind(MonitorSettingsProvider).toService(MonitorSettingsProviderImpl);
 
   // Serial client provider per connected frontend.
   bind(ConnectionContainerModule).toConstantValue(

@@ -122,10 +122,18 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
 
     this.logger.info('starting monitor');
-    this.settings = await this.monitorSettingsProvider.init(
-      monitorID,
-      this.coreClientProvider
+
+    // get default monitor settings from the CLI
+    const defaultSettings = await this.portMonitorSettings(
+      this.port.protocol,
+      this.board.fqbn
     );
+    // get actual settings from the settings provider
+    this.settings = await this.monitorSettingsProvider.getSettings(
+      monitorID,
+      defaultSettings
+    );
+
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;

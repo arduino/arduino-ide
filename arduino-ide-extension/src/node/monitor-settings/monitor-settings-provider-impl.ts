@@ -1,47 +1,145 @@
-import { injectable } from 'inversify';
-import { CoreClientProvider } from '../core-client-provider';
+import * as fs from 'fs';
+import { join } from 'path';
+import { injectable, inject, postConstruct } from 'inversify';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import { promisify } from 'util';
+
 import {
   PluggableMonitorSettings,
   MonitorSettingsProvider,
-  MonitorSettings,
 } from './monitor-settings-provider';
+import { Deferred } from '@theia/core/lib/common/promise-util';
+
+const MONITOR_SETTINGS_FILE = 'pluggable-monitor-settings.json';
 
 @injectable()
 export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
-  // this is populated with all settings coming from the CLI. This should never get modified
-  // as it is used to double actual values set by the user
-  private monitorSettings: MonitorSettings;
+  @inject(EnvVariablesServer)
+  protected readonly envVariablesServer: EnvVariablesServer;
 
-  // this contains values for setting of the monitorSettings
-  // the key is MonitorSetting.id, the value  should be one of the MonitorSetting.values
-  private monitorSettingsValues: Record<string, any>;
+  protected ready = new Deferred<void>();
 
-  init(
-    id: string,
-    coreClientProvider: CoreClientProvider
+  // this is populated with all settings coming from the CLI. This should never be modified
+  // // as it is used to double check the monitorSettings attribute
+  // private monitorDefaultSettings: PluggableMonitorSettings;
+
+  // this contains actual values coming from the stored file and edited by the user
+  // this is a map with MonitorId as key and PluggableMonitorSetting as value
+  private monitorSettings: Record<string, PluggableMonitorSettings>;
+
+  private pluggableMonitorSettingsPath: string;
+
+  @postConstruct()
+  protected async init(): Promise<void> {
+    // get the monitor settings file path
+    const configDirUri = await this.envVariablesServer.getConfigDirUri();
+    this.pluggableMonitorSettingsPath = join(
+      FileUri.fsPath(configDirUri),
+      MONITOR_SETTINGS_FILE
+    );
+
+    // read existing settings
+    this.readFile();
+
+    console.log(this.monitorSettings);
+    this.ready.resolve();
+  }
+
+  async getSettings(
+    monitorId: string,
+    defaultSettings: PluggableMonitorSettings
   ): Promise<PluggableMonitorSettings> {
-    throw new Error('Method not implemented.');
+    // wait for the service to complete the init
+    await this.ready.promise;
 
-    // 1. query the CLI (via coreClientProvider) and return all available settings for the pluggable monitor.
-    // store these in `monitorSettings` for later checkings
+    const { matchingSettings } = this.longestPrefixMatch(monitorId);
 
-    // 2. check for the settings file in the user's home directory
-    //  a. if it doesn't exist, create it as an empty json file
-    // 3. search the file, looking for the longest prefix matching the id
-    //  a. miss: populate `monitorSettingsValues` with all default settings from `monitorSettings`
-    //  b. hit: populate `monitorSettingsValues` with the result for the search
-    //    i. purge the `monitorSettingsValues` removing keys that are not defined in `monitorSettings`
-    //       and adding those that are missing
-    //    ii. save the `monitorSettingsValues` in the file, using the id as the key
+    return this.reconcileSettings(matchingSettings, defaultSettings);
   }
-  get(): Promise<PluggableMonitorSettings> {
-    throw new Error('Method not implemented.');
-  }
-  set(settings: PluggableMonitorSettings): Promise<PluggableMonitorSettings> {
-    throw new Error('Method not implemented.');
+  async setSettings(
+    monitorId: string,
+    settings: PluggableMonitorSettings
+  ): Promise<PluggableMonitorSettings> {
+    // wait for the service to complete the init
+    await this.ready.promise;
 
-    // 1. parse the settings parameter and remove any setting that is not defined in `monitorSettings`
-    // 2. update `monitorSettingsValues` accordingly
-    // 3. save it to the file
+    const newSettings = this.reconcileSettings(
+      settings,
+      this.monitorSettings[monitorId]
+    );
+    this.monitorSettings[monitorId] = newSettings;
+
+    await this.writeFile();
+    return newSettings;
+  }
+
+  private reconcileSettings(
+    newSettings: PluggableMonitorSettings,
+    defaultSettings: PluggableMonitorSettings
+  ): PluggableMonitorSettings {
+    // TODO: implement
+    return newSettings;
+  }
+
+  private async readFile(): Promise<void> {
+    const rawJson = await promisify(fs.readFile)(
+      this.pluggableMonitorSettingsPath,
+      {
+        encoding: 'utf-8',
+        flag: 'a+', // a+ = append and read, creating the file if it doesn't exist
+      }
+    );
+
+    if (!rawJson) {
+      this.monitorSettings = {};
+    }
+
+    try {
+      this.monitorSettings = JSON.parse(rawJson);
+    } catch (error) {
+      console.error(
+        'Could not parse the pluggable monitor settings file. Using empty file.'
+      );
+      this.monitorSettings = {};
+    }
+  }
+
+  private async writeFile() {
+    await promisify(fs.writeFile)(
+      this.pluggableMonitorSettingsPath,
+      JSON.stringify(this.monitorSettings)
+    );
+  }
+
+  private longestPrefixMatch(id: string): {
+    matchingPrefix: string;
+    matchingSettings: PluggableMonitorSettings;
+  } {
+    const separator = '-';
+    const idTokens = id.split(separator);
+
+    let matchingPrefix = '';
+    let matchingSettings: PluggableMonitorSettings = {};
+
+    const monitorSettingsKeys = Object.keys(this.monitorSettings);
+
+    for (let i = 0; i < idTokens.length; i++) {
+      const prefix = idTokens.slice(0, i + 1).join(separator);
+
+      for (let k = 0; k < monitorSettingsKeys.length; k++) {
+        if (monitorSettingsKeys[k].startsWith(prefix)) {
+          matchingPrefix = prefix;
+          matchingSettings = this.monitorSettings[monitorSettingsKeys[k]];
+          break;
+        }
+      }
+
+      if (matchingPrefix.length) {
+        break;
+      }
+    }
+
+    return { matchingPrefix, matchingSettings };
   }
 }
