@@ -7,6 +7,7 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { ApplicationServer } from '@theia/core/lib/common/application-protocol';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
+import { DEFAULT_WINDOW_HASH } from '@theia/core/lib/common/window';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
@@ -59,6 +60,30 @@ export class WorkspaceService extends TheiaWorkspaceService {
       ? application.shell.currentWidget
       : null;
     this.onCurrentWidgetChange({ newValue, oldValue: null });
+  }
+
+  // Was copied from the Theia implementation.
+  // Unlike the default behavior, IDE2 does not check the existence of the workspace before open.
+  protected async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
+    // If an empty window is explicitly requested do not restore a previous workspace.
+    // Note: `window.location.hash` includes leading "#" if non-empty.
+    if (window.location.hash === `#${DEFAULT_WINDOW_HASH}`) {
+      window.location.hash = '';
+      return undefined;
+    }
+
+    // Prefer the workspace path specified as the URL fragment, if present.
+    if (window.location.hash.length > 1) {
+      // Remove the leading # and decode the URI.
+      const wpPath = decodeURI(window.location.hash.substring(1));
+      const workspaceUri = new URI().withPath(wpPath).withScheme('file');
+      // Customization! Here, we do no check if the workspace exists.
+      return workspaceUri.toString();
+    } else {
+      // Else, ask the server for its suggested workspace (usually the one
+      // specified on the CLI, or the most recent).
+      return this.server.getMostRecentlyUsedWorkspace();
+    }
   }
 
   protected getDefaultWorkspaceUri(): Promise<string | undefined> {
