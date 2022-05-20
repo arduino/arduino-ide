@@ -39,7 +39,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMenuContribution).toSelf().inSingletonScope();
   bind(MainMenuManager).toService(ElectronMenuContribution);
   rebind(TheiaElectronMenuContribution).to(ElectronMenuContribution);
-  bind(ElectronMainMenuFactory).toSelf().inRequestScope();
+  bind(ElectronMainMenuFactory).toSelf().inSingletonScope();
   rebind(TheiaElectronMainMenuFactory).toService(ElectronMainMenuFactory);
   bind(ElectronWindowService).toSelf().inSingletonScope();
   rebind(WindowService).toService(ElectronWindowService);

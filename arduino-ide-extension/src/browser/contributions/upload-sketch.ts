@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
@@ -16,6 +16,7 @@ import {
 } from './contribution';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class UploadSketch extends SketchContribution {
@@ -47,8 +48,8 @@ export class UploadSketch extends SketchContribution {
 
   protected readonly menuActionsDisposables = new DisposableCollection();
 
-  @postConstruct()
-  protected init(): void {
+  protected override init(): void {
+    super.init();
     this.boardsServiceClientImpl.onBoardsConfigChanged(async () => {
       const userFields =
         await this.boardsServiceClientImpl.selectedBoardUserFields();
@@ -72,7 +73,7 @@ export class UploadSketch extends SketchContribution {
     return fqbn + '|' + address;
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
       execute: async () => {
         const key = this.selectedFqbnAddress();
@@ -134,7 +135,7 @@ export class UploadSketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     this.menuActionsDisposables.dispose();
 
     this.menuActionsDisposables.push(
@@ -177,7 +178,7 @@ export class UploadSketch extends SketchContribution {
     );
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: UploadSketch.Commands.UPLOAD_SKETCH.id,
       keybinding: 'CtrlCmd+U',
@@ -188,7 +189,7 @@ export class UploadSketch extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
       command: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
@@ -209,7 +210,7 @@ export class UploadSketch extends SketchContribution {
     this.uploadInProgress = true;
     this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
 

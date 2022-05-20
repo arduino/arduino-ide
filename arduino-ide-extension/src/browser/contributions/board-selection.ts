@@ -47,7 +47,7 @@ export class BoardSelection extends SketchContribution {
 
   protected readonly toDisposeBeforeMenuRebuild = new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BoardSelection.Commands.GET_BOARD_INFO, {
       execute: async () => {
         const { selectedBoard, selectedPort } =
@@ -100,19 +100,20 @@ PID: ${PID}`;
     });
   }
 
-  onStart(): void {
+  override onStart(): void {
+    this.notificationCenter.onPlatformInstalled(() => this.updateMenus());
+    this.notificationCenter.onPlatformUninstalled(() => this.updateMenus());
+    this.boardsServiceProvider.onBoardsConfigChanged(() => this.updateMenus());
+    this.boardsServiceProvider.onAvailableBoardsChanged(() =>
+      this.updateMenus()
+    );
+    this.boardsServiceProvider.onAvailablePortsChanged(() =>
+      this.updateMenus()
+    );
+  }
+
+  override async onReady(): Promise<void> {
     this.updateMenus();
-    this.notificationCenter.onPlatformInstalled(this.updateMenus.bind(this));
-    this.notificationCenter.onPlatformUninstalled(this.updateMenus.bind(this));
-    this.boardsServiceProvider.onBoardsConfigChanged(
-      this.updateMenus.bind(this)
-    );
-    this.boardsServiceProvider.onAvailableBoardsChanged(
-      this.updateMenus.bind(this)
-    );
-    this.boardsServiceProvider.onAvailablePortsChanged(
-      this.updateMenus.bind(this)
-    );
   }
 
   protected async updateMenus(): Promise<void> {

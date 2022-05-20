@@ -13,7 +13,7 @@ export class DebugFrontendApplicationContribution extends TheiaDebugFrontendAppl
     this.options.defaultWidgetOptions.rank = 4;
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     unregisterSubmenu(DebugMenus.DEBUG, registry);
   }

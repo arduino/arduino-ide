@@ -866,7 +866,9 @@ proto.cc.arduino.cli.commands.v1.InitRequest.prototype.toObject = function(opt_i
  */
 proto.cc.arduino.cli.commands.v1.InitRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f)
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
+    profile: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    sketchPath: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -908,6 +910,14 @@ proto.cc.arduino.cli.commands.v1.InitRequest.deserializeBinaryFromReader = funct
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
       msg.setInstance(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProfile(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSketchPath(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -943,6 +953,20 @@ proto.cc.arduino.cli.commands.v1.InitRequest.serializeBinaryToWriter = function(
       1,
       f,
       cc_arduino_cli_commands_v1_common_pb.Instance.serializeBinaryToWriter
+    );
+  }
+  f = message.getProfile();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getSketchPath();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
     );
   }
 };
@@ -985,6 +1009,42 @@ proto.cc.arduino.cli.commands.v1.InitRequest.prototype.hasInstance = function() 
 };
 
 
+/**
+ * optional string profile = 2;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.InitRequest.prototype.getProfile = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.InitRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.InitRequest.prototype.setProfile = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string sketch_path = 3;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.InitRequest.prototype.getSketchPath = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.InitRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.InitRequest.prototype.setSketchPath = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
 
 /**
  * Oneof group definitions for this message. Each group defines the field
@@ -994,7 +1054,7 @@ proto.cc.arduino.cli.commands.v1.InitRequest.prototype.hasInstance = function() 
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.InitResponse.oneofGroups_ = [[1,2]];
+proto.cc.arduino.cli.commands.v1.InitResponse.oneofGroups_ = [[1,2,3]];
 
 /**
  * @enum {number}
@@ -1002,7 +1062,8 @@ proto.cc.arduino.cli.commands.v1.InitResponse.oneofGroups_ = [[1,2]];
 proto.cc.arduino.cli.commands.v1.InitResponse.MessageCase = {
   MESSAGE_NOT_SET: 0,
   INIT_PROGRESS: 1,
-  ERROR: 2
+  ERROR: 2,
+  PROFILE: 3
 };
 
 /**
@@ -1044,7 +1105,8 @@ proto.cc.arduino.cli.commands.v1.InitResponse.prototype.toObject = function(opt_
 proto.cc.arduino.cli.commands.v1.InitResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     initProgress: (f = msg.getInitProgress()) && proto.cc.arduino.cli.commands.v1.InitResponse.Progress.toObject(includeInstance, f),
-    error: (f = msg.getError()) && google_rpc_status_pb.Status.toObject(includeInstance, f)
+    error: (f = msg.getError()) && google_rpc_status_pb.Status.toObject(includeInstance, f),
+    profile: (f = msg.getProfile()) && cc_arduino_cli_commands_v1_common_pb.Profile.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1091,6 +1153,11 @@ proto.cc.arduino.cli.commands.v1.InitResponse.deserializeBinaryFromReader = func
       reader.readMessage(value,google_rpc_status_pb.Status.deserializeBinaryFromReader);
       msg.setError(value);
       break;
+    case 3:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Profile;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Profile.deserializeBinaryFromReader);
+      msg.setProfile(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1134,6 +1201,14 @@ proto.cc.arduino.cli.commands.v1.InitResponse.serializeBinaryToWriter = function
       2,
       f,
       google_rpc_status_pb.Status.serializeBinaryToWriter
+    );
+  }
+  f = message.getProfile();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.Profile.serializeBinaryToWriter
     );
   }
 };
@@ -1412,6 +1487,43 @@ proto.cc.arduino.cli.commands.v1.InitResponse.prototype.clearError = function() 
  */
 proto.cc.arduino.cli.commands.v1.InitResponse.prototype.hasError = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional Profile profile = 3;
+ * @return {?proto.cc.arduino.cli.commands.v1.Profile}
+ */
+proto.cc.arduino.cli.commands.v1.InitResponse.prototype.getProfile = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.Profile} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Profile, 3));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.Profile|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.InitResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.InitResponse.prototype.setProfile = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 3, proto.cc.arduino.cli.commands.v1.InitResponse.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.InitResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.InitResponse.prototype.clearProfile = function() {
+  return this.setProfile(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.InitResponse.prototype.hasProfile = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

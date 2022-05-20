@@ -18,7 +18,7 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
     });
   }
 
-  async initializeLayout(): Promise<void> {
+  override async initializeLayout(): Promise<void> {
     this.openView();
   }
 }

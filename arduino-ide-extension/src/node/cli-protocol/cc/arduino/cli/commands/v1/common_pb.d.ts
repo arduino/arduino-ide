@@ -185,28 +185,36 @@ export namespace Platform {
     }
 }
 
-export class PlatformReference extends jspb.Message { 
+export class InstalledPlatformReference extends jspb.Message { 
     getId(): string;
-    setId(value: string): PlatformReference;
+    setId(value: string): InstalledPlatformReference;
 
     getVersion(): string;
-    setVersion(value: string): PlatformReference;
+    setVersion(value: string): InstalledPlatformReference;
+
+    getInstallDir(): string;
+    setInstallDir(value: string): InstalledPlatformReference;
+
+    getPackageUrl(): string;
+    setPackageUrl(value: string): InstalledPlatformReference;
 
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): PlatformReference.AsObject;
-    static toObject(includeInstance: boolean, msg: PlatformReference): PlatformReference.AsObject;
+    toObject(includeInstance?: boolean): InstalledPlatformReference.AsObject;
+    static toObject(includeInstance: boolean, msg: InstalledPlatformReference): InstalledPlatformReference.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: PlatformReference, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): PlatformReference;
-    static deserializeBinaryFromReader(message: PlatformReference, reader: jspb.BinaryReader): PlatformReference;
+    static serializeBinaryToWriter(message: InstalledPlatformReference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): InstalledPlatformReference;
+    static deserializeBinaryFromReader(message: InstalledPlatformReference, reader: jspb.BinaryReader): InstalledPlatformReference;
 }
 
-export namespace PlatformReference {
+export namespace InstalledPlatformReference {
     export type AsObject = {
         id: string,
         version: string,
+        installDir: string,
+        packageUrl: string,
     }
 }
 
@@ -229,6 +237,31 @@ export class Board extends jspb.Message {
 }
 
 export namespace Board {
+    export type AsObject = {
+        name: string,
+        fqbn: string,
+    }
+}
+
+export class Profile extends jspb.Message { 
+    getName(): string;
+    setName(value: string): Profile;
+
+    getFqbn(): string;
+    setFqbn(value: string): Profile;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Profile.AsObject;
+    static toObject(includeInstance: boolean, msg: Profile): Profile.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Profile, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Profile;
+    static deserializeBinaryFromReader(message: Profile, reader: jspb.BinaryReader): Profile;
+}
+
+export namespace Profile {
     export type AsObject = {
         name: string,
         fqbn: string,

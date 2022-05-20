@@ -32,7 +32,7 @@ export class SettingsComponent extends React.Component<
     super(props);
   }
 
-  componentDidUpdate(
+  override componentDidUpdate(
     _: SettingsComponent.Props,
     prevState: SettingsComponent.State
   ): void {
@@ -49,7 +49,7 @@ export class SettingsComponent extends React.Component<
     }
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.props.settingsService
       .settings()
       .then((settings) =>
@@ -67,11 +67,11 @@ export class SettingsComponent extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     if (!this.state) {
       return <div />;
     }

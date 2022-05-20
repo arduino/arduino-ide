@@ -19,7 +19,7 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
 
   constructor(
     @inject(DoNotAskAgainDialogProps)
-    protected readonly props: DoNotAskAgainDialogProps
+    protected override readonly props: DoNotAskAgainDialogProps
   ) {
     super(props);
     this.controlPanel.removeChild(this.errorMessageNode);
@@ -42,7 +42,7 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
     this.doNotAskAgainCheckbox.type = 'checkbox';
   }
 
-  protected async accept(): Promise<void> {
+  protected override async accept(): Promise<void> {
     if (!this.resolve) {
       return;
     }
@@ -65,7 +65,7 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
     }
   }
 
-  protected setErrorMessage(error: DialogError): void {
+  protected override setErrorMessage(error: DialogError): void {
     if (this.acceptButton) {
       this.acceptButton.disabled = !DialogError.getResult(error);
     }

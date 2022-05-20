@@ -3,7 +3,10 @@ import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { LabelProvider } from '@theia/core/lib/browser';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { SketchesService, Sketch } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
@@ -16,9 +19,9 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
   @inject(LabelProvider)
-  protected readonly labelProvider: LabelProvider;
+  protected override readonly labelProvider: LabelProvider;
 
-  protected async createEditor(uri: URI): Promise<EditorWidget> {
+  protected override async createEditor(uri: URI): Promise<EditorWidget> {
     const widget = await super.createEditor(uri);
     return this.maybeUpdateCaption(widget);
   }
@@ -28,7 +31,7 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
   ): Promise<EditorWidget> {
     const sketch = await this.sketchesServiceClient.currentSketch();
     const { uri } = widget.editor;
-    if (sketch && Sketch.isInSketch(uri, sketch)) {
+    if (CurrentSketch.isValid(sketch) && Sketch.isInSketch(uri, sketch)) {
       const isTemp = await this.sketchesService.isTemp(sketch);
       if (isTemp) {
         widget.title.caption = nls.localize(

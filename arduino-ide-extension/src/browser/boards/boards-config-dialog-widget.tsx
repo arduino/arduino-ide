@@ -55,12 +55,13 @@ export class BoardsConfigDialogWidget extends ReactWidget {
           onConfigChange={this.fireConfigChanged}
           onFocusNodeSet={this.setFocusNode}
           onFilteredTextDidChangeEvent={this.onFilterTextDidChangeEmitter.event}
+          onAppStateDidChange={this.notificationCenter.onAppStateDidChange}
         />
       </div>
     );
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     if (this.focusNode instanceof HTMLInputElement) {
       this.focusNode.select();

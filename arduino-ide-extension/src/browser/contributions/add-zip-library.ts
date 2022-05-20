@@ -28,13 +28,13 @@ export class AddZipLibrary extends SketchContribution {
   @inject(LibraryService)
   protected readonly libraryService: LibraryService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddZipLibrary.Commands.ADD_ZIP_LIBRARY, {
       execute: () => this.addZipLibrary(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     const includeLibMenuPath = [
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
       '0_include',

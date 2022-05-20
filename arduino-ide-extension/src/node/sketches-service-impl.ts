@@ -1,19 +1,20 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
-import * as minimatch from 'minimatch';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as temp from 'temp';
+import * as tempDir from 'temp-dir';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { ncp } from 'ncp';
 import { promisify } from 'util';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node';
-import { isWindows } from '@theia/core/lib/common/os';
+import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { ConfigService } from '../common/protocol/config-service';
 import {
   SketchesService,
   Sketch,
+  SketchRef,
   SketchContainer,
 } from '../common/protocol/sketches-service';
 import { firstToLowerCase } from '../common/utils';
@@ -24,16 +25,28 @@ import {
   ArchiveSketchRequest,
   LoadSketchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { duration } from '../common/decorators';
+import * as glob from 'glob';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
 const prefix = '.arduinoIDE-unsaved';
 
 @injectable()
-export class SketchesServiceImpl extends CoreClientAware
-  implements SketchesService {
+export class SketchesServiceImpl
+  extends CoreClientAware
+  implements SketchesService
+{
   private sketchSuffixIndex = 1;
   private lastSketchBaseName: string;
+  // If on macOS, the `temp-dir` lib will make sure there is resolved realpath.
+  // If on Windows, the `C:\Users\KITTAA~1\AppData\Local\Temp` path will be resolved and normalized to `C:\Users\kittaakos\AppData\Local\Temp`.
+  // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
+  // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
+  private tempDirRealpath = isOSX
+    ? tempDir
+    : maybeNormalizeDrive(fs.realpathSync.native(tempDir));
 
   @inject(ConfigService)
   protected readonly configService: ConfigService;
@@ -43,116 +56,172 @@ export class SketchesServiceImpl extends CoreClientAware
 
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
+
   async getSketches({
     uri,
     exclude,
   }: {
     uri?: string;
     exclude?: string[];
-  }): Promise<SketchContainerWithDetails> {
-    const start = Date.now();
-    let sketchbookPath: undefined | string;
-    if (!uri) {
-      const { sketchDirUri } = await this.configService.getConfiguration();
-      sketchbookPath = FileUri.fsPath(sketchDirUri);
-      if (!(await promisify(fs.exists)(sketchbookPath))) {
-        await promisify(fs.mkdir)(sketchbookPath, { recursive: true });
-      }
-    } else {
-      sketchbookPath = FileUri.fsPath(uri);
-    }
-    const container: SketchContainerWithDetails = {
-      label: uri ? path.basename(sketchbookPath) : 'Sketchbook',
-      sketches: [],
-      children: [],
-    };
-    if (!(await promisify(fs.exists)(sketchbookPath))) {
-      return container;
-    }
-    const stat = await promisify(fs.stat)(sketchbookPath);
-    if (!stat.isDirectory()) {
-      return container;
-    }
+  }): Promise<SketchContainer> {
+    const [/*old,*/ _new] = await Promise.all([
+      // this.getSketchesOld({ uri, exclude }),
+      this.getSketchesNew({ uri, exclude }),
+    ]);
+    return _new;
+  }
 
-    const recursivelyLoad = async (
-      fsPath: string,
-      containerToLoad: SketchContainerWithDetails
-    ) => {
-      const filenames = await promisify(fs.readdir)(fsPath);
-      for (const name of filenames) {
-        const childFsPath = path.join(fsPath, name);
-        let skip = false;
-        for (const pattern of exclude || [
-          '**/libraries/**',
-          '**/hardware/**',
-        ]) {
-          if (!skip && minimatch(childFsPath, pattern)) {
-            skip = true;
-          }
-        }
-        if (skip) {
-          continue;
-        }
-        try {
-          const stat = await promisify(fs.stat)(childFsPath);
-          if (stat.isDirectory()) {
-            const sketch = await this._isSketchFolder(
-              FileUri.create(childFsPath).toString()
-            );
-            if (sketch) {
-              containerToLoad.sketches.push({
-                ...sketch,
-                mtimeMs: stat.mtimeMs,
-              });
+  @duration()
+  async getSketchesNew({
+    uri,
+    exclude,
+  }: {
+    uri?: string;
+    exclude?: string[];
+  }): Promise<SketchContainer> {
+    const root = await this.root(uri);
+    const pathToAllSketchFiles = await new Promise<string[]>(
+      (resolve, reject) => {
+        glob(
+          '/!(libraries|hardware)/**/*.{ino,pde}',
+          { root },
+          (error, results) => {
+            if (error) {
+              reject(error);
             } else {
-              const childContainer: SketchContainerWithDetails = {
-                label: name,
-                children: [],
-                sketches: [],
-              };
-              await recursivelyLoad(childFsPath, childContainer);
-              if (!SketchContainer.isEmpty(childContainer)) {
-                containerToLoad.children.push(childContainer);
-              }
+              resolve(results);
             }
           }
-        } catch {
-          console.warn(`Could not load sketch from ${childFsPath}.`);
-        }
+        );
       }
-      containerToLoad.sketches.sort(
-        (left, right) => right.mtimeMs - left.mtimeMs
-      );
-      return containerToLoad;
-    };
-
-    await recursivelyLoad(sketchbookPath, container);
-    SketchContainer.prune(container);
-    console.debug(
-      `Loading the sketches from ${sketchbookPath} took ${
-        Date.now() - start
-      } ms.`
     );
+    // Sort by path length to filter out nested sketches, such as the `Nested_folder` inside the `Folder` sketch.
+    //
+    // `directories#user`
+    // |
+    // +--Folder
+    //    |
+    //    +--Folder.ino
+    //    |
+    //    +--Nested_folder
+    //       |
+    //       +--Nested_folder.ino
+    pathToAllSketchFiles.sort((left, right) => left.length - right.length);
+    const container = SketchContainer.create(
+      uri ? path.basename(root) : 'Sketchbook'
+    );
+    const getOrCreateChildContainer = (
+      parent: SketchContainer,
+      segments: string[]
+    ) => {
+      if (segments.length === 1) {
+        throw new Error(
+          `Expected at least two segments relative path: ['ExampleSketchName', 'ExampleSketchName.{ino,pde}]. Was: ${segments}`
+        );
+      }
+      if (segments.length === 2) {
+        return parent;
+      }
+      const label = segments[0];
+      const existingSketch = parent.sketches.find(
+        (sketch) => sketch.name === label
+      );
+      if (existingSketch) {
+        // If the container has a sketch with the same label, it cannot have a child container.
+        // See above example about how to ignore nested sketches.
+        return undefined;
+      }
+      let child = parent.children.find((child) => child.label === label);
+      if (!child) {
+        child = SketchContainer.create(label);
+        parent.children.push(child);
+      }
+      return child;
+    };
+    for (const pathToSketchFile of pathToAllSketchFiles) {
+      const relative = path.relative(root, pathToSketchFile);
+      if (!relative) {
+        console.warn(
+          `Could not determine relative sketch path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Relative path was: ${relative}`
+        );
+        continue;
+      }
+      const segments = relative.split(path.sep);
+      if (segments.length < 2) {
+        // folder name, and sketch name.
+        console.warn(
+          `Expected at least one segment relative path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Segments were: ${segments}.`
+        );
+        continue;
+      }
+      // the folder name and the sketch name must match. For example, `Foo/foo.ino` is invalid.
+      // drop the folder name from the sketch name, if `.ino` or `.pde` remains, it's valid
+      const sketchName = segments[segments.length - 2];
+      const sketchFilename = segments[segments.length - 1];
+      const sketchFileExtension = segments[segments.length - 1].replace(
+        new RegExp(sketchName),
+        ''
+      );
+      if (sketchFileExtension !== '.ino' && sketchFileExtension !== '.pde') {
+        console.warn(
+          `Mismatching sketch file <${sketchFilename}> and sketch folder name <${sketchName}>. Skipping`
+        );
+        continue;
+      }
+      const child = getOrCreateChildContainer(container, segments);
+      if (child) {
+        child.sketches.push({
+          name: sketchName,
+          uri: FileUri.create(pathToSketchFile).toString(),
+        });
+      }
+    }
     return container;
   }
 
+  private async root(uri?: string | undefined): Promise<string> {
+    return FileUri.fsPath(uri ?? (await this.sketchbookUri()));
+  }
+
+  private async sketchbookUri(): Promise<string> {
+    const { sketchDirUri } = await this.configService.getConfiguration();
+    return sketchDirUri;
+  }
+
   async loadSketch(uri: string): Promise<SketchWithDetails> {
-    await this.coreClientProvider.initialized;
     const { client, instance } = await this.coreClient();
     const req = new LoadSketchRequest();
-    req.setSketchPath(FileUri.fsPath(uri));
+    const requestSketchPath = FileUri.fsPath(uri);
+    req.setSketchPath(requestSketchPath);
     req.setInstance(instance);
+    const stat = new Deferred<fs.Stats | Error>();
+    fs.lstat(requestSketchPath, (err, result) =>
+      err ? stat.resolve(err) : stat.resolve(result)
+    );
     const sketch = await new Promise<SketchWithDetails>((resolve, reject) => {
       client.loadSketch(req, async (err, resp) => {
         if (err) {
           reject(err);
           return;
         }
-        const sketchFolderPath = resp.getLocationPath();
-        const { mtimeMs } = await promisify(fs.lstat)(sketchFolderPath);
+        const responseSketchPath = maybeNormalizeDrive(resp.getLocationPath());
+        if (requestSketchPath !== responseSketchPath) {
+          console.warn(
+            `Warning! The request sketch path was different than the response sketch path from the CLI. This could be a potential bug. Request: <${requestSketchPath}>, response: <${responseSketchPath}>.`
+          );
+        }
+        const resolvedStat = await stat.promise;
+        if (resolvedStat instanceof Error) {
+          console.error(
+            `The CLI could load the sketch from ${requestSketchPath}, but stating the folder has failed.`
+          );
+          reject(resolvedStat);
+          return;
+        }
+        const { mtimeMs } = resolvedStat;
         resolve({
-          name: path.basename(sketchFolderPath),
-          uri: FileUri.create(sketchFolderPath).toString(),
+          name: path.basename(responseSketchPath),
+          uri: FileUri.create(responseSketchPath).toString(),
           mainFileUri: FileUri.create(resp.getMainFile()).toString(),
           otherSketchFileUris: resp
             .getOtherSketchFilesList()
@@ -292,12 +361,18 @@ export class SketchesServiceImpl extends CoreClientAware
     ];
     const today = new Date();
     const parentPath = await new Promise<string>((resolve, reject) => {
-      temp.mkdir({ prefix }, (err, dirPath) => {
-        if (err) {
-          reject(err);
+      temp.mkdir({ prefix }, (createError, dirPath) => {
+        if (createError) {
+          reject(createError);
           return;
         }
-        resolve(dirPath);
+        fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
+          if (resolveError) {
+            reject(resolveError);
+            return;
+          }
+          resolve(resolvedDirPath);
+        });
       });
     });
     const sketchBaseName = `sketch_${
@@ -395,20 +470,21 @@ void loop() {
     return undefined;
   }
 
-  async isTemp(sketch: Sketch): Promise<boolean> {
-    let sketchPath = FileUri.fsPath(sketch.uri);
-    let temp = await promisify(fs.realpath)(os.tmpdir());
-    // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
-    // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
-    if (isWindows) {
-      if (WIN32_DRIVE_REGEXP.exec(sketchPath)) {
-        sketchPath = firstToLowerCase(sketchPath);
-      }
-      if (WIN32_DRIVE_REGEXP.exec(temp)) {
-        temp = firstToLowerCase(temp);
-      }
-    }
-    return sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(temp);
+  async isTemp(sketch: SketchRef): Promise<boolean> {
+    // Consider the following paths:
+    // macOS:
+    // - Temp folder: /var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T
+    // - Sketch folder: /private/var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T/arduino-ide2-A0337D47F86B24A51DF3DBCF2CC17925
+    // Windows:
+    // - Temp folder: C:\Users\KITTAA~1\AppData\Local\Temp
+    // - Sketch folder: c:\Users\kittaakos\AppData\Local\Temp\.arduinoIDE-unsaved2022431-21824-116kfaz.9ljl\sketch_may31a
+    // Both sketches are valid and temp, but this function will give a false-negative result if we use the default `os.tmpdir()` logic.
+    const sketchPath = maybeNormalizeDrive(FileUri.fsPath(sketch.uri));
+    const tempPath = this.tempDirRealpath; // https://github.com/sindresorhus/temp-dir
+    const result =
+      sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(tempPath);
+    console.log('isTemp?', result, sketch.uri);
+    return result;
   }
 
   async copy(
@@ -512,10 +588,15 @@ void loop() {
 interface SketchWithDetails extends Sketch {
   readonly mtimeMs: number;
 }
-interface SketchContainerWithDetails extends SketchContainer {
-  readonly label: string;
-  readonly children: SketchContainerWithDetails[];
-  readonly sketches: SketchWithDetails[];
+
+/**
+ * If on Windows, will change the input `C:\\path\\to\\somewhere` to `c:\\path\\to\\somewhere`.
+ */
+function maybeNormalizeDrive(input: string): string {
+  if (isWindows && WIN32_DRIVE_REGEXP.test(input)) {
+    return firstToLowerCase(input);
+  }
+  return input;
 }
 
 /*
@@ -523,7 +604,7 @@ interface SketchContainerWithDetails extends SketchContainer {
  * from other new sketches I created today.
  * If 'sketch_jul8a' is already used, go with 'sketch_jul8b'.
  * If 'sketch_jul8b' already used, go with 'sketch_jul8c'.
- * When it reacheas 'sketch_jul8z', go with 'sketch_jul8aa',
+ * When it reach 'sketch_jul8z', go with 'sketch_jul8aa',
  * and so on.
  */
 function sketchIndexToLetters(num: number): string {

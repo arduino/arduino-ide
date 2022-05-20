@@ -28,7 +28,7 @@ export class LibraryListWidgetFrontendContribution
     this.openView();
   }
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
         commandId: this.toggleCommand.id,

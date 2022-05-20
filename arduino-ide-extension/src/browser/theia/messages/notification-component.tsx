@@ -4,7 +4,7 @@ import { nls } from '@theia/core/lib/common';
 import { codicon } from '@theia/core/lib/browser';
 
 export class NotificationComponent extends TheiaNotificationComponent {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { messageId, message, type, collapsed, expandable, source, actions } =
       this.props.notification;
     return (

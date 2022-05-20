@@ -11,9 +11,9 @@ export class BackendApplication extends TheiaBackendApplication {
   constructor(
     @inject(ContributionProvider)
     @named(BackendApplicationContribution)
-    protected readonly contributionsProvider: ContributionProvider<BackendApplicationContribution>,
+    protected override readonly contributionsProvider: ContributionProvider<BackendApplicationContribution>,
     @inject(BackendApplicationCliContribution)
-    protected readonly cliParams: BackendApplicationCliContribution
+    protected override readonly cliParams: BackendApplicationCliContribution
   ) {
     super(contributionsProvider, cliParams);
     // Workaround for Electron not installing a handler to ignore SIGPIPE

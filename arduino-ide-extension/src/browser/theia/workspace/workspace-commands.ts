@@ -12,7 +12,10 @@ import {
 } from '@theia/workspace/lib/browser/workspace-commands';
 import { Sketch, SketchesService } from '../../../common/protocol';
 import { WorkspaceInputDialog } from './workspace-input-dialog';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import { SingleTextInputDialog } from '@theia/core/lib/browser';
 import { nls } from '@theia/core/lib/common';
@@ -28,7 +31,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
   @inject(SketchesService)
   protected readonly sketchService: SketchesService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     registry.unregisterCommand(WorkspaceCommands.NEW_FILE);
     registry.registerCommand(
@@ -75,7 +78,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     }
   }
 
-  protected async validateFileName(
+  protected override async validateFileName(
     name: string,
     parent: FileStat,
     recursive = false
@@ -129,15 +132,15 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
       return;
     }
     const sketch = await this.sketchesServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
 
     // file belongs to another sketch, do not allow rename
-    const parentsketch = await this.sketchService.getSketchFolder(
+    const parentSketch = await this.sketchService.getSketchFolder(
       uri.toString()
     );
-    if (parentsketch && parentsketch.uri !== sketch.uri) {
+    if (parentSketch && parentSketch.uri !== sketch.uri) {
       return;
     }
 

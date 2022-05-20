@@ -9,7 +9,7 @@ import {
 
 export interface NotificationServiceClient {
   notifyIndexUpdated(): void;
-  notifyDaemonStarted(): void;
+  notifyDaemonStarted(port: string): void;
   notifyDaemonStopped(): void;
   notifyConfigChanged(event: { config: Config | undefined }): void;
   notifyPlatformInstalled(event: { item: BoardsPackage }): void;

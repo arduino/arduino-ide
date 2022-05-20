@@ -43,7 +43,7 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     return this.cloudSketchbookTreeWidget;
   }
 
-  protected onAfterAttach(message: Message): void {
+  protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     Widget.attach(this.cloudSketchbookTreeWidget, this.compositeNode);
     ReactDOM.render(
@@ -58,7 +58,7 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     );
   }
 
-  protected onResize(message: Widget.ResizeMessage): void {
+  protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     MessageLoop.sendMessage(
       this.cloudSketchbookTreeWidget,

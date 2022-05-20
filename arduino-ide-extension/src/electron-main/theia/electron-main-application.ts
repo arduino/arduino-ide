@@ -1,5 +1,13 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen, Event as ElectronEvent } from '@theia/core/electron-shared/electron';
+import {
+  app,
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  contentTracing,
+  ipcMain,
+  screen,
+  Event as ElectronEvent,
+} from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join, dirname } from 'path';
@@ -34,6 +42,28 @@ interface WorkspaceOptions {
 
 const WORKSPACES = 'workspaces';
 
+/**
+ * Purely a dev thing. If you start the app with the `--nosplash` argument,
+ * then you won't have the splash screen (which is always on top :confused:) and can debug the app at startup.
+ * Note: if you start the app from VS Code with the `App (Electron)` config, the splash screen will be disabled.
+ */
+const APP_STARTED_WITH_NOSPLASH =
+  typeof process !== 'undefined' && process.argv.indexOf('--nosplash') !== -1;
+
+/**
+ * If the app is started with `--open-devtools` argument, the `Dev Tools` will be opened.
+ */
+const APP_STARTED_WITH_DEV_TOOLS =
+  typeof process !== 'undefined' &&
+  process.argv.indexOf('--open-devtools') !== -1;
+
+/**
+ * If the app is started with `--content-trace` argument, the `Dev Tools` will be opened and content tracing will start.
+ */
+const APP_STARTED_WITH_CONTENT_TRACE =
+  typeof process !== 'undefined' &&
+  process.argv.indexOf('--content-trace') !== -1;
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   protected startup = false;
@@ -42,13 +72,74 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   @inject(SplashServiceImpl)
   protected readonly splashService: SplashServiceImpl;
 
-  async start(config: FrontendApplicationConfig): Promise<void> {
+  override async start(config: FrontendApplicationConfig): Promise<void> {
     // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
     // See: https://github.com/electron-userland/electron-builder/issues/2468
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
     app.on('ready', () => app.setName(config.applicationName));
     this.attachFileAssociations();
-    return super.start(config);
+    this.useNativeWindowFrame = this.getTitleBarStyle(config) === 'native';
+    this._config = config;
+    this.hookApplicationEvents();
+    const [port] = await Promise.all([this.startBackend(), app.whenReady()]);
+    this.startContentTracing();
+    this._backendPort.resolve(port);
+    await Promise.all([
+      this.attachElectronSecurityToken(port),
+      this.startContributions(),
+    ]);
+    return this.launch({
+      secondInstance: false,
+      argv: this.processArgv.getProcessArgvWithoutBin(process.argv),
+      cwd: process.cwd(),
+    });
+  }
+
+  private startContentTracing(): void {
+    if (!APP_STARTED_WITH_CONTENT_TRACE) {
+      return;
+    }
+    if (!app.isReady()) {
+      throw new Error(
+        'Cannot start content tracing when the electron app is not ready.'
+      );
+    }
+    const defaultTraceCategories: Readonly<Array<string>> = [
+      '-*',
+      'devtools.timeline',
+      'disabled-by-default-devtools.timeline',
+      'disabled-by-default-devtools.timeline.frame',
+      'toplevel',
+      'blink.console',
+      'disabled-by-default-devtools.timeline.stack',
+      'disabled-by-default-v8.cpu_profile',
+      'disabled-by-default-v8.cpu_profiler',
+      'disabled-by-default-v8.cpu_profiler.hires',
+    ];
+    const traceOptions = {
+      categoryFilter: defaultTraceCategories.join(','),
+      traceOptions: 'record-until-full',
+      options: 'sampling-frequency=10000',
+    };
+    (async () => {
+      const appPath = app.getAppPath();
+      let traceFile: string | undefined;
+      if (appPath) {
+        const tracesPath = join(appPath, 'traces');
+        await fs.promises.mkdir(tracesPath, { recursive: true });
+        traceFile = join(tracesPath, `trace-${new Date().toISOString()}.trace`);
+      }
+      console.log('>>> Content tracing has started...');
+      await contentTracing.startRecording(traceOptions);
+      await new Promise((resolve) => setTimeout(resolve, 10_000));
+      contentTracing
+        .stopRecording(traceFile)
+        .then((out) =>
+          console.log(
+            `<<< Content tracing has finished. The trace data was written to: ${out}.`
+          )
+        );
+    })();
   }
 
   attachFileAssociations() {
@@ -71,7 +162,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return typeof uri === 'string' && await fs.pathExists(uri);
   }
 
-  protected async launch(params: ElectronMainExecutionParams): Promise<void> {
+  protected override async launch(params: ElectronMainExecutionParams): Promise<void> {
     try {
       // When running on MacOS, we either have to wait until
       // 1. The `open-file` command has been received by the app, rejecting the promise
@@ -143,18 +234,18 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return electronWindow;
   }
 
-  protected avoidOverlap(options: TheiaBrowserWindowOptions): TheiaBrowserWindowOptions {
+  protected override avoidOverlap(options: TheiaBrowserWindowOptions): TheiaBrowserWindowOptions {
     if (this.startup) {
       return options;
     }
     return super.avoidOverlap(options);
   }
 
-  protected getTitleBarStyle(): 'native' | 'custom' {
+  protected override getTitleBarStyle(config: FrontendApplicationConfig): 'native' | 'custom' {
     return 'native';
   }
 
-  protected hookApplicationEvents(): void {
+  protected override hookApplicationEvents(): void {
     app.on('will-quit', this.onWillQuit.bind(this));
     app.on('second-instance', this.onSecondInstance.bind(this));
     app.on('window-all-closed', this.onWindowAllClosed.bind(this));
@@ -164,7 +255,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     });
   }
 
-  protected async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
+  protected override async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
     if (!os.isOSX && await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
       // Application has received a file in its arguments
       return;
@@ -177,13 +268,13 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
    *
    * @param options
    */
-  async createWindow(
+   override async createWindow(
     asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
     let options = await asyncOptions;
     options = this.avoidOverlap(options);
     let electronWindow: BrowserWindow | undefined;
-    if (this.windows.size) {
+    if (this.windows.size || APP_STARTED_WITH_NOSPLASH) {
       electronWindow = await this.doCreateWindow(options);
     } else {
       const { bounds } = screen.getDisplayNearestPoint(
@@ -235,8 +326,20 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     options: TheiaBrowserWindowOptions
   ): Promise<BrowserWindow> {
     const electronWindow = await super.createWindow(options);
+    if (APP_STARTED_WITH_DEV_TOOLS) {
+      electronWindow.webContents.openDevTools();
+    }
     this.attachListenersToWindow(electronWindow);
     return electronWindow;
+  }
+
+  protected override getDefaultOptions(): TheiaBrowserWindowOptions {
+    const options = super.getDefaultOptions();
+    if (!options.webPreferences) {
+      options.webPreferences = {};
+    }
+    options.webPreferences.v8CacheOptions = 'bypassHeatCheck'; // TODO: verify this. VS Code use this V8 option.
+    return options;
   }
 
   private attachListenersToWindow(electronWindow: BrowserWindow) {
@@ -270,7 +373,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     this.attachClosedWorkspace(electronWindow);
   }
 
-  protected async startBackend(): Promise<number> {
+  protected override async startBackend(): Promise<number> {
     // Check if we should run everything as one process.
     const noBackendFork = process.argv.indexOf('--no-cluster') !== -1;
     // We cannot use the `process.cwd()` as the application project path (the location of the `package.json` in other words)
@@ -359,7 +462,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     });
   }
 
-  protected onWillQuit(event: Electron.Event): void {
+  protected override onWillQuit(event: Electron.Event): void {
     // Only add workspaces which were closed within the last second (1000 milliseconds)
     const threshold = Date.now() - 1000;
     const visited = new Set<string>();
