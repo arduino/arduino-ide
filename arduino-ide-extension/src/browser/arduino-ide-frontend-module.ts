@@ -48,9 +48,7 @@ import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from 
 import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
   ApplicationShell as TheiaApplicationShell,
-  ShellLayoutRestorer as TheiaShellLayoutRestorer,
   CommonFrontendContribution as TheiaCommonFrontendContribution,
-  KeybindingRegistry as TheiaKeybindingRegistry,
   TabBarRendererFactory,
   ContextMenuRenderer,
   createTreeContainer,
@@ -88,7 +86,6 @@ import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
-import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
@@ -138,7 +135,6 @@ import { PreferencesContribution } from './theia/preferences/preferences-contrib
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control';
 import { Settings } from './contributions/settings';
-import { KeybindingRegistry } from './theia/core/keybindings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
@@ -276,8 +272,6 @@ import {
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 
-const ElementQueries = require('css-element-queries/src/ElementQueries');
-
 MonacoThemingService.register({
   id: 'arduino-theme',
   label: 'Light (Arduino)',
@@ -286,8 +280,6 @@ MonacoThemingService.register({
 });
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
-  ElementQueries.listen();
-  ElementQueries.init();
 
   // Commands and toolbar items
   bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
@@ -477,7 +469,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaPreferencesContribution)
     .to(PreferencesContribution)
     .inSingletonScope();
-  rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
   rebind(TheiaWorkspaceCommandContribution)
     .to(WorkspaceCommandContribution)
     .inSingletonScope();
@@ -541,10 +532,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Problem markers
   bind(ProblemManager).toSelf().inSingletonScope();
   rebind(TheiaProblemManager).toService(ProblemManager);
-
-  // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
-  bind(ShellLayoutRestorer).toSelf().inSingletonScope();
-  rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
 
   // No dropdown for the _Output_ view.
   bind(OutputToolbarContribution).toSelf().inSingletonScope();

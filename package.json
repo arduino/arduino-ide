@@ -35,8 +35,6 @@
     "jsdom": "^11.5.1"
   },
   "resolutions": {
-    "find-git-exec": "0.0.4",
-    "dugite-extra": "0.1.15",
     "@types/react": "16.14.25"
   },
   "scripts": {
