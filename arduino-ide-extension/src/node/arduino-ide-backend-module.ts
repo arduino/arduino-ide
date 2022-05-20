@@ -90,9 +90,15 @@ import {
   MonitorManagerProxyClient,
   MonitorManagerProxyPath,
 } from '../common/protocol/monitor-service';
-import { MonitorServiceName } from './monitor-service';
+import { MonitorService, MonitorServiceName } from './monitor-service';
 import { MonitorSettingsProvider } from './monitor-settings/monitor-settings-provider';
 import { MonitorSettingsProviderImpl } from './monitor-settings/monitor-settings-provider-impl';
+import {
+  MonitorServiceFactory,
+  MonitorServiceFactoryOptions,
+} from './monitor-service-factory';
+import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
+import { WebSocketProvider } from './web-socket/web-socket-provider';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -204,8 +210,37 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // a single MonitorManager is responsible for handling the actual connections to the pluggable monitors
   bind(MonitorManager).toSelf().inSingletonScope();
 
+  // monitor service & factory bindings
   bind(MonitorSettingsProviderImpl).toSelf().inSingletonScope();
   bind(MonitorSettingsProvider).toService(MonitorSettingsProviderImpl);
+
+  bind(WebSocketProviderImpl).toSelf();
+  bind(WebSocketProvider).toService(WebSocketProviderImpl);
+
+  bind(MonitorServiceFactory).toFactory(
+    ({ container }) =>
+      (options: MonitorServiceFactoryOptions) => {
+        const logger = container.get<ILogger>(ILogger);
+
+        const monitorSettingsProvider = container.get<MonitorSettingsProvider>(
+          MonitorSettingsProvider
+        );
+
+        const webSocketProvider =
+          container.get<WebSocketProvider>(WebSocketProvider);
+
+        const { board, port, coreClientProvider } = options;
+
+        return new MonitorService(
+          logger,
+          monitorSettingsProvider,
+          webSocketProvider,
+          board,
+          port,
+          coreClientProvider
+        );
+      }
+  );
 
   // Serial client provider per connected frontend.
   bind(ConnectionContainerModule).toConstantValue(

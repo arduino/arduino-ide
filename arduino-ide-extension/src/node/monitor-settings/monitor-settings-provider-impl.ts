@@ -40,7 +40,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     );
 
     // read existing settings
-    this.readFile();
+    await this.readFile();
 
     console.log(this.monitorSettings);
     this.ready.resolve();
