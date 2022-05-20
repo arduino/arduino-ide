@@ -6,9 +6,9 @@ import { NewWindowOptions } from '@theia/core/lib/common/window';
 @injectable()
 export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowService {
   @inject(ElectronMainApplication)
-  protected readonly app: ElectronMainApplication;
+  protected override readonly app: ElectronMainApplication;
 
-  openNewWindow(url: string, { external }: NewWindowOptions): undefined {
+  override openNewWindow(url: string, { external }: NewWindowOptions): undefined {
     if (!external) {
       const sanitizedUrl = this.sanitize(url);
       const existing = this.app.browserWindows.find(

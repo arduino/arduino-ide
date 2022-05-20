@@ -21,7 +21,7 @@ export class ElectronWindowService extends TheiaElectronWindowService {
   protected readonly appStateService: FrontendApplicationStateService;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     this.appStateService
       .reachedAnyState('initialized_layout')
       .then(() => this.splashService.requestClose());

@@ -39,7 +39,7 @@ export class UploadCertificate extends Contribution {
 
   protected dialogOpened = false;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadCertificate.Commands.OPEN, {
       execute: async () => {
         try {
@@ -93,7 +93,7 @@ export class UploadCertificate extends Contribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__FIRMWARE_UPLOADER_GROUP, {
       commandId: UploadCertificate.Commands.OPEN.id,
       label: UploadCertificate.Commands.OPEN.label,

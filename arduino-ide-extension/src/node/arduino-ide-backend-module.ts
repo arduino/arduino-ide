@@ -58,7 +58,10 @@ import {
   FileSystemExt,
   FileSystemExtPath,
 } from '../common/protocol/filesystem-ext';
-import { ExamplesServiceImpl } from './examples-service-impl';
+import {
+  BuiltInExamplesServiceImpl,
+  ExamplesServiceImpl,
+} from './examples-service-impl';
 import {
   ExamplesService,
   ExamplesServicePath,
@@ -80,8 +83,6 @@ import {
 } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
-import { DefaultGitInit } from './theia/git/git-init';
-import { GitInit } from '@theia/git/lib/node/init/git-init';
 import { AuthenticationServiceImpl } from './auth/authentication-service-impl';
 import {
   AuthenticationService,
@@ -138,6 +139,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+  // Built-in examples are not board specific, so it is possible to have one shared instance.
+  bind(BuiltInExamplesServiceImpl).toSelf().inSingletonScope();
 
   // Examples service. One per backend, each connected FE gets a proxy.
   bind(ConnectionContainerModule).toConstantValue(
@@ -328,9 +331,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope()
     .whenTargetNamed(SerialServiceName);
-
-  bind(DefaultGitInit).toSelf();
-  rebind(GitInit).toService(DefaultGitInit);
 
   // Remote sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();

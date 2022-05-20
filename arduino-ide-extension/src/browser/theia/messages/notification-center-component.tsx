@@ -7,7 +7,7 @@ import { codicon } from '@theia/core/lib/browser';
 const PerfectScrollbar = require('react-perfect-scrollbar');
 
 export class NotificationCenterComponent extends TheiaNotificationCenterComponent {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const empty = this.state.notifications.length === 0;
     const title = empty
       ? nls.localize(

@@ -21,7 +21,7 @@ import { NotificationCenter } from '../../notification-center';
 @injectable()
 export abstract class ListWidget<
   T extends ArduinoComponent
-> extends ReactWidget {
+  > extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
 
@@ -42,6 +42,11 @@ export abstract class ListWidget<
   protected readonly filterTextChangeEmitter = new Emitter<
     string | undefined
   >();
+  /**
+   * Instead of running an `update` from the `postConstruct` `init` method,
+   * we use this variable to track first activate, then run.
+   */
+  protected firstActivate = true;
 
   constructor(protected options: ListWidget.Options<T>) {
     super();
@@ -61,7 +66,6 @@ export abstract class ListWidget<
 
   @postConstruct()
   protected init(): void {
-    this.update();
     this.toDispose.pushAll([
       this.notificationCenter.onIndexUpdated(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonStarted(() => this.refresh(undefined)),
@@ -69,21 +73,34 @@ export abstract class ListWidget<
     ]);
   }
 
-  protected getScrollContainer(): MaybePromise<HTMLElement> {
+  protected override getScrollContainer(): MaybePromise<HTMLElement> {
     return this.deferredContainer.promise;
   }
 
-  protected onActivateRequest(message: Message): void {
+  protected override onAfterShow(message: Message): void {
+    this.maybeUpdateOnFirstRender();
+    super.onAfterShow(message);
+  }
+
+  private maybeUpdateOnFirstRender() {
+    if (this.firstActivate) {
+      this.firstActivate = false;
+      this.update();
+    }
+  }
+
+  protected override onActivateRequest(message: Message): void {
+    this.maybeUpdateOnFirstRender();
     super.onActivateRequest(message);
     (this.focusNode || this.node).focus();
   }
 
-  protected onUpdateRequest(message: Message): void {
+  protected override onUpdateRequest(message: Message): void {
     super.onUpdateRequest(message);
     this.render();
   }
 
-  protected onResize(message: Widget.ResizeMessage): void {
+  protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     this.updateScrollBar();
   }

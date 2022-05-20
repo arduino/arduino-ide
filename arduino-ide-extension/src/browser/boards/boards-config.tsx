@@ -16,6 +16,7 @@ import {
 } from './boards-service-provider';
 import { naturalCompare } from '../../common/utils';
 import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationState } from '@theia/core/lib/common/frontend-application-state';
 
 export namespace BoardsConfig {
   export interface Config {
@@ -29,6 +30,7 @@ export namespace BoardsConfig {
     readonly onConfigChange: (config: Config) => void;
     readonly onFocusNodeSet: (element: HTMLElement | undefined) => void;
     readonly onFilteredTextDidChangeEvent: Event<string>;
+    readonly onAppStateDidChange: Event<FrontendApplicationState>;
   }
 
   export interface State extends Config {
@@ -47,7 +49,7 @@ export abstract class Item<T> extends React.Component<{
   missing?: boolean;
   details?: string;
 }> {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { selected, label, missing, details } = this.props;
     const classNames = ['item'];
     if (selected) {
@@ -99,14 +101,18 @@ export class BoardsConfig extends React.Component<
     };
   }
 
-  componentDidMount() {
-    this.updateBoards();
-    this.updatePorts(
-      this.props.boardsServiceProvider.availableBoards
-        .map(({ port }) => port)
-        .filter(notEmpty)
-    );
+  override componentDidMount(): void {
     this.toDispose.pushAll([
+      this.props.onAppStateDidChange((state) => {
+        if (state === 'ready') {
+          this.updateBoards();
+          this.updatePorts(
+            this.props.boardsServiceProvider.availableBoards
+              .map(({ port }) => port)
+              .filter(notEmpty)
+          );
+        }
+      }),
       this.props.notificationCenter.onAttachedBoardsChanged((event) =>
         this.updatePorts(
           event.newState.ports,
@@ -141,11 +147,11 @@ export class BoardsConfig extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
-  protected fireConfigChanged() {
+  protected fireConfigChanged(): void {
     const { selectedBoard, selectedPort } = this.state;
     this.props.onConfigChange({ selectedBoard, selectedPort });
   }
@@ -250,7 +256,7 @@ export class BoardsConfig extends React.Component<
     this.props.onFocusNodeSet(element || undefined);
   };
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <div className="body">
         {this.renderContainer('boards', this.renderBoards.bind(this))}

@@ -146,7 +146,10 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     createCompilationDatabaseOnly: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
     sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : [],
     exportBinaries: (f = msg.getExportBinaries()) && google_protobuf_wrappers_pb.BoolValue.toObject(includeInstance, f),
-    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f
+    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f,
+    keysKeychain: jspb.Message.getFieldWithDefault(msg, 25, ""),
+    signKey: jspb.Message.getFieldWithDefault(msg, 26, ""),
+    encryptKey: jspb.Message.getFieldWithDefault(msg, 27, "")
   };
 
   if (includeInstance) {
@@ -270,6 +273,18 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
     case 24:
       var value = /** @type {string} */ (reader.readString());
       msg.addLibrary(value);
+      break;
+    case 25:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setKeysKeychain(value);
+      break;
+    case 26:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSignKey(value);
+      break;
+    case 27:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEncryptKey(value);
       break;
     default:
       reader.skipField();
@@ -443,6 +458,27 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeRepeatedString(
       24,
+      f
+    );
+  }
+  f = message.getKeysKeychain();
+  if (f.length > 0) {
+    writer.writeString(
+      25,
+      f
+    );
+  }
+  f = message.getSignKey();
+  if (f.length > 0) {
+    writer.writeString(
+      26,
+      f
+    );
+  }
+  f = message.getEncryptKey();
+  if (f.length > 0) {
+    writer.writeString(
+      27,
       f
     );
   }
@@ -926,6 +962,60 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.clearLibraryList = fun
 };
 
 
+/**
+ * optional string keys_keychain = 25;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getKeysKeychain = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 25, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setKeysKeychain = function(value) {
+  return jspb.Message.setProto3StringField(this, 25, value);
+};
+
+
+/**
+ * optional string sign_key = 26;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getSignKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 26, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSignKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 26, value);
+};
+
+
+/**
+ * optional string encrypt_key = 27;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getEncryptKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 27, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setEncryptKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 27, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
@@ -972,8 +1062,8 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.toObject = function(includeInst
     cc_arduino_cli_commands_v1_lib_pb.Library.toObject, includeInstance),
     executableSectionsSizeList: jspb.Message.toObjectList(msg.getExecutableSectionsSizeList(),
     proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.toObject, includeInstance),
-    boardPlatform: (f = msg.getBoardPlatform()) && cc_arduino_cli_commands_v1_common_pb.PlatformReference.toObject(includeInstance, f),
-    buildPlatform: (f = msg.getBuildPlatform()) && cc_arduino_cli_commands_v1_common_pb.PlatformReference.toObject(includeInstance, f),
+    boardPlatform: (f = msg.getBoardPlatform()) && cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.toObject(includeInstance, f),
+    buildPlatform: (f = msg.getBuildPlatform()) && cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.toObject(includeInstance, f),
     progress: (f = msg.getProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f)
   };
 
@@ -1034,13 +1124,13 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.deserializeBinaryFromReader = f
       msg.addExecutableSectionsSize(value);
       break;
     case 6:
-      var value = new cc_arduino_cli_commands_v1_common_pb.PlatformReference;
-      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.PlatformReference.deserializeBinaryFromReader);
+      var value = new cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.deserializeBinaryFromReader);
       msg.setBoardPlatform(value);
       break;
     case 7:
-      var value = new cc_arduino_cli_commands_v1_common_pb.PlatformReference;
-      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.PlatformReference.deserializeBinaryFromReader);
+      var value = new cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.deserializeBinaryFromReader);
       msg.setBuildPlatform(value);
       break;
     case 8:
@@ -1119,7 +1209,7 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.serializeBinaryToWriter = funct
     writer.writeMessage(
       6,
       f,
-      cc_arduino_cli_commands_v1_common_pb.PlatformReference.serializeBinaryToWriter
+      cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.serializeBinaryToWriter
     );
   }
   f = message.getBuildPlatform();
@@ -1127,7 +1217,7 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.serializeBinaryToWriter = funct
     writer.writeMessage(
       7,
       f,
-      cc_arduino_cli_commands_v1_common_pb.PlatformReference.serializeBinaryToWriter
+      cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.serializeBinaryToWriter
     );
   }
   f = message.getProgress();
@@ -1320,17 +1410,17 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearExecutableSectio
 
 
 /**
- * optional PlatformReference board_platform = 6;
- * @return {?proto.cc.arduino.cli.commands.v1.PlatformReference}
+ * optional InstalledPlatformReference board_platform = 6;
+ * @return {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference}
  */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBoardPlatform = function() {
-  return /** @type{?proto.cc.arduino.cli.commands.v1.PlatformReference} */ (
-    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.PlatformReference, 6));
+  return /** @type{?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference, 6));
 };
 
 
 /**
- * @param {?proto.cc.arduino.cli.commands.v1.PlatformReference|undefined} value
+ * @param {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
 */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBoardPlatform = function(value) {
@@ -1357,17 +1447,17 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasBoardPlatform = fu
 
 
 /**
- * optional PlatformReference build_platform = 7;
- * @return {?proto.cc.arduino.cli.commands.v1.PlatformReference}
+ * optional InstalledPlatformReference build_platform = 7;
+ * @return {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference}
  */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBuildPlatform = function() {
-  return /** @type{?proto.cc.arduino.cli.commands.v1.PlatformReference} */ (
-    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.PlatformReference, 7));
+  return /** @type{?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference, 7));
 };
 
 
 /**
- * @param {?proto.cc.arduino.cli.commands.v1.PlatformReference|undefined} value
+ * @param {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
 */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBuildPlatform = function(value) {

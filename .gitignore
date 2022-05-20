@@ -21,3 +21,5 @@ arduino-ide-extension/data/cli/config
 scripts/themes/tokens
 # environment variables
 .env
+# content trace files for electron
+electron-app/traces

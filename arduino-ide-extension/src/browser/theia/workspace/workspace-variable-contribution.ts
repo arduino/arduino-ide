@@ -1,8 +1,15 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { WorkspaceVariableContribution as TheiaWorkspaceVariableContribution } from '@theia/workspace/lib/browser/workspace-variable-contribution';
 import { Sketch } from '../../../common/protocol';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContribution {
@@ -12,14 +19,15 @@ export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContrib
   protected currentSketch?: Sketch;
 
   @postConstruct()
-  protected init(): void {
-    this.sketchesServiceClient
-      .currentSketch()
-      .then()
-      .then((sketch) => (this.currentSketch = sketch));
+  protected override init(): void {
+    this.sketchesServiceClient.currentSketch().then((sketch) => {
+      if (CurrentSketch.isValid(sketch)) {
+        this.currentSketch = sketch;
+      }
+    });
   }
 
-  getResourceUri(): URI | undefined {
+  override getResourceUri(): URI | undefined {
     const resourceUri = super.getResourceUri();
     // https://github.com/arduino/arduino-ide/issues/46
     // `currentWidget` can be an editor representing a file outside of the workspace. The current sketch should be a fallback.

@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ConfigServiceImpl } from './config-service-impl';
@@ -15,16 +19,18 @@ export abstract class GrpcClientProvider<C> {
   @inject(ConfigServiceImpl)
   protected readonly configService: ConfigServiceImpl;
 
-  protected _port: string | number | undefined;
+  protected _port: string | undefined;
   protected _client: C | Error | undefined;
 
   @postConstruct()
   protected init(): void {
-    const updateClient = () => {
-      this.reconcileClient();
-    };
-    this.configService.onConfigChange(updateClient);
-    this.daemon.ready.then(updateClient);
+    this.configService.onConfigChange(() => {
+      // Only reconcile the gRPC client if the port is known. Hence the CLI daemon is running.
+      if (this._port) {
+        this.reconcileClient(this._port);
+      }
+    });
+    this.daemon.getPort().then((port) => this.reconcileClient(port));
     this.daemon.onDaemonStopped(() => {
       if (this._client && !(this._client instanceof Error)) {
         this.close(this._client);
@@ -36,32 +42,25 @@ export abstract class GrpcClientProvider<C> {
 
   async client(): Promise<C | Error | undefined> {
     try {
-      await this.daemon.ready;
+      await this.daemon.getPort();
       return this._client;
     } catch (error) {
       return error;
     }
   }
 
-  protected async reconcileClient(): Promise<void> {
-    const port = await this.daemon.getPort();
-
-    if (this._port === port) {
-      return; // Nothing to do.
-    }
+  protected async reconcileClient(port: string): Promise<void> {
     this._port = port;
     if (this._client && !(this._client instanceof Error)) {
       this.close(this._client);
       this._client = undefined;
     }
-    if (this._port) {
-      try {
-        const client = await this.createClient(this._port);
-        this._client = client;
-      } catch (error) {
-        this.logger.error('Could not create client for gRPC.', error);
-        this._client = error;
-      }
+    try {
+      const client = await this.createClient(this._port);
+      this._client = client;
+    } catch (error) {
+      this.logger.error('Could not create client for gRPC.', error);
+      this._client = error;
     }
   }
 

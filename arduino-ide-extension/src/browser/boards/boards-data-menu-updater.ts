@@ -13,6 +13,7 @@ import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
@@ -31,11 +32,20 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
 
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
   protected readonly toDisposeOnBoardChange = new DisposableCollection();
 
   async onStart(): Promise<void> {
-    this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard);
+    this.appStateService
+      .reachedState('ready')
+      .then(() =>
+        this.updateMenuActions(
+          this.boardsServiceClient.boardsConfig.selectedBoard
+        )
+      );
     this.boardsDataStore.onChanged(() =>
       this.updateMenuActions(
         this.boardsServiceClient.boardsConfig.selectedBoard

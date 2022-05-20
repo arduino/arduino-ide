@@ -1,4 +1,4 @@
-import { injectable } from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX } from '@theia/core/lib/common/os';
 import {
@@ -14,10 +14,27 @@ import {
   ArduinoMenus,
   PlaceholderMenuNode,
 } from '../../../browser/menu/arduino-menus';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
-  createElectronMenuBar(): Electron.Menu {
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
+  private appReady = false;
+  private updateWhenReady = false;
+
+  override postConstruct(): void {
+    super.postConstruct();
+    this.appStateService.reachedState('ready').then(() => {
+      this.appReady = true;
+      if (this.updateWhenReady) {
+        this.setMenuBar();
+      }
+    });
+  }
+
+  override createElectronMenuBar(): Electron.Menu {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
     const template = this.fillMenuTemplate([], menuModel);
@@ -29,7 +46,14 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return menu;
   }
 
-  async setMenuBar(): Promise<void> {
+  override async setMenuBar(): Promise<void> {
+    // Avoid updating menu items when the app is not ready.
+    // Getting the current electron window is not free and synchronous.
+    // Here, we defer all menu update requests, and fire one when the app is ready.
+    if (!this.appReady) {
+      this.updateWhenReady = true;
+      return;
+    }
     await this.preferencesService.ready;
     const createdMenuBar = this.createElectronMenuBar();
     if (isOSX) {
@@ -39,7 +63,10 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     }
   }
 
-  createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
+  override createElectronContextMenu(
+    menuPath: MenuPath,
+    args?: any[]
+  ): Electron.Menu {
     const menuModel = this.menuProvider.getMenu(menuPath);
     const template = this.fillMenuTemplate([], menuModel, args, {
       showDisabled: false,
@@ -64,7 +91,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return template;
   }
 
-  protected createOSXMenu(): Electron.MenuItemConstructorOptions {
+  protected override createOSXMenu(): Electron.MenuItemConstructorOptions {
     const { submenu } = super.createOSXMenu();
     const label = 'Arduino IDE';
     if (!!submenu && Array.isArray(submenu)) {
@@ -96,7 +123,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return { label, submenu };
   }
 
-  protected handleElectronDefault(
+  protected override handleElectronDefault(
     menuNode: CompositeMenuNode,
     args: any[] = [],
     options?: ElectronMenuOptions

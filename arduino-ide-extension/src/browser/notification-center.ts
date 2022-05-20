@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
@@ -14,6 +18,10 @@ import {
   Config,
   Sketch,
 } from '../common/protocol';
+import {
+  FrontendApplicationStateService,
+  FrontendApplicationState,
+} from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class NotificationCenter
@@ -22,8 +30,11 @@ export class NotificationCenter
   @inject(NotificationServiceServer)
   protected readonly server: JsonRpcProxy<NotificationServiceServer>;
 
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
   protected readonly indexUpdatedEmitter = new Emitter<void>();
-  protected readonly daemonStartedEmitter = new Emitter<void>();
+  protected readonly daemonStartedEmitter = new Emitter<string>();
   protected readonly daemonStoppedEmitter = new Emitter<void>();
   protected readonly configChangedEmitter = new Emitter<{
     config: Config | undefined;
@@ -45,6 +56,8 @@ export class NotificationCenter
   protected readonly recentSketchesChangedEmitter = new Emitter<{
     sketches: Sketch[];
   }>();
+  private readonly onAppStateDidChangeEmitter =
+    new Emitter<FrontendApplicationState>();
 
   protected readonly toDispose = new DisposableCollection(
     this.indexUpdatedEmitter,
@@ -68,10 +81,16 @@ export class NotificationCenter
   readonly onLibraryUninstalled = this.libraryUninstalledEmitter.event;
   readonly onAttachedBoardsChanged = this.attachedBoardsChangedEmitter.event;
   readonly onRecentSketchesChanged = this.recentSketchesChangedEmitter.event;
+  readonly onAppStateDidChange = this.onAppStateDidChangeEmitter.event;
 
   @postConstruct()
   protected init(): void {
     this.server.setClient(this);
+    this.toDispose.push(
+      this.appStateService.onStateChanged((state) =>
+        this.onAppStateDidChangeEmitter.fire(state)
+      )
+    );
   }
 
   onStop(): void {
@@ -82,8 +101,8 @@ export class NotificationCenter
     this.indexUpdatedEmitter.fire();
   }
 
-  notifyDaemonStarted(): void {
-    this.daemonStartedEmitter.fire();
+  notifyDaemonStarted(port: string): void {
+    this.daemonStartedEmitter.fire(port);
   }
 
   notifyDaemonStopped(): void {

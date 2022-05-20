@@ -149,7 +149,7 @@ export class ShareSketchDialog extends AbstractDialog<void> {
 
   constructor(
     @inject(ShareSketchDialogProps)
-    protected readonly props: ShareSketchDialogProps
+    protected override readonly props: ShareSketchDialogProps
   ) {
     super({ title: props.title });
     this.contentNode.classList.add('arduino-share-sketch-dialog');
@@ -159,7 +159,7 @@ export class ShareSketchDialog extends AbstractDialog<void> {
   get value(): void {
     return;
   }
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -168,12 +168,12 @@ export class ShareSketchDialog extends AbstractDialog<void> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }

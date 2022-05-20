@@ -11,7 +11,7 @@ import {
 
 @injectable()
 export class OutputChannelManager extends TheiaOutputChannelManager {
-  getChannel(name: string): TheiaOutputChannel {
+  override getChannel(name: string): TheiaOutputChannel {
     const existing = this.channels.get(name);
     if (existing) {
       return existing;
@@ -43,7 +43,7 @@ export class OutputChannelManager extends TheiaOutputChannelManager {
 }
 
 export class OutputChannel extends TheiaOutputChannel {
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
     if ((this as any).disposed) {
       const textModifyQueue: PQueue = (this as any).textModifyQueue;

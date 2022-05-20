@@ -12,7 +12,7 @@ export class TabBarToolbar extends TheiaTabBarToolbar {
    * Copied over from Theia. Added an ID to the parent of the toolbar item (`--container`).
    * CSS3 does not support parent selectors but we want to style the parent of the toolbar item.
    */
-  protected renderItem(item: TabBarToolbarItem): React.ReactNode {
+  protected override renderItem(item: TabBarToolbarItem): React.ReactNode {
     let innerText = '';
     const classNames = [];
     if (item.text) {

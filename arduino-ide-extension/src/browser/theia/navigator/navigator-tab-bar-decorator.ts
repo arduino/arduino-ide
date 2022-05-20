@@ -8,11 +8,11 @@ import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@thei
  */
 @injectable()
 export class NavigatorTabBarDecorator extends TheiaNavigatorTabBarDecorator {
-  onStart(): void {
+  override onStart(): void {
     // NOOP
   }
 
-  decorate(): WidgetDecoration.Data[] {
+  override decorate(): WidgetDecoration.Data[] {
     // Does not decorate anything.
     return [];
   }

@@ -12,11 +12,11 @@ export class CloudSketchbookWidget extends SketchbookWidget {
   protected readonly arduinoPreferences: ArduinoPreferences;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
   }
 
-  getTreeWidget(): any {
+  override getTreeWidget(): any {
     const widget: any = this.sketchbookTreesContainer.selectedWidgets().next();
 
     if (widget && typeof widget.getTreeWidget !== 'undefined') {
@@ -36,7 +36,7 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     this.setDocumentMode();
   }
 
-  setDocumentMode() {
+  setDocumentMode(): void {
     if (this.arduinoPreferences['arduino.cloud.enabled']) {
       this.sketchbookTreesContainer.mode = 'multiple-document';
     } else {
@@ -44,7 +44,7 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     }
   }
 
-  protected onAfterAttach(msg: any) {
+  protected override onAfterAttach(msg: any): void {
     this.sketchbookTreesContainer.addWidget(this.widget);
     this.setDocumentMode();
     this.arduinoPreferences.onPreferenceChanged((event) => {

@@ -1,5 +1,9 @@
 import * as grpc from '@grpc/grpc-js';
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
@@ -16,7 +20,8 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Deferred, retry } from '@theia/core/lib/common/promise-util';
+import { Status as RpcStatus } from './cli-protocol/google/rpc/status_pb';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -48,9 +53,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     this._initialized = new Deferred<void>();
   }
 
-  protected async reconcileClient(): Promise<void> {
-    const port = await this.daemon.getPort();
-
+  protected override async reconcileClient(port: string): Promise<void> {
     if (port && port === this._port) {
       // No need to create a new gRPC client, but we have to update the indexes.
       if (this._client && !(this._client instanceof Error)) {
@@ -58,29 +61,47 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         this.onClientReadyEmitter.fire();
       }
     } else {
-      await super.reconcileClient();
+      await super.reconcileClient(port);
       this.onClientReadyEmitter.fire();
     }
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
-    this.daemon.ready.then(async () => {
+  protected override init(): void {
+    this.daemon.getPort().then(async (port) => {
       // First create the client and the instance synchronously
       // and notify client is ready.
       // TODO: Creation failure should probably be handled here
-      await this.reconcileClient().then(() => {
-        this._created.resolve();
-      });
+      await this.reconcileClient(port); // create instance
+      this._created.resolve();
 
-      // If client has been created correctly update indexes and initialize
-      // its instance by loading platforms and cores.
+      // Normal startup workflow:
+      // 1. create instance,
+      // 2. init instance,
+      // 3. update indexes asynchronously.
+
+      // First startup workflow:
+      // 1. create instance,
+      // 2. update indexes and wait,
+      // 3. init instance.
       if (this._client && !(this._client instanceof Error)) {
-        await this.updateIndexes(this._client)
-          .then(this.initInstance)
-          .then(() => {
+        try {
+          await this.initInstance(this._client); // init instance
+          this._initialized.resolve();
+          this.updateIndex(this._client); // Update the indexes asynchronously
+        } catch (error: unknown) {
+          if (
+            this.isPackageIndexMissingError(error) ||
+            this.isDiscoveryNotFoundError(error)
+          ) {
+            // If it's a first start, IDE2 must run index update before the init request.
+            await this.updateIndexes(this._client);
+            await this.initInstance(this._client);
             this._initialized.resolve();
-          });
+          } else {
+            throw error;
+          }
+        }
       }
     });
 
@@ -91,6 +112,41 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       this._client = undefined;
       this._port = undefined;
     });
+  }
+
+  private isPackageIndexMissingError(error: unknown): boolean {
+    const assert = (message: string) =>
+      message.includes('loading json index file');
+    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
+    return this.isRpcStatusError(error, assert);
+  }
+
+  private isDiscoveryNotFoundError(error: unknown): boolean {
+    const assert = (message: string) =>
+      message.includes('discovery') &&
+      (message.includes('not found') || message.includes('not installed'));
+    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L740
+    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L744
+    return this.isRpcStatusError(error, assert);
+  }
+
+  private isCancelError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      error.message.toLocaleLowerCase().includes('cancelled on client')
+    );
+  }
+
+  // Final error codes are not yet defined by the CLI. Hence, we do string matching in the message RPC status.
+  private isRpcStatusError(
+    error: unknown,
+    assert: (message: string) => boolean
+  ) {
+    if (error instanceof RpcStatus) {
+      const { message } = RpcStatus.toObject(false, error);
+      return assert(message.toLocaleLowerCase());
+    }
+    return false;
   }
 
   protected async createClient(
@@ -134,8 +190,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   }: CoreClientProvider.Client): Promise<void> {
     const initReq = new InitRequest();
     initReq.setInstance(instance);
-    await new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const stream = client.init(initReq);
+      const errorStatus: RpcStatus[] = [];
       stream.on('data', (res: InitResponse) => {
         const progress = res.getInitProgress();
         if (progress) {
@@ -151,55 +208,39 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
           }
         }
 
-        const err = res.getError();
-        if (err) {
-          console.error(err.getMessage());
+        const error = res.getError();
+        if (error) {
+          console.error(error.getMessage());
+          errorStatus.push(error);
+          // Cancel the init request. No need to wait until the end of the event. The init has already failed.
+          // Canceling the request will result in a cancel error, but we need to reject with the original error later.
+          stream.cancel();
         }
       });
-      stream.on('error', (err) => reject(err));
-      stream.on('end', resolve);
+      stream.on('error', (error) => {
+        // On any error during the init request, the request is canceled.
+        // On cancel, the IDE2 ignores the cancel error and rejects with the original one.
+        reject(
+          this.isCancelError(error) && errorStatus.length
+            ? errorStatus[0]
+            : error
+        );
+      });
+      stream.on('end', () =>
+        errorStatus.length ? reject(errorStatus) : resolve()
+      );
     });
   }
 
-  protected async updateIndexes({
-    client,
-    instance,
-  }: CoreClientProvider.Client): Promise<CoreClientProvider.Client> {
-    // in a separate promise, try and update the index
-    let indexUpdateSucceeded = true;
-    for (let i = 0; i < 10; i++) {
-      try {
-        await this.updateIndex({ client, instance });
-        indexUpdateSucceeded = true;
-        break;
-      } catch (e) {
-        console.error(`Error while updating index in attempt ${i}.`, e);
-      }
-    }
-    if (!indexUpdateSucceeded) {
-      console.error('Could not update the index. Please restart to try again.');
-    }
-
-    let libIndexUpdateSucceeded = true;
-    for (let i = 0; i < 10; i++) {
-      try {
-        await this.updateLibraryIndex({ client, instance });
-        libIndexUpdateSucceeded = true;
-        break;
-      } catch (e) {
-        console.error(`Error while updating library index in attempt ${i}.`, e);
-      }
-    }
-    if (!libIndexUpdateSucceeded) {
-      console.error(
-        'Could not update the library index. Please restart to try again.'
-      );
-    }
-
-    if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
-      this.notificationService.notifyIndexUpdated();
-    }
-    return { client, instance };
+  protected async updateIndexes(
+    client: CoreClientProvider.Client
+  ): Promise<CoreClientProvider.Client> {
+    await Promise.all([
+      retry(() => this.updateIndex(client), 50, 3),
+      retry(() => this.updateLibraryIndex(client), 50, 3),
+    ]);
+    this.notificationService.notifyIndexUpdated();
+    return client;
   }
 
   protected async updateLibraryIndex({
@@ -231,7 +272,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       }
     });
     await new Promise<void>((resolve, reject) => {
-      resp.on('error', reject);
+      resp.on('error', (error) => {
+        reject(error);
+      });
       resp.on('end', resolve);
     });
   }

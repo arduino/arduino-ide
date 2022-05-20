@@ -26,7 +26,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
 
   constructor(
     @inject(BoardsConfigDialogProps)
-    protected readonly props: BoardsConfigDialogProps
+    protected override readonly props: BoardsConfigDialogProps
   ) {
     super(props);
 
@@ -52,7 +52,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
   /**
    * Pass in an empty string if you want to reset the search term. Using `undefined` has no effect.
    */
-  async open(
+  override async open(
     query: string | undefined = undefined
   ): Promise<BoardsConfig.Config | undefined> {
     if (typeof query === 'string') {
@@ -95,7 +95,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     return head;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -110,23 +110,23 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message) {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     if (event.target instanceof HTMLTextAreaElement) {
       return false;
     }
   }
 
-  protected isValid(value: BoardsConfig.Config): DialogError {
+  protected override isValid(value: BoardsConfig.Config): DialogError {
     if (!value.selectedBoard) {
       if (value.selectedPort) {
         return nls.localize(

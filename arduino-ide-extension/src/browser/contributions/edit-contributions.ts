@@ -28,7 +28,7 @@ export class EditContributions extends Contribution {
   @inject(PreferenceService)
   protected readonly preferences: PreferenceService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(EditContributions.Commands.GO_TO_LINE, {
       execute: () => this.run('editor.action.gotoLine'),
     });
@@ -93,7 +93,7 @@ ${value}
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: CommonCommands.CUT.id,
       order: '0',
@@ -201,7 +201,7 @@ ${value}
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: EditContributions.Commands.COPY_FOR_FORUM.id,
       keybinding: 'CtrlCmd+Shift+C',

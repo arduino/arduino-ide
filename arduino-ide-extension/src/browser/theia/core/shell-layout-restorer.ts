@@ -23,7 +23,7 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
     }
   }
 
-  async restoreLayout(app: FrontendApplication): Promise<boolean> {
+  override async restoreLayout(app: FrontendApplication): Promise<boolean> {
     this.logger.info('>>> Restoring the layout state...');
     const serializedLayoutData = await this.storageService.getData<string>(
       this.storageKey

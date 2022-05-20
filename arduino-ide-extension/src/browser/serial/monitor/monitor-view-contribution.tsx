@@ -62,7 +62,7 @@ export class MonitorViewContribution
     });
   }
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
         commandId: this.toggleCommand.id,
@@ -95,7 +95,7 @@ export class MonitorViewContribution
     });
   }
 
-  registerCommands(commands: CommandRegistry): void {
+  override registerCommands(commands: CommandRegistry): void {
     commands.registerCommand(SerialMonitor.Commands.CLEAR_OUTPUT, {
       isEnabled: (widget) => widget instanceof MonitorWidget,
       isVisible: (widget) => widget instanceof MonitorWidget,

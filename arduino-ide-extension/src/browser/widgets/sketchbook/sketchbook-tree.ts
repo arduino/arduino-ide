@@ -18,7 +18,7 @@ export class SketchbookTree extends FileNavigatorTree {
   @inject(ArduinoPreferences)
   protected readonly arduinoPreferences: ArduinoPreferences;
 
-  async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
+  override async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
     const showAllFiles =
       this.arduinoPreferences['arduino.sketchbook.showAllFiles'];
 
