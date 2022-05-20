@@ -12,12 +12,12 @@ export class BrowserMainMenuFactory
 {
   protected menuBar: MenuBarWidget | undefined;
 
-  createMenuBar(): MenuBarWidget {
+  override createMenuBar(): MenuBarWidget {
     this.menuBar = super.createMenuBar();
     return this.menuBar;
   }
 
-  update() {
+  update(): void {
     if (this.menuBar) {
       this.menuBar.clearMenus();
       this.fillMenuBar(this.menuBar);

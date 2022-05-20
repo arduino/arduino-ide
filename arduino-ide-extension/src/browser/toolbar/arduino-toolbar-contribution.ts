@@ -19,7 +19,7 @@ export class ArduinoToolbarContainer extends Widget {
     this.toolbars = toolbars;
   }
 
-  onAfterAttach(msg: Message) {
+  override onAfterAttach(msg: Message) {
     for (const toolbar of this.toolbars) {
       Widget.attach(toolbar, this.node);
     }

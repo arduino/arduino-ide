@@ -8,7 +8,7 @@ import {
 
 @injectable()
 export abstract class AbstractDialog<T> extends TheiaAbstractDialog<T> {
-  constructor(@inject(DialogProps) protected readonly props: DialogProps) {
+  constructor(@inject(DialogProps) protected override readonly props: DialogProps) {
     super(props);
 
     this.closeCrossNode.classList.remove(...codiconArray('close'));

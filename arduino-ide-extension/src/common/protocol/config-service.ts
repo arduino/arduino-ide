@@ -9,8 +9,6 @@ export interface ConfigService {
   getCliConfigFileUri(): Promise<string>;
   getConfiguration(): Promise<Config>;
   setConfiguration(config: Config): Promise<void>;
-  isInDataDir(uri: string): Promise<boolean>;
-  isInSketchDir(uri: string): Promise<boolean>;
 }
 
 export interface Daemon {
@@ -115,10 +113,8 @@ export interface Config {
   readonly locale: string;
   readonly sketchDirUri: string;
   readonly dataDirUri: string;
-  readonly downloadsDirUri: string;
   readonly additionalUrls: AdditionalUrls;
   readonly network: Network;
-  readonly daemon: Daemon;
 }
 export namespace Config {
   export function sameAs(left: Config, right: Config): boolean {
@@ -135,7 +131,6 @@ export namespace Config {
     return (
       left.locale === right.locale &&
       left.dataDirUri === right.dataDirUri &&
-      left.downloadsDirUri === right.downloadsDirUri &&
       left.sketchDirUri === right.sketchDirUri &&
       Network.sameAs(left.network, right.network)
     );

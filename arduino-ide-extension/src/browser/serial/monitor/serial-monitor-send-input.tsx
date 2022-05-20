@@ -32,7 +32,7 @@ export class SerialMonitorSendInput extends React.Component<
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.props.serialConnection.isBESerialConnected().then((connected) => {
       this.setState({ connected });
     });
@@ -50,12 +50,12 @@ export class SerialMonitorSendInput extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
     this.toDisposeBeforeUnmount.dispose();
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <input
         ref={this.setRef}

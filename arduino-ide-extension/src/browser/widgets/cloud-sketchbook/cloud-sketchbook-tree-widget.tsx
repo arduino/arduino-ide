@@ -28,18 +28,18 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
   protected readonly cloudSketchbookTree: CloudSketchbookTree;
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     await super.init();
     this.addClass('tree-container'); // Adds `height: 100%` to the tree. Otherwise you cannot see it.
   }
 
-  protected renderTree(model: TreeModel): React.ReactNode {
+  protected override renderTree(model: TreeModel): React.ReactNode {
     if (this.shouldShowWelcomeView()) return this.renderViewWelcome();
     if (this.shouldShowEmptyView()) return this.renderEmptyView();
     return super.renderTree(model);
   }
 
-  protected renderEmptyView() {
+  protected renderEmptyView(): React.ReactNode {
     return (
       <div className="cloud-sketchbook-welcome center">
         <div className="center item">
@@ -71,7 +71,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     );
   }
 
-  protected shouldShowWelcomeView(): boolean {
+  protected override shouldShowWelcomeView(): boolean {
     if (!this.model || this.model instanceof CloudSketchbookTreeModel) {
       return !this.authenticationService.session;
     }
@@ -83,7 +83,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return CompositeTreeNode.is(node) && node.children.length === 0;
   }
 
-  protected createNodeClassNames(node: any, props: NodeProps): string[] {
+  protected override createNodeClassNames(node: any, props: NodeProps): string[] {
     const classNames = super.createNodeClassNames(node, props);
 
     if (
@@ -97,7 +97,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return classNames;
   }
 
-  protected renderInlineCommands(node: any): React.ReactNode {
+  protected override renderInlineCommands(node: any): React.ReactNode {
     if (CloudSketchbookTree.CloudSketchDirNode.is(node) && node.commands) {
       return Array.from(new Set(node.commands)).map((command) =>
         this.renderInlineCommand(command.id, node, {
@@ -108,7 +108,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return undefined;
   }
 
-  protected renderViewWelcome(): React.ReactNode {
+  protected override renderViewWelcome(): React.ReactNode {
     return (
       <div className="cloud-sketchbook-welcome center">
         <div className="center item">
@@ -151,7 +151,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     );
   }
 
-  protected handleDblClickEvent(
+  protected override handleDblClickEvent(
     node: TreeNode,
     event: React.MouseEvent<HTMLElement>
   ): void {

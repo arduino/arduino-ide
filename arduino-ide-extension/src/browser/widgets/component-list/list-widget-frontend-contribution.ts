@@ -11,7 +11,7 @@ export abstract class ListWidgetFrontendContribution<T extends ArduinoComponent>
 {
   async initializeLayout(): Promise<void> {}
 
-  registerMenus(): void {
+  override registerMenus(): void {
     // NOOP
   }
 }

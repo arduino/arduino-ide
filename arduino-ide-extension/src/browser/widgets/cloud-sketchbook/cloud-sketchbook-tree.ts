@@ -47,7 +47,7 @@ type FilesToSync = {
 @injectable()
 export class CloudSketchbookTree extends SketchbookTree {
   @inject(FileService)
-  protected readonly fileService: FileService;
+  protected override readonly fileService: FileService;
 
   @inject(LocalCacheFsProvider)
   protected readonly localCacheFsProvider: LocalCacheFsProvider;
@@ -56,7 +56,7 @@ export class CloudSketchbookTree extends SketchbookTree {
   protected readonly sketchCache: SketchCache;
 
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
+  protected override readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(PreferenceService)
   protected readonly preferenceService: PreferenceService;
@@ -315,7 +315,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     return { filesToWrite, filesToDelete };
   }
 
-  async refresh(
+  override async refresh(
     node?: CompositeTreeNode
   ): Promise<CompositeTreeNode | undefined> {
     if (node) {
@@ -375,7 +375,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     );
   }
 
-  async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
+  override async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
     return (await super.resolveChildren(parent)).sort((a, b) => {
       if (
         WorkspaceNode.is(parent) &&
@@ -403,12 +403,12 @@ export class CloudSketchbookTree extends SketchbookTree {
   }
 
   /**
-   * Retrieve fileStats for the given node, merging the local and remote childrens
+   * Retrieve fileStats for the given node, merging the local and remote children
    * Local children take precedence over remote ones
    * @param node
    * @returns
    */
-  protected async resolveFileStat(
+  protected override async resolveFileStat(
     node: FileStatNode
   ): Promise<FileStat | undefined> {
     if (
@@ -470,7 +470,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     }
   }
 
-  protected toNode(
+  protected override toNode(
     fileStat: any,
     parent: CompositeTreeNode
   ): FileNode | DirNode {
@@ -529,7 +529,7 @@ export class CloudSketchbookTree extends SketchbookTree {
    * @param node
    * @returns
    */
-  protected async augmentSketchNode(node: DirNode): Promise<void> {
+  protected override async augmentSketchNode(node: DirNode): Promise<void> {
     const sketch = this.sketchCache.getSketch(
       node.fileStat.resource.path.toString()
     );
@@ -582,7 +582,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     return node;
   }
 
-  protected async decorateNode(
+  protected override async decorateNode(
     node: TreeNode,
     showAllFiles: boolean
   ): Promise<TreeNode> {
@@ -592,7 +592,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     return node;
   }
 
-  protected async isSketchNode(node: DirNode): Promise<boolean> {
+  protected override async isSketchNode(node: DirNode): Promise<boolean> {
     if (DirNode.is(node)) {
       const sketch = this.sketchCache.getSketch(
         node.fileStat.resource.path.toString()

@@ -62,6 +62,12 @@ export class InitRequest extends jspb.Message {
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): InitRequest;
 
+    getProfile(): string;
+    setProfile(value: string): InitRequest;
+
+    getSketchPath(): string;
+    setSketchPath(value: string): InitRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): InitRequest.AsObject;
@@ -76,6 +82,8 @@ export class InitRequest extends jspb.Message {
 export namespace InitRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        profile: string,
+        sketchPath: string,
     }
 }
 
@@ -91,6 +99,12 @@ export class InitResponse extends jspb.Message {
     clearError(): void;
     getError(): google_rpc_status_pb.Status | undefined;
     setError(value?: google_rpc_status_pb.Status): InitResponse;
+
+
+    hasProfile(): boolean;
+    clearProfile(): void;
+    getProfile(): cc_arduino_cli_commands_v1_common_pb.Profile | undefined;
+    setProfile(value?: cc_arduino_cli_commands_v1_common_pb.Profile): InitResponse;
 
 
     getMessageCase(): InitResponse.MessageCase;
@@ -109,6 +123,7 @@ export namespace InitResponse {
     export type AsObject = {
         initProgress?: InitResponse.Progress.AsObject,
         error?: google_rpc_status_pb.Status.AsObject,
+        profile?: cc_arduino_cli_commands_v1_common_pb.Profile.AsObject,
     }
 
 
@@ -150,6 +165,8 @@ export namespace InitResponse {
     INIT_PROGRESS = 1,
 
     ERROR = 2,
+
+    PROFILE = 3,
 
     }
 

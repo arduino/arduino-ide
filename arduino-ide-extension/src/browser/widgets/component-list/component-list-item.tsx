@@ -43,7 +43,7 @@ export class ComponentListItem<
     this.setState({ selectedVersion: version });
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { item, itemRenderer } = this.props;
     return itemRenderer.renderItem(
       Object.assign(this.state, { item }),

@@ -21,21 +21,21 @@ import { nls } from '@theia/core/lib/common';
 @injectable()
 export class Close extends SketchContribution {
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   protected shell: ApplicationShell;
 
-  onStart(app: FrontendApplication): void {
+  override onStart(app: FrontendApplication): void {
     this.shell = app.shell;
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(Close.Commands.CLOSE, {
       execute: () => remote.getCurrentWindow().close()
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: Close.Commands.CLOSE.id,
       label: nls.localize('vscode/editor.contribution/close', 'Close'),
@@ -43,7 +43,7 @@ export class Close extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: Close.Commands.CLOSE.id,
       keybinding: 'CtrlCmd+W',

@@ -44,7 +44,7 @@ export interface SketchesService {
    * Sketches are created to the temp location by default and will be moved under `directories.user` on save.
    * This method resolves to `true` if the `sketch` is still in the temp location. Otherwise, `false`.
    */
-  isTemp(sketch: Sketch): Promise<boolean>;
+  isTemp(sketch: SketchRef): Promise<boolean>;
 
   /**
    * If `isTemp` is `true` for the `sketch`, you can call this method to move the sketch from the temp
@@ -81,9 +81,20 @@ export interface SketchesService {
   getIdeTempFolderUri(sketch: Sketch): Promise<string>;
 }
 
-export interface Sketch {
+export interface SketchRef {
   readonly name: string;
   readonly uri: string; // `LocationPath`
+}
+export namespace SketchRef {
+  export function fromUri(uriLike: string | URI): SketchRef {
+    const uri = typeof uriLike === 'string' ? new URI(uriLike) : uriLike;
+    return {
+      name: uri.path.base,
+      uri: typeof uriLike === 'string' ? uriLike : uriLike.toString(),
+    };
+  }
+}
+export interface Sketch extends SketchRef {
   readonly mainFileUri: string; // `MainFile`
   readonly otherSketchFileUris: string[]; // `OtherSketchFiles`
   readonly additionalFileUris: string[]; // `AdditionalFiles`
@@ -134,9 +145,16 @@ export namespace Sketch {
 export interface SketchContainer {
   readonly label: string;
   readonly children: SketchContainer[];
-  readonly sketches: Sketch[];
+  readonly sketches: SketchRef[];
 }
 export namespace SketchContainer {
+  export function create(label: string): SketchContainer {
+    return {
+      label,
+      children: [],
+      sketches: [],
+    };
+  }
   export function is(arg: any): arg is SketchContainer {
     return (
       !!arg &&
@@ -174,8 +192,8 @@ export namespace SketchContainer {
     return container;
   }
 
-  export function toArray(container: SketchContainer): Sketch[] {
-    const visit = (parent: SketchContainer, toPushSketch: Sketch[]) => {
+  export function toArray(container: SketchContainer): SketchRef[] {
+    const visit = (parent: SketchContainer, toPushSketch: SketchRef[]) => {
       toPushSketch.push(...parent.sketches);
       parent.children.map((child) => visit(child, toPushSketch));
     };

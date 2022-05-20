@@ -10,19 +10,20 @@ import {
 } from './contribution';
 import { FileDialogService } from '@theia/filesystem/lib/browser';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class AddFile extends SketchContribution {
   @inject(FileDialogService)
   protected readonly fileDialogService: FileDialogService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddFile.Commands.ADD_FILE, {
       execute: () => this.addFile(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: AddFile.Commands.ADD_FILE.id,
       label: nls.localize('arduino/contributions/addFile', 'Add File') + '...',
@@ -32,7 +33,7 @@ export class AddFile extends SketchContribution {
 
   protected async addFile(): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const toAddUri = await this.fileDialogService.showOpenDialog({

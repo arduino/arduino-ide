@@ -75,21 +75,21 @@ export class MonitorWidget extends ReactWidget {
     this.update();
   }
 
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     super.onAfterAttach(msg);
     this.serialConnection.openWSToBE();
   }
 
-  onCloseRequest(msg: Message): void {
+  protected override onCloseRequest(msg: Message): void {
     this.closing = true;
     super.onCloseRequest(msg);
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     // TODO: `this.isAttached`
     // See: https://github.com/eclipse-theia/theia/issues/6704#issuecomment-562574713
     if (!this.closing && this.isAttached) {
@@ -97,13 +97,13 @@ export class MonitorWidget extends ReactWidget {
     }
   }
 
-  protected onResize(msg: Widget.ResizeMessage): void {
+  protected override onResize(msg: Widget.ResizeMessage): void {
     super.onResize(msg);
     this.widgetHeight = msg.height;
     this.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     (this.focusNode || this.node).focus();
   }

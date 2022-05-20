@@ -33,7 +33,7 @@ export class SketchbookWidget extends BaseWidget {
     this.sketchbookTreesContainer.addWidget(this.localSketchbookTreeWidget);
   }
 
-  protected onAfterAttach(message: Message): void {
+  protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     Widget.attach(this.sketchbookTreesContainer, this.node);
     this.toDisposeOnDetach.push(
@@ -45,7 +45,7 @@ export class SketchbookWidget extends BaseWidget {
     return this.localSketchbookTreeWidget;
   }
 
-  protected onActivateRequest(message: Message): void {
+  protected override onActivateRequest(message: Message): void {
     super.onActivateRequest(message);
 
     // TODO: focus the active sketchbook
@@ -56,7 +56,7 @@ export class SketchbookWidget extends BaseWidget {
     this.node.focus();
   }
 
-  protected onResize(message: Widget.ResizeMessage): void {
+  protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     MessageLoop.sendMessage(
       this.sketchbookTreesContainer,
@@ -67,7 +67,7 @@ export class SketchbookWidget extends BaseWidget {
     }
   }
 
-  protected onAfterShow(msg: Message): void {
+  protected override onAfterShow(msg: Message): void {
     super.onAfterShow(msg);
     this.onResize(Widget.ResizeMessage.UnknownSize);
   }

@@ -7,7 +7,7 @@ export class SearchBar extends React.Component<SearchBar.Props> {
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <input
         ref={this.setRef}

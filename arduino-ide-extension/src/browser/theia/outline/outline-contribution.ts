@@ -12,7 +12,7 @@ export class OutlineViewContribution extends TheiaOutlineViewContribution {
     };
   }
 
-  async initializeLayout(app: FrontendApplication): Promise<void> {
+  override async initializeLayout(app: FrontendApplication): Promise<void> {
     // NOOP
   }
 }

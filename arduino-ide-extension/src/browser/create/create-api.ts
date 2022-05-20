@@ -117,11 +117,11 @@ export class CreateApi {
           headers,
         })
       ).sketches;
-      if (partialSketches.length != 0) {
+      if (partialSketches.length !== 0) {
         result.sketches = result.sketches.concat(partialSketches);
       }
       currentOffset = currentOffset + limit;
-    } while (partialSketches.length != 0);
+    } while (partialSketches.length !== 0);
 
     result.sketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
     return result.sketches;

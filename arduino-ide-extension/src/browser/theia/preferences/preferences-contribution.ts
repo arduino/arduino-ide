@@ -6,7 +6,7 @@ import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/
 
 @injectable()
 export class PreferencesContribution extends TheiaPreferencesContribution {
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     // The settings group: preferences, CLI config is not part of the `File` menu on macOS.
     // On Windows and Linux, we rebind it to `Preferences...`. It is safe to remove here.
@@ -16,7 +16,7 @@ export class PreferencesContribution extends TheiaPreferencesContribution {
     );
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.unregisterKeybinding(CommonCommands.OPEN_PREFERENCES.id);
   }
 }

@@ -22,13 +22,13 @@ export class About extends Contribution {
   @inject(ConfigService)
   protected readonly configService: ConfigService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(About.Commands.ABOUT_APP, {
       execute: () => this.showAbout(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.HELP__ABOUT_GROUP, {
       commandId: About.Commands.ABOUT_APP.id,
       label: nls.localize(

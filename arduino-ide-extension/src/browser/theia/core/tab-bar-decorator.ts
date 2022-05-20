@@ -27,7 +27,7 @@ export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
       );
   }
 
-  getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
+  override getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
     if (title.owner instanceof EditorWidget) {
       const editor = title.owner.editor;
       if (this.dataDirUri && this.dataDirUri.isEqualOrParent(editor.uri)) {

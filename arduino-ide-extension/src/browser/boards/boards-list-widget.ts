@@ -30,7 +30,7 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
   }
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.toDispose.pushAll([
       this.notificationCenter.onPlatformInstalled(() =>
@@ -42,7 +42,7 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
     ]);
   }
 
-  protected async install({
+  protected override async install({
     item,
     progressId,
     version,
@@ -63,7 +63,7 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
     );
   }
 
-  protected async uninstall({
+  protected override async uninstall({
     item,
     progressId,
   }: {
