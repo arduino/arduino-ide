@@ -21,7 +21,7 @@ import {
   MenuModelRegistry,
 } from './contribution';
 import { NotificationCenter } from '../notification-center';
-import { Board, Sketch, SketchContainer } from '../../common/protocol';
+import { Board, SketchRef, SketchContainer } from '../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
@@ -82,7 +82,7 @@ export abstract class Examples extends SketchContribution {
   registerRecursively(
     sketchContainerOrPlaceholder:
       | SketchContainer
-      | (Sketch | SketchContainer)[]
+      | (SketchRef | SketchContainer)[]
       | string,
     menuPath: MenuPath,
     pushToDispose: DisposableCollection = new DisposableCollection(),
@@ -100,7 +100,7 @@ export abstract class Examples extends SketchContribution {
         )
       );
     } else {
-      const sketches: Sketch[] = [];
+      const sketches: SketchRef[] = [];
       const children: SketchContainer[] = [];
       let submenuPath = menuPath;
 

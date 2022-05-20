@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { join, basename } from 'path';
 import * as fs from 'fs';
 import { promisify } from 'util';
@@ -13,6 +17,8 @@ import {
   LibraryService,
 } from '../common/protocol';
 import { ConfigServiceImpl } from './config-service-impl';
+import { duration } from '../common/decorators';
+const eq = require('deep-equals');
 
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
@@ -52,6 +58,26 @@ export class ExamplesServiceImpl implements ExamplesService {
     current: SketchContainer[];
     any: SketchContainer[];
   }> {
+    const [old, _new] = await Promise.all([
+      this.installedOld({ fqbn }),
+      this.installedNew({ fqbn }),
+    ]);
+    // Compare new and old
+    if (eq(old, _new)) {
+      console.log('---- happiness. the packages are the same');
+    } else {
+      console.error('---- yayy :( the packages are not the same');
+    }
+
+    return old;
+  }
+
+  @duration()
+  async installedOld({ fqbn }: { fqbn?: string }): Promise<{
+    user: SketchContainer[];
+    current: SketchContainer[];
+    any: SketchContainer[];
+  }> {
     const user: SketchContainer[] = [];
     const current: SketchContainer[] = [];
     const any: SketchContainer[] = [];
@@ -59,7 +85,7 @@ export class ExamplesServiceImpl implements ExamplesService {
       fqbn,
     });
     for (const pkg of packages) {
-      const container = await this.tryGroupExamples(pkg);
+      const container = await this.tryGroupExamplesOld(pkg);
       const { location } = pkg;
       if (location === LibraryLocation.USER) {
         user.push(container);
@@ -80,7 +106,97 @@ export class ExamplesServiceImpl implements ExamplesService {
    * folder hierarchy. This method tries to workaround it by falling back to the `installDirUri` and manually creating the
    * location of the examples. Otherwise it creates the example container from the direct examples FS paths.
    */
-  protected async tryGroupExamples({
+  protected async tryGroupExamplesOld({
+    label,
+    exampleUris,
+    installDirUri,
+  }: LibraryPackage): Promise<SketchContainer> {
+    const paths = exampleUris.map((uri) => FileUri.fsPath(uri));
+    if (installDirUri) {
+      for (const example of [
+        'example',
+        'Example',
+        'EXAMPLE',
+        'examples',
+        'Examples',
+        'EXAMPLES',
+      ]) {
+        const examplesPath = join(FileUri.fsPath(installDirUri), example);
+        const exists = await promisify(fs.exists)(examplesPath);
+        const isDir =
+          exists && (await promisify(fs.lstat)(examplesPath)).isDirectory();
+        if (isDir) {
+          const fileNames = await promisify(fs.readdir)(examplesPath);
+          const children: SketchContainer[] = [];
+          const sketches: Sketch[] = [];
+          for (const fileName of fileNames) {
+            const subPath = join(examplesPath, fileName);
+            const subIsDir = (await promisify(fs.lstat)(subPath)).isDirectory();
+            if (subIsDir) {
+              const sketch = await this.tryLoadSketch(subPath);
+              if (!sketch) {
+                const container = await this.load(subPath);
+                if (container.children.length || container.sketches.length) {
+                  children.push(container);
+                }
+              } else {
+                sketches.push(sketch);
+              }
+            }
+          }
+          return {
+            label,
+            children,
+            sketches,
+          };
+        }
+      }
+    }
+    const sketches = await Promise.all(
+      paths.map((path) => this.tryLoadSketch(path))
+    );
+    return {
+      label,
+      children: [],
+      sketches: sketches.filter(notEmpty),
+    };
+  }
+
+  @duration()
+  async installedNew({ fqbn }: { fqbn?: string }): Promise<{
+    user: SketchContainer[];
+    current: SketchContainer[];
+    any: SketchContainer[];
+  }> {
+    const user: SketchContainer[] = [];
+    const current: SketchContainer[] = [];
+    const any: SketchContainer[] = [];
+    const packages: LibraryPackage[] = await this.libraryService.list({
+      fqbn,
+    });
+    for (const pkg of packages) {
+      const container = await this.tryGroupExamplesNew(pkg);
+      const { location } = pkg;
+      if (location === LibraryLocation.USER) {
+        user.push(container);
+      } else if (
+        location === LibraryLocation.PLATFORM_BUILTIN ||
+        LibraryLocation.REFERENCED_PLATFORM_BUILTIN
+      ) {
+        current.push(container);
+      } else {
+        any.push(container);
+      }
+    }
+    return { user, current, any };
+  }
+
+  /**
+   * The CLI provides direct FS paths to the examples so that menus and menu groups cannot be built for the UI by traversing the
+   * folder hierarchy. This method tries to workaround it by falling back to the `installDirUri` and manually creating the
+   * location of the examples. Otherwise it creates the example container from the direct examples FS paths.
+   */
+  protected async tryGroupExamplesNew({
     label,
     exampleUris,
     installDirUri,

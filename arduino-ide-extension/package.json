@@ -64,6 +64,7 @@
     "btoa": "^1.2.1",
     "dateformat": "^3.0.3",
     "deepmerge": "2.0.1",
+    "deep-equals": "^0.0.2",
     "electron-updater": "^4.6.5",
     "fast-safe-stringify": "^2.1.1",
     "glob": "^7.1.6",

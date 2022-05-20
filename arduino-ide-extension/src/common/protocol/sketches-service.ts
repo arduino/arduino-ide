@@ -81,9 +81,11 @@ export interface SketchesService {
   getIdeTempFolderUri(sketch: Sketch): Promise<string>;
 }
 
-export interface Sketch {
+export interface SketchRef {
   readonly name: string;
   readonly uri: string; // `LocationPath`
+}
+export interface Sketch extends SketchRef {
   readonly mainFileUri: string; // `MainFile`
   readonly otherSketchFileUris: string[]; // `OtherSketchFiles`
   readonly additionalFileUris: string[]; // `AdditionalFiles`
@@ -134,7 +136,7 @@ export namespace Sketch {
 export interface SketchContainer {
   readonly label: string;
   readonly children: SketchContainer[];
-  readonly sketches: Sketch[];
+  readonly sketches: SketchRef[];
 }
 export namespace SketchContainer {
   export function is(arg: any): arg is SketchContainer {
@@ -174,8 +176,8 @@ export namespace SketchContainer {
     return container;
   }
 
-  export function toArray(container: SketchContainer): Sketch[] {
-    const visit = (parent: SketchContainer, toPushSketch: Sketch[]) => {
+  export function toArray(container: SketchContainer): SketchRef[] {
+    const visit = (parent: SketchContainer, toPushSketch: SketchRef[]) => {
       toPushSketch.push(...parent.sketches);
       parent.children.map((child) => visit(child, toPushSketch));
     };

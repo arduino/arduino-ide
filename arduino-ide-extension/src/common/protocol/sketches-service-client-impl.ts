@@ -10,7 +10,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { Sketch, SketchesService } from '../../common/protocol';
 import { ConfigService } from './config-service';
-import { SketchContainer } from './sketches-service';
+import { SketchContainer, SketchRef } from './sketches-service';
 import {
   ARDUINO_CLOUD_FOLDER,
   REMOTE_SKETCHBOOK_FOLDER,
@@ -40,10 +40,10 @@ export class SketchesServiceClientImpl
   protected readonly configService: ConfigService;
 
   protected toDispose = new DisposableCollection();
-  protected sketches = new Map<string, Sketch>();
+  protected sketches = new Map<string, SketchRef>();
   protected sketchbookDidChangeEmitter = new Emitter<{
-    created: Sketch[];
-    removed: Sketch[];
+    created: SketchRef[];
+    removed: SketchRef[];
   }>();
   readonly onSketchbookDidChange = this.sketchbookDidChangeEmitter.event;
 
@@ -145,10 +145,10 @@ export class SketchesServiceClientImpl
   private fireSoonHandle?: number;
   private bufferedSketchbookEvents: {
     type: 'created' | 'removed';
-    sketch: Sketch;
+    sketch: SketchRef;
   }[] = [];
 
-  private fireSoon(sketch: Sketch, type: 'created' | 'removed'): void {
+  private fireSoon(sketch: SketchRef, type: 'created' | 'removed'): void {
     this.bufferedSketchbookEvents.push({ type, sketch });
 
     if (typeof this.fireSoonHandle === 'number') {
@@ -156,7 +156,7 @@ export class SketchesServiceClientImpl
     }
 
     this.fireSoonHandle = window.setTimeout(() => {
-      const event: { created: Sketch[]; removed: Sketch[] } = {
+      const event: { created: SketchRef[]; removed: SketchRef[] } = {
         created: [],
         removed: [],
       };
