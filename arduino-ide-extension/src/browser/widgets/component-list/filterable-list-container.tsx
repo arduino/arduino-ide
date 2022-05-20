@@ -28,19 +28,19 @@ export class FilterableListContainer<
     };
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.search = debounce(this.search, 500);
     this.handleFilterTextChange('');
     this.props.filterTextChangeEvent(this.handleFilterTextChange.bind(this));
   }
 
-  componentDidUpdate(): void {
+  override componentDidUpdate(): void {
     // See: arduino/arduino-pro-ide#101
     // Resets the top of the perfect scroll-bar's thumb.
     this.props.container.updateScrollBar();
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <div className={'filterable-list-container'}>
         {this.renderSearchFilter()}

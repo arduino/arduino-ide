@@ -14,7 +14,7 @@ import {
 
 @injectable()
 export class NewSketch extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(NewSketch.Commands.NEW_SKETCH, {
       execute: () => this.newSketch(),
     });
@@ -25,7 +25,7 @@ export class NewSketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: NewSketch.Commands.NEW_SKETCH.id,
       label: nls.localize('arduino/sketch/new', 'New'),
@@ -33,14 +33,14 @@ export class NewSketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: NewSketch.Commands.NEW_SKETCH.id,
       keybinding: 'CtrlCmd+N',
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
       command: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,

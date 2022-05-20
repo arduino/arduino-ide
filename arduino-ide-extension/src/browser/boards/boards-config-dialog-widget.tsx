@@ -60,7 +60,7 @@ export class BoardsConfigDialogWidget extends ReactWidget {
     );
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     if (this.focusNode instanceof HTMLInputElement) {
       this.focusNode.select();

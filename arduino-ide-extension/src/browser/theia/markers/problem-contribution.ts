@@ -6,15 +6,15 @@ import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/
 
 @injectable()
 export class ProblemContribution extends TheiaProblemContribution {
-  async initializeLayout(app: FrontendApplication): Promise<void> {
+  override async initializeLayout(app: FrontendApplication): Promise<void> {
     // NOOP
   }
 
-  protected setStatusBarElement(problemStat: ProblemStat): void {
+  protected override setStatusBarElement(problemStat: ProblemStat): void {
     // NOOP
   }
 
-  registerKeybindings(keybindings: KeybindingRegistry): void {
+  override registerKeybindings(keybindings: KeybindingRegistry): void {
     if (this.toggleCommand) {
       keybindings.registerKeybinding({
         command: this.toggleCommand.id,

@@ -56,7 +56,7 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
       .finally(() => this.busyCallback(false));
   }
 
-  onCloseRequest(msg: Message): void {
+  protected override onCloseRequest(msg: Message): void {
     super.onCloseRequest(msg);
     this.isOpen = new Object();
   }
@@ -88,7 +88,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
 
   constructor(
     @inject(UploadFirmwareDialogProps)
-    protected readonly props: UploadFirmwareDialogProps
+    protected override readonly props: UploadFirmwareDialogProps
   ) {
     super({ title: UploadFirmware.Commands.OPEN.label || '' });
     this.contentNode.classList.add('firmware-uploader-dialog');
@@ -99,7 +99,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     return;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -109,21 +109,21 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     return false;
   }
 
-  close(): void {
+  override close(): void {
     if (this.busy) {
       return;
     }

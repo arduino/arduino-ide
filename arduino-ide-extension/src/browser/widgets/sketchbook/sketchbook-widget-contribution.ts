@@ -95,7 +95,7 @@ export class SketchbookWidgetContribution
     return this.openView() as Promise<any>;
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
 
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
@@ -186,7 +186,7 @@ export class SketchbookWidgetContribution
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
 
     // unregister main menu action

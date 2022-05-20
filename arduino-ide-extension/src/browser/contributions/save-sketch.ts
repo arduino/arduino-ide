@@ -15,7 +15,7 @@ import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class SaveSketch extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveSketch.Commands.SAVE_SKETCH, {
       execute: () => this.saveSketch(),
     });
@@ -27,7 +27,7 @@ export class SaveSketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveSketch.Commands.SAVE_SKETCH.id,
       label: nls.localize('vscode/fileCommands/save', 'Save'),
@@ -35,14 +35,14 @@ export class SaveSketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: SaveSketch.Commands.SAVE_SKETCH.id,
       keybinding: 'CtrlCmd+S',
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
       command: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,

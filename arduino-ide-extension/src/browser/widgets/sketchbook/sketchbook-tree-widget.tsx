@@ -33,10 +33,10 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   protected currentSketchUri = '';
 
   constructor(
-    @inject(TreeProps) readonly props: TreeProps,
-    @inject(SketchbookTreeModel) readonly model: SketchbookTreeModel,
+    @inject(TreeProps) override readonly props: TreeProps,
+    @inject(SketchbookTreeModel) override readonly model: SketchbookTreeModel,
     @inject(ContextMenuRenderer)
-    readonly contextMenuRenderer: ContextMenuRenderer,
+    override readonly contextMenuRenderer: ContextMenuRenderer,
     @inject(EditorManager) readonly editorManager: EditorManager
   ) {
     super(props, model, contextMenuRenderer);
@@ -50,14 +50,14 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     super.init();
     // cache the current open sketch uri
     const currentSketch = await this.sketchServiceClient.currentSketch();
     this.currentSketchUri = (currentSketch && currentSketch.uri) || '';
   }
 
-  protected createNodeClassNames(node: TreeNode, props: NodeProps): string[] {
+  protected override createNodeClassNames(node: TreeNode, props: NodeProps): string[] {
     const classNames = super.createNodeClassNames(node, props);
 
     if (
@@ -70,7 +70,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return classNames;
   }
 
-  protected renderIcon(node: TreeNode, props: NodeProps): React.ReactNode {
+  protected override renderIcon(node: TreeNode, props: NodeProps): React.ReactNode {
     if (SketchbookTree.SketchDirNode.is(node) || Sketch.isSketchFile(node.id)) {
       return <div className="sketch-folder-icon file-icon"></div>;
     }
@@ -81,7 +81,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return undefined;
   }
 
-  protected renderTailDecorations(
+  protected override renderTailDecorations(
     node: TreeNode,
     props: NodeProps
   ): React.ReactNode {
@@ -99,7 +99,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     this.update();
   }
 
-  protected createNodeAttributes(
+  protected override createNodeAttributes(
     node: TreeNode,
     props: NodeProps
   ): React.Attributes & React.HTMLAttributes<HTMLElement> {
@@ -160,7 +160,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return undefined;
   }
 
-  protected handleClickEvent(
+  protected override handleClickEvent(
     node: TreeNode | undefined,
     event: React.MouseEvent<HTMLElement>
   ): void {
@@ -186,7 +186,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     }
   }
 
-  protected doToggle(event: React.MouseEvent<HTMLElement>): void {
+  protected override doToggle(event: React.MouseEvent<HTMLElement>): void {
     const nodeId = event.currentTarget.getAttribute('data-node-id');
     if (nodeId) {
       const node = this.model.getNode(nodeId);

@@ -47,7 +47,7 @@ export abstract class Item<T> extends React.Component<{
   missing?: boolean;
   details?: string;
 }> {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { selected, label, missing, details } = this.props;
     const classNames = ['item'];
     if (selected) {
@@ -99,7 +99,7 @@ export class BoardsConfig extends React.Component<
     };
   }
 
-  componentDidMount() {
+  override componentDidMount() {
     this.updateBoards();
     this.updatePorts(
       this.props.boardsServiceProvider.availableBoards
@@ -141,11 +141,11 @@ export class BoardsConfig extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
-  protected fireConfigChanged() {
+  protected fireConfigChanged(): void {
     const { selectedBoard, selectedPort } = this.state;
     this.props.onConfigChange({ selectedBoard, selectedPort });
   }
@@ -250,7 +250,7 @@ export class BoardsConfig extends React.Component<
     this.props.onFocusNodeSet(element || undefined);
   };
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <div className="body">
         {this.renderContainer('boards', this.renderBoards.bind(this))}

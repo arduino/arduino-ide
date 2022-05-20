@@ -8,7 +8,7 @@ import { CommandRegistry } from '@theia/core/lib/common/command';
 
 @injectable()
 export class CommonFrontendContribution extends TheiaCommonFrontendContribution {
-  registerCommands(commandRegistry: CommandRegistry): void {
+  override registerCommands(commandRegistry: CommandRegistry): void {
     super.registerCommands(commandRegistry);
 
     for (const command of [
@@ -26,7 +26,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
     }
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     for (const command of [
       CommonCommands.SAVE,

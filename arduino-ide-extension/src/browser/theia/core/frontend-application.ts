@@ -20,7 +20,7 @@ export class FrontendApplication extends TheiaFrontendApplication {
   @inject(SketchesService)
   protected readonly sketchesService: SketchesService;
 
-  protected async initializeLayout(): Promise<void> {
+  protected override async initializeLayout(): Promise<void> {
     await super.initializeLayout();
     const roots = await this.workspaceService.roots;
     for (const root of roots) {
@@ -35,7 +35,9 @@ export class FrontendApplication extends TheiaFrontendApplication {
     }
   }
 
-  protected getStartupIndicator(host: HTMLElement): HTMLElement | undefined {
+  protected override getStartupIndicator(
+    host: HTMLElement
+  ): HTMLElement | undefined {
     let startupElement = this.doGetStartupIndicator(host, 'old-theia-preload'); // https://github.com/eclipse-theia/theia/pull/10761#issuecomment-1131476318
     if (!startupElement) {
       startupElement = this.doGetStartupIndicator(host, 'theia-preload'); // We show the new Theia spinner in dev mode.

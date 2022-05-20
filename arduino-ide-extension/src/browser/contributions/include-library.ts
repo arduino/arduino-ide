@@ -30,7 +30,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly mainMenuManager: MainMenuManager;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
@@ -44,7 +44,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
   protected readonly toDispose = new DisposableCollection();
 
-  onStart(): void {
+  override onStart(): void {
     this.updateMenuActions();
     this.boardsServiceClient.onBoardsConfigChanged(() =>
       this.updateMenuActions()
@@ -55,7 +55,7 @@ export class IncludeLibrary extends SketchContribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     // `Include Library` submenu
     const includeLibMenuPath = [
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
@@ -78,7 +78,7 @@ export class IncludeLibrary extends SketchContribution {
     });
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY, {
       execute: async (arg) => {
         if (LibraryPackage.is(arg)) {

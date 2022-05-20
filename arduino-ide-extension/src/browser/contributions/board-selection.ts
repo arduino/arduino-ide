@@ -47,7 +47,7 @@ export class BoardSelection extends SketchContribution {
 
   protected readonly toDisposeBeforeMenuRebuild = new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BoardSelection.Commands.GET_BOARD_INFO, {
       execute: async () => {
         const { selectedBoard, selectedPort } =
@@ -100,7 +100,7 @@ PID: ${PID}`;
     });
   }
 
-  onStart(): void {
+  override onStart(): void {
     this.updateMenus();
     this.notificationCenter.onPlatformInstalled(this.updateMenus.bind(this));
     this.notificationCenter.onPlatformUninstalled(this.updateMenus.bind(this));

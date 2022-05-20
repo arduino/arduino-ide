@@ -16,13 +16,13 @@ export class AddFile extends SketchContribution {
   @inject(FileDialogService)
   protected readonly fileDialogService: FileDialogService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddFile.Commands.ADD_FILE, {
       execute: () => this.addFile(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: AddFile.Commands.ADD_FILE.id,
       label: nls.localize('arduino/contributions/addFile', 'Add File') + '...',

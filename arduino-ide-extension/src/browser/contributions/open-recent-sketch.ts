@@ -35,7 +35,7 @@ export class OpenRecentSketch extends SketchContribution {
 
   protected toDisposeBeforeRegister = new Map<string, DisposableCollection>();
 
-  onStart(): void {
+  override onStart(): void {
     const refreshMenu = (sketches: Sketch[]) => {
       this.register(sketches);
       this.mainMenuManager.update();
@@ -46,7 +46,7 @@ export class OpenRecentSketch extends SketchContribution {
     this.sketchService.recentlyOpenedSketches().then(refreshMenu);
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerSubmenu(
       ArduinoMenus.FILE__OPEN_RECENT_SUBMENU,
       nls.localize('arduino/sketch/openRecent', 'Open Recent'),

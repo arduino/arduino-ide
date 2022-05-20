@@ -45,7 +45,7 @@ export class PlotterFrontendContribution extends Contribution {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
 
-  onStart(app: FrontendApplication): MaybePromise<void> {
+  override onStart(app: FrontendApplication): MaybePromise<void> {
     this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
 
     ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
@@ -56,13 +56,13 @@ export class PlotterFrontendContribution extends Contribution {
     return super.onStart(app);
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
       execute: this.connect.bind(this),
     });
   }
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: SerialPlotterContribution.Commands.OPEN.id,
       label: SerialPlotterContribution.Commands.OPEN.label,

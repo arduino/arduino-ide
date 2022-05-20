@@ -56,7 +56,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
 
   constructor(
     @inject(SettingsDialogProps)
-    protected readonly props: SettingsDialogProps
+    protected override readonly props: SettingsDialogProps
   ) {
     super(props);
     this.contentNode.classList.add('arduino-settings-dialog');
@@ -73,7 +73,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     );
   }
 
-  protected async isValid(settings: Promise<Settings>): Promise<DialogError> {
+  protected override async isValid(settings: Promise<Settings>): Promise<DialogError> {
     const result = await this.settingsService.validate(settings);
     if (typeof result === 'string') {
       return result;
@@ -85,7 +85,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     return this.settingsService.settings();
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -97,12 +97,12 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
 
     // calling settingsService.reset() in order to reload the settings from the preferenceService
@@ -172,17 +172,17 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
     return AdditionalUrls.parse(this.textArea.value, 'newline');
   }
 
-  protected onAfterAttach(message: Message): void {
+  protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     this.addUpdateListener(this.textArea, 'input');
   }
 
-  protected onActivateRequest(message: Message): void {
+  protected override onActivateRequest(message: Message): void {
     super.onActivateRequest(message);
     this.textArea.focus();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     if (event.target instanceof HTMLInputElement) {
       return super.handleEnter(event);
     }

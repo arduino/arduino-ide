@@ -66,7 +66,7 @@ export class Debug extends SketchContribution {
     onDidChange: this.onDisabledMessageDidChange as Event<void>,
   };
 
-  onStart(): void {
+  override onStart(): void {
     this.onDisabledMessageDidChange(
       () =>
         (this.debugToolbarItem.tooltip = `${
@@ -127,7 +127,7 @@ export class Debug extends SketchContribution {
     refreshState();
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(Debug.Commands.START_DEBUGGING, {
       execute: () => this.startDebug(),
       isVisible: (widget) =>
@@ -136,7 +136,7 @@ export class Debug extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem(this.debugToolbarItem);
   }
 

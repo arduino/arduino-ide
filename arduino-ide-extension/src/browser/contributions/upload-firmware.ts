@@ -16,7 +16,7 @@ export class UploadFirmware extends Contribution {
 
   protected dialogOpened = false;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadFirmware.Commands.OPEN, {
       execute: async () => {
         try {
@@ -30,7 +30,7 @@ export class UploadFirmware extends Contribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__FIRMWARE_UPLOADER_GROUP, {
       commandId: UploadFirmware.Commands.OPEN.id,
       label: UploadFirmware.Commands.OPEN.label,

@@ -54,7 +54,7 @@ export abstract class Examples extends SketchContribution {
     // NOOP
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     try {
       // This is a hack the ensures the desired menu ordering! We cannot use https://github.com/eclipse-theia/theia/pull/8377 due to ATL-222.
       const index = ArduinoMenus.FILE__EXAMPLES_SUBMENU.length - 1;
@@ -161,7 +161,7 @@ export abstract class Examples extends SketchContribution {
 
 @injectable()
 export class BuiltInExamples extends Examples {
-  onStart(): void {
+  override onStart(): void {
     this.register(); // no `await`
   }
 
@@ -201,13 +201,13 @@ export class LibraryExamples extends Examples {
 
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
-  onStart(): void {
+  override onStart(): void {
     this.register(); // no `await`
     this.notificationCenter.onLibraryInstalled(() => this.register());
     this.notificationCenter.onLibraryUninstalled(() => this.register());
   }
 
-  protected handleBoardChanged(board: Board | undefined): void {
+  protected override handleBoardChanged(board: Board | undefined): void {
     this.register(board);
   }
 

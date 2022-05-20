@@ -149,7 +149,7 @@ export class CloudSketchbookContribution extends Contribution {
 
   protected readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     menus.registerMenuAction(ArduinoMenus.FILE__ADVANCED_SUBMENU, {
       commandId: CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK.id,
       label: CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK.label,
@@ -157,7 +157,7 @@ export class CloudSketchbookContribution extends Contribution {
     });
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK, {
       execute: () => {
         this.preferenceService.set(

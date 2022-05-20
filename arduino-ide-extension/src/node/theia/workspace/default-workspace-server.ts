@@ -11,7 +11,7 @@ export class DefaultWorkspaceServer extends TheiaDefaultWorkspaceServer {
   @inject(ILogger)
   protected readonly logger: ILogger;
 
-  protected async getWorkspaceURIFromCli(): Promise<string | undefined> {
+  protected override async getWorkspaceURIFromCli(): Promise<string | undefined> {
     try {
       const config = await this.configService.getConfiguration();
       return config.sketchDirUri;

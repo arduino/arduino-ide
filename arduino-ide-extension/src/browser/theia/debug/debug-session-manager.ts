@@ -7,7 +7,7 @@ import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class DebugSessionManager extends TheiaDebugSessionManager {
-  async start(options: DebugSessionOptions): Promise<DebugSession | undefined> {
+  override async start(options: DebugSessionOptions): Promise<DebugSession | undefined> {
     return this.progressService.withProgress(
       nls.localize('theia/debug/start', 'Start...'),
       'debug',
@@ -76,7 +76,7 @@ export class DebugSessionManager extends TheiaDebugSessionManager {
       }
     );
   }
-  async terminateSession(session?: DebugSession): Promise<void> {
+  override async terminateSession(session?: DebugSession): Promise<void> {
     if (!session) {
         this.updateCurrentSession(this._currentSession);
         session = this._currentSession;

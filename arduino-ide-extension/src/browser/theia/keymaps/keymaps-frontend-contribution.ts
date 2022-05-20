@@ -9,7 +9,7 @@ import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class KeymapsFrontendContribution extends TheiaKeymapsFrontendContribution {
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     menus.registerMenuAction(ArduinoMenus.FILE__ADVANCED_SUBMENU, {
       commandId: KeymapsCommands.OPEN_KEYMAPS.id,
       label: nls.localize(

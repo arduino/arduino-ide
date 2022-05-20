@@ -13,7 +13,7 @@ export class ElectronMenuContribution
   extends TheiaElectronMenuContribution
   implements MainMenuManager
 {
-  protected hideTopPanel(): void {
+  protected override hideTopPanel(): void {
     // NOOP
     // We reuse the `div` for the Arduino toolbar.
   }
@@ -22,17 +22,17 @@ export class ElectronMenuContribution
     (this as any).setMenu();
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     registry.unregisterCommand(ElectronCommands.CLOSE_WINDOW);
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     registry.unregisterMenuAction(ElectronCommands.CLOSE_WINDOW);
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     super.registerKeybindings(registry);
     registry.unregisterKeybinding(ElectronCommands.CLOSE_WINDOW.id);
     registry.unregisterKeybinding(ElectronCommands.ZOOM_IN.id);

@@ -28,7 +28,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
   @inject(SketchesService)
   protected readonly sketchService: SketchesService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     registry.unregisterCommand(WorkspaceCommands.NEW_FILE);
     registry.registerCommand(
@@ -75,7 +75,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     }
   }
 
-  protected async validateFileName(
+  protected override async validateFileName(
     name: string,
     parent: FileStat,
     recursive = false

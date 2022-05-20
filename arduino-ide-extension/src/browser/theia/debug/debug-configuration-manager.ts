@@ -36,7 +36,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     super.init();
     this.appStateService.reachedState('ready').then(async () => {
       const tempContent = await this.getTempLaunchJsonContent();
@@ -73,7 +73,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     });
   }
 
-  protected updateModels = debounce(async () => {
+  protected override updateModels = debounce(async () => {
     await this.appStateService.reachedState('ready');
     const roots = await this.workspaceService.roots;
     const toDelete = new Set(this.models.keys());

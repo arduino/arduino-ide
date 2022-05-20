@@ -16,9 +16,9 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
   @inject(LabelProvider)
-  protected readonly labelProvider: LabelProvider;
+  protected override readonly labelProvider: LabelProvider;
 
-  protected async createEditor(uri: URI): Promise<EditorWidget> {
+  protected override async createEditor(uri: URI): Promise<EditorWidget> {
     const widget = await super.createEditor(uri);
     return this.maybeUpdateCaption(widget);
   }

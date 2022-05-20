@@ -35,7 +35,7 @@ export class SketchControl extends SketchContribution {
   protected readonly contextMenuRenderer: ContextMenuRenderer;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(SketchesServiceClientImpl)
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
@@ -46,7 +46,7 @@ export class SketchControl extends SketchContribution {
   protected readonly toDisposeBeforeCreateNewContextMenu =
     new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(
       SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR,
       {
@@ -200,7 +200,7 @@ export class SketchControl extends SketchContribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
       {
@@ -228,7 +228,7 @@ export class SketchControl extends SketchContribution {
     );
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: WorkspaceCommands.NEW_FILE.id,
       keybinding: 'CtrlCmd+Shift+N',
@@ -243,7 +243,7 @@ export class SketchControl extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,
       command: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,

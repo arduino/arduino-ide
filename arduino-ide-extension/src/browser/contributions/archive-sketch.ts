@@ -13,13 +13,13 @@ import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class ArchiveSketch extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(ArchiveSketch.Commands.ARCHIVE_SKETCH, {
       execute: () => this.archiveSketch(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: ArchiveSketch.Commands.ARCHIVE_SKETCH.id,
       label: nls.localize('arduino/sketch/archiveSketch', 'Archive Sketch'),

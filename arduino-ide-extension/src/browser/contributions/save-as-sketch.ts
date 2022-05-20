@@ -22,18 +22,18 @@ export class SaveAsSketch extends SketchContribution {
   protected readonly applicationShell: ApplicationShell;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(WindowService)
   protected readonly windowService: WindowService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
       execute: (args) => this.saveAs(args),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
       label: nls.localize('vscode/fileCommands/saveAs', 'Save As...'),
@@ -41,7 +41,7 @@ export class SaveAsSketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
       keybinding: 'CtrlCmd+Shift+S',

@@ -17,7 +17,7 @@ import {
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
-  createElectronMenuBar(): Electron.Menu {
+  override createElectronMenuBar(): Electron.Menu {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
     const template = this.fillMenuTemplate([], menuModel);
@@ -29,7 +29,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return menu;
   }
 
-  async setMenuBar(): Promise<void> {
+  override async setMenuBar(): Promise<void> {
     await this.preferencesService.ready;
     const createdMenuBar = this.createElectronMenuBar();
     if (isOSX) {
@@ -39,7 +39,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     }
   }
 
-  createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
+  override createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
     const menuModel = this.menuProvider.getMenu(menuPath);
     const template = this.fillMenuTemplate([], menuModel, args, {
       showDisabled: false,
@@ -64,7 +64,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return template;
   }
 
-  protected createOSXMenu(): Electron.MenuItemConstructorOptions {
+  protected override createOSXMenu(): Electron.MenuItemConstructorOptions {
     const { submenu } = super.createOSXMenu();
     const label = 'Arduino IDE';
     if (!!submenu && Array.isArray(submenu)) {
@@ -96,7 +96,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return { label, submenu };
   }
 
-  protected handleElectronDefault(
+  protected override handleElectronDefault(
     menuNode: CompositeMenuNode,
     args: any[] = [],
     options?: ElectronMenuOptions

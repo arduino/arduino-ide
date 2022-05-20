@@ -42,7 +42,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   @inject(SplashServiceImpl)
   protected readonly splashService: SplashServiceImpl;
 
-  async start(config: FrontendApplicationConfig): Promise<void> {
+  override async start(config: FrontendApplicationConfig): Promise<void> {
     // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
     // See: https://github.com/electron-userland/electron-builder/issues/2468
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
@@ -71,7 +71,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return typeof uri === 'string' && await fs.pathExists(uri);
   }
 
-  protected async launch(params: ElectronMainExecutionParams): Promise<void> {
+  protected override async launch(params: ElectronMainExecutionParams): Promise<void> {
     try {
       // When running on MacOS, we either have to wait until
       // 1. The `open-file` command has been received by the app, rejecting the promise
@@ -143,18 +143,18 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return electronWindow;
   }
 
-  protected avoidOverlap(options: TheiaBrowserWindowOptions): TheiaBrowserWindowOptions {
+  protected override avoidOverlap(options: TheiaBrowserWindowOptions): TheiaBrowserWindowOptions {
     if (this.startup) {
       return options;
     }
     return super.avoidOverlap(options);
   }
 
-  protected getTitleBarStyle(): 'native' | 'custom' {
+  protected override getTitleBarStyle(): 'native' | 'custom' {
     return 'native';
   }
 
-  protected hookApplicationEvents(): void {
+  protected override hookApplicationEvents(): void {
     app.on('will-quit', this.onWillQuit.bind(this));
     app.on('second-instance', this.onSecondInstance.bind(this));
     app.on('window-all-closed', this.onWindowAllClosed.bind(this));
@@ -164,7 +164,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     });
   }
 
-  protected async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
+  protected override async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
     if (!os.isOSX && await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
       // Application has received a file in its arguments
       return;
@@ -177,7 +177,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
    *
    * @param options
    */
-  async createWindow(
+   override async createWindow(
     asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
     let options = await asyncOptions;
@@ -270,7 +270,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     this.attachClosedWorkspace(electronWindow);
   }
 
-  protected async startBackend(): Promise<number> {
+  protected override async startBackend(): Promise<number> {
     // Check if we should run everything as one process.
     const noBackendFork = process.argv.indexOf('--no-cluster') !== -1;
     // We cannot use the `process.cwd()` as the application project path (the location of the `package.json` in other words)
@@ -359,7 +359,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     });
   }
 
-  protected onWillQuit(event: Electron.Event): void {
+  protected override onWillQuit(event: Electron.Event): void {
     // Only add workspaces which were closed within the last second (1000 milliseconds)
     const threshold = Date.now() - 1000;
     const visited = new Set<string>();

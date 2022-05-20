@@ -38,7 +38,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
   }
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.toDispose.pushAll([
       this.notificationCenter.onLibraryInstalled(() => this.refresh(undefined)),
@@ -48,7 +48,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
     ]);
   }
 
-  protected async install({
+  protected override async install({
     item,
     progressId,
     version,
@@ -158,7 +158,7 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
     }
   }
 
-  protected async uninstall({
+  protected override async uninstall({
     item,
     progressId,
   }: {
@@ -199,7 +199,7 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
     });
   }
 
-  protected onCloseRequest(message: Message): void {
+  protected override onCloseRequest(message: Message): void {
     super.onCloseRequest(message);
     this.accept();
   }
@@ -217,7 +217,7 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
     return message;
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     this.response = 0;
     super.handleEnter(event);
   }

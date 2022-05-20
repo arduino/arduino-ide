@@ -31,10 +31,10 @@ export class WorkspaceService extends TheiaWorkspaceService {
   protected readonly configService: ConfigService;
 
   @inject(LabelProvider)
-  protected readonly labelProvider: LabelProvider;
+  protected override readonly labelProvider: LabelProvider;
 
   @inject(MessageService)
-  protected readonly messageService: MessageService;
+  protected override readonly messageService: MessageService;
 
   @inject(ApplicationServer)
   protected readonly applicationServer: ApplicationServer;
@@ -64,7 +64,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
 
   // Was copied from the Theia implementation.
   // Unlike the default behavior, IDE2 does not check the existence of the workspace before open.
-  protected async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
+  protected override async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
     // If an empty window is explicitly requested do not restore a previous workspace.
     // Note: `window.location.hash` includes leading "#" if non-empty.
     if (window.location.hash === `#${DEFAULT_WINDOW_HASH}`) {
@@ -86,7 +86,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
-  protected getDefaultWorkspaceUri(): Promise<string | undefined> {
+  protected override getDefaultWorkspaceUri(): Promise<string | undefined> {
     if (this.workspaceUri) {
       // Avoid creating a new sketch twice
       return this.workspaceUri;
@@ -132,7 +132,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     return this.workspaceUri;
   }
 
-  protected openNewWindow(workspacePath: string): void {
+  protected override openNewWindow(workspacePath: string): void {
     const { boardsConfig } = this.boardsServiceProvider;
     const url = BoardsConfig.Config.setConfig(
       boardsConfig,
@@ -171,7 +171,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
-  protected formatTitle(title?: string): string {
+  protected override formatTitle(title?: string): string {
     const version = this.version ? ` ${this.version}` : '';
     const name = `${this.applicationName} ${version}`;
     return title ? `${title} | ${name}` : name;

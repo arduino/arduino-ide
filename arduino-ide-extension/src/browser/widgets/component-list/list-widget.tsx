@@ -69,21 +69,21 @@ export abstract class ListWidget<
     ]);
   }
 
-  protected getScrollContainer(): MaybePromise<HTMLElement> {
+  protected override getScrollContainer(): MaybePromise<HTMLElement> {
     return this.deferredContainer.promise;
   }
 
-  protected onActivateRequest(message: Message): void {
+  protected override onActivateRequest(message: Message): void {
     super.onActivateRequest(message);
     (this.focusNode || this.node).focus();
   }
 
-  protected onUpdateRequest(message: Message): void {
+  protected override onUpdateRequest(message: Message): void {
     super.onUpdateRequest(message);
     this.render();
   }
 
-  protected onResize(message: Widget.ResizeMessage): void {
+  protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     this.updateScrollBar();
   }

@@ -61,7 +61,7 @@ export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
 
   constructor(
     @inject(UserFieldsDialogProps)
-    protected readonly props: UserFieldsDialogProps
+    protected override readonly props: UserFieldsDialogProps
   ) {
     super({
       title: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label || '',
@@ -83,7 +83,7 @@ export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
     return this.widget.currentUserFields;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -92,17 +92,17 @@ export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  protected async accept(): Promise<void> {
+  protected override async accept(): Promise<void> {
     // If the user presses enter and at least
     // a field is empty don't accept the input
     for (const field of this.value) {
@@ -113,7 +113,7 @@ export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
     return super.accept();
   }
 
-  close(): void {
+  override close(): void {
     this.widget.resetUserFieldsValue();
     this.widget.close();
     super.close();

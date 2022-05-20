@@ -10,7 +10,7 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
   @inject(SketchesServiceClientImpl)
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-  async execute(uris: URI[]): Promise<void> {
+  override async execute(uris: URI[]): Promise<void> {
     const sketch = await this.sketchesServiceClient.currentSketch();
     if (!sketch) {
       return;

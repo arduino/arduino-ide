@@ -21,7 +21,7 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
   protected isRunning = false;
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     this.schedulePing();
     try {
       this.isRunning = await this.daemon.isRunning();
@@ -54,14 +54,14 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
     this.notificationCenter.onDaemonStopped(() => (this.isRunning = false));
   }
 
-  protected onStateChange(state: ConnectionStatus): void {
+  protected override onStateChange(state: ConnectionStatus): void {
     if (!this.isRunning && state === ConnectionStatus.ONLINE) {
       return;
     }
     super.onStateChange(state);
   }
 
-  protected handleOffline(): void {
+  protected override handleOffline(): void {
     this.statusBar.setElement('connection-status', {
       alignment: StatusBarAlignment.LEFT,
       text: this.isRunning

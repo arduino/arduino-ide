@@ -26,7 +26,7 @@ export class MonacoEditorProvider extends TheiaMonacoEditorProvider {
   @inject(SketchesServiceClientImpl)
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-  protected async doCreateEditor(
+  protected override async doCreateEditor(
     uri: URI,
     factory: EditorFactory
   ): Promise<MonacoEditor> {

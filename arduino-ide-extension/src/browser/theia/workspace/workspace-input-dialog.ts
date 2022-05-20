@@ -13,8 +13,8 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
 
   constructor(
     @inject(WorkspaceInputDialogProps)
-    protected readonly props: WorkspaceInputDialogProps,
-    @inject(LabelProvider) protected readonly labelProvider: LabelProvider
+    protected override readonly props: WorkspaceInputDialogProps,
+    @inject(LabelProvider) protected override readonly labelProvider: LabelProvider
   ) {
     super(props, labelProvider);
     this.appendCloseButton(
@@ -22,18 +22,18 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     );
   }
 
-  protected appendParentPath(): void {
+  protected override appendParentPath(): void {
     // NOOP
   }
 
-  isValid(value: string, mode: DialogMode): MaybePromise<DialogError> {
+  override isValid(value: string, mode: DialogMode): MaybePromise<DialogError> {
     if (value !== '') {
       this.wasTouched = true;
     }
     return super.isValid(value, mode);
   }
 
-  protected setErrorMessage(error: DialogError): void {
+  protected override setErrorMessage(error: DialogError): void {
     if (this.acceptButton) {
       this.acceptButton.disabled = !DialogError.getResult(error);
     }

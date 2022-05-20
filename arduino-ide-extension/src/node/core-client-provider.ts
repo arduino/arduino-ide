@@ -48,7 +48,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     this._initialized = new Deferred<void>();
   }
 
-  protected async reconcileClient(): Promise<void> {
+  protected override async reconcileClient(): Promise<void> {
     const port = await this.daemon.getPort();
 
     if (port && port === this._port) {
@@ -64,7 +64,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     this.daemon.ready.then(async () => {
       // First create the client and the instance synchronously
       // and notify client is ready.

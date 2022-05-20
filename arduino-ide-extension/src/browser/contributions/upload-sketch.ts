@@ -72,7 +72,7 @@ export class UploadSketch extends SketchContribution {
     return fqbn + '|' + address;
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
       execute: async () => {
         const key = this.selectedFqbnAddress();
@@ -134,7 +134,7 @@ export class UploadSketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     this.menuActionsDisposables.dispose();
 
     this.menuActionsDisposables.push(
@@ -177,7 +177,7 @@ export class UploadSketch extends SketchContribution {
     );
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: UploadSketch.Commands.UPLOAD_SKETCH.id,
       keybinding: 'CtrlCmd+U',
@@ -188,7 +188,7 @@ export class UploadSketch extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,
       command: UploadSketch.Commands.UPLOAD_SKETCH_TOOLBAR.id,

@@ -12,14 +12,14 @@ export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContrib
   protected currentSketch?: Sketch;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     this.sketchesServiceClient
       .currentSketch()
       .then()
       .then((sketch) => (this.currentSketch = sketch));
   }
 
-  getResourceUri(): URI | undefined {
+  override getResourceUri(): URI | undefined {
     const resourceUri = super.getResourceUri();
     // https://github.com/arduino/arduino-ide/issues/46
     // `currentWidget` can be an editor representing a file outside of the workspace. The current sketch should be a fallback.
