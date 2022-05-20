@@ -4,12 +4,15 @@ import { injectable, inject, postConstruct } from 'inversify';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { promisify } from 'util';
-
 import {
   PluggableMonitorSettings,
   MonitorSettingsProvider,
 } from './monitor-settings-provider';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import {
+  longestPrefixMatch,
+  reconcileSettings,
+} from './monitor-settings-utils';
 
 const MONITOR_SETTINGS_FILE = 'pluggable-monitor-settings.json';
 
@@ -18,16 +21,14 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
   @inject(EnvVariablesServer)
   protected readonly envVariablesServer: EnvVariablesServer;
 
+  // deferred used to guarantee file operations are performed after the service is initialized
   protected ready = new Deferred<void>();
-
-  // this is populated with all settings coming from the CLI. This should never be modified
-  // // as it is used to double check the monitorSettings attribute
-  // private monitorDefaultSettings: PluggableMonitorSettings;
 
   // this contains actual values coming from the stored file and edited by the user
   // this is a map with MonitorId as key and PluggableMonitorSetting as value
   private monitorSettings: Record<string, PluggableMonitorSettings>;
 
+  // this is the path to the pluggable monitor settings file, set during init
   private pluggableMonitorSettingsPath: string;
 
   @postConstruct()
@@ -40,9 +41,11 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     );
 
     // read existing settings
-    this.readFile();
+    this.readSettingsFromFS();
 
     console.log(this.monitorSettings);
+
+    // init is done, resolve the deferred and unblock any call that was waiting for it
     this.ready.resolve();
   }
 
@@ -57,6 +60,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
 
     return this.reconcileSettings(matchingSettings, defaultSettings);
   }
+
   async setSettings(
     monitorId: string,
     settings: PluggableMonitorSettings
@@ -70,7 +74,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     );
     this.monitorSettings[monitorId] = newSettings;
 
-    await this.writeFile();
+    await this.writeSettingsToFS();
     return newSettings;
   }
 
@@ -78,11 +82,10 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     newSettings: PluggableMonitorSettings,
     defaultSettings: PluggableMonitorSettings
   ): PluggableMonitorSettings {
-    // TODO: implement
-    return newSettings;
+    return reconcileSettings(newSettings, defaultSettings);
   }
 
-  private async readFile(): Promise<void> {
+  private async readSettingsFromFS(): Promise<void> {
     const rawJson = await promisify(fs.readFile)(
       this.pluggableMonitorSettingsPath,
       {
@@ -105,7 +108,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     }
   }
 
-  private async writeFile() {
+  private async writeSettingsToFS(): Promise<void> {
     await promisify(fs.writeFile)(
       this.pluggableMonitorSettingsPath,
       JSON.stringify(this.monitorSettings)
@@ -116,30 +119,6 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     matchingPrefix: string;
     matchingSettings: PluggableMonitorSettings;
   } {
-    const separator = '-';
-    const idTokens = id.split(separator);
-
-    let matchingPrefix = '';
-    let matchingSettings: PluggableMonitorSettings = {};
-
-    const monitorSettingsKeys = Object.keys(this.monitorSettings);
-
-    for (let i = 0; i < idTokens.length; i++) {
-      const prefix = idTokens.slice(0, i + 1).join(separator);
-
-      for (let k = 0; k < monitorSettingsKeys.length; k++) {
-        if (monitorSettingsKeys[k].startsWith(prefix)) {
-          matchingPrefix = prefix;
-          matchingSettings = this.monitorSettings[monitorSettingsKeys[k]];
-          break;
-        }
-      }
-
-      if (matchingPrefix.length) {
-        break;
-      }
-    }
-
-    return { matchingPrefix, matchingSettings };
+    return longestPrefixMatch(id, this.monitorSettings);
   }
 }
