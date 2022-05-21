@@ -14,13 +14,9 @@ import { ConfigService } from '../../../common/protocol/config-service';
 import {
   SketchesService,
   Sketch,
-  SketchContainer,
 } from '../../../common/protocol/sketches-service';
-import { ArduinoWorkspaceRootResolver } from '../../arduino-workspace-resolver';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
-import { nls } from '@theia/core/lib/common';
-import { URI as VSCodeUri } from '@theia/core/shared/vscode-uri';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -45,12 +41,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
 
-  private application: FrontendApplication;
-  private workspaceUri?: Promise<string | undefined>;
   private version?: string;
 
   async onStart(application: FrontendApplication): Promise<void> {
-    this.application = application;
     const info = await this.applicationServer.getApplicationInfo();
     this.version = info?.version;
     application.shell.onDidChangeCurrentWidget(
@@ -64,7 +57,9 @@ export class WorkspaceService extends TheiaWorkspaceService {
 
   // Was copied from the Theia implementation.
   // Unlike the default behavior, IDE2 does not check the existence of the workspace before open.
-  protected override async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
+  protected override async doGetDefaultWorkspaceUri(): Promise<
+    string | undefined
+  > {
     // If an empty window is explicitly requested do not restore a previous workspace.
     // Note: `window.location.hash` includes leading "#" if non-empty.
     if (window.location.hash === `#${DEFAULT_WINDOW_HASH}`) {
@@ -86,51 +81,51 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
-  protected override getDefaultWorkspaceUri(): Promise<string | undefined> {
-    if (this.workspaceUri) {
-      // Avoid creating a new sketch twice
-      return this.workspaceUri;
-    }
-    this.workspaceUri = (async () => {
-      try {
-        const hash = window.location.hash;
-        const [recentWorkspacesPaths, recentSketches] = await Promise.all([
-          this.server.getRecentWorkspaces(),
-          this.sketchService
-            .getSketches({})
-            .then((container) =>
-              SketchContainer.toArray(container).map((s) => s.uri)
-            ),
-        ]);
-        // On Dindows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
-        const recentWorkspaces = recentWorkspacesPaths.map((e) =>
-          VSCodeUri.file(e).toString()
-        );
-        const toOpen = await new ArduinoWorkspaceRootResolver({
-          isValid: this.isValid.bind(this),
-        }).resolve({ hash, recentWorkspaces, recentSketches });
-        if (toOpen) {
-          const { uri } = toOpen;
-          await this.server.setMostRecentlyUsedWorkspace(uri);
-          return toOpen.uri;
-        }
-        return (await this.sketchService.createNewSketch()).uri;
-      } catch (err) {
-        this.appStateService
-          .reachedState('ready')
-          .then(() => this.application.shell.update());
-        this.logger.fatal(`Failed to determine the sketch directory: ${err}`);
-        this.messageService.error(
-          nls.localize(
-            'theia/workspace/sketchDirectoryError',
-            'There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected.'
-          )
-        );
-        return super.getDefaultWorkspaceUri();
-      }
-    })();
-    return this.workspaceUri;
-  }
+  // protected override getDefaultWorkspaceUri(): Promise<string | undefined> {
+  //   if (this.workspaceUri) {
+  //     // Avoid creating a new sketch twice
+  //     return this.workspaceUri;
+  //   }
+  //   this.workspaceUri = (async () => {
+  //     try {
+  //       const hash = window.location.hash;
+  //       const [recentWorkspacesPaths, recentSketches] = await Promise.all([
+  //         this.server.getRecentWorkspaces(),
+  //         this.sketchService
+  //           .getSketches({})
+  //           .then((container) =>
+  //             SketchContainer.toArray(container).map((s) => s.uri)
+  //           ),
+  //       ]);
+  //       // On Dindows, `getRecentWorkspaces` returns only file paths, not URIs as expected by the `isValid` method.
+  //       const recentWorkspaces = recentWorkspacesPaths.map((e) =>
+  //         VSCodeUri.file(e).toString()
+  //       );
+  //       const toOpen = await new ArduinoWorkspaceRootResolver({
+  //         isValid: this.isValid.bind(this),
+  //       }).resolve({ hash, recentWorkspaces, recentSketches });
+  //       if (toOpen) {
+  //         const { uri } = toOpen;
+  //         await this.server.setMostRecentlyUsedWorkspace(uri);
+  //         return toOpen.uri;
+  //       }
+  //       return (await this.sketchService.createNewSketch()).uri;
+  //     } catch (err) {
+  //       this.appStateService
+  //         .reachedState('ready')
+  //         .then(() => this.application.shell.update());
+  //       this.logger.fatal(`Failed to determine the sketch directory: ${err}`);
+  //       this.messageService.error(
+  //         nls.localize(
+  //           'theia/workspace/sketchDirectoryError',
+  //           'There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected.'
+  //         )
+  //       );
+  //       return super.getDefaultWorkspaceUri();
+  //     }
+  //   })();
+  //   return this.workspaceUri;
+  // }
 
   protected override openNewWindow(workspacePath: string): void {
     const { boardsConfig } = this.boardsServiceProvider;
@@ -142,13 +137,13 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.windowService.openNewWindow(url.toString());
   }
 
-  private async isValid(uri: string): Promise<boolean> {
-    const exists = await this.fileService.exists(new URI(uri));
-    if (!exists) {
-      return false;
-    }
-    return this.sketchService.isSketchFolder(uri);
-  }
+  // private async isValid(uri: string): Promise<boolean> {
+  //   const exists = await this.fileService.exists(new URI(uri));
+  //   if (!exists) {
+  //     return false;
+  //   }
+  //   return this.sketchService.isSketchFolder(uri);
+  // }
 
   protected onCurrentWidgetChange({
     newValue,
