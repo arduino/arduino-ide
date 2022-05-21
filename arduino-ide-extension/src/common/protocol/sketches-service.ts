@@ -85,6 +85,15 @@ export interface SketchRef {
   readonly name: string;
   readonly uri: string; // `LocationPath`
 }
+export namespace SketchRef {
+  export function fromUri(uriLike: string | URI): SketchRef {
+    const uri = typeof uriLike === 'string' ? new URI(uriLike) : uriLike;
+    return {
+      name: uri.path.base,
+      uri: typeof uriLike === 'string' ? uriLike : uriLike.toString(),
+    };
+  }
+}
 export interface Sketch extends SketchRef {
   readonly mainFileUri: string; // `MainFile`
   readonly otherSketchFileUris: string[]; // `OtherSketchFiles`
@@ -139,6 +148,13 @@ export interface SketchContainer {
   readonly sketches: SketchRef[];
 }
 export namespace SketchContainer {
+  export function create(label: string): SketchContainer {
+    return {
+      label,
+      children: [],
+      sketches: [],
+    };
+  }
   export function is(arg: any): arg is SketchContainer {
     return (
       !!arg &&
