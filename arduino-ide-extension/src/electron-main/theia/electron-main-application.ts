@@ -34,6 +34,14 @@ interface WorkspaceOptions {
 
 const WORKSPACES = 'workspaces';
 
+/**
+ * Purely a dev thing. If you start the app with the `--nosplash` argument,
+ * then you won't have the splash screen (which is always on top :confused:) and can debug the app at startup.
+ * Note: if you start the app from VS Code with the `App (Electron)` config, the splash screen will be disabled.
+ */
+const APP_STARTED_WITH_NOSPLASH =
+  typeof process !== 'undefined' && process.argv.indexOf('--nosplash') !== -1;
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   protected startup = false;
@@ -183,7 +191,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     let options = await asyncOptions;
     options = this.avoidOverlap(options);
     let electronWindow: BrowserWindow | undefined;
-    if (this.windows.size) {
+    if (this.windows.size || APP_STARTED_WITH_NOSPLASH) {
       electronWindow = await this.doCreateWindow(options);
     } else {
       const { bounds } = screen.getDisplayNearestPoint(
