@@ -25,6 +25,41 @@ import { duration } from '../common/decorators';
 import { URI } from '@theia/core/lib/common/uri';
 import { Path } from '@theia/core/lib/common/path';
 
+interface BuiltInSketchRef {
+  readonly name: string;
+  readonly relativePath: string;
+}
+namespace BuiltInSketchRef {
+  export function toSketchRef(
+    { name, relativePath }: BuiltInSketchRef,
+    root: URI
+  ): SketchRef {
+    return {
+      name,
+      uri: root.resolve(relativePath).toString(),
+    };
+  }
+}
+interface BuiltInSketchContainer {
+  readonly label: string;
+  readonly children: BuiltInSketchContainer[];
+  readonly sketches: BuiltInSketchRef[];
+}
+namespace BuiltInSketchContainer {
+  export function toSketchContainer(
+    source: BuiltInSketchContainer,
+    root: URI
+  ): SketchContainer {
+    return {
+      label: source.label,
+      children: source.children.map((child) => toSketchContainer(child, root)),
+      sketches: source.sketches.map((child) =>
+        BuiltInSketchRef.toSketchRef(child, root)
+      ),
+    };
+  }
+}
+
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
   @inject(SketchesServiceImpl)
@@ -47,12 +82,15 @@ export class ExamplesServiceImpl implements ExamplesService {
     if (this._all) {
       return this._all;
     }
-    const exampleRootPath = join(__dirname, '..', '..', 'Examples');
-    const exampleNames = await promisify(fs.readdir)(exampleRootPath);
-    this._all = await Promise.all(
-      exampleNames
-        .map((name) => join(exampleRootPath, name))
-        .map((path) => this.load(path))
+    const examplesRootPath = join(__dirname, '..', '..', 'Examples');
+    const examplesRootUri = FileUri.create(examplesRootPath);
+    const rawJson = await fs.promises.readFile(
+      join(examplesRootPath, 'examples.json'),
+      { encoding: 'utf8' }
+    );
+    const examples: BuiltInSketchContainer[] = JSON.parse(rawJson);
+    this._all = examples.map((container) =>
+      BuiltInSketchContainer.toSketchContainer(container, examplesRootUri)
     );
     return this._all;
   }
