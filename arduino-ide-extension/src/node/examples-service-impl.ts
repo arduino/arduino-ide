@@ -24,9 +24,6 @@ import { ConfigServiceImpl } from './config-service-impl';
 import { duration } from '../common/decorators';
 import { URI } from '@theia/core/lib/common/uri';
 import { Path } from '@theia/core/lib/common/path';
-const eq = require('deep-equals');
-import { diff } from 'deep-object-diff';
-const deepSort = require('deep-sort-object');
 
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
@@ -66,20 +63,20 @@ export class ExamplesServiceImpl implements ExamplesService {
     current: SketchContainer[];
     any: SketchContainer[];
   }> {
-    const [old, _new] = await Promise.all([
-      this.installedOld({ fqbn }),
+    const [/*old,*/ _new] = await Promise.all([
+      // this.installedOld({ fqbn }),
       this.installedNew({ fqbn }),
     ]);
     // Compare new and old
-    if (eq(old, _new)) {
-      console.log('---- happiness. the packages are the same');
-    } else {
-      console.error('---- yayy :( the packages are not the same');
-      const diffObj = diff(old, _new);
-      console.error(JSON.stringify(diffObj));
-    }
+    // if (eq(old, _new)) {
+    //   console.log('---- happiness. the packages are the same');
+    // } else {
+    //   console.error('---- yayy :( the packages are not the same');
+    //   const diffObj = diff(old, _new);
+    //   console.error(JSON.stringify(diffObj));
+    // }
 
-    return old;
+    return _new;
   }
 
   @duration()
@@ -108,10 +105,10 @@ export class ExamplesServiceImpl implements ExamplesService {
         any.push(container);
       }
     }
-    user.sort((left, right) => left.label.localeCompare(right.label));
-    current.sort((left, right) => left.label.localeCompare(right.label));
-    any.sort((left, right) => left.label.localeCompare(right.label));
-    return deepSort({ user, current, any });
+    // user.sort((left, right) => left.label.localeCompare(right.label));
+    // current.sort((left, right) => left.label.localeCompare(right.label));
+    // any.sort((left, right) => left.label.localeCompare(right.label));
+    return { user, current, any };
   }
 
   /**
@@ -207,10 +204,10 @@ export class ExamplesServiceImpl implements ExamplesService {
         any.push(container);
       }
     }
-    user.sort((left, right) => left.label.localeCompare(right.label));
-    current.sort((left, right) => left.label.localeCompare(right.label));
-    any.sort((left, right) => left.label.localeCompare(right.label));
-    return deepSort({ user, current, any });
+    // user.sort((left, right) => left.label.localeCompare(right.label));
+    // current.sort((left, right) => left.label.localeCompare(right.label));
+    // any.sort((left, right) => left.label.localeCompare(right.label));
+    return { user, current, any };
   }
 
   /**
