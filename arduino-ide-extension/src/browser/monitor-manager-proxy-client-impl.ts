@@ -70,7 +70,12 @@ export class MonitorManagerProxyClientImpl
       const parsedMessage = JSON.parse(message.data);
       if (Array.isArray(parsedMessage))
         this.onMessagesReceivedEmitter.fire({ messages: parsedMessage });
-      else this.onMonitorSettingsDidChangeEmitter.fire(parsedMessage);
+      else if (
+        parsedMessage.command ===
+        Monitor.MiddlewareCommand.ON_SETTINGS_DID_CHANGE
+      ) {
+        this.onMonitorSettingsDidChangeEmitter.fire(parsedMessage.data);
+      }
     };
     this.wsPort = addressPort;
   }

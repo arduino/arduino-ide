@@ -58,7 +58,11 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
 
     const { matchingSettings } = this.longestPrefixMatch(monitorId);
 
-    return this.reconcileSettings(matchingSettings, defaultSettings);
+    this.monitorSettings[monitorId] = this.reconcileSettings(
+      matchingSettings,
+      defaultSettings
+    );
+    return this.monitorSettings[monitorId];
   }
 
   async setSettings(
@@ -70,7 +74,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
 
     const newSettings = this.reconcileSettings(
       settings,
-      this.monitorSettings[monitorId]
+      this.monitorSettings[monitorId] || {}
     );
     this.monitorSettings[monitorId] = newSettings;
 

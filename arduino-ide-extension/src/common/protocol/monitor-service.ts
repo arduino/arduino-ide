@@ -70,7 +70,7 @@ export namespace Monitor {
   }
 
   export type Message = {
-    command: Monitor.ClientCommand;
+    command: Monitor.ClientCommand | Monitor.MiddlewareCommand;
     data: string | MonitorSettings;
   };
 }

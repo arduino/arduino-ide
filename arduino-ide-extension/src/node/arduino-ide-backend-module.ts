@@ -229,7 +229,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const webSocketProvider =
           container.get<WebSocketProvider>(WebSocketProvider);
 
-        const { board, port, coreClientProvider } = options;
+        const { board, port, coreClientProvider, monitorID } = options;
 
         return new MonitorService(
           logger,
@@ -237,6 +237,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
           webSocketProvider,
           board,
           port,
+          monitorID,
           coreClientProvider
         );
       }

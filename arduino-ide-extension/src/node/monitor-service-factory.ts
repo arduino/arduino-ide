@@ -7,6 +7,7 @@ export interface MonitorServiceFactory {
   (options: {
     board: Board;
     port: Port;
+    monitorID: string;
     coreClientProvider: CoreClientProvider;
   }): MonitorService;
 }
@@ -14,5 +15,6 @@ export interface MonitorServiceFactory {
 export interface MonitorServiceFactoryOptions {
   board: Board;
   port: Port;
+  monitorID: string;
   coreClientProvider: CoreClientProvider;
 }

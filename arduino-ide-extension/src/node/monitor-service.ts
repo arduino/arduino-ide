@@ -63,14 +63,11 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
     private readonly board: Board,
     private readonly port: Port,
+    private readonly monitorID: string,
     protected readonly coreClientProvider: CoreClientProvider
   ) {
     super();
 
-    this.monitorSettingsProvider = {
-      getSettings: () => ({} as Promise<PluggableMonitorSettings>),
-      setSettings: () => ({} as Promise<PluggableMonitorSettings>),
-    };
     this.onWSClientsNumberChanged =
       this.webSocketProvider.onClientsNumberChanged(async (clients: number) => {
         if (clients === 0) {
@@ -81,13 +78,19 @@ export class MonitorService extends CoreClientAware implements Disposable {
         }
       });
 
-    this.portMonitorSettings(port.protocol, board.fqbn!).then((settings) => {
-      this.settings = {
-        ...this.settings,
-        pluggableMonitorSettings: settings,
-      };
-      this._initialized.resolve();
-    });
+    this.portMonitorSettings(port.protocol, board.fqbn!).then(
+      async (settings) => {
+        this.settings = {
+          ...this.settings,
+          pluggableMonitorSettings:
+            await this.monitorSettingsProvider.getSettings(
+              this.monitorID,
+              settings
+            ),
+        };
+        this._initialized.resolve();
+      }
+    );
   }
 
   get initialized(): Promise<void> {
@@ -368,21 +371,26 @@ export class MonitorService extends CoreClientAware implements Disposable {
   async changeSettings(settings: MonitorSettings): Promise<Status> {
     const config = new MonitorPortConfiguration();
     const { pluggableMonitorSettings } = settings;
+    const reconciledSettings = await this.monitorSettingsProvider.setSettings(
+      this.monitorID,
+      pluggableMonitorSettings || {}
+    );
 
-    this.webSocketProvider.sendMessage(JSON.stringify(settings));
-
-    if (pluggableMonitorSettings) {
-      for (const id in pluggableMonitorSettings) {
+    if (reconciledSettings) {
+      for (const id in reconciledSettings) {
         const s = new MonitorPortSetting();
         s.setSettingId(id);
-        s.setValue(pluggableMonitorSettings[id].selectedValue);
+        s.setValue(reconciledSettings[id].selectedValue);
         config.addSettings(s);
-        this.settings.pluggableMonitorSettings = {
-          ...this.settings.pluggableMonitorSettings,
-          [id]: pluggableMonitorSettings[id],
-        };
       }
     }
+
+    const command: Monitor.Message = {
+      command: Monitor.MiddlewareCommand.ON_SETTINGS_DID_CHANGE,
+      data: { ...settings, pluggableMonitorSettings: reconciledSettings },
+    };
+
+    this.webSocketProvider.sendMessage(JSON.stringify(command));
 
     if (!this.duplex) {
       return Status.NOT_CONNECTED;

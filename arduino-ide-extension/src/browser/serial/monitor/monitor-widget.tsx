@@ -84,7 +84,7 @@ export class MonitorWidget extends ReactWidget {
     );
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected onBeforeAttach(msg: Message): void {
     this.update();
     this.toDispose.push(this.monitorModel.onChange(() => this.update()));
     this.getCurrentSettings().then(this.onMonitorSettingsDidChange.bind(this));

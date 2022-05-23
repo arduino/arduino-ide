@@ -196,6 +196,7 @@ export class MonitorManager extends CoreClientAware {
     const monitor = this.monitorServiceFactory({
       board,
       port,
+      monitorID,
       coreClientProvider: this.coreClientProvider,
     });
     this.monitorServices.set(monitorID, monitor);
