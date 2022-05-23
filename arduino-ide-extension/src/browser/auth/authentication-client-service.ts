@@ -49,7 +49,10 @@ export class AuthenticationClientService
     this.service
       .session()
       .then((session) => this.notifySessionDidChange(session));
+
     this.setOptions();
+    this.service.initAuthSession()
+
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.preferenceName.startsWith('arduino.auth.')) {
         this.setOptions();

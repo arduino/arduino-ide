@@ -23,6 +23,7 @@ export interface AuthenticationService
   session(): Promise<AuthenticationSession | undefined>;
   disposeClient(client: AuthenticationServiceClient): void;
   setOptions(authOptions: AuthOptions): void;
+  initAuthSession(): Promise<void>;
 }
 
 export interface AuthenticationServiceClient {
