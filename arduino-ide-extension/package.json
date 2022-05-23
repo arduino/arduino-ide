@@ -44,7 +44,7 @@
     "@types/btoa": "^1.2.3",
     "@types/dateformat": "^3.0.1",
     "@types/deepmerge": "^2.2.0",
-    "@types/glob": "^5.0.35",
+    "@types/glob": "^7.2.0",
     "@types/google-protobuf": "^3.7.2",
     "@types/js-yaml": "^3.12.2",
     "@types/keytar": "^4.4.0",

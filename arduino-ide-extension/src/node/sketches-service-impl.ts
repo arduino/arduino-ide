@@ -24,14 +24,18 @@ import {
   ArchiveSketchRequest,
   LoadSketchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { duration } from '../common/decorators';
+import * as glob from 'glob';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
 const prefix = '.arduinoIDE-unsaved';
 
 @injectable()
-export class SketchesServiceImpl extends CoreClientAware
-  implements SketchesService {
+export class SketchesServiceImpl
+  extends CoreClientAware
+  implements SketchesService
+{
   private sketchSuffixIndex = 1;
   private lastSketchBaseName: string;
 
@@ -43,13 +47,147 @@ export class SketchesServiceImpl extends CoreClientAware
 
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
+
   async getSketches({
     uri,
     exclude,
   }: {
     uri?: string;
     exclude?: string[];
-  }): Promise<SketchContainerWithDetails> {
+  }): Promise<SketchContainer> {
+    const [old, _new] = await Promise.all([
+      this.getSketchesOld({ uri, exclude }),
+      this.getSketchesNew({ uri, exclude }),
+    ]);
+    console.log(typeof old);
+    return _new;
+  }
+
+  @duration()
+  async getSketchesNew({
+    uri,
+    exclude,
+  }: {
+    uri?: string;
+    exclude?: string[];
+  }): Promise<SketchContainer> {
+    const root = await this.root(uri);
+    const pathToAllSketchFiles = await new Promise<string[]>(
+      (resolve, reject) => {
+        glob(
+          '/!(libraries|hardware)/**/*.{ino,pde}',
+          { root },
+          (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      }
+    );
+    // Sort by path length to filter out nested sketches, such as the `Nested_folder` inside the `Folder` sketch.
+    //
+    // `directories#user`
+    // |
+    // +--Folder
+    //    |
+    //    +--Folder.ino
+    //    |
+    //    +--Nested_folder
+    //       |
+    //       +--Nested_folder.ino
+    pathToAllSketchFiles.sort((left, right) => left.length - right.length);
+    const container = SketchContainer.create(
+      uri ? path.basename(root) : 'Sketchbook'
+    );
+    const getOrCreateChildContainer = (
+      parent: SketchContainer,
+      segments: string[]
+    ) => {
+      if (segments.length === 1) {
+        throw new Error(
+          `Expected at least two segments relative path: ['ExampleSketchName', 'ExampleSketchName.{ino,pde}]. Was: ${segments}`
+        );
+      }
+      if (segments.length === 2) {
+        return parent;
+      }
+      const label = segments[0];
+      const existingSketch = parent.sketches.find(
+        (sketch) => sketch.name === label
+      );
+      if (existingSketch) {
+        // If the container has a sketch with the same label, it cannot have a child container.
+        // See above example about how to ignore nested sketches.
+        return undefined;
+      }
+      let child = parent.children.find((child) => child.label === label);
+      if (!child) {
+        child = SketchContainer.create(label);
+        parent.children.push(child);
+      }
+      return child;
+    };
+    for (const pathToSketchFile of pathToAllSketchFiles) {
+      const relative = path.relative(root, pathToSketchFile);
+      if (!relative) {
+        console.warn(
+          `Could not determine relative sketch path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Relative path was: ${relative}`
+        );
+        continue;
+      }
+      const segments = relative.split(path.sep);
+      if (segments.length < 2) {
+        // folder name, and sketch name.
+        console.warn(
+          `Expected at least one segment relative path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Segments were: ${segments}.`
+        );
+        continue;
+      }
+      // the folder name and the sketch name must match. For example, `Foo/foo.ino` is invalid.
+      // drop the folder name from the sketch name, if `.ino` or `.pde` remains, it's valid
+      const sketchName = segments[segments.length - 2];
+      const sketchFilename = segments[segments.length - 1];
+      const sketchFileExtension = segments[segments.length - 1].replace(
+        new RegExp(sketchName),
+        ''
+      );
+      if (sketchFileExtension !== '.ino' && sketchFileExtension !== '.pde') {
+        console.warn(
+          `Mismatching sketch file <${sketchFilename} >and sketch folder name <${sketchName}>. Skipping`
+        );
+        continue;
+      }
+      const child = getOrCreateChildContainer(container, segments);
+      if (child) {
+        child.sketches.push({
+          name: sketchName,
+          uri: FileUri.create(pathToSketchFile).toString(),
+        });
+      }
+    }
+    return container;
+  }
+
+  private async root(uri?: string | undefined): Promise<string> {
+    return FileUri.fsPath(uri ?? (await this.sketchbookUri()));
+  }
+
+  private async sketchbookUri(): Promise<string> {
+    const { sketchDirUri } = await this.configService.getConfiguration();
+    return sketchDirUri;
+  }
+
+  @duration()
+  async getSketchesOld({
+    uri,
+    exclude,
+  }: {
+    uri?: string;
+    exclude?: string[];
+  }): Promise<SketchContainer> {
     const start = Date.now();
     let sketchbookPath: undefined | string;
     if (!uri) {
