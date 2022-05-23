@@ -13,7 +13,6 @@ import {
 import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
 import {
   PluggableMonitorSettings,
   MonitorSettingsProvider,
@@ -48,19 +47,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
   protected readonly onDisposeEmitter = new Emitter<void>();
   readonly onDispose = this.onDisposeEmitter.event;
 
-  @inject(MonitorSettingsProvider)
-  protected readonly monitorSettingsProvider: MonitorSettingsProvider;
-
-  // TODO: use dependency injection
-  protected readonly webSocketProvider: WebSocketProvider =
-    new WebSocketProviderImpl();
-
   protected uploadInProgress = false;
 
   constructor(
     @inject(ILogger)
     @named(MonitorServiceName)
     protected readonly logger: ILogger,
+    @inject(MonitorSettingsProvider)
+    protected readonly monitorSettingsProvider: MonitorSettingsProvider,
+    @inject(WebSocketProvider)
+    protected readonly webSocketProvider: WebSocketProvider,
 
     private readonly board: Board,
     private readonly port: Port,

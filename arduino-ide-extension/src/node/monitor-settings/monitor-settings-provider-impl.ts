@@ -41,7 +41,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     );
 
     // read existing settings
-    this.readSettingsFromFS();
+    await this.readSettingsFromFS();
 
     console.log(this.monitorSettings);
 

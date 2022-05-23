@@ -3,6 +3,7 @@ import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { Board, Port, Status } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
+import { MonitorServiceFactory } from './monitor-service-factory';
 import { PluggableMonitorSettings } from './monitor-settings/monitor-settings-provider';
 
 type MonitorID = string;
@@ -16,6 +17,9 @@ export class MonitorManager extends CoreClientAware {
   // If either the board or port managed changes, a new service must
   // be started.
   private monitorServices = new Map<MonitorID, MonitorService>();
+
+  @inject(MonitorServiceFactory)
+  private monitorServiceFactory: MonitorServiceFactory;
 
   constructor(
     @inject(ILogger)
@@ -183,12 +187,11 @@ export class MonitorManager extends CoreClientAware {
    */
   private createMonitor(board: Board, port: Port): MonitorService {
     const monitorID = this.monitorID(board, port);
-    const monitor = new MonitorService(
-      this.logger,
+    const monitor = this.monitorServiceFactory({
       board,
       port,
-      this.coreClientProvider
-    );
+      coreClientProvider: this.coreClientProvider,
+    });
     this.monitorServices.set(monitorID, monitor);
     monitor.onDispose(
       (() => {
