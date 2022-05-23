@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
@@ -23,7 +27,7 @@ export class NotificationCenter
   protected readonly server: JsonRpcProxy<NotificationServiceServer>;
 
   protected readonly indexUpdatedEmitter = new Emitter<void>();
-  protected readonly daemonStartedEmitter = new Emitter<void>();
+  protected readonly daemonStartedEmitter = new Emitter<string>();
   protected readonly daemonStoppedEmitter = new Emitter<void>();
   protected readonly configChangedEmitter = new Emitter<{
     config: Config | undefined;
@@ -82,8 +86,8 @@ export class NotificationCenter
     this.indexUpdatedEmitter.fire();
   }
 
-  notifyDaemonStarted(): void {
-    this.daemonStartedEmitter.fire();
+  notifyDaemonStarted(port: string): void {
+    this.daemonStartedEmitter.fire(port);
   }
 
   notifyDaemonStopped(): void {

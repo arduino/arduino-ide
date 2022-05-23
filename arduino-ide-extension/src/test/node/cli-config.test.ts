@@ -19,7 +19,6 @@ describe('cli-config', () => {
       [
         () => {
           const conf = defaultConfig();
-          (conf.daemon as any).port = String(conf.daemon.port);
           return conf;
         },
         defaultConfig,
@@ -41,12 +40,8 @@ describe('cli-config', () => {
       board_manager: {
         additional_urls: [],
       },
-      daemon: {
-        port: 5000,
-      },
       directories: {
         data: 'data',
-        downloads: 'downloads',
         user: 'user',
       },
     };

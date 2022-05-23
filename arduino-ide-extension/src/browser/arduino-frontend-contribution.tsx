@@ -7,6 +7,7 @@ import {
   ExecutableService,
   Sketch,
   LibraryService,
+  ArduinoDaemon,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
@@ -171,6 +172,9 @@ export class ArduinoFrontendContribution
 
   @inject(IDEUpdaterDialog)
   protected readonly updaterDialog: IDEUpdaterDialog;
+
+  @inject(ArduinoDaemon)
+  protected readonly daemon: ArduinoDaemon;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -369,6 +373,10 @@ export class ArduinoFrontendContribution
   ): Promise<void> {
     const release = await this.languageServerStartMutex.acquire();
     try {
+      const port = this.daemon.tryGetPort();
+      if (!port) {
+        return;
+      }
       await this.hostedPluginSupport.didStart;
       const details = await this.boardsService.getBoardDetails({ fqbn });
       if (!details) {
@@ -416,8 +424,6 @@ export class ArduinoFrontendContribution
         this.fileService.fsPath(new URI(lsUri)),
       ]);
 
-      const config = await this.configService.getConfiguration();
-
       this.languageServerFqbn = await Promise.race([
         new Promise<undefined>((_, reject) =>
           setTimeout(
@@ -429,7 +435,7 @@ export class ArduinoFrontendContribution
           'arduino.languageserver.start',
           {
             lsPath,
-            cliDaemonAddr: `localhost:${config.daemon.port}`, // TODO: verify if this port is coming from the BE
+            cliDaemonAddr: `localhost:${port}`,
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
             cliDaemonInstance: '1',

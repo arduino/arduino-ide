@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { StatusBarAlignment } from '@theia/core/lib/browser/status-bar/status-bar';
 import {
@@ -18,18 +22,22 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
 
-  protected isRunning = false;
+  protected connectedPort: string | undefined;
 
   @postConstruct()
   protected override async init(): Promise<void> {
     this.schedulePing();
     try {
-      this.isRunning = await this.daemon.isRunning();
+      this.connectedPort = await this.daemon.tryGetPort();
     } catch {}
-    this.notificationCenter.onDaemonStarted(() => (this.isRunning = true));
-    this.notificationCenter.onDaemonStopped(() => (this.isRunning = false));
+    this.notificationCenter.onDaemonStarted(
+      (port) => (this.connectedPort = port)
+    );
+    this.notificationCenter.onDaemonStopped(
+      () => (this.connectedPort = undefined)
+    );
     this.wsConnectionProvider.onIncomingMessageActivity(() => {
-      this.updateStatus(this.isRunning);
+      this.updateStatus(!!this.connectedPort);
       this.schedulePing();
     });
   }
@@ -43,19 +51,23 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
 
-  protected isRunning = false;
+  protected connectedPort: string | undefined;
 
   @postConstruct()
   protected async init(): Promise<void> {
     try {
-      this.isRunning = await this.daemon.isRunning();
+      this.connectedPort = await this.daemon.tryGetPort();
     } catch {}
-    this.notificationCenter.onDaemonStarted(() => (this.isRunning = true));
-    this.notificationCenter.onDaemonStopped(() => (this.isRunning = false));
+    this.notificationCenter.onDaemonStarted(
+      (port) => (this.connectedPort = port)
+    );
+    this.notificationCenter.onDaemonStopped(
+      () => (this.connectedPort = undefined)
+    );
   }
 
   protected override onStateChange(state: ConnectionStatus): void {
-    if (!this.isRunning && state === ConnectionStatus.ONLINE) {
+    if (!this.connectedPort && state === ConnectionStatus.ONLINE) {
       return;
     }
     super.onStateChange(state);
@@ -64,11 +76,11 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
   protected override handleOffline(): void {
     this.statusBar.setElement('connection-status', {
       alignment: StatusBarAlignment.LEFT,
-      text: this.isRunning
+      text: this.connectedPort
         ? nls.localize('theia/core/offline', 'Offline')
         : '$(bolt) ' +
           nls.localize('theia/core/daemonOffline', 'CLI Daemon Offline'),
-      tooltip: this.isRunning
+      tooltip: this.connectedPort
         ? nls.localize(
             'theia/core/cannotConnectBackend',
             'Cannot connect to the backend.'
