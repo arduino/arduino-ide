@@ -419,10 +419,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
           const message: Monitor.Message = JSON.parse(msg);
 
           switch (message.command) {
-            case Monitor.Command.SEND_MESSAGE:
+            case Monitor.ClientCommand.SEND_MESSAGE:
               this.send(message.data as string);
               break;
-            case Monitor.Command.CHANGE_SETTINGS:
+            case Monitor.ClientCommand.CHANGE_SETTINGS:
               this.changeSettings(message.data as MonitorSettings);
               break;
           }

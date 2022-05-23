@@ -111,7 +111,7 @@ export class MonitorManagerProxyClientImpl
 
     this.webSocket.send(
       JSON.stringify({
-        command: Monitor.Command.SEND_MESSAGE,
+        command: Monitor.ClientCommand.SEND_MESSAGE,
         data: message,
       })
     );
@@ -124,9 +124,7 @@ export class MonitorManagerProxyClientImpl
 
     this.webSocket.send(
       JSON.stringify({
-        command: Monitor.Command.CHANGE_SETTINGS,
-        // TODO: This might be wrong, verify if it works
-        // SPOILER: It doesn't
+        command: Monitor.ClientCommand.CHANGE_SETTINGS,
         data: settings,
       })
     );

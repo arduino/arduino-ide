@@ -59,13 +59,18 @@ export interface PluggableMonitorSetting {
 }
 
 export namespace Monitor {
-  export enum Command {
-    SEND_MESSAGE = 'MONITOR_SEND_MESSAGE',
-    CHANGE_SETTINGS = 'MONITOR_CHANGE_SETTINGS',
+  // Commands sent by the clients to the web socket server
+  export enum ClientCommand {
+    SEND_MESSAGE = 'SEND_MESSAGE',
+    CHANGE_SETTINGS = 'CHANGE_SETTINGS',
+  }
+
+  export enum MiddlewareCommand {
+    ON_SETTINGS_DID_CHANGE = 'ON_SETTINGS_DID_CHANGE',
   }
 
   export type Message = {
-    command: Monitor.Command;
+    command: Monitor.ClientCommand;
     data: string | MonitorSettings;
   };
 }
