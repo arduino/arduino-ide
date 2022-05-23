@@ -155,7 +155,7 @@ export class SketchesServiceImpl
       );
       if (sketchFileExtension !== '.ino' && sketchFileExtension !== '.pde') {
         console.warn(
-          `Mismatching sketch file <${sketchFilename} >and sketch folder name <${sketchName}>. Skipping`
+          `Mismatching sketch file <${sketchFilename}> and sketch folder name <${sketchName}>. Skipping`
         );
         continue;
       }
