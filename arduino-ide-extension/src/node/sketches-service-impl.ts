@@ -55,11 +55,10 @@ export class SketchesServiceImpl
     uri?: string;
     exclude?: string[];
   }): Promise<SketchContainer> {
-    const [old, _new] = await Promise.all([
-      this.getSketchesOld({ uri, exclude }),
+    const [/*old,*/ _new] = await Promise.all([
+      // this.getSketchesOld({ uri, exclude }),
       this.getSketchesNew({ uri, exclude }),
     ]);
-    console.log(typeof old);
     return _new;
   }
 
