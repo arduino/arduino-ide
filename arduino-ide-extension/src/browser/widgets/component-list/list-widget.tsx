@@ -42,6 +42,11 @@ export abstract class ListWidget<
   protected readonly filterTextChangeEmitter = new Emitter<
     string | undefined
   >();
+  /**
+   * Instead of running an `update` from the `postConstruct` `init` method,
+   * we use this variable to track first activate, then run.
+   */
+  protected firstActivate = true;
 
   constructor(protected options: ListWidget.Options<T>) {
     super();
@@ -61,7 +66,6 @@ export abstract class ListWidget<
 
   @postConstruct()
   protected init(): void {
-    this.update();
     this.toDispose.pushAll([
       this.notificationCenter.onIndexUpdated(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonStarted(() => this.refresh(undefined)),
@@ -74,6 +78,10 @@ export abstract class ListWidget<
   }
 
   protected override onActivateRequest(message: Message): void {
+    if (this.firstActivate) {
+      this.firstActivate = false;
+      this.update();
+    }
     super.onActivateRequest(message);
     (this.focusNode || this.node).focus();
   }
