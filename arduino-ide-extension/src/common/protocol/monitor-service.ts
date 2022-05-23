@@ -20,15 +20,16 @@ export interface MonitorManagerProxy
   changeMonitorSettings(
     board: Board,
     port: Port,
-    settings: PluggableMonitorSettings
+    settings: MonitorSettings
   ): Promise<void>;
   stopMonitor(board: Board, port: Port): Promise<void>;
-  getCurrentSettings(board: Board, port: Port): PluggableMonitorSettings;
+  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
 }
 
 export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
 export interface MonitorManagerProxyClient {
   onMessagesReceived: Event<{ messages: string[] }>;
+  onMonitorSettingsDidChange: Event<MonitorSettings>;
   onWSConnectionChanged: Event<boolean>;
   connect(addressPort: number): void;
   disconnect(): void;
@@ -39,7 +40,7 @@ export interface MonitorManagerProxyClient {
     port: Port,
     settings?: PluggableMonitorSettings
   ): Promise<void>;
-  getCurrentSettings(board: Board, port: Port): MonitorSettings;
+  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
   send(message: string): void;
   changeSettings(settings: MonitorSettings): void;
 }
@@ -65,7 +66,7 @@ export namespace Monitor {
 
   export type Message = {
     command: Monitor.Command;
-    data: string;
+    data: string | MonitorSettings;
   };
 }
 

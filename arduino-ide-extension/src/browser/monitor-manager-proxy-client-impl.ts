@@ -24,6 +24,11 @@ export class MonitorManagerProxyClientImpl
   }>();
   readonly onMessagesReceived = this.onMessagesReceivedEmitter.event;
 
+  protected readonly onMonitorSettingsDidChangeEmitter =
+    new Emitter<MonitorSettings>();
+  readonly onMonitorSettingsDidChange =
+    this.onMonitorSettingsDidChangeEmitter.event;
+
   protected readonly onWSConnectionChangedEmitter = new Emitter<boolean>();
   readonly onWSConnectionChanged = this.onWSConnectionChangedEmitter.event;
 
@@ -61,9 +66,11 @@ export class MonitorManagerProxyClientImpl
       return;
     }
 
-    this.webSocket.onmessage = (res) => {
-      const messages = JSON.parse(res.data);
-      this.onMessagesReceivedEmitter.fire({ messages });
+    this.webSocket.onmessage = (message) => {
+      const parsedMessage = JSON.parse(message.data);
+      if (Array.isArray(parsedMessage))
+        this.onMessagesReceivedEmitter.fire({ messages: parsedMessage });
+      else this.onMonitorSettingsDidChangeEmitter.fire(parsedMessage);
     };
     this.wsPort = addressPort;
   }
@@ -93,7 +100,7 @@ export class MonitorManagerProxyClientImpl
     return this.server().startMonitor(board, port, settings);
   }
 
-  getCurrentSettings(board: Board, port: Port): MonitorSettings {
+  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {
     return this.server().getCurrentSettings(board, port);
   }
 

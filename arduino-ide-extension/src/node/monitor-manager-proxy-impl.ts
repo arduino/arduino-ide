@@ -6,7 +6,10 @@ import {
 } from '../common/protocol';
 import { Board, Port } from '../common/protocol';
 import { MonitorManager } from './monitor-manager';
-import { PluggableMonitorSettings } from './monitor-settings/monitor-settings-provider';
+import {
+  MonitorSettings,
+  PluggableMonitorSettings,
+} from './monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorManagerProxyImpl implements MonitorManagerProxy {
@@ -79,7 +82,7 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
    * @param port port monitored
    * @returns a map of MonitorSetting
    */
-  getCurrentSettings(board: Board, port: Port): PluggableMonitorSettings {
+  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {
     return this.manager.currentMonitorSettings(board, port);
   }
 

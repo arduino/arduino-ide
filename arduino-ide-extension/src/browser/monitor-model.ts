@@ -4,6 +4,9 @@ import {
   LocalStorageService,
 } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { MonitorManagerProxyClient } from '../common/protocol';
+import { isNullOrUndefined } from '../common/utils';
+import { MonitorSettings } from '../node/monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorModel implements FrontendApplicationContribution {
@@ -11,6 +14,9 @@ export class MonitorModel implements FrontendApplicationContribution {
 
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
+
+  @inject(MonitorManagerProxyClient)
+  protected readonly monitorManagerProxy: MonitorManagerProxyClient;
 
   protected readonly onChangeEmitter: Emitter<
     MonitorModel.State.Change<keyof MonitorModel.State>
@@ -35,7 +41,11 @@ export class MonitorModel implements FrontendApplicationContribution {
   onStart(): void {
     this.localStorageService
       .getData<MonitorModel.State>(MonitorModel.STORAGE_ID)
-      .then(this.restoreState);
+      .then(this.restoreState.bind(this));
+
+    this.monitorManagerProxy.onMonitorSettingsDidChange(
+      this.onMonitorSettingsDidChange.bind(this)
+    );
   }
 
   get onChange(): Event<MonitorModel.State.Change<keyof MonitorModel.State>> {
@@ -65,22 +75,34 @@ export class MonitorModel implements FrontendApplicationContribution {
     return this._autoscroll;
   }
 
-  toggleAutoscroll(): void {
-    this._autoscroll = !this._autoscroll;
+  set autoscroll(autoscroll: boolean) {
+    if (autoscroll === this._autoscroll) return;
+    this._autoscroll = autoscroll;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { autoscroll },
+    });
     this.storeState().then(() => {
       this.onChangeEmitter.fire({
         property: 'autoscroll',
-        value: this._timestamp,
+        value: this._autoscroll,
       });
     });
+  }
+
+  toggleAutoscroll(): void {
+    this.autoscroll = !this._autoscroll;
   }
 
   get timestamp(): boolean {
     return this._timestamp;
   }
 
-  toggleTimestamp(): void {
-    this._timestamp = !this._timestamp;
+  set timestamp(timestamp: boolean) {
+    if (timestamp === this._timestamp) return;
+    this._timestamp = timestamp;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { timestamp },
+    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'timestamp',
@@ -89,12 +111,20 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
+  toggleTimestamp(): void {
+    this.timestamp = !this._timestamp;
+  }
+
   get lineEnding(): MonitorModel.EOL {
     return this._lineEnding;
   }
 
   set lineEnding(lineEnding: MonitorModel.EOL) {
+    if (lineEnding === this._lineEnding) return;
     this._lineEnding = lineEnding;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { lineEnding },
+    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'lineEnding',
@@ -107,8 +137,12 @@ export class MonitorModel implements FrontendApplicationContribution {
     return this._interpolate;
   }
 
-  set interpolate(i: boolean) {
-    this._interpolate = i;
+  set interpolate(interpolate: boolean) {
+    if (interpolate === this._interpolate) return;
+    this._interpolate = interpolate;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { interpolate },
+    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'interpolate',
@@ -116,6 +150,18 @@ export class MonitorModel implements FrontendApplicationContribution {
       })
     );
   }
+
+  protected onMonitorSettingsDidChange = (settings: MonitorSettings): void => {
+    const { monitorUISettings } = settings;
+    if (!monitorUISettings) return;
+    const { autoscroll, interpolate, lineEnding, timestamp } =
+      monitorUISettings;
+
+    if (!isNullOrUndefined(autoscroll)) this.autoscroll = autoscroll;
+    if (!isNullOrUndefined(interpolate)) this.interpolate = interpolate;
+    if (!isNullOrUndefined(lineEnding)) this.lineEnding = lineEnding;
+    if (!isNullOrUndefined(timestamp)) this.timestamp = timestamp;
+  };
 }
 
 // TODO: Move this to /common

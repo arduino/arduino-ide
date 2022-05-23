@@ -14,9 +14,11 @@ import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
+  MonitorSettings,
   PluggableMonitorSettings,
   MonitorSettingsProvider,
 } from './monitor-settings/monitor-settings-provider';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 export const MonitorServiceName = 'monitor-service';
 
@@ -27,7 +29,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
   // Settings used by the currently running pluggable monitor.
   // They can be freely modified while running.
-  protected settings: PluggableMonitorSettings;
+  protected settings: MonitorSettings = {};
 
   // List of messages received from the running pluggable monitor.
   // These are flushed from time to time to the frontend.
@@ -48,6 +50,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   readonly onDispose = this.onDisposeEmitter.event;
 
   protected uploadInProgress = false;
+  protected _initialized = new Deferred<void>();
 
   constructor(
     @inject(ILogger)
@@ -64,6 +67,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
   ) {
     super();
 
+    this.monitorSettingsProvider = {
+      getSettings: () => ({} as Promise<PluggableMonitorSettings>),
+      setSettings: () => ({} as Promise<PluggableMonitorSettings>),
+    };
     this.onWSClientsNumberChanged =
       this.webSocketProvider.onClientsNumberChanged(async (clients: number) => {
         if (clients === 0) {
@@ -73,6 +80,18 @@ export class MonitorService extends CoreClientAware implements Disposable {
           this.dispose();
         }
       });
+
+    this.portMonitorSettings(port.protocol, board.fqbn!).then((settings) => {
+      this.settings = {
+        ...this.settings,
+        pluggableMonitorSettings: settings,
+      };
+      this._initialized.resolve();
+    });
+  }
+
+  get initialized(): Promise<void> {
+    return this._initialized.promise;
   }
 
   setUploadInProgress(status: boolean): void {
@@ -125,10 +144,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
       this.board.fqbn
     );
     // get actual settings from the settings provider
-    this.settings = await this.monitorSettingsProvider.getSettings(
-      monitorID,
-      defaultSettings
-    );
+    this.settings = {
+      ...this.settings,
+      pluggableMonitorSettings: {
+        ...this.settings.pluggableMonitorSettings,
+        ...(await this.monitorSettingsProvider.getSettings(
+          monitorID,
+          defaultSettings
+        )),
+      },
+    };
 
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
@@ -181,10 +206,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
       req.setPort(port);
     }
     const config = new MonitorPortConfiguration();
-    for (const id in this.settings) {
+    for (const id in this.settings.pluggableMonitorSettings) {
       const s = new MonitorPortSetting();
       s.setSettingId(id);
-      s.setValue(this.settings[id].selectedValue);
+      s.setValue(this.settings.pluggableMonitorSettings[id].selectedValue);
       config.addSettings(s);
     }
     req.setPortConfiguration(config);
@@ -283,7 +308,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
    *
    * @returns map of current monitor settings
    */
-  currentSettings(): PluggableMonitorSettings {
+  async currentSettings(): Promise<MonitorSettings> {
+    await this.initialized;
     return this.settings;
   }
 
@@ -339,14 +365,23 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * @param settings map of monitor settings to change
    * @returns a status to verify settings have been sent.
    */
-  async changeSettings(settings: PluggableMonitorSettings): Promise<Status> {
+  async changeSettings(settings: MonitorSettings): Promise<Status> {
     const config = new MonitorPortConfiguration();
-    for (const id in settings) {
-      const s = new MonitorPortSetting();
-      s.setSettingId(id);
-      s.setValue(settings[id].selectedValue);
-      config.addSettings(s);
-      this.settings[id] = settings[id];
+    const { pluggableMonitorSettings } = settings;
+
+    this.webSocketProvider.sendMessage(JSON.stringify(settings));
+
+    if (pluggableMonitorSettings) {
+      for (const id in pluggableMonitorSettings) {
+        const s = new MonitorPortSetting();
+        s.setSettingId(id);
+        s.setValue(pluggableMonitorSettings[id].selectedValue);
+        config.addSettings(s);
+        this.settings.pluggableMonitorSettings = {
+          ...this.settings.pluggableMonitorSettings,
+          [id]: pluggableMonitorSettings[id],
+        };
+      }
     }
 
     if (!this.duplex) {
@@ -385,13 +420,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
           switch (message.command) {
             case Monitor.Command.SEND_MESSAGE:
-              this.send(message.data);
+              this.send(message.data as string);
               break;
             case Monitor.Command.CHANGE_SETTINGS:
-              const settings: PluggableMonitorSettings = JSON.parse(
-                message.data
-              );
-              this.changeSettings(settings);
+              this.changeSettings(message.data as MonitorSettings);
               break;
           }
         }

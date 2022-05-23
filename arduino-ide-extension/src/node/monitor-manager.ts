@@ -4,7 +4,10 @@ import { Board, Port, Status } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
 import { MonitorServiceFactory } from './monitor-service-factory';
-import { PluggableMonitorSettings } from './monitor-settings/monitor-settings-provider';
+import {
+  MonitorSettings,
+  PluggableMonitorSettings,
+} from './monitor-settings/monitor-settings-provider';
 
 type MonitorID = string;
 
@@ -169,7 +172,10 @@ export class MonitorManager extends CoreClientAware {
    * @param port port monitored
    * @returns map of current monitor settings
    */
-  currentMonitorSettings(board: Board, port: Port): PluggableMonitorSettings {
+  async currentMonitorSettings(
+    board: Board,
+    port: Port
+  ): Promise<MonitorSettings> {
     const monitorID = this.monitorID(board, port);
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {

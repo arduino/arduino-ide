@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { postConstruct, injectable, inject } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { OptionsType } from 'react-select/src/types';
 import { Emitter } from '@theia/core/lib/common/event';
 import { Disposable } from '@theia/core/lib/common/disposable';
@@ -25,6 +25,8 @@ export class MonitorWidget extends ReactWidget {
     'Serial Monitor'
   );
   static readonly ID = 'serial-monitor';
+
+  protected settings: MonitorSettings = {};
 
   protected widgetHeight: number;
 
@@ -82,10 +84,24 @@ export class MonitorWidget extends ReactWidget {
     );
   }
 
-  @postConstruct()
-  protected init(): void {
+  protected onAfterAttach(msg: Message): void {
     this.update();
     this.toDispose.push(this.monitorModel.onChange(() => this.update()));
+    this.getCurrentSettings().then(this.onMonitorSettingsDidChange.bind(this));
+    this.monitorManagerProxy.onMonitorSettingsDidChange(
+      this.onMonitorSettingsDidChange.bind(this)
+    );
+  }
+
+  onMonitorSettingsDidChange(settings: MonitorSettings): void {
+    this.settings = {
+      ...this.settings,
+      pluggableMonitorSettings: {
+        ...this.settings.pluggableMonitorSettings,
+        ...settings.pluggableMonitorSettings,
+      },
+    };
+    this.update();
   }
 
   clearConsole(): void {
@@ -157,56 +173,33 @@ export class MonitorWidget extends ReactWidget {
     ];
   }
 
-  private getCurrentSettings(): MonitorSettings {
+  private getCurrentSettings(): Promise<MonitorSettings> {
     const board = this.boardsServiceProvider.boardsConfig.selectedBoard;
     const port = this.boardsServiceProvider.boardsConfig.selectedPort;
     if (!board || !port) {
-      return {};
+      return Promise.resolve(this.settings || {});
     }
     return this.monitorManagerProxy.getCurrentSettings(board, port);
   }
 
-  //////////////////////////////////////////////////
-  ////////////////////IMPORTANT/////////////////////
-  //////////////////////////////////////////////////
-  // baudRates and selectedBaudRates as of now are hardcoded
-  // like this to retrieve the baudrate settings from the ones
-  // received by the monitor.
-  // We're doing it like since the frontend as of now doesn't
-  // support a fully customizable list of options that would
-  // be require to support pluggable monitors completely.
-  // As soon as the frontend UI is updated to support
-  // any custom settings this methods MUST be removed and
-  // made generic.
-  //
-  // This breaks if the user tries to open a monitor that
-  // doesn't support the baudrate setting.
-  protected get baudRates(): string[] {
-    const { pluggableMonitorSettings } = this.getCurrentSettings();
-    if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate']) {
-      return [];
-    }
-
-    const baudRateSettings = pluggableMonitorSettings['baudrate'];
-
-    return baudRateSettings.values;
-  }
-
-  protected get selectedBaudRate(): string {
-    const { pluggableMonitorSettings } = this.getCurrentSettings();
-    if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate']) {
-      return '';
-    }
-    const baudRateSettings = pluggableMonitorSettings['baudrate'];
-    return baudRateSettings.selectedValue;
-  }
-
   protected render(): React.ReactNode {
-    const { baudRates, lineEndings } = this;
+    const baudrate = this.settings?.pluggableMonitorSettings
+      ? this.settings.pluggableMonitorSettings.baudrate
+      : undefined;
+
+    const baudrateOptions = baudrate?.values.map((b) => ({
+      label: b + ' baud',
+      value: b,
+    }));
+    const baudrateSelectedOption = baudrateOptions?.find(
+      (b) => b.value === baudrate?.selectedValue
+    );
+
     const lineEnding =
-      lineEndings.find((item) => item.value === this.monitorModel.lineEnding) ||
-      lineEndings[1]; // Defaults to `\n`.
-    const baudRate = baudRates.find((item) => item === this.selectedBaudRate);
+      this.lineEndings.find(
+        (item) => item.value === this.monitorModel.lineEnding
+      ) || this.lineEndings[1]; // Defaults to `\n`.
+
     return (
       <div className="serial-monitor">
         <div className="head">
@@ -222,20 +215,22 @@ export class MonitorWidget extends ReactWidget {
             <div className="select">
               <ArduinoSelect
                 maxMenuHeight={this.widgetHeight - 40}
-                options={lineEndings}
+                options={this.lineEndings}
                 value={lineEnding}
                 onChange={this.onChangeLineEnding}
               />
             </div>
-            <div className="select">
-              <ArduinoSelect
-                className="select"
-                maxMenuHeight={this.widgetHeight - 40}
-                options={baudRates}
-                value={baudRate}
-                onChange={this.onChangeBaudRate}
-              />
-            </div>
+            {baudrateOptions && baudrateSelectedOption && (
+              <div className="select">
+                <ArduinoSelect
+                  className="select"
+                  maxMenuHeight={this.widgetHeight - 40}
+                  options={baudrateOptions}
+                  value={baudrateSelectedOption}
+                  onChange={this.onChangeBaudRate}
+                />
+              </div>
+            )}
           </div>
         </div>
         <div className="body">
@@ -257,16 +252,21 @@ export class MonitorWidget extends ReactWidget {
 
   protected readonly onChangeLineEnding = (
     option: SerialMonitorOutput.SelectOption<MonitorModel.EOL>
-  ) => {
+  ): void => {
     this.monitorModel.lineEnding = option.value;
   };
 
-  protected readonly onChangeBaudRate = (value: string) => {
-    const { pluggableMonitorSettings } = this.getCurrentSettings();
-    if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate'])
-      return;
-    const baudRateSettings = pluggableMonitorSettings['baudrate'];
-    baudRateSettings.selectedValue = value;
-    this.monitorManagerProxy.changeSettings(pluggableMonitorSettings);
+  protected readonly onChangeBaudRate = ({
+    value,
+  }: {
+    value: string;
+  }): void => {
+    this.getCurrentSettings().then(({ pluggableMonitorSettings }) => {
+      if (!pluggableMonitorSettings || !pluggableMonitorSettings['baudrate'])
+        return;
+      const baudRateSettings = pluggableMonitorSettings['baudrate'];
+      baudRateSettings.selectedValue = value;
+      this.monitorManagerProxy.changeSettings({ pluggableMonitorSettings });
+    });
   };
 }
