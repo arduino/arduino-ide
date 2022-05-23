@@ -12,10 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Node.js 14.18.1
+      - name: Install Node.js 14.x
         uses: actions/setup-node@v2
         with:
-          node-version: '14.18.1'
+          node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
