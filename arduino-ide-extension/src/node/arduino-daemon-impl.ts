@@ -13,7 +13,6 @@ import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
-import { DaemonLog } from './daemon-log';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath, spawnCommand } from './exec-util';
 
@@ -256,7 +255,7 @@ export class ArduinoDaemonImpl
   }
 
   protected onData(message: string): void {
-    DaemonLog.log(this.logger, message);
+    this.logger.info(message);
   }
 
   protected onError(error: any): void {
