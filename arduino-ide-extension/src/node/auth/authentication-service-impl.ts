@@ -20,8 +20,6 @@ export class AuthenticationServiceImpl
   protected readonly clients: AuthenticationServiceClient[] = [];
   protected readonly toDispose = new DisposableCollection();
   
-  private initialized = false; 
-
   private initialized = false;
 
   async onStart(): Promise<void> {
