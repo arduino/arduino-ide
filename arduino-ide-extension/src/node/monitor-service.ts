@@ -123,11 +123,11 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * Start and connects a monitor using currently set board and port.
    * If a monitor is already started or board fqbn, port address and/or protocol
    * are missing nothing happens.
-   * @param id
    * @returns a status to verify connection has been established.
    */
-  async start(monitorID: string): Promise<Status> {
+  async start(): Promise<Status> {
     if (this.duplex) {
+      this.updateClientsSettings({ monitorUISettings: { connected: true } });
       return Status.ALREADY_CONNECTED;
     }
 
@@ -152,7 +152,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       pluggableMonitorSettings: {
         ...this.settings.pluggableMonitorSettings,
         ...(await this.monitorSettingsProvider.getSettings(
-          monitorID,
+          this.monitorID,
           defaultSettings
         )),
       },
@@ -165,12 +165,14 @@ export class MonitorService extends CoreClientAware implements Disposable {
     this.duplex
       .on('close', () => {
         this.duplex = null;
+        this.updateClientsSettings({ monitorUISettings: { connected: false } });
         this.logger.info(
           `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
         );
       })
       .on('end', () => {
         this.duplex = null;
+        this.updateClientsSettings({ monitorUISettings: { connected: false } });
         this.logger.info(
           `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
         );
@@ -223,6 +225,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         this.logger.info(
           `started monitor to ${this.port?.address} using ${this.port?.protocol}`
         );
+        this.updateClientsSettings({ monitorUISettings: { connected: true } });
         resolve(Status.OK);
         return;
       }
@@ -385,12 +388,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
       }
     }
 
-    const command: Monitor.Message = {
-      command: Monitor.MiddlewareCommand.ON_SETTINGS_DID_CHANGE,
-      data: { ...settings, pluggableMonitorSettings: reconciledSettings },
-    };
-
-    this.webSocketProvider.sendMessage(JSON.stringify(command));
+    this.updateClientsSettings({
+      ...settings,
+      pluggableMonitorSettings: reconciledSettings,
+    });
 
     if (!this.duplex) {
       return Status.NOT_CONNECTED;
@@ -437,6 +438,15 @@ export class MonitorService extends CoreClientAware implements Disposable {
         }
       );
     }
+  }
+
+  updateClientsSettings(settings: MonitorSettings): void {
+    const command: Monitor.Message = {
+      command: Monitor.MiddlewareCommand.ON_SETTINGS_DID_CHANGE,
+      data: settings,
+    };
+
+    this.webSocketProvider.sendMessage(JSON.stringify(command));
   }
 
   /**

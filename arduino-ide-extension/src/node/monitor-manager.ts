@@ -62,7 +62,7 @@ export class MonitorManager extends CoreClientAware {
     if (!monitor) {
       monitor = this.createMonitor(board, port);
     }
-    return await monitor.start(monitorID);
+    return await monitor.start();
   }
 
   /**
@@ -142,7 +142,7 @@ export class MonitorManager extends CoreClientAware {
       return Status.NOT_CONNECTED;
     }
     monitor.setUploadInProgress(false);
-    return await monitor.start(monitorID);
+    return await monitor.start();
   }
 
   /**

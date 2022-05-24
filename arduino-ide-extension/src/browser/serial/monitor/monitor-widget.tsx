@@ -207,6 +207,7 @@ export class MonitorWidget extends ReactWidget {
             <SerialMonitorSendInput
               boardsServiceProvider={this.boardsServiceProvider}
               monitorManagerProxy={this.monitorManagerProxy}
+              monitorModel={this.monitorModel}
               resolveFocus={this.onFocusResolved}
               onSend={this.onSend}
             />

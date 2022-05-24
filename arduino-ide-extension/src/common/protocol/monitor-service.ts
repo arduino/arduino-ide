@@ -65,6 +65,7 @@ export namespace Monitor {
     CHANGE_SETTINGS = 'CHANGE_SETTINGS',
   }
 
+  // Commands sent by the backend to the clients
   export enum MiddlewareCommand {
     ON_SETTINGS_DID_CHANGE = 'ON_SETTINGS_DID_CHANGE',
   }
