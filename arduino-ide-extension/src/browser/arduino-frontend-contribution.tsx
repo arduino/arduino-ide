@@ -373,7 +373,7 @@ export class ArduinoFrontendContribution
   ): Promise<void> {
     const release = await this.languageServerStartMutex.acquire();
     try {
-      const port = this.daemon.tryGetPort();
+      const port = await this.daemon.tryGetPort();
       if (!port) {
         return;
       }
