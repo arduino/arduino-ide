@@ -2,12 +2,12 @@
   "name": "Arduino dark",
   "type": "dark",
   "colors": {
-    "list.highlightForeground": "#171e21",
-    "list.activeSelectionForeground": "#424242",
-    "list.activeSelectionBackground": "#DAE3E3",
-    "list.inactiveSelectionForeground": "#424242",
-    "list.inactiveSelectionBackground": "#DAE3E3",
-    "list.hoverBackground": "#ECF1F1",
+    "list.highlightForeground": "#0ca1a6",
+    "list.activeSelectionForeground": "#dae3e3",
+    "list.activeSelectionBackground": "#434f54",
+    "list.inactiveSelectionForeground": "#dae3e3",
+    "list.inactiveSelectionBackground": "#434f54",
+    "list.hoverBackground": "#1f272a",
     "progressBar.background": "#005c5f",
     "editor.background": "#1f272a",
     "editor.foreground": "#dae3e3",
@@ -15,7 +15,7 @@
     "editor.selectionBackground": "#f1c40f",
     "editorCursor.foreground": "#434f54",
     "editorWhitespace.foreground": "#bfbfbf",
-    "editorWidget.background": "#F7F9F9",
+    "editorWidget.background": "#171e21",
     "focusBorder": "#dae3e3",
     "menubar.selectionBackground": "#ffffff",
     "menubar.selectionForeground": "#212121",
@@ -27,27 +27,30 @@
     "titleBar.activeForeground": "#dae3e3",
     "terminal.background": "#000000",
     "terminal.foreground": "#e0e0e0",
-    "dropdown.border": "#ececec",
-    "dropdown.background": "#ececec",
-    "activityBar.background": "#101618",
+    "dropdown.border": "#7fcbcd",
+    "dropdown.background": "#2c353a",
+    "dropdown.foreground": "#dae3e3",
+    "activityBar.background": "#171e21",
     "activityBar.foreground": "#dae3e3",
     "activityBar.inactiveForeground": "#4e5b61",
     "activityBar.activeBorder": "#0ca1a6",
     "statusBar.background": "#171e21",
-    "secondaryButton.background": "#b5c8c9",
-    "secondaryButton.foreground": "#ececec",
-    "secondaryButton.hoverBackground": "#dae3e3",
+    "secondaryButton.background": "#ff000000",
+    "secondaryButton.foreground": "#dae3e3",
+    "secondaryButton.hoverBackground": "#434f54",
     "arduino.branding.primary": "#0ca1a6",
     "arduino.branding.secondary": "#b5c8c9",
     "arduino.foreground": "#edf1f1",
     "arduino.output.foreground": "#ffffff",
     "arduino.output.background": "#000000",
+    "arduino.toolbar.hoverBackground": "#dae3e3",
     "sideBar.background": "#101618",
     "input.background": "#000000",
     "foreground": "#dae3e3",
     "settings.headerForeground": "#dae3e3",
     "tree.indentGuidesStroke": "#374146",
-    "tab.unfocusedActiveForeground": "#dae3e3"
+    "tab.unfocusedActiveForeground": "#dae3e3",
+    "tab.inactiveBackground": "#171e21"
   },
   "tokenColors": [
     {
@@ -97,7 +100,7 @@
         "variable.name"
       ],
       "settings": {
-        "foreground": "#434f54"
+        "foreground": "#dae3e3"
       }
     },
     {
