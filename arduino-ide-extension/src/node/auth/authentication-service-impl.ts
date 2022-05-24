@@ -19,8 +19,8 @@ export class AuthenticationServiceImpl
   protected readonly delegate = new ArduinoAuthenticationProvider();
   protected readonly clients: AuthenticationServiceClient[] = [];
   protected readonly toDispose = new DisposableCollection();
-  
-  private initialized = false; 
+
+  private initialized = false;
 
   async onStart(): Promise<void> {
     this.toDispose.pushAll([
@@ -49,12 +49,12 @@ export class AuthenticationServiceImpl
   async initAuthSession(): Promise<void> {
     if (!this.initialized) {
       await this.delegate.init();
-      this.initialized = true
+      this.initialized = true;
     }
   }
 
-  setOptions(authOptions: AuthOptions) {
-    this.delegate.setOptions(authOptions);
+  setOptions(authOptions: AuthOptions): Promise<void> {
+    return this.delegate.setOptions(authOptions);
   }
 
   async login(): Promise<AuthenticationSession> {

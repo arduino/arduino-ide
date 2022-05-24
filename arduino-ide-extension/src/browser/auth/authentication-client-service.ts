@@ -43,15 +43,15 @@ export class AuthenticationClientService
 
   readonly onSessionDidChange = this.onSessionDidChangeEmitter.event;
 
-  onStart(): void {
+  async onStart(): Promise<void> {
     this.toDispose.push(this.onSessionDidChangeEmitter);
     this.service.setClient(this);
     this.service
       .session()
       .then((session) => this.notifySessionDidChange(session));
 
-    this.setOptions();
-    this.service.initAuthSession()
+    await this.setOptions();
+    this.service.initAuthSession();
 
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.preferenceName.startsWith('arduino.auth.')) {
@@ -60,8 +60,8 @@ export class AuthenticationClientService
     });
   }
 
-  setOptions(): void {
-    this.service.setOptions({
+  setOptions(): Promise<void> {
+    return this.service.setOptions({
       redirectUri: `http://localhost:${serverPort}/callback`,
       responseType: 'code',
       clientID: this.arduinoPreferences['arduino.auth.clientID'],
