@@ -1,4 +1,4 @@
-import { injectable } from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX } from '@theia/core/lib/common/os';
 import {
@@ -14,9 +14,26 @@ import {
   ArduinoMenus,
   PlaceholderMenuNode,
 } from '../../../browser/menu/arduino-menus';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
+  private appReady = false;
+  private updateWhenReady = false;
+
+  override postConstruct(): void {
+    super.postConstruct();
+    this.appStateService.reachedState('ready').then(() => {
+      this.appReady = true;
+      if (this.updateWhenReady) {
+        this.setMenuBar();
+      }
+    });
+  }
+
   override createElectronMenuBar(): Electron.Menu {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
@@ -30,6 +47,13 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
   }
 
   override async setMenuBar(): Promise<void> {
+    // Avoid updating menu items when the app is not ready.
+    // Getting the current electron window is not free and synchronous.
+    // Here, we defer all menu update requests, and fire one when the app is ready.
+    if (!this.appReady) {
+      this.updateWhenReady = true;
+      return;
+    }
     await this.preferencesService.ready;
     const createdMenuBar = this.createElectronMenuBar();
     if (isOSX) {
@@ -39,7 +63,10 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     }
   }
 
-  override createElectronContextMenu(menuPath: MenuPath, args?: any[]): Electron.Menu {
+  override createElectronContextMenu(
+    menuPath: MenuPath,
+    args?: any[]
+  ): Electron.Menu {
     const menuModel = this.menuProvider.getMenu(menuPath);
     const template = this.fillMenuTemplate([], menuModel, args, {
       showDisabled: false,

@@ -42,6 +42,12 @@ const WORKSPACES = 'workspaces';
 const APP_STARTED_WITH_NOSPLASH =
   typeof process !== 'undefined' && process.argv.indexOf('--nosplash') !== -1;
 
+/**
+ * If the app is started with `--open-devtools` argument, the `Dev Tools` will be opened.
+ */
+const APP_STARTED_WITH_DEV_TOOLS =
+  typeof process !== 'undefined' && process.argv.indexOf('--open-devtools') !== -1;
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   protected startup = false;
@@ -243,8 +249,20 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     options: TheiaBrowserWindowOptions
   ): Promise<BrowserWindow> {
     const electronWindow = await super.createWindow(options);
+    if (APP_STARTED_WITH_DEV_TOOLS) {
+      electronWindow.webContents.openDevTools({ mode: 'undocked' });
+    }
     this.attachListenersToWindow(electronWindow);
     return electronWindow;
+  }
+
+  protected override getDefaultOptions(): TheiaBrowserWindowOptions {
+    const options = super.getDefaultOptions();
+    if (!options.webPreferences) {
+      options.webPreferences = {};
+    }
+    options.webPreferences.v8CacheOptions = 'bypassHeatCheck'; // TODO: verify this. VS Code use this V8 option.
+    return options;
   }
 
   private attachListenersToWindow(electronWindow: BrowserWindow) {
