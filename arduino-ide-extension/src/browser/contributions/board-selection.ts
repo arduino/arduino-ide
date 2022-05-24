@@ -101,7 +101,6 @@ PID: ${PID}`;
   }
 
   override onStart(): void {
-    this.updateMenus();
     this.notificationCenter.onPlatformInstalled(this.updateMenus.bind(this));
     this.notificationCenter.onPlatformUninstalled(this.updateMenus.bind(this));
     this.boardsServiceProvider.onBoardsConfigChanged(
@@ -113,6 +112,10 @@ PID: ${PID}`;
     this.boardsServiceProvider.onAvailablePortsChanged(
       this.updateMenus.bind(this)
     );
+  }
+
+  override async onReady(): Promise<void> {
+    this.updateMenus();
   }
 
   protected async updateMenus(): Promise<void> {

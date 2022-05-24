@@ -58,7 +58,7 @@ import {
   FileSystemExt,
   FileSystemExtPath,
 } from '../common/protocol/filesystem-ext';
-import { ExamplesServiceImpl } from './examples-service-impl';
+import { BuiltInExamplesServiceImpl, ExamplesServiceImpl } from './examples-service-impl';
 import {
   ExamplesService,
   ExamplesServicePath,
@@ -123,6 +123,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  // Built-in examples are not board specific, so it is possible to have one shared instance.
+  bind(BuiltInExamplesServiceImpl).toSelf().inSingletonScope();
 
   // Examples service. One per backend, each connected FE gets a proxy.
   bind(ConnectionContainerModule).toConstantValue(

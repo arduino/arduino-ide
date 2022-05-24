@@ -1,5 +1,5 @@
 import * as PQueue from 'p-queue';
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandHandler } from '@theia/core/lib/common/command';
 import {
   MenuPath,
@@ -43,8 +43,8 @@ export abstract class Examples extends SketchContribution {
 
   protected readonly toDispose = new DisposableCollection();
 
-  @postConstruct()
-  init(): void {
+  protected override init(): void {
+    super.init();
     this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
       this.handleBoardChanged(selectedBoard)
     );
@@ -161,7 +161,7 @@ export abstract class Examples extends SketchContribution {
 
 @injectable()
 export class BuiltInExamples extends Examples {
-  override onStart(): void {
+  override async onReady(): Promise<void> {
     this.register(); // no `await`
   }
 
@@ -202,9 +202,12 @@ export class LibraryExamples extends Examples {
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
   override onStart(): void {
-    this.register(); // no `await`
     this.notificationCenter.onLibraryInstalled(() => this.register());
     this.notificationCenter.onLibraryUninstalled(() => this.register());
+  }
+
+  override async onReady(): Promise<void> {
+    this.register(); // no `await`
   }
 
   protected override handleBoardChanged(board: Board | undefined): void {

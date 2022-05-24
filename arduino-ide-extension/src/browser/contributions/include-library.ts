@@ -45,7 +45,6 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly toDispose = new DisposableCollection();
 
   override onStart(): void {
-    this.updateMenuActions();
     this.boardsServiceClient.onBoardsConfigChanged(() =>
       this.updateMenuActions()
     );
@@ -53,6 +52,10 @@ export class IncludeLibrary extends SketchContribution {
     this.notificationCenter.onLibraryUninstalled(() =>
       this.updateMenuActions()
     );
+  }
+
+  override async onReady(): Promise<void> {
+    this.updateMenuActions();
   }
 
   override registerMenus(registry: MenuModelRegistry): void {

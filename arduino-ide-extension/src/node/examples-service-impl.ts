@@ -61,6 +61,33 @@ namespace BuiltInSketchContainer {
 }
 
 @injectable()
+export class BuiltInExamplesServiceImpl {
+  protected _builtIns: SketchContainer[] | undefined;
+
+  @postConstruct()
+  protected init(): void {
+    this.builtIns();
+  }
+
+  async builtIns(): Promise<SketchContainer[]> {
+    if (this._builtIns) {
+      return this._builtIns;
+    }
+    const examplesRootPath = join(__dirname, '..', '..', 'Examples');
+    const examplesRootUri = FileUri.create(examplesRootPath);
+    const rawJson = await fs.promises.readFile(
+      join(examplesRootPath, 'examples.json'),
+      { encoding: 'utf8' }
+    );
+    const examples: BuiltInSketchContainer[] = JSON.parse(rawJson);
+    this._builtIns = examples.map((container) =>
+      BuiltInSketchContainer.toSketchContainer(container, examplesRootUri)
+    );
+    return this._builtIns;
+  }
+}
+
+@injectable()
 export class ExamplesServiceImpl implements ExamplesService {
   @inject(SketchesServiceImpl)
   protected readonly sketchesService: SketchesServiceImpl;
@@ -71,28 +98,11 @@ export class ExamplesServiceImpl implements ExamplesService {
   @inject(ConfigServiceImpl)
   protected readonly configService: ConfigServiceImpl;
 
-  protected _all: SketchContainer[] | undefined;
+  @inject(BuiltInExamplesServiceImpl)
+  private readonly builtInExamplesService: BuiltInExamplesServiceImpl;
 
-  @postConstruct()
-  protected init(): void {
-    this.builtIns();
-  }
-
-  async builtIns(): Promise<SketchContainer[]> {
-    if (this._all) {
-      return this._all;
-    }
-    const examplesRootPath = join(__dirname, '..', '..', 'Examples');
-    const examplesRootUri = FileUri.create(examplesRootPath);
-    const rawJson = await fs.promises.readFile(
-      join(examplesRootPath, 'examples.json'),
-      { encoding: 'utf8' }
-    );
-    const examples: BuiltInSketchContainer[] = JSON.parse(rawJson);
-    this._all = examples.map((container) =>
-      BuiltInSketchContainer.toSketchContainer(container, examplesRootUri)
-    );
-    return this._all;
+  builtIns(): Promise<SketchContainer[]> {
+    return this.builtInExamplesService.builtIns();
   }
 
   // TODO: decide whether it makes sense to cache them. Keys should be: `fqbn` + version of containing core/library.

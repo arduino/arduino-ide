@@ -24,15 +24,18 @@ export class Sketchbook extends Examples {
   protected readonly notificationCenter: NotificationCenter;
 
   override onStart(): void {
-    this.sketchService.getSketches({}).then((container) => {
-      this.register(container);
-      this.mainMenuManager.update();
-    });
     this.sketchServiceClient.onSketchbookDidChange(() => {
       this.sketchService.getSketches({}).then((container) => {
         this.register(container);
         this.mainMenuManager.update();
       });
+    });
+  }
+
+  override async onReady(): Promise<void> {
+    this.sketchService.getSketches({}).then((container) => {
+      this.register(container);
+      this.mainMenuManager.update();
     });
   }
 

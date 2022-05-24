@@ -36,14 +36,15 @@ export class OpenRecentSketch extends SketchContribution {
   protected toDisposeBeforeRegister = new Map<string, DisposableCollection>();
 
   override onStart(): void {
-    const refreshMenu = (sketches: Sketch[]) => {
-      this.register(sketches);
-      this.mainMenuManager.update();
-    };
     this.notificationCenter.onRecentSketchesChanged(({ sketches }) =>
-      refreshMenu(sketches)
+      this.refreshMenu(sketches)
     );
-    this.sketchService.recentlyOpenedSketches().then(refreshMenu);
+  }
+
+  override async onReady(): Promise<void> {
+    this.sketchService
+      .recentlyOpenedSketches()
+      .then((sketches) => this.refreshMenu(sketches));
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
@@ -52,6 +53,11 @@ export class OpenRecentSketch extends SketchContribution {
       nls.localize('arduino/sketch/openRecent', 'Open Recent'),
       { order: '2' }
     );
+  }
+
+  private refreshMenu(sketches: Sketch[]): void {
+    this.register(sketches);
+    this.mainMenuManager.update();
   }
 
   protected register(sketches: Sketch[]): void {
