@@ -271,6 +271,12 @@ import {
   IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
+import { DefaultJsonSchemaContribution } from './theia/core/json-schema-store';
+import { DefaultJsonSchemaContribution as TheiaDefaultJsonSchemaContribution } from '@theia/core/lib/browser/json-schema-store';
+import { EditorNavigationContribution } from './theia/editor/editor-navigation-contribution';
+import { EditorNavigationContribution as TheiaEditorNavigationContribution } from '@theia/editor/lib/browser/editor-navigation-contribution';
+import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-generator';
+import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -668,6 +674,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Silent the badge decoration in the Explorer view.
   bind(NavigatorTabBarDecorator).toSelf().inSingletonScope();
   rebind(TheiaNavigatorTabBarDecorator).toService(NavigatorTabBarDecorator);
+
+  // Do not fetch the `catalog.json` from Azure on FE load.
+  bind(DefaultJsonSchemaContribution).toSelf().inSingletonScope();
+  rebind(TheiaDefaultJsonSchemaContribution).toService(
+    DefaultJsonSchemaContribution
+  );
+
+  // Do not block the app startup when initializing the editor navigation history.
+  bind(EditorNavigationContribution).toSelf().inSingletonScope();
+  rebind(TheiaEditorNavigationContribution).toService(
+    EditorNavigationContribution
+  );
+
+  bind(PreferenceTreeGenerator).toSelf().inSingletonScope()
+  rebind(TheiaPreferenceTreeGenerator).toService(PreferenceTreeGenerator);
 
   // To avoid running `Save All` when there are no dirty editors before starting the debug session.
   bind(DebugSessionManager).toSelf().inSingletonScope();
