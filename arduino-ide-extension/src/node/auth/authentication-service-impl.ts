@@ -19,6 +19,8 @@ export class AuthenticationServiceImpl
   protected readonly delegate = new ArduinoAuthenticationProvider();
   protected readonly clients: AuthenticationServiceClient[] = [];
   protected readonly toDispose = new DisposableCollection();
+  
+  private initialized = false; 
 
   private initialized = false;
 
