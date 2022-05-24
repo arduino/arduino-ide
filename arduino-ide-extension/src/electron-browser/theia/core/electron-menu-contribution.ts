@@ -18,16 +18,16 @@ export class ElectronMenuContribution
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
-  private appReady = false;
-  private updateWhenReady = false;
+  // private appReady = false;
+  // private updateWhenReady = false;
 
   override onStart(app: FrontendApplication): void {
     super.onStart(app);
     this.appStateService.reachedState('ready').then(() => {
-      this.appReady = true;
-      if (this.updateWhenReady) {
-        this.update();
-      }
+      // this.appReady = true;
+      // if (this.updateWhenReady) {
+      //   this.update();
+      // }
     });
   }
 
@@ -37,11 +37,11 @@ export class ElectronMenuContribution
   }
 
   update(): void {
-    if (this.appReady) {
-      (this as any).setMenu();
-    } else {
-      this.updateWhenReady = true;
-    }
+    (this as any).setMenu();
+    // if (this.appReady) {
+    // } else {
+    //   this.updateWhenReady = true;
+    // }
   }
 
   override registerCommands(registry: CommandRegistry): void {

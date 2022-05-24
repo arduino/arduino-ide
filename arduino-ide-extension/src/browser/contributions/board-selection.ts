@@ -101,16 +101,14 @@ PID: ${PID}`;
   }
 
   override onStart(): void {
-    this.notificationCenter.onPlatformInstalled(this.updateMenus.bind(this));
-    this.notificationCenter.onPlatformUninstalled(this.updateMenus.bind(this));
-    this.boardsServiceProvider.onBoardsConfigChanged(
-      this.updateMenus.bind(this)
+    this.notificationCenter.onPlatformInstalled(() => this.updateMenus());
+    this.notificationCenter.onPlatformUninstalled(() => this.updateMenus());
+    this.boardsServiceProvider.onBoardsConfigChanged(() => this.updateMenus());
+    this.boardsServiceProvider.onAvailableBoardsChanged(() =>
+      this.updateMenus()
     );
-    this.boardsServiceProvider.onAvailableBoardsChanged(
-      this.updateMenus.bind(this)
-    );
-    this.boardsServiceProvider.onAvailablePortsChanged(
-      this.updateMenus.bind(this)
+    this.boardsServiceProvider.onAvailablePortsChanged(() =>
+      this.updateMenus()
     );
   }
 

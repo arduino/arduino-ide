@@ -41,7 +41,7 @@ export class ArduinoDaemonImpl
   // Backend application lifecycle.
 
   onStart(): void {
-    this.startDaemon();
+    this.startDaemon(); // no await
   }
 
   // Daemon API
