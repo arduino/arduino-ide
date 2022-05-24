@@ -22,17 +22,15 @@ export class FrontendApplication extends TheiaFrontendApplication {
 
   protected override async initializeLayout(): Promise<void> {
     await super.initializeLayout();
-    const roots = await this.workspaceService.roots;
-    for (const root of roots) {
-      const exists = await this.fileService.exists(root.resource);
-      if (exists) {
-        this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
+    this.workspaceService.roots.then(async (roots) => {
+      for (const root of roots) {
         await this.commandService.executeCommand(
           ArduinoCommands.OPEN_SKETCH_FILES.id,
           root.resource
         );
+        this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
       }
-    }
+    });
   }
 
   protected override getStartupIndicator(

@@ -72,11 +72,12 @@ export class WorkspaceService extends TheiaWorkspaceService {
       // Remove the leading # and decode the URI.
       const wpPath = decodeURI(window.location.hash.substring(1));
       const workspaceUri = new URI().withPath(wpPath).withScheme('file');
-      // Customization! Here, we do no check if the workspace exists.
+      // ### Customization! Here, we do no check if the workspace exists.
       return workspaceUri.toString();
     } else {
       // Else, ask the server for its suggested workspace (usually the one
       // specified on the CLI, or the most recent).
+      // ### Customization! the default workspace server will create a new sketch and will return with its URI if no recent workspaces are available.
       return this.server.getMostRecentlyUsedWorkspace();
     }
   }
