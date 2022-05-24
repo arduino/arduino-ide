@@ -5,12 +5,13 @@ import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
-import { timeout } from '@theia/core/lib/common/promise-util';
+import { MonitorModel } from '../../monitor-model';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
     readonly boardsServiceProvider: BoardsServiceProvider;
     readonly monitorManagerProxy: MonitorManagerProxyClient;
+    readonly monitorModel: MonitorModel;
     readonly onSend: (text: string) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
   }
@@ -35,25 +36,12 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   componentDidMount(): void {
-    this.setState({ connected: true });
-
-    const checkWSConnection = new Promise<boolean>((resolve) => {
-      this.props.monitorManagerProxy.onWSConnectionChanged((connected) => {
-        this.setState({ connected });
-        resolve(true);
-      });
-    });
-
-    const checkWSTimeout = timeout(1000).then(() => false);
-
-    Promise.race<boolean>([checkWSConnection, checkWSTimeout]).then(
-      async (resolved) => {
-        if (!resolved) {
-          const connected =
-            await this.props.monitorManagerProxy.isWSConnected();
-          this.setState({ connected });
-        }
-      }
+    this.setState({ connected: this.props.monitorModel.connected });
+    this.toDisposeBeforeUnmount.push(
+      this.props.monitorModel.onChange(({ property }) => {
+        if (property === 'connected')
+          this.setState({ connected: this.props.monitorModel.connected });
+      })
     );
   }
 

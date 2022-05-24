@@ -26,12 +26,20 @@ export class MonitorModel implements FrontendApplicationContribution {
   protected _timestamp: boolean;
   protected _lineEnding: MonitorModel.EOL;
   protected _interpolate: boolean;
+  protected _darkTheme: boolean;
+  protected _wsPort: number;
+  protected _serialPort: string;
+  protected _connected: boolean;
 
   constructor() {
     this._autoscroll = true;
     this._timestamp = false;
     this._interpolate = false;
     this._lineEnding = MonitorModel.EOL.DEFAULT;
+    this._darkTheme = false;
+    this._wsPort = 0;
+    this._serialPort = '';
+    this._connected = true;
 
     this.onChangeEmitter = new Emitter<
       MonitorModel.State.Change<keyof MonitorModel.State>
@@ -60,6 +68,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     this._timestamp = state.timestamp;
     this._lineEnding = state.lineEnding;
     this._interpolate = state.interpolate;
+    this._serialPort = state.serialPort;
   }
 
   protected async storeState(): Promise<void> {
@@ -68,6 +77,7 @@ export class MonitorModel implements FrontendApplicationContribution {
       timestamp: this._timestamp,
       lineEnding: this._lineEnding,
       interpolate: this._interpolate,
+      serialPort: this._serialPort,
     });
   }
 
@@ -151,16 +161,94 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
+  get darkTheme(): boolean {
+    return this._darkTheme;
+  }
+
+  set darkTheme(darkTheme: boolean) {
+    if (darkTheme === this._darkTheme) return;
+    this._darkTheme = darkTheme;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { darkTheme },
+    });
+    this.onChangeEmitter.fire({
+      property: 'darkTheme',
+      value: this._darkTheme,
+    });
+  }
+
+  get wsPort(): number {
+    return this._wsPort;
+  }
+
+  set wsPort(wsPort: number) {
+    if (wsPort === this._wsPort) return;
+    this._wsPort = wsPort;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { wsPort },
+    });
+    this.onChangeEmitter.fire({
+      property: 'wsPort',
+      value: this._wsPort,
+    });
+  }
+
+  get serialPort(): string {
+    return this._serialPort;
+  }
+
+  set serialPort(serialPort: string) {
+    if (serialPort === this._serialPort) return;
+    this._serialPort = serialPort;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { serialPort },
+    });
+    this.storeState().then(() =>
+      this.onChangeEmitter.fire({
+        property: 'serialPort',
+        value: this._serialPort,
+      })
+    );
+  }
+
+  get connected(): boolean {
+    return this._connected;
+  }
+
+  set connected(connected: boolean) {
+    if (connected === this._connected) return;
+    this._connected = connected;
+    this.monitorManagerProxy.changeSettings({
+      monitorUISettings: { connected },
+    });
+    this.onChangeEmitter.fire({
+      property: 'connected',
+      value: this._connected,
+    });
+  }
+
   protected onMonitorSettingsDidChange = (settings: MonitorSettings): void => {
     const { monitorUISettings } = settings;
     if (!monitorUISettings) return;
-    const { autoscroll, interpolate, lineEnding, timestamp } =
-      monitorUISettings;
+    const {
+      autoscroll,
+      interpolate,
+      lineEnding,
+      timestamp,
+      darkTheme,
+      wsPort,
+      serialPort,
+      connected,
+    } = monitorUISettings;
 
     if (!isNullOrUndefined(autoscroll)) this.autoscroll = autoscroll;
     if (!isNullOrUndefined(interpolate)) this.interpolate = interpolate;
     if (!isNullOrUndefined(lineEnding)) this.lineEnding = lineEnding;
     if (!isNullOrUndefined(timestamp)) this.timestamp = timestamp;
+    if (!isNullOrUndefined(darkTheme)) this.darkTheme = darkTheme;
+    if (!isNullOrUndefined(wsPort)) this.wsPort = wsPort;
+    if (!isNullOrUndefined(serialPort)) this.serialPort = serialPort;
+    if (!isNullOrUndefined(connected)) this.connected = connected;
   };
 }
 
@@ -171,6 +259,10 @@ export namespace MonitorModel {
     timestamp: boolean;
     lineEnding: EOL;
     interpolate: boolean;
+    darkTheme: boolean;
+    wsPort: number;
+    serialPort: string;
+    connected: boolean;
   }
   export namespace State {
     export interface Change<K extends keyof State> {
