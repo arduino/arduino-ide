@@ -21,7 +21,7 @@
     "test:watch": "mocha --watch --watch-files lib \"./lib/test/**/*.test.js\""
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.3.7",
+    "@grpc/grpc-js": "^1.6.7",
     "@theia/application-package": "1.25.0",
     "@theia/core": "1.25.0",
     "@theia/editor": "1.25.0",
@@ -70,8 +70,6 @@
     "electron-updater": "^4.6.5",
     "fast-safe-stringify": "^2.1.1",
     "glob": "^7.1.6",
-    "google-protobuf": "^3.11.4",
-    "grpc": "^1.24.11",
     "hash.js": "^1.1.7",
     "is-valid-path": "^0.1.1",
     "js-yaml": "^3.13.1",
