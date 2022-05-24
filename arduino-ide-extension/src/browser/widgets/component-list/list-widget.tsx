@@ -21,7 +21,7 @@ import { NotificationCenter } from '../../notification-center';
 @injectable()
 export abstract class ListWidget<
   T extends ArduinoComponent
-> extends ReactWidget {
+  > extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
 
@@ -77,11 +77,20 @@ export abstract class ListWidget<
     return this.deferredContainer.promise;
   }
 
-  protected override onActivateRequest(message: Message): void {
+  protected override onAfterShow(message: Message): void {
+    this.maybeUpdateOnFirstRender();
+    super.onAfterShow(message);
+  }
+
+  private maybeUpdateOnFirstRender() {
     if (this.firstActivate) {
       this.firstActivate = false;
       this.update();
     }
+  }
+
+  protected override onActivateRequest(message: Message): void {
+    this.maybeUpdateOnFirstRender();
     super.onActivateRequest(message);
     (this.focusNode || this.node).focus();
   }
