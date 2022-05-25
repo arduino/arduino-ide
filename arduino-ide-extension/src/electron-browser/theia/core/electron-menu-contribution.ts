@@ -8,7 +8,13 @@ import {
 } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 import { MainMenuManager } from '../../../common/main-menu-manager';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { FrontendApplication } from '@theia/core/lib/browser';
+import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import { ZoomLevel } from '@theia/core/lib/electron-browser/window/electron-window-preferences';
+import { PreferenceScope } from '@theia/core/lib/browser/preferences/preference-scope';
+import {
+  getCurrentWindow,
+  getCurrentWebContents,
+} from '@theia/core/electron-shared/@electron/remote';
 
 @injectable()
 export class ElectronMenuContribution
@@ -37,15 +43,19 @@ export class ElectronMenuContribution
   }
 
   update(): void {
-    (this as any).setMenu();
     // if (this.appReady) {
+    (this as any).setMenu();
     // } else {
     //   this.updateWhenReady = true;
     // }
   }
 
+  override handleTitleBarStyling(): void {
+    // NOOP
+  }
+
   override registerCommands(registry: CommandRegistry): void {
-    super.registerCommands(registry);
+    this.theiaRegisterCommands(registry);
     registry.unregisterCommand(ElectronCommands.CLOSE_WINDOW);
   }
 
@@ -59,5 +69,82 @@ export class ElectronMenuContribution
     registry.unregisterKeybinding(ElectronCommands.CLOSE_WINDOW.id);
     registry.unregisterKeybinding(ElectronCommands.ZOOM_IN.id);
     registry.unregisterKeybinding(ElectronCommands.ZOOM_OUT.id);
+  }
+
+  // Copied from Theia: https://github.com/eclipse-theia/theia/blob/9ec8835cf35d5a46101a62ae93285aeb37a2f382/packages/core/src/electron-browser/menu/electron-menu-contribution.ts#L260-L314
+  // Unlike the Theia implementation, this does not require synchronously the browser window, but use a function only when the command handler executes.
+  private theiaRegisterCommands(registry: CommandRegistry): void {
+    const currentWindow = () => getCurrentWindow();
+
+    registry.registerCommand(ElectronCommands.TOGGLE_DEVELOPER_TOOLS, {
+      execute: () => {
+        const webContent = getCurrentWebContents();
+        if (!webContent.isDevToolsOpened()) {
+          webContent.openDevTools();
+        } else {
+          webContent.closeDevTools();
+        }
+      },
+    });
+
+    registry.registerCommand(ElectronCommands.RELOAD, {
+      execute: () => this.windowService.reload(),
+    });
+    registry.registerCommand(ElectronCommands.CLOSE_WINDOW, {
+      execute: () => currentWindow().close(),
+    });
+
+    registry.registerCommand(ElectronCommands.ZOOM_IN, {
+      execute: () => {
+        const webContents = currentWindow().webContents;
+        // When starting at a level that is not a multiple of 0.5, increment by at most 0.5 to reach the next highest multiple of 0.5.
+        let zoomLevel =
+          Math.floor(webContents.zoomLevel / ZoomLevel.VARIATION) *
+            ZoomLevel.VARIATION +
+          ZoomLevel.VARIATION;
+        if (zoomLevel > ZoomLevel.MAX) {
+          zoomLevel = ZoomLevel.MAX;
+          return;
+        }
+        this.preferenceService.set(
+          'window.zoomLevel',
+          zoomLevel,
+          PreferenceScope.User
+        );
+      },
+    });
+    registry.registerCommand(ElectronCommands.ZOOM_OUT, {
+      execute: () => {
+        const webContents = currentWindow().webContents;
+        // When starting at a level that is not a multiple of 0.5, decrement by at most 0.5 to reach the next lowest multiple of 0.5.
+        let zoomLevel =
+          Math.ceil(webContents.zoomLevel / ZoomLevel.VARIATION) *
+            ZoomLevel.VARIATION -
+          ZoomLevel.VARIATION;
+        if (zoomLevel < ZoomLevel.MIN) {
+          zoomLevel = ZoomLevel.MIN;
+          return;
+        }
+        this.preferenceService.set(
+          'window.zoomLevel',
+          zoomLevel,
+          PreferenceScope.User
+        );
+      },
+    });
+    registry.registerCommand(ElectronCommands.RESET_ZOOM, {
+      execute: () =>
+        this.preferenceService.set(
+          'window.zoomLevel',
+          ZoomLevel.DEFAULT,
+          PreferenceScope.User
+        ),
+    });
+    registry.registerCommand(ElectronCommands.TOGGLE_FULL_SCREEN, {
+      isEnabled: () => currentWindow().isFullScreenable(),
+      isVisible: () => currentWindow().isFullScreenable(),
+      execute: () =>
+        currentWindow().setFullScreen(!currentWindow().isFullScreen()),
+    });
   }
 }
