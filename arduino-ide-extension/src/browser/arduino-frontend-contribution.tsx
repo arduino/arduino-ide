@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import {
@@ -45,19 +49,13 @@ import {
   EditorManager,
   EditorOpenerOptions,
 } from '@theia/editor/lib/browser';
-import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
-import { FileNavigatorCommands, FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
-import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
-import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
-import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileChangeType } from '@theia/filesystem/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { ConfigService } from '../common/protocol/config-service';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsConfig } from './boards/boards-config';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
@@ -70,7 +68,6 @@ import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { ArduinoPreferences } from './arduino-preferences';
 import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
-import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
@@ -85,96 +82,73 @@ export class ArduinoFrontendContribution
     TabBarToolbarContribution,
     CommandContribution,
     MenuContribution,
-    ColorContribution {
+    ColorContribution
+{
   @inject(ILogger)
-  protected logger: ILogger;
+  private readonly logger: ILogger;
 
   @inject(MessageService)
-  protected readonly messageService: MessageService;
+  private readonly messageService: MessageService;
 
   @inject(BoardsService)
-  protected readonly boardsService: BoardsService;
+  private readonly boardsService: BoardsService;
 
   @inject(LibraryService)
-  protected readonly libraryService: LibraryService;
+  private readonly libraryService: LibraryService;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClientImpl: BoardsServiceProvider;
+  private readonly boardsServiceClientImpl: BoardsServiceProvider;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  private readonly editorManager: EditorManager;
 
   @inject(FileService)
-  protected readonly fileService: FileService;
+  private readonly fileService: FileService;
 
   @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
+  private readonly sketchService: SketchesService;
 
   @inject(BoardsConfigDialog)
-  protected readonly boardsConfigDialog: BoardsConfigDialog;
+  private readonly boardsConfigDialog: BoardsConfigDialog;
 
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
+  private readonly commandRegistry: CommandRegistry;
 
   @inject(StatusBar)
-  protected readonly statusBar: StatusBar;
-
-  @inject(FileNavigatorContribution)
-  protected readonly fileNavigatorContributions: FileNavigatorContribution;
-
-  @inject(OutputContribution)
-  protected readonly outputContribution: OutputContribution;
-
-  @inject(OutlineViewContribution)
-  protected readonly outlineContribution: OutlineViewContribution;
-
-  @inject(ProblemContribution)
-  protected readonly problemContribution: ProblemContribution;
-
-  @inject(ScmContribution)
-  protected readonly scmContribution: ScmContribution;
-
-  @inject(SearchInWorkspaceFrontendContribution)
-  protected readonly siwContribution: SearchInWorkspaceFrontendContribution;
-
-  @inject(SketchbookWidgetContribution)
-  protected readonly sketchbookWidgetContribution: SketchbookWidgetContribution;
+  private readonly statusBar: StatusBar;
 
   @inject(EditorMode)
-  protected readonly editorMode: EditorMode;
-
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  private readonly editorMode: EditorMode;
 
   @inject(HostedPluginSupport)
-  protected hostedPluginSupport: HostedPluginSupport;
+  private readonly hostedPluginSupport: HostedPluginSupport;
 
   @inject(ExecutableService)
-  protected executableService: ExecutableService;
+  private readonly executableService: ExecutableService;
 
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
+  private readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchServiceClient: SketchesServiceClientImpl;
+  private readonly sketchServiceClient: SketchesServiceClientImpl;
 
   @inject(FrontendApplicationStateService)
-  protected readonly appStateService: FrontendApplicationStateService;
+  private readonly appStateService: FrontendApplicationStateService;
 
   @inject(LocalStorageService)
-  protected readonly localStorageService: LocalStorageService;
+  private readonly localStorageService: LocalStorageService;
 
   @inject(FileSystemFrontendContribution)
-  protected readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
+  private readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
 
   @inject(IDEUpdater)
-  protected readonly updater: IDEUpdater;
+  private readonly updater: IDEUpdater;
 
   @inject(IDEUpdaterDialog)
-  protected readonly updaterDialog: IDEUpdaterDialog;
+  private readonly updaterDialog: IDEUpdaterDialog;
 
   @inject(ArduinoDaemon)
-  protected readonly daemon: ArduinoDaemon;
+  private readonly daemon: ArduinoDaemon;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -271,21 +245,6 @@ export class ArduinoFrontendContribution
   }
 
   async onStart(app: FrontendApplication): Promise<void> {
-    // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
-    for (const viewContribution of [
-      this.fileNavigatorContributions,
-      this.outputContribution,
-      this.outlineContribution,
-      this.problemContribution,
-      this.scmContribution,
-      this.siwContribution,
-      this.sketchbookWidgetContribution,
-    ] as Array<FrontendApplicationContribution>) {
-      if (viewContribution.initializeLayout) {
-        viewContribution.initializeLayout(app);
-      }
-    }
-
     this.updater
       .init(
         this.arduinoPreferences.get('arduino.ide.updateChannel'),
@@ -349,16 +308,18 @@ export class ArduinoFrontendContribution
 
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
 
-    this.fileSystemFrontendContribution.onDidChangeEditorFile(e => {
-      if (e.type === FileChangeType.DELETED) {
-        const editorWidget = e.editor;
-        if (SaveableWidget.is(editorWidget)) {
-          editorWidget.closeWithoutSaving();
-        } else {
-          editorWidget.close();
+    this.fileSystemFrontendContribution.onDidChangeEditorFile(
+      ({ type, editor }) => {
+        if (type === FileChangeType.DELETED) {
+          const editorWidget = editor;
+          if (SaveableWidget.is(editorWidget)) {
+            editorWidget.closeWithoutSaving();
+          } else {
+            editorWidget.close();
+          }
         }
       }
-    });
+    );
   }
 
   onStop(): void {
@@ -501,13 +462,13 @@ export class ArduinoFrontendContribution
       EditorCommands.SPLIT_EDITOR_UP,
       EditorCommands.SPLIT_EDITOR_VERTICAL,
       EditorCommands.SPLIT_EDITOR_HORIZONTAL,
-      FileNavigatorCommands.REVEAL_IN_NAVIGATOR
+      FileNavigatorCommands.REVEAL_IN_NAVIGATOR,
     ]) {
       registry.unregisterCommand(command);
     }
   }
 
-  registerMenus(registry: MenuModelRegistry) {
+  registerMenus(registry: MenuModelRegistry): void {
     const menuId = (menuPath: string[]): string => {
       const index = menuPath.length - 1;
       const menuId = menuPath[index];
@@ -576,7 +537,7 @@ export class ArduinoFrontendContribution
     uri: string,
     forceOpen = false,
     options?: EditorOpenerOptions | undefined
-  ): Promise<any> {
+  ): Promise<unknown> {
     const widget = this.editorManager.all.find(
       (widget) => widget.editor.uri.toString() === uri
     );
