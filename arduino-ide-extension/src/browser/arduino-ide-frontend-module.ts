@@ -277,6 +277,8 @@ import { EditorNavigationContribution } from './theia/editor/editor-navigation-c
 import { EditorNavigationContribution as TheiaEditorNavigationContribution } from '@theia/editor/lib/browser/editor-navigation-contribution';
 import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-generator';
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
+import { AboutDialog } from './theia/core/about-dialog';
+import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -687,8 +689,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     EditorNavigationContribution
   );
 
-  bind(PreferenceTreeGenerator).toSelf().inSingletonScope()
+  // IDE2 does not use the Theia preferences widget, no need to create and sync the underlying tree model.
+  bind(PreferenceTreeGenerator).toSelf().inSingletonScope();
   rebind(TheiaPreferenceTreeGenerator).toService(PreferenceTreeGenerator);
+
+  // IDE2 has a custom about dialog, so there is no need to load the Theia extensions on FE load
+  bind(AboutDialog).toSelf().inSingletonScope();
+  rebind(TheiaAboutDialog).toService(AboutDialog);
 
   // To avoid running `Save All` when there are no dirty editors before starting the debug session.
   bind(DebugSessionManager).toSelf().inSingletonScope();
