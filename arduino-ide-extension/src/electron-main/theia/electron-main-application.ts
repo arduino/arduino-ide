@@ -1,5 +1,13 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, screen, Event as ElectronEvent } from '@theia/core/electron-shared/electron';
+import {
+  app,
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  contentTracing,
+  ipcMain,
+  screen,
+  Event as ElectronEvent,
+} from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join, dirname } from 'path';
@@ -46,7 +54,15 @@ const APP_STARTED_WITH_NOSPLASH =
  * If the app is started with `--open-devtools` argument, the `Dev Tools` will be opened.
  */
 const APP_STARTED_WITH_DEV_TOOLS =
-  typeof process !== 'undefined' && process.argv.indexOf('--open-devtools') !== -1;
+  typeof process !== 'undefined' &&
+  process.argv.indexOf('--open-devtools') !== -1;
+
+/**
+ * If the app is started with `--content-trace` argument, the `Dev Tools` will be opened and content tracing will start.
+ */
+const APP_STARTED_WITH_CONTENT_TRACE =
+  typeof process !== 'undefined' &&
+  process.argv.indexOf('--content-trace') !== -1;
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
@@ -62,7 +78,68 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
     app.on('ready', () => app.setName(config.applicationName));
     this.attachFileAssociations();
-    return super.start(config);
+    this.useNativeWindowFrame = this.getTitleBarStyle(config) === 'native';
+    this._config = config;
+    this.hookApplicationEvents();
+    const [port] = await Promise.all([this.startBackend(), app.whenReady()]);
+    this.startContentTracing();
+    this._backendPort.resolve(port);
+    await Promise.all([
+      this.attachElectronSecurityToken(port),
+      this.startContributions(),
+    ]);
+    return this.launch({
+      secondInstance: false,
+      argv: this.processArgv.getProcessArgvWithoutBin(process.argv),
+      cwd: process.cwd(),
+    });
+  }
+
+  private startContentTracing(): void {
+    if (!APP_STARTED_WITH_CONTENT_TRACE) {
+      return;
+    }
+    if (!app.isReady()) {
+      throw new Error(
+        'Cannot start content tracing when the electron app is not ready.'
+      );
+    }
+    const defaultTraceCategories: Readonly<Array<string>> = [
+      '-*',
+      'devtools.timeline',
+      'disabled-by-default-devtools.timeline',
+      'disabled-by-default-devtools.timeline.frame',
+      'toplevel',
+      'blink.console',
+      'disabled-by-default-devtools.timeline.stack',
+      'disabled-by-default-v8.cpu_profile',
+      'disabled-by-default-v8.cpu_profiler',
+      'disabled-by-default-v8.cpu_profiler.hires',
+    ];
+    const traceOptions = {
+      categoryFilter: defaultTraceCategories.join(','),
+      traceOptions: 'record-until-full',
+      options: 'sampling-frequency=10000',
+    };
+    (async () => {
+      const appPath = app.getAppPath();
+      let traceFile: string | undefined;
+      if (appPath) {
+        const tracesPath = join(appPath, 'traces');
+        await fs.promises.mkdir(tracesPath, { recursive: true });
+        traceFile = join(tracesPath, `trace-${new Date().toISOString()}.trace`);
+      }
+      console.log('>>> Content tracing has started...');
+      await contentTracing.startRecording(traceOptions);
+      await new Promise((resolve) => setTimeout(resolve, 10_000));
+      contentTracing
+        .stopRecording(traceFile)
+        .then((out) =>
+          console.log(
+            `<<< Content tracing has finished. The trace data was written to: ${out}.`
+          )
+        );
+    })();
   }
 
   attachFileAssociations() {
@@ -164,7 +241,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return super.avoidOverlap(options);
   }
 
-  protected override getTitleBarStyle(): 'native' | 'custom' {
+  protected override getTitleBarStyle(config: FrontendApplicationConfig): 'native' | 'custom' {
     return 'native';
   }
 

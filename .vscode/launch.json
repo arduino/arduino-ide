@@ -21,7 +21,7 @@
         "--plugins=local-dir:../plugins",
         "--hosted-plugin-inspect=9339",
         "--nosplash",
-        "--open-devtools"
+        "--content-trace"
       ],
       "env": {
         "NODE_ENV": "development"
