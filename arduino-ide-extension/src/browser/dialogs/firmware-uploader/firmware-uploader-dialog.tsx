@@ -15,6 +15,7 @@ import {
 } from '../../../common/protocol/arduino-firmware-uploader';
 import { FirmwareUploaderComponent } from './firmware-uploader-component';
 import { UploadFirmware } from '../../contributions/upload-firmware';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class UploadFirmwareDialogWidget extends ReactWidget {
@@ -23,6 +24,9 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   @inject(ArduinoFirmwareUploader)
   protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStatusService: FrontendApplicationStateService;
 
   protected updatableFqbns: string[] = [];
   protected availableBoards: AvailableBoard[] = [];
@@ -38,7 +42,8 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   @postConstruct()
   protected init(): void {
-    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+    this.appStatusService.reachedState('ready').then(async () => {
+      const fqbns = await this.arduinoFirmwareUploader.updatableBoards();
       this.updatableFqbns = fqbns;
       this.update();
     });
