@@ -57,7 +57,7 @@ export class PlotterFrontendContribution extends Contribution {
 
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
-      execute: this.connect.bind(this),
+      execute: this.startPlotter.bind(this),
     });
   }
 
@@ -69,7 +69,20 @@ export class PlotterFrontendContribution extends Contribution {
     });
   }
 
-  async connect(): Promise<void> {
+  async startPlotter(): Promise<void> {
+    if (
+      !this.boardsServiceProvider.boardsConfig.selectedBoard ||
+      !this.boardsServiceProvider.boardsConfig.selectedPort
+    ) {
+      this.messageService.error(
+        `You need to select a connected board to start the serial plotter`
+      );
+      return;
+    }
+    await this.monitorManagerProxy.startMonitor(
+      this.boardsServiceProvider.boardsConfig.selectedBoard,
+      this.boardsServiceProvider.boardsConfig.selectedPort
+    );
     if (!!this.window) {
       this.window.focus();
       return;
@@ -104,8 +117,8 @@ export class PlotterFrontendContribution extends Contribution {
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
       interpolate: this.model.interpolate,
-      connected: await this.monitorManagerProxy.isWSConnected(),
-      serialPort: this.boardsServiceProvider.boardsConfig.selectedPort?.address,
+      connected: this.model.connected,
+      serialPort: this.model.serialPort,
     };
     const urlWithParams = queryString.stringifyUrl(
       {
