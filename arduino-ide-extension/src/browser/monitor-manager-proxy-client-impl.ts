@@ -1,4 +1,4 @@
-import { Emitter, MessageService } from '@theia/core';
+import { CommandRegistry, Emitter, MessageService } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Board, Port } from '../common/protocol';
 import {
@@ -10,6 +10,8 @@ import {
   PluggableMonitorSettings,
   MonitorSettings,
 } from '../node/monitor-settings/monitor-settings-provider';
+import { BoardsConfig } from './boards/boards-config';
+import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 
 @injectable()
 export class MonitorManagerProxyClientImpl
@@ -29,13 +31,11 @@ export class MonitorManagerProxyClientImpl
   readonly onMonitorSettingsDidChange =
     this.onMonitorSettingsDidChangeEmitter.event;
 
-  protected readonly onWSConnectionChangedEmitter = new Emitter<boolean>();
-  readonly onWSConnectionChanged = this.onWSConnectionChangedEmitter.event;
-
   // WebSocket used to handle pluggable monitor communication between
   // frontend and backend.
   private webSocket?: WebSocket;
   private wsPort?: number;
+  private lastConnectedBoard: BoardsConfig.Config;
 
   getWebSocketPort(): number | undefined {
     return this.wsPort;
@@ -47,20 +47,20 @@ export class MonitorManagerProxyClientImpl
 
     // This is necessary to call the backend methods from the frontend
     @inject(MonitorManagerProxyFactory)
-    protected server: MonitorManagerProxyFactory
+    protected server: MonitorManagerProxyFactory,
+
+    @inject(CommandRegistry)
+    protected readonly commandRegistry: CommandRegistry
   ) {}
 
   /**
    * Connects a localhost WebSocket using the specified port.
    * @param addressPort port of the WebSocket
    */
-  connect(addressPort: number): void {
-    if (this.webSocket) {
-      return;
-    }
+  async connect(addressPort: number): Promise<void> {
+    if (!!this.webSocket && this.wsPort === addressPort) return;
     try {
       this.webSocket = new WebSocket(`ws://localhost:${addressPort}`);
-      this.onWSConnectionChangedEmitter.fire(true);
     } catch {
       this.messageService.error('Unable to connect to websocket');
       return;
@@ -87,7 +87,6 @@ export class MonitorManagerProxyClientImpl
     try {
       this.webSocket?.close();
       this.webSocket = undefined;
-      this.onWSConnectionChangedEmitter.fire(false);
     } catch {
       this.messageService.error('Unable to close websocket');
     }
@@ -102,7 +101,18 @@ export class MonitorManagerProxyClientImpl
     port: Port,
     settings?: PluggableMonitorSettings
   ): Promise<void> {
-    return this.server().startMonitor(board, port, settings);
+    await this.server().startMonitor(board, port, settings);
+    if (
+      board.fqbn !== this.lastConnectedBoard?.selectedBoard?.fqbn ||
+      port.id !== this.lastConnectedBoard?.selectedPort?.id
+    )
+      await this.commandRegistry.executeCommand(
+        MonitorViewContribution.RESET_SERIAL_MONITOR
+      );
+    this.lastConnectedBoard = {
+      selectedBoard: board,
+      selectedPort: port,
+    };
   }
 
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {

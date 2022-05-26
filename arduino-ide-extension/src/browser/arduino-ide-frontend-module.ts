@@ -1,10 +1,7 @@
 import '../../src/browser/style/index.css';
 import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
-import {
-  CommandContribution,
-  CommandRegistry,
-} from '@theia/core/lib/common/command';
+import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import {
   TabBarToolbarContribution,
@@ -424,8 +421,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         context.container.get<MonitorManagerProxyClient>(
           MonitorManagerProxyClient
         ),
-        context.container.get<BoardsServiceProvider>(BoardsServiceProvider),
-        context.container.get<CommandRegistry>(CommandRegistry)
+        context.container.get<BoardsServiceProvider>(BoardsServiceProvider)
       );
     },
   }));

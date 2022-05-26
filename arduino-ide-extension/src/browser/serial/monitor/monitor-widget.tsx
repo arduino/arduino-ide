@@ -13,12 +13,10 @@ import { ArduinoSelect } from '../../widgets/arduino-select';
 import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
-import { CommandRegistry, nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { MonitorSettings } from '../../../node/monitor-settings/monitor-settings-provider';
-import { MonitorViewContribution } from './monitor-view-contribution';
-import { BoardsConfig } from '../../boards/boards-config';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -43,8 +41,6 @@ export class MonitorWidget extends ReactWidget {
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
 
-  protected lastConnectedBoard: BoardsConfig.Config;
-
   constructor(
     @inject(MonitorModel)
     protected readonly monitorModel: MonitorModel,
@@ -53,10 +49,7 @@ export class MonitorWidget extends ReactWidget {
     protected readonly monitorManagerProxy: MonitorManagerProxyClient,
 
     @inject(BoardsServiceProvider)
-    protected readonly boardsServiceProvider: BoardsServiceProvider,
-
-    @inject(CommandRegistry)
-    protected readonly commandRegistry: CommandRegistry
+    protected readonly boardsServiceProvider: BoardsServiceProvider
   ) {
     super();
     this.id = MonitorWidget.ID;
@@ -85,18 +78,6 @@ export class MonitorWidget extends ReactWidget {
               selectedPort
             );
 
-            if (
-              selectedBoard.fqbn !==
-                this.lastConnectedBoard?.selectedBoard?.fqbn ||
-              selectedPort.id !== this.lastConnectedBoard?.selectedPort?.id
-            )
-              await this.commandRegistry.executeCommand(
-                MonitorViewContribution.RESET_SERIAL_MONITOR
-              );
-            this.lastConnectedBoard = {
-              selectedBoard,
-              selectedPort,
-            };
             this.update();
           }
         }
