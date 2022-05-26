@@ -47,6 +47,7 @@ export class MonitorViewContribution
   static readonly TOGGLE_SERIAL_MONITOR = MonitorWidget.ID + ':toggle';
   static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
     MonitorWidget.ID + ':toggle-toolbar';
+  static readonly RESET_SERIAL_MONITOR = MonitorWidget.ID + ':reset';
 
   @inject(MonitorModel)
   protected readonly model: MonitorModel;
@@ -119,6 +120,10 @@ export class MonitorViewContribution
         }
       );
     }
+    commands.registerCommand(
+      { id: MonitorViewContribution.RESET_SERIAL_MONITOR },
+      { execute: () => this.reset() }
+    );
   }
 
   protected async toggle(): Promise<void> {
@@ -128,6 +133,12 @@ export class MonitorViewContribution
     } else {
       await this.openView({ activate: true, reveal: true });
     }
+  }
+
+  protected async reset(): Promise<void> {
+    const widget = this.tryGetWidget();
+    if (widget) widget.dispose();
+    await this.openView({ activate: true, reveal: true });
   }
 
   protected renderAutoScrollButton(): React.ReactNode {

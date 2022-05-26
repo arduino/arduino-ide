@@ -1,7 +1,10 @@
 import '../../src/browser/style/index.css';
 import { ContainerModule } from 'inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
-import { CommandContribution } from '@theia/core/lib/common/command';
+import {
+  CommandContribution,
+  CommandRegistry,
+} from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import {
   TabBarToolbarContribution,
@@ -152,7 +155,14 @@ import {
   OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl,
   OutputChannelRegistryMainImpl,
 } from './theia/plugin-ext/output-channel-registry-main';
-import { ExecutableService, ExecutableServicePath, MonitorManagerProxy, MonitorManagerProxyClient, MonitorManagerProxyFactory, MonitorManagerProxyPath } from '../common/protocol';
+import {
+  ExecutableService,
+  ExecutableServicePath,
+  MonitorManagerProxy,
+  MonitorManagerProxyClient,
+  MonitorManagerProxyFactory,
+  MonitorManagerProxyPath,
+} from '../common/protocol';
 import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
 import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
 import { ResponseServiceImpl } from './response-service-impl';
@@ -411,21 +421,35 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     createWidget: () => {
       return new MonitorWidget(
         context.container.get<MonitorModel>(MonitorModel),
-        context.container.get<MonitorManagerProxyClient>(MonitorManagerProxyClient),
+        context.container.get<MonitorManagerProxyClient>(
+          MonitorManagerProxyClient
+        ),
         context.container.get<BoardsServiceProvider>(BoardsServiceProvider),
+        context.container.get<CommandRegistry>(CommandRegistry)
       );
-    }
+    },
   }));
 
-  bind(MonitorManagerProxyFactory).toFactory((context) => () => context.container.get<MonitorManagerProxy>(MonitorManagerProxy))
+  bind(MonitorManagerProxyFactory).toFactory(
+    (context) => () =>
+      context.container.get<MonitorManagerProxy>(MonitorManagerProxy)
+  );
 
-  bind(MonitorManagerProxy).toDynamicValue((context) =>
-    WebSocketConnectionProvider.createProxy(context.container, MonitorManagerProxyPath, context.container.get(MonitorManagerProxyClient))
-  ).inSingletonScope();
+  bind(MonitorManagerProxy)
+    .toDynamicValue((context) =>
+      WebSocketConnectionProvider.createProxy(
+        context.container,
+        MonitorManagerProxyPath,
+        context.container.get(MonitorManagerProxyClient)
+      )
+    )
+    .inSingletonScope();
 
   // Monitor manager proxy client to receive and delegate pluggable monitors
   // notifications from the backend
-  bind(MonitorManagerProxyClient).to(MonitorManagerProxyClientImpl).inSingletonScope();
+  bind(MonitorManagerProxyClient)
+    .to(MonitorManagerProxyClientImpl)
+    .inSingletonScope();
 
   bind(WorkspaceService).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceService).toService(WorkspaceService);
@@ -482,11 +506,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
   rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) => () => {
-      const container = parentContainer.createChild();
-      container.bind(TabBarToolbar).toSelf().inSingletonScope();
-      return container.get(TabBarToolbar);
-    }
+    ({ container: parentContainer }) =>
+      () => {
+        const container = parentContainer.createChild();
+        container.bind(TabBarToolbar).toSelf().inSingletonScope();
+        return container.get(TabBarToolbar);
+      }
   );
   bind(OutputWidget).toSelf().inSingletonScope();
   rebind(TheiaOutputWidget).toService(OutputWidget);
@@ -651,15 +676,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Enable the dirty indicator on uncloseable widgets.
   rebind(TabBarRendererFactory).toFactory((context) => () => {
-    const contextMenuRenderer = context.container.get<ContextMenuRenderer>(
-      ContextMenuRenderer
-    );
+    const contextMenuRenderer =
+      context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
     const decoratorService = context.container.get<TabBarDecoratorService>(
       TabBarDecoratorService
     );
-    const iconThemeService = context.container.get<IconThemeService>(
-      IconThemeService
-    );
+    const iconThemeService =
+      context.container.get<IconThemeService>(IconThemeService);
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,
