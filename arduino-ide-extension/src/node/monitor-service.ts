@@ -132,10 +132,13 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
 
     if (!this.board?.fqbn || !this.port?.address || !this.port?.protocol) {
+      this.updateClientsSettings({ monitorUISettings: { connected: false } });
+
       return Status.CONFIG_MISSING;
     }
 
     if (this.uploadInProgress) {
+      this.updateClientsSettings({ monitorUISettings: { connected: false } });
       return Status.UPLOAD_IN_PROGRESS;
     }
 
@@ -389,7 +392,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
 
     this.updateClientsSettings({
-      ...settings,
+      monitorUISettings: {
+        ...settings.monitorUISettings,
+        connected: !!this.duplex,
+      },
       pluggableMonitorSettings: reconciledSettings,
     });
 

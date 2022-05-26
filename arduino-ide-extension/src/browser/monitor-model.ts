@@ -39,7 +39,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     this._darkTheme = false;
     this._wsPort = 0;
     this._serialPort = '';
-    this._connected = false;
+    this._connected = true;
 
     this.onChangeEmitter = new Emitter<
       MonitorModel.State.Change<keyof MonitorModel.State>
