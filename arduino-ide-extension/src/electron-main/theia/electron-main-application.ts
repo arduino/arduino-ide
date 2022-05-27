@@ -327,7 +327,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   ): Promise<BrowserWindow> {
     const electronWindow = await super.createWindow(options);
     if (APP_STARTED_WITH_DEV_TOOLS) {
-      electronWindow.webContents.openDevTools({ mode: 'undocked' });
+      electronWindow.webContents.openDevTools();
     }
     this.attachListenersToWindow(electronWindow);
     return electronWindow;
