@@ -16,6 +16,7 @@ import {
 } from './boards-service-provider';
 import { naturalCompare } from '../../common/utils';
 import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationState } from '@theia/core/lib/common/frontend-application-state';
 
 export namespace BoardsConfig {
   export interface Config {
@@ -29,6 +30,7 @@ export namespace BoardsConfig {
     readonly onConfigChange: (config: Config) => void;
     readonly onFocusNodeSet: (element: HTMLElement | undefined) => void;
     readonly onFilteredTextDidChangeEvent: Event<string>;
+    readonly onAppStateDidChange: Event<FrontendApplicationState>;
   }
 
   export interface State extends Config {
@@ -99,14 +101,18 @@ export class BoardsConfig extends React.Component<
     };
   }
 
-  override componentDidMount() {
-    this.updateBoards();
-    this.updatePorts(
-      this.props.boardsServiceProvider.availableBoards
-        .map(({ port }) => port)
-        .filter(notEmpty)
-    );
+  override componentDidMount(): void {
     this.toDispose.pushAll([
+      this.props.onAppStateDidChange((state) => {
+        if (state === 'ready') {
+          this.updateBoards();
+          this.updatePorts(
+            this.props.boardsServiceProvider.availableBoards
+              .map(({ port }) => port)
+              .filter(notEmpty)
+          );
+        }
+      }),
       this.props.notificationCenter.onAttachedBoardsChanged((event) =>
         this.updatePorts(
           event.newState.ports,

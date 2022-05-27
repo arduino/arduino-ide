@@ -18,6 +18,10 @@ import {
   Config,
   Sketch,
 } from '../common/protocol';
+import {
+  FrontendApplicationStateService,
+  FrontendApplicationState,
+} from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class NotificationCenter
@@ -25,6 +29,9 @@ export class NotificationCenter
 {
   @inject(NotificationServiceServer)
   protected readonly server: JsonRpcProxy<NotificationServiceServer>;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
   protected readonly indexUpdatedEmitter = new Emitter<void>();
   protected readonly daemonStartedEmitter = new Emitter<string>();
@@ -49,6 +56,8 @@ export class NotificationCenter
   protected readonly recentSketchesChangedEmitter = new Emitter<{
     sketches: Sketch[];
   }>();
+  private readonly onAppStateDidChangeEmitter =
+    new Emitter<FrontendApplicationState>();
 
   protected readonly toDispose = new DisposableCollection(
     this.indexUpdatedEmitter,
@@ -72,10 +81,16 @@ export class NotificationCenter
   readonly onLibraryUninstalled = this.libraryUninstalledEmitter.event;
   readonly onAttachedBoardsChanged = this.attachedBoardsChangedEmitter.event;
   readonly onRecentSketchesChanged = this.recentSketchesChangedEmitter.event;
+  readonly onAppStateDidChange = this.onAppStateDidChangeEmitter.event;
 
   @postConstruct()
   protected init(): void {
     this.server.setClient(this);
+    this.toDispose.push(
+      this.appStateService.onStateChanged((state) =>
+        this.onAppStateDidChangeEmitter.fire(state)
+      )
+    );
   }
 
   onStop(): void {

@@ -55,6 +55,7 @@ export class BoardsConfigDialogWidget extends ReactWidget {
           onConfigChange={this.fireConfigChanged}
           onFocusNodeSet={this.setFocusNode}
           onFilteredTextDidChangeEvent={this.onFilterTextDidChangeEmitter.event}
+          onAppStateDidChange={this.notificationCenter.onAppStateDidChange}
         />
       </div>
     );
