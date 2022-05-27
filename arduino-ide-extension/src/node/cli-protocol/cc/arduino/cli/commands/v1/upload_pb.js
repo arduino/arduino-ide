@@ -2718,8 +2718,7 @@ proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.toObject = function(
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    protocol: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    address: jspb.Message.getFieldWithDefault(msg, 4, "")
+    protocol: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -2769,10 +2768,6 @@ proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.deserializeBinaryFro
       var value = /** @type {string} */ (reader.readString());
       msg.setProtocol(value);
       break;
-    case 4:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setAddress(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -2821,13 +2816,6 @@ proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.serializeBinaryToWri
   if (f.length > 0) {
     writer.writeString(
       3,
-      f
-    );
-  }
-  f = message.getAddress();
-  if (f.length > 0) {
-    writer.writeString(
-      4,
       f
     );
   }
@@ -2904,24 +2892,6 @@ proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.prototype.getProtoco
  */
 proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.prototype.setProtocol = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
- * optional string address = 4;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.prototype.getAddress = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.SupportedUserFieldsRequest.prototype.setAddress = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

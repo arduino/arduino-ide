@@ -146,7 +146,10 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     createCompilationDatabaseOnly: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
     sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : [],
     exportBinaries: (f = msg.getExportBinaries()) && google_protobuf_wrappers_pb.BoolValue.toObject(includeInstance, f),
-    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f
+    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f,
+    keysKeychain: jspb.Message.getFieldWithDefault(msg, 25, ""),
+    signKey: jspb.Message.getFieldWithDefault(msg, 26, ""),
+    encryptKey: jspb.Message.getFieldWithDefault(msg, 27, "")
   };
 
   if (includeInstance) {
@@ -270,6 +273,18 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
     case 24:
       var value = /** @type {string} */ (reader.readString());
       msg.addLibrary(value);
+      break;
+    case 25:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setKeysKeychain(value);
+      break;
+    case 26:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSignKey(value);
+      break;
+    case 27:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEncryptKey(value);
       break;
     default:
       reader.skipField();
@@ -443,6 +458,27 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeRepeatedString(
       24,
+      f
+    );
+  }
+  f = message.getKeysKeychain();
+  if (f.length > 0) {
+    writer.writeString(
+      25,
+      f
+    );
+  }
+  f = message.getSignKey();
+  if (f.length > 0) {
+    writer.writeString(
+      26,
+      f
+    );
+  }
+  f = message.getEncryptKey();
+  if (f.length > 0) {
+    writer.writeString(
+      27,
       f
     );
   }
@@ -923,6 +959,60 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.addLibrary = function(
  */
 proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.clearLibraryList = function() {
   return this.setLibraryList([]);
+};
+
+
+/**
+ * optional string keys_keychain = 25;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getKeysKeychain = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 25, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setKeysKeychain = function(value) {
+  return jspb.Message.setProto3StringField(this, 25, value);
+};
+
+
+/**
+ * optional string sign_key = 26;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getSignKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 26, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSignKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 26, value);
+};
+
+
+/**
+ * optional string encrypt_key = 27;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getEncryptKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 27, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setEncryptKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 27, value);
 };
 
 

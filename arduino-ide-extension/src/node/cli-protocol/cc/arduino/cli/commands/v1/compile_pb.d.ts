@@ -86,6 +86,15 @@ export class CompileRequest extends jspb.Message {
     setLibraryList(value: Array<string>): CompileRequest;
     addLibrary(value: string, index?: number): string;
 
+    getKeysKeychain(): string;
+    setKeysKeychain(value: string): CompileRequest;
+
+    getSignKey(): string;
+    setSignKey(value: string): CompileRequest;
+
+    getEncryptKey(): string;
+    setEncryptKey(value: string): CompileRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -121,6 +130,9 @@ export namespace CompileRequest {
         sourceOverrideMap: Array<[string, string]>,
         exportBinaries?: google_protobuf_wrappers_pb.BoolValue.AsObject,
         libraryList: Array<string>,
+        keysKeychain: string,
+        signKey: string,
+        encryptKey: string,
     }
 }
 
