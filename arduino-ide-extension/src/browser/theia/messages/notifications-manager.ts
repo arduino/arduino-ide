@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { CancellationToken } from '@theia/core/lib/common/cancellation';
 import {
   ProgressMessage,

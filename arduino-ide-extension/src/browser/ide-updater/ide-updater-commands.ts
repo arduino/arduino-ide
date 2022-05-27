@@ -5,7 +5,7 @@ import {
   MessageService,
   nls,
 } from '@theia/core';
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { IDEUpdater, UpdateInfo } from '../../common/protocol/ide-updater';
 import { IDEUpdaterDialog } from '../dialogs/ide-updater/ide-updater-dialog';
 

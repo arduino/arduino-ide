@@ -1,5 +1,5 @@
 import '../../src/browser/style/index.css';
-import { ContainerModule } from 'inversify';
+import { ContainerModule } from '@theia/core/shared/inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
@@ -688,6 +688,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Workaround for https://github.com/eclipse-theia/theia/issues/8722
   // Do not trigger a save on IDE startup if `"editor.autoSave": "on"` was set as a preference.
+  // Note: `"editor.autoSave" was renamed to `"files.autoSave" and `"on"` was replaced with three
+  // different cases, but we treat `!== 'off'` as auto save enabled. (https://github.com/eclipse-theia/theia/issues/10812)
   bind(EditorCommandContribution).toSelf().inSingletonScope();
   rebind(TheiaEditorCommandContribution).toService(EditorCommandContribution);
 

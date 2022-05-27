@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { inject, injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { nls } from '@theia/core';
 import { IDEUpdaterComponent } from './ide-updater-component';

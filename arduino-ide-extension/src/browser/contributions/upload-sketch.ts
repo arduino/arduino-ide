@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';

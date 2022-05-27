@@ -1,5 +1,5 @@
 import { nls } from '@theia/core/lib/common';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {

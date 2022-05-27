@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';

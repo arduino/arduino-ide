@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { open } from '@theia/core/lib/browser/opener-service';
 import { FileStat } from '@theia/filesystem/lib/common/files';

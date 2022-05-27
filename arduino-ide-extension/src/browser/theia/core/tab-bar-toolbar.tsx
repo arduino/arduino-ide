@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { injectable } from '@theia/core/shared/inversify';
 import { LabelIcon } from '@theia/core/lib/browser/label-parser';
 import {
   TabBarToolbar as TheiaTabBarToolbar,

@@ -4,7 +4,7 @@ import * as temp from 'temp';
 import * as yaml from 'js-yaml';
 import { promisify } from 'util';
 import * as grpc from '@grpc/grpc-js';
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node/file-uri';

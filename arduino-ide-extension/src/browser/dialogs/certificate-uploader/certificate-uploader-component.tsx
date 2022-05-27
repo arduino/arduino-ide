@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import Tippy from '@tippyjs/react';
 import { AvailableBoard } from '../../boards/boards-service-provider';
 import { CertificateListComponent } from './certificate-list';

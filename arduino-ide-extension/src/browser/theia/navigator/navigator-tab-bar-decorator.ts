@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { WidgetDecoration } from '@theia/core/lib/browser/widget-decoration';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 

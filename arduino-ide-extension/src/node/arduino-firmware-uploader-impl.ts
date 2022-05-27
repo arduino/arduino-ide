@@ -2,7 +2,7 @@ import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../common/protocol/arduino-firmware-uploader';
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { ExecutableService, Port } from '../common/protocol';
 import { getExecPath, spawnCommand } from './exec-util';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -74,7 +74,7 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
     const board = {
       name: firmware.board_name,
       fqbn: firmware.board_fqbn,
-    }
+    };
     try {
       this.monitorManager.notifyUploadStarted(board, port);
       output = await this.runCommand([

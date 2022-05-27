@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { injectable, inject } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ReactWidget, Message } from '@theia/core/lib/browser';
 import { BoardsService } from '../../common/protocol/boards-service';

@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';

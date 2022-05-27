@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { Command } from '@theia/core/lib/common/command';
 import { Keybinding } from '@theia/core/lib/common/keybinding';
 import {

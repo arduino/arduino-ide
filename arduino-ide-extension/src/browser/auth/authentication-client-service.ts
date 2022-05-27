@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -49,7 +49,10 @@ export class AuthenticationClientService
     this.service
       .session()
       .then((session) => this.notifySessionDidChange(session));
+
     this.setOptions();
+    this.service.initAuthSession()
+
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.preferenceName.startsWith('arduino.auth.')) {
         this.setOptions();

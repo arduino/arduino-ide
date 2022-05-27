@@ -111,10 +111,13 @@ let splashScreen: Electron.BrowserWindow | null;
  * @param config - Configures splashscreen
  * @returns {BrowserWindow} the main browser window ready for loading
  */
-export const initSplashScreen = (
+export const initSplashScreen = async (
   config: Config,
+  windowFactory: (
+    options: Electron.BrowserViewConstructorOptions
+  ) => Promise<BrowserWindow>,
   onCloseRequested?: Event<void>
-): BrowserWindow => {
+): Promise<BrowserWindow> => {
   const xConfig: Required<Config> = {
     windowOpts: config.windowOpts,
     templateUrl: config.templateUrl,
@@ -126,7 +129,7 @@ export const initSplashScreen = (
   xConfig.splashScreenOpts.center = true;
   xConfig.splashScreenOpts.frame = false;
   xConfig.windowOpts.show = false;
-  const window = new BrowserWindow(xConfig.windowOpts);
+  const window = await windowFactory(xConfig.windowOpts);
   splashScreen = new BrowserWindow(xConfig.splashScreenOpts);
   splashScreen.loadURL(`file://${xConfig.templateUrl}`);
   xConfig.closeWindow &&
@@ -152,27 +155,4 @@ export const initSplashScreen = (
   }
   window.on('closed', () => closeSplashScreen(window, 0)); // XXX: close splash when main window is closed
   return window;
-};
-/** Return object for `initDynamicSplashScreen()`. */
-export interface DynamicSplashScreen {
-  /** The main browser window ready for loading */
-  main: BrowserWindow;
-  /** The splashscreen browser window so you can communicate with splashscreen in more complex use cases. */
-  splashScreen: Electron.BrowserWindow;
-}
-/**
- * Initializes a splashscreen that will show/hide smartly (and handle show/hiding of main window).
- * Use this function if you need to send/receive info to the splashscreen (e.g., you want to send
- * IPC messages to the splashscreen to inform the user of the app's loading state).
- * @param config - Configures splashscreen
- * @returns {DynamicSplashScreen} the main browser window and the created splashscreen
- */
-export const initDynamicSplashScreen = (
-  config: Config
-): DynamicSplashScreen => {
-  return {
-    main: initSplashScreen(config),
-    // initSplashScreen initializes splashscreen so this is a safe cast.
-    splashScreen: splashScreen as Electron.BrowserWindow,
-  };
 };

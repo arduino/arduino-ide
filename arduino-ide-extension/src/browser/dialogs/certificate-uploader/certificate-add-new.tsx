@@ -1,5 +1,5 @@
 import { nls } from '@theia/core/lib/common';
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 
 export const CertificateAddComponent = ({
   addCertificate,
@@ -8,9 +8,12 @@ export const CertificateAddComponent = ({
 }): React.ReactElement => {
   const [value, setValue] = React.useState('');
 
-  const handleChange = React.useCallback((event) => {
-    setValue(event.target.value);
-  }, []);
+  const handleChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(event.target.value);
+    },
+    []
+  );
 
   return (
     <form

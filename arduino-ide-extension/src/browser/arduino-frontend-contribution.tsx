@@ -1,5 +1,5 @@
-import { inject, injectable, postConstruct } from 'inversify';
-import * as React from 'react';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import * as React from '@theia/core/shared/react';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import {
   BoardsService,

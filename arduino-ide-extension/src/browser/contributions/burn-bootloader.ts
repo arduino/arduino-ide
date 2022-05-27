@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';

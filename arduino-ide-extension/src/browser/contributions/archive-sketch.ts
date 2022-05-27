@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import * as dateFormat from 'dateformat';
 import URI from '@theia/core/lib/common/uri';

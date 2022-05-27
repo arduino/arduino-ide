@@ -1,5 +1,5 @@
 import debounce = require('p-debounce');
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';

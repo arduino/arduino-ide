@@ -1,4 +1,4 @@
-import { inject } from 'inversify';
+import { inject } from '@theia/core/shared/inversify';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { DialogError, DialogMode } from '@theia/core/lib/browser/dialogs';

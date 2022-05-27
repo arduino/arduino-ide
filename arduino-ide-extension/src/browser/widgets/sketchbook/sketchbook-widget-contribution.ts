@@ -1,5 +1,5 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';

@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import { CommonCommands, CommonMenus } from '@theia/core/lib/browser';

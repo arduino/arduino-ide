@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { posixSegments, splitSketchPath } from '../../create/create-paths';
 import { CreateApi } from '../../create/create-api';

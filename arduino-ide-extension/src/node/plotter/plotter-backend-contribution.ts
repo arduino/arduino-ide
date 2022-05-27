@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import path = require('path');
 

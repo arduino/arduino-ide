@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import {
   Disposable,
   DisposableCollection,
@@ -19,6 +19,8 @@ export class AuthenticationServiceImpl
   protected readonly delegate = new ArduinoAuthenticationProvider();
   protected readonly clients: AuthenticationServiceClient[] = [];
   protected readonly toDispose = new DisposableCollection();
+  
+  private initialized = false; 
 
   async onStart(): Promise<void> {
     this.toDispose.pushAll([
@@ -42,7 +44,13 @@ export class AuthenticationServiceImpl
         this.clients.forEach((client) => this.disposeClient(client))
       ),
     ]);
-    await this.delegate.init();
+  }
+
+  async initAuthSession(): Promise<void> {
+    if (!this.initialized) {
+      await this.delegate.init();
+      this.initialized = true
+    }
   }
 
   setOptions(authOptions: AuthOptions) {

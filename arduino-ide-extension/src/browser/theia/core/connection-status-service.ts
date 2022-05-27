@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { StatusBarAlignment } from '@theia/core/lib/browser/status-bar/status-bar';
 import {

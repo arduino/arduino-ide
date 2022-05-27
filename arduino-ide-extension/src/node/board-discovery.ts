@@ -1,4 +1,4 @@
-import { injectable, inject, postConstruct, named } from 'inversify';
+import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';

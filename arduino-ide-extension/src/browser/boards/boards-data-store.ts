@@ -1,4 +1,4 @@
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { Event, Emitter } from '@theia/core/lib/common/event';

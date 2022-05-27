@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { Diagnostic } from 'vscode-languageserver-types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core';

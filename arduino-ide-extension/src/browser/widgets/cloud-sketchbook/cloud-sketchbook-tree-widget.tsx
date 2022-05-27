@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { TreeModel } from '@theia/core/lib/browser/tree/tree-model';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';

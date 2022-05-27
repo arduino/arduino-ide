@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import {
   FrontendApplicationContribution,
   FrontendApplication,

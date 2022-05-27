@@ -1,5 +1,5 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';

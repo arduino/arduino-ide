@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { MaybePromise } from '@theia/core/lib/common/types';

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { inject, injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
