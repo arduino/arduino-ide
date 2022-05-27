@@ -75,7 +75,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
           // data from this monitor, we can freely close
           // and dispose it.
           this.dispose();
+          return;
         }
+        this.updateClientsSettings(this.settings);
       });
 
     this.portMonitorSettings(port.protocol, board.fqbn!).then(
@@ -447,6 +449,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   }
 
   updateClientsSettings(settings: MonitorSettings): void {
+    this.settings = { ...this.settings, ...settings };
     const command: Monitor.Message = {
       command: Monitor.MiddlewareCommand.ON_SETTINGS_DID_CHANGE,
       data: settings,

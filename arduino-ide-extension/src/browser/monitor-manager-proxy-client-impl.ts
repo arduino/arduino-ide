@@ -58,7 +58,10 @@ export class MonitorManagerProxyClientImpl
    * @param addressPort port of the WebSocket
    */
   async connect(addressPort: number): Promise<void> {
-    if (!!this.webSocket && this.wsPort === addressPort) return;
+    if (!!this.webSocket) {
+      if (this.wsPort === addressPort) return;
+      else this.disconnect();
+    }
     try {
       this.webSocket = new WebSocket(`ws://localhost:${addressPort}`);
     } catch {
@@ -84,6 +87,7 @@ export class MonitorManagerProxyClientImpl
    * Disconnects the WebSocket if connected.
    */
   disconnect(): void {
+    if (!this.webSocket) return;
     try {
       this.webSocket?.close();
       this.webSocket = undefined;

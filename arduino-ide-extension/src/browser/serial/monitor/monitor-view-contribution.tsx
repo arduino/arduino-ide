@@ -137,8 +137,10 @@ export class MonitorViewContribution
 
   protected async reset(): Promise<void> {
     const widget = this.tryGetWidget();
-    if (widget) widget.dispose();
-    await this.openView({ activate: true, reveal: true });
+    if (widget) {
+      widget.dispose();
+      await this.openView({ activate: true, reveal: true });
+    }
   }
 
   protected renderAutoScrollButton(): React.ReactNode {
