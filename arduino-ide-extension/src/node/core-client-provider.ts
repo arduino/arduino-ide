@@ -86,7 +86,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       // 3. init instance.
       if (this._client && !(this._client instanceof Error)) {
         try {
-          await this.initInstance(this._client);
+          await this.initInstance(this._client); // init instance
           this._initialized.resolve();
           this.updateIndex(this._client); // Update the indexes asynchronously
         } catch (error: unknown) {
@@ -94,9 +94,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
             this.isPackageIndexMissingError(error) ||
             this.isDiscoveryNotFoundError(error)
           ) {
+            // If it's a first start, IDE2 must run index update before the init request.
             await this.updateIndexes(this._client);
             await this.initInstance(this._client);
-            console.log('fooo');
             this._initialized.resolve();
           } else {
             throw error;
