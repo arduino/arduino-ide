@@ -13,7 +13,7 @@ import {
 } from '@theia/core/lib/browser/tree';
 import { SketchbookCommands } from './sketchbook-commands';
 import { OpenerService, open } from '@theia/core/lib/browser';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -294,7 +294,10 @@ export class SketchbookTreeModel extends FileTreeModel {
 
     // check if the node is a file that belongs to another sketch
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (sketch && node.uri.toString().indexOf(sketch.uri) !== 0) {
+    if (
+      CurrentSketch.isValid(sketch) &&
+      node.uri.toString().indexOf(sketch.uri) !== 0
+    ) {
       return false;
     }
     return true;

@@ -14,7 +14,10 @@ import { ContextMenuRenderer } from '@theia/core/lib/browser/context-menu-render
 import { SketchbookTree } from './sketchbook-tree';
 import { SketchbookTreeModel } from './sketchbook-tree-model';
 import { ArduinoPreferences } from '../../arduino-preferences';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
 import { Sketch } from '../../contributions/contribution';
 import { nls } from '@theia/core/lib/common';
@@ -54,7 +57,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     super.init();
     // cache the current open sketch uri
     const currentSketch = await this.sketchServiceClient.currentSketch();
-    this.currentSketchUri = (currentSketch && currentSketch.uri) || '';
+    this.currentSketchUri = (CurrentSketch.isValid(currentSketch) && currentSketch.uri) || '';
   }
 
   protected override createNodeClassNames(node: TreeNode, props: NodeProps): string[] {

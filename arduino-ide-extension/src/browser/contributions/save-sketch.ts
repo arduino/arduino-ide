@@ -12,6 +12,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class SaveSketch extends SketchContribution {
@@ -53,7 +54,7 @@ export class SaveSketch extends SketchContribution {
 
   async saveSketch(): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const isTemp = await this.sketchService.isTemp(sketch);

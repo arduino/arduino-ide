@@ -17,6 +17,7 @@ import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
 import * as monaco from '@theia/monaco-editor-core';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -172,7 +173,7 @@ export class IncludeLibrary extends SketchContribution {
 
   protected async includeLibrary(library: LibraryPackage): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     // If the current editor is one of the additional files from the sketch, we use that.

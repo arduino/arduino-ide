@@ -16,6 +16,7 @@ import {
 } from './contribution';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class UploadSketch extends SketchContribution {
@@ -209,7 +210,7 @@ export class UploadSketch extends SketchContribution {
     this.uploadInProgress = true;
     this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
 

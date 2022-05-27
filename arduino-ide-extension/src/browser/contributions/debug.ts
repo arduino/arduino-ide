@@ -13,6 +13,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { MaybePromise, nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class Debug extends SketchContribution {
@@ -160,7 +161,7 @@ export class Debug extends SketchContribution {
       this.sketchServiceClient.currentSketch(),
       this.executableService.list(),
     ]);
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(

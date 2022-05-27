@@ -15,7 +15,7 @@ import {
 } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
 import URI from '@theia/core/lib/common/uri';
 
@@ -41,7 +41,7 @@ export class ApplicationShell extends TheiaApplicationShell {
     if (widget instanceof EditorWidget) {
       // Make the editor un-closeable asynchronously.
       this.sketchesServiceClient.currentSketch().then((sketch) => {
-        if (sketch) {
+        if (CurrentSketch.isValid(sketch)) {
           if (!this.isSketchFile(widget.editor.uri, sketch.uri)) {
               return;
           }

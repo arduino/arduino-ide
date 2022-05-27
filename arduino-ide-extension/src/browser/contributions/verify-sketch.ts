@@ -14,6 +14,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class VerifySketch extends SketchContribution {
@@ -99,7 +100,7 @@ export class VerifySketch extends SketchContribution {
     this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
 
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     try {

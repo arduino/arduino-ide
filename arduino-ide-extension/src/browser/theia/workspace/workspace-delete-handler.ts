@@ -2,7 +2,10 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
@@ -12,7 +15,7 @@ export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
 
   override async execute(uris: URI[]): Promise<void> {
     const sketch = await this.sketchesServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     // Deleting the main sketch file.

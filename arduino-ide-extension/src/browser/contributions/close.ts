@@ -16,6 +16,7 @@ import {
   URI,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 /**
  * Closes the `current` closeable editor, or any closeable current widget from the main area, or the current sketch window.
@@ -54,7 +55,7 @@ export class Close extends SketchContribution {
 
         // Close the sketch (window).
         const sketch = await this.sketchServiceClient.currentSketch();
-        if (!sketch) {
+        if (!CurrentSketch.isValid(sketch)) {
           return;
         }
         const isTemp = await this.sketchService.isTemp(sketch);

@@ -66,7 +66,10 @@ import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { ArduinoPreferences } from './arduino-preferences';
-import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
@@ -219,7 +222,10 @@ export class ArduinoFrontendContribution
     updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
     this.appStateService.reachedState('ready').then(async () => {
       const sketch = await this.sketchServiceClient.currentSketch();
-      if (sketch && !(await this.sketchService.isTemp(sketch))) {
+      if (
+        CurrentSketch.isValid(sketch) &&
+        !(await this.sketchService.isTemp(sketch))
+      ) {
         this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
         this.toDisposeOnStop.push(
           this.fileService.onDidFilesChange(async (event) => {
@@ -373,7 +379,7 @@ export class ArduinoFrontendContribution
       let currentSketchPath: string | undefined = undefined;
       if (log) {
         const currentSketch = await this.sketchServiceClient.currentSketch();
-        if (currentSketch) {
+        if (CurrentSketch.isValid(currentSketch)) {
           currentSketchPath = await this.fileService.fsPath(
             new URI(currentSketch.uri)
           );

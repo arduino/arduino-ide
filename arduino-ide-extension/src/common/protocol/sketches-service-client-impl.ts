@@ -16,9 +16,17 @@ import {
   REMOTE_SKETCHBOOK_FOLDER,
 } from '../../browser/utils/constants';
 import * as monaco from '@theia/monaco-editor-core';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 const READ_ONLY_FILES = ['sketch.json'];
 const READ_ONLY_FILES_REMOTE = ['thingProperties.h', 'thingsProperties.h'];
+
+export type CurrentSketch = Sketch | 'invalid';
+export namespace CurrentSketch {
+  export function isValid(arg: CurrentSketch | undefined): arg is Sketch {
+    return !!arg && arg !== 'invalid';
+  }
+}
 
 @injectable()
 export class SketchesServiceClientImpl
@@ -41,11 +49,14 @@ export class SketchesServiceClientImpl
 
   protected toDispose = new DisposableCollection();
   protected sketches = new Map<string, SketchRef>();
+  // TODO: rename this + event to the `onBlabla` pattern
   protected sketchbookDidChangeEmitter = new Emitter<{
     created: SketchRef[];
     removed: SketchRef[];
   }>();
   readonly onSketchbookDidChange = this.sketchbookDidChangeEmitter.event;
+
+  private _currentSketch = new Deferred<CurrentSketch>();
 
   onStart(): void {
     this.configService.getConfiguration().then(({ sketchDirUri }) => {
@@ -99,13 +110,16 @@ export class SketchesServiceClientImpl
           );
         });
     });
+    this.loadCurrentSketch().then((currentSketch) =>
+      this._currentSketch.resolve(currentSketch)
+    );
   }
 
   onStop(): void {
     this.toDispose.dispose();
   }
 
-  async currentSketch(): Promise<Sketch | undefined> {
+  private async loadCurrentSketch(): Promise<CurrentSketch> {
     const sketches = (
       await Promise.all(
         this.workspaceService
@@ -116,7 +130,7 @@ export class SketchesServiceClientImpl
       )
     ).filter(notEmpty);
     if (!sketches.length) {
-      return undefined;
+      return 'invalid';
     }
     if (sketches.length > 1) {
       console.log(
@@ -128,16 +142,14 @@ export class SketchesServiceClientImpl
     return sketches[0];
   }
 
+  async currentSketch(): Promise<CurrentSketch> {
+    return this._currentSketch.promise;
+  }
+
   async currentSketchFile(): Promise<string | undefined> {
-    const sketch = await this.currentSketch();
-    if (sketch) {
-      const uri = sketch.mainFileUri;
-      const exists = await this.fileService.exists(new URI(uri));
-      if (!exists) {
-        this.messageService.warn(`Could not find sketch file: ${uri}`);
-        return undefined;
-      }
-      return uri;
+    const currentSketch = await this.currentSketch();
+    if (CurrentSketch.isValid(currentSketch)) {
+      return currentSketch.mainFileUri;
     }
     return undefined;
   }

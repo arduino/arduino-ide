@@ -10,6 +10,7 @@ import {
   MenuModelRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class ArchiveSketch extends SketchContribution {
@@ -32,7 +33,7 @@ export class ArchiveSketch extends SketchContribution {
       this.sketchServiceClient.currentSketch(),
       this.configService.getConfiguration(),
     ]);
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const archiveBasename = `${sketch.name}-${dateFormat(

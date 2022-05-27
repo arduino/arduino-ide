@@ -14,6 +14,7 @@ import { nls } from '@theia/core/lib/common';
 import { ApplicationShell, NavigatableWidget, Saveable } from '@theia/core/lib/browser';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
@@ -59,7 +60,7 @@ export class SaveAsSketch extends SketchContribution {
     }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
   ): Promise<boolean> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return false;
     }
 

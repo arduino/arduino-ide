@@ -23,7 +23,10 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
 
@@ -142,7 +145,10 @@ export class SketchbookWidgetContribution
         // disable the "open sketch" command for the current sketch.
         // otherwise make the command clickable
         const currentSketch = await this.sketchServiceClient.currentSketch();
-        if (currentSketch && currentSketch.uri === arg.node.uri.toString()) {
+        if (
+          CurrentSketch.isValid(currentSketch) &&
+          currentSketch.uri === arg.node.uri.toString()
+        ) {
           const placeholder = new PlaceholderMenuNode(
             SKETCHBOOK__CONTEXT__MAIN_GROUP,
             SketchbookCommands.OPEN_NEW_WINDOW.label!

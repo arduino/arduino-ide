@@ -19,7 +19,10 @@ import {
 } from './contribution';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
-import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../common/protocol/sketches-service-client-impl';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
 import { nls } from '@theia/core/lib/common';
 
@@ -55,7 +58,7 @@ export class SketchControl extends SketchContribution {
         execute: async () => {
           this.toDisposeBeforeCreateNewContextMenu.dispose();
           const sketch = await this.sketchServiceClient.currentSketch();
-          if (!sketch) {
+          if (!CurrentSketch.isValid(sketch)) {
             return;
           }
 
@@ -70,25 +73,22 @@ export class SketchControl extends SketchContribution {
             return;
           }
 
-          const { mainFileUri, rootFolderFileUris } =
-            await this.sketchService.loadSketch(sketch.uri);
+          const { mainFileUri, rootFolderFileUris } = sketch;
           const uris = [mainFileUri, ...rootFolderFileUris];
 
-          const currentSketch =
-            await this.sketchesServiceClient.currentSketch();
-          const parentsketchUri = this.editorManager.currentEditor
+          const parentSketchUri = this.editorManager.currentEditor
             ?.getResourceUri()
             ?.toString();
-          const parentsketch = await this.sketchService.getSketchFolder(
-            parentsketchUri || ''
+          const parentSketch = await this.sketchService.getSketchFolder(
+            parentSketchUri || ''
           );
 
           // if the current file is in the current opened sketch, show extra menus
           if (
-            currentSketch &&
-            parentsketch &&
-            parentsketch.uri === currentSketch.uri &&
-            this.allowRename(parentsketch.uri)
+            sketch &&
+            parentSketch &&
+            parentSketch.uri === sketch.uri &&
+            this.allowRename(parentSketch.uri)
           ) {
             this.menuRegistry.registerMenuAction(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -122,10 +122,10 @@ export class SketchControl extends SketchContribution {
           }
 
           if (
-            currentSketch &&
-            parentsketch &&
-            parentsketch.uri === currentSketch.uri &&
-            this.allowDelete(parentsketch.uri)
+            sketch &&
+            parentSketch &&
+            parentSketch.uri === sketch.uri &&
+            this.allowDelete(parentSketch.uri)
           ) {
             this.menuRegistry.registerMenuAction(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,

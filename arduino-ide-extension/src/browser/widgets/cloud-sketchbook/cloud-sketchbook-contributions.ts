@@ -23,7 +23,7 @@ import {
 } from '@theia/core/lib/browser/preferences/preference-service';
 import { ArduinoMenus, PlaceholderMenuNode } from '../../menu/arduino-menus';
 import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
@@ -279,7 +279,8 @@ export class CloudSketchbookContribution extends Contribution {
           // disable the "open sketch" command for the current sketch and for those not in sync
           if (
             !CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node) ||
-            (currentSketch && currentSketch.uri === arg.node.uri.toString())
+            (CurrentSketch.isValid(currentSketch) &&
+              currentSketch.uri === arg.node.uri.toString())
           ) {
             const placeholder = new PlaceholderMenuNode(
               SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP,

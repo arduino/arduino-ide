@@ -39,7 +39,10 @@ import {
 } from '@theia/core/lib/common/command';
 import { EditorMode } from '../editor-mode';
 import { SettingsService } from '../dialogs/settings/settings';
-import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../common/protocol/sketches-service-client-impl';
 import {
   SketchesService,
   ConfigService,
@@ -149,7 +152,7 @@ export abstract class SketchContribution extends Contribution {
   protected async sourceOverride(): Promise<Record<string, string>> {
     const override: Record<string, string> = {};
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (sketch) {
+    if (CurrentSketch.isValid(sketch)) {
       for (const editor of this.editorManager.all) {
         const uri = editor.editor.uri;
         if (Saveable.isDirty(editor) && Sketch.isInSketch(uri, sketch)) {
