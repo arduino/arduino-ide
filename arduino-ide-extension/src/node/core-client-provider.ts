@@ -20,7 +20,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Deferred, retry } from '@theia/core/lib/common/promise-util';
 import { Status as RpcStatus } from './cli-protocol/google/rpc/status_pb';
 
 @injectable()
@@ -232,45 +232,15 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     });
   }
 
-  protected async updateIndexes({
-    client,
-    instance,
-  }: CoreClientProvider.Client): Promise<CoreClientProvider.Client> {
-    // in a separate promise, try and update the index
-    let indexUpdateSucceeded = true;
-    for (let i = 0; i < 10; i++) {
-      try {
-        await this.updateIndex({ client, instance });
-        indexUpdateSucceeded = true;
-        break;
-      } catch (e) {
-        console.error(`Error while updating index in attempt ${i}.`, e);
-      }
-    }
-    if (!indexUpdateSucceeded) {
-      console.error('Could not update the index. Please restart to try again.');
-    }
-
-    let libIndexUpdateSucceeded = true;
-    for (let i = 0; i < 10; i++) {
-      try {
-        await this.updateLibraryIndex({ client, instance });
-        libIndexUpdateSucceeded = true;
-        break;
-      } catch (e) {
-        console.error(`Error while updating library index in attempt ${i}.`, e);
-      }
-    }
-    if (!libIndexUpdateSucceeded) {
-      console.error(
-        'Could not update the library index. Please restart to try again.'
-      );
-    }
-
-    if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
-      this.notificationService.notifyIndexUpdated();
-    }
-    return { client, instance };
+  protected async updateIndexes(
+    client: CoreClientProvider.Client
+  ): Promise<CoreClientProvider.Client> {
+    await Promise.all([
+      retry(() => this.updateIndex(client), 50, 3),
+      retry(() => this.updateLibraryIndex(client), 50, 3),
+    ]);
+    this.notificationService.notifyIndexUpdated();
+    return client;
   }
 
   protected async updateLibraryIndex({
