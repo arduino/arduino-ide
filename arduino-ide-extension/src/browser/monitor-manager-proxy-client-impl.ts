@@ -12,6 +12,7 @@ import {
 } from '../node/monitor-settings/monitor-settings-provider';
 import { BoardsConfig } from './boards/boards-config';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
+import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
 
 @injectable()
 export class MonitorManagerProxyClientImpl
@@ -109,10 +110,14 @@ export class MonitorManagerProxyClientImpl
     if (
       board.fqbn !== this.lastConnectedBoard?.selectedBoard?.fqbn ||
       port.id !== this.lastConnectedBoard?.selectedPort?.id
-    )
+    ) {
       await this.commandRegistry.executeCommand(
         MonitorViewContribution.RESET_SERIAL_MONITOR
       );
+      await this.commandRegistry.executeCommand(
+        SerialPlotterContribution.Commands.RESET.id
+      );
+    }
     this.lastConnectedBoard = {
       selectedBoard: board,
       selectedPort: port,

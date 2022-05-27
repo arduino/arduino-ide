@@ -23,6 +23,11 @@ export namespace SerialPlotterContribution {
       label: 'Serial Plotter',
       category: 'Arduino',
     };
+    export const RESET: Command = {
+      id: 'serial-plotter-reset',
+      label: 'Reset Serial Plotter',
+      category: 'Arduino',
+    };
   }
 }
 
@@ -58,6 +63,9 @@ export class PlotterFrontendContribution extends Contribution {
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
       execute: this.startPlotter.bind(this),
+    });
+    registry.registerCommand(SerialPlotterContribution.Commands.RESET, {
+      execute: () => this.reset(),
     });
   }
 
@@ -96,28 +104,9 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   protected async open(wsPort: number): Promise<void> {
-    const board = this.boardsServiceProvider.boardsConfig.selectedBoard;
-    const port = this.boardsServiceProvider.boardsConfig.selectedPort;
-    let baudrates: number[] = [];
-    let currentBaudrate = -1;
-    if (board && port) {
-      const { pluggableMonitorSettings } =
-        await this.monitorManagerProxy.getCurrentSettings(board, port);
-      if (pluggableMonitorSettings && 'baudrate' in pluggableMonitorSettings) {
-        // Convert from string to numbers
-        baudrates = pluggableMonitorSettings['baudrate'].values.map((b) => +b);
-        currentBaudrate = +pluggableMonitorSettings['baudrate'].selectedValue;
-      }
-    }
-
     const initConfig: Partial<SerialPlotter.Config> = {
-      baudrates,
-      currentBaudrate,
-      currentLineEnding: this.model.lineEnding,
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
-      interpolate: this.model.interpolate,
-      connected: this.model.connected,
       serialPort: this.model.serialPort,
     };
     const urlWithParams = queryString.stringifyUrl(
@@ -128,5 +117,12 @@ export class PlotterFrontendContribution extends Contribution {
       { arrayFormat: 'comma' }
     );
     this.window = window.open(urlWithParams, 'serialPlotter');
+  }
+
+  protected async reset(): Promise<void> {
+    if (!!this.window) {
+      this.window.close();
+      await this.startPlotter();
+    }
   }
 }
