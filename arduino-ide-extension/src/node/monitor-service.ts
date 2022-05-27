@@ -129,7 +129,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
    */
   async start(): Promise<Status> {
     if (this.duplex) {
-      this.updateClientsSettings({ monitorUISettings: { connected: true } });
+      this.updateClientsSettings({
+        monitorUISettings: { connected: true, serialPort: this.port.address },
+      });
       return Status.ALREADY_CONNECTED;
     }
 
@@ -140,7 +142,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
 
     if (this.uploadInProgress) {
-      this.updateClientsSettings({ monitorUISettings: { connected: false } });
+      this.updateClientsSettings({
+        monitorUISettings: { connected: false, serialPort: this.port.address },
+      });
       return Status.UPLOAD_IN_PROGRESS;
     }
 
@@ -230,7 +234,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
         this.logger.info(
           `started monitor to ${this.port?.address} using ${this.port?.protocol}`
         );
-        this.updateClientsSettings({ monitorUISettings: { connected: true } });
+        this.updateClientsSettings({
+          monitorUISettings: { connected: true, serialPort: this.port.address },
+        });
         resolve(Status.OK);
         return;
       }
@@ -397,6 +403,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       monitorUISettings: {
         ...settings.monitorUISettings,
         connected: !!this.duplex,
+        serialPort: this.port.address,
       },
       pluggableMonitorSettings: reconciledSettings,
     });
