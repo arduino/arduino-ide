@@ -137,7 +137,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     );
   }
 
-  // Final error codes are not yet defined by the CLI. Hence, we do string match in the error message.
+  // Final error codes are not yet defined by the CLI. Hence, we do string matching in the message RPC status.
   private isRpcStatusError(
     error: unknown,
     assert: (message: string) => boolean
@@ -212,26 +212,23 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         if (error) {
           console.error(error.getMessage());
           errorStatus.push(error);
-          // Cancel the init request. This will result in a cancel error.
+          // Cancel the init request. No need to wait until the end of the event. The init has already failed.
+          // Canceling the request will result in a cancel error, but we need to reject with the original error later.
           stream.cancel();
         }
       });
       stream.on('error', (error) => {
-        // on any error during the init request, the request is canceled.
-        // on cancel, the IDE2 ignores the cancel error and rejects with the original one.
+        // On any error during the init request, the request is canceled.
+        // On cancel, the IDE2 ignores the cancel error and rejects with the original one.
         reject(
           this.isCancelError(error) && errorStatus.length
             ? errorStatus[0]
             : error
         );
       });
-      stream.on('end', () => {
-        if (errorStatus.length) {
-          reject(errorStatus);
-        } else {
-          resolve();
-        }
-      });
+      stream.on('end', () =>
+        errorStatus.length ? reject(errorStatus) : resolve()
+      );
     });
   }
 
