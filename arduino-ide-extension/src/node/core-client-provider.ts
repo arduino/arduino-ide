@@ -21,6 +21,7 @@ import {
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Status as RpcStatus } from './cli-protocol/google/rpc/status_pb';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -66,23 +67,41 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   }
 
   @postConstruct()
-  protected override async init(): Promise<void> {
+  protected override init(): void {
     this.daemon.getPort().then(async (port) => {
       // First create the client and the instance synchronously
       // and notify client is ready.
       // TODO: Creation failure should probably be handled here
-      await this.reconcileClient(port).then(() => {
-        this._created.resolve();
-      });
+      await this.reconcileClient(port); // create instance
+      this._created.resolve();
 
-      // If client has been created correctly update indexes and initialize
-      // its instance by loading platforms and cores.
+      // Normal startup workflow:
+      // 1. create instance,
+      // 2. init instance,
+      // 3. update indexes asynchronously.
+
+      // First startup workflow:
+      // 1. create instance,
+      // 2. update indexes and wait,
+      // 3. init instance.
       if (this._client && !(this._client instanceof Error)) {
-        await this.updateIndexes(this._client)
-          .then(this.initInstance)
-          .then(() => {
+        try {
+          await this.initInstance(this._client);
+          this._initialized.resolve();
+          this.updateIndex(this._client); // Update the indexes asynchronously
+        } catch (error: unknown) {
+          if (
+            this.isPackageIndexMissingError(error) ||
+            this.isDiscoveryNotFoundError(error)
+          ) {
+            await this.updateIndexes(this._client);
+            await this.initInstance(this._client);
+            console.log('fooo');
             this._initialized.resolve();
-          });
+          } else {
+            throw error;
+          }
+        }
       }
     });
 
@@ -93,6 +112,41 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       this._client = undefined;
       this._port = undefined;
     });
+  }
+
+  private isPackageIndexMissingError(error: unknown): boolean {
+    const assert = (message: string) =>
+      message.includes('loading json index file');
+    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
+    return this.isRpcStatusError(error, assert);
+  }
+
+  private isDiscoveryNotFoundError(error: unknown): boolean {
+    const assert = (message: string) =>
+      message.includes('discovery') &&
+      (message.includes('not found') || message.includes('not installed'));
+    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L740
+    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L744
+    return this.isRpcStatusError(error, assert);
+  }
+
+  private isCancelError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      error.message.toLocaleLowerCase().includes('cancelled on client')
+    );
+  }
+
+  // Final error codes are not yet defined by the CLI. Hence, we do string match in the error message.
+  private isRpcStatusError(
+    error: unknown,
+    assert: (message: string) => boolean
+  ) {
+    if (error instanceof RpcStatus) {
+      const { message } = RpcStatus.toObject(false, error);
+      return assert(message.toLocaleLowerCase());
+    }
+    return false;
   }
 
   protected async createClient(
@@ -136,8 +190,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   }: CoreClientProvider.Client): Promise<void> {
     const initReq = new InitRequest();
     initReq.setInstance(instance);
-    await new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const stream = client.init(initReq);
+      const errorStatus: RpcStatus[] = [];
       stream.on('data', (res: InitResponse) => {
         const progress = res.getInitProgress();
         if (progress) {
@@ -153,13 +208,30 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
           }
         }
 
-        const err = res.getError();
-        if (err) {
-          console.error(err.getMessage());
+        const error = res.getError();
+        if (error) {
+          console.error(error.getMessage());
+          errorStatus.push(error);
+          // Cancel the init request. This will result in a cancel error.
+          stream.cancel();
         }
       });
-      stream.on('error', (err) => reject(err));
-      stream.on('end', resolve);
+      stream.on('error', (error) => {
+        // on any error during the init request, the request is canceled.
+        // on cancel, the IDE2 ignores the cancel error and rejects with the original one.
+        reject(
+          this.isCancelError(error) && errorStatus.length
+            ? errorStatus[0]
+            : error
+        );
+      });
+      stream.on('end', () => {
+        if (errorStatus.length) {
+          reject(errorStatus);
+        } else {
+          resolve();
+        }
+      });
     });
   }
 
@@ -233,7 +305,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       }
     });
     await new Promise<void>((resolve, reject) => {
-      resp.on('error', reject);
+      resp.on('error', (error) => {
+        reject(error);
+      });
       resp.on('end', resolve);
     });
   }
