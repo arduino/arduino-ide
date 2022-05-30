@@ -8,7 +8,7 @@ on:
 env:
   CHANGELOG_ARTIFACTS: changelog
   # See: https://github.com/actions/setup-node/#readme
-  NODE_VERSION: 14.x
+  NODE_VERSION: 16.x
 
 jobs:
   create-changelog:

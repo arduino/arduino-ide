@@ -9,7 +9,7 @@ on:
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
   GO_VERSION: "1.17"
-  NODE_VERSION: 14.x
+  NODE_VERSION: 16.x
 
 jobs:
   pull-from-jsonbin:
