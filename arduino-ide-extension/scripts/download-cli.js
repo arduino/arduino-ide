@@ -42,6 +42,9 @@
     const suffix = (() => {
       switch (platform) {
         case 'darwin':
+          if (arch === 'arm64') {
+            return 'macOS_ARM64.tar.gz';
+          }
           return 'macOS_64bit.tar.gz';
         case 'win32':
           return 'Windows_64bit.zip';

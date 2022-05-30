@@ -27,6 +27,9 @@ function artifactName() {
       throw new Error(`Unsupported platform, arch: ${platform}, ${arch}`);
     }
     case 'darwin': {
+      if (arch === 'arm64') {
+        return `${name}_${id}_macOS_ARM64.\$\{ext}`;
+      }
       return `${name}_${id}_macOS_64bit.\$\{ext}`;
     }
     case 'linux': {

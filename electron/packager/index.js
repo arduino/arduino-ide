@@ -6,7 +6,6 @@
   const shell = require('shelljs');
   const glob = require('glob');
   const isCI = require('is-ci');
-  shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1'; // Do not run the ffmpeg validation for the packager.
   // Note, this will crash on PI if the available memory is less than desired heap size.
   // https://github.com/shelljs/shelljs/issues/1024#issuecomment-1001552543
   shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI

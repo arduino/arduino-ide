@@ -54,7 +54,7 @@ This repository contains the main code, but two more repositories are included d
 If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and if you want to contribute to the
 project, you should be able to build the Arduino IDE locally.
 Please refer to the [Theia IDE prerequisites](https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#prerequisites) documentation for the setup instructions.
-> **Note**: Node.js 14 must be used instead of the version 12 recommended at the link above.
+> **Note**: Node.js 16 must be used instead of the version 14 recommended at the link above.
 
 Once you have all the tools installed, you can build the editor following these steps
 

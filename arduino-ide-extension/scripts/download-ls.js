@@ -76,6 +76,12 @@
       lsSuffix = 'macOS_64bit.tar.gz';
       clangdSuffix = 'macOS_64bit';
       break;
+    case 'darwin-arm64':
+      clangdExecutablePath = path.join(build, 'clangd');
+      clangFormatExecutablePath = path.join(build, 'clang-format');
+      lsSuffix = 'macOS_ARM64.tar.gz';
+      clangdSuffix = 'macOS_ARM64';
+      break;
     case 'linux-x64':
       clangdExecutablePath = path.join(build, 'clangd');
       clangFormatExecutablePath = path.join(build, 'clang-format');

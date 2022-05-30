@@ -11,7 +11,7 @@
   "devDependencies": {
     "@theia/cli": "1.25.0",
     "cross-env": "^7.0.2",
-    "electron-builder": "23.0.2",
+    "electron-builder": "23.3.3",
     "electron-notarize": "^1.1.1",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
@@ -26,7 +26,7 @@
     "patch": "ncp ./patch/backend/main.js ./src-gen/backend/main.js"
   },
   "engines": {
-    "node": ">=14.0.0 <15"
+    "node": ">=16.0.0 <17"
   },
   "repository": {
     "type": "git",
@@ -89,7 +89,10 @@
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "resources/entitlements.mac.plist",
-      "entitlementsInherit": "resources/entitlements.mac.plist"
+      "entitlementsInherit": "resources/entitlements.mac.plist",
+      "target": {
+        "target": "default"
+      }
     },
     "linux": {
       "target": [

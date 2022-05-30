@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "engines": {
-    "node": ">=14.0.0 <15"
+    "node": ">=16.0.0 <17"
   },
   "devDependencies": {
     "@theia/cli": "1.25.0",
@@ -26,7 +26,7 @@
     "ignore-styles": "^5.0.1",
     "lerna": "^3.20.2",
     "lint-staged": "^11.0.0",
-    "node-gyp": "^9.0.0",
+    "node-gyp": "^9.3.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
@@ -37,7 +37,8 @@
     "xhr2": "^0.2.1"
   },
   "resolutions": {
-    "@types/react": "16.14.25"
+    "@types/react": "16.14.25",
+    "electron-rebuild": "3.2.9"
   },
   "scripts": {
     "prepare": "lerna run prepare && yarn download:plugins",
