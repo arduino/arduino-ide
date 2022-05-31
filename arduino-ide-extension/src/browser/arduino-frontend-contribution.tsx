@@ -579,7 +579,11 @@ export class ArduinoFrontendContribution
       (widget) => widget.editor.uri.toString() === uri
     );
     if (!widget || forceOpen) {
-      return this.editorManager.open(new URI(uri), options);
+      return this.editorManager.open(new URI(uri), options ?? {
+        mode: 'reveal',
+        preview: false,
+        counter: 0
+      });
     }
   }
 

@@ -276,6 +276,8 @@ import {
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 import { MonitorModel } from './monitor-model';
 import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
+import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
+import { EditorManager } from './theia/editor/editor-manager';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -524,6 +526,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(SearchInWorkspaceWidget).toSelf();
   rebind(TheiaSearchInWorkspaceWidget).toService(SearchInWorkspaceWidget);
+
+  rebind(TheiaEditorManager).to(EditorManager);
 
   // replace search icon
   rebind(TheiaSearchInWorkspaceFactory)
