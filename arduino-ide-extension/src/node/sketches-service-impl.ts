@@ -3,6 +3,7 @@ import * as minimatch from 'minimatch';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as temp from 'temp';
+import * as tempDir from 'temp-dir';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { ncp } from 'ncp';
@@ -533,8 +534,16 @@ void loop() {
   }
 
   async isTemp(sketch: Sketch): Promise<boolean> {
+    // Consider the following paths:
+    // macOS:
+    // - Temp folder: /var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T
+    // - Sketch folder: /private/var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T/arduino-ide2-A0337D47F86B24A51DF3DBCF2CC17925
+    // Windows:
+    // - Temp folder: C:\Users\KITTAA~1\AppData\Local\Temp
+    // - Sketch folder: c:\Users\kittaakos\AppData\Local\Temp\.arduinoIDE-unsaved2022431-21824-116kfaz.9ljl\sketch_may31a
+    // Both sketches are valid and temp, but this function will give a false-negative result if we use `os.tmpdir()`.
     let sketchPath = FileUri.fsPath(sketch.uri);
-    let temp = await promisify(fs.realpath)(os.tmpdir());
+    let temp = tempDir; // https://github.com/sindresorhus/temp-dir
     // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
     // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
     if (isWindows) {
@@ -545,7 +554,10 @@ void loop() {
         temp = firstToLowerCase(temp);
       }
     }
-    return sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(temp);
+    const result =
+      sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(temp);
+    console.log('isTemp?', result, sketch.uri);
+    return result;
   }
 
   async copy(
