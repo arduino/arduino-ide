@@ -50,10 +50,6 @@ export class ElectronMenuContribution
     // }
   }
 
-  override handleTitleBarStyling(): void {
-    // NOOP
-  }
-
   override registerCommands(registry: CommandRegistry): void {
     this.theiaRegisterCommands(registry);
     registry.unregisterCommand(ElectronCommands.CLOSE_WINDOW);
