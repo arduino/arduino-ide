@@ -1,4 +1,9 @@
-import { CommandRegistry, Emitter, MessageService } from '@theia/core';
+import {
+  CommandRegistry,
+  Disposable,
+  Emitter,
+  MessageService,
+} from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Board, Port } from '../common/protocol';
 import {
@@ -11,8 +16,7 @@ import {
   MonitorSettings,
 } from '../node/monitor-settings/monitor-settings-provider';
 import { BoardsConfig } from './boards/boards-config';
-import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
-import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
+import { BoardsServiceProvider } from './boards/boards-service-provider';
 
 @injectable()
 export class MonitorManagerProxyClientImpl
@@ -32,11 +36,15 @@ export class MonitorManagerProxyClientImpl
   readonly onMonitorSettingsDidChange =
     this.onMonitorSettingsDidChangeEmitter.event;
 
+  protected readonly onMonitorShouldResetEmitter = new Emitter();
+  readonly onMonitorShouldReset = this.onMonitorShouldResetEmitter.event;
+
   // WebSocket used to handle pluggable monitor communication between
   // frontend and backend.
   private webSocket?: WebSocket;
   private wsPort?: number;
   private lastConnectedBoard: BoardsConfig.Config;
+  private onBoardsConfigChanged: Disposable | undefined;
 
   getWebSocketPort(): number | undefined {
     return this.wsPort;
@@ -51,7 +59,10 @@ export class MonitorManagerProxyClientImpl
     protected server: MonitorManagerProxyFactory,
 
     @inject(CommandRegistry)
-    protected readonly commandRegistry: CommandRegistry
+    protected readonly commandRegistry: CommandRegistry,
+
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceProvider: BoardsServiceProvider
   ) {}
 
   /**
@@ -89,6 +100,8 @@ export class MonitorManagerProxyClientImpl
    */
   disconnect(): void {
     if (!this.webSocket) return;
+    this.onBoardsConfigChanged?.dispose();
+    this.onBoardsConfigChanged = undefined;
     try {
       this.webSocket?.close();
       this.webSocket = undefined;
@@ -101,27 +114,46 @@ export class MonitorManagerProxyClientImpl
     return !!this.webSocket;
   }
 
-  async startMonitor(
-    board: Board,
-    port: Port,
-    settings?: PluggableMonitorSettings
-  ): Promise<void> {
-    await this.server().startMonitor(board, port, settings);
-    if (
-      board.fqbn !== this.lastConnectedBoard?.selectedBoard?.fqbn ||
-      port.id !== this.lastConnectedBoard?.selectedPort?.id
-    ) {
-      await this.commandRegistry.executeCommand(
-        MonitorViewContribution.RESET_SERIAL_MONITOR
-      );
-      await this.commandRegistry.executeCommand(
-        SerialPlotterContribution.Commands.RESET.id
-      );
-    }
+  async startMonitor(settings?: PluggableMonitorSettings): Promise<void> {
     this.lastConnectedBoard = {
-      selectedBoard: board,
-      selectedPort: port,
+      selectedBoard: this.boardsServiceProvider.boardsConfig.selectedBoard,
+      selectedPort: this.boardsServiceProvider.boardsConfig.selectedPort,
     };
+
+    if (!this.onBoardsConfigChanged) {
+      this.onBoardsConfigChanged =
+        this.boardsServiceProvider.onBoardsConfigChanged(
+          async ({ selectedBoard, selectedPort }) => {
+            if (
+              typeof selectedBoard === 'undefined' ||
+              typeof selectedPort === 'undefined'
+            )
+              return;
+
+            // a board is plugged and it's different from the old connected board
+            if (
+              selectedBoard?.fqbn !==
+                this.lastConnectedBoard?.selectedBoard?.fqbn ||
+              selectedPort?.id !== this.lastConnectedBoard?.selectedPort?.id
+            ) {
+              this.onMonitorShouldResetEmitter.fire(null);
+              this.lastConnectedBoard = {
+                selectedBoard: selectedBoard,
+                selectedPort: selectedPort,
+              };
+            } else {
+              // a board is plugged and it's the same as prev, rerun "this.startMonitor" to
+              // recreate the listener callback
+              this.startMonitor();
+            }
+          }
+        );
+    }
+
+    const { selectedBoard, selectedPort } =
+      this.boardsServiceProvider.boardsConfig;
+    if (!selectedBoard || !selectedBoard.fqbn || !selectedPort) return;
+    await this.server().startMonitor(selectedBoard, selectedPort, settings);
   }
 
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {

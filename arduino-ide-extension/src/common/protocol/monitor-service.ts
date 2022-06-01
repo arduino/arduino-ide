@@ -30,15 +30,12 @@ export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
 export interface MonitorManagerProxyClient {
   onMessagesReceived: Event<{ messages: string[] }>;
   onMonitorSettingsDidChange: Event<MonitorSettings>;
+  onMonitorShouldReset: Event<void>;
   connect(addressPort: number): void;
   disconnect(): void;
   getWebSocketPort(): number | undefined;
   isWSConnected(): Promise<boolean>;
-  startMonitor(
-    board: Board,
-    port: Port,
-    settings?: PluggableMonitorSettings
-  ): Promise<void>;
+  startMonitor(settings?: PluggableMonitorSettings): Promise<void>;
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
   send(message: string): void;
   changeSettings(settings: MonitorSettings): void;

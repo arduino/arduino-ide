@@ -61,28 +61,6 @@ export class MonitorWidget extends ReactWidget {
     this.toDispose.push(
       Disposable.create(() => this.monitorManagerProxy.disconnect())
     );
-
-    // Start monitor right away if there is already a board/port combination selected
-    const { selectedBoard, selectedPort } =
-      this.boardsServiceProvider.boardsConfig;
-    if (selectedBoard && selectedBoard.fqbn && selectedPort) {
-      this.monitorManagerProxy.startMonitor(selectedBoard, selectedPort);
-    }
-
-    this.toDispose.push(
-      this.boardsServiceProvider.onBoardsConfigChanged(
-        async ({ selectedBoard, selectedPort }) => {
-          if (selectedBoard && selectedBoard.fqbn && selectedPort) {
-            await this.monitorManagerProxy.startMonitor(
-              selectedBoard,
-              selectedPort
-            );
-
-            this.update();
-          }
-        }
-      )
-    );
   }
 
   protected onBeforeAttach(msg: Message): void {
@@ -92,6 +70,8 @@ export class MonitorWidget extends ReactWidget {
     this.monitorManagerProxy.onMonitorSettingsDidChange(
       this.onMonitorSettingsDidChange.bind(this)
     );
+
+    this.monitorManagerProxy.startMonitor();
   }
 
   onMonitorSettingsDidChange(settings: MonitorSettings): void {
@@ -207,7 +187,6 @@ export class MonitorWidget extends ReactWidget {
           <div className="send">
             <SerialMonitorSendInput
               boardsServiceProvider={this.boardsServiceProvider}
-              monitorManagerProxy={this.monitorManagerProxy}
               monitorModel={this.monitorModel}
               resolveFocus={this.onFocusResolved}
               onSend={this.onSend}

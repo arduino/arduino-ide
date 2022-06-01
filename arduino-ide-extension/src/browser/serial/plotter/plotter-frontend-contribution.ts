@@ -14,6 +14,7 @@ import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { SerialPlotter } from './protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
+
 const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
@@ -57,6 +58,8 @@ export class PlotterFrontendContribution extends Contribution {
         this.window = null;
       }
     });
+    this.monitorManagerProxy.onMonitorShouldReset(() => this.reset());
+
     return super.onStart(app);
   }
 
@@ -78,19 +81,7 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   async startPlotter(): Promise<void> {
-    if (
-      !this.boardsServiceProvider.boardsConfig.selectedBoard ||
-      !this.boardsServiceProvider.boardsConfig.selectedPort
-    ) {
-      this.messageService.error(
-        `You need to select a connected board to start the serial plotter`
-      );
-      return;
-    }
-    await this.monitorManagerProxy.startMonitor(
-      this.boardsServiceProvider.boardsConfig.selectedBoard,
-      this.boardsServiceProvider.boardsConfig.selectedPort
-    );
+    await this.monitorManagerProxy.startMonitor();
     if (!!this.window) {
       this.window.focus();
       return;

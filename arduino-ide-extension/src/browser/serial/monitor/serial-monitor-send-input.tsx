@@ -3,14 +3,12 @@ import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board } from '../../../common/protocol/boards-service';
 import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
-import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
     readonly boardsServiceProvider: BoardsServiceProvider;
-    readonly monitorManagerProxy: MonitorManagerProxyClient;
     readonly monitorModel: MonitorModel;
     readonly onSend: (text: string) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;

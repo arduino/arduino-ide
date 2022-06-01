@@ -11,6 +11,7 @@ import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
 import { ArduinoMenus } from '../../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
 import { MonitorModel } from '../../monitor-model';
+import { MonitorManagerProxyClient } from '../../../common/protocol';
 
 export namespace SerialMonitor {
   export namespace Commands {
@@ -49,10 +50,13 @@ export class MonitorViewContribution
     MonitorWidget.ID + ':toggle-toolbar';
   static readonly RESET_SERIAL_MONITOR = MonitorWidget.ID + ':reset';
 
-  @inject(MonitorModel)
-  protected readonly model: MonitorModel;
+  constructor(
+    @inject(MonitorModel)
+    protected readonly model: MonitorModel,
 
-  constructor() {
+    @inject(MonitorManagerProxyClient)
+    protected readonly monitorManagerProxy: MonitorManagerProxyClient
+  ) {
     super({
       widgetId: MonitorWidget.ID,
       widgetName: MonitorWidget.LABEL,
@@ -62,6 +66,7 @@ export class MonitorViewContribution
       toggleCommandId: MonitorViewContribution.TOGGLE_SERIAL_MONITOR,
       toggleKeybinding: 'CtrlCmd+Shift+M',
     });
+    this.monitorManagerProxy.onMonitorShouldReset(() => this.reset());
   }
 
   registerMenus(menus: MenuModelRegistry): void {

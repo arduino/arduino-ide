@@ -62,6 +62,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
   protected uploadInProgress = false;
   protected _initialized = new Deferred<void>();
+  protected creating: Deferred<Status>;
 
   constructor(
     @inject(ILogger)
@@ -121,6 +122,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   dispose(): void {
     this.stop();
     this.onDisposeEmitter.fire();
+    this.onWSClientsNumberChanged?.dispose();
   }
 
   /**
@@ -148,24 +150,30 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * @returns a status to verify connection has been established.
    */
   async start(): Promise<Status> {
+    if (this.creating?.state === 'unresolved') return this.creating.promise;
+    this.creating = new Deferred();
     if (this.duplex) {
       this.updateClientsSettings({
         monitorUISettings: { connected: true, serialPort: this.port.address },
       });
-      return Status.ALREADY_CONNECTED;
+      this.creating.resolve(Status.ALREADY_CONNECTED);
+      return this.creating.promise;
     }
 
     if (!this.board?.fqbn || !this.port?.address || !this.port?.protocol) {
       this.updateClientsSettings({ monitorUISettings: { connected: false } });
 
-      return Status.CONFIG_MISSING;
+      this.creating.resolve(Status.CONFIG_MISSING);
+      return this.creating.promise;
     }
 
     if (this.uploadInProgress) {
       this.updateClientsSettings({
         monitorUISettings: { connected: false, serialPort: this.port.address },
       });
-      return Status.UPLOAD_IN_PROGRESS;
+
+      this.creating.resolve(Status.UPLOAD_IN_PROGRESS);
+      return this.creating.promise;
     }
 
     this.logger.info('starting monitor');
@@ -213,7 +221,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
     // Promise executor
     const writeToStream = (resolve: (value: boolean) => void) => {
-      this.duplex = this.duplex || coreClient.client.monitor();
+      this.duplex = coreClient.client.monitor();
 
       const duplexHandlers: DuplexHandler[] = [
         {
@@ -257,17 +265,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
               this.logger.error(res.getError());
               return;
             }
+            if (res.getSuccess()) {
+              resolve(true);
+              return;
+            }
             const data = res.getRxData();
             const message =
               typeof data === 'string'
                 ? data
                 : new TextDecoder('utf8').decode(data);
             this.messages.push(...splitLines(message));
-
-            // if (res.getSuccess()) {
-            //   resolve(true);
-            //   return;
-            // }
           },
         },
       ];
@@ -277,14 +284,15 @@ export class MonitorService extends CoreClientAware implements Disposable {
     };
 
     let attemptsRemaining = 10;
-    let wroteToStreamWithoutError = false;
-    do {
-      await new Promise((r) => setTimeout(r, 10000));
-      wroteToStreamWithoutError = await new Promise(writeToStream);
+    let wroteToStreamSuccessfully = false;
+    while (attemptsRemaining > 0) {
+      wroteToStreamSuccessfully = await new Promise(writeToStream);
+      if (wroteToStreamSuccessfully) break;
       attemptsRemaining -= 1;
-    } while (!wroteToStreamWithoutError && attemptsRemaining > 0);
+      await new Promise((r) => setTimeout(r, 2000));
+    }
 
-    if (wroteToStreamWithoutError) {
+    if (wroteToStreamSuccessfully) {
       this.startMessagesHandlers();
       this.logger.info(
         `started monitor to ${this.port?.address} using ${this.port?.protocol}`
@@ -292,12 +300,14 @@ export class MonitorService extends CoreClientAware implements Disposable {
       this.updateClientsSettings({
         monitorUISettings: { connected: true, serialPort: this.port.address },
       });
-      return Status.OK;
+      this.creating.resolve(Status.OK);
+      return this.creating.promise;
     } else {
       this.logger.warn(
         `failed starting monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
-      return Status.NOT_CONNECTED;
+      this.creating.resolve(Status.NOT_CONNECTED);
+      return this.creating.promise;
     }
   }
 
