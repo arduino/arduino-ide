@@ -10,7 +10,7 @@ import { ncp } from 'ncp';
 import { promisify } from 'util';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node';
-import { isWindows } from '@theia/core/lib/common/os';
+import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { ConfigService } from '../common/protocol/config-service';
 import {
   SketchesService,
@@ -27,6 +27,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import { duration } from '../common/decorators';
 import * as glob from 'glob';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
 
@@ -39,6 +40,13 @@ export class SketchesServiceImpl
 {
   private sketchSuffixIndex = 1;
   private lastSketchBaseName: string;
+  // If on macOS, the `temp-dir` lib will make sure there is resolved realpath.
+  // If on Windows, the `C:\Users\KITTAA~1\AppData\Local\Temp` path will be resolved and normalized to `C:\Users\kittaakos\AppData\Local\Temp`.
+  // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
+  // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
+  private tempDirRealpath = isOSX
+    ? tempDir
+    : maybeNormalizeDrive(fs.realpathSync.native(tempDir));
 
   @inject(ConfigService)
   protected readonly configService: ConfigService;
@@ -275,22 +283,39 @@ export class SketchesServiceImpl
   }
 
   async loadSketch(uri: string): Promise<SketchWithDetails> {
-    await this.coreClientProvider.initialized;
     const { client, instance } = await this.coreClient();
     const req = new LoadSketchRequest();
-    req.setSketchPath(FileUri.fsPath(uri));
+    const requestSketchPath = FileUri.fsPath(uri);
+    req.setSketchPath(requestSketchPath);
     req.setInstance(instance);
+    const stat = new Deferred<fs.Stats | Error>();
+    fs.lstat(requestSketchPath, (err, result) =>
+      err ? stat.resolve(err) : stat.resolve(result)
+    );
     const sketch = await new Promise<SketchWithDetails>((resolve, reject) => {
       client.loadSketch(req, async (err, resp) => {
         if (err) {
           reject(err);
           return;
         }
-        const sketchFolderPath = resp.getLocationPath();
-        const { mtimeMs } = await promisify(fs.lstat)(sketchFolderPath);
+        const responseSketchPath = maybeNormalizeDrive(resp.getLocationPath());
+        if (requestSketchPath !== responseSketchPath) {
+          console.warn(
+            `Warning! The request sketch path was different than the response sketch path from the CLI. This could be a potential bug. Request: <${requestSketchPath}>, response: <${responseSketchPath}>.`
+          );
+        }
+        const resolvedStat = await stat.promise;
+        if (resolvedStat instanceof Error) {
+          console.error(
+            `The CLI could load the sketch from ${requestSketchPath}, but stating the folder has failed.`
+          );
+          reject(resolvedStat);
+          return;
+        }
+        const { mtimeMs } = resolvedStat;
         resolve({
-          name: path.basename(sketchFolderPath),
-          uri: FileUri.create(sketchFolderPath).toString(),
+          name: path.basename(responseSketchPath),
+          uri: FileUri.create(responseSketchPath).toString(),
           mainFileUri: FileUri.create(resp.getMainFile()).toString(),
           otherSketchFileUris: resp
             .getOtherSketchFilesList()
@@ -430,12 +455,18 @@ export class SketchesServiceImpl
     ];
     const today = new Date();
     const parentPath = await new Promise<string>((resolve, reject) => {
-      temp.mkdir({ prefix }, (err, dirPath) => {
-        if (err) {
-          reject(err);
+      temp.mkdir({ prefix }, (createError, dirPath) => {
+        if (createError) {
+          reject(createError);
           return;
         }
-        resolve(dirPath);
+        fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
+          if (resolveError) {
+            reject(resolveError);
+            return;
+          }
+          resolve(resolvedDirPath);
+        });
       });
     });
     const sketchBaseName = `sketch_${
@@ -541,21 +572,11 @@ void loop() {
     // Windows:
     // - Temp folder: C:\Users\KITTAA~1\AppData\Local\Temp
     // - Sketch folder: c:\Users\kittaakos\AppData\Local\Temp\.arduinoIDE-unsaved2022431-21824-116kfaz.9ljl\sketch_may31a
-    // Both sketches are valid and temp, but this function will give a false-negative result if we use `os.tmpdir()`.
-    let sketchPath = FileUri.fsPath(sketch.uri);
-    let temp = tempDir; // https://github.com/sindresorhus/temp-dir
-    // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
-    // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
-    if (isWindows) {
-      if (WIN32_DRIVE_REGEXP.exec(sketchPath)) {
-        sketchPath = firstToLowerCase(sketchPath);
-      }
-      if (WIN32_DRIVE_REGEXP.exec(temp)) {
-        temp = firstToLowerCase(temp);
-      }
-    }
+    // Both sketches are valid and temp, but this function will give a false-negative result if we use the default `os.tmpdir()` logic.
+    const sketchPath = maybeNormalizeDrive(FileUri.fsPath(sketch.uri));
+    const tempPath = this.tempDirRealpath; // https://github.com/sindresorhus/temp-dir
     const result =
-      sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(temp);
+      sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(tempPath);
     console.log('isTemp?', result, sketch.uri);
     return result;
   }
@@ -665,6 +686,16 @@ interface SketchContainerWithDetails extends SketchContainer {
   readonly label: string;
   readonly children: SketchContainerWithDetails[];
   readonly sketches: SketchWithDetails[];
+}
+
+/**
+ * If on Windows, will change the input `C:\\path\\to\\somewhere` to `c:\\path\\to\\somewhere`.
+ */
+function maybeNormalizeDrive(input: string): string {
+  if (isWindows && WIN32_DRIVE_REGEXP.test(input)) {
+    return firstToLowerCase(input);
+  }
+  return input;
 }
 
 /*
