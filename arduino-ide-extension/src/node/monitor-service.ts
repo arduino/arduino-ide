@@ -21,6 +21,17 @@ import {
 import { Deferred } from '@theia/core/lib/common/promise-util';
 
 export const MonitorServiceName = 'monitor-service';
+type DuplexHandlerKeys =
+  | 'close'
+  | 'end'
+  | 'error'
+  | 'data'
+  | 'status'
+  | 'metadata';
+interface DuplexHandler {
+  key: DuplexHandlerKeys;
+  callback: (...args: any) => void;
+}
 
 export class MonitorService extends CoreClientAware implements Disposable {
   // Bidirectional gRPC stream used to receive and send data from the running
@@ -121,6 +132,15 @@ export class MonitorService extends CoreClientAware implements Disposable {
     return !!this.duplex;
   }
 
+  setDuplexHandlers(
+    duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>,
+    handlers: DuplexHandler[]
+  ): void {
+    for (const handler of handlers) {
+      duplex.on(handler.key, handler.callback);
+    }
+  }
+
   /**
    * Start and connects a monitor using currently set board and port.
    * If a monitor is already started or board fqbn, port address and/or protocol
@@ -169,45 +189,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
-    const { client, instance } = coreClient;
-    this.duplex = client.monitor();
-    this.duplex
-      .on('close', () => {
-        this.duplex = null;
-        this.updateClientsSettings({ monitorUISettings: { connected: false } });
-        this.logger.info(
-          `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
-        );
-      })
-      .on('end', () => {
-        this.duplex = null;
-        this.updateClientsSettings({ monitorUISettings: { connected: false } });
-        this.logger.info(
-          `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
-        );
-      })
-      .on('error', (err: Error) => {
-        this.logger.error(err);
-        // TODO
-        // this.theiaFEClient?.notifyError()
-      })
-      .on(
-        'data',
-        ((res: MonitorResponse) => {
-          if (res.getError()) {
-            // TODO: Maybe disconnect
-            this.logger.error(res.getError());
-            return;
-          }
-          const data = res.getRxData();
-          const message =
-            typeof data === 'string'
-              ? data
-              : new TextDecoder('utf8').decode(data);
-          this.messages.push(...splitLines(message));
-        }).bind(this)
-      );
 
+    const { instance } = coreClient;
     const req = new MonitorRequest();
     req.setInstance(instance);
     if (this.board?.fqbn) {
@@ -228,34 +211,94 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
     req.setPortConfiguration(config);
 
-    const connect = new Promise<Status>((resolve) => {
-      if (this.duplex?.write(req)) {
-        this.startMessagesHandlers();
-        this.logger.info(
-          `started monitor to ${this.port?.address} using ${this.port?.protocol}`
-        );
-        this.updateClientsSettings({
-          monitorUISettings: { connected: true, serialPort: this.port.address },
-        });
-        resolve(Status.OK);
-        return;
-      }
+    // Promise executor
+    const writeToStream = (resolve: (value: boolean) => void) => {
+      this.duplex = this.duplex || coreClient.client.monitor();
+
+      const duplexHandlers: DuplexHandler[] = [
+        {
+          key: 'close',
+          callback: () => {
+            this.duplex = null;
+            this.updateClientsSettings({
+              monitorUISettings: { connected: false },
+            });
+            this.logger.info(
+              `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
+            );
+          },
+        },
+        {
+          key: 'end',
+          callback: () => {
+            this.duplex = null;
+            this.updateClientsSettings({
+              monitorUISettings: { connected: false },
+            });
+            this.logger.info(
+              `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
+            );
+          },
+        },
+        {
+          key: 'error',
+          callback: (err: Error) => {
+            this.logger.error(err);
+            resolve(false);
+            // TODO
+            // this.theiaFEClient?.notifyError()
+          },
+        },
+        {
+          key: 'data',
+          callback: (res: MonitorResponse) => {
+            if (res.getError()) {
+              // TODO: Maybe disconnect
+              this.logger.error(res.getError());
+              return;
+            }
+            const data = res.getRxData();
+            const message =
+              typeof data === 'string'
+                ? data
+                : new TextDecoder('utf8').decode(data);
+            this.messages.push(...splitLines(message));
+
+            // if (res.getSuccess()) {
+            //   resolve(true);
+            //   return;
+            // }
+          },
+        },
+      ];
+
+      this.setDuplexHandlers(this.duplex, duplexHandlers);
+      this.duplex.write(req);
+    };
+
+    let attemptsRemaining = 10;
+    let wroteToStreamWithoutError = false;
+    do {
+      await new Promise((r) => setTimeout(r, 10000));
+      wroteToStreamWithoutError = await new Promise(writeToStream);
+      attemptsRemaining -= 1;
+    } while (!wroteToStreamWithoutError && attemptsRemaining > 0);
+
+    if (wroteToStreamWithoutError) {
+      this.startMessagesHandlers();
+      this.logger.info(
+        `started monitor to ${this.port?.address} using ${this.port?.protocol}`
+      );
+      this.updateClientsSettings({
+        monitorUISettings: { connected: true, serialPort: this.port.address },
+      });
+      return Status.OK;
+    } else {
       this.logger.warn(
         `failed starting monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
-      resolve(Status.NOT_CONNECTED);
-    });
-
-    const connectTimeout = new Promise<Status>((resolve) => {
-      setTimeout(async () => {
-        this.logger.warn(
-          `timeout starting monitor to ${this.port?.address} using ${this.port?.protocol}`
-        );
-        resolve(Status.NOT_CONNECTED);
-      }, 1000);
-    });
-    // Try opening a monitor connection with a timeout
-    return await Promise.race([connect, connectTimeout]);
+      return Status.NOT_CONNECTED;
+    }
   }
 
   /**
