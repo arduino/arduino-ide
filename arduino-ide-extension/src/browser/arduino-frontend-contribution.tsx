@@ -17,9 +17,11 @@ import {
   DisposableCollection,
 } from '@theia/core';
 import {
+  Dialog,
   FrontendApplication,
   FrontendApplicationContribution,
   LocalStorageService,
+  OnWillStopAction,
   SaveableWidget,
   StatusBar,
   StatusBarAlignment,
@@ -666,5 +668,52 @@ export class ArduinoFrontendContribution
         description: 'Background color of the Output view.',
       }
     );
+  }
+
+  onWillStop(): OnWillStopAction {
+    return {
+      reason: 'temp-sketch',
+      action: () => {
+        return this.showTempSketchDialog();
+      }
+    }
+  }
+
+  private async showTempSketchDialog(): Promise<boolean> {
+    const sketch = await this.sketchServiceClient.currentSketch();
+    if (!sketch) {
+      return true;
+    }
+    const isTemp = await this.sketchService.isTemp(sketch);
+    if (!isTemp) {
+      return true;
+    }
+    const messageBoxResult = await remote.dialog.showMessageBox(
+      remote.getCurrentWindow(),
+      {
+        message: nls.localize('arduino/sketch/saveTempSketch', 'Save your sketch to open it again later.'),
+        title: nls.localize('theia/core/quitTitle', 'Are you sure you want to quit?'),
+        type: 'question',
+        buttons: [
+          Dialog.CANCEL,
+          nls.localizeByDefault('Save As...'),
+          nls.localizeByDefault("Don't Save"),
+        ],
+      }
+    )
+    const result = messageBoxResult.response;
+    if (result === 2) {
+      return true;
+    } else if (result === 1) {
+      return !!(await this.commandRegistry.executeCommand(
+        SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+        {
+          execOnlyIfTemp: false,
+          openAfterMove: false,
+          wipeOriginal: true
+        }
+      ));
+    }
+    return false
   }
 }

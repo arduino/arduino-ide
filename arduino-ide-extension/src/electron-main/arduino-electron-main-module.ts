@@ -19,6 +19,8 @@ import {
   IDEUpdaterPath,
 } from '../common/protocol/ide-updater';
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
+import { TheiaElectronWindow } from './theia/theia-electron-window';
+import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMainApplication).toSelf().inSingletonScope();
@@ -56,4 +58,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  bind(TheiaElectronWindow).toSelf();
+  rebind(DefaultTheiaElectronWindow).toService(TheiaElectronWindow);
 });
