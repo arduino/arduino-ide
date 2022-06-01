@@ -94,6 +94,8 @@ import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
 import { WebSocketService } from './web-socket/web-socket-service';
 import { ArduinoLocalizationContribution } from './arduino-localization-contribution';
 import { LocalizationContribution } from '@theia/core/lib/node/i18n/localization-contribution';
+import { ClangFormatter } from './clang-formatter';
+import { FormatterPath } from '../common/protocol/formatter';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -122,6 +124,17 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       (context) =>
         new JsonRpcConnectionHandler(ArduinoDaemonPath, () =>
           context.container.get(ArduinoDaemon)
+        )
+    )
+    .inSingletonScope();
+
+  // Shared formatter
+  bind(ClangFormatter).toSelf().inSingletonScope();
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      ({ container }) =>
+        new JsonRpcConnectionHandler(FormatterPath, () =>
+          container.get(ClangFormatter)
         )
     )
     .inSingletonScope();
