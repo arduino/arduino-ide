@@ -163,7 +163,7 @@
       "version": "2.0.0"
     },
     "clangd": {
-      "version": "13.0.0"
+      "version": "14.0.0"
     },
     "languageServer": {
       "version": "0.6.0"

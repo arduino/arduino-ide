@@ -47,7 +47,8 @@ export async function getExecPath(
 export function spawnCommand(
   command: string,
   args: string[],
-  onError: (error: Error) => void = (error) => console.log(error)
+  onError: (error: Error) => void = (error) => console.log(error),
+  stdIn?: string
 ): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     const cp = spawn(command, args, { windowsHide: true, shell: true });
@@ -87,5 +88,9 @@ export function spawnCommand(
         return;
       }
     });
+    if (stdIn !== undefined) {
+      cp.stdin.write(stdIn);
+      cp.stdin.end();
+    }
   });
 }
