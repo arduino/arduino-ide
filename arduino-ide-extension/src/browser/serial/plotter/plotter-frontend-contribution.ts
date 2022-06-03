@@ -11,7 +11,6 @@ import { Contribution } from '../../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/electron/shared/electron';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
-import { SerialPlotter } from './protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
 
@@ -95,7 +94,7 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   protected async open(wsPort: number): Promise<void> {
-    const initConfig: Partial<SerialPlotter.Config> = {
+    const initConfig = {
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
       serialPort: this.model.serialPort,
