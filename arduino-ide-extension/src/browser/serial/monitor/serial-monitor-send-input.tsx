@@ -102,7 +102,7 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   protected onSend(): void {
-    this.props.onSend(this.state.text);
+    this.props.onSend(this.state.text + this.props.monitorModel.lineEnding);
     this.setState({ text: '' });
   }
 
