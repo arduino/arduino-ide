@@ -64,6 +64,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
   protected _initialized = new Deferred<void>();
   protected creating: Deferred<Status>;
 
+  MAX_WRITE_TO_STREAM_TRIES = 10;
+  WRITE_TO_STREAM_TIMEOUT_MS = 30000;
+
   constructor(
     @inject(ILogger)
     @named(MonitorServiceName)
@@ -134,15 +137,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
     return !!this.duplex;
   }
 
-  setDuplexHandlers(
-    duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>,
-    handlers: DuplexHandler[]
-  ): void {
-    for (const handler of handlers) {
-      duplex.on(handler.key, handler.callback);
-    }
-  }
-
   /**
    * Start and connects a monitor using currently set board and port.
    * If a monitor is already started or board fqbn, port address and/or protocol
@@ -199,16 +193,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
     const coreClient = await this.coreClient();
 
     const { instance } = coreClient;
-    const req = new MonitorRequest();
-    req.setInstance(instance);
+    const monitorRequest = new MonitorRequest();
+    monitorRequest.setInstance(instance);
     if (this.board?.fqbn) {
-      req.setFqbn(this.board.fqbn);
+      monitorRequest.setFqbn(this.board.fqbn);
     }
     if (this.port?.address && this.port?.protocol) {
       const port = new gRPCPort();
       port.setAddress(this.port.address);
       port.setProtocol(this.port.protocol);
-      req.setPort(port);
+      monitorRequest.setPort(port);
     }
     const config = new MonitorPortConfiguration();
     for (const id in this.settings.pluggableMonitorSettings) {
@@ -217,81 +211,11 @@ export class MonitorService extends CoreClientAware implements Disposable {
       s.setValue(this.settings.pluggableMonitorSettings[id].selectedValue);
       config.addSettings(s);
     }
-    req.setPortConfiguration(config);
+    monitorRequest.setPortConfiguration(config);
 
-    // Promise executor
-    const writeToStream = (resolve: (value: boolean) => void) => {
-      this.duplex = coreClient.client.monitor();
-
-      const duplexHandlers: DuplexHandler[] = [
-        {
-          key: 'close',
-          callback: () => {
-            this.duplex = null;
-            this.updateClientsSettings({
-              monitorUISettings: { connected: false },
-            });
-            this.logger.info(
-              `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
-            );
-          },
-        },
-        {
-          key: 'end',
-          callback: () => {
-            this.duplex = null;
-            this.updateClientsSettings({
-              monitorUISettings: { connected: false },
-            });
-            this.logger.info(
-              `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
-            );
-          },
-        },
-        {
-          key: 'error',
-          callback: (err: Error) => {
-            this.logger.error(err);
-            resolve(false);
-            // TODO
-            // this.theiaFEClient?.notifyError()
-          },
-        },
-        {
-          key: 'data',
-          callback: (res: MonitorResponse) => {
-            if (res.getError()) {
-              // TODO: Maybe disconnect
-              this.logger.error(res.getError());
-              return;
-            }
-            if (res.getSuccess()) {
-              resolve(true);
-              return;
-            }
-            const data = res.getRxData();
-            const message =
-              typeof data === 'string'
-                ? data
-                : new TextDecoder('utf8').decode(data);
-            this.messages.push(...splitLines(message));
-          },
-        },
-      ];
-
-      this.setDuplexHandlers(this.duplex, duplexHandlers);
-      this.duplex.write(req);
-    };
-
-    let attemptsRemaining = 10;
-    let wroteToStreamSuccessfully = false;
-    while (attemptsRemaining > 0) {
-      wroteToStreamSuccessfully = await new Promise(writeToStream);
-      if (wroteToStreamSuccessfully) break;
-      attemptsRemaining -= 1;
-      await new Promise((r) => setTimeout(r, 2000));
-    }
-
+    const wroteToStreamSuccessfully = await this.pollWriteToStream(
+      monitorRequest
+    );
     if (wroteToStreamSuccessfully) {
       this.startMessagesHandlers();
       this.logger.info(
@@ -309,6 +233,144 @@ export class MonitorService extends CoreClientAware implements Disposable {
       this.creating.resolve(Status.NOT_CONNECTED);
       return this.creating.promise;
     }
+  }
+
+  async createDuplex(): Promise<
+    ClientDuplexStream<MonitorRequest, MonitorResponse>
+  > {
+    const coreClient = await this.coreClient();
+    return coreClient.client.monitor();
+  }
+
+  setDuplexHandlers(
+    duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>,
+    additionalHandlers: DuplexHandler[]
+  ): void {
+    // default handlers
+    duplex
+      .on('close', () => {
+        this.duplex = null;
+        this.updateClientsSettings({
+          monitorUISettings: { connected: false },
+        });
+        this.logger.info(
+          `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
+        );
+      })
+      .on('end', () => {
+        this.duplex = null;
+        this.updateClientsSettings({
+          monitorUISettings: { connected: false },
+        });
+        this.logger.info(
+          `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
+        );
+      });
+
+    for (const handler of additionalHandlers) {
+      duplex.on(handler.key, handler.callback);
+    }
+  }
+
+  pollWriteToStream(request: MonitorRequest): Promise<boolean> {
+    let attemptsRemaining = this.MAX_WRITE_TO_STREAM_TRIES;
+    const writeTimeoutMs = this.WRITE_TO_STREAM_TIMEOUT_MS;
+
+    const createWriteToStreamExecutor =
+      (duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>) =>
+      (resolve: (value: boolean) => void, reject: () => void) => {
+        const resolvingDuplexHandlers: DuplexHandler[] = [
+          {
+            key: 'error',
+            callback: async (err: Error) => {
+              this.logger.error(err);
+              resolve(false);
+              // TODO
+              // this.theiaFEClient?.notifyError()
+            },
+          },
+          {
+            key: 'data',
+            callback: async (monitorResponse: MonitorResponse) => {
+              if (monitorResponse.getError()) {
+                // TODO: Maybe disconnect
+                this.logger.error(monitorResponse.getError());
+                return;
+              }
+              if (monitorResponse.getSuccess()) {
+                resolve(true);
+                return;
+              }
+              const data = monitorResponse.getRxData();
+              const message =
+                typeof data === 'string'
+                  ? data
+                  : new TextDecoder('utf8').decode(data);
+              this.messages.push(...splitLines(message));
+            },
+          },
+        ];
+
+        this.setDuplexHandlers(duplex, resolvingDuplexHandlers);
+
+        setTimeout(() => {
+          reject();
+        }, writeTimeoutMs);
+        duplex.write(request);
+      };
+
+    const pollWriteToStream = new Promise<boolean>((resolve) => {
+      const startPolling = async () => {
+        // here we create a new duplex but we don't yet
+        // set "this.duplex", nor do we use "this.duplex" in our poll
+        // as duplex 'end' / 'close' events (which we do not "await")
+        // will set "this.duplex" to null
+        const createdDuplex = await this.createDuplex();
+
+        let pollingIsSuccessful;
+        // attempt a "writeToStream" and "await" CLI response: success (true) or error (false)
+        // if we get neither within WRITE_TO_STREAM_TIMEOUT_MS or an error we get undefined
+        try {
+          const writeToStream = createWriteToStreamExecutor(createdDuplex);
+          pollingIsSuccessful = await new Promise(writeToStream);
+        } catch (error) {
+          this.logger.error(error);
+        }
+
+        // CLI confirmed port opened successfully
+        if (pollingIsSuccessful) {
+          this.duplex = createdDuplex;
+          resolve(true);
+          return;
+        }
+
+        // if "pollingIsSuccessful" is false
+        // the CLI gave us an error, lets try again
+        // after waiting 2 seconds if we've not already
+        // reached MAX_WRITE_TO_STREAM_TRIES
+        if (pollingIsSuccessful === false) {
+          attemptsRemaining -= 1;
+          if (attemptsRemaining > 0) {
+            setTimeout(startPolling, 2000);
+            return;
+          } else {
+            resolve(false);
+            return;
+          }
+        }
+
+        // "pollingIsSuccessful" remains undefined:
+        // we got no response from the CLI within 30 seconds
+        // resolve to false and end the duplex connection
+        resolve(false);
+        createdDuplex.end();
+        return;
+      };
+
+      startPolling();
+    });
+
+    return pollWriteToStream;
   }
 
   /**
