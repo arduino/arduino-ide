@@ -266,15 +266,11 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Carriage Return",
-      "connectionBusy": "Connection failed. Serial port is busy: {0}",
-      "disconnected": "Disconnected {0} from {1}.",
-      "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
       "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
       "newLine": "New Line",
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
-      "reconnect": "Reconnecting {0} to {1} in {2} seconds...",
       "timestamp": "Timestamp",
       "toggleTimestamp": "Toggle Timestamp",
       "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}."
@@ -284,7 +280,6 @@
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
       "configureAndUpload": "Configure And Upload",
-      "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Done uploading.",
