@@ -215,6 +215,10 @@
       "sketch": "Sketch",
       "tools": "Tools"
     },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to close websocket"
+    },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
       "auth.audience": "The OAuth2 audience.",
