@@ -3,6 +3,7 @@ import {
   Disposable,
   Emitter,
   MessageService,
+  nls,
 } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Board, Port } from '../common/protocol';
@@ -77,7 +78,12 @@ export class MonitorManagerProxyClientImpl
     try {
       this.webSocket = new WebSocket(`ws://localhost:${addressPort}`);
     } catch {
-      this.messageService.error('Unable to connect to websocket');
+      this.messageService.error(
+        nls.localize(
+          'arduino/monitor/unableToConnectToWebSocket',
+          'Unable to connect to websocket'
+        )
+      );
       return;
     }
 
@@ -106,7 +112,12 @@ export class MonitorManagerProxyClientImpl
       this.webSocket?.close();
       this.webSocket = undefined;
     } catch {
-      this.messageService.error('Unable to close websocket');
+      this.messageService.error(
+        nls.localize(
+          'arduino/monitor/unableToConnectToWebSocket',
+          'Unable to close websocket'
+        )
+      );
     }
   }
 
