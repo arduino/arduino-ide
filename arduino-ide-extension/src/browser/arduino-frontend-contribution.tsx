@@ -54,7 +54,6 @@ import { OutputContribution } from '@theia/output/lib/browser/output-contributio
 import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileChangeType } from '@theia/filesystem/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -75,6 +74,7 @@ import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-wi
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
+import { HostedPluginEvents } from './hosted-plugin-events';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
@@ -147,8 +147,8 @@ export class ArduinoFrontendContribution
   @inject(ConfigService)
   protected readonly configService: ConfigService;
 
-  @inject(HostedPluginSupport)
-  protected hostedPluginSupport: HostedPluginSupport;
+  @inject(HostedPluginEvents)
+  protected hostedPluginEvents: HostedPluginEvents;
 
   @inject(ExecutableService)
   protected executableService: ExecutableService;
@@ -317,6 +317,12 @@ export class ArduinoFrontendContribution
       }
     };
     this.boardsServiceClientImpl.onBoardsConfigChanged(start);
+    this.hostedPluginEvents.onPluginsDidStart(() =>
+      start(this.boardsServiceClientImpl.boardsConfig)
+    );
+    this.hostedPluginEvents.onPluginsWillUnload(
+      () => (this.languageServerFqbn = undefined)
+    );
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
@@ -371,7 +377,7 @@ export class ArduinoFrontendContribution
   ): Promise<void> {
     const release = await this.languageServerStartMutex.acquire();
     try {
-      await this.hostedPluginSupport.didStart;
+      await this.hostedPluginEvents.didStart;
       const details = await this.boardsService.getBoardDetails({ fqbn });
       if (!details) {
         // Core is not installed for the selected board.

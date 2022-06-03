@@ -277,6 +277,9 @@ import {
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { EditorManager } from './theia/editor/editor-manager';
+import { HostedPluginEvents } from './hosted-plugin-events';
+import { HostedPluginSupport } from './theia/plugin-ext/hosted-plugin';
+import { HostedPluginSupport as TheiaHostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 
 const ElementQueries = require('css-element-queries/src/ElementQueries');
 
@@ -805,4 +808,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       );
     })
     .inSingletonScope();
+
+  bind(HostedPluginSupport).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginSupport).toService(HostedPluginSupport);
+  bind(HostedPluginEvents).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(HostedPluginEvents);
 });
