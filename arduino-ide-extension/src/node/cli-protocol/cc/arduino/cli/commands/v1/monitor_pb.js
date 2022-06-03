@@ -712,7 +712,8 @@ proto.cc.arduino.cli.commands.v1.MonitorResponse.toObject = function(includeInst
     error: jspb.Message.getFieldWithDefault(msg, 1, ""),
     rxData: msg.getRxData_asB64(),
     appliedSettingsList: jspb.Message.toObjectList(msg.getAppliedSettingsList(),
-    proto.cc.arduino.cli.commands.v1.MonitorPortSetting.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.v1.MonitorPortSetting.toObject, includeInstance),
+    success: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -761,6 +762,10 @@ proto.cc.arduino.cli.commands.v1.MonitorResponse.deserializeBinaryFromReader = f
       var value = new proto.cc.arduino.cli.commands.v1.MonitorPortSetting;
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.MonitorPortSetting.deserializeBinaryFromReader);
       msg.addAppliedSettings(value);
+      break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSuccess(value);
       break;
     default:
       reader.skipField();
@@ -811,6 +816,13 @@ proto.cc.arduino.cli.commands.v1.MonitorResponse.serializeBinaryToWriter = funct
       3,
       f,
       proto.cc.arduino.cli.commands.v1.MonitorPortSetting.serializeBinaryToWriter
+    );
+  }
+  f = message.getSuccess();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
     );
   }
 };
@@ -911,6 +923,24 @@ proto.cc.arduino.cli.commands.v1.MonitorResponse.prototype.addAppliedSettings = 
  */
 proto.cc.arduino.cli.commands.v1.MonitorResponse.prototype.clearAppliedSettingsList = function() {
   return this.setAppliedSettingsList([]);
+};
+
+
+/**
+ * optional bool success = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.MonitorResponse.prototype.getSuccess = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.MonitorResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.MonitorResponse.prototype.setSuccess = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 

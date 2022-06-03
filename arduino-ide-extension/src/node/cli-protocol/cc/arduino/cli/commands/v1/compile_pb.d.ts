@@ -86,6 +86,15 @@ export class CompileRequest extends jspb.Message {
     setLibraryList(value: Array<string>): CompileRequest;
     addLibrary(value: string, index?: number): string;
 
+    getKeysKeychain(): string;
+    setKeysKeychain(value: string): CompileRequest;
+
+    getSignKey(): string;
+    setSignKey(value: string): CompileRequest;
+
+    getEncryptKey(): string;
+    setEncryptKey(value: string): CompileRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -121,6 +130,9 @@ export namespace CompileRequest {
         sourceOverrideMap: Array<[string, string]>,
         exportBinaries?: google_protobuf_wrappers_pb.BoolValue.AsObject,
         libraryList: Array<string>,
+        keysKeychain: string,
+        signKey: string,
+        encryptKey: string,
     }
 }
 
@@ -151,14 +163,14 @@ export class CompileResponse extends jspb.Message {
 
     hasBoardPlatform(): boolean;
     clearBoardPlatform(): void;
-    getBoardPlatform(): cc_arduino_cli_commands_v1_common_pb.PlatformReference | undefined;
-    setBoardPlatform(value?: cc_arduino_cli_commands_v1_common_pb.PlatformReference): CompileResponse;
+    getBoardPlatform(): cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference | undefined;
+    setBoardPlatform(value?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference): CompileResponse;
 
 
     hasBuildPlatform(): boolean;
     clearBuildPlatform(): void;
-    getBuildPlatform(): cc_arduino_cli_commands_v1_common_pb.PlatformReference | undefined;
-    setBuildPlatform(value?: cc_arduino_cli_commands_v1_common_pb.PlatformReference): CompileResponse;
+    getBuildPlatform(): cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference | undefined;
+    setBuildPlatform(value?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference): CompileResponse;
 
 
     hasProgress(): boolean;
@@ -184,8 +196,8 @@ export namespace CompileResponse {
         buildPath: string,
         usedLibrariesList: Array<cc_arduino_cli_commands_v1_lib_pb.Library.AsObject>,
         executableSectionsSizeList: Array<ExecutableSectionSize.AsObject>,
-        boardPlatform?: cc_arduino_cli_commands_v1_common_pb.PlatformReference.AsObject,
-        buildPlatform?: cc_arduino_cli_commands_v1_common_pb.PlatformReference.AsObject,
+        boardPlatform?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.AsObject,
+        buildPlatform?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.AsObject,
         progress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
     }
 }

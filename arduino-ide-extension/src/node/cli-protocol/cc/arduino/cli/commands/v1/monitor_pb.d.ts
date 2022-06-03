@@ -93,6 +93,9 @@ export class MonitorResponse extends jspb.Message {
     setAppliedSettingsList(value: Array<MonitorPortSetting>): MonitorResponse;
     addAppliedSettings(value?: MonitorPortSetting, index?: number): MonitorPortSetting;
 
+    getSuccess(): boolean;
+    setSuccess(value: boolean): MonitorResponse;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorResponse.AsObject;
@@ -109,6 +112,7 @@ export namespace MonitorResponse {
         error: string,
         rxData: Uint8Array | string,
         appliedSettingsList: Array<MonitorPortSetting.AsObject>,
+        success: boolean,
     }
 }
 
