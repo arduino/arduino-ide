@@ -8,6 +8,7 @@ import {
 } from '@theia/core/lib/common/menu';
 import {
   ElectronMainMenuFactory as TheiaElectronMainMenuFactory,
+  ElectronMenuItemRole,
   ElectronMenuOptions,
 } from '@theia/core/lib/electron-browser/menu/electron-main-menu-factory';
 import {
@@ -121,6 +122,15 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       };
     }
     return { label, submenu };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected override roleFor(id: string): ElectronMenuItemRole | undefined {
+    // MenuItem `roles` are completely broken on macOS:
+    //  - https://github.com/eclipse-theia/theia/issues/11217,
+    //  - https://github.com/arduino/arduino-ide/issues/969
+    // IDE2 uses commands instead.
+    return undefined;
   }
 
   protected override handleElectronDefault(
