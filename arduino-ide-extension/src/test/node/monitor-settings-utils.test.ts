@@ -7,8 +7,6 @@ import { PluggableMonitorSettings } from '../../node/monitor-settings/monitor-se
 
 type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> };
 
-// use(require('chai-string'));
-
 describe('longestPrefixMatch', () => {
   const settings = {
     'arduino:avr:uno-port1-protocol1': {

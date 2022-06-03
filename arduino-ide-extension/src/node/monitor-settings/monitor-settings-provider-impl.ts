@@ -13,6 +13,7 @@ import {
   longestPrefixMatch,
   reconcileSettings,
 } from './monitor-settings-utils';
+import { ILogger } from '@theia/core';
 
 const MONITOR_SETTINGS_FILE = 'pluggable-monitor-settings.json';
 
@@ -20,6 +21,9 @@ const MONITOR_SETTINGS_FILE = 'pluggable-monitor-settings.json';
 export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
   @inject(EnvVariablesServer)
   protected readonly envVariablesServer: EnvVariablesServer;
+
+  @inject(ILogger)
+  protected logger: ILogger;
 
   // deferred used to guarantee file operations are performed after the service is initialized
   protected ready = new Deferred<void>();
@@ -42,8 +46,6 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
 
     // read existing settings
     await this.readSettingsFromFS();
-
-    console.log(this.monitorSettings);
 
     // init is done, resolve the deferred and unblock any call that was waiting for it
     this.ready.resolve();
@@ -105,7 +107,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     try {
       this.monitorSettings = JSON.parse(rawJson);
     } catch (error) {
-      console.error(
+      this.logger.error(
         'Could not parse the pluggable monitor settings file. Using empty file.'
       );
       this.monitorSettings = {};
