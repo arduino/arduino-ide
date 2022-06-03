@@ -114,7 +114,7 @@ export class MonitorManagerProxyClientImpl
     } catch {
       this.messageService.error(
         nls.localize(
-          'arduino/monitor/unableToConnectToWebSocket',
+          'arduino/monitor/unableToCloseWebSocket',
           'Unable to close websocket'
         )
       );
