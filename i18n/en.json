@@ -217,7 +217,7 @@
     },
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to close websocket"
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
@@ -274,8 +274,7 @@
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
       "timestamp": "Timestamp",
-      "toggleTimestamp": "Toggle Timestamp",
-      "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}."
+      "toggleTimestamp": "Toggle Timestamp"
     },
     "sketch": {
       "archiveSketch": "Archive Sketch",
