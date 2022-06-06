@@ -47,6 +47,15 @@ export class Keychain {
       return false;
     }
     try {
+      const stringifiedTokenLength = stringifiedToken.length;
+      const tokenLengthNotSupported =
+        stringifiedTokenLength > 2500 && process.platform === 'win32';
+
+      if (tokenLengthNotSupported) {
+        // TODO manage this specific error appropriately
+        return false;
+      }
+
       await keytar.setPassword(
         this.credentialsSection,
         this.account,
