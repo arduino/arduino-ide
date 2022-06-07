@@ -89,7 +89,7 @@ export class ArduinoAuthenticationProvider implements AuthenticationProvider {
     setInterval(checkToken, REFRESH_INTERVAL);
   }
 
-  public setOptions(authOptions: AuthOptions) {
+  public async setOptions(authOptions: AuthOptions): Promise<void> {
     this.authOptions = authOptions;
   }
 

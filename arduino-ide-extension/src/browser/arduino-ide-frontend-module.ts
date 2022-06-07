@@ -48,6 +48,7 @@ import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from 
 import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
   ApplicationShell as TheiaApplicationShell,
+  ShellLayoutRestorer as TheiaShellLayoutRestorer,
   CommonFrontendContribution as TheiaCommonFrontendContribution,
   TabBarRendererFactory,
   ContextMenuRenderer,
@@ -78,6 +79,7 @@ import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
+import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
@@ -576,6 +578,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Problem markers
   bind(ProblemManager).toSelf().inSingletonScope();
   rebind(TheiaProblemManager).toService(ProblemManager);
+
+  // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
+  bind(ShellLayoutRestorer).toSelf().inSingletonScope();
+  rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
 
   // No dropdown for the _Output_ view.
   bind(OutputToolbarContribution).toSelf().inSingletonScope();
