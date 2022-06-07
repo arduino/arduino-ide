@@ -17,3 +17,7 @@ yarn*.log
 plugins
 # the config files for the CLI
 arduino-ide-extension/data/cli/config
+# the tokens folder for the themes
+scripts/themes/tokens
+# environment variables
+.env

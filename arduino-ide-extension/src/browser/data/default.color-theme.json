@@ -1,0 +1,149 @@
+{
+  "name": "Arduino default",
+  "type": "default",
+  "colors": {
+    "list.highlightForeground": "#008184",
+    "list.activeSelectionForeground": "#4e5b61",
+    "list.activeSelectionBackground": "#dae3e3",
+    "list.inactiveSelectionForeground": "#4e5b61",
+    "list.inactiveSelectionBackground": "#dae3e3",
+    "list.hoverBackground": "#ecf1f1",
+    "progressBar.background": "#005c5f",
+    "editor.background": "#ffffff",
+    "editor.foreground": "#4e5b61",
+    "editor.lineHighlightBackground": "#434f5410",
+    "editor.selectionBackground": "#f1c40f",
+    "editorCursor.foreground": "#434f54",
+    "editorWhitespace.foreground": "#bfbfbf",
+    "editorWidget.background": "#f7f9f9",
+    "focusBorder": "#7fcbcd",
+    "menubar.selectionBackground": "#ffffff",
+    "menubar.selectionForeground": "#212121",
+    "menu.selectionBackground": "#dae3e3",
+    "menu.selectionForeground": "#212121",
+    "editorGroupHeader.tabsBackground": "#ecf1f1",
+    "button.background": "#7fcbcd",
+    "titleBar.activeBackground": "#006d70",
+    "titleBar.activeForeground": "#f7f9f9",
+    "terminal.background": "#000000",
+    "terminal.foreground": "#e0e0e0",
+    "dropdown.border": "#f7f9f9",
+    "dropdown.background": "#ffffff",
+    "dropdown.foreground": "#4e5b61",
+    "activityBar.background": "#ecf1f1",
+    "activityBar.foreground": "#4e5b61",
+    "activityBar.inactiveForeground": "#bdc7c7",
+    "activityBar.activeBorder": "#008184",
+    "statusBar.background": "#006d70",
+    "secondaryButton.background": "#ff000000",
+    "secondaryButton.foreground": "#008184",
+    "secondaryButton.hoverBackground": "#dae3e3",
+    "arduino.branding.primary": "#008184",
+    "arduino.branding.secondary": "#b5c8c9",
+    "arduino.foreground": "#edf1f1",
+    "arduino.output.foreground": "#ffffff",
+    "arduino.output.background": "#000000",
+    "arduino.toolbar.hoverBackground": "#f7f9f9",
+    "sideBar.background": "#f7f9f9",
+    "input.background": "#ffffff",
+    "foreground": "#4e5b61",
+    "settings.headerForeground": "#4e5b61",
+    "tree.indentGuidesStroke": "#dae3e3",
+    "tab.unfocusedActiveForeground": "#4e5b61",
+    "tab.inactiveBackground": "#ecf1f1"
+  },
+  "tokenColors": [
+    {
+      "name": "",
+      "settings": {
+        "foreground": "#434f54"
+      }
+    },
+    {
+      "name": "Comments",
+      "scope": "comment",
+      "settings": {
+        "foreground": "#95a5a6cc"
+      }
+    },
+    {
+      "name": "Keywords Attributes",
+      "scope": [
+        "storage",
+        "support",
+        "string.quoted.single.c"
+      ],
+      "settings": {
+        "foreground": "#00979D"
+      }
+    },
+    {
+      "name": "literal",
+      "scope": [
+        "meta.function.c",
+        "entity.name.function",
+        "meta.function-call.c",
+        "variable.other"
+      ],
+      "settings": {
+        "foreground": "#D35400"
+      }
+    },
+    {
+      "name": "punctuation",
+      "scope": [
+        "punctuation.section",
+        "meta.function-call.c",
+        "meta.block.c",
+        "meta.function.c",
+        "variable",
+        "variable.name"
+      ],
+      "settings": {
+        "foreground": "#434f54"
+      }
+    },
+    {
+      "name": "function preprocessor",
+      "scope": [
+        "entity.name.function.preprocessor.c",
+        "meta.preprocessor.macro.c"
+      ],
+      "settings": {
+        "foreground": "#9e846d"
+      }
+    },
+    {
+      "name": "constants",
+      "scope": [
+        "string.quoted.double",
+        "string.quoted.other.lt-gt",
+        "constant"
+      ],
+      "settings": {
+        "foreground": "#005C5F"
+      }
+    },
+    {
+      "name": "meta keywords",
+      "scope": [
+        "keyword.control",
+        "meta.preprocessor.c"
+      ],
+      "settings": {
+        "foreground": "#728E00"
+      }
+    },
+    {
+      "name": "numeric preprocessor",
+      "scope": [
+        "meta.preprocessor.macro.c",
+        "constant.numeric.preprocessor.c",
+        "meta.preprocessor.c"
+      ],
+      "settings": {
+        "foreground": "#434f54"
+      }
+    }
+  ]
+}
