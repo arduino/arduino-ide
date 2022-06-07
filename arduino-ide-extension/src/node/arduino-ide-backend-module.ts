@@ -40,16 +40,7 @@ import {
   ArduinoDaemon,
   ArduinoDaemonPath,
 } from '../common/protocol/arduino-daemon';
-import {
-  SerialServiceImpl,
-  SerialServiceName,
-} from './serial/serial-service-impl';
-import {
-  SerialService,
-  SerialServicePath,
-  SerialServiceClient,
-} from '../common/protocol/serial-service';
-import { MonitorClientProvider } from './serial/monitor-client-provider';
+
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
@@ -91,10 +82,24 @@ import {
 } from '../common/protocol/authentication-service';
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
-import WebSocketServiceImpl from './web-socket/web-socket-service-impl';
-import { WebSocketService } from './web-socket/web-socket-service';
 import { ArduinoLocalizationContribution } from './arduino-localization-contribution';
 import { LocalizationContribution } from '@theia/core/lib/node/i18n/localization-contribution';
+import { MonitorManagerProxyImpl } from './monitor-manager-proxy-impl';
+import { MonitorManager, MonitorManagerName } from './monitor-manager';
+import {
+  MonitorManagerProxy,
+  MonitorManagerProxyClient,
+  MonitorManagerProxyPath,
+} from '../common/protocol/monitor-service';
+import { MonitorService, MonitorServiceName } from './monitor-service';
+import { MonitorSettingsProvider } from './monitor-settings/monitor-settings-provider';
+import { MonitorSettingsProviderImpl } from './monitor-settings/monitor-settings-provider-impl';
+import {
+  MonitorServiceFactory,
+  MonitorServiceFactoryOptions,
+} from './monitor-service-factory';
+import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
+import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { ClangFormatter } from './clang-formatter';
 import { FormatterPath } from '../common/protocol/formatter';
 
@@ -193,9 +198,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
   );
 
-  // Shared WebSocketService for the backend. This will manage all websocket conenctions
-  bind(WebSocketService).to(WebSocketServiceImpl).inSingletonScope();
-
   // Shared Arduino core client provider service for the backend.
   bind(CoreClientProvider).toSelf().inSingletonScope();
 
@@ -221,19 +223,58 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // #endregion Theia customizations
 
+  // a single MonitorManager is responsible for handling the actual connections to the pluggable monitors
+  bind(MonitorManager).toSelf().inSingletonScope();
+
+  // monitor service & factory bindings
+  bind(MonitorSettingsProviderImpl).toSelf().inSingletonScope();
+  bind(MonitorSettingsProvider).toService(MonitorSettingsProviderImpl);
+
+  bind(WebSocketProviderImpl).toSelf();
+  bind(WebSocketProvider).toService(WebSocketProviderImpl);
+
+  bind(MonitorServiceFactory).toFactory(
+    ({ container }) =>
+      (options: MonitorServiceFactoryOptions) => {
+        const logger = container.get<ILogger>(ILogger);
+
+        const monitorSettingsProvider = container.get<MonitorSettingsProvider>(
+          MonitorSettingsProvider
+        );
+
+        const webSocketProvider =
+          container.get<WebSocketProvider>(WebSocketProvider);
+
+        const { board, port, coreClientProvider, monitorID } = options;
+
+        return new MonitorService(
+          logger,
+          monitorSettingsProvider,
+          webSocketProvider,
+          board,
+          port,
+          monitorID,
+          coreClientProvider
+        );
+      }
+  );
+
   // Serial client provider per connected frontend.
   bind(ConnectionContainerModule).toConstantValue(
     ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-      bind(MonitorClientProvider).toSelf().inSingletonScope();
-      bind(SerialServiceImpl).toSelf().inSingletonScope();
-      bind(SerialService).toService(SerialServiceImpl);
-      bindBackendService<SerialService, SerialServiceClient>(
-        SerialServicePath,
-        SerialService,
-        (service, client) => {
-          service.setClient(client);
-          client.onDidCloseConnection(() => service.dispose());
-          return service;
+      bind(MonitorManagerProxyImpl).toSelf().inSingletonScope();
+      bind(MonitorManagerProxy).toService(MonitorManagerProxyImpl);
+      bindBackendService<MonitorManagerProxy, MonitorManagerProxyClient>(
+        MonitorManagerProxyPath,
+        MonitorManagerProxy,
+        (monitorMgrProxy, client) => {
+          monitorMgrProxy.setClient(client);
+          // when the client close the connection, the proxy is disposed.
+          // when the MonitorManagerProxy is disposed, it informs the MonitorManager
+          // telling him that it does not need an address/board anymore.
+          // the MonitorManager will then dispose the actual connection if there are no proxies using it
+          client.onDidCloseConnection(() => monitorMgrProxy.dispose());
+          return monitorMgrProxy;
         }
       );
     })
@@ -323,14 +364,22 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope()
     .whenTargetNamed('config');
 
-  // Logger for the serial service.
+  // Logger for the monitor manager and its services
   bind(ILogger)
     .toDynamicValue((ctx) => {
       const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child(SerialServiceName);
+      return parentLogger.child(MonitorManagerName);
     })
     .inSingletonScope()
-    .whenTargetNamed(SerialServiceName);
+    .whenTargetNamed(MonitorManagerName);
+
+  bind(ILogger)
+    .toDynamicValue((ctx) => {
+      const parentLogger = ctx.container.get<ILogger>(ILogger);
+      return parentLogger.child(MonitorServiceName);
+    })
+    .inSingletonScope()
+    .whenTargetNamed(MonitorServiceName);
 
   // Remote sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();

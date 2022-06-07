@@ -4,7 +4,6 @@ import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { SerialConnectionManager } from '../serial/serial-connection-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   SketchContribution,
@@ -22,9 +21,6 @@ import { CurrentSketch } from '../../common/protocol/sketches-service-client-imp
 export class UploadSketch extends SketchContribution {
   @inject(CoreService)
   protected readonly coreService: CoreService;
-
-  @inject(SerialConnectionManager)
-  protected readonly serialConnection: SerialConnectionManager;
 
   @inject(MenuModelRegistry)
   protected readonly menuRegistry: MenuModelRegistry;
@@ -227,6 +223,11 @@ export class UploadSketch extends SketchContribution {
           this.sourceOverride(),
         ]);
 
+      const board = {
+        ...boardsConfig.selectedBoard,
+        name: boardsConfig.selectedBoard?.name || '',
+        fqbn,
+      }
       let options: CoreService.Upload.Options | undefined = undefined;
       const sketchUri = sketch.uri;
       const optimizeForDebug = this.editorMode.compileForDebug;
@@ -248,7 +249,7 @@ export class UploadSketch extends SketchContribution {
         const programmer = selectedProgrammer;
         options = {
           sketchUri,
-          fqbn,
+          board,
           optimizeForDebug,
           programmer,
           port,
@@ -260,7 +261,7 @@ export class UploadSketch extends SketchContribution {
       } else {
         options = {
           sketchUri,
-          fqbn,
+          board,
           optimizeForDebug,
           port,
           verbose,
@@ -290,8 +291,6 @@ export class UploadSketch extends SketchContribution {
     } finally {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();
-
-      setTimeout(() => this.serialConnection.reconnectAfterUpload(), 5000);
     }
   }
 }

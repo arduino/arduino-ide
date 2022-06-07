@@ -1,5 +1,9 @@
 import * as React from '@theia/core/shared/react';
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
@@ -15,6 +19,7 @@ import {
 } from '../../../common/protocol/arduino-firmware-uploader';
 import { FirmwareUploaderComponent } from './firmware-uploader-component';
 import { UploadFirmware } from '../../contributions/upload-firmware';
+import { Port } from '../../../common/protocol';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
@@ -54,7 +59,7 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
     });
   }
 
-  protected flashFirmware(firmware: FirmwareInfo, port: string): Promise<any> {
+  protected flashFirmware(firmware: FirmwareInfo, port: Port): Promise<any> {
     this.busyCallback(true);
     return this.arduinoFirmwareUploader
       .flash(firmware, port)

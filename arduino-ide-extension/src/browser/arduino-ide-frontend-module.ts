@@ -68,20 +68,12 @@ import { ScmContribution } from './theia/scm/scm-contribution';
 import { SearchInWorkspaceFrontendContribution as TheiaSearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
 import { SearchInWorkspaceFrontendContribution } from './theia/search-in-workspace/search-in-workspace-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from './library/library-widget-frontend-contribution';
-import { SerialServiceClientImpl } from './serial/serial-service-client-impl';
-import {
-  SerialServicePath,
-  SerialService,
-  SerialServiceClient,
-} from '../common/protocol/serial-service';
 import {
   ConfigService,
   ConfigServicePath,
 } from '../common/protocol/config-service';
 import { MonitorWidget } from './serial/monitor/monitor-widget';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
-import { SerialConnectionManager } from './serial/serial-connection-manager';
-import { SerialModel } from './serial/serial-model';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
@@ -158,7 +150,14 @@ import {
   OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl,
   OutputChannelRegistryMainImpl,
 } from './theia/plugin-ext/output-channel-registry-main';
-import { ExecutableService, ExecutableServicePath } from '../common/protocol';
+import {
+  ExecutableService,
+  ExecutableServicePath,
+  MonitorManagerProxy,
+  MonitorManagerProxyClient,
+  MonitorManagerProxyFactory,
+  MonitorManagerProxyPath,
+} from '../common/protocol';
 import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
 import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service';
 import { ResponseServiceImpl } from './response-service-impl';
@@ -273,6 +272,8 @@ import {
   IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
+import { MonitorModel } from './monitor-model';
+import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { EditorManager } from './theia/editor/editor-manager';
 import { HostedPluginEvents } from './hosted-plugin-events';
@@ -424,29 +425,44 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
 
   // Serial monitor
-  bind(SerialModel).toSelf().inSingletonScope();
-  bind(FrontendApplicationContribution).toService(SerialModel);
   bind(MonitorWidget).toSelf();
+  bind(FrontendApplicationContribution).toService(MonitorModel);
+  bind(MonitorModel).toSelf().inSingletonScope();
   bindViewContribution(bind, MonitorViewContribution);
   bind(TabBarToolbarContribution).toService(MonitorViewContribution);
   bind(WidgetFactory).toDynamicValue((context) => ({
     id: MonitorWidget.ID,
-    createWidget: () => context.container.get(MonitorWidget),
-  }));
-  // Frontend binding for the serial service
-  bind(SerialService)
-    .toDynamicValue((context) => {
-      const connection = context.container.get(WebSocketConnectionProvider);
-      const client = context.container.get<SerialServiceClient>(
-        SerialServiceClient
+    createWidget: () => {
+      return new MonitorWidget(
+        context.container.get<MonitorModel>(MonitorModel),
+        context.container.get<MonitorManagerProxyClient>(
+          MonitorManagerProxyClient
+        ),
+        context.container.get<BoardsServiceProvider>(BoardsServiceProvider)
       );
-      return connection.createProxy(SerialServicePath, client);
-    })
-    .inSingletonScope();
-  bind(SerialConnectionManager).toSelf().inSingletonScope();
+    },
+  }));
 
-  // Serial service client to receive and delegate notifications from the backend.
-  bind(SerialServiceClient).to(SerialServiceClientImpl).inSingletonScope();
+  bind(MonitorManagerProxyFactory).toFactory(
+    (context) => () =>
+      context.container.get<MonitorManagerProxy>(MonitorManagerProxy)
+  );
+
+  bind(MonitorManagerProxy)
+    .toDynamicValue((context) =>
+      WebSocketConnectionProvider.createProxy(
+        context.container,
+        MonitorManagerProxyPath,
+        context.container.get(MonitorManagerProxyClient)
+      )
+    )
+    .inSingletonScope();
+
+  // Monitor manager proxy client to receive and delegate pluggable monitors
+  // notifications from the backend
+  bind(MonitorManagerProxyClient)
+    .to(MonitorManagerProxyClientImpl)
+    .inSingletonScope();
 
   bind(WorkspaceService).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceService).toService(WorkspaceService);
@@ -502,11 +518,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
   rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) => () => {
-      const container = parentContainer.createChild();
-      container.bind(TabBarToolbar).toSelf().inSingletonScope();
-      return container.get(TabBarToolbar);
-    }
+    ({ container: parentContainer }) =>
+      () => {
+        const container = parentContainer.createChild();
+        container.bind(TabBarToolbar).toSelf().inSingletonScope();
+        return container.get(TabBarToolbar);
+      }
   );
   bind(OutputWidget).toSelf().inSingletonScope();
   rebind(TheiaOutputWidget).toService(OutputWidget);
@@ -523,7 +540,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(SearchInWorkspaceWidget).toSelf();
   rebind(TheiaSearchInWorkspaceWidget).toService(SearchInWorkspaceWidget);
-  
+
   rebind(TheiaEditorManager).to(EditorManager);
 
   // replace search icon
@@ -560,9 +577,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ProblemManager).toSelf().inSingletonScope();
   rebind(TheiaProblemManager).toService(ProblemManager);
 
- // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
- bind(ShellLayoutRestorer).toSelf().inSingletonScope();
- rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
+  // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
+  bind(ShellLayoutRestorer).toSelf().inSingletonScope();
+  rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
 
   // No dropdown for the _Output_ view.
   bind(OutputToolbarContribution).toSelf().inSingletonScope();
@@ -687,15 +704,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Enable the dirty indicator on uncloseable widgets.
   rebind(TabBarRendererFactory).toFactory((context) => () => {
-    const contextMenuRenderer = context.container.get<ContextMenuRenderer>(
-      ContextMenuRenderer
-    );
+    const contextMenuRenderer =
+      context.container.get<ContextMenuRenderer>(ContextMenuRenderer);
     const decoratorService = context.container.get<TabBarDecoratorService>(
       TabBarDecoratorService
     );
-    const iconThemeService = context.container.get<IconThemeService>(
-      IconThemeService
-    );
+    const iconThemeService =
+      context.container.get<IconThemeService>(IconThemeService);
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,

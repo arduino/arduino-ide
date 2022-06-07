@@ -24,7 +24,7 @@ import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { nls } from '@theia/core';
-import { SerialService } from './../common/protocol/serial-service';
+import { MonitorManager } from './monitor-manager';
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -34,8 +34,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
 
-  @inject(SerialService)
-  protected readonly serialService: SerialService;
+  @inject(MonitorManager)
+  protected readonly monitorManager: MonitorManager;
 
   protected uploading = false;
 
@@ -45,7 +45,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compilerWarnings?: CompilerWarnings;
     }
   ): Promise<void> {
-    const { sketchUri, fqbn, compilerWarnings } = options;
+    const { sketchUri, board, compilerWarnings } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
     await this.coreClientProvider.initialized;
@@ -55,8 +55,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const compileReq = new CompileRequest();
     compileReq.setInstance(instance);
     compileReq.setSketchPath(sketchPath);
-    if (fqbn) {
-      compileReq.setFqbn(fqbn);
+    if (board?.fqbn) {
+      compileReq.setFqbn(board.fqbn);
     }
     if (compilerWarnings) {
       compileReq.setWarnings(compilerWarnings.toLowerCase());
@@ -139,11 +139,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     await this.compile(Object.assign(options, { exportBinaries: false }));
 
     this.uploading = true;
-    this.serialService.uploadInProgress = true;
+    const { sketchUri, board, port, programmer } = options;
+    await this.monitorManager.notifyUploadStarted(board, port);
 
-    await this.serialService.disconnect();
-
-    const { sketchUri, fqbn, port, programmer } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
     await this.coreClientProvider.initialized;
@@ -153,8 +151,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const req = requestProvider();
     req.setInstance(instance);
     req.setSketchPath(sketchPath);
-    if (fqbn) {
-      req.setFqbn(fqbn);
+    if (board?.fqbn) {
+      req.setFqbn(board.fqbn);
     }
     const p = new Port();
     if (port) {
@@ -209,23 +207,22 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.serialService.uploadInProgress = false;
+      this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
     this.uploading = true;
-    this.serialService.uploadInProgress = true;
-    await this.serialService.disconnect();
+    const { board, port, programmer } = options;
+    await this.monitorManager.notifyUploadStarted(board, port);
 
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
-    const { fqbn, port, programmer } = options;
     const burnReq = new BurnBootloaderRequest();
     burnReq.setInstance(instance);
-    if (fqbn) {
-      burnReq.setFqbn(fqbn);
+    if (board?.fqbn) {
+      burnReq.setFqbn(board.fqbn);
     }
     const p = new Port();
     if (port) {
@@ -267,7 +264,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.serialService.uploadInProgress = false;
+      await this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 

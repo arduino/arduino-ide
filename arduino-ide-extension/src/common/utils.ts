@@ -12,3 +12,7 @@ export function firstToLowerCase(what: string): string {
 export function firstToUpperCase(what: string): string {
   return what.charAt(0).toUpperCase() + what.slice(1);
 }
+
+export function isNullOrUndefined(what: any): what is undefined | null {
+  return what === undefined || what === null;
+}

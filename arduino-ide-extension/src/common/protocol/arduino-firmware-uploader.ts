@@ -1,3 +1,5 @@
+import { Port } from "./boards-service";
+
 export const ArduinoFirmwareUploaderPath =
   '/services/arduino-firmware-uploader';
 export const ArduinoFirmwareUploader = Symbol('ArduinoFirmwareUploader');
@@ -10,7 +12,7 @@ export type FirmwareInfo = {
 };
 export interface ArduinoFirmwareUploader {
   list(fqbn?: string): Promise<FirmwareInfo[]>;
-  flash(firmware: FirmwareInfo, port: string): Promise<string>;
+  flash(firmware: FirmwareInfo, port: Port): Promise<string>;
   uploadCertificates(command: string): Promise<any>;
   updatableBoards(): Promise<string[]>;
   availableFirmwares(fqbn: string): Promise<FirmwareInfo[]>;
