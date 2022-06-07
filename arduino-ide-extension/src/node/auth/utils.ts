@@ -44,7 +44,15 @@ export function token2IToken(token: Token): IToken {
     (token.id_token && jwt_decode(token.id_token)) || {};
 
   return {
-    idToken: token.id_token,
+    /*
+     * ".id_token" is already decoded for account details above
+     * so we probably don't need to keep it around as "idToken".
+     * If we do, and subsequently try to store it with
+     * Windows Credential Manager (WCM) it's probable we'll
+     * exceed WCMs' 2500 password character limit breaking
+     * our auth functionality
+     */
+    // ! idToken: token.id_token,
     expiresIn: token.expires_in,
     expiresAt: token.expires_in
       ? Date.now() + token.expires_in * 1000
