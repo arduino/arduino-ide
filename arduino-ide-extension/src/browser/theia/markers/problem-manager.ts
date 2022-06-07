@@ -17,7 +17,7 @@ export class ProblemManager extends TheiaProblemManager {
   protected dataDirUri: URI | undefined;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.configService
       .getConfiguration()
@@ -27,7 +27,7 @@ export class ProblemManager extends TheiaProblemManager {
       );
   }
 
-  setMarkers(
+  override setMarkers(
     uri: URI,
     owner: string,
     data: Diagnostic[]

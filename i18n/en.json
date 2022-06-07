@@ -343,8 +343,7 @@
       "fileNewName": "Name for new file",
       "invalidExtension": ".{0} is not a valid extension",
       "invalidFilename": "Invalid filename.",
-      "newFileName": "New name for file",
-      "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+      "newFileName": "New name for file"
     }
   }
 }

@@ -48,9 +48,7 @@ import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from 
 import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
   ApplicationShell as TheiaApplicationShell,
-  ShellLayoutRestorer as TheiaShellLayoutRestorer,
   CommonFrontendContribution as TheiaCommonFrontendContribution,
-  KeybindingRegistry as TheiaKeybindingRegistry,
   TabBarRendererFactory,
   ContextMenuRenderer,
   createTreeContainer,
@@ -80,7 +78,6 @@ import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
-import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
@@ -130,7 +127,6 @@ import { PreferencesContribution } from './theia/preferences/preferences-contrib
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control';
 import { Settings } from './contributions/settings';
-import { KeybindingRegistry } from './theia/core/keybindings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
@@ -278,20 +274,37 @@ import { MonitorModel } from './monitor-model';
 import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { EditorManager } from './theia/editor/editor-manager';
-
-const ElementQueries = require('css-element-queries/src/ElementQueries');
+import { HostedPluginEvents } from './hosted-plugin-events';
+import { HostedPluginSupport } from './theia/plugin-ext/hosted-plugin';
+import { HostedPluginSupport as TheiaHostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { Formatter, FormatterPath } from '../common/protocol/formatter';
+import { Format } from './contributions/format';
+import { MonacoFormattingConflictsContribution } from './theia/monaco/monaco-formatting-conflicts';
+import { MonacoFormattingConflictsContribution as TheiaMonacoFormattingConflictsContribution } from '@theia/monaco/lib/browser/monaco-formatting-conflicts';
+import { DefaultJsonSchemaContribution } from './theia/core/json-schema-store';
+import { DefaultJsonSchemaContribution as TheiaDefaultJsonSchemaContribution } from '@theia/core/lib/browser/json-schema-store';
+import { EditorNavigationContribution } from './theia/editor/editor-navigation-contribution';
+import { EditorNavigationContribution as TheiaEditorNavigationContribution } from '@theia/editor/lib/browser/editor-navigation-contribution';
+import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-generator';
+import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
+import { AboutDialog } from './theia/core/about-dialog';
+import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
   label: 'Light (Arduino)',
   uiTheme: 'vs',
-  json: require('../../src/browser/data/arduino.color-theme.json'),
+  json: require('../../src/browser/data/default.color-theme.json'),
+});
+
+MonacoThemingService.register({
+  id: 'arduino-theme-dark',
+  label: 'Dark (Arduino)',
+  uiTheme: 'vs-dark',
+  json: require('../../src/browser/data/dark.color-theme.json'),
 });
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
-  ElementQueries.listen();
-  ElementQueries.init();
-
   // Commands and toolbar items
   bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
   bind(CommandContribution).toService(ArduinoFrontendContribution);
@@ -495,7 +508,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaPreferencesContribution)
     .to(PreferencesContribution)
     .inSingletonScope();
-  rebind(TheiaKeybindingRegistry).to(KeybindingRegistry).inSingletonScope();
   rebind(TheiaWorkspaceCommandContribution)
     .to(WorkspaceCommandContribution)
     .inSingletonScope();
@@ -565,10 +577,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ProblemManager).toSelf().inSingletonScope();
   rebind(TheiaProblemManager).toService(ProblemManager);
 
-  // Customized layout restorer that can restore the state in async way: https://github.com/eclipse-theia/theia/issues/6579
-  bind(ShellLayoutRestorer).toSelf().inSingletonScope();
-  rebind(TheiaShellLayoutRestorer).toService(ShellLayoutRestorer);
-
   // No dropdown for the _Output_ view.
   bind(OutputToolbarContribution).toSelf().inSingletonScope();
   rebind(TheiaOutputToolbarContribution).toService(OutputToolbarContribution);
@@ -579,6 +587,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         context.container,
         ArduinoDaemonPath
       )
+    )
+    .inSingletonScope();
+
+  bind(Formatter)
+    .toDynamicValue(({ container }) =>
+      WebSocketConnectionProvider.createProxy(container, FormatterPath)
     )
     .inSingletonScope();
 
@@ -649,6 +663,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, ArchiveSketch);
   Contribution.configure(bind, AddZipLibrary);
   Contribution.configure(bind, PlotterFrontendContribution);
+  Contribution.configure(bind, Format);
+
+  // Disabled the quick-pick customization from Theia when multiple formatters are available.
+  // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.
+  bind(MonacoFormattingConflictsContribution).toSelf().inSingletonScope();
+  rebind(TheiaMonacoFormattingConflictsContribution).toService(
+    MonacoFormattingConflictsContribution
+  );
 
   bind(ResponseServiceImpl)
     .toSelf()
@@ -702,6 +724,26 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Silent the badge decoration in the Explorer view.
   bind(NavigatorTabBarDecorator).toSelf().inSingletonScope();
   rebind(TheiaNavigatorTabBarDecorator).toService(NavigatorTabBarDecorator);
+
+  // Do not fetch the `catalog.json` from Azure on FE load.
+  bind(DefaultJsonSchemaContribution).toSelf().inSingletonScope();
+  rebind(TheiaDefaultJsonSchemaContribution).toService(
+    DefaultJsonSchemaContribution
+  );
+
+  // Do not block the app startup when initializing the editor navigation history.
+  bind(EditorNavigationContribution).toSelf().inSingletonScope();
+  rebind(TheiaEditorNavigationContribution).toService(
+    EditorNavigationContribution
+  );
+
+  // IDE2 does not use the Theia preferences widget, no need to create and sync the underlying tree model.
+  bind(PreferenceTreeGenerator).toSelf().inSingletonScope();
+  rebind(TheiaPreferenceTreeGenerator).toService(PreferenceTreeGenerator);
+
+  // IDE2 has a custom about dialog, so there is no need to load the Theia extensions on FE load
+  bind(AboutDialog).toSelf().inSingletonScope();
+  rebind(TheiaAboutDialog).toService(AboutDialog);
 
   // To avoid running `Save All` when there are no dirty editors before starting the debug session.
   bind(DebugSessionManager).toSelf().inSingletonScope();
@@ -822,4 +864,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       );
     })
     .inSingletonScope();
+
+  bind(HostedPluginSupport).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginSupport).toService(HostedPluginSupport);
+  bind(HostedPluginEvents).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(HostedPluginEvents);
 });

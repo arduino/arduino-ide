@@ -28,7 +28,7 @@ export class Help extends Contribution {
   @inject(QuickInputService)
   protected readonly quickInputService: QuickInputService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     const open = (url: string) =>
       this.windowService.openNewWindow(url, { external: true });
     const createOpenHandler = (url: string) =>
@@ -92,7 +92,7 @@ export class Help extends Contribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.unregisterMenuAction({
       commandId: ElectronCommands.TOGGLE_DEVELOPER_TOOLS.id,
     });
@@ -136,7 +136,7 @@ export class Help extends Contribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: Help.Commands.FIND_IN_REFERENCE.id,
       keybinding: 'CtrlCmd+Shift+F',

@@ -9,7 +9,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
 > {
   protected container?: HTMLElement;
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <div className={'items-container'} ref={this.setRef}>
         {this.props.items.map((item) => this.createItem(item))}
@@ -17,7 +17,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
     );
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     if (this.container && this.props.resolveContainer) {
       this.props.resolveContainer(this.container);
     }

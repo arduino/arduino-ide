@@ -9,7 +9,7 @@ export class ArduinoSelect<T> extends Select<T> {
     super(props);
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const controlHeight = 27; // from `monitor.css` -> `.serial-monitor-container .head` (`height: 27px;`)
     const styles: Styles<T, false> = {
       control: (styles) => ({

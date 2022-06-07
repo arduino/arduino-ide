@@ -29,7 +29,7 @@ export class SerialMonitorOutput extends React.Component<
     };
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <List
         className="serial-monitor-messages"
@@ -51,11 +51,11 @@ export class SerialMonitorOutput extends React.Component<
     );
   }
 
-  shouldComponentUpdate(): boolean {
+  override shouldComponentUpdate(): boolean {
     return true;
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.monitorManagerProxy.onMessagesReceived(({ messages }) => {
@@ -86,7 +86,7 @@ export class SerialMonitorOutput extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
     this.toDisposeBeforeUnmount.dispose();
   }

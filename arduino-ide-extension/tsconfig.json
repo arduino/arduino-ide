@@ -6,6 +6,7 @@
     "noEmitOnError": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
+    "noImplicitOverride": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,

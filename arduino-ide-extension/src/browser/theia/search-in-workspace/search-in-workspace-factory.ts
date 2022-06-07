@@ -8,7 +8,7 @@ import {
 
 @injectable()
 export class SearchInWorkspaceFactory extends TheiaSearchInWorkspaceFactory {
-  async createWidget(): Promise<ViewContainer> {
+  override async createWidget(): Promise<ViewContainer> {
     const viewContainer = await super.createWidget();
     viewContainer.setTitleOptions({
       ...SEARCH_VIEW_CONTAINER_TITLE_OPTIONS,

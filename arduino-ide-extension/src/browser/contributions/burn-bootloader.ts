@@ -25,15 +25,15 @@ export class BurnBootloader extends SketchContribution {
   protected readonly boardsServiceClientImpl: BoardsServiceProvider;
 
   @inject(OutputChannelManager)
-  protected readonly outputChannelManager: OutputChannelManager;
+  protected override readonly outputChannelManager: OutputChannelManager;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BurnBootloader.Commands.BURN_BOOTLOADER, {
       execute: () => this.burnBootloader(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP, {
       commandId: BurnBootloader.Commands.BURN_BOOTLOADER.id,
       label: nls.localize(

@@ -4,11 +4,11 @@ import { StatusBarEntry } from '@theia/core/lib/browser/status-bar/status-bar';
 
 @injectable()
 export class ScmContribution extends TheiaScmContribution {
-  async initializeLayout(): Promise<void> {
+  override async initializeLayout(): Promise<void> {
     // NOOP
   }
 
-  protected setStatusBarEntry(id: string, entry: StatusBarEntry): void {
+  protected override setStatusBarEntry(id: string, entry: StatusBarEntry): void {
     // NOOP
   }
 }

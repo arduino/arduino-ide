@@ -3,7 +3,7 @@ import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from 
 
 @injectable()
 export class MonacoStatusBarContribution extends TheiaMonacoStatusBarContribution {
-  protected setConfigTabSizeWidget() {}
+  protected override setConfigTabSizeWidget() {}
 
-  protected setLineEndingWidget() {}
+  protected override setLineEndingWidget() {}
 }

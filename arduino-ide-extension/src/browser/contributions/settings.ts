@@ -18,7 +18,7 @@ export class Settings extends SketchContribution {
 
   protected settingsOpened = false;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(Settings.Commands.OPEN, {
       execute: async () => {
         let settings: Preferences | undefined = undefined;
@@ -39,7 +39,7 @@ export class Settings extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__PREFERENCES_GROUP, {
       commandId: Settings.Commands.OPEN.id,
       label:
@@ -52,7 +52,7 @@ export class Settings extends SketchContribution {
     registry.registerSubmenu(ArduinoMenus.FILE__ADVANCED_SUBMENU, 'Advanced');
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: Settings.Commands.OPEN.id,
       keybinding: 'CtrlCmd+,',

@@ -7,7 +7,7 @@ import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/mess
 
 @injectable()
 export class NotificationsRenderer extends TheiaNotificationsRenderer {
-  protected render(): void {
+  protected override render(): void {
     ReactDOM.render(
       <div>
         <NotificationToastsComponent

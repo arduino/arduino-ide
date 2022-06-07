@@ -71,7 +71,7 @@ export class ArduinoToolbarComponent extends React.Component<
     );
   };
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const tooltip = (
       <div key="arduino-toolbar-tooltip" className={'arduino-toolbar-tooltip'}>
         {this.state.tooltip}

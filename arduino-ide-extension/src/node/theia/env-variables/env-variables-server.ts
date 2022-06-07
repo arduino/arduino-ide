@@ -7,7 +7,7 @@ import { EnvVariablesServerImpl as TheiaEnvVariablesServerImpl } from '@theia/co
 
 @injectable()
 export class EnvVariablesServer extends TheiaEnvVariablesServerImpl {
-  protected readonly configDirUri = Promise.resolve(
+  protected override readonly configDirUri = Promise.resolve(
     FileUri.create(
       join(homedir(), BackendApplicationConfigProvider.get().configDirName)
     ).toString()

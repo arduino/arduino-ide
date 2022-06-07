@@ -49,7 +49,10 @@ import {
   FileSystemExt,
   FileSystemExtPath,
 } from '../common/protocol/filesystem-ext';
-import { ExamplesServiceImpl } from './examples-service-impl';
+import {
+  BuiltInExamplesServiceImpl,
+  ExamplesServiceImpl,
+} from './examples-service-impl';
 import {
   ExamplesService,
   ExamplesServicePath,
@@ -71,8 +74,6 @@ import {
 } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
-import { DefaultGitInit } from './theia/git/git-init';
-import { GitInit } from '@theia/git/lib/node/init/git-init';
 import { AuthenticationServiceImpl } from './auth/authentication-service-impl';
 import {
   AuthenticationService,
@@ -99,6 +100,8 @@ import {
 } from './monitor-service-factory';
 import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
+import { ClangFormatter } from './clang-formatter';
+import { FormatterPath } from '../common/protocol/formatter';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -130,6 +133,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  // Shared formatter
+  bind(ClangFormatter).toSelf().inSingletonScope();
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      ({ container }) =>
+        new JsonRpcConnectionHandler(FormatterPath, () =>
+          container.get(ClangFormatter)
+        )
+    )
+    .inSingletonScope();
+  // Built-in examples are not board specific, so it is possible to have one shared instance.
+  bind(BuiltInExamplesServiceImpl).toSelf().inSingletonScope();
 
   // Examples service. One per backend, each connected FE gets a proxy.
   bind(ConnectionContainerModule).toConstantValue(
@@ -364,9 +380,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope()
     .whenTargetNamed(MonitorServiceName);
-
-  bind(DefaultGitInit).toSelf();
-  rebind(GitInit).toService(DefaultGitInit);
 
   // Remote sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();

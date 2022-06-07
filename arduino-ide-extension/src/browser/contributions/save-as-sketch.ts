@@ -14,6 +14,7 @@ import { nls } from '@theia/core/lib/common';
 import { ApplicationShell, NavigatableWidget, Saveable } from '@theia/core/lib/browser';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
@@ -22,18 +23,18 @@ export class SaveAsSketch extends SketchContribution {
   protected readonly applicationShell: ApplicationShell;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(WindowService)
   protected readonly windowService: WindowService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
       execute: (args) => this.saveAs(args),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
       label: nls.localize('vscode/fileCommands/saveAs', 'Save As...'),
@@ -41,7 +42,7 @@ export class SaveAsSketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
       keybinding: 'CtrlCmd+Shift+S',
@@ -59,7 +60,7 @@ export class SaveAsSketch extends SketchContribution {
     }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
   ): Promise<boolean> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return false;
     }
 

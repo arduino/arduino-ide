@@ -10,7 +10,7 @@ import { WorkspaceFrontendContribution as TheiaWorkspaceFrontendContribution } f
 
 @injectable()
 export class WorkspaceFrontendContribution extends TheiaWorkspaceFrontendContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     // TODO: instead of blacklisting commands to remove, it would be more robust to whitelist the ones we want to keep
     const commands = new Set(registry.commands);
@@ -28,9 +28,9 @@ export class WorkspaceFrontendContribution extends TheiaWorkspaceFrontendContrib
       .forEach(registry.unregisterCommand.bind(registry));
   }
 
-  registerMenus(_: MenuModelRegistry): void {}
+  override registerMenus(_: MenuModelRegistry): void {}
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     super.registerKeybindings(registry);
     [
       WorkspaceCommands.NEW_FILE,
@@ -44,7 +44,7 @@ export class WorkspaceFrontendContribution extends TheiaWorkspaceFrontendContrib
 
 @injectable()
 export class ArduinoFileMenuContribution extends FileMenuContribution {
-  registerMenus(_: MenuModelRegistry): void {
+  override registerMenus(_: MenuModelRegistry): void {
     // NOOP
   }
 }

@@ -15,7 +15,7 @@ import {
 } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
 import URI from '@theia/core/lib/common/uri';
 
@@ -33,7 +33,7 @@ export class ApplicationShell extends TheiaApplicationShell {
   @inject(ConnectionStatusService)
   protected readonly connectionStatusService: ConnectionStatusService;
 
-  protected track(widget: Widget): void {
+  protected override track(widget: Widget): void {
     super.track(widget);
     if (widget instanceof OutputWidget) {
       widget.title.closable = false; // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
@@ -41,7 +41,7 @@ export class ApplicationShell extends TheiaApplicationShell {
     if (widget instanceof EditorWidget) {
       // Make the editor un-closeable asynchronously.
       this.sketchesServiceClient.currentSketch().then((sketch) => {
-        if (sketch) {
+        if (CurrentSketch.isValid(sketch)) {
           if (!this.isSketchFile(widget.editor.uri, sketch.uri)) {
               return;
           }
@@ -61,7 +61,7 @@ export class ApplicationShell extends TheiaApplicationShell {
       return false;
   }
 
-  async addWidget(
+  override async addWidget(
     widget: Widget,
     options: Readonly<TheiaApplicationShell.WidgetOptions> = {}
   ): Promise<void> {
@@ -87,19 +87,19 @@ export class ApplicationShell extends TheiaApplicationShell {
     return super.addWidget(widget, { ...options, ref });
   }
 
-  handleEvent(): boolean {
+  override handleEvent(): boolean {
     // NOOP, dragging has been disabled
-    return false
+    return false;
   }
 
   // Avoid hiding top panel as we use it for arduino toolbar
-  protected createTopPanel(): Panel {
+  protected override createTopPanel(): Panel {
     const topPanel = super.createTopPanel();
     topPanel.show();
     return topPanel;
   }
 
-  async saveAll(): Promise<void> {
+  override async saveAll(): Promise<void> {
     if (
       this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE
     ) {

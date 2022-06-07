@@ -24,7 +24,7 @@ export class UserStatus extends React.Component<
     };
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     const statusListener = () => this.setState({ status: this.status });
     window.addEventListener('online', statusListener);
     window.addEventListener('offline', statusListener);
@@ -41,11 +41,11 @@ export class UserStatus extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     if (!this.props.authenticationService.session) {
       return null;
     }
