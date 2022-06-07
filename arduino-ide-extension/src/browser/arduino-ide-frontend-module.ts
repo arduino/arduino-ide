@@ -543,8 +543,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   rebind(TheiaEditorManager).to(EditorManager);
 
-  rebind(TheiaEditorManager).to(EditorManager);
-
   // replace search icon
   rebind(TheiaSearchInWorkspaceFactory)
     .to(SearchInWorkspaceFactory)
