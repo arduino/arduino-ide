@@ -79,7 +79,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     private readonly board: Board,
     private readonly port: Port,
     private readonly monitorID: string,
-    protected readonly coreClientProvider: CoreClientProvider
+    protected override readonly coreClientProvider: CoreClientProvider
   ) {
     super();
 
