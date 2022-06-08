@@ -4,9 +4,28 @@ import { ShellLayoutRestorer as TheiaShellLayoutRestorer } from '@theia/core/lib
 import { injectable } from '@theia/core/shared/inversify';
 import { EditorPreviewWidgetFactory } from '@theia/editor-preview/lib/browser/editor-preview-widget-factory';
 import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
+import { FrontendApplication } from './frontend-application';
 
 @injectable()
 export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
+  override async restoreLayout(app: FrontendApplication): Promise<boolean> {
+    this.logger.info('>>> Restoring the layout state...');
+    const serializedLayoutData = await this.storageService.getData<string>(
+      this.storageKey
+    );
+    if (serializedLayoutData === undefined) {
+      this.logger.info('<<< Nothing to restore.');
+      return false;
+    }
+    console.log('------- SERIALIZED LAYOUT DATA -------');
+    console.log(serializedLayoutData);
+    console.log('------- END SERIALIZED LAYOUT DATA -------');
+    const layoutData = await this.inflate(serializedLayoutData);
+    await app.shell.setLayoutData(layoutData);
+    this.logger.info('<<< The layout has been successfully restored.');
+    return true;
+  }
+
   /**
    * Customized to filter out duplicate editor tabs.
    */
