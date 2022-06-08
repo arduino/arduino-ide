@@ -8,3 +8,8 @@
 .monaco-list-row.show-file-icons.focused {
     background-color: #d6ebff;
 }
+
+.monaco-editor .view-overlays .compiler-error {
+    background-color: var(--theia-inputValidation-errorBackground);
+    opacity: 0.4 !important;
+}

@@ -1,12 +1,11 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
-  SketchContribution,
+  CoreServiceContribution,
   Command,
   CommandRegistry,
   MenuModelRegistry,
@@ -17,10 +16,7 @@ import { nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
-export class VerifySketch extends SketchContribution {
-  @inject(CoreService)
-  protected readonly coreService: CoreService;
-
+export class VerifySketch extends CoreServiceContribution {
   @inject(BoardsDataStore)
   protected readonly boardsDataStore: BoardsDataStore;
 
@@ -96,14 +92,14 @@ export class VerifySketch extends SketchContribution {
 
     // toggle the toolbar button and menu item state.
     // verifyInProgress will be set to false whether the compilation fails or not
-    this.verifyInProgress = true;
-    this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
-
     if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     try {
+      this.verifyInProgress = true;
+      this.coreErrorHandler.reset();
+      this.onDidChangeEmitter.fire();
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, sourceOverride] = await Promise.all([
         this.boardsDataStore.appendConfigToFqbn(
@@ -115,12 +111,12 @@ export class VerifySketch extends SketchContribution {
         ...boardsConfig.selectedBoard,
         name: boardsConfig.selectedBoard?.name || '',
         fqbn,
-      }
+      };
       const verbose = this.preferences.get('arduino.compile.verbose');
       const compilerWarnings = this.preferences.get('arduino.compile.warnings');
       this.outputChannelManager.getChannel('Arduino').clear();
       await this.coreService.compile({
-        sketchUri: sketch.uri,
+        sketch,
         board,
         optimizeForDebug: this.editorMode.compileForDebug,
         verbose,
@@ -133,13 +129,7 @@ export class VerifySketch extends SketchContribution {
         { timeout: 3000 }
       );
     } catch (e) {
-      let errorMessage = "";
-      if (typeof e === "string") {
-        errorMessage = e;
-      } else {
-        errorMessage = e.toString();
-      }
-      this.messageService.error(errorMessage);
+      this.handleError(e);
     } finally {
       this.verifyInProgress = false;
       this.onDidChangeEmitter.fire();

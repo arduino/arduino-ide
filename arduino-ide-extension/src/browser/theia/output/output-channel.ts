@@ -40,6 +40,14 @@ export class OutputChannelManager extends TheiaOutputChannelManager {
     }
     return channel;
   }
+
+  async contentOfChannel(name: string): Promise<string | undefined> {
+    const resource = this.resources.get(name);
+    if (resource) {
+      return resource.readContents();
+    }
+    return undefined;
+  }
 }
 
 export class OutputChannel extends TheiaOutputChannel {
