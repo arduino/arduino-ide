@@ -298,6 +298,8 @@ import {
 } from '../common/protocol/survey-service';
 import { WindowContribution } from './theia/core/window-contribution';
 import { WindowContribution as TheiaWindowContribution } from '@theia/core/lib/browser/window-contribution';
+import { CoreErrorHandler } from './contributions/core-error-handler';
+import { CompilerErrors } from './contributions/compiler-errors';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -430,6 +432,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       )
     )
     .inSingletonScope();
+  bind(CoreErrorHandler).toSelf().inSingletonScope();
 
   // Serial monitor
   bind(MonitorWidget).toSelf();
@@ -694,6 +697,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, AddZipLibrary);
   Contribution.configure(bind, PlotterFrontendContribution);
   Contribution.configure(bind, Format);
+  Contribution.configure(bind, CompilerErrors);
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.

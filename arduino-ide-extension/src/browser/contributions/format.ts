@@ -2,6 +2,8 @@ import { MaybePromise } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as monaco from '@theia/monaco-editor-core';
 import { Formatter } from '../../common/protocol/formatter';
+import { InoSelector } from '../ino-selectors';
+import { fullRange } from '../utils/monaco';
 import { Contribution, URI } from './contribution';
 
 @injectable()
@@ -15,12 +17,11 @@ export class Format
   private readonly formatter: Formatter;
 
   override onStart(): MaybePromise<void> {
-    const selector = this.selectorOf('ino', 'c', 'cpp', 'h', 'hpp', 'pde');
     monaco.languages.registerDocumentRangeFormattingEditProvider(
-      selector,
+      InoSelector,
       this
     );
-    monaco.languages.registerDocumentFormattingEditProvider(selector, this);
+    monaco.languages.registerDocumentFormattingEditProvider(InoSelector, this);
   }
   async provideDocumentRangeFormattingEdits(
     model: monaco.editor.ITextModel,
@@ -39,16 +40,9 @@ export class Format
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _token: monaco.CancellationToken
   ): Promise<monaco.languages.TextEdit[]> {
-    const range = this.fullRange(model);
+    const range = fullRange(model);
     const text = await this.format(model, range, options);
     return [{ range, text }];
-  }
-
-  private fullRange(model: monaco.editor.ITextModel): monaco.Range {
-    const lastLine = model.getLineCount();
-    const lastLineMaxColumn = model.getLineMaxColumn(lastLine);
-    const end = new monaco.Position(lastLine, lastLineMaxColumn);
-    return monaco.Range.fromPositions(new monaco.Position(1, 1), end);
   }
 
   /**
@@ -81,14 +75,5 @@ export class Format
       formatterConfigFolderUris,
       options,
     });
-  }
-
-  private selectorOf(
-    ...languageId: string[]
-  ): monaco.languages.LanguageSelector {
-    return languageId.map((language) => ({
-      language,
-      exclusive: true, // <-- this should make sure the custom formatter has higher precedence over the LS formatter.
-    }));
   }
 }

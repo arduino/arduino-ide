@@ -6,7 +6,7 @@ import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
-  SketchContribution,
+  CoreServiceContribution,
   Command,
   CommandRegistry,
   MenuModelRegistry,
@@ -18,10 +18,7 @@ import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
-export class UploadSketch extends SketchContribution {
-  @inject(CoreService)
-  protected readonly coreService: CoreService;
-
+export class UploadSketch extends CoreServiceContribution {
   @inject(MenuModelRegistry)
   protected readonly menuRegistry: MenuModelRegistry;
 
@@ -201,16 +198,17 @@ export class UploadSketch extends SketchContribution {
       return;
     }
 
-    // toggle the toolbar button and menu item state.
-    // uploadInProgress will be set to false whether the upload fails or not
-    this.uploadInProgress = true;
-    this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return;
     }
 
     try {
+      // toggle the toolbar button and menu item state.
+      // uploadInProgress will be set to false whether the upload fails or not
+      this.uploadInProgress = true;
+      this.coreErrorHandler.reset();
+      this.onDidChangeEmitter.fire();
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
         await Promise.all([
@@ -227,9 +225,8 @@ export class UploadSketch extends SketchContribution {
         ...boardsConfig.selectedBoard,
         name: boardsConfig.selectedBoard?.name || '',
         fqbn,
-      }
+      };
       let options: CoreService.Upload.Options | undefined = undefined;
-      const sketchUri = sketch.uri;
       const optimizeForDebug = this.editorMode.compileForDebug;
       const { selectedPort } = boardsConfig;
       const port = selectedPort;
@@ -248,7 +245,7 @@ export class UploadSketch extends SketchContribution {
       if (usingProgrammer) {
         const programmer = selectedProgrammer;
         options = {
-          sketchUri,
+          sketch,
           board,
           optimizeForDebug,
           programmer,
@@ -260,7 +257,7 @@ export class UploadSketch extends SketchContribution {
         };
       } else {
         options = {
-          sketchUri,
+          sketch,
           board,
           optimizeForDebug,
           port,
@@ -281,13 +278,7 @@ export class UploadSketch extends SketchContribution {
         { timeout: 3000 }
       );
     } catch (e) {
-      let errorMessage = '';
-      if (typeof e === 'string') {
-        errorMessage = e;
-      } else {
-        errorMessage = e.toString();
-      }
-      this.messageService.error(errorMessage);
+      this.handleError(e);
     } finally {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();

@@ -1,6 +1,10 @@
+import { ApplicationError } from '@theia/core';
+import { Location } from '@theia/core/shared/vscode-languageserver-protocol';
 import { BoardUserField } from '.';
 import { Board, Port } from '../../common/protocol/boards-service';
+import { ErrorInfo as CliErrorInfo } from '../../node/cli-error-parser';
 import { Programmer } from './boards-service';
+import { Sketch } from './sketches-service';
 
 export const CompilerWarningLiterals = [
   'None',
@@ -9,6 +13,53 @@ export const CompilerWarningLiterals = [
   'All',
 ] as const;
 export type CompilerWarnings = typeof CompilerWarningLiterals[number];
+export namespace CoreError {
+  export type ErrorInfo = CliErrorInfo;
+  export interface Compiler extends ErrorInfo {
+    readonly message: string;
+    readonly location: Location;
+  }
+  export namespace Compiler {
+    export function is(error: ErrorInfo): error is Compiler {
+      const { message, location } = error;
+      return !!message && !!location;
+    }
+  }
+  export const Codes = {
+    Verify: 4001,
+    Upload: 4002,
+    UploadUsingProgrammer: 4003,
+    BurnBootloader: 4004,
+  };
+  export const VerifyFailed = create(Codes.Verify);
+  export const UploadFailed = create(Codes.Upload);
+  export const UploadUsingProgrammerFailed = create(
+    Codes.UploadUsingProgrammer
+  );
+  export const BurnBootloaderFailed = create(Codes.BurnBootloader);
+  export function is(
+    error: unknown
+  ): error is ApplicationError<number, ErrorInfo[]> {
+    return (
+      error instanceof Error &&
+      ApplicationError.is(error) &&
+      Object.values(Codes).includes(error.code)
+    );
+  }
+  function create(
+    code: number
+  ): ApplicationError.Constructor<number, ErrorInfo[]> {
+    return ApplicationError.declare(
+      code,
+      (message: string, data: ErrorInfo[]) => {
+        return {
+          data,
+          message,
+        };
+      }
+    );
+  }
+}
 
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
@@ -23,16 +74,12 @@ export interface CoreService {
   upload(options: CoreService.Upload.Options): Promise<void>;
   uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
   burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;
-  isUploading(): Promise<boolean>;
 }
 
 export namespace CoreService {
   export namespace Compile {
     export interface Options {
-      /**
-       * `file` URI to the sketch folder.
-       */
-      readonly sketchUri: string;
+      readonly sketch: Sketch;
       readonly board?: Board;
       readonly optimizeForDebug: boolean;
       readonly verbose: boolean;

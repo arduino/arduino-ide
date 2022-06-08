@@ -2,7 +2,14 @@ import { Event } from '@theia/core/lib/common/event';
 
 export interface OutputMessage {
   readonly chunk: string;
-  readonly severity?: 'error' | 'warning' | 'info'; // Currently not used!
+  readonly severity?: OutputMessage.Severity;
+}
+export namespace OutputMessage {
+  export enum Severity {
+    Error,
+    Warning,
+    Info,
+  }
 }
 
 export interface ProgressMessage {
