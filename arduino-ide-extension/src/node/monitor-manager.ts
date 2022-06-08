@@ -215,6 +215,8 @@ export class MonitorManager extends CoreClientAware {
    * @returns a unique monitor ID
    */
   private monitorID(board: Board, port: Port): MonitorID {
-    return `${board.fqbn}-${port.address}-${port.protocol}`;
+    const splitFqbn = board?.fqbn?.split(':') || [];
+    const shortenedFqbn = splitFqbn.slice(0, 3).join(':') || '';
+    return `${shortenedFqbn}-${port.address}-${port.protocol}`;
   }
 }

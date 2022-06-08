@@ -76,7 +76,7 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
       fqbn: firmware.board_fqbn,
     };
     try {
-      this.monitorManager.notifyUploadStarted(board, port);
+      await this.monitorManager.notifyUploadStarted(board, port);
       output = await this.runCommand([
         'firmware',
         'flash',
