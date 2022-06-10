@@ -121,6 +121,8 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
+import { SurveyNotification } from './contributions/survey-notification';
+import { SurveyRetriever } from './survey/survey-retriever';
 import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
 import { EditContributions } from './contributions/edit-contributions';
 import { OpenSketchExternal } from './contributions/open-sketch-external';
@@ -474,6 +476,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
   bind(EditorMode).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(EditorMode);
+
+  // Survey notification
+  bind(SurveyRetriever).toSelf().inSingletonScope();
+
+  bind(SurveyNotification).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(SurveyNotification);
 
   // Layout and shell customizations.
   rebind(TheiaOutlineViewContribution)
