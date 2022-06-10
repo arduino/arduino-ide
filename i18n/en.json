@@ -305,6 +305,11 @@
       "verify": "Verify",
       "verifyOrCompile": "Verify/Compile"
     },
+    "survey": {
+      "answerSurvey": "ANSWER SURVEY",
+      "dismissSurvey": "DON’T SHOW ANYMORE",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
     "upload": {
       "error": "{0} error: {1}"
     },
