@@ -21,7 +21,10 @@ import {
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
 import { Deferred, retry } from '@theia/core/lib/common/promise-util';
-import { Status as RpcStatus } from './cli-protocol/google/rpc/status_pb';
+import {
+  Status as RpcStatus,
+  Status,
+} from './cli-protocol/google/rpc/status_pb';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -90,10 +93,11 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
           this._initialized.resolve();
           this.updateIndex(this._client); // Update the indexes asynchronously
         } catch (error: unknown) {
-          if (
-            this.isPackageIndexMissingError(error) ||
-            this.isDiscoveryNotFoundError(error)
-          ) {
+          console.error(
+            'Error occurred while initializing the core gRPC client provider',
+            error
+          );
+          if (error instanceof IndexUpdateRequiredBeforeInitError) {
             // If it's a first start, IDE2 must run index update before the init request.
             await this.updateIndexes(this._client);
             await this.initInstance(this._client);
@@ -112,41 +116,6 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       this._client = undefined;
       this._port = undefined;
     });
-  }
-
-  private isPackageIndexMissingError(error: unknown): boolean {
-    const assert = (message: string) =>
-      message.includes('loading json index file');
-    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
-    return this.isRpcStatusError(error, assert);
-  }
-
-  private isDiscoveryNotFoundError(error: unknown): boolean {
-    const assert = (message: string) =>
-      message.includes('discovery') &&
-      (message.includes('not found') || message.includes('not installed'));
-    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L740
-    // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L744
-    return this.isRpcStatusError(error, assert);
-  }
-
-  private isCancelError(error: unknown): boolean {
-    return (
-      error instanceof Error &&
-      error.message.toLocaleLowerCase().includes('cancelled on client')
-    );
-  }
-
-  // Final error codes are not yet defined by the CLI. Hence, we do string matching in the message RPC status.
-  private isRpcStatusError(
-    error: unknown,
-    assert: (message: string) => boolean
-  ) {
-    if (error instanceof RpcStatus) {
-      const { message } = RpcStatus.toObject(false, error);
-      return assert(message.toLocaleLowerCase());
-    }
-    return false;
   }
 
   protected async createClient(
@@ -192,7 +161,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     initReq.setInstance(instance);
     return new Promise<void>((resolve, reject) => {
       const stream = client.init(initReq);
-      const errorStatus: RpcStatus[] = [];
+      const errors: RpcStatus[] = [];
       stream.on('data', (res: InitResponse) => {
         const progress = res.getInitProgress();
         if (progress) {
@@ -210,26 +179,28 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
 
         const error = res.getError();
         if (error) {
-          console.error(error.getMessage());
-          errorStatus.push(error);
-          // Cancel the init request. No need to wait until the end of the event. The init has already failed.
-          // Canceling the request will result in a cancel error, but we need to reject with the original error later.
-          stream.cancel();
+          const { code, message } = Status.toObject(false, error);
+          console.error(
+            `Detected an error response during the gRPC core client initialization: code: ${code}, message: ${message}`
+          );
+          errors.push(error);
         }
       });
-      stream.on('error', (error) => {
-        // On any error during the init request, the request is canceled.
-        // On cancel, the IDE2 ignores the cancel error and rejects with the original one.
-        reject(
-          this.isCancelError(error) && errorStatus.length
-            ? errorStatus[0]
-            : error
-        );
+      stream.on('error', reject);
+      stream.on('end', () => {
+        const error = this.evaluateErrorStatus(errors);
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
       });
-      stream.on('end', () =>
-        errorStatus.length ? reject(errorStatus) : resolve()
-      );
     });
+  }
+
+  private evaluateErrorStatus(status: RpcStatus[]): Error | undefined {
+    const error = isIndexUpdateRequiredBeforeInit(status); // put future error matching here
+    return error;
   }
 
   protected async updateIndexes(
@@ -337,4 +308,59 @@ export abstract class CoreClientAware {
       }
     );
   }
+}
+
+class IndexUpdateRequiredBeforeInitError extends Error {
+  constructor(causes: RpcStatus.AsObject[]) {
+    super(`The index of the cores and libraries must be updated before initializing the core gRPC client.
+The following problems were detected during the gRPC client initialization:
+${causes
+  .map(({ code, message }) => ` - code: ${code}, message: ${message}`)
+  .join('\n')}
+`);
+    Object.setPrototypeOf(this, IndexUpdateRequiredBeforeInitError.prototype);
+    if (!causes.length) {
+      throw new Error(`expected non-empty 'causes'`);
+    }
+  }
+}
+
+function isIndexUpdateRequiredBeforeInit(
+  status: RpcStatus[]
+): IndexUpdateRequiredBeforeInitError | undefined {
+  const causes = status
+    .filter((s) =>
+      IndexUpdateRequiredBeforeInit.map((predicate) => predicate(s)).some(
+        Boolean
+      )
+    )
+    .map((s) => RpcStatus.toObject(false, s));
+  return causes.length
+    ? new IndexUpdateRequiredBeforeInitError(causes)
+    : undefined;
+}
+const IndexUpdateRequiredBeforeInit = [
+  isPackageIndexMissingStatus,
+  isDiscoveryNotFoundStatus,
+];
+function isPackageIndexMissingStatus(status: RpcStatus): boolean {
+  const predicate = ({ message }: RpcStatus.AsObject) =>
+    message.includes('loading json index file');
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
+  return evaluate(status, predicate);
+}
+function isDiscoveryNotFoundStatus(status: RpcStatus): boolean {
+  const predicate = ({ message }: RpcStatus.AsObject) =>
+    message.includes('discovery') &&
+    (message.includes('not found') || message.includes('not installed'));
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L740
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L744
+  return evaluate(status, predicate);
+}
+function evaluate(
+  subject: RpcStatus,
+  predicate: (error: RpcStatus.AsObject) => boolean
+): boolean {
+  const status = RpcStatus.toObject(false, subject);
+  return predicate(status);
 }
