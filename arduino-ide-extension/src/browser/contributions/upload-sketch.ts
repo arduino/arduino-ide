@@ -212,12 +212,6 @@ export class UploadSketch extends SketchContribution {
     // uploadInProgress will be set to false whether the upload fails or not
     this.uploadInProgress = true;
 
-    // here we inform the "monitorManagerProxyClient" an upload is in progress,
-    // setting a boolean flag, this is to prevent triggering of the
-    // "usual side effects" if a serial port change occurs during upload
-    // (expected on windows for some boards)
-    this.monitorManagerProxyClient.setUploadInProgress(true);
-
     this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
@@ -225,6 +219,12 @@ export class UploadSketch extends SketchContribution {
     }
 
     try {
+      // here we inform the "monitorManagerProxyClient" an upload is in progress,
+      // setting a boolean flag, this is to prevent triggering of the
+      // "usual side effects" if a serial port change occurs during upload
+      // (expected on windows for some boards)
+      this.monitorManagerProxyClient.setUploadInProgress(true);
+
       const { boardsConfig } = this.boardsServiceClientImpl;
       const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
         await Promise.all([
