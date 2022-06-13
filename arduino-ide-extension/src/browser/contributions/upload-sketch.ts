@@ -1,6 +1,10 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import { BoardUserField, CoreService } from '../../common/protocol';
+import {
+  BoardUserField,
+  CoreService,
+  MonitorManagerProxyClient,
+} from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
@@ -33,6 +37,9 @@ export class UploadSketch extends SketchContribution {
 
   @inject(UserFieldsDialog)
   protected readonly userFieldsDialog: UserFieldsDialog;
+
+  @inject(MonitorManagerProxyClient)
+  protected readonly monitorManagerProxyClient: MonitorManagerProxyClient;
 
   protected cachedUserFields: Map<string, BoardUserField[]> = new Map();
 
@@ -204,6 +211,13 @@ export class UploadSketch extends SketchContribution {
     // toggle the toolbar button and menu item state.
     // uploadInProgress will be set to false whether the upload fails or not
     this.uploadInProgress = true;
+
+    // here we inform the "monitorManagerProxyClient" an upload is in progress,
+    // setting a boolean flag, this is to prevent triggering of the
+    // "usual side effects" if a serial port change occurs during upload
+    // (expected on windows for some boards)
+    this.monitorManagerProxyClient.setUploadInProgress(true);
+
     this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
@@ -227,7 +241,7 @@ export class UploadSketch extends SketchContribution {
         ...boardsConfig.selectedBoard,
         name: boardsConfig.selectedBoard?.name || '',
         fqbn,
-      }
+      };
       let options: CoreService.Upload.Options | undefined = undefined;
       const sketchUri = sketch.uri;
       const optimizeForDebug = this.editorMode.compileForDebug;
@@ -290,6 +304,9 @@ export class UploadSketch extends SketchContribution {
       this.messageService.error(errorMessage);
     } finally {
       this.uploadInProgress = false;
+
+      this.monitorManagerProxyClient.setUploadInProgress(false);
+
       this.onDidChangeEmitter.fire();
     }
   }

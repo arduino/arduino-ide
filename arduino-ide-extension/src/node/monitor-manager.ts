@@ -24,8 +24,6 @@ export class MonitorManager extends CoreClientAware {
   @inject(MonitorServiceFactory)
   private monitorServiceFactory: MonitorServiceFactory;
 
-  uploading = false;
-
   constructor(
     @inject(ILogger)
     @named(MonitorManagerName)
@@ -59,9 +57,6 @@ export class MonitorManager extends CoreClientAware {
    * started or if there have been errors.
    */
   async startMonitor(board: Board, port: Port): Promise<Status> {
-    if (this.uploading) {
-      return Status.UPLOAD_IN_PROGRESS;
-    }
     const monitorID = this.monitorID(board, port);
     let monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
@@ -111,7 +106,6 @@ export class MonitorManager extends CoreClientAware {
    * @param port port to monitor
    */
   async notifyUploadStarted(board?: Board, port?: Port): Promise<void> {
-    this.uploading = true;
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
@@ -136,7 +130,6 @@ export class MonitorManager extends CoreClientAware {
    * started or if there have been errors.
    */
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
-    this.uploading = false;
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
