@@ -1,10 +1,14 @@
 import { MessageService } from '@theia/core';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { shell } from '@theia/electron/shared/electron';
 import { LocalStorageService } from '@theia/core/lib/browser';
-import { SurveyRetriever } from '../survey/survey-retriever';
 import { nls } from '@theia/core/lib/common';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
+
+export type Survey = {
+  url: URL;
+  id: string;
+};
 
 const SURVEY_MESSAGE = nls.localize(
   'arduino/survey/surveyMessage',
@@ -19,6 +23,9 @@ const GO_TO_SURVEY = nls.localize(
   'ANSWER SURVEY'
 );
 
+const SURVEY_BASE_URL = 'https://surveys.hotjar.com/';
+const surveyId = '17887b40-e1f0-4bd6-b9f0-a37f229ccd8b';
+
 @injectable()
 export class SurveyNotification implements FrontendApplicationContribution {
   @inject(MessageService)
@@ -27,30 +34,32 @@ export class SurveyNotification implements FrontendApplicationContribution {
   @inject(LocalStorageService)
   protected readonly localStorageService: LocalStorageService;
 
-  @inject(SurveyRetriever)
-  protected readonly surveyRetriever: SurveyRetriever;
+  @inject(WindowService)
+  protected readonly windowService: WindowService;
 
   async onStart(): Promise<void> {
-    const survey = await this.surveyRetriever.getSurvey();
-    const surveyAnswered = await this.localStorageService.getData(
-      this.surveyKey(survey.id),
-      'notAnswered'
-    );
-
-    if (surveyAnswered !== 'notAnswered') {
-      return;
-    }
-
-    this.messageService
-      .info(SURVEY_MESSAGE, DO_NOT_SHOW_AGAIN, GO_TO_SURVEY)
-      .then(async (answer) => {
+    this.localStorageService
+      .getData(this.surveyKey(surveyId), undefined)
+      .then((surveyAnswered) => {
+        if (surveyAnswered !== undefined) {
+          return;
+        }
+        return this.messageService.info(
+          SURVEY_MESSAGE,
+          DO_NOT_SHOW_AGAIN,
+          GO_TO_SURVEY
+        );
+      })
+      .then((answer) => {
         switch (answer) {
           case GO_TO_SURVEY:
-            shell.openExternal(survey.url.href);
-            this.localStorageService.setData(this.surveyKey(survey.id), true);
+            this.windowService.openNewWindow(SURVEY_BASE_URL + surveyId, {
+              external: true,
+            });
+            this.localStorageService.setData(this.surveyKey(surveyId), true);
             break;
           case DO_NOT_SHOW_AGAIN:
-            this.localStorageService.setData(this.surveyKey(survey.id), false);
+            this.localStorageService.setData(this.surveyKey(surveyId), false);
             break;
         }
       });
