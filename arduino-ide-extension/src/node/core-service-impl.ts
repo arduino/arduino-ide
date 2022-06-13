@@ -39,6 +39,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   protected uploading = false;
 
+  private outputString: string;
+
+  private FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS = 32;
+
+  private flushOutputMessagesInterval?: NodeJS.Timeout;
+
+  setOutputMessagesInterval(): void {
+    this.flushOutputMessagesInterval = setInterval(() => {
+      this.responseService.appendToOutput({
+        chunk: this.outputString,
+      });
+    }, this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS);
+  }
+
+  clearOutputMessagesInterval(): void {
+    clearInterval(this.flushOutputMessagesInterval);
+    this.flushOutputMessagesInterval = undefined;
+  }
+
   async compile(
     options: CoreService.Compile.Options & {
       exportBinaries?: boolean;
@@ -174,18 +193,21 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const result = responseHandler(client, req);
 
+    this.setOutputMessagesInterval();
+
     try {
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: UploadResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getErrStream_asU8()).toString(),
-          });
+          this.outputString =
+            this.outputString +
+            Buffer.from(resp.getOutStream_asU8()).toString() +
+            Buffer.from(resp.getErrStream_asU8()).toString();
         });
         result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('end', () => {
+          this.clearOutputMessagesInterval();
+          resolve();
+        });
       });
       this.responseService.appendToOutput({
         chunk:
