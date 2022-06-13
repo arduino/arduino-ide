@@ -78,7 +78,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const result = client.compile(compileReq);
 
     const compileBuffer = new OutputPanelBufferProvider(
-      this.flushOutputPanelMessages,
+      this.flushOutputPanelMessages.bind(this),
       this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
     try {
@@ -185,7 +185,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const result = responseHandler(client, req);
 
     const uploadBuffer = new OutputPanelBufferProvider(
-      this.flushOutputPanelMessages,
+      this.flushOutputPanelMessages.bind(this),
       this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
     try {
@@ -256,7 +256,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const result = client.burnBootloader(burnReq);
 
     const bootloaderBuffer = new OutputPanelBufferProvider(
-      this.flushOutputPanelMessages,
+      this.flushOutputPanelMessages.bind(this),
       this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
     try {
@@ -306,9 +306,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   private flushOutputPanelMessages(chunk: string): void {
-    this.responseService.appendToOutput({
-      chunk,
-    });
     this.responseService.appendToOutput({
       chunk,
     });

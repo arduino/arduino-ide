@@ -5,9 +5,12 @@ export class OutputPanelBufferProvider {
 
   constructor(onFlush: (chunk: string) => void, flushTimeout: number) {
     this.flushInterval = setInterval(() => {
-      const chunkString = Buffer.concat(this.chunks).toString();
-      onFlush(chunkString);
-      this.clearChunks();
+      if (this.chunks.length > 0) {
+        const chunkString = Buffer.concat(this.chunks).toString();
+        this.clearChunks();
+
+        onFlush(chunkString);
+      }
     }, flushTimeout);
   }
 
