@@ -307,8 +307,8 @@
       "verifyOrCompile": "Verify/Compile"
     },
     "survey": {
-      "answerSurvey": "ANSWER SURVEY",
-      "dismissSurvey": "DON'T SHOW ANYMORE",
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {

@@ -12,11 +12,11 @@ const SURVEY_MESSAGE = nls.localize(
 );
 const DO_NOT_SHOW_AGAIN = nls.localize(
   'arduino/survey/dismissSurvey',
-  "DON'T SHOW ANYMORE"
+  "Don't show again"
 );
 const GO_TO_SURVEY = nls.localize(
   'arduino/survey/answerSurvey',
-  'ANSWER SURVEY'
+  'Answer survey'
 );
 
 const SURVEY_BASE_URL = 'https://surveys.hotjar.com/';
