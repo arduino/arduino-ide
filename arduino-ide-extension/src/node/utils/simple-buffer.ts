@@ -1,4 +1,4 @@
-export class OutputPanelBufferProvider {
+export class SimpleBuffer {
   chunks: Uint8Array[] = [];
 
   private flushInterval?: NodeJS.Timeout;

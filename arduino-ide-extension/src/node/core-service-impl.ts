@@ -25,7 +25,7 @@ import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
-import { OutputPanelBufferProvider } from './output-panel-buffer-provider';
+import { SimpleBuffer } from './utils/simple-buffer';
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -77,7 +77,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const result = client.compile(compileReq);
 
-    const compileBuffer = new OutputPanelBufferProvider(
+    const compileBuffer = new SimpleBuffer(
       this.flushOutputPanelMessages.bind(this),
       this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
@@ -184,7 +184,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const result = responseHandler(client, req);
 
-    const uploadBuffer = new OutputPanelBufferProvider(
+    const uploadBuffer = new SimpleBuffer(
       this.flushOutputPanelMessages.bind(this),
       this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
@@ -255,7 +255,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     burnReq.setVerbose(options.verbose);
     const result = client.burnBootloader(burnReq);
 
-    const bootloaderBuffer = new OutputPanelBufferProvider(
+    const bootloaderBuffer = new SimpleBuffer(
       this.flushOutputPanelMessages.bind(this),
       this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
