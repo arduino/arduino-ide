@@ -37,39 +37,30 @@ export class SurveyNotification implements FrontendApplicationContribution {
   private readonly arduinoPreferences: ArduinoPreferences;
 
   onStart(): void {
-    this.arduinoPreferences.ready.then(() => {
+    this.arduinoPreferences.ready.then(async () => {
       if (this.arduinoPreferences.get('arduino.survey.notification')) {
-        this.localStorageService
-          .getData(this.surveyKey(surveyId))
-          .then((surveyAnswered) => {
-            if (surveyAnswered !== undefined) {
-              return;
-            }
-            return this.messageService.info(
-              SURVEY_MESSAGE,
-              DO_NOT_SHOW_AGAIN,
-              GO_TO_SURVEY
-            );
-          })
-          .then((answer) => {
-            switch (answer) {
-              case GO_TO_SURVEY:
-                this.windowService.openNewWindow(SURVEY_BASE_URL + surveyId, {
-                  external: true,
-                });
-                this.localStorageService.setData(
-                  this.surveyKey(surveyId),
-                  true
-                );
-                break;
-              case DO_NOT_SHOW_AGAIN:
-                this.localStorageService.setData(
-                  this.surveyKey(surveyId),
-                  false
-                );
-                break;
-            }
-          });
+        const surveyAnswered = await this.localStorageService.getData(
+          this.surveyKey(surveyId)
+        );
+        if (surveyAnswered !== undefined) {
+          return;
+        }
+        const answer = await this.messageService.info(
+          SURVEY_MESSAGE,
+          DO_NOT_SHOW_AGAIN,
+          GO_TO_SURVEY
+        );
+        switch (answer) {
+          case GO_TO_SURVEY:
+            this.windowService.openNewWindow(SURVEY_BASE_URL + surveyId, {
+              external: true,
+            });
+            this.localStorageService.setData(this.surveyKey(surveyId), true);
+            break;
+          case DO_NOT_SHOW_AGAIN:
+            this.localStorageService.setData(this.surveyKey(surveyId), false);
+            break;
+        }
       }
     });
   }
