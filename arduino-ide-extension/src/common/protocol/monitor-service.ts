@@ -39,7 +39,6 @@ export interface MonitorManagerProxyClient {
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
   send(message: string): void;
   changeSettings(settings: MonitorSettings): void;
-  setUploadInProgress(value: boolean): void;
 }
 
 export interface PluggableMonitorSetting {
