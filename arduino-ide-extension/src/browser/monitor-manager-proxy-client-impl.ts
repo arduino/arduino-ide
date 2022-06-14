@@ -135,6 +135,12 @@ export class MonitorManagerProxyClientImpl
       this.onBoardsConfigChanged =
         this.boardsServiceProvider.onBoardsConfigChanged(
           async ({ selectedBoard, selectedPort }) => {
+            if (
+              typeof selectedBoard === 'undefined' ||
+              typeof selectedPort === 'undefined'
+            )
+              return;
+
             // a board is plugged and it's different from the old connected board
             if (
               selectedBoard?.fqbn !==
