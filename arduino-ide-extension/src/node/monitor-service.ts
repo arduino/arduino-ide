@@ -60,7 +60,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
   protected readonly onDisposeEmitter = new Emitter<void>();
   readonly onDispose = this.onDisposeEmitter.event;
 
-  protected uploadInProgress = false;
   protected _initialized = new Deferred<void>();
   protected creating: Deferred<Status>;
 
@@ -114,10 +113,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
     return this._initialized.promise;
   }
 
-  setUploadInProgress(status: boolean): void {
-    this.uploadInProgress = status;
-  }
-
   getWebsocketAddressPort(): number {
     return this.webSocketProvider.getAddress().port;
   }
@@ -158,15 +153,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
       this.updateClientsSettings({ monitorUISettings: { connected: false } });
 
       this.creating.resolve(Status.CONFIG_MISSING);
-      return this.creating.promise;
-    }
-
-    if (this.uploadInProgress) {
-      this.updateClientsSettings({
-        monitorUISettings: { connected: false, serialPort: this.port.address },
-      });
-
-      this.creating.resolve(Status.UPLOAD_IN_PROGRESS);
       return this.creating.promise;
     }
 

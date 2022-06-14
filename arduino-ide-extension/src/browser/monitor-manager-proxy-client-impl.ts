@@ -47,8 +47,6 @@ export class MonitorManagerProxyClientImpl
   private lastConnectedBoard: BoardsConfig.Config;
   private onBoardsConfigChanged: Disposable | undefined;
 
-  private uploadInProgress = false;
-
   getWebSocketPort(): number | undefined {
     return this.wsPort;
   }
@@ -137,14 +135,6 @@ export class MonitorManagerProxyClientImpl
       this.onBoardsConfigChanged =
         this.boardsServiceProvider.onBoardsConfigChanged(
           async ({ selectedBoard, selectedPort }) => {
-            const changeTriggeredDuringUpload = this.uploadInProgress;
-            if (
-              changeTriggeredDuringUpload ||
-              typeof selectedBoard === 'undefined' ||
-              typeof selectedPort === 'undefined'
-            )
-              return;
-
             // a board is plugged and it's different from the old connected board
             if (
               selectedBoard?.fqbn !==
@@ -199,9 +189,5 @@ export class MonitorManagerProxyClientImpl
         data: settings,
       })
     );
-  }
-
-  public setUploadInProgress(value: boolean): void {
-    this.uploadInProgress = value;
   }
 }

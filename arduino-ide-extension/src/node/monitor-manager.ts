@@ -20,6 +20,9 @@ export class MonitorManager extends CoreClientAware {
   // If either the board or port managed changes, a new service must
   // be started.
   private monitorServices = new Map<MonitorID, MonitorService>();
+  private isUploadInProgress: boolean;
+
+  private startMonitorPendingRequests: Array<MonitorID> = [];
 
   @inject(MonitorServiceFactory)
   private monitorServiceFactory: MonitorServiceFactory;
@@ -62,7 +65,11 @@ export class MonitorManager extends CoreClientAware {
     if (!monitor) {
       monitor = this.createMonitor(board, port);
     }
-    return await monitor.start();
+    if (this.isUploadInProgress) {
+      this.startMonitorPendingRequests.push(monitorID);
+      return Status.UPLOAD_IN_PROGRESS;
+    }
+    return monitor.start();
   }
 
   /**
@@ -117,7 +124,7 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return;
     }
-    monitor.setUploadInProgress(true);
+    this.isUploadInProgress = true;
     return await monitor.pause();
   }
 
@@ -130,6 +137,14 @@ export class MonitorManager extends CoreClientAware {
    * started or if there have been errors.
    */
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
+    try {
+      for (const id of this.startMonitorPendingRequests) {
+        const m = this.monitorServices.get(id);
+        if (m) m.start();
+      }
+    } finally {
+      this.startMonitorPendingRequests = [];
+    }
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
@@ -141,8 +156,9 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return Status.NOT_CONNECTED;
     }
-    monitor.setUploadInProgress(false);
-    return await monitor.start();
+    this.isUploadInProgress = false;
+
+    return monitor.start();
   }
 
   /**
