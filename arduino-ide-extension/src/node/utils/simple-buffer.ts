@@ -1,5 +1,5 @@
 export class SimpleBuffer {
-  chunks: Uint8Array[] = [];
+  private chunks: Uint8Array[] = [];
 
   private flushInterval?: NodeJS.Timeout;
 
@@ -18,7 +18,7 @@ export class SimpleBuffer {
     this.chunks.push(chunk);
   }
 
-  private clearChunks() {
+  private clearChunks(): void {
     this.chunks = [];
   }
 

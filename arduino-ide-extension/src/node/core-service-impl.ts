@@ -27,6 +27,7 @@ import { nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
 import { SimpleBuffer } from './utils/simple-buffer';
 
+const FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS = 32;
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(ResponseService)
@@ -39,8 +40,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   protected readonly monitorManager: MonitorManager;
 
   protected uploading = false;
-
-  private FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS = 32;
 
   async compile(
     options: CoreService.Compile.Options & {
@@ -79,7 +78,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const compileBuffer = new SimpleBuffer(
       this.flushOutputPanelMessages.bind(this),
-      this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
     try {
       await new Promise<void>((resolve, reject) => {
@@ -186,7 +185,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const uploadBuffer = new SimpleBuffer(
       this.flushOutputPanelMessages.bind(this),
-      this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
     try {
       await new Promise<void>((resolve, reject) => {
@@ -257,7 +256,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const bootloaderBuffer = new SimpleBuffer(
       this.flushOutputPanelMessages.bind(this),
-      this.FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
     );
     try {
       await new Promise<void>((resolve, reject) => {
