@@ -25,7 +25,9 @@ import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
+import { SimpleBuffer } from './utils/simple-buffer';
 
+const FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS = 32;
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(ResponseService)
@@ -73,18 +75,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     this.mergeSourceOverrides(compileReq, options);
 
     const result = client.compile(compileReq);
+
+    const compileBuffer = new SimpleBuffer(
+      this.flushOutputPanelMessages.bind(this),
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+    );
     try {
       await new Promise<void>((resolve, reject) => {
         result.on('data', (cr: CompileResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(cr.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(cr.getErrStream_asU8()).toString(),
-          });
+          compileBuffer.addChunk(cr.getOutStream_asU8());
+          compileBuffer.addChunk(cr.getErrStream_asU8());
         });
-        result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('error', (error) => {
+          compileBuffer.clearFlushInterval();
+          reject(error);
+        });
+        result.on('end', () => {
+          compileBuffer.clearFlushInterval();
+          resolve();
+        });
       });
       this.responseService.appendToOutput({
         chunk: '\n--------------------------\nCompilation complete.\n',
@@ -176,17 +185,24 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
       const result = responseHandler(client, req);
 
+      const uploadBuffer = new SimpleBuffer(
+        this.flushOutputPanelMessages.bind(this),
+        FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+      );
+
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: UploadResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getErrStream_asU8()).toString(),
-          });
+          uploadBuffer.addChunk(resp.getOutStream_asU8());
+          uploadBuffer.addChunk(resp.getErrStream_asU8());
         });
-        result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('error', (error) => {
+          uploadBuffer.clearFlushInterval();
+          reject(error);
+        });
+        result.on('end', () => {
+          uploadBuffer.clearFlushInterval();
+          resolve();
+        });
       });
       this.responseService.appendToOutput({
         chunk:
@@ -240,18 +256,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     burnReq.setVerify(options.verify);
     burnReq.setVerbose(options.verbose);
     const result = client.burnBootloader(burnReq);
+
+    const bootloaderBuffer = new SimpleBuffer(
+      this.flushOutputPanelMessages.bind(this),
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+    );
     try {
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: BurnBootloaderResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getErrStream_asU8()).toString(),
-          });
+          bootloaderBuffer.addChunk(resp.getOutStream_asU8());
+          bootloaderBuffer.addChunk(resp.getErrStream_asU8());
         });
-        result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('error', (error) => {
+          bootloaderBuffer.clearFlushInterval();
+          reject(error);
+        });
+        result.on('end', () => {
+          bootloaderBuffer.clearFlushInterval();
+          resolve();
+        });
       });
     } catch (e) {
       const errorMessage = nls.localize(
@@ -282,5 +305,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         req.getSourceOverrideMap().set(relativePath, content);
       }
     }
+  }
+
+  private flushOutputPanelMessages(chunk: string): void {
+    this.responseService.appendToOutput({
+      chunk,
+    });
   }
 }

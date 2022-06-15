@@ -130,5 +130,5 @@ DockPanel.prototype.handleEvent = function (event) {
       case 'p-drop':
         return;
   }
-  originalHandleEvent(event);
+  originalHandleEvent.bind(this)(event);
 };
