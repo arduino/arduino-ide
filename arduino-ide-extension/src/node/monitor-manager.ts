@@ -23,6 +23,10 @@ export class MonitorManager extends CoreClientAware {
   // If either the board or port managed changes, a new service must
   // be started.
   private monitorServices = new Map<MonitorID, MonitorService>();
+  private reconnectServiceCallbacks = new Map<
+    MonitorID,
+    (status: Status) => void
+  >();
   private isUploadInProgress: boolean;
 
   private startMonitorPendingRequests: [
@@ -84,6 +88,7 @@ export class MonitorManager extends CoreClientAware {
 
     const result = await monitor.start();
     postStartCallback(result);
+    this.reconnectServiceCallbacks.set(monitorID, postStartCallback);
   }
 
   /**
@@ -126,21 +131,29 @@ export class MonitorManager extends CoreClientAware {
    * @param board board connected to port
    * @param port port to monitor
    */
-  async notifyUploadStarted(board?: Board, port?: Port): Promise<void> {
+  async notifyUploadStarted(
+    board?: Board,
+    port?: Port
+  ): Promise<((status: Status) => void) | undefined> {
     this.isUploadInProgress = true;
 
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
-      return;
+      return undefined;
     }
     const monitorID = this.monitorID(board, port);
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       // There's no monitor running there, bail
-      return;
+      return undefined;
     }
-    return monitor.pause();
+
+    const reconnectCallback = this.reconnectServiceCallbacks.get(monitorID);
+    await monitor.dispose();
+    if (reconnectCallback) {
+      return reconnectCallback;
+    }
   }
 
   /**
@@ -151,22 +164,27 @@ export class MonitorManager extends CoreClientAware {
    * @returns a Status object to know if the process has been
    * started or if there have been errors.
    */
-  async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
+  async notifyUploadFinished(
+    board?: Board,
+    port?: Port,
+    postStartCallback?: (status: Status) => void
+  ): Promise<void> {
     this.isUploadInProgress = false;
 
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
-      return Status.NOT_CONNECTED;
-    }
-    const monitorID = this.monitorID(board, port);
-    const monitor = this.monitorServices.get(monitorID);
-    if (!monitor) {
-      // There's no monitor running there, bail
-      return Status.NOT_CONNECTED;
+      return;
     }
 
-    return monitor.start();
+    const monitor = this.createMonitor(board, port);
+    const restartServiceResult = await monitor.start();
+    if (postStartCallback) {
+      postStartCallback(restartServiceResult);
+
+      const monitorID = this.monitorID(board, port);
+      this.reconnectServiceCallbacks.set(monitorID, postStartCallback);
+    }
   }
 
   async startQueuedServices(): Promise<void> {
@@ -252,6 +270,7 @@ export class MonitorManager extends CoreClientAware {
     monitor.onDispose(
       (() => {
         this.monitorServices.delete(monitorID);
+        this.reconnectServiceCallbacks.delete(monitorID);
       }).bind(this)
     );
     return monitor;
