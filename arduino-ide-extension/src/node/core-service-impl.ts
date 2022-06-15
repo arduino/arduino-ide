@@ -171,10 +171,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       req.getUserFieldsMap().set(e.name, e.value);
     });
 
-    const result = responseHandler(client, req);
-
     try {
       await this.monitorManager.notifyUploadStarted(board, port);
+
+      const result = responseHandler(client, req);
 
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: UploadResponse) => {
