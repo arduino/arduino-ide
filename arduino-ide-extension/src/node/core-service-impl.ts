@@ -140,7 +140,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     this.uploading = true;
     const { sketchUri, board, port, programmer } = options;
-    await this.monitorManager.notifyUploadStarted(board, port);
 
     const sketchPath = FileUri.fsPath(sketchUri);
 
@@ -175,6 +174,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const result = responseHandler(client, req);
 
     try {
+      await this.monitorManager.notifyUploadStarted(board, port);
+
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: UploadResponse) => {
           this.responseService.appendToOutput({
@@ -207,7 +208,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.monitorManager.notifyUploadFinished(board, port);
+      await this.monitorManager.notifyUploadFinished(board, port);
+      await this.monitorManager.startQueuedServices();
     }
   }
 

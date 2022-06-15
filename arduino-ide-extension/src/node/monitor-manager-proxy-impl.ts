@@ -40,11 +40,14 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
     if (settings) {
       await this.changeMonitorSettings(board, port, settings);
     }
-    const status = await this.manager.startMonitor(board, port);
-    if (status === Status.ALREADY_CONNECTED || status === Status.OK) {
-      // Monitor started correctly, connect it with the frontend
-      this.client.connect(this.manager.getWebsocketAddressPort(board, port));
-    }
+
+    const onFinish = (status: Status) => {
+      if (status === Status.ALREADY_CONNECTED || status === Status.OK) {
+        // Monitor started correctly, connect it with the frontend
+        this.client.connect(this.manager.getWebsocketAddressPort(board, port));
+      }
+    };
+    return this.manager.startMonitor(board, port, onFinish);
   }
 
   /**

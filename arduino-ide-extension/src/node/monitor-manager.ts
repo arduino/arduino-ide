@@ -1,6 +1,6 @@
 import { ILogger } from '@theia/core';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { Board, Port, Status } from '../common/protocol';
+import { Board, BoardsService, Port, Status } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
 import { MonitorServiceFactory } from './monitor-service-factory';
@@ -15,6 +15,9 @@ export const MonitorManagerName = 'monitor-manager';
 
 @injectable()
 export class MonitorManager extends CoreClientAware {
+  @inject(BoardsService)
+  protected boardsService: BoardsService;
+
   // Map of monitor services that manage the running pluggable monitors.
   // Each service handles the lifetime of one, and only one, monitor.
   // If either the board or port managed changes, a new service must
@@ -22,7 +25,10 @@ export class MonitorManager extends CoreClientAware {
   private monitorServices = new Map<MonitorID, MonitorService>();
   private isUploadInProgress: boolean;
 
-  private startMonitorPendingRequests: Array<MonitorID> = [];
+  private startMonitorPendingRequests: [
+    [Board, Port],
+    (status: Status) => void
+  ][] = [];
 
   @inject(MonitorServiceFactory)
   private monitorServiceFactory: MonitorServiceFactory;
@@ -59,17 +65,25 @@ export class MonitorManager extends CoreClientAware {
    * @returns a Status object to know if the process has been
    * started or if there have been errors.
    */
-  async startMonitor(board: Board, port: Port): Promise<Status> {
+  async startMonitor(
+    board: Board,
+    port: Port,
+    postStartCallback: (status: Status) => void
+  ): Promise<void> {
     const monitorID = this.monitorID(board, port);
+
     let monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       monitor = this.createMonitor(board, port);
     }
+
     if (this.isUploadInProgress) {
-      this.startMonitorPendingRequests.push(monitorID);
-      return Status.UPLOAD_IN_PROGRESS;
+      this.startMonitorPendingRequests.push([[board, port], postStartCallback]);
+      return;
     }
-    return monitor.start();
+
+    const result = await monitor.start();
+    postStartCallback(result);
   }
 
   /**
@@ -113,6 +127,8 @@ export class MonitorManager extends CoreClientAware {
    * @param port port to monitor
    */
   async notifyUploadStarted(board?: Board, port?: Port): Promise<void> {
+    this.isUploadInProgress = true;
+
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
@@ -124,8 +140,7 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return;
     }
-    this.isUploadInProgress = true;
-    return await monitor.pause();
+    return monitor.pause();
   }
 
   /**
@@ -137,14 +152,8 @@ export class MonitorManager extends CoreClientAware {
    * started or if there have been errors.
    */
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
-    try {
-      for (const id of this.startMonitorPendingRequests) {
-        const m = this.monitorServices.get(id);
-        if (m) m.start();
-      }
-    } finally {
-      this.startMonitorPendingRequests = [];
-    }
+    this.isUploadInProgress = false;
+
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
@@ -156,9 +165,33 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return Status.NOT_CONNECTED;
     }
-    this.isUploadInProgress = false;
 
     return monitor.start();
+  }
+
+  async startQueuedServices(): Promise<void> {
+    const queued = this.startMonitorPendingRequests;
+    this.startMonitorPendingRequests = [];
+
+    for (const [[board, port], onFinish] of queued) {
+      const boardsState = await this.boardsService.getState();
+      const boardIsStillOnPort = Object.keys(boardsState)
+        .map((connection: string) => {
+          const portAddress = connection.split('|')[0];
+          return portAddress;
+        })
+        .some((portAddress: string) => port.address === portAddress);
+
+      if (boardIsStillOnPort) {
+        const monitorID = this.monitorID(board, port);
+        const monitorService = this.monitorServices.get(monitorID);
+
+        if (monitorService) {
+          const result = await monitorService.start();
+          onFinish(result);
+        }
+      }
+    }
   }
 
   /**
