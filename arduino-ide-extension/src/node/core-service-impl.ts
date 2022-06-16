@@ -182,7 +182,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     try {
       await this.monitorManager.notifyUploadStarted(board, port);
-      await new Promise((r) => setTimeout(r, 10000));
 
       const result = responseHandler(client, req);
 
