@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { promises as fs } from 'fs';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { spawn, ChildProcess } from 'child_process';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -142,9 +143,12 @@ export class ArduinoDaemonImpl
   }
 
   protected async getSpawnArgs(): Promise<string[]> {
-    const configDirUri = await this.envVariablesServer.getConfigDirUri();
+    const [configDirUri, debug] = await Promise.all([
+      this.envVariablesServer.getConfigDirUri(),
+      this.debugDaemon(),
+    ]);
     const cliConfigPath = join(FileUri.fsPath(configDirUri), CLI_CONFIG);
-    return [
+    const args = [
       'daemon',
       '--format',
       'jsonmini',
@@ -156,6 +160,41 @@ export class ArduinoDaemonImpl
       '--log-format',
       'json',
     ];
+    if (debug) {
+      args.push('--debug');
+    }
+    return args;
+  }
+
+  private async debugDaemon(): Promise<boolean> {
+    // Poor man's preferences on the backend. (https://github.com/arduino/arduino-ide/issues/1056#issuecomment-1153975064)
+    const configDirUri = await this.envVariablesServer.getConfigDirUri();
+    const configDirPath = FileUri.fsPath(configDirUri);
+    try {
+      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
+        encoding: 'utf8',
+      });
+      const json = this.tryParse(raw);
+      if (json) {
+        const value = json['arduino.cli.daemon.debug'];
+        return typeof value === 'boolean' && !!value;
+      }
+      return false;
+    } catch (error) {
+      if ('code' in error && error.code === 'ENOENT') {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private tryParse(raw: string): any | undefined {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return undefined;
+    }
   }
 
   protected async spawnDaemonProcess(): Promise<{
