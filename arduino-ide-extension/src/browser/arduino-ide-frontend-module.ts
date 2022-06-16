@@ -292,6 +292,10 @@ import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-gen
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 import { AboutDialog } from './theia/core/about-dialog';
 import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
+import {
+  SurveyNotificationService,
+  SurveyNotificationServicePath,
+} from '../common/protocol/survey-service';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -479,6 +483,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Survey notification
   bind(SurveyNotification).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(SurveyNotification);
+
+  bind(SurveyNotificationService)
+    .toDynamicValue((context) => {
+      return ElectronIpcConnectionProvider.createProxy(
+        context.container,
+        SurveyNotificationServicePath
+      );
+    })
+    .inSingletonScope();
 
   // Layout and shell customizations.
   rebind(TheiaOutlineViewContribution)

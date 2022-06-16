@@ -5,6 +5,7 @@ import { LocalStorageService } from '@theia/core/lib/browser';
 import { nls } from '@theia/core/lib/common';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { ArduinoPreferences } from '../arduino-preferences';
+import { SurveyNotificationService } from '../../common/protocol/survey-service';
 
 const SURVEY_MESSAGE = nls.localize(
   'arduino/survey/surveyMessage',
@@ -36,9 +37,15 @@ export class SurveyNotification implements FrontendApplicationContribution {
   @inject(ArduinoPreferences)
   private readonly arduinoPreferences: ArduinoPreferences;
 
+  @inject(SurveyNotificationService)
+  private readonly surveyNotificationService: SurveyNotificationService;
+
   onStart(): void {
     this.arduinoPreferences.ready.then(async () => {
-      if (this.arduinoPreferences.get('arduino.survey.notification')) {
+      if (
+        (await this.surveyNotificationService.isFirstInstance()) &&
+        this.arduinoPreferences.get('arduino.survey.notification')
+      ) {
         const surveyAnswered = await this.localStorageService.getData(
           this.surveyKey(surveyId)
         );
