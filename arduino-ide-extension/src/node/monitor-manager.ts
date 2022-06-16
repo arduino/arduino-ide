@@ -153,20 +153,19 @@ export class MonitorManager extends CoreClientAware {
    */
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
     this.isUploadInProgress = false;
-
-    if (!board || !port) {
-      // We have no way of knowing which monitor
-      // to retrieve if we don't have this information.
-      return Status.NOT_CONNECTED;
-    }
-    const monitorID = this.monitorID(board, port);
-    const monitor = this.monitorServices.get(monitorID);
-    if (!monitor) {
+    let status: Status = Status.NOT_CONNECTED;
+    // We have no way of knowing which monitor
+    // to retrieve if we don't have this information.
+    if (board && port) {
+      const monitorID = this.monitorID(board, port);
+      const monitor = this.monitorServices.get(monitorID);
       // There's no monitor running there, bail
-      return Status.NOT_CONNECTED;
+      if (monitor) {
+        status = await monitor.start();
+      }
     }
-
-    return monitor.start();
+    await this.startQueuedServices();
+    return status;
   }
 
   async startQueuedServices(): Promise<void> {

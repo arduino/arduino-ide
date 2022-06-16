@@ -182,7 +182,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     try {
       await this.monitorManager.notifyUploadStarted(board, port);
-
       await new Promise((r) => setTimeout(r, 10000));
 
       const result = responseHandler(client, req);
@@ -227,14 +226,12 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     } finally {
       this.uploading = false;
       await this.monitorManager.notifyUploadFinished(board, port);
-      await this.monitorManager.startQueuedServices();
     }
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
     this.uploading = true;
     const { board, port, programmer } = options;
-    await this.monitorManager.notifyUploadStarted(board, port);
 
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
@@ -257,13 +254,14 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
     burnReq.setVerify(options.verify);
     burnReq.setVerbose(options.verbose);
-    const result = client.burnBootloader(burnReq);
-
-    const bootloaderBuffer = new SimpleBuffer(
-      this.flushOutputPanelMessages.bind(this),
-      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
-    );
     try {
+      await this.monitorManager.notifyUploadStarted(board, port);
+      const result = client.burnBootloader(burnReq);
+
+      const bootloaderBuffer = new SimpleBuffer(
+        this.flushOutputPanelMessages.bind(this),
+        FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+      );
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: BurnBootloaderResponse) => {
           bootloaderBuffer.addChunk(resp.getOutStream_asU8());
