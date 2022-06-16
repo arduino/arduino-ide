@@ -180,12 +180,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       req.getUserFieldsMap().set(e.name, e.value);
     });
 
-    let reconnectMonitorCallback;
     try {
-      reconnectMonitorCallback = await this.monitorManager.notifyUploadStarted(
-        board,
-        port
-      );
+      await this.monitorManager.notifyUploadStarted(board, port);
 
       const result = responseHandler(client, req);
 
@@ -228,11 +224,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      await this.monitorManager.notifyUploadFinished(
-        board,
-        port,
-        reconnectMonitorCallback
-      );
+      await this.monitorManager.notifyUploadFinished(board, port);
       await this.monitorManager.startQueuedServices();
     }
   }

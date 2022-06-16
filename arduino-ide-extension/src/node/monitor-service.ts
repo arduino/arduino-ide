@@ -117,8 +117,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
     return this.webSocketProvider.getAddress().port;
   }
 
-  async dispose(): Promise<void> {
-    await this.stop();
+  dispose(): void {
+    this.stop();
     this.onDisposeEmitter.fire();
     this.onWSClientsNumberChanged?.dispose();
   }
