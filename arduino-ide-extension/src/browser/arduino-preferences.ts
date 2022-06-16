@@ -174,6 +174,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: 'https://auth.arduino.cc/login#/register',
     },
+    'arduino.cli.daemon.debug': {
+      type: 'boolean',
+      description: nls.localize(
+        'arduino/preferences/cli.daemonDebug',
+        "Enable debug logging of the gRPC calls to the Arduino CLI. It's false by default."
+      ),
+      default: false,
+    },
   },
 };
 
@@ -198,6 +206,7 @@ export interface ArduinoConfiguration {
   'arduino.auth.domain': string;
   'arduino.auth.audience': string;
   'arduino.auth.registerUri': string;
+  'arduino.cli.daemon.debug': boolean;
 }
 
 export const ArduinoPreferences = Symbol('ArduinoPreferences');
