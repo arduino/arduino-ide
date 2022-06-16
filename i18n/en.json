@@ -229,6 +229,7 @@
       "board.certificates": "List of certificates that can be uploaded to boards",
       "browse": "Browse",
       "choose": "Choose",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
