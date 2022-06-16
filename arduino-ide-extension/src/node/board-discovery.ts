@@ -96,6 +96,10 @@ export class BoardDiscovery extends CoreClientAware {
       console.info('board watch ended');
     });
     this.boardWatchDuplex.on('data', (resp: BoardListWatchResponse) => {
+      console.log(
+        'board-discovery, onData',
+        JSON.stringify(BoardListWatchResponse.toObject(false, resp), null, 2)
+      );
       if (resp.getEventType() === 'quit') {
         this.watching = false;
         console.info('board watch ended');
@@ -181,6 +185,10 @@ export class BoardDiscovery extends CoreClientAware {
         };
 
         this._state = newState;
+        console.log(
+          'board-discovery notifyAttachedBoardsChanged',
+          JSON.stringify(event, null, 2)
+        );
         this.notificationService.notifyAttachedBoardsChanged(event);
       }
     });
