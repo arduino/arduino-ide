@@ -21,6 +21,11 @@ import {
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
 import { TheiaElectronWindow } from './theia/theia-electron-window';
 import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
+import { SurveyNotificationServiceImpl } from '../node/survey-service-impl';
+import {
+  SurveyNotificationService,
+  SurveyNotificationServicePath,
+} from '../common/protocol/survey-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMainApplication).toSelf().inSingletonScope();
@@ -61,4 +66,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(TheiaElectronWindow).toSelf();
   rebind(DefaultTheiaElectronWindow).toService(TheiaElectronWindow);
+
+  // Survey notification bindings
+  bind(SurveyNotificationServiceImpl).toSelf().inSingletonScope();
+  bind(SurveyNotificationService).toService(SurveyNotificationServiceImpl);
+  bind(ElectronMainApplicationContribution).toService(
+    SurveyNotificationService
+  );
+  bind(ElectronConnectionHandler)
+    .toDynamicValue(
+      (context) =>
+        new JsonRpcConnectionHandler(SurveyNotificationServicePath, () =>
+          context.container.get<SurveyNotificationService>(
+            SurveyNotificationService
+          )
+        )
+    )
+    .inSingletonScope();
 });

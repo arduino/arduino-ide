@@ -121,6 +121,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
 import { VerifySketch } from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
+import { SurveyNotification } from './contributions/survey-notification';
 import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
 import { EditContributions } from './contributions/edit-contributions';
 import { OpenSketchExternal } from './contributions/open-sketch-external';
@@ -291,6 +292,10 @@ import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-gen
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 import { AboutDialog } from './theia/core/about-dialog';
 import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
+import {
+  SurveyNotificationService,
+  SurveyNotificationServicePath,
+} from '../common/protocol/survey-service';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -474,6 +479,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
   bind(EditorMode).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(EditorMode);
+
+  // Survey notification
+  bind(SurveyNotification).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(SurveyNotification);
+
+  bind(SurveyNotificationService)
+    .toDynamicValue((context) => {
+      return ElectronIpcConnectionProvider.createProxy(
+        context.container,
+        SurveyNotificationServicePath
+      );
+    })
+    .inSingletonScope();
 
   // Layout and shell customizations.
   rebind(TheiaOutlineViewContribution)
