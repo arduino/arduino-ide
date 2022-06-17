@@ -11,6 +11,9 @@ import {
 
 type MonitorID = string;
 
+type UploadState = 'uploadInProgress' | 'pausedForUpload' | 'disposedForUpload';
+type MonitorIDsByUploadState = Record<UploadState, MonitorID[]>;
+
 export const MonitorManagerName = 'monitor-manager';
 
 @injectable()
@@ -23,15 +26,17 @@ export class MonitorManager extends CoreClientAware {
   // If either the board or port managed changes, a new service must
   // be started.
   private monitorServices = new Map<MonitorID, MonitorService>();
-  private isUploadInProgress: boolean;
 
-  private servicesPausedForUpload: MonitorID[] = [];
-  private servicesDisposedForUpload: MonitorID[] = [];
+  private monitorIDsByUploadState: MonitorIDsByUploadState = {
+    uploadInProgress: [],
+    pausedForUpload: [],
+    disposedForUpload: [],
+  };
 
-  private startMonitorPendingRequests: [
-    [Board, Port],
-    (status: Status) => void
-  ][] = [];
+  private startMonitor_PendingRequests: {
+    requestFor: [Board, Port];
+    postStartCallback: (status: Status) => void;
+  }[] = [];
 
   @inject(MonitorServiceFactory)
   private monitorServiceFactory: MonitorServiceFactory;
@@ -60,6 +65,25 @@ export class MonitorManager extends CoreClientAware {
     return false;
   }
 
+  uploadIsInProgress(): boolean {
+    return this.monitorIDsByUploadState.uploadInProgress.length > 0;
+  }
+
+  addToMonitorIDsByUploadState(state: UploadState, monitorID: string): void {
+    this.monitorIDsByUploadState[state].push(monitorID);
+  }
+
+  removeFromMonitorIDsByUploadState(
+    state: UploadState,
+    monitorID: string
+  ): void {
+    this.monitorIDsByUploadState[state].filter((id) => id !== monitorID);
+  }
+
+  monitorIDIsInUploadState(state: UploadState, monitorID: string): boolean {
+    return this.monitorIDsByUploadState[state].includes(monitorID);
+  }
+
   /**
    * Start a pluggable monitor that receives and sends messages
    * to the specified board and port combination.
@@ -80,8 +104,11 @@ export class MonitorManager extends CoreClientAware {
       monitor = this.createMonitor(board, port);
     }
 
-    if (this.isUploadInProgress) {
-      this.startMonitorPendingRequests.push([[board, port], postStartCallback]);
+    if (this.uploadIsInProgress()) {
+      this.startMonitor_PendingRequests.push({
+        requestFor: [board, port],
+        postStartCallback,
+      });
       return;
     }
 
@@ -130,21 +157,22 @@ export class MonitorManager extends CoreClientAware {
    * @param port port to monitor
    */
   async notifyUploadStarted(board?: Board, port?: Port): Promise<void> {
-    this.isUploadInProgress = true;
-
     if (!board || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
       return;
     }
+
     const monitorID = this.monitorID(board, port);
+    this.addToMonitorIDsByUploadState('uploadInProgress', monitorID);
+
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       // There's no monitor running there, bail
       return;
     }
 
-    this.servicesPausedForUpload.push(monitorID);
+    this.addToMonitorIDsByUploadState('pausedForUpload', monitorID);
     return monitor.pause();
   }
 
@@ -157,7 +185,6 @@ export class MonitorManager extends CoreClientAware {
    * started or if there have been errors.
    */
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
-    this.isUploadInProgress = false;
     let status: Status = Status.NOT_CONNECTED;
     let portDidChangeOnUpload = false;
 
@@ -165,25 +192,25 @@ export class MonitorManager extends CoreClientAware {
     // to retrieve if we don't have this information.
     if (board && port) {
       const monitorID = this.monitorID(board, port);
+      this.removeFromMonitorIDsByUploadState('uploadInProgress', monitorID);
+
       const monitor = this.monitorServices.get(monitorID);
       if (monitor) {
         status = await monitor.start();
       }
 
-      // this monitorID will only be present in "servicesDisposedForUpload"
+      // this monitorID will only be present in "disposedForUpload"
       // if the upload changed the board port
-      portDidChangeOnUpload =
-        this.servicesDisposedForUpload.includes(monitorID);
+      portDidChangeOnUpload = this.monitorIDIsInUploadState(
+        'disposedForUpload',
+        monitorID
+      );
       if (portDidChangeOnUpload) {
-        this.servicesDisposedForUpload = this.servicesDisposedForUpload.filter(
-          (id) => id !== monitorID
-        );
+        this.removeFromMonitorIDsByUploadState('disposedForUpload', monitorID);
       }
 
       // in case a service was paused but not disposed
-      this.servicesPausedForUpload = this.servicesPausedForUpload.filter(
-        (id) => id !== monitorID
-      );
+      this.removeFromMonitorIDsByUploadState('pausedForUpload', monitorID);
     }
 
     await this.startQueuedServices(portDidChangeOnUpload);
@@ -195,11 +222,14 @@ export class MonitorManager extends CoreClientAware {
     // will include a request for our "upload port', most likely at index 0.
     // We remove it, as this port was to be used exclusively for the upload
     const queued = portDidChangeOnUpload
-      ? this.startMonitorPendingRequests.slice(1)
-      : this.startMonitorPendingRequests;
-    this.startMonitorPendingRequests = [];
+      ? this.startMonitor_PendingRequests.slice(1)
+      : this.startMonitor_PendingRequests;
+    this.startMonitor_PendingRequests = [];
 
-    for (const [[board, port], onFinish] of queued) {
+    for (const {
+      requestFor: [board, port],
+      postStartCallback: onFinish,
+    } of queued) {
       const boardsState = await this.boardsService.getState();
       const boardIsStillOnPort = Object.keys(boardsState)
         .map((connection: string) => {
@@ -281,13 +311,12 @@ export class MonitorManager extends CoreClientAware {
         // we paused it beforehand we know it was disposed
         // of because the upload changed the board port
         if (
-          this.isUploadInProgress &&
-          this.servicesPausedForUpload.includes(monitorID)
+          this.uploadIsInProgress() &&
+          this.monitorIDIsInUploadState('pausedForUpload', monitorID)
         ) {
-          this.servicesPausedForUpload = this.servicesPausedForUpload.filter(
-            (id) => id !== monitorID
-          );
-          this.servicesDisposedForUpload.push(monitorID);
+          this.removeFromMonitorIDsByUploadState('pausedForUpload', monitorID);
+
+          this.addToMonitorIDsByUploadState('disposedForUpload', monitorID);
         }
 
         this.monitorServices.delete(monitorID);
