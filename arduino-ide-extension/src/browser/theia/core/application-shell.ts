@@ -40,12 +40,13 @@ export class ApplicationShell extends TheiaApplicationShell {
   override async setLayoutData(
     layoutData: TheiaApplicationShell.LayoutData
   ): Promise<void> {
-    layoutData.activeWidgetId = SketchbookWidget.ID;
-    layoutData.leftPanel?.items?.forEach((item) => {
-      if (item?.widget?.id === SketchbookWidget.ID) item.expanded = true;
-      else item.expanded = false;
-    });
-
+    if (typeof layoutData.activeWidgetId !== 'undefined') {
+      layoutData.activeWidgetId = SketchbookWidget.ID;
+      layoutData.leftPanel?.items?.forEach((item) => {
+        if (item?.widget?.id === SketchbookWidget.ID) item.expanded = true;
+        else item.expanded = false;
+      });
+    }
     super.setLayoutData(layoutData);
   }
 
