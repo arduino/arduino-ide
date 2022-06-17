@@ -296,6 +296,8 @@ import {
   SurveyNotificationService,
   SurveyNotificationServicePath,
 } from '../common/protocol/survey-service';
+import { WindowContribution } from './theia/core/window-contribution';
+import { WindowContribution as TheiaWindowContribution } from '@theia/core/lib/browser/window-contribution';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -604,6 +606,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // No dropdown for the _Output_ view.
   bind(OutputToolbarContribution).toSelf().inSingletonScope();
   rebind(TheiaOutputToolbarContribution).toService(OutputToolbarContribution);
+
+  // To remove `New Window` from the `File` menu
+  bind(WindowContribution).toSelf().inSingletonScope();
+  rebind(TheiaWindowContribution).toService(WindowContribution);
 
   bind(ArduinoDaemon)
     .toDynamicValue((context) =>
