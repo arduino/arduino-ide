@@ -90,7 +90,7 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
     } catch (e) {
       throw e;
     } finally {
-      this.monitorManager.notifyUploadFinished(board, port);
+      await this.monitorManager.notifyUploadFinished(board, port);
       return output;
     }
   }

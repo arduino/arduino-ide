@@ -224,7 +224,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.monitorManager.notifyUploadFinished(board, port);
+      await this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
@@ -288,7 +288,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.monitorManager.notifyUploadFinished(board, port);
+      await this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
