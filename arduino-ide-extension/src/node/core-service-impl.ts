@@ -112,8 +112,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
   }
 
-  async upload(options: CoreService.Upload.Options): Promise<void> {
-    await this.doUpload(
+  upload(options: CoreService.Upload.Options): Promise<void> {
+    return this.doUpload(
       options,
       () => new UploadRequest(),
       (client, req) => client.upload(req)
@@ -123,7 +123,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   async uploadUsingProgrammer(
     options: CoreService.Upload.Options
   ): Promise<void> {
-    await this.doUpload(
+    return this.doUpload(
       options,
       () => new UploadUsingProgrammerRequest(),
       (client, req) => client.uploadUsingProgrammer(req),
@@ -224,7 +224,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      await this.monitorManager.notifyUploadFinished(board, port);
+      this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
@@ -288,7 +288,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      await this.monitorManager.notifyUploadFinished(board, port);
+      this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
