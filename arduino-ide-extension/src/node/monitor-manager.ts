@@ -169,7 +169,9 @@ export class MonitorManager extends CoreClientAware {
   }
 
   async startQueuedServices(): Promise<void> {
-    const queued = this.startMonitorPendingRequests;
+    // here we remove the first item as in all likelihood it's
+    // probably the port we used to perform an upload
+    const queued = this.startMonitorPendingRequests.slice(1);
     this.startMonitorPendingRequests = [];
 
     for (const [[board, port], onFinish] of queued) {
