@@ -1,5 +1,5 @@
 import { BoardUserField } from '.';
-import { Port } from '../../common/protocol/boards-service';
+import { Board, Port } from '../../common/protocol/boards-service';
 import { Programmer } from './boards-service';
 
 export const CompilerWarningLiterals = [
@@ -33,7 +33,7 @@ export namespace CoreService {
        * `file` URI to the sketch folder.
        */
       readonly sketchUri: string;
-      readonly fqbn?: string | undefined;
+      readonly board?: Board;
       readonly optimizeForDebug: boolean;
       readonly verbose: boolean;
       readonly sourceOverride: Record<string, string>;
@@ -42,7 +42,7 @@ export namespace CoreService {
 
   export namespace Upload {
     export interface Options extends Compile.Options {
-      readonly port?: Port | undefined;
+      readonly port?: Port;
       readonly programmer?: Programmer | undefined;
       readonly verify: boolean;
       readonly userFields: BoardUserField[];
@@ -51,8 +51,8 @@ export namespace CoreService {
 
   export namespace Bootloader {
     export interface Options {
-      readonly fqbn?: string | undefined;
-      readonly port?: Port | undefined;
+      readonly board?: Board;
+      readonly port?: Port;
       readonly programmer?: Programmer | undefined;
       readonly verbose: boolean;
       readonly verify: boolean;

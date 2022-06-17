@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { BoardsListWidget } from './boards-list-widget';
 import { BoardsPackage } from '../../common/protocol/boards-service';
 import { ListWidgetFrontendContribution } from '../widgets/component-list/list-widget-frontend-contribution';
@@ -18,7 +18,7 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
     });
   }
 
-  async initializeLayout(): Promise<void> {
+  override async initializeLayout(): Promise<void> {
     this.openView();
   }
 }

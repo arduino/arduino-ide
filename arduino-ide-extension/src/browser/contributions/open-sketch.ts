@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { Widget, ContextMenuRenderer } from '@theia/core/lib/browser';
@@ -43,7 +43,7 @@ export class OpenSketch extends SketchContribution {
 
   protected readonly toDispose = new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketch.Commands.OPEN_SKETCH, {
       execute: (arg) =>
         Sketch.is(arg) ? this.openSketch(arg) : this.openSketch(),
@@ -116,7 +116,7 @@ export class OpenSketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: OpenSketch.Commands.OPEN_SKETCH.id,
       label: nls.localize('vscode/workspaceActions/openFileFolder', 'Open...'),
@@ -124,14 +124,14 @@ export class OpenSketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: OpenSketch.Commands.OPEN_SKETCH.id,
       keybinding: 'CtrlCmd+O',
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
       command: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,

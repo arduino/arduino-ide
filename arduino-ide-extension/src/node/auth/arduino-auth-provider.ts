@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 
 import { createServer, startServer } from './authentication-server';
 import { Keychain } from './keychain';
@@ -89,7 +89,7 @@ export class ArduinoAuthenticationProvider implements AuthenticationProvider {
     setInterval(checkToken, REFRESH_INTERVAL);
   }
 
-  public setOptions(authOptions: AuthOptions) {
+  public async setOptions(authOptions: AuthOptions): Promise<void> {
     this.authOptions = authOptions;
   }
 

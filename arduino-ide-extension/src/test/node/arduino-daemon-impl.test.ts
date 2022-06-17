@@ -16,15 +16,15 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
     super();
   }
 
-  onData(data: string): void {
+  override onData(data: string): void {
     // NOOP
   }
 
-  async spawnDaemonProcess(): Promise<{ daemon: ChildProcess; port: string }> {
+  override async spawnDaemonProcess(): Promise<{ daemon: ChildProcess; port: string }> {
     return super.spawnDaemonProcess();
   }
 
-  protected async getSpawnArgs(): Promise<string[]> {
+  protected override async getSpawnArgs(): Promise<string[]> {
     const cliConfigPath = await this.initCliConfig();
     return [
       'daemon',

@@ -1,14 +1,15 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board } from '../../../common/protocol/boards-service';
 import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
-import { SerialConnectionManager } from '../serial-connection-manager';
-import { SerialPlotter } from '../plotter/protocol';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { MonitorModel } from '../../monitor-model';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
-    readonly serialConnection: SerialConnectionManager;
+    readonly boardsServiceProvider: BoardsServiceProvider;
+    readonly monitorModel: MonitorModel;
     readonly onSend: (text: string) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
   }
@@ -26,41 +27,33 @@ export class SerialMonitorSendInput extends React.Component<
 
   constructor(props: Readonly<SerialMonitorSendInput.Props>) {
     super(props);
-    this.state = { text: '', connected: false };
+    this.state = { text: '', connected: true };
     this.onChange = this.onChange.bind(this);
     this.onSend = this.onSend.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  componentDidMount(): void {
-    this.props.serialConnection.isBESerialConnected().then((connected) => {
-      this.setState({ connected });
-    });
-
-    this.toDisposeBeforeUnmount.pushAll([
-      this.props.serialConnection.onRead(({ messages }) => {
-        if (
-          messages.command ===
-            SerialPlotter.Protocol.Command.MIDDLEWARE_CONFIG_CHANGED &&
-          'connected' in messages.data
-        ) {
-          this.setState({ connected: messages.data.connected });
-        }
-      }),
-    ]);
+  override componentDidMount(): void {
+    this.setState({ connected: this.props.monitorModel.connected });
+    this.toDisposeBeforeUnmount.push(
+      this.props.monitorModel.onChange(({ property }) => {
+        if (property === 'connected')
+          this.setState({ connected: this.props.monitorModel.connected });
+      })
+    );
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
     this.toDisposeBeforeUnmount.dispose();
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <input
         ref={this.setRef}
         type="text"
-        className={`theia-input ${this.state.connected ? '' : 'warning'}`}
+        className={`theia-input ${this.shouldShowWarning() ? 'warning' : ''}`}
         placeholder={this.placeholder}
         value={this.state.text}
         onChange={this.onChange}
@@ -69,15 +62,22 @@ export class SerialMonitorSendInput extends React.Component<
     );
   }
 
+  protected shouldShowWarning(): boolean {
+    const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
+    const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
+    return !this.state.connected || !board || !port;
+  }
+
   protected get placeholder(): string {
-    const serialConfig = this.props.serialConnection.getConfig();
-    if (!this.state.connected || !serialConfig) {
+    if (this.shouldShowWarning()) {
       return nls.localize(
         'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
       );
     }
-    const { board, port } = serialConfig;
+
+    const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
+    const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
     return nls.localize(
       'arduino/serial/message',
       "Message ({0} + Enter to send message to '{1}' on '{2}')",
@@ -102,7 +102,7 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   protected onSend(): void {
-    this.props.onSend(this.state.text);
+    this.props.onSend(this.state.text + this.props.monitorModel.lineEnding);
     this.setState({ text: '' });
   }
 

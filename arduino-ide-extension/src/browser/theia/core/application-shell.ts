@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -9,14 +9,19 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import {
   ApplicationShell as TheiaApplicationShell,
+  DockPanel,
   Panel,
   Widget,
 } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
 import { SketchbookWidget } from '../../widgets/sketchbook/sketchbook-widget';
+import URI from '@theia/core/lib/common/uri';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
@@ -32,7 +37,7 @@ export class ApplicationShell extends TheiaApplicationShell {
   @inject(ConnectionStatusService)
   protected readonly connectionStatusService: ConnectionStatusService;
 
-  async setLayoutData(
+  override async setLayoutData(
     layoutData: TheiaApplicationShell.LayoutData
   ): Promise<void> {
     layoutData.activeWidgetId = SketchbookWidget.ID;
@@ -44,7 +49,7 @@ export class ApplicationShell extends TheiaApplicationShell {
     super.setLayoutData(layoutData);
   }
 
-  protected track(widget: Widget): void {
+  protected override track(widget: Widget): void {
     super.track(widget);
     if (widget instanceof OutputWidget) {
       widget.title.closable = false; // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
@@ -52,7 +57,10 @@ export class ApplicationShell extends TheiaApplicationShell {
     if (widget instanceof EditorWidget) {
       // Make the editor un-closeable asynchronously.
       this.sketchesServiceClient.currentSketch().then((sketch) => {
-        if (sketch) {
+        if (CurrentSketch.isValid(sketch)) {
+          if (!this.isSketchFile(widget.editor.uri, sketch.uri)) {
+            return;
+          }
           if (Sketch.isInSketch(widget.editor.uri, sketch)) {
             widget.title.closable = false;
           }
@@ -61,7 +69,15 @@ export class ApplicationShell extends TheiaApplicationShell {
     }
   }
 
-  async addWidget(
+  private isSketchFile(uri: URI, sketchUriString: string): boolean {
+    const sketchUri = new URI(sketchUriString);
+    if (uri.parent.isEqual(sketchUri)) {
+      return true;
+    }
+    return false;
+  }
+
+  override async addWidget(
     widget: Widget,
     options: Readonly<TheiaApplicationShell.WidgetOptions> = {}
   ): Promise<void> {
@@ -87,14 +103,19 @@ export class ApplicationShell extends TheiaApplicationShell {
     return super.addWidget(widget, { ...options, ref });
   }
 
+  override handleEvent(): boolean {
+    // NOOP, dragging has been disabled
+    return false;
+  }
+
   // Avoid hiding top panel as we use it for arduino toolbar
-  protected createTopPanel(): Panel {
+  protected override createTopPanel(): Panel {
     const topPanel = super.createTopPanel();
     topPanel.show();
     return topPanel;
   }
 
-  async saveAll(): Promise<void> {
+  override async saveAll(): Promise<void> {
     if (
       this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE
     ) {
@@ -114,3 +135,16 @@ export class ApplicationShell extends TheiaApplicationShell {
     );
   }
 }
+
+const originalHandleEvent = DockPanel.prototype.handleEvent;
+
+DockPanel.prototype.handleEvent = function (event) {
+  switch (event.type) {
+    case 'p-dragenter':
+    case 'p-dragleave':
+    case 'p-dragover':
+    case 'p-drop':
+      return;
+  }
+  originalHandleEvent.bind(this)(event);
+};

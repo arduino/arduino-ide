@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { injectable, inject, postConstruct } from 'inversify';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import * as React from '@theia/core/shared/react';
+import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { DialogError, ReactWidget } from '@theia/core/lib/browser';
 import { AbstractDialog, DialogProps } from '@theia/core/lib/browser';
 import { Settings, SettingsService } from './settings';
@@ -11,6 +11,7 @@ import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/fil
 import { nls } from '@theia/core/lib/common';
 import { SettingsComponent } from './settings-component';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import { AdditionalUrls } from '../../../common/protocol';
 
 @injectable()
 export class SettingsWidget extends ReactWidget {
@@ -55,7 +56,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
 
   constructor(
     @inject(SettingsDialogProps)
-    protected readonly props: SettingsDialogProps
+    protected override readonly props: SettingsDialogProps
   ) {
     super(props);
     this.contentNode.classList.add('arduino-settings-dialog');
@@ -72,7 +73,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     );
   }
 
-  protected async isValid(settings: Promise<Settings>): Promise<DialogError> {
+  protected override async isValid(settings: Promise<Settings>): Promise<DialogError> {
     const result = await this.settingsService.validate(settings);
     if (typeof result === 'string') {
       return result;
@@ -84,7 +85,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     return this.settingsService.settings();
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -96,16 +97,16 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message) {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
 
     // calling settingsService.reset() in order to reload the settings from the preferenceService
-    // and update the UI including changes triggerd from the command palette
+    // and update the UI including changes triggered from the command palette
     this.settingsService.reset();
 
     this.widget.activate();
@@ -168,23 +169,20 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
   }
 
   get value(): string[] {
-    return this.textArea.value
-      .split('\n')
-      .map((url) => url.trim())
-      .filter((url) => !!url);
+    return AdditionalUrls.parse(this.textArea.value, 'newline');
   }
 
-  protected onAfterAttach(message: Message): void {
+  protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     this.addUpdateListener(this.textArea, 'input');
   }
 
-  protected onActivateRequest(message: Message): void {
+  protected override onActivateRequest(message: Message): void {
     super.onActivateRequest(message);
     this.textArea.focus();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     if (event.target instanceof HTMLInputElement) {
       return super.handleEnter(event);
     }

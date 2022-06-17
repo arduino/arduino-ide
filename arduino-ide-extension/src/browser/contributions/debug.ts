@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -12,7 +12,8 @@ import {
   SketchContribution,
   TabBarToolbarRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/common';
+import { MaybePromise, nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class Debug extends SketchContribution {
@@ -66,7 +67,7 @@ export class Debug extends SketchContribution {
     onDidChange: this.onDisabledMessageDidChange as Event<void>,
   };
 
-  onStart(): void {
+  override onStart(): void {
     this.onDisabledMessageDidChange(
       () =>
         (this.debugToolbarItem.tooltip = `${
@@ -79,55 +80,18 @@ export class Debug extends SketchContribution {
             : Debug.Commands.START_DEBUGGING.label
         }`)
     );
-    const refreshState = async (
-      board: Board | undefined = this.boardsServiceProvider.boardsConfig
-        .selectedBoard
-    ) => {
-      if (!board) {
-        this.disabledMessage = nls.localize(
-          'arduino/common/noBoardSelected',
-          'No board selected'
-        );
-        return;
-      }
-      const fqbn = board.fqbn;
-      if (!fqbn) {
-        this.disabledMessage = nls.localize(
-          'arduino/debug/noPlatformInstalledFor',
-          "Platform is not installed for '{0}'",
-          board.name
-        );
-        return;
-      }
-      const details = await this.boardService.getBoardDetails({ fqbn });
-      if (!details) {
-        this.disabledMessage = nls.localize(
-          'arduino/debug/noPlatformInstalledFor',
-          "Platform is not installed for '{0}'",
-          board.name
-        );
-        return;
-      }
-      const { debuggingSupported } = details;
-      if (!debuggingSupported) {
-        this.disabledMessage = nls.localize(
-          'arduino/debug/debuggingNotSupported',
-          "Debugging is not supported by '{0}'",
-          board.name
-        );
-      } else {
-        this.disabledMessage = undefined;
-      }
-    };
     this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
-      refreshState(selectedBoard)
+      this.refreshState(selectedBoard)
     );
-    this.notificationCenter.onPlatformInstalled(() => refreshState());
-    this.notificationCenter.onPlatformUninstalled(() => refreshState());
-    refreshState();
+    this.notificationCenter.onPlatformInstalled(() => this.refreshState());
+    this.notificationCenter.onPlatformUninstalled(() => this.refreshState());
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override onReady(): MaybePromise<void> {
+    this.refreshState();
+  }
+
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(Debug.Commands.START_DEBUGGING, {
       execute: () => this.startDebug(),
       isVisible: (widget) =>
@@ -136,8 +100,49 @@ export class Debug extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem(this.debugToolbarItem);
+  }
+
+  private async refreshState(
+    board: Board | undefined = this.boardsServiceProvider.boardsConfig
+      .selectedBoard
+  ): Promise<void> {
+    if (!board) {
+      this.disabledMessage = nls.localize(
+        'arduino/common/noBoardSelected',
+        'No board selected'
+      );
+      return;
+    }
+    const fqbn = board.fqbn;
+    if (!fqbn) {
+      this.disabledMessage = nls.localize(
+        'arduino/debug/noPlatformInstalledFor',
+        "Platform is not installed for '{0}'",
+        board.name
+      );
+      return;
+    }
+    const details = await this.boardService.getBoardDetails({ fqbn });
+    if (!details) {
+      this.disabledMessage = nls.localize(
+        'arduino/debug/noPlatformInstalledFor',
+        "Platform is not installed for '{0}'",
+        board.name
+      );
+      return;
+    }
+    const { debuggingSupported } = details;
+    if (!debuggingSupported) {
+      this.disabledMessage = nls.localize(
+        'arduino/debug/debuggingNotSupported',
+        "Debugging is not supported by '{0}'",
+        board.name
+      );
+    } else {
+      this.disabledMessage = undefined;
+    }
   }
 
   protected async startDebug(
@@ -156,7 +161,7 @@ export class Debug extends SketchContribution {
       this.sketchServiceClient.currentSketch(),
       this.executableService.list(),
     ]);
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(

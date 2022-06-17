@@ -1,10 +1,8 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as temp from 'temp';
+import { promises as fs } from 'fs';
+import { dirname } from 'path';
 import * as yaml from 'js-yaml';
-import { promisify } from 'util';
 import * as grpc from '@grpc/grpc-js';
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -28,9 +26,9 @@ import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone } from '@theia/core';
+import { duration } from '../common/decorators';
 
 const deepmerge = require('deepmerge');
-const track = temp.track();
 
 @injectable()
 export class ConfigServiceImpl
@@ -54,18 +52,19 @@ export class ConfigServiceImpl
   protected ready = new Deferred<void>();
   protected readonly configChangeEmitter = new Emitter<Config>();
 
-  async onStart(): Promise<void> {
-    await this.ensureCliConfigExists();
-    this.cliConfig = await this.loadCliConfig();
-    if (this.cliConfig) {
-      const config = await this.mapCliConfigToAppConfig(this.cliConfig);
-      if (config) {
-        this.config = config;
-        this.ready.resolve();
-        return;
+  onStart(): void {
+    this.loadCliConfig().then(async (cliConfig) => {
+      this.cliConfig = cliConfig;
+      if (this.cliConfig) {
+        const config = await this.mapCliConfigToAppConfig(this.cliConfig);
+        if (config) {
+          this.config = config;
+          this.ready.resolve();
+          return;
+        }
       }
-    }
-    this.fireInvalidConfig();
+      this.fireInvalidConfig();
+    });
   }
 
   async getCliConfigFileUri(): Promise<string> {
@@ -75,8 +74,7 @@ export class ConfigServiceImpl
 
   async getConfiguration(): Promise<Config> {
     await this.ready.promise;
-    await this.daemon.ready;
-    return { ...this.config, daemon: { port: await this.daemon.getPort() } };
+    return { ...this.config };
   }
 
   // Used by frontend to update the config.
@@ -91,17 +89,10 @@ export class ConfigServiceImpl
     if (!copyDefaultCliConfig) {
       copyDefaultCliConfig = await this.getFallbackCliConfig();
     }
-    const {
-      additionalUrls,
-      dataDirUri,
-      downloadsDirUri,
-      sketchDirUri,
-      network,
-      locale,
-    } = config;
+    const { additionalUrls, dataDirUri, sketchDirUri, network, locale } =
+      config;
     copyDefaultCliConfig.directories = {
       data: FileUri.fsPath(dataDirUri),
-      downloads: FileUri.fsPath(downloadsDirUri),
       user: FileUri.fsPath(sketchDirUri),
     };
     copyDefaultCliConfig.board_manager = {
@@ -135,76 +126,44 @@ export class ConfigServiceImpl
     return this.daemon.getVersion();
   }
 
-  async isInDataDir(uri: string): Promise<boolean> {
-    return this.getConfiguration().then(({ dataDirUri }) =>
-      new URI(dataDirUri).isEqualOrParent(new URI(uri))
-    );
-  }
-
-  async isInSketchDir(uri: string): Promise<boolean> {
-    return this.getConfiguration().then(({ sketchDirUri }) =>
-      new URI(sketchDirUri).isEqualOrParent(new URI(uri))
-    );
-  }
-
-  protected async loadCliConfig(): Promise<DefaultCliConfig | undefined> {
+  @duration()
+  protected async loadCliConfig(
+    initializeIfAbsent = true
+  ): Promise<DefaultCliConfig | undefined> {
     const cliConfigFileUri = await this.getCliConfigFileUri();
     const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
     try {
-      const content = await promisify(fs.readFile)(cliConfigPath, {
+      const content = await fs.readFile(cliConfigPath, {
         encoding: 'utf8',
       });
-      const model = yaml.safeLoad(content) || {};
-      // The CLI can run with partial (missing `port`, `directories`), the app cannot, we merge the default with the user's config.
+      const model = (yaml.safeLoad(content) || {}) as DefaultCliConfig;
+      if (model.directories.data && model.directories.user) {
+        return model;
+      }
+      // The CLI can run with partial (missing `port`, `directories`), the IDE2 cannot.
+      // We merge the default CLI config with the partial user's config.
       const fallbackModel = await this.getFallbackCliConfig();
       return deepmerge(fallbackModel, model) as DefaultCliConfig;
     } catch (error) {
-      this.logger.error(
-        `Error occurred when loading CLI config from ${cliConfigPath}.`,
-        error
-      );
+      if ('code' in error && error.code === 'ENOENT') {
+        if (initializeIfAbsent) {
+          await this.initCliConfigTo(dirname(cliConfigPath));
+          return this.loadCliConfig(false);
+        }
+      }
+      throw error;
     }
-    return undefined;
   }
 
   protected async getFallbackCliConfig(): Promise<DefaultCliConfig> {
     const cliPath = await this.daemon.getExecPath();
-    const throwawayDirPath = await new Promise<string>((resolve, reject) => {
-      track.mkdir({}, (err, dirPath) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(dirPath);
-      });
-    });
-    await spawnCommand(`"${cliPath}"`, [
+    const rawJson = await spawnCommand(`"${cliPath}"`, [
       'config',
-      'init',
-      '--dest-dir',
-      `"${throwawayDirPath}"`,
+      'dump',
+      'format',
+      '--json',
     ]);
-    const rawYaml = await promisify(fs.readFile)(
-      path.join(throwawayDirPath, CLI_CONFIG),
-      { encoding: 'utf-8' }
-    );
-    const model = yaml.safeLoad(rawYaml.trim());
-    return model as DefaultCliConfig;
-  }
-
-  protected async ensureCliConfigExists(): Promise<void> {
-    const cliConfigFileUri = await this.getCliConfigFileUri();
-    const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
-    let exists = await promisify(fs.exists)(cliConfigPath);
-    if (!exists) {
-      await this.initCliConfigTo(path.dirname(cliConfigPath));
-      exists = await promisify(fs.exists)(cliConfigPath);
-      if (!exists) {
-        throw new Error(
-          `Could not initialize the default CLI configuration file at ${cliConfigPath}.`
-        );
-      }
-    }
+    return JSON.parse(rawJson);
   }
 
   protected async initCliConfigTo(fsPathToDir: string): Promise<void> {
@@ -220,8 +179,8 @@ export class ConfigServiceImpl
   protected async mapCliConfigToAppConfig(
     cliConfig: DefaultCliConfig
   ): Promise<Config> {
-    const { directories, locale = 'en', daemon } = cliConfig;
-    const { data, user, downloads } = directories;
+    const { directories, locale = 'en' } = cliConfig;
+    const { user, data } = directories;
     const additionalUrls: Array<string> = [];
     if (cliConfig.board_manager && cliConfig.board_manager.additional_urls) {
       additionalUrls.push(
@@ -232,11 +191,9 @@ export class ConfigServiceImpl
     return {
       dataDirUri: FileUri.create(data).toString(),
       sketchDirUri: FileUri.create(user).toString(),
-      downloadsDirUri: FileUri.create(downloads).toString(),
       additionalUrls,
       network,
       locale,
-      daemon,
     };
   }
 

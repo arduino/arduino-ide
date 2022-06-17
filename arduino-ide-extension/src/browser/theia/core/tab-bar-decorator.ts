@@ -1,6 +1,6 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
-import { Title, Widget } from '@phosphor/widgets';
+import { Title, Widget } from '@theia/core/shared/@phosphor/widgets';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { WidgetDecoration } from '@theia/core/lib/browser/widget-decoration';
@@ -27,7 +27,7 @@ export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
       );
   }
 
-  getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
+  override getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
     if (title.owner instanceof EditorWidget) {
       const editor = title.owner.editor;
       if (this.dataDirUri && this.dataDirUri.isEqualOrParent(editor.uri)) {

@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import * as moment from 'moment';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX, isWindows } from '@theia/core/lib/common/os';
@@ -22,13 +22,13 @@ export class About extends Contribution {
   @inject(ConfigService)
   protected readonly configService: ConfigService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(About.Commands.ABOUT_APP, {
       execute: () => this.showAbout(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.HELP__ABOUT_GROUP, {
       commandId: About.Commands.ABOUT_APP.id,
       label: nls.localize(

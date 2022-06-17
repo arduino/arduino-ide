@@ -6,6 +6,7 @@
     "noEmitOnError": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
+    "noImplicitOverride": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
@@ -26,7 +27,6 @@
     "src"
   ],
   "files": [
-    "../node_modules/nsfw/index.d.ts",
-    "../node_modules/@theia/monaco/src/typings/monaco/index.d.ts"
+    "../node_modules/nsfw/index.d.ts"
   ]
 }

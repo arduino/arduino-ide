@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { Disable } from 'react-disable';
@@ -9,6 +9,7 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/file-dialog-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import {
+  AdditionalUrls,
   CompilerWarningLiterals,
   Network,
   ProxySettings,
@@ -16,7 +17,10 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { Settings, SettingsService } from './settings';
 import { AdditionalUrlsDialog } from './settings-dialog';
-import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
+import {
+  AsyncLocalizationProvider,
+  LanguageInfo,
+} from '@theia/core/lib/common/i18n/localization';
 
 export class SettingsComponent extends React.Component<
   SettingsComponent.Props,
@@ -28,35 +32,46 @@ export class SettingsComponent extends React.Component<
     super(props);
   }
 
-  componentDidUpdate(
+  override componentDidUpdate(
     _: SettingsComponent.Props,
     prevState: SettingsComponent.State
   ): void {
     if (
       this.state &&
       prevState &&
-      JSON.stringify(this.state) !== JSON.stringify(prevState)
+      JSON.stringify(SettingsComponent.State.toSettings(this.state)) !==
+        JSON.stringify(SettingsComponent.State.toSettings(prevState))
     ) {
-      this.props.settingsService.update(this.state, true);
+      this.props.settingsService.update(
+        SettingsComponent.State.toSettings(this.state),
+        true
+      );
     }
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.props.settingsService
       .settings()
-      .then((settings) => this.setState(settings));
-    this.toDispose.push(
+      .then((settings) =>
+        this.setState(SettingsComponent.State.fromSettings(settings))
+      );
+    this.toDispose.pushAll([
       this.props.settingsService.onDidChange((settings) =>
-        this.setState(settings)
-      )
-    );
+        this.setState((prevState) => ({
+          ...SettingsComponent.State.merge(prevState, settings),
+        }))
+      ),
+      this.props.settingsService.onDidReset((settings) =>
+        this.setState(SettingsComponent.State.fromSettings(settings))
+      ),
+    ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     if (!this.state) {
       return <div />;
     }
@@ -201,11 +216,9 @@ export class SettingsComponent extends React.Component<
                 value={this.state.currentLanguage}
                 onChange={this.languageDidChange}
               >
-                {this.state.languages.map((label) => (
-                  <option key={label} value={label}>
-                    {label}
-                  </option>
-                ))}
+                {this.state.languages.map((label) =>
+                  this.toSelectOptions(label)
+                )}
               </select>
               <span style={{ marginLeft: '5px' }}>
                 (
@@ -263,7 +276,7 @@ export class SettingsComponent extends React.Component<
         <label className="flex-line">
           <input
             type="checkbox"
-            checked={this.state.autoSave === 'on'}
+            checked={this.state.autoSave !== 'off'}
             onChange={this.autoSaveDidChange}
           />
           {nls.localize(
@@ -290,8 +303,8 @@ export class SettingsComponent extends React.Component<
           <input
             className="theia-input stretch with-margin"
             type="text"
-            value={this.state.additionalUrls.join(',')}
-            onChange={this.additionalUrlsDidChange}
+            value={this.state.rawAdditionalUrlsValue}
+            onChange={this.rawAdditionalUrlsValueDidChange}
           />
           <i
             className="fa fa-window-restore theia-button shrink"
@@ -299,6 +312,24 @@ export class SettingsComponent extends React.Component<
           />
         </div>
       </div>
+    );
+  }
+
+  private toSelectOptions(language: string | LanguageInfo): JSX.Element {
+    const plain = typeof language === 'string';
+    const key = plain ? language : language.languageId;
+    const value = plain ? language : language.languageId;
+    const label = plain
+      ? language === 'en'
+        ? 'English'
+        : language
+      : language.localizedLanguageName ||
+        language.languageName ||
+        language.languageId;
+    return (
+      <option key={key} value={value}>
+        {label}
+      </option>
     );
   }
 
@@ -475,11 +506,13 @@ export class SettingsComponent extends React.Component<
 
   protected editAdditionalUrlDidClick = async (): Promise<void> => {
     const additionalUrls = await new AdditionalUrlsDialog(
-      this.state.additionalUrls,
+      AdditionalUrls.parse(this.state.rawAdditionalUrlsValue, ','),
       this.props.windowService
     ).open();
     if (additionalUrls) {
-      this.setState({ additionalUrls });
+      this.setState({
+        rawAdditionalUrlsValue: AdditionalUrls.stringify(additionalUrls),
+      });
     }
   };
 
@@ -492,11 +525,11 @@ export class SettingsComponent extends React.Component<
     }
   };
 
-  protected additionalUrlsDidChange = (
+  protected rawAdditionalUrlsValueDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     this.setState({
-      additionalUrls: event.target.value.split(',').map((url) => url.trim()),
+      rawAdditionalUrlsValue: event.target.value,
     });
   };
 
@@ -535,7 +568,9 @@ export class SettingsComponent extends React.Component<
   protected autoSaveDidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    this.setState({ autoSave: event.target.checked ? 'on' : 'off' });
+    this.setState({
+      autoSave: event.target.checked ? Settings.AutoSave.DEFAULT_ON : 'off',
+    });
   };
 
   protected quickSuggestionsOtherDidChange = (
@@ -699,5 +734,48 @@ export namespace SettingsComponent {
     readonly windowService: WindowService;
     readonly localizationProvider: AsyncLocalizationProvider;
   }
-  export type State = Settings & { languages: string[] };
+  export type State = Settings & {
+    rawAdditionalUrlsValue: string;
+  };
+  export namespace State {
+    export function fromSettings(settings: Settings): State {
+      return {
+        ...settings,
+        rawAdditionalUrlsValue: AdditionalUrls.stringify(
+          settings.additionalUrls
+        ),
+      };
+    }
+    export function toSettings(state: State): Settings {
+      const parsedAdditionalUrls = AdditionalUrls.parse(
+        state.rawAdditionalUrlsValue,
+        ','
+      );
+      return {
+        ...state,
+        additionalUrls: AdditionalUrls.sameAs(
+          state.additionalUrls,
+          parsedAdditionalUrls
+        )
+          ? state.additionalUrls
+          : parsedAdditionalUrls,
+      };
+    }
+    export function merge(prevState: State, settings: Settings): State {
+      const prevAdditionalUrls = AdditionalUrls.parse(
+        prevState.rawAdditionalUrlsValue,
+        ','
+      );
+      return {
+        ...settings,
+        rawAdditionalUrlsValue: prevState.rawAdditionalUrlsValue,
+        additionalUrls: AdditionalUrls.sameAs(
+          prevAdditionalUrls,
+          settings.additionalUrls
+        )
+          ? prevAdditionalUrls
+          : settings.additionalUrls,
+      };
+    }
+  }
 }

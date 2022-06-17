@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { WorkspaceServer } from '@theia/workspace/lib/common/workspace-protocol';
 import {
   Disposable,
@@ -35,23 +35,29 @@ export class OpenRecentSketch extends SketchContribution {
 
   protected toDisposeBeforeRegister = new Map<string, DisposableCollection>();
 
-  onStart(): void {
-    const refreshMenu = (sketches: Sketch[]) => {
-      this.register(sketches);
-      this.mainMenuManager.update();
-    };
+  override onStart(): void {
     this.notificationCenter.onRecentSketchesChanged(({ sketches }) =>
-      refreshMenu(sketches)
+      this.refreshMenu(sketches)
     );
-    this.sketchService.recentlyOpenedSketches().then(refreshMenu);
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override async onReady(): Promise<void> {
+    this.sketchService
+      .recentlyOpenedSketches()
+      .then((sketches) => this.refreshMenu(sketches));
+  }
+
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerSubmenu(
       ArduinoMenus.FILE__OPEN_RECENT_SUBMENU,
       nls.localize('arduino/sketch/openRecent', 'Open Recent'),
       { order: '2' }
     );
+  }
+
+  private refreshMenu(sketches: Sketch[]): void {
+    this.register(sketches);
+    this.mainMenuManager.update();
   }
 
   protected register(sketches: Sketch[]): void {

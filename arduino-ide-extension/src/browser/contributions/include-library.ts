@@ -1,5 +1,5 @@
 import * as PQueue from 'p-queue';
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser';
@@ -16,6 +16,8 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
+import * as monaco from '@theia/monaco-editor-core';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -29,7 +31,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly mainMenuManager: MainMenuManager;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
@@ -43,8 +45,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
   protected readonly toDispose = new DisposableCollection();
 
-  onStart(): void {
-    this.updateMenuActions();
+  override onStart(): void {
     this.boardsServiceClient.onBoardsConfigChanged(() =>
       this.updateMenuActions()
     );
@@ -54,7 +55,11 @@ export class IncludeLibrary extends SketchContribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override async onReady(): Promise<void> {
+    this.updateMenuActions();
+  }
+
+  override registerMenus(registry: MenuModelRegistry): void {
     // `Include Library` submenu
     const includeLibMenuPath = [
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
@@ -77,7 +82,7 @@ export class IncludeLibrary extends SketchContribution {
     });
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY, {
       execute: async (arg) => {
         if (LibraryPackage.is(arg)) {
@@ -168,7 +173,7 @@ export class IncludeLibrary extends SketchContribution {
 
   protected async includeLibrary(library: LibraryPackage): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     // If the current editor is one of the additional files from the sketch, we use that.

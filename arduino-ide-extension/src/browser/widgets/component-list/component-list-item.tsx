@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { ListItemRenderer } from './list-item-renderer';
@@ -43,7 +43,7 @@ export class ComponentListItem<
     this.setState({ selectedVersion: version });
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { item, itemRenderer } = this.props;
     return itemRenderer.renderItem(
       Object.assign(this.state, { item }),

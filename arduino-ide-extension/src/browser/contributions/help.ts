@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -15,6 +15,7 @@ import {
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
+import * as monaco from '@theia/monaco-editor-core';
 
 @injectable()
 export class Help extends Contribution {
@@ -27,7 +28,7 @@ export class Help extends Contribution {
   @inject(QuickInputService)
   protected readonly quickInputService: QuickInputService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     const open = (url: string) =>
       this.windowService.openNewWindow(url, { external: true });
     const createOpenHandler = (url: string) =>
@@ -91,7 +92,7 @@ export class Help extends Contribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.unregisterMenuAction({
       commandId: ElectronCommands.TOGGLE_DEVELOPER_TOOLS.id,
     });
@@ -135,7 +136,7 @@ export class Help extends Contribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: Help.Commands.FIND_IN_REFERENCE.id,
       keybinding: 'CtrlCmd+Shift+F',

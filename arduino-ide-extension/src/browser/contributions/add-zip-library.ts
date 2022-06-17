@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
@@ -28,21 +28,17 @@ export class AddZipLibrary extends SketchContribution {
   @inject(LibraryService)
   protected readonly libraryService: LibraryService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddZipLibrary.Commands.ADD_ZIP_LIBRARY, {
       execute: () => this.addZipLibrary(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     const includeLibMenuPath = [
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
       '0_include',
     ];
-    // TODO: do we need it? calling `registerSubmenu` multiple times is noop, so it does not hurt.
-    registry.registerSubmenu(includeLibMenuPath, 'Include Library', {
-      order: '1',
-    });
     registry.registerMenuAction([...includeLibMenuPath, '1_install'], {
       commandId: AddZipLibrary.Commands.ADD_ZIP_LIBRARY.id,
       label: nls.localize('arduino/library/addZip', 'Add .ZIP Library...'),

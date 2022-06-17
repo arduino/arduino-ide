@@ -74,6 +74,7 @@
     'yarn.lock',
     'package.json',
     'lerna.json',
+    'i18n'
   ]) {
     cp('-rf', path(rootPath, name), path('..', workingCopy));
   }
@@ -227,8 +228,7 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     'Installing dependencies'
   );
   exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build${isElectronPublish ? ':publish' : ''
-    }`,
+    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build`,
     `Building the ${productName} application`
   );
   exec(
@@ -488,7 +488,6 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
         )}.`
       );
       shell.exit(1);
-      process.exit(1);
     }
     if (expectedVersion) {
       if (!versions.has(expectedVersion)) {
@@ -497,7 +496,6 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
           }'.`
         );
         shell.exit(1);
-        process.exit(1);
       }
     }
   }

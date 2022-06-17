@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser';
@@ -19,7 +19,10 @@ import {
 } from './contribution';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
-import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../common/protocol/sketches-service-client-impl';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
 import { nls } from '@theia/core/lib/common';
 
@@ -35,7 +38,7 @@ export class SketchControl extends SketchContribution {
   protected readonly contextMenuRenderer: ContextMenuRenderer;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(SketchesServiceClientImpl)
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
@@ -46,7 +49,7 @@ export class SketchControl extends SketchContribution {
   protected readonly toDisposeBeforeCreateNewContextMenu =
     new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(
       SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR,
       {
@@ -55,7 +58,7 @@ export class SketchControl extends SketchContribution {
         execute: async () => {
           this.toDisposeBeforeCreateNewContextMenu.dispose();
           const sketch = await this.sketchServiceClient.currentSketch();
-          if (!sketch) {
+          if (!CurrentSketch.isValid(sketch)) {
             return;
           }
 
@@ -70,25 +73,22 @@ export class SketchControl extends SketchContribution {
             return;
           }
 
-          const { mainFileUri, rootFolderFileUris } =
-            await this.sketchService.loadSketch(sketch.uri);
+          const { mainFileUri, rootFolderFileUris } = sketch;
           const uris = [mainFileUri, ...rootFolderFileUris];
 
-          const currentSketch =
-            await this.sketchesServiceClient.currentSketch();
-          const parentsketchUri = this.editorManager.currentEditor
+          const parentSketchUri = this.editorManager.currentEditor
             ?.getResourceUri()
             ?.toString();
-          const parentsketch = await this.sketchService.getSketchFolder(
-            parentsketchUri || ''
+          const parentSketch = await this.sketchService.getSketchFolder(
+            parentSketchUri || ''
           );
 
           // if the current file is in the current opened sketch, show extra menus
           if (
-            currentSketch &&
-            parentsketch &&
-            parentsketch.uri === currentSketch.uri &&
-            this.allowRename(parentsketch.uri)
+            sketch &&
+            parentSketch &&
+            parentSketch.uri === sketch.uri &&
+            this.allowRename(parentSketch.uri)
           ) {
             this.menuRegistry.registerMenuAction(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -122,10 +122,10 @@ export class SketchControl extends SketchContribution {
           }
 
           if (
-            currentSketch &&
-            parentsketch &&
-            parentsketch.uri === currentSketch.uri &&
-            this.allowDelete(parentsketch.uri)
+            sketch &&
+            parentSketch &&
+            parentSketch.uri === sketch.uri &&
+            this.allowDelete(parentSketch.uri)
           ) {
             this.menuRegistry.registerMenuAction(
               ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
@@ -200,7 +200,7 @@ export class SketchControl extends SketchContribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
       {
@@ -228,7 +228,7 @@ export class SketchControl extends SketchContribution {
     );
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: WorkspaceCommands.NEW_FILE.id,
       keybinding: 'CtrlCmd+Shift+N',
@@ -243,7 +243,7 @@ export class SketchControl extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,
       command: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,

@@ -1,5 +1,5 @@
 import { FileUri } from '@theia/core/lib/node/file-uri';
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { relative } from 'path';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
@@ -24,8 +24,10 @@ import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands
 import { firstToUpperCase, firstToLowerCase } from '../common/utils';
 import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { nls } from '@theia/core';
-import { SerialService } from './../common/protocol/serial-service';
+import { MonitorManager } from './monitor-manager';
+import { SimpleBuffer } from './utils/simple-buffer';
 
+const FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS = 32;
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(ResponseService)
@@ -34,8 +36,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
 
-  @inject(SerialService)
-  protected readonly serialService: SerialService;
+  @inject(MonitorManager)
+  protected readonly monitorManager: MonitorManager;
 
   protected uploading = false;
 
@@ -45,7 +47,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compilerWarnings?: CompilerWarnings;
     }
   ): Promise<void> {
-    const { sketchUri, fqbn, compilerWarnings } = options;
+    const { sketchUri, board, compilerWarnings } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
     await this.coreClientProvider.initialized;
@@ -55,8 +57,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const compileReq = new CompileRequest();
     compileReq.setInstance(instance);
     compileReq.setSketchPath(sketchPath);
-    if (fqbn) {
-      compileReq.setFqbn(fqbn);
+    if (board?.fqbn) {
+      compileReq.setFqbn(board.fqbn);
     }
     if (compilerWarnings) {
       compileReq.setWarnings(compilerWarnings.toLowerCase());
@@ -73,18 +75,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     this.mergeSourceOverrides(compileReq, options);
 
     const result = client.compile(compileReq);
+
+    const compileBuffer = new SimpleBuffer(
+      this.flushOutputPanelMessages.bind(this),
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+    );
     try {
       await new Promise<void>((resolve, reject) => {
         result.on('data', (cr: CompileResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(cr.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(cr.getErrStream_asU8()).toString(),
-          });
+          compileBuffer.addChunk(cr.getOutStream_asU8());
+          compileBuffer.addChunk(cr.getErrStream_asU8());
         });
-        result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('error', (error) => {
+          compileBuffer.clearFlushInterval();
+          reject(error);
+        });
+        result.on('end', () => {
+          compileBuffer.clearFlushInterval();
+          resolve();
+        });
       });
       this.responseService.appendToOutput({
         chunk: '\n--------------------------\nCompilation complete.\n',
@@ -139,11 +148,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     await this.compile(Object.assign(options, { exportBinaries: false }));
 
     this.uploading = true;
-    this.serialService.uploadInProgress = true;
+    const { sketchUri, board, port, programmer } = options;
+    await this.monitorManager.notifyUploadStarted(board, port);
 
-    await this.serialService.disconnect();
-
-    const { sketchUri, fqbn, port, programmer } = options;
     const sketchPath = FileUri.fsPath(sketchUri);
 
     await this.coreClientProvider.initialized;
@@ -153,8 +160,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const req = requestProvider();
     req.setInstance(instance);
     req.setSketchPath(sketchPath);
-    if (fqbn) {
-      req.setFqbn(fqbn);
+    if (board?.fqbn) {
+      req.setFqbn(board.fqbn);
     }
     const p = new Port();
     if (port) {
@@ -176,18 +183,24 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
     const result = responseHandler(client, req);
 
+    const uploadBuffer = new SimpleBuffer(
+      this.flushOutputPanelMessages.bind(this),
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+    );
     try {
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: UploadResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getErrStream_asU8()).toString(),
-          });
+          uploadBuffer.addChunk(resp.getOutStream_asU8());
+          uploadBuffer.addChunk(resp.getErrStream_asU8());
         });
-        result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('error', (error) => {
+          uploadBuffer.clearFlushInterval();
+          reject(error);
+        });
+        result.on('end', () => {
+          uploadBuffer.clearFlushInterval();
+          resolve();
+        });
       });
       this.responseService.appendToOutput({
         chunk:
@@ -209,23 +222,22 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.serialService.uploadInProgress = false;
+      this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
     this.uploading = true;
-    this.serialService.uploadInProgress = true;
-    await this.serialService.disconnect();
+    const { board, port, programmer } = options;
+    await this.monitorManager.notifyUploadStarted(board, port);
 
     await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
-    const { fqbn, port, programmer } = options;
     const burnReq = new BurnBootloaderRequest();
     burnReq.setInstance(instance);
-    if (fqbn) {
-      burnReq.setFqbn(fqbn);
+    if (board?.fqbn) {
+      burnReq.setFqbn(board.fqbn);
     }
     const p = new Port();
     if (port) {
@@ -241,18 +253,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     burnReq.setVerify(options.verify);
     burnReq.setVerbose(options.verbose);
     const result = client.burnBootloader(burnReq);
+
+    const bootloaderBuffer = new SimpleBuffer(
+      this.flushOutputPanelMessages.bind(this),
+      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
+    );
     try {
       await new Promise<void>((resolve, reject) => {
         result.on('data', (resp: BurnBootloaderResponse) => {
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getOutStream_asU8()).toString(),
-          });
-          this.responseService.appendToOutput({
-            chunk: Buffer.from(resp.getErrStream_asU8()).toString(),
-          });
+          bootloaderBuffer.addChunk(resp.getOutStream_asU8());
+          bootloaderBuffer.addChunk(resp.getErrStream_asU8());
         });
-        result.on('error', (error) => reject(error));
-        result.on('end', () => resolve());
+        result.on('error', (error) => {
+          bootloaderBuffer.clearFlushInterval();
+          reject(error);
+        });
+        result.on('end', () => {
+          bootloaderBuffer.clearFlushInterval();
+          resolve();
+        });
       });
     } catch (e) {
       const errorMessage = nls.localize(
@@ -267,7 +286,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       throw new Error(errorMessage);
     } finally {
       this.uploading = false;
-      this.serialService.uploadInProgress = false;
+      await this.monitorManager.notifyUploadFinished(board, port);
     }
   }
 
@@ -283,5 +302,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         req.getSourceOverrideMap().set(relativePath, content);
       }
     }
+  }
+
+  private flushOutputPanelMessages(chunk: string): void {
+    this.responseService.appendToOutput({
+      chunk,
+    });
   }
 }

@@ -1,0 +1,13 @@
+# Source:
+# https://github.com/arduino/tooling-project-assets/blob/main/issue-templates/template-choosers/general/config.yml
+blank_issues_enabled: false
+contact_links:
+  - name: Learn about using this project
+    url: https://github.com/arduino/arduino-ide#readme
+    about: Detailed usage documentation is available here.
+  - name: Support request
+    url: https://forum.arduino.cc/
+    about: We can help you out on the Arduino Forum!
+  - name: Discuss development work on the project
+    url: https://groups.google.com/a/arduino.cc/g/developers
+    about: Arduino Developers Mailing List

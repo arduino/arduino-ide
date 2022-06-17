@@ -1,11 +1,11 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
-import { SerialModel } from '../serial-model';
-import { SerialConnectionManager } from '../serial-connection-manager';
 import dateFormat = require('dateformat');
 import { messagesToLines, truncateLines } from './monitor-utils';
+import { MonitorManagerProxyClient } from '../../../common/protocol';
+import { MonitorModel } from '../../monitor-model';
 
 export type Line = { message: string; timestamp?: Date; lineLen: number };
 
@@ -24,12 +24,12 @@ export class SerialMonitorOutput extends React.Component<
     this.listRef = React.createRef();
     this.state = {
       lines: [],
-      timestamp: this.props.serialModel.timestamp,
+      timestamp: this.props.monitorModel.timestamp,
       charCount: 0,
     };
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <List
         className="serial-monitor-messages"
@@ -51,21 +51,20 @@ export class SerialMonitorOutput extends React.Component<
     );
   }
 
-  shouldComponentUpdate(): boolean {
+  override shouldComponentUpdate(): boolean {
     return true;
   }
 
-  componentDidMount(): void {
+  override componentDidMount(): void {
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
-      this.props.serialConnection.onRead(({ messages }) => {
+      this.props.monitorManagerProxy.onMessagesReceived(({ messages }) => {
         const [newLines, totalCharCount] = messagesToLines(
           messages,
           this.state.lines,
           this.state.charCount
         );
         const [lines, charCount] = truncateLines(newLines, totalCharCount);
-
         this.setState({
           lines,
           charCount,
@@ -75,9 +74,9 @@ export class SerialMonitorOutput extends React.Component<
       this.props.clearConsoleEvent(() =>
         this.setState({ lines: [], charCount: 0 })
       ),
-      this.props.serialModel.onChange(({ property }) => {
+      this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
-          const { timestamp } = this.props.serialModel;
+          const { timestamp } = this.props.monitorModel;
           this.setState({ timestamp });
         }
         if (property === 'autoscroll') {
@@ -87,13 +86,13 @@ export class SerialMonitorOutput extends React.Component<
     ]);
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
     this.toDisposeBeforeUnmount.dispose();
   }
 
   scrollToBottom = ((): void => {
-    if (this.listRef.current && this.props.serialModel.autoscroll) {
+    if (this.listRef.current && this.props.monitorModel.autoscroll) {
       this.listRef.current.scrollToItem(this.state.lines.length, 'end');
     }
   }).bind(this);
@@ -115,8 +114,10 @@ const _Row = ({
   return (
     (data.lines[index].lineLen && (
       <div style={style}>
-        {timestamp}
-        {data.lines[index].message}
+        <pre>
+          {timestamp}
+          {data.lines[index].message}
+        </pre>
       </div>
     )) ||
     null
@@ -126,8 +127,8 @@ const Row = React.memo(_Row, areEqual);
 
 export namespace SerialMonitorOutput {
   export interface Props {
-    readonly serialModel: SerialModel;
-    readonly serialConnection: SerialConnectionManager;
+    readonly monitorModel: MonitorModel;
+    readonly monitorManagerProxy: MonitorManagerProxyClient;
     readonly clearConsoleEvent: Event<void>;
     readonly height: number;
   }

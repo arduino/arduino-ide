@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 
 import {
   AbstractDialog as TheiaAbstractDialog,
@@ -8,7 +8,7 @@ import {
 
 @injectable()
 export abstract class AbstractDialog<T> extends TheiaAbstractDialog<T> {
-  constructor(@inject(DialogProps) protected readonly props: DialogProps) {
+  constructor(@inject(DialogProps) protected override readonly props: DialogProps) {
     super(props);
 
     this.closeCrossNode.classList.remove(...codiconArray('close'));

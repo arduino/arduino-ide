@@ -1,4 +1,9 @@
-import { inject, injectable, interfaces } from 'inversify';
+import {
+  inject,
+  injectable,
+  interfaces,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Saveable } from '@theia/core/lib/browser/saveable';
@@ -34,7 +39,10 @@ import {
 } from '@theia/core/lib/common/command';
 import { EditorMode } from '../editor-mode';
 import { SettingsService } from '../dialogs/settings/settings';
-import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../common/protocol/sketches-service-client-impl';
 import {
   SketchesService,
   ConfigService,
@@ -42,6 +50,7 @@ import {
   Sketch,
 } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 export {
   Command,
@@ -84,15 +93,31 @@ export abstract class Contribution
   @inject(SettingsService)
   protected readonly settingsService: SettingsService;
 
+  @inject(FrontendApplicationStateService)
+  protected readonly appStateService: FrontendApplicationStateService;
+
+  @postConstruct()
+  protected init(): void {
+    this.appStateService.reachedState('ready').then(() => this.onReady());
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, unused-imports/no-unused-vars
   onStart(app: FrontendApplication): MaybePromise<void> {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, unused-imports/no-unused-vars
   registerCommands(registry: CommandRegistry): void {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, unused-imports/no-unused-vars
   registerMenus(registry: MenuModelRegistry): void {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, unused-imports/no-unused-vars
   registerKeybindings(registry: KeybindingRegistry): void {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, unused-imports/no-unused-vars
   registerToolbarItems(registry: TabBarToolbarRegistry): void {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onReady(): MaybePromise<void> {}
 }
 
 @injectable()
@@ -127,7 +152,7 @@ export abstract class SketchContribution extends Contribution {
   protected async sourceOverride(): Promise<Record<string, string>> {
     const override: Record<string, string> = {};
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (sketch) {
+    if (CurrentSketch.isValid(sketch)) {
       for (const editor of this.editorManager.all) {
         const uri = editor.editor.uri;
         if (Saveable.isDirty(editor) && Sketch.isInSketch(uri, sketch)) {
@@ -140,7 +165,7 @@ export abstract class SketchContribution extends Contribution {
 }
 
 export namespace Contribution {
-  export function configure<T>(
+  export function configure(
     bind: interfaces.Bind,
     serviceIdentifier: typeof Contribution
   ): void {

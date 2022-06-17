@@ -1,29 +1,29 @@
 {
   "private": true,
   "name": "browser-app",
-  "version": "2.0.0-rc5",
+  "version": "2.0.0-rc7",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "@theia/core": "1.22.1",
-    "@theia/debug": "1.22.1",
-    "@theia/editor": "1.22.1",
-    "@theia/editor-preview": "1.22.1",
-    "@theia/file-search": "1.22.1",
-    "@theia/filesystem": "1.22.1",
-    "@theia/keymaps": "1.22.1",
-    "@theia/messages": "1.22.1",
-    "@theia/monaco": "1.22.1",
-    "@theia/navigator": "1.22.1",
-    "@theia/plugin-ext": "1.22.1",
-    "@theia/plugin-ext-vscode": "1.22.1",
-    "@theia/preferences": "1.22.1",
-    "@theia/process": "1.22.1",
-    "@theia/terminal": "1.22.1",
-    "@theia/workspace": "1.22.1",
-    "arduino-ide-extension": "2.0.0-rc5"
+    "@theia/core": "1.25.0",
+    "@theia/debug": "1.25.0",
+    "@theia/editor": "1.25.0",
+    "@theia/editor-preview": "1.25.0",
+    "@theia/file-search": "1.25.0",
+    "@theia/filesystem": "1.25.0",
+    "@theia/keymaps": "1.25.0",
+    "@theia/messages": "1.25.0",
+    "@theia/monaco": "1.25.0",
+    "@theia/navigator": "1.25.0",
+    "@theia/plugin-ext": "1.25.0",
+    "@theia/plugin-ext-vscode": "1.25.0",
+    "@theia/preferences": "1.25.0",
+    "@theia/process": "1.25.0",
+    "@theia/terminal": "1.25.0",
+    "@theia/workspace": "1.25.0",
+    "arduino-ide-extension": "2.0.0-rc7"
   },
   "devDependencies": {
-    "@theia/cli": "1.22.1"
+    "@theia/cli": "1.25.0"
   },
   "scripts": {
     "prepare": "theia build --mode development",
@@ -36,7 +36,7 @@
         "applicationName": "Arduino IDE",
         "defaultTheme": "arduino-theme",
         "preferences": {
-          "editor.autoSave": "on",
+          "files.autoSave": "afterDelay",
           "editor.minimap.enabled": false,
           "editor.tabSize": 2,
           "editor.scrollBeyondLastLine": false,

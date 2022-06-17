@@ -1,5 +1,5 @@
 import * as PQueue from 'p-queue';
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandHandler } from '@theia/core/lib/common/command';
 import {
   MenuPath,
@@ -21,7 +21,7 @@ import {
   MenuModelRegistry,
 } from './contribution';
 import { NotificationCenter } from '../notification-center';
-import { Board, Sketch, SketchContainer } from '../../common/protocol';
+import { Board, SketchRef, SketchContainer } from '../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
@@ -43,8 +43,8 @@ export abstract class Examples extends SketchContribution {
 
   protected readonly toDispose = new DisposableCollection();
 
-  @postConstruct()
-  init(): void {
+  protected override init(): void {
+    super.init();
     this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
       this.handleBoardChanged(selectedBoard)
     );
@@ -54,7 +54,7 @@ export abstract class Examples extends SketchContribution {
     // NOOP
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     try {
       // This is a hack the ensures the desired menu ordering! We cannot use https://github.com/eclipse-theia/theia/pull/8377 due to ATL-222.
       const index = ArduinoMenus.FILE__EXAMPLES_SUBMENU.length - 1;
@@ -82,7 +82,7 @@ export abstract class Examples extends SketchContribution {
   registerRecursively(
     sketchContainerOrPlaceholder:
       | SketchContainer
-      | (Sketch | SketchContainer)[]
+      | (SketchRef | SketchContainer)[]
       | string,
     menuPath: MenuPath,
     pushToDispose: DisposableCollection = new DisposableCollection(),
@@ -100,7 +100,7 @@ export abstract class Examples extends SketchContribution {
         )
       );
     } else {
-      const sketches: Sketch[] = [];
+      const sketches: SketchRef[] = [];
       const children: SketchContainer[] = [];
       let submenuPath = menuPath;
 
@@ -161,7 +161,7 @@ export abstract class Examples extends SketchContribution {
 
 @injectable()
 export class BuiltInExamples extends Examples {
-  onStart(): void {
+  override async onReady(): Promise<void> {
     this.register(); // no `await`
   }
 
@@ -201,13 +201,16 @@ export class LibraryExamples extends Examples {
 
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
-  onStart(): void {
-    this.register(); // no `await`
+  override onStart(): void {
     this.notificationCenter.onLibraryInstalled(() => this.register());
     this.notificationCenter.onLibraryUninstalled(() => this.register());
   }
 
-  protected handleBoardChanged(board: Board | undefined): void {
+  override async onReady(): Promise<void> {
+    this.register(); // no `await`
+  }
+
+  protected override handleBoardChanged(board: Board | undefined): void {
     this.register(board);
   }
 

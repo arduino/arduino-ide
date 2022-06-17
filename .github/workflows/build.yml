@@ -78,6 +78,7 @@ jobs:
             fi
           fi
 
+          npx node-gyp install
           yarn --cwd ./electron/packager/
           yarn --cwd ./electron/packager/ package
 

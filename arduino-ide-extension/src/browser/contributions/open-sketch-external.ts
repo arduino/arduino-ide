@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -13,13 +13,13 @@ import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class OpenSketchExternal extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketchExternal.Commands.OPEN_EXTERNAL, {
       execute: () => this.openExternal(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: OpenSketchExternal.Commands.OPEN_EXTERNAL.id,
       label: nls.localize('arduino/sketch/showFolder', 'Show Sketch Folder'),
@@ -27,7 +27,7 @@ export class OpenSketchExternal extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: OpenSketchExternal.Commands.OPEN_EXTERNAL.id,
       keybinding: 'CtrlCmd+Alt+K',

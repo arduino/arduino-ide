@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { inject, injectable } from 'inversify';
-import { Widget } from '@phosphor/widgets';
-import { Message, MessageLoop } from '@phosphor/messaging';
+import * as React from '@theia/core/shared/react';
+import * as ReactDOM from '@theia/core/shared/react-dom';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message, MessageLoop } from '@theia/core/shared/@phosphor/messaging';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { UserStatus } from './cloud-user-status';
@@ -43,7 +43,7 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     return this.cloudSketchbookTreeWidget;
   }
 
-  protected onAfterAttach(message: Message): void {
+  protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     Widget.attach(this.cloudSketchbookTreeWidget, this.compositeNode);
     ReactDOM.render(
@@ -58,7 +58,7 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     );
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.cloudSketchbookTreeWidget.activate();
 
@@ -72,7 +72,7 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     );
   }
 
-  protected onResize(message: Widget.ResizeMessage): void {
+  protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     MessageLoop.sendMessage(
       this.cloudSketchbookTreeWidget,

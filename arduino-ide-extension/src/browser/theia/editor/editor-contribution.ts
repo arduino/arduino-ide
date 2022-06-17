@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { EditorPreviewContribution as TheiaEditorPreviewContribution } from '@theia/editor-preview/lib/browser/editor-preview-contribution';
 import { TextEditor } from '@theia/editor/lib/browser';
 

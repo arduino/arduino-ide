@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from '@theia/core/shared/react';
+import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
@@ -41,7 +41,7 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
     }
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return ReactDOM.createPortal(this.renderNode(), this.dropdownElement);
   }
 
@@ -130,13 +130,13 @@ export class BoardsToolBarItem extends React.Component<
     });
   }
 
-  componentDidMount() {
+  override componentDidMount(): void {
     this.props.boardsServiceClient.onAvailableBoardsChanged((availableBoards) =>
       this.setState({ availableBoards })
     );
   }
 
-  componentWillUnmount(): void {
+  override componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
@@ -161,7 +161,7 @@ export class BoardsToolBarItem extends React.Component<
     event.nativeEvent.stopImmediatePropagation();
   };
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { coords, availableBoards } = this.state;
     const boardsConfig = this.props.boardsServiceClient.boardsConfig;
     const title = BoardsConfig.Config.toString(boardsConfig, {

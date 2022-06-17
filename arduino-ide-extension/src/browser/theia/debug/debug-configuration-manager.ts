@@ -1,5 +1,5 @@
 import debounce = require('p-debounce');
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -7,7 +7,10 @@ import { DebugConfiguration } from '@theia/debug/lib/common/debug-common';
 import { DebugConfigurationModel as TheiaDebugConfigurationModel } from '@theia/debug/lib/browser/debug-configuration-model';
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 import { SketchesService } from '../../../common/protocol';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { DebugConfigurationModel } from './debug-configuration-model';
 import {
   FileOperationError,
@@ -36,7 +39,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     super.init();
     this.appStateService.reachedState('ready').then(async () => {
       const tempContent = await this.getTempLaunchJsonContent();
@@ -73,7 +76,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     });
   }
 
-  protected updateModels = debounce(async () => {
+  protected override updateModels = debounce(async () => {
     await this.appStateService.reachedState('ready');
     const roots = await this.workspaceService.roots;
     const toDelete = new Set(this.models.keys());
@@ -113,7 +116,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     (TheiaDebugConfigurationModel.JsonContent & { uri: URI }) | URI | undefined
   > {
     const sketch = await this.sketchesServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return undefined;
     }
     const uri = await this.sketchesService.getIdeTempFolderUri(sketch);

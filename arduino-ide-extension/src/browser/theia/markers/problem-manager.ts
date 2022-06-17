@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { Diagnostic } from 'vscode-languageserver-types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core';
@@ -17,7 +17,7 @@ export class ProblemManager extends TheiaProblemManager {
   protected dataDirUri: URI | undefined;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.configService
       .getConfiguration()
@@ -27,7 +27,7 @@ export class ProblemManager extends TheiaProblemManager {
       );
   }
 
-  setMarkers(
+  override setMarkers(
     uri: URI,
     owner: string,
     data: Diagnostic[]

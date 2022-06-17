@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { CloudSketchbookCompositeWidget } from './cloud-sketchbook-composite-widget';
 import { SketchbookWidget } from '../sketchbook/sketchbook-widget';
 import { ArduinoPreferences } from '../../arduino-preferences';
@@ -29,11 +33,11 @@ export class CloudSketchbookWidget extends SketchbookWidget {
   protected readonly localCacheFsProvider: LocalCacheFsProvider;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
   }
 
-  getTreeWidget(): any {
+  override getTreeWidget(): any {
     const widget: any = this.sketchbookTreesContainer.selectedWidgets().next();
 
     if (widget && typeof widget.getTreeWidget !== 'undefined') {
@@ -42,7 +46,7 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     return widget;
   }
 
-  protected onAfterShow(msg: Message): void {
+  protected override onAfterShow(msg: Message): void {
     this.checkCloudEnabled();
     super.onAfterShow(msg);
   }
@@ -51,6 +55,7 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     const currentSketch = await this.sketchesServiceClient.currentSketch();
     const isCloudSketch =
       currentSketch &&
+      currentSketch !== 'invalid' &&
       currentSketch.uri.includes(
         path.join(REMOTE_SKETCHBOOK_FOLDER, ARDUINO_CLOUD_FOLDER)
       );
@@ -71,7 +76,7 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     }
   }
 
-  protected onAfterAttach(msg: any) {
+  protected override onAfterAttach(msg: any): void {
     this.sketchbookTreesContainer.addWidget(this.widget);
     this.sketchbookTreesContainer.mode = 'single-document';
     this.arduinoPreferences.onPreferenceChanged((event) => {

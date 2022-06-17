@@ -1,5 +1,9 @@
 import * as grpc from '@grpc/grpc-js';
-import { inject, injectable, postConstruct } from 'inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { GrpcClientProvider } from './grpc-client-provider';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
@@ -16,7 +20,11 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { NotificationServiceServer } from '../common/protocol';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Deferred, retry } from '@theia/core/lib/common/promise-util';
+import {
+  Status as RpcStatus,
+  Status,
+} from './cli-protocol/google/rpc/status_pb';
 
 @injectable()
 export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Client> {
@@ -48,9 +56,7 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
     this._initialized = new Deferred<void>();
   }
 
-  protected async reconcileClient(): Promise<void> {
-    const port = await this.daemon.getPort();
-
+  protected override async reconcileClient(port: string): Promise<void> {
     if (port && port === this._port) {
       // No need to create a new gRPC client, but we have to update the indexes.
       if (this._client && !(this._client instanceof Error)) {
@@ -58,29 +64,48 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
         this.onClientReadyEmitter.fire();
       }
     } else {
-      await super.reconcileClient();
+      await super.reconcileClient(port);
       this.onClientReadyEmitter.fire();
     }
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
-    this.daemon.ready.then(async () => {
+  protected override init(): void {
+    this.daemon.getPort().then(async (port) => {
       // First create the client and the instance synchronously
       // and notify client is ready.
       // TODO: Creation failure should probably be handled here
-      await this.reconcileClient().then(() => {
-        this._created.resolve();
-      });
+      await this.reconcileClient(port); // create instance
+      this._created.resolve();
 
-      // If client has been created correctly update indexes and initialize
-      // its instance by loading platforms and cores.
+      // Normal startup workflow:
+      // 1. create instance,
+      // 2. init instance,
+      // 3. update indexes asynchronously.
+
+      // First startup workflow:
+      // 1. create instance,
+      // 2. update indexes and wait,
+      // 3. init instance.
       if (this._client && !(this._client instanceof Error)) {
-        await this.updateIndexes(this._client)
-          .then(this.initInstance)
-          .then(() => {
+        try {
+          await this.initInstance(this._client); // init instance
+          this._initialized.resolve();
+          this.updateIndex(this._client); // Update the indexes asynchronously
+        } catch (error: unknown) {
+          console.error(
+            'Error occurred while initializing the core gRPC client provider',
+            error
+          );
+          if (error instanceof IndexUpdateRequiredBeforeInitError) {
+            // If it's a first start, IDE2 must run index update before the init request.
+            await this.updateIndexes(this._client);
+            await this.initInstance(this._client);
             this._initialized.resolve();
-          });
+          } else {
+            throw error;
+          }
+        }
       }
     });
 
@@ -134,8 +159,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
   }: CoreClientProvider.Client): Promise<void> {
     const initReq = new InitRequest();
     initReq.setInstance(instance);
-    await new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const stream = client.init(initReq);
+      const errors: RpcStatus[] = [];
       stream.on('data', (res: InitResponse) => {
         const progress = res.getInitProgress();
         if (progress) {
@@ -151,55 +177,41 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
           }
         }
 
-        const err = res.getError();
-        if (err) {
-          console.error(err.getMessage());
+        const error = res.getError();
+        if (error) {
+          const { code, message } = Status.toObject(false, error);
+          console.error(
+            `Detected an error response during the gRPC core client initialization: code: ${code}, message: ${message}`
+          );
+          errors.push(error);
         }
       });
-      stream.on('error', (err) => reject(err));
-      stream.on('end', resolve);
+      stream.on('error', reject);
+      stream.on('end', () => {
+        const error = this.evaluateErrorStatus(errors);
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
     });
   }
 
-  protected async updateIndexes({
-    client,
-    instance,
-  }: CoreClientProvider.Client): Promise<CoreClientProvider.Client> {
-    // in a separate promise, try and update the index
-    let indexUpdateSucceeded = true;
-    for (let i = 0; i < 10; i++) {
-      try {
-        await this.updateIndex({ client, instance });
-        indexUpdateSucceeded = true;
-        break;
-      } catch (e) {
-        console.error(`Error while updating index in attempt ${i}.`, e);
-      }
-    }
-    if (!indexUpdateSucceeded) {
-      console.error('Could not update the index. Please restart to try again.');
-    }
+  private evaluateErrorStatus(status: RpcStatus[]): Error | undefined {
+    const error = isIndexUpdateRequiredBeforeInit(status); // put future error matching here
+    return error;
+  }
 
-    let libIndexUpdateSucceeded = true;
-    for (let i = 0; i < 10; i++) {
-      try {
-        await this.updateLibraryIndex({ client, instance });
-        libIndexUpdateSucceeded = true;
-        break;
-      } catch (e) {
-        console.error(`Error while updating library index in attempt ${i}.`, e);
-      }
-    }
-    if (!libIndexUpdateSucceeded) {
-      console.error(
-        'Could not update the library index. Please restart to try again.'
-      );
-    }
-
-    if (indexUpdateSucceeded && libIndexUpdateSucceeded) {
-      this.notificationService.notifyIndexUpdated();
-    }
-    return { client, instance };
+  protected async updateIndexes(
+    client: CoreClientProvider.Client
+  ): Promise<CoreClientProvider.Client> {
+    await Promise.all([
+      retry(() => this.updateIndex(client), 50, 3),
+      retry(() => this.updateLibraryIndex(client), 50, 3),
+    ]);
+    this.notificationService.notifyIndexUpdated();
+    return client;
   }
 
   protected async updateLibraryIndex({
@@ -231,7 +243,9 @@ export class CoreClientProvider extends GrpcClientProvider<CoreClientProvider.Cl
       }
     });
     await new Promise<void>((resolve, reject) => {
-      resp.on('error', reject);
+      resp.on('error', (error) => {
+        reject(error);
+      });
       resp.on('end', resolve);
     });
   }
@@ -294,4 +308,59 @@ export abstract class CoreClientAware {
       }
     );
   }
+}
+
+class IndexUpdateRequiredBeforeInitError extends Error {
+  constructor(causes: RpcStatus.AsObject[]) {
+    super(`The index of the cores and libraries must be updated before initializing the core gRPC client.
+The following problems were detected during the gRPC client initialization:
+${causes
+  .map(({ code, message }) => ` - code: ${code}, message: ${message}`)
+  .join('\n')}
+`);
+    Object.setPrototypeOf(this, IndexUpdateRequiredBeforeInitError.prototype);
+    if (!causes.length) {
+      throw new Error(`expected non-empty 'causes'`);
+    }
+  }
+}
+
+function isIndexUpdateRequiredBeforeInit(
+  status: RpcStatus[]
+): IndexUpdateRequiredBeforeInitError | undefined {
+  const causes = status
+    .filter((s) =>
+      IndexUpdateRequiredBeforeInit.map((predicate) => predicate(s)).some(
+        Boolean
+      )
+    )
+    .map((s) => RpcStatus.toObject(false, s));
+  return causes.length
+    ? new IndexUpdateRequiredBeforeInitError(causes)
+    : undefined;
+}
+const IndexUpdateRequiredBeforeInit = [
+  isPackageIndexMissingStatus,
+  isDiscoveryNotFoundStatus,
+];
+function isPackageIndexMissingStatus(status: RpcStatus): boolean {
+  const predicate = ({ message }: RpcStatus.AsObject) =>
+    message.includes('loading json index file');
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
+  return evaluate(status, predicate);
+}
+function isDiscoveryNotFoundStatus(status: RpcStatus): boolean {
+  const predicate = ({ message }: RpcStatus.AsObject) =>
+    message.includes('discovery') &&
+    (message.includes('not found') || message.includes('not installed'));
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L740
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L744
+  return evaluate(status, predicate);
+}
+function evaluate(
+  subject: RpcStatus,
+  predicate: (error: RpcStatus.AsObject) => boolean
+): boolean {
+  const status = RpcStatus.toObject(false, subject);
+  return predicate(status);
 }

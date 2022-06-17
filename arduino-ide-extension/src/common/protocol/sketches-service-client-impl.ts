@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
@@ -10,13 +10,23 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { Sketch, SketchesService } from '../../common/protocol';
 import { ConfigService } from './config-service';
-import { SketchContainer } from './sketches-service';
+import { SketchContainer, SketchRef } from './sketches-service';
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../../browser/utils/constants';
+import * as monaco from '@theia/monaco-editor-core';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
-const READ_ONLY_FILES = [
-  'thingProperties.h',
-  'thingsProperties.h',
-  'sketch.json',
-];
+const READ_ONLY_FILES = ['sketch.json'];
+const READ_ONLY_FILES_REMOTE = ['thingProperties.h', 'thingsProperties.h'];
+
+export type CurrentSketch = Sketch | 'invalid';
+export namespace CurrentSketch {
+  export function isValid(arg: CurrentSketch | undefined): arg is Sketch {
+    return !!arg && arg !== 'invalid';
+  }
+}
 
 @injectable()
 export class SketchesServiceClientImpl
@@ -38,12 +48,15 @@ export class SketchesServiceClientImpl
   protected readonly configService: ConfigService;
 
   protected toDispose = new DisposableCollection();
-  protected sketches = new Map<string, Sketch>();
+  protected sketches = new Map<string, SketchRef>();
+  // TODO: rename this + event to the `onBlabla` pattern
   protected sketchbookDidChangeEmitter = new Emitter<{
-    created: Sketch[];
-    removed: Sketch[];
+    created: SketchRef[];
+    removed: SketchRef[];
   }>();
   readonly onSketchbookDidChange = this.sketchbookDidChangeEmitter.event;
+
+  private _currentSketch = new Deferred<CurrentSketch>();
 
   onStart(): void {
     this.configService.getConfiguration().then(({ sketchDirUri }) => {
@@ -97,13 +110,16 @@ export class SketchesServiceClientImpl
           );
         });
     });
+    this.loadCurrentSketch().then((currentSketch) =>
+      this._currentSketch.resolve(currentSketch)
+    );
   }
 
   onStop(): void {
     this.toDispose.dispose();
   }
 
-  async currentSketch(): Promise<Sketch | undefined> {
+  private async loadCurrentSketch(): Promise<CurrentSketch> {
     const sketches = (
       await Promise.all(
         this.workspaceService
@@ -114,7 +130,7 @@ export class SketchesServiceClientImpl
       )
     ).filter(notEmpty);
     if (!sketches.length) {
-      return undefined;
+      return 'invalid';
     }
     if (sketches.length > 1) {
       console.log(
@@ -126,16 +142,14 @@ export class SketchesServiceClientImpl
     return sketches[0];
   }
 
+  async currentSketch(): Promise<CurrentSketch> {
+    return this._currentSketch.promise;
+  }
+
   async currentSketchFile(): Promise<string | undefined> {
-    const sketch = await this.currentSketch();
-    if (sketch) {
-      const uri = sketch.mainFileUri;
-      const exists = await this.fileService.exists(new URI(uri));
-      if (!exists) {
-        this.messageService.warn(`Could not find sketch file: ${uri}`);
-        return undefined;
-      }
-      return uri;
+    const currentSketch = await this.currentSketch();
+    if (CurrentSketch.isValid(currentSketch)) {
+      return currentSketch.mainFileUri;
     }
     return undefined;
   }
@@ -143,10 +157,10 @@ export class SketchesServiceClientImpl
   private fireSoonHandle?: number;
   private bufferedSketchbookEvents: {
     type: 'created' | 'removed';
-    sketch: Sketch;
+    sketch: SketchRef;
   }[] = [];
 
-  private fireSoon(sketch: Sketch, type: 'created' | 'removed'): void {
+  private fireSoon(sketch: SketchRef, type: 'created' | 'removed'): void {
     this.bufferedSketchbookEvents.push({ type, sketch });
 
     if (typeof this.fireSoonHandle === 'number') {
@@ -154,7 +168,7 @@ export class SketchesServiceClientImpl
     }
 
     this.fireSoonHandle = window.setTimeout(() => {
-      const event: { created: Sketch[]; removed: Sketch[] } = {
+      const event: { created: SketchRef[]; removed: SketchRef[] } = {
         created: [],
         removed: [],
       };
@@ -178,7 +192,17 @@ export class SketchesServiceClientImpl
     if (toCheck.scheme === 'user-storage') {
       return false;
     }
-    if (READ_ONLY_FILES.includes(toCheck?.path?.base)) {
+
+    const isCloudSketch = toCheck
+      .toString()
+      .includes(`${REMOTE_SKETCHBOOK_FOLDER}/${ARDUINO_CLOUD_FOLDER}`);
+
+    const filesToCheck = [
+      ...READ_ONLY_FILES,
+      ...(isCloudSketch ? READ_ONLY_FILES_REMOTE : []),
+    ];
+
+    if (filesToCheck.includes(toCheck?.path?.base)) {
       return true;
     }
     const readOnly = !this.workspaceService

@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide",
-  "version": "2.0.0-rc5",
+  "version": "2.0.0-rc7",
   "description": "Arduino IDE",
   "repository": "https://github.com/arduino/arduino-ide.git",
   "author": "Arduino SA",
@@ -10,7 +10,7 @@
     "node": ">=14.0.0 <15"
   },
   "devDependencies": {
-    "@theia/cli": "1.22.1",
+    "@theia/cli": "1.25.0",
     "@types/sinon": "^2.3.5",
     "@types/jsdom": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
@@ -26,19 +26,21 @@
     "ignore-styles": "^5.0.1",
     "lerna": "^3.20.2",
     "lint-staged": "^11.0.0",
+    "node-gyp": "^9.0.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
     "semver": "^7.3.2",
-    "typescript": "^3.9.2",
-    "jsdom": "^11.5.1"
+    "typescript": "~4.5.5",
+    "jsdom": "^11.5.1",
+    "style-dictionary": "^3.7.0",
+    "xhr2": "^0.2.1"
   },
   "resolutions": {
-    "find-git-exec": "0.0.4",
-    "dugite-extra": "0.1.15"
+    "@types/react": "16.14.25"
   },
   "scripts": {
-    "prepare": "cross-env THEIA_ELECTRON_SKIP_REPLACE_FFMPEG=1 lerna run prepare && yarn download:plugins",
+    "prepare": "lerna run prepare && yarn download:plugins",
     "cleanup": "npx rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./browser-app/lib ./browser-app/src-gen ./browser-app/gen-webpack.config.js ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
@@ -47,10 +49,12 @@
     "test": "lerna run test",
     "download:plugins": "theia download:plugins",
     "update:version": "node ./scripts/update-version.js",
-    "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|browser-app|electron|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
+    "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|browser-app|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
     "i18n:check": "yarn i18n:generate && git add -N ./i18n && git diff --exit-code ./i18n",
     "i18n:push": "node ./scripts/i18n/transifex-push.js ./i18n/en.json",
     "i18n:pull": "node ./scripts/i18n/transifex-pull.js ./i18n/",
+    "themes:pull": "node ./scripts/themes/theme-tokens-pull.js",
+    "themes:generate": "node ./scripts/themes/theme-generator.js",
     "compose-changelog": "yarn --cwd ./arduino-ide-extension compose-changelog"
   },
   "lint-staged": {
@@ -74,6 +78,12 @@
     "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.2.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix"
+    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix",
+    "vscode-language-pack-nl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-nl/1.48.3/file/MS-CEINTL.vscode-language-pack-nl-1.48.3.vsix",
+    "vscode-language-pack-fr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-fr/1.53.2/file/MS-CEINTL.vscode-language-pack-fr-1.53.2.vsix",
+    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.53.2/file/MS-CEINTL.vscode-language-pack-zh-hans-1.53.2.vsix",
+    "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.53.2/file/MS-CEINTL.vscode-language-pack-de-1.53.2.vsix",
+    "vscode-language-pack-ja": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ja/1.53.2/file/MS-CEINTL.vscode-language-pack-ja-1.53.2.vsix",
+    "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.53.2/file/MS-CEINTL.vscode-language-pack-tr-1.53.2.vsix"
   }
 }

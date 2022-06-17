@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import {
   NotificationServiceServer,
   NotificationServiceClient,
@@ -19,8 +19,8 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyIndexUpdated());
   }
 
-  notifyDaemonStarted(): void {
-    this.clients.forEach((client) => client.notifyDaemonStarted());
+  notifyDaemonStarted(port: string): void {
+    this.clients.forEach((client) => client.notifyDaemonStarted(port));
   }
 
   notifyDaemonStopped(): void {

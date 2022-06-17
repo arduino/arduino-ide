@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandHandler } from '@theia/core/lib/common/command';
 import { CommandRegistry, MenuModelRegistry } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -12,10 +12,10 @@ import { nls } from '@theia/core/lib/common';
 @injectable()
 export class Sketchbook extends Examples {
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
+  protected override readonly commandRegistry: CommandRegistry;
 
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
+  protected override readonly menuRegistry: MenuModelRegistry;
 
   @inject(MainMenuManager)
   protected readonly mainMenuManager: MainMenuManager;
@@ -23,11 +23,7 @@ export class Sketchbook extends Examples {
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
 
-  onStart(): void {
-    this.sketchService.getSketches({}).then((container) => {
-      this.register(container);
-      this.mainMenuManager.update();
-    });
+  override onStart(): void {
     this.sketchServiceClient.onSketchbookDidChange(() => {
       this.sketchService.getSketches({}).then((container) => {
         this.register(container);
@@ -36,7 +32,14 @@ export class Sketchbook extends Examples {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override async onReady(): Promise<void> {
+    this.sketchService.getSketches({}).then((container) => {
+      this.register(container);
+      this.mainMenuManager.update();
+    });
+  }
+
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerSubmenu(
       ArduinoMenus.FILE__SKETCHBOOK_SUBMENU,
       nls.localize('arduino/sketch/sketchbook', 'Sketchbook'),
@@ -53,7 +56,7 @@ export class Sketchbook extends Examples {
     );
   }
 
-  protected createHandler(uri: string): CommandHandler {
+  protected override createHandler(uri: string): CommandHandler {
     return {
       execute: async () => {
         const sketch = await this.sketchService.loadSketch(uri);

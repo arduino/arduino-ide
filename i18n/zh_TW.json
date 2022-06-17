@@ -1,0 +1,352 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "版本：1{0}，日期：2{1}，命令列版本：{3}{4}[{5}]  {6}",
+      "label": "關於 1[0]"
+    },
+    "board": {
+      "board": "1{0} 開發板",
+      "boardInfo": "開發板資訊",
+      "boardListItem": "{0}在{1}",
+      "configDialog1": "若要上傳 Sketch 請選擇一片板子及一個埠",
+      "configDialog2": "如果你只有選擇板子你可以編譯，但不能上傳 Sketch",
+      "configDialogTitle": "選擇其他電路板或通訊埠",
+      "couldNotFindPreviouslySelected": "在安装的平台{1}中找不到以前選擇的開發板{0}。請手動選擇要使用的開發板。你想現在重新選擇它吗？",
+      "getBoardInfo": "取得開發板資訊",
+      "inSketchbook": "(在草稿資料夾中)",
+      "installManually": "手動安裝",
+      "installNow": "必須為目前選定的 {2} 開發板安裝 1{0} 2{1} 核心程式，你要現在安裝嗎？",
+      "noFQBN": "FQBN無法用於所選擇的\"{0}\"開發版。你是否安裝了對應的核心?",
+      "noPortsSelected": "沒有選到 '{0}' 板的埠",
+      "noneSelected": "沒有選擇電路板",
+      "openBoardsConfig": "選擇其他的電路板或埠...",
+      "platformMissing": "選擇的'{0}'開發版平台並未安裝",
+      "pleasePickBoard": "請選擇要連接的開發版",
+      "port": "1{0} 埠",
+      "programmer": "燒錄器",
+      "reselectLater": "請晚一點再選擇",
+      "selectBoardForInfo": "請選擇電路板以取得板子的資訊",
+      "selectPortForInfo": "請選定一個埠，以便能取得板子的資訊",
+      "showAllAvailablePorts": "當開啟時，顯示所有可用的埠",
+      "succesfullyInstalledPlatform": "平台已成功安裝 1[0]：2[1]",
+      "succesfullyUninstalledPlatform": "平台已成功移除 1[0]：2[1]"
+    },
+    "boardsManager": "開發板管理器",
+    "bootloader": {
+      "burnBootloader": "燒錄 Bootloader",
+      "doneBurningBootloader": "Bootloader 燒錄完成"
+    },
+    "burnBootloader": {
+      "error": "燒錄 1{0} Bootloader 時出現錯誤"
+    },
+    "certificate": {
+      "addNew": "加入新的",
+      "addURL": "加入 URL 以提取 SSL 證書",
+      "boardAtPort": "{0}在{1}",
+      "certificatesUploaded": "證書已上傳",
+      "enterURL": "輸入網址",
+      "noSupportedBoardConnected": "不支援目前連接的板子",
+      "openContext": "開啟context脈絡",
+      "remove": "移除",
+      "selectBoard": "選擇開發板",
+      "selectCertificateToUpload": "1. 選擇要上傳的證書",
+      "selectDestinationBoardToUpload": "2. 選擇目標的開發板並上傳證書",
+      "upload": "上傳",
+      "uploadFailed": "上傳失敗，請再試一次",
+      "uploadRootCertificates": "上傳SSL根證書",
+      "uploadingCertificates": "上傳證書"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "選擇草稿的能見度：",
+      "cloudSketchbook": "雲端草稿資料夾",
+      "connected": "已連接",
+      "continue": "繼續",
+      "donePulling": "完成讀取'{0}'。",
+      "donePushing": "完成更改'{0}'。",
+      "embed": "嵌入：",
+      "emptySketchbook": "您的草稿資料夾是空的",
+      "learnMore": "了解更多",
+      "link": "連結：",
+      "notYetPulled": "無法更改至雲端。尚未被讀取。",
+      "offline": "離線",
+      "openInCloudEditor": "在雲端編輯器中打開",
+      "options": "選項...",
+      "privateVisibility": "私人的。只有你可以查看草稿。",
+      "profilePicture": "頭像圖片",
+      "publicVisibility": "公開的。擁有連結的人都可以查看草稿。",
+      "pull": "讀取",
+      "pullFirst": "您必些先讀取才能更改至Cloud。",
+      "pullSketch": "讀取草稿",
+      "pullSketchMsg": "從雲端中讀取這個草稿將會覆蓋本地的版本。你確定要繼續嗎?",
+      "push": "更改",
+      "pushSketch": "更改草稿",
+      "pushSketchMsg": "這是一個公開草稿，在更改前，請確認所有敏感資訊都定義在arduino_secrets.h中。可以在分享介面設定為私人草稿。",
+      "remote": "遠端",
+      "share": "分享...",
+      "shareSketch": "分享草稿",
+      "showHideRemoveSketchbook": "顯示/隱藏遠端草稿資料夾",
+      "signIn": "登入",
+      "signInToCloud": "登入Arduino Cloud",
+      "signOut": "登出",
+      "syncEditSketches": "同步和編輯您的Arduino Clou草稿",
+      "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
+    },
+    "common": {
+      "later": "稍後再說",
+      "noBoardSelected": "沒有選擇開發版",
+      "notConnected": "[未連接]",
+      "offlineIndicator": "您目前處於離線狀態，在沒有網路的情況下，Arduino命令列介面將無法下載需要的資源，並可能導致錯誤。請連接至網路並重新啟動程式。",
+      "oldFormat": "'{0}'仍然使用舊的 `.pde` 格式，是否要轉換至新的 `.ino` 擴充?",
+      "processing": "資料處理中",
+      "selectBoard": "選擇開發版",
+      "selectedOn": "在 1{0}",
+      "serialMonitor": "序列埠監控",
+      "unknown": "未知"
+    },
+    "compile": {
+      "error": "1{0} 編譯錯誤"
+    },
+    "component": {
+      "by": "by",
+      "filterSearch": "過濾你的搜尋 ...",
+      "install": "安裝",
+      "moreInfo": "更多資訊",
+      "uninstall": "移除安裝",
+      "uninstallMsg": "你要移除 1{0}？",
+      "version": "版本 1{0}"
+    },
+    "contributions": {
+      "addFile": "加入檔案",
+      "fileAdded": "一個檔案加入到 Sketch",
+      "replaceTitle": "替代"
+    },
+    "debug": {
+      "debugWithMessage": "除錯 - {0}",
+      "debuggingNotSupported": "'{0}'不支援除錯。",
+      "noPlatformInstalledFor": "未安裝'{0}'的平台",
+      "optimizeForDebugging": "除錯最佳化"
+    },
+    "dialog": {
+      "dontAskAgain": "請勿再次請求"
+    },
+    "editor": {
+      "autoFormat": "自動格式化",
+      "commentUncomment": "備註/取消備註",
+      "copyForForum": "複製到論壇(Markdowm)",
+      "decreaseFontSize": "縮小字體",
+      "decreaseIndent": "減少縮排",
+      "increaseFontSize": "加大字體",
+      "increaseIndent": "增加縮排"
+    },
+    "electron": {
+      "couldNotSave": "無法儲存草稿，請複製你未存檔的工作到你偏好的文字編輯器中並重新啟動 IDE 整合開發環境",
+      "unsavedChanges": "任何沒有儲存的修改將不會被儲存"
+    },
+    "examples": {
+      "builtInExamples": "內建範例",
+      "couldNotInitializeExamples": "無法初始內建的範例",
+      "customLibrary": "客製函式庫的範例",
+      "for": "1 {0} 的範例",
+      "forAny": "適用各種開發板的範例",
+      "menu": "範例"
+    },
+    "firmware": {
+      "checkUpdates": "檢查更新",
+      "failedInstall": "安裝失敗，請再試一次",
+      "install": "安裝",
+      "installingFirmware": "安裝韌體",
+      "overwriteSketch": "安裝將覆寫到板子上的 Sketch",
+      "selectBoard": "選擇開發版",
+      "selectVersion": "選擇韌體版本",
+      "successfullyInstalled": "成功安裝韌體",
+      "updater": "WiFi101 / WiFiNINA 韌體更新器"
+    },
+    "help": {
+      "environment": "環境",
+      "faq": "常見問答集",
+      "findInReference": "在參考中搜尋",
+      "gettingStarted": "開始",
+      "keyword": "輸入關鍵字",
+      "privacyPolicy": "隱私政策",
+      "reference": "參考",
+      "search": "在 Arduino.cc 上搜尋",
+      "troubleshooting": "故障排除",
+      "visit": "造訪 Arduino.cc"
+    },
+    "ide-updater": {
+      "closeAndInstallButton": "關閉並安裝。",
+      "closeToInstallNotice": "關閉軟體並安裝更新。",
+      "downloadButton": "下載",
+      "downloadingNotice": "正在下載最新版本的Arduino IDE。",
+      "errorCheckingForUpdates": "檢查Arduino IDE更新時發生錯誤。{0}",
+      "goToDownloadButton": "前往下載",
+      "goToDownloadPage": "Arduino IDE可以更新，但我們無法自動下載與安裝。請至下載頁面下載最新的版本。",
+      "ideUpdaterDialog": "軟體更新",
+      "newVersionAvailable": "有新版本的Arduino IDE({0})可供下載。",
+      "noUpdatesAvailable": "Arduino IDE目前沒有更新的版本。",
+      "notNowButton": "現在不要",
+      "skipVersionButton": "跳過這個版本",
+      "updateAvailable": "有可用的更新。",
+      "versionDownloaded": "Arduino IDE{0}下載完成。"
+    },
+    "library": {
+      "addZip": "加入 .zip 函式庫 ...",
+      "arduinoLibraries": "Arduino函式庫",
+      "contributedLibraries": "貢獻函式庫",
+      "dependenciesForLibrary": "與 1{0}：2{1} 函式庫相依",
+      "include": "含括函式庫",
+      "installAll": "全部安裝",
+      "installMissingDependencies": "是否安裝所有缺少的附屬程式？",
+      "installOneMissingDependency": "是否安裝缺少的附屬程式?",
+      "installOnly": "只安裝 1[0]",
+      "installedSuccessfully": "成功安裝 1{0}：2{1} 函式庫",
+      "libraryAlreadyExists": "函式庫已經存在，你要覆寫它嗎？",
+      "manageLibraries": "管理函式庫",
+      "namedLibraryAlreadyExists": "函式庫的資料夾名稱 1{0} 已經存在，你要覆寫它嗎？",
+      "needsMultipleDependencies": "函式庫<b>{0}：{1}</b>需要一些未安装的附屬程式：",
+      "needsOneDependency": "函式庫<b>{0}：{1}</b>需要一些未安装的附屬程式：",
+      "overwriteExistingLibrary": "你要覆寫既有的函式庫嗎？",
+      "successfullyInstalledZipLibrary": "從 1{0} 歸檔成功安裝函式庫",
+      "title": "函式庫管理器",
+      "uninstalledSuccessfully": "成功移除安裝的 1{0}：2{1} 函式庫",
+      "zipLibrary": "函式庫"
+    },
+    "menu": {
+      "sketch": "草稿",
+      "tools": "工具"
+    },
+    "preferences": {
+      "additionalManagerURLs": "其他開發版管理器網址",
+      "auth.audience": "OAuth2閱聽者",
+      "auth.clientID": "OAuth2客戶端ID",
+      "auth.domain": "OAuth2域",
+      "auth.registerUri": "用於註冊新使用者的地址",
+      "automatic": "自動調整",
+      "board.certificates": "可上傳至開發版的證書列表",
+      "browse": "瀏覽",
+      "choose": "選擇",
+      "cloud.enabled": "True則啟用草稿同步功能。預設為true。",
+      "cloud.pull.warn": "True則在取出雲端草稿時警告使用者。預設為true。",
+      "cloud.push.warn": "True則在更改雲端草稿時警告使用者。預設為True。",
+      "cloud.pushpublic.warn": "True則在更改一個公開草稿到雲端時警告使用者。預設為true",
+      "cloud.sketchSyncEnpoint": "用來從後台更改與取出草稿的端點。預設的端點是指向Arduino Cloud API。",
+      "compile": "編譯",
+      "compile.verbose": "True則輸出詳細編譯資訊。預設為False",
+      "compile.warnings": "設定gcc警告等級。預設為'None'",
+      "compilerWarnings": "編譯器警告",
+      "editorFontSize": "編輯器字體大小",
+      "editorQuickSuggestions": "編輯器快速建議",
+      "enterAdditionalURLs": "輸入其他網址，每行一個",
+      "files.inside.sketches": "顯示草稿中的檔案",
+      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "前往版本釋出頻道獲取更新。 'stable'表示為穩定的版本， 'nightly' 則是最新的開發版本。",
+      "interfaceScale": "介面比例",
+      "invalid.editorFontSize": "無效的編輯器字體大小。它必須是正整數。",
+      "invalid.sketchbook.location": "無效的草稿資料夾位置:{0}",
+      "invalid.theme": "無效的主題。",
+      "language.log": "True則Arduino語言伺服器會自動在草稿資料夾產生日誌檔案。預設為false。",
+      "manualProxy": "手動設置代理",
+      "network": "網路",
+      "newSketchbookLocation": "選取新的草稿資料夾位置",
+      "noProxy": "無代理",
+      "showVerbose": "顯示詳細輸出",
+      "sketchbook.location": "草稿資料夾位置",
+      "sketchbook.showAllFiles": "True則顯示所有草稿中的草稿檔案。預設為false。",
+      "unofficialBoardSupport": "點擊以取得支援非官方開發版的網址列表",
+      "upload": "上傳",
+      "upload.verbose": "True則輸出詳細上傳資訊。預設為False",
+      "verifyAfterUpload": "上傳後驗證程式",
+      "window.autoScale": "True則使用者介面隨字體大小自動縮放。",
+      "window.zoomLevel": "調整視窗的縮放大小。預設大小為0，增加(例如1)或者減少(例如-1)代表縮放增加或減少20%。可以自行輸入小數調整更精細的大小。"
+    },
+    "replaceMsg": "取代 1{0} 的現有版本？",
+    "selectZip": "選擇要加入函示庫的zip檔案",
+    "serial": {
+      "autoscroll": "自動滾頁面",
+      "carriageReturn": "回車",
+      "connectionBusy": "連接失敗，1[0] 串列埠忙碌",
+      "disconnected": "已斷開{0}與{1}的連接。",
+      "failedReconnect": "連續嘗試10此後，無法將{0}重新連接到序列埠。{1}序列埠被占用。",
+      "message": "訊息 (1{0}+Enter將訊息發送到'{2}'上的2{1})",
+      "newLine": "換行",
+      "newLineCarriageReturn": "兩者都是NL和CR",
+      "noLineEndings": "沒有斷行符號",
+      "notConnected": "未有連接，請選擇開發板、埠以自動連接",
+      "reconnect": "{2}秒內將{0}重新連接至{1}...",
+      "timestamp": "時戳/時間戳記",
+      "toggleTimestamp": "切換時戳",
+      "unexpectedError": "意外的錯誤。重新接埠{1}的{0}。"
+    },
+    "sketch": {
+      "archiveSketch": "儲存草稿",
+      "cantOpen": "命名為\"{0}\"的資料夾已存在。無法開啟草稿。",
+      "close": "你確定要關閉 Sketch？",
+      "configureAndUpload": "組態配置並上傳",
+      "couldNotConnectToSerial": "無法連接到序列埠。{0}",
+      "createdArchive": "已創建文件{0}。",
+      "doneCompiling": "編譯完成",
+      "doneUploading": "上傳完畢",
+      "exportBinary": "會出已編譯的二進位檔",
+      "moving": "移動",
+      "movingMsg": "\"{0}\"必須在命名為\"{1}\"的草稿資料夾中。建立這個資料夾，移動草稿並繼續？",
+      "new": "新增",
+      "openFolder": "打開資料夾",
+      "openRecent": "開啟最近的",
+      "openSketchInNewWindow": "在新視窗開啟草稿",
+      "saveFolderAs": "另存 Sketch 資料夾",
+      "saveSketchAs": "另存 Sketch 資料夾",
+      "saveTempSketch": "Save your sketch to open it again later.",
+      "showFolder": "顯示 Sketch 資料夾",
+      "sketch": "草稿",
+      "sketchbook": "草稿資料夾",
+      "titleLocalSketchbook": "本地草稿資料夾",
+      "titleSketchbook": "草稿資料夾",
+      "upload": "上傳",
+      "uploadUsingProgrammer": "使用燒錄器上傳",
+      "userFieldsNotFoundError": "找不到已連接開發版中的用戶字段",
+      "verify": "驗證",
+      "verifyOrCompile": "驗證/編譯"
+    },
+    "upload": {
+      "error": "1 [0] 錯誤：2 [1]"
+    },
+    "userFields": {
+      "cancel": "取消",
+      "upload": "上傳"
+    }
+  },
+  "cloud": {
+    "GoToCloud": "前往雲端"
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "無法連接後端",
+      "cannotConnectDaemon": "無法連接命令列 (CLI) 常駐程式",
+      "couldNotSave": "無法儲存草稿，請複製你未存檔的工作到你偏好的文字編輯器中並重新啟動 IDE 整合開發環境",
+      "daemonOffline": "CLI 命令列常駐程式離線",
+      "offline": "離線",
+      "quitMessage": "任何沒有儲存的修改將不會被儲存",
+      "quitTitle": "Are you sure you want to quit?"
+    },
+    "debug": {
+      "start": "開始 ....",
+      "startError": "除錯階段出現錯誤，更多細節請檢查日誌內容",
+      "typeNotSupported": "不支援 \" 1{0} \" 除錯階段型態"
+    },
+    "editor": {
+      "unsavedTitle": "1[0] –尚未儲存"
+    },
+    "messages": {
+      "collapse": "崩潰",
+      "expand": "延伸"
+    },
+    "workspace": {
+      "deleteCurrentSketch": "你要刪除現行的草稿嗎？",
+      "fileNewName": "給予檔案新名稱",
+      "invalidExtension": ".{0} 不是合法的副檔名",
+      "invalidFilename": "不合法的檔案名稱",
+      "newFileName": "給予檔案新名稱",
+      "sketchDirectoryError": "在建立草稿目錄時發生錯誤。詳細訊息請參日誌。應用程式可能無法正常運作。"
+    }
+  }
+}

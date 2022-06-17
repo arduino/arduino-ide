@@ -1,20 +1,19 @@
 import { ThemeService } from '@theia/core/lib/browser/theming';
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import {
   Command,
   CommandRegistry,
   MaybePromise,
   MenuModelRegistry,
 } from '@theia/core';
-import { SerialModel } from '../serial-model';
 import { ArduinoMenus } from '../../menu/arduino-menus';
 import { Contribution } from '../../contributions/contribution';
 import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
 import { ipcRenderer } from '@theia/electron/shared/electron';
-import { SerialConfig } from '../../../common/protocol';
-import { SerialConnectionManager } from '../serial-connection-manager';
-import { SerialPlotter } from './protocol';
+import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { MonitorModel } from '../../monitor-model';
+
 const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
@@ -22,6 +21,11 @@ export namespace SerialPlotterContribution {
     export const OPEN: Command = {
       id: 'serial-plotter-open',
       label: 'Serial Plotter',
+      category: 'Arduino',
+    };
+    export const RESET: Command = {
+      id: 'serial-plotter-reset',
+      label: 'Reset Serial Plotter',
       category: 'Arduino',
     };
   }
@@ -33,19 +37,19 @@ export class PlotterFrontendContribution extends Contribution {
   protected url: string;
   protected wsPort: number;
 
-  @inject(SerialModel)
-  protected readonly model: SerialModel;
+  @inject(MonitorModel)
+  protected readonly model: MonitorModel;
 
   @inject(ThemeService)
   protected readonly themeService: ThemeService;
 
-  @inject(SerialConnectionManager)
-  protected readonly serialConnection: SerialConnectionManager;
+  @inject(MonitorManagerProxyClient)
+  protected readonly monitorManagerProxy: MonitorManagerProxyClient;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceProvider: BoardsServiceProvider;
 
-  onStart(app: FrontendApplication): MaybePromise<void> {
+  override onStart(app: FrontendApplication): MaybePromise<void> {
     this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
 
     ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
@@ -53,16 +57,21 @@ export class PlotterFrontendContribution extends Contribution {
         this.window = null;
       }
     });
+    this.monitorManagerProxy.onMonitorShouldReset(() => this.reset());
+
     return super.onStart(app);
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
-      execute: this.connect.bind(this),
+      execute: this.startPlotter.bind(this),
+    });
+    registry.registerCommand(SerialPlotterContribution.Commands.RESET, {
+      execute: () => this.reset(),
     });
   }
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: SerialPlotterContribution.Commands.OPEN.id,
       label: SerialPlotterContribution.Commands.OPEN.label,
@@ -70,12 +79,13 @@ export class PlotterFrontendContribution extends Contribution {
     });
   }
 
-  async connect(): Promise<void> {
+  async startPlotter(): Promise<void> {
+    await this.monitorManagerProxy.startMonitor();
     if (!!this.window) {
       this.window.focus();
       return;
     }
-    const wsPort = this.serialConnection.getWsPort();
+    const wsPort = this.monitorManagerProxy.getWebSocketPort();
     if (wsPort) {
       this.open(wsPort);
     } else {
@@ -84,15 +94,10 @@ export class PlotterFrontendContribution extends Contribution {
   }
 
   protected async open(wsPort: number): Promise<void> {
-    const initConfig: Partial<SerialPlotter.Config> = {
-      baudrates: SerialConfig.BaudRates.map((b) => b),
-      currentBaudrate: this.model.baudRate,
-      currentLineEnding: this.model.lineEnding,
+    const initConfig = {
       darkTheme: this.themeService.getCurrentTheme().type === 'dark',
       wsPort,
-      interpolate: this.model.interpolate,
-      connected: await this.serialConnection.isBESerialConnected(),
-      serialPort: this.boardsServiceProvider.boardsConfig.selectedPort?.address,
+      serialPort: this.model.serialPort,
     };
     const urlWithParams = queryString.stringifyUrl(
       {
@@ -102,5 +107,12 @@ export class PlotterFrontendContribution extends Contribution {
       { arrayFormat: 'comma' }
     );
     this.window = window.open(urlWithParams, 'serialPlotter');
+  }
+
+  protected async reset(): Promise<void> {
+    if (!!this.window) {
+      this.window.close();
+      await this.startPlotter();
+    }
   }
 }

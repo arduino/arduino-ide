@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
@@ -21,7 +21,7 @@ export class ElectronWindowService extends TheiaElectronWindowService {
   protected readonly appStateService: FrontendApplicationStateService;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     this.appStateService
       .reachedAnyState('initialized_layout')
       .then(() => this.splashService.requestClose());

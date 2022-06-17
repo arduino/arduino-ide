@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { MenuModelRegistry } from '@theia/core';
@@ -28,7 +28,7 @@ export class LibraryListWidgetFrontendContribution
     this.openView();
   }
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
         commandId: this.toggleCommand.id,

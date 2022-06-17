@@ -1,16 +1,16 @@
-import { injectable, postConstruct } from 'inversify';
+import { injectable, postConstruct } from '@theia/core/shared/inversify';
 import { EditorCommandContribution as TheiaEditorCommandContribution } from '@theia/editor/lib/browser/editor-command';
 
 @injectable()
 export class EditorCommandContribution extends TheiaEditorCommandContribution {
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     // Workaround for https://github.com/eclipse-theia/theia/issues/8722.
     this.editorPreferences.onPreferenceChanged(
       ({ preferenceName, newValue, oldValue }) => {
-        if (preferenceName === 'editor.autoSave') {
-          const autoSaveWasOnBeforeChange = !oldValue || oldValue === 'on';
-          const autoSaveIsOnAfterChange = !newValue || newValue === 'on';
+        if (preferenceName === 'files.autoSave') {
+          const autoSaveWasOnBeforeChange = !oldValue || oldValue !== 'off';
+          const autoSaveIsOnAfterChange = !newValue || newValue !== 'off';
           if (!autoSaveWasOnBeforeChange && autoSaveIsOnAfterChange) {
             this.shell.saveAll();
           }

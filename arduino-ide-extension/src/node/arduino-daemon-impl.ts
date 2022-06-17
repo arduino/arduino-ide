@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { inject, injectable, named } from 'inversify';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { spawn, ChildProcess } from 'child_process';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -12,9 +12,7 @@ import { Event, Emitter } from '@theia/core/lib/common/event';
 import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
-import { LocalizationProvider } from '@theia/core/lib/node/i18n/localization-provider';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
-import { DaemonLog } from './daemon-log';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath, spawnCommand } from './exec-util';
 
@@ -32,32 +30,31 @@ export class ArduinoDaemonImpl
   @inject(NotificationServiceServer)
   protected readonly notificationService: NotificationServiceServer;
 
-  @inject(LocalizationProvider)
-  protected readonly localizationProvider: LocalizationProvider;
-
   protected readonly toDispose = new DisposableCollection();
-  protected readonly onDaemonStartedEmitter = new Emitter<void>();
+  protected readonly onDaemonStartedEmitter = new Emitter<string>();
   protected readonly onDaemonStoppedEmitter = new Emitter<void>();
 
   protected _running = false;
-  protected _ready = new Deferred<void>();
+  protected _port = new Deferred<string>();
   protected _execPath: string | undefined;
-  protected _port: string;
 
   // Backend application lifecycle.
 
   onStart(): void {
-    this.startDaemon();
+    this.startDaemon(); // no await
   }
 
   // Daemon API
 
-  async isRunning(): Promise<boolean> {
-    return Promise.resolve(this._running);
+  async getPort(): Promise<string> {
+    return this._port.promise;
   }
 
-  async getPort(): Promise<string> {
-    return Promise.resolve(this._port);
+  async tryGetPort(): Promise<string | undefined> {
+    if (this._running) {
+      return this._port.promise;
+    }
+    return undefined;
   }
 
   async startDaemon(): Promise<void> {
@@ -66,7 +63,6 @@ export class ArduinoDaemonImpl
       const cliPath = await this.getExecPath();
       this.onData(`Starting daemon from ${cliPath}...`);
       const { daemon, port } = await this.spawnDaemonProcess();
-      this._port = port;
       // Watchdog process for terminating the daemon process when the backend app terminates.
       spawn(
         process.execPath,
@@ -87,7 +83,7 @@ export class ArduinoDaemonImpl
         Disposable.create(() => daemon.kill()),
         Disposable.create(() => this.fireDaemonStopped()),
       ]);
-      this.fireDaemonStarted();
+      this.fireDaemonStarted(port);
       this.onData('Daemon is running.');
     } catch (err) {
       this.onData('Failed to start the daemon.');
@@ -107,16 +103,12 @@ export class ArduinoDaemonImpl
     this.toDispose.dispose();
   }
 
-  get onDaemonStarted(): Event<void> {
+  get onDaemonStarted(): Event<string> {
     return this.onDaemonStartedEmitter.event;
   }
 
   get onDaemonStopped(): Event<void> {
     return this.onDaemonStoppedEmitter.event;
-  }
-
-  get ready(): Promise<void> {
-    return this._ready.promise;
   }
 
   async getExecPath(): Promise<string> {
@@ -244,11 +236,11 @@ export class ArduinoDaemonImpl
     return ready.promise;
   }
 
-  protected fireDaemonStarted(): void {
+  protected fireDaemonStarted(port: string): void {
     this._running = true;
-    this._ready.resolve();
-    this.onDaemonStartedEmitter.fire();
-    this.notificationService.notifyDaemonStarted();
+    this._port.resolve(port);
+    this.onDaemonStartedEmitter.fire(port);
+    this.notificationService.notifyDaemonStarted(port);
   }
 
   protected fireDaemonStopped(): void {
@@ -256,14 +248,14 @@ export class ArduinoDaemonImpl
       return;
     }
     this._running = false;
-    this._ready.reject(); // Reject all pending.
-    this._ready = new Deferred<void>();
+    this._port.reject(); // Reject all pending.
+    this._port = new Deferred<string>();
     this.onDaemonStoppedEmitter.fire();
     this.notificationService.notifyDaemonStopped();
   }
 
   protected onData(message: string): void {
-    DaemonLog.log(this.logger, message);
+    this.logger.info(message);
   }
 
   protected onError(error: any): void {

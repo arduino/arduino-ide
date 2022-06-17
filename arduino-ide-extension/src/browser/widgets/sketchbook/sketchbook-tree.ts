@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Command } from '@theia/core/lib/common/command';
 import { CompositeTreeNode, TreeNode } from '@theia/core/lib/browser/tree';
 import { DirNode, FileStatNode } from '@theia/filesystem/lib/browser/file-tree';
@@ -18,7 +18,7 @@ export class SketchbookTree extends FileNavigatorTree {
   @inject(ArduinoPreferences)
   protected readonly arduinoPreferences: ArduinoPreferences;
 
-  async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
+  override async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
     const showAllFiles =
       this.arduinoPreferences['arduino.sketchbook.showAllFiles'];
 

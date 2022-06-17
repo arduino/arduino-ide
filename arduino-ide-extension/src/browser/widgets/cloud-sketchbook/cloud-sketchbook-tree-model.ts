@@ -1,4 +1,4 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { posixSegments, splitSketchPath } from '../../create/create-paths';
 import { CreateApi } from '../../create/create-api';
@@ -53,7 +53,7 @@ export function sketchesToFileStats(sketches: Create.Sketch[]): FileStat[] {
 @injectable()
 export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   @inject(FileService)
-  protected readonly fileService: FileService;
+  protected override readonly fileService: FileService;
 
   @inject(AuthenticationClientService)
   protected readonly authenticationService: AuthenticationClientService;
@@ -65,7 +65,7 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   protected readonly cloudSketchbookTree: CloudSketchbookTree;
 
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
+  protected override readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(LocalCacheFsProvider)
   protected readonly localCacheFsProvider: LocalCacheFsProvider;
@@ -74,14 +74,14 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   protected readonly sketchCache: SketchCache;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.toDispose.push(
       this.authenticationService.onSessionDidChange(() => this.updateRoot())
     );
   }
 
-  async createRoot(): Promise<TreeNode | undefined> {
+  override async createRoot(): Promise<TreeNode | undefined> {
     const { session } = this.authenticationService;
     if (!session) {
       this.tree.root = undefined;
@@ -108,7 +108,7 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
     return this.tree as CloudSketchbookTree;
   }
 
-  protected recursivelyFindSketchRoot(node: TreeNode): any {
+  protected override recursivelyFindSketchRoot(node: TreeNode): any {
     if (node && CloudSketchbookTree.CloudSketchDirNode.is(node)) {
       return node;
     }
@@ -121,7 +121,7 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
     return false;
   }
 
-  async revealFile(uri: URI): Promise<TreeNode | undefined> {
+  override async revealFile(uri: URI): Promise<TreeNode | undefined> {
     // we use remote uris as keys for the tree
     // convert local URIs
     const remoteuri = this.localCacheFsProvider.from(uri);

@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { inject, injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { nls } from '@theia/core';
 import { IDEUpdaterComponent } from './ide-updater-component';
@@ -70,7 +70,7 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
     this.close();
   }
 
-  close(): void {
+  override close(): void {
     super.close();
     this.onClose();
   }
@@ -122,7 +122,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
 
   constructor(
     @inject(IDEUpdaterDialogProps)
-    protected readonly props: IDEUpdaterDialogProps
+    protected override readonly props: IDEUpdaterDialogProps
   ) {
     super({
       title: nls.localize(
@@ -138,7 +138,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
     return this.widget.updateInfo;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -147,7 +147,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
     this.update();
   }
 
-  async open(
+  override async open(
     data: UpdateInfo | undefined = undefined
   ): Promise<UpdateInfo | undefined> {
     if (data && data.version) {
@@ -156,17 +156,17 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
     }
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  close(): void {
+  override close(): void {
     this.widget.dispose();
     super.close();
   }

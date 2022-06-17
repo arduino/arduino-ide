@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { Command, CommandRegistry } from '@theia/core/lib/common/command';
@@ -23,7 +23,7 @@ import {
 } from '@theia/core/lib/browser/preferences/preference-service';
 import { ArduinoMenus, PlaceholderMenuNode } from '../../menu/arduino-menus';
 import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
@@ -149,7 +149,7 @@ export class CloudSketchbookContribution extends Contribution {
 
   protected readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
 
-  registerMenus(menus: MenuModelRegistry): void {
+  override registerMenus(menus: MenuModelRegistry): void {
     menus.registerMenuAction(ArduinoMenus.FILE__ADVANCED_SUBMENU, {
       commandId: CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK.id,
       label: CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK.label,
@@ -157,7 +157,7 @@ export class CloudSketchbookContribution extends Contribution {
     });
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK, {
       execute: () => {
         this.preferenceService.set(
@@ -279,7 +279,8 @@ export class CloudSketchbookContribution extends Contribution {
           // disable the "open sketch" command for the current sketch and for those not in sync
           if (
             !CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node) ||
-            (currentSketch && currentSketch.uri === arg.node.uri.toString())
+            (CurrentSketch.isValid(currentSketch) &&
+              currentSketch.uri === arg.node.uri.toString())
           ) {
             const placeholder = new PlaceholderMenuNode(
               SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP,

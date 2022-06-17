@@ -1,5 +1,9 @@
-import { inject, injectable, postConstruct } from 'inversify';
-import * as React from 'react';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
+import * as React from '@theia/core/shared/react';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import {
   BoardsService,
@@ -7,6 +11,7 @@ import {
   ExecutableService,
   Sketch,
   LibraryService,
+  ArduinoDaemon,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
@@ -17,9 +22,12 @@ import {
   DisposableCollection,
 } from '@theia/core';
 import {
+  Dialog,
   FrontendApplication,
   FrontendApplicationContribution,
   LocalStorageService,
+  OnWillStopAction,
+  SaveableWidget,
   StatusBar,
   StatusBarAlignment,
 } from '@theia/core/lib/browser';
@@ -38,23 +46,17 @@ import {
 import { MessageService } from '@theia/core/lib/common/message-service';
 import URI from '@theia/core/lib/common/uri';
 import {
+  EditorCommands,
   EditorMainMenu,
   EditorManager,
   EditorOpenerOptions,
 } from '@theia/editor/lib/browser';
-import { ProblemContribution } from '@theia/markers/lib/browser/problem/problem-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
-import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
-import { OutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
-import { OutputContribution } from '@theia/output/lib/browser/output-contribution';
-import { ScmContribution } from '@theia/scm/lib/browser/scm-contribution';
-import { SearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
+import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileChangeType } from '@theia/filesystem/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { ConfigService } from '../common/protocol/config-service';
 import { ArduinoCommands } from './arduino-commands';
 import { BoardsConfig } from './boards/boards-config';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
@@ -65,11 +67,15 @@ import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { ArduinoPreferences } from './arduino-preferences';
-import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './contributions/save-as-sketch';
-import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
+import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
+import { HostedPluginEvents } from './hosted-plugin-events';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
@@ -81,89 +87,73 @@ export class ArduinoFrontendContribution
     TabBarToolbarContribution,
     CommandContribution,
     MenuContribution,
-    ColorContribution {
+    ColorContribution
+{
   @inject(ILogger)
-  protected logger: ILogger;
+  private readonly logger: ILogger;
 
   @inject(MessageService)
-  protected readonly messageService: MessageService;
+  private readonly messageService: MessageService;
 
   @inject(BoardsService)
-  protected readonly boardsService: BoardsService;
+  private readonly boardsService: BoardsService;
 
   @inject(LibraryService)
-  protected readonly libraryService: LibraryService;
+  private readonly libraryService: LibraryService;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClientImpl: BoardsServiceProvider;
+  private readonly boardsServiceClientImpl: BoardsServiceProvider;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  private readonly editorManager: EditorManager;
 
   @inject(FileService)
-  protected readonly fileService: FileService;
+  private readonly fileService: FileService;
 
   @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
+  private readonly sketchService: SketchesService;
 
   @inject(BoardsConfigDialog)
-  protected readonly boardsConfigDialog: BoardsConfigDialog;
+  private readonly boardsConfigDialog: BoardsConfigDialog;
 
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
+  private readonly commandRegistry: CommandRegistry;
 
   @inject(StatusBar)
-  protected readonly statusBar: StatusBar;
-
-  @inject(FileNavigatorContribution)
-  protected readonly fileNavigatorContributions: FileNavigatorContribution;
-
-  @inject(OutputContribution)
-  protected readonly outputContribution: OutputContribution;
-
-  @inject(OutlineViewContribution)
-  protected readonly outlineContribution: OutlineViewContribution;
-
-  @inject(ProblemContribution)
-  protected readonly problemContribution: ProblemContribution;
-
-  @inject(ScmContribution)
-  protected readonly scmContribution: ScmContribution;
-
-  @inject(SearchInWorkspaceFrontendContribution)
-  protected readonly siwContribution: SearchInWorkspaceFrontendContribution;
-
-  @inject(SketchbookWidgetContribution)
-  protected readonly sketchbookWidgetContribution: SketchbookWidgetContribution;
+  private readonly statusBar: StatusBar;
 
   @inject(EditorMode)
-  protected readonly editorMode: EditorMode;
+  private readonly editorMode: EditorMode;
 
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
-
-  @inject(HostedPluginSupport)
-  protected hostedPluginSupport: HostedPluginSupport;
+  @inject(HostedPluginEvents)
+  private readonly hostedPluginEvents: HostedPluginEvents;
 
   @inject(ExecutableService)
-  protected executableService: ExecutableService;
+  private readonly executableService: ExecutableService;
 
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
+  private readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchServiceClient: SketchesServiceClientImpl;
+  private readonly sketchServiceClient: SketchesServiceClientImpl;
 
-  protected readonly appStateService: FrontendApplicationStateService;
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
   @inject(LocalStorageService)
-  protected readonly localStorageService: LocalStorageService;
+  private readonly localStorageService: LocalStorageService;
+
+  @inject(FileSystemFrontendContribution)
+  private readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
 
   @inject(IDEUpdater)
-  protected readonly updater: IDEUpdater;
+  private readonly updater: IDEUpdater;
 
   @inject(IDEUpdaterDialog)
-  protected readonly updaterDialog: IDEUpdaterDialog;
+  private readonly updaterDialog: IDEUpdaterDialog;
+
+  @inject(ArduinoDaemon)
+  private readonly daemon: ArduinoDaemon;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -234,7 +224,10 @@ export class ArduinoFrontendContribution
     updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
     this.appStateService.reachedState('ready').then(async () => {
       const sketch = await this.sketchServiceClient.currentSketch();
-      if (sketch && !(await this.sketchService.isTemp(sketch))) {
+      if (
+        CurrentSketch.isValid(sketch) &&
+        !(await this.sketchService.isTemp(sketch))
+      ) {
         this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
         this.toDisposeOnStop.push(
           this.fileService.onDidFilesChange(async (event) => {
@@ -260,21 +253,6 @@ export class ArduinoFrontendContribution
   }
 
   async onStart(app: FrontendApplication): Promise<void> {
-    // Initialize all `pro-mode` widgets. This is a NOOP if in normal mode.
-    for (const viewContribution of [
-      this.fileNavigatorContributions,
-      this.outputContribution,
-      this.outlineContribution,
-      this.problemContribution,
-      this.scmContribution,
-      this.siwContribution,
-      this.sketchbookWidgetContribution,
-    ] as Array<FrontendApplicationContribution>) {
-      if (viewContribution.initializeLayout) {
-        viewContribution.initializeLayout(app);
-      }
-    }
-
     this.updater
       .init(
         this.arduinoPreferences.get('arduino.ide.updateChannel'),
@@ -308,6 +286,12 @@ export class ArduinoFrontendContribution
       }
     };
     this.boardsServiceClientImpl.onBoardsConfigChanged(start);
+    this.hostedPluginEvents.onPluginsDidStart(() =>
+      start(this.boardsServiceClientImpl.boardsConfig)
+    );
+    this.hostedPluginEvents.onPluginsWillUnload(
+      () => (this.languageServerFqbn = undefined)
+    );
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
@@ -337,6 +321,19 @@ export class ArduinoFrontendContribution
     });
 
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
+
+    this.fileSystemFrontendContribution.onDidChangeEditorFile(
+      ({ type, editor }) => {
+        if (type === FileChangeType.DELETED) {
+          const editorWidget = editor;
+          if (SaveableWidget.is(editorWidget)) {
+            editorWidget.closeWithoutSaving();
+          } else {
+            editorWidget.close();
+          }
+        }
+      }
+    );
   }
 
   onStop(): void {
@@ -349,9 +346,13 @@ export class ArduinoFrontendContribution
     fqbn: string,
     name: string | undefined
   ): Promise<void> {
+    const port = await this.daemon.tryGetPort();
+    if (!port) {
+      return;
+    }
     const release = await this.languageServerStartMutex.acquire();
     try {
-      await this.hostedPluginSupport.didStart;
+      await this.hostedPluginEvents.didStart;
       const details = await this.boardsService.getBoardDetails({ fqbn });
       if (!details) {
         // Core is not installed for the selected board.
@@ -386,7 +387,7 @@ export class ArduinoFrontendContribution
       let currentSketchPath: string | undefined = undefined;
       if (log) {
         const currentSketch = await this.sketchServiceClient.currentSketch();
-        if (currentSketch) {
+        if (CurrentSketch.isValid(currentSketch)) {
           currentSketchPath = await this.fileService.fsPath(
             new URI(currentSketch.uri)
           );
@@ -397,8 +398,6 @@ export class ArduinoFrontendContribution
         this.fileService.fsPath(new URI(clangdUri)),
         this.fileService.fsPath(new URI(lsUri)),
       ]);
-
-      const config = await this.configService.getConfiguration();
 
       this.languageServerFqbn = await Promise.race([
         new Promise<undefined>((_, reject) =>
@@ -411,7 +410,7 @@ export class ArduinoFrontendContribution
           'arduino.languageserver.start',
           {
             lsPath,
-            cliDaemonAddr: `localhost:${config.daemon.port}`, // TODO: verify if this port is coming from the BE
+            cliDaemonAddr: `localhost:${port}`,
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
             cliDaemonInstance: '1',
@@ -469,9 +468,21 @@ export class ArduinoFrontendContribution
         }
       },
     });
+
+    for (const command of [
+      EditorCommands.SPLIT_EDITOR_DOWN,
+      EditorCommands.SPLIT_EDITOR_LEFT,
+      EditorCommands.SPLIT_EDITOR_RIGHT,
+      EditorCommands.SPLIT_EDITOR_UP,
+      EditorCommands.SPLIT_EDITOR_VERTICAL,
+      EditorCommands.SPLIT_EDITOR_HORIZONTAL,
+      FileNavigatorCommands.REVEAL_IN_NAVIGATOR,
+    ]) {
+      registry.unregisterCommand(command);
+    }
   }
 
-  registerMenus(registry: MenuModelRegistry) {
+  registerMenus(registry: MenuModelRegistry): void {
     const menuId = (menuPath: string[]): string => {
       const index = menuPath.length - 1;
       const menuId = menuPath[index];
@@ -540,12 +551,19 @@ export class ArduinoFrontendContribution
     uri: string,
     forceOpen = false,
     options?: EditorOpenerOptions | undefined
-  ): Promise<any> {
+  ): Promise<unknown> {
     const widget = this.editorManager.all.find(
       (widget) => widget.editor.uri.toString() === uri
     );
     if (!widget || forceOpen) {
-      return this.editorManager.open(new URI(uri), options);
+      return this.editorManager.open(
+        new URI(uri),
+        options ?? {
+          mode: 'reveal',
+          preview: false,
+          counter: 0,
+        }
+      );
     }
   }
 
@@ -628,5 +646,58 @@ export class ArduinoFrontendContribution
         description: 'Background color of the Output view.',
       }
     );
+  }
+
+  onWillStop(): OnWillStopAction {
+    return {
+      reason: 'temp-sketch',
+      action: () => {
+        return this.showTempSketchDialog();
+      },
+    };
+  }
+
+  private async showTempSketchDialog(): Promise<boolean> {
+    const sketch = await this.sketchServiceClient.currentSketch();
+    if (!CurrentSketch.isValid(sketch)) {
+      return true;
+    }
+    const isTemp = await this.sketchService.isTemp(sketch);
+    if (!isTemp) {
+      return true;
+    }
+    const messageBoxResult = await remote.dialog.showMessageBox(
+      remote.getCurrentWindow(),
+      {
+        message: nls.localize(
+          'arduino/sketch/saveTempSketch',
+          'Save your sketch to open it again later.'
+        ),
+        title: nls.localize(
+          'theia/core/quitTitle',
+          'Are you sure you want to quit?'
+        ),
+        type: 'question',
+        buttons: [
+          Dialog.CANCEL,
+          nls.localizeByDefault('Save As...'),
+          nls.localizeByDefault("Don't Save"),
+        ],
+      }
+    );
+    const result = messageBoxResult.response;
+    if (result === 2) {
+      return true;
+    } else if (result === 1) {
+      return !!(await this.commandRegistry.executeCommand(
+        SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+        {
+          execOnlyIfTemp: false,
+          openAfterMove: false,
+          wipeOriginal: true,
+        }
+      ));
+    }
+    return false;
   }
 }

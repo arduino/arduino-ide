@@ -1,4 +1,4 @@
-import { injectable, inject, postConstruct, named } from 'inversify';
+import { injectable, inject, postConstruct, named } from '@theia/core/shared/inversify';
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
@@ -55,9 +55,7 @@ export class BoardDiscovery extends CoreClientAware {
 
   @postConstruct()
   protected async init(): Promise<void> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
-    this.startBoardListWatch(coreClient);
+    this.coreClient().then((client) => this.startBoardListWatch(client));
   }
 
   stopBoardListWatch(coreClient: CoreClientProvider.Client): Promise<void> {

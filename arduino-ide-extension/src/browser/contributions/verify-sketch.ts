@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -14,6 +14,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class VerifySketch extends SketchContribution {
@@ -31,7 +32,7 @@ export class VerifySketch extends SketchContribution {
 
   protected verifyInProgress = false;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
       execute: () => this.verifySketch(),
       isEnabled: () => !this.verifyInProgress,
@@ -50,7 +51,7 @@ export class VerifySketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: VerifySketch.Commands.VERIFY_SKETCH.id,
       label: nls.localize('arduino/sketch/verifyOrCompile', 'Verify/Compile'),
@@ -66,7 +67,7 @@ export class VerifySketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: VerifySketch.Commands.VERIFY_SKETCH.id,
       keybinding: 'CtrlCmd+R',
@@ -77,7 +78,7 @@ export class VerifySketch extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
       command: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
@@ -99,7 +100,7 @@ export class VerifySketch extends SketchContribution {
     this.onDidChangeEmitter.fire();
     const sketch = await this.sketchServiceClient.currentSketch();
 
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     try {
@@ -110,12 +111,17 @@ export class VerifySketch extends SketchContribution {
         ),
         this.sourceOverride(),
       ]);
+      const board = {
+        ...boardsConfig.selectedBoard,
+        name: boardsConfig.selectedBoard?.name || '',
+        fqbn,
+      }
       const verbose = this.preferences.get('arduino.compile.verbose');
       const compilerWarnings = this.preferences.get('arduino.compile.warnings');
       this.outputChannelManager.getChannel('Arduino').clear();
       await this.coreService.compile({
         sketchUri: sketch.uri,
-        fqbn,
+        board,
         optimizeForDebug: this.editorMode.compileForDebug,
         verbose,
         exportBinaries,

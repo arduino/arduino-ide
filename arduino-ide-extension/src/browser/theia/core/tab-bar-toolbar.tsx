@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { injectable } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { injectable } from '@theia/core/shared/inversify';
 import { LabelIcon } from '@theia/core/lib/browser/label-parser';
 import {
   TabBarToolbar as TheiaTabBarToolbar,
@@ -12,7 +12,7 @@ export class TabBarToolbar extends TheiaTabBarToolbar {
    * Copied over from Theia. Added an ID to the parent of the toolbar item (`--container`).
    * CSS3 does not support parent selectors but we want to style the parent of the toolbar item.
    */
-  protected renderItem(item: TabBarToolbarItem): React.ReactNode {
+  protected override renderItem(item: TabBarToolbarItem): React.ReactNode {
     let innerText = '';
     const classNames = [];
     if (item.text) {

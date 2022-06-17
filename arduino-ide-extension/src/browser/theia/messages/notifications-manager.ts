@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { CancellationToken } from '@theia/core/lib/common/cancellation';
 import {
   ProgressMessage,
@@ -8,7 +8,7 @@ import { NotificationManager as TheiaNotificationManager } from '@theia/messages
 
 @injectable()
 export class NotificationManager extends TheiaNotificationManager {
-  async reportProgress(
+  override async reportProgress(
     messageId: string,
     update: ProgressUpdate,
     originalMessage: ProgressMessage,
@@ -34,7 +34,7 @@ export class NotificationManager extends TheiaNotificationManager {
     this.fireUpdatedEvent();
   }
 
-  protected toPlainProgress(update: ProgressUpdate): number | undefined {
+  protected override toPlainProgress(update: ProgressUpdate): number | undefined {
     if (!update.work) {
       return undefined;
     }

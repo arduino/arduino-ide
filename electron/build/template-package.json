@@ -3,30 +3,27 @@
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3",
-    "electron-builder": "22.10.5",
-    "find-git-exec": "0.0.4",
-    "dugite-extra": "0.1.15"
+    "electron-builder": "23.0.2"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
   },
   "devDependencies": {
-    "@theia/cli": "1.22.1",
+    "@theia/cli": "1.25.0",
     "cross-env": "^7.0.2",
-    "electron-builder": "22.10.5",
+    "electron-builder": "23.0.2",
     "electron-notarize": "^1.1.1",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
     "shelljs": "^0.8.3"
   },
   "scripts": {
-    "build": "yarn download:plugins && theia build --mode development && yarn patch",
-    "build:publish": "yarn download:plugins && theia build --mode production && yarn patch",
+    "build": "yarn download:plugins && theia build --mode production && yarn patch",
     "rebuild": "yarn theia rebuild:electron",
     "package": "cross-env DEBUG=* && electron-builder --publish=never",
     "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
     "download:plugins": "theia download:plugins",
-    "patch": "ncp ./patch/main.js ./src-gen/backend/main.js"
+    "patch": "ncp ./patch/main.js ./src-gen/backend/main.js && node ./scripts/patch-theia-preload.js ./lib/index.html"
   },
   "engines": {
     "node": ">=14.0.0 <15"
@@ -40,11 +37,6 @@
   ],
   "theia": {
     "target": "electron",
-    "frontend": {
-      "config": {
-        "disallowReloadKeybinding": true
-      }
-    },
     "backend": {
       "config": {
         "singleInstance": true
@@ -107,6 +99,9 @@
       "category": "Development",
       "icon": "resources/icons"
     },
+    "msi": {
+      "runAfterFinish": false
+    },
     "nsis": {
       "oneClick": false,
       "installerHeaderIcon": "resources/icon.ico",
@@ -149,6 +144,12 @@
     "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.2.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix"
+    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix",
+    "vscode-language-pack-nl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-nl/1.48.3/file/MS-CEINTL.vscode-language-pack-nl-1.48.3.vsix",
+    "vscode-language-pack-fr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-fr/1.53.2/file/MS-CEINTL.vscode-language-pack-fr-1.53.2.vsix",
+    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.53.2/file/MS-CEINTL.vscode-language-pack-zh-hans-1.53.2.vsix",
+    "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.53.2/file/MS-CEINTL.vscode-language-pack-de-1.53.2.vsix",
+    "vscode-language-pack-ja":"https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ja/1.53.2/file/MS-CEINTL.vscode-language-pack-ja-1.53.2.vsix",
+    "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.53.2/file/MS-CEINTL.vscode-language-pack-tr-1.53.2.vsix"
   }
 }

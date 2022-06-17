@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { KeybindingRegistry } from '@theia/core/lib/browser';
 import { ProblemStat } from '@theia/markers/lib/browser/problem/problem-manager';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
@@ -6,15 +6,15 @@ import { ProblemContribution as TheiaProblemContribution } from '@theia/markers/
 
 @injectable()
 export class ProblemContribution extends TheiaProblemContribution {
-  async initializeLayout(app: FrontendApplication): Promise<void> {
+  override async initializeLayout(app: FrontendApplication): Promise<void> {
     // NOOP
   }
 
-  protected setStatusBarElement(problemStat: ProblemStat): void {
+  protected override setStatusBarElement(problemStat: ProblemStat): void {
     // NOOP
   }
 
-  registerKeybindings(keybindings: KeybindingRegistry): void {
+  override registerKeybindings(keybindings: KeybindingRegistry): void {
     if (this.toggleCommand) {
       keybindings.registerKeybinding({
         command: this.toggleCommand.id,

@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -12,10 +12,11 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 
 @injectable()
 export class SaveSketch extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveSketch.Commands.SAVE_SKETCH, {
       execute: () => this.saveSketch(),
     });
@@ -27,7 +28,7 @@ export class SaveSketch extends SketchContribution {
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveSketch.Commands.SAVE_SKETCH.id,
       label: nls.localize('vscode/fileCommands/save', 'Save'),
@@ -35,14 +36,14 @@ export class SaveSketch extends SketchContribution {
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: SaveSketch.Commands.SAVE_SKETCH.id,
       keybinding: 'CtrlCmd+S',
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
       command: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
@@ -53,7 +54,7 @@ export class SaveSketch extends SketchContribution {
 
   async saveSketch(): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const isTemp = await this.sketchService.isTemp(sketch);

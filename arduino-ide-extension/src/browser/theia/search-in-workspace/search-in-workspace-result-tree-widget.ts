@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import {
   SearchInWorkspaceFileNode,
@@ -11,7 +11,7 @@ import { MEMORY_TEXT } from '@theia/core/lib/common/resource';
  */
 @injectable()
 export class SearchInWorkspaceResultTreeWidget extends TheiaSearchInWorkspaceResultTreeWidget {
-  protected async createReplacePreview(
+  protected override async createReplacePreview(
     node: SearchInWorkspaceFileNode
   ): Promise<URI> {
     const fileUri = new URI(node.fileUri).withScheme('file');

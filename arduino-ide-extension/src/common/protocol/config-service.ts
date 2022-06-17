@@ -9,8 +9,6 @@ export interface ConfigService {
   getCliConfigFileUri(): Promise<string>;
   getConfiguration(): Promise<Config>;
   setConfiguration(config: Config): Promise<void>;
-  isInDataDir(uri: string): Promise<boolean>;
-  isInSketchDir(uri: string): Promise<boolean>;
 }
 
 export interface Daemon {
@@ -115,10 +113,8 @@ export interface Config {
   readonly locale: string;
   readonly sketchDirUri: string;
   readonly dataDirUri: string;
-  readonly downloadsDirUri: string;
-  readonly additionalUrls: string[];
+  readonly additionalUrls: AdditionalUrls;
   readonly network: Network;
-  readonly daemon: Daemon;
 }
 export namespace Config {
   export function sameAs(left: Config, right: Config): boolean {
@@ -135,9 +131,37 @@ export namespace Config {
     return (
       left.locale === right.locale &&
       left.dataDirUri === right.dataDirUri &&
-      left.downloadsDirUri === right.downloadsDirUri &&
       left.sketchDirUri === right.sketchDirUri &&
       Network.sameAs(left.network, right.network)
     );
+  }
+}
+export type AdditionalUrls = string[];
+export namespace AdditionalUrls {
+  export function parse(value: string, delimiter: ',' | 'newline'): string[] {
+    return value
+      .trim()
+      .split(delimiter === ',' ? delimiter : /\r?\n/)
+      .map((url) => url.trim())
+      .filter((url) => !!url);
+  }
+  export function stringify(additionalUrls: AdditionalUrls): string {
+    return additionalUrls.join(',');
+  }
+  export function sameAs(left: AdditionalUrls, right: AdditionalUrls): boolean {
+    if (left.length !== right.length) {
+      return false;
+    }
+    const localeCompare = (left: string, right: string) =>
+      left.localeCompare(right);
+    const normalize = (url: string) => url.toLowerCase();
+    const normalizedLeft = left.map(normalize).sort(localeCompare);
+    const normalizedRight = right.map(normalize).sort(localeCompare);
+    for (let i = 0; i < normalizedLeft.length; i++) {
+      if (normalizedLeft[i] !== normalizedRight[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 }

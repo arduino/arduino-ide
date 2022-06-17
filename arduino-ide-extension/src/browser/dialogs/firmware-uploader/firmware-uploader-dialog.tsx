@@ -1,9 +1,13 @@
-import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import {
   AvailableBoard,
@@ -15,6 +19,8 @@ import {
 } from '../../../common/protocol/arduino-firmware-uploader';
 import { FirmwareUploaderComponent } from './firmware-uploader-component';
 import { UploadFirmware } from '../../contributions/upload-firmware';
+import { Port } from '../../../common/protocol';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class UploadFirmwareDialogWidget extends ReactWidget {
@@ -23,6 +29,9 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   @inject(ArduinoFirmwareUploader)
   protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStatusService: FrontendApplicationStateService;
 
   protected updatableFqbns: string[] = [];
   protected availableBoards: AvailableBoard[] = [];
@@ -38,7 +47,8 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
 
   @postConstruct()
   protected init(): void {
-    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+    this.appStatusService.reachedState('ready').then(async () => {
+      const fqbns = await this.arduinoFirmwareUploader.updatableBoards();
       this.updatableFqbns = fqbns;
       this.update();
     });
@@ -49,14 +59,14 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
     });
   }
 
-  protected flashFirmware(firmware: FirmwareInfo, port: string): Promise<any> {
+  protected flashFirmware(firmware: FirmwareInfo, port: Port): Promise<any> {
     this.busyCallback(true);
     return this.arduinoFirmwareUploader
       .flash(firmware, port)
       .finally(() => this.busyCallback(false));
   }
 
-  onCloseRequest(msg: Message): void {
+  protected override onCloseRequest(msg: Message): void {
     super.onCloseRequest(msg);
     this.isOpen = new Object();
   }
@@ -88,7 +98,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
 
   constructor(
     @inject(UploadFirmwareDialogProps)
-    protected readonly props: UploadFirmwareDialogProps
+    protected override readonly props: UploadFirmwareDialogProps
   ) {
     super({ title: UploadFirmware.Commands.OPEN.label || '' });
     this.contentNode.classList.add('firmware-uploader-dialog');
@@ -99,7 +109,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     return;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -109,21 +119,21 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     return false;
   }
 
-  close(): void {
+  override close(): void {
     if (this.busy) {
       return;
     }

@@ -1,5 +1,5 @@
 import { nls } from '@theia/core/lib/common';
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 
 export class SearchBar extends React.Component<SearchBar.Props> {
   constructor(props: Readonly<SearchBar.Props>) {
@@ -7,7 +7,7 @@ export class SearchBar extends React.Component<SearchBar.Props> {
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <input
         ref={this.setRef}

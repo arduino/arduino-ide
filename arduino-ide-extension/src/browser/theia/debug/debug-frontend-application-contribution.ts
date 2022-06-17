@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
   DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution,
@@ -13,7 +13,7 @@ export class DebugFrontendApplicationContribution extends TheiaDebugFrontendAppl
     this.options.defaultWidgetOptions.rank = 4;
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     unregisterSubmenu(DebugMenus.DEBUG, registry);
   }

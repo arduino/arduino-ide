@@ -66,21 +66,24 @@
     build,
     `arduino-language-server${platform === 'win32' ? '.exe' : ''}`
   );
-  let clangdExecutablePath, lsSuffix, clangdSuffix;
+  let clangdExecutablePath, clangFormatExecutablePath, lsSuffix, clangdSuffix;
 
   switch (platformArch) {
     case 'darwin-x64':
       clangdExecutablePath = path.join(build, 'clangd');
+      clangFormatExecutablePath = path.join(build, 'clang-format');
       lsSuffix = 'macOS_64bit.tar.gz';
       clangdSuffix = 'macOS_64bit';
       break;
     case 'linux-x64':
       clangdExecutablePath = path.join(build, 'clangd');
+      clangFormatExecutablePath = path.join(build, 'clang-format');
       lsSuffix = 'Linux_64bit.tar.gz';
       clangdSuffix = 'Linux_64bit';
       break;
     case 'win32-x64':
       clangdExecutablePath = path.join(build, 'clangd.exe');
+      clangFormatExecutablePath = path.join(build, 'clang-format.exe');
       lsSuffix = 'Windows_64bit.zip';
       clangdSuffix = 'Windows_64bit';
       break;
@@ -103,4 +106,15 @@
   downloader.downloadUnzipAll(clangdUrl, build, clangdExecutablePath, force, {
     strip: 1,
   }); // `strip`: the new clangd (12.x) is zipped into a folder, so we have to strip the outmost folder.
+
+  const clangdFormatUrl = `https://downloads.arduino.cc/tools/clang-format_${clangdVersion}_${clangdSuffix}.tar.bz2`;
+  downloader.downloadUnzipAll(
+    clangdFormatUrl,
+    build,
+    clangFormatExecutablePath,
+    force,
+    {
+      strip: 1,
+    }
+  );
 })();
