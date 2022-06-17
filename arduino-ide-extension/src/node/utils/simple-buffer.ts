@@ -3,15 +3,20 @@ export class SimpleBuffer {
 
   private flushInterval?: NodeJS.Timeout;
 
+  private flush: () => void;
+
   constructor(onFlush: (chunk: string) => void, flushTimeout: number) {
-    this.flushInterval = setInterval(() => {
+    const flush = () => {
       if (this.chunks.length > 0) {
         const chunkString = Buffer.concat(this.chunks).toString();
         this.clearChunks();
 
         onFlush(chunkString);
       }
-    }, flushTimeout);
+    };
+
+    this.flush = flush;
+    this.flushInterval = setInterval(flush, flushTimeout);
   }
 
   public addChunk(chunk: Uint8Array): void {
@@ -23,6 +28,7 @@ export class SimpleBuffer {
   }
 
   public clearFlushInterval(): void {
+    this.flush();
     this.clearChunks();
 
     clearInterval(this.flushInterval);
