@@ -61,86 +61,48 @@
     },
     {
       "name": "Comments",
-      "scope": "comment",
       "settings": {
         "foreground": "#7f8c8d"
       }
     },
     {
       "name": "Keywords Attributes",
-      "scope": [
-        "storage",
-        "support",
-        "string.quoted.single.c"
-      ],
       "settings": {
         "foreground": "#0ca1a6"
       }
     },
     {
       "name": "literal",
-      "scope": [
-        "meta.function.c",
-        "entity.name.function",
-        "meta.function-call.c",
-        "variable.other"
-      ],
       "settings": {
         "foreground": "#F39C12"
       }
     },
     {
       "name": "punctuation",
-      "scope": [
-        "punctuation.section",
-        "meta.function-call.c",
-        "meta.block.c",
-        "meta.function.c",
-        "variable",
-        "variable.name"
-      ],
       "settings": {
         "foreground": "#dae3e3"
       }
     },
     {
       "name": "function preprocessor",
-      "scope": [
-        "entity.name.function.preprocessor.c",
-        "meta.preprocessor.macro.c"
-      ],
       "settings": {
         "foreground": "#569CD6"
       }
     },
     {
       "name": "constants",
-      "scope": [
-        "string.quoted.double",
-        "string.quoted.other.lt-gt",
-        "constant"
-      ],
       "settings": {
         "foreground": "#7fcbcd"
       }
     },
     {
       "name": "meta keywords",
-      "scope": [
-        "keyword.control",
-        "meta.preprocessor.c"
-      ],
       "settings": {
         "foreground": "#C586C0"
       }
     },
     {
       "name": "numeric preprocessor",
-      "scope": [
-        "meta.preprocessor.macro.c",
-        "constant.numeric.preprocessor.c",
-        "meta.preprocessor.c"
-      ],
       "settings": {
         "foreground": "#434f54"
       }
