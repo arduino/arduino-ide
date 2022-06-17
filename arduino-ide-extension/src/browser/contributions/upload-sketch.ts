@@ -1,10 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import {
-  BoardUserField,
-  CoreService,
-  MonitorManagerProxyClient,
-} from '../../common/protocol';
+import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { BoardsDataStore } from '../boards/boards-data-store';
@@ -37,9 +33,6 @@ export class UploadSketch extends SketchContribution {
 
   @inject(UserFieldsDialog)
   protected readonly userFieldsDialog: UserFieldsDialog;
-
-  @inject(MonitorManagerProxyClient)
-  protected readonly monitorManagerProxyClient: MonitorManagerProxyClient;
 
   protected cachedUserFields: Map<string, BoardUserField[]> = new Map();
 
