@@ -25,6 +25,9 @@ export class MonitorManager extends CoreClientAware {
   private monitorServices = new Map<MonitorID, MonitorService>();
   private isUploadInProgress: boolean;
 
+  private servicesPausedForUpload: MonitorID[] = [];
+  private servicesDisposedForUpload: MonitorID[] = [];
+
   private startMonitorPendingRequests: [
     [Board, Port],
     (status: Status) => void
@@ -140,6 +143,8 @@ export class MonitorManager extends CoreClientAware {
       // There's no monitor running there, bail
       return;
     }
+
+    this.servicesPausedForUpload.push(monitorID);
     return monitor.pause();
   }
 
@@ -154,35 +159,41 @@ export class MonitorManager extends CoreClientAware {
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
     this.isUploadInProgress = false;
     let status: Status = Status.NOT_CONNECTED;
-    let monitorID;
+    let portDidChangeOnUpload = false;
+
     // We have no way of knowing which monitor
     // to retrieve if we don't have this information.
     if (board && port) {
-      monitorID = this.monitorID(board, port);
+      const monitorID = this.monitorID(board, port);
       const monitor = this.monitorServices.get(monitorID);
-      // There's no monitor running there, bail
       if (monitor) {
         status = await monitor.start();
       }
+
+      // this monitorID will only be present in "servicesDisposedForUpload"
+      // if the upload changed the board port
+      portDidChangeOnUpload =
+        this.servicesDisposedForUpload.includes(monitorID);
+      if (portDidChangeOnUpload) {
+        this.servicesDisposedForUpload = this.servicesDisposedForUpload.filter(
+          (id) => id !== monitorID
+        );
+      }
+
+      // in case a service was paused but not disposed
+      this.servicesPausedForUpload = this.servicesPausedForUpload.filter(
+        (id) => id !== monitorID
+      );
     }
-    await this.startQueuedServices(monitorID);
+
+    await this.startQueuedServices(portDidChangeOnUpload);
     return status;
   }
 
-  async startQueuedServices(
-    monitorIDRelatedToUploadBoard?: string // when upload initially requested
-  ): Promise<void> {
-    let portDidChangeOnUpload = false;
-    if (monitorIDRelatedToUploadBoard) {
-      portDidChangeOnUpload = ![...this.monitorServices.keys()].includes(
-        monitorIDRelatedToUploadBoard
-      );
-    }
-    // if we no longer have a monitor service for the "board, port"
-    // combination with which we called "notifyUploadStarted", we know
-    // the port changed during upload, hence in our "startMonitorPendingRequests"
-    // we'll have our "upload port', most likely at index 0.
-    // We remove it, as there will no longer be a board using this "upload port"
+  async startQueuedServices(portDidChangeOnUpload: boolean): Promise<void> {
+    // if the port changed during upload with the monitor open, "startMonitorPendingRequests"
+    // will include a request for our "upload port', most likely at index 0.
+    // We remove it, as this port was to be used exclusively for the upload
     const queued = portDidChangeOnUpload
       ? this.startMonitorPendingRequests.slice(1)
       : this.startMonitorPendingRequests;
@@ -266,6 +277,19 @@ export class MonitorManager extends CoreClientAware {
     this.monitorServices.set(monitorID, monitor);
     monitor.onDispose(
       (() => {
+        // if a service is disposed during upload and
+        // we paused it beforehand we know it was disposed
+        // of because the upload changed the board port
+        if (
+          this.isUploadInProgress &&
+          this.servicesPausedForUpload.includes(monitorID)
+        ) {
+          this.servicesPausedForUpload = this.servicesPausedForUpload.filter(
+            (id) => id !== monitorID
+          );
+          this.servicesDisposedForUpload.push(monitorID);
+        }
+
         this.monitorServices.delete(monitorID);
       }).bind(this)
     );
