@@ -34,6 +34,7 @@ export class MonitorManager extends CoreClientAware {
   };
 
   private startMonitor_PendingRequests: {
+    monitorID: string;
     requestFor: [Board, Port];
     postStartCallback: (status: Status) => void;
   }[] = [];
@@ -107,10 +108,17 @@ export class MonitorManager extends CoreClientAware {
     }
 
     if (this.uploadIsInProgress()) {
+      this.startMonitor_PendingRequests =
+        this.startMonitor_PendingRequests.filter(
+          (request) => request.monitorID !== monitorID
+        );
+
       this.startMonitor_PendingRequests.push({
+        monitorID,
         requestFor: [board, port],
         postStartCallback,
       });
+
       return;
     }
 
@@ -229,7 +237,8 @@ export class MonitorManager extends CoreClientAware {
     this.startMonitor_PendingRequests = [];
 
     for (const {
-      requestFor: [board, port],
+      monitorID,
+      requestFor: [_, port],
       postStartCallback: onFinish,
     } of queued) {
       const boardsState = await this.boardsService.getState();
@@ -241,7 +250,6 @@ export class MonitorManager extends CoreClientAware {
         .some((portAddress: string) => port.address === portAddress);
 
       if (boardIsStillOnPort) {
-        const monitorID = this.monitorID(board, port);
         const monitorService = this.monitorServices.get(monitorID);
 
         if (monitorService) {
