@@ -77,7 +77,9 @@ export class MonitorManager extends CoreClientAware {
     state: UploadState,
     monitorID: string
   ): void {
-    this.monitorIDsByUploadState[state].filter((id) => id !== monitorID);
+    this.monitorIDsByUploadState[state] = this.monitorIDsByUploadState[
+      state
+    ].filter((id) => id !== monitorID);
   }
 
   monitorIDIsInUploadState(state: UploadState, monitorID: string): boolean {
