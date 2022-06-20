@@ -58,7 +58,6 @@
     },
     "cloud": {
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
-      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connected",
       "continue": "Continue",
       "donePulling": "Done pulling ‘{0}’.",
@@ -82,6 +81,7 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Remote",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Share...",
       "shareSketch": "Share Sketch",
       "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
