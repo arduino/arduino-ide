@@ -57,6 +57,7 @@
       "uploadingCertificates": "Uploading certificates."
     },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
       "connected": "Connected",
       "continue": "Continue",
@@ -88,6 +89,7 @@
       "signIn": "SIGN IN",
       "signInToCloud": "Sign in to Arduino Cloud",
       "signOut": "Sign Out",
+      "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
