@@ -42,8 +42,8 @@ import { FileNavigatorContribution as TheiaFileNavigatorContribution } from '@th
 import { KeymapsFrontendContribution } from './theia/keymaps/keymaps-frontend-contribution';
 import { KeymapsFrontendContribution as TheiaKeymapsFrontendContribution } from '@theia/keymaps/lib/browser/keymaps-frontend-contribution';
 import { ArduinoToolbarContribution } from './toolbar/arduino-toolbar-contribution';
-import { EditorPreviewContribution as TheiaEditorPreviewContribution } from '@theia/editor-preview/lib/browser/editor-preview-contribution';
-import { EditorPreviewContribution } from './theia/editor/editor-contribution';
+import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
+import { EditorContribution } from './theia/editor/editor-contribution';
 import { MonacoStatusBarContribution as TheiaMonacoStatusBarContribution } from '@theia/monaco/lib/browser/monaco-status-bar-contribution';
 import { MonacoStatusBarContribution } from './theia/monaco/monaco-status-bar-contribution';
 import {
@@ -300,6 +300,8 @@ import { WindowContribution } from './theia/core/window-contribution';
 import { WindowContribution as TheiaWindowContribution } from '@theia/core/lib/browser/window-contribution';
 import { CoreErrorHandler } from './contributions/core-error-handler';
 import { CompilerErrors } from './contributions/compiler-errors';
+import { WidgetManager } from './theia/core/widget-manager';
+import { WidgetManager as TheiaWidgetManager } from '@theia/core/lib/browser/widget-manager';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -509,9 +511,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaKeymapsFrontendContribution)
     .to(KeymapsFrontendContribution)
     .inSingletonScope();
-  rebind(TheiaEditorPreviewContribution)
-    .to(EditorPreviewContribution)
-    .inSingletonScope();
+  rebind(TheiaEditorContribution).to(EditorContribution).inSingletonScope();
   rebind(TheiaMonacoStatusBarContribution)
     .to(MonacoStatusBarContribution)
     .inSingletonScope();
@@ -790,6 +790,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To be able to use a `launch.json` from outside of the workspace.
   bind(DebugConfigurationManager).toSelf().inSingletonScope();
   rebind(TheiaDebugConfigurationManager).toService(DebugConfigurationManager);
+
+  // To avoid duplicate tabs use deepEqual instead of string equal: https://github.com/eclipse-theia/theia/issues/11309
+  bind(WidgetManager).toSelf().inSingletonScope();
+  rebind(TheiaWidgetManager).toService(WidgetManager);
 
   // Preferences
   bindArduinoPreferences(bind);

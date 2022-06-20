@@ -2,9 +2,12 @@ import { notEmpty } from '@theia/core';
 import { WidgetDescription } from '@theia/core/lib/browser';
 import { ShellLayoutRestorer as TheiaShellLayoutRestorer } from '@theia/core/lib/browser/shell/shell-layout-restorer';
 import { injectable } from '@theia/core/shared/inversify';
-import { EditorPreviewWidgetFactory } from '@theia/editor-preview/lib/browser/editor-preview-widget-factory';
 import { EditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { FrontendApplication } from './frontend-application';
+
+namespace EditorPreviewWidgetFactory {
+  export const ID = 'editor-preview-widget'; // The factory ID must be a hard-coded string because IDE2 does not depend on `@theia/editor-preview`.
+}
 
 @injectable()
 export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
@@ -160,8 +163,8 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
                 constructionOptions: {
                   factoryId: EditorWidgetFactory.ID,
                   options: {
-                    uri,
                     kind: 'navigatable',
+                    uri,
                     counter: 0,
                   },
                 },

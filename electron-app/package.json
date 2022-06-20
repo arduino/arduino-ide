@@ -8,7 +8,6 @@
     "@theia/core": "1.25.0",
     "@theia/debug": "1.25.0",
     "@theia/editor": "1.25.0",
-    "@theia/editor-preview": "1.25.0",
     "@theia/electron": "1.25.0",
     "@theia/file-search": "1.25.0",
     "@theia/filesystem": "1.25.0",
