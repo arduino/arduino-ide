@@ -127,11 +127,8 @@ export namespace Sketch {
     export const ALL = Array.from(new Set([...MAIN, ...SOURCE, ...ADDITIONAL]));
   }
   export function isInSketch(uri: string | URI, sketch: Sketch): boolean {
-    const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
-    return (
-      [mainFileUri, ...otherSketchFileUris, ...additionalFileUris].indexOf(
-        uri.toString()
-      ) !== -1
+    return uris(sketch).includes(
+      typeof uri === 'string' ? uri : uri.toString()
     );
   }
   export function isSketchFile(arg: string | URI): boolean {
@@ -139,6 +136,10 @@ export namespace Sketch {
       return isSketchFile(arg.toString());
     }
     return Extensions.MAIN.some((ext) => arg.endsWith(ext));
+  }
+  export function uris(sketch: Sketch): string[] {
+    const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
+    return [mainFileUri, ...otherSketchFileUris, ...additionalFileUris];
   }
 }
 

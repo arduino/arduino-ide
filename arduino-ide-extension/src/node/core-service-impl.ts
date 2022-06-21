@@ -4,7 +4,11 @@ import { relative } from 'path';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 import { ClientReadableStream } from '@grpc/grpc-js';
-import { CompilerWarnings, CoreService } from '../common/protocol/core-service';
+import {
+  CompilerWarnings,
+  CoreService,
+  CoreError,
+} from '../common/protocol/core-service';
 import {
   CompileRequest,
   CompileResponse,
@@ -19,27 +23,24 @@ import {
   UploadUsingProgrammerResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { ResponseService } from '../common/protocol/response-service';
-import { NotificationServiceServer } from '../common/protocol';
+import { Board, OutputMessage, Port, Status } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { firstToUpperCase, firstToLowerCase } from '../common/utils';
-import { Port } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import { nls } from '@theia/core';
+import { Port as GrpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { ApplicationError, Disposable, nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
 import { SimpleBuffer } from './utils/simple-buffer';
+import { tryParseError } from './cli-error-parser';
+import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
+import { firstToUpperCase, notEmpty } from '../common/utils';
+import { ServiceError } from './service-error';
 
-const FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS = 32;
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(ResponseService)
-  protected readonly responseService: ResponseService;
-
-  @inject(NotificationServiceServer)
-  protected readonly notificationService: NotificationServiceServer;
+  private readonly responseService: ResponseService;
 
   @inject(MonitorManager)
-  protected readonly monitorManager: MonitorManager;
-
-  protected uploading = false;
+  private readonly monitorManager: MonitorManager;
 
   async compile(
     options: CoreService.Compile.Options & {
@@ -47,76 +48,85 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compilerWarnings?: CompilerWarnings;
     }
   ): Promise<void> {
-    const { sketchUri, board, compilerWarnings } = options;
-    const sketchPath = FileUri.fsPath(sketchUri);
-
-    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
+    const handler = this.createOnDataHandler();
+    const request = this.compileRequest(options, instance);
+    return new Promise<void>((resolve, reject) => {
+      client
+        .compile(request)
+        .on('data', handler.onData)
+        .on('error', (error) => {
+          if (!ServiceError.is(error)) {
+            console.error(
+              'Unexpected error occurred while compiling the sketch.',
+              error
+            );
+            reject(error);
+          } else {
+            const compilerErrors = tryParseError({
+              content: handler.stderr,
+              sketch: options.sketch,
+            });
+            const message = nls.localize(
+              'arduino/compile/error',
+              'Compilation error: {0}',
+              compilerErrors
+                .map(({ message }) => message)
+                .filter(notEmpty)
+                .shift() ?? error.details
+            );
+            this.sendResponse(
+              error.details + '\n\n' + message,
+              OutputMessage.Severity.Error
+            );
+            reject(CoreError.VerifyFailed(message, compilerErrors));
+          }
+        })
+        .on('end', resolve);
+    }).finally(() => handler.dispose());
+  }
 
-    const compileReq = new CompileRequest();
-    compileReq.setInstance(instance);
-    compileReq.setSketchPath(sketchPath);
+  private compileRequest(
+    options: CoreService.Compile.Options & {
+      exportBinaries?: boolean;
+      compilerWarnings?: CompilerWarnings;
+    },
+    instance: Instance
+  ): CompileRequest {
+    const { sketch, board, compilerWarnings } = options;
+    const sketchUri = sketch.uri;
+    const sketchPath = FileUri.fsPath(sketchUri);
+    const request = new CompileRequest();
+    request.setInstance(instance);
+    request.setSketchPath(sketchPath);
     if (board?.fqbn) {
-      compileReq.setFqbn(board.fqbn);
+      request.setFqbn(board.fqbn);
     }
     if (compilerWarnings) {
-      compileReq.setWarnings(compilerWarnings.toLowerCase());
+      request.setWarnings(compilerWarnings.toLowerCase());
     }
-    compileReq.setOptimizeForDebug(options.optimizeForDebug);
-    compileReq.setPreprocess(false);
-    compileReq.setVerbose(options.verbose);
-    compileReq.setQuiet(false);
+    request.setOptimizeForDebug(options.optimizeForDebug);
+    request.setPreprocess(false);
+    request.setVerbose(options.verbose);
+    request.setQuiet(false);
     if (typeof options.exportBinaries === 'boolean') {
       const exportBinaries = new BoolValue();
       exportBinaries.setValue(options.exportBinaries);
-      compileReq.setExportBinaries(exportBinaries);
+      request.setExportBinaries(exportBinaries);
     }
-    this.mergeSourceOverrides(compileReq, options);
-
-    const result = client.compile(compileReq);
-
-    const compileBuffer = new SimpleBuffer(
-      this.flushOutputPanelMessages.bind(this),
-      FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
-    );
-    try {
-      await new Promise<void>((resolve, reject) => {
-        result.on('data', (cr: CompileResponse) => {
-          compileBuffer.addChunk(cr.getOutStream_asU8());
-          compileBuffer.addChunk(cr.getErrStream_asU8());
-        });
-        result.on('error', (error) => {
-          compileBuffer.clearFlushInterval();
-          reject(error);
-        });
-        result.on('end', () => {
-          compileBuffer.clearFlushInterval();
-          resolve();
-        });
-      });
-      this.responseService.appendToOutput({
-        chunk: '\n--------------------------\nCompilation complete.\n',
-      });
-    } catch (e) {
-      const errorMessage = nls.localize(
-        'arduino/compile/error',
-        'Compilation error: {0}',
-        e.details
-      );
-      this.responseService.appendToOutput({
-        chunk: `${errorMessage}\n`,
-        severity: 'error',
-      });
-      throw new Error(errorMessage);
-    }
+    this.mergeSourceOverrides(request, options);
+    return request;
   }
 
   upload(options: CoreService.Upload.Options): Promise<void> {
     return this.doUpload(
       options,
       () => new UploadRequest(),
-      (client, req) => client.upload(req)
+      (client, req) => client.upload(req),
+      (message: string, info: CoreError.ErrorInfo[]) =>
+        CoreError.UploadFailed(message, info),
+      'upload'
     );
   }
 
@@ -127,176 +137,209 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       options,
       () => new UploadUsingProgrammerRequest(),
       (client, req) => client.uploadUsingProgrammer(req),
+      (message: string, info: CoreError.ErrorInfo[]) =>
+        CoreError.UploadUsingProgrammerFailed(message, info),
       'upload using programmer'
     );
   }
 
-  isUploading(): Promise<boolean> {
-    return Promise.resolve(this.uploading);
-  }
-
   protected async doUpload(
     options: CoreService.Upload.Options,
-    requestProvider: () => UploadRequest | UploadUsingProgrammerRequest,
-    // tslint:disable-next-line:max-line-length
+    requestFactory: () => UploadRequest | UploadUsingProgrammerRequest,
     responseHandler: (
       client: ArduinoCoreServiceClient,
-      req: UploadRequest | UploadUsingProgrammerRequest
+      request: UploadRequest | UploadUsingProgrammerRequest
     ) => ClientReadableStream<UploadResponse | UploadUsingProgrammerResponse>,
-    task = 'upload'
+    errorHandler: (
+      message: string,
+      info: CoreError.ErrorInfo[]
+    ) => ApplicationError<number, CoreError.ErrorInfo[]>,
+    task: string
   ): Promise<void> {
     await this.compile(Object.assign(options, { exportBinaries: false }));
 
-    this.uploading = true;
-    const { sketchUri, board, port, programmer } = options;
-
-    const sketchPath = FileUri.fsPath(sketchUri);
-
-    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
+    const request = this.uploadOrUploadUsingProgrammerRequest(
+      options,
+      instance,
+      requestFactory
+    );
+    const handler = this.createOnDataHandler();
+    return this.notifyUploadWillStart(options).then(() =>
+      new Promise<void>((resolve, reject) => {
+        responseHandler(client, request)
+          .on('data', handler.onData)
+          .on('error', (error) => {
+            if (!ServiceError.is(error)) {
+              console.error(`Unexpected error occurred while ${task}.`, error);
+              reject(error);
+            } else {
+              const message = nls.localize(
+                'arduino/upload/error',
+                '{0} error: {1}',
+                firstToUpperCase(task),
+                error.details
+              );
+              this.sendResponse(error.details, OutputMessage.Severity.Error);
+              reject(
+                errorHandler(
+                  message,
+                  tryParseError({
+                    content: handler.stderr,
+                    sketch: options.sketch,
+                  })
+                )
+              );
+            }
+          })
+          .on('end', resolve);
+      }).finally(async () => {
+        handler.dispose();
+        await this.notifyUploadDidFinish(options);
+      })
+    );
+  }
 
-    const req = requestProvider();
-    req.setInstance(instance);
-    req.setSketchPath(sketchPath);
+  private uploadOrUploadUsingProgrammerRequest(
+    options: CoreService.Upload.Options,
+    instance: Instance,
+    requestFactory: () => UploadRequest | UploadUsingProgrammerRequest
+  ): UploadRequest | UploadUsingProgrammerRequest {
+    const { sketch, board, port, programmer } = options;
+    const sketchPath = FileUri.fsPath(sketch.uri);
+    const request = requestFactory();
+    request.setInstance(instance);
+    request.setSketchPath(sketchPath);
     if (board?.fqbn) {
-      req.setFqbn(board.fqbn);
+      request.setFqbn(board.fqbn);
     }
-    const p = new Port();
-    if (port) {
-      p.setAddress(port.address);
-      p.setLabel(port.addressLabel);
-      p.setProtocol(port.protocol);
-      p.setProtocolLabel(port.protocolLabel);
-    }
-    req.setPort(p);
+    request.setPort(this.createPort(port));
     if (programmer) {
-      req.setProgrammer(programmer.id);
+      request.setProgrammer(programmer.id);
     }
-    req.setVerbose(options.verbose);
-    req.setVerify(options.verify);
+    request.setVerbose(options.verbose);
+    request.setVerify(options.verify);
 
     options.userFields.forEach((e) => {
-      req.getUserFieldsMap().set(e.name, e.value);
+      request.getUserFieldsMap().set(e.name, e.value);
     });
-
-    try {
-      await this.monitorManager.notifyUploadStarted(board, port);
-
-      const result = responseHandler(client, req);
-
-      const uploadBuffer = new SimpleBuffer(
-        this.flushOutputPanelMessages.bind(this),
-        FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
-      );
-
-      await new Promise<void>((resolve, reject) => {
-        result.on('data', (resp: UploadResponse) => {
-          uploadBuffer.addChunk(resp.getOutStream_asU8());
-          uploadBuffer.addChunk(resp.getErrStream_asU8());
-        });
-        result.on('error', (error) => {
-          uploadBuffer.clearFlushInterval();
-          reject(error);
-        });
-        result.on('end', () => {
-          uploadBuffer.clearFlushInterval();
-          resolve();
-        });
-      });
-      this.responseService.appendToOutput({
-        chunk:
-          '\n--------------------------\n' +
-          firstToLowerCase(task) +
-          ' complete.\n',
-      });
-    } catch (e) {
-      const errorMessage = nls.localize(
-        'arduino/upload/error',
-        '{0} error: {1}',
-        firstToUpperCase(task),
-        e.details
-      );
-      this.responseService.appendToOutput({
-        chunk: `${errorMessage}\n`,
-        severity: 'error',
-      });
-      throw new Error(errorMessage);
-    } finally {
-      this.uploading = false;
-      await this.monitorManager.notifyUploadFinished(board, port);
-    }
+    return request;
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
-    this.uploading = true;
-    const { board, port, programmer } = options;
-
-    await this.coreClientProvider.initialized;
     const coreClient = await this.coreClient();
     const { client, instance } = coreClient;
-    const burnReq = new BurnBootloaderRequest();
-    burnReq.setInstance(instance);
-    if (board?.fqbn) {
-      burnReq.setFqbn(board.fqbn);
-    }
-    const p = new Port();
-    if (port) {
-      p.setAddress(port.address);
-      p.setLabel(port.addressLabel);
-      p.setProtocol(port.protocol);
-      p.setProtocolLabel(port.protocolLabel);
-    }
-    burnReq.setPort(p);
-    if (programmer) {
-      burnReq.setProgrammer(programmer.id);
-    }
-    burnReq.setVerify(options.verify);
-    burnReq.setVerbose(options.verbose);
-    try {
-      await this.monitorManager.notifyUploadStarted(board, port);
-      const result = client.burnBootloader(burnReq);
+    const handler = this.createOnDataHandler();
+    const request = this.burnBootloaderRequest(options, instance);
+    return this.notifyUploadWillStart(options).then(() =>
+      new Promise<void>((resolve, reject) => {
+        client
+          .burnBootloader(request)
+          .on('data', handler.onData)
+          .on('error', (error) => {
+            if (!ServiceError.is(error)) {
+              console.error(
+                'Unexpected error occurred while burning the bootloader.',
+                error
+              );
+              reject(error);
+            } else {
+              this.sendResponse(error.details, OutputMessage.Severity.Error);
+              reject(
+                CoreError.BurnBootloaderFailed(
+                  nls.localize(
+                    'arduino/burnBootloader/error',
+                    'Error while burning the bootloader: {0}',
+                    error.details
+                  ),
+                  tryParseError({ content: handler.stderr })
+                )
+              );
+            }
+          })
+          .on('end', resolve);
+      }).finally(async () => {
+        handler.dispose();
+        await this.notifyUploadDidFinish(options);
+      })
+    );
+  }
 
-      const bootloaderBuffer = new SimpleBuffer(
-        this.flushOutputPanelMessages.bind(this),
-        FLUSH_OUTPUT_MESSAGES_TIMEOUT_MS
-      );
-      await new Promise<void>((resolve, reject) => {
-        result.on('data', (resp: BurnBootloaderResponse) => {
-          bootloaderBuffer.addChunk(resp.getOutStream_asU8());
-          bootloaderBuffer.addChunk(resp.getErrStream_asU8());
-        });
-        result.on('error', (error) => {
-          bootloaderBuffer.clearFlushInterval();
-          reject(error);
-        });
-        result.on('end', () => {
-          bootloaderBuffer.clearFlushInterval();
-          resolve();
-        });
-      });
-    } catch (e) {
-      const errorMessage = nls.localize(
-        'arduino/burnBootloader/error',
-        'Error while burning the bootloader: {0}',
-        e.details
-      );
-      this.responseService.appendToOutput({
-        chunk: `${errorMessage}\n`,
-        severity: 'error',
-      });
-      throw new Error(errorMessage);
-    } finally {
-      this.uploading = false;
-      await this.monitorManager.notifyUploadFinished(board, port);
+  private burnBootloaderRequest(
+    options: CoreService.Bootloader.Options,
+    instance: Instance
+  ): BurnBootloaderRequest {
+    const { board, port, programmer } = options;
+    const request = new BurnBootloaderRequest();
+    request.setInstance(instance);
+    if (board?.fqbn) {
+      request.setFqbn(board.fqbn);
     }
+    request.setPort(this.createPort(port));
+    if (programmer) {
+      request.setProgrammer(programmer.id);
+    }
+    request.setVerify(options.verify);
+    request.setVerbose(options.verbose);
+    return request;
+  }
+
+  private createOnDataHandler<R extends StreamingResponse>(): Disposable & {
+    stderr: Buffer[];
+    onData: (response: R) => void;
+  } {
+    const stderr: Buffer[] = [];
+    const buffer = new SimpleBuffer((chunks) => {
+      Array.from(chunks.entries()).forEach(([severity, chunk]) => {
+        if (chunk) {
+          this.sendResponse(chunk, severity);
+        }
+      });
+    });
+    const onData = StreamingResponse.createOnDataHandler(stderr, (out, err) => {
+      buffer.addChunk(out);
+      buffer.addChunk(err, OutputMessage.Severity.Error);
+    });
+    return {
+      dispose: () => buffer.dispose(),
+      stderr,
+      onData,
+    };
+  }
+
+  private sendResponse(
+    chunk: string,
+    severity: OutputMessage.Severity = OutputMessage.Severity.Info
+  ): void {
+    this.responseService.appendToOutput({ chunk, severity });
+  }
+
+  private async notifyUploadWillStart({
+    board,
+    port,
+  }: {
+    board?: Board | undefined;
+    port?: Port | undefined;
+  }): Promise<void> {
+    return this.monitorManager.notifyUploadStarted(board, port);
+  }
+
+  private async notifyUploadDidFinish({
+    board,
+    port,
+  }: {
+    board?: Board | undefined;
+    port?: Port | undefined;
+  }): Promise<Status> {
+    return this.monitorManager.notifyUploadFinished(board, port);
   }
 
   private mergeSourceOverrides(
     req: { getSourceOverrideMap(): jspb.Map<string, string> },
     options: CoreService.Compile.Options
   ): void {
-    const sketchPath = FileUri.fsPath(options.sketchUri);
+    const sketchPath = FileUri.fsPath(options.sketch.uri);
     for (const uri of Object.keys(options.sourceOverride)) {
       const content = options.sourceOverride[uri];
       if (content) {
@@ -306,9 +349,33 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
   }
 
-  private flushOutputPanelMessages(chunk: string): void {
-    this.responseService.appendToOutput({
-      chunk,
-    });
+  private createPort(port: Port | undefined): GrpcPort {
+    const grpcPort = new GrpcPort();
+    if (port) {
+      grpcPort.setAddress(port.address);
+      grpcPort.setLabel(port.addressLabel);
+      grpcPort.setProtocol(port.protocol);
+      grpcPort.setProtocolLabel(port.protocolLabel);
+    }
+    return grpcPort;
+  }
+}
+type StreamingResponse =
+  | CompileResponse
+  | UploadResponse
+  | UploadUsingProgrammerResponse
+  | BurnBootloaderResponse;
+namespace StreamingResponse {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export function createOnDataHandler<R extends StreamingResponse>(
+    stderr: Uint8Array[],
+    onData: (out: Uint8Array, err: Uint8Array) => void
+  ): (response: R) => void {
+    return (response: R) => {
+      const out = response.getOutStream_asU8();
+      const err = response.getErrStream_asU8();
+      stderr.push(err);
+      onData(out, err);
+    };
   }
 }

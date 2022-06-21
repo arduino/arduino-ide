@@ -13,6 +13,32 @@ export enum UpdateChannel {
   Stable = 'stable',
   Nightly = 'nightly',
 }
+export const ErrorRevealStrategyLiterals = [
+  /**
+   * Scroll vertically as necessary and reveal a line.
+   */
+  'auto',
+  /**
+   * Scroll vertically as necessary and reveal a line centered vertically.
+   */
+  'center',
+  /**
+   * Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition.
+   */
+  'top',
+  /**
+   * Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport.
+   */
+  'centerIfOutsideViewport',
+] as const;
+export type ErrorRevealStrategy = typeof ErrorRevealStrategyLiterals[number];
+export namespace ErrorRevealStrategy {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+  export function is(arg: any): arg is ErrorRevealStrategy {
+    return !!arg && ErrorRevealStrategyLiterals.includes(arg);
+  }
+  export const Default: ErrorRevealStrategy = 'centerIfOutsideViewport';
+}
 
 export const ArduinoConfigSchema: PreferenceSchema = {
   type: 'object',
@@ -32,6 +58,23 @@ export const ArduinoConfigSchema: PreferenceSchema = {
         'True for verbose compile output. False by default'
       ),
       default: false,
+    },
+    'arduino.compile.experimental': {
+      type: 'boolean',
+      description: nls.localize(
+        'arduino/preferences/compile.experimental',
+        'True if the IDE should handle multiple compiler errors. False by default'
+      ),
+      default: false,
+    },
+    'arduino.compile.revealRange': {
+      enum: [...ErrorRevealStrategyLiterals],
+      description: nls.localize(
+        'arduino/preferences/compile.revealRange',
+        "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+        ErrorRevealStrategy.Default
+      ),
+      default: ErrorRevealStrategy.Default,
     },
     'arduino.compile.warnings': {
       enum: [...CompilerWarningLiterals],
@@ -182,12 +225,22 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: true,
     },
+    'arduino.cli.daemon.debug': {
+      type: 'boolean',
+      description: nls.localize(
+        'arduino/preferences/cli.daemonDebug',
+        "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default."
+      ),
+      default: false,
+    },
   },
 };
 
 export interface ArduinoConfiguration {
   'arduino.language.log': boolean;
   'arduino.compile.verbose': boolean;
+  'arduino.compile.experimental': boolean;
+  'arduino.compile.revealRange': ErrorRevealStrategy;
   'arduino.compile.warnings': CompilerWarnings;
   'arduino.upload.verbose': boolean;
   'arduino.upload.verify': boolean;
@@ -207,6 +260,7 @@ export interface ArduinoConfiguration {
   'arduino.auth.audience': string;
   'arduino.auth.registerUri': string;
   'arduino.survey.notification': boolean;
+  'arduino.cli.daemon.debug': boolean;
 }
 
 export const ArduinoPreferences = Symbol('ArduinoPreferences');

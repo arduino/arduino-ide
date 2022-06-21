@@ -14,7 +14,7 @@ import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
-import { OutputChannelManager } from '@theia/output/lib/browser/output-channel';
+
 import {
   MenuModelRegistry,
   MenuContribution,
@@ -48,9 +48,15 @@ import {
   ConfigService,
   FileSystemExt,
   Sketch,
+  CoreService,
+  CoreError,
 } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { CoreErrorHandler } from './core-error-handler';
+import { nls } from '@theia/core';
+import { OutputChannelManager } from '../theia/output/output-channel';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 
 export {
   Command,
@@ -161,6 +167,56 @@ export abstract class SketchContribution extends Contribution {
       }
     }
     return override;
+  }
+}
+
+@injectable()
+export class CoreServiceContribution extends SketchContribution {
+  @inject(CoreService)
+  protected readonly coreService: CoreService;
+
+  @inject(CoreErrorHandler)
+  protected readonly coreErrorHandler: CoreErrorHandler;
+
+  @inject(ClipboardService)
+  private readonly clipboardService: ClipboardService;
+
+  protected handleError(error: unknown): void {
+    this.coreErrorHandler.tryHandle(error);
+    this.tryToastErrorMessage(error);
+  }
+
+  private tryToastErrorMessage(error: unknown): void {
+    let message: undefined | string = undefined;
+    if (CoreError.is(error)) {
+      message = error.message;
+    } else if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === 'string') {
+      message = error;
+    } else {
+      try {
+        message = JSON.stringify(error);
+      } catch {}
+    }
+    if (message) {
+      const copyAction = nls.localize(
+        'arduino/coreContribution/copyError',
+        'Copy error messages'
+      );
+      this.messageService.error(message, copyAction).then(async (action) => {
+        if (action === copyAction) {
+          const content = await this.outputChannelManager.contentOfChannel(
+            'Arduino'
+          );
+          if (content) {
+            this.clipboardService.writeText(content);
+          }
+        }
+      });
+    } else {
+      throw error;
+    }
   }
 }
 

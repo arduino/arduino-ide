@@ -3,23 +3,19 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { join, basename } from 'path';
+import { join } from 'path';
 import * as fs from 'fs';
-import { promisify } from 'util';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import {
-  Sketch,
   SketchRef,
   SketchContainer,
 } from '../common/protocol/sketches-service';
-import { SketchesServiceImpl } from './sketches-service-impl';
 import { ExamplesService } from '../common/protocol/examples-service';
 import {
   LibraryLocation,
   LibraryPackage,
   LibraryService,
 } from '../common/protocol';
-import { ConfigServiceImpl } from './config-service-impl';
 import { duration } from '../common/decorators';
 import { URI } from '@theia/core/lib/common/uri';
 import { Path } from '@theia/core/lib/common/path';
@@ -88,14 +84,8 @@ export class BuiltInExamplesServiceImpl {
 
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
-  @inject(SketchesServiceImpl)
-  protected readonly sketchesService: SketchesServiceImpl;
-
   @inject(LibraryService)
-  protected readonly libraryService: LibraryService;
-
-  @inject(ConfigServiceImpl)
-  protected readonly configService: ConfigServiceImpl;
+  private readonly libraryService: LibraryService;
 
   @inject(BuiltInExamplesServiceImpl)
   private readonly builtInExamplesService: BuiltInExamplesServiceImpl;
@@ -117,7 +107,7 @@ export class ExamplesServiceImpl implements ExamplesService {
       fqbn,
     });
     for (const pkg of packages) {
-      const container = await this.tryGroupExamplesNew(pkg);
+      const container = await this.tryGroupExamples(pkg);
       const { location } = pkg;
       if (location === LibraryLocation.USER) {
         user.push(container);
@@ -130,9 +120,6 @@ export class ExamplesServiceImpl implements ExamplesService {
         any.push(container);
       }
     }
-    // user.sort((left, right) => left.label.localeCompare(right.label));
-    // current.sort((left, right) => left.label.localeCompare(right.label));
-    // any.sort((left, right) => left.label.localeCompare(right.label));
     return { user, current, any };
   }
 
@@ -141,7 +128,7 @@ export class ExamplesServiceImpl implements ExamplesService {
    * folder hierarchy. This method tries to workaround it by falling back to the `installDirUri` and manually creating the
    * location of the examples. Otherwise it creates the example container from the direct examples FS paths.
    */
-  protected async tryGroupExamplesNew({
+  private async tryGroupExamples({
     label,
     exampleUris,
     installDirUri,
@@ -208,10 +195,6 @@ export class ExamplesServiceImpl implements ExamplesService {
         if (!child) {
           child = SketchContainer.create(label);
           parent.children.push(child);
-          //TODO: remove or move sort
-          parent.children.sort((left, right) =>
-            left.label.localeCompare(right.label)
-          );
         }
         return child;
       };
@@ -230,65 +213,7 @@ export class ExamplesServiceImpl implements ExamplesService {
         container
       );
       refContainer.sketches.push(ref);
-      //TODO: remove or move sort
-      refContainer.sketches.sort((left, right) =>
-        left.name.localeCompare(right.name)
-      );
     }
     return container;
-  }
-
-  // Built-ins are included inside the IDE.
-  protected async load(path: string): Promise<SketchContainer> {
-    if (!(await promisify(fs.exists)(path))) {
-      throw new Error('Examples are not available');
-    }
-    const stat = await promisify(fs.stat)(path);
-    if (!stat.isDirectory) {
-      throw new Error(`${path} is not a directory.`);
-    }
-    const names = await promisify(fs.readdir)(path);
-    const sketches: SketchRef[] = [];
-    const children: SketchContainer[] = [];
-    for (const p of names.map((name) => join(path, name))) {
-      const stat = await promisify(fs.stat)(p);
-      if (stat.isDirectory()) {
-        const sketch = await this.tryLoadSketch(p);
-        if (sketch) {
-          sketches.push({ name: sketch.name, uri: sketch.uri });
-          sketches.sort((left, right) => left.name.localeCompare(right.name));
-        } else {
-          const child = await this.load(p);
-          children.push(child);
-          children.sort((left, right) => left.label.localeCompare(right.label));
-        }
-      }
-    }
-    const label = basename(path);
-    return {
-      label,
-      children,
-      sketches,
-    };
-  }
-
-  protected async group(paths: string[]): Promise<Map<string, fs.Stats>> {
-    const map = new Map<string, fs.Stats>();
-    for (const path of paths) {
-      const stat = await promisify(fs.stat)(path);
-      map.set(path, stat);
-    }
-    return map;
-  }
-
-  protected async tryLoadSketch(path: string): Promise<Sketch | undefined> {
-    try {
-      const sketch = await this.sketchesService.loadSketch(
-        FileUri.create(path).toString()
-      );
-      return sketch;
-    } catch {
-      return undefined;
-    }
   }
 }

@@ -56,6 +56,24 @@
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
     },
+    "cli-error-parser": {
+      "byteError": "The 'BYTE' keyword is no longer supported.",
+      "byteMessage": "As of Arduino 1.0, the 'BYTE' keyword is no longer supported.\nPlease use Serial.write() instead.",
+      "clientError": "The Client class has been renamed EthernetClient.",
+      "clientMessage": "As of Arduino 1.0, the Client class in the Ethernet library has been renamed to EthernetClient.",
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?",
+      "receiveError": "Wire.receive() has been renamed Wire.read().",
+      "receiveMessage": "As of Arduino 1.0, the Wire.receive() function was renamed to Wire.read() for consistency with other libraries.",
+      "sendError": "Wire.send() has been renamed Wire.write().",
+      "sendMessage": "As of Arduino 1.0, the Wire.send() function was renamed to Wire.write() for consistency with other libraries.",
+      "serverError": "The Server class has been renamed EthernetServer.",
+      "serverMessage": "As of Arduino 1.0, the Server class in the Ethernet library has been renamed to EthernetServer.",
+      "spiError": "Please import the SPI library from the Sketch > Import Library menu.",
+      "spiMessage": "As of Arduino 0019, the Ethernet library depends on the SPI library.\nYou appear to be using it or another library that depends on the SPI library.",
+      "udpError": "The Udp class has been renamed EthernetUdp.",
+      "udpMessage": "As of Arduino 1.0, the Udp class in the Ethernet library has been renamed to EthernetUdp."
+    },
     "cloud": {
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
       "cloudSketchbook": "Cloud Sketchbook",
@@ -120,6 +138,9 @@
       "fileAdded": "One file added to the sketch.",
       "replaceTitle": "Replace"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
@@ -136,7 +157,9 @@
       "decreaseFontSize": "Decrease Font Size",
       "decreaseIndent": "Decrease Indent",
       "increaseFontSize": "Increase Font Size",
-      "increaseIndent": "Increase Indent"
+      "increaseIndent": "Increase Indent",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -229,12 +252,15 @@
       "board.certificates": "List of certificates that can be uploaded to boards",
       "browse": "Browse",
       "choose": "Choose",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
       "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "compile",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True for verbose compile output. False by default",
       "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
       "compilerWarnings": "Compiler warnings",
