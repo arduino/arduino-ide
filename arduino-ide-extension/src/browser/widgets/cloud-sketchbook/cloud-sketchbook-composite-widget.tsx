@@ -31,8 +31,8 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     this.compositeNode.appendChild(this.cloudUserStatusNode);
     this.node.appendChild(this.compositeNode);
     this.title.caption = nls.localize(
-      'arduino/cloud/cloudSketchbook',
-      'Cloud Sketchbook'
+      'arduino/cloud/remoteSketchbook',
+      'Remote Sketchbook'
     );
     this.title.iconClass = 'cloud-sketchbook-tree-icon';
     this.title.closable = false;

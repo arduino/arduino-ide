@@ -65,6 +65,7 @@ export class UserStatus extends React.Component<
         </div>
         <div className="actions item flex-line">
           <div
+            title={nls.localize('arduino/cloud/sync', 'Sync')}
             className={`fa fa-reload ${
               (this.state.refreshing && 'rotating') || ''
             }`}
@@ -74,6 +75,7 @@ export class UserStatus extends React.Component<
         </div>
         <div className="account item flex-line">
           <div
+            title={nls.localize('arduino/cloud/account', 'Account')}
             className="account-icon"
             style={{ cursor: 'pointer' }}
             onClick={(event) => {

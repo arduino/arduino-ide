@@ -75,8 +75,8 @@
       "udpMessage": "As of Arduino 1.0, the Udp class in the Ethernet library has been renamed to EthernetUdp."
     },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
-      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connected",
       "continue": "Continue",
       "donePulling": "Done pulling ‘{0}’.",
@@ -100,12 +100,14 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Remote",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Share...",
       "shareSketch": "Share Sketch",
       "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
       "signIn": "SIGN IN",
       "signInToCloud": "Sign in to Arduino Cloud",
       "signOut": "Sign Out",
+      "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
