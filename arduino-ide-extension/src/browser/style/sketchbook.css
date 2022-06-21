@@ -1,27 +1,38 @@
 .sketchbook-tab-icon {
-    -webkit-mask: url('./sketchbook.svg');
-    mask: url('./sketchbook.svg');
+  -webkit-mask: url('./sketchbook.svg');
+  mask: url('./sketchbook.svg');
 }
 
 .sketch-folder-icon {
-    background: url('./sketch-folder-icon.svg') center center no-repeat;
-    background-position-x: 1px;
-    width: var(--theia-icon-size);
-    height: var(--theia-icon-size);
+  background: url('./sketch-folder-icon.svg') center center no-repeat;
+  background-position-x: 1px;
+  width: var(--theia-icon-size);
+  height: var(--theia-icon-size);
 }
 
 .sketchbook-tree-icon {
-    background: url('./sketchbook-tree-icon.svg') center center no-repeat;
-    width: 19px !important;
-    height: var(--theia-icon-size);
+  background-color: #424242;
+  -webkit-mask: url(./sketchbook-tree-icon.svg);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  width: 19px !important;
+  height: var(--theia-icon-size);
+}
+
+.p-mod-current
+.sketchbook-tree-icon {
+    background-color: var(--theia-statusBar-background);
 }
 
 .sketchbook-trees-container {
-    height: 100%;
+  height: 100%;
 }
 
 .sketchbook-tree__opts {
-  background: url('./sketchbook-opts-icon.svg') center center no-repeat;
+  background-color: #424242;
+  -webkit-mask: url(./sketchbook-opts-icon.svg);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
   width: var(--theia-icon-size);
   height: var(--theia-icon-size);
 }

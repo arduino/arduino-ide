@@ -13,12 +13,19 @@
     margin-bottom: 20px;
 }
 
-
 .cloud-sketchbook-tree-icon {
-    background: url("./cloud-sketchbook-tree-icon.svg") center center no-repeat;
+    background-color: #424242;
+    -webkit-mask: url(./cloud-sketchbook-tree-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
-    background-size: auto 90%;
+    -webkit-mask-size: auto 90%;
+}
+
+.p-mod-current
+.cloud-sketchbook-tree-icon {
+    background-color: var(--theia-statusBar-background);
 }
 
 .sketchbook-trees-container
@@ -89,13 +96,19 @@
 }
 
 .pull-sketch-icon {
-    background: url("./pull-sketch-icon.svg") center center no-repeat;
+    background-color: #424242;
+    -webkit-mask: url(./pull-sketch-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
 }
 
 .push-sketch-icon {
-    background: url("./push-sketch-icon.svg") center center no-repeat;
+    background-color: #424242;
+    -webkit-mask: url(./push-sketch-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
 }
