@@ -281,7 +281,6 @@ export class UploadSketch extends CoreServiceContribution {
       this.handleError(e);
     } finally {
       this.uploadInProgress = false;
-
       this.onDidChangeEmitter.fire();
     }
   }
