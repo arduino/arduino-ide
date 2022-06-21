@@ -27,8 +27,9 @@
 }
 
 .ide-updater-dialog .changelog-container {
-  background: white;
-  border: 1px solid #dae3e3;
+  color: var(--theia-dropdown-foreground);
+  background-color: var(--theia-dropdown-background);
+  border: 1px solid var(--theia-tree-indentGuidesStroke);
   border-radius: 2px;
   font-size: 12px;
   height: 180px;
