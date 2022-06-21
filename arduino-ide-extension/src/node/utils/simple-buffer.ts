@@ -4,24 +4,25 @@ import { OutputMessage } from '../../common/protocol';
 const DEFAULT_FLUS_TIMEOUT_MS = 32;
 
 export class SimpleBuffer implements Disposable {
-  private readonly flush: () => void;
   private readonly chunks = Chunks.create();
+  private readonly flush: () => void;
   private flushInterval?: NodeJS.Timeout;
 
-  constructor(onFlush: (chunk: string) => void, flushTimeout: number) {
-    const flush = () => {
-      if (this.chunks.length > 0) {
-        const chunkString = Buffer.concat(this.chunks).toString();
+  constructor(
+    onFlush: (chunks: Map<OutputMessage.Severity, string | undefined>) => void,
+    flushTimeout: number = DEFAULT_FLUS_TIMEOUT_MS
+  ) {
+    this.flush = () => {
+      if (!Chunks.isEmpty(this.chunks)) {
+        const chunks = Chunks.toString(this.chunks);
         this.clearChunks();
         onFlush(chunks);
       }
     };
-
-    this.flush = flush;
-    this.flushInterval = setInterval(flush, flushTimeout);
+    this.flushInterval = setInterval(this.flush, flushTimeout);
   }
 
-  public addChunk(
+  addChunk(
     chunk: Uint8Array,
     severity: OutputMessage.Severity = OutputMessage.Severity.Info
   ): void {
@@ -32,10 +33,8 @@ export class SimpleBuffer implements Disposable {
     Chunks.clear(this.chunks);
   }
 
-  public clearFlushInterval(): void {
+  dispose(): void {
     this.flush();
-    this.clearChunks();
-
     clearInterval(this.flushInterval);
     this.clearChunks();
     this.flushInterval = undefined;
