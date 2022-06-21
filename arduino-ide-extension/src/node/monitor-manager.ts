@@ -33,10 +33,10 @@ export class MonitorManager extends CoreClientAware {
     disposedForUpload: [],
   };
 
-  private startMonitor_PendingRequests: {
+  private monitorServiceStartQueue: {
     monitorID: string;
-    requestFor: [Board, Port];
-    postStartCallback: (status: Status) => void;
+    serviceStartParams: [Board, Port];
+    connectToClient: (status: Status) => void;
   }[] = [];
 
   @inject(MonitorServiceFactory)
@@ -66,15 +66,18 @@ export class MonitorManager extends CoreClientAware {
     return false;
   }
 
-  uploadIsInProgress(): boolean {
+  private uploadIsInProgress(): boolean {
     return this.monitorIDsByUploadState.uploadInProgress.length > 0;
   }
 
-  addToMonitorIDsByUploadState(state: UploadState, monitorID: string): void {
+  private addToMonitorIDsByUploadState(
+    state: UploadState,
+    monitorID: string
+  ): void {
     this.monitorIDsByUploadState[state].push(monitorID);
   }
 
-  removeFromMonitorIDsByUploadState(
+  private removeFromMonitorIDsByUploadState(
     state: UploadState,
     monitorID: string
   ): void {
@@ -83,7 +86,10 @@ export class MonitorManager extends CoreClientAware {
     ].filter((id) => id !== monitorID);
   }
 
-  monitorIDIsInUploadState(state: UploadState, monitorID: string): boolean {
+  private monitorIDIsInUploadState(
+    state: UploadState,
+    monitorID: string
+  ): boolean {
     return this.monitorIDsByUploadState[state].includes(monitorID);
   }
 
@@ -98,7 +104,7 @@ export class MonitorManager extends CoreClientAware {
   async startMonitor(
     board: Board,
     port: Port,
-    postStartCallback: (status: Status) => void
+    connectToClient: (status: Status) => void
   ): Promise<void> {
     const monitorID = this.monitorID(board, port);
 
@@ -108,22 +114,21 @@ export class MonitorManager extends CoreClientAware {
     }
 
     if (this.uploadIsInProgress()) {
-      this.startMonitor_PendingRequests =
-        this.startMonitor_PendingRequests.filter(
-          (request) => request.monitorID !== monitorID
-        );
+      this.monitorServiceStartQueue = this.monitorServiceStartQueue.filter(
+        (request) => request.monitorID !== monitorID
+      );
 
-      this.startMonitor_PendingRequests.push({
+      this.monitorServiceStartQueue.push({
         monitorID,
-        requestFor: [board, port],
-        postStartCallback,
+        serviceStartParams: [board, port],
+        connectToClient,
       });
 
       return;
     }
 
     const result = await monitor.start();
-    postStartCallback(result);
+    connectToClient(result);
   }
 
   /**
@@ -232,14 +237,14 @@ export class MonitorManager extends CoreClientAware {
     // will include a request for our "upload port', most likely at index 0.
     // We remove it, as this port was to be used exclusively for the upload
     const queued = portDidChangeOnUpload
-      ? this.startMonitor_PendingRequests.slice(1)
-      : this.startMonitor_PendingRequests;
-    this.startMonitor_PendingRequests = [];
+      ? this.monitorServiceStartQueue.slice(1)
+      : this.monitorServiceStartQueue;
+    this.monitorServiceStartQueue = [];
 
     for (const {
       monitorID,
-      requestFor: [_, port],
-      postStartCallback: onFinish,
+      serviceStartParams: [_, port],
+      connectToClient,
     } of queued) {
       const boardsState = await this.boardsService.getState();
       const boardIsStillOnPort = Object.keys(boardsState)
@@ -254,7 +259,7 @@ export class MonitorManager extends CoreClientAware {
 
         if (monitorService) {
           const result = await monitorService.start();
-          onFinish(result);
+          connectToClient(result);
         }
       }
     }
