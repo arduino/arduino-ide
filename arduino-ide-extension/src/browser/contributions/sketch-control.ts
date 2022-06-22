@@ -250,7 +250,7 @@ export class SketchControl extends SketchContribution {
     });
   }
 
-  protected isCloudSketch(uri: string): boolean {
+  isCloudSketch(uri: string): boolean {
     try {
       const cloudCacheLocation = this.localCacheFsProvider.from(new URI(uri));
 

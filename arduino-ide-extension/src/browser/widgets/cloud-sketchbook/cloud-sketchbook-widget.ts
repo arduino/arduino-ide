@@ -6,16 +6,10 @@ import {
 import { CloudSketchbookCompositeWidget } from './cloud-sketchbook-composite-widget';
 import { SketchbookWidget } from '../sketchbook/sketchbook-widget';
 import { ArduinoPreferences } from '../../arduino-preferences';
-import { Command, CommandContribution, CommandRegistry } from '@theia/core';
+import { CommandContribution, CommandRegistry } from '@theia/core';
 import { ApplicationShell } from '@theia/core/lib/browser';
-
-export const SHOW_CLOUD_SKETCHBOOK_WIDGET = Command.toLocalizedCommand(
-  {
-    id: 'arduino-sketchbook--show-cloud-sketchbook-widget',
-    label: 'Show Cloud Sketchbook Widget',
-  },
-  'arduino/sketch/showCloudSketchbookWidget'
-);
+import { CloudSketchbookCommands } from './cloud-sketchbook-contributions';
+import { EditorManager } from '@theia/editor/lib/browser';
 
 @injectable()
 export class CloudSketchbookWidget
@@ -30,6 +24,9 @@ export class CloudSketchbookWidget
 
   @inject(ApplicationShell)
   protected readonly shell: ApplicationShell;
+
+  @inject(EditorManager)
+  protected readonly editorManager: EditorManager;
 
   @postConstruct()
   protected override init(): void {
@@ -83,9 +80,12 @@ export class CloudSketchbookWidget
     this.sketchbookTreesContainer.addWidget(
       this.cloudSketchbookCompositeWidget
     );
-    registry.registerCommand(SHOW_CLOUD_SKETCHBOOK_WIDGET, {
-      execute: this.showCloudSketchbookWidget.bind(this),
-    });
+    registry.registerCommand(
+      CloudSketchbookCommands.SHOW_CLOUD_SKETCHBOOK_WIDGET,
+      {
+        execute: () => this.showCloudSketchbookWidget(),
+      }
+    );
   }
 
   showCloudSketchbookWidget(): void {
@@ -94,6 +94,8 @@ export class CloudSketchbookWidget
         if (widget instanceof CloudSketchbookWidget) {
           widget.activateTreeWidget(this.cloudSketchbookCompositeWidget.id);
         }
+        if (this.editorManager.currentEditor)
+          this.shell.activateWidget(this.editorManager.currentEditor.id);
       });
     }
   }

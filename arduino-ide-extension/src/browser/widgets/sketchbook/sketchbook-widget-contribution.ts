@@ -1,6 +1,6 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { CommandRegistry } from '@theia/core/lib/common/command';
+import { Command, CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
@@ -29,6 +29,10 @@ import {
 } from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { EditorManager } from '@theia/editor/lib/browser';
+import { SketchControl } from '../../contributions/sketch-control';
+import { CloudSketchbookCommands } from '../cloud-sketchbook/cloud-sketchbook-contributions';
 
 export const SKETCHBOOK__CONTEXT = ['arduino-sketchbook--context'];
 
@@ -67,6 +71,18 @@ export class SketchbookWidgetContribution
   @inject(FileService)
   protected readonly fileService: FileService;
 
+  @inject(CommandRegistry)
+  protected readonly commandRegistry: CommandRegistry;
+
+  @inject(FrontendApplicationStateService)
+  private readonly app: FrontendApplicationStateService;
+
+  @inject(EditorManager)
+  protected readonly editorManager: EditorManager;
+
+  @inject(SketchControl)
+  protected readonly sketchControl: SketchControl;
+
   protected readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
 
   constructor() {
@@ -92,6 +108,12 @@ export class SketchbookWidgetContribution
         this.mainMenuManager.update();
       }
     });
+
+    this.app.reachedState('ready').then(() => this.onReady());
+  }
+
+  onReady(): void {
+    this.runEncodedCommands();
   }
 
   async initializeLayout(): Promise<void> {
@@ -104,9 +126,7 @@ export class SketchbookWidgetContribution
       execute: () => this.showSketchbookWidget(),
     });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
-      execute: async (arg) => {
-        return this.workspaceService.open(arg.node.uri);
-      },
+      execute: (arg) => this.openSketchInNewWindow(arg),
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
       isVisible: (arg) =>
@@ -194,6 +214,15 @@ export class SketchbookWidgetContribution
     });
   }
 
+  openSketchInNewWindow(arg: any): any {
+    const openSketchbookCommand = this.sketchControl.isCloudSketch(arg.node.uri)
+      ? CloudSketchbookCommands.SHOW_CLOUD_SKETCHBOOK_WIDGET
+      : SketchbookCommands.SHOW_SKETCHBOOK_WIDGET;
+    return this.workspaceService.open(arg.node.uri, {
+      commands: [openSketchbookCommand],
+    });
+  }
+
   override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
 
@@ -234,8 +263,29 @@ export class SketchbookWidgetContribution
   }
 
   protected async showSketchbookWidget(): Promise<void> {
-    const widget = await this.widget;
-    await this.shell.activateWidget(widget.id);
-    widget.activateTreeWidget(widget.getTreeWidget().id);
+    this.widget
+      .then((widget) => this.shell.activateWidget(widget.id))
+      .then((widget) => {
+        if (widget instanceof SketchbookWidget) {
+          widget.activateTreeWidget(widget.getTreeWidget().id);
+          if (this.editorManager.currentEditor)
+            this.shell.activateWidget(this.editorManager.currentEditor.id);
+        }
+      });
+  }
+
+  protected runEncodedCommands(): void {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get('commands');
+    if (!encoded) return;
+
+    const commands = JSON.parse(decodeURIComponent(encoded));
+
+    if (commands && Array.isArray(commands)) {
+      commands.forEach((c: Command) => {
+        if (this.commandRegistry.commandIds.includes(c.id))
+          this.commandRegistry.executeCommand(c.id);
+      });
+    }
   }
 }
