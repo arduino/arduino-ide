@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { toArray } from '@theia/core/shared/@phosphor/algorithm';
 import { IDragEvent } from '@theia/core/shared/@phosphor/dragdrop';
 import { DockPanel, Widget } from '@theia/core/shared/@phosphor/widgets';
@@ -43,6 +47,16 @@ export class SketchbookWidget extends BaseWidget {
 
   getTreeWidget(): SketchbookTreeWidget {
     return this.localSketchbookTreeWidget;
+  }
+
+  activateTreeWidget(treeWidgetId: string): boolean {
+    for (const widget of toArray(this.sketchbookTreesContainer.widgets())) {
+      if (widget.id === treeWidgetId) {
+        this.sketchbookTreesContainer.activateWidget(widget);
+        return true;
+      }
+    }
+    return false;
   }
 
   protected override onActivateRequest(message: Message): void {

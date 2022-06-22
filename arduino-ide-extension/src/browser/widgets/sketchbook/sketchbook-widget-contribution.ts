@@ -77,7 +77,7 @@ export class SketchbookWidgetContribution
         area: 'left',
         rank: 1,
       },
-      toggleCommandId: 'arduino-sketchbook-widget:toggle',
+      toggleCommandId: SketchbookCommands.TOGGLE_SKETCHBOOK_WIDGET.id,
       toggleKeybinding: 'CtrlCmd+Shift+B',
     });
   }
@@ -100,7 +100,9 @@ export class SketchbookWidgetContribution
 
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
-
+    registry.registerCommand(SketchbookCommands.SHOW_SKETCHBOOK_WIDGET, {
+      execute: () => this.showSketchbookWidget(),
+    });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
       execute: async (arg) => {
         return this.workspaceService.open(arg.node.uri);
@@ -197,7 +199,7 @@ export class SketchbookWidgetContribution
 
     // unregister main menu action
     registry.unregisterMenuAction({
-      commandId: 'arduino-sketchbook-widget:toggle',
+      commandId: SketchbookCommands.TOGGLE_SKETCHBOOK_WIDGET.id,
     });
 
     registry.registerMenuAction(SKETCHBOOK__CONTEXT__MAIN_GROUP, {
@@ -229,5 +231,11 @@ export class SketchbookWidgetContribution
 
   protected onCurrentWidgetChangedHandler(): void {
     this.selectWidgetFileNode(this.shell.currentWidget);
+  }
+
+  protected async showSketchbookWidget(): Promise<void> {
+    const widget = await this.widget;
+    await this.shell.activateWidget(widget.id);
+    widget.activateTreeWidget(widget.getTreeWidget().id);
   }
 }

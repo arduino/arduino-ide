@@ -832,6 +832,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(CloudSketchbookWidget).toSelf();
   rebind(SketchbookWidget).toService(CloudSketchbookWidget);
+  bind(CommandContribution).toService(CloudSketchbookWidget);
   bind(CloudSketchbookTreeWidget).toDynamicValue(({ container }) =>
     createCloudSketchbookTreeWidget(container)
   );
