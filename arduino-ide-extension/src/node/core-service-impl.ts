@@ -119,7 +119,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  async upload(options: CoreService.Upload.Options): Promise<void> {
+  upload(options: CoreService.Upload.Options): Promise<void> {
     return this.doUpload(
       options,
       () => new UploadRequest(),

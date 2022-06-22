@@ -1,6 +1,6 @@
 import { ILogger } from '@theia/core';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { Board, Port, Status } from '../common/protocol';
+import { Board, BoardsService, Port, Status } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
 import { MonitorServiceFactory } from './monitor-service-factory';
@@ -11,15 +11,33 @@ import {
 
 type MonitorID = string;
 
+type UploadState = 'uploadInProgress' | 'pausedForUpload' | 'disposedForUpload';
+type MonitorIDsByUploadState = Record<UploadState, MonitorID[]>;
+
 export const MonitorManagerName = 'monitor-manager';
 
 @injectable()
 export class MonitorManager extends CoreClientAware {
+  @inject(BoardsService)
+  protected boardsService: BoardsService;
+
   // Map of monitor services that manage the running pluggable monitors.
   // Each service handles the lifetime of one, and only one, monitor.
   // If either the board or port managed changes, a new service must
   // be started.
   private monitorServices = new Map<MonitorID, MonitorService>();
+
+  private monitorIDsByUploadState: MonitorIDsByUploadState = {
+    uploadInProgress: [],
+    pausedForUpload: [],
+    disposedForUpload: [],
+  };
+
+  private monitorServiceStartQueue: {
+    monitorID: string;
+    serviceStartParams: [Board, Port];
+    connectToClient: (status: Status) => void;
+  }[] = [];
 
   @inject(MonitorServiceFactory)
   private monitorServiceFactory: MonitorServiceFactory;
@@ -48,6 +66,33 @@ export class MonitorManager extends CoreClientAware {
     return false;
   }
 
+  private uploadIsInProgress(): boolean {
+    return this.monitorIDsByUploadState.uploadInProgress.length > 0;
+  }
+
+  private addToMonitorIDsByUploadState(
+    state: UploadState,
+    monitorID: string
+  ): void {
+    this.monitorIDsByUploadState[state].push(monitorID);
+  }
+
+  private removeFromMonitorIDsByUploadState(
+    state: UploadState,
+    monitorID: string
+  ): void {
+    this.monitorIDsByUploadState[state] = this.monitorIDsByUploadState[
+      state
+    ].filter((id) => id !== monitorID);
+  }
+
+  private monitorIDIsInUploadState(
+    state: UploadState,
+    monitorID: string
+  ): boolean {
+    return this.monitorIDsByUploadState[state].includes(monitorID);
+  }
+
   /**
    * Start a pluggable monitor that receives and sends messages
    * to the specified board and port combination.
@@ -56,13 +101,34 @@ export class MonitorManager extends CoreClientAware {
    * @returns a Status object to know if the process has been
    * started or if there have been errors.
    */
-  async startMonitor(board: Board, port: Port): Promise<Status> {
+  async startMonitor(
+    board: Board,
+    port: Port,
+    connectToClient: (status: Status) => void
+  ): Promise<void> {
     const monitorID = this.monitorID(board, port);
+
     let monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       monitor = this.createMonitor(board, port);
     }
-    return await monitor.start();
+
+    if (this.uploadIsInProgress()) {
+      this.monitorServiceStartQueue = this.monitorServiceStartQueue.filter(
+        (request) => request.monitorID !== monitorID
+      );
+
+      this.monitorServiceStartQueue.push({
+        monitorID,
+        serviceStartParams: [board, port],
+        connectToClient,
+      });
+
+      return;
+    }
+
+    const result = await monitor.start();
+    connectToClient(result);
   }
 
   /**
@@ -111,14 +177,18 @@ export class MonitorManager extends CoreClientAware {
       // to retrieve if we don't have this information.
       return;
     }
+
     const monitorID = this.monitorID(board, port);
+    this.addToMonitorIDsByUploadState('uploadInProgress', monitorID);
+
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       // There's no monitor running there, bail
       return;
     }
-    monitor.setUploadInProgress(true);
-    return await monitor.pause();
+
+    this.addToMonitorIDsByUploadState('pausedForUpload', monitorID);
+    return monitor.pause();
   }
 
   /**
@@ -130,19 +200,69 @@ export class MonitorManager extends CoreClientAware {
    * started or if there have been errors.
    */
   async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
-    if (!board || !port) {
-      // We have no way of knowing which monitor
-      // to retrieve if we don't have this information.
-      return Status.NOT_CONNECTED;
+    let status: Status = Status.NOT_CONNECTED;
+    let portDidChangeOnUpload = false;
+
+    // We have no way of knowing which monitor
+    // to retrieve if we don't have this information.
+    if (board && port) {
+      const monitorID = this.monitorID(board, port);
+      this.removeFromMonitorIDsByUploadState('uploadInProgress', monitorID);
+
+      const monitor = this.monitorServices.get(monitorID);
+      if (monitor) {
+        status = await monitor.start();
+      }
+
+      // this monitorID will only be present in "disposedForUpload"
+      // if the upload changed the board port
+      portDidChangeOnUpload = this.monitorIDIsInUploadState(
+        'disposedForUpload',
+        monitorID
+      );
+      if (portDidChangeOnUpload) {
+        this.removeFromMonitorIDsByUploadState('disposedForUpload', monitorID);
+      }
+
+      // in case a service was paused but not disposed
+      this.removeFromMonitorIDsByUploadState('pausedForUpload', monitorID);
     }
-    const monitorID = this.monitorID(board, port);
-    const monitor = this.monitorServices.get(monitorID);
-    if (!monitor) {
-      // There's no monitor running there, bail
-      return Status.NOT_CONNECTED;
+
+    await this.startQueuedServices(portDidChangeOnUpload);
+    return status;
+  }
+
+  async startQueuedServices(portDidChangeOnUpload: boolean): Promise<void> {
+    // if the port changed during upload with the monitor open, "startMonitorPendingRequests"
+    // will include a request for our "upload port', most likely at index 0.
+    // We remove it, as this port was to be used exclusively for the upload
+    const queued = portDidChangeOnUpload
+      ? this.monitorServiceStartQueue.slice(1)
+      : this.monitorServiceStartQueue;
+    this.monitorServiceStartQueue = [];
+
+    for (const {
+      monitorID,
+      serviceStartParams: [_, port],
+      connectToClient,
+    } of queued) {
+      const boardsState = await this.boardsService.getState();
+      const boardIsStillOnPort = Object.keys(boardsState)
+        .map((connection: string) => {
+          const portAddress = connection.split('|')[0];
+          return portAddress;
+        })
+        .some((portAddress: string) => port.address === portAddress);
+
+      if (boardIsStillOnPort) {
+        const monitorService = this.monitorServices.get(monitorID);
+
+        if (monitorService) {
+          const result = await monitorService.start();
+          connectToClient(result);
+        }
+      }
     }
-    monitor.setUploadInProgress(false);
-    return await monitor.start();
   }
 
   /**
@@ -202,6 +322,18 @@ export class MonitorManager extends CoreClientAware {
     this.monitorServices.set(monitorID, monitor);
     monitor.onDispose(
       (() => {
+        // if a service is disposed during upload and
+        // we paused it beforehand we know it was disposed
+        // of because the upload changed the board port
+        if (
+          this.uploadIsInProgress() &&
+          this.monitorIDIsInUploadState('pausedForUpload', monitorID)
+        ) {
+          this.removeFromMonitorIDsByUploadState('pausedForUpload', monitorID);
+
+          this.addToMonitorIDsByUploadState('disposedForUpload', monitorID);
+        }
+
         this.monitorServices.delete(monitorID);
       }).bind(this)
     );
