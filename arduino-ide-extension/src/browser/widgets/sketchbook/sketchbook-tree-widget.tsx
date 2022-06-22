@@ -1,5 +1,9 @@
 import * as React from '@theia/core/shared/react';
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree/tree';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import {
@@ -21,6 +25,11 @@ import {
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
 import { Sketch } from '../../contributions/contribution';
 import { nls } from '@theia/core/lib/common';
+
+const customTreeProps: TreeProps = {
+  leftPadding: 20,
+  expansionTogglePadding: 6,
+};
 
 @injectable()
 export class SketchbookTreeWidget extends FileTreeWidget {
@@ -57,10 +66,14 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     super.init();
     // cache the current open sketch uri
     const currentSketch = await this.sketchServiceClient.currentSketch();
-    this.currentSketchUri = (CurrentSketch.isValid(currentSketch) && currentSketch.uri) || '';
+    this.currentSketchUri =
+      (CurrentSketch.isValid(currentSketch) && currentSketch.uri) || '';
   }
 
-  protected override createNodeClassNames(node: TreeNode, props: NodeProps): string[] {
+  protected override createNodeClassNames(
+    node: TreeNode,
+    props: NodeProps
+  ): string[] {
     const classNames = super.createNodeClassNames(node, props);
 
     if (
@@ -73,7 +86,10 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return classNames;
   }
 
-  protected override renderIcon(node: TreeNode, props: NodeProps): React.ReactNode {
+  protected override renderIcon(
+    node: TreeNode,
+    props: NodeProps
+  ): React.ReactNode {
     if (SketchbookTree.SketchDirNode.is(node) || Sketch.isSketchFile(node.id)) {
       return <div className="sketch-folder-icon file-icon"></div>;
     }
@@ -198,5 +214,14 @@ export class SketchbookTreeWidget extends FileTreeWidget {
       }
     }
     event.stopPropagation();
+  }
+
+  protected override getPaddingLeft(node: TreeNode, props: NodeProps): number {
+    return (
+      props.depth * customTreeProps.leftPadding +
+      (this.needsExpansionTogglePadding(node)
+        ? customTreeProps.expansionTogglePadding
+        : 0)
+    );
   }
 }
