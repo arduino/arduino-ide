@@ -9,7 +9,10 @@ import { FrontendApplication } from '@theia/core/lib/browser/frontend-applicatio
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
 import { DEFAULT_WINDOW_HASH } from '@theia/core/lib/common/window';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import {
+  WorkspaceInput,
+  WorkspaceService as TheiaWorkspaceService,
+} from '@theia/workspace/lib/browser/workspace-service';
 import { ConfigService } from '../../../common/protocol/config-service';
 import {
   SketchesService,
@@ -17,6 +20,11 @@ import {
 } from '../../../common/protocol/sketches-service';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
+import { Command } from '@theia/core';
+
+interface WorkspaceOptions extends WorkspaceInput {
+  commands: Command[];
+}
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -42,6 +50,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
   protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   private version?: string;
+  private optionsToAppendToURI?: WorkspaceOptions;
 
   async onStart(application: FrontendApplication): Promise<void> {
     const info = await this.applicationServer.getApplicationInfo();
@@ -82,6 +91,11 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
+  override open(uri: URI, options?: WorkspaceOptions): void {
+    this.optionsToAppendToURI = options;
+    super.doOpen(uri);
+  }
+
   protected override openNewWindow(workspacePath: string): void {
     const { boardsConfig } = this.boardsServiceProvider;
     const url = BoardsConfig.Config.setConfig(
@@ -89,6 +103,13 @@ export class WorkspaceService extends TheiaWorkspaceService {
       new URL(window.location.href)
     ); // Set the current boards config for the new browser window.
     url.hash = workspacePath;
+    if (this.optionsToAppendToURI) {
+      url.searchParams.set(
+        'commands',
+        encodeURIComponent(JSON.stringify(this.optionsToAppendToURI?.commands))
+      );
+      this.optionsToAppendToURI = undefined;
+    }
     this.windowService.openNewWindow(url.toString());
   }
 
