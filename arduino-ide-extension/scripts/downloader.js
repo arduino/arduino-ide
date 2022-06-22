@@ -86,6 +86,7 @@ exports.downloadUnzipFile = async (
  * @param targetDir {string}  Directory into which to decompress the archive
  * @param targetFile {string} Path to the main file expected after decompressing
  * @param force {boolean}     Whether to download even if the target file exists
+ * @param decompressOptions {import('decompress').DecompressOptions}
  */
 exports.downloadUnzipAll = async (
   url,

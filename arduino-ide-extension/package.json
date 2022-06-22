@@ -155,7 +155,7 @@
   ],
   "arduino": {
     "cli": {
-      "version": "0.24.0"
+      "version": "0.25.0-rc1"
     },
     "fwuploader": {
       "version": "2.2.0"
@@ -164,7 +164,7 @@
       "version": "14.0.0"
     },
     "languageServer": {
-      "version": "0.6.0"
+      "version": "0.7.0"
     }
   }
 }

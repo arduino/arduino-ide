@@ -5,7 +5,6 @@ import type {
   BoardUserField,
   Port,
 } from '../../common/protocol/boards-service';
-import type { ErrorInfo as CliErrorInfo } from '../../node/cli-error-parser';
 import type { Programmer } from './boards-service';
 import type { Sketch } from './sketches-service';
 
@@ -17,16 +16,10 @@ export const CompilerWarningLiterals = [
 ] as const;
 export type CompilerWarnings = typeof CompilerWarningLiterals[number];
 export namespace CoreError {
-  export type ErrorInfo = CliErrorInfo;
-  export interface Compiler extends ErrorInfo {
+  export interface ErrorLocation {
     readonly message: string;
     readonly location: Location;
-  }
-  export namespace Compiler {
-    export function is(error: ErrorInfo): error is Compiler {
-      const { message, location } = error;
-      return !!message && !!location;
-    }
+    readonly details?: string;
   }
   export const Codes = {
     Verify: 4001,
@@ -42,7 +35,7 @@ export namespace CoreError {
   export const BurnBootloaderFailed = create(Codes.BurnBootloader);
   export function is(
     error: unknown
-  ): error is ApplicationError<number, ErrorInfo[]> {
+  ): error is ApplicationError<number, ErrorLocation[]> {
     return (
       error instanceof Error &&
       ApplicationError.is(error) &&
@@ -51,10 +44,10 @@ export namespace CoreError {
   }
   function create(
     code: number
-  ): ApplicationError.Constructor<number, ErrorInfo[]> {
+  ): ApplicationError.Constructor<number, ErrorLocation[]> {
     return ApplicationError.declare(
       code,
-      (message: string, data: ErrorInfo[]) => {
+      (message: string, data: ErrorLocation[]) => {
         return {
           data,
           message,

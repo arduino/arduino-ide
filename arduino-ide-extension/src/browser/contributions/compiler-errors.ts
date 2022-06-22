@@ -275,7 +275,7 @@ export class CompilerErrors
   }
 
   private async handleCompilerErrorsDidChange(
-    errors: CoreError.Compiler[]
+    errors: CoreError.ErrorLocation[]
   ): Promise<void> {
     this.toDisposeOnCompilerErrorDidChange.dispose();
     const compilerErrorsPerResource = this.groupByResource(
@@ -312,8 +312,8 @@ export class CompilerErrors
   }
 
   private async filter(
-    errors: CoreError.Compiler[]
-  ): Promise<CoreError.Compiler[]> {
+    errors: CoreError.ErrorLocation[]
+  ): Promise<CoreError.ErrorLocation[]> {
     if (!errors.length) {
       return [];
     }
@@ -326,7 +326,7 @@ export class CompilerErrors
   }
 
   private async decorateEditors(
-    errors: Map<string, CoreError.Compiler[]>
+    errors: Map<string, CoreError.ErrorLocation[]>
   ): Promise<{ dispose: Disposable; errors: ErrorDecoration[] }> {
     const composite = await Promise.all(
       [...errors.entries()].map(([uri, errors]) =>
@@ -346,7 +346,7 @@ export class CompilerErrors
 
   private async decorateEditor(
     uri: string,
-    errors: CoreError.Compiler[]
+    errors: CoreError.ErrorLocation[]
   ): Promise<{ dispose: Disposable; errors: ErrorDecoration[] }> {
     const editor = await this.editorManager.getByUri(new URI(uri));
     if (!editor) {
@@ -523,7 +523,7 @@ export class CompilerErrors
   }
 
   private async trackEditors(
-    errors: Map<string, CoreError.Compiler[]>,
+    errors: Map<string, CoreError.ErrorLocation[]>,
     ...track: ((editor: EditorWidget) => Disposable)[]
   ): Promise<Disposable> {
     return new DisposableCollection(
@@ -605,8 +605,8 @@ export class CompilerErrors
   }
 
   private groupByResource(
-    errors: CoreError.Compiler[]
-  ): Map<string, CoreError.Compiler[]> {
+    errors: CoreError.ErrorLocation[]
+  ): Map<string, CoreError.ErrorLocation[]> {
     return errors.reduce((acc, curr) => {
       const {
         location: { uri },
@@ -618,7 +618,7 @@ export class CompilerErrors
       }
       errors.push(curr);
       return acc;
-    }, new Map<string, CoreError.Compiler[]>());
+    }, new Map<string, CoreError.ErrorLocation[]>());
   }
 
   private monacoEditor(widget: EditorWidget): MonacoEditor | undefined;

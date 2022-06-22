@@ -26,7 +26,7 @@ import { ResponseService } from '../common/protocol/response-service';
 import { Board, OutputMessage, Port, Status } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Port as GrpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import { ApplicationError, Disposable, nls } from '@theia/core';
+import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
 import { AutoFlushingBuffer } from './utils/buffers';
 import { tryParseError } from './cli-error-parser';
@@ -42,6 +42,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(MonitorManager)
   private readonly monitorManager: MonitorManager;
 
+  @inject(CommandService)
+  private readonly commandService: CommandService;
+
   async compile(
     options: CoreService.Compile.Options & {
       exportBinaries?: boolean;
@@ -50,7 +53,19 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   ): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    const handler = this.createOnDataHandler();
+    let buildPath: string | undefined = undefined;
+    const handler = this.createOnDataHandler<CompileResponse>((response) => {
+      const currentBuildPath = response.getBuildPath();
+      if (!buildPath && currentBuildPath) {
+        buildPath = currentBuildPath;
+      } else {
+        if (!!currentBuildPath && currentBuildPath !== buildPath) {
+          throw new Error(
+            `The CLI has already provided a build path: <${buildPath}>, and there is a new build path value: <${currentBuildPath}>.`
+          );
+        }
+      }
+    });
     const request = this.compileRequest(options, instance);
     return new Promise<void>((resolve, reject) => {
       client
@@ -84,7 +99,36 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           }
         })
         .on('end', resolve);
-    }).finally(() => handler.dispose());
+    }).finally(() => {
+      handler.dispose();
+      if (!buildPath) {
+        console.error(
+          `Have not received the build path from the CLI while running the compilation.`
+        );
+      } else {
+        this.fireBuildDidComplete(FileUri.create(buildPath).toString());
+      }
+    });
+  }
+
+  // This executes on the frontend, the VS Code extension receives it, and sends an `ino/buildDidComplete` notification to the language server.
+  private fireBuildDidComplete(buildOutputUri: string): void {
+    const params = {
+      buildOutputUri,
+    };
+    console.info(
+      `Executing 'arduino.languageserver.notifyBuildDidComplete' with ${JSON.stringify(
+        params
+      )}`
+    );
+    this.commandService
+      .executeCommand('arduino.languageserver.notifyBuildDidComplete', params)
+      .catch((err) =>
+        console.error(
+          `Unexpected error when firing event on build did complete. ${buildOutputUri}`,
+          err
+        )
+      );
   }
 
   private compileRequest(
@@ -124,8 +168,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       options,
       () => new UploadRequest(),
       (client, req) => client.upload(req),
-      (message: string, info: CoreError.ErrorInfo[]) =>
-        CoreError.UploadFailed(message, info),
+      (message: string, locations: CoreError.ErrorLocation[]) =>
+        CoreError.UploadFailed(message, locations),
       'upload'
     );
   }
@@ -137,8 +181,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       options,
       () => new UploadUsingProgrammerRequest(),
       (client, req) => client.uploadUsingProgrammer(req),
-      (message: string, info: CoreError.ErrorInfo[]) =>
-        CoreError.UploadUsingProgrammerFailed(message, info),
+      (message: string, locations: CoreError.ErrorLocation[]) =>
+        CoreError.UploadUsingProgrammerFailed(message, locations),
       'upload using programmer'
     );
   }
@@ -152,8 +196,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     ) => ClientReadableStream<UploadResponse | UploadUsingProgrammerResponse>,
     errorHandler: (
       message: string,
-      info: CoreError.ErrorInfo[]
-    ) => ApplicationError<number, CoreError.ErrorInfo[]>,
+      locations: CoreError.ErrorLocation[]
+    ) => ApplicationError<number, CoreError.ErrorLocation[]>,
     task: string
   ): Promise<void> {
     await this.compile(Object.assign(options, { exportBinaries: false }));
@@ -285,7 +329,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  private createOnDataHandler<R extends StreamingResponse>(): Disposable & {
+  private createOnDataHandler<R extends StreamingResponse>(
+    onResponse?: (response: R) => void
+  ): Disposable & {
     stderr: Buffer[];
     onData: (response: R) => void;
   } {
@@ -297,10 +343,14 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         }
       });
     });
-    const onData = StreamingResponse.createOnDataHandler(stderr, (out, err) => {
-      buffer.addChunk(out);
-      buffer.addChunk(err, OutputMessage.Severity.Error);
-    });
+    const onData = StreamingResponse.createOnDataHandler(
+      stderr,
+      (out, err) => {
+        buffer.addChunk(out);
+        buffer.addChunk(err, OutputMessage.Severity.Error);
+      },
+      onResponse
+    );
     return {
       dispose: () => buffer.dispose(),
       stderr,
@@ -369,13 +419,17 @@ namespace StreamingResponse {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export function createOnDataHandler<R extends StreamingResponse>(
     stderr: Uint8Array[],
-    onData: (out: Uint8Array, err: Uint8Array) => void
+    onData: (out: Uint8Array, err: Uint8Array) => void,
+    onResponse?: (response: R) => void
   ): (response: R) => void {
     return (response: R) => {
       const out = response.getOutStream_asU8();
       const err = response.getErrStream_asU8();
       stderr.push(err);
       onData(out, err);
+      if (onResponse) {
+        onResponse(response);
+      }
     };
   }
 }

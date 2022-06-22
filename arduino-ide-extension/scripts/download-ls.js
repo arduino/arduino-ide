@@ -7,22 +7,23 @@
   const path = require('path');
   const shell = require('shelljs');
   const downloader = require('./downloader');
+  const { goBuildFromGit } = require('./utils');
 
-  const [DEFAULT_ALS_VERSION, DEFAULT_CLANGD_VERSION] = (() => {
+  const [DEFAULT_LS_VERSION, DEFAULT_CLANGD_VERSION] = (() => {
     const pkg = require(path.join(__dirname, '..', 'package.json'));
-    if (!pkg) return undefined;
+    if (!pkg) return [undefined, undefined];
 
     const { arduino } = pkg;
-    if (!arduino) return undefined;
+    if (!arduino) return [undefined, undefined];
 
     const { languageServer, clangd } = arduino;
-    if (!languageServer) return undefined;
-    if (!clangd) return undefined;
+    if (!languageServer) return [undefined, undefined];
+    if (!clangd) return [undefined, undefined];
 
     return [languageServer.version, clangd.version];
   })();
 
-  if (!DEFAULT_ALS_VERSION) {
+  if (!DEFAULT_LS_VERSION) {
     shell.echo(
       `Could not retrieve Arduino Language Server version info from the 'package.json'.`
     );
@@ -39,8 +40,8 @@
   const yargs = require('yargs')
     .option('ls-version', {
       alias: 'lv',
-      default: DEFAULT_ALS_VERSION,
-      describe: `The version of the 'arduino-language-server' to download. Defaults to ${DEFAULT_ALS_VERSION}.`,
+      default: DEFAULT_LS_VERSION,
+      describe: `The version of the 'arduino-language-server' to download. Defaults to ${DEFAULT_LS_VERSION}.`,
     })
     .option('clangd-version', {
       alias: 'cv',
@@ -56,7 +57,7 @@
     .version(false)
     .parse();
 
-  const alsVersion = yargs['ls-version'];
+  const lsVersion = yargs['ls-version'];
   const clangdVersion = yargs['clangd-version'];
   const force = yargs['force-download'];
   const { platform, arch } = process;
@@ -87,6 +88,8 @@
       lsSuffix = 'Windows_64bit.zip';
       clangdSuffix = 'Windows_64bit';
       break;
+    default:
+      throw new Error(`Unsupported platform/arch: ${platformArch}.`);
   }
   if (!lsSuffix || !clangdSuffix) {
     shell.echo(
@@ -95,12 +98,16 @@
     shell.exit(1);
   }
 
-  const alsUrl = `https://downloads.arduino.cc/arduino-language-server/${
-    alsVersion === 'nightly'
-      ? 'nightly/arduino-language-server'
-      : 'arduino-language-server_' + alsVersion
-  }_${lsSuffix}`;
-  downloader.downloadUnzipAll(alsUrl, build, lsExecutablePath, force);
+  if (typeof lsVersion === 'string') {
+    const lsUrl = `https://downloads.arduino.cc/arduino-language-server/${
+      lsVersion === 'nightly'
+        ? 'nightly/arduino-language-server'
+        : 'arduino-language-server_' + lsVersion
+    }_${lsSuffix}`;
+    downloader.downloadUnzipAll(lsUrl, build, lsExecutablePath, force);
+  } else {
+    goBuildFromGit(lsVersion, lsExecutablePath, 'language-server');
+  }
 
   const clangdUrl = `https://downloads.arduino.cc/tools/clangd_${clangdVersion}_${clangdSuffix}.tar.bz2`;
   downloader.downloadUnzipAll(clangdUrl, build, clangdExecutablePath, force, {
