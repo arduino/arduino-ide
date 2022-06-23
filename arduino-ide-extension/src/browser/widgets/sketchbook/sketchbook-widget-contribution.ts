@@ -1,6 +1,6 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { Command, CommandRegistry } from '@theia/core/lib/common/command';
+import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
@@ -29,7 +29,6 @@ import {
 } from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { SketchControl } from '../../contributions/sketch-control';
 import { CloudSketchbookCommands } from '../cloud-sketchbook/cloud-sketchbook-contributions';
@@ -71,12 +70,6 @@ export class SketchbookWidgetContribution
   @inject(FileService)
   protected readonly fileService: FileService;
 
-  @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
-
-  @inject(FrontendApplicationStateService)
-  private readonly app: FrontendApplicationStateService;
-
   @inject(EditorManager)
   protected readonly editorManager: EditorManager;
 
@@ -108,12 +101,6 @@ export class SketchbookWidgetContribution
         this.mainMenuManager.update();
       }
     });
-
-    this.app.reachedState('ready').then(() => this.onReady());
-  }
-
-  onReady(): void {
-    this.runEncodedCommands();
   }
 
   async initializeLayout(): Promise<void> {
@@ -271,19 +258,5 @@ export class SketchbookWidgetContribution
           this.selectWidgetFileNode(this.editorManager.currentEditor);
         }
       });
-  }
-
-  protected runEncodedCommands(): void {
-    const params = new URLSearchParams(window.location.search);
-    const encoded = params.get('commands');
-    if (!encoded) return;
-
-    const commands = JSON.parse(decodeURIComponent(encoded));
-
-    if (Array.isArray(commands)) {
-      commands.forEach((c: Command) => {
-        this.commandRegistry.executeCommand(c.id);
-      });
-    }
   }
 }
