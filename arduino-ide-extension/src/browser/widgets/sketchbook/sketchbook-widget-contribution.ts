@@ -218,7 +218,7 @@ export class SketchbookWidgetContribution
     const openSketchbookCommand = this.sketchControl.isCloudSketch(arg.node.uri)
       ? CloudSketchbookCommands.SHOW_CLOUD_SKETCHBOOK_WIDGET
       : SketchbookCommands.SHOW_SKETCHBOOK_WIDGET;
-    return this.workspaceService.open(arg.node.uri, {
+    return this.workspaceService.openWithCommands(arg.node.uri, {
       commands: [openSketchbookCommand],
     });
   }

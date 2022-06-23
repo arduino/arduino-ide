@@ -50,7 +50,6 @@ export class WorkspaceService extends TheiaWorkspaceService {
   protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   private version?: string;
-  private optionsToAppendToURI?: WorkspaceOptions;
 
   async onStart(application: FrontendApplication): Promise<void> {
     const info = await this.applicationServer.getApplicationInfo();
@@ -91,25 +90,68 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
-  override open(uri: URI, options?: WorkspaceOptions): void {
-    this.optionsToAppendToURI = options;
-    super.doOpen(uri);
+  /*
+    This method mostly duplicates super.doOpen and super.openWindow because they didn't let pass any custom
+    option to openNewWindow
+  */
+  async openWithCommands(uri: URI, options?: WorkspaceOptions): Promise<void> {
+    const stat = await this.toFileStat(uri);
+    if (stat) {
+      if (!stat.isDirectory && !this.isWorkspaceFile(stat)) {
+        const message = `Not a valid workspace: ${uri.path.toString()}`;
+        this.messageService.error(message);
+        throw new Error(message);
+      }
+      // The same window has to be preserved too (instead of opening a new one), if the workspace root is not yet available and we are setting it for the first time.
+      // Option passed as parameter has the highest priority (for api developers), then the preference, then the default.
+      await this.roots;
+      const { preserveWindow } = {
+        preserveWindow:
+          this.preferences['workspace.preserveWindow'] || !this.opened,
+        ...options,
+      };
+      await this.server.setMostRecentlyUsedWorkspace(uri.toString());
+      if (preserveWindow) {
+        this._workspace = stat;
+      }
+
+      const workspacePath = stat.resource.path.toString();
+
+      if (this.shouldPreserveWindow(options)) {
+        this.reloadWindow();
+      } else {
+        try {
+          this.openNewWindow(workspacePath, options);
+          return;
+        } catch (error) {
+          // Fall back to reloading the current window in case the browser has blocked the new window
+          this._workspace = stat;
+          this.logger.error(error.toString()).then(() => this.reloadWindow());
+        }
+      }
+    }
+    throw new Error(
+      'Invalid workspace root URI. Expected an existing directory or workspace file.'
+    );
   }
 
-  protected override openNewWindow(workspacePath: string): void {
+  protected override openNewWindow(
+    workspacePath: string,
+    options?: WorkspaceOptions
+  ): void {
     const { boardsConfig } = this.boardsServiceProvider;
     const url = BoardsConfig.Config.setConfig(
       boardsConfig,
       new URL(window.location.href)
     ); // Set the current boards config for the new browser window.
     url.hash = workspacePath;
-    if (this.optionsToAppendToURI) {
+    if (options?.commands) {
       url.searchParams.set(
         'commands',
-        encodeURIComponent(JSON.stringify(this.optionsToAppendToURI?.commands))
+        encodeURIComponent(JSON.stringify(options.commands))
       );
-      this.optionsToAppendToURI = undefined;
     }
+
     this.windowService.openNewWindow(url.toString());
   }
 
