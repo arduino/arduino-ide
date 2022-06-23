@@ -123,7 +123,7 @@ export class SketchbookWidgetContribution
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     registry.registerCommand(SketchbookCommands.SHOW_SKETCHBOOK_WIDGET, {
-      execute: () => this.showSketchbookWidget(),
+      execute: () => this.showLocalSketchbookWidget(),
     });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
       execute: (arg) => this.openSketchInNewWindow(arg),
@@ -262,14 +262,13 @@ export class SketchbookWidgetContribution
     this.selectWidgetFileNode(this.shell.currentWidget);
   }
 
-  protected async showSketchbookWidget(): Promise<void> {
+  protected async showLocalSketchbookWidget(): Promise<void> {
     this.widget
       .then((widget) => this.shell.activateWidget(widget.id))
       .then((widget) => {
         if (widget instanceof SketchbookWidget) {
           widget.activateTreeWidget(widget.getTreeWidget().id);
-          if (this.editorManager.currentEditor)
-            this.shell.activateWidget(this.editorManager.currentEditor.id);
+          this.selectWidgetFileNode(this.editorManager.currentEditor);
         }
       });
   }
@@ -281,10 +280,9 @@ export class SketchbookWidgetContribution
 
     const commands = JSON.parse(decodeURIComponent(encoded));
 
-    if (commands && Array.isArray(commands)) {
+    if (Array.isArray(commands)) {
       commands.forEach((c: Command) => {
-        if (this.commandRegistry.commandIds.includes(c.id))
-          this.commandRegistry.executeCommand(c.id);
+        this.commandRegistry.executeCommand(c.id);
       });
     }
   }

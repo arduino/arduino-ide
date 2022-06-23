@@ -10,6 +10,7 @@ import { CommandContribution, CommandRegistry } from '@theia/core';
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { CloudSketchbookCommands } from './cloud-sketchbook-contributions';
 import { EditorManager } from '@theia/editor/lib/browser';
+import { SketchbookWidgetContribution } from '../sketchbook/sketchbook-widget-contribution';
 
 @injectable()
 export class CloudSketchbookWidget
@@ -17,16 +18,19 @@ export class CloudSketchbookWidget
   implements CommandContribution
 {
   @inject(CloudSketchbookCompositeWidget)
-  protected readonly cloudSketchbookCompositeWidget: CloudSketchbookCompositeWidget;
+  private readonly cloudSketchbookCompositeWidget: CloudSketchbookCompositeWidget;
 
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
+  private readonly arduinoPreferences: ArduinoPreferences;
 
   @inject(ApplicationShell)
-  protected readonly shell: ApplicationShell;
+  private readonly shell: ApplicationShell;
+
+  @inject(SketchbookWidgetContribution)
+  private readonly sketchbookWidgetContribution: SketchbookWidgetContribution;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  private readonly editorManager: EditorManager;
 
   @postConstruct()
   protected override init(): void {
@@ -94,8 +98,9 @@ export class CloudSketchbookWidget
         if (widget instanceof CloudSketchbookWidget) {
           widget.activateTreeWidget(this.cloudSketchbookCompositeWidget.id);
         }
-        if (this.editorManager.currentEditor)
-          this.shell.activateWidget(this.editorManager.currentEditor.id);
+        this.sketchbookWidgetContribution.selectWidgetFileNode(
+          this.editorManager.currentEditor
+        );
       });
     }
   }
