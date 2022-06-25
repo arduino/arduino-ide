@@ -4,10 +4,26 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/build.yml'
+      - '.vscode/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'static/**'
+      - '*.md'
     tags:
       - '[0-9]+.[0-9]+.[0-9]+*'
   workflow_dispatch:
   pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/build.yml'
+      - '.vscode/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'static/**'
+      - '*.md'
   schedule:
     - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
 
