@@ -6,8 +6,8 @@ exports.default = async function notarizing(context) {
     console.log('Skipping notarization: not on CI.');
     return;
   }
-  if (process.env.IS_FORK === 'true') {
-    console.log('Skipping the app notarization: building from a fork.');
+  if (process.env.CAN_SIGN === 'false') {
+    console.log('Skipping the app notarization: certificate was not provided.');
     return;
   }
   const { electronPlatformName, appOutDir } = context;
