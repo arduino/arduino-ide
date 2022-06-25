@@ -17,13 +17,22 @@ env:
 
 jobs:
   build:
+    name: build (${{ matrix.config.os }})
     if: github.repository == 'arduino/arduino-ide'
     strategy:
       matrix:
         config:
           - os: windows-2019
+            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
+            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
+            certificate-extension: pfx  # File extension for the certificate.
           - os: ubuntu-18.04 # https://github.com/arduino/arduino-ide/issues/259
           - os: macos-latest
+            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+            certificate-password-secret: KEYCHAIN_PASSWORD
+            certificate-extension: p12
     runs-on: ${{ matrix.config.os }}
     timeout-minutes: 90
 
@@ -59,23 +68,14 @@ jobs:
           if [ $IS_FORK = true ]; then
             echo "Skipping the app signing: building from a fork."
           else
-            if [ "${{ runner.OS }}" = "macOS" ]; then
-              export CSC_LINK="${{ runner.temp }}/signing_certificate.p12"
-              # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
-              # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
-              echo "${{ secrets.APPLE_SIGNING_CERTIFICATE_P12 }}" | base64 --decode > "$CSC_LINK"
-
-              export CSC_KEY_PASSWORD="${{ secrets.KEYCHAIN_PASSWORD }}"
-
-            elif [ "${{ runner.OS }}" = "Windows" ]; then
-              export CSC_LINK="${{ runner.temp }}/signing_certificate.pfx"
-              npm config set msvs_version 2017 --global
-              echo "${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PFX }}" | base64 --decode > "$CSC_LINK"
-
-              export CSC_KEY_PASSWORD="${{ secrets.WINDOWS_SIGNING_CERTIFICATE_PASSWORD }}"
-            fi
+            export CSC_LINK="${{ runner.temp }}/signing_certificate.${{ matrix.config.certificate-extension }}"
+            echo "${{ secrets[matrix.config.certificate-secret] }}" | base64 --decode > "$CSC_LINK"
+            export CSC_KEY_PASSWORD="${{ secrets[matrix.config.certificate-password-secret] }}"
           fi
 
+          if [ "${{ runner.OS }}" = "Windows" ]; then
+            npm config set msvs_version 2017 --global
+          fi
           npx node-gyp install
           yarn --cwd ./electron/packager/
           yarn --cwd ./electron/packager/ package
