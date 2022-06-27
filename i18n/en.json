@@ -237,6 +237,7 @@
       "zipLibrary": "Library"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Sketch",
       "tools": "Tools"
     },
