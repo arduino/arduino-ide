@@ -127,12 +127,12 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 }
 
 .component-list-item:hover .footer > * {
-    display: block;
+    display: inline-block;
     margin: 5px 0px 0px 10px;
 }
 
 .component-list-item:hover .footer > label {
-    display: block;
+    display: inline-block;
     align-self: center;
     margin: 5px 0px 0px 10px;
 }

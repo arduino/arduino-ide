@@ -94,7 +94,7 @@ export const CertificateUploaderComponent = ({
           >
             <button
               type="button"
-              className="theia-button primary add-cert-btn"
+              className="theia-button secondary add-cert-btn"
               onClick={() => {
                 showAdd ? setShowAdd(false) : setShowAdd(true);
               }}
