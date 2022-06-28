@@ -36,14 +36,13 @@ export class SimpleBuffer implements Disposable {
   }
 
   private setTimeoutVariable(flushTimeout: number): void {
-    let isDisposed = this.disposed;
+    const isDisposed = this.disposed;
     if (isDisposed) {
       // once "isDisposed" is true we stop
       // creating timeouts and do one more
       // flush AFTER any setTimeout
       // callback that may be in progress
       this.flush();
-      isDisposed = false;
       return;
     }
 
