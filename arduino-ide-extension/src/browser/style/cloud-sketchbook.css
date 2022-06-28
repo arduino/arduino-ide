@@ -14,7 +14,7 @@
 }
 
 .cloud-sketchbook-tree-icon {
-    background-color: #424242;
+    background-color: var(--theia-sideBar-foreground);
     -webkit-mask: url(./cloud-sketchbook-tree-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -96,7 +96,7 @@
 }
 
 .pull-sketch-icon {
-    background-color: #424242;
+    background-color: var(--theia-sideBar-foreground);
     -webkit-mask: url(./pull-sketch-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -105,7 +105,7 @@
 }
 
 .push-sketch-icon {
-    background-color: #424242;
+    background-color: var(--theia-sideBar-foreground);
     -webkit-mask: url(./push-sketch-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;

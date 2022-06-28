@@ -11,7 +11,7 @@
 }
 
 .sketchbook-tree-icon {
-  background-color: #424242;
+  background-color: var(--theia-sideBar-foreground);
   -webkit-mask: url(./sketchbook-tree-icon.svg);
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
@@ -29,7 +29,7 @@
 }
 
 .sketchbook-tree__opts {
-  background-color: #424242;
+  background-color: var(--theia-sideBar-foreground);
   -webkit-mask: url(./sketchbook-opts-icon.svg);
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
