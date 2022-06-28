@@ -6,7 +6,8 @@ const DEFAULT_FLUS_TIMEOUT_MS = 32;
 export class SimpleBuffer implements Disposable {
   private readonly chunks = Chunks.create();
   private readonly flush: () => void;
-  private flushInterval?: NodeJS.Timeout;
+  private flushTimeout?: NodeJS.Timeout;
+  private disposed = false;
 
   constructor(
     onFlush: (chunks: Map<OutputMessage.Severity, string | undefined>) => void,
@@ -19,7 +20,8 @@ export class SimpleBuffer implements Disposable {
         onFlush(chunks);
       }
     };
-    this.flushInterval = setInterval(this.flush, flushTimeout);
+
+    this.setTimeoutVariable(flushTimeout);
   }
 
   addChunk(
@@ -33,11 +35,40 @@ export class SimpleBuffer implements Disposable {
     Chunks.clear(this.chunks);
   }
 
+  private setTimeoutVariable(flushTimeout: number): void {
+    let isDisposed = this.disposed;
+    if (isDisposed) {
+      // once "isDisposed" is true we stop
+      // creating timeouts and do one more
+      // flush AFTER any setTimeout
+      // callback that may be in progress
+      this.flush();
+      isDisposed = false;
+      return;
+    }
+
+    if (!this.flushTimeout) {
+      const onTimeout = () => {
+        this.flush();
+        this.clearTimeoutVariable();
+      };
+
+      this.flushTimeout = setTimeout(() => {
+        onTimeout();
+        this.setTimeoutVariable(flushTimeout);
+      }, flushTimeout);
+    }
+  }
+
+  private clearTimeoutVariable(): void {
+    if (this.flushTimeout) {
+      clearTimeout(this.flushTimeout);
+      this.flushTimeout = undefined;
+    }
+  }
+
   dispose(): void {
-    this.flush();
-    clearInterval(this.flushInterval);
-    this.clearChunks();
-    this.flushInterval = undefined;
+    this.disposed = true;
   }
 }
 
