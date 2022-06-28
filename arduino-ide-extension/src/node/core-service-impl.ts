@@ -84,8 +84,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             reject(CoreError.VerifyFailed(message, compilerErrors));
           }
         })
-        .on('end', resolve);
-    }).finally(() => handler.dispose());
+        .on('end', () => {
+          handler.dispose();
+          resolve();
+        });
+    });
   }
 
   private compileRequest(
@@ -195,9 +198,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
             }
           })
-          .on('end', resolve);
+          .on('end', () => {
+            handler.dispose();
+            resolve();
+          });
       }).finally(async () => {
-        handler.dispose();
         await this.notifyUploadDidFinish(options);
       })
     );
@@ -261,9 +266,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
             }
           })
-          .on('end', resolve);
+          .on('end', () => {
+            handler.dispose();
+            resolve();
+          });
       }).finally(async () => {
-        handler.dispose();
         await this.notifyUploadDidFinish(options);
       })
     );
