@@ -61,7 +61,9 @@ export class NotificationComponent extends TheiaNotificationComponent {
                   actions.map((action, index) => (
                     <button
                       key={messageId + `-action-${index}`}
-                      className="theia-button"
+                      className={`theia-button ${
+                        index !== actions.length - 1 ? 'secondary' : ''
+                      }`}
                       data-message-id={messageId}
                       data-action={action}
                       onClick={this.onAction}
