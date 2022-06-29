@@ -13,12 +13,23 @@
     margin-bottom: 20px;
 }
 
-
-.cloud-sketchbook-tree-icon {
-    background: url("./cloud-sketchbook-tree-icon.svg") center center no-repeat;
+.p-TabBar-tabIcon.cloud-sketchbook-tree-icon {
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./cloud-sketchbook-tree-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
-    background-size: auto 90%;
+    -webkit-mask-size: 100%;
+}
+
+.p-mod-current
+.cloud-sketchbook-tree-icon {
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./cloud-sketchbook-tree-icon-filled.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100%;
 }
 
 .sketchbook-trees-container
@@ -65,7 +76,7 @@
 .p-Widget.p-TabBar.p-DockPanel-tabBar
 > ul
 > li.p-TabBar-tab.p-mod-current {
-    border-bottom: 2px solid var(--theia-statusBar-background);
+    border-bottom: 2px solid var(--theia-activityBar-activeBorder);
 }
 
 .sketchbook-trees-container .center {
@@ -89,13 +100,19 @@
 }
 
 .pull-sketch-icon {
-    background: url("./pull-sketch-icon.svg") center center no-repeat;
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./pull-sketch-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
 }
 
 .push-sketch-icon {
-    background: url("./push-sketch-icon.svg") center center no-repeat;
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./push-sketch-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
 }
