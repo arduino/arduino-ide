@@ -4,7 +4,7 @@ import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { spawn, ChildProcess } from 'child_process';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Deferred, retry } from '@theia/core/lib/common/promise-util';
 import {
   Disposable,
   DisposableCollection,
@@ -23,26 +23,26 @@ export class ArduinoDaemonImpl
 {
   @inject(ILogger)
   @named('daemon')
-  protected readonly logger: ILogger;
+  private readonly logger: ILogger;
 
   @inject(EnvVariablesServer)
-  protected readonly envVariablesServer: EnvVariablesServer;
+  private readonly envVariablesServer: EnvVariablesServer;
 
   @inject(NotificationServiceServer)
-  protected readonly notificationService: NotificationServiceServer;
+  private readonly notificationService: NotificationServiceServer;
 
-  protected readonly toDispose = new DisposableCollection();
-  protected readonly onDaemonStartedEmitter = new Emitter<string>();
-  protected readonly onDaemonStoppedEmitter = new Emitter<void>();
+  private readonly toDispose = new DisposableCollection();
+  private readonly onDaemonStartedEmitter = new Emitter<string>();
+  private readonly onDaemonStoppedEmitter = new Emitter<void>();
 
-  protected _running = false;
-  protected _port = new Deferred<string>();
-  protected _execPath: string | undefined;
+  private _running = false;
+  private _port = new Deferred<string>();
+  private _execPath: string | undefined;
 
   // Backend application lifecycle.
 
   onStart(): void {
-    this.startDaemon(); // no await
+    this.start(); // no await
   }
 
   // Daemon API
@@ -58,7 +58,7 @@ export class ArduinoDaemonImpl
     return undefined;
   }
 
-  async startDaemon(): Promise<void> {
+  async start(): Promise<string> {
     try {
       this.toDispose.dispose(); // This will `kill` the previously started daemon process, if any.
       const cliPath = await this.getExecPath();
@@ -86,23 +86,28 @@ export class ArduinoDaemonImpl
       ]);
       this.fireDaemonStarted(port);
       this.onData('Daemon is running.');
+      return port;
     } catch (err) {
-      this.onData('Failed to start the daemon.');
-      this.onError(err);
-      let i = 5; // TODO: make this better
-      while (i) {
-        this.onData(`Restarting daemon in ${i} seconds...`);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        i--;
-      }
-      this.onData('Restarting daemon now...');
-      return this.startDaemon();
+      return retry(
+        () => {
+          this.onError(err);
+          return this.start();
+        },
+        1_000,
+        5
+      );
     }
   }
 
-  async stopDaemon(): Promise<void> {
+  async stop(): Promise<void> {
     this.toDispose.dispose();
   }
+
+  async restart(): Promise<string> {
+    return this.start();
+  }
+
+  // Backend only daemon API
 
   get onDaemonStarted(): Event<string> {
     return this.onDaemonStartedEmitter.event;
@@ -275,14 +280,14 @@ export class ArduinoDaemonImpl
     return ready.promise;
   }
 
-  protected fireDaemonStarted(port: string): void {
+  private fireDaemonStarted(port: string): void {
     this._running = true;
     this._port.resolve(port);
     this.onDaemonStartedEmitter.fire(port);
-    this.notificationService.notifyDaemonStarted(port);
+    this.notificationService.notifyDaemonDidStart(port);
   }
 
-  protected fireDaemonStopped(): void {
+  private fireDaemonStopped(): void {
     if (!this._running) {
       return;
     }
@@ -290,14 +295,15 @@ export class ArduinoDaemonImpl
     this._port.reject(); // Reject all pending.
     this._port = new Deferred<string>();
     this.onDaemonStoppedEmitter.fire();
-    this.notificationService.notifyDaemonStopped();
+    this.notificationService.notifyDaemonDidStop();
   }
 
   protected onData(message: string): void {
     this.logger.info(message);
   }
 
-  protected onError(error: any): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private onError(error: any): void {
     this.logger.error(error);
   }
 }

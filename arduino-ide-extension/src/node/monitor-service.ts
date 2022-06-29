@@ -10,7 +10,7 @@ import {
   MonitorRequest,
   MonitorResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
-import { CoreClientAware, CoreClientProvider } from './core-client-provider';
+import { CoreClientAware } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
@@ -77,8 +77,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
     private readonly board: Board,
     private readonly port: Port,
-    private readonly monitorID: string,
-    protected override readonly coreClientProvider: CoreClientProvider
+    private readonly monitorID: string
   ) {
     super();
 
@@ -175,8 +174,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       },
     };
 
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
 
     const { instance } = coreClient;
     const monitorRequest = new MonitorRequest();
@@ -224,7 +222,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   async createDuplex(): Promise<
     ClientDuplexStream<MonitorRequest, MonitorResponse>
   > {
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     return coreClient.client.monitor();
   }
 
@@ -404,8 +402,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     if (!this.duplex) {
       return Status.NOT_CONNECTED;
     }
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { instance } = coreClient;
 
     const req = new MonitorRequest();
@@ -431,7 +428,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     return this.settings;
   }
 
-  // TODO: move this into MonitoSettingsProvider
+  // TODO: move this into MonitorSettingsProvider
   /**
    * Returns the possible configurations used to connect a monitor
    * to the board specified by fqbn using the specified protocol
@@ -443,8 +440,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     protocol: string,
     fqbn: string
   ): Promise<PluggableMonitorSettings> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const req = new EnumerateMonitorPortSettingsRequest();
     req.setInstance(instance);
@@ -512,8 +508,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     if (!this.duplex) {
       return Status.NOT_CONNECTED;
     }
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { instance } = coreClient;
 
     const req = new MonitorRequest();

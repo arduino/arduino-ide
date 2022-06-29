@@ -7,7 +7,7 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   Installable,
   LibraryService,
-  ResponseServiceArduino,
+  ResponseServiceClient,
 } from '../../common/protocol';
 import {
   SketchContribution,
@@ -22,8 +22,8 @@ export class AddZipLibrary extends SketchContribution {
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
 
-  @inject(ResponseServiceArduino)
-  protected readonly responseService: ResponseServiceArduino;
+  @inject(ResponseServiceClient)
+  protected readonly responseService: ResponseServiceClient;
 
   @inject(LibraryService)
   protected readonly libraryService: LibraryService;

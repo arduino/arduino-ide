@@ -83,8 +83,8 @@ export class Debug extends SketchContribution {
     this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
       this.refreshState(selectedBoard)
     );
-    this.notificationCenter.onPlatformInstalled(() => this.refreshState());
-    this.notificationCenter.onPlatformUninstalled(() => this.refreshState());
+    this.notificationCenter.onPlatformDidInstall(() => this.refreshState());
+    this.notificationCenter.onPlatformDidUninstall(() => this.refreshState());
   }
 
   override onReady(): MaybePromise<void> {

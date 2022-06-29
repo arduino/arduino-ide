@@ -8,7 +8,7 @@ import {
   Port,
 } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
-import { Installable, ResponseServiceArduino } from '../../common/protocol';
+import { Installable, ResponseServiceClient } from '../../common/protocol';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
 import { nls } from '@theia/core/lib/common';
 import { NotificationCenter } from '../notification-center';
@@ -45,8 +45,8 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
 
-  @inject(ResponseServiceArduino)
-  protected readonly responseService: ResponseServiceArduino;
+  @inject(ResponseServiceClient)
+  protected readonly responseService: ResponseServiceClient;
 
   @inject(BoardsListWidgetFrontendContribution)
   protected readonly boardsManagerFrontendContribution: BoardsListWidgetFrontendContribution;
@@ -86,7 +86,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
       // installed, though this is not strictly necessary. It's more of a
       // cleanup, to ensure the related variables are representative of
       // current state.
-      this.notificationCenter.onPlatformInstalled((installed) => {
+      this.notificationCenter.onPlatformDidInstall((installed) => {
         if (this.lastRefusedPackageId === installed.item.id) {
           this.clearLastRefusedPromptInfo();
         }

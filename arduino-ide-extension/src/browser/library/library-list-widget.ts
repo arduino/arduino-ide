@@ -41,8 +41,8 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
   protected override init(): void {
     super.init();
     this.toDispose.pushAll([
-      this.notificationCenter.onLibraryInstalled(() => this.refresh(undefined)),
-      this.notificationCenter.onLibraryUninstalled(() =>
+      this.notificationCenter.onLibraryDidInstall(() => this.refresh(undefined)),
+      this.notificationCenter.onLibraryDidUninstall(() =>
         this.refresh(undefined)
       ),
     ]);

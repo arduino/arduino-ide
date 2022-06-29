@@ -1,13 +1,13 @@
 import * as semver from 'semver';
-import { Progress } from '@theia/core/lib/common/message-service-protocol';
+import type { Progress } from '@theia/core/lib/common/message-service-protocol';
 import {
   CancellationToken,
   CancellationTokenSource,
 } from '@theia/core/lib/common/cancellation';
 import { naturalCompare } from './../utils';
-import { ArduinoComponent } from './arduino-component';
-import { MessageService } from '@theia/core';
-import { ResponseServiceArduino } from './response-service';
+import type { ArduinoComponent } from './arduino-component';
+import type { MessageService } from '@theia/core/lib/common/message-service';
+import type { ResponseServiceClient } from './response-service';
 
 export interface Installable<T extends ArduinoComponent> {
   /**
@@ -44,7 +44,7 @@ export namespace Installable {
   >(options: {
     installable: Installable<T>;
     messageService: MessageService;
-    responseService: ResponseServiceArduino;
+    responseService: ResponseServiceClient;
     item: T;
     version: Installable.Version;
   }): Promise<void> {
@@ -66,7 +66,7 @@ export namespace Installable {
   >(options: {
     installable: Installable<T>;
     messageService: MessageService;
-    responseService: ResponseServiceArduino;
+    responseService: ResponseServiceClient;
     item: T;
   }): Promise<void> {
     const { item } = options;
@@ -86,7 +86,7 @@ export namespace Installable {
   export async function doWithProgress(options: {
     run: ({ progressId }: { progressId: string }) => Promise<void>;
     messageService: MessageService;
-    responseService: ResponseServiceArduino;
+    responseService: ResponseServiceClient;
     progressText: string;
   }): Promise<void> {
     return withProgress(
@@ -103,7 +103,7 @@ export namespace Installable {
           }
         );
         try {
-          options.responseService.clearArduinoChannel();
+          options.responseService.clearOutput();
           await options.run({ progressId });
         } finally {
           toDispose.dispose();

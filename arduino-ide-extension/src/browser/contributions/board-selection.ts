@@ -101,8 +101,8 @@ PID: ${PID}`;
   }
 
   override onStart(): void {
-    this.notificationCenter.onPlatformInstalled(() => this.updateMenus());
-    this.notificationCenter.onPlatformUninstalled(() => this.updateMenus());
+    this.notificationCenter.onPlatformDidInstall(() => this.updateMenus());
+    this.notificationCenter.onPlatformDidUninstall(() => this.updateMenus());
     this.boardsServiceProvider.onBoardsConfigChanged(() => this.updateMenus());
     this.boardsServiceProvider.onAvailableBoardsChanged(() =>
       this.updateMenus()

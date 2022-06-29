@@ -202,8 +202,8 @@ export class LibraryExamples extends Examples {
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
   override onStart(): void {
-    this.notificationCenter.onLibraryInstalled(() => this.register());
-    this.notificationCenter.onLibraryUninstalled(() => this.register());
+    this.notificationCenter.onLibraryDidInstall(() => this.register());
+    this.notificationCenter.onLibraryDidUninstall(() => this.register());
   }
 
   override async onReady(): Promise<void> {

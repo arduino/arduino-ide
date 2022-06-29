@@ -25,7 +25,7 @@ import { Installable } from '../common/protocol/installable';
 import { ILogger, notEmpty } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node';
 import { ResponseService, NotificationServiceServer } from '../common/protocol';
-import { InstallWithProgress } from './grpc-installable';
+import { ExecuteWithProgress } from './grpc-progressible';
 
 @injectable()
 export class LibraryServiceImpl
@@ -45,8 +45,7 @@ export class LibraryServiceImpl
   protected readonly notificationServer: NotificationServiceServer;
 
   async search(options: { query?: string }): Promise<LibraryPackage[]> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const listReq = new LibraryListRequest();
@@ -112,8 +111,7 @@ export class LibraryServiceImpl
   }: {
     fqbn?: string | undefined;
   }): Promise<LibraryPackage[]> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const req = new LibraryListRequest();
     req.setInstance(instance);
@@ -218,8 +216,7 @@ export class LibraryServiceImpl
     version: Installable.Version;
     filterSelf?: boolean;
   }): Promise<LibraryDependency[]> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const req = new LibraryResolveDependenciesRequest();
     req.setInstance(instance);
@@ -260,8 +257,7 @@ export class LibraryServiceImpl
     const version = !!options.version
       ? options.version
       : item.availableVersions[0];
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const req = new LibraryInstallRequest();
@@ -278,7 +274,7 @@ export class LibraryServiceImpl
     const resp = client.libraryInstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId: options.progressId,
         responseService: this.responseService,
       })
@@ -304,7 +300,7 @@ export class LibraryServiceImpl
     const items = await this.search({});
     const updated =
       items.find((other) => LibraryPackage.equals(other, item)) || item;
-    this.notificationServer.notifyLibraryInstalled({ item: updated });
+    this.notificationServer.notifyLibraryDidInstall({ item: updated });
     console.info('<<< Library package installation done.', item);
   }
 
@@ -317,8 +313,7 @@ export class LibraryServiceImpl
     progressId?: string;
     overwrite?: boolean;
   }): Promise<void> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const req = new ZipLibraryInstallRequest();
     req.setPath(FileUri.fsPath(zipUri));
@@ -333,7 +328,7 @@ export class LibraryServiceImpl
     const resp = client.zipLibraryInstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId,
         responseService: this.responseService,
       })
@@ -352,8 +347,7 @@ export class LibraryServiceImpl
     progressId?: string;
   }): Promise<void> {
     const { item, progressId } = options;
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const req = new LibraryUninstallRequest();
@@ -369,7 +363,7 @@ export class LibraryServiceImpl
     const resp = client.libraryUninstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId,
         responseService: this.responseService,
       })
@@ -382,7 +376,7 @@ export class LibraryServiceImpl
       resp.on('error', reject);
     });
 
-    this.notificationServer.notifyLibraryUninstalled({ item });
+    this.notificationServer.notifyLibraryDidUninstall({ item });
     console.info('<<< Library package uninstallation done.', item);
   }
 

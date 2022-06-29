@@ -18,7 +18,7 @@ import {
   BoardsService,
   BoardsServicePath,
 } from '../common/protocol/boards-service';
-import { LibraryServiceImpl } from './library-service-server-impl';
+import { LibraryServiceImpl } from './library-service-impl';
 import { BoardsServiceImpl } from './boards-service-impl';
 import { CoreServiceImpl } from './core-service-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
@@ -245,7 +245,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         const webSocketProvider =
           container.get<WebSocketProvider>(WebSocketProvider);
 
-        const { board, port, coreClientProvider, monitorID } = options;
+        const { board, port, monitorID } = options;
 
         return new MonitorService(
           logger,
@@ -253,8 +253,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
           webSocketProvider,
           board,
           port,
-          monitorID,
-          coreClientProvider
+          monitorID
         );
       }
   );

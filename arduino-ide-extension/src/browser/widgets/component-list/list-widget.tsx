@@ -1,5 +1,9 @@
 import * as React from '@theia/core/shared/react';
-import { injectable, postConstruct, inject } from '@theia/core/shared/inversify';
+import {
+  injectable,
+  postConstruct,
+  inject,
+} from '@theia/core/shared/inversify';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { Deferred } from '@theia/core/lib/common/promise-util';
@@ -12,7 +16,7 @@ import {
   Installable,
   Searchable,
   ArduinoComponent,
-  ResponseServiceArduino,
+  ResponseServiceClient,
 } from '../../../common/protocol';
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
@@ -21,15 +25,15 @@ import { NotificationCenter } from '../../notification-center';
 @injectable()
 export abstract class ListWidget<
   T extends ArduinoComponent
-  > extends ReactWidget {
+> extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
 
   @inject(CommandService)
   protected readonly commandService: CommandService;
 
-  @inject(ResponseServiceArduino)
-  protected readonly responseService: ResponseServiceArduino;
+  @inject(ResponseServiceClient)
+  protected readonly responseService: ResponseServiceClient;
 
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
@@ -67,9 +71,9 @@ export abstract class ListWidget<
   @postConstruct()
   protected init(): void {
     this.toDispose.pushAll([
-      this.notificationCenter.onIndexUpdated(() => this.refresh(undefined)),
-      this.notificationCenter.onDaemonStarted(() => this.refresh(undefined)),
-      this.notificationCenter.onDaemonStopped(() => this.refresh(undefined)),
+      this.notificationCenter.onIndexDidUpdate(() => this.refresh(undefined)),
+      this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
+      this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
   }
 
