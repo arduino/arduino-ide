@@ -76,19 +76,15 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
                 .filter(notEmpty)
                 .shift() ?? error.details
             );
-            const chunk = new TextEncoder().encode(
-              `${error.details}'\n\n'${message}`
+            this.sendResponse(
+              error.details + '\n\n' + message,
+              OutputMessage.Severity.Error
             );
-            handler.addChunk(chunk, OutputMessage.Severity.Error);
-
             reject(CoreError.VerifyFailed(message, compilerErrors));
           }
         })
-        .on('end', () => {
-          handler.dispose();
-          resolve();
-        });
-    });
+        .on('end', resolve);
+    }).finally(() => handler.dispose());
   }
 
   private compileRequest(
@@ -185,8 +181,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
                 firstToUpperCase(task),
                 error.details
               );
-              const chunk = new TextEncoder().encode(error.details);
-              handler.addChunk(chunk, OutputMessage.Severity.Error);
+              this.sendResponse(error.details, OutputMessage.Severity.Error);
               reject(
                 errorHandler(
                   message,
@@ -198,11 +193,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
             }
           })
-          .on('end', () => {
-            handler.dispose();
-            resolve();
-          });
+          .on('end', resolve);
       }).finally(async () => {
+        handler.dispose();
         await this.notifyUploadDidFinish(options);
       })
     );
@@ -252,8 +245,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
               reject(error);
             } else {
-              const chunk = new TextEncoder().encode(error.details);
-              handler.addChunk(chunk, OutputMessage.Severity.Error);
+              this.sendResponse(error.details, OutputMessage.Severity.Error);
               reject(
                 CoreError.BurnBootloaderFailed(
                   nls.localize(
@@ -266,11 +258,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
             }
           })
-          .on('end', () => {
-            handler.dispose();
-            resolve();
-          });
+          .on('end', resolve);
       }).finally(async () => {
+        handler.dispose();
         await this.notifyUploadDidFinish(options);
       })
     );
@@ -298,7 +288,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private createOnDataHandler<R extends StreamingResponse>(): Disposable & {
     stderr: Buffer[];
     onData: (response: R) => void;
-    addChunk: (chunk: Uint8Array, severity?: OutputMessage.Severity) => void;
   } {
     const stderr: Buffer[] = [];
     const buffer = new SimpleBuffer((chunks) => {
@@ -312,14 +301,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       buffer.addChunk(out);
       buffer.addChunk(err, OutputMessage.Severity.Error);
     });
-    const addChunk = (chunk: Uint8Array, severity?: OutputMessage.Severity) =>
-      buffer.addChunk(chunk, severity);
-
     return {
       dispose: () => buffer.dispose(),
       stderr,
       onData,
-      addChunk,
     };
   }
 
