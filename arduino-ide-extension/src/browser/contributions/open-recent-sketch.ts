@@ -36,7 +36,7 @@ export class OpenRecentSketch extends SketchContribution {
   protected toDisposeBeforeRegister = new Map<string, DisposableCollection>();
 
   override onStart(): void {
-    this.notificationCenter.onRecentSketchesChanged(({ sketches }) =>
+    this.notificationCenter.onRecentSketchesDidChange(({ sketches }) =>
       this.refreshMenu(sketches)
     );
   }

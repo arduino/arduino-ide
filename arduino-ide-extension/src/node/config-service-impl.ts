@@ -199,11 +199,11 @@ export class ConfigServiceImpl
 
   protected fireConfigChanged(config: Config): void {
     this.configChangeEmitter.fire(config);
-    this.notificationService.notifyConfigChanged({ config });
+    this.notificationService.notifyConfigDidChange({ config });
   }
 
   protected fireInvalidConfig(): void {
-    this.notificationService.notifyConfigChanged({ config: undefined });
+    this.notificationService.notifyConfigDidChange({ config: undefined });
   }
 
   protected async updateDaemon(

@@ -189,7 +189,7 @@ export class SketchesServiceImpl
   }
 
   async loadSketch(uri: string): Promise<SketchWithDetails> {
-    const { client, instance } = await this.coreClient();
+    const { client, instance } = await this.coreClient;
     const req = new LoadSketchRequest();
     const requestSketchPath = FileUri.fsPath(uri);
     req.setSketchPath(requestSketchPath);
@@ -295,7 +295,7 @@ export class SketchesServiceImpl
 
     await promisify(fs.writeFile)(fsPath, JSON.stringify(data, null, 2));
     this.recentlyOpenedSketches().then((sketches) =>
-      this.notificationService.notifyRecentSketchesChanged({ sketches })
+      this.notificationService.notifyRecentSketchesDidChange({ sketches })
     );
   }
 
@@ -549,9 +549,8 @@ void loop() {
   }
 
   async archive(sketch: Sketch, destinationUri: string): Promise<string> {
-    await this.coreClientProvider.initialized;
     await this.loadSketch(sketch.uri); // sanity check
-    const { client } = await this.coreClient();
+    const { client } = await this.coreClient;
     const archivePath = FileUri.fsPath(destinationUri);
     // The CLI cannot override existing archives, so we have to wipe it manually: https://github.com/arduino/arduino-cli/issues/1160
     if (await promisify(fs.exists)(archivePath)) {

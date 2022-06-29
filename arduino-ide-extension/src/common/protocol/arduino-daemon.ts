@@ -12,4 +12,7 @@ export interface ArduinoDaemon {
    * Otherwise resolves to the CLI daemon port.
    */
   tryGetPort(): Promise<string | undefined>;
+  start(): Promise<string>;
+  stop(): Promise<void>;
+  restart(): Promise<string>;
 }

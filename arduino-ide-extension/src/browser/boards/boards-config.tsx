@@ -113,7 +113,7 @@ export class BoardsConfig extends React.Component<
           );
         }
       }),
-      this.props.notificationCenter.onAttachedBoardsChanged((event) =>
+      this.props.notificationCenter.onAttachedBoardsDidChange((event) =>
         this.updatePorts(
           event.newState.ports,
           AttachedBoardsChangeEvent.diff(event).detached.ports
@@ -126,19 +126,19 @@ export class BoardsConfig extends React.Component<
           );
         }
       ),
-      this.props.notificationCenter.onPlatformInstalled(() =>
+      this.props.notificationCenter.onPlatformDidInstall(() =>
         this.updateBoards(this.state.query)
       ),
-      this.props.notificationCenter.onPlatformUninstalled(() =>
+      this.props.notificationCenter.onPlatformDidUninstall(() =>
         this.updateBoards(this.state.query)
       ),
-      this.props.notificationCenter.onIndexUpdated(() =>
+      this.props.notificationCenter.onIndexDidUpdate(() =>
         this.updateBoards(this.state.query)
       ),
-      this.props.notificationCenter.onDaemonStarted(() =>
+      this.props.notificationCenter.onDaemonDidStart(() =>
         this.updateBoards(this.state.query)
       ),
-      this.props.notificationCenter.onDaemonStopped(() =>
+      this.props.notificationCenter.onDaemonDidStop(() =>
         this.setState({ searchResults: [] })
       ),
       this.props.onFilteredTextDidChangeEvent((query) =>

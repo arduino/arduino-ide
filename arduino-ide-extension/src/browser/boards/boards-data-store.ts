@@ -33,7 +33,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
   protected readonly onChangedEmitter = new Emitter<void>();
 
   onStart(): void {
-    this.notificationCenter.onPlatformInstalled(async ({ item }) => {
+    this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
       let shouldFireChanged = false;
       for (const fqbn of item.boards
         .map(({ fqbn }) => fqbn)

@@ -49,8 +49,8 @@ export class IncludeLibrary extends SketchContribution {
     this.boardsServiceClient.onBoardsConfigChanged(() =>
       this.updateMenuActions()
     );
-    this.notificationCenter.onLibraryInstalled(() => this.updateMenuActions());
-    this.notificationCenter.onLibraryUninstalled(() =>
+    this.notificationCenter.onLibraryDidInstall(() => this.updateMenuActions());
+    this.notificationCenter.onLibraryDidUninstall(() =>
       this.updateMenuActions()
     );
   }

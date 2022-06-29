@@ -1,23 +1,33 @@
-import { LibraryPackage } from './library-service';
-import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
-import {
-  Sketch,
-  Config,
-  BoardsPackage,
+import type { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
+import type {
   AttachedBoardsChangeEvent,
+  BoardsPackage,
+  Config,
+  ProgressMessage,
+  Sketch,
 } from '../protocol';
+import type { LibraryPackage } from './library-service';
 
 export interface NotificationServiceClient {
-  notifyIndexUpdated(): void;
-  notifyDaemonStarted(port: string): void;
-  notifyDaemonStopped(): void;
-  notifyConfigChanged(event: { config: Config | undefined }): void;
-  notifyPlatformInstalled(event: { item: BoardsPackage }): void;
-  notifyPlatformUninstalled(event: { item: BoardsPackage }): void;
-  notifyLibraryInstalled(event: { item: LibraryPackage }): void;
-  notifyLibraryUninstalled(event: { item: LibraryPackage }): void;
-  notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void;
-  notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void;
+  notifyIndexWillUpdate(progressId: string): void;
+  notifyIndexUpdateDidProgress(progressMessage: ProgressMessage): void;
+  notifyIndexDidUpdate(progressId: string): void;
+  notifyIndexUpdateDidFail({
+    progressId,
+    message,
+  }: {
+    progressId: string;
+    message: string;
+  }): void;
+  notifyDaemonDidStart(port: string): void;
+  notifyDaemonDidStop(): void;
+  notifyConfigDidChange(event: { config: Config | undefined }): void;
+  notifyPlatformDidInstall(event: { item: BoardsPackage }): void;
+  notifyPlatformDidUninstall(event: { item: BoardsPackage }): void;
+  notifyLibraryDidInstall(event: { item: LibraryPackage }): void;
+  notifyLibraryDidUninstall(event: { item: LibraryPackage }): void;
+  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void;
+  notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void;
 }
 
 export const NotificationServicePath = '/services/notification-service';

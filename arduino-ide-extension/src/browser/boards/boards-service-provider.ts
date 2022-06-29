@@ -77,13 +77,13 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   private readonly _reconciled = new Deferred<void>();
 
   onStart(): void {
-    this.notificationCenter.onAttachedBoardsChanged(
+    this.notificationCenter.onAttachedBoardsDidChange(
       this.notifyAttachedBoardsChanged.bind(this)
     );
-    this.notificationCenter.onPlatformInstalled(
+    this.notificationCenter.onPlatformDidInstall(
       this.notifyPlatformInstalled.bind(this)
     );
-    this.notificationCenter.onPlatformUninstalled(
+    this.notificationCenter.onPlatformDidUninstall(
       this.notifyPlatformUninstalled.bind(this)
     );
 

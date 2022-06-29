@@ -48,7 +48,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compilerWarnings?: CompilerWarnings;
     }
   ): Promise<void> {
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const handler = this.createOnDataHandler();
     const request = this.compileRequest(options, instance);
@@ -158,7 +158,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   ): Promise<void> {
     await this.compile(Object.assign(options, { exportBinaries: false }));
 
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const request = this.uploadOrUploadUsingProgrammerRequest(
       options,
@@ -228,7 +228,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const handler = this.createOnDataHandler();
     const request = this.burnBootloaderRequest(options, instance);

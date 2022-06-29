@@ -11,7 +11,7 @@ import { SearchBar } from './search-bar';
 import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
-import { ResponseServiceArduino } from '../../../common/protocol';
+import { ResponseServiceClient } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
 export class FilterableListContainer<
@@ -162,7 +162,7 @@ export namespace FilterableListContainer {
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
     readonly filterTextChangeEvent: Event<string | undefined>;
     readonly messageService: MessageService;
-    readonly responseService: ResponseServiceArduino;
+    readonly responseService: ResponseServiceClient;
     readonly install: ({
       item,
       progressId,

@@ -1,10 +1,13 @@
-import { ApplicationError } from '@theia/core';
-import { Location } from '@theia/core/shared/vscode-languageserver-protocol';
-import { BoardUserField } from '.';
-import { Board, Port } from '../../common/protocol/boards-service';
-import { ErrorInfo as CliErrorInfo } from '../../node/cli-error-parser';
-import { Programmer } from './boards-service';
-import { Sketch } from './sketches-service';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
+import type { Location } from '@theia/core/shared/vscode-languageserver-protocol';
+import type {
+  Board,
+  BoardUserField,
+  Port,
+} from '../../common/protocol/boards-service';
+import type { ErrorInfo as CliErrorInfo } from '../../node/cli-error-parser';
+import type { Programmer } from './boards-service';
+import type { Sketch } from './sketches-service';
 
 export const CompilerWarningLiterals = [
   'None',

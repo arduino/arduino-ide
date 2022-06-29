@@ -33,10 +33,10 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
   protected override init(): void {
     super.init();
     this.toDispose.pushAll([
-      this.notificationCenter.onPlatformInstalled(() =>
+      this.notificationCenter.onPlatformDidInstall(() =>
         this.refresh(undefined)
       ),
-      this.notificationCenter.onPlatformUninstalled(() =>
+      this.notificationCenter.onPlatformDidUninstall(() =>
         this.refresh(undefined)
       ),
     ]);

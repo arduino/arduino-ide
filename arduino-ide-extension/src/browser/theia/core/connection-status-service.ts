@@ -30,10 +30,10 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
     try {
       this.connectedPort = await this.daemon.tryGetPort();
     } catch {}
-    this.notificationCenter.onDaemonStarted(
+    this.notificationCenter.onDaemonDidStart(
       (port) => (this.connectedPort = port)
     );
-    this.notificationCenter.onDaemonStopped(
+    this.notificationCenter.onDaemonDidStop(
       () => (this.connectedPort = undefined)
     );
     this.wsConnectionProvider.onIncomingMessageActivity(() => {
@@ -58,10 +58,10 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
     try {
       this.connectedPort = await this.daemon.tryGetPort();
     } catch {}
-    this.notificationCenter.onDaemonStarted(
+    this.notificationCenter.onDaemonDidStart(
       (port) => (this.connectedPort = port)
     );
-    this.notificationCenter.onDaemonStopped(
+    this.notificationCenter.onDaemonDidStop(
       () => (this.connectedPort = undefined)
     );
   }

@@ -1,4 +1,4 @@
-import { Event } from '@theia/core/lib/common/event';
+import type { Event } from '@theia/core/lib/common/event';
 
 export interface OutputMessage {
   readonly chunk: string;
@@ -18,6 +18,18 @@ export interface ProgressMessage {
   readonly work?: ProgressMessage.Work;
 }
 export namespace ProgressMessage {
+  export function is(arg: unknown): arg is ProgressMessage {
+    if (typeof arg === 'object') {
+      const object = arg as Record<string, unknown>;
+      return (
+        'progressId' in object &&
+        typeof object.progressId === 'string' &&
+        'message' in object &&
+        typeof object.message === 'string'
+      );
+    }
+    return false;
+  }
   export interface Work {
     readonly done: number;
     readonly total: number;
@@ -31,8 +43,8 @@ export interface ResponseService {
   reportProgress(message: ProgressMessage): void;
 }
 
-export const ResponseServiceArduino = Symbol('ResponseServiceArduino');
-export interface ResponseServiceArduino extends ResponseService {
+export const ResponseServiceClient = Symbol('ResponseServiceClient');
+export interface ResponseServiceClient extends ResponseService {
   onProgressDidChange: Event<ProgressMessage>;
-  clearArduinoChannel: () => void;
+  clearOutput: () => void;
 }

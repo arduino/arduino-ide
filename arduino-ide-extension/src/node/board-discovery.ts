@@ -55,7 +55,7 @@ export class BoardDiscovery extends CoreClientAware {
 
   @postConstruct()
   protected async init(): Promise<void> {
-    this.coreClient().then((client) => this.startBoardListWatch(client));
+    this.coreClient.then((client) => this.startBoardListWatch(client));
   }
 
   stopBoardListWatch(coreClient: CoreClientProvider.Client): Promise<void> {
@@ -181,7 +181,7 @@ export class BoardDiscovery extends CoreClientAware {
         };
 
         this._state = newState;
-        this.notificationService.notifyAttachedBoardsChanged(event);
+        this.notificationService.notifyAttachedBoardsDidChange(event);
       }
     });
     this.boardWatchDuplex.write(req);

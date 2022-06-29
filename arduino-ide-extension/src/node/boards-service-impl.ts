@@ -40,7 +40,7 @@ import {
   SupportedUserFieldsRequest,
   SupportedUserFieldsResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
-import { InstallWithProgress } from './grpc-installable';
+import { ExecuteWithProgress } from './grpc-progressible';
 
 @injectable()
 export class BoardsServiceImpl
@@ -78,8 +78,7 @@ export class BoardsServiceImpl
   async getBoardDetails(options: {
     fqbn: string;
   }): Promise<BoardDetails | undefined> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const { fqbn } = options;
     const detailsReq = new BoardDetailsRequest();
@@ -218,8 +217,7 @@ export class BoardsServiceImpl
   }: {
     query?: string;
   }): Promise<BoardWithPackage[]> {
-    await this.coreClientProvider.initialized;
-    const { instance, client } = await this.coreClient();
+    const { instance, client } = await this.coreClient;
     const req = new BoardSearchRequest();
     req.setSearchArgs(query || '');
     req.setInstance(instance);
@@ -252,8 +250,7 @@ export class BoardsServiceImpl
     fqbn: string;
     protocol: string;
   }): Promise<BoardUserField[]> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const supportedUserFieldsReq = new SupportedUserFieldsRequest();
@@ -279,8 +276,7 @@ export class BoardsServiceImpl
   }
 
   async search(options: { query?: string }): Promise<BoardsPackage[]> {
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const installedPlatformsReq = new PlatformListRequest();
@@ -404,8 +400,7 @@ export class BoardsServiceImpl
     const version = !!options.version
       ? options.version
       : item.availableVersions[0];
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const [platform, architecture] = item.id.split(':');
@@ -424,7 +419,7 @@ export class BoardsServiceImpl
     const resp = client.platformInstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId: options.progressId,
         responseService: this.responseService,
       })
@@ -448,7 +443,7 @@ export class BoardsServiceImpl
     const items = await this.search({});
     const updated =
       items.find((other) => BoardsPackage.equals(other, item)) || item;
-    this.notificationService.notifyPlatformInstalled({ item: updated });
+    this.notificationService.notifyPlatformDidInstall({ item: updated });
     console.info('<<< Boards package installation done.', item);
   }
 
@@ -457,8 +452,7 @@ export class BoardsServiceImpl
     progressId?: string;
   }): Promise<void> {
     const { item, progressId } = options;
-    await this.coreClientProvider.initialized;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const [platform, architecture] = item.id.split(':');
@@ -476,7 +470,7 @@ export class BoardsServiceImpl
     const resp = client.platformUninstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId,
         responseService: this.responseService,
       })
@@ -490,7 +484,7 @@ export class BoardsServiceImpl
     });
 
     // Here, unlike at `install` we send out the argument `item`. Otherwise, we would not know about the board FQBN.
-    this.notificationService.notifyPlatformUninstalled({ item });
+    this.notificationService.notifyPlatformDidUninstall({ item });
     console.info('<<< Boards package uninstallation done.', item);
   }
 }

@@ -7,11 +7,11 @@ import {
 import {
   OutputMessage,
   ProgressMessage,
-  ResponseServiceArduino,
+  ResponseServiceClient,
 } from '../common/protocol/response-service';
 
 @injectable()
-export class ResponseServiceImpl implements ResponseServiceArduino {
+export class ResponseServiceImpl implements ResponseServiceClient {
   @inject(OutputChannelManager)
   private readonly outputChannelManager: OutputChannelManager;
 
@@ -19,7 +19,7 @@ export class ResponseServiceImpl implements ResponseServiceArduino {
 
   readonly onProgressDidChange = this.progressDidChangeEmitter.event;
 
-  clearArduinoChannel(): void {
+  clearOutput(): void {
     this.outputChannelManager.getChannel('Arduino').clear();
   }
 

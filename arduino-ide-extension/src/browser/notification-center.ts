@@ -17,6 +17,7 @@ import {
   LibraryPackage,
   Config,
   Sketch,
+  ProgressMessage,
 } from '../common/protocol';
 import {
   FrontendApplicationStateService,
@@ -33,25 +34,32 @@ export class NotificationCenter
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
-  protected readonly indexUpdatedEmitter = new Emitter<void>();
-  protected readonly daemonStartedEmitter = new Emitter<string>();
-  protected readonly daemonStoppedEmitter = new Emitter<void>();
-  protected readonly configChangedEmitter = new Emitter<{
+  protected readonly indexDidUpdateEmitter = new Emitter<string>();
+  protected readonly indexWillUpdateEmitter = new Emitter<string>();
+  protected readonly indexUpdateDidProgressEmitter =
+    new Emitter<ProgressMessage>();
+  protected readonly indexUpdateDidFailEmitter = new Emitter<{
+    progressId: string;
+    message: string;
+  }>();
+  protected readonly daemonDidStartEmitter = new Emitter<string>();
+  protected readonly daemonDidStopEmitter = new Emitter<void>();
+  protected readonly configDidChangeEmitter = new Emitter<{
     config: Config | undefined;
   }>();
-  protected readonly platformInstalledEmitter = new Emitter<{
+  protected readonly platformDidInstallEmitter = new Emitter<{
     item: BoardsPackage;
   }>();
-  protected readonly platformUninstalledEmitter = new Emitter<{
+  protected readonly platformDidUninstallEmitter = new Emitter<{
     item: BoardsPackage;
   }>();
-  protected readonly libraryInstalledEmitter = new Emitter<{
+  protected readonly libraryDidInstallEmitter = new Emitter<{
     item: LibraryPackage;
   }>();
-  protected readonly libraryUninstalledEmitter = new Emitter<{
+  protected readonly libraryDidUninstallEmitter = new Emitter<{
     item: LibraryPackage;
   }>();
-  protected readonly attachedBoardsChangedEmitter =
+  protected readonly attachedBoardsDidChangeEmitter =
     new Emitter<AttachedBoardsChangeEvent>();
   protected readonly recentSketchesChangedEmitter = new Emitter<{
     sketches: Sketch[];
@@ -60,27 +68,34 @@ export class NotificationCenter
     new Emitter<FrontendApplicationState>();
 
   protected readonly toDispose = new DisposableCollection(
-    this.indexUpdatedEmitter,
-    this.daemonStartedEmitter,
-    this.daemonStoppedEmitter,
-    this.configChangedEmitter,
-    this.platformInstalledEmitter,
-    this.platformUninstalledEmitter,
-    this.libraryInstalledEmitter,
-    this.libraryUninstalledEmitter,
-    this.attachedBoardsChangedEmitter
+    this.indexWillUpdateEmitter,
+    this.indexUpdateDidProgressEmitter,
+    this.indexDidUpdateEmitter,
+    this.indexUpdateDidFailEmitter,
+    this.daemonDidStartEmitter,
+    this.daemonDidStopEmitter,
+    this.configDidChangeEmitter,
+    this.platformDidInstallEmitter,
+    this.platformDidUninstallEmitter,
+    this.libraryDidInstallEmitter,
+    this.libraryDidUninstallEmitter,
+    this.attachedBoardsDidChangeEmitter
   );
 
-  readonly onIndexUpdated = this.indexUpdatedEmitter.event;
-  readonly onDaemonStarted = this.daemonStartedEmitter.event;
-  readonly onDaemonStopped = this.daemonStoppedEmitter.event;
-  readonly onConfigChanged = this.configChangedEmitter.event;
-  readonly onPlatformInstalled = this.platformInstalledEmitter.event;
-  readonly onPlatformUninstalled = this.platformUninstalledEmitter.event;
-  readonly onLibraryInstalled = this.libraryInstalledEmitter.event;
-  readonly onLibraryUninstalled = this.libraryUninstalledEmitter.event;
-  readonly onAttachedBoardsChanged = this.attachedBoardsChangedEmitter.event;
-  readonly onRecentSketchesChanged = this.recentSketchesChangedEmitter.event;
+  readonly onIndexDidUpdate = this.indexDidUpdateEmitter.event;
+  readonly onIndexWillUpdate = this.indexDidUpdateEmitter.event;
+  readonly onIndexUpdateDidProgress = this.indexUpdateDidProgressEmitter.event;
+  readonly onIndexUpdateDidFail = this.indexUpdateDidFailEmitter.event;
+  readonly onDaemonDidStart = this.daemonDidStartEmitter.event;
+  readonly onDaemonDidStop = this.daemonDidStopEmitter.event;
+  readonly onConfigDidChange = this.configDidChangeEmitter.event;
+  readonly onPlatformDidInstall = this.platformDidInstallEmitter.event;
+  readonly onPlatformDidUninstall = this.platformDidUninstallEmitter.event;
+  readonly onLibraryDidInstall = this.libraryDidInstallEmitter.event;
+  readonly onLibraryDidUninstall = this.libraryDidUninstallEmitter.event;
+  readonly onAttachedBoardsDidChange =
+    this.attachedBoardsDidChangeEmitter.event;
+  readonly onRecentSketchesDidChange = this.recentSketchesChangedEmitter.event;
   readonly onAppStateDidChange = this.onAppStateDidChangeEmitter.event;
 
   @postConstruct()
@@ -97,43 +112,61 @@ export class NotificationCenter
     this.toDispose.dispose();
   }
 
-  notifyIndexUpdated(): void {
-    this.indexUpdatedEmitter.fire();
+  notifyIndexWillUpdate(progressId: string): void {
+    this.indexWillUpdateEmitter.fire(progressId);
   }
 
-  notifyDaemonStarted(port: string): void {
-    this.daemonStartedEmitter.fire(port);
+  notifyIndexUpdateDidProgress(progressMessage: ProgressMessage): void {
+    this.indexUpdateDidProgressEmitter.fire(progressMessage);
   }
 
-  notifyDaemonStopped(): void {
-    this.daemonStoppedEmitter.fire();
+  notifyIndexDidUpdate(progressId: string): void {
+    this.indexDidUpdateEmitter.fire(progressId);
   }
 
-  notifyConfigChanged(event: { config: Config | undefined }): void {
-    this.configChangedEmitter.fire(event);
+  notifyIndexUpdateDidFail({
+    progressId,
+    message,
+  }: {
+    progressId: string;
+    message: string;
+  }): void {
+    this.indexUpdateDidFailEmitter.fire({ progressId, message });
   }
 
-  notifyPlatformInstalled(event: { item: BoardsPackage }): void {
-    this.platformInstalledEmitter.fire(event);
+  notifyDaemonDidStart(port: string): void {
+    this.daemonDidStartEmitter.fire(port);
   }
 
-  notifyPlatformUninstalled(event: { item: BoardsPackage }): void {
-    this.platformUninstalledEmitter.fire(event);
+  notifyDaemonDidStop(): void {
+    this.daemonDidStopEmitter.fire();
   }
 
-  notifyLibraryInstalled(event: { item: LibraryPackage }): void {
-    this.libraryInstalledEmitter.fire(event);
+  notifyConfigDidChange(event: { config: Config | undefined }): void {
+    this.configDidChangeEmitter.fire(event);
   }
 
-  notifyLibraryUninstalled(event: { item: LibraryPackage }): void {
-    this.libraryUninstalledEmitter.fire(event);
+  notifyPlatformDidInstall(event: { item: BoardsPackage }): void {
+    this.platformDidInstallEmitter.fire(event);
   }
 
-  notifyAttachedBoardsChanged(event: AttachedBoardsChangeEvent): void {
-    this.attachedBoardsChangedEmitter.fire(event);
+  notifyPlatformDidUninstall(event: { item: BoardsPackage }): void {
+    this.platformDidUninstallEmitter.fire(event);
   }
 
-  notifyRecentSketchesChanged(event: { sketches: Sketch[] }): void {
+  notifyLibraryDidInstall(event: { item: LibraryPackage }): void {
+    this.libraryDidInstallEmitter.fire(event);
+  }
+
+  notifyLibraryDidUninstall(event: { item: LibraryPackage }): void {
+    this.libraryDidUninstallEmitter.fire(event);
+  }
+
+  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void {
+    this.attachedBoardsDidChangeEmitter.fire(event);
+  }
+
+  notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void {
     this.recentSketchesChangedEmitter.fire(event);
   }
 }

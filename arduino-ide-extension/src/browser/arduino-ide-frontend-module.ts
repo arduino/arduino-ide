@@ -163,7 +163,7 @@ import { MonacoTextModelService } from './theia/monaco/monaco-text-model-service
 import { ResponseServiceImpl } from './response-service-impl';
 import {
   ResponseService,
-  ResponseServiceArduino,
+  ResponseServiceClient,
   ResponseServicePath,
 } from '../common/protocol/response-service';
 import { NotificationCenter } from './notification-center';
@@ -302,6 +302,8 @@ import { CompilerErrors } from './contributions/compiler-errors';
 import { WidgetManager } from './theia/core/widget-manager';
 import { WidgetManager as TheiaWidgetManager } from '@theia/core/lib/browser/widget-manager';
 import { StartupTask } from './widgets/sketchbook/startup-task';
+import { IndexesUpdateProgress } from './contributions/indexes-update-progress';
+import { Daemon } from './contributions/daemon';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -695,6 +697,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Format);
   Contribution.configure(bind, CompilerErrors);
   Contribution.configure(bind, StartupTask);
+  Contribution.configure(bind, IndexesUpdateProgress);
+  Contribution.configure(bind, Daemon);
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.
@@ -716,7 +720,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     });
 
   bind(ResponseService).toService(ResponseServiceImpl);
-  bind(ResponseServiceArduino).toService(ResponseServiceImpl);
+  bind(ResponseServiceClient).toService(ResponseServiceImpl);
 
   bind(NotificationCenter).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(NotificationCenter);
