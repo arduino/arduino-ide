@@ -15,7 +15,7 @@
   -webkit-mask: url(./sketchbook-tree-icon.svg);
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
-  width: var(--theia-icon-size);
+  width: 19px !important;
   height: var(--theia-icon-size);
   -webkit-mask-size: 100%;
 }
