@@ -10,18 +10,23 @@
   height: var(--theia-icon-size);
 }
 
-.sketchbook-tree-icon {
+.p-TabBar-tabIcon.sketchbook-tree-icon {
   background-color: var(--theia-sideBar-foreground);
   -webkit-mask: url(./sketchbook-tree-icon.svg);
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
-  width: 19px !important;
+  width: var(--theia-icon-size);
   height: var(--theia-icon-size);
+  -webkit-mask-size: 100%;
 }
 
 .p-mod-current
 .sketchbook-tree-icon {
-    background-color: var(--theia-statusBar-background);
+  background-color: var(--theia-statusBar-background);
+  -webkit-mask: url(./sketchbook-tree-icon-filled.svg);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100%;
 }
 
 .sketchbook-trees-container {

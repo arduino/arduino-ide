@@ -13,19 +13,23 @@
     margin-bottom: 20px;
 }
 
-.cloud-sketchbook-tree-icon {
+.p-TabBar-tabIcon.cloud-sketchbook-tree-icon {
     background-color: var(--theia-sideBar-foreground);
     -webkit-mask: url(./cloud-sketchbook-tree-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     width: var(--theia-icon-size);
     height: var(--theia-icon-size);
-    -webkit-mask-size: auto 90%;
+    -webkit-mask-size: 100%;
 }
 
 .p-mod-current
 .cloud-sketchbook-tree-icon {
     background-color: var(--theia-statusBar-background);
+    -webkit-mask: url(./cloud-sketchbook-tree-icon-filled.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100%;
 }
 
 .sketchbook-trees-container
