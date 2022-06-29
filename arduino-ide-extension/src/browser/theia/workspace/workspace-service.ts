@@ -20,10 +20,10 @@ import {
 } from '../../../common/protocol/sketches-service';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
-import { Command } from '@theia/core';
+import { EncodableCommad } from '../../widgets/sketchbook/encoded-commands-contribution';
 
 interface WorkspaceOptions extends WorkspaceInput {
-  commands: Command[];
+  commands: EncodableCommad[];
 }
 
 @injectable()

@@ -17,6 +17,7 @@ import {
   Navigatable,
   RenderContextMenuOptions,
   SelectableTreeNode,
+  TreeNode,
   Widget,
 } from '@theia/core/lib/browser';
 import {
@@ -29,9 +30,9 @@ import {
 } from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
-import { EditorManager } from '@theia/editor/lib/browser';
 import { SketchControl } from '../../contributions/sketch-control';
-import { CloudSketchbookCommands } from '../cloud-sketchbook/cloud-sketchbook-contributions';
+import { SketchbookTreeWidget } from './sketchbook-tree-widget';
+import { EncodableCommad } from './encoded-commands-contribution';
 
 export const SKETCHBOOK__CONTEXT = ['arduino-sketchbook--context'];
 
@@ -70,9 +71,6 @@ export class SketchbookWidgetContribution
   @inject(FileService)
   protected readonly fileService: FileService;
 
-  @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
-
   @inject(SketchControl)
   protected readonly sketchControl: SketchControl;
 
@@ -110,7 +108,8 @@ export class SketchbookWidgetContribution
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     registry.registerCommand(SketchbookCommands.SHOW_SKETCHBOOK_WIDGET, {
-      execute: () => this.showLocalSketchbookWidget(),
+      execute: (treeWidget: SketchbookTreeWidget, node: TreeNode) =>
+        this.showSketchbookWidget(treeWidget, node),
     });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
       execute: (arg) => this.openSketchInNewWindow(arg),
@@ -201,12 +200,16 @@ export class SketchbookWidgetContribution
     });
   }
 
-  openSketchInNewWindow(arg: any): any {
-    const openSketchbookCommand = this.sketchControl.isCloudSketch(arg.node.uri)
-      ? CloudSketchbookCommands.SHOW_CLOUD_SKETCHBOOK_WIDGET
-      : SketchbookCommands.SHOW_SKETCHBOOK_WIDGET;
+  async openSketchInNewWindow(arg: any): Promise<any> {
+    const treeWidget: SketchbookTreeWidget = (
+      await this.widget
+    ).getTreeWidget();
+    const command: EncodableCommad = {
+      id: SketchbookCommands.SHOW_SKETCHBOOK_WIDGET.id,
+      args: [treeWidget, arg.node],
+    };
     return this.workspaceService.openWithCommands(arg.node.uri, {
-      commands: [openSketchbookCommand],
+      commands: [command],
     });
   }
 
@@ -249,13 +252,19 @@ export class SketchbookWidgetContribution
     this.selectWidgetFileNode(this.shell.currentWidget);
   }
 
-  protected async showLocalSketchbookWidget(): Promise<void> {
+  protected async showSketchbookWidget(
+    treeWidget: SketchbookTreeWidget,
+    node: TreeNode
+  ): Promise<void> {
     this.widget
       .then((widget) => this.shell.activateWidget(widget.id))
       .then((widget) => {
         if (widget instanceof SketchbookWidget) {
-          widget.activateTreeWidget(widget.getTreeWidget().id);
-          this.selectWidgetFileNode(this.editorManager.currentEditor);
+          widget.activateTreeWidget(treeWidget.id);
+          if (SelectableTreeNode.is(node)) {
+            const { model } = treeWidget;
+            model.selectNode(node);
+          }
         }
       });
   }
