@@ -14,7 +14,7 @@
 }
 
 .p-TabBar-tabIcon.cloud-sketchbook-tree-icon {
-    background-color: var(--theia-sideBar-foreground);
+    background-color: var(--theia-foreground);
     -webkit-mask: url(./cloud-sketchbook-tree-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -25,7 +25,7 @@
 
 .p-mod-current
 .cloud-sketchbook-tree-icon {
-    background-color: var(--theia-statusBar-background);
+    background-color: var(--theia-foreground);
     -webkit-mask: url(./cloud-sketchbook-tree-icon-filled.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -76,7 +76,7 @@
 .p-Widget.p-TabBar.p-DockPanel-tabBar
 > ul
 > li.p-TabBar-tab.p-mod-current {
-    border-bottom: 2px solid var(--theia-statusBar-background);
+    border-bottom: 2px solid var(--theia-activityBar-activeBorder);
 }
 
 .sketchbook-trees-container .center {
@@ -100,7 +100,7 @@
 }
 
 .pull-sketch-icon {
-    background-color: var(--theia-sideBar-foreground);
+    background-color: var(--theia-foreground);
     -webkit-mask: url(./pull-sketch-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -109,7 +109,7 @@
 }
 
 .push-sketch-icon {
-    background-color: var(--theia-sideBar-foreground);
+    background-color: var(--theia-foreground);
     -webkit-mask: url(./push-sketch-icon.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
