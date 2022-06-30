@@ -11,6 +11,8 @@ import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
+import { SelectableTreeNode, TreeWidget } from '@theia/core/lib/browser';
+import { CloudSketchbookCompositeWidget } from '../cloud-sketchbook/cloud-sketchbook-composite-widget';
 
 @injectable()
 export class SketchbookWidget extends BaseWidget {
@@ -49,14 +51,58 @@ export class SketchbookWidget extends BaseWidget {
     return this.localSketchbookTreeWidget;
   }
 
-  activateTreeWidget(treeWidgetId: string): boolean {
-    for (const widget of toArray(this.sketchbookTreesContainer.widgets())) {
-      if (widget.id === treeWidgetId) {
-        this.sketchbookTreesContainer.activateWidget(widget);
-        return true;
-      }
+  activeTreeWidgetId(): string | undefined {
+    const selectedTreeWidgets = toArray(
+      this.sketchbookTreesContainer.selectedWidgets()
+    ).map(({ id }) => id);
+    if (selectedTreeWidgets.length > 1) {
+      console.warn(
+        `Found multiple selected tree widgets: ${JSON.stringify(
+          selectedTreeWidgets
+        )}. Expected only one.`
+      );
     }
-    return false;
+    return selectedTreeWidgets.shift();
+  }
+
+  async revealSketchNode(treeWidgetId: string, nodeId: string): Promise<void> {
+    const widget = toArray(this.sketchbookTreesContainer.widgets())
+      .filter(({ id }) => id === treeWidgetId)
+      .shift();
+    if (!widget) {
+      console.warn(`Could not find tree widget with ID: ${widget}`);
+      return;
+    }
+    const treeWidget = this.treeWidget(
+      toArray(this.sketchbookTreesContainer.widgets())
+        .filter(({ id }) => id === treeWidgetId)
+        .shift()
+    );
+    if (!treeWidget) {
+      console.warn(`Could not find tree widget with ID: ${treeWidget}`);
+      return;
+    }
+    this.sketchbookTreesContainer.activateWidget(widget);
+    const treeNode = treeWidget.model.getNode(nodeId);
+    if (!treeNode) {
+      console.warn(`Could not find tree node with ID: ${nodeId}`);
+      return;
+    }
+    if (!SelectableTreeNode.is(treeNode)) {
+      console.warn(`Tree node ${treeNode.id} is not selectable.`);
+      return;
+    }
+    treeWidget.model.selectNode(treeNode);
+  }
+
+  private treeWidget(widget: Widget | undefined): TreeWidget | undefined {
+    if (widget instanceof TreeWidget) {
+      return widget;
+    }
+    if (widget instanceof CloudSketchbookCompositeWidget) {
+      return widget.getTreeWidget();
+    }
+    return undefined;
   }
 
   protected override onActivateRequest(message: Message): void {

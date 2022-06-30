@@ -17,7 +17,6 @@ import {
   Navigatable,
   RenderContextMenuOptions,
   SelectableTreeNode,
-  TreeNode,
   Widget,
 } from '@theia/core/lib/browser';
 import {
@@ -30,9 +29,7 @@ import {
 } from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
-import { SketchControl } from '../../contributions/sketch-control';
-import { SketchbookTreeWidget } from './sketchbook-tree-widget';
-import { EncodableCommad } from './encoded-commands-contribution';
+import { WorkspaceInput } from '@theia/workspace/lib/browser';
 
 export const SKETCHBOOK__CONTEXT = ['arduino-sketchbook--context'];
 
@@ -71,9 +68,6 @@ export class SketchbookWidgetContribution
   @inject(FileService)
   protected readonly fileService: FileService;
 
-  @inject(SketchControl)
-  protected readonly sketchControl: SketchControl;
-
   protected readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
 
   constructor() {
@@ -107,12 +101,32 @@ export class SketchbookWidgetContribution
 
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
-    registry.registerCommand(SketchbookCommands.SHOW_SKETCHBOOK_WIDGET, {
-      execute: (treeWidget: SketchbookTreeWidget, node: TreeNode) =>
-        this.showSketchbookWidget(treeWidget, node),
+    registry.registerCommand(SketchbookCommands.REVEAL_SKETCH_NODE, {
+      execute: (treeWidgetId: string, nodeId: string) =>
+        this.revealSketchNode(treeWidgetId, nodeId),
     });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
-      execute: (arg) => this.openSketchInNewWindow(arg),
+      execute: (arg) => {
+        const widget = this.tryGetWidget();
+        if (widget) {
+          const treeWidgetId = widget.activeTreeWidgetId();
+          if (!treeWidgetId) {
+            console.warn(`Could not retrieve active sketchbook tree ID.`);
+            return;
+          }
+          const nodeId = arg.node.id;
+          const options: WorkspaceInput = {};
+          Object.assign(options, {
+            tasks: [
+              {
+                command: SketchbookCommands.REVEAL_SKETCH_NODE.id,
+                args: [treeWidgetId, nodeId],
+              },
+            ],
+          });
+          return this.workspaceService.open(arg.node.uri, options);
+        }
+      },
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
       isVisible: (arg) =>
@@ -200,19 +214,6 @@ export class SketchbookWidgetContribution
     });
   }
 
-  async openSketchInNewWindow(arg: any): Promise<any> {
-    const treeWidget: SketchbookTreeWidget = (
-      await this.widget
-    ).getTreeWidget();
-    const command: EncodableCommad = {
-      id: SketchbookCommands.SHOW_SKETCHBOOK_WIDGET.id,
-      args: [treeWidget, arg.node],
-    };
-    return this.workspaceService.openWithCommands(arg.node.uri, {
-      commands: [command],
-    });
-  }
-
   override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
 
@@ -252,19 +253,15 @@ export class SketchbookWidgetContribution
     this.selectWidgetFileNode(this.shell.currentWidget);
   }
 
-  protected async showSketchbookWidget(
-    treeWidget: SketchbookTreeWidget,
-    node: TreeNode
+  private async revealSketchNode(
+    treeWidgetId: string,
+    nodeId: string
   ): Promise<void> {
-    this.widget
+    return this.widget
       .then((widget) => this.shell.activateWidget(widget.id))
       .then((widget) => {
         if (widget instanceof SketchbookWidget) {
-          widget.activateTreeWidget(treeWidget.id);
-          if (SelectableTreeNode.is(node)) {
-            const { model } = treeWidget;
-            model.selectNode(node);
-          }
+          return widget.revealSketchNode(treeWidgetId, nodeId);
         }
       });
   }

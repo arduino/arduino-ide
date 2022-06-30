@@ -1,36 +1,15 @@
-import {
-  inject,
-  injectable,
-  postConstruct,
-} from '@theia/core/shared/inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { CloudSketchbookCompositeWidget } from './cloud-sketchbook-composite-widget';
 import { SketchbookWidget } from '../sketchbook/sketchbook-widget';
 import { ArduinoPreferences } from '../../arduino-preferences';
-import { CommandContribution, CommandRegistry } from '@theia/core';
-import { ApplicationShell } from '@theia/core/lib/browser';
-import { CloudSketchbookCommands } from './cloud-sketchbook-contributions';
-import { EditorManager } from '@theia/editor/lib/browser';
-import { SketchbookWidgetContribution } from '../sketchbook/sketchbook-widget-contribution';
 
 @injectable()
-export class CloudSketchbookWidget
-  extends SketchbookWidget
-  implements CommandContribution
-{
+export class CloudSketchbookWidget extends SketchbookWidget {
   @inject(CloudSketchbookCompositeWidget)
-  private readonly cloudSketchbookCompositeWidget: CloudSketchbookCompositeWidget;
+  protected readonly widget: CloudSketchbookCompositeWidget;
 
   @inject(ArduinoPreferences)
-  private readonly arduinoPreferences: ArduinoPreferences;
-
-  @inject(ApplicationShell)
-  private readonly shell: ApplicationShell;
-
-  @inject(SketchbookWidgetContribution)
-  private readonly sketchbookWidgetContribution: SketchbookWidgetContribution;
-
-  @inject(EditorManager)
-  private readonly editorManager: EditorManager;
+  protected readonly arduinoPreferences: ArduinoPreferences;
 
   @postConstruct()
   protected override init(): void {
@@ -48,9 +27,7 @@ export class CloudSketchbookWidget
 
   checkCloudEnabled() {
     if (this.arduinoPreferences['arduino.cloud.enabled']) {
-      this.sketchbookTreesContainer.activateWidget(
-        this.cloudSketchbookCompositeWidget
-      );
+      this.sketchbookTreesContainer.activateWidget(this.widget);
     } else {
       this.sketchbookTreesContainer.activateWidget(
         this.localSketchbookTreeWidget
@@ -68,9 +45,7 @@ export class CloudSketchbookWidget
   }
 
   protected override onAfterAttach(msg: any): void {
-    this.sketchbookTreesContainer.addWidget(
-      this.cloudSketchbookCompositeWidget
-    );
+    this.sketchbookTreesContainer.addWidget(this.widget);
     this.setDocumentMode();
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.preferenceName === 'arduino.cloud.enabled') {
@@ -78,30 +53,5 @@ export class CloudSketchbookWidget
       }
     });
     super.onAfterAttach(msg);
-  }
-
-  registerCommands(registry: CommandRegistry): void {
-    this.sketchbookTreesContainer.addWidget(
-      this.cloudSketchbookCompositeWidget
-    );
-    registry.registerCommand(
-      CloudSketchbookCommands.SHOW_CLOUD_SKETCHBOOK_WIDGET,
-      {
-        execute: () => this.showCloudSketchbookWidget(),
-      }
-    );
-  }
-
-  showCloudSketchbookWidget(): void {
-    if (this.arduinoPreferences['arduino.cloud.enabled']) {
-      this.shell.activateWidget(this.id).then((widget) => {
-        if (widget instanceof CloudSketchbookWidget) {
-          widget.activateTreeWidget(this.cloudSketchbookCompositeWidget.id);
-        }
-        this.sketchbookWidgetContribution.selectWidgetFileNode(
-          this.editorManager.currentEditor
-        );
-      });
-    }
   }
 }

@@ -20,11 +20,8 @@ import {
 } from '../../../common/protocol/sketches-service';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
-import { EncodableCommad } from '../../widgets/sketchbook/encoded-commands-contribution';
-
-interface WorkspaceOptions extends WorkspaceInput {
-  commands: EncodableCommad[];
-}
+import { FileStat } from '@theia/filesystem/lib/common/files';
+import { StartupTask } from '../../widgets/sketchbook/startup-task';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -90,11 +87,13 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
-  /*
-    This method mostly duplicates super.doOpen and super.openWindow because they didn't let pass any custom
-    option to openNewWindow
-  */
-  async openWithCommands(uri: URI, options?: WorkspaceOptions): Promise<void> {
+  /**
+   * Copied from Theia as-is to be able to pass the original `options` down.
+   */
+  protected override async doOpen(
+    uri: URI,
+    options?: WorkspaceInput
+  ): Promise<URI | undefined> {
     const stat = await this.toFileStat(uri);
     if (stat) {
       if (!stat.isDirectory && !this.isWorkspaceFile(stat)) {
@@ -114,30 +113,35 @@ export class WorkspaceService extends TheiaWorkspaceService {
       if (preserveWindow) {
         this._workspace = stat;
       }
-
-      const workspacePath = stat.resource.path.toString();
-
-      if (this.shouldPreserveWindow(options)) {
-        this.reloadWindow();
-      } else {
-        try {
-          this.openNewWindow(workspacePath, options);
-          return;
-        } catch (error) {
-          // Fall back to reloading the current window in case the browser has blocked the new window
-          this._workspace = stat;
-          this.logger.error(error.toString()).then(() => this.reloadWindow());
-        }
-      }
+      this.openWindow(stat, Object.assign(options ?? {}, { preserveWindow }));
+      return;
     }
     throw new Error(
       'Invalid workspace root URI. Expected an existing directory or workspace file.'
     );
   }
 
+  /**
+   * Copied from Theia. Can pass the `options` further down the chain.
+   */
+  protected override openWindow(uri: FileStat, options?: WorkspaceInput): void {
+    const workspacePath = uri.resource.path.toString();
+    if (this.shouldPreserveWindow(options)) {
+      this.reloadWindow();
+    } else {
+      try {
+        this.openNewWindow(workspacePath, options); // Unlike Theia, IDE2 passes the `input` downstream.
+      } catch (error) {
+        // Fall back to reloading the current window in case the browser has blocked the new window
+        this._workspace = uri;
+        this.logger.error(error.toString()).then(() => this.reloadWindow());
+      }
+    }
+  }
+
   protected override openNewWindow(
     workspacePath: string,
-    options?: WorkspaceOptions
+    options?: WorkspaceInput
   ): void {
     const { boardsConfig } = this.boardsServiceProvider;
     const url = BoardsConfig.Config.setConfig(
@@ -145,10 +149,10 @@ export class WorkspaceService extends TheiaWorkspaceService {
       new URL(window.location.href)
     ); // Set the current boards config for the new browser window.
     url.hash = workspacePath;
-    if (options?.commands) {
+    if (StartupTask.WorkspaceInput.is(options)) {
       url.searchParams.set(
-        'commands',
-        encodeURIComponent(JSON.stringify(options.commands))
+        StartupTask.QUERY_STRING,
+        encodeURIComponent(JSON.stringify(options.tasks))
       );
     }
 
