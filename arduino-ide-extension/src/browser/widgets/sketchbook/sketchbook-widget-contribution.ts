@@ -106,27 +106,7 @@ export class SketchbookWidgetContribution
         this.revealSketchNode(treeWidgetId, nodeId),
     });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
-      execute: (arg) => {
-        const widget = this.tryGetWidget();
-        if (widget) {
-          const treeWidgetId = widget.activeTreeWidgetId();
-          if (!treeWidgetId) {
-            console.warn(`Could not retrieve active sketchbook tree ID.`);
-            return;
-          }
-          const nodeId = arg.node.id;
-          const options: WorkspaceInput = {};
-          Object.assign(options, {
-            tasks: [
-              {
-                command: SketchbookCommands.REVEAL_SKETCH_NODE.id,
-                args: [treeWidgetId, nodeId],
-              },
-            ],
-          });
-          return this.workspaceService.open(arg.node.uri, options);
-        }
-      },
+      execute: (arg) => this.openNewWindow(arg.node),
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
       isVisible: (arg) =>
@@ -227,6 +207,28 @@ export class SketchbookWidgetContribution
       label: SketchbookCommands.REVEAL_IN_FINDER.label,
       order: '0',
     });
+  }
+
+  private openNewWindow(node: SketchbookTree.SketchDirNode): void {
+    const widget = this.tryGetWidget();
+    if (widget) {
+      const treeWidgetId = widget.activeTreeWidgetId();
+      if (!treeWidgetId) {
+        console.warn(`Could not retrieve active sketchbook tree ID.`);
+        return;
+      }
+      const nodeId = node.id;
+      const options: WorkspaceInput = {};
+      Object.assign(options, {
+        tasks: [
+          {
+            command: SketchbookCommands.REVEAL_SKETCH_NODE.id,
+            args: [treeWidgetId, nodeId],
+          },
+        ],
+      });
+      return this.workspaceService.open(node.uri, options);
+    }
   }
 
   /**
