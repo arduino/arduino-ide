@@ -5,12 +5,9 @@ export namespace SketchbookCommands {
     id: 'arduino-sketchbook-widget:toggle',
   };
 
-  export const REVEAL_SKETCH_NODE = Command.toLocalizedCommand(
-    {
-      id: 'arduino-sketchbook--reveal-sketch-node',
-    },
-    'arduino/sketch/revealSketchNode'
-  );
+  export const REVEAL_SKETCH_NODE: Command = {
+    id: 'arduino-sketchbook--reveal-sketch-node',
+  };
 
   export const OPEN_NEW_WINDOW = Command.toLocalizedCommand(
     {

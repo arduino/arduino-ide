@@ -64,14 +64,6 @@ export namespace CloudSketchbookCommands {
     }
   }
 
-  export const SHOW_CLOUD_SKETCHBOOK_WIDGET = Command.toLocalizedCommand(
-    {
-      id: 'arduino-cloud-sketchbook--show-cloud-sketchbook-widget',
-      label: 'Show Cloud Sketchbook Widget',
-    },
-    'arduino/sketch/showCloudSketchbookWidget'
-  );
-
   export const TOGGLE_CLOUD_SKETCHBOOK = Command.toLocalizedCommand(
     {
       id: 'arduino-cloud-sketchbook--disable',
