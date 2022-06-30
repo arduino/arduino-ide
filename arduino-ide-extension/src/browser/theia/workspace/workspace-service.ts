@@ -113,7 +113,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
       if (preserveWindow) {
         this._workspace = stat;
       }
-      this.openWindow(stat, Object.assign(options ?? {}, { preserveWindow }));
+      this.openWindow(stat, Object.assign(options ?? {}, { preserveWindow })); // Unlike Theia, IDE2 passes the whole `input` downstream and not only { preserveWindow }
       return;
     }
     throw new Error(
