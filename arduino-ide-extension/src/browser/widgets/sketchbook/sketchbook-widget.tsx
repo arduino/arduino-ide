@@ -73,7 +73,19 @@ export class SketchbookWidget extends BaseWidget {
       console.warn(`Could not find tree widget with ID: ${widget}`);
       return;
     }
-    const treeWidget = this.treeWidget(
+    // TODO: remove this when the remote/local sketchbooks and their widgets are cleaned up.
+    const findTreeWidget = (
+      widget: Widget | undefined
+    ): TreeWidget | undefined => {
+      if (widget instanceof TreeWidget) {
+        return widget;
+      }
+      if (widget instanceof CloudSketchbookCompositeWidget) {
+        return widget.getTreeWidget();
+      }
+      return undefined;
+    };
+    const treeWidget = findTreeWidget(
       toArray(this.sketchbookTreesContainer.widgets())
         .filter(({ id }) => id === treeWidgetId)
         .shift()
@@ -93,16 +105,6 @@ export class SketchbookWidget extends BaseWidget {
       return;
     }
     treeWidget.model.selectNode(treeNode);
-  }
-
-  private treeWidget(widget: Widget | undefined): TreeWidget | undefined {
-    if (widget instanceof TreeWidget) {
-      return widget;
-    }
-    if (widget instanceof CloudSketchbookCompositeWidget) {
-      return widget.getTreeWidget();
-    }
-    return undefined;
   }
 
   protected override onActivateRequest(message: Message): void {
