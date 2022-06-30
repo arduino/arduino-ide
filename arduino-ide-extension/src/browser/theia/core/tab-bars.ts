@@ -10,4 +10,9 @@ export class TabBarRenderer extends TheiaTabBarRenderer {
     }
     return className;
   }
+
+  protected override handleContextMenuEvent = (): void => {
+    // NOOP
+    // Context menus are empty, so they have been removed
+  };
 }
