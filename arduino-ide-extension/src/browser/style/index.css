@@ -87,6 +87,11 @@ button.theia-button {
   max-width: none;
 }
 
+.theia-button:active,
+.theia-button:focus {
+  box-shadow: 0 0 0 2px var(--theia-focusBorder);
+}
+
 button.theia-button.secondary {
   border: 1.5px solid var(--theia-secondaryButton-foreground);
 }
