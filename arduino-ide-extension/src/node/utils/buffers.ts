@@ -1,27 +1,33 @@
+import { DisposableCollection } from '@theia/core';
 import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 import { OutputMessage } from '../../common/protocol';
 
-const DEFAULT_FLUS_TIMEOUT_MS = 32;
-
-export class SimpleBuffer implements Disposable {
+export class AutoFlushingBuffer implements Disposable {
   private readonly chunks = Chunks.create();
-  private readonly flush: () => void;
-  private flushTimeout?: NodeJS.Timeout;
+  private readonly toDispose;
+  private timer?: NodeJS.Timeout;
   private disposed = false;
 
   constructor(
     onFlush: (chunks: Map<OutputMessage.Severity, string | undefined>) => void,
-    flushTimeout: number = DEFAULT_FLUS_TIMEOUT_MS
+    taskTimeout: number = AutoFlushingBuffer.DEFAULT_FLUSH_TIMEOUT_MS
   ) {
-    this.flush = () => {
+    const task = () => {
       if (!Chunks.isEmpty(this.chunks)) {
         const chunks = Chunks.toString(this.chunks);
-        this.clearChunks();
+        Chunks.clear(this.chunks);
         onFlush(chunks);
       }
+      if (!this.disposed) {
+        this.timer = setTimeout(task, taskTimeout);
+      }
     };
-
-    this.setTimeoutVariable(flushTimeout);
+    this.timer = setTimeout(task, taskTimeout);
+    this.toDispose = new DisposableCollection(
+      Disposable.create(() => (this.disposed = true)),
+      Disposable.create(() => clearTimeout(this.timer)),
+      Disposable.create(() => task())
+    );
   }
 
   addChunk(
@@ -31,44 +37,16 @@ export class SimpleBuffer implements Disposable {
     this.chunks.get(severity)?.push(chunk);
   }
 
-  private clearChunks(): void {
-    Chunks.clear(this.chunks);
-  }
-
-  private setTimeoutVariable(flushTimeout: number): void {
-    const isDisposed = this.disposed;
-    if (isDisposed) {
-      // once "isDisposed" is true we stop
-      // creating timeouts and do one more
-      // flush AFTER any setTimeout
-      // callback that may be in progress
-      this.flush();
-      return;
-    }
-
-    if (!this.flushTimeout) {
-      const onTimeout = () => {
-        this.flush();
-        this.clearTimeoutVariable();
-      };
-
-      this.flushTimeout = setTimeout(() => {
-        onTimeout();
-        this.setTimeoutVariable(flushTimeout);
-      }, flushTimeout);
-    }
-  }
-
-  private clearTimeoutVariable(): void {
-    if (this.flushTimeout) {
-      clearTimeout(this.flushTimeout);
-      this.flushTimeout = undefined;
-    }
-  }
-
   dispose(): void {
-    this.disposed = true;
+    this.toDispose.dispose();
   }
+}
+export namespace AutoFlushingBuffer {
+  /**
+   * _"chunking and sending every 16ms (60hz) is the best for small amount of data
+   * To be able to crunch more data without the cpu going to high, I opted for a 30fps refresh rate, hence the 32msec"_
+   */
+  export const DEFAULT_FLUSH_TIMEOUT_MS = 32;
 }
 
 type Chunks = Map<OutputMessage.Severity, Uint8Array[]>;

@@ -28,7 +28,7 @@ import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands
 import { Port as GrpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { ApplicationError, Disposable, nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
-import { SimpleBuffer } from './utils/simple-buffer';
+import { AutoFlushingBuffer } from './utils/buffers';
 import { tryParseError } from './cli-error-parser';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { firstToUpperCase, notEmpty } from '../common/utils';
@@ -290,7 +290,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     onData: (response: R) => void;
   } {
     const stderr: Buffer[] = [];
-    const buffer = new SimpleBuffer((chunks) => {
+    const buffer = new AutoFlushingBuffer((chunks) => {
       Array.from(chunks.entries()).forEach(([severity, chunk]) => {
         if (chunk) {
           this.sendResponse(chunk, severity);
