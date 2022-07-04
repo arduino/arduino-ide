@@ -34,7 +34,7 @@ type AutoInstallPromptActions = AutoInstallPromptAction[];
 @injectable()
 export class BoardsAutoInstaller implements FrontendApplicationContribution {
   @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
+  private readonly notificationCenter: NotificationCenter;
 
   @inject(MessageService)
   protected readonly messageService: MessageService;
@@ -54,34 +54,12 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
   // Workaround for https://github.com/eclipse-theia/theia/issues/9349
   protected notifications: Board[] = [];
 
-  private spliceNotificationByBoard(selectedBoard: Board): void {
-    const index = this.notifications.findIndex((notification) =>
-      Board.sameAs(notification, selectedBoard)
-    );
-    if (index !== -1) {
-      this.notifications.splice(index, 1);
-    }
-  }
-
   // * "refusal" meaning a "prompt action" not accepting the auto-install offer ("X" or "install manually")
   // we can use "portSelectedOnLastRefusal" to deduce when a board is unplugged after a user has "refused"
   // an auto-install prompt. Important to know as we do not want "an unplug" to trigger a "refused" prompt
   // showing again
   private portSelectedOnLastRefusal: Port | undefined;
   private lastRefusedPackageId: string | undefined;
-
-  private clearLastRefusedPromptInfo(): void {
-    this.lastRefusedPackageId = undefined;
-    this.portSelectedOnLastRefusal = undefined;
-  }
-
-  private setLastRefusedPromptInfo(
-    packageId: string,
-    selectedPort?: Port
-  ): void {
-    this.lastRefusedPackageId = packageId;
-    this.portSelectedOnLastRefusal = selectedPort;
-  }
 
   onStart(): void {
     const setEventListeners = () => {
@@ -129,6 +107,28 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
     });
   }
 
+  private removeNotificationByBoard(selectedBoard: Board): void {
+    const index = this.notifications.findIndex((notification) =>
+      Board.sameAs(notification, selectedBoard)
+    );
+    if (index !== -1) {
+      this.notifications.splice(index, 1);
+    }
+  }
+
+  private clearLastRefusedPromptInfo(): void {
+    this.lastRefusedPackageId = undefined;
+    this.portSelectedOnLastRefusal = undefined;
+  }
+
+  private setLastRefusedPromptInfo(
+    packageId: string,
+    selectedPort?: Port
+  ): void {
+    this.lastRefusedPackageId = packageId;
+    this.portSelectedOnLastRefusal = selectedPort;
+  }
+
   private promptAlreadyShowingForBoard(board: Board): boolean {
     return Boolean(
       this.notifications.find((notification) =>
@@ -145,7 +145,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
       if (candidate) {
         this.showAutoInstallPrompt(candidate, selectedBoard, selectedPort);
       } else {
-        this.spliceNotificationByBoard(selectedBoard);
+        this.removeNotificationByBoard(selectedBoard);
       }
     });
   }
@@ -153,7 +153,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
   private getInstallCandidate(
     packages: BoardsPackage[],
     selectedBoard: Board
-  ): BoardsPackage | void {
+  ): BoardsPackage | undefined {
     // filter packagesForBoard selecting matches from the cli (installed packages)
     // and matches based on the board name
     // NOTE: this ensures the Deprecated & new packages are all in the array
@@ -203,7 +203,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
     const handleAction = this.createOnAnswerHandler(actions, onRefuse);
 
     const onAnswer = (answer: string) => {
-      this.spliceNotificationByBoard(selectedBoard);
+      this.removeNotificationByBoard(selectedBoard);
 
       handleAction(answer);
     };

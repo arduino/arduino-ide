@@ -20,6 +20,7 @@ import { NotificationCenter } from '../notification-center';
 import { ArduinoCommands } from '../arduino-commands';
 import { StorageWrapper } from '../storage-wrapper';
 import { nls } from '@theia/core/lib/common';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -73,7 +74,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     this.onAvailableBoardsChangedEmitter.event;
   readonly onAvailablePortsChanged = this.onAvailablePortsChangedEmitter.event;
 
-  public reconciled: Promise<void>;
+  private readonly _reconciled = new Deferred<void>();
 
   onStart(): void {
     this.notificationCenter.onAttachedBoardsChanged(
@@ -86,16 +87,24 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.notifyPlatformUninstalled.bind(this)
     );
 
-    this.reconciled = Promise.all([
+    Promise.all([
       this.boardsService.getAttachedBoards(),
       this.boardsService.getAvailablePorts(),
       this.loadState(),
-    ]).then(([attachedBoards, availablePorts]) => {
+    ]).then(async ([attachedBoards, availablePorts]) => {
       this._attachedBoards = attachedBoards;
       this._availablePorts = availablePorts;
       this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
-      this.reconcileAvailableBoards().then(() => this.tryReconnect());
+
+      await this.reconcileAvailableBoards();
+
+      this.tryReconnect();
+      this._reconciled.resolve();
     });
+  }
+
+  get reconciled(): Promise<void> {
+    return this._reconciled.promise;
   }
 
   protected notifyAttachedBoardsChanged(
@@ -211,7 +220,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
   }
 
-  protected async tryReconnect(): Promise<boolean> {
+  protected tryReconnect(): boolean {
     if (this.latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
       for (const board of this.availableBoards.filter(
         ({ state }) => state !== AvailableBoard.State.incomplete
