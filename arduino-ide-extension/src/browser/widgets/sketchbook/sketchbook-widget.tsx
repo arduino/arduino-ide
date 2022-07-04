@@ -11,8 +11,8 @@ import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
-import { SelectableTreeNode, TreeWidget } from '@theia/core/lib/browser';
 import { CloudSketchbookCompositeWidget } from '../cloud-sketchbook/cloud-sketchbook-composite-widget';
+import { URI } from '../../contributions/contribution';
 
 @injectable()
 export class SketchbookWidget extends BaseWidget {
@@ -65,7 +65,7 @@ export class SketchbookWidget extends BaseWidget {
     return selectedTreeWidgets.shift();
   }
 
-  async revealSketchNode(treeWidgetId: string, nodeId: string): Promise<void> {
+  async revealSketchNode(treeWidgetId: string, nodeUri: string): Promise<void> {
     const widget = toArray(this.sketchbookTreesContainer.widgets())
       .filter(({ id }) => id === treeWidgetId)
       .shift();
@@ -76,8 +76,8 @@ export class SketchbookWidget extends BaseWidget {
     // TODO: remove this when the remote/local sketchbooks and their widgets are cleaned up.
     const findTreeWidget = (
       widget: Widget | undefined
-    ): TreeWidget | undefined => {
-      if (widget instanceof TreeWidget) {
+    ): SketchbookTreeWidget | undefined => {
+      if (widget instanceof SketchbookTreeWidget) {
         return widget;
       }
       if (widget instanceof CloudSketchbookCompositeWidget) {
@@ -95,16 +95,11 @@ export class SketchbookWidget extends BaseWidget {
       return;
     }
     this.sketchbookTreesContainer.activateWidget(widget);
-    const treeNode = treeWidget.model.getNode(nodeId);
+
+    const treeNode = await treeWidget.model.revealFile(new URI(nodeUri));
     if (!treeNode) {
-      console.warn(`Could not find tree node with ID: ${nodeId}`);
-      return;
+      console.warn(`Could not find tree node with URI: ${nodeUri}`);
     }
-    if (!SelectableTreeNode.is(treeNode)) {
-      console.warn(`Tree node ${treeNode.id} is not selectable.`);
-      return;
-    }
-    treeWidget.model.selectNode(treeNode);
   }
 
   protected override onActivateRequest(message: Message): void {

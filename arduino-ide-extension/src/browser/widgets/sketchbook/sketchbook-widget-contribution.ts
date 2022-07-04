@@ -102,8 +102,8 @@ export class SketchbookWidgetContribution
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
     registry.registerCommand(SketchbookCommands.REVEAL_SKETCH_NODE, {
-      execute: (treeWidgetId: string, nodeId: string) =>
-        this.revealSketchNode(treeWidgetId, nodeId),
+      execute: (treeWidgetId: string, nodeUri: string) =>
+        this.revealSketchNode(treeWidgetId, nodeUri),
     });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
       execute: (arg) => this.openNewWindow(arg.node),
@@ -217,13 +217,13 @@ export class SketchbookWidgetContribution
         console.warn(`Could not retrieve active sketchbook tree ID.`);
         return;
       }
-      const nodeId = node.id;
+      const nodeUri = node.uri.toString();
       const options: WorkspaceInput = {};
       Object.assign(options, {
         tasks: [
           {
             command: SketchbookCommands.REVEAL_SKETCH_NODE.id,
-            args: [treeWidgetId, nodeId],
+            args: [treeWidgetId, nodeUri],
           },
         ],
       });
@@ -257,13 +257,13 @@ export class SketchbookWidgetContribution
 
   private async revealSketchNode(
     treeWidgetId: string,
-    nodeId: string
+    nodeUIri: string
   ): Promise<void> {
     return this.widget
       .then((widget) => this.shell.activateWidget(widget.id))
       .then((widget) => {
         if (widget instanceof SketchbookWidget) {
-          return widget.revealSketchNode(treeWidgetId, nodeId);
+          return widget.revealSketchNode(treeWidgetId, nodeUIri);
         }
       });
   }
