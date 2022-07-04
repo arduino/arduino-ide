@@ -49,7 +49,8 @@
             "strings": false
           },
           "breadcrumbs.enabled": false,
-          "workbench.tree.renderIndentGuides": "none" 
+          "workbench.tree.renderIndentGuides": "none",
+          "explorer.compactFolders": false
         }
       }
     },
