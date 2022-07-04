@@ -56,9 +56,13 @@
       "uploadRootCertificates": "بارگذاری سند ریشه SSL",
       "uploadingCertificates": "در حال بارگذاری سند."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "قابلیت مشاهده طرح خود را انتخاب کنید:",
-      "cloudSketchbook": "منبع ابری طرح ها",
       "connected": "متصل",
       "continue": "ادامه",
       "donePulling": "پایان دریافت {0}",
@@ -82,12 +86,14 @@
       "pushSketch": "ارسال طرح",
       "pushSketchMsg": "این یک طرح عمومی است. قبل از ارسال، مطمئن شوید که اطلاعات حساس در فایل‌های arduino_secrets.h تعریف شده است. می‌توانید از پانل اشتراک‌گذاری یک طرح را خصوصی کنید.",
       "remote": "از راه دور",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "اشتراک گذاری...",
       "shareSketch": "اشتراک طرح",
       "showHideRemoveSketchbook": "نمایش/پنهان کردن از راه دور منبع طرح ها",
       "signIn": "ورود کاربر",
       "signInToCloud": "ورود به ابر آردوینو",
       "signOut": "خروج کاربر",
+      "sync": "Sync",
       "syncEditSketches": "طرح های ابر آردوینو خود را همگام سازی و ویرایش کنید",
       "visitArduinoCloud": "بازدید از ابر آردوینو برای ساخت ابر طرح ها"
     },
@@ -120,6 +126,9 @@
       "fileAdded": "یک فایل به طرح افزوده شد.",
       "replaceTitle": "جایگذاری"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "رفع خطا {0}",
       "debuggingNotSupported": "رفع خطا توسط {0} پشتیبانی نمی شود.",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "کاهش اندازه فونت",
       "decreaseIndent": "برداشتن دندانه",
       "increaseFontSize": "افزایش اندازه فونت",
-      "increaseIndent": "افزودن دندانه"
+      "increaseIndent": "افزودن دندانه",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "ابر طرح را ذخیره نکرد. لطفا کار ذخیره نشده خود را به ویرایشگر متن مورد علاقه خود کپی کنید، و آردوینو را دوباره راه اندازی کنید.",
@@ -212,8 +223,13 @@
       "zipLibrary": "کتابخانه"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "طرح",
       "tools": "ابزار ها"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "نشانی‌های اینترنتی مدیر تابلوهای افزوده",
@@ -225,12 +241,15 @@
       "board.certificates": "فهرست گواهی‌هایی که می‌توان در تابلوها بارگذاری کرد",
       "browse": "مرور کردن",
       "choose": "انتخاب",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "اگر فعال بودن توابع همگام سازی طرح درست می باشد ، پیش فرض ها درست است",
       "cloud.pull.warn": "اگر هشدار دادن به کاربران قبل از کشیدن یک طرح ابری درست می باشد ، پیش فرض ها صحیح است.",
       "cloud.push.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح ابری درست است پیش فرض ها درست می باشد",
       "cloud.pushpublic.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح عمومی به فضای درست می باشد پیش فرض ها درست است.",
       "cloud.sketchSyncEnpoint": "نقطه ای برای ارسال و دریافت طرح ها استفاده می شود . به طور پیش فرض به رابط ابر آردوینو استفاده می کند.",
       "compile": "کامپایل",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "برای خروجی کامپایل پرمخاطب درست است. به طور پیش فرض نادرست است",
       "compile.warnings": "به gcc می گوید از کدام سطح هشدار استفاده کند. به طور پیش فرض \"هیچ\" است",
       "compilerWarnings": "هشدار های کامپایلر",
@@ -252,6 +271,7 @@
       "showVerbose": "نمایش خروجی پرمخاطب در طول",
       "sketchbook.location": "مکان منبع طرح ها",
       "sketchbook.showAllFiles": "همه فایل‌های طرح را در داخل طرح نشان دهد درست است. به طور پیش فرض نادرست است.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "برای لیستی از آدرس های اینترنتی پشتیبانی هیئت مدیره غیررسمی کلیک کنید",
       "upload": "آپلود",
       "upload.verbose": "برای خروجی آپلود پرمخاطب درست است. به طور پیش فرض نادرست است.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "پیمایش خودکار",
       "carriageReturn": "رفتن به سر سطر",
-      "connectionBusy": "اتصال ناموفق بود. پورت سریال مشغول به {0} است.",
-      "disconnected": "{0} از {1} قطع شد.",
-      "failedReconnect": "اتصال دوباره {0} به پورت سریال بعد از 10 تلاش متوالی ناموفق بود. {1} پورت سریال مشغول است.",
       "message": "پیام ( {0} + بزنید تا پیام به '{1}' بر '{2}' ارسال شود)",
       "newLine": "خط جدید",
       "newLineCarriageReturn": "هم NL و هم CR",
       "noLineEndings": "بدون پایان خط",
       "notConnected": "متصل نشد. برد و پورت را انتخاب کنید تا بطور خودکار متصل شود.",
-      "reconnect": "اتصال دوباره {0} به {1} در {2} ثانیه ...",
       "timestamp": "برچسب زمانی",
-      "toggleTimestamp": "اتصال برچسب زمان",
-      "unexpectedError": "خطای غیر منتظره. اتصال مجدد {0} در پورت {1}."
+      "toggleTimestamp": "اتصال برچسب زمان"
     },
     "sketch": {
       "archiveSketch": "آرشیو طرح",
       "cantOpen": "پوشه ای با نام \"{0}\" از قبل وجود دارد. طرح را نمی توان باز کرد",
       "close": "آیا شما می خواهید این طرح را ببندید؟",
       "configureAndUpload": "پیکربندی و بارگذاری",
-      "couldNotConnectToSerial": "ابر نتوانست دوباره به پورت سریال {0} متصل شود.",
       "createdArchive": "آرشیو {0} ایجاد شد.",
       "doneCompiling": "پایان کامپایل کردن",
       "doneUploading": "پایان بارگذاری",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "عدم یافت شدن فیلد های کاربر برای برد متصل",
       "verify": "تائید",
       "verifyOrCompile": "تائید / کامپایل"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "خطا {0} : {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "نام برای فایل جدید",
       "invalidExtension": "افزونه {0} نادرست است.",
       "invalidFilename": "عدم وجود نام برای فایل",
-      "newFileName": "نام جدید برای فایل",
-      "sketchDirectoryError": "یک خطا در ساخت دیکشنری طرح بود، تاریخچه بقیه جزئیات را بررسی کنید. نرم افزار شاید نتواند پیش بینی شده کار کند."
+      "newFileName": "نام جدید برای فایل"
     }
   }
 }

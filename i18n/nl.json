@@ -56,9 +56,13 @@
       "uploadRootCertificates": "SSL-rootcertificaten uploaden",
       "uploadingCertificates": "Certificaten uploaden."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' niet gevonden. Bevat je schets de regel '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' niet gevonden. Bevat je schets de regel '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Kies de zichtbaarheid van je Sketch:",
-      "cloudSketchbook": "Cload Schetsboek",
       "connected": "Verbonden",
       "continue": "Doorgaan",
       "donePulling": "Klaar met trekken van '{0}'.",
@@ -82,12 +86,14 @@
       "pushSketch": "Push Schets",
       "pushSketchMsg": "Dit is een openbare schets. Voordat u gaat pushen, moet u ervoor zorgen dat gevoelige informatie is gedefinieerd in arduino_secrets.h bestanden. U kunt een schets privé maken vanuit het deelvenster Delen.",
       "remote": "Op Afstand",
+      "remoteSketchbook": "Schetsboek op afstand",
       "share": "Delen...",
       "shareSketch": "Schets Delen",
       "showHideRemoveSketchbook": "Toon/verberg schetsboek op afstand",
       "signIn": "INLOGGEN",
       "signInToCloud": "Aanmelden bij Arduino Cloud",
       "signOut": "Uitloggen",
+      "sync": "Sync",
       "syncEditSketches": "Synchroniseer en bewerk uw Arduino Cloud Sketches",
       "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Sketches te maken."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Één bestand toegevoegd aan de schets.",
       "replaceTitle": "Vervangen"
     },
+    "coreContribution": {
+      "copyError": "Foutmeldingen kopiëren"
+    },
     "debug": {
       "debugWithMessage": "Foutopsporing - {0}",
       "debuggingNotSupported": "Foutopsporing wordt niet ondersteund door '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Lettergrootte verkleinen",
       "decreaseIndent": "Inspringing verkleinen",
       "increaseFontSize": "Lettergrootte vergroten",
-      "increaseIndent": "Inspringing vergroten"
+      "increaseIndent": "Inspringing vergroten",
+      "nextError": "Volgende Fout",
+      "previousError": "Vorige Fout"
     },
     "electron": {
       "couldNotSave": "Kan de schets niet opslaan. Kopieer uw niet-opgeslagen werk naar uw favoriete teksteditor en start de IDE opnieuw. ",
@@ -212,8 +223,13 @@
       "zipLibrary": "Bibliotheek"
     },
     "menu": {
+      "advanced": "Geavanceerd",
       "sketch": "Schets",
       "tools": "Hulpmiddelen"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Kan websocket niet sluiten",
+      "unableToConnectToWebSocket": "Kan geen verbinding maken met websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Bijkomende Borden Beheerder URL's",
@@ -225,12 +241,15 @@
       "board.certificates": "Lijst met certificaten die kunnen worden geüpload naar borden",
       "browse": "Bladeren",
       "choose": "Kies",
+      "cli.daemonDebug": "Schakel debug logging van de gRPC aanroepen naar de Arduino CLI in. Een herstart van de IDE is nodig om deze instelling in werking te laten treden. Standaard Onwaar.",
       "cloud.enabled": "Waar als de schets synchronisatie functies zijn ingeschakeld. Standaard ingesteld op waar.",
       "cloud.pull.warn": "Waar als de gebruiker verwittigd moet worden voor een cloud schets trekken. Standaard ingesteld op waar. ",
       "cloud.push.warn": "Waar als gebruikers moeten worden gewaarschuwd voordat ze een cloud schets pushen. Standaard ingesteld op waar. ",
       "cloud.pushpublic.warn": "Waar als gebruikers moeten worden gewaarschuwd voordat ze een openbare schets naar de cloud pushen. Standaard ingesteld op waar.",
       "cloud.sketchSyncEnpoint": "Het eindpunt dat wordt gebruikt om schetsen van een backend te pushen en te trekken. Standaard verwijst het naar Arduino Cloud API.",
       "compile": "compileren",
+      "compile.experimental": "Waar als de IDE meerdere compileer fouten moet afhandelen. Standaard is het Onwaar",
+      "compile.revealRange": "Regelt hoe compileer fouten in de editor getoond worden na een mislukte verificatie/upload. Mogelijke waarden: 'auto': Scroll verticaal als dat nodig is en onthul een regel. 'centreren': Scroll verticaal als nodig en onthul een verticaal gecentreerde lijn. 'top': Scroll verticaal als nodig en onthul een lijn dicht bij de bovenkant van het kijkvenster, geoptimaliseerd voor het bekijken van een code-definitie. 'centerIfOutsideViewport': Scroll verticaal als nodig en onthul een verticaal gecentreerde lijn alleen als ze buiten het kijkvenster ligt. De standaardwaarde is '{0}'.",
       "compile.verbose": "Waar voor uitgebreide compileer uitvoer. Standaard onwaar",
       "compile.warnings": "Vertelt gcc welk waarschuwingsniveau moet worden gebruikt. Standaard 'Geen'",
       "compilerWarnings": "Compiler waarschuwingen",
@@ -238,7 +257,7 @@
       "editorQuickSuggestions": "Snelle suggesties in editor",
       "enterAdditionalURLs": "Voer extra URL's in, één per rij",
       "files.inside.sketches": "Toon bestanden in Schetsen",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl": "De basis URL waar updates van gedownload moeten worden. Wordt standaard ingesteld op 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "Release kanaal om bijgewerkte versies van te krijgen. 'stable' is de stabiele release, 'nightly' is de laatste ontwikkel build.",
       "interfaceScale": "Interface schaal",
       "invalid.editorFontSize": "Ongeldige lettergrootte voor editor. Het moet een positief geheel getal zijn.",
@@ -252,6 +271,7 @@
       "showVerbose": "Uitgebreide uitvoer weergeven tijdens",
       "sketchbook.location": "Schetsboek locatie",
       "sketchbook.showAllFiles": "Waar om al de schets bestanden in de schets weer te geven. Standaard ingesteld op onwaar.",
+      "survey.notification": "Waar als gebruikers een melding moeten krijgen als er een enquête beschikbaar is. Standaard is dit waar.",
       "unofficialBoardSupport": "Klik voor een lijst met onofficiële borden ondersteuning URL's",
       "upload": "uploaden",
       "upload.verbose": "Waar voor uitgebreide uploaduitvoer. Standaard onwaar.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Carriage Return",
-      "connectionBusy": "Verbinding mislukt. Seriële poort is bezet: {0}",
-      "disconnected": "Verbinding {0} met {1} verbroken.",
-      "failedReconnect": "Kon na 10 opeenvolgende pogingen {0} niet opnieuw verbinden met seriële poort. De seriële poort {1} is bezet.",
       "message": "Bericht ({0} + Enter om bericht te verzenden naar '{1}' op '{2}')",
       "newLine": "Nieuwe Regel",
       "newLineCarriageReturn": "Zowel NL & CR",
       "noLineEndings": "Geen RegelEinde",
       "notConnected": "Niet verbonden. Kies een bord en een poort om automatisch te verbinden.",
-      "reconnect": "Opnieuw verbinding maken tussen {0} en {1} over {2} seconden...",
       "timestamp": "Tijdstempel",
-      "toggleTimestamp": "Tijdstempel omschakelen",
-      "unexpectedError": "Onverwachte fout. Opnieuw verbinding maken met {0} op poort {1}."
+      "toggleTimestamp": "Tijdstempel omschakelen"
     },
     "sketch": {
       "archiveSketch": "Archiveer Schets",
       "cantOpen": "Er bestaat al een map met de naam \"{0}\". Kan schets niet openen.",
       "close": "Weet je zeker dat je de schets wilt sluiten?",
       "configureAndUpload": "Configureren en uploaden",
-      "couldNotConnectToSerial": "Kon niet opnieuw verbinding maken met seriële poort. {0}",
       "createdArchive": "Archief '{0}' gemaakt.",
       "doneCompiling": "Klaar met compileren.",
       "doneUploading": "Klaar met uploaden.",
@@ -295,7 +309,7 @@
       "openSketchInNewWindow": "Schets openen in nieuw venster",
       "saveFolderAs": "Sla de schets map op als...",
       "saveSketchAs": "Sla de schetsmap op als...",
-      "saveTempSketch": "Save your sketch to open it again later.",
+      "saveTempSketch": "Bewaar je schets om hem later weer te openen.",
       "showFolder": "Schetsmap tonen",
       "sketch": "Schets",
       "sketchbook": "Schetsboek",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Kan gebruiker veld van verbonden bord niet vinden",
       "verify": "Verifiëren",
       "verifyOrCompile": "Verifiëren/Compileren"
+    },
+    "survey": {
+      "answerSurvey": "Antwoord enquête",
+      "dismissSurvey": "Niet meer laten zien",
+      "surveyMessage": "Help ons alsjeblieft te verbeteren door deze super korte enquête te beantwoorden. We waarderen onze gemeenschap en willen onze supporters graag wat beter leren kennen."
     },
     "upload": {
       "error": "{0} fout: {1}"
@@ -326,7 +345,7 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitMessage": "Niet opgeslagen wijzigingen worden niet opgeslagen.",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Weet je zeker dat je wilt stoppen?"
     },
     "debug": {
       "start": "Start...",
@@ -345,8 +364,7 @@
       "fileNewName": "Naam voor nieuw bestand",
       "invalidExtension": ".{0} is geen geldige extensie",
       "invalidFilename": "Ongeldige bestandsnaam.",
-      "newFileName": "Nieuwe naam voor bestand",
-      "sketchDirectoryError": "Er is een fout opgetreden bij het maken van de schets map. Zie het logboek voor meer details. De applicatie zal waarschijnlijk niet werken zoals verwacht. "
+      "newFileName": "Nieuwe naam voor bestand"
     }
   }
 }

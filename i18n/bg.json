@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Качете SSL коренни сертификати",
       "uploadingCertificates": "Качване на сертификати."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Изберете видимост на вашата скица:",
-      "cloudSketchbook": "Облачен скицник",
       "connected": "Свързано",
       "continue": "Продължи",
       "donePulling": "Изтеглянето на „{0}“ приключи.",
@@ -82,12 +86,14 @@
       "pushSketch": "Изпрати скица",
       "pushSketchMsg": "Това е публична скица. Преди да я изпратите, уверете се, че всяка чувствителна информация е дефинирана във файловете arduino_secrets.h. Можете да направите скица частна от панела за споделяне.",
       "remote": "Отдалечен",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Сподели...",
       "shareSketch": "Споделете скица",
       "showHideRemoveSketchbook": "Показване/скриване на отдалечен скицник",
       "signIn": "ВПИШИ СЕ",
       "signInToCloud": "Влезте в Arduino Cloud",
       "signOut": "Отписване",
+      "sync": "Sync",
       "syncEditSketches": "Синхронизирайте и редактирайте на вашите Arduino облачни скици",
       "visitArduinoCloud": "Посетете Arduino Cloud, за да създадете облачни скици."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Към скицата е добавен един файл.",
       "replaceTitle": "Замени"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Отстраняване на грешки - {0}",
       "debuggingNotSupported": "Отстраняването на грешки не се поддържа от „{0}“",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Намаляване на размера на шрифта",
       "decreaseIndent": "Намаляване на отстъпа",
       "increaseFontSize": "Увеличете размера на шрифта",
-      "increaseIndent": "Увеличете отстъпа"
+      "increaseIndent": "Увеличете отстъпа",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Библиотека"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Скица",
       "tools": "Инструменти"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Допълнителни URL адреси на мениджър на платки",
@@ -225,12 +241,15 @@
       "board.certificates": "Списък със сертификати, които могат да бъдат качени на платката",
       "browse": "Прегледай",
       "choose": "Изберете",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True , ако функциите за синхронизиране на скицата са активирани. По подразбиране е true.",
       "cloud.pull.warn": "True е, ако потребителите трябва да бъдат предупредени, преди да се изтегли скица от облака. По подразбиране е true.",
       "cloud.push.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде пусната скица в облака. По подразбиране е true.",
       "cloud.pushpublic.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде изпратена публична скица в облака. По подразбиране е true.",
       "cloud.sketchSyncEnpoint": "Крайната точка, използвана за изпращане и изтегляне на скици от бекенда. По подразбиране той сочи към Arduino Cloud API.",
       "compile": "компилиране",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True за подробен изход за компилиране. False по подразбиране",
       "compile.warnings": "Указва на gcc кое ниво на предупреждение да използва. По подразбиране е „None“.",
       "compilerWarnings": "Компилационни предупреждения",
@@ -252,6 +271,7 @@
       "showVerbose": "Показване на подробен изход по време на",
       "sketchbook.location": "Местоположение на скицника",
       "sketchbook.showAllFiles": "True , за да се покажат всички файлове вътре в скицата. По подразбиране е false.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Щракнете за списък с неофициално поддържаните URL адреси на платки",
       "upload": "качване",
       "upload.verbose": "True за подробен изход за качване. False по подразбиране.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Автоматично превъртане",
       "carriageReturn": "Carriage Return",
-      "connectionBusy": "Свързването е неуспешно. Серийният порт е зает: {0}",
-      "disconnected": "Прекъснато е връзката на {0} с {1}.",
-      "failedReconnect": "Неуспешно свързване на {0} към серийния порт след 10 последователни опита. Серийният порт {1} е зает.",
       "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
       "newLine": "Нов ред",
       "newLineCarriageReturn": "Както NL, така и CR",
       "noLineEndings": "Без край на реда",
       "notConnected": "Няма връзка. Изберете платка и порт за автоматично свързване.",
-      "reconnect": "Повторно свързване на {0} към {1} след {2} секунди...",
       "timestamp": "Печат за време",
-      "toggleTimestamp": "Превключване на клеймото за време",
-      "unexpectedError": "Неочаквана грешка. Повторно свързване на {0} на порт {1}."
+      "toggleTimestamp": "Превключване на клеймото за време"
     },
     "sketch": {
       "archiveSketch": "Архивирай скица",
       "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
       "close": "Наистина ли искате да затворите скицата?",
       "configureAndUpload": "Конфигуриране и качване",
-      "couldNotConnectToSerial": "Не можа да се свърже отново със серийния порт. {0}",
       "createdArchive": "Създаден е архив „{0}“.",
       "doneCompiling": "Готово е компилирането.",
       "doneUploading": "Качването приключи.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Не мога да намеря потребителски полета за свързаната платка",
       "verify": "Потвърдете",
       "verifyOrCompile": "Проверете/компилирайте"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} грешка: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Име за нов файл",
       "invalidExtension": ".{0} не е валидно разширение",
       "invalidFilename": "Невалидно име на файла.",
-      "newFileName": "Ново име на файла",
-      "sketchDirectoryError": "При създаването на директорията на скицата възникна грешка. Вижте дневника за повече подробности. Приложението вероятно няма да работи според очакванията."
+      "newFileName": "Ново име на файла"
     }
   }
 }

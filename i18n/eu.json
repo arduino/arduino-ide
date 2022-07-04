@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Kargatu SSL erro-ziurtagiriak",
       "uploadingCertificates": "Ziurtagiriak kargatzen."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Aukeratu zure programaren ikusgaitasuna:",
-      "cloudSketchbook": "Hodeiko programa bilduma",
       "connected": "Konektatuta",
       "continue": "Jarraitu",
       "donePulling": "Hodeitik kargatzea burututa: '{0}'.",
@@ -82,12 +86,14 @@
       "pushSketch": "Kargatu hodeitik",
       "pushSketchMsg": "Hau programa publiko bat da. Hodeian gorde aurretik, ziurtatu isilpeko informazioa arduino_secrets.h fitxategietan definituta dagoela. Programa pribatu bihurtu dezakezu Partekatu paneletik.",
       "remote": "Urrunekoa",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Partekatu...",
       "shareSketch": "Partekatu programa",
       "showHideRemoveSketchbook": "Erakutsi/Ezkutatu urruneko programa bilduma",
       "signIn": "HASI SAIOA",
       "signInToCloud": "Hasi saioa Arduino Cloud-en",
       "signOut": "Amaitu saioa",
+      "sync": "Sync",
       "syncEditSketches": "Sinkronizatu eta editatu zure Arduino Cloud-eko programak",
       "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Fitxategi bat gehitu da programara.",
       "replaceTitle": "Ordezkatu"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Araztu - {0}",
       "debuggingNotSupported": "Ez dauka arazketarako euskarririk: '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Txikiagotu letra-tamaina",
       "decreaseIndent": "Txikiagotu koska",
       "increaseFontSize": "Handitu letra-tamaina",
-      "increaseIndent": "Handitu koska"
+      "increaseIndent": "Handitu koska",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Ezin izan da programa gorde. Kopiatu gorde gabeko zure lana zure testu-editore gogokoenera eta berrabiarazi IDEa.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Liburutegia"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Programa",
       "tools": "Tresnak"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Plaka kudeatzaile gehigarrien URLak:",
@@ -225,12 +241,15 @@
       "board.certificates": "Plaketara kargatu daitezkeen ziurtagirien zerrenda",
       "browse": "Arakatu",
       "choose": "Aukeratu",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Egia programaren sinkronizazio-funtzioak gaituta badaude. Lehenetsia egia da.",
       "cloud.pull.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeitik kargatu aurretik. Lehenetsia egia da.",
       "cloud.push.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeian gorde aurretik. Lehenetsia egia da.",
       "cloud.pushpublic.warn": "Egia bada erabiltzaileek abisua jasoko dute programa publiko bat hodeian gorde aurretik. Lehenetsia egia da.",
       "cloud.sketchSyncEnpoint": "Zerbitzari batean programak gorde eta kargatzeko amaiera-puntua. Lehenetsia Arduino Cloud API da.",
       "compile": "konpilazioa",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Egia konpilazioaren irteera xehatua izateko. Lehenetsia Gezurra.",
       "compile.warnings": "gcc-ri ze abisu maila erabili esaten dio. 'None' da lehenetsia",
       "compilerWarnings": "Konpiladorearen abisuak",
@@ -252,6 +271,7 @@
       "showVerbose": "Erakutsi irteera xehatua honetan zehar:",
       "sketchbook.location": "Programa bildumaren kokalekua",
       "sketchbook.showAllFiles": "Egia programaren barruko programa-fitxategi guztiak erakusteko. Lehenetsia gezurra da.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Egin klik ofizialak ez diren plaken laguntza-URL zerrenda ikusteko",
       "upload": "karga",
       "upload.verbose": "Egia kargaren irteera xehatua izateko. Lehenetsia Gezurra.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Korritze automatikoa",
       "carriageReturn": "Orga-itzulera",
-      "connectionBusy": "Konexioak huts egin du. Serieko ataka lanpetuta dago: {0}",
-      "disconnected": "{0} deskonektatu da hemendik: {1}.",
-      "failedReconnect": "Huts egin du {0} serieko atakara berriz konektatzeko 10 saiakeraren ondoren. {1} serieko ataka lanpetuta dago.",
       "message": "Mezua ({0} + Enter honi mezua bidaltzeko: '{1}' hemen: '{2}')",
       "newLine": "Lerro berria",
       "newLineCarriageReturn": "NL & CR biak",
       "noLineEndings": "Lerro amaierarik ez",
       "notConnected": "Ez dago konektatuta. Hautatu plaka eta ataka automatikoki konektatzeko.",
-      "reconnect": "Berriz konektatuko da {0} {1} atakan {2} segundo barru...",
       "timestamp": "Denbora-zigilua",
-      "toggleTimestamp": "Txandakatu denbora-zigilua",
-      "unexpectedError": "Ustekabeko errorea. {0} berriz konektatzen {1} atakan."
+      "toggleTimestamp": "Txandakatu denbora-zigilua"
     },
     "sketch": {
       "archiveSketch": "Artxibatu programa",
       "cantOpen": "\"{0}\" izeneko karpeta badago dagoeneko. Ezin da programa ireki.",
       "close": "Ziur zaude programa itxi nahi duzula?",
       "configureAndUpload": "Konfiguratu eta kargatu",
-      "couldNotConnectToSerial": "Ezin izan da serieko atakara berriz konektatu. {0}",
       "createdArchive": "'{0}' artxiboa sortu da.",
       "doneCompiling": "Konpilazioa burutu da.",
       "doneUploading": "Karga burutu da.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Ezin dira erabiltzaile eremuak aurkitu konektatutako plakarentzat",
       "verify": "Egiaztatu",
       "verifyOrCompile": "Egiaztatu/Konpilatu"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} errorea: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Fitxategi berriaren izena",
       "invalidExtension": "{0} ez da baliozko luzapen bat.",
       "invalidFilename": "Fitxategi-izen baliogabea.",
-      "newFileName": "Fitxategiaren izen berria",
-      "sketchDirectoryError": "Errore bat gertatu da programaren direktorioa sortzean. Ikusi egunkaria xehetasun gehiagorako. Aplikazioak ez du espero bezala funtzionatuko."
+      "newFileName": "Fitxategiaren izen berria"
     }
   }
 }

@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Спусти SSL Root сертификате",
       "uploadingCertificates": "Спуштање сертификата."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Одабери видљивост твог рада:",
-      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Повезан",
       "continue": "Наставите",
       "donePulling": "Готово повлачење  ‘{0}’.",
@@ -82,12 +86,14 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Удаљени",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Подјели...",
       "shareSketch": "Подјели рад",
       "showHideRemoveSketchbook": "Прикажи/Сакриј удаљене радне свеске",
       "signIn": "ПРИЈАВИ СЕ",
       "signInToCloud": "Улогујте се на Arduino Cloud",
       "signOut": "Одјави се",
+      "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Датотека је додата у рад.",
       "replaceTitle": "Замјени"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Отклањање грешака - {0}",
       "debuggingNotSupported": "'{0}' не подржава отклањање грешака",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Смањи величину текста",
       "decreaseIndent": "Смањи увлачење",
       "increaseFontSize": "Повећај величину текста",
-      "increaseIndent": "Повећај увлачење"
+      "increaseIndent": "Повећај увлачење",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Библиотека"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Рад",
       "tools": "Алатке"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
@@ -225,12 +241,15 @@
       "board.certificates": "Листа сертификата који могу бити спуштени на плоче",
       "browse": "Претражи",
       "choose": "Одабери",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
       "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "преведи",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True for verbose compile output. False by default",
       "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
       "compilerWarnings": "Упозорења преводиоца",
@@ -252,6 +271,7 @@
       "showVerbose": "Прикажи детаљан испис током",
       "sketchbook.location": "Локација радне свеске",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "спусти",
       "upload.verbose": "True for verbose upload output. False by default.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Аутоматско скроловање",
       "carriageReturn": "Carriage Return",
-      "connectionBusy": "Повезивање није успјело. Серијски порт је заузет: {0}",
-      "disconnected": "Откачен {0} од {1}.",
-      "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
       "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
       "newLine": "Нова линија",
       "newLineCarriageReturn": "И нова линија и CR",
       "noLineEndings": "Без завршетка линије",
       "notConnected": "Није повезано. Одабери плочу и порт за аутоматско повезивање.",
-      "reconnect": "Поновно повезивање {0} на {1} за {2} секунди...",
       "timestamp": "Временска ознака",
-      "toggleTimestamp": "Укључи/искључи временску ознаку",
-      "unexpectedError": "Неочекивана грешка. Поновно повезивање {0} на порту {1}."
+      "toggleTimestamp": "Укључи/искључи временску ознаку"
     },
     "sketch": {
       "archiveSketch": "Архивирај рад",
       "cantOpen": "Директоријум \"{0}\" већ постоји. Није могуће отворити рад.",
       "close": "Да ли желиш да затвориш рад?",
       "configureAndUpload": "Конфигуриши и спусти",
-      "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
       "createdArchive": "Направљена архива '{0}'.",
       "doneCompiling": "Превођење завршено.",
       "doneUploading": "Спуштање завршено.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Није могуће пронаћи корисничка поља за повезану плочу.",
       "verify": "Провјери",
       "verifyOrCompile": "Провјери/Преведи"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} грешка: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Име за нову датотеку",
       "invalidExtension": ".{0} није валидна екстензија",
       "invalidFilename": "Неважеће име датотеке.",
-      "newFileName": "Ново име за датотеку",
-      "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+      "newFileName": "Ново име за датотеку"
     }
   }
 }

@@ -56,9 +56,13 @@
       "uploadRootCertificates": "SSLルート証明書を書き込み",
       "uploadingCertificates": "証明書を書き込み中。"
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "スケッチの可視性を選択:",
-      "cloudSketchbook": "クラウドスケッチブック",
       "connected": "接続済み",
       "continue": "続ける",
       "donePulling": "‘{0}’のプルが完了しました。",
@@ -82,12 +86,14 @@
       "pushSketch": "スケッチをプッシュする",
       "pushSketchMsg": "これはパブリックなスケッチです。プッシュする前に、すべての機密情報がarduino_secrets.hファイルで定義されていることを確認してください。共有パネルでスケッチをプライベートにできます。",
       "remote": "リモート",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "共有...",
       "shareSketch": "スケッチを共有",
       "showHideRemoveSketchbook": "リモートスケッチブックの表示・非表示",
       "signIn": "サインイン",
       "signInToCloud": "Arduino Cloudにサインインする",
       "signOut": "サインアウト",
+      "sync": "Sync",
       "syncEditSketches": "Arduinoクラウドスケッチの同期と編集",
       "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
     },
@@ -120,6 +126,9 @@
       "fileAdded": "スケッチにファイルが1つ追加されました。",
       "replaceTitle": "置換"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "デバッグ - {0}",
       "debuggingNotSupported": "デバッグは'{0}'ではサポートされていません。",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "フォントサイズを小さく",
       "decreaseIndent": "インデントを減らす",
       "increaseFontSize": "フォントサイズを大きく",
-      "increaseIndent": "インデントを増やす"
+      "increaseIndent": "インデントを増やす",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディタにコピーして、IDEを再起動してください。",
@@ -212,8 +223,13 @@
       "zipLibrary": "ライブラリ"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "スケッチ",
       "tools": "ツール"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "追加のボードマネージャのURL",
@@ -225,12 +241,15 @@
       "board.certificates": "ボードに書き込みできる証明書の一覧",
       "browse": "参照",
       "choose": "選択",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "スケッチの同期機能が有効な場合にはtrueを指定。デフォルトではtrue。",
       "cloud.pull.warn": "クラウドスケッチをプルする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
       "cloud.push.warn": "クラウドスケッチをプッシュする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
       "cloud.pushpublic.warn": "パブリックスケッチをクラウドにプッシュする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
       "cloud.sketchSyncEnpoint": "バックエンドからスケッチをプッシュ／プルするために使用されるエンドポイント。デフォルトではArduino Cloud APIを指します。",
       "compile": "コンパイル",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "コンパイル時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
       "compile.warnings": "使用する警告レベルをgccに指示します。デフォルトでは「なし」です。",
       "compilerWarnings": "コンパイラの警告",
@@ -252,6 +271,7 @@
       "showVerbose": "より詳細な情報を表示する",
       "sketchbook.location": "スケッチブックの場所",
       "sketchbook.showAllFiles": "スケッチ内のすべてのスケッチファイルを表示するにはtrueを指定。デフォルトではfalse。",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "クリックして非公式ボードをサポートするURLのリストを表示",
       "upload": "書き込み",
       "upload.verbose": "書き込み時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "自動スクロール",
       "carriageReturn": "CRのみ",
-      "connectionBusy": "接続に失敗しました。シリアルポートがビジー状態です: {0}",
-      "disconnected": "{1}から{0}を切断しました。",
-      "failedReconnect": "10回連続で試しましたが、{0}をシリアルポートに再接続できませんでした。シリアルポート{1}はビジー状態です。",
       "message": "メッセージ（'{2}'の'{1}'にメッセージを送信するには{0} + Enter）",
       "newLine": "LFのみ",
       "newLineCarriageReturn": "CRおよびLF",
       "noLineEndings": "改行なし",
       "notConnected": "接続されていません。自動的に接続するには、ボードとポートを選択してください。",
-      "reconnect": "{2}秒後に{0}を{1}に再接続します…",
       "timestamp": "タイムスタンプ",
-      "toggleTimestamp": "タイムスタンプを表示・非表示",
-      "unexpectedError": "予期せぬエラーが発生しました。ポート{1}の{0}に再接続中です。"
+      "toggleTimestamp": "タイムスタンプを表示・非表示"
     },
     "sketch": {
       "archiveSketch": "スケッチをアーカイブする",
       "cantOpen": "「{0}」というフォルダはすでに存在します。スケッチを開けません。",
       "close": "本当にスケッチを閉じますか？",
       "configureAndUpload": "構成と書き込み",
-      "couldNotConnectToSerial": "シリアルポートに再接続できませんでした。 {0}",
       "createdArchive": "アーカイブ'{0}'を作成しました。",
       "doneCompiling": "コンパイル完了。",
       "doneUploading": "書き込み完了",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "接続されたボードのユーザーフィールドが見つかりません。",
       "verify": "検証",
       "verifyOrCompile": "検証・コンパイル"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} エラー: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "新しいファイルの名前",
       "invalidExtension": "拡張子「.{0}」は、使えません。",
       "invalidFilename": "無効なファイル名です。",
-      "newFileName": "ファイルの新しい名前",
-      "sketchDirectoryError": "スケッチディレクトリの作成中にエラーが発生しました。詳細はログを参照してください。アプリケーションはおそらく期待通りに動作しないでしょう。"
+      "newFileName": "ファイルの新しい名前"
     }
   }
 }

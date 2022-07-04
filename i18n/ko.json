@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
-      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connected",
       "continue": "Continue",
       "donePulling": "Done pulling ‘{0}’.",
@@ -82,12 +86,14 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Remote",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Share...",
       "shareSketch": "Share Sketch",
       "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
       "signIn": "SIGN IN",
       "signInToCloud": "Sign in to Arduino Cloud",
       "signOut": "Sign Out",
+      "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "One file added to the sketch.",
       "replaceTitle": "Replace"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "디버그 - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Decrease Font Size",
       "decreaseIndent": "Decrease Indent",
       "increaseFontSize": "Increase Font Size",
-      "increaseIndent": "Increase Indent"
+      "increaseIndent": "Increase Indent",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Library"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "스케치",
       "tools": "도구"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
@@ -225,12 +241,15 @@
       "board.certificates": "List of certificates that can be uploaded to boards",
       "browse": "Browse",
       "choose": "Choose",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
       "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "compile",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True for verbose compile output. False by default",
       "compile.warnings": "gcc에 사용할 경고 수준을 알려줍니다. 기본값은 '없음'입니다.",
       "compilerWarnings": "Compiler warnings",
@@ -252,6 +271,7 @@
       "showVerbose": "Show verbose output during",
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "upload",
       "upload.verbose": "True for verbose upload output. False by default.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Carriage Return",
-      "connectionBusy": "Connection failed. Serial port is busy: {0}",
-      "disconnected": "Disconnected {0} from {1}.",
-      "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
       "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
       "newLine": "New Line",
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
-      "reconnect": "Reconnecting {0} to {1} in {2} seconds...",
       "timestamp": "Timestamp",
-      "toggleTimestamp": "Toggle Timestamp",
-      "unexpectedError": "Unexpected error. Reconnecting {0} on port {1}."
+      "toggleTimestamp": "Toggle Timestamp"
     },
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
       "configureAndUpload": "Configure And Upload",
-      "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Done uploading.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verify",
       "verifyOrCompile": "Verify/Compile"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} error: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Name for new file",
       "invalidExtension": ".{0} is not a valid extension",
       "invalidFilename": "Invalid filename.",
-      "newFileName": "New name for file",
-      "sketchDirectoryError": "There was an error creating the sketch directory. See the log for more details. The application will probably not work as expected."
+      "newFileName": "New name for file"
     }
   }
 }

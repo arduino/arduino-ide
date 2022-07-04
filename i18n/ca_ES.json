@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Carregueu els certificats arrel SSL",
       "uploadingCertificates": "Càrrega de certificats."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Trieu la visibilitat del vostre programa:",
-      "cloudSketchbook": "Quadern de programes del núvol",
       "connected": "Connectat",
       "continue": "Continuar",
       "donePulling": "S'ha acabat de extreure '{0}.",
@@ -82,12 +86,14 @@
       "pushSketch": "Enviar programa",
       "pushSketchMsg": "Aquest és un programa públic. Abans d'enviar, assegureu-vos que qualsevol informació sensible estigui definida als fitxers arduino_secrets.h. Podeu fer un programa privat des del tauler Compartir.",
       "remote": "Remot",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Compartir...",
       "shareSketch": "Compartir programa",
       "showHideRemoveSketchbook": "Mostra/amaga el quadern de programes remot",
       "signIn": "Inicieu sessió",
       "signInToCloud": "Inicieu la sessió a Arduino Cloud",
       "signOut": "Tanca sessió",
+      "sync": "Sync",
       "syncEditSketches": "Tanca la sessió de sincronització i edita els teus programes del núvol Arduino",
       "visitArduinoCloud": "Visiteu Arduino Cloud per crear programes al núvol."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "S'ha afegit un fitxer al programa.",
       "replaceTitle": "Substitueix"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Depuració - {0}",
       "debuggingNotSupported": "La depuració no és compatible amb '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Disminueix la mida de la lletra",
       "decreaseIndent": "Disminueix el sagnat",
       "increaseFontSize": "Augmenta la mida de la lletra",
-      "increaseIndent": "Augmenta el sagnat"
+      "increaseIndent": "Augmenta el sagnat",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Llibreria"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Programa",
       "tools": "Eines"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "URL addicionals del gestor de targetes",
@@ -225,12 +241,15 @@
       "board.certificates": "Llista de certificats que es poden carregar a les targes",
       "browse": "Navega",
       "choose": "Tria",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "És cert si les funcions de sincronització del programa estan habilitades. El valor predeterminat és true.",
       "cloud.pull.warn": "És cert si s'ha d'avisar als usuaris abans de baixar un programa del núvol. El valor predeterminat és true.",
       "cloud.push.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa del núvol. El valor predeterminat és true.",
       "cloud.pushpublic.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa públic al núvol. El valor predeterminat és true.",
       "cloud.sketchSyncEnpoint": "El punt final s'utilitza per a enviar i descarregar programes des d'un backend. Per defecte apunta a l'API d'Arduino Cloud.",
       "compile": "compilar",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Veritat per a la sortida de compilació detallada. Fals per defecte",
       "compile.warnings": "Indica a gcc quin nivell d'avís s'ha d'utilitzar. Per defecte és \"Cap\".",
       "compilerWarnings": "Advertències del compilador",
@@ -252,6 +271,7 @@
       "showVerbose": "Mostra la sortida detallada durant",
       "sketchbook.location": "Ubicació del quadern de programes",
       "sketchbook.showAllFiles": "True per mostrar tots els fitxers del programa dins del programa. És fals per defecte.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Feu clic per obtenir una llista d'URL de suport de targetes no oficials",
       "upload": "carregar",
       "upload.verbose": "True per a la sortida detallada de la càrrega. Fals per defecte.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Desplaçament automàtic",
       "carriageReturn": "Retorn de carro",
-      "connectionBusy": "Connexió fallida. El port sèrie està ocupat:{0}",
-      "disconnected": "Desconnectat {0}de {1}.",
-      "failedReconnect": "No s'ha pogut tornar a connectar {0}al port sèrie després de 10 intents consecutius. El port sèrie {1} està ocupat.",
       "message": "Missatge ({0}+ Intro per enviar el missatge a '{1}' a '{2}')",
       "newLine": "Nova Línia",
       "newLineCarriageReturn": "Ambdós NL & CR",
       "noLineEndings": "Sense final de línia",
       "notConnected": "No connectat. Seleccioneu una tarja i un port per connectar-vos automàticament.",
-      "reconnect": "S'està tornant a connectar {0} a {1} en {2} segons...",
       "timestamp": "Marca de temps",
-      "toggleTimestamp": "Activa o desactiva la marca de temps",
-      "unexpectedError": "Error inesperat. Tornant a connectar {0}al port{1}."
+      "toggleTimestamp": "Activa o desactiva la marca de temps"
     },
     "sketch": {
       "archiveSketch": "Guardar programa",
       "cantOpen": "Ja existeix una carpeta anomenada \"{0}\". No es pot obrir el programa.",
       "close": "Esteu segur que voleu tancar el programa?",
       "configureAndUpload": "Configura i puja",
-      "couldNotConnectToSerial": "No s'ha pogut tornar a connectar al port sèrie. {0}",
       "createdArchive": "S'ha creat l'arxiu '{0}'.",
       "doneCompiling": "S'ha fet la compilació.",
       "doneUploading": "S'ha acabat de carregar.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "No s'han trobat camps d'usuari per a la tarja connectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} error: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Nom del nou fitxer",
       "invalidExtension": ". {0} no és una extensió vàlida",
       "invalidFilename": "El nom del fitxer no és vàlid.",
-      "newFileName": "Nou nom per al fitxer",
-      "sketchDirectoryError": "S'ha produït un error en crear el directori del programa. Consulteu el registre per a més detalls. És probable que l'aplicació no funcioni com s'esperava."
+      "newFileName": "Nou nom per al fitxer"
     }
   }
 }

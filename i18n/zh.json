@@ -11,16 +11,16 @@
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
       "configDialogTitle": "选择其他开发板和端口",
-      "couldNotFindPreviouslySelected": "在安装的平台{1}中找不到以前选择的开发板{0}。请手动选择要使用的开发板。你想现在重新选择它吗？",
+      "couldNotFindPreviouslySelected": "在安装的平台’{1}‘中找不到以前选择的开发板’{0}‘。请手动选择要使用的开发板。你想现在重新选择它吗？",
       "getBoardInfo": "获得开发板信息",
       "inSketchbook": "（在项目文件夹中）",
       "installManually": "手动安装",
-      "installNow": "必须为当前选定的{2}开发板板安装{0}{1}内核。你想现在安装吗？",
-      "noFQBN": "FQBN不可用于所选开发板{0}。你是否安装了相应的内核？",
-      "noPortsSelected": "没有为开发板选择端口：{0}。",
+      "installNow": "必须为当前选定的{2}开发板板安装“{0}{1}”内核。你想现在安装吗？",
+      "noFQBN": "FQBN不可用于所选开发板“{0}”。你是否安装了相应的内核？",
+      "noPortsSelected": "没有为开发板选择端口：’{0}‘。",
       "noneSelected": "未选择任何开发板。",
       "openBoardsConfig": "选择其他开发板和端口。。。",
-      "platformMissing": "未安装所选{0}开发板的平台。",
+      "platformMissing": "未安装所选’{0}‘开发板的平台。",
       "pleasePickBoard": "请选择要连接的开发板。",
       "port": "端口{0}",
       "programmer": "编程器",
@@ -56,13 +56,17 @@
       "uploadRootCertificates": "上传SSL根证书",
       "uploadingCertificates": "上传证书。"
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "选择项目的可见性：",
-      "cloudSketchbook": "云项目文件夹",
       "connected": "已连接",
       "continue": "继续",
-      "donePulling": "已完成拉取{0}。",
-      "donePushing": "已完成推送{0}。",
+      "donePulling": "已完成拉取’{0}‘。",
+      "donePushing": "已完成推送’{0}‘。",
       "embed": "嵌入：",
       "emptySketchbook": "你的项目文件夹是空的",
       "learnMore": "查看更多",
@@ -82,12 +86,14 @@
       "pushSketch": "推送项目",
       "pushSketchMsg": "这是公开的项目。推送前，确保在arduino_secrets.h中明确了所有敏感信息。可以从共享界面将项目设为私人项目。",
       "remote": "远程",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "共享。。。",
       "shareSketch": "共享项目",
       "showHideRemoveSketchbook": "显示/隐藏远程项目文件夹",
       "signIn": "登录",
       "signInToCloud": "登录Arduino Cloud",
       "signOut": "退出登录",
+      "sync": "Sync",
       "syncEditSketches": "同步和编辑Arduino Cloud项目",
       "visitArduinoCloud": "访问Arduino Cloud以创建云项目。"
     },
@@ -96,7 +102,7 @@
       "noBoardSelected": "没有选择开发板",
       "notConnected": "[没有连接]",
       "offlineIndicator": "你似乎处于离线状态。如果没有网络连接，Arduino CLI可能无法下载所需的资源，并可能导致故障。请连接网络并重新启动程序。",
-      "oldFormat": "{0}仍然使用旧的.pde格式。是否要切换到新的.ino扩展？",
+      "oldFormat": "’{0}‘仍然使用旧的‘.pde’格式。是否要切换到新的‘.ino’扩展？",
       "processing": "正在处理中",
       "selectBoard": "选择开发板",
       "selectedOn": "on {0}",
@@ -120,10 +126,13 @@
       "fileAdded": "将一个文件添加到项目中。",
       "replaceTitle": "替换"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "调试 - {0}",
-      "debuggingNotSupported": "{0}不支持调试",
-      "noPlatformInstalledFor": "{0}平台未安装",
+      "debuggingNotSupported": "’{0}‘不支持调试",
+      "noPlatformInstalledFor": "’{0}‘平台未安装",
       "optimizeForDebugging": "调试优化"
     },
     "dialog": {
@@ -136,7 +145,9 @@
       "decreaseFontSize": "减小字号",
       "decreaseIndent": "减少缩进",
       "increaseFontSize": "放大字体",
-      "increaseIndent": "增加缩进"
+      "increaseIndent": "增加缩进",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "无法保存草图。请将未保存的工作复制到你喜爱的文本编辑器中，然后重新启动IDE。",
@@ -193,27 +204,32 @@
       "addZip": "添加 .ZIP 库。。。",
       "arduinoLibraries": "arduino库",
       "contributedLibraries": "贡献库",
-      "dependenciesForLibrary": "库{0}的依赖：{1}",
+      "dependenciesForLibrary": "{0}库的依赖：{1}",
       "include": "包含库",
       "installAll": "全部安装",
       "installMissingDependencies": "是否安装所有缺少的依赖？",
       "installOneMissingDependency": "是否安装缺少的依赖？",
       "installOnly": "仅安装{0}",
-      "installedSuccessfully": "已成功安装库{0}：{1}",
+      "installedSuccessfully": "已成功安装{0}库：{1}",
       "libraryAlreadyExists": "库已经存在。是否要覆盖它？",
       "manageLibraries": "管理库。。。",
       "namedLibraryAlreadyExists": "名为{0}的库文件夹已存在。是否要覆盖它？",
-      "needsMultipleDependencies": "库<b>{0}：{1}</b>需要一些未安装的依赖：",
-      "needsOneDependency": "库<b>{0}：{1}</b>需要一些未安装的依赖：",
+      "needsMultipleDependencies": "<b>{0}库：{1}</b>需要一些未安装的依赖：",
+      "needsOneDependency": "<b>{0}库：{1}</b>需要一些未安装的依赖：",
       "overwriteExistingLibrary": "是否覆盖现有的库？",
       "successfullyInstalledZipLibrary": "已从{0}存档成功安装库",
       "title": "库管理",
-      "uninstalledSuccessfully": "已成功卸载库{0}：{1}",
+      "uninstalledSuccessfully": "已成功卸载{0}库：{1}",
       "zipLibrary": "库"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "项目",
       "tools": "工具"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "无法关闭websocket",
+      "unableToConnectToWebSocket": "无法连接websocket"
     },
     "preferences": {
       "additionalManagerURLs": "其他开发板管理器地址",
@@ -225,20 +241,23 @@
       "board.certificates": "可上传到开发板的证书列表",
       "browse": "浏览",
       "choose": "选择",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True则启用项目同步功能。默认为true。",
       "cloud.pull.warn": "True则在拉取cloud项目之前警告用户。默认为true。",
       "cloud.push.warn": "True则在推送cloud项目之前警告用户。默认为true。",
       "cloud.pushpublic.warn": "True则将公开项目推送到cloud中之前警告用户。默认为true。",
       "cloud.sketchSyncEnpoint": "用于从后台推送项目的端点。默认情况下，它指向Arduino Cloud API。",
       "compile": "编译",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True则输出详细编译信息。默认为False",
       "compile.warnings": "设置gcc警告级别。默认为None",
       "compilerWarnings": "编译器警告",
       "editorFontSize": "编辑器字体大小",
       "editorQuickSuggestions": "编辑快速建议",
-      "enterAdditionalURLs": "输入其他地址，每行一个。",
+      "enterAdditionalURLs": "输入补充地址，每行一个。",
       "files.inside.sketches": "显示项目中的文件夹",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl": "下载更新的网址。默认为 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "在发布频道中获取更新信息。'stable是稳定的版本，nightly是最新的开发版本。",
       "interfaceScale": "界面比例",
       "invalid.editorFontSize": "编辑器字体大小无效。它必须是正整数。",
@@ -252,6 +271,7 @@
       "showVerbose": "显示详细输出",
       "sketchbook.location": "项目文件夹地址",
       "sketchbook.showAllFiles": "True则显示项目中的所有项目文件。默认情况下为false。",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "点击获取支持的非官方开发板地址列表",
       "upload": "上传",
       "upload.verbose": "True则输出详细上传信息。默认情况下为False。",
@@ -264,38 +284,32 @@
     "serial": {
       "autoscroll": "自动滚屏",
       "carriageReturn": "回车",
-      "connectionBusy": "连接失败。串行端口被占用：{0}",
-      "disconnected": "已断开{0}与{1}的连接。",
-      "failedReconnect": "连续尝试10次后，无法将{0}重新连接到串行端口。{1}串行端口被占用。",
       "message": "消息（{0}+Enter将消息发送到{2}上的{1}）",
       "newLine": "换行",
       "newLineCarriageReturn": "两者都是NL和CR",
       "noLineEndings": "没有结束符",
       "notConnected": "未连接。选择要自动连接的开发板和端口。",
-      "reconnect": "正在{2}秒内将{0}重新连接到{1}。。。",
       "timestamp": "时间戳",
-      "toggleTimestamp": "切换时间戳",
-      "unexpectedError": "意外错误。正在重新连接端口{1}上的{0}。"
+      "toggleTimestamp": "切换时间戳"
     },
     "sketch": {
       "archiveSketch": "项目存档",
-      "cantOpen": "文件夹{0}已存在。无法打开项目。",
+      "cantOpen": "”{0}“文件夹已存在。无法打开项目。",
       "close": "是否确实要关闭项目？",
       "configureAndUpload": "配置和上传",
-      "couldNotConnectToSerial": "无法重新连接到串行端口。{0}",
-      "createdArchive": "已创建存档文件{0}。",
+      "createdArchive": "已创建存档’{0}‘。",
       "doneCompiling": "编译完成",
       "doneUploading": "上传完成",
       "exportBinary": "导出已编译的二进制文件",
       "moving": "移动",
-      "movingMsg": "文件{0}需要位于{1}项目文件夹中。\n创建此文件夹，移动文件，然后继续？",
+      "movingMsg": "”{0}“文件需要位于“{1}”项目文件夹中。\n创建此文件夹，移动文件，然后继续？",
       "new": "新建",
       "openFolder": "打开文件夹",
       "openRecent": "打开最近",
       "openSketchInNewWindow": "在新窗口打开项目",
       "saveFolderAs": "将项目文件夹另存为。。。",
       "saveSketchAs": "将项目文件夹另存为。。。",
-      "saveTempSketch": "Save your sketch to open it again later.",
+      "saveTempSketch": "保存你的项目，以便以后再次打开它。",
       "showFolder": "显示项目文件夹",
       "sketch": "项目",
       "sketchbook": "项目文件夹",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "找不到已连接开发板的用户字段",
       "verify": "验证",
       "verifyOrCompile": "验证/编译"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0}错误：{1}"
@@ -326,12 +345,12 @@
       "daemonOffline": "CLI守护进程离线",
       "offline": "离线",
       "quitMessage": "将不会保存任何未保存的更改。",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "你确定你要退出吗？"
     },
     "debug": {
       "start": "开始。。。",
       "startError": "启动调试会话时出错，请检查日志以了解更多详细信息。",
-      "typeNotSupported": "不支持调试会话的类型{0}。"
+      "typeNotSupported": "不支持调试会话的类型“{0}”。"
     },
     "editor": {
       "unsavedTitle": "未保存–{0}"
@@ -345,8 +364,7 @@
       "fileNewName": "新文件的名称",
       "invalidExtension": ".{0}不是有效扩展名",
       "invalidFilename": "无效的文件名。",
-      "newFileName": "文件的新名称",
-      "sketchDirectoryError": "新建项目目录时出错。有关详细信息，请参阅日志。应用程序可能无法按预期工作。"
+      "newFileName": "文件的新名称"
     }
   }
 }

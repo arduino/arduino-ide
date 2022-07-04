@@ -56,9 +56,13 @@
       "uploadRootCertificates": "SSL gyökér-/root-tanúsítványok feltöltése ",
       "uploadingCertificates": "Tanúsítványok feltöltése "
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Válaszd ki a vázlat/sketch láthatóságát: ",
-      "cloudSketchbook": "Felhő vázlatfüzet/sketchbook ",
       "connected": "Kapcsolódva",
       "continue": "Tovább",
       "donePulling": "Letöltés kész: '{0}'.",
@@ -82,12 +86,14 @@
       "pushSketch": "Vázlat/sketch feltöltése",
       "pushSketchMsg": "Ez egy nyilvános vázlat/sketch. A beküldés előtt győződj meg arról, hogy minden érzékeny információ definiálva van az arduino_secrets.h fájlokban. A vázlatot priváttá tehet tenni a Megosztás panelen. ",
       "remote": "Távoli",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Megosztás...",
       "shareSketch": "Vázlat/sketch megosztása",
       "showHideRemoveSketchbook": "Távoli vázlatfüzet/sketch megjelenítése/elrejtése ",
       "signIn": "BEJELENTKEZÉS",
       "signInToCloud": "Bejelentkezés az Arduino Cloudba ",
       "signOut": "Kijelentkezés",
+      "sync": "Sync",
       "syncEditSketches": "Arduino felhővázlatok szinkronizálása és szerkesztése",
       "visitArduinoCloud": "Látogasd meg az Arduino Cloud webhelyet, hogy a felhőben vázlatokat hozhass létre. "
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Egy fájl hozzáadása megtörtént a vázlathoz/sketch-hez. ",
       "replaceTitle": "Csere"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Hibakeresés/Debug - {0}",
       "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja ",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Betűméret csökkentése",
       "decreaseIndent": "Behúzás csökkentése",
       "increaseFontSize": "Betűméret növelése",
-      "increaseIndent": "Behúzás növelése"
+      "increaseIndent": "Behúzás növelése",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Nem sikerült menteni a vázlatot/sketch-et. Másold át a nem mentett munkát kedvenc szövegszerkesztődbe és indítsd újra az IDE-t. ",
@@ -212,8 +223,13 @@
       "zipLibrary": "Könyvtár"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Sketch",
       "tools": "Eszközök"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Kiegészítő alaplapok URL-jei",
@@ -225,12 +241,15 @@
       "board.certificates": "Az alaplapokra feltölthető tanúsítványok listája",
       "browse": "Tallóz",
       "choose": "Választás",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Kipipálva: a vázlat/sketch-szinkronizálás engedélyezve van. Alapértelmezés: kipipálva. ",
       "cloud.pull.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből letöltése  előtt. Alapértelmezés szerint: kipipálva.",
       "cloud.push.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből való letöltése előtt. Alapértelmezés: kipipálva. ",
       "cloud.pushpublic.warn": "Kipipálva: figyelmeztetés megjelenítése a nyilvános vázlat/sketch felhőbe küldése előtt. Alapértelmezés szerint: kipipálva.",
       "cloud.sketchSyncEnpoint": "A végpont/endpoint a vázlatok/sketch-ek háttéből történő letöltésére illetve  publikálására szolgál. Alapértelmezés szerint az Arduino Cloud API-ra mutat. ",
       "compile": "fordítás",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Kipipálva: a részletes fordítási üzenetek képernyőre írása. Alapértelmezés szerint: nincs kipipálva.",
       "compile.warnings": "Beállítja a gcc fordítónak, hogy melyik figyelmeztetési szintet kell használni. Ez alapértelmezés szerint: „Nincs/None”. ",
       "compilerWarnings": "Fordítóprogram figyelmeztetései / Compiler warnings",
@@ -252,6 +271,7 @@
       "showVerbose": "Részletes kimenet megjelenítése eközben: ",
       "sketchbook.location": "SketchBook elérési helye ",
       "sketchbook.showAllFiles": "Kipipálva: az összes vázlatfájl/sketch megjelenítése a vázlaton/sketch-en belül. Alapértelmezés szerint: nincs kipipálva.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Kattints ide a nem hivatalos alaplapok fordítási URL-jeinek listájához ",
       "upload": "feltöltés",
       "upload.verbose": "Kipipálva: a részletes feltöltési üzenetek kiírása a képernyőre. Alapértelmezés szerint hamis/nincs kipipálva.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Automatikus görgetés",
       "carriageReturn": "Kocsi vissza",
-      "connectionBusy": "Kapcsolat nem jött létre. A {0} soros port foglalt.",
-      "disconnected": "Megszakadt a/az {0} és a/az {1} kapcsolata. ",
-      "failedReconnect": "10 egymást követő próbálkozás után nem sikerült újracsatlakozni a/az {0} soros porthoz. A/az {1} soros port foglalt. ",
       "message": "Üzenet ({0} + Enter az üzenet elküldéséhez az {1} itt: {2})",
       "newLine": "Új sor",
       "newLineCarriageReturn": "Mindkettő: Új sor és Kocsi vissza - NL&CR",
       "noLineEndings": "Nincs sorvége ",
       "notConnected": "Nincs kapcsolat. Válassz ki egy alaplapot és egy portot az automatikus csatlakozáshoz. ",
-      "reconnect": "A/az {0} és a/az {1} újracsatlakozása {2} másodperc múlva... ",
       "timestamp": "Időbélyeg",
-      "toggleTimestamp": "Időbélyeg váltása",
-      "unexpectedError": "Váratlan hiba. A/az {0} újracsatlakozása a/az {1} porton. "
+      "toggleTimestamp": "Időbélyeg váltása"
     },
     "sketch": {
       "archiveSketch": "Vázlat/sketch archiválása",
       "cantOpen": "Már létezik a/az {0} nevű mappa. A vázlat/sketch nem nyitható meg. ",
       "close": "Biztosan bezárod a vázlatot/sketch-et? ",
       "configureAndUpload": "Konfigurálás és feltöltés",
-      "couldNotConnectToSerial": "Nem sikerült újracsatlakozni a {0} soros porthoz.",
       "createdArchive": "Archívum létrehozva: {0}. ",
       "doneCompiling": "Fordítás kész.",
       "doneUploading": "Feltöltés kész.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Nem találhatók felhasználói adatok a csatlakoztatott kártyához",
       "verify": "Ellenőrzés",
       "verifyOrCompile": "Ellenőrzés/fordítás"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} hiba: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Az új fájl neve",
       "invalidExtension": "A .{0} nem érvényes kiterjesztés",
       "invalidFilename": "Hibás fájlnév.",
-      "newFileName": "A fájl új neve",
-      "sketchDirectoryError": "Hiba történt a vázlatkönyvtár/sketchbook létrehozásakor. További részletekért lásd a naplót. Az alkalmazás valószínűleg nem fog megfelelően működni. "
+      "newFileName": "A fájl új neve"
     }
   }
 }

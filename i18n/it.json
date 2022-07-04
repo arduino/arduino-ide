@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Carica i tuoi certificati SSL Root",
       "uploadingCertificates": "Caricamento dei certificati."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' non è stato trovato. Il tuo sketch include la linea '#include <Keyboard.h>' nel codice?",
+      "mouseError": "'Mouse' non è stato trovato. Il tuo sketch include la linea '#include <Mouse.h>' nel codice?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Scegli a chi far vedere il tuo Sketch:",
-      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connesso",
       "continue": "Continua",
       "donePulling": "Pulling terminato ‘{0}’.",
@@ -82,12 +86,14 @@
       "pushSketch": "Invia lo Sketch",
       "pushSketchMsg": "Questo è uno sketch pubblico. Prima di inviarlo, verifica che tutte le informazioni sensibili siano all'interno di arduino_secrets.h. Eventualmente puoi rendere lo sketch privato dal Pannello di Condivisione.",
       "remote": "Remoto",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Condividi...",
       "shareSketch": "Condividi sketch",
       "showHideRemoveSketchbook": "Mostra/Nascondi la raccolta Remota degli Schetch",
       "signIn": "COLLEGATI",
       "signInToCloud": "Effettua la registrazione su Arduino Cloud",
       "signOut": "Disconnetti",
+      "sync": "Sincronizza",
       "syncEditSketches": "Sincronizza e modifica la tua raccolta di Sketches sul Cloud Arduino",
       "visitArduinoCloud": "Visita Arduino Cloud per creare Cloud Sketch "
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Aggiunto un file allo sketch.",
       "replaceTitle": "Sostituisci"
     },
+    "coreContribution": {
+      "copyError": "Copia messaggi di errore"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Il debug non è supportato da  '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Riduci la dimensione del testo",
       "decreaseIndent": "Riduci indentazione",
       "increaseFontSize": "Aumenta la dimensione del font",
-      "increaseIndent": "Aumenta indentazione"
+      "increaseIndent": "Aumenta indentazione",
+      "nextError": "Errore Successivo",
+      "previousError": "Errore Precedente"
     },
     "electron": {
       "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l' Arduino IDE. ",
@@ -212,8 +223,13 @@
       "zipLibrary": "Libreria"
     },
     "menu": {
+      "advanced": "Avanzate",
       "sketch": "Sketch",
       "tools": "Strumenti"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "URL aggiuntive per il Gestore schede",
@@ -225,12 +241,15 @@
       "board.certificates": "Lista dei certificati che possono essere caricati nelle schede",
       "browse": "Sfoglia",
       "choose": "Scegli",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Imposta su true per abilitare le funzioni di sincronia dello sketch. Il valore predefinito è true.",
       "cloud.pull.warn": "Imposta su true se gli utenti devono essere avvisato dopo avere effettuato il pull dello sketch sul cloud. Il valore predefinito è true.",
       "cloud.push.warn": "Imposta su True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch cloud. Il valore predefinito è true.",
       "cloud.pushpublic.warn": "True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch pubblico nel cloud. Il valore predefinito è true.",
       "cloud.sketchSyncEnpoint": "La destinazione utilizzata per inviare e richiedere gli schizzi da un back-end. L'impostazione predefinita utilizza Arduino Cloud API.",
       "compile": "compilazione",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Vero per compilazione esplicita. Falso come opzione predefinita",
       "compile.warnings": "Indica a gcc il livello di avviso che deve mostrare. Il valore predefinito è 'None' ",
       "compilerWarnings": "Warning del compilatore",
@@ -252,6 +271,7 @@
       "showVerbose": "Mostra un output dettagliato durante",
       "sketchbook.location": "Percorso della cartella degli sketch",
       "sketchbook.showAllFiles": "Vero per mostrare tutti i file relativi contenuti all'interno dello sketch. L'opzione predefinita è falso.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Clicca per ottenere la lista di collegamenti per le schede di terze parti, non schede ufficiali.",
       "upload": "caricamento",
       "upload.verbose": " Seleziona Vero per un rapporto dettagliato durante l'upload. Il valore predefinito è impostato su falso",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Scorrimento automatico",
       "carriageReturn": "Ritorno carrello (CR)",
-      "connectionBusy": "Connessione fallita. La porta seriale è occupata:  1{0}",
-      "disconnected": "Disconnesso  1{0} da  2{1} .",
-      "failedReconnect": "Connessione alla porta seriale  1 {0}  fallita  dopo 10 tentativi. La 2{1} porta seriale è occupata.",
       "message": "Messaggio({0} + Invio per inviare il messaggio a  '{1}' su '{2}')",
       "newLine": "A capo (NL)",
       "newLineCarriageReturn": "Entrambi NL & CR",
       "noLineEndings": "Nessun fine riga",
       "notConnected": "Non collegato. Scegli una scheda e la porta di comunicazione per una connessione automatica.",
-      "reconnect": "Riconnessione da 1 {0}   a   2 {1}  tra {2} secondi...",
       "timestamp": "Marca temporale",
-      "toggleTimestamp": "Alterna il Timestamp",
-      "unexpectedError": "Errore imprevisto. Riconnessione  1{0} nella porta  2{1} ."
+      "toggleTimestamp": "Alterna il Timestamp"
     },
     "sketch": {
       "archiveSketch": "Archivia sketch",
       "cantOpen": "Una cartella di nome \"{0}\" esiste già. Impossibile aprire lo sketch.",
       "close": "Sei sicuro di voler chiudere lo sketch?",
       "configureAndUpload": "Configurare e caricare",
-      "couldNotConnectToSerial": "Non è possibile riconnettersi alla porta seriale.   1{0}",
       "createdArchive": "Creato l'archivio '{0}'.",
       "doneCompiling": "Compilazione completata.",
       "doneUploading": "Caricamento terminato.",
@@ -307,6 +321,11 @@
       "verify": "Verifica",
       "verifyOrCompile": "Verifica/Compila"
     },
+    "survey": {
+      "answerSurvey": "Rispondi al questionario",
+      "dismissSurvey": "Non mostrare più",
+      "surveyMessage": "Aiutaci a migliorare rispondendo a questo brevissimo questionario. Abbiamo a cuore la nostra comunità e vorremmo conoscere meglio chi ci supporta!"
+    },
     "upload": {
       "error": "1 {0}   errore:   2 {1}"
     },
@@ -326,7 +345,7 @@
       "daemonOffline": "Il CLI Daemon è disconnesso",
       "offline": "Disconnesso",
       "quitMessage": "Eventuali modifiche non salvate verranno perse",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Sei sicuro di volere chiudere?"
     },
     "debug": {
       "start": "Inizio...",
@@ -345,8 +364,7 @@
       "fileNewName": "Nome per il nuovo file",
       "invalidExtension": "\".{0}\" non è un'estensione valida",
       "invalidFilename": "Nome del file invalido",
-      "newFileName": "Nuovo nome del file",
-      "sketchDirectoryError": "Si è verificato un errore durante la creazione della directory degli sketch. Per ulteriori dettagli guarda il file di log. Probabilmente l'applicazione non funzionerà come previsto."
+      "newFileName": "Nuovo nome del file"
     }
   }
 }
