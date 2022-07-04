@@ -23,7 +23,10 @@ import {
 } from '@theia/core/lib/browser/preferences/preference-service';
 import { ArduinoMenus, PlaceholderMenuNode } from '../../menu/arduino-menus';
 import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
-import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
