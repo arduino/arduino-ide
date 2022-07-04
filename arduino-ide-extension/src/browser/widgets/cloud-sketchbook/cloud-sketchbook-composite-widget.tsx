@@ -58,6 +58,16 @@ export class CloudSketchbookCompositeWidget extends BaseWidget {
     );
   }
 
+  protected override onActivateRequest(msg: Message): void {
+    super.onActivateRequest(msg);
+
+    /* 
+      Sending a resize message is needed because otherwise the cloudSketchbookTreeWidget
+      would render empty
+    */
+    this.onResize(Widget.ResizeMessage.UnknownSize);
+  }
+
   protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     MessageLoop.sendMessage(
