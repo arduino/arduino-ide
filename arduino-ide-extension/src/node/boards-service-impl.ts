@@ -264,7 +264,7 @@ export class BoardsServiceImpl
     const supportedUserFieldsResp =
       await new Promise<SupportedUserFieldsResponse>((resolve, reject) => {
         client.supportedUserFields(supportedUserFieldsReq, (err, resp) => {
-          (!!err ? reject : resolve)(!!err ? err : resp);
+          !!err ? reject(err) : resolve(resp);
         });
       });
     return supportedUserFieldsResp.getUserFieldsList().map((e) => {
@@ -286,10 +286,11 @@ export class BoardsServiceImpl
     const installedPlatformsReq = new PlatformListRequest();
     installedPlatformsReq.setInstance(instance);
     const installedPlatformsResp = await new Promise<PlatformListResponse>(
-      (resolve, reject) =>
-        client.platformList(installedPlatformsReq, (err, resp) =>
-          (!!err ? reject : resolve)(!!err ? err : resp)
-        )
+      (resolve, reject) => {
+        client.platformList(installedPlatformsReq, (err, resp) => {
+          !!err ? reject(err) : resolve(resp);
+        });
+      }
     );
     const installedPlatforms =
       installedPlatformsResp.getInstalledPlatformsList();
@@ -298,10 +299,12 @@ export class BoardsServiceImpl
     req.setSearchArgs(options.query || '');
     req.setAllVersions(true);
     req.setInstance(instance);
-    const resp = await new Promise<PlatformSearchResponse>((resolve, reject) =>
-      client.platformSearch(req, (err, resp) =>
-        (!!err ? reject : resolve)(!!err ? err : resp)
-      )
+    const resp = await new Promise<PlatformSearchResponse>(
+      (resolve, reject) => {
+        client.platformSearch(req, (err, resp) => {
+          !!err ? reject(err) : resolve(resp);
+        });
+      }
     );
     const packages = new Map<string, BoardsPackage>();
     const toPackage = (platform: Platform) => {
@@ -337,8 +340,9 @@ export class BoardsServiceImpl
     const groupedById: Map<string, Platform[]> = new Map();
     for (const platform of resp.getSearchOutputList()) {
       const id = platform.getId();
-      if (groupedById.has(id)) {
-        groupedById.get(id)!.push(platform);
+      const idGroup = groupedById.get(id);
+      if (idGroup) {
+        idGroup.push(platform);
       } else {
         groupedById.set(id, [platform]);
       }
@@ -363,17 +367,20 @@ export class BoardsServiceImpl
       if (!leftInstalled && rightInstalled) {
         return 1;
       }
-      return Installable.Version.COMPARATOR(
-        left.getLatest(),
-        right.getLatest()
-      ); // Higher version comes first.
+
+      const invertedVersionComparator =
+        Installable.Version.COMPARATOR(left.getLatest(), right.getLatest()) *
+        -1;
+      // Higher version comes first.
+
+      return invertedVersionComparator;
     };
-    for (const id of groupedById.keys()) {
-      groupedById.get(id)!.sort(installedAwareVersionComparator);
+    for (const value of groupedById.values()) {
+      value.sort(installedAwareVersionComparator);
     }
 
-    for (const id of groupedById.keys()) {
-      for (const platform of groupedById.get(id)!) {
+    for (const value of groupedById.values()) {
+      for (const platform of value) {
         const id = platform.getId();
         const pkg = packages.get(id);
         if (pkg) {
