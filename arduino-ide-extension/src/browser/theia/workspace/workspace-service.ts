@@ -17,11 +17,16 @@ import { ConfigService } from '../../../common/protocol/config-service';
 import {
   SketchesService,
   Sketch,
+  SketchesError,
 } from '../../../common/protocol/sketches-service';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
 import { FileStat } from '@theia/filesystem/lib/common/files';
-import { StartupTask } from '../../widgets/sketchbook/startup-task';
+import {
+  StartupTask,
+  StartupTasks,
+} from '../../widgets/sketchbook/startup-task';
+import { setURL } from '../../utils/window';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
@@ -60,6 +65,35 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.onCurrentWidgetChange({ newValue, oldValue: null });
   }
 
+  protected override async toFileStat(
+    uri: string | URI | undefined
+  ): Promise<FileStat | undefined> {
+    const stat = await super.toFileStat(uri);
+    if (!stat) {
+      return this.toFileStatWithNewSketchFallback(uri);
+    }
+    return stat;
+  }
+
+  private async toFileStatWithNewSketchFallback(
+    uri: string | URI | undefined
+  ): Promise<FileStat | undefined> {
+    if (!uri) {
+      return;
+    }
+    try {
+      await this.sketchService.loadSketch(
+        uri instanceof URI ? uri.toString() : uri
+      );
+    } catch (err) {
+      if (SketchesError.NotFound.is(err)) {
+        this.messageService.error(err.message);
+      }
+    }
+    const newSketchUri = await this.sketchService.createNewSketch();
+    return this.toFileStat(newSketchUri.uri);
+  }
+
   // Was copied from the Theia implementation.
   // Unlike the default behavior, IDE2 does not check the existence of the workspace before open.
   protected override async doGetDefaultWorkspaceUri(): Promise<
@@ -78,6 +112,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
       const wpPath = decodeURI(window.location.hash.substring(1));
       const workspaceUri = new URI().withPath(wpPath).withScheme('file');
       // ### Customization! Here, we do no check if the workspace exists.
+      // ### The error or missing sketch handling is done in the customized `toFileStat`.
       return workspaceUri.toString();
     } else {
       // Else, ask the server for its suggested workspace (usually the one
@@ -127,7 +162,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
   protected override openWindow(uri: FileStat, options?: WorkspaceInput): void {
     const workspacePath = uri.resource.path.toString();
     if (this.shouldPreserveWindow(options)) {
-      this.reloadWindow();
+      this.reloadWindow(options); // Unlike Theia, IDE2 passes the `input` downstream.
     } else {
       try {
         this.openNewWindow(workspacePath, options); // Unlike Theia, IDE2 passes the `input` downstream.
@@ -139,21 +174,25 @@ export class WorkspaceService extends TheiaWorkspaceService {
     }
   }
 
+  protected override reloadWindow(options?: WorkspaceInput): void {
+    if (StartupTasks.WorkspaceInput.is(options)) {
+      setURL(StartupTask.append(options.tasks, new URL(window.location.href)));
+    }
+    super.reloadWindow();
+  }
+
   protected override openNewWindow(
     workspacePath: string,
     options?: WorkspaceInput
   ): void {
     const { boardsConfig } = this.boardsServiceProvider;
-    const url = BoardsConfig.Config.setConfig(
+    let url = BoardsConfig.Config.setConfig(
       boardsConfig,
       new URL(window.location.href)
     ); // Set the current boards config for the new browser window.
     url.hash = workspacePath;
-    if (StartupTask.WorkspaceInput.is(options)) {
-      url.searchParams.set(
-        StartupTask.QUERY_STRING,
-        encodeURIComponent(JSON.stringify(options.tasks))
-      );
+    if (StartupTasks.WorkspaceInput.is(options)) {
+      url = StartupTask.append(options.tasks, url);
     }
 
     this.windowService.openNewWindow(url.toString());

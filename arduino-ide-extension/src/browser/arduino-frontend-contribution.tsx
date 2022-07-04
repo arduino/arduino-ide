@@ -11,6 +11,7 @@ import {
   ExecutableService,
   Sketch,
   ArduinoDaemon,
+  SketchesError,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
@@ -19,6 +20,7 @@ import {
   MenuModelRegistry,
   ILogger,
   DisposableCollection,
+  ApplicationError,
 } from '@theia/core';
 import {
   Dialog,
@@ -75,6 +77,8 @@ import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { HostedPluginEvents } from './hosted-plugin-events';
+import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { Notifications } from './contributions/notifications';
 
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
@@ -149,6 +153,9 @@ export class ArduinoFrontendContribution
 
   @inject(ArduinoDaemon)
   private readonly daemon: ArduinoDaemon;
+
+  @inject(WorkspaceService)
+  private readonly workspaceService: WorkspaceService;
 
   protected invalidConfigPopup:
     | Promise<void | 'No' | 'Yes' | undefined>
@@ -523,11 +530,53 @@ export class ArduinoFrontendContribution
             }
           });
       }
-    } catch (e) {
-      console.error(e);
-      const message = e instanceof Error ? e.message : JSON.stringify(e);
-      this.messageService.error(message);
+    } catch (err) {
+      if (SketchesError.NotFound.is(err)) {
+        this.openFallbackSketch(err);
+      } else {
+        console.error(err);
+        const message =
+          err instanceof Error
+            ? err.message
+            : typeof err === 'string'
+            ? err
+            : String(err);
+        this.messageService.error(message);
+      }
     }
+  }
+
+  private openFallbackSketch(
+    err: ApplicationError<
+      number,
+      {
+        uri: string;
+      }
+    >
+  ) {
+    this.sketchService.createNewSketch().then((sketch) => {
+      this.workspaceService.open(
+        new URI(sketch.uri),
+        Object.assign(
+          {
+            preserveWindow: true,
+          },
+          {
+            tasks: [
+              {
+                command: Notifications.Commands.NOTIFY.id,
+                args: [
+                  {
+                    type: 'error',
+                    message: err.message,
+                  },
+                ],
+              },
+            ],
+          }
+        )
+      );
+    });
   }
 
   protected async ensureOpened(

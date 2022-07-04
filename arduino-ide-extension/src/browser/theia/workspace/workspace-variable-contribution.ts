@@ -10,21 +10,31 @@ import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../../../common/protocol/sketches-service-client-impl';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 
 @injectable()
 export class WorkspaceVariableContribution extends TheiaWorkspaceVariableContribution {
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  private readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-  protected currentSketch?: Sketch;
+  private currentSketch?: Sketch;
 
   @postConstruct()
   protected override init(): void {
-    this.sketchesServiceClient.currentSketch().then((sketch) => {
-      if (CurrentSketch.isValid(sketch)) {
-        this.currentSketch = sketch;
-      }
-    });
+    const sketch = this.sketchesServiceClient.tryGetCurrentSketch();
+    if (CurrentSketch.isValid(sketch)) {
+      this.currentSketch = sketch;
+    } else {
+      const toDispose = new DisposableCollection();
+      toDispose.push(
+        this.sketchesServiceClient.onCurrentSketchDidChange((sketch) => {
+          if (CurrentSketch.isValid(sketch)) {
+            this.currentSketch = sketch;
+          }
+          toDispose.dispose();
+        })
+      );
+    }
   }
 
   override getResourceUri(): URI | undefined {
