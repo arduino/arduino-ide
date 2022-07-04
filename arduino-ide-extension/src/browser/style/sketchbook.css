@@ -61,3 +61,7 @@
 .theia-TreeNode.theia-mod-selected .sketchbook-commands-icons {
   display: block;
 }
+
+.theia-TreeContainer .theia-tree-node-indent {
+  border-right: none!important;
+}
