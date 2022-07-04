@@ -48,7 +48,8 @@
             "comments": false,
             "strings": false
           },
-          "breadcrumbs.enabled": false
+          "breadcrumbs.enabled": false,
+          "workbench.tree.renderIndentGuides": "none" 
         }
       }
     },
