@@ -1,6 +1,14 @@
 import { Command } from '@theia/core/lib/common/command';
 
 export namespace SketchbookCommands {
+  export const TOGGLE_SKETCHBOOK_WIDGET: Command = {
+    id: 'arduino-sketchbook-widget:toggle',
+  };
+
+  export const REVEAL_SKETCH_NODE: Command = {
+    id: 'arduino-sketchbook--reveal-sketch-node',
+  };
+
   export const OPEN_NEW_WINDOW = Command.toLocalizedCommand(
     {
       id: 'arduino-sketchbook--open-sketch-new-window',

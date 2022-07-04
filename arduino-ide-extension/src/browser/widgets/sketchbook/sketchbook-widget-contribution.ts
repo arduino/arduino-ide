@@ -29,6 +29,7 @@ import {
 } from '../../../common/protocol/sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
+import { WorkspaceInput } from '@theia/workspace/lib/browser';
 
 export const SKETCHBOOK__CONTEXT = ['arduino-sketchbook--context'];
 
@@ -77,7 +78,7 @@ export class SketchbookWidgetContribution
         area: 'left',
         rank: 1,
       },
-      toggleCommandId: 'arduino-sketchbook-widget:toggle',
+      toggleCommandId: SketchbookCommands.TOGGLE_SKETCHBOOK_WIDGET.id,
       toggleKeybinding: 'CtrlCmd+Shift+B',
     });
   }
@@ -100,11 +101,12 @@ export class SketchbookWidgetContribution
 
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
-
+    registry.registerCommand(SketchbookCommands.REVEAL_SKETCH_NODE, {
+      execute: (treeWidgetId: string, nodeUri: string) =>
+        this.revealSketchNode(treeWidgetId, nodeUri),
+    });
     registry.registerCommand(SketchbookCommands.OPEN_NEW_WINDOW, {
-      execute: async (arg) => {
-        return this.workspaceService.open(arg.node.uri);
-      },
+      execute: (arg) => this.openNewWindow(arg.node),
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
       isVisible: (arg) =>
@@ -197,7 +199,7 @@ export class SketchbookWidgetContribution
 
     // unregister main menu action
     registry.unregisterMenuAction({
-      commandId: 'arduino-sketchbook-widget:toggle',
+      commandId: SketchbookCommands.TOGGLE_SKETCHBOOK_WIDGET.id,
     });
 
     registry.registerMenuAction(SKETCHBOOK__CONTEXT__MAIN_GROUP, {
@@ -205,6 +207,28 @@ export class SketchbookWidgetContribution
       label: SketchbookCommands.REVEAL_IN_FINDER.label,
       order: '0',
     });
+  }
+
+  private openNewWindow(node: SketchbookTree.SketchDirNode): void {
+    const widget = this.tryGetWidget();
+    if (widget) {
+      const treeWidgetId = widget.activeTreeWidgetId();
+      if (!treeWidgetId) {
+        console.warn(`Could not retrieve active sketchbook tree ID.`);
+        return;
+      }
+      const nodeUri = node.uri.toString();
+      const options: WorkspaceInput = {};
+      Object.assign(options, {
+        tasks: [
+          {
+            command: SketchbookCommands.REVEAL_SKETCH_NODE.id,
+            args: [treeWidgetId, nodeUri],
+          },
+        ],
+      });
+      return this.workspaceService.open(node.uri, options);
+    }
   }
 
   /**
@@ -229,5 +253,18 @@ export class SketchbookWidgetContribution
 
   protected onCurrentWidgetChangedHandler(): void {
     this.selectWidgetFileNode(this.shell.currentWidget);
+  }
+
+  private async revealSketchNode(
+    treeWidgetId: string,
+    nodeUIri: string
+  ): Promise<void> {
+    return this.widget
+      .then((widget) => this.shell.activateWidget(widget.id))
+      .then((widget) => {
+        if (widget instanceof SketchbookWidget) {
+          return widget.revealSketchNode(treeWidgetId, nodeUIri);
+        }
+      });
   }
 }
