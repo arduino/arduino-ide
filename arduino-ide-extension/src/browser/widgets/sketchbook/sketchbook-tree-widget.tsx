@@ -28,7 +28,7 @@ import { nls } from '@theia/core/lib/common';
 
 const customTreeProps: TreeProps = {
   leftPadding: 20,
-  expansionTogglePadding: 6,
+  expansionTogglePadding: 12,
 };
 
 @injectable()
