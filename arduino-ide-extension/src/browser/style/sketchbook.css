@@ -49,6 +49,10 @@
 
 }
 
+#arduino-sketchbook-tree-widget .theia-TreeNode {
+  line-height: 30px;
+}
+
 #arduino-sketchbook-tree-widget .theia-TreeNodeSegmentGrow {
   flex: 1;
 }
