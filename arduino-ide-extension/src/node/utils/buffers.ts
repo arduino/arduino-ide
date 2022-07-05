@@ -1,25 +1,33 @@
+import { DisposableCollection } from '@theia/core';
 import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 import { OutputMessage } from '../../common/protocol';
 
-const DEFAULT_FLUS_TIMEOUT_MS = 32;
-
-export class SimpleBuffer implements Disposable {
+export class AutoFlushingBuffer implements Disposable {
   private readonly chunks = Chunks.create();
-  private readonly flush: () => void;
-  private flushInterval?: NodeJS.Timeout;
+  private readonly toDispose;
+  private timer?: NodeJS.Timeout;
+  private disposed = false;
 
   constructor(
     onFlush: (chunks: Map<OutputMessage.Severity, string | undefined>) => void,
-    flushTimeout: number = DEFAULT_FLUS_TIMEOUT_MS
+    taskTimeout: number = AutoFlushingBuffer.DEFAULT_FLUSH_TIMEOUT_MS
   ) {
-    this.flush = () => {
+    const task = () => {
       if (!Chunks.isEmpty(this.chunks)) {
         const chunks = Chunks.toString(this.chunks);
-        this.clearChunks();
+        Chunks.clear(this.chunks);
         onFlush(chunks);
       }
+      if (!this.disposed) {
+        this.timer = setTimeout(task, taskTimeout);
+      }
     };
-    this.flushInterval = setInterval(this.flush, flushTimeout);
+    this.timer = setTimeout(task, taskTimeout);
+    this.toDispose = new DisposableCollection(
+      Disposable.create(() => (this.disposed = true)),
+      Disposable.create(() => clearTimeout(this.timer)),
+      Disposable.create(() => task())
+    );
   }
 
   addChunk(
@@ -29,16 +37,16 @@ export class SimpleBuffer implements Disposable {
     this.chunks.get(severity)?.push(chunk);
   }
 
-  private clearChunks(): void {
-    Chunks.clear(this.chunks);
-  }
-
   dispose(): void {
-    this.flush();
-    clearInterval(this.flushInterval);
-    this.clearChunks();
-    this.flushInterval = undefined;
+    this.toDispose.dispose();
   }
+}
+export namespace AutoFlushingBuffer {
+  /**
+   * _"chunking and sending every 16ms (60hz) is the best for small amount of data
+   * To be able to crunch more data without the cpu going to high, I opted for a 30fps refresh rate, hence the 32msec"_
+   */
+  export const DEFAULT_FLUSH_TIMEOUT_MS = 32;
 }
 
 type Chunks = Map<OutputMessage.Severity, Uint8Array[]>;
