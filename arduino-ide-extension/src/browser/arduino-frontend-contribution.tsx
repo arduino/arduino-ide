@@ -598,7 +598,7 @@ export class ArduinoFrontendContribution
           'Color of the Arduino IDE foreground which is used for dialogs, such as the Select Board dialog.',
       },
       {
-        id: 'arduino.toolbar.background',
+        id: 'arduino.toolbar.button.background',
         defaults: {
           dark: 'button.background',
           light: 'button.background',
@@ -608,7 +608,7 @@ export class ArduinoFrontendContribution
           'Background color of the toolbar items. Such as Upload, Verify, etc.',
       },
       {
-        id: 'arduino.toolbar.hoverBackground',
+        id: 'arduino.toolbar.button.hoverBackground',
         defaults: {
           dark: 'button.hoverBackground',
           light: 'button.foreground',
