@@ -69,9 +69,9 @@ button.theia-button,
   justify-content: center;
   cursor: pointer;
   letter-spacing: .01em;
-  line-height: 170%;
+  line-height: 23.8px;
   outline: none;
-  padding: 0 18px;
+  padding: 0 16px;
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -83,7 +83,7 @@ button.theia-button,
 }
 
 button.theia-button {
-  height: auto;
+  height: 28px;
   max-width: none;
 }
 

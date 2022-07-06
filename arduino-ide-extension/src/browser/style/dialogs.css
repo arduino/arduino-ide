@@ -55,7 +55,8 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow:first-child {
-    margin-top: 0px;
+    margin-top: 0px;    
+    height: 32px;
 }
 
 .fl1{
