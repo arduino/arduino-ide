@@ -339,6 +339,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       options.webPreferences = {};
     }
     options.webPreferences.v8CacheOptions = 'bypassHeatCheck'; // TODO: verify this. VS Code use this V8 option.
+    options.useContentSize = true;
+    options.minWidth = 680;
+    options.minHeight = 565;
     return options;
   }
 
