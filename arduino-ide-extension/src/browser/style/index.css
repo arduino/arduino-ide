@@ -19,6 +19,13 @@
 @import './custom-codicon.css';
 @import './progress-bar.css';
 
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url(https://fonts.gstatic.com/s/opensans/v29/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVI.woff2) format('woff2');
+}
+
 .theia-input.warning:focus {
   outline-width: 1px;
   outline-style: solid;
