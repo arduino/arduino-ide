@@ -20,6 +20,7 @@ import { NotificationCenter } from '../notification-center';
 import { ArduinoCommands } from '../arduino-commands';
 import { StorageWrapper } from '../storage-wrapper';
 import { nls } from '@theia/core/lib/common';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -73,6 +74,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     this.onAvailableBoardsChangedEmitter.event;
   readonly onAvailablePortsChanged = this.onAvailablePortsChangedEmitter.event;
 
+  private readonly _reconciled = new Deferred<void>();
+
   onStart(): void {
     this.notificationCenter.onAttachedBoardsChanged(
       this.notifyAttachedBoardsChanged.bind(this)
@@ -88,12 +91,20 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.boardsService.getAttachedBoards(),
       this.boardsService.getAvailablePorts(),
       this.loadState(),
-    ]).then(([attachedBoards, availablePorts]) => {
+    ]).then(async ([attachedBoards, availablePorts]) => {
       this._attachedBoards = attachedBoards;
       this._availablePorts = availablePorts;
       this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
-      this.reconcileAvailableBoards().then(() => this.tryReconnect());
+
+      await this.reconcileAvailableBoards();
+
+      this.tryReconnect();
+      this._reconciled.resolve();
     });
+  }
+
+  get reconciled(): Promise<void> {
+    return this._reconciled.promise;
   }
 
   protected notifyAttachedBoardsChanged(
@@ -185,8 +196,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         const selectedAvailableBoard = AvailableBoard.is(selectedBoard)
           ? selectedBoard
           : this._availableBoards.find((availableBoard) =>
-            Board.sameAs(availableBoard, selectedBoard)
-          );
+              Board.sameAs(availableBoard, selectedBoard)
+            );
         if (
           selectedAvailableBoard &&
           selectedAvailableBoard.selected &&
@@ -209,7 +220,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
   }
 
-  protected async tryReconnect(): Promise<boolean> {
+  protected tryReconnect(): boolean {
     if (this.latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
       for (const board of this.availableBoards.filter(
         ({ state }) => state !== AvailableBoard.State.incomplete
@@ -231,7 +242,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         if (
           this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
           this.latestValidBoardsConfig.selectedBoard.name === board.name &&
-          this.latestValidBoardsConfig.selectedPort.protocol === board.port?.protocol
+          this.latestValidBoardsConfig.selectedPort.protocol ===
+            board.port?.protocol
         ) {
           this.boardsConfig = {
             ...this.latestValidBoardsConfig,
@@ -376,14 +388,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const timeoutTask =
       !!timeout && timeout > 0
         ? new Promise<void>((_, reject) =>
-          setTimeout(
-            () => reject(new Error(`Timeout after ${timeout} ms.`)),
-            timeout
+            setTimeout(
+              () => reject(new Error(`Timeout after ${timeout} ms.`)),
+              timeout
+            )
           )
-        )
         : new Promise<void>(() => {
-          /* never */
-        });
+            /* never */
+          });
     const waitUntilTask = new Promise<void>((resolve) => {
       let candidate = find(what, this.availableBoards);
       if (candidate) {
@@ -534,8 +546,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
   protected getLastSelectedBoardOnPortKey(port: Port | string): string {
     // TODO: we lose the port's `protocol` info (`serial`, `network`, etc.) here if the `port` is a `string`.
-    return `last-selected-board-on-port:${typeof port === 'string' ? port : port.address
-      }`;
+    return `last-selected-board-on-port:${
+      typeof port === 'string' ? port : port.address
+    }`;
   }
 
   protected async loadState(): Promise<void> {
