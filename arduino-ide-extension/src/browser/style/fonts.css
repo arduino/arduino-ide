@@ -1,4 +1,11 @@
 @font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url('fonts/OpenSans-Regular-webfont.woff') format('woff');
+}
+
+@font-face {
   font-family: 'FontAwesome';
   src:
     url('fonts/FontAwesome.ttf?nuchcq') format('truetype'),
