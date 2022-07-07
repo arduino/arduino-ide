@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Cargar certificados raíz SSL",
       "uploadingCertificates": "Cargando certificados."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Elige la visibilidad de tu Sketch:",
-      "cloudSketchbook": "Libro de bocetos en la nube",
       "connected": "Conectado",
       "continue": "Continuar",
       "donePulling": "Extracción de '{0}' realizada.",
@@ -82,12 +86,14 @@
       "pushSketch": "Pulsa para listar las URLs de la tarjetas no oficiales",
       "pushSketchMsg": "Este es un Sketch público. Antes de enviarlo, asegúrate de que cualquier información sensible está definida en los archivos arduino_secrets.h. Puedes hacer que un Sketch sea privado desde el panel Compartir.",
       "remote": "Remoto",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Compartir...",
       "shareSketch": "Compartir Sketch",
       "showHideRemoveSketchbook": "Mostrar/Ocultar Sketchbook Remoto",
       "signIn": "Iniciar sesión",
       "signInToCloud": "Iniciar sesión en Arduino Cloud",
       "signOut": "Cerrar sesión",
+      "sync": "Sync",
       "syncEditSketches": "Sincroniza y edita tus Arduino Cloud Sketches",
       "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Un archivo añadido al sketch.",
       "replaceTitle": "Reemplazar"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Reducir Tamaño de Fuente",
       "decreaseIndent": "Disminuir sangría",
       "increaseFontSize": "Aumentar tamaño de fuente",
-      "increaseIndent": "Aumentar sangría"
+      "increaseIndent": "Aumentar sangría",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "No se ha podido guardar el sketch. Por favor, copia tu trabajo no guardado en tu editor de texto favorito y reinicia el IDE.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Biblioteca"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Sketch",
       "tools": "Herramientas"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": " No se puede cerrar websocket",
+      "unableToConnectToWebSocket": " No se puede conectar al websocket"
     },
     "preferences": {
       "additionalManagerURLs": "URLs adicionales de gestor de placas",
@@ -225,12 +241,15 @@
       "board.certificates": "Listado de certificados que pueden ser cargados en las placas",
       "browse": "Explorar",
       "choose": "Elija",
+      "cli.daemonDebug": "Habilitar logueo de depuración de las llamadas gRPC al Arduino CLI. Requiere un reinicio del IDE para tener efecto. Deshabilitado por defecto.",
       "cloud.enabled": "Verdadero si las funciones de sincronización del sketch están activadas. Verdadero por defecto.",
       "cloud.pull.warn": "Verdadero si se debe advertir a los usuarios antes de sacar un boceto de la nube. El valor predeterminado es verdadero.",
       "cloud.push.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto a la nube. El valor predeterminado es verdadero.",
       "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
       "cloud.sketchSyncEnpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
       "compile": "Compliar",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Verdadero para compilación detallada. Falso por defecto",
       "compile.warnings": "Indica a gcc qué nivel de advertencia usar. Por defecto es \"Ninguno\"",
       "compilerWarnings": "alertas de compilación",
@@ -252,6 +271,7 @@
       "showVerbose": "Mostrar salida verbosa durante",
       "sketchbook.location": "Ruta del Sketchbook",
       "sketchbook.showAllFiles": "Verdadero para mostrar todos los archivos de bocetos dentro del boceto. Por defecto es falso.",
+      "survey.notification": "Verdadero si usuarios deberían ser notificados cuando una encuesta esté disponible. Verdadero es predeterminado.",
       "unofficialBoardSupport": "Pulsa para listar las URLs de las tarjetas no oficiales",
       "upload": "Carga",
       "upload.verbose": "Verdadero para una salida verbosa de la carga. Falso por defecto.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Retorno de carro",
-      "connectionBusy": "Error en la conexión. El puerto serie está ocupado: {0}",
-      "disconnected": "Desconectado {0} de {1}.",
-      "failedReconnect": "Fallo al reconectar {0} al puerto serie después de 10 intentos consecutivos.  El puerto serie {1} está ocupado.",
       "message": "Mensaje ({0} + Enter para enviar el mensaje a '{1}' en '{2}')",
       "newLine": "Nueva línea",
       "newLineCarriageReturn": "Ambos NL & CR",
       "noLineEndings": "Sin ajuste de línea",
       "notConnected": "No conectado. Selecciona una placa y un puerto para conectarte automáticamente.",
-      "reconnect": "Reconectando {0} a {1} en {2} segundos...",
       "timestamp": "Marca de tiempo",
-      "toggleTimestamp": "Alternar la marca de tiempo",
-      "unexpectedError": "Error inesperado. Reconectando {0} en el puerto {1}."
+      "toggleTimestamp": "Alternar la marca de tiempo"
     },
     "sketch": {
       "archiveSketch": "Archivo de programa",
       "cantOpen": "Ya existe una carpeta con el nombre \"{0}\". No se puede abrir.",
       "close": "¿Estás seguro de que quieres cerrar el sketch?",
       "configureAndUpload": "Configurar y subir",
-      "couldNotConnectToSerial": "No se ha podido reconectar al puerto serie. {0}",
       "createdArchive": "Archivo '{0}' creado.",
       "doneCompiling": "Compilación completada.",
       "doneUploading": "Carga completada.",
@@ -295,7 +309,7 @@
       "openSketchInNewWindow": "Abrir Sketch en una ventana nueva",
       "saveFolderAs": "Guardar carpeta de sketch como...",
       "saveSketchAs": "Guardar carpeta de sketch como...",
-      "saveTempSketch": "Save your sketch to open it again later.",
+      "saveTempSketch": "Guarde su sketch para abirlo más tarde.",
       "showFolder": "Mostrar carpeta de Sketch",
       "sketch": "Sketch",
       "sketchbook": "Sketchbook",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "No se pueden encontrar campos de usuario para la placa conectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
+    },
+    "survey": {
+      "answerSurvey": "Completar encuesta",
+      "dismissSurvey": "No volver a mostrar",
+      "surveyMessage": "Por favor ayudenos mejorar completando esta breve encuesta. Valoramos nuestra comunidad y nos gustaría conocer algo mejor a los que nos apoyan."
     },
     "upload": {
       "error": "1{0} error: 2{1}"
@@ -326,7 +345,7 @@
       "daemonOffline": "Demonio del CLI fuera de línea",
       "offline": "Desconectado",
       "quitMessage": "Los cambios no guardados no serán guardados.",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Seguro que quiere salir ?"
     },
     "debug": {
       "start": "Empezar...",
@@ -345,8 +364,7 @@
       "fileNewName": "Nombre del nuevo archivo",
       "invalidExtension": "\".{0}\" no es una extensión válida",
       "invalidFilename": "Nombre de archivo no válido.",
-      "newFileName": "Nuevo nombre para el archivo",
-      "sketchDirectoryError": "Se ha producido un error al crear el directorio de bocetos. Consulta el log para obtener más detalles. Es probable que la aplicación no funcione como se espera."
+      "newFileName": "Nuevo nombre para el archivo"
     }
   }
 }

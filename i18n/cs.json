@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Nahrát certifikát SSL",
       "uploadingCertificates": "Nahrávám certifikát."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Zvolte viditelnost sketche:",
-      "cloudSketchbook": "Cloudové umístění projektů",
       "connected": "Připojen",
       "continue": "Pokračovat",
       "donePulling": "Stahování dokončeno ’{0}’.",
@@ -82,12 +86,14 @@
       "pushSketch": "Odeslat sketch",
       "pushSketchMsg": "Toto je veřejná sketch. Před odesláním se prosím ujistěte že jsou smazané citlivé informace ze souboru arduino_secrets.h . Tuto sketch můžete změnit na soukromou v panelu pro sdílení.  ",
       "remote": "Vzdálený",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Sdílet...",
       "shareSketch": "Sdílet sketch",
       "showHideRemoveSketchbook": "Zobrazit/skrýt vzdálenou sketch",
       "signIn": "Přihlásit se",
       "signInToCloud": "Přihlásit se do Arduino Cloud",
       "signOut": "Odhlásit se",
+      "sync": "Sync",
       "syncEditSketches": "Synchronizovat a editovat sketche v Arduino Cloud",
       "visitArduinoCloud": "Navštivte Arduino Cloud pro vytvoření cloudové sketche"
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Soubor byl přidán do sketche.",
       "replaceTitle": "Vyměnit"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging není podporován s  '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Zmenšit velikost písma",
       "decreaseIndent": "Zmenšit odrážku",
       "increaseFontSize": "Zvýšit velikost písma",
-      "increaseIndent": "Zvětšit odrážku"
+      "increaseIndent": "Zvětšit odrážku",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Nebylo možné uložit sketch. Zkopírujte prosím neuloženou práci do Vašeho oblíbeného textového editoru a restartujte IDE. ",
@@ -212,8 +223,13 @@
       "zipLibrary": "Knihovna"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Sketch",
       "tools": "Nástroje"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Další URL pro manager desek",
@@ -225,12 +241,15 @@
       "board.certificates": "Seznam certifikátů, které mohou být nahrány na desky",
       "browse": "Procházet",
       "choose": "Zvolit",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Ano pokud je povolená automatická synchronizace sketche. Ano je výchozí hodnota. ",
       "cloud.pull.warn": "Ano pokud by měl být uživatel varován před stahováním cloud sketche. Ano je výchozí hodnota. ",
       "cloud.push.warn": "Ano pokud by měl být uživatel varován před odesláním cloud sketche. Ano je výchozí hodnota. ",
       "cloud.pushpublic.warn": "Ano pokud by měl být uživatel varován před odesláním veřejné sketche do cloudu. Ano je výchozí hodnota. ",
       "cloud.sketchSyncEnpoint": "Endpoint použitý pro stahování a odesílání sketchí z backendu. Ve výchozím stavu je toto směrováno na Arduino Cloud API.",
       "compile": "kompilovat",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Ano pro podrobný výstup při kompilaci. Ne je výchozí hodnota.  ",
       "compile.warnings": "Řekne gcc který stupeň varování se má použít. \"Žádný\" je výchozí hodnota. ",
       "compilerWarnings": "Varování kompileru",
@@ -252,6 +271,7 @@
       "showVerbose": "Zobrazit podrobný výstup během",
       "sketchbook.location": "Umístění sketche",
       "sketchbook.showAllFiles": "Ano pro zobrazení všech souborů sketche. Ne je výchozí hodnota. ",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Zde klikněte pro seznam adres neoficiálně podporovaných desek",
       "upload": "nahrát",
       "upload.verbose": "Ano pro podrobný výstup při nahrávání. Ne je výchozí hodnota.  ",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Enter (CR)",
-      "connectionBusy": "Připojení se nezdařilo, sériový port je zaneprázdněn: {0}",
-      "disconnected": "Odpojen {0}od {1}.",
-      "failedReconnect": "Nepodařilo se připojit {0}k sériovému portu po 10 pokusech po sobě. Sériový port {1} je zaneprázdněn. ",
       "message": "Zpráva ({0}+ Enter pro odeslání zprávy do '{1}'  na  '{2}')",
       "newLine": "Nový řádek (NL)",
       "newLineCarriageReturn": "Oba NL & CR",
       "noLineEndings": "Bez konce řádku",
       "notConnected": "Nepřipojen. Zvolte desku a port pro automatické připojení.",
-      "reconnect": "Opětovné připojení {0} k {1}za [2] vteřin...",
       "timestamp": "Časová značka",
-      "toggleTimestamp": "Přepnout časovou značku",
-      "unexpectedError": "Nastala neočekávaná chyba. Opět připojuji {0} na portu {1}."
+      "toggleTimestamp": "Přepnout časovou značku"
     },
     "sketch": {
       "archiveSketch": "Archivovat sketch",
       "cantOpen": "Složka s názvem \"{0}\" již existuje, proto nemohu otevřít sketch. ",
       "close": "Opravdu chcete zavřít tuto sketch? ",
       "configureAndUpload": "Nastavit a nahrát",
-      "couldNotConnectToSerial": "Nebylo možné se opět připojit k seriovému portu. {0}",
       "createdArchive": "Vytvořen archív '{0}'.",
       "doneCompiling": "Ověřování dokončeno.",
       "doneUploading": "Nahrávání dokončeno. ",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Nemohu nalézt uživatelská pole pro připojenou desku",
       "verify": "Ověřit",
       "verifyOrCompile": "Ověřit/Kompilovat"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0}chyba: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Název pro nový soubor",
       "invalidExtension": ".{0}je neplatná přípona",
       "invalidFilename": "Neplatný název souboru.",
-      "newFileName": "Nový název souboru",
-      "sketchDirectoryError": "Vyskytla se chyba při vytváření složky pro sketch. Více informací naleznete v logu. Aplikace nebude pravděpodobně pracovat správně. "
+      "newFileName": "Nový název souboru"
     }
   }
 }

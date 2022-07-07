@@ -10,7 +10,7 @@
       "boardListItem": "{0} / {1}",
       "configDialog1": "Bir eskiz yüklemek istiyorsanız Kart ve Port seçmelisiniz.",
       "configDialog2": "Sadece Kart seçerseniz eskizinizi derleyebilir, ancak yükleyemezsiniz.",
-      "configDialogTitle": "Diğer Kart ve Port Seç",
+      "configDialogTitle": "Başka Kart ve Port Seç",
       "couldNotFindPreviouslySelected": "Kurulu '{1}' platformunda daha önce seçili kart '{0}' bulunamadı. Lütfen kullanmak istediğiniz kartı elle yeniden seçin. Şimdi tekrar seçmek istiyor musunuz?",
       "getBoardInfo": "Kart Bilgisini Al",
       "inSketchbook": "(Eskiz Defteri'nde)",
@@ -19,7 +19,7 @@
       "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
       "noPortsSelected": "'{0}' kartı için port seçilmedi",
       "noneSelected": "Kart seçilmedi.",
-      "openBoardsConfig": "Diğer kart ve portu seç...",
+      "openBoardsConfig": "Başka kart ve portu seç...",
       "platformMissing": "Seçili '{0}' kart için platform kurulmadı.",
       "pleasePickBoard": "Lütfen seçtiğiniz porta bağlı kartı seçin.",
       "port": "Port{0}",
@@ -56,15 +56,19 @@
       "uploadRootCertificates": "SSL Kök Sertifikalarını Yükle",
       "uploadingCertificates": "Sertifikalar yükleniyor."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' bulunamadı. Eskiziniz '#include <Keyboard.h>' satırını içeriyor mu?",
+      "mouseError": "'Mouse' bulunamadı. Eskiziniz '#include <Mouse.h>' satırını içeriyor mu? "
+    },
     "cloud": {
+      "account": "Hesap",
       "chooseSketchVisibility": "Eskizinizin görünürlüğünü seçin",
-      "cloudSketchbook": "Bulut Eskiz Defteri",
       "connected": "Bağlandı",
       "continue": "Devam et",
       "donePulling": "Çekme bitti: ‘{0}’.",
       "donePushing": "Gönderme bitti: ‘{0}’.",
       "embed": "Yerleştir:",
-      "emptySketchbook": "Eskiz Defteri'niz boş",
+      "emptySketchbook": "Eskiz Defteriniz boş",
       "learnMore": "Daha fazlasını öğren",
       "link": "Bağlantı:",
       "notYetPulled": "Bulut'a gönderilemedi. Henüz çekilmemiş.",
@@ -82,12 +86,14 @@
       "pushSketch": "Eskizi Gönder",
       "pushSketchMsg": "Bu bir Herkese Açık Eskiz. Göndermeden önce tüm hassas bilgilerin arduino_secrets.h dosyaları içinde tanımlandığından emin olun. Eskizleri Paylaş panelinden gizli yapabilirsiniz.",
       "remote": "Uzak",
+      "remoteSketchbook": "Bulut Eskiz Defteri",
       "share": "Paylaş...",
-      "shareSketch": "Eskiz'i Paylaş",
-      "showHideRemoveSketchbook": "Uzak Eskiz Defteri'ni Göster/Gizle",
+      "shareSketch": "Eskizi Paylaş",
+      "showHideRemoveSketchbook": "Bulut Eskiz Defteri'ni Göster/Gizle",
       "signIn": "GİRİŞ YAP",
       "signInToCloud": "Arduino Cloud'a giriş yap",
       "signOut": "Çıkış Yap",
+      "sync": "Senkronize Et",
       "syncEditSketches": "Arduino Cloud eskizlerinizi eşitleyin ve düzenleyin",
       "visitArduinoCloud": "Bulut Eskizleri oluşturmak için Arduino Cloud'u ziyaret edin."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Eskize bir dosya eklendi.",
       "replaceTitle": "Değiştir"
     },
+    "coreContribution": {
+      "copyError": "Hata mesajlarını kopyala"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Yazı Tipi Boyutunu Küçült",
       "decreaseIndent": "Girintiyi Azalt",
       "increaseFontSize": "Yazı Tipi Boyutunu Büyüt",
-      "increaseIndent": "Girintiyi Artır"
+      "increaseIndent": "Girintiyi Artır",
+      "nextError": "Sonraki Hata",
+      "previousError": "Önceki Hata"
     },
     "electron": {
       "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
@@ -155,7 +166,7 @@
       "failedInstall": "Kurulum başarısız. Lütfen tekrar deneyin.",
       "install": "Kur",
       "installingFirmware": "Firmware kuruluyor.",
-      "overwriteSketch": "Kurulum karttaki Eskiz'in üzerine yazacak.",
+      "overwriteSketch": "Kurulum karttaki Eskizin üzerine yazacak.",
       "selectBoard": "Kart Seç",
       "selectVersion": "Firmware versiyonunu seç",
       "successfullyInstalled": "Firmware başarıyla kuruldu.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Kütüphane"
     },
     "menu": {
+      "advanced": "Gelişmiş",
       "sketch": "Eskiz",
       "tools": "Araçlar"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Websocket kapatılamadı ",
+      "unableToConnectToWebSocket": "Websocket'e bağlanılamadı"
     },
     "preferences": {
       "additionalManagerURLs": "Ek Kart Yöneticisi URL'leri",
@@ -225,13 +241,16 @@
       "board.certificates": "Kartlara yüklenebilecek sertifikaların listesi",
       "browse": "Araştır",
       "choose": "Seç",
-      "cloud.enabled": "Eskiz eşitleme fonksiyonları etkinse True. Varsayılan: True.",
-      "cloud.pull.warn": "Kullanıcılar bir bulut eskizini çekmeden önce uyarılacaksa True. Varsayılan: True.",
-      "cloud.push.warn": "Kullanıcılar bir bulut eskizini göndermeden önce uyarılacaksa True. Varsayılan: True.",
-      "cloud.pushpublic.warn": "Kullanıcılar buluta herkese açık bir eskiz yüklemeden önce uyarılacaksa True. Varsayılan: True.",
+      "cli.daemonDebug": "Arduino CLI tarafına yapılan gRPC bağlantılarının debug kaydını etkinleştirir. Bu ayarın geçerli olması için IDE'nin yeniden başlatılması gerekir. Varsayılan olarak kapalıdır.",
+      "cloud.enabled": "Eskiz eşitleme fonksiyonları etkinse açın. Varsayılan: Açık.",
+      "cloud.pull.warn": "Kullanıcılar bir bulut eskizini çekmeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.push.warn": "Kullanıcılar bir bulut eskizini göndermeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.pushpublic.warn": "Kullanıcılar buluta herkese açık bir eskiz yüklemeden önce uyarılacaksa açın. Varsayılan: Açık.",
       "cloud.sketchSyncEnpoint": "Ana yapıdan eskizler çekmek veya göndermek için son nokta kullanılır. Varsayılan: Arduino Cloud API.",
       "compile": "derle",
-      "compile.verbose": "Ayrıntılı derleme çıktısı için True. Varsayılan: False",
+      "compile.experimental": "IDE'nin birden fazla derleme hatasını kontrol etmesini istiyorsanız açın. Varsayılan olarak kapalı.",
+      "compile.revealRange": "Tamamlanamayan bir doğrula/yükleme'den sonra editörün derleme hatalarını nasıl göstereceğini ayarlar. Seçenekler: 'auto': Gerekli oldukça kaydır ve satırı göster. 'center': Gerekli oldukça kaydır ve satırı ortada göster. 'top': Gerekli oldukça kaydır ve satırı görünüm alanının üzerine yakın bir yerde göster. 'centerIfOutsideViewport': Gerekli oldukça kaydır ve satır sadece görünen alanın dışındaysa ortada göster. Varsayılan değer '{0}'.",
+      "compile.verbose": "Ayrıntılı derleme çıktısı için açın. Varsayılan: Kapalı",
       "compile.warnings": "gcc'ye hangi uyarı seviyesinin kullanılacağını söyler. Varsayılan: 'None'",
       "compilerWarnings": "Derleyici uyarıları",
       "editorFontSize": "Editör yazı tipi boyutu",
@@ -251,12 +270,13 @@
       "noProxy": "Vekil yok",
       "showVerbose": "Ayrıntılı çıktıyı görüntüle",
       "sketchbook.location": "Eskiz Defteri konumu",
-      "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için True. Varsayılan: false.",
+      "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için açın. Varsayılan: kapalı.",
+      "survey.notification": "Bir anket bulunduğunda kullanıcılara gösterilecekse açın. Varsayılan olarak açıktır.",
       "unofficialBoardSupport": "Desteklenmeyen kart destek URL'leri listesi için tıklayın",
       "upload": "yükle",
-      "upload.verbose": " Ayrıntılı yükleme çıktısı için True. Varsayılan: False",
+      "upload.verbose": " Ayrıntılı yükleme çıktısı için açın. Varsayılan: Kapalı",
       "verifyAfterUpload": "Yüklemeden sonra kodu doğrula",
-      "window.autoScale": "Kullanıcı arayüzü yazı tipi boyutu ile otomatik olarak ölçeklenecekse True",
+      "window.autoScale": "Kullanıcı arayüzü yazı tipi boyutu ile otomatik olarak ölçeklenecekse açın",
       "window.zoomLevel": "Pencerenin yakınlaştırma seviyesini ayarlar. Orijinal boyut 0'dır ve her yukarı artış (örn. 1) veya düşüş (örn. -1) %20 daha büyük veya daha küçük anlamına gelir. Aynı zamanda yakınlaştırma seviyesini daha hassas ayarlamak için ondalıklar da girebilirsiniz."
     },
     "replaceMsg": "{0}'un mevcut versiyonu değiştirilsin mi?",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Otomatik Kaydırma",
       "carriageReturn": "Satır Başı",
-      "connectionBusy": "Bağlantı başarısız. Seri Port meşgul: {0}",
-      "disconnected": "{1} bağlantısı koptu {0}.",
-      "failedReconnect": "Peş peşe 10 denemeden sonra {0}'a bağlanılamadı. {1} Seri Portu meşgul.",
       "message": "Mesaj ({0} + Mesaj göndermek için Enter '{1}' / '{2}')",
       "newLine": "Yeni Satır",
       "newLineCarriageReturn": "NL ve CR ile Birlikte",
       "noLineEndings": "Satır Sonu Yok",
       "notConnected": "Bağlı değil. Otomatik olarak bağlanacak bir kart ve bir port seçin.",
-      "reconnect": "Yeniden bağlanılıyor {0} / {1} - {2} saniye",
       "timestamp": "Zaman",
-      "toggleTimestamp": "Zaman Damgasını Göster",
-      "unexpectedError": "Beklenmeyen hata. Yeniden bağlanılıyor {0} / {1}."
+      "toggleTimestamp": "Zaman Damgasını Göster"
     },
     "sketch": {
-      "archiveSketch": "Eskiz'i Arşivle",
+      "archiveSketch": "Eskizi Arşivle",
       "cantOpen": "\"{0}\" klasörü zaten mevcut. Eskiz açılamadı.",
       "close": "Eskizi kapatmak istediğinizden emin misiniz?",
       "configureAndUpload": "Ayarla ve Yükle",
-      "couldNotConnectToSerial": "Seri Port'a tekrar bağlanılamadı. {0}",
       "createdArchive": "'{0}' arşivi oluşturuldu.",
       "doneCompiling": "Derleme bitti.",
       "doneUploading": "Yükleme bitti.",
@@ -292,7 +306,7 @@
       "new": "Yeni",
       "openFolder": "Klasörü Aç",
       "openRecent": "Yakın Geçmiş",
-      "openSketchInNewWindow": "Eskiz'i Yeni Pencerede Aç",
+      "openSketchInNewWindow": "Eskizi Yeni Pencerede Aç",
       "saveFolderAs": "Eskiz klasörünü farklı kaydet...",
       "saveSketchAs": "Eskiz klasörünü farklı kaydet...",
       "saveTempSketch": "Daha sonra tekrar açmak için eskizinizi kaydedin.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Bağlı kart için kullanıcı alanları bulunamadı",
       "verify": "Doğrula",
       "verifyOrCompile": "Doğrula/Derle"
+    },
+    "survey": {
+      "answerSurvey": "Anketi yanıtla",
+      "dismissSurvey": "Tekrar gösterme",
+      "surveyMessage": "Lütfen bu çok kısa anketi yanıtlayarak gelişmemize yardım edin. Topluluğumuza değer veriyoruz e destekçilerimizi biraz daha iyi tanımak isteriz."
     },
     "upload": {
       "error": "{0} hata: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Yeni dosya için isim",
       "invalidExtension": ".{0}  geçerli bir uzantı değil",
       "invalidFilename": "Hatalı dosya adı.",
-      "newFileName": "Dosya için yeni isim",
-      "sketchDirectoryError": "Eskiz klasörünü oluştururken bir hata oluştur. Daha fazla bilgi için log'a bakın. Uygulama muhtemelen beklendiği şekilde çalışmayacak."
+      "newFileName": "Dosya için yeni isim"
     }
   }
 }

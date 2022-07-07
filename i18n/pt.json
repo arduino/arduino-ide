@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Enviar certificado Raiz SSL",
       "uploadingCertificates": "Enviando certificados."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Escolha a visibilidade do seu Sketch:",
-      "cloudSketchbook": "Sketchbook na nuvem",
       "connected": "Conectado",
       "continue": "Continuar",
       "donePulling": "Terminou de baixar '{0}'.",
@@ -82,12 +86,14 @@
       "pushSketch": "Enviar Sketch",
       "pushSketchMsg": "Baixar",
       "remote": "Remoto",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Compartilhar...",
       "shareSketch": "Compartilhar Sketch",
       "showHideRemoveSketchbook": "Exibir/Ocultar Sketchbook remoto",
       "signIn": "ENTRAR",
       "signInToCloud": "Faça login no Arduino Cloud",
       "signOut": "Sair",
+      "sync": "Sync",
       "syncEditSketches": "Sincronizar e editar seus Sketches no Arduino Cloud",
       "visitArduinoCloud": "Visite Arduino Cloud para criar Cloud Sketches."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Um arquivo adicionado ao sketch.",
       "replaceTitle": "Substituir"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Depuração - {0}",
       "debuggingNotSupported": "A depuração não é suportada por '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Diminuir tamanho da fonte",
       "decreaseIndent": "Diminuir Recuo",
       "increaseFontSize": "Aumentar o Tamanho da Fonte",
-      "increaseIndent": "Aumentar Recuo"
+      "increaseIndent": "Aumentar Recuo",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Não foi possível salvar o sketch. Copie seu trabalho não salvo em seu editor de texto favorito e reinicie a IDE.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Biblioteca"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Rascunho",
       "tools": "Ferramentas"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "URLs Adicionais para Gerenciadores de Placas",
@@ -225,12 +241,15 @@
       "board.certificates": "Lista de certificados que podem ser carregados nas placas",
       "browse": "Procurar",
       "choose": "Escolher",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Verdadeiro se as funções de sincronização de sketch estiverem ativadas. O padrão é verdadeiro.",
       "cloud.pull.warn": "Verdadeiro se os usuários devem ser avisados antes de baixar um sketch da nuvem. O padrão é verdadeiro.",
       "cloud.push.warn": "Verdadeiro se os usuários devem ser avisados antes de enviar um sketch para a nuvem. O padrão é verdadeiro.",
       "cloud.pushpublic.warn": "Verdadeiro se os usuários devem ser avisados antes de enviar um sketch público para a nuvem. O padrão é verdadeiro.",
       "cloud.sketchSyncEnpoint": "O endpoint usado para enviar e baixar os sketches de um backend. Por padrão, ele aponta para a Arduino Cloud API.",
       "compile": "compilar",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Verdadeiro para saída de compilação detalhada. Falso é padrão",
       "compile.warnings": "Diz ao gcc qual nível de aviso usar. 'Nenhum' é padrão",
       "compilerWarnings": "Avisos do compilador",
@@ -252,6 +271,7 @@
       "showVerbose": "Mostrar a saída detalhada durante",
       "sketchbook.location": "Localização dos Sketchbooks",
       "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de sketch dentro do sketch. Falso é padrão.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Clique para obter uma lista de URLs de placas não oficiais suportadas",
       "upload": "enviar",
       "upload.verbose": "Verdadeiro para saída de upload detalhada. Falsa é padrão.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Avanço automático de linha",
       "carriageReturn": "Retorno de linha",
-      "connectionBusy": "A conexão falhou. A porta serial está ocupada: {0}",
-      "disconnected": "Desconectado {0} de {1}.",
-      "failedReconnect": "Falha ao reconectar com a porta serial {0} após 10 tentativas consecutivas. A porta serial {1} está ocupada.",
       "message": "Mensagem ({0} + Enter para enviar mensagem para '{1}' em '{2}'",
       "newLine": "Nova linha",
       "newLineCarriageReturn": "Nova linha e retorno de linha",
       "noLineEndings": "Sem final de linha",
       "notConnected": "Não conectado. Selecione uma placa e uma porta para conectar automaticamente.",
-      "reconnect": "Reconectando {0} ao {1} em {2} segundos...",
       "timestamp": "Data e Hora",
-      "toggleTimestamp": "Mudar Data e Hora",
-      "unexpectedError": "Erro inesperado. Reconectando {0} na porta {1}."
+      "toggleTimestamp": "Mudar Data e Hora"
     },
     "sketch": {
       "archiveSketch": "Arquivar Sketch",
       "cantOpen": "Directoria chamada \"{0}\" já existe. Não é possível abrir o rascunho.",
       "close": "Tem certeza que deseja fechar o sketch?",
       "configureAndUpload": "Configurar e Fazer Envio",
-      "couldNotConnectToSerial": "Não foi possível reconectar à porta serial. {0}",
       "createdArchive": "Arquivo criado '{0}'.",
       "doneCompiling": "Compilação concluída.",
       "doneUploading": "Envio concluído.",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Não é possível encontrar dados de usuário para placa conectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} erro: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Nome para o novo arquivo",
       "invalidExtension": "\".{0}\" não é uma extensão válida.",
       "invalidFilename": "Arquivo inválido.",
-      "newFileName": "Novo nome para o arquivo",
-      "sketchDirectoryError": "Ocorreu um erro ao criar o diretório de sketch. Veja o log para mais detalhes. O aplicativo provavelmente não funcionará conforme o esperado."
+      "newFileName": "Novo nome para o arquivo"
     }
   }
 }

@@ -56,9 +56,13 @@
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "Επίλεξε την ορατότητα του Σχεδίου σου:",
-      "cloudSketchbook": "Σχέδια Cloud",
       "connected": "Συνδέθηκε",
       "continue": "Συνέχεια",
       "donePulling": "Done pulling ‘{0}’.",
@@ -82,12 +86,14 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Απομακρυνσμένο",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "Κοινοποίηση...",
       "shareSketch": "Κοινοποίηση Σχεδίου",
       "showHideRemoveSketchbook": "Εμφάνιση/Απόκρυψη Απομακρυνσμένων Σχεδίων",
       "signIn": "ΣΥΥΝΔΕΣΗ",
       "signInToCloud": "Σύνδεση στο Arduino Cloud",
       "signOut": "Αποσύνδεση",
+      "sync": "Sync",
       "syncEditSketches": "Συγχρονισμός και τροποποίηση των Arduino Cloud Σχεδίων σου.",
       "visitArduinoCloud": "Επισκέψου το Arduino Cloud για δημιουργία Σχεδίων Cloud."
     },
@@ -120,6 +126,9 @@
       "fileAdded": "Ένα αρχείο προστέθηκε στον κώδικα.",
       "replaceTitle": "Αντικατάσταση"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "Αποσφαλμάτωση - {0}",
       "debuggingNotSupported": "Δεν υποστιρίζεται αποσφαλμάτωση από '{0}'",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "Decrease Font Size",
       "decreaseIndent": "Decrease Indent",
       "increaseFontSize": "Increase Font Size",
-      "increaseIndent": "Increase Indent"
+      "increaseIndent": "Increase Indent",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -212,8 +223,13 @@
       "zipLibrary": "Διαχειριστής βιβλιοθήκης"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "Σχέδιο",
       "tools": "Εργαλεία"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "preferences": {
       "additionalManagerURLs": "Πρόσθετοι Σύνδεσμοι Διαχειριστή Πλακετών",
@@ -225,12 +241,15 @@
       "board.certificates": "Λίστα πιστοποιητικών που μπορούν να ανέβουν σε πλακέτες",
       "browse": "Περιήγηση",
       "choose": "Επιλογή",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Αληθές αν οι λειτουγίες συγχονισμού σχεδίου είναι ενεργοποιημένες. Προεπιλογή ως αληθές.",
       "cloud.pull.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν τραβηχτεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές.",
       "cloud.push.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
       "cloud.pushpublic.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα δημόσιο σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
       "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "μεταγλώττιση",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "Αληθές για λεπτομερή έξοδο μεταγλώττισης. Ψευδές απο προεπιλογή.",
       "compile.warnings": "Λέει στο gcc ποιο επίπεδο προειδοποίησης να χρησιμοποιήσει. Είναι 'None' απο προεπιλογή",
       "compilerWarnings": "Προειδοποιήσεις μεταγγλωτιστή",
@@ -252,6 +271,7 @@
       "showVerbose": "Εμφάνιση λεπτομερούς εξόδου κατά τη διάρκεια",
       "sketchbook.location": "Τοποθεσία σχεδίων",
       "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Κλικ για λίστα Συνδέσμων ανεπίσημης υποστήριξης πλακετών",
       "upload": "ανέβασμα",
       "upload.verbose": "Αληθές για λεπτομερή έξοδο ανεβάσματος. Ψευδές απο προεπιλογή.",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Carriage Return",
-      "connectionBusy": "Connection failed. Serial port is busy: {0}",
-      "disconnected": "Disconnected {0} from {1}.",
-      "failedReconnect": "Failed to reconnect {0} to serial port after 10 consecutive attempts. The {1} serial port is busy.",
       "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
       "newLine": "Νέα γραμμή",
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
-      "reconnect": "Reconnecting {0} to {1} in {2} seconds...",
       "timestamp": "Timestamp",
-      "toggleTimestamp": "Toggle Timestamp",
-      "unexpectedError": "Απρόσμενο σφάλμα. Επανασύνδεση {0} στην θύρα {1}"
+      "toggleTimestamp": "Toggle Timestamp"
     },
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
       "configureAndUpload": "Configure And Upload",
-      "couldNotConnectToSerial": "Could not reconnect to serial port. {0}",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Ολοκλήρωση ανεβάσματος",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Επαλήθευση",
       "verifyOrCompile": "Επικύρωση"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "{0} σφάλμα: {1}"
@@ -345,8 +364,7 @@
       "fileNewName": "Όνομα για το νεό αρχείο",
       "invalidExtension": ".{0} is not a valid extension",
       "invalidFilename": "Μη-έγκυρο όνομα αρχείου",
-      "newFileName": "Νέο όνομα για το αρχείο",
-      "sketchDirectoryError": "Υπήρξε ένα λάθος κατά τη δημιουργία του φακέλου. Για περισσότερες λεπτομέρειες δείτε το αρχείο καταγραφής. Η εφαρμογή πιθανόν δε θα δουλέψει όπως αναμένεται."
+      "newFileName": "Νέο όνομα για το αρχείο"
     }
   }
 }

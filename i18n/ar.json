@@ -56,9 +56,13 @@
       "uploadRootCertificates": "رفع شهادات SSL Root",
       "uploadingCertificates": "جار رفع الشهادة"
     },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
     "cloud": {
+      "account": "Account",
       "chooseSketchVisibility": "اختر خصوصية مشروعك:",
-      "cloudSketchbook": "مشاريع على السحابة",
       "connected": "متصل",
       "continue": "استئناف",
       "donePulling": "تم السحب بنجاح '{0}'",
@@ -82,12 +86,14 @@
       "pushSketch": "دفع المشروع",
       "pushSketchMsg": "هذا مشروع عام . قبل دفعه , تاكد من عدم وجود اي معلومات حساسة داخل  ملف arduino_secrets.h . تستطيع جعل المشروع خاصا من لوحة المشاركة",
       "remote": "عن بعد",
+      "remoteSketchbook": "Remote Sketchbook",
       "share": "مشاركة...",
       "shareSketch": "مشاركة المشروع",
       "showHideRemoveSketchbook": "اظهار/اخفاء المشاريع عن بعد",
       "signIn": "تسجيل الدخول",
       "signInToCloud": "تسجيل الدخول الى Arduino Cloud",
       "signOut": "تسجيل الخروج",
+      "sync": "Sync",
       "syncEditSketches": "المزامنة و التعديل على مشاريعك في Arduino Cloud",
       "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
     },
@@ -120,6 +126,9 @@
       "fileAdded": "تمت اضافة ملف واحد الى المشروع",
       "replaceTitle": "استبدال"
     },
+    "coreContribution": {
+      "copyError": "Copy error messages"
+    },
     "debug": {
       "debugWithMessage": "تصحيح برمجي - {0}",
       "debuggingNotSupported": "'{0}' لا يقبل التصحيح البرمجي",
@@ -136,7 +145,9 @@
       "decreaseFontSize": "تصغير حجم الخط",
       "decreaseIndent": "تقليل مسافة البادئة",
       "increaseFontSize": "تكبير حجم الخط",
-      "increaseIndent": "زيادة مسافة البادئة"
+      "increaseIndent": "زيادة مسافة البادئة",
+      "nextError": "Next Error",
+      "previousError": "Previous Error"
     },
     "electron": {
       "couldNotSave": "تعذر حفظ المشروع . الرجاء نسخ عملك الغير محفوظ الى محرر النصوص المفضل لديك و اعادة تشغيل Arduino IDE",
@@ -212,8 +223,13 @@
       "zipLibrary": "المكتبة"
     },
     "menu": {
+      "advanced": "Advanced",
       "sketch": "مشروع",
       "tools": "ادوات"
+    },
+    "monitor": {
+      "unableToCloseWebSocket": "تعذر اغلاق مقبس الويب",
+      "unableToConnectToWebSocket": "تعذر الاتصال بمقبس الويب"
     },
     "preferences": {
       "additionalManagerURLs": "مدير اللوحات الاضافية",
@@ -225,12 +241,15 @@
       "board.certificates": "قائمة الشهادات التي يمكن رفعها الى اللوحات",
       "browse": "استعرض",
       "choose": "اختر",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True اذا كانت مهام المزامنة مفعلة . True افتراضيا",
       "cloud.pull.warn": "True اذا كان يجب تحذير المستخدمين قبل سحب مشروع من السحابة . True افتراضيا",
       "cloud.push.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع الى السحابة . True افتراضيا",
       "cloud.pushpublic.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع عام الى السحابة . True افتراضيا",
       "cloud.sketchSyncEnpoint": "الوجهة المستخدمة لدفع و سحب المشاريع من الخلفية . تشير افتراضيا الى Arduino Cloud API.",
       "compile": "الترجمة",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True لخرج الترجمة المطول . False افتراضيا",
       "compile.warnings": "يخبر gcc اي مستوى انذار سيتم استخدامه , قيمته 'None' افتراضيا",
       "compilerWarnings": "تحذيرات المترجم",
@@ -238,7 +257,7 @@
       "editorQuickSuggestions": "اقتراحات المحرّر السريعة",
       "enterAdditionalURLs": "قم بادخال عناوين URL الاضافية , واحد لكل صف",
       "files.inside.sketches": "اظهر الملفات داخل المشاريع",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl": "عنوان URL الاساسي حيث يتم تنزيل التحديثات منه \nقيمته افتراضيا 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "انشر القناة للحصول على تحديثات من . 'stable' هو النسخة الثابتة .'nightly' هي اخر نسخة تطويرية ",
       "interfaceScale": "مقياس الواجهة",
       "invalid.editorFontSize": "حجم خط المحرّر غير صالح . يجب ان يكون عدد موجب",
@@ -252,6 +271,7 @@
       "showVerbose": "اظهر خرج مطوّل خلال",
       "sketchbook.location": "موقع ملف المشاريع",
       "sketchbook.showAllFiles": "True لعرض كل مجلدات مشاريع داخل المشروع . False افتراضيا",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "انقر لعرض قائمة عناوين URL للوحات المدعومة بشكل غير رسمي",
       "upload": "الرفع",
       "upload.verbose": "True لخرج الرفع المطول . False افتراضيا",
@@ -264,25 +284,19 @@
     "serial": {
       "autoscroll": "تمرير تلقائي",
       "carriageReturn": "اعادة الحمل",
-      "connectionBusy": "تعذر الاتصال . المنفذ التسلسلي مشغول : {0}",
-      "disconnected": "انقطع اتصال {0} من {1}",
-      "failedReconnect": "فشل اعادة الاتصال بالمنفذ التسلسلي {0}بعد 10 محاولات متتالية . المنفذ التسلسلي{1} مشغول",
       "message": "الرسالة ({0} + ادخل لارسال رسالة الى  '{1}'  على '{2}')",
       "newLine": "سطر جديد",
       "newLineCarriageReturn": " NL & CR معاً",
       "noLineEndings": "نهاية السطر غير موجودة",
       "notConnected": "غير متصل . اختر لوحة و منفذ للاتصال تلقائيا",
-      "reconnect": "جار اعادة اتصال {0} الى {1} خلال {2} ثانية",
       "timestamp": "الطابع الزمني",
-      "toggleTimestamp": "تبديل الطابع الزمني",
-      "unexpectedError": "خطأ غير متوقع . جار اعادة اتصال {0} على المنفذ {1}"
+      "toggleTimestamp": "تبديل الطابع الزمني"
     },
     "sketch": {
       "archiveSketch": "ارشفة الشيفرة البرمجية",
       "cantOpen": "المجلد المسمى \"{0}\" موجود مسبقا. لا يمكن فتح الشيفرة البرمجية",
       "close": "هل انت متاكد بانك تريد اغلاق المشروع ؟",
       "configureAndUpload": "تهيئة و رفع",
-      "couldNotConnectToSerial": "لا يمكن الاتصال بالمنفذ التسلسلي {0}",
       "createdArchive": "تم انشاء ارشيف '{0}'",
       "doneCompiling": "تمت الترجمة بنجاح.",
       "doneUploading": "تم الرفع بنجاح.",
@@ -295,7 +309,7 @@
       "openSketchInNewWindow": "فتح المشروع في نافذة جديدة",
       "saveFolderAs": "احفظ مجلد المشروع باسم",
       "saveSketchAs": "حفظ ملف المشروع باسم ...",
-      "saveTempSketch": "Save your sketch to open it again later.",
+      "saveTempSketch": "احفظ ملف المشروع لفتحه مرة اخرى لاحقا",
       "showFolder": "اعرض ملف المشروع",
       "sketch": "مشروع",
       "sketchbook": "مجلد المشاريع",
@@ -306,6 +320,11 @@
       "userFieldsNotFoundError": "تعذر ايجاد حقول المستخدم للوحة المتصلة",
       "verify": "تحقق",
       "verifyOrCompile": "تحقق/ترجم"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {
       "error": "خطا {0} : {1}"
@@ -326,7 +345,7 @@
       "daemonOffline": "CLI Daemon غير متصل",
       "offline": "غير متصل",
       "quitMessage": "اي تغييرات لم تحفظ لن يتم حفظها",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "هل انت متاكد بانك تريد الخروج؟"
     },
     "debug": {
       "start": "البدء...",
@@ -345,8 +364,7 @@
       "fileNewName": "اسم الملف الجديد",
       "invalidExtension": "\".{0}\" امتداد غير صالح",
       "invalidFilename": "اسم الملف خاطئ",
-      "newFileName": "الاسم الجديد لملف",
-      "sketchDirectoryError": "لقد حصل خطأ اثناء انشاء مجلد المشروع . اذهب الى السجل للمزيد من التفاصيل . التطبيق غالبا لن يعمل بالشكل المطلوب"
+      "newFileName": "الاسم الجديد لملف"
     }
   }
 }
