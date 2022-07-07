@@ -1,9 +1,12 @@
 import * as React from '@theia/core/shared/react';
-import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import {
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { DialogError, ReactWidget } from '@theia/core/lib/browser';
-import { AbstractDialog, DialogProps } from '@theia/core/lib/browser';
+import { DialogError, DialogProps, ReactWidget } from '@theia/core/lib/browser';
 import { Settings, SettingsService } from './settings';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -12,6 +15,7 @@ import { nls } from '@theia/core/lib/common';
 import { SettingsComponent } from './settings-component';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
 import { AdditionalUrls } from '../../../common/protocol';
+import { AbstractDialog } from '../../theia/dialogs/dialogs';
 
 @injectable()
 export class SettingsWidget extends ReactWidget {
@@ -59,6 +63,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     protected override readonly props: SettingsDialogProps
   ) {
     super(props);
+    this.node.classList.add('arduino-settings-dialog-container');
     this.contentNode.classList.add('arduino-settings-dialog');
     this.appendCloseButton(
       nls.localize('vscode/issueMainService/cancel', 'Cancel')
@@ -73,7 +78,9 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     );
   }
 
-  protected override async isValid(settings: Promise<Settings>): Promise<DialogError> {
+  protected override async isValid(
+    settings: Promise<Settings>
+  ): Promise<DialogError> {
     const result = await this.settingsService.validate(settings);
     if (typeof result === 'string') {
       return result;

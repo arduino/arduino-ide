@@ -119,7 +119,7 @@ export class SettingsComponent extends React.Component<
             'Show files inside Sketches'
           )}
         </label>
-        <div className="flex-line">
+        <div className="column-container">
           <div className="column">
             <div className="flex-line">
               {nls.localize(

@@ -30,14 +30,14 @@ import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-e
 app.commandLine.appendSwitch('disable-http-cache');
 
 interface WorkspaceOptions {
-  file: string
-  x: number
-  y: number
-  width: number
-  height: number
-  isMaximized: boolean
-  isFullScreen: boolean
-  time: number
+  file: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  isMaximized: boolean;
+  isFullScreen: boolean;
+  time: number;
 }
 
 const WORKSPACES = 'workspaces';
@@ -147,7 +147,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     if (os.isOSX) {
       app.on('open-file', async (event, uri) => {
         event.preventDefault();
-        if (uri.endsWith('.ino') && await fs.pathExists(uri)) {
+        if (uri.endsWith('.ino') && (await fs.pathExists(uri))) {
           this.openFilePromise.reject();
           await this.openSketch(dirname(uri));
         }
@@ -159,10 +159,12 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   protected async isValidSketchPath(uri: string): Promise<boolean | undefined> {
-    return typeof uri === 'string' && await fs.pathExists(uri);
+    return typeof uri === 'string' && (await fs.pathExists(uri));
   }
 
-  protected override async launch(params: ElectronMainExecutionParams): Promise<void> {
+  protected override async launch(
+    params: ElectronMainExecutionParams
+  ): Promise<void> {
     try {
       // When running on MacOS, we either have to wait until
       // 1. The `open-file` command has been received by the app, rejecting the promise
@@ -173,13 +175,14 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       return;
     }
 
-    if (!os.isOSX && await this.launchFromArgs(params)) {
+    if (!os.isOSX && (await this.launchFromArgs(params))) {
       // Application has received a file in its arguments and will skip the default application launch
       return;
     }
 
     this.startup = true;
-    const workspaces: WorkspaceOptions[] | undefined = this.electronStore.get(WORKSPACES);
+    const workspaces: WorkspaceOptions[] | undefined =
+      this.electronStore.get(WORKSPACES);
     let useDefault = true;
     if (workspaces && workspaces.length > 0) {
       console.log(
@@ -198,12 +201,17 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected async launchFromArgs(params: ElectronMainExecutionParams): Promise<boolean> {
+  protected async launchFromArgs(
+    params: ElectronMainExecutionParams
+  ): Promise<boolean> {
     // Copy to prevent manipulation of original array
     const argCopy = [...params.argv];
     let uri: string | undefined;
     for (const possibleUri of argCopy) {
-      if (possibleUri.endsWith('.ino') && await this.isValidSketchPath(possibleUri)) {
+      if (
+        possibleUri.endsWith('.ino') &&
+        (await this.isValidSketchPath(possibleUri))
+      ) {
         uri = possibleUri;
         break;
       }
@@ -215,7 +223,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return false;
   }
 
-  protected async openSketch(workspace: WorkspaceOptions | string): Promise<BrowserWindow> {
+  protected async openSketch(
+    workspace: WorkspaceOptions | string
+  ): Promise<BrowserWindow> {
     const options = await this.getLastWindowOptions();
     let file: string;
     if (typeof workspace === 'object') {
@@ -229,19 +239,26 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     } else {
       file = workspace;
     }
-    const [uri, electronWindow] = await Promise.all([this.createWindowUri(), this.createWindow(options)]);
+    const [uri, electronWindow] = await Promise.all([
+      this.createWindowUri(),
+      this.createWindow(options),
+    ]);
     electronWindow.loadURL(uri.withFragment(encodeURI(file)).toString(true));
     return electronWindow;
   }
 
-  protected override avoidOverlap(options: TheiaBrowserWindowOptions): TheiaBrowserWindowOptions {
+  protected override avoidOverlap(
+    options: TheiaBrowserWindowOptions
+  ): TheiaBrowserWindowOptions {
     if (this.startup) {
       return options;
     }
     return super.avoidOverlap(options);
   }
 
-  protected override getTitleBarStyle(config: FrontendApplicationConfig): 'native' | 'custom' {
+  protected override getTitleBarStyle(
+    config: FrontendApplicationConfig
+  ): 'native' | 'custom' {
     return 'native';
   }
 
@@ -255,8 +272,15 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     });
   }
 
-  protected override async onSecondInstance(event: ElectronEvent, argv: string[], cwd: string): Promise<void> {
-    if (!os.isOSX && await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
+  protected override async onSecondInstance(
+    event: ElectronEvent,
+    argv: string[],
+    cwd: string
+  ): Promise<void> {
+    if (
+      !os.isOSX &&
+      (await this.launchFromArgs({ cwd, argv, secondInstance: true }))
+    ) {
       // Application has received a file in its arguments
       return;
     }
@@ -268,7 +292,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
    *
    * @param options
    */
-   override async createWindow(
+  override async createWindow(
     asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
     let options = await asyncOptions;
@@ -339,6 +363,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       options.webPreferences = {};
     }
     options.webPreferences.v8CacheOptions = 'bypassHeatCheck'; // TODO: verify this. VS Code use this V8 option.
+    options.useContentSize = true;
+    options.minWidth = 680;
+    options.minHeight = 565;
     return options;
   }
 
@@ -456,8 +483,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           isMaximized: window.isMaximized(),
           isFullScreen: window.isFullScreen(),
           file: workspaceUri.fsPath,
-          time: now
-        })
+          time: now,
+        });
       }
     });
   }
