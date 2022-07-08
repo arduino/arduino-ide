@@ -256,6 +256,7 @@
       "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "compile",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.optimizeForDebug": "Optimize compile output for debug, not for release. It's 'false' by default.",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True for verbose compile output. False by default",
       "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
