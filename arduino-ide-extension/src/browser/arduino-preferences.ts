@@ -92,6 +92,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: 'None',
     },
+    'arduino.compile.optimizeForDebug': {
+      type: 'boolean',
+      description: nls.localize(
+        'arduino/preferences/compile.optimizeForDebug',
+        "Optimize compile output for debug, not for release. It's 'false' by default."
+      ),
+      default: false,
+    },
     'arduino.upload.verbose': {
       type: 'boolean',
       description: nls.localize(
@@ -251,6 +259,7 @@ export interface ArduinoConfiguration {
   'arduino.compile.experimental': boolean;
   'arduino.compile.revealRange': ErrorRevealStrategy;
   'arduino.compile.warnings': CompilerWarnings;
+  'arduino.compile.optimizeForDebug': boolean;
   'arduino.upload.verbose': boolean;
   'arduino.upload.verify': boolean;
   'arduino.window.autoScale': boolean;

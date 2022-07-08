@@ -59,7 +59,6 @@ import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { OpenSketchFiles } from './contributions/open-sketch-files';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
-import { EditorMode } from './editor-mode';
 import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
@@ -95,9 +94,6 @@ export class ArduinoFrontendContribution
 
   @inject(StatusBar)
   private readonly statusBar: StatusBar;
-
-  @inject(EditorMode)
-  private readonly editorMode: EditorMode;
 
   @inject(ArduinoPreferences)
   private readonly arduinoPreferences: ArduinoPreferences;
@@ -295,10 +291,6 @@ export class ArduinoFrontendContribution
   }
 
   registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG, {
-      execute: () => this.editorMode.toggleCompileForDebug(),
-      isToggled: () => this.editorMode.compileForDebug,
-    });
     registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
       execute: async (query?: string | undefined) => {
         const boardsConfig = await this.boardsConfigDialog.open(query);
@@ -340,14 +332,6 @@ export class ArduinoFrontendContribution
       ArduinoMenus.TOOLS,
       nls.localize('arduino/menu/tools', 'Tools')
     );
-    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
-      label: nls.localize(
-        'arduino/debug/optimizeForDebugging',
-        'Optimize for Debugging'
-      ),
-      order: '5',
-    });
   }
 
   registerColors(colors: ColorRegistry): void {

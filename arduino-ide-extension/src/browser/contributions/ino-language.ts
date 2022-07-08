@@ -8,7 +8,6 @@ import {
 import { HostedPluginEvents } from '../hosted-plugin-events';
 import { SketchContribution, URI } from './contribution';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
-import { ArduinoPreferences } from '../arduino-preferences';
 import { BoardsConfig } from '../boards/boards-config';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 
@@ -29,9 +28,6 @@ export class InoLanguage extends SketchContribution {
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  @inject(ArduinoPreferences)
-  private readonly arduinoPreferences: ArduinoPreferences;
-
   private languageServerFqbn?: string;
   private languageServerStartMutex = new Mutex();
 
@@ -51,7 +47,7 @@ export class InoLanguage extends SketchContribution {
     this.hostedPluginEvents.onPluginsWillUnload(
       () => (this.languageServerFqbn = undefined)
     );
-    this.arduinoPreferences.onPreferenceChanged(
+    this.preferences.onPreferenceChanged(
       ({ preferenceName, oldValue, newValue }) => {
         if (
           preferenceName === 'arduino.language.log' &&
@@ -105,7 +101,7 @@ export class InoLanguage extends SketchContribution {
         return;
       }
       this.logger.info(`Starting language server: ${fqbn}`);
-      const log = this.arduinoPreferences.get('arduino.language.log');
+      const log = this.preferences.get('arduino.language.log');
       let currentSketchPath: string | undefined = undefined;
       if (log) {
         const currentSketch = await this.sketchServiceClient.currentSketch();

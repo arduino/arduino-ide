@@ -80,7 +80,6 @@ import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browse
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
-import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
@@ -488,10 +487,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaWorkspaceVariableContribution).toService(
     WorkspaceVariableContribution
   );
-
-  // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
-  bind(EditorMode).toSelf().inSingletonScope();
-  bind(FrontendApplicationContribution).toService(EditorMode);
 
   bind(SurveyNotificationService)
     .toDynamicValue((context) => {
