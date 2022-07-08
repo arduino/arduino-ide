@@ -95,6 +95,9 @@ export abstract class Contribution
   @inject(SettingsService)
   protected readonly settingsService: SettingsService;
 
+  @inject(ArduinoPreferences)
+  protected readonly preferences: ArduinoPreferences;
+
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
 
@@ -141,9 +144,6 @@ export abstract class SketchContribution extends Contribution {
 
   @inject(SketchesServiceClientImpl)
   protected readonly sketchServiceClient: SketchesServiceClientImpl;
-
-  @inject(ArduinoPreferences)
-  protected readonly preferences: ArduinoPreferences;
 
   @inject(EditorManager)
   protected readonly editorManager: EditorManager;

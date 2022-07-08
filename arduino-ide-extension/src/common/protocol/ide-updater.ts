@@ -69,3 +69,5 @@ export interface IDEUpdaterClient {
   notifyDownloadProgressChanged(message: ProgressInfo): void;
   notifyDownloadFinished(message: UpdateInfo): void;
 }
+
+export const SKIP_IDE_VERSION = 'skipIDEVersion';

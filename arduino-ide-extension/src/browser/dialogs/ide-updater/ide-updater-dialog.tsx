@@ -12,10 +12,10 @@ import {
   IDEUpdater,
   IDEUpdaterClient,
   ProgressInfo,
+  SKIP_IDE_VERSION,
   UpdateInfo,
 } from '../../../common/protocol/ide-updater';
 import { LocalStorageService } from '@theia/core/lib/browser';
-import { SKIP_IDE_VERSION } from '../../arduino-frontend-contribution';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 
 @injectable()

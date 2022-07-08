@@ -29,10 +29,7 @@ import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { MonacoToProtocolConverter } from '@theia/monaco/lib/browser/monaco-to-protocol-converter';
 import { ProtocolToMonacoConverter } from '@theia/monaco/lib/browser/protocol-to-monaco-converter';
 import { CoreError } from '../../common/protocol/core-service';
-import {
-  ArduinoPreferences,
-  ErrorRevealStrategy,
-} from '../arduino-preferences';
+import { ErrorRevealStrategy } from '../arduino-preferences';
 import { InoSelector } from '../ino-selectors';
 import { fullRange } from '../utils/monaco';
 import { Contribution } from './contribution';
@@ -126,9 +123,6 @@ export class CompilerErrors
 
   @inject(CoreErrorHandler)
   private readonly coreErrorHandler: CoreErrorHandler;
-
-  @inject(ArduinoPreferences)
-  private readonly preferences: ArduinoPreferences;
 
   private readonly errors: ErrorDecoration[] = [];
   private readonly onDidChangeEmitter = new monaco.Emitter<this>();

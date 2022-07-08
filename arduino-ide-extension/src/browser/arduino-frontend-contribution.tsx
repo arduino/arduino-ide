@@ -43,7 +43,6 @@ import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/fi
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { IDEUpdater } from '../common/protocol/ide-updater';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
@@ -55,7 +54,6 @@ import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { OpenSketchFiles } from './contributions/open-sketch-files';
 import { SaveAsSketch } from './contributions/save-as-sketch';
-import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
@@ -103,12 +101,6 @@ export class ArduinoFrontendContribution
 
   @inject(FileSystemFrontendContribution)
   private readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
-
-  @inject(IDEUpdater)
-  private readonly updater: IDEUpdater;
-
-  @inject(IDEUpdaterDialog)
-  private readonly updaterDialog: IDEUpdaterDialog;
 
   protected toDisposeOnStop = new DisposableCollection();
 
@@ -159,30 +151,6 @@ export class ArduinoFrontendContribution
   }
 
   async onStart(app: FrontendApplication): Promise<void> {
-    this.updater
-      .init(
-        this.arduinoPreferences.get('arduino.ide.updateChannel'),
-        this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
-      )
-      .then(() => this.updater.checkForUpdates(true))
-      .then(async (updateInfo) => {
-        if (!updateInfo) return;
-        const versionToSkip = await this.localStorageService.getData<string>(
-          SKIP_IDE_VERSION
-        );
-        if (versionToSkip === updateInfo.version) return;
-        this.updaterDialog.open(updateInfo);
-      })
-      .catch((e) => {
-        this.messageService.error(
-          nls.localize(
-            'arduino/ide-updater/errorCheckingForUpdates',
-            'Error while checking for Arduino IDE updates.\n{0}',
-            e.message
-          )
-        );
-      });
-
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
@@ -191,13 +159,6 @@ export class ArduinoFrontendContribution
               const webContents = remote.getCurrentWebContents();
               webContents.setZoomLevel(event.newValue || 0);
             }
-            break;
-          case 'arduino.ide.updateChannel':
-          case 'arduino.ide.updateBaseUrl':
-            this.updater.init(
-              this.arduinoPreferences.get('arduino.ide.updateChannel'),
-              this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
-            );
             break;
         }
       }
