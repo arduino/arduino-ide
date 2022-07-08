@@ -20,8 +20,6 @@ import {
   LocalStorageService,
   OnWillStopAction,
   SaveableWidget,
-  StatusBar,
-  StatusBarAlignment,
 } from '@theia/core/lib/browser';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
@@ -52,7 +50,6 @@ import {
 } from '../common/protocol/sketches-service-client-impl';
 import { ArduinoCommands } from './arduino-commands';
 import { ArduinoPreferences } from './arduino-preferences';
-import { BoardsConfig } from './boards/boards-config';
 import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
@@ -92,9 +89,6 @@ export class ArduinoFrontendContribution
   @inject(CommandRegistry)
   private readonly commandRegistry: CommandRegistry;
 
-  @inject(StatusBar)
-  private readonly statusBar: StatusBar;
-
   @inject(ArduinoPreferences)
   private readonly arduinoPreferences: ArduinoPreferences;
 
@@ -129,36 +123,6 @@ export class ArduinoFrontendContribution
         )
       );
     }
-    const updateStatusBar = ({
-      selectedBoard,
-      selectedPort,
-    }: BoardsConfig.Config) => {
-      this.statusBar.setElement('arduino-selected-board', {
-        alignment: StatusBarAlignment.RIGHT,
-        text: selectedBoard
-          ? `$(microchip) ${selectedBoard.name}`
-          : `$(close) ${nls.localize(
-              'arduino/common/noBoardSelected',
-              'No board selected'
-            )}`,
-        className: 'arduino-selected-board',
-      });
-      if (selectedBoard) {
-        this.statusBar.setElement('arduino-selected-port', {
-          alignment: StatusBarAlignment.RIGHT,
-          text: selectedPort
-            ? nls.localize(
-                'arduino/common/selectedOn',
-                'on {0}',
-                selectedPort.address
-              )
-            : nls.localize('arduino/common/notConnected', '[not connected]'),
-          className: 'arduino-selected-port',
-        });
-      }
-    };
-    this.boardsServiceClientImpl.onBoardsConfigChanged(updateStatusBar);
-    updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
     this.appStateService.reachedState('ready').then(async () => {
       const sketch = await this.sketchServiceClient.currentSketch();
       if (
@@ -249,6 +213,7 @@ export class ArduinoFrontendContribution
       webContents.setZoomLevel(zoomLevel);
     });
 
+    // Removes the _Settings_ (cog) icon from the left sidebar
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
 
     this.fileSystemFrontendContribution.onDidChangeEditorFile(
