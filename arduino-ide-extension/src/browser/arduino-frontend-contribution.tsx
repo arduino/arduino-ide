@@ -6,7 +6,6 @@ import {
 } from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
 import { SketchesService } from '../common/protocol';
-
 import {
   MAIN_MENU_BAR,
   MenuContribution,
@@ -46,6 +45,7 @@ import { SaveAsSketch } from './contributions/save-as-sketch';
 import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
@@ -76,6 +76,9 @@ export class ArduinoFrontendContribution
   @inject(SketchesServiceClientImpl)
   private readonly sketchServiceClient: SketchesServiceClientImpl;
 
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
   @postConstruct()
   protected async init(): Promise<void> {
     if (!window.navigator.onLine) {
@@ -102,17 +105,15 @@ export class ArduinoFrontendContribution
         }
       }
     });
-
-    // TODO: Verify this! If true IDE2 can start ~100ms faster.
-    // If the preferences is resolved, then the `ready` call will happen in the same tick
-    // and will do a `send_sync` request to the electron main to get the current window.
-    // Consider moving after app `ready`.
-    this.arduinoPreferences.ready.then(() => {
-      const webContents = remote.getCurrentWebContents();
-      const zoomLevel = this.arduinoPreferences.get('arduino.window.zoomLevel');
-      webContents.setZoomLevel(zoomLevel);
-    });
-
+    this.appStateService.reachedState('initialized_layout').then(() =>
+      this.arduinoPreferences.ready.then(() => {
+        const webContents = remote.getCurrentWebContents();
+        const zoomLevel = this.arduinoPreferences.get(
+          'arduino.window.zoomLevel'
+        );
+        webContents.setZoomLevel(zoomLevel);
+      })
+    );
     // Removes the _Settings_ (cog) icon from the left sidebar
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
   }
