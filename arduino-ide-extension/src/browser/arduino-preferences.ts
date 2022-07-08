@@ -193,10 +193,10 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: true,
     },
-    'arduino.cloud.sketchSyncEnpoint': {
+    'arduino.cloud.sketchSyncEndpoint': {
       type: 'string',
       description: nls.localize(
-        'arduino/preferences/cloud.sketchSyncEnpoint',
+        'arduino/preferences/cloud.sketchSyncEndpoint',
         'The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.'
       ),
       default: 'https://api2.arduino.cc/create',
@@ -272,7 +272,7 @@ export interface ArduinoConfiguration {
   'arduino.cloud.pull.warn': boolean;
   'arduino.cloud.push.warn': boolean;
   'arduino.cloud.pushpublic.warn': boolean;
-  'arduino.cloud.sketchSyncEnpoint': string;
+  'arduino.cloud.sketchSyncEndpoint': string;
   'arduino.auth.clientID': string;
   'arduino.auth.domain': string;
   'arduino.auth.audience': string;
