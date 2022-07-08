@@ -409,6 +409,7 @@ export class ArduinoFrontendContribution
     );
   }
 
+  // TODO: should be handled by `Close` contribution. https://github.com/arduino/arduino-ide/issues/1016
   onWillStop(): OnWillStopAction {
     return {
       reason: 'temp-sketch',
