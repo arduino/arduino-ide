@@ -47,8 +47,6 @@ import { MonitorViewContribution } from './serial/monitor/monitor-view-contribut
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
-export const SKIP_IDE_VERSION = 'skipIDEVersion';
-
 @injectable()
 export class ArduinoFrontendContribution
   implements
