@@ -1,24 +1,17 @@
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import {
   inject,
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
+import { SketchesService, Sketch } from '../common/protocol';
+
 import {
-  BoardsService,
-  SketchesService,
-  ExecutableService,
-  Sketch,
-  ArduinoDaemon,
-} from '../common/protocol';
-import { Mutex } from 'async-mutex';
-import {
+  DisposableCollection,
   MAIN_MENU_BAR,
   MenuContribution,
   MenuModelRegistry,
-  ILogger,
-  DisposableCollection,
 } from '@theia/core';
 import {
   Dialog,
@@ -30,14 +23,15 @@ import {
   StatusBar,
   StatusBarAlignment,
 } from '@theia/core/lib/browser';
-import { nls } from '@theia/core/lib/common';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
   TabBarToolbarContribution,
   TabBarToolbarRegistry,
 } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { nls } from '@theia/core/lib/common';
 import {
   CommandContribution,
   CommandRegistry,
@@ -45,32 +39,30 @@ import {
 import { MessageService } from '@theia/core/lib/common/message-service';
 import URI from '@theia/core/lib/common/uri';
 import { EditorCommands, EditorMainMenu } from '@theia/editor/lib/browser';
+import { FileChangeType } from '@theia/filesystem/lib/browser';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { FileChangeType } from '@theia/filesystem/lib/browser';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { ArduinoCommands } from './arduino-commands';
-import { BoardsConfig } from './boards/boards-config';
-import { BoardsConfigDialog } from './boards/boards-config-dialog';
-import { BoardsServiceProvider } from './boards/boards-service-provider';
-import { BoardsToolBarItem } from './boards/boards-toolbar-item';
-import { EditorMode } from './editor-mode';
-import { ArduinoMenus } from './menu/arduino-menus';
-import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
-import { ArduinoToolbar } from './toolbar/arduino-toolbar';
-import { ArduinoPreferences } from './arduino-preferences';
+import { IDEUpdater } from '../common/protocol/ide-updater';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../common/protocol/sketches-service-client-impl';
+import { ArduinoCommands } from './arduino-commands';
+import { ArduinoPreferences } from './arduino-preferences';
+import { BoardsConfig } from './boards/boards-config';
+import { BoardsConfigDialog } from './boards/boards-config-dialog';
+import { BoardsServiceProvider } from './boards/boards-service-provider';
+import { BoardsToolBarItem } from './boards/boards-toolbar-item';
+import { OpenSketchFiles } from './contributions/open-sketch-files';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
-import { IDEUpdater } from '../common/protocol/ide-updater';
-import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
-import { HostedPluginEvents } from './hosted-plugin-events';
-import { OpenSketchFiles } from './contributions/open-sketch-files';
+import { EditorMode } from './editor-mode';
+import { ArduinoMenus } from './menu/arduino-menus';
+import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
+import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
@@ -83,14 +75,8 @@ export class ArduinoFrontendContribution
     MenuContribution,
     ColorContribution
 {
-  @inject(ILogger)
-  private readonly logger: ILogger;
-
   @inject(MessageService)
   private readonly messageService: MessageService;
-
-  @inject(BoardsService)
-  private readonly boardsService: BoardsService;
 
   @inject(BoardsServiceProvider)
   private readonly boardsServiceClientImpl: BoardsServiceProvider;
@@ -113,12 +99,6 @@ export class ArduinoFrontendContribution
   @inject(EditorMode)
   private readonly editorMode: EditorMode;
 
-  @inject(HostedPluginEvents)
-  private readonly hostedPluginEvents: HostedPluginEvents;
-
-  @inject(ExecutableService)
-  private readonly executableService: ExecutableService;
-
   @inject(ArduinoPreferences)
   private readonly arduinoPreferences: ArduinoPreferences;
 
@@ -139,9 +119,6 @@ export class ArduinoFrontendContribution
 
   @inject(IDEUpdaterDialog)
   private readonly updaterDialog: IDEUpdaterDialog;
-
-  @inject(ArduinoDaemon)
-  private readonly daemon: ArduinoDaemon;
 
   protected toDisposeOnStop = new DisposableCollection();
 
@@ -246,31 +223,9 @@ export class ArduinoFrontendContribution
         );
       });
 
-    const start = async (
-      { selectedBoard }: BoardsConfig.Config,
-      forceStart = false
-    ) => {
-      if (selectedBoard) {
-        const { name, fqbn } = selectedBoard;
-        if (fqbn) {
-          this.startLanguageServer(fqbn, name, forceStart);
-        }
-      }
-    };
-    this.boardsServiceClientImpl.onBoardsConfigChanged(start);
-    this.hostedPluginEvents.onPluginsDidStart(() =>
-      start(this.boardsServiceClientImpl.boardsConfig)
-    );
-    this.hostedPluginEvents.onPluginsWillUnload(
-      () => (this.languageServerFqbn = undefined)
-    );
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
-          case 'arduino.language.log':
-          case 'arduino.language.realTimeDiagnostics':
-            start(this.boardsServiceClientImpl.boardsConfig, true);
-            break;
           case 'arduino.window.zoomLevel':
             if (typeof event.newValue === 'number') {
               const webContents = remote.getCurrentWebContents();
@@ -316,100 +271,6 @@ export class ArduinoFrontendContribution
 
   onStop(): void {
     this.toDisposeOnStop.dispose();
-  }
-
-  protected languageServerFqbn?: string;
-  protected languageServerStartMutex = new Mutex();
-  protected async startLanguageServer(
-    fqbn: string,
-    name: string | undefined,
-    forceStart = false
-  ): Promise<void> {
-    const port = await this.daemon.tryGetPort();
-    if (!port) {
-      return;
-    }
-    const release = await this.languageServerStartMutex.acquire();
-    try {
-      await this.hostedPluginEvents.didStart;
-      const details = await this.boardsService.getBoardDetails({ fqbn });
-      if (!details) {
-        // Core is not installed for the selected board.
-        console.info(
-          `Could not start language server for ${fqbn}. The core is not installed for the board.`
-        );
-        if (this.languageServerFqbn) {
-          try {
-            await this.commandRegistry.executeCommand(
-              'arduino.languageserver.stop'
-            );
-            console.info(
-              `Stopped language server process for ${this.languageServerFqbn}.`
-            );
-            this.languageServerFqbn = undefined;
-          } catch (e) {
-            console.error(
-              `Failed to start language server process for ${this.languageServerFqbn}`,
-              e
-            );
-            throw e;
-          }
-        }
-        return;
-      }
-      if (!forceStart && fqbn === this.languageServerFqbn) {
-        // NOOP
-        return;
-      }
-      this.logger.info(`Starting language server: ${fqbn}`);
-      const log = this.arduinoPreferences.get('arduino.language.log');
-      const realTimeDiagnostics = this.arduinoPreferences.get(
-        'arduino.language.realTimeDiagnostics'
-      );
-      let currentSketchPath: string | undefined = undefined;
-      if (log) {
-        const currentSketch = await this.sketchServiceClient.currentSketch();
-        if (CurrentSketch.isValid(currentSketch)) {
-          currentSketchPath = await this.fileService.fsPath(
-            new URI(currentSketch.uri)
-          );
-        }
-      }
-      const { clangdUri, lsUri } = await this.executableService.list();
-      const [clangdPath, lsPath] = await Promise.all([
-        this.fileService.fsPath(new URI(clangdUri)),
-        this.fileService.fsPath(new URI(lsUri)),
-      ]);
-
-      this.languageServerFqbn = await Promise.race([
-        new Promise<undefined>((_, reject) =>
-          setTimeout(
-            () => reject(new Error(`Timeout after ${20_000} ms.`)),
-            20_000
-          )
-        ),
-        this.commandRegistry.executeCommand<string>(
-          'arduino.languageserver.start',
-          {
-            lsPath,
-            cliDaemonAddr: `localhost:${port}`,
-            clangdPath,
-            log: currentSketchPath ? currentSketchPath : log,
-            cliDaemonInstance: '1',
-            realTimeDiagnostics,
-            board: {
-              fqbn,
-              name: name ? `"${name}"` : undefined,
-            },
-          }
-        ),
-      ]);
-    } catch (e) {
-      console.log(`Failed to start language server for ${fqbn}`, e);
-      this.languageServerFqbn = undefined;
-    } finally {
-      release();
-    }
   }
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {
