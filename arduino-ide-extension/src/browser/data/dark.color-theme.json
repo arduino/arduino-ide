@@ -4,7 +4,7 @@
   "colors": {
     "list.highlightForeground": "#0ca1a6",
     "list.activeSelectionForeground": "#dae3e3",
-    "list.activeSelectionBackground": "#434f54",
+    "list.activeSelectionBackground": "#0ca1a64d",
     "list.inactiveSelectionForeground": "#dae3e3",
     "list.inactiveSelectionBackground": "#434f54",
     "list.hoverBackground": "#1f272a",
@@ -45,7 +45,8 @@
     "arduino.foreground": "#edf1f1",
     "arduino.output.foreground": "#ffffff",
     "arduino.output.background": "#000000",
-    "arduino.toolbar.hoverBackground": "#dae3e3",
+    "arduino.toolbar.button.hoverBackground": "#dae3e3",
+    "arduino.toolbar.button.background": "#0ca1a6",
     "sideBar.background": "#101618",
     "sideBar.foreground": "#dae3e3",
     "input.background": "#000000",

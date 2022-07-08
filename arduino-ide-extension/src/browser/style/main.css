@@ -20,11 +20,11 @@
     align-items: center;
     height: 24px;
     width: 24px;
-    background: var(--theia-arduino-toolbar-background);
+    background: var(--theia-arduino-toolbar-button-background);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div {
-    background: var(--theia-arduino-toolbar-hoverBackground);
+    background: var(--theia-arduino-toolbar-button-hoverBackground);
 }
 
 .arduino-verify-sketch--toolbar,
@@ -178,7 +178,7 @@
 }
 
 #arduino-open-sketch-control--toolbar--container {
-    background-color: var(--theia-arduino-toolbar-background);
+    background-color: var(--theia-arduino-toolbar-button-background);
     border-radius: 1px;
 }
 

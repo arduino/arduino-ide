@@ -60,25 +60,51 @@
 /* Overrule the default Theia CSS button styles. */
 button.theia-button,
 .theia-button {
-  border: 1px solid var(--theia-dropdown-border);
-}
-
-button.theia-button:hover,
-.theia-button:hover {
-  border: 1px solid var(--theia-focusBorder);
+  align-items: center;
+  display: flex;
+  font-family: 'Open Sans',sans-serif;
+  font-style: normal;
+  font-weight: 700;  
+  font-size: 14px;
+  justify-content: center;
+  cursor: pointer;
+  letter-spacing: .01em;
+  line-height: 24px;
+  outline: none;
+  padding: 0 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  border-width: 2px;
+  border-radius: 32px;
+  text-transform: uppercase;
+  transition: none;
+  box-shadow: none;
 }
 
 button.theia-button {
-  height: 31px;
+  height: 28px;
+  max-width: none;
+}
+
+.theia-button:active,
+.theia-button:focus {
+  box-shadow: 0 0 0 2px var(--theia-focusBorder);
 }
 
 button.theia-button.secondary {
-  background-color: var(--theia-secondaryButton-background);
-  color: var(--theia-secondaryButton-foreground);
+  border: 2px solid var(--theia-secondaryButton-foreground);
 }
 
-button.theia-button.main {
+button.theia-button[disabled], .theia-button[disabled] {
+  opacity: 0.5;
   color: var(--theia-button-foreground);
+  background-color: var(--theia-button-background);
+}
+
+button.secondary[disabled], .theia-button.secondary[disabled] {
+  color: var(--theia-secondaryButton-foreground);
+  background-color: var(--theia-secondaryButton-background);
 }
 
 /* To make the progress-bar slightly thicker, and use the color from the status bar */

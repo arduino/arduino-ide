@@ -44,7 +44,7 @@
 
 .active-sketch {
   font-weight: 500;
-  background-color: var(--theia-button-disabledBackground) !important;
+  background-color: var(--theia-list-activeSelectionBackground) !important;
   color: var(--theia-list-inactiveSelectionForeground) !important;
 
 }

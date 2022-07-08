@@ -72,7 +72,10 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     );
     const onClickInstall = () => install(item);
     const installButton = item.installable && (
-      <button className="theia-button install" onClick={onClickInstall}>
+      <button
+        className="theia-button secondary install"
+        onClick={onClickInstall}
+      >
         {nls.localize('arduino/component/install', 'INSTALL')}
       </button>
     );
@@ -121,8 +124,8 @@ export class ListItemRenderer<T extends ArduinoComponent> {
         </div>
         <div className="info">{moreInfo}</div>
         <div className="footer">
-          {installButton}
           {versions}
+          {installButton}
         </div>
       </div>
     );
