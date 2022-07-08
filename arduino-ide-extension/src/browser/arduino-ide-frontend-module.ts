@@ -310,6 +310,7 @@ import { InoLanguage } from './contributions/ino-language';
 import { SelectedBoard } from './contributions/selected-board';
 import { CheckForUpdates } from './contributions/check-for-updates';
 import { OpenBoardsConfig } from './contributions/open-boards-config';
+import { SketchFilesTracker } from './contributions/sketch-files-tracker';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -709,6 +710,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, SelectedBoard);
   Contribution.configure(bind, CheckForUpdates);
   Contribution.configure(bind, OpenBoardsConfig);
+  Contribution.configure(bind, SketchFilesTracker);
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.

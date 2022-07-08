@@ -5,10 +5,9 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
-import { SketchesService, Sketch } from '../common/protocol';
+import { SketchesService } from '../common/protocol';
 
 import {
-  DisposableCollection,
   MAIN_MENU_BAR,
   MenuContribution,
   MenuModelRegistry,
@@ -17,14 +16,11 @@ import {
   Dialog,
   FrontendApplication,
   FrontendApplicationContribution,
-  LocalStorageService,
   OnWillStopAction,
-  SaveableWidget,
 } from '@theia/core/lib/browser';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
   TabBarToolbarContribution,
   TabBarToolbarRegistry,
@@ -35,11 +31,7 @@ import {
   CommandRegistry,
 } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import URI from '@theia/core/lib/common/uri';
 import { EditorCommands, EditorMainMenu } from '@theia/editor/lib/browser';
-import { FileChangeType } from '@theia/filesystem/lib/browser';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
@@ -50,7 +42,6 @@ import {
 import { ArduinoPreferences } from './arduino-preferences';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
-import { OpenSketchFiles } from './contributions/open-sketch-files';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
@@ -73,9 +64,6 @@ export class ArduinoFrontendContribution
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  @inject(FileService)
-  private readonly fileService: FileService;
-
   @inject(SketchesService)
   private readonly sketchService: SketchesService;
 
@@ -88,17 +76,6 @@ export class ArduinoFrontendContribution
   @inject(SketchesServiceClientImpl)
   private readonly sketchServiceClient: SketchesServiceClientImpl;
 
-  @inject(FrontendApplicationStateService)
-  private readonly appStateService: FrontendApplicationStateService;
-
-  @inject(LocalStorageService)
-  private readonly localStorageService: LocalStorageService;
-
-  @inject(FileSystemFrontendContribution)
-  private readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
-
-  protected toDisposeOnStop = new DisposableCollection();
-
   @postConstruct()
   protected async init(): Promise<void> {
     if (!window.navigator.onLine) {
@@ -110,39 +87,6 @@ export class ArduinoFrontendContribution
         )
       );
     }
-    this.appStateService.reachedState('ready').then(async () => {
-      const sketch = await this.sketchServiceClient.currentSketch();
-      if (
-        CurrentSketch.isValid(sketch) &&
-        !(await this.sketchService.isTemp(sketch))
-      ) {
-        this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
-        this.toDisposeOnStop.push(
-          this.fileService.onDidFilesChange(async (event) => {
-            for (const { type, resource } of event.changes) {
-              if (
-                type === FileChangeType.ADDED &&
-                resource.parent.toString() === sketch.uri
-              ) {
-                const reloadedSketch = await this.sketchService.loadSketch(
-                  sketch.uri
-                );
-                if (Sketch.isInSketch(resource, reloadedSketch)) {
-                  this.commandRegistry.executeCommand(
-                    OpenSketchFiles.Commands.ENSURE_OPENED.id,
-                    resource.toString(),
-                    true,
-                    {
-                      mode: 'open',
-                    }
-                  );
-                }
-              }
-            }
-          })
-        );
-      }
-    });
   }
 
   async onStart(app: FrontendApplication): Promise<void> {
@@ -171,23 +115,6 @@ export class ArduinoFrontendContribution
 
     // Removes the _Settings_ (cog) icon from the left sidebar
     app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
-
-    this.fileSystemFrontendContribution.onDidChangeEditorFile(
-      ({ type, editor }) => {
-        if (type === FileChangeType.DELETED) {
-          const editorWidget = editor;
-          if (SaveableWidget.is(editorWidget)) {
-            editorWidget.closeWithoutSaving();
-          } else {
-            editorWidget.close();
-          }
-        }
-      }
-    );
-  }
-
-  onStop(): void {
-    this.toDisposeOnStop.dispose();
   }
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {
