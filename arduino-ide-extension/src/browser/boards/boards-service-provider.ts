@@ -17,7 +17,6 @@ import {
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
-import { ArduinoCommands } from '../arduino-commands';
 import { StorageWrapper } from '../storage-wrapper';
 import { nls } from '@theia/core/lib/common';
 import { Deferred } from '@theia/core/lib/common/promise-util';
@@ -171,7 +170,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
           .then(async (answer) => {
             if (answer === yes) {
               this.commandService.executeCommand(
-                ArduinoCommands.OPEN_BOARDS_DIALOG.id,
+                'arduino-open-boards-dialog',
                 selectedBoard.name
               );
             }

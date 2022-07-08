@@ -3,13 +3,14 @@ import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
-import { ArduinoCommands } from '../arduino-commands';
+import { BoardsConfig } from './boards-config';
 import {
   BoardsServiceProvider,
   AvailableBoard,
 } from './boards-service-provider';
 import { nls } from '@theia/core/lib/common';
 import classNames from 'classnames';
+import { OpenBoardsConfig } from '../contributions/open-boards-config';
 
 export interface BoardsDropDownListCoords {
   readonly top: number;
@@ -155,7 +156,7 @@ export class BoardsToolBarItem extends React.Component<
   constructor(props: BoardsToolBarItem.Props) {
     super(props);
 
-    const { availableBoards } = props.boardsServiceClient;
+    const { availableBoards } = props.boardsServiceProvider;
     this.state = {
       availableBoards,
       coords: 'hidden',
@@ -167,8 +168,8 @@ export class BoardsToolBarItem extends React.Component<
   }
 
   override componentDidMount(): void {
-    this.props.boardsServiceClient.onAvailableBoardsChanged((availableBoards) =>
-      this.setState({ availableBoards })
+    this.props.boardsServiceProvider.onAvailableBoardsChanged(
+      (availableBoards) => this.setState({ availableBoards })
     );
   }
 
@@ -199,24 +200,23 @@ export class BoardsToolBarItem extends React.Component<
 
   override render(): React.ReactNode {
     const { coords, availableBoards } = this.state;
-    const selectedBoard = availableBoards.find(({ selected }) => selected);
-
-    const boardLabel =
-      selectedBoard?.name ||
-      nls.localize('arduino/board/selectBoard', 'Select Board');
-    const selectedPortLabel = portLabel(selectedBoard?.port?.address);
-
-    const isConnected = Boolean(
-      selectedBoard && AvailableBoard.hasPort(selectedBoard)
-    );
-    const protocolIcon = isConnected
-      ? iconNameFromProtocol(selectedBoard?.port?.protocol || '')
-      : null;
-    const procolIconClassNames = classNames(
-      'arduino-boards-toolbar-item--protocol',
-      'fa',
-      protocolIcon
-    );
+    const boardsConfig = this.props.boardsServiceProvider.boardsConfig;
+    const title = BoardsConfig.Config.toString(boardsConfig, {
+      default: nls.localize(
+        'arduino/common/noBoardSelected',
+        'No board selected'
+      ),
+    });
+    const decorator = (() => {
+      const selectedBoard = availableBoards.find(({ selected }) => selected);
+      if (!selectedBoard || !selectedBoard.port) {
+        return 'fa fa-times notAttached';
+      }
+      if (selectedBoard.state === AvailableBoard.State.guessed) {
+        return 'fa fa-exclamation-triangle guessed';
+      }
+      return '';
+    })();
 
     return (
       <React.Fragment>
@@ -245,12 +245,12 @@ export class BoardsToolBarItem extends React.Component<
               ...board,
               onClick: () => {
                 if (board.state === AvailableBoard.State.incomplete) {
-                  this.props.boardsServiceClient.boardsConfig = {
+                  this.props.boardsServiceProvider.boardsConfig = {
                     selectedPort: board.port,
                   };
                   this.openDialog();
                 } else {
-                  this.props.boardsServiceClient.boardsConfig = {
+                  this.props.boardsServiceProvider.boardsConfig = {
                     selectedBoard: board,
                     selectedPort: board.port,
                   };
@@ -265,12 +265,15 @@ export class BoardsToolBarItem extends React.Component<
   }
 
   protected openDialog = () => {
-    this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
+    this.props.commands.executeCommand(
+      OpenBoardsConfig.Commands.OPEN_DIALOG.id
+    );
+    this.setState({ coords: 'hidden' });
   };
 }
 export namespace BoardsToolBarItem {
   export interface Props {
-    readonly boardsServiceClient: BoardsServiceProvider;
+    readonly boardsServiceProvider: BoardsServiceProvider;
     readonly commands: CommandRegistry;
   }
 

@@ -47,9 +47,7 @@ import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../common/protocol/sketches-service-client-impl';
-import { ArduinoCommands } from './arduino-commands';
 import { ArduinoPreferences } from './arduino-preferences';
-import { BoardsConfigDialog } from './boards/boards-config-dialog';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { OpenSketchFiles } from './contributions/open-sketch-files';
@@ -73,16 +71,13 @@ export class ArduinoFrontendContribution
   private readonly messageService: MessageService;
 
   @inject(BoardsServiceProvider)
-  private readonly boardsServiceClientImpl: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(FileService)
   private readonly fileService: FileService;
 
   @inject(SketchesService)
   private readonly sketchService: SketchesService;
-
-  @inject(BoardsConfigDialog)
-  private readonly boardsConfigDialog: BoardsConfigDialog;
 
   @inject(CommandRegistry)
   private readonly commandRegistry: CommandRegistry;
@@ -202,7 +197,7 @@ export class ArduinoFrontendContribution
         <BoardsToolBarItem
           key="boardsToolbarItem"
           commands={this.commandRegistry}
-          boardsServiceClient={this.boardsServiceClientImpl}
+          boardsServiceProvider={this.boardsServiceProvider}
         />
       ),
       isVisible: (widget) =>
@@ -217,15 +212,6 @@ export class ArduinoFrontendContribution
   }
 
   registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
-      execute: async (query?: string | undefined) => {
-        const boardsConfig = await this.boardsConfigDialog.open(query);
-        if (boardsConfig) {
-          this.boardsServiceClientImpl.boardsConfig = boardsConfig;
-        }
-      },
-    });
-
     for (const command of [
       EditorCommands.SPLIT_EDITOR_DOWN,
       EditorCommands.SPLIT_EDITOR_LEFT,
