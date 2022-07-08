@@ -30,7 +30,7 @@
     padding: 0;
 }
 
-.p-Widget.dialogOverlay .dialogBlock .dialogContent input {
+.p-Widget.dialogOverlay .dialogBlock .dialogContent > input {
     margin-bottom: 28px;
 }
 
