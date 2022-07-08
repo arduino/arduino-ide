@@ -22,12 +22,16 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogControl {
-    padding: 28px 0 36px 0;
+    padding: 0 0 36px;
     min-height: 0;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent {
     padding: 0;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent input {
+    margin-bottom: 28px;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent > div {
