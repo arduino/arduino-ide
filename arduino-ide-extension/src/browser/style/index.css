@@ -134,21 +134,3 @@ button.secondary[disabled], .theia-button.secondary[disabled] {
 .fa-reload {
   font-size: 14px;
 }
-
-/* restore the old Theia spinner */
-/* https://github.com/eclipse-theia/theia/pull/10761#issuecomment-1131476318 */
-.old-theia-preload {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 50000;
-  background: var(--theia-editor-background);
-  background-image: var(--theia-preloader);
-  background-size: 60px 60px;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-  transition: opacity 0.8s;
-}

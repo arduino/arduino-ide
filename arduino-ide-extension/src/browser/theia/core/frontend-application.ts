@@ -32,26 +32,4 @@ export class FrontendApplication extends TheiaFrontendApplication {
       }
     });
   }
-
-  protected override getStartupIndicator(
-    host: HTMLElement
-  ): HTMLElement | undefined {
-    let startupElement = this.doGetStartupIndicator(host, 'old-theia-preload'); // https://github.com/eclipse-theia/theia/pull/10761#issuecomment-1131476318
-    if (!startupElement) {
-      startupElement = this.doGetStartupIndicator(host, 'theia-preload'); // We show the new Theia spinner in dev mode.
-    }
-    return startupElement;
-  }
-
-  private doGetStartupIndicator(
-    host: HTMLElement,
-    classNames: string
-  ): HTMLElement | undefined {
-    const elements = host.getElementsByClassName(classNames);
-    const first = elements[0];
-    if (first instanceof HTMLElement) {
-      return first;
-    }
-    return undefined;
-  }
 }
