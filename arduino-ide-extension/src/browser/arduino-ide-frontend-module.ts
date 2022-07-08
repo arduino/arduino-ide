@@ -305,6 +305,8 @@ import { StartupTasks } from './widgets/sketchbook/startup-task';
 import { IndexesUpdateProgress } from './contributions/indexes-update-progress';
 import { Daemon } from './contributions/daemon';
 import { FirstStartupInstaller } from './contributions/first-startup-installer';
+import { Notifications } from './contributions/notifications';
+import { OpenSketchFiles } from './contributions/open-sketch-files';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -702,6 +704,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Daemon);
   Contribution.configure(bind, FirstStartupInstaller);
   Contribution.configure(bind, StartupTasks);
+  Contribution.configure(bind, Notifications);
+  Contribution.configure(bind, OpenSketchFiles);
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.

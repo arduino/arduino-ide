@@ -11,7 +11,6 @@ import {
   ExecutableService,
   Sketch,
   ArduinoDaemon,
-  SketchesError,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
 import {
@@ -20,7 +19,6 @@ import {
   MenuModelRegistry,
   ILogger,
   DisposableCollection,
-  ApplicationError,
 } from '@theia/core';
 import {
   Dialog,
@@ -46,12 +44,7 @@ import {
 } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import URI from '@theia/core/lib/common/uri';
-import {
-  EditorCommands,
-  EditorMainMenu,
-  EditorManager,
-  EditorOpenerOptions,
-} from '@theia/editor/lib/browser';
+import { EditorCommands, EditorMainMenu } from '@theia/editor/lib/browser';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
@@ -77,8 +70,7 @@ import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { HostedPluginEvents } from './hosted-plugin-events';
-import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { Notifications } from './contributions/notifications';
+import { OpenSketchFiles } from './contributions/open-sketch-files';
 
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
@@ -102,9 +94,6 @@ export class ArduinoFrontendContribution
 
   @inject(BoardsServiceProvider)
   private readonly boardsServiceClientImpl: BoardsServiceProvider;
-
-  @inject(EditorManager)
-  private readonly editorManager: EditorManager;
 
   @inject(FileService)
   private readonly fileService: FileService;
@@ -154,12 +143,6 @@ export class ArduinoFrontendContribution
   @inject(ArduinoDaemon)
   private readonly daemon: ArduinoDaemon;
 
-  @inject(WorkspaceService)
-  private readonly workspaceService: WorkspaceService;
-
-  protected invalidConfigPopup:
-    | Promise<void | 'No' | 'Yes' | undefined>
-    | undefined;
   protected toDisposeOnStop = new DisposableCollection();
 
   @postConstruct()
@@ -221,9 +204,14 @@ export class ArduinoFrontendContribution
                   sketch.uri
                 );
                 if (Sketch.isInSketch(resource, reloadedSketch)) {
-                  this.ensureOpened(resource.toString(), true, {
-                    mode: 'open',
-                  });
+                  this.commandRegistry.executeCommand(
+                    OpenSketchFiles.Commands.ENSURE_OPENED.id,
+                    resource.toString(),
+                    true,
+                    {
+                      mode: 'open',
+                    }
+                  );
                 }
               }
             }
@@ -299,6 +287,11 @@ export class ArduinoFrontendContribution
         }
       }
     });
+
+    // TODO: Verify this! If true IDE2 can start ~100ms faster.
+    // If the preferences is resolved, then the `ready` call will happen in the same tick
+    // and will do a `send_sync` request to the electron main to get the current window.
+    // Consider moving after app `ready`.
     this.arduinoPreferences.ready.then(() => {
       const webContents = remote.getCurrentWebContents();
       const zoomLevel = this.arduinoPreferences.get('arduino.window.zoomLevel');
@@ -445,11 +438,6 @@ export class ArduinoFrontendContribution
       execute: () => this.editorMode.toggleCompileForDebug(),
       isToggled: () => this.editorMode.compileForDebug,
     });
-    registry.registerCommand(ArduinoCommands.OPEN_SKETCH_FILES, {
-      execute: async (uri: URI) => {
-        this.openSketchFiles(uri);
-      },
-    });
     registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
       execute: async (query?: string | undefined) => {
         const boardsConfig = await this.boardsConfigDialog.open(query);
@@ -499,104 +487,6 @@ export class ArduinoFrontendContribution
       ),
       order: '5',
     });
-  }
-
-  protected async openSketchFiles(uri: URI): Promise<void> {
-    try {
-      const sketch = await this.sketchService.loadSketch(uri.toString());
-      const { mainFileUri, rootFolderFileUris } = sketch;
-      for (const uri of [mainFileUri, ...rootFolderFileUris]) {
-        await this.ensureOpened(uri);
-      }
-      if (mainFileUri.endsWith('.pde')) {
-        const message = nls.localize(
-          'arduino/common/oldFormat',
-          "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
-          sketch.name
-        );
-        const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
-        this.messageService
-          .info(message, nls.localize('arduino/common/later', 'Later'), yes)
-          .then(async (answer) => {
-            if (answer === yes) {
-              this.commandRegistry.executeCommand(
-                SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-                {
-                  execOnlyIfTemp: false,
-                  openAfterMove: true,
-                  wipeOriginal: false,
-                }
-              );
-            }
-          });
-      }
-    } catch (err) {
-      if (SketchesError.NotFound.is(err)) {
-        this.openFallbackSketch(err);
-      } else {
-        console.error(err);
-        const message =
-          err instanceof Error
-            ? err.message
-            : typeof err === 'string'
-            ? err
-            : String(err);
-        this.messageService.error(message);
-      }
-    }
-  }
-
-  private openFallbackSketch(
-    err: ApplicationError<
-      number,
-      {
-        uri: string;
-      }
-    >
-  ) {
-    this.sketchService.createNewSketch().then((sketch) => {
-      this.workspaceService.open(
-        new URI(sketch.uri),
-        Object.assign(
-          {
-            preserveWindow: true,
-          },
-          {
-            tasks: [
-              {
-                command: Notifications.Commands.NOTIFY.id,
-                args: [
-                  {
-                    type: 'error',
-                    message: err.message,
-                  },
-                ],
-              },
-            ],
-          }
-        )
-      );
-    });
-  }
-
-  protected async ensureOpened(
-    uri: string,
-    forceOpen = false,
-    options?: EditorOpenerOptions | undefined
-  ): Promise<unknown> {
-    const widget = this.editorManager.all.find(
-      (widget) => widget.editor.uri.toString() === uri
-    );
-    if (!widget || forceOpen) {
-      return this.editorManager.open(
-        new URI(uri),
-        options ?? {
-          mode: 'reveal',
-          preview: false,
-          counter: 0,
-        }
-      );
-    }
   }
 
   registerColors(colors: ColorRegistry): void {
