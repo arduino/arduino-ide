@@ -22,7 +22,7 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogControl {
-    padding: 0 0 36px;
+    padding: 28px 0 36px 0;
     min-height: 0;
 }
 
