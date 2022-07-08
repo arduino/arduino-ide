@@ -584,11 +584,7 @@ interface SketchWithDetails extends Sketch {
 }
 
 function isNotFoundError(err: unknown): err is ServiceError {
-  return (
-    ServiceError.is(err) &&
-    err.code === 5 &&
-    err.message.toLocaleLowerCase('en-US').includes('not_found')
-  );
+  return ServiceError.is(err) && err.code === 5; // `NOT_FOUND` https://grpc.github.io/grpc/core/md_doc_statuscodes.html
 }
 
 /**
