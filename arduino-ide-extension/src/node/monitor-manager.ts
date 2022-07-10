@@ -55,7 +55,7 @@ export class MonitorManager extends CoreClientAware {
    * @param board board connected to port
    * @param port port to monitor
    * @returns true if the monitor is currently monitoring the board/port
-   * combination specifed, false in all other cases.
+   * combination specified, false in all other cases.
    */
   isStarted(board: Board, port: Port): boolean {
     const monitorID = this.monitorID(board, port);
@@ -317,6 +317,7 @@ export class MonitorManager extends CoreClientAware {
       board,
       port,
       monitorID,
+      coreClientProvider: this.coreClientProvider,
     });
     this.monitorServices.set(monitorID, monitor);
     monitor.onDispose(

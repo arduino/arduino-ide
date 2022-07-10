@@ -397,7 +397,7 @@ export namespace CoreClientProvider {
 @injectable()
 export abstract class CoreClientAware {
   @inject(CoreClientProvider)
-  private readonly coreClientProvider: CoreClientProvider;
+  protected readonly coreClientProvider: CoreClientProvider; // TODO: should be `private`, fix injection in subclasses. (https://github.com/arduino/arduino-ide/issues/1161)
   /**
    * Returns with a promise that resolves when the core client is initialized and ready.
    */
