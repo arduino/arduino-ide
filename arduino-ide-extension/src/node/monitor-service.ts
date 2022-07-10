@@ -10,7 +10,7 @@ import {
   MonitorRequest,
   MonitorResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
-import { CoreClientAware } from './core-client-provider';
+import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
@@ -77,6 +77,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
     private readonly board: Board,
     private readonly port: Port,
+    protected override readonly coreClientProvider: CoreClientProvider,
     private readonly monitorID: string
   ) {
     super();
