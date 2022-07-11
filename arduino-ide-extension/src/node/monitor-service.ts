@@ -1,6 +1,6 @@
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { Disposable, Emitter, ILogger } from '@theia/core';
-import { inject, named } from '@theia/core/shared/inversify';
+import { inject, named, postConstruct } from '@theia/core/shared/inversify';
 import { Board, Port, Status, Monitor } from '../common/protocol';
 import {
   EnumerateMonitorPortSettingsRequest,
@@ -10,7 +10,7 @@ import {
   MonitorRequest,
   MonitorResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
-import { CoreClientAware, CoreClientProvider } from './core-client-provider';
+import { CoreClientAware } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
@@ -19,6 +19,7 @@ import {
   MonitorSettingsProvider,
 } from './monitor-settings/monitor-settings-provider';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { MonitorServiceFactoryOptions } from './monitor-service-factory';
 
 export const MonitorServiceName = 'monitor-service';
 type DuplexHandlerKeys =
@@ -33,55 +34,63 @@ interface DuplexHandler {
   callback: (...args: any) => void;
 }
 
+const MAX_WRITE_TO_STREAM_TRIES = 10;
+const WRITE_TO_STREAM_TIMEOUT_MS = 30000;
+
 export class MonitorService extends CoreClientAware implements Disposable {
+  @inject(ILogger)
+  @named(MonitorServiceName)
+  private readonly logger: ILogger;
+
+  @inject(MonitorSettingsProvider)
+  private readonly monitorSettingsProvider: MonitorSettingsProvider;
+
+  @inject(WebSocketProvider)
+  private readonly webSocketProvider: WebSocketProvider;
+
   // Bidirectional gRPC stream used to receive and send data from the running
   // pluggable monitor managed by the Arduino CLI.
-  protected duplex: ClientDuplexStream<MonitorRequest, MonitorResponse> | null;
+  private duplex: ClientDuplexStream<MonitorRequest, MonitorResponse> | null;
 
   // Settings used by the currently running pluggable monitor.
   // They can be freely modified while running.
-  protected settings: MonitorSettings = {};
+  private settings: MonitorSettings = {};
 
   // List of messages received from the running pluggable monitor.
   // These are flushed from time to time to the frontend.
-  protected messages: string[] = [];
+  private messages: string[] = [];
 
   // Handles messages received from the frontend via websocket.
-  protected onMessageReceived?: Disposable;
+  private onMessageReceived?: Disposable;
 
   // Sends messages to the frontend from time to time.
-  protected flushMessagesInterval?: NodeJS.Timeout;
+  private flushMessagesInterval?: NodeJS.Timeout;
 
   // Triggered each time the number of clients connected
   // to the this service WebSocket changes.
-  protected onWSClientsNumberChanged?: Disposable;
+  private onWSClientsNumberChanged?: Disposable;
 
   // Used to notify that the monitor is being disposed
-  protected readonly onDisposeEmitter = new Emitter<void>();
+  private readonly onDisposeEmitter = new Emitter<void>();
   readonly onDispose = this.onDisposeEmitter.event;
 
-  protected _initialized = new Deferred<void>();
-  protected creating: Deferred<Status>;
-
-  MAX_WRITE_TO_STREAM_TRIES = 10;
-  WRITE_TO_STREAM_TIMEOUT_MS = 30000;
+  private _initialized = new Deferred<void>();
+  private creating: Deferred<Status>;
+  private readonly board: Board;
+  private readonly port: Port;
+  private readonly monitorID: string;
 
   constructor(
-    @inject(ILogger)
-    @named(MonitorServiceName)
-    protected readonly logger: ILogger,
-    @inject(MonitorSettingsProvider)
-    protected readonly monitorSettingsProvider: MonitorSettingsProvider,
-    @inject(WebSocketProvider)
-    protected readonly webSocketProvider: WebSocketProvider,
-
-    private readonly board: Board,
-    private readonly port: Port,
-    protected override readonly coreClientProvider: CoreClientProvider,
-    private readonly monitorID: string
+    @inject(MonitorServiceFactoryOptions) options: MonitorServiceFactoryOptions
   ) {
     super();
+    this.board = options.board;
+    this.port = options.port;
+    this.monitorID = options.monitorID;
+  }
 
+  @postConstruct()
+  protected init(): void {
     this.onWSClientsNumberChanged =
       this.webSocketProvider.onClientsNumberChanged(async (clients: number) => {
         if (clients === 0) {
@@ -94,7 +103,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         this.updateClientsSettings(this.settings);
       });
 
-    this.portMonitorSettings(port.protocol, board.fqbn!).then(
+    this.portMonitorSettings(this.port.protocol, this.board.fqbn!).then(
       async (settings) => {
         this.settings = {
           ...this.settings,
@@ -258,8 +267,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
   }
 
   pollWriteToStream(request: MonitorRequest): Promise<boolean> {
-    let attemptsRemaining = this.MAX_WRITE_TO_STREAM_TRIES;
-    const writeTimeoutMs = this.WRITE_TO_STREAM_TIMEOUT_MS;
+    let attemptsRemaining = MAX_WRITE_TO_STREAM_TRIES;
+    const writeTimeoutMs = WRITE_TO_STREAM_TIMEOUT_MS;
 
     const createWriteToStreamExecutor =
       (duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>) =>

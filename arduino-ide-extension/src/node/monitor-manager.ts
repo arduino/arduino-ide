@@ -317,7 +317,6 @@ export class MonitorManager extends CoreClientAware {
       board,
       port,
       monitorID,
-      coreClientProvider: this.coreClientProvider,
     });
     this.monitorServices.set(monitorID, monitor);
     monitor.onDispose(
