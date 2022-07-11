@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Copia messaggi di errore"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Il debug non è supportato da  '{0}'",
