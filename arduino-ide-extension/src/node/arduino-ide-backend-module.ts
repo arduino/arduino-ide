@@ -236,26 +236,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(MonitorServiceFactory).toFactory(
     ({ container }) =>
       (options: MonitorServiceFactoryOptions) => {
-        const logger = container.get<ILogger>(ILogger);
-
-        const monitorSettingsProvider = container.get<MonitorSettingsProvider>(
-          MonitorSettingsProvider
-        );
-
-        const webSocketProvider =
-          container.get<WebSocketProvider>(WebSocketProvider);
-
-        const { board, port, coreClientProvider, monitorID } = options;
-
-        return new MonitorService(
-          logger,
-          monitorSettingsProvider,
-          webSocketProvider,
-          board,
-          port,
-          coreClientProvider,
-          monitorID
-        );
+        const child = container.createChild();
+        child
+          .bind<MonitorServiceFactoryOptions>(MonitorServiceFactoryOptions)
+          .toConstantValue({
+            ...options,
+          });
+        child.bind(MonitorService).toSelf();
+        return child.get<MonitorService>(MonitorService);
       }
   );
 
