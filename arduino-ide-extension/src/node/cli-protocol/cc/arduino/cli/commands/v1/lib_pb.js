@@ -967,7 +967,8 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.toObject = function(inclu
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     version: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    noDeps: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
+    noDeps: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    noOverwrite: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
   };
 
   if (includeInstance) {
@@ -1020,6 +1021,10 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.deserializeBinaryFromRead
     case 4:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setNoDeps(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setNoOverwrite(value);
       break;
     default:
       reader.skipField();
@@ -1076,6 +1081,13 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.serializeBinaryToWriter =
   if (f) {
     writer.writeBool(
       4,
+      f
+    );
+  }
+  f = message.getNoOverwrite();
+  if (f) {
+    writer.writeBool(
+      5,
       f
     );
   }
@@ -1170,6 +1182,24 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.getNoDeps = fun
  */
 proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.setNoDeps = function(value) {
   return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+/**
+ * optional bool no_overwrite = 5;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.getNoOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.LibraryInstallRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.setNoOverwrite = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
 };
 
 

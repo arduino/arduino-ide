@@ -339,7 +339,8 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.toObject = function(incl
     platformPackage: jspb.Message.getFieldWithDefault(msg, 2, ""),
     architecture: jspb.Message.getFieldWithDefault(msg, 3, ""),
     version: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    skipPostInstall: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
+    skipPostInstall: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+    noOverwrite: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
   };
 
   if (includeInstance) {
@@ -396,6 +397,10 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.deserializeBinaryFromRea
     case 5:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSkipPostInstall(value);
+      break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setNoOverwrite(value);
       break;
     default:
       reader.skipField();
@@ -459,6 +464,13 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.serializeBinaryToWriter 
   if (f) {
     writer.writeBool(
       5,
+      f
+    );
+  }
+  f = message.getNoOverwrite();
+  if (f) {
+    writer.writeBool(
+      6,
       f
     );
   }
@@ -571,6 +583,24 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.getSkipPostIns
  */
 proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.setSkipPostInstall = function(value) {
   return jspb.Message.setProto3BooleanField(this, 5, value);
+};
+
+
+/**
+ * optional bool no_overwrite = 6;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.getNoOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.PlatformInstallRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.setNoOverwrite = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
 };
 
 

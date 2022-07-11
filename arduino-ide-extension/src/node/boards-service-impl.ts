@@ -395,6 +395,7 @@ export class BoardsServiceImpl
     item: BoardsPackage;
     progressId?: string;
     version?: Installable.Version;
+    noOverwrite?: boolean;
   }): Promise<void> {
     const item = options.item;
     const version = !!options.version
@@ -410,6 +411,7 @@ export class BoardsServiceImpl
     req.setArchitecture(architecture);
     req.setPlatformPackage(platform);
     req.setVersion(version);
+    req.setNoOverwrite(Boolean(options.noOverwrite));
 
     console.info('>>> Starting boards package installation...', item);
 
