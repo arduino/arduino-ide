@@ -5,7 +5,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { Emitter } from '@theia/core/lib/common/event';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
@@ -53,6 +53,8 @@ export class CoreClientProvider {
   private readonly onClientReadyEmitter =
     new Emitter<CoreClientProvider.Client>();
   private readonly onClientReady = this.onClientReadyEmitter.event;
+  private readonly onClientDidRefreshEmitter =
+    new Emitter<CoreClientProvider.Client>();
 
   @postConstruct()
   protected init(): void {
@@ -86,6 +88,10 @@ export class CoreClientProvider {
       ]);
     }
     return this.pending.promise;
+  }
+
+  get onClientDidRefresh(): Event<CoreClientProvider.Client> {
+    return this.onClientDidRefreshEmitter.event;
   }
 
   /**
@@ -253,6 +259,7 @@ export class CoreClientProvider {
         await this.initInstance(client);
         // notify clients about the index update only after the client has been "re-initialized" and the new content is available.
         progressHandler.reportEnd();
+        this.onClientDidRefreshEmitter.fire(client);
       } catch (err) {
         console.error('Failed to update indexes', err);
         progressHandler.reportError(
@@ -403,6 +410,10 @@ export abstract class CoreClientAware {
    */
   protected get coreClient(): Promise<CoreClientProvider.Client> {
     return this.coreClientProvider.client;
+  }
+
+  protected get onClientDidRefresh(): Event<CoreClientProvider.Client> {
+    return this.coreClientProvider.onClientDidRefresh;
   }
 }
 

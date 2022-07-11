@@ -56,6 +56,11 @@ export class BoardDiscovery extends CoreClientAware {
   @postConstruct()
   protected async init(): Promise<void> {
     this.coreClient.then((client) => this.startBoardListWatch(client));
+    this.onClientDidRefresh((client) =>
+      this.stopBoardListWatch(client).then(() =>
+        this.startBoardListWatch(client)
+      )
+    );
   }
 
   stopBoardListWatch(coreClient: CoreClientProvider.Client): Promise<void> {
@@ -79,7 +84,7 @@ export class BoardDiscovery extends CoreClientAware {
   startBoardListWatch(coreClient: CoreClientProvider.Client): void {
     if (this.watching) {
       // We want to avoid starting the board list watch process multiple
-      // times to meet unforseen consequences
+      // times to meet unforeseen consequences
       return;
     }
     this.watching = true;
