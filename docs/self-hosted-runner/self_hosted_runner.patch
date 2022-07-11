@@ -1,0 +1,70 @@
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index 3dceb0c..076b64e 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -37,17 +37,18 @@ jobs:
+     strategy:
+       matrix:
+         config:
+-          - os: windows-2019
+-            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
+-            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
+-            certificate-extension: pfx  # File extension for the certificate.
+-          - os: ubuntu-18.04 # https://github.com/arduino/arduino-ide/issues/259
+-          - os: macos-latest
+-            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+-            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+-            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+-            certificate-password-secret: KEYCHAIN_PASSWORD
+-            certificate-extension: p12
++#          - os: windows-2019
++#            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
++#            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
++#            certificate-extension: pfx  # File extension for the certificate.
++#          - os: ubuntu-18.04 # https://github.com/arduino/arduino-ide/issues/259
++#          - os: macos-latest
++#            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
++#            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
++#            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
++#            certificate-password-secret: KEYCHAIN_PASSWORD
++#            certificate-extension: p12
++          - os: self-hosted
+     runs-on: ${{ matrix.config.os }}
+     timeout-minutes: 90
+ 
+@@ -62,6 +63,7 @@ jobs:
+           registry-url: 'https://registry.npmjs.org'
+ 
+       - name: Install Python 3.x
++        if: matrix.config.os != 'self-hosted'
+         uses: actions/setup-python@v2
+         with:
+           python-version: '3.x'
+@@ -114,6 +116,10 @@ jobs:
+             name: Linux_X86-64_zip
+           - path: '*Linux_64bit.AppImage'
+             name: Linux_X86-64_app_image
++          - path: '*Linux_ARM64.zip'
++            name: Linux_ARM64_zip
++          - path: '*Linux_ARM64.AppImage'
++            name: Linux_ARM64_app_image
+           - path: '*macOS_64bit.dmg'
+             name: macOS_dmg
+           - path: '*macOS_64bit.zip'
+diff --git a/arduino-ide-extension/scripts/download-ls.js b/arduino-ide-extension/scripts/download-ls.js
+index 81b9329..7f63204 100755
+--- a/arduino-ide-extension/scripts/download-ls.js
++++ b/arduino-ide-extension/scripts/download-ls.js
+@@ -81,6 +81,12 @@
+       lsSuffix = 'Linux_64bit.tar.gz';
+       clangdSuffix = 'Linux_64bit';
+       break;
++    case 'linux-arm64':
++      clangdExecutablePath = path.join(build, 'clangd');
++      clangFormatExecutablePath = path.join(build, 'clang-format');
++      lsSuffix = 'Linux_ARM64.tar.gz';
++      clangdSuffix = 'Linux_ARM64';
++      break;
+     case 'win32-x64':
+       clangdExecutablePath = path.join(build, 'clangd.exe');
+       clangFormatExecutablePath = path.join(build, 'clang-format.exe');

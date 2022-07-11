@@ -1,0 +1,46 @@
+diff --git a/Dockerfile b/Dockerfile
+index 4d87988..870bd7b 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,12 +1,12 @@
+ # hadolint ignore=DL3007
+-FROM myoung34/github-runner-base:latest
++FROM myoung34/github-runner-base:ubuntu-bionic
+ LABEL maintainer="myoung34@my.apsu.edu"
+ 
+ ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
+ RUN mkdir -p /opt/hostedtoolcache
+ 
+ ARG GH_RUNNER_VERSION="2.294.0"
+-ARG TARGETPLATFORM
++ARG TARGETPLATFORM="linux/arm64"
+ 
+ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ 
+@@ -17,6 +17,12 @@ RUN chmod +x /actions-runner/install_actions.sh \
+   && /actions-runner/install_actions.sh ${GH_RUNNER_VERSION} ${TARGETPLATFORM} \
+   && rm /actions-runner/install_actions.sh
+ 
++# install arduino ide build dependencies
++RUN apt-get install -y libxkbfile-dev libsecret-1-dev
++
++# install nvm
++RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
++
+ COPY token.sh entrypoint.sh /
+ RUN chmod +x /token.sh /entrypoint.sh
+ 
+diff --git a/entrypoint.sh b/entrypoint.sh
+index 3b29d58..5df4be8 100644
+--- a/entrypoint.sh
++++ b/entrypoint.sh
+@@ -124,5 +124,9 @@ if [[ ${_DISABLE_AUTOMATIC_DEREGISTRATION} == "false" ]]; then
+   trap deregister_runner SIGINT SIGQUIT SIGTERM INT TERM QUIT
+ fi
+ 
++. $HOME/.nvm/nvm.sh
++nvm install 14.0.0
++npm install --global yarn
++
+ # Container's command (CMD) execution
+ "$@"
