@@ -4,7 +4,7 @@
   "description": "An extension for Theia building the Arduino IDE",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn copy-serial-plotter && yarn copy-i18n && yarn clean && yarn download-examples && yarn build && yarn test",
+    "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn copy-i18n && yarn clean && yarn download-examples && yarn build && yarn test",
     "clean": "rimraf lib",
     "compose-changelog": "node ./scripts/compose-changelog.js",
     "download-cli": "node ./scripts/download-cli.js",

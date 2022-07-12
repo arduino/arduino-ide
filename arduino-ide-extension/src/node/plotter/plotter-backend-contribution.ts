@@ -14,7 +14,8 @@ export class PlotterBackendContribution
       '..',
       '..',
       '..',
-      'build',
+      '..',
+      'node_modules',
       'arduino-serial-plotter-webapp',
       'build',
     ];
