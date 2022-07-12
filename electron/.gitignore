@@ -6,7 +6,6 @@ working-copy/
 src-gen/
 node_modules/
 build/yarn.lock
-webpack.config.js
 lib/
 
 # The electron-builder output.

@@ -52,6 +52,7 @@
     'resources',
     'scripts',
     'template-package.json',
+    'webpack.config.js'
   ];
   fs.readdirSync(path('..', 'build'))
     .filter((filename) => resourcesToKeep.indexOf(filename) === -1)
