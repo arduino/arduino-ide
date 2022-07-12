@@ -414,7 +414,7 @@ export class BoardsServiceImpl
     console.info('>>> Starting boards package installation...', item);
 
     // stop the board discovery
-    await this.boardDiscovery.stopBoardListWatch(coreClient);
+    await this.boardDiscovery.stop();
 
     const resp = client.platformInstall(req);
     resp.on(
@@ -426,7 +426,7 @@ export class BoardsServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient);
+        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
         resolve();
       });
       resp.on('error', (error) => {
@@ -465,7 +465,7 @@ export class BoardsServiceImpl
     console.info('>>> Starting boards package uninstallation...', item);
 
     // stop the board discovery
-    await this.boardDiscovery.stopBoardListWatch(coreClient);
+    await this.boardDiscovery.stop();
 
     const resp = client.platformUninstall(req);
     resp.on(
@@ -477,7 +477,7 @@ export class BoardsServiceImpl
     );
     await new Promise<void>((resolve, reject) => {
       resp.on('end', () => {
-        this.boardDiscovery.startBoardListWatch(coreClient);
+        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
         resolve();
       });
       resp.on('error', reject);

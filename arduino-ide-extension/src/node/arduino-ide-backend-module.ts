@@ -203,6 +203,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Shared port/board discovery for the server
   bind(BoardDiscovery).toSelf().inSingletonScope();
+  bind(BackendApplicationContribution).toService(BoardDiscovery);
 
   // Core service -> `verify` and `upload`. Singleton per BE, each FE connection gets its proxy.
   bind(ConnectionContainerModule).toConstantValue(
@@ -338,10 +339,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ILogger)
     .toDynamicValue((ctx) => {
       const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('discovery');
+      return parentLogger.child('discovery-log'); // TODO: revert
     })
     .inSingletonScope()
-    .whenTargetNamed('discovery');
+    .whenTargetNamed('discovery-log'); // TODO: revert
 
   // Logger for the CLI config service. From the CLI config (FS path aware), we make a URI-aware app config.
   bind(ILogger)
