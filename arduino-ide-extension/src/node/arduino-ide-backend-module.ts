@@ -351,10 +351,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ILogger)
     .toDynamicValue((ctx) => {
       const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('discovery-log'); // TODO: revert
+      return parentLogger.child('discovery');
     })
     .inSingletonScope()
-    .whenTargetNamed('discovery-log'); // TODO: revert
+    .whenTargetNamed('discovery');
 
   // Logger for the CLI config service. From the CLI config (FS path aware), we make a URI-aware app config.
   bind(ILogger)
