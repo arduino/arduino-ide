@@ -71,7 +71,8 @@ export class BoardDiscovery
 
   onStart(): void {
     this.start();
-    this.onClientDidRefresh(() => this.stop().then(() => this.start()));
+    this.onClientWillRefresh(() => this.stop());
+    this.onClientDidRefresh(() => this.start());
   }
 
   onStop(): void {
@@ -181,6 +182,16 @@ export class BoardDiscovery
       Disposable.create(() => {
         this.watching?.reject(new Error(`Stopping watcher.`));
         this.watching = undefined;
+      }),
+      Disposable.create(() => {
+        const oldState = deepClone(this._state);
+        const boards = this.getAttachedBoards(oldState);
+        const ports = this.getAvailablePorts(oldState);
+        this._state = {};
+        this.notificationService.notifyAttachedBoardsDidChange({
+          newState: { boards: [], ports: [] },
+          oldState: { boards, ports },
+        });
       }),
     ]);
     return wrapper;

@@ -55,6 +55,7 @@ export class CoreClientProvider {
   private readonly onClientReady = this.onClientReadyEmitter.event;
   private readonly onClientDidRefreshEmitter =
     new Emitter<CoreClientProvider.Client>();
+  private readonly onClientWillRefreshEmitter = new Emitter<void>();
 
   @postConstruct()
   protected init(): void {
@@ -92,6 +93,10 @@ export class CoreClientProvider {
 
   get onClientDidRefresh(): Event<CoreClientProvider.Client> {
     return this.onClientDidRefreshEmitter.event;
+  }
+
+  get onClientWillRefresh(): Event<void> {
+    return this.onClientWillRefreshEmitter.event;
   }
 
   /**
@@ -253,6 +258,7 @@ export class CoreClientProvider {
   private async refreshIndexes(): Promise<void> {
     const client = this._client;
     if (client) {
+      this.onClientWillRefreshEmitter.fire();
       const progressHandler = this.createProgressHandler();
       try {
         await this.updateIndexes(client, progressHandler);
@@ -414,6 +420,10 @@ export abstract class CoreClientAware {
 
   protected get onClientDidRefresh(): Event<CoreClientProvider.Client> {
     return this.coreClientProvider.onClientDidRefresh;
+  }
+
+  protected get onClientWillRefresh(): Event<void> {
+    return this.coreClientProvider.onClientWillRefresh;
   }
 }
 
