@@ -81,7 +81,10 @@ export class BoardDiscovery
   stop(): Promise<void> {
     this.logger.info('>>> Stopping boards watcher...');
     return new Promise<void>((resolve, reject) => {
-      const timeout = this.timeout(BoardDiscovery.StopWatchTimeout, reject);
+      const timeout = this.createTimeout(
+        BoardDiscovery.StopWatchTimeout,
+        reject
+      );
       const toDispose = new DisposableCollection();
       toDispose.pushAll([
         timeout,
@@ -107,7 +110,7 @@ export class BoardDiscovery
     });
   }
 
-  private timeout(
+  private createTimeout(
     after: number,
     onTimeout: (error: Error) => void
   ): Disposable {
@@ -118,37 +121,22 @@ export class BoardDiscovery
     return Disposable.create(() => clearTimeout(timer));
   }
 
-  private async write(
+  private async requestStartWatch(
     req: BoardListWatchRequest,
     duplex: Duplex
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.logger.info(`>>> Writing ${this.toJson(req)} to the stream...`);
       if (
         !duplex.write(req, (err: Error | undefined) => {
           if (err) {
-            this.logger.error(
-              `<<< Error ocurred while writing to the stream.`,
-              err
-            );
             reject(err);
             return;
           }
         })
       ) {
-        duplex.once('drain', () => {
-          this.logger.info(
-            `<<< Board list watch request has been successfully written to the stream after the handling backpressure.`
-          );
-          resolve();
-        });
+        duplex.once('drain', resolve);
       } else {
-        process.nextTick(() => {
-          this.logger.info(
-            `<<< Board list watch request has been successfully written to the stream.`
-          );
-          resolve();
-        });
+        process.nextTick(resolve);
       }
     });
   }
@@ -302,7 +290,7 @@ export class BoardDiscovery
         this.notificationService.notifyAttachedBoardsDidChange(event);
       }
     });
-    await this.write(
+    await this.requestStartWatch(
       new BoardListWatchRequest().setInstance(instance),
       wrapper.stream
     );
