@@ -1,4 +1,4 @@
-import { injectable, inject, named } from '@theia/core/shared/inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import {
@@ -49,10 +49,6 @@ export class BoardsServiceImpl
 {
   @inject(ILogger)
   protected logger: ILogger;
-
-  @inject(ILogger)
-  @named('discovery')
-  protected discoveryLogger: ILogger;
 
   @inject(ResponseService)
   protected readonly responseService: ResponseService;
