@@ -60,7 +60,7 @@ export class BoardsServiceImpl
   protected readonly boardDiscovery: BoardDiscovery;
 
   async getState(): Promise<AvailablePorts> {
-    return this.boardDiscovery.state;
+    return this.boardDiscovery.availablePorts;
   }
 
   async getAttachedBoards(): Promise<Board[]> {
