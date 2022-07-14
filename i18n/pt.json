@@ -9,7 +9,7 @@
       "boardInfo": "Informações da Placa",
       "boardListItem": "{0} de {1}",
       "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
-      "configDialog2": "Se você somente selecionar uma Placa você será capaz de compilar, mas não de enviar o seu rascunho.",
+      "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de carregar o seu sketch.",
       "configDialogTitle": "Selecionar Outra Placa e Porta",
       "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione novamente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
       "getBoardInfo": "Obter Informações da Placa",
@@ -57,11 +57,11 @@
       "uploadingCertificates": "Enviando certificados."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "'Keyboard' não encontrado. Seu sketch deve incluir a linha\n'#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' não encontrado. Seu sketch deve incluir a linha\n'#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Conta",
       "chooseSketchVisibility": "Escolha a visibilidade do seu Sketch:",
       "connected": "Conectado",
       "continue": "Continuar",
@@ -86,14 +86,14 @@
       "pushSketch": "Enviar Sketch",
       "pushSketchMsg": "Baixar",
       "remote": "Remoto",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Sketchbook remoto",
       "share": "Compartilhar...",
       "shareSketch": "Compartilhar Sketch",
       "showHideRemoveSketchbook": "Exibir/Ocultar Sketchbook remoto",
       "signIn": "ENTRAR",
       "signInToCloud": "Faça login no Arduino Cloud",
       "signOut": "Sair",
-      "sync": "Sync",
+      "sync": "Sincronização",
       "syncEditSketches": "Sincronizar e editar seus Sketches no Arduino Cloud",
       "visitArduinoCloud": "Visite Arduino Cloud para criar Cloud Sketches."
     },
@@ -127,7 +127,12 @@
       "replaceTitle": "Substituir"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Cópia de mensagens de erro"
+    },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
     },
     "debug": {
       "debugWithMessage": "Depuração - {0}",
@@ -146,8 +151,8 @@
       "decreaseIndent": "Diminuir Recuo",
       "increaseFontSize": "Aumentar o Tamanho da Fonte",
       "increaseIndent": "Aumentar Recuo",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "Próximo Erro",
+      "previousError": "Erro Anterior"
     },
     "electron": {
       "couldNotSave": "Não foi possível salvar o sketch. Copie seu trabalho não salvo em seu editor de texto favorito e reinicie a IDE.",
@@ -223,13 +228,13 @@
       "zipLibrary": "Biblioteca"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Avançado",
       "sketch": "Rascunho",
       "tools": "Ferramentas"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "Impossível fechar websocket",
+      "unableToConnectToWebSocket": "Impossível conectar ao websocket"
     },
     "preferences": {
       "additionalManagerURLs": "URLs Adicionais para Gerenciadores de Placas",
@@ -241,15 +246,15 @@
       "board.certificates": "Lista de certificados que podem ser carregados nas placas",
       "browse": "Procurar",
       "choose": "Escolher",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cli.daemonDebug": "Habilite o log de depuração das chamadas gRPC para a CLI do Arduino. Uma reinicialização do IDE é necessária para que essa configuração tenha efeito. É falso por padrão.",
       "cloud.enabled": "Verdadeiro se as funções de sincronização de sketch estiverem ativadas. O padrão é verdadeiro.",
       "cloud.pull.warn": "Verdadeiro se os usuários devem ser avisados antes de baixar um sketch da nuvem. O padrão é verdadeiro.",
       "cloud.push.warn": "Verdadeiro se os usuários devem ser avisados antes de enviar um sketch para a nuvem. O padrão é verdadeiro.",
       "cloud.pushpublic.warn": "Verdadeiro se os usuários devem ser avisados antes de enviar um sketch público para a nuvem. O padrão é verdadeiro.",
       "cloud.sketchSyncEnpoint": "O endpoint usado para enviar e baixar os sketches de um backend. Por padrão, ele aponta para a Arduino Cloud API.",
       "compile": "compilar",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "Verdadeiro se o IDE deve trabalhar com múltiplos erros de compilação. Falso por padrão",
+      "compile.revealRange": "Ajusta como os erros do compilador são revelados no editor após uma falha na verificação/upload. Valores possíveis: 'auto': Role verticalmente conforme necessário e revele uma linha. 'center': Role verticalmente conforme necessário e revele uma linha centralizada verticalmente. 'top': Role verticalmente conforme necessário e revele uma linha próxima ao topo da janela de visualização, otimizada para visualizar uma definição de código. 'centerIfOutsideViewport': Role verticalmente conforme necessário e revele uma linha centralizada verticalmente somente se estiver fora da viewport. O valor padrão é ' {0}'.",
       "compile.verbose": "Verdadeiro para saída de compilação detalhada. Falso é padrão",
       "compile.warnings": "Diz ao gcc qual nível de aviso usar. 'Nenhum' é padrão",
       "compilerWarnings": "Avisos do compilador",
@@ -271,7 +276,7 @@
       "showVerbose": "Mostrar a saída detalhada durante",
       "sketchbook.location": "Localização dos Sketchbooks",
       "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de sketch dentro do sketch. Falso é padrão.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "survey.notification": "Verdadeiro se o usuário deve ser notificado se uma pesquisa estiver disponível. Verdadeiro por padrão",
       "unofficialBoardSupport": "Clique para obter uma lista de URLs de placas não oficiais suportadas",
       "upload": "enviar",
       "upload.verbose": "Verdadeiro para saída de upload detalhada. Falsa é padrão.",
@@ -309,7 +314,7 @@
       "openSketchInNewWindow": "Abrir sketch em uma nova janela",
       "saveFolderAs": "Salvar a pasta de sketch como...",
       "saveSketchAs": "Salvar a pasta de sketch como...",
-      "saveTempSketch": "Save your sketch to open it again later.",
+      "saveTempSketch": "Salve seu sketch para abrí-lo novamente mais tarde",
       "showFolder": "Mostrar a pasta de Sketches",
       "sketch": "Sketch",
       "sketchbook": "Sketchbook",
@@ -322,9 +327,9 @@
       "verifyOrCompile": "Verificar/Compilar"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "Responder a pesquisa",
+      "dismissSurvey": "Não mostrar novamente",
+      "surveyMessage": "Por favor, ajude-nos a melhorar respondendo essa pequena pesquisa. Nós valorizamos nossa comunidade  e gostaríamos de conhecer nossos colaboradores um pouco melhor."
     },
     "upload": {
       "error": "{0} erro: {1}"
@@ -345,7 +350,7 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitMessage": "Quaisquer alterações não serão salvas.",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Você tem certeza que quer sair?"
     },
     "debug": {
       "start": "Iniciar...",

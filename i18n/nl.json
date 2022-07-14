@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Foutmeldingen kopiëren"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Foutopsporing - {0}",
       "debuggingNotSupported": "Foutopsporing wordt niet ondersteund door '{0}'",

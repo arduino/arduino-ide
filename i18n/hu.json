@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Copy error messages"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Hibakeresés/Debug - {0}",
       "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja ",

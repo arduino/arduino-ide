@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Copy error messages"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Αποσφαλμάτωση - {0}",
       "debuggingNotSupported": "Δεν υποστιρίζεται αποσφαλμάτωση από '{0}'",

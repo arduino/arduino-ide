@@ -57,11 +57,11 @@
       "uploadingCertificates": "Загрузка сертификатов."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "'Keyboard' не найдено. В вашем скетче есть строка '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' не найдено. В вашем скетче есть строка '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Аккаунт",
       "chooseSketchVisibility": "Выберите видимость своего скетча:",
       "connected": "Подключено",
       "continue": "Продолжить",
@@ -127,7 +127,12 @@
       "replaceTitle": "Заменить"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Скопировать сообщения ошибок"
+    },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
     },
     "debug": {
       "debugWithMessage": "Отладка - {0}",
@@ -146,8 +151,8 @@
       "decreaseIndent": "Уменьшить отступ",
       "increaseFontSize": "Увеличить размер шрифта",
       "increaseIndent": "Увеличить отступ",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "Следущая ошибка",
+      "previousError": "Предыдущая ошибка"
     },
     "electron": {
       "couldNotSave": "Скетч не сохранён. Пожалуйста, скопируйте вашу не сохраненную работу в ваш внешний текстовый редактор и перезапустите IDE.",
@@ -322,8 +327,8 @@
       "verifyOrCompile": "Проверить/Скомпилировать"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
+      "answerSurvey": "Ответить на опрос",
+      "dismissSurvey": "Больше не показывать",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "upload": {

@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Copy error messages"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Отстраняване на грешки - {0}",
       "debuggingNotSupported": "Отстраняването на грешки не се поддържа от „{0}“",

@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Hata mesajlarını kopyala"
     },
+    "daemon": {
+      "restart": "Arthizmeti Yeniden Başlat",
+      "start": "Arthizmeti Başlat",
+      "stop": "Arthizmeti Durdur"
+    },
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",

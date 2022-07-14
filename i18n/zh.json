@@ -19,7 +19,7 @@
       "noFQBN": "FQBN不可用于所选开发板“{0}”。你是否安装了相应的内核？",
       "noPortsSelected": "没有为开发板选择端口：’{0}‘。",
       "noneSelected": "未选择任何开发板。",
-      "openBoardsConfig": "选择其他开发板和端口。。。",
+      "openBoardsConfig": "选择其他开发板和接口......",
       "platformMissing": "未安装所选’{0}‘开发板的平台。",
       "pleasePickBoard": "请选择要连接的开发板。",
       "port": "端口{0}",
@@ -48,7 +48,7 @@
       "noSupportedBoardConnected": "未连接受支持的开发板",
       "openContext": "打开上下文",
       "remove": "删除",
-      "selectBoard": "选择开发板。。。",
+      "selectBoard": "选择开发板...",
       "selectCertificateToUpload": "1.选择要上传的证书",
       "selectDestinationBoardToUpload": "2.选择开发板并上传证书",
       "upload": "上传",
@@ -57,11 +57,11 @@
       "uploadingCertificates": "上传证书。"
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "没有找到'Keyboard'，请检查您的项目是否包含‘#include<Keyboard.h>’",
+      "mouseError": "没有找到'Mouse'，请检查您的项目是否包含‘#include<Mouse.h>’"
     },
     "cloud": {
-      "account": "Account",
+      "account": "账户",
       "chooseSketchVisibility": "选择项目的可见性：",
       "connected": "已连接",
       "continue": "继续",
@@ -74,7 +74,7 @@
       "notYetPulled": "无法推送到Cloud。未被拉取。",
       "offline": "离线",
       "openInCloudEditor": "在Cloud编辑器打开",
-      "options": "选项。。。",
+      "options": "选项......",
       "privateVisibility": "私有的。只有你可以查看项目。",
       "profilePicture": "资料图片",
       "publicVisibility": "公开的。有链接的人都可以查看项目。",
@@ -86,14 +86,14 @@
       "pushSketch": "推送项目",
       "pushSketchMsg": "这是公开的项目。推送前，确保在arduino_secrets.h中明确了所有敏感信息。可以从共享界面将项目设为私人项目。",
       "remote": "远程",
-      "remoteSketchbook": "Remote Sketchbook",
-      "share": "共享。。。",
+      "remoteSketchbook": "远程项目文件夹",
+      "share": "共享......",
       "shareSketch": "共享项目",
       "showHideRemoveSketchbook": "显示/隐藏远程项目文件夹",
       "signIn": "登录",
       "signInToCloud": "登录Arduino Cloud",
       "signOut": "退出登录",
-      "sync": "Sync",
+      "sync": "同步",
       "syncEditSketches": "同步和编辑Arduino Cloud项目",
       "visitArduinoCloud": "访问Arduino Cloud以创建云项目。"
     },
@@ -114,7 +114,7 @@
     },
     "component": {
       "by": "by",
-      "filterSearch": "对搜索进行过滤。。。",
+      "filterSearch": "筛选搜索结果......",
       "install": "安装",
       "moreInfo": "更多信息",
       "uninstall": "卸载",
@@ -127,7 +127,12 @@
       "replaceTitle": "替换"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "复制错误信息"
+    },
+    "daemon": {
+      "restart": "重启守护进程",
+      "start": "启动守护进程",
+      "stop": "停止守护进程"
     },
     "debug": {
       "debugWithMessage": "调试 - {0}",
@@ -139,15 +144,15 @@
       "dontAskAgain": "不要再请求"
     },
     "editor": {
-      "autoFormat": "自动排版",
+      "autoFormat": "自动格式化",
       "commentUncomment": "注释/取消注释",
       "copyForForum": "复制到论坛（Markdown）",
       "decreaseFontSize": "减小字号",
       "decreaseIndent": "减少缩进",
       "increaseFontSize": "放大字体",
       "increaseIndent": "增加缩进",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "下一个错误",
+      "previousError": "上一个错误"
     },
     "electron": {
       "couldNotSave": "无法保存草图。请将未保存的工作复制到你喜爱的文本编辑器中，然后重新启动IDE。",
@@ -201,7 +206,7 @@
       "versionDownloaded": "Arduino IDE{0}已经下载。"
     },
     "library": {
-      "addZip": "添加 .ZIP 库。。。",
+      "addZip": "添加 .ZIP 库...",
       "arduinoLibraries": "arduino库",
       "contributedLibraries": "贡献库",
       "dependenciesForLibrary": "{0}库的依赖：{1}",
@@ -212,7 +217,7 @@
       "installOnly": "仅安装{0}",
       "installedSuccessfully": "已成功安装{0}库：{1}",
       "libraryAlreadyExists": "库已经存在。是否要覆盖它？",
-      "manageLibraries": "管理库。。。",
+      "manageLibraries": "管理库...",
       "namedLibraryAlreadyExists": "名为{0}的库文件夹已存在。是否要覆盖它？",
       "needsMultipleDependencies": "<b>{0}库：{1}</b>需要一些未安装的依赖：",
       "needsOneDependency": "<b>{0}库：{1}</b>需要一些未安装的依赖：",
@@ -223,7 +228,7 @@
       "zipLibrary": "库"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "高级设置",
       "sketch": "项目",
       "tools": "工具"
     },
@@ -290,7 +295,7 @@
       "noLineEndings": "没有结束符",
       "notConnected": "未连接。选择要自动连接的开发板和端口。",
       "timestamp": "时间戳",
-      "toggleTimestamp": "切换时间戳"
+      "toggleTimestamp": "显示时间戳"
     },
     "sketch": {
       "archiveSketch": "项目存档",
@@ -322,9 +327,9 @@
       "verifyOrCompile": "验证/编译"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "回答问卷",
+      "dismissSurvey": "不要再显示",
+      "surveyMessage": "请回答这份很短的调查来帮助我们改进。我们重视我们的社区，也希望能够更好地了解对我们的支持者"
     },
     "upload": {
       "error": "{0}错误：{1}"
@@ -348,7 +353,7 @@
       "quitTitle": "你确定你要退出吗？"
     },
     "debug": {
-      "start": "开始。。。",
+      "start": "开始...",
       "startError": "启动调试会话时出错，请检查日志以了解更多详细信息。",
       "typeNotSupported": "不支持调试会话的类型“{0}”。"
     },

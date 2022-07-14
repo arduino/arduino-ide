@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Copy error messages"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Sửa lỗi - {0}",
       "debuggingNotSupported": "Sửa lỗi không hỗ trợ bởi '{0}'",
