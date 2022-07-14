@@ -109,6 +109,10 @@
     z-index: 0;
 }
 
+:root {
+    --theia-private-menubar-height: 40px; /* set the topbar height */
+}
+
 #theia-top-panel .p-TabBar-toolbar {
     padding-left: 4px !important; /* moves the `verify`, upload and other toolbar items to the left */
 }
