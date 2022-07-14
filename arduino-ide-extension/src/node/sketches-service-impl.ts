@@ -10,7 +10,7 @@ import { promisify } from 'util';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node';
 import { isWindows, isOSX } from '@theia/core/lib/common/os';
-import { ConfigService } from '../common/protocol/config-service';
+import { ConfigServiceImpl } from './config-service-impl';
 import {
   SketchesService,
   Sketch,
@@ -50,8 +50,8 @@ export class SketchesServiceImpl
     ? tempDir
     : maybeNormalizeDrive(fs.realpathSync.native(tempDir));
 
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceImpl)
+  protected readonly configService: ConfigServiceImpl;
 
   @inject(NotificationServiceServerImpl)
   protected readonly notificationService: NotificationServiceServerImpl;
@@ -205,7 +205,14 @@ export class SketchesServiceImpl
         if (err) {
           reject(
             isNotFoundError(err)
-              ? SketchesError.NotFound(err.details, uri)
+              ? SketchesError.NotFound(
+                  fixErrorMessage(
+                    err,
+                    requestSketchPath,
+                    this.configService.cliConfiguration?.directories.user
+                  ),
+                  uri
+                )
               : err
           );
           return;
@@ -581,6 +588,36 @@ void loop() {
 
 interface SketchWithDetails extends Sketch {
   readonly mtimeMs: number;
+}
+
+// https://github.com/arduino/arduino-cli/issues/1797
+function fixErrorMessage(
+  err: ServiceError,
+  sketchPath: string,
+  sketchbookPath: string | undefined
+): string {
+  if (!sketchbookPath) {
+    return err.details; // No way to repair the error message. The current sketchbook path is not available.
+  }
+  // Original: `Can't open sketch: no valid sketch found in /Users/a.kitta/Documents/Arduino: missing /Users/a.kitta/Documents/Arduino/Arduino.ino`
+  // Fixed: `Can't open sketch: no valid sketch found in /Users/a.kitta/Documents/Arduino: missing $sketchPath`
+  const message = err.details;
+  const incorrectMessageSuffix = path.join(sketchbookPath, 'Arduino.ino');
+  if (
+    message.startsWith("Can't open sketch: no valid sketch found in") &&
+    message.endsWith(`${incorrectMessageSuffix}`)
+  ) {
+    const sketchName = path.basename(sketchPath);
+    const correctMessagePrefix = message.substring(
+      0,
+      message.length - incorrectMessageSuffix.length
+    );
+    return `${correctMessagePrefix}${path.join(
+      sketchPath,
+      `${sketchName}.ino`
+    )}`;
+  }
+  return err.details;
 }
 
 function isNotFoundError(err: unknown): err is ServiceError {
