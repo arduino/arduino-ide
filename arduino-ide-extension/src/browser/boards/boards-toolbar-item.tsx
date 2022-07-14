@@ -3,7 +3,6 @@ import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
-import { OpenBoardsConfig } from '../contributions/open-boards-config';
 import {
   BoardsServiceProvider,
   AvailableBoard,
@@ -72,16 +71,14 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
         ref={this.listRef}
         tabIndex={0}
       >
-        <div className="arduino-boards-dropdown-list--items-container">
-          {items
-            .map(({ name, port, selected, onClick }) => ({
-              boardLabel: name,
-              port,
-              selected,
-              onClick,
-            }))
-            .map(this.renderItem)}
-        </div>
+        {items
+          .map(({ name, port, selected, onClick }) => ({
+            boardLabel: name,
+            port,
+            selected,
+            onClick,
+          }))
+          .map(this.renderItem)}
         <div
           key={footerLabel}
           tabIndex={0}
@@ -106,11 +103,6 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
     onClick: () => void;
   }): React.ReactNode {
     const protocolIcon = iconNameFromProtocol(port.protocol);
-    const onKeyUp = (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        onClick();
-      }
-    };
 
     return (
       <div
@@ -212,7 +204,7 @@ export class BoardsToolBarItem extends React.Component<
     const protocolIcon = isConnected
       ? iconNameFromProtocol(selectedBoard?.port?.protocol || '')
       : null;
-    const protocolIconClassNames = classNames(
+    const procolIconClassNames = classNames(
       'arduino-boards-toolbar-item--protocol',
       'fa',
       protocolIcon
@@ -225,7 +217,7 @@ export class BoardsToolBarItem extends React.Component<
           title={selectedPortLabel}
           onClick={this.show}
         >
-          {protocolIcon && <div className={protocolIconClassNames} />}
+          {protocolIcon && <div className={procolIconClassNames} />}
           <div
             className={classNames(
               'arduino-boards-toolbar-item--label',
@@ -299,7 +291,7 @@ function iconNameFromProtocol(protocol: string): string {
   }
 }
 
-function portLabel(portName?: string): string {
+function portLabel(portName?: string) {
   return portName
     ? nls.localize('arduino/board/portLabel', 'Port: {0}', portName)
     : nls.localize('arduino/board/disconnected', 'Disconnected');
