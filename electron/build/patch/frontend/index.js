@@ -21,6 +21,24 @@ const defaultTheme =
     ? darkTheme
     : lightTheme;
 
+const arduinoDarkTheme = {
+  id: 'arduino-theme-dark',
+  type: 'dark',
+  label: 'Dark (Arduino)',
+  editorTheme: 'arduino-theme-dark',
+  activate() { },
+  deactivate() { }
+};
+
+const arduinoLightTheme = {
+  id: 'arduino-theme',
+  type: 'light',
+  label: 'Light (Arduino)',
+  editorTheme: 'arduino-theme',
+  activate() { },
+  deactivate() { }
+};
+
 if (!window[ThemeServiceSymbol]) {
   const themeService = new ThemeService();
   Object.defineProperty(themeService, 'defaultTheme', {
@@ -31,7 +49,7 @@ if (!window[ThemeServiceSymbol]) {
       );
     },
   });
-  themeService.register(...BuiltinThemeProvider.themes);
+  themeService.register(...BuiltinThemeProvider.themes, arduinoDarkTheme, arduinoLightTheme);
   themeService.startupTheme();
   themeService.setCurrentTheme(defaultTheme);
   window[ThemeServiceSymbol] = themeService;
