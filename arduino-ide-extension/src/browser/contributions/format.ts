@@ -2,8 +2,7 @@ import { MaybePromise } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as monaco from '@theia/monaco-editor-core';
 import { Formatter } from '../../common/protocol/formatter';
-import { InoSelector } from '../ino-selectors';
-import { fullRange } from '../utils/monaco';
+import { InoSelector } from '../selectors';
 import { Contribution, URI } from './contribution';
 
 @injectable()
@@ -40,7 +39,7 @@ export class Format
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _token: monaco.CancellationToken
   ): Promise<monaco.languages.TextEdit[]> {
-    const range = fullRange(model);
+    const range = model.getFullModelRange();
     const text = await this.format(model, range, options);
     return [{ range, text }];
   }

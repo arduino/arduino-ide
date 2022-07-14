@@ -4,11 +4,13 @@ import {
   Disposable,
   DisposableCollection,
   Emitter,
+  MaybeArray,
   MaybePromise,
   nls,
   notEmpty,
 } from '@theia/core';
 import { ApplicationShell, FrontendApplication } from '@theia/core/lib/browser';
+import { ITextModel } from '@theia/monaco-editor-core/esm/vs/editor/common/model';
 import URI from '@theia/core/lib/common/uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import {
@@ -28,14 +30,15 @@ import * as monaco from '@theia/monaco-editor-core';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { MonacoToProtocolConverter } from '@theia/monaco/lib/browser/monaco-to-protocol-converter';
 import { ProtocolToMonacoConverter } from '@theia/monaco/lib/browser/protocol-to-monaco-converter';
+import { OutputUri } from '@theia/output/lib/common/output-uri';
 import { CoreError } from '../../common/protocol/core-service';
 import { ErrorRevealStrategy } from '../arduino-preferences';
-import { InoSelector } from '../ino-selectors';
-import { fullRange } from '../utils/monaco';
+import { ArduinoOutputSelector, InoSelector } from '../selectors';
 import { Contribution } from './contribution';
 import { CoreErrorHandler } from './core-error-handler';
+import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';
 
-interface ErrorDecoration {
+interface ErrorDecorationRef {
   /**
    * This is the unique ID of the decoration given by `monaco`.
    */
@@ -45,72 +48,89 @@ interface ErrorDecoration {
    */
   readonly uri: string;
 }
-namespace ErrorDecoration {
-  export function rangeOf(
-    { id, uri }: ErrorDecoration,
-    editorProvider: (uri: string) => Promise<MonacoEditor | undefined>
-  ): Promise<monaco.Range | undefined>;
-  export function rangeOf(
-    { id, uri }: ErrorDecoration,
-    editorProvider: MonacoEditor
-  ): monaco.Range | undefined;
-  export function rangeOf(
-    { id, uri }: ErrorDecoration,
-    editorProvider:
-      | ((uri: string) => Promise<MonacoEditor | undefined>)
-      | MonacoEditor
-  ): MaybePromise<monaco.Range | undefined> {
-    if (editorProvider instanceof MonacoEditor) {
-      const control = editorProvider.getControl();
-      const model = control.getModel();
-      if (model) {
-        return control
-          .getDecorationsInRange(fullRange(model))
-          ?.find(({ id: candidateId }) => id === candidateId)?.range;
-      }
-      return undefined;
+export namespace ErrorDecorationRef {
+  export function is(arg: unknown): arg is ErrorDecorationRef {
+    if (typeof arg === 'object') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const object = arg as any;
+      return (
+        'uri' in object &&
+        typeof object['uri'] === 'string' &&
+        'id' in object &&
+        typeof object['id'] === 'string'
+      );
     }
-    return editorProvider(uri).then((editor) => {
-      if (editor) {
-        return rangeOf({ id, uri }, editor);
-      }
-      return undefined;
-    });
+    return false;
   }
-
-  // export async function rangeOf(
-  //   { id, uri }: ErrorDecoration,
-  //   editorProvider:
-  //     | ((uri: string) => Promise<MonacoEditor | undefined>)
-  //     | MonacoEditor
-  // ): Promise<monaco.Range | undefined> {
-  //   const editor =
-  //     editorProvider instanceof MonacoEditor
-  //       ? editorProvider
-  //       : await editorProvider(uri);
-  //   if (editor) {
-  //     const control = editor.getControl();
-  //     const model = control.getModel();
-  //     if (model) {
-  //       return control
-  //         .getDecorationsInRange(fullRange(model))
-  //         ?.find(({ id: candidateId }) => id === candidateId)?.range;
-  //     }
-  //   }
-  //   return undefined;
-  // }
   export function sameAs(
-    left: ErrorDecoration,
-    right: ErrorDecoration
+    left: ErrorDecorationRef,
+    right: ErrorDecorationRef
   ): boolean {
     return left.id === right.id && left.uri === right.uri;
+  }
+}
+
+interface ErrorDecoration extends ErrorDecorationRef {
+  /**
+   * The range of the error location the error in the compiler output from the CLI.
+   */
+  readonly rangesInOutput: monaco.Range[];
+}
+namespace ErrorDecoration {
+  export function rangeOf(
+    editorOrModel: MonacoEditor | ITextModel | undefined,
+    decorations: ErrorDecoration
+  ): monaco.Range | undefined;
+  export function rangeOf(
+    editorOrModel: MonacoEditor | ITextModel | undefined,
+    decorations: ErrorDecoration[]
+  ): (monaco.Range | undefined)[];
+  export function rangeOf(
+    editorOrModel: MonacoEditor | ITextModel | undefined,
+    decorations: ErrorDecoration | ErrorDecoration[]
+  ): MaybePromise<MaybeArray<monaco.Range | undefined>> {
+    if (editorOrModel) {
+      const allDecorations = getAllDecorations(editorOrModel);
+      if (allDecorations) {
+        if (Array.isArray(decorations)) {
+          return decorations.map(({ id: decorationId }) =>
+            findRangeOf(decorationId, allDecorations)
+          );
+        } else {
+          return findRangeOf(decorations.id, allDecorations);
+        }
+      }
+    }
+    return Array.isArray(decorations)
+      ? decorations.map(() => undefined)
+      : undefined;
+  }
+  function findRangeOf(
+    decorationId: string,
+    allDecorations: { id: string; range?: monaco.Range }[]
+  ): monaco.Range | undefined {
+    return allDecorations.find(
+      ({ id: candidateId }) => candidateId === decorationId
+    )?.range;
+  }
+  function getAllDecorations(
+    editorOrModel: MonacoEditor | ITextModel
+  ): { id: string; range?: monaco.Range }[] {
+    if (editorOrModel instanceof MonacoEditor) {
+      const model = editorOrModel.getControl().getModel();
+      if (!model) {
+        return [];
+      }
+      return model.getAllDecorations();
+    }
+    return editorOrModel.getAllDecorations();
   }
 }
 
 @injectable()
 export class CompilerErrors
   extends Contribution
-  implements monaco.languages.CodeLensProvider
+  implements monaco.languages.CodeLensProvider, monaco.languages.LinkProvider
 {
   @inject(EditorManager)
   private readonly editorManager: EditorManager;
@@ -119,10 +139,13 @@ export class CompilerErrors
   private readonly p2m: ProtocolToMonacoConverter;
 
   @inject(MonacoToProtocolConverter)
-  private readonly mp2: MonacoToProtocolConverter;
+  private readonly m2p: MonacoToProtocolConverter;
 
   @inject(CoreErrorHandler)
   private readonly coreErrorHandler: CoreErrorHandler;
+
+  private revealStrategy = ErrorRevealStrategy.Default;
+  private experimental = false;
 
   private readonly errors: ErrorDecoration[] = [];
   private readonly onDidChangeEmitter = new monaco.Emitter<this>();
@@ -131,8 +154,8 @@ export class CompilerErrors
     this.currentErrorDidChangEmitter.event;
   private readonly toDisposeOnCompilerErrorDidChange =
     new DisposableCollection();
+
   private shell: ApplicationShell | undefined;
-  private revealStrategy = ErrorRevealStrategy.Default;
   private currentError: ErrorDecoration | undefined;
   private get currentErrorIndex(): number {
     const current = this.currentError;
@@ -140,46 +163,75 @@ export class CompilerErrors
       return -1;
     }
     return this.errors.findIndex((error) =>
-      ErrorDecoration.sameAs(error, current)
+      ErrorDecorationRef.sameAs(error, current)
     );
   }
 
   override onStart(app: FrontendApplication): void {
     this.shell = app.shell;
     monaco.languages.registerCodeLensProvider(InoSelector, this);
+    monaco.languages.registerLinkProvider(ArduinoOutputSelector, this);
     this.coreErrorHandler.onCompilerErrorsDidChange((errors) =>
-      this.filter(errors).then(this.handleCompilerErrorsDidChange.bind(this))
+      this.handleCompilerErrorsDidChange(errors)
     );
     this.onCurrentErrorDidChange(async (error) => {
-      const range = await ErrorDecoration.rangeOf(error, (uri) =>
-        this.monacoEditor(uri)
-      );
-      if (!range) {
+      const monacoEditor = await this.monacoEditor(error.uri);
+      const monacoRange = ErrorDecoration.rangeOf(monacoEditor, error);
+      if (!monacoRange) {
         console.warn(
           'compiler-errors',
           `Could not find range of decoration: ${error.id}`
         );
         return;
       }
+      const range = this.m2p.asRange(monacoRange);
       const editor = await this.revealLocationInEditor({
         uri: error.uri,
-        range: this.mp2.asRange(range),
+        range,
       });
       if (!editor) {
         console.warn(
           'compiler-errors',
           `Failed to mark error ${error.id} as the current one.`
         );
+      } else {
+        const monacoEditor = this.monacoEditor(editor);
+        if (monacoEditor) {
+          monacoEditor.cursor = range.start;
+        }
       }
     });
+  }
+
+  override onReady(): MaybePromise<void> {
     this.preferences.ready.then(() => {
-      this.preferences.onPreferenceChanged(({ preferenceName, newValue }) => {
-        if (preferenceName === 'arduino.compile.revealRange') {
-          this.revealStrategy = ErrorRevealStrategy.is(newValue)
-            ? newValue
-            : ErrorRevealStrategy.Default;
+      this.experimental = Boolean(
+        this.preferences['arduino.compile.experimental']
+      );
+      const strategy = this.preferences['arduino.compile.revealRange'];
+      this.revealStrategy = ErrorRevealStrategy.is(strategy)
+        ? strategy
+        : ErrorRevealStrategy.Default;
+      this.preferences.onPreferenceChanged(
+        ({ preferenceName, newValue, oldValue }) => {
+          if (newValue === oldValue) {
+            return;
+          }
+          switch (preferenceName) {
+            case 'arduino.compile.revealRange': {
+              this.revealStrategy = ErrorRevealStrategy.is(newValue)
+                ? newValue
+                : ErrorRevealStrategy.Default;
+              return;
+            }
+            case 'arduino.compile.experimental': {
+              this.experimental = Boolean(newValue);
+              this.onDidChangeEmitter.fire(this);
+              return;
+            }
+          }
         }
-      });
+      );
     });
   }
 
@@ -196,9 +248,13 @@ export class CompilerErrors
         }
         const nextError =
           this.errors[index === this.errors.length - 1 ? 0 : index + 1];
-        this.markAsCurrentError(nextError);
+        return this.markAsCurrentError(nextError, {
+          forceReselect: true,
+          reveal: true,
+        });
       },
-      isEnabled: () => !!this.currentError && this.errors.length > 1,
+      isEnabled: () =>
+        this.experimental && !!this.currentError && this.errors.length > 1,
     });
     registry.registerCommand(CompilerErrors.Commands.PREVIOUS_ERROR, {
       execute: () => {
@@ -212,9 +268,24 @@ export class CompilerErrors
         }
         const previousError =
           this.errors[index === 0 ? this.errors.length - 1 : index - 1];
-        this.markAsCurrentError(previousError);
+        return this.markAsCurrentError(previousError, {
+          forceReselect: true,
+          reveal: true,
+        });
       },
-      isEnabled: () => !!this.currentError && this.errors.length > 1,
+      isEnabled: () =>
+        this.experimental && !!this.currentError && this.errors.length > 1,
+    });
+    registry.registerCommand(CompilerErrors.Commands.MARK_AS_CURRENT, {
+      execute: (arg: unknown) => {
+        if (ErrorDecorationRef.is(arg)) {
+          return this.markAsCurrentError(
+            { id: arg.id, uri: new URI(arg.uri).toString() }, // Make sure the URI fragments are encoded. On Windows, `C:` is encoded as `C%3A`.
+            { forceReselect: true, reveal: true }
+          );
+        }
+      },
+      isEnabled: () => !!this.errors.length,
     });
   }
 
@@ -229,13 +300,13 @@ export class CompilerErrors
   ): Promise<monaco.languages.CodeLensList> {
     const lenses: monaco.languages.CodeLens[] = [];
     if (
+      this.experimental &&
       this.currentError &&
       this.currentError.uri === model.uri.toString() &&
       this.errors.length > 1
     ) {
-      const range = await ErrorDecoration.rangeOf(this.currentError, (uri) =>
-        this.monacoEditor(uri)
-      );
+      const monacoEditor = await this.monacoEditor(model.uri);
+      const range = ErrorDecoration.rangeOf(monacoEditor, this.currentError);
       if (range) {
         lenses.push(
           {
@@ -268,14 +339,81 @@ export class CompilerErrors
     };
   }
 
+  async provideLinks(
+    model: monaco.editor.ITextModel,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _token: monaco.CancellationToken
+  ): Promise<monaco.languages.ILinksList> {
+    const links: monaco.languages.ILink[] = [];
+    if (
+      model.uri.scheme === OutputUri.SCHEME &&
+      model.uri.path === '/Arduino'
+    ) {
+      links.push(
+        ...this.errors
+          .filter((decoration) => !!decoration.rangesInOutput.length)
+          .map(({ rangesInOutput, id, uri }) =>
+            rangesInOutput.map(
+              (range) =>
+                <monaco.languages.ILink>{
+                  range,
+                  url: monaco.Uri.parse(`command://`).with({
+                    query: JSON.stringify({ id, uri }),
+                    path: CompilerErrors.Commands.MARK_AS_CURRENT.id,
+                  }),
+                  tooltip: nls.localize(
+                    'arduino/editor/revealError',
+                    'Reveal Error'
+                  ),
+                }
+            )
+          )
+          .reduce((acc, curr) => acc.concat(curr), [])
+      );
+    } else {
+      console.warn('unexpected URI: ' + model.uri.toString());
+    }
+    return { links };
+  }
+
+  async resolveLink(
+    link: monaco.languages.ILink,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _token: monaco.CancellationToken
+  ): Promise<monaco.languages.ILink | undefined> {
+    if (!this.experimental) {
+      return undefined;
+    }
+    const { url } = link;
+    if (url) {
+      const candidateUri = new URI(
+        typeof url === 'string' ? url : url.toString()
+      );
+      const candidateId = candidateUri.path.toString();
+      const error = this.errors.find((error) => error.id === candidateId);
+      if (error) {
+        const monacoEditor = await this.monacoEditor(error.uri);
+        const range = ErrorDecoration.rangeOf(monacoEditor, error);
+        if (range) {
+          return {
+            range,
+            url: monaco.Uri.parse(error.uri),
+          };
+        }
+      }
+    }
+    return undefined;
+  }
+
   private async handleCompilerErrorsDidChange(
     errors: CoreError.ErrorLocation[]
   ): Promise<void> {
     this.toDisposeOnCompilerErrorDidChange.dispose();
-    const compilerErrorsPerResource = this.groupByResource(
-      await this.filter(errors)
+    const groupedErrors = this.groupBy(
+      errors,
+      (error: CoreError.ErrorLocation) => error.location.uri
     );
-    const decorations = await this.decorateEditors(compilerErrorsPerResource);
+    const decorations = await this.decorateEditors(groupedErrors);
     this.errors.push(...decorations.errors);
     this.toDisposeOnCompilerErrorDidChange.pushAll([
       Disposable.create(() => (this.errors.length = 0)),
@@ -283,17 +421,17 @@ export class CompilerErrors
       ...(await Promise.all([
         decorations.dispose,
         this.trackEditors(
-          compilerErrorsPerResource,
+          groupedErrors,
           (editor) =>
-            editor.editor.onSelectionChanged((selection) =>
+            editor.onSelectionChanged((selection) =>
               this.handleSelectionChange(editor, selection)
             ),
           (editor) =>
-            editor.onDidDispose(() =>
-              this.handleEditorDidDispose(editor.editor.uri.toString())
+            editor.onDispose(() =>
+              this.handleEditorDidDispose(editor.uri.toString())
             ),
           (editor) =>
-            editor.editor.onDocumentContentChanged((event) =>
+            editor.onDocumentContentChanged((event) =>
               this.handleDocumentContentChange(editor, event)
             )
         ),
@@ -301,22 +439,11 @@ export class CompilerErrors
     ]);
     const currentError = this.errors[0];
     if (currentError) {
-      await this.markAsCurrentError(currentError);
+      await this.markAsCurrentError(currentError, {
+        forceReselect: true,
+        reveal: true,
+      });
     }
-  }
-
-  private async filter(
-    errors: CoreError.ErrorLocation[]
-  ): Promise<CoreError.ErrorLocation[]> {
-    if (!errors.length) {
-      return [];
-    }
-    await this.preferences.ready;
-    if (this.preferences['arduino.compile.experimental']) {
-      return errors;
-    }
-    // Always shows maximum one error; hence the code lens navigation is unavailable.
-    return [errors[0]];
   }
 
   private async decorateEditors(
@@ -342,11 +469,11 @@ export class CompilerErrors
     uri: string,
     errors: CoreError.ErrorLocation[]
   ): Promise<{ dispose: Disposable; errors: ErrorDecoration[] }> {
-    const editor = await this.editorManager.getByUri(new URI(uri));
+    const editor = await this.monacoEditor(uri);
     if (!editor) {
       return { dispose: Disposable.NULL, errors: [] };
     }
-    const oldDecorations = editor.editor.deltaDecorations({
+    const oldDecorations = editor.deltaDecorations({
       oldDecorations: [],
       newDecorations: errors.map((error) =>
         this.compilerErrorDecoration(error.location.range)
@@ -355,13 +482,19 @@ export class CompilerErrors
     return {
       dispose: Disposable.create(() => {
         if (editor) {
-          editor.editor.deltaDecorations({
+          editor.deltaDecorations({
             oldDecorations,
             newDecorations: [],
           });
         }
       }),
-      errors: oldDecorations.map((id) => ({ id, uri })),
+      errors: oldDecorations.map((id, index) => ({
+        id,
+        uri,
+        rangesInOutput: errors[index].rangesInOutput.map((range) =>
+          this.p2m.asRange(range)
+        ),
+      })),
     };
   }
 
@@ -371,7 +504,7 @@ export class CompilerErrors
       options: {
         isWholeLine: true,
         className: 'compiler-error',
-        stickiness: TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
       },
     };
   }
@@ -379,11 +512,10 @@ export class CompilerErrors
   /**
    * Tracks the selection in all editors that have an error. If the editor selection overlaps one of the compiler error's range, mark as current error.
    */
-  private handleSelectionChange(editor: EditorWidget, selection: Range): void {
-    const monacoEditor = this.monacoEditor(editor);
-    if (!monacoEditor) {
-      return;
-    }
+  private handleSelectionChange(
+    monacoEditor: MonacoEditor,
+    selection: Range
+  ): void {
     const uri = monacoEditor.uri.toString();
     const monacoSelection = this.p2m.asRange(selection);
     console.log(
@@ -418,12 +550,13 @@ export class CompilerErrors
       console.trace('No match');
       return undefined;
     };
-    const error = this.errors
-      .filter((error) => error.uri === uri)
-      .map((error) => ({
-        error,
-        range: ErrorDecoration.rangeOf(error, monacoEditor),
-      }))
+    const errorsPerResource = this.errors.filter((error) => error.uri === uri);
+    const rangesPerResource = ErrorDecoration.rangeOf(
+      monacoEditor,
+      errorsPerResource
+    );
+    const error = rangesPerResource
+      .map((range, index) => ({ error: errorsPerResource[index], range }))
       .map(({ error, range }) => {
         if (range) {
           const priority = calculatePriority(range, monacoSelection);
@@ -464,66 +597,77 @@ export class CompilerErrors
   }
 
   /**
-   * If a document change "destroys" the range of the decoration, the decoration must be removed.
+   * If the text document changes in the line where compiler errors are, the compiler errors will be removed.
    */
   private handleDocumentContentChange(
-    editor: EditorWidget,
+    monacoEditor: MonacoEditor,
     event: TextDocumentChangeEvent
   ): void {
-    const monacoEditor = this.monacoEditor(editor);
-    if (!monacoEditor) {
-      return;
-    }
-    // A decoration location can be "destroyed", hence should be deleted when:
-    // - deleting range (start != end AND text is empty)
-    // - inserting text into range (start != end AND text is not empty)
-    // Filter unrelated delta changes to spare the CPU.
-    const relevantChanges = event.contentChanges.filter(
-      ({ range: { start, end } }) =>
-        start.line !== end.line || start.character !== end.character
+    const errorsPerResource = this.errors.filter(
+      (error) => error.uri === event.document.uri
     );
-    if (!relevantChanges.length) {
-      return;
+    let editorOrModel: MonacoEditor | ITextModel = monacoEditor;
+    const doc = event.document;
+    if (doc instanceof MonacoEditorModel) {
+      editorOrModel = doc.textEditorModel;
     }
-
-    const resolvedMarkers = this.errors
-      .filter((error) => error.uri === event.document.uri)
-      .map((error, index) => {
-        const range = ErrorDecoration.rangeOf(error, monacoEditor);
-        if (range) {
-          return { error, range, index };
-        }
-        return undefined;
-      })
-      .filter(notEmpty);
-
-    const decorationIdsToRemove = relevantChanges
+    const rangesPerResource = ErrorDecoration.rangeOf(
+      editorOrModel,
+      errorsPerResource
+    );
+    const resolvedDecorations = rangesPerResource.map((range, index) => ({
+      error: errorsPerResource[index],
+      range,
+    }));
+    const decoratorsToRemove = event.contentChanges
       .map(({ range }) => this.p2m.asRange(range))
-      .map((changeRange) =>
-        resolvedMarkers.filter(({ range: decorationRange }) =>
-          changeRange.containsRange(decorationRange)
-        )
+      .map((changedRange) =>
+        resolvedDecorations
+          .filter(({ range: decorationRange }) => {
+            if (!decorationRange) {
+              return false;
+            }
+            const affects =
+              changedRange.startLineNumber <= decorationRange.startLineNumber &&
+              changedRange.endLineNumber >= decorationRange.endLineNumber;
+            console.log(
+              'compiler-errors',
+              `decoration range: ${decorationRange.toString()}, change range: ${changedRange.toString()}, affects: ${affects}`
+            );
+            return affects;
+          })
+          .map(({ error }) => {
+            const index = this.errors.findIndex((candidate) =>
+              ErrorDecorationRef.sameAs(candidate, error)
+            );
+            return index !== -1 ? { error, index } : undefined;
+          })
+          .filter(notEmpty)
       )
       .reduce((acc, curr) => acc.concat(curr), [])
-      .map(({ error, index }) => {
-        this.errors.splice(index, 1);
-        return error.id;
-      });
-    if (!decorationIdsToRemove.length) {
-      return;
+      .sort((left, right) => left.index - right.index); // highest index last
+
+    if (decoratorsToRemove.length) {
+      let i = decoratorsToRemove.length;
+      while (i--) {
+        this.errors.splice(decoratorsToRemove[i].index, 1);
+      }
+      monacoEditor.getControl().deltaDecorations(
+        decoratorsToRemove.map(({ error }) => error.id),
+        []
+      );
+      this.onDidChangeEmitter.fire(this);
     }
-    monacoEditor.getControl().deltaDecorations(decorationIdsToRemove, []);
-    this.onDidChangeEmitter.fire(this);
   }
 
   private async trackEditors(
     errors: Map<string, CoreError.ErrorLocation[]>,
-    ...track: ((editor: EditorWidget) => Disposable)[]
+    ...track: ((editor: MonacoEditor) => Disposable)[]
   ): Promise<Disposable> {
     return new DisposableCollection(
       ...(await Promise.all(
         Array.from(errors.keys()).map(async (uri) => {
-          const editor = await this.editorManager.getByUri(new URI(uri));
+          const editor = await this.monacoEditor(uri);
           if (!editor) {
             return Disposable.NULL;
           }
@@ -533,15 +677,18 @@ export class CompilerErrors
     );
   }
 
-  private async markAsCurrentError(error: ErrorDecoration): Promise<void> {
+  private async markAsCurrentError(
+    ref: ErrorDecorationRef,
+    options?: { forceReselect?: boolean; reveal?: boolean }
+  ): Promise<void> {
     const index = this.errors.findIndex((candidate) =>
-      ErrorDecoration.sameAs(candidate, error)
+      ErrorDecorationRef.sameAs(candidate, ref)
     );
     if (index < 0) {
       console.warn(
         'compiler-errors',
         `Failed to mark error ${
-          error.id
+          ref.id
         } as the current one. Error is unknown. Known errors are: ${this.errors.map(
           ({ id }) => id
         )}`
@@ -550,15 +697,18 @@ export class CompilerErrors
     }
     const newError = this.errors[index];
     if (
+      options?.forceReselect ||
       !this.currentError ||
-      !ErrorDecoration.sameAs(this.currentError, newError)
+      !ErrorDecorationRef.sameAs(this.currentError, newError)
     ) {
       this.currentError = this.errors[index];
       console.log(
         'compiler-errors',
         `Current error changed to ${this.currentError.id}`
       );
-      this.currentErrorDidChangEmitter.fire(this.currentError);
+      if (options?.reveal) {
+        this.currentErrorDidChangEmitter.fire(this.currentError);
+      }
       this.onDidChangeEmitter.fire(this);
     }
   }
@@ -598,27 +748,28 @@ export class CompilerErrors
     return undefined;
   }
 
-  private groupByResource(
-    errors: CoreError.ErrorLocation[]
-  ): Map<string, CoreError.ErrorLocation[]> {
-    return errors.reduce((acc, curr) => {
-      const {
-        location: { uri },
-      } = curr;
-      let errors = acc.get(uri);
-      if (!errors) {
-        errors = [];
-        acc.set(uri, errors);
+  private groupBy<K, V>(
+    elements: V[],
+    extractKey: (element: V) => K
+  ): Map<K, V[]> {
+    return elements.reduce((acc, curr) => {
+      const key = extractKey(curr);
+      let values = acc.get(key);
+      if (!values) {
+        values = [];
+        acc.set(key, values);
       }
-      errors.push(curr);
+      values.push(curr);
       return acc;
-    }, new Map<string, CoreError.ErrorLocation[]>());
+    }, new Map<K, V[]>());
   }
 
   private monacoEditor(widget: EditorWidget): MonacoEditor | undefined;
-  private monacoEditor(uri: string): Promise<MonacoEditor | undefined>;
   private monacoEditor(
-    uriOrWidget: string | EditorWidget
+    uri: string | monaco.Uri
+  ): Promise<MonacoEditor | undefined>;
+  private monacoEditor(
+    uriOrWidget: string | monaco.Uri | EditorWidget
   ): MaybePromise<MonacoEditor | undefined> {
     if (uriOrWidget instanceof EditorWidget) {
       const editor = uriOrWidget.editor;
@@ -645,6 +796,9 @@ export namespace CompilerErrors {
     };
     export const PREVIOUS_ERROR: Command = {
       id: 'arduino-editor-previous-error',
+    };
+    export const MARK_AS_CURRENT: Command = {
+      id: 'arduino-editor-mark-as-current-error',
     };
   }
 }

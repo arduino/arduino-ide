@@ -1,5 +1,9 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
-import type { Location } from '@theia/core/shared/vscode-languageserver-protocol';
+import type {
+  Location,
+  Range,
+  Position,
+} from '@theia/core/shared/vscode-languageserver-protocol';
 import type {
   BoardUserField,
   Port,
@@ -15,10 +19,40 @@ export const CompilerWarningLiterals = [
 ] as const;
 export type CompilerWarnings = typeof CompilerWarningLiterals[number];
 export namespace CoreError {
-  export interface ErrorLocation {
+  export interface ErrorLocationRef {
     readonly message: string;
     readonly location: Location;
     readonly details?: string;
+  }
+  export namespace ErrorLocationRef {
+    export function equals(
+      left: ErrorLocationRef,
+      right: ErrorLocationRef
+    ): boolean {
+      return (
+        left.message === right.message &&
+        left.details === right.details &&
+        equalsLocation(left.location, right.location)
+      );
+    }
+    function equalsLocation(left: Location, right: Location): boolean {
+      return left.uri === right.uri && equalsRange(left.range, right.range);
+    }
+    function equalsRange(left: Range, right: Range): boolean {
+      return (
+        equalsPosition(left.start, right.start) &&
+        equalsPosition(left.end, right.end)
+      );
+    }
+    function equalsPosition(left: Position, right: Position): boolean {
+      return left.character === right.character && left.line === right.line;
+    }
+  }
+  export interface ErrorLocation extends ErrorLocationRef {
+    /**
+     * The range of the error location source from the CLI output.
+     */
+    readonly rangesInOutput: Range[]; // The same error might show up multiple times in the CLI output: https://github.com/arduino/arduino-cli/issues/1761
   }
   export const Codes = {
     Verify: 4001,
