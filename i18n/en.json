@@ -107,6 +107,7 @@
       "selectBoard": "Select Board",
       "selectedOn": "on {0}",
       "serialMonitor": "Serial Monitor",
+      "serialPlotter": "Serial Plotter",
       "unknown": "Unknown"
     },
     "compile": {
