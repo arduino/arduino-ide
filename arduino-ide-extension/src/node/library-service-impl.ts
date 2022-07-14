@@ -293,7 +293,7 @@ export class LibraryServiceImpl
           }.\n`,
         });
         this.responseService.appendToOutput({
-          chunk: error.toString(),
+          chunk: `${error.toString()}\n`,
         });
         reject(error);
       });

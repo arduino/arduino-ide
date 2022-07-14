@@ -436,7 +436,7 @@ export class BoardsServiceImpl
           chunk: `Failed to install platform: ${item.id}.\n`,
         });
         this.responseService.appendToOutput({
-          chunk: error.toString(),
+          chunk: `${error.toString()}\n`,
         });
         reject(error);
       });
