@@ -269,6 +269,7 @@
       "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
       "invalid.theme": "Invalid theme.",
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",

@@ -164,7 +164,11 @@
       "version": "14.0.0"
     },
     "languageServer": {
-      "version": "0.7.0"
+      "version": {
+        "owner": "arduino",
+        "repo": "arduino-language-server",
+        "commitish": "flag_to_disable_real_time_errors"
+      }
     }
   }
 }

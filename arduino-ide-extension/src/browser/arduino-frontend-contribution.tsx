@@ -277,11 +277,14 @@ export class ArduinoFrontendContribution
         );
       });
 
-    const start = async ({ selectedBoard }: BoardsConfig.Config) => {
+    const start = async (
+      { selectedBoard }: BoardsConfig.Config,
+      forceStart = false
+    ) => {
       if (selectedBoard) {
         const { name, fqbn } = selectedBoard;
         if (fqbn) {
-          this.startLanguageServer(fqbn, name);
+          this.startLanguageServer(fqbn, name, forceStart);
         }
       }
     };
@@ -296,7 +299,8 @@ export class ArduinoFrontendContribution
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
           case 'arduino.language.log':
-            start(this.boardsServiceClientImpl.boardsConfig);
+          case 'arduino.language.realTimeDiagnostics':
+            start(this.boardsServiceClientImpl.boardsConfig, true);
             break;
           case 'arduino.window.zoomLevel':
             if (typeof event.newValue === 'number') {
@@ -344,7 +348,8 @@ export class ArduinoFrontendContribution
   protected languageServerStartMutex = new Mutex();
   protected async startLanguageServer(
     fqbn: string,
-    name: string | undefined
+    name: string | undefined,
+    forceStart = false
   ): Promise<void> {
     const port = await this.daemon.tryGetPort();
     if (!port) {
@@ -378,12 +383,15 @@ export class ArduinoFrontendContribution
         }
         return;
       }
-      if (fqbn === this.languageServerFqbn) {
+      if (!forceStart && fqbn === this.languageServerFqbn) {
         // NOOP
         return;
       }
       this.logger.info(`Starting language server: ${fqbn}`);
       const log = this.arduinoPreferences.get('arduino.language.log');
+      const realTimeDiagnostics = this.arduinoPreferences.get(
+        'arduino.language.realTimeDiagnostics'
+      );
       let currentSketchPath: string | undefined = undefined;
       if (log) {
         const currentSketch = await this.sketchServiceClient.currentSketch();
@@ -414,6 +422,7 @@ export class ArduinoFrontendContribution
             clangdPath,
             log: currentSketchPath ? currentSketchPath : log,
             cliDaemonInstance: '1',
+            realTimeDiagnostics,
             board: {
               fqbn,
               name: name ? `"${name}"` : undefined,

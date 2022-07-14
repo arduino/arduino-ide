@@ -51,6 +51,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: false,
     },
+    'arduino.language.realTimeDiagnostics': {
+      type: 'boolean',
+      description: nls.localize(
+        'arduino/preferences/language.realTimeDiagnostics',
+        "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default."
+      ),
+      default: false,
+    },
     'arduino.compile.verbose': {
       type: 'boolean',
       description: nls.localize(
@@ -238,6 +246,7 @@ export const ArduinoConfigSchema: PreferenceSchema = {
 
 export interface ArduinoConfiguration {
   'arduino.language.log': boolean;
+  'arduino.language.realTimeDiagnostics': boolean;
   'arduino.compile.verbose': boolean;
   'arduino.compile.experimental': boolean;
   'arduino.compile.revealRange': ErrorRevealStrategy;
