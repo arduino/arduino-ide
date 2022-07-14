@@ -1,6 +1,11 @@
 #arduino-settings-dialog-container > .dialogBlock {
-    width: calc(100% - 96px);
+    height: 531px;;
     max-width: 740px !important;
+    width: calc(100% - 96px);
+}
+
+#arduino-settings-dialog-container > .dialogBlock > .dialogContent {
+    justify-content: flex-start;
 }
 
 .arduino-settings-dialog .content {
