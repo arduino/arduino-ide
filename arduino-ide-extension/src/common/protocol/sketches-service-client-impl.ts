@@ -17,6 +17,7 @@ import {
 } from '../../browser/utils/constants';
 import * as monaco from '@theia/monaco-editor-core';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 const READ_ONLY_FILES = ['sketch.json'];
 const READ_ONLY_FILES_REMOTE = ['thingProperties.h', 'thingsProperties.h'];
@@ -46,6 +47,9 @@ export class SketchesServiceClientImpl
 
   @inject(ConfigService)
   protected readonly configService: ConfigService;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
   protected sketches = new Map<string, SketchRef>();
   // TODO: rename this + event to the `onBlabla` pattern
@@ -117,12 +121,14 @@ export class SketchesServiceClientImpl
           );
         });
     });
-    setTimeout(async () => {
-      const currentSketch = await this.loadCurrentSketch();
-      this._currentSketch = currentSketch;
-      this.currentSketchDidChangeEmitter.fire(this._currentSketch);
-      this.currentSketchLoaded.resolve(this._currentSketch);
-    }, 1_000);
+    this.appStateService
+      .reachedState('started_contributions')
+      .then(async () => {
+        const currentSketch = await this.loadCurrentSketch();
+        this._currentSketch = currentSketch;
+        this.currentSketchDidChangeEmitter.fire(this._currentSketch);
+        this.currentSketchLoaded.resolve(this._currentSketch);
+      });
   }
 
   onStop(): void {
