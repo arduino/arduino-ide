@@ -28,10 +28,12 @@ export namespace BoardsDropDown {
 
 export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
   protected dropdownElement: HTMLElement;
+  listRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: BoardsDropDown.Props) {
     super(props);
 
+    this.listRef = React.createRef();
     let list = document.getElementById('boards-dropdown-container');
     if (!list) {
       list = document.createElement('div');
@@ -40,6 +42,14 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
       this.dropdownElement = list;
     }
   }
+
+  override componentDidUpdate(prevProps: BoardsDropDown.Props): void {
+    if (prevProps.coords === 'hidden' && this.listRef.current) {
+      this.listRef.current.focus();
+    }
+  }
+
+  override componentDidMount(): void {}
 
   override render(): React.ReactNode {
     return ReactDOM.createPortal(this.renderNode(), this.dropdownElement);
@@ -61,17 +71,22 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
           position: 'absolute',
           ...coords,
         }}
+        ref={this.listRef}
+        tabIndex={0}
       >
-        {items
-          .map(({ name, port, selected, onClick }) => ({
-            boardLabel: name,
-            port,
-            selected,
-            onClick,
-          }))
-          .map(this.renderItem)}
+        <div className="arduino-boards-dropdown-list--items-container">
+          {items
+            .map(({ name, port, selected, onClick }) => ({
+              boardLabel: name,
+              port,
+              selected,
+              onClick,
+            }))
+            .map(this.renderItem)}
+        </div>
         <div
           key={footerLabel}
+          tabIndex={0}
           className="arduino-boards-dropdown-item arduino-board-dropdown-footer"
           onClick={() => this.props.openBoardsConfig()}
         >
@@ -93,6 +108,11 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
     onClick: () => void;
   }): React.ReactNode {
     const protocolIcon = iconNameFromProtocol(port.protocol);
+    const onKeyUp = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        onClick();
+      }
+    };
 
     return (
       <div
@@ -101,6 +121,8 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
           'arduino-boards-dropdown-item--selected': selected,
         })}
         onClick={onClick}
+        onKeyUp={onKeyUp}
+        tabIndex={0}
       >
         <div
           className={classNames(
@@ -235,6 +257,7 @@ export class BoardsToolBarItem extends React.Component<
                     selectedPort: board.port,
                   };
                 }
+                this.setState({ coords: 'hidden' });
               },
             }))}
           openBoardsConfig={this.openDialog}
@@ -245,7 +268,6 @@ export class BoardsToolBarItem extends React.Component<
 
   protected openDialog = () => {
     this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
-    this.setState({ coords: 'hidden' });
   };
 }
 export namespace BoardsToolBarItem {
