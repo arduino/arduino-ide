@@ -149,7 +149,8 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f,
     keysKeychain: jspb.Message.getFieldWithDefault(msg, 25, ""),
     signKey: jspb.Message.getFieldWithDefault(msg, 26, ""),
-    encryptKey: jspb.Message.getFieldWithDefault(msg, 27, "")
+    encryptKey: jspb.Message.getFieldWithDefault(msg, 27, ""),
+    skipLibrariesDiscovery: jspb.Message.getBooleanFieldWithDefault(msg, 28, false)
   };
 
   if (includeInstance) {
@@ -285,6 +286,10 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
     case 27:
       var value = /** @type {string} */ (reader.readString());
       msg.setEncryptKey(value);
+      break;
+    case 28:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkipLibrariesDiscovery(value);
       break;
     default:
       reader.skipField();
@@ -479,6 +484,13 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       27,
+      f
+    );
+  }
+  f = message.getSkipLibrariesDiscovery();
+  if (f) {
+    writer.writeBool(
+      28,
       f
     );
   }
@@ -1013,6 +1025,24 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getEncryptKey = functi
  */
 proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setEncryptKey = function(value) {
   return jspb.Message.setProto3StringField(this, 27, value);
+};
+
+
+/**
+ * optional bool skip_libraries_discovery = 28;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getSkipLibrariesDiscovery = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 28, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSkipLibrariesDiscovery = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 28, value);
 };
 
 
