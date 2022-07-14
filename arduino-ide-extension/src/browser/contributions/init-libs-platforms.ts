@@ -31,17 +31,21 @@ export class InitLibsPlatforms extends Contribution {
       )[0];
 
       if (avrPackage) {
-        await this.boardsService.install({
-          item: avrPackage,
-          noOverwrite: true, // We don't want to automatically replace custom platforms the user might already have in place
-        });
+        try {
+          await this.boardsService.install({
+            item: avrPackage,
+            noOverwrite: true, // We don't want to automatically replace custom platforms the user might already have in place
+          });
+        } catch {} // If this fails, we still want to install the libraries
       }
       if (builtInLibrary) {
-        await this.libraryService.install({
-          item: builtInLibrary,
-          installDependencies: true,
-          noOverwrite: true, // We don't want to automatically replace custom libraries the user might already have in place
-        });
+        try {
+          await this.libraryService.install({
+            item: builtInLibrary,
+            installDependencies: true,
+            noOverwrite: true, // We don't want to automatically replace custom libraries the user might already have in place
+          });
+        } catch {}
       }
     }
   }
