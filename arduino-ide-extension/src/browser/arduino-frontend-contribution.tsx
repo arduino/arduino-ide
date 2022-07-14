@@ -76,6 +76,7 @@ import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
 import { IDEUpdater } from '../common/protocol/ide-updater';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { HostedPluginEvents } from './hosted-plugin-events';
+import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
 
 const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
@@ -442,6 +443,11 @@ export class ArduinoFrontendContribution
       isVisible: (widget) =>
         ArduinoToolbar.is(widget) && widget.side === 'left',
       priority: 7,
+    });
+    registry.registerItem({
+      id: 'toggle-serial-plotter',
+      command: SerialPlotterContribution.Commands.OPEN_TOOLBAR.id,
+      tooltip: nls.localize('arduino/common/serialPlotter', 'Serial Plotter'),
     });
     registry.registerItem({
       id: 'toggle-serial-monitor',

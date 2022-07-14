@@ -13,6 +13,7 @@ import { ipcRenderer } from '@theia/electron/shared/electron';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
+import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
 
 const queryString = require('query-string');
 
@@ -26,6 +27,11 @@ export namespace SerialPlotterContribution {
     export const RESET: Command = {
       id: 'serial-plotter-reset',
       label: 'Reset Serial Plotter',
+      category: 'Arduino',
+    };
+    export const OPEN_TOOLBAR: Command = {
+      id: 'serial-plotter-open-toolbar',
+      label: 'Serial Plotter Toolbar',
       category: 'Arduino',
     };
   }
@@ -69,6 +75,14 @@ export class PlotterFrontendContribution extends Contribution {
     registry.registerCommand(SerialPlotterContribution.Commands.RESET, {
       execute: () => this.reset(),
     });
+    registry.registerCommand(
+      { id: SerialPlotterContribution.Commands.OPEN_TOOLBAR.id },
+      {
+        isVisible: (widget) =>
+          ArduinoToolbar.is(widget) && widget.side === 'right',
+        execute: this.startPlotter.bind(this),
+      }
+    );
   }
 
   override registerMenus(menus: MenuModelRegistry): void {
