@@ -16,7 +16,6 @@ import {
   CommandRegistry,
   MenuModelRegistry,
   KeybindingRegistry,
-  TabBarToolbarRegistry,
 } from './contribution';
 import { ExamplesService } from '../../common/protocol/examples-service';
 import { BuiltInExamples } from './examples';
@@ -128,15 +127,6 @@ export class OpenSketch extends SketchContribution {
     registry.registerKeybinding({
       command: OpenSketch.Commands.OPEN_SKETCH.id,
       keybinding: 'CtrlCmd+O',
-    });
-  }
-
-  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
-    registry.registerItem({
-      id: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
-      command: OpenSketch.Commands.OPEN_SKETCH__TOOLBAR.id,
-      tooltip: nls.localize('vscode/dialogMainService/open', 'Open'),
-      priority: 4,
     });
   }
 

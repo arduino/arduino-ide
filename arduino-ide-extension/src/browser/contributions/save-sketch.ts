@@ -9,7 +9,6 @@ import {
   CommandRegistry,
   MenuModelRegistry,
   KeybindingRegistry,
-  TabBarToolbarRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
@@ -40,15 +39,6 @@ export class SaveSketch extends SketchContribution {
     registry.registerKeybinding({
       command: SaveSketch.Commands.SAVE_SKETCH.id,
       keybinding: 'CtrlCmd+S',
-    });
-  }
-
-  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
-    registry.registerItem({
-      id: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
-      command: SaveSketch.Commands.SAVE_SKETCH__TOOLBAR.id,
-      tooltip: nls.localize('vscode/fileCommands/save', 'Save'),
-      priority: 5,
     });
   }
 
