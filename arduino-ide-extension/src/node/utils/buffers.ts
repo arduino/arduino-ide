@@ -3,13 +3,13 @@ import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 import { OutputMessage } from '../../common/protocol';
 
 export class AutoFlushingBuffer implements Disposable {
-  private readonly chunks = Chunks.create();
+  private readonly chunks: Array<[OutputMessage.Severity, Uint8Array]> = [];
   private readonly toDispose;
   private timer?: NodeJS.Timeout;
   private disposed = false;
 
   constructor(
-    onFlush: (chunks: Map<OutputMessage.Severity, string | undefined>) => void,
+    onFlush: (chunks: Array<[OutputMessage.Severity, string]>) => void,
     taskTimeout: number = AutoFlushingBuffer.DEFAULT_FLUSH_TIMEOUT_MS
   ) {
     const task = () => {
@@ -34,7 +34,9 @@ export class AutoFlushingBuffer implements Disposable {
     chunk: Uint8Array,
     severity: OutputMessage.Severity = OutputMessage.Severity.Info
   ): void {
-    this.chunks.get(severity)?.push(chunk);
+    if (chunk.length) {
+      this.chunks.push([severity, chunk]);
+    }
   }
 
   dispose(): void {
@@ -49,19 +51,10 @@ export namespace AutoFlushingBuffer {
   export const DEFAULT_FLUSH_TIMEOUT_MS = 32;
 }
 
-type Chunks = Map<OutputMessage.Severity, Uint8Array[]>;
+type Chunks = Array<[OutputMessage.Severity, Uint8Array]>;
 namespace Chunks {
-  export function create(): Chunks {
-    return new Map([
-      [OutputMessage.Severity.Error, []],
-      [OutputMessage.Severity.Warning, []],
-      [OutputMessage.Severity.Info, []],
-    ]);
-  }
   export function clear(chunks: Chunks): Chunks {
-    for (const chunk of chunks.values()) {
-      chunk.length = 0;
-    }
+    chunks.length = 0;
     return chunks;
   }
   export function isEmpty(chunks: Chunks): boolean {
@@ -69,12 +62,35 @@ namespace Chunks {
   }
   export function toString(
     chunks: Chunks
-  ): Map<OutputMessage.Severity, string | undefined> {
-    return new Map(
-      Array.from(chunks.entries()).map(([severity, buffers]) => [
-        severity,
-        buffers.length ? Buffer.concat(buffers).toString() : undefined,
-      ])
-    );
+  ): Array<[OutputMessage.Severity, string]> {
+    const result: Array<[OutputMessage.Severity, string]> = [];
+    let current:
+      | { severity: OutputMessage.Severity; buffers: Uint8Array[] }
+      | undefined = undefined;
+    const appendToResult = () => {
+      if (current && current.buffers) {
+        result.push([
+          current.severity,
+          Buffer.concat(current.buffers).toString('utf-8'),
+        ]);
+      }
+    };
+    for (const [severity, buffer] of chunks) {
+      if (!buffer.length) {
+        continue;
+      }
+      if (!current) {
+        current = { severity, buffers: [buffer] };
+      } else {
+        if (current.severity === severity) {
+          current.buffers.push(buffer);
+        } else {
+          appendToResult();
+          current = { severity, buffers: [buffer] };
+        }
+      }
+    }
+    appendToResult();
+    return result;
   }
 }

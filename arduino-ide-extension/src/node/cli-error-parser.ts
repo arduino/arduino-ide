@@ -5,25 +5,41 @@ import {
   Range,
   Position,
 } from '@theia/core/shared/vscode-languageserver-protocol';
-import type { CoreError } from '../common/protocol';
+import { CoreError } from '../common/protocol';
 import { Sketch } from '../common/protocol/sketches-service';
 
-export interface ErrorSource {
+export interface OutputSource {
   readonly content: string | ReadonlyArray<Uint8Array>;
   readonly sketch?: Sketch;
 }
-
-export function tryParseError(source: ErrorSource): CoreError.ErrorLocation[] {
-  const { content, sketch } = source;
-  const err =
-    typeof content === 'string'
+export namespace OutputSource {
+  export function content(source: OutputSource): string {
+    const { content } = source;
+    return typeof content === 'string'
       ? content
       : Buffer.concat(content).toString('utf8');
+  }
+}
+
+export function tryParseError(source: OutputSource): CoreError.ErrorLocation[] {
+  const { sketch } = source;
+  const content = OutputSource.content(source);
   if (sketch) {
-    return tryParse(err)
+    return tryParse(content)
       .map(remapErrorMessages)
       .filter(isLocationInSketch(sketch))
-      .map(toErrorInfo);
+      .map(toErrorInfo)
+      .reduce((acc, curr) => {
+        const existingRef = acc.find((candidate) =>
+          CoreError.ErrorLocationRef.equals(candidate, curr)
+        );
+        if (existingRef) {
+          existingRef.rangesInOutput.push(...curr.rangesInOutput);
+        } else {
+          acc.push(curr);
+        }
+        return acc;
+      }, [] as CoreError.ErrorLocation[]);
   }
   return [];
 }
@@ -35,6 +51,7 @@ interface ParseResult {
   readonly errorPrefix: string;
   readonly error: string;
   readonly message?: string;
+  readonly rangeInOutput?: Range | undefined;
 }
 namespace ParseResult {
   export function keyOf(result: ParseResult): string {
@@ -64,6 +81,7 @@ function toErrorInfo({
   path,
   line,
   column,
+  rangeInOutput,
 }: ParseResult): CoreError.ErrorLocation {
   return {
     message: error,
@@ -72,6 +90,7 @@ function toErrorInfo({
       uri: FileUri.create(path).toString(),
       range: range(line, column),
     },
+    rangesInOutput: rangeInOutput ? [rangeInOutput] : [],
   };
 }
 
@@ -86,48 +105,50 @@ function range(line: number, column?: number): Range {
   };
 }
 
-export function tryParse(raw: string): ParseResult[] {
+function tryParse(content: string): ParseResult[] {
   // Shamelessly stolen from the Java IDE: https://github.com/arduino/Arduino/blob/43b0818f7fa8073301db1b80ac832b7b7596b828/arduino-core/src/cc/arduino/Compiler.java#L137
   const re = new RegExp(
     '(.+\\.\\w+):(\\d+)(:\\d+)*:\\s*((fatal)?\\s*error:\\s*)(.*)\\s*',
     'gm'
   );
-  return [
-    ...new Map(
-      Array.from(raw.matchAll(re) ?? [])
-        .map((match) => {
-          const [, path, rawLine, rawColumn, errorPrefix, , error] = match.map(
-            (match) => (match ? match.trim() : match)
+  return Array.from(content.matchAll(re) ?? [])
+    .map((match) => {
+      const { index: start } = match;
+      const [, path, rawLine, rawColumn, errorPrefix, , error] = match.map(
+        (match) => (match ? match.trim() : match)
+      );
+      const line = Number.parseInt(rawLine, 10);
+      if (!Number.isInteger(line)) {
+        console.warn(
+          `Could not parse line number. Raw input: <${rawLine}>, parsed integer: <${line}>.`
+        );
+        return undefined;
+      }
+      let column: number | undefined = undefined;
+      if (rawColumn) {
+        const normalizedRawColumn = rawColumn.slice(-1); // trims the leading colon => `:3` will be `3`
+        column = Number.parseInt(normalizedRawColumn, 10);
+        if (!Number.isInteger(column)) {
+          console.warn(
+            `Could not parse column number. Raw input: <${normalizedRawColumn}>, parsed integer: <${column}>.`
           );
-          const line = Number.parseInt(rawLine, 10);
-          if (!Number.isInteger(line)) {
-            console.warn(
-              `Could not parse line number. Raw input: <${rawLine}>, parsed integer: <${line}>.`
-            );
-            return undefined;
-          }
-          let column: number | undefined = undefined;
-          if (rawColumn) {
-            const normalizedRawColumn = rawColumn.slice(-1); // trims the leading colon => `:3` will be `3`
-            column = Number.parseInt(normalizedRawColumn, 10);
-            if (!Number.isInteger(column)) {
-              console.warn(
-                `Could not parse column number. Raw input: <${normalizedRawColumn}>, parsed integer: <${column}>.`
-              );
-            }
-          }
-          return {
-            path,
-            line,
-            column,
-            errorPrefix,
-            error,
-          };
-        })
-        .filter(notEmpty)
-        .map((result) => [ParseResult.keyOf(result), result])
-    ).values(),
-  ];
+        }
+      }
+      const rangeInOutput = findRangeInOutput(
+        start,
+        { path, rawLine, rawColumn },
+        content
+      );
+      return {
+        path,
+        line,
+        column,
+        errorPrefix,
+        error,
+        rangeInOutput,
+      };
+    })
+    .filter(notEmpty);
 }
 
 /**
@@ -161,3 +182,47 @@ const KnownErrors: Record<string, { error: string; message?: string }> = {
     ),
   },
 };
+
+function findRangeInOutput(
+  startIndex: number | undefined,
+  groups: { path: string; rawLine: string; rawColumn: string | null },
+  content: string // TODO? lines: string[]? can this code break line on `\n`? const lines = content.split(/\r?\n/) ?? [];
+): Range | undefined {
+  if (startIndex === undefined) {
+    return undefined;
+  }
+  // /path/to/location/Sketch/Sketch.ino:36:42
+  const offset =
+    groups.path.length +
+    ':'.length +
+    groups.rawLine.length +
+    (groups.rawColumn ? groups.rawColumn.length : 0);
+  const start = toPosition(startIndex, content);
+  if (!start) {
+    return undefined;
+  }
+  const end = toPosition(startIndex + offset, content);
+  if (!end) {
+    return undefined;
+  }
+  return { start, end };
+}
+
+function toPosition(offset: number, content: string): Position | undefined {
+  let line = 0;
+  let character = 0;
+  const length = content.length;
+  for (let i = 0; i < length; i++) {
+    const c = content.charAt(i);
+    if (i === offset) {
+      return { line, character };
+    }
+    if (c === '\n') {
+      line++;
+      character = 0;
+    } else {
+      character++;
+    }
+  }
+  return undefined;
+}

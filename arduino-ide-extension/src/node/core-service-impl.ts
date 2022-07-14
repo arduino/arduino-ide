@@ -86,7 +86,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             reject(error);
           } else {
             const compilerErrors = tryParseError({
-              content: handler.stderr,
+              content: handler.content,
               sketch: options.sketch,
             });
             const message = nls.localize(
@@ -224,7 +224,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
                 errorCtor(
                   message,
                   tryParseError({
-                    content: handler.stderr,
+                    content: handler.content,
                     sketch: options.sketch,
                   })
                 )
@@ -291,7 +291,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
                     'Error while burning the bootloader: {0}',
                     error.details
                   ),
-                  tryParseError({ content: handler.stderr })
+                  tryParseError({ content: handler.content })
                 )
               );
             }
@@ -342,19 +342,15 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     // TODO: why not creating a composite handler with progress, `build_path`, and out/err stream handlers?
     ...handlers: ((response: R) => void)[]
   ): Disposable & {
-    stderr: Buffer[];
+    content: Buffer[];
     onData: (response: R) => void;
   } {
-    const stderr: Buffer[] = [];
+    const content: Buffer[] = [];
     const buffer = new AutoFlushingBuffer((chunks) => {
-      Array.from(chunks.entries()).forEach(([severity, chunk]) => {
-        if (chunk) {
-          this.sendResponse(chunk, severity);
-        }
-      });
+      chunks.forEach(([severity, chunk]) => this.sendResponse(chunk, severity));
     });
     const onData = StreamingResponse.createOnDataHandler({
-      stderr,
+      content,
       onData: (out, err) => {
         buffer.addChunk(out);
         buffer.addChunk(err, OutputMessage.Severity.Error);
@@ -363,7 +359,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     });
     return {
       dispose: () => buffer.dispose(),
-      stderr,
+      content,
       onData,
     };
   }
@@ -432,14 +428,19 @@ namespace StreamingResponse {
   ): (response: R) => void {
     return (response: R) => {
       const out = response.getOutStream_asU8();
+      if (out.length) {
+        options.content.push(out);
+      }
       const err = response.getErrStream_asU8();
-      options.stderr.push(err);
+      if (err.length) {
+        options.content.push(err);
+      }
       options.onData(out, err);
       options.handlers?.forEach((handler) => handler(response));
     };
   }
   export interface Options<R extends StreamingResponse> {
-    readonly stderr: Uint8Array[];
+    readonly content: Uint8Array[];
     readonly onData: (out: Uint8Array, err: Uint8Array) => void;
     /**
      * Additional request handlers.
