@@ -27,7 +27,7 @@ export namespace BoardsDropDown {
 
 export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
   protected dropdownElement: HTMLElement;
-  private listRef: React.RefObject<HTMLDivElement>;
+  listRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: BoardsDropDown.Props) {
     super(props);
@@ -47,6 +47,8 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
       this.listRef.current.focus();
     }
   }
+
+  override componentDidMount(): void {}
 
   override render(): React.ReactNode {
     return ReactDOM.createPortal(this.renderNode(), this.dropdownElement);
@@ -71,14 +73,16 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
         ref={this.listRef}
         tabIndex={0}
       >
-        {items
-          .map(({ name, port, selected, onClick }) => ({
-            boardLabel: name,
-            port,
-            selected,
-            onClick,
-          }))
-          .map(this.renderItem)}
+        <div className="arduino-boards-dropdown-list--items-container">
+          {items
+            .map(({ name, port, selected, onClick }) => ({
+              boardLabel: name,
+              port,
+              selected,
+              onClick,
+            }))
+            .map(this.renderItem)}
+        </div>
         <div
           key={footerLabel}
           tabIndex={0}
@@ -103,6 +107,11 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
     onClick: () => void;
   }): React.ReactNode {
     const protocolIcon = iconNameFromProtocol(port.protocol);
+    const onKeyUp = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        onClick();
+      }
+    };
 
     return (
       <div
@@ -256,10 +265,8 @@ export class BoardsToolBarItem extends React.Component<
     );
   }
 
-  protected openDialog = (): void => {
-    this.props.commands.executeCommand(
-      OpenBoardsConfig.Commands.OPEN_DIALOG.id
-    );
+  protected openDialog = () => {
+    this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
   };
 }
 export namespace BoardsToolBarItem {
