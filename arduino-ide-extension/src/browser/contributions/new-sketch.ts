@@ -9,7 +9,6 @@ import {
   CommandRegistry,
   MenuModelRegistry,
   KeybindingRegistry,
-  TabBarToolbarRegistry,
 } from './contribution';
 
 @injectable()
@@ -37,15 +36,6 @@ export class NewSketch extends SketchContribution {
     registry.registerKeybinding({
       command: NewSketch.Commands.NEW_SKETCH.id,
       keybinding: 'CtrlCmd+N',
-    });
-  }
-
-  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
-    registry.registerItem({
-      id: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
-      command: NewSketch.Commands.NEW_SKETCH__TOOLBAR.id,
-      tooltip: nls.localize('arduino/sketch/new', 'New'),
-      priority: 3,
     });
   }
 

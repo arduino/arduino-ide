@@ -1,5 +1,5 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { Event, Emitter } from '@theia/core/lib/common/event';
+import { Emitter } from '@theia/core/lib/common/event';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { NotificationCenter } from '../notification-center';
@@ -10,7 +10,6 @@ import {
   Command,
   CommandRegistry,
   SketchContribution,
-  TabBarToolbarRegistry,
 } from './contribution';
 import { MaybePromise, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
@@ -51,35 +50,7 @@ export class Debug extends SketchContribution {
     this.disabledMessageDidChangeEmitter.fire(this._disabledMessages);
   }
 
-  protected readonly debugToolbarItem = {
-    id: Debug.Commands.START_DEBUGGING.id,
-    command: Debug.Commands.START_DEBUGGING.id,
-    tooltip: `${
-      this.disabledMessage
-        ? nls.localize(
-            'arduino/debug/debugWithMessage',
-            'Debug - {0}',
-            this.disabledMessage
-          )
-        : Debug.Commands.START_DEBUGGING.label
-    }`,
-    priority: 3,
-    onDidChange: this.onDisabledMessageDidChange as Event<void>,
-  };
-
   override onStart(): void {
-    this.onDisabledMessageDidChange(
-      () =>
-        (this.debugToolbarItem.tooltip = `${
-          this.disabledMessage
-            ? nls.localize(
-                'arduino/debug/debugWithMessage',
-                'Debug - {0}',
-                this.disabledMessage
-              )
-            : Debug.Commands.START_DEBUGGING.label
-        }`)
-    );
     this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
       this.refreshState(selectedBoard)
     );
@@ -98,10 +69,6 @@ export class Debug extends SketchContribution {
         ArduinoToolbar.is(widget) && widget.side === 'left',
       isEnabled: () => !this.disabledMessage,
     });
-  }
-
-  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
-    registry.registerItem(this.debugToolbarItem);
   }
 
   private async refreshState(
