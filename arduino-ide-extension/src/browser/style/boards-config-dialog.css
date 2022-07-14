@@ -142,96 +142,122 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 .p-Widget.dialogOverlay .dialogContent.select-board-dialog {
   width: 500px;
 }
+
 .arduino-boards-toolbar-item-container {
-  margin-left: 3px;
+  align-items: center;
+  background: var(--theia-tab-unfocusedActiveBackground);
+  border-radius: 1px;
+  color: var(--theia-foreground);
+  display: flex;
+  gap: 10px;
+  height: 24px;
+  margin: 0 6px;
+  overflow: hidden;
+  padding: 0 10px;
+  width: 230px;
+}
+
+.arduino-boards-toolbar-item--protocol, 
+.arduino-boards-dropdown-item--protocol {
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+}
+
+.arduino-boards-toolbar-item--protocol {
+  color: var(--theia-foreground);
+}
+
+.arduino-boards-dropdown-item--protocol {
+  color: var(--theia-activityBar-inactiveForeground);
 }
 
 .arduino-boards-toolbar-item-container
-  .arduino-boards-toolbar-item
-  .inner-container {
+  .arduino-boards-toolbar-item {
   display: flex;
   align-items: baseline;
   width: 100%;
 }
 
-.arduino-boards-toolbar-item-container
-  .arduino-boards-toolbar-item
-  .inner-container
-  .notAttached {
-  width: 10px;
-  height: 10px;
-  color: red;
-  margin: 0 5px;
-}
-
-.arduino-boards-toolbar-item-container
-  .arduino-boards-toolbar-item
-  .inner-container
-  .guessed {
-  width: 10px;
-  height: 10px;
-  color: var(--theia-warningBackground);
-  margin: 0 5px;
-}
-
-.arduino-boards-toolbar-item-container {
-  display: flex;
-  align-items: center;
-  width: 220px;
-}
-
-.arduino-boards-toolbar-item .label {
+.arduino-boards-toolbar-item--label {
   height: 100%;
   display: flex;
   align-items: center;
-  margin: 0 5px;
   width: 100%;
 }
 
-.arduino-boards-toolbar-item .caret {
+.arduino-boards-toolbar-item--label-connected {
+  font-weight: 700;
+}
+
+.arduino-boards-toolbar-item-container .caret {
   width: 10px;
   margin-right: 5px;
 }
 
-.arduino-boards-toolbar-item {
-  background: var(--theia-tab-unfocusedActiveBackground);
-  color: var(--theia-foreground);
-  height: 22px;
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-  margin: 0px 3px 0px 3px;
-  border: 1px solid var(--theia-dropdown-border);
-}
-
 .arduino-boards-dropdown-list {
-  border: 3px solid var(--theia-activityBar-background);
   margin: -1px;
   z-index: 1;
-  border: 1px solid var(--theia-dropdown-border);
+  border: 1px solid var(--theia-menu-selectionBackground);
+}
+
+.arduino-boards-dropdown-list--items-container {
+  overflow: auto;
+  max-height: 404px;
+}
+
+.arduino-boards-dropdown-list--items-container::-webkit-scrollbar {
+  background: var(--theia-tab-unfocusedActiveBackground);
 }
 
 .arduino-boards-dropdown-item {
-  font-size: var(--theia-ui-font-size1);
-  display: flex;
-  padding: 10px;
-  cursor: pointer;
-  color: var(--theia-foreground);
   background: var(--theia-tab-unfocusedActiveBackground);
-  border: 1px solid var(--theia-tab-unfocusedActiveBackground);
+  color: var(--theia-foreground);
+  cursor: default;
+  display: flex;
+  font-size: var(--theia-ui-font-size1);
+  gap: 10px;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.arduino-boards-dropdown-item--label {
+  flex: 1;
+}
+
+.arduino-boards-dropdown-item--board-label {
+  font-size: 14px;
+}
+
+.arduino-boards-dropdown-item--port-label {
+  color: #95A5A6;
+  font-size: 12px;
+}
+
+.arduino-boards-dropdown-item:hover {
+  background: var(--theia-list-hoverBackground);
+}
+
+.arduino-boards-dropdown-item--selected,
+.arduino-boards-dropdown-item--selected:hover {
+  background: var(--theia-menu-selectionBackground);
+  border: 1px solid var(--theia-menu-selectionBackground);
+}
+
+.arduino-boards-dropdown-item--selected
+  .arduino-boards-dropdown-item--port-label {
+  color: var(--theia-foreground);
+}
+
+.arduino-boards-dropdown-item--selected .fa {
+  color: #1DA086;
 }
 
 .arduino-boards-dropdown-item .fa-check {
-  color: var(--theia-arduino-branding-primary);
   align-self: center;
-}
-
-.arduino-boards-dropdown-item.selected,
-.arduino-boards-dropdown-item:hover {
-  border: 1px solid var(--theia-focusBorder);
 }
 
 .arduino-board-dropdown-footer {
   color: var(--theia-arduino-branding-primary);
-  border-top: 1px solid var(--theia-dropdown-border);
+  border-top: 1px solid var(--theia-menu-selectionBackground);
 }

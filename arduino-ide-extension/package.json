@@ -61,6 +61,7 @@
     "atob": "^2.1.2",
     "auth0-js": "^9.14.0",
     "btoa": "^1.2.1",
+    "classnames": "^2.3.1",
     "dateformat": "^3.0.3",
     "deep-equal": "^2.0.5",
     "deepmerge": "2.0.1",

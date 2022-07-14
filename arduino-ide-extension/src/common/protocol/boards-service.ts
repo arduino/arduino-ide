@@ -5,7 +5,9 @@ import { ArduinoComponent } from './arduino-component';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
-  export function byProtocol(availablePorts: AvailablePorts): Map<string, AvailablePorts> {
+  export function byProtocol(
+    availablePorts: AvailablePorts
+  ): Map<string, AvailablePorts> {
     const grouped = new Map<string, AvailablePorts>();
     for (const portID of Object.keys(availablePorts)) {
       const [port, boards] = availablePorts[portID];
@@ -42,18 +44,14 @@ export namespace AttachedBoardsChangeEvent {
       const visitedAttachedPorts: Port[] = [];
       const visitedDetachedPorts: Port[] = [];
       for (const board of attached.boards) {
-        const port = board.port
-          ? ` on ${Port.toString(board.port)}`
-          : '';
+        const port = board.port ? ` on ${Port.toString(board.port)}` : '';
         rows.push(` - Attached board: ${Board.toString(board)}${port}`);
         if (board.port) {
           visitedAttachedPorts.push(board.port);
         }
       }
       for (const board of detached.boards) {
-        const port = board.port
-          ? ` from ${Port.toString(board.port)}`
-          : '';
+        const port = board.port ? ` from ${Port.toString(board.port)}` : '';
         rows.push(` - Detached board: ${Board.toString(board)}${port}`);
         if (board.port) {
           visitedDetachedPorts.push(board.port);
@@ -61,16 +59,12 @@ export namespace AttachedBoardsChangeEvent {
       }
       for (const port of attached.ports) {
         if (!visitedAttachedPorts.find((p) => Port.sameAs(port, p))) {
-          rows.push(
-            ` - New port is available on ${Port.toString(port)}`
-          );
+          rows.push(` - New port is available on ${Port.toString(port)}`);
         }
       }
       for (const port of detached.ports) {
         if (!visitedDetachedPorts.find((p) => Port.sameAs(port, p))) {
-          rows.push(
-            ` - Port is no longer available on ${Port.toString(port)}`
-          );
+          rows.push(` - Port is no longer available on ${Port.toString(port)}`);
         }
       }
     }
@@ -121,7 +115,7 @@ export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService
   extends Installable<BoardsPackage>,
-  Searchable<BoardsPackage> {
+    Searchable<BoardsPackage> {
   /**
    * Deprecated. `getState` should be used to correctly map a board with a port.
    * @deprecated
@@ -139,7 +133,10 @@ export interface BoardsService
     fqbn: string;
   }): Promise<BoardsPackage | undefined>;
   searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
-  getBoardUserFields(options: { fqbn: string, protocol: string }): Promise<BoardUserField[]>;
+  getBoardUserFields(options: {
+    fqbn: string;
+    protocol: string;
+  }): Promise<BoardUserField[]>;
 }
 
 export interface Port {
@@ -172,13 +169,13 @@ export namespace Port {
     // 1. Serial
     // 2. Network
     // 3. Other protocols
-    if (left.protocol === "serial" && right.protocol !== "serial") {
+    if (left.protocol === 'serial' && right.protocol !== 'serial') {
       return -1;
-    } else if (left.protocol !== "serial" && right.protocol === "serial") {
+    } else if (left.protocol !== 'serial' && right.protocol === 'serial') {
       return 1;
-    } else if (left.protocol === "network" && right.protocol !== "network") {
+    } else if (left.protocol === 'network' && right.protocol !== 'network') {
       return -1;
-    } else if (left.protocol !== "network" && right.protocol === "network") {
+    } else if (left.protocol !== 'network' && right.protocol === 'network') {
       return 1;
     }
     return naturalCompare(left.address!, right.address!);
