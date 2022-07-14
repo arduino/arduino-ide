@@ -63,7 +63,7 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     protected override readonly props: SettingsDialogProps
   ) {
     super(props);
-    this.node.classList.add('arduino-settings-dialog-container');
+    this.node.id = 'arduino-settings-dialog-container';
     this.contentNode.classList.add('arduino-settings-dialog');
     this.appendCloseButton(
       nls.localize('vscode/issueMainService/cancel', 'Cancel')
