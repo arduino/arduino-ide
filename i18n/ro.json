@@ -129,6 +129,11 @@
     "coreContribution": {
       "copyError": "Copy error messages"
     },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
     "debug": {
       "debugWithMessage": "Depanare - {0}",
       "debuggingNotSupported": "Depanarea nu este suportată de '{0}'",

@@ -57,11 +57,11 @@
       "uploadingCertificates": "جار رفع الشهادة"
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "تعذر ايجاد لوحة المفاتيح 'Keyboard' . هل يحتوي مشروعك على '#include <Keyboard.h>' ؟",
+      "mouseError": "تعذر ايجاد الفأرة 'Mouse' . هل يحتوي مشروعك على '#include <Mouse.h>' ؟"
     },
     "cloud": {
-      "account": "Account",
+      "account": "الحساب",
       "chooseSketchVisibility": "اختر خصوصية مشروعك:",
       "connected": "متصل",
       "continue": "استئناف",
@@ -86,14 +86,14 @@
       "pushSketch": "دفع المشروع",
       "pushSketchMsg": "هذا مشروع عام . قبل دفعه , تاكد من عدم وجود اي معلومات حساسة داخل  ملف arduino_secrets.h . تستطيع جعل المشروع خاصا من لوحة المشاركة",
       "remote": "عن بعد",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "ملف المشاريع عن بعد (Remote Sketchbook)",
       "share": "مشاركة...",
       "shareSketch": "مشاركة المشروع",
       "showHideRemoveSketchbook": "اظهار/اخفاء المشاريع عن بعد",
       "signIn": "تسجيل الدخول",
       "signInToCloud": "تسجيل الدخول الى Arduino Cloud",
       "signOut": "تسجيل الخروج",
-      "sync": "Sync",
+      "sync": "مزامنة",
       "syncEditSketches": "المزامنة و التعديل على مشاريعك في Arduino Cloud",
       "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
     },
@@ -127,7 +127,12 @@
       "replaceTitle": "استبدال"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "نسخ رسالة الخطأ"
+    },
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
     },
     "debug": {
       "debugWithMessage": "تصحيح برمجي - {0}",
@@ -146,8 +151,8 @@
       "decreaseIndent": "تقليل مسافة البادئة",
       "increaseFontSize": "تكبير حجم الخط",
       "increaseIndent": "زيادة مسافة البادئة",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "الخطأ التالي",
+      "previousError": "الخطأ السابق"
     },
     "electron": {
       "couldNotSave": "تعذر حفظ المشروع . الرجاء نسخ عملك الغير محفوظ الى محرر النصوص المفضل لديك و اعادة تشغيل Arduino IDE",
@@ -223,7 +228,7 @@
       "zipLibrary": "المكتبة"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "متقدم",
       "sketch": "مشروع",
       "tools": "ادوات"
     },
@@ -241,7 +246,7 @@
       "board.certificates": "قائمة الشهادات التي يمكن رفعها الى اللوحات",
       "browse": "استعرض",
       "choose": "اختر",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cli.daemonDebug": "تفعيل تسجيل تصحيح الاخطاء لـ  gRPC calls الى CLI الاردوينو (Enable debug logging of the gRPC calls to the Arduino CLI)  يجب اعادة تشغيل ide لكي يصبح هذا الخيار فعالا .  الخيار غير مفعل افتراضيا",
       "cloud.enabled": "True اذا كانت مهام المزامنة مفعلة . True افتراضيا",
       "cloud.pull.warn": "True اذا كان يجب تحذير المستخدمين قبل سحب مشروع من السحابة . True افتراضيا",
       "cloud.push.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع الى السحابة . True افتراضيا",
@@ -322,9 +327,9 @@
       "verifyOrCompile": "تحقق/ترجم"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "الاجابة على الاستبيان",
+      "dismissSurvey": "لا تظهر مرة اخرى",
+      "surveyMessage": "يرجى ان تساعدنا لنحسن ادائنا من خلال الاجابة على هذا الاستبيان القصير جدا . نحن نحترم المجتمع الخاص بنا و نريد ان نتعرف بشكل افضل على داعمينا "
     },
     "upload": {
       "error": "خطا {0} : {1}"

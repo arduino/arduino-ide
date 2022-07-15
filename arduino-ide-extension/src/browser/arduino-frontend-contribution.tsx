@@ -650,6 +650,74 @@ export class ArduinoFrontendContribution
           hc: 'editor.background',
         },
         description: 'Background color of the Output view.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.border',
+        defaults: {
+          dark: 'dropdown.border',
+          light: 'dropdown.border',
+          hc: 'dropdown.border',
+        },
+        description: 'Border color of the Board Selector.',
+      },
+
+      {
+        id: 'arduino.toolbar.dropdown.borderActive',
+        defaults: {
+          dark: 'focusBorder',
+          light: 'focusBorder',
+          hc: 'focusBorder',
+        },
+        description: "Border color of the Board Selector when it's active",
+      },
+
+      {
+        id: 'arduino.toolbar.dropdown.background',
+        defaults: {
+          dark: 'tab.unfocusedActiveBackground',
+          light: 'tab.unfocusedActiveBackground',
+          hc: 'tab.unfocusedActiveBackground',
+        },
+        description: 'Background color of the Board Selector.',
+      },
+
+      {
+        id: 'arduino.toolbar.dropdown.label',
+        defaults: {
+          dark: 'foreground',
+          light: 'foreground',
+          hc: 'foreground',
+        },
+        description: 'Font color of the Board Selector.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.iconSelected',
+        defaults: {
+          dark: 'statusBar.background',
+          light: 'statusBar.background',
+          hc: 'statusBar.background',
+        },
+        description:
+          'Color of the selected protocol icon in the Board Selector.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.option.backgroundHover',
+        defaults: {
+          dark: 'editor.background',
+          light: 'editor.background',
+          hc: 'editor.background',
+        },
+        description: 'Background color on hover of the Board Selector options.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.option.backgroundSelected',
+        defaults: {
+          dark: 'editor.background',
+          light: 'editor.background',
+          hc: 'editor.background',
+        },
+        description:
+          'Background color of the selected board in the Board Selector.',
       }
     );
   }

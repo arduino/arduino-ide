@@ -30,7 +30,7 @@ export class ArduinoLocalizationContribution
     );
 
     registry.registerLocalizationFromRequire(
-      'pt',
+      'pt-br',
       require('../../build/i18n/pt.json')
     );
 

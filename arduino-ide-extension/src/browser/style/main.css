@@ -91,10 +91,10 @@
 #arduino-toolbar-container {
     display: flex;
     width: 100%;
+    justify-content: space-between;
 }
 
 .p-TabBar-toolbar.theia-arduino-toolbar {
-    flex: 1;
     z-index: 0;
 }
 
@@ -112,7 +112,7 @@
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
     justify-content: flex-start;
-    min-width: 190px;
+    min-width: 100px;
 }
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.left {
