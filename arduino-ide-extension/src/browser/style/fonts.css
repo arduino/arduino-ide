@@ -1,14 +1,9 @@
 @font-face {
-  font-family: 'Open Sans';
-  src: url('fonts/OpenSans-Bold-webfont.woff') format('woff');
-}
-
-@font-face {
   font-family: 'FontAwesome';
   src:
-    url('fonts/FontAwesome.ttf?nuchcq') format('truetype'),
-    url('fonts/FontAwesome.woff?nuchcq') format('woff'),
-    url('fonts/FontAwesome.svg?nuchcq#FontAwesome') format('svg');
+    url('fonts/FontAwesome.ttf?ykyvxr') format('truetype'),
+    url('fonts/FontAwesome.woff?ykyvxr') format('woff'),
+    url('fonts/FontAwesome.svg?ykyvxr#FontAwesome') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -29,10 +24,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fa-fa-check:before {
+  content: "\e90a";
+}
+.fa-arduino-technology-3dimensionscube:before {
+  content: "\e906";
+}
+.fa-arduino-technology-usb:before {
+  content: "\e907";
+}
+.fa-arduino-technology-connection:before {
+  content: "\e908";
+}
+.fa-arduino-technology-bluetooth:before {
+  content: "\e909";
+}
 .fa-arduino-debugger:before {
   content: "\e905";
 }
-
 .fa-arduino-search:before {
   content: "\e901";
 }
@@ -93,9 +102,6 @@
 .fa-th-list:before {
   content: "\f00b";
 }
-.fa-check:before {
-  content: "\f00c";
-}
 .fa-close:before {
   content: "\f00d";
 }
@@ -135,9 +141,6 @@
 .fa-clock-o:before {
   content: "\f017";
 }
-.fa-road:before {
-  content: "\f018";
-}
 .fa-download:before {
   content: "\f019";
 }
@@ -168,9 +171,6 @@
 .fa-lock:before {
   content: "\f023";
 }
-.fa-flag:before {
-  content: "\f024";
-}
 .fa-volume-off:before {
   content: "\f026";
 }
@@ -191,9 +191,6 @@
 }
 .fa-book:before {
   content: "\f02d";
-}
-.fa-bookmark:before {
-  content: "\f02e";
 }
 .fa-print:before {
   content: "\f02f";
@@ -228,20 +225,11 @@
 .fa-indent:before {
   content: "\f03c";
 }
-.fa-video-camera:before {
-  content: "\f03d";
-}
 .fa-pencil:before {
   content: "\f040";
 }
-.fa-map-marker:before {
-  content: "\f041";
-}
 .fa-adjust:before {
   content: "\f042";
-}
-.fa-tint:before {
-  content: "\f043";
 }
 .fa-edit:before {
   content: "\f044";
@@ -393,23 +381,11 @@
 .fa-arrows-h:before {
   content: "\f07e";
 }
-.fa-bar-chart:before {
-  content: "\f080";
-}
-.fa-bar-chart-o:before {
-  content: "\f080";
-}
 .fa-cogs:before {
   content: "\f085";
 }
 .fa-gears:before {
   content: "\f085";
-}
-.fa-thumbs-o-up:before {
-  content: "\f087";
-}
-.fa-thumbs-o-down:before {
-  content: "\f088";
 }
 .fa-star-half:before {
   content: "\f089";
@@ -458,9 +434,6 @@
 }
 .fa-arrow-circle-down:before {
   content: "\f0ab";
-}
-.fa-globe:before {
-  content: "\f0ac";
 }
 .fa-wrench:before {
   content: "\f0ad";
@@ -582,29 +555,8 @@
 .fa-angle-down:before {
   content: "\f107";
 }
-.fa-desktop:before {
-  content: "\f108";
-}
-.fa-laptop:before {
-  content: "\f109";
-}
-.fa-tablet:before {
-  content: "\f10a";
-}
-.fa-mobile:before {
-  content: "\f10b";
-}
-.fa-mobile-phone:before {
-  content: "\f10b";
-}
 .fa-circle-o:before {
   content: "\f10c";
-}
-.fa-quote-left:before {
-  content: "\f10d";
-}
-.fa-quote-right:before {
-  content: "\f10e";
 }
 .fa-spinner:before {
   content: "\f110";
@@ -618,26 +570,14 @@
 .fa-reply:before {
   content: "\f112";
 }
-.fa-github-alt:before {
-  content: "\f113";
-}
 .fa-folder-o:before {
   content: "\f114";
 }
 .fa-folder-open-o:before {
   content: "\f115";
 }
-.fa-gamepad:before {
-  content: "\f11b";
-}
 .fa-keyboard-o:before {
   content: "\f11c";
-}
-.fa-flag-o:before {
-  content: "\f11d";
-}
-.fa-flag-checkered:before {
-  content: "\f11e";
 }
 .fa-terminal:before {
   content: "\f120";
