@@ -18,8 +18,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 24px;
-    width: 24px;
+    height: 28px;
+    width: 28px;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-upload-sketch--toolbar,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-verify-sketch--toolbar {
     background: var(--theia-arduino-toolbar-button-background);
 }
 
@@ -29,7 +33,7 @@
 
 .arduino-verify-sketch--toolbar,
 .arduino-upload-sketch--toolbar {
-    border-radius: 12px;
+    border-radius: 14px;
 }
 
 .item.arduino-tool-item.toggled {
@@ -43,43 +47,28 @@
 }
 
 .arduino-tool-icon {
-    height: 24px;
-    width: 24px;
-    background-color: var(--theia-titleBar-activeBackground);
-    -webkit-mask: url(../icons/mask-buttons.svg);
-    mask: url(../icons/mask-buttons.svg);
-    -webkit-mask-size: 800%;
-    mask-size: 800%;
-}
-
-.arduino-save-sketch--toolbar-icon {
-    -webkit-mask-position: 59px -4px;
-    mask-position: 59px -4px;
+    height: 28px;
+    width: 28px;
 }
 
 .arduino-verify-sketch--toolbar-icon {
-    -webkit-mask-position: 188px -4px;
-    mask-position: 188px -4px;
+    -webkit-mask: url(../icons/verify.svg) center no-repeat;
+    background-color: var(--theia-titleBar-activeBackground);
 }
 
 .arduino-upload-sketch--toolbar-icon {
-    -webkit-mask-position: 156px -4px;
-    mask-position: 156px -4px;
-}
-
-.arduino-new-sketch--toolbar-icon {
-    -webkit-mask-position: 124px -4px;
-    mask-position: 124px -4px;
-}
-
-.arduino-open-sketch--toolbar-icon {
-    -webkit-mask-position: 92px -4px;
-    mask-position: 92px -4px;
+    -webkit-mask: url(../icons/upload.svg) center no-repeat;
+    background-color: var(--theia-titleBar-activeBackground);   
 }
 
 .toggle-serial-monitor-icon {
-    -webkit-mask-position: 28px -4px;
-    mask-position: 28px -4px;
+    -webkit-mask: url(../icons/monitor.svg) center no-repeat;
+    background-color: var(--theia-menu-selectionBackground);
+}
+
+.toggle-serial-plotter-icon {
+    -webkit-mask: url(../icons/plotter.svg) center no-repeat;
+    background-color: var(--theia-menu-selectionBackground);
 }
 
 .arduino-start-debug-icon {
@@ -114,7 +103,7 @@
 }
 
 #theia-top-panel .p-TabBar-toolbar {
-    padding-left: 4px !important; /* moves the `verify`, upload and other toolbar items to the left */
+    padding-left: 12px !important; /* moves the `verify`, upload and other toolbar items to the left */
 }
 
 .p-Widget .p-MenuBar {
@@ -181,17 +170,13 @@
     margin-left: 10px;
 }
 
-#arduino-open-sketch-control--toolbar--container {
-    background-color: var(--theia-arduino-toolbar-button-background);
-    border-radius: 1px;
+#arduino-open-sketch-control--toolbar {    
+    -webkit-mask: url(../icons/sketch-tabs-menu.svg) center no-repeat;
+    background-color: var(--theia-dropdown-foreground);
 }
 
-#arduino-open-sketch-control--toolbar {
-    height: unset;
-    width: unset;
-    line-height: unset;
-    color: var(--theia-titleBar-activeBackground);
-    padding: 5px 8px; /* based on pure heuristics */
+.p-TabBar.theia-app-sides .p-TabBar-tabIcon.arduino-boards-manager {
+    -webkit-mask: url(../icons/boards-manager.svg) center no-repeat;
 }
 
 /* Output */
