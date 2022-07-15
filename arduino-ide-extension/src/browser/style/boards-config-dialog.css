@@ -150,11 +150,11 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   color: var(--theia-arduino-toolbar-dropdown-label);
   display: flex;
   gap: 10px;
-  height: 24px;
-  margin: 0 6px;
+  height: 28px;
+  margin: 0 4px;
   overflow: hidden;
   padding: 0 10px;
-  width: 230px;
+  width: 210px;
 }
 
 .arduino-boards-toolbar-item--protocol, 
