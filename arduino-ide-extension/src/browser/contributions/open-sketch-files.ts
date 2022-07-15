@@ -1,4 +1,3 @@
-import { ApplicationError } from '@theia/core/lib/common/application-error';
 import { nls } from '@theia/core/lib/common/nls';
 import { injectable } from '@theia/core/shared/inversify';
 import type { EditorOpenerOptions } from '@theia/editor/lib/browser/editor-manager';
@@ -9,7 +8,6 @@ import {
   SketchContribution,
   URI,
 } from './contribution';
-import { Notifications } from './notifications';
 import { SaveAsSketch } from './save-as-sketch';
 
 @injectable()
@@ -60,7 +58,7 @@ export class OpenSketchFiles extends SketchContribution {
       }
     } catch (err) {
       if (SketchesError.NotFound.is(err)) {
-        this.openFallbackSketch(err);
+        this.openFallbackSketch();
       } else {
         console.error(err);
         const message =
@@ -74,36 +72,9 @@ export class OpenSketchFiles extends SketchContribution {
     }
   }
 
-  private async openFallbackSketch(
-    err: ApplicationError<
-      number,
-      {
-        uri: string;
-      }
-    >
-  ): Promise<void> {
+  private async openFallbackSketch(): Promise<void> {
     const sketch = await this.sketchService.createNewSketch();
-    this.workspaceService.open(
-      new URI(sketch.uri),
-      Object.assign(
-        {
-          preserveWindow: true,
-        },
-        {
-          tasks: [
-            {
-              command: Notifications.Commands.NOTIFY.id,
-              args: [
-                {
-                  type: 'error',
-                  message: err.message,
-                },
-              ],
-            },
-          ],
-        }
-      )
-    );
+    this.workspaceService.open(new URI(sketch.uri), { preserveWindow: true });
   }
 
   private async ensureOpened(

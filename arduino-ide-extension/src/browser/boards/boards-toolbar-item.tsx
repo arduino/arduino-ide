@@ -3,14 +3,13 @@ import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
-import { BoardsConfig } from './boards-config';
+import { OpenBoardsConfig } from '../contributions/open-boards-config';
 import {
   BoardsServiceProvider,
   AvailableBoard,
 } from './boards-service-provider';
 import { nls } from '@theia/core/lib/common';
 import classNames from 'classnames';
-import { OpenBoardsConfig } from '../contributions/open-boards-config';
 
 export interface BoardsDropDownListCoords {
   readonly top: number;
@@ -177,7 +176,7 @@ export class BoardsToolBarItem extends React.Component<
     this.toDispose.dispose();
   }
 
-  protected readonly show = (event: React.MouseEvent<HTMLElement>) => {
+  protected readonly show = (event: React.MouseEvent<HTMLElement>): void => {
     const { currentTarget: element } = event;
     if (element instanceof HTMLElement) {
       if (this.state.coords === 'hidden') {
@@ -200,23 +199,24 @@ export class BoardsToolBarItem extends React.Component<
 
   override render(): React.ReactNode {
     const { coords, availableBoards } = this.state;
-    const boardsConfig = this.props.boardsServiceProvider.boardsConfig;
-    const title = BoardsConfig.Config.toString(boardsConfig, {
-      default: nls.localize(
-        'arduino/common/noBoardSelected',
-        'No board selected'
-      ),
-    });
-    const decorator = (() => {
-      const selectedBoard = availableBoards.find(({ selected }) => selected);
-      if (!selectedBoard || !selectedBoard.port) {
-        return 'fa fa-times notAttached';
-      }
-      if (selectedBoard.state === AvailableBoard.State.guessed) {
-        return 'fa fa-exclamation-triangle guessed';
-      }
-      return '';
-    })();
+    const selectedBoard = availableBoards.find(({ selected }) => selected);
+
+    const boardLabel =
+      selectedBoard?.name ||
+      nls.localize('arduino/board/selectBoard', 'Select Board');
+    const selectedPortLabel = portLabel(selectedBoard?.port?.address);
+
+    const isConnected = Boolean(
+      selectedBoard && AvailableBoard.hasPort(selectedBoard)
+    );
+    const protocolIcon = isConnected
+      ? iconNameFromProtocol(selectedBoard?.port?.protocol || '')
+      : null;
+    const protocolIconClassNames = classNames(
+      'arduino-boards-toolbar-item--protocol',
+      'fa',
+      protocolIcon
+    );
 
     return (
       <React.Fragment>
@@ -225,7 +225,7 @@ export class BoardsToolBarItem extends React.Component<
           title={selectedPortLabel}
           onClick={this.show}
         >
-          {protocolIcon && <div className={procolIconClassNames} />}
+          {protocolIcon && <div className={protocolIconClassNames} />}
           <div
             className={classNames(
               'arduino-boards-toolbar-item--label',
@@ -264,11 +264,10 @@ export class BoardsToolBarItem extends React.Component<
     );
   }
 
-  protected openDialog = () => {
+  protected openDialog = (): void => {
     this.props.commands.executeCommand(
       OpenBoardsConfig.Commands.OPEN_DIALOG.id
     );
-    this.setState({ coords: 'hidden' });
   };
 }
 export namespace BoardsToolBarItem {

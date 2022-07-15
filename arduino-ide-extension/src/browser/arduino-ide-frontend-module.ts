@@ -304,7 +304,6 @@ import { StartupTasks } from './widgets/sketchbook/startup-task';
 import { IndexesUpdateProgress } from './contributions/indexes-update-progress';
 import { Daemon } from './contributions/daemon';
 import { FirstStartupInstaller } from './contributions/first-startup-installer';
-import { Notifications } from './contributions/notifications';
 import { OpenSketchFiles } from './contributions/open-sketch-files';
 import { InoLanguage } from './contributions/ino-language';
 import { SelectedBoard } from './contributions/selected-board';
@@ -705,7 +704,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Daemon);
   Contribution.configure(bind, FirstStartupInstaller);
   Contribution.configure(bind, StartupTasks);
-  Contribution.configure(bind, Notifications);
   Contribution.configure(bind, OpenSketchFiles);
   Contribution.configure(bind, InoLanguage);
   Contribution.configure(bind, SelectedBoard);

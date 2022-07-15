@@ -17,7 +17,6 @@ import { ConfigService } from '../../../common/protocol/config-service';
 import {
   SketchesService,
   Sketch,
-  SketchesError,
 } from '../../../common/protocol/sketches-service';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { BoardsConfig } from '../../boards/boards-config';
@@ -70,28 +69,10 @@ export class WorkspaceService extends TheiaWorkspaceService {
   ): Promise<FileStat | undefined> {
     const stat = await super.toFileStat(uri);
     if (!stat) {
-      return this.toFileStatWithNewSketchFallback(uri);
+      const newSketchUri = await this.sketchService.createNewSketch();
+      return this.toFileStat(newSketchUri.uri);
     }
     return stat;
-  }
-
-  private async toFileStatWithNewSketchFallback(
-    uri: string | URI | undefined
-  ): Promise<FileStat | undefined> {
-    if (!uri) {
-      return;
-    }
-    try {
-      await this.sketchService.loadSketch(
-        uri instanceof URI ? uri.toString() : uri
-      );
-    } catch (err) {
-      if (SketchesError.NotFound.is(err)) {
-        this.messageService.error(err.message);
-      }
-    }
-    const newSketchUri = await this.sketchService.createNewSketch();
-    return this.toFileStat(newSketchUri.uri);
   }
 
   // Was copied from the Theia implementation.
