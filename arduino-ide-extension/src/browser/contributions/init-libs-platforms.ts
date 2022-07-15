@@ -60,11 +60,7 @@ export class InitLibsPlatforms extends Contribution {
           });
         } catch (e) {
           // There's no error code, I need to parse the error message: https://github.com/arduino/arduino-cli/commit/2ea3608453b17b1157f8a1dc892af2e13e40f4f0#diff-1de7569144d4e260f8dde0e0d00a4e2a218c57966d583da1687a70d518986649R95
-          if (
-            e.message.includes(
-              `Library ${builtInLibrary.name} is already installed`
-            )
-          ) {
+          if (/Library (.*) is already installed/.test(e.message)) {
             // If Arduino_BuiltIn installation fails because it's already installed we don't want to retry on next start-up
             console.log('error installing core', e);
           } else {
