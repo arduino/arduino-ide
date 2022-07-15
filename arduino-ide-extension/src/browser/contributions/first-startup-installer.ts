@@ -4,7 +4,7 @@ import { BoardsService, LibraryService } from '../../common/protocol';
 import { Contribution } from './contribution';
 
 @injectable()
-export class InitLibsPlatforms extends Contribution {
+export class FirstStartupInstaller extends Contribution {
   @inject(LocalStorageService)
   private readonly localStorageService: LocalStorageService;
   @inject(BoardsService)
@@ -14,7 +14,7 @@ export class InitLibsPlatforms extends Contribution {
 
   override async onReady(): Promise<void> {
     const isFirstStartup = !(await this.localStorageService.getData(
-      InitLibsPlatforms.INIT_LIBS_AND_PACKAGES
+      FirstStartupInstaller.INIT_LIBS_AND_PACKAGES
     ));
     if (isFirstStartup) {
       const avrPackage = await this.boardsService.getBoardPackage({
@@ -85,13 +85,13 @@ export class InitLibsPlatforms extends Contribution {
 
       if (!avrPackageError && !builtInLibraryError) {
         await this.localStorageService.setData(
-          InitLibsPlatforms.INIT_LIBS_AND_PACKAGES,
+          FirstStartupInstaller.INIT_LIBS_AND_PACKAGES,
           true
         );
       }
     }
   }
 }
-export namespace InitLibsPlatforms {
+export namespace FirstStartupInstaller {
   export const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 }
