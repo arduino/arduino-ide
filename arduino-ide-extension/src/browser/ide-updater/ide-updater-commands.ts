@@ -52,9 +52,12 @@ export class IDEUpdaterCommands implements CommandContribution {
   }
 }
 export namespace IDEUpdaterCommands {
-  export const CHECK_FOR_UPDATES: Command = {
-    id: 'arduino-ide-check-for-updates',
-    category: 'Arduino',
-    label: 'Check for Arduino IDE updates',
-  };
+  export const CHECK_FOR_UPDATES: Command = Command.toLocalizedCommand(
+    {
+      id: 'arduino-ide-check-for-updates',
+      label: 'Check for Arduino IDE updates',
+      category: 'Arduino',
+    },
+    'arduino/ide-updater/checkForUpdates'
+  );
 }

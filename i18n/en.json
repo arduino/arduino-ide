@@ -190,6 +190,7 @@
       "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
@@ -294,6 +295,7 @@
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Timestamp",
       "toggleTimestamp": "Toggle Timestamp"
     },
