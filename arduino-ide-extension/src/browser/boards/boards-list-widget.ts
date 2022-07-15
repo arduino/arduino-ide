@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import {
   BoardsPackage,
   BoardsService,
@@ -20,7 +24,7 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
     super({
       id: BoardsListWidget.WIDGET_ID,
       label: BoardsListWidget.WIDGET_LABEL,
-      iconClass: 'fa fa-arduino-boards',
+      iconClass: 'arduino-boards-manager',
       searchable: service,
       installable: service,
       itemLabel: (item: BoardsPackage) => item.name,
