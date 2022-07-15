@@ -341,15 +341,7 @@ export class SketchesServiceImpl
 
   async cloneExample(uri: string): Promise<Sketch> {
     const sketch = await this.loadSketch(uri);
-    const parentPath = await new Promise<string>((resolve, reject) => {
-      temp.mkdir({ prefix }, (err, dirPath) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(dirPath);
-      });
-    });
+    const parentPath = await this.createTempFolder();
     const destinationUri = FileUri.create(
       path.join(parentPath, sketch.name)
     ).toString();
@@ -373,21 +365,7 @@ export class SketchesServiceImpl
       'dec',
     ];
     const today = new Date();
-    const parentPath = await new Promise<string>((resolve, reject) => {
-      temp.mkdir({ prefix }, (createError, dirPath) => {
-        if (createError) {
-          reject(createError);
-          return;
-        }
-        fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
-          if (resolveError) {
-            reject(resolveError);
-            return;
-          }
-          resolve(resolvedDirPath);
-        });
-      });
-    });
+    const parentPath = await this.createTempFolder();
     const sketchBaseName = `sketch_${
       monthNames[today.getMonth()]
     }${today.getDate()}`;
@@ -436,6 +414,30 @@ void loop() {
       { encoding: 'utf8' }
     );
     return this.loadSketch(FileUri.create(sketchDir).toString());
+  }
+
+  /**
+   * Creates a temp folder and returns with a promise that resolves with the canonicalized absolute pathname of the newly created temp folder.
+   * This method ensures that the file-system path pointing to the new temp directory is fully resolved.
+   * For example, on Windows, instead of getting an [8.3 filename](https://en.wikipedia.org/wiki/8.3_filename), callers will get a fully resolved path.
+   * `C:\\Users\\KITTAA~1\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a` will be `C:\\Users\\kittaakos\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a`
+   */
+  private createTempFolder(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      temp.mkdir({ prefix }, (createError, dirPath) => {
+        if (createError) {
+          reject(createError);
+          return;
+        }
+        fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
+          if (resolveError) {
+            reject(resolveError);
+            return;
+          }
+          resolve(resolvedDirPath);
+        });
+      });
+    });
   }
 
   async getSketchFolder(uri: string): Promise<Sketch | undefined> {
@@ -534,15 +536,7 @@ void loop() {
     // `ncp` makes a recursion and copies the folders over and over again. In such cases, we copy the source into a temp folder,
     // then move it to the desired destination.
     const destination = FileUri.fsPath(destinationUri);
-    let tempDestination = await new Promise<string>((resolve, reject) => {
-      temp.track().mkdir({ prefix }, async (err, dirPath) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(dirPath);
-      });
-    });
+    let tempDestination = await this.createTempFolder();
     tempDestination = path.join(tempDestination, sketch.name);
     await fs.promises.mkdir(tempDestination, { recursive: true });
     await copy(source, tempDestination);
