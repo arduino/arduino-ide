@@ -28,7 +28,7 @@ export namespace BoardsDropDown {
 
 export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
   protected dropdownElement: HTMLElement;
-  listRef: React.RefObject<HTMLDivElement>;
+  private listRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: BoardsDropDown.Props) {
     super(props);
@@ -48,8 +48,6 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
       this.listRef.current.focus();
     }
   }
-
-  override componentDidMount(): void {}
 
   override render(): React.ReactNode {
     return ReactDOM.createPortal(this.renderNode(), this.dropdownElement);
@@ -299,7 +297,7 @@ function iconNameFromProtocol(protocol: string): string {
   }
 }
 
-function portLabel(portName?: string) {
+function portLabel(portName?: string): string {
   return portName
     ? nls.localize('arduino/board/portLabel', 'Port: {0}', portName)
     : nls.localize('arduino/board/disconnected', 'Disconnected');
