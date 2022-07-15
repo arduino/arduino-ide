@@ -95,6 +95,9 @@ export class CompileRequest extends jspb.Message {
     getEncryptKey(): string;
     setEncryptKey(value: string): CompileRequest;
 
+    getSkipLibrariesDiscovery(): boolean;
+    setSkipLibrariesDiscovery(value: boolean): CompileRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -133,6 +136,7 @@ export namespace CompileRequest {
         keysKeychain: string,
         signKey: string,
         encryptKey: string,
+        skipLibrariesDiscovery: boolean,
     }
 }
 

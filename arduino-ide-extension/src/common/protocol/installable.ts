@@ -17,6 +17,7 @@ export interface Installable<T extends ArduinoComponent> {
     item: T;
     progressId?: string;
     version?: Installable.Version;
+    noOverwrite?: boolean;
   }): Promise<void>;
 
   /**

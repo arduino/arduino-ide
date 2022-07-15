@@ -16,6 +16,7 @@ export interface LibraryService
     progressId?: string;
     version?: Installable.Version;
     installDependencies?: boolean;
+    noOverwrite?: boolean;
   }): Promise<void>;
   installZip(options: {
     zipUri: string;

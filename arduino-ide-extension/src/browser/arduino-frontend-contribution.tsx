@@ -10,7 +10,6 @@ import {
   SketchesService,
   ExecutableService,
   Sketch,
-  LibraryService,
   ArduinoDaemon,
 } from '../common/protocol';
 import { Mutex } from 'async-mutex';
@@ -77,7 +76,6 @@ import { IDEUpdater } from '../common/protocol/ide-updater';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { HostedPluginEvents } from './hosted-plugin-events';
 
-const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
 
 @injectable()
@@ -97,9 +95,6 @@ export class ArduinoFrontendContribution
 
   @inject(BoardsService)
   private readonly boardsService: BoardsService;
-
-  @inject(LibraryService)
-  private readonly libraryService: LibraryService;
 
   @inject(BoardsServiceProvider)
   private readonly boardsServiceClientImpl: BoardsServiceProvider;
@@ -162,27 +157,6 @@ export class ArduinoFrontendContribution
 
   @postConstruct()
   protected async init(): Promise<void> {
-    const isFirstStartup = !(await this.localStorageService.getData(
-      INIT_LIBS_AND_PACKAGES
-    ));
-    if (isFirstStartup) {
-      await this.localStorageService.setData(INIT_LIBS_AND_PACKAGES, true);
-      const avrPackage = await this.boardsService.getBoardPackage({
-        id: 'arduino:avr',
-      });
-      const builtInLibrary = (
-        await this.libraryService.search({
-          query: 'Arduino_BuiltIn',
-        })
-      )[0];
-
-      !!avrPackage && (await this.boardsService.install({ item: avrPackage }));
-      !!builtInLibrary &&
-        (await this.libraryService.install({
-          item: builtInLibrary,
-          installDependencies: true,
-        }));
-    }
     if (!window.navigator.onLine) {
       // tslint:disable-next-line:max-line-length
       this.messageService.warn(

@@ -79,6 +79,9 @@ export class LibraryInstallRequest extends jspb.Message {
     getNoDeps(): boolean;
     setNoDeps(value: boolean): LibraryInstallRequest;
 
+    getNoOverwrite(): boolean;
+    setNoOverwrite(value: boolean): LibraryInstallRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryInstallRequest.AsObject;
@@ -96,6 +99,7 @@ export namespace LibraryInstallRequest {
         name: string,
         version: string,
         noDeps: boolean,
+        noOverwrite: boolean,
     }
 }
 

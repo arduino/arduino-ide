@@ -252,6 +252,7 @@ export class LibraryServiceImpl
     progressId?: string;
     version?: Installable.Version;
     installDependencies?: boolean;
+    noOverwrite?: boolean;
   }): Promise<void> {
     const item = options.item;
     const version = !!options.version
@@ -265,6 +266,7 @@ export class LibraryServiceImpl
     req.setName(item.name);
     req.setVersion(version);
     req.setNoDeps(!options.installDependencies);
+    req.setNoOverwrite(Boolean(options.noOverwrite));
 
     console.info('>>> Starting library package installation...', item);
 
@@ -291,7 +293,7 @@ export class LibraryServiceImpl
           }.\n`,
         });
         this.responseService.appendToOutput({
-          chunk: error.toString(),
+          chunk: `${error.toString()}\n`,
         });
         reject(error);
       });

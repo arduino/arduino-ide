@@ -26,6 +26,9 @@ export class PlatformInstallRequest extends jspb.Message {
     getSkipPostInstall(): boolean;
     setSkipPostInstall(value: boolean): PlatformInstallRequest;
 
+    getNoOverwrite(): boolean;
+    setNoOverwrite(value: boolean): PlatformInstallRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallRequest.AsObject;
@@ -44,6 +47,7 @@ export namespace PlatformInstallRequest {
         architecture: string,
         version: string,
         skipPostInstall: boolean,
+        noOverwrite: boolean,
     }
 }
 
