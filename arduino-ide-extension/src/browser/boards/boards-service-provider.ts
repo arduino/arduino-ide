@@ -270,6 +270,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   }
 
   protected setBoardsConfig(config: BoardsConfig.Config): void {
+    this.logger.debug('Board config changed: ', JSON.stringify(config));
     this._boardsConfig = config;
     this.latestBoardsConfig = this._boardsConfig;
     if (this.canUploadTo(this._boardsConfig)) {
