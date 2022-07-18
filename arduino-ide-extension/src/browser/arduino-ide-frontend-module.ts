@@ -702,7 +702,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, IndexesUpdateProgress);
   Contribution.configure(bind, Daemon);
   Contribution.configure(bind, FirstStartupInstaller);
-  Contribution.configure(bind, StartupTasks);
   Contribution.configure(bind, OpenSketchFiles);
   Contribution.configure(bind, InoLanguage);
   Contribution.configure(bind, SelectedBoard);
