@@ -17,10 +17,10 @@ import {
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
-import { ArduinoCommands } from '../arduino-commands';
 import { StorageWrapper } from '../storage-wrapper';
 import { nls } from '@theia/core/lib/common';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -38,6 +38,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
   @inject(NotificationCenter)
   protected notificationCenter: NotificationCenter;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
   protected readonly onBoardsConfigChangedEmitter =
     new Emitter<BoardsConfig.Config>();
@@ -87,11 +90,12 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.notifyPlatformUninstalled.bind(this)
     );
 
-    Promise.all([
-      this.boardsService.getAttachedBoards(),
-      this.boardsService.getAvailablePorts(),
-      this.loadState(),
-    ]).then(async ([attachedBoards, availablePorts]) => {
+    this.appStateService.reachedState('ready').then(async () => {
+      const [attachedBoards, availablePorts] = await Promise.all([
+        this.boardsService.getAttachedBoards(),
+        this.boardsService.getAvailablePorts(),
+        this.loadState(),
+      ]);
       this._attachedBoards = attachedBoards;
       this._availablePorts = availablePorts;
       this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
@@ -166,7 +170,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
           .then(async (answer) => {
             if (answer === yes) {
               this.commandService.executeCommand(
-                ArduinoCommands.OPEN_BOARDS_DIALOG.id,
+                'arduino-open-boards-dialog',
                 selectedBoard.name
               );
             }

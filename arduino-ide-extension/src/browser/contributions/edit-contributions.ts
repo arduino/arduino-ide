@@ -1,7 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
-import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
 import { MonacoEditorService } from '@theia/monaco/lib/browser/monaco-editor-service';
 import {
   Contribution,
@@ -20,13 +19,10 @@ import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/edit
 @injectable()
 export class EditContributions extends Contribution {
   @inject(MonacoEditorService)
-  protected readonly codeEditorService: MonacoEditorService;
+  private readonly codeEditorService: MonacoEditorService;
 
   @inject(ClipboardService)
-  protected readonly clipboardService: ClipboardService;
-
-  @inject(PreferenceService)
-  protected readonly preferences: PreferenceService;
+  private readonly clipboardService: ClipboardService;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(EditContributions.Commands.GO_TO_LINE, {

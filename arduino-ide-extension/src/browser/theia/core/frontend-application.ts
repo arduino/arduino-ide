@@ -4,7 +4,7 @@ import { CommandService } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { SketchesService } from '../../../common/protocol';
-import { ArduinoCommands } from '../../arduino-commands';
+import { OpenSketchFiles } from '../../contributions/open-sketch-files';
 
 @injectable()
 export class FrontendApplication extends TheiaFrontendApplication {
@@ -25,33 +25,11 @@ export class FrontendApplication extends TheiaFrontendApplication {
     this.workspaceService.roots.then(async (roots) => {
       for (const root of roots) {
         await this.commandService.executeCommand(
-          ArduinoCommands.OPEN_SKETCH_FILES.id,
+          OpenSketchFiles.Commands.OPEN_SKETCH_FILES.id,
           root.resource
         );
         this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
       }
     });
-  }
-
-  protected override getStartupIndicator(
-    host: HTMLElement
-  ): HTMLElement | undefined {
-    let startupElement = this.doGetStartupIndicator(host, 'old-theia-preload'); // https://github.com/eclipse-theia/theia/pull/10761#issuecomment-1131476318
-    if (!startupElement) {
-      startupElement = this.doGetStartupIndicator(host, 'theia-preload'); // We show the new Theia spinner in dev mode.
-    }
-    return startupElement;
-  }
-
-  private doGetStartupIndicator(
-    host: HTMLElement,
-    classNames: string
-  ): HTMLElement | undefined {
-    const elements = host.getElementsByClassName(classNames);
-    const first = elements[0];
-    if (first instanceof HTMLElement) {
-      return first;
-    }
-    return undefined;
   }
 }

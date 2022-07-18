@@ -3,7 +3,7 @@ import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
-import { ArduinoCommands } from '../arduino-commands';
+import { OpenBoardsConfig } from '../contributions/open-boards-config';
 import {
   BoardsServiceProvider,
   AvailableBoard,
@@ -155,7 +155,7 @@ export class BoardsToolBarItem extends React.Component<
   constructor(props: BoardsToolBarItem.Props) {
     super(props);
 
-    const { availableBoards } = props.boardsServiceClient;
+    const { availableBoards } = props.boardsServiceProvider;
     this.state = {
       availableBoards,
       coords: 'hidden',
@@ -167,8 +167,8 @@ export class BoardsToolBarItem extends React.Component<
   }
 
   override componentDidMount(): void {
-    this.props.boardsServiceClient.onAvailableBoardsChanged((availableBoards) =>
-      this.setState({ availableBoards })
+    this.props.boardsServiceProvider.onAvailableBoardsChanged(
+      (availableBoards) => this.setState({ availableBoards })
     );
   }
 
@@ -176,7 +176,7 @@ export class BoardsToolBarItem extends React.Component<
     this.toDispose.dispose();
   }
 
-  protected readonly show = (event: React.MouseEvent<HTMLElement>) => {
+  protected readonly show = (event: React.MouseEvent<HTMLElement>): void => {
     const { currentTarget: element } = event;
     if (element instanceof HTMLElement) {
       if (this.state.coords === 'hidden') {
@@ -212,7 +212,7 @@ export class BoardsToolBarItem extends React.Component<
     const protocolIcon = isConnected
       ? iconNameFromProtocol(selectedBoard?.port?.protocol || '')
       : null;
-    const procolIconClassNames = classNames(
+    const protocolIconClassNames = classNames(
       'arduino-boards-toolbar-item--protocol',
       'fa',
       protocolIcon
@@ -225,7 +225,7 @@ export class BoardsToolBarItem extends React.Component<
           title={selectedPortLabel}
           onClick={this.show}
         >
-          {protocolIcon && <div className={procolIconClassNames} />}
+          {protocolIcon && <div className={protocolIconClassNames} />}
           <div
             className={classNames(
               'arduino-boards-toolbar-item--label',
@@ -245,12 +245,12 @@ export class BoardsToolBarItem extends React.Component<
               ...board,
               onClick: () => {
                 if (board.state === AvailableBoard.State.incomplete) {
-                  this.props.boardsServiceClient.boardsConfig = {
+                  this.props.boardsServiceProvider.boardsConfig = {
                     selectedPort: board.port,
                   };
                   this.openDialog();
                 } else {
-                  this.props.boardsServiceClient.boardsConfig = {
+                  this.props.boardsServiceProvider.boardsConfig = {
                     selectedBoard: board,
                     selectedPort: board.port,
                   };
@@ -264,13 +264,15 @@ export class BoardsToolBarItem extends React.Component<
     );
   }
 
-  protected openDialog = () => {
-    this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
+  protected openDialog = (): void => {
+    this.props.commands.executeCommand(
+      OpenBoardsConfig.Commands.OPEN_DIALOG.id
+    );
   };
 }
 export namespace BoardsToolBarItem {
   export interface Props {
-    readonly boardsServiceClient: BoardsServiceProvider;
+    readonly boardsServiceProvider: BoardsServiceProvider;
     readonly commands: CommandRegistry;
   }
 

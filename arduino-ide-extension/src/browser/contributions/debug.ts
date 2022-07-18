@@ -12,46 +12,54 @@ import {
   SketchContribution,
   TabBarToolbarRegistry,
 } from './contribution';
-import { MaybePromise, nls } from '@theia/core/lib/common';
+import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import {
+  PreferenceScope,
+  PreferenceService,
+} from '@theia/core/lib/browser/preferences/preference-service';
 
 @injectable()
 export class Debug extends SketchContribution {
   @inject(HostedPluginSupport)
-  protected hostedPluginSupport: HostedPluginSupport;
+  private readonly hostedPluginSupport: HostedPluginSupport;
 
   @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
+  private readonly notificationCenter: NotificationCenter;
 
   @inject(ExecutableService)
-  protected readonly executableService: ExecutableService;
+  private readonly executableService: ExecutableService;
 
   @inject(BoardsService)
-  protected readonly boardService: BoardsService;
+  private readonly boardService: BoardsService;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
+
+  @inject(PreferenceService)
+  private readonly preferenceService: PreferenceService;
 
   /**
    * If `undefined`, debugging is enabled. Otherwise, the reason why it's disabled.
    */
-  protected _disabledMessages?: string = nls.localize(
+  private _disabledMessages?: string = nls.localize(
     'arduino/common/noBoardSelected',
     'No board selected'
   ); // Initial pessimism.
-  protected disabledMessageDidChangeEmitter = new Emitter<string | undefined>();
-  protected onDisabledMessageDidChange =
+  private disabledMessageDidChangeEmitter = new Emitter<string | undefined>();
+  private onDisabledMessageDidChange =
     this.disabledMessageDidChangeEmitter.event;
 
-  protected get disabledMessage(): string | undefined {
+  private get disabledMessage(): string | undefined {
     return this._disabledMessages;
   }
-  protected set disabledMessage(message: string | undefined) {
+  private set disabledMessage(message: string | undefined) {
     this._disabledMessages = message;
     this.disabledMessageDidChangeEmitter.fire(this._disabledMessages);
   }
 
-  protected readonly debugToolbarItem = {
+  private readonly debugToolbarItem = {
     id: Debug.Commands.START_DEBUGGING.id,
     command: Debug.Commands.START_DEBUGGING.id,
     tooltip: `${
@@ -98,10 +106,22 @@ export class Debug extends SketchContribution {
         ArduinoToolbar.is(widget) && widget.side === 'left',
       isEnabled: () => !this.disabledMessage,
     });
+    registry.registerCommand(Debug.Commands.OPTIMIZE_FOR_DEBUG, {
+      execute: () => this.toggleOptimizeForDebug(),
+      isToggled: () => this.isOptimizeForDebug(),
+    });
   }
 
   override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem(this.debugToolbarItem);
+  }
+
+  override registerMenus(registry: MenuModelRegistry): void {
+    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+      commandId: Debug.Commands.OPTIMIZE_FOR_DEBUG.id,
+      label: Debug.Commands.OPTIMIZE_FOR_DEBUG.label,
+      order: '5',
+    });
   }
 
   private async refreshState(
@@ -145,7 +165,7 @@ export class Debug extends SketchContribution {
     }
   }
 
-  protected async startDebug(
+  private async startDebug(
     board: Board | undefined = this.boardsServiceProvider.boardsConfig
       .selectedBoard
   ): Promise<void> {
@@ -183,8 +203,19 @@ export class Debug extends SketchContribution {
     };
     return this.commandService.executeCommand('arduino.debug.start', config);
   }
-}
 
+  private isOptimizeForDebug(): boolean {
+    return this.preferences.get('arduino.compile.optimizeForDebug');
+  }
+
+  private async toggleOptimizeForDebug(): Promise<void> {
+    return this.preferenceService.set(
+      'arduino.compile.optimizeForDebug',
+      !this.isOptimizeForDebug(),
+      PreferenceScope.User
+    );
+  }
+}
 export namespace Debug {
   export namespace Commands {
     export const START_DEBUGGING = Command.toLocalizedCommand(
@@ -194,6 +225,14 @@ export namespace Debug {
         category: 'Arduino',
       },
       'vscode/debug.contribution/startDebuggingHelp'
+    );
+    export const OPTIMIZE_FOR_DEBUG = Command.toLocalizedCommand(
+      {
+        id: 'arduino-optimize-for-debug',
+        label: 'Optimize for Debugging',
+        category: 'Arduino',
+      },
+      'arduino/debug/optimizeForDebugging'
     );
   }
 }

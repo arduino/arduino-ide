@@ -507,7 +507,8 @@ export class CreateApi {
   }
 
   private domain(apiVersion = 'v2'): string {
-    const endpoint = this.arduinoPreferences['arduino.cloud.sketchSyncEnpoint'];
+    const endpoint =
+      this.arduinoPreferences['arduino.cloud.sketchSyncEndpoint'];
     return `${endpoint}/${apiVersion}`;
   }
 

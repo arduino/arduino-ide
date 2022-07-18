@@ -17,6 +17,7 @@ import {
 } from '../../browser/utils/constants';
 import * as monaco from '@theia/monaco-editor-core';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 const READ_ONLY_FILES = ['sketch.json'];
 const READ_ONLY_FILES_REMOTE = ['thingProperties.h', 'thingsProperties.h'];
@@ -47,7 +48,9 @@ export class SketchesServiceClientImpl
   @inject(ConfigService)
   protected readonly configService: ConfigService;
 
-  protected toDispose = new DisposableCollection();
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
   protected sketches = new Map<string, SketchRef>();
   // TODO: rename this + event to the `onBlabla` pattern
   protected sketchbookDidChangeEmitter = new Emitter<{
@@ -55,8 +58,16 @@ export class SketchesServiceClientImpl
     removed: SketchRef[];
   }>();
   readonly onSketchbookDidChange = this.sketchbookDidChangeEmitter.event;
+  protected currentSketchDidChangeEmitter = new Emitter<CurrentSketch>();
+  readonly onCurrentSketchDidChange = this.currentSketchDidChangeEmitter.event;
 
-  private _currentSketch = new Deferred<CurrentSketch>();
+  protected toDispose = new DisposableCollection(
+    this.sketchbookDidChangeEmitter,
+    this.currentSketchDidChangeEmitter
+  );
+
+  private _currentSketch: CurrentSketch | undefined;
+  private currentSketchLoaded = new Deferred<CurrentSketch>();
 
   onStart(): void {
     this.configService.getConfiguration().then(({ sketchDirUri }) => {
@@ -110,9 +121,14 @@ export class SketchesServiceClientImpl
           );
         });
     });
-    this.loadCurrentSketch().then((currentSketch) =>
-      this._currentSketch.resolve(currentSketch)
-    );
+    this.appStateService
+      .reachedState('started_contributions')
+      .then(async () => {
+        const currentSketch = await this.loadCurrentSketch();
+        this._currentSketch = currentSketch;
+        this.currentSketchDidChangeEmitter.fire(this._currentSketch);
+        this.currentSketchLoaded.resolve(this._currentSketch);
+      });
   }
 
   onStop(): void {
@@ -143,7 +159,11 @@ export class SketchesServiceClientImpl
   }
 
   async currentSketch(): Promise<CurrentSketch> {
-    return this._currentSketch.promise;
+    return this.currentSketchLoaded.promise;
+  }
+
+  tryGetCurrentSketch(): CurrentSketch | undefined {
+    return this._currentSketch;
   }
 
   async currentSketchFile(): Promise<string | undefined> {

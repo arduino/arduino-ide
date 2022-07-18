@@ -1,36 +1,22 @@
+import * as remote from '@theia/core/electron-shared/@electron/remote';
 import {
   inject,
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
-import {
-  BoardsService,
-  SketchesService,
-  ExecutableService,
-  Sketch,
-  ArduinoDaemon,
-} from '../common/protocol';
-import { Mutex } from 'async-mutex';
+import { SketchesService } from '../common/protocol';
 import {
   MAIN_MENU_BAR,
   MenuContribution,
   MenuModelRegistry,
-  ILogger,
-  DisposableCollection,
 } from '@theia/core';
 import {
   Dialog,
   FrontendApplication,
   FrontendApplicationContribution,
-  LocalStorageService,
   OnWillStopAction,
-  SaveableWidget,
-  StatusBar,
-  StatusBarAlignment,
 } from '@theia/core/lib/browser';
-import { nls } from '@theia/core/lib/common';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
@@ -38,45 +24,28 @@ import {
   TabBarToolbarContribution,
   TabBarToolbarRegistry,
 } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { nls } from '@theia/core/lib/common';
 import {
   CommandContribution,
   CommandRegistry,
 } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import URI from '@theia/core/lib/common/uri';
-import {
-  EditorCommands,
-  EditorMainMenu,
-  EditorManager,
-  EditorOpenerOptions,
-} from '@theia/editor/lib/browser';
+import { EditorCommands, EditorMainMenu } from '@theia/editor/lib/browser';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { FileChangeType } from '@theia/filesystem/lib/browser';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { ArduinoCommands } from './arduino-commands';
-import { BoardsConfig } from './boards/boards-config';
-import { BoardsConfigDialog } from './boards/boards-config-dialog';
-import { BoardsServiceProvider } from './boards/boards-service-provider';
-import { BoardsToolBarItem } from './boards/boards-toolbar-item';
-import { EditorMode } from './editor-mode';
-import { ArduinoMenus } from './menu/arduino-menus';
-import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
-import { ArduinoToolbar } from './toolbar/arduino-toolbar';
-import { ArduinoPreferences } from './arduino-preferences';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../common/protocol/sketches-service-client-impl';
+import { ArduinoPreferences } from './arduino-preferences';
+import { BoardsServiceProvider } from './boards/boards-service-provider';
+import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { SaveAsSketch } from './contributions/save-as-sketch';
-import { IDEUpdaterDialog } from './dialogs/ide-updater/ide-updater-dialog';
-import { IDEUpdater } from '../common/protocol/ide-updater';
-import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
-import { HostedPluginEvents } from './hosted-plugin-events';
-
-export const SKIP_IDE_VERSION = 'skipIDEVersion';
+import { ArduinoMenus } from './menu/arduino-menus';
+import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
+import { ArduinoToolbar } from './toolbar/arduino-toolbar';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -87,44 +56,17 @@ export class ArduinoFrontendContribution
     MenuContribution,
     ColorContribution
 {
-  @inject(ILogger)
-  private readonly logger: ILogger;
-
   @inject(MessageService)
   private readonly messageService: MessageService;
 
-  @inject(BoardsService)
-  private readonly boardsService: BoardsService;
-
   @inject(BoardsServiceProvider)
-  private readonly boardsServiceClientImpl: BoardsServiceProvider;
-
-  @inject(EditorManager)
-  private readonly editorManager: EditorManager;
-
-  @inject(FileService)
-  private readonly fileService: FileService;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(SketchesService)
   private readonly sketchService: SketchesService;
 
-  @inject(BoardsConfigDialog)
-  private readonly boardsConfigDialog: BoardsConfigDialog;
-
   @inject(CommandRegistry)
   private readonly commandRegistry: CommandRegistry;
-
-  @inject(StatusBar)
-  private readonly statusBar: StatusBar;
-
-  @inject(EditorMode)
-  private readonly editorMode: EditorMode;
-
-  @inject(HostedPluginEvents)
-  private readonly hostedPluginEvents: HostedPluginEvents;
-
-  @inject(ExecutableService)
-  private readonly executableService: ExecutableService;
 
   @inject(ArduinoPreferences)
   private readonly arduinoPreferences: ArduinoPreferences;
@@ -134,26 +76,6 @@ export class ArduinoFrontendContribution
 
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
-
-  @inject(LocalStorageService)
-  private readonly localStorageService: LocalStorageService;
-
-  @inject(FileSystemFrontendContribution)
-  private readonly fileSystemFrontendContribution: FileSystemFrontendContribution;
-
-  @inject(IDEUpdater)
-  private readonly updater: IDEUpdater;
-
-  @inject(IDEUpdaterDialog)
-  private readonly updaterDialog: IDEUpdaterDialog;
-
-  @inject(ArduinoDaemon)
-  private readonly daemon: ArduinoDaemon;
-
-  protected invalidConfigPopup:
-    | Promise<void | 'No' | 'Yes' | undefined>
-    | undefined;
-  protected toDisposeOnStop = new DisposableCollection();
 
   @postConstruct()
   protected async init(): Promise<void> {
@@ -166,250 +88,32 @@ export class ArduinoFrontendContribution
         )
       );
     }
-    const updateStatusBar = ({
-      selectedBoard,
-      selectedPort,
-    }: BoardsConfig.Config) => {
-      this.statusBar.setElement('arduino-selected-board', {
-        alignment: StatusBarAlignment.RIGHT,
-        text: selectedBoard
-          ? `$(microchip) ${selectedBoard.name}`
-          : `$(close) ${nls.localize(
-              'arduino/common/noBoardSelected',
-              'No board selected'
-            )}`,
-        className: 'arduino-selected-board',
-      });
-      if (selectedBoard) {
-        this.statusBar.setElement('arduino-selected-port', {
-          alignment: StatusBarAlignment.RIGHT,
-          text: selectedPort
-            ? nls.localize(
-                'arduino/common/selectedOn',
-                'on {0}',
-                selectedPort.address
-              )
-            : nls.localize('arduino/common/notConnected', '[not connected]'),
-          className: 'arduino-selected-port',
-        });
-      }
-    };
-    this.boardsServiceClientImpl.onBoardsConfigChanged(updateStatusBar);
-    updateStatusBar(this.boardsServiceClientImpl.boardsConfig);
-    this.appStateService.reachedState('ready').then(async () => {
-      const sketch = await this.sketchServiceClient.currentSketch();
-      if (
-        CurrentSketch.isValid(sketch) &&
-        !(await this.sketchService.isTemp(sketch))
-      ) {
-        this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
-        this.toDisposeOnStop.push(
-          this.fileService.onDidFilesChange(async (event) => {
-            for (const { type, resource } of event.changes) {
-              if (
-                type === FileChangeType.ADDED &&
-                resource.parent.toString() === sketch.uri
-              ) {
-                const reloadedSketch = await this.sketchService.loadSketch(
-                  sketch.uri
-                );
-                if (Sketch.isInSketch(resource, reloadedSketch)) {
-                  this.ensureOpened(resource.toString(), true, {
-                    mode: 'open',
-                  });
-                }
-              }
-            }
-          })
-        );
-      }
-    });
   }
 
   async onStart(app: FrontendApplication): Promise<void> {
-    this.updater
-      .init(
-        this.arduinoPreferences.get('arduino.ide.updateChannel'),
-        this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
-      )
-      .then(() => this.updater.checkForUpdates(true))
-      .then(async (updateInfo) => {
-        if (!updateInfo) return;
-        const versionToSkip = await this.localStorageService.getData<string>(
-          SKIP_IDE_VERSION
-        );
-        if (versionToSkip === updateInfo.version) return;
-        this.updaterDialog.open(updateInfo);
-      })
-      .catch((e) => {
-        this.messageService.error(
-          nls.localize(
-            'arduino/ide-updater/errorCheckingForUpdates',
-            'Error while checking for Arduino IDE updates.\n{0}',
-            e.message
-          )
-        );
-      });
-
-    const start = async (
-      { selectedBoard }: BoardsConfig.Config,
-      forceStart = false
-    ) => {
-      if (selectedBoard) {
-        const { name, fqbn } = selectedBoard;
-        if (fqbn) {
-          this.startLanguageServer(fqbn, name, forceStart);
-        }
-      }
-    };
-    this.boardsServiceClientImpl.onBoardsConfigChanged(start);
-    this.hostedPluginEvents.onPluginsDidStart(() =>
-      start(this.boardsServiceClientImpl.boardsConfig)
-    );
-    this.hostedPluginEvents.onPluginsWillUnload(
-      () => (this.languageServerFqbn = undefined)
-    );
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
-          case 'arduino.language.log':
-          case 'arduino.language.realTimeDiagnostics':
-            start(this.boardsServiceClientImpl.boardsConfig, true);
-            break;
           case 'arduino.window.zoomLevel':
             if (typeof event.newValue === 'number') {
               const webContents = remote.getCurrentWebContents();
               webContents.setZoomLevel(event.newValue || 0);
             }
             break;
-          case 'arduino.ide.updateChannel':
-          case 'arduino.ide.updateBaseUrl':
-            this.updater.init(
-              this.arduinoPreferences.get('arduino.ide.updateChannel'),
-              this.arduinoPreferences.get('arduino.ide.updateBaseUrl')
-            );
-            break;
         }
       }
     });
-    this.arduinoPreferences.ready.then(() => {
-      const webContents = remote.getCurrentWebContents();
-      const zoomLevel = this.arduinoPreferences.get('arduino.window.zoomLevel');
-      webContents.setZoomLevel(zoomLevel);
-    });
-
-    app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
-
-    this.fileSystemFrontendContribution.onDidChangeEditorFile(
-      ({ type, editor }) => {
-        if (type === FileChangeType.DELETED) {
-          const editorWidget = editor;
-          if (SaveableWidget.is(editorWidget)) {
-            editorWidget.closeWithoutSaving();
-          } else {
-            editorWidget.close();
-          }
-        }
-      }
-    );
-  }
-
-  onStop(): void {
-    this.toDisposeOnStop.dispose();
-  }
-
-  protected languageServerFqbn?: string;
-  protected languageServerStartMutex = new Mutex();
-  protected async startLanguageServer(
-    fqbn: string,
-    name: string | undefined,
-    forceStart = false
-  ): Promise<void> {
-    const port = await this.daemon.tryGetPort();
-    if (!port) {
-      return;
-    }
-    const release = await this.languageServerStartMutex.acquire();
-    try {
-      await this.hostedPluginEvents.didStart;
-      const details = await this.boardsService.getBoardDetails({ fqbn });
-      if (!details) {
-        // Core is not installed for the selected board.
-        console.info(
-          `Could not start language server for ${fqbn}. The core is not installed for the board.`
+    this.appStateService.reachedState('initialized_layout').then(() =>
+      this.arduinoPreferences.ready.then(() => {
+        const webContents = remote.getCurrentWebContents();
+        const zoomLevel = this.arduinoPreferences.get(
+          'arduino.window.zoomLevel'
         );
-        if (this.languageServerFqbn) {
-          try {
-            await this.commandRegistry.executeCommand(
-              'arduino.languageserver.stop'
-            );
-            console.info(
-              `Stopped language server process for ${this.languageServerFqbn}.`
-            );
-            this.languageServerFqbn = undefined;
-          } catch (e) {
-            console.error(
-              `Failed to start language server process for ${this.languageServerFqbn}`,
-              e
-            );
-            throw e;
-          }
-        }
-        return;
-      }
-      if (!forceStart && fqbn === this.languageServerFqbn) {
-        // NOOP
-        return;
-      }
-      this.logger.info(`Starting language server: ${fqbn}`);
-      const log = this.arduinoPreferences.get('arduino.language.log');
-      const realTimeDiagnostics = this.arduinoPreferences.get(
-        'arduino.language.realTimeDiagnostics'
-      );
-      let currentSketchPath: string | undefined = undefined;
-      if (log) {
-        const currentSketch = await this.sketchServiceClient.currentSketch();
-        if (CurrentSketch.isValid(currentSketch)) {
-          currentSketchPath = await this.fileService.fsPath(
-            new URI(currentSketch.uri)
-          );
-        }
-      }
-      const { clangdUri, lsUri } = await this.executableService.list();
-      const [clangdPath, lsPath] = await Promise.all([
-        this.fileService.fsPath(new URI(clangdUri)),
-        this.fileService.fsPath(new URI(lsUri)),
-      ]);
-
-      this.languageServerFqbn = await Promise.race([
-        new Promise<undefined>((_, reject) =>
-          setTimeout(
-            () => reject(new Error(`Timeout after ${20_000} ms.`)),
-            20_000
-          )
-        ),
-        this.commandRegistry.executeCommand<string>(
-          'arduino.languageserver.start',
-          {
-            lsPath,
-            cliDaemonAddr: `localhost:${port}`,
-            clangdPath,
-            log: currentSketchPath ? currentSketchPath : log,
-            cliDaemonInstance: '1',
-            realTimeDiagnostics,
-            board: {
-              fqbn,
-              name: name ? `"${name}"` : undefined,
-            },
-          }
-        ),
-      ]);
-    } catch (e) {
-      console.log(`Failed to start language server for ${fqbn}`, e);
-      this.languageServerFqbn = undefined;
-    } finally {
-      release();
-    }
+        webContents.setZoomLevel(zoomLevel);
+      })
+    );
+    // Removes the _Settings_ (cog) icon from the left sidebar
+    app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
   }
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {
@@ -419,7 +123,7 @@ export class ArduinoFrontendContribution
         <BoardsToolBarItem
           key="boardsToolbarItem"
           commands={this.commandRegistry}
-          boardsServiceClient={this.boardsServiceClientImpl}
+          boardsServiceProvider={this.boardsServiceProvider}
         />
       ),
       isVisible: (widget) =>
@@ -434,24 +138,6 @@ export class ArduinoFrontendContribution
   }
 
   registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG, {
-      execute: () => this.editorMode.toggleCompileForDebug(),
-      isToggled: () => this.editorMode.compileForDebug,
-    });
-    registry.registerCommand(ArduinoCommands.OPEN_SKETCH_FILES, {
-      execute: async (uri: URI) => {
-        this.openSketchFiles(uri);
-      },
-    });
-    registry.registerCommand(ArduinoCommands.OPEN_BOARDS_DIALOG, {
-      execute: async (query?: string | undefined) => {
-        const boardsConfig = await this.boardsConfigDialog.open(query);
-        if (boardsConfig) {
-          this.boardsServiceClientImpl.boardsConfig = boardsConfig;
-        }
-      },
-    });
-
     for (const command of [
       EditorCommands.SPLIT_EDITOR_DOWN,
       EditorCommands.SPLIT_EDITOR_LEFT,
@@ -484,70 +170,6 @@ export class ArduinoFrontendContribution
       ArduinoMenus.TOOLS,
       nls.localize('arduino/menu/tools', 'Tools')
     );
-    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: ArduinoCommands.TOGGLE_COMPILE_FOR_DEBUG.id,
-      label: nls.localize(
-        'arduino/debug/optimizeForDebugging',
-        'Optimize for Debugging'
-      ),
-      order: '5',
-    });
-  }
-
-  protected async openSketchFiles(uri: URI): Promise<void> {
-    try {
-      const sketch = await this.sketchService.loadSketch(uri.toString());
-      const { mainFileUri, rootFolderFileUris } = sketch;
-      for (const uri of [mainFileUri, ...rootFolderFileUris]) {
-        await this.ensureOpened(uri);
-      }
-      if (mainFileUri.endsWith('.pde')) {
-        const message = nls.localize(
-          'arduino/common/oldFormat',
-          "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
-          sketch.name
-        );
-        const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
-        this.messageService
-          .info(message, nls.localize('arduino/common/later', 'Later'), yes)
-          .then(async (answer) => {
-            if (answer === yes) {
-              this.commandRegistry.executeCommand(
-                SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-                {
-                  execOnlyIfTemp: false,
-                  openAfterMove: true,
-                  wipeOriginal: false,
-                }
-              );
-            }
-          });
-      }
-    } catch (e) {
-      console.error(e);
-      const message = e instanceof Error ? e.message : JSON.stringify(e);
-      this.messageService.error(message);
-    }
-  }
-
-  protected async ensureOpened(
-    uri: string,
-    forceOpen = false,
-    options?: EditorOpenerOptions | undefined
-  ): Promise<unknown> {
-    const widget = this.editorManager.all.find(
-      (widget) => widget.editor.uri.toString() === uri
-    );
-    if (!widget || forceOpen) {
-      return this.editorManager.open(
-        new URI(uri),
-        options ?? {
-          mode: 'reveal',
-          preview: false,
-          counter: 0,
-        }
-      );
-    }
   }
 
   registerColors(colors: ColorRegistry): void {
@@ -699,6 +321,7 @@ export class ArduinoFrontendContribution
     );
   }
 
+  // TODO: should be handled by `Close` contribution. https://github.com/arduino/arduino-ide/issues/1016
   onWillStop(): OnWillStopAction {
     return {
       reason: 'temp-sketch',

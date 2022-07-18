@@ -37,7 +37,6 @@ import {
   CommandContribution,
   CommandService,
 } from '@theia/core/lib/common/command';
-import { EditorMode } from '../editor-mode';
 import { SettingsService } from '../dialogs/settings/settings';
 import {
   CurrentSketch,
@@ -90,14 +89,14 @@ export abstract class Contribution
   @inject(WorkspaceService)
   protected readonly workspaceService: WorkspaceService;
 
-  @inject(EditorMode)
-  protected readonly editorMode: EditorMode;
-
   @inject(LabelProvider)
   protected readonly labelProvider: LabelProvider;
 
   @inject(SettingsService)
   protected readonly settingsService: SettingsService;
+
+  @inject(ArduinoPreferences)
+  protected readonly preferences: ArduinoPreferences;
 
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
@@ -145,9 +144,6 @@ export abstract class SketchContribution extends Contribution {
 
   @inject(SketchesServiceClientImpl)
   protected readonly sketchServiceClient: SketchesServiceClientImpl;
-
-  @inject(ArduinoPreferences)
-  protected readonly preferences: ArduinoPreferences;
 
   @inject(EditorManager)
   protected readonly editorManager: EditorManager;

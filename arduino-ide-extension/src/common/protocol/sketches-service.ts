@@ -1,4 +1,20 @@
+import { ApplicationError } from '@theia/core/lib/common/application-error';
 import URI from '@theia/core/lib/common/uri';
+
+export namespace SketchesError {
+  export const Codes = {
+    NotFound: 5001,
+  };
+  export const NotFound = ApplicationError.declare(
+    Codes.NotFound,
+    (message: string, uri: string) => {
+      return {
+        message,
+        data: { uri },
+      };
+    }
+  );
+}
 
 export const SketchesServicePath = '/services/sketches-service';
 export const SketchesService = Symbol('SketchesService');

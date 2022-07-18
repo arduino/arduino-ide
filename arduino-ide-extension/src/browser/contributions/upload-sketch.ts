@@ -227,7 +227,9 @@ export class UploadSketch extends CoreServiceContribution {
         fqbn,
       };
       let options: CoreService.Upload.Options | undefined = undefined;
-      const optimizeForDebug = this.editorMode.compileForDebug;
+      const optimizeForDebug = this.preferences.get(
+        'arduino.compile.optimizeForDebug'
+      );
       const { selectedPort } = boardsConfig;
       const port = selectedPort;
       const userFields =

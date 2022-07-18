@@ -80,7 +80,6 @@ import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browse
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
-import { EditorMode } from './editor-mode';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
@@ -301,10 +300,16 @@ import { CoreErrorHandler } from './contributions/core-error-handler';
 import { CompilerErrors } from './contributions/compiler-errors';
 import { WidgetManager } from './theia/core/widget-manager';
 import { WidgetManager as TheiaWidgetManager } from '@theia/core/lib/browser/widget-manager';
-import { StartupTask } from './widgets/sketchbook/startup-task';
+import { StartupTasks } from './widgets/sketchbook/startup-task';
 import { IndexesUpdateProgress } from './contributions/indexes-update-progress';
 import { Daemon } from './contributions/daemon';
 import { FirstStartupInstaller } from './contributions/first-startup-installer';
+import { OpenSketchFiles } from './contributions/open-sketch-files';
+import { InoLanguage } from './contributions/ino-language';
+import { SelectedBoard } from './contributions/selected-board';
+import { CheckForUpdates } from './contributions/check-for-updates';
+import { OpenBoardsConfig } from './contributions/open-boards-config';
+import { SketchFilesTracker } from './contributions/sketch-files-tracker';
 
 MonacoThemingService.register({
   id: 'arduino-theme',
@@ -485,10 +490,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaWorkspaceVariableContribution).toService(
     WorkspaceVariableContribution
   );
-
-  // Customizing default Theia layout based on the editor mode: `pro-mode` or `classic`.
-  bind(EditorMode).toSelf().inSingletonScope();
-  bind(FrontendApplicationContribution).toService(EditorMode);
 
   bind(SurveyNotificationService)
     .toDynamicValue((context) => {
@@ -697,10 +698,16 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, PlotterFrontendContribution);
   Contribution.configure(bind, Format);
   Contribution.configure(bind, CompilerErrors);
-  Contribution.configure(bind, StartupTask);
+  Contribution.configure(bind, StartupTasks);
   Contribution.configure(bind, IndexesUpdateProgress);
   Contribution.configure(bind, Daemon);
   Contribution.configure(bind, FirstStartupInstaller);
+  Contribution.configure(bind, OpenSketchFiles);
+  Contribution.configure(bind, InoLanguage);
+  Contribution.configure(bind, SelectedBoard);
+  Contribution.configure(bind, CheckForUpdates);
+  Contribution.configure(bind, OpenBoardsConfig);
+  Contribution.configure(bind, SketchFilesTracker);
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.

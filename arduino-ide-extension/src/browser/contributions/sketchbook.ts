@@ -5,7 +5,11 @@ import { ArduinoMenus } from '../menu/arduino-menus';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { NotificationCenter } from '../notification-center';
 import { Examples } from './examples';
-import { SketchContainer } from '../../common/protocol';
+import {
+  SketchContainer,
+  SketchesError,
+  SketchRef,
+} from '../../common/protocol';
 import { OpenSketch } from './open-sketch';
 import { nls } from '@theia/core/lib/common';
 
@@ -24,15 +28,14 @@ export class Sketchbook extends Examples {
   protected readonly notificationCenter: NotificationCenter;
 
   override onStart(): void {
-    this.sketchServiceClient.onSketchbookDidChange(() => {
-      this.sketchService.getSketches({}).then((container) => {
-        this.register(container);
-        this.mainMenuManager.update();
-      });
-    });
+    this.sketchServiceClient.onSketchbookDidChange(() => this.update());
   }
 
   override async onReady(): Promise<void> {
+    this.update();
+  }
+
+  private update() {
     this.sketchService.getSketches({}).then((container) => {
       this.register(container);
       this.mainMenuManager.update();
@@ -59,11 +62,24 @@ export class Sketchbook extends Examples {
   protected override createHandler(uri: string): CommandHandler {
     return {
       execute: async () => {
-        const sketch = await this.sketchService.loadSketch(uri);
-        return this.commandService.executeCommand(
-          OpenSketch.Commands.OPEN_SKETCH.id,
-          sketch
-        );
+        let sketch: SketchRef | undefined = undefined;
+        try {
+          sketch = await this.sketchService.loadSketch(uri);
+        } catch (err) {
+          if (SketchesError.NotFound.is(err)) {
+            // To handle the following:
+            // Open IDE2, delete a sketch from sketchbook, click on File > Sketchbook > the deleted sketch.
+            // Filesystem watcher misses out delete events on macOS; hence IDE2 has no chance to update the menu items.
+            this.messageService.error(err.message);
+            this.update();
+          }
+        }
+        if (sketch) {
+          await this.commandService.executeCommand(
+            OpenSketch.Commands.OPEN_SKETCH.id,
+            sketch
+          );
+        }
       },
     };
   }
