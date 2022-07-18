@@ -246,7 +246,7 @@ export class ArduinoFrontendContribution
           hc: 'textLink.foreground',
         },
         description:
-          'Background color of the toolbar items when hovering over them. Such as Serial Monitor and Serial Plotter',
+          'Background color of the toolbar items when hovering over them, such as "Serial Monitor" and "Serial Plotter"',
       },
       {
         id: 'arduino.toolbar.toggleBackground',
