@@ -232,6 +232,26 @@ export class ArduinoFrontendContribution
           'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.',
       },
       {
+        id: 'arduino.toolbar.button.secondary.label',
+        defaults: {
+          dark: 'secondaryButton.foreground',
+          light: 'button.foreground',
+          hc: 'activityBar.inactiveForeground',
+        },
+        description:
+          'Foreground color of the toolbar items. Such as Serial Monitor and Serial Plotter',
+      },
+      {
+        id: 'arduino.toolbar.button.secondary.hoverBackground',
+        defaults: {
+          dark: 'secondaryButton.hoverBackground',
+          light: 'button.hoverBackground',
+          hc: 'textLink.foreground',
+        },
+        description:
+          'Background color of the toolbar items when hovering over them. Such as Serial Monitor and Serial Plotter',
+      },
+      {
         id: 'arduino.toolbar.toggleBackground',
         defaults: {
           dark: 'editor.selectionBackground',

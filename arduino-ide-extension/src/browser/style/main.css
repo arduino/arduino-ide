@@ -32,6 +32,12 @@
     background: var(--theia-arduino-toolbar-button-hoverBackground);
 }
 
+.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div.toggle-serial-monitor,
+.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div.toggle-serial-plotter {
+    background-color: var(--theia-arduino-toolbar-button-secondary-hoverBackground);
+    border-radius: 14px;
+}
+
 .arduino-verify-sketch--toolbar,
 .arduino-upload-sketch--toolbar {
     border-radius: 14px;
@@ -64,12 +70,12 @@
 
 .toggle-serial-monitor-icon {
     -webkit-mask: url(../icons/monitor.svg) center no-repeat;
-    background-color: var(--theia-menu-selectionBackground);
+    background-color: var(--theia-arduino-toolbar-button-secondary-label);
 }
 
 .toggle-serial-plotter-icon {
     -webkit-mask: url(../icons/plotter.svg) center no-repeat;
-    background-color: var(--theia-menu-selectionBackground);
+    background-color: var(--theia-arduino-toolbar-button-secondary-label);
 }
 
 .arduino-start-debug-icon {
@@ -128,7 +134,8 @@
 }
 
 .arduino-toolbar-tooltip {
-    margin-left: 10px;
+    margin-left: 10px;    
+    margin-right: 4px;
     display: flex;
     align-items: center;
     color: var(--theia-titleBar-activeForeground);
