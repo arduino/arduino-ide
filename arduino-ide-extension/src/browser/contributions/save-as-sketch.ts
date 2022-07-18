@@ -77,15 +77,11 @@ export class SaveAsSketch extends SketchContribution {
     const exists = await this.fileService.exists(
       sketchDirUri.resolve(sketch.name)
     );
-    const defaultUri = exists
-      ? sketchDirUri.resolve(
-          sketchDirUri
-            .resolve(
-              `${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`
-            )
-            .toString()
-        )
-      : sketchDirUri.resolve(sketch.name);
+    const defaultUri = sketchDirUri.resolve(
+      exists
+        ? `${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`
+        : sketch.name
+    );
     const defaultPath = await this.fileService.fsPath(defaultUri);
     const { filePath, canceled } = await remote.dialog.showSaveDialog({
       title: nls.localize(
