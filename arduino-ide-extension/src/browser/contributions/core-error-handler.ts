@@ -4,29 +4,29 @@ import { CoreError } from '../../common/protocol/core-service';
 
 @injectable()
 export class CoreErrorHandler {
-  private readonly compilerErrors: CoreError.Compiler[] = [];
+  private readonly errors: CoreError.ErrorLocation[] = [];
   private readonly compilerErrorsDidChangeEmitter = new Emitter<
-    CoreError.Compiler[]
+    CoreError.ErrorLocation[]
   >();
 
   tryHandle(error: unknown): void {
     if (CoreError.is(error)) {
-      this.compilerErrors.length = 0;
-      this.compilerErrors.push(...error.data.filter(CoreError.Compiler.is));
+      this.errors.length = 0;
+      this.errors.push(...error.data);
       this.fireCompilerErrorsDidChange();
     }
   }
 
   reset(): void {
-    this.compilerErrors.length = 0;
+    this.errors.length = 0;
     this.fireCompilerErrorsDidChange();
   }
 
-  get onCompilerErrorsDidChange(): Event<CoreError.Compiler[]> {
+  get onCompilerErrorsDidChange(): Event<CoreError.ErrorLocation[]> {
     return this.compilerErrorsDidChangeEmitter.event;
   }
 
   private fireCompilerErrorsDidChange(): void {
-    this.compilerErrorsDidChangeEmitter.fire(this.compilerErrors.slice());
+    this.compilerErrorsDidChangeEmitter.fire(this.errors.slice());
   }
 }

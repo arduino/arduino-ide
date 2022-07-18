@@ -1,24 +1,19 @@
-import { notEmpty } from '@theia/core';
+import { notEmpty } from '@theia/core/lib/common/objects';
 import { nls } from '@theia/core/lib/common/nls';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import {
-  Location,
   Range,
   Position,
 } from '@theia/core/shared/vscode-languageserver-protocol';
-import { Sketch } from '../common/protocol';
+import type { CoreError } from '../common/protocol';
+import { Sketch } from '../common/protocol/sketches-service';
 
-export interface ErrorInfo {
-  readonly message?: string;
-  readonly location?: Location;
-  readonly details?: string;
-}
 export interface ErrorSource {
   readonly content: string | ReadonlyArray<Uint8Array>;
   readonly sketch?: Sketch;
 }
 
-export function tryParseError(source: ErrorSource): ErrorInfo[] {
+export function tryParseError(source: ErrorSource): CoreError.ErrorLocation[] {
   const { content, sketch } = source;
   const err =
     typeof content === 'string'
@@ -28,7 +23,7 @@ export function tryParseError(source: ErrorSource): ErrorInfo[] {
     return tryParse(err)
       .map(remapErrorMessages)
       .filter(isLocationInSketch(sketch))
-      .map(errorInfo());
+      .map(toErrorInfo);
   }
   return [];
 }
@@ -50,9 +45,7 @@ namespace ParseResult {
   }
 }
 
-function isLocationInSketch(
-  sketch: Sketch
-): (value: ParseResult, index: number, array: ParseResult[]) => unknown {
+function isLocationInSketch(sketch: Sketch): (result: ParseResult) => boolean {
   return (result) => {
     const uri = FileUri.create(result.path).toString();
     if (!Sketch.isInSketch(uri, sketch)) {
@@ -65,15 +58,21 @@ function isLocationInSketch(
   };
 }
 
-function errorInfo(): (value: ParseResult) => ErrorInfo {
-  return ({ error, message, path, line, column }) => ({
+function toErrorInfo({
+  error,
+  message,
+  path,
+  line,
+  column,
+}: ParseResult): CoreError.ErrorLocation {
+  return {
     message: error,
     details: message,
     location: {
       uri: FileUri.create(path).toString(),
       range: range(line, column),
     },
-  });
+  };
 }
 
 function range(line: number, column?: number): Range {
