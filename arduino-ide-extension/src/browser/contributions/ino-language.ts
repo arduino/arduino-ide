@@ -32,11 +32,14 @@ export class InoLanguage extends SketchContribution {
   private languageServerStartMutex = new Mutex();
 
   override onReady(): void {
-    const start = ({ selectedBoard }: BoardsConfig.Config) => {
+    const start = (
+      { selectedBoard }: BoardsConfig.Config,
+      forceStart = false
+    ) => {
       if (selectedBoard) {
         const { name, fqbn } = selectedBoard;
         if (fqbn) {
-          this.startLanguageServer(fqbn, name);
+          this.startLanguageServer(fqbn, name, forceStart);
         }
       }
     };
@@ -49,11 +52,12 @@ export class InoLanguage extends SketchContribution {
     );
     this.preferences.onPreferenceChanged(
       ({ preferenceName, oldValue, newValue }) => {
-        if (
-          preferenceName === 'arduino.language.log' &&
-          newValue !== oldValue
-        ) {
-          start(this.boardsServiceProvider.boardsConfig);
+        if (oldValue !== newValue) {
+          switch (preferenceName) {
+            case 'arduino.language.log':
+            case 'arduino.language.realTimeDiagnostics':
+              start(this.boardsServiceProvider.boardsConfig, true);
+          }
         }
       }
     );
@@ -62,7 +66,8 @@ export class InoLanguage extends SketchContribution {
 
   private async startLanguageServer(
     fqbn: string,
-    name: string | undefined
+    name: string | undefined,
+    forceStart = false
   ): Promise<void> {
     const port = await this.daemon.tryGetPort();
     if (!port) {
@@ -96,7 +101,7 @@ export class InoLanguage extends SketchContribution {
         }
         return;
       }
-      if (fqbn === this.languageServerFqbn) {
+      if (!forceStart && fqbn === this.languageServerFqbn) {
         // NOOP
         return;
       }
