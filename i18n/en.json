@@ -138,6 +138,7 @@
       "stop": "Stop Daemon"
     },
     "debug": {
+      "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "noPlatformInstalledFor": "Platform is not installed for '{0}'",
       "optimizeForDebugging": "Optimize for Debugging"
