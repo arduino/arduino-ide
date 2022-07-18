@@ -177,15 +177,6 @@
     margin-left: 10px;
 }
 
-#arduino-open-sketch-control--toolbar {    
-    -webkit-mask: url(../icons/sketch-tabs-menu.svg) center no-repeat;
-    background-color: var(--theia-dropdown-foreground);
-}
-
-.p-TabBar.theia-app-sides .p-TabBar-tabIcon.arduino-boards-manager {
-    -webkit-mask: url(../icons/boards-manager.svg) center no-repeat;
-}
-
 /* Output */
 .theia-output .editor-container {
     background-color: var(--theia-arduino-output-background);
