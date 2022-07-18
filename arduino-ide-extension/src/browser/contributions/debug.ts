@@ -1,5 +1,5 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { Emitter } from '@theia/core/lib/common/event';
+import { Event, Emitter } from '@theia/core/lib/common/event';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { NotificationCenter } from '../notification-center';
@@ -11,8 +11,9 @@ import {
   CommandRegistry,
   SketchContribution,
 } from './contribution';
-import { MaybePromise, nls } from '@theia/core/lib/common';
+import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   PreferenceScope,
   PreferenceService,
@@ -57,7 +58,35 @@ export class Debug extends SketchContribution {
     this.disabledMessageDidChangeEmitter.fire(this._disabledMessages);
   }
 
+  private readonly debugToolbarItem = {
+    id: Debug.Commands.START_DEBUGGING.id,
+    command: Debug.Commands.START_DEBUGGING.id,
+    tooltip: `${
+      this.disabledMessage
+        ? nls.localize(
+            'arduino/debug/debugWithMessage',
+            'Debug - {0}',
+            this.disabledMessage
+          )
+        : Debug.Commands.START_DEBUGGING.label
+    }`,
+    priority: 3,
+    onDidChange: this.onDisabledMessageDidChange as Event<void>,
+  };
+
   override onStart(): void {
+    this.onDisabledMessageDidChange(
+      () =>
+        (this.debugToolbarItem.tooltip = `${
+          this.disabledMessage
+            ? nls.localize(
+                'arduino/debug/debugWithMessage',
+                'Debug - {0}',
+                this.disabledMessage
+              )
+            : Debug.Commands.START_DEBUGGING.label
+        }`)
+    );
     this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
       this.refreshState(selectedBoard)
     );
@@ -79,6 +108,14 @@ export class Debug extends SketchContribution {
     registry.registerCommand(Debug.Commands.OPTIMIZE_FOR_DEBUG, {
       execute: () => this.toggleOptimizeForDebug(),
       isToggled: () => this.isOptimizeForDebug(),
+    });
+  }
+
+  override registerMenus(registry: MenuModelRegistry): void {
+    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+      commandId: Debug.Commands.OPTIMIZE_FOR_DEBUG.id,
+      label: Debug.Commands.OPTIMIZE_FOR_DEBUG.label,
+      order: '5',
     });
   }
 

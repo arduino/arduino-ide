@@ -48,9 +48,6 @@ import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
 
-const INIT_LIBS_AND_PACKAGES = 'initializedLibsAndPackages';
-export const SKIP_IDE_VERSION = 'skipIDEVersion';
-
 @injectable()
 export class ArduinoFrontendContribution
   implements

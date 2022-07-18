@@ -3,6 +3,7 @@ import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Port } from '../../common/protocol';
+import { OpenBoardsConfig } from '../contributions/open-boards-config';
 import {
   BoardsServiceProvider,
   AvailableBoard,
@@ -211,7 +212,7 @@ export class BoardsToolBarItem extends React.Component<
     const protocolIcon = isConnected
       ? iconNameFromProtocol(selectedBoard?.port?.protocol || '')
       : null;
-    const procolIconClassNames = classNames(
+    const protocolIconClassNames = classNames(
       'arduino-boards-toolbar-item--protocol',
       'fa',
       protocolIcon
@@ -224,7 +225,7 @@ export class BoardsToolBarItem extends React.Component<
           title={selectedPortLabel}
           onClick={this.show}
         >
-          {protocolIcon && <div className={procolIconClassNames} />}
+          {protocolIcon && <div className={protocolIconClassNames} />}
           <div
             className={classNames(
               'arduino-boards-toolbar-item--label',
@@ -263,8 +264,10 @@ export class BoardsToolBarItem extends React.Component<
     );
   }
 
-  protected openDialog = () => {
-    this.props.commands.executeCommand(ArduinoCommands.OPEN_BOARDS_DIALOG.id);
+  protected openDialog = (): void => {
+    this.props.commands.executeCommand(
+      OpenBoardsConfig.Commands.OPEN_DIALOG.id
+    );
   };
 }
 export namespace BoardsToolBarItem {
