@@ -25,8 +25,9 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
       valueRoundedToScale === value ? value + step : valueRoundedToScale;
     const newValue = limitValueByCondition(
       calculatedValue,
+      maxValue,
       calculatedValue >= maxValue,
-      () => setStepUpDisabled(true)
+      disableStepUp
     );
 
     setSettingsStateValue(newValue);
@@ -38,8 +39,9 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
       valueRoundedToScale === value ? value - step : valueRoundedToScale;
     const newValue = limitValueByCondition(
       calculatedValue,
+      minValue,
       calculatedValue <= minValue,
-      () => setStepDownDisabled(true)
+      disableStepDown
     );
 
     setSettingsStateValue(newValue);
@@ -47,13 +49,14 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
 
   const limitValueByCondition = (
     calculatedValue: number,
+    limitedValue: number,
     condition: boolean,
     onConditionTrue: () => void,
     onConditionFalse = enableButtons
   ): number => {
     if (condition) {
       onConditionTrue();
-      return minValue;
+      return limitedValue;
     } else {
       onConditionFalse();
       return calculatedValue;
@@ -63,6 +66,14 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   const enableButtons = (): void => {
     setStepUpDisabled(false);
     setStepDownDisabled(false);
+  };
+
+  const disableStepUp = (): void => {
+    setStepUpDisabled(true);
+  };
+
+  const disableStepDown = (): void => {
+    setStepDownDisabled(true);
   };
 
   const onUserInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -77,12 +88,18 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     if (!isNaN(number) && number !== value) {
       let newValue;
       if (number > value) {
-        newValue = limitValueByCondition(number, number >= maxValue, () =>
-          setStepUpDisabled(true)
+        newValue = limitValueByCondition(
+          number,
+          maxValue,
+          number >= maxValue,
+          disableStepUp
         );
       } else {
-        newValue = limitValueByCondition(number, number <= minValue, () =>
-          setStepDownDisabled(true)
+        newValue = limitValueByCondition(
+          number,
+          minValue,
+          number <= minValue,
+          disableStepDown
         );
       }
 
