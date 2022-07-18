@@ -18,15 +18,17 @@ const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
   export namespace Commands {
-    export const OPEN: Command = {
-      id: 'serial-plotter-open',
-      label: 'Serial Plotter',
-      category: 'Arduino',
-    };
+    export const OPEN: Command = Command.toLocalizedCommand(
+      {
+        id: 'serial-plotter-open',
+        label: 'Serial Plotter',
+        category: 'Arduino',
+      },
+      'arduino/serial/openSerialPlotter'
+    );
+
     export const RESET: Command = {
       id: 'serial-plotter-reset',
-      label: 'Reset Serial Plotter',
-      category: 'Arduino',
     };
   }
 }
