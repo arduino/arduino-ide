@@ -103,6 +103,9 @@
 
 .p-TabBar-toolbar.theia-arduino-toolbar {
     align-items: center;
+    gap: 8px;
+    margin: 0 12px;
+    padding: 0;
     z-index: 0;
 }
 
