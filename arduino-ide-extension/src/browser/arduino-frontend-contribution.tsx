@@ -46,6 +46,7 @@ import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -129,6 +130,14 @@ export class ArduinoFrontendContribution
       isVisible: (widget) =>
         ArduinoToolbar.is(widget) && widget.side === 'left',
       priority: 7,
+    });
+    registry.registerItem({
+      id: 'toggle-serial-plotter',
+      command: SerialPlotterContribution.Commands.OPEN_TOOLBAR.id,
+      tooltip: nls.localize(
+        'arduino/serial/openSerialPlotter',
+        'Serial Plotter'
+      ),
     });
     registry.registerItem({
       id: 'toggle-serial-monitor',
@@ -221,6 +230,26 @@ export class ArduinoFrontendContribution
         },
         description:
           'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.',
+      },
+      {
+        id: 'arduino.toolbar.button.secondary.label',
+        defaults: {
+          dark: 'secondaryButton.foreground',
+          light: 'button.foreground',
+          hc: 'activityBar.inactiveForeground',
+        },
+        description:
+          'Foreground color of the toolbar items. Such as Serial Monitor and Serial Plotter',
+      },
+      {
+        id: 'arduino.toolbar.button.secondary.hoverBackground',
+        defaults: {
+          dark: 'secondaryButton.hoverBackground',
+          light: 'button.hoverBackground',
+          hc: 'textLink.foreground',
+        },
+        description:
+          'Background color of the toolbar items when hovering over them, such as "Serial Monitor" and "Serial Plotter"',
       },
       {
         id: 'arduino.toolbar.toggleBackground',

@@ -276,7 +276,7 @@ export namespace SketchControl {
   export namespace Commands {
     export const OPEN_SKETCH_CONTROL__TOOLBAR: Command = {
       id: 'arduino-open-sketch-control--toolbar',
-      iconClass: 'fa fa-caret-down',
+      iconClass: 'fa fa-arduino-sketch-tabs-menu',
     };
   }
 }

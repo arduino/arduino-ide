@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import {
   BoardsPackage,
   BoardsService,
