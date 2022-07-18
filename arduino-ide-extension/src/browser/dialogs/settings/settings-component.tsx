@@ -21,7 +21,15 @@ import {
   AsyncLocalizationProvider,
   LanguageInfo,
 } from '@theia/core/lib/common/i18n/localization';
+import SettingsStepInput from './settings-step-input';
 
+const maxScale = 200;
+const minScale = -100;
+const scaleStep = 20;
+
+const maxFontSize = 72;
+const minFontSize = 8;
+const fontSizeStep = 2;
 export class SettingsComponent extends React.Component<
   SettingsComponent.Props,
   SettingsComponent.State
@@ -88,6 +96,8 @@ export class SettingsComponent extends React.Component<
   }
 
   protected renderSettings(): React.ReactNode {
+    const scalePercentage = 100 + this.state.interfaceScale * 20;
+
     return (
       <div className="content noselect">
         {nls.localize(
@@ -160,14 +170,13 @@ export class SettingsComponent extends React.Component<
           </div>
           <div className="column">
             <div className="flex-line">
-              <input
-                className="theia-input small"
-                type="number"
-                step={1}
-                pattern="[0-9]+"
-                onKeyDown={this.numbersOnlyKeyDown}
+              <SettingsStepInput
                 value={this.state.editorFontSize}
-                onChange={this.editorFontSizeDidChange}
+                setSettingsStateValue={this.setFontSize}
+                step={fontSizeStep}
+                maxValue={maxFontSize}
+                minValue={minFontSize}
+                classNames={{ input: 'theia-input small' }}
               />
             </div>
             <div className="flex-line">
@@ -179,14 +188,13 @@ export class SettingsComponent extends React.Component<
                 />
                 {nls.localize('arduino/preferences/automatic', 'Automatic')}
               </label>
-              <input
-                className="theia-input small with-margin"
-                type="number"
-                step={20}
-                pattern="[0-9]+"
-                onKeyDown={this.noopKeyDown}
-                value={100 + this.state.interfaceScale * 20}
-                onChange={this.interfaceScaleDidChange}
+              <SettingsStepInput
+                value={scalePercentage}
+                setSettingsStateValue={this.setInterfaceScale}
+                step={scaleStep}
+                maxValue={maxScale}
+                minValue={minScale}
+                classNames={{ input: 'theia-input small with-margin' }}
               />
               %
             </div>
@@ -516,13 +524,8 @@ export class SettingsComponent extends React.Component<
     }
   };
 
-  protected editorFontSizeDidChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const { value } = event.target;
-    if (value) {
-      this.setState({ editorFontSize: parseInt(value, 10) });
-    }
+  private setFontSize = (editorFontSize: number) => {
+    this.setState({ editorFontSize });
   };
 
   protected rawAdditionalUrlsValueDidChange = (
@@ -539,18 +542,10 @@ export class SettingsComponent extends React.Component<
     this.setState({ autoScaleInterface: event.target.checked });
   };
 
-  protected interfaceScaleDidChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const { value } = event.target;
-    const percentage = parseInt(value, 10);
-    if (isNaN(percentage)) {
-      return;
-    }
+  private setInterfaceScale = (percentage: number) => {
     const interfaceScale = (percentage - 100) / 20;
-    if (!isNaN(interfaceScale)) {
-      this.setState({ interfaceScale });
-    }
+
+    this.setState({ interfaceScale });
   };
 
   protected verifyAfterUploadDidChange = (
