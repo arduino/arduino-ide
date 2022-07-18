@@ -28,7 +28,7 @@ const minScale = -100;
 const scaleStep = 20;
 
 const maxFontSize = 72;
-const minFontSize = 8;
+const minFontSize = 0;
 const fontSizeStep = 2;
 export class SettingsComponent extends React.Component<
   SettingsComponent.Props,

@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 interface SettingsStepInputProps {
   value: number;
-  setSettingsStateValue: (interfaceScale: number) => void;
+  setSettingsStateValue: (value: number) => void;
   step: number;
   maxValue: number;
   minValue: number;
