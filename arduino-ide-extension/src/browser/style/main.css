@@ -114,14 +114,6 @@
     --theia-private-menubar-height: 40px; /* set the topbar height */
 }
 
-#theia-top-panel .p-TabBar-toolbar {
-    padding-left: 12px !important; /* moves the `verify`, upload and other toolbar items to the left */
-}
-
-.p-Widget .p-MenuBar {
-    padding-left: 1px !important; /* moves the menubar: `File`, `Edit`, etc to the left */
-}
-
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
     justify-content: flex-start;
     min-width: 100px;
