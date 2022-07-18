@@ -46,6 +46,8 @@
     "arduino.output.foreground": "#ffffff",
     "arduino.output.background": "#000000",
     "arduino.toolbar.button.hoverBackground": "#f7f9f9",
+    "arduino.toolbar.button.secondary.label": "#dae3e3",
+    "arduino.toolbar.button.secondary.hoverBackground": "#dae3e366",
     "arduino.toolbar.button.background": "#7fcbcd",
     "arduino.toolbar.dropdown.border": "#dae3e3",
     "arduino.toolbar.dropdown.borderActive": "#7fcbcd",
