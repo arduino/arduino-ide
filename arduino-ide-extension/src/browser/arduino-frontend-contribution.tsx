@@ -134,7 +134,10 @@ export class ArduinoFrontendContribution
     registry.registerItem({
       id: 'toggle-serial-plotter',
       command: SerialPlotterContribution.Commands.OPEN_TOOLBAR.id,
-      tooltip: nls.localize('arduino/common/serialPlotter', 'Serial Plotter'),
+      tooltip: nls.localize(
+        'arduino/serial/openSerialPlotter',
+        'Serial Plotter'
+      ),
     });
     registry.registerItem({
       id: 'toggle-serial-monitor',
