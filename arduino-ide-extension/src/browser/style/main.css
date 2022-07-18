@@ -3,8 +3,7 @@
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item {
-    margin-right: 8px;
-    margin-left: unset;
+    margin-left: 0;
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item .toggle-serial-monitor,
@@ -109,18 +108,12 @@
     z-index: 0;
 }
 
-.p-TabBar-toolbar {
-    margin-right: 12px;
-}
-
 :root {
     --theia-private-menubar-height: 40px; /* set the topbar height */
 }
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
     justify-content: flex-start;
-    min-width: 100px;
-    margin-right: 4px;
 }
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.left {
@@ -129,8 +122,6 @@
 }
 
 .arduino-toolbar-tooltip {
-    margin-left: 10px;    
-    margin-right: 4px;
     display: flex;
     align-items: center;
     color: var(--theia-titleBar-activeForeground);
