@@ -48,7 +48,8 @@
   border: none;
 }
 
-.item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar {
+.item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar,
+.item.arduino-tool-item.toggled .arduino-upload-sketch--toolbar {
   background-color: var(--theia-arduino-toolbar-toggleBackground) !important;
 }
 
