@@ -107,6 +107,9 @@ export class InoLanguage extends SketchContribution {
       }
       this.logger.info(`Starting language server: ${fqbn}`);
       const log = this.preferences.get('arduino.language.log');
+      const realTimeDiagnostics = this.preferences.get(
+        'arduino.language.realTimeDiagnostics'
+      );
       let currentSketchPath: string | undefined = undefined;
       if (log) {
         const currentSketch = await this.sketchServiceClient.currentSketch();
@@ -141,6 +144,7 @@ export class InoLanguage extends SketchContribution {
               fqbn,
               name: name ? `"${name}"` : undefined,
             },
+            realTimeDiagnostics,
           }
         ),
       ]);
