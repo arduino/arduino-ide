@@ -33,8 +33,6 @@ export namespace SerialPlotterContribution {
     };
     export const OPEN_TOOLBAR: Command = {
       id: 'serial-plotter-open-toolbar',
-      label: 'Serial Plotter Toolbar',
-      category: 'Arduino',
     };
   }
 }
