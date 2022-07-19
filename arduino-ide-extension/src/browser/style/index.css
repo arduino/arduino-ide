@@ -18,6 +18,7 @@
 @import './fonts.css';
 @import './custom-codicon.css';
 @import './progress-bar.css';
+@import './settings-step-input.css';
 
 .theia-input.warning:focus {
   outline-width: 1px;
