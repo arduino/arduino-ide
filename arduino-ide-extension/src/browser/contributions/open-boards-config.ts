@@ -17,7 +17,7 @@ export class OpenBoardsConfig extends Contribution {
       execute: async (query?: string | undefined) => {
         const boardsConfig = await this.boardsConfigDialog.open(query);
         if (boardsConfig) {
-          this.boardsServiceProvider.boardsConfig = boardsConfig;
+          return (this.boardsServiceProvider.boardsConfig = boardsConfig);
         }
       },
     });
