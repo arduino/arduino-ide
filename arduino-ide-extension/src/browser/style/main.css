@@ -23,7 +23,8 @@
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-upload-sketch--toolbar,
-.p-TabBar-toolbar .item.arduino-tool-item .arduino-verify-sketch--toolbar {
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-verify-sketch--toolbar,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-start-debug {
     background: var(--theia-arduino-toolbar-button-background);
 }
 
@@ -38,7 +39,8 @@
 }
 
 .arduino-verify-sketch--toolbar,
-.arduino-upload-sketch--toolbar {
+.arduino-upload-sketch--toolbar,
+.arduino-start-debug {
     border-radius: 14px;
 }
 
@@ -79,20 +81,14 @@
 }
 
 .arduino-start-debug-icon {
-    -webkit-mask: url('../icons/debug-dark.svg') 50%;
-    mask: url('../icons/debug-dark.svg') 50%;
+    -webkit-mask: url('../icons/debug-dark.svg') 50% 60%;
     -webkit-mask-size: 70%;
-    mask-size: 70%;
     -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--theia-ui-button-font-color);
-}
+    background-color: var(--theia-titleBar-activeBackground);   
 
-.arduino-start-debug {
-    border-radius: 12px;
 }
 
 #arduino-toolbar-container {

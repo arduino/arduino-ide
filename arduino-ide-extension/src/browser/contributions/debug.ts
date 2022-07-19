@@ -10,6 +10,7 @@ import {
   Command,
   CommandRegistry,
   SketchContribution,
+  TabBarToolbarRegistry,
 } from './contribution';
 import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
@@ -111,6 +112,10 @@ export class Debug extends SketchContribution {
     registry.registerCommand(Debug.Commands.IS_OPTIMIZE_FOR_DEBUG, {
       execute: () => this.compileForDebug,
     });
+  }
+
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
+    registry.registerItem(this.debugToolbarItem);
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
