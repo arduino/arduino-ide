@@ -14,11 +14,10 @@ import {
 import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import {
-  PreferenceScope,
-  PreferenceService,
-} from '@theia/core/lib/browser/preferences/preference-service';
 
+import { MainMenuManager } from '../../common/main-menu-manager';
+
+const COMPILE_FOR_DEBUG_KEY = 'arduino-compile-for-debug';
 @injectable()
 export class Debug extends SketchContribution {
   @inject(HostedPluginSupport)
@@ -36,8 +35,8 @@ export class Debug extends SketchContribution {
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  @inject(PreferenceService)
-  private readonly preferenceService: PreferenceService;
+  @inject(MainMenuManager)
+  private readonly mainMenuManager: MainMenuManager;
 
   /**
    * If `undefined`, debugging is enabled. Otherwise, the reason why it's disabled.
@@ -105,16 +104,19 @@ export class Debug extends SketchContribution {
         ArduinoToolbar.is(widget) && widget.side === 'left',
       isEnabled: () => !this.disabledMessage,
     });
-    registry.registerCommand(Debug.Commands.OPTIMIZE_FOR_DEBUG, {
-      execute: () => this.toggleOptimizeForDebug(),
-      isToggled: () => this.isOptimizeForDebug(),
+    registry.registerCommand(Debug.Commands.TOGGLE_OPTIMIZE_FOR_DEBUG, {
+      execute: () => this.toggleCompileForDebug(),
+      isToggled: () => this.compileForDebug,
+    });
+    registry.registerCommand(Debug.Commands.IS_OPTIMIZE_FOR_DEBUG, {
+      execute: () => this.compileForDebug,
     });
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: Debug.Commands.OPTIMIZE_FOR_DEBUG.id,
-      label: Debug.Commands.OPTIMIZE_FOR_DEBUG.label,
+      commandId: Debug.Commands.TOGGLE_OPTIMIZE_FOR_DEBUG.id,
+      label: Debug.Commands.TOGGLE_OPTIMIZE_FOR_DEBUG.label,
       order: '5',
     });
   }
@@ -199,16 +201,16 @@ export class Debug extends SketchContribution {
     return this.commandService.executeCommand('arduino.debug.start', config);
   }
 
-  private isOptimizeForDebug(): boolean {
-    return this.preferences.get('arduino.compile.optimizeForDebug');
+  get compileForDebug(): boolean {
+    const value = window.localStorage.getItem(COMPILE_FOR_DEBUG_KEY);
+    return value === 'true';
   }
 
-  private async toggleOptimizeForDebug(): Promise<void> {
-    return this.preferenceService.set(
-      'arduino.compile.optimizeForDebug',
-      !this.isOptimizeForDebug(),
-      PreferenceScope.User
-    );
+  async toggleCompileForDebug(): Promise<void> {
+    const oldState = this.compileForDebug;
+    const newState = !oldState;
+    window.localStorage.setItem(COMPILE_FOR_DEBUG_KEY, String(newState));
+    this.mainMenuManager.update();
   }
 }
 export namespace Debug {
@@ -221,13 +223,16 @@ export namespace Debug {
       },
       'vscode/debug.contribution/startDebuggingHelp'
     );
-    export const OPTIMIZE_FOR_DEBUG = Command.toLocalizedCommand(
+    export const TOGGLE_OPTIMIZE_FOR_DEBUG = Command.toLocalizedCommand(
       {
-        id: 'arduino-optimize-for-debug',
+        id: 'arduino-toggle-optimize-for-debug',
         label: 'Optimize for Debugging',
         category: 'Arduino',
       },
       'arduino/debug/optimizeForDebugging'
     );
+    export const IS_OPTIMIZE_FOR_DEBUG: Command = {
+      id: 'arduino-is-optimize-for-debug',
+    };
   }
 }
