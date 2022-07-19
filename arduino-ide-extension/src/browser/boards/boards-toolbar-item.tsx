@@ -10,6 +10,7 @@ import {
 } from './boards-service-provider';
 import { nls } from '@theia/core/lib/common';
 import classNames from 'classnames';
+import { BoardsConfig } from './boards-config';
 
 export interface BoardsDropDownListCoords {
   readonly top: number;
@@ -245,10 +246,12 @@ export class BoardsToolBarItem extends React.Component<
               ...board,
               onClick: () => {
                 if (board.state === AvailableBoard.State.incomplete) {
+                  const previousBoardConfig =
+                    this.props.boardsServiceProvider.boardsConfig;
                   this.props.boardsServiceProvider.boardsConfig = {
                     selectedPort: board.port,
                   };
-                  this.openDialog();
+                  this.openDialog(previousBoardConfig);
                 } else {
                   this.props.boardsServiceProvider.boardsConfig = {
                     selectedBoard: board,
@@ -264,10 +267,20 @@ export class BoardsToolBarItem extends React.Component<
     );
   }
 
-  protected openDialog = (): void => {
-    this.props.commands.executeCommand(
-      OpenBoardsConfig.Commands.OPEN_DIALOG.id
-    );
+  protected openDialog = async (
+    previousBoardConfig?: BoardsConfig.Config
+  ): Promise<void> => {
+    const selectedBoardConfig =
+      await this.props.commands.executeCommand<BoardsConfig.Config>(
+        OpenBoardsConfig.Commands.OPEN_DIALOG.id
+      );
+    if (
+      previousBoardConfig &&
+      (!selectedBoardConfig?.selectedPort ||
+        !selectedBoardConfig?.selectedBoard)
+    ) {
+      this.props.boardsServiceProvider.boardsConfig = previousBoardConfig;
+    }
   };
 }
 export namespace BoardsToolBarItem {
