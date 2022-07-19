@@ -226,6 +226,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 .arduino-boards-dropdown-item--label {
+  overflow: hidden;
   flex: 1;
 }
 
