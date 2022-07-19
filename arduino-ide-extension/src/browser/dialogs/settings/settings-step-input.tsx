@@ -107,6 +107,14 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     }
   };
 
+  // the component does not unmount when we close the settings dialog
+  // in theia which necessitates the below useEffect
+  React.useEffect(() => {
+    if (value > minValue && value < maxValue) {
+      enableButtons();
+    }
+  }, [value, minValue, maxValue]);
+
   return (
     <div className="settings-step-input-container">
       <input
