@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide-extension",
-  "version": "2.0.0-rc8",
+  "version": "2.0.0-rc9",
   "description": "An extension for Theia building the Arduino IDE",
   "license": "AGPL-3.0-or-later",
   "scripts": {
@@ -156,7 +156,7 @@
   ],
   "arduino": {
     "cli": {
-      "version": "0.25.0-rc2"
+      "version": "0.25.0"
     },
     "fwuploader": {
       "version": "2.2.0"
