@@ -200,18 +200,17 @@ export class BoardsToolBarItem extends React.Component<
 
   override render(): React.ReactNode {
     const { coords, availableBoards } = this.state;
-    const selectedBoard = availableBoards.find(({ selected }) => selected);
+    const { selectedBoard, selectedPort } =
+      this.props.boardsServiceProvider.boardsConfig;
 
     const boardLabel =
       selectedBoard?.name ||
       nls.localize('arduino/board/selectBoard', 'Select Board');
-    const selectedPortLabel = portLabel(selectedBoard?.port?.address);
+    const selectedPortLabel = portLabel(selectedPort?.address);
 
-    const isConnected = Boolean(
-      selectedBoard && AvailableBoard.hasPort(selectedBoard)
-    );
+    const isConnected = Boolean(selectedBoard && selectedPort);
     const protocolIcon = isConnected
-      ? iconNameFromProtocol(selectedBoard?.port?.protocol || '')
+      ? iconNameFromProtocol(selectedPort?.protocol || '')
       : null;
     const protocolIconClassNames = classNames(
       'arduino-boards-toolbar-item--protocol',
@@ -245,7 +244,7 @@ export class BoardsToolBarItem extends React.Component<
             .map((board) => ({
               ...board,
               onClick: () => {
-                if (board.state === AvailableBoard.State.incomplete) {
+                if (!board.fqbn) {
                   const previousBoardConfig =
                     this.props.boardsServiceProvider.boardsConfig;
                   this.props.boardsServiceProvider.boardsConfig = {
