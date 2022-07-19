@@ -114,14 +114,15 @@ export class VerifySketch extends CoreServiceContribution {
       };
       const verbose = this.preferences.get('arduino.compile.verbose');
       const compilerWarnings = this.preferences.get('arduino.compile.warnings');
-      const optimizeForDebug = this.preferences.get(
-        'arduino.compile.optimizeForDebug'
-      );
+      const optimizeForDebug =
+        await this.commandService.executeCommand<boolean>(
+          'arduino-is-optimize-for-debug'
+        );
       this.outputChannelManager.getChannel('Arduino').clear();
       await this.coreService.compile({
         sketch,
         board,
-        optimizeForDebug,
+        optimizeForDebug: Boolean(optimizeForDebug),
         verbose,
         exportBinaries,
         sourceOverride,

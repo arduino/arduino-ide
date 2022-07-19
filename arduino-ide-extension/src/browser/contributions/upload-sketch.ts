@@ -210,16 +210,25 @@ export class UploadSketch extends CoreServiceContribution {
       this.coreErrorHandler.reset();
       this.onDidChangeEmitter.fire();
       const { boardsConfig } = this.boardsServiceClientImpl;
-      const [fqbn, { selectedProgrammer }, verify, verbose, sourceOverride] =
-        await Promise.all([
-          this.boardsDataStore.appendConfigToFqbn(
-            boardsConfig.selectedBoard?.fqbn
-          ),
-          this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
-          this.preferences.get('arduino.upload.verify'),
-          this.preferences.get('arduino.upload.verbose'),
-          this.sourceOverride(),
-        ]);
+      const [
+        fqbn,
+        { selectedProgrammer },
+        verify,
+        verbose,
+        sourceOverride,
+        optimizeForDebug,
+      ] = await Promise.all([
+        this.boardsDataStore.appendConfigToFqbn(
+          boardsConfig.selectedBoard?.fqbn
+        ),
+        this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
+        this.preferences.get('arduino.upload.verify'),
+        this.preferences.get('arduino.upload.verbose'),
+        this.sourceOverride(),
+        this.commandService.executeCommand<boolean>(
+          'arduino-is-optimize-for-debug'
+        ),
+      ]);
 
       const board = {
         ...boardsConfig.selectedBoard,
@@ -227,9 +236,6 @@ export class UploadSketch extends CoreServiceContribution {
         fqbn,
       };
       let options: CoreService.Upload.Options | undefined = undefined;
-      const optimizeForDebug = this.preferences.get(
-        'arduino.compile.optimizeForDebug'
-      );
       const { selectedPort } = boardsConfig;
       const port = selectedPort;
       const userFields =
@@ -249,7 +255,7 @@ export class UploadSketch extends CoreServiceContribution {
         options = {
           sketch,
           board,
-          optimizeForDebug,
+          optimizeForDebug: Boolean(optimizeForDebug),
           programmer,
           port,
           verbose,
@@ -261,7 +267,7 @@ export class UploadSketch extends CoreServiceContribution {
         options = {
           sketch,
           board,
-          optimizeForDebug,
+          optimizeForDebug: Boolean(optimizeForDebug),
           port,
           verbose,
           verify,
