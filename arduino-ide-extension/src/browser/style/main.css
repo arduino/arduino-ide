@@ -155,6 +155,10 @@
     align-items: center;
     color: var(--theia-titleBar-activeBackground);
 }
+.p-TabBar.theia-app-sides .p-TabBar-tabIcon.fa-arduino-folder,
+.p-TabBar.theia-app-sides .p-TabBar-tabIcon.fa-arduino-boards {
+    font-size: 21px;
+}
 
 .monaco-editor .margin {
     border-right: 2px solid var(--theia-sideBar-background);
