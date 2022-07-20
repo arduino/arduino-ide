@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide",
-  "version": "2.0.0-rc8",
+  "version": "2.0.0-rc9",
   "description": "Arduino IDE",
   "repository": "https://github.com/arduino/arduino-ide.git",
   "author": "Arduino SA",
@@ -86,7 +86,7 @@
     "vscode-language-pack-ja": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ja/1.69.0/file/MS-CEINTL.vscode-language-pack-ja-1.69.0.vsix",
     "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.69.0/file/MS-CEINTL.vscode-language-pack-tr-1.69.0.vsix",
     "vscode-language-pack-it": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-it/1.69.0/file/MS-CEINTL.vscode-language-pack-it-1.69.0.vsix",
-    "vscode-language-pack-ru":"https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ru/1.69.0/file/MS-CEINTL.vscode-language-pack-ru-1.69.0.vsix",
+    "vscode-language-pack-ru": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ru/1.69.0/file/MS-CEINTL.vscode-language-pack-ru-1.69.0.vsix",
     "vscode-language-pack-es": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-es/1.69.0/file/MS-CEINTL.vscode-language-pack-es-1.69.0.vsix",
     "vscode-language-pack-pt-BR": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-pt-BR/1.69.0/file/MS-CEINTL.vscode-language-pack-pt-BR-1.69.0.vsix",
     "vscode-language-pack-cs": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-cs/1.69.0/file/MS-CEINTL.vscode-language-pack-cs-1.69.0.vsix"
