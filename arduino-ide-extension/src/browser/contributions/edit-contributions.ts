@@ -141,6 +141,11 @@ ${value}
       label: nls.localize('arduino/editor/decreaseIndent', 'Decrease Indent'),
       order: '2',
     });
+    registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
+      commandId: EditContributions.Commands.AUTO_FORMAT.id,
+      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
+      order: '3',
+    });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.INCREASE_FONT_SIZE.id,
@@ -187,13 +192,6 @@ ${value}
         'Use Selection for Find'
       ), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '3',
-    });
-
-    // `Tools`
-    registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
-      commandId: EditContributions.Commands.AUTO_FORMAT.id,
-      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
-      order: '0',
     });
   }
 
@@ -248,10 +246,13 @@ ${value}
     });
   }
 
-  protected async current(): Promise<ICodeEditor | StandaloneCodeEditor  | undefined> {
+  protected async current(): Promise<
+    ICodeEditor | StandaloneCodeEditor | undefined
+  > {
     return (
       this.codeEditorService.getFocusedCodeEditor() ||
-      this.codeEditorService.getActiveCodeEditor() || undefined
+      this.codeEditorService.getActiveCodeEditor() ||
+      undefined
     );
   }
 
