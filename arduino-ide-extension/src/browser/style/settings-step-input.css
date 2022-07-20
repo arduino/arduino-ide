@@ -18,7 +18,7 @@
     height: calc(100% - 4px);
     width: 14px;
     padding: 2px;
-    background: white;
+    background: var(--theia-input-background);
 }
 
 .settings-step-input-container:hover > .settings-step-input-buttons-container {
@@ -33,7 +33,6 @@
     border: none;
     border-radius: 0;
     height: 50%;
-    width: 1;
     display: flex;
     align-items: center;
     justify-content: center;
