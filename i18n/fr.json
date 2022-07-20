@@ -7,11 +7,11 @@
     "board": {
       "board": "Carte{0}",
       "boardInfo": "Information de la carte",
-      "boardListItem": "{0} à {1}",
       "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
       "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez compiler votre croquis, mais pas le téléverser.",
       "configDialogTitle": "Sélectionner une autre carte et un autre port",
       "couldNotFindPreviouslySelected": "Impossible de trouver la carte précédente sélectionnée \"{0}\" dans les plateformes installées \"{1}\". Merci de re-sélectionner manuellement la carte que vous souhaitez utiliser. Souhaitez vous la re-sélectionner maintenant ?",
+      "disconnected": "Disconnected",
       "getBoardInfo": "Obtenir les informations sur la carte",
       "inSketchbook": "(dans le Croquis)",
       "installManually": "Installer manuellement.",
@@ -23,8 +23,10 @@
       "platformMissing": "La plateforme pour la carte '{0}' sélectionnée n'est pas installée.",
       "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
       "port": "Port{0}",
+      "portLabel": "Port: {0}",
       "programmer": "Programmeur",
       "reselectLater": "Re-sélectionner plus tard",
+      "selectBoard": "Selectionner une carte",
       "selectBoardForInfo": "Merci de choisir une carte pour obtenir ses informations.",
       "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
       "showAllAvailablePorts": "Affiche les ports disponibles quand activer.",
@@ -350,7 +352,7 @@
       "daemonOffline": "CLI Deamon hors ligne",
       "offline": "Hors-ligne",
       "quitMessage": "Les modifications non enregistrées seront perdues.",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Est que-vous sur vous voulez quitter? "
     },
     "debug": {
       "start": "Commencer...",

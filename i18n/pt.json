@@ -7,11 +7,11 @@
     "board": {
       "board": "Placa{0}",
       "boardInfo": "Informações da Placa",
-      "boardListItem": "{0} de {1}",
       "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
       "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de carregar o seu sketch.",
       "configDialogTitle": "Selecionar Outra Placa e Porta",
-      "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione novamente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
+      "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione manualmente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
+      "disconnected": "Disconnected",
       "getBoardInfo": "Obter Informações da Placa",
       "inSketchbook": "(no Sketchbook)",
       "installManually": "Instalar Manualmente",
@@ -23,8 +23,10 @@
       "platformMissing": "A plataforma para a placa '{0}' selecionada não está instalada.",
       "pleasePickBoard": "Escolha uma placa conectada à porta que você selecionou.",
       "port": "Porta{0}",
+      "portLabel": "Port: {0}",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
+      "selectBoard": "Selecionar Placa",
       "selectBoardForInfo": "Selecione uma placa para obter informações sobre ela.",
       "selectPortForInfo": "Selecione uma porta para obter informações sobre a placa.",
       "showAllAvailablePorts": "Mostrar todas as portas disponíveis quando habilitado",
@@ -57,8 +59,8 @@
       "uploadingCertificates": "Enviando certificados."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' não encontrado. Seu sketch deve incluir a linha\n'#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' não encontrado. Seu sketch deve incluir a linha\n'#include <Mouse.h>'?"
+      "keyboardError": "'Keyboard' não encontrado. O seu sketch inclue a linha '#include <Keyboard.h>'?",
+      "mouseError": "\"Mouse\" não encontrado. O seu sketch inclue a linha '#include <Mouse.h>' ?"
     },
     "cloud": {
       "account": "Conta",
@@ -84,7 +86,7 @@
       "pullSketchMsg": "Baixar este Sketch da nuvem irá sobrescrever sua versão local. Você tem certeza que deseja continuar?",
       "push": "Enviar",
       "pushSketch": "Enviar Sketch",
-      "pushSketchMsg": "Baixar",
+      "pushSketchMsg": "Este é um Sketch Público. Antes de enviar, verifique qualquer informação sensível que esteja denifinda nos arquivos arduino_secrets.h. Você pode tornar um Sketch privado a partir do painel Compartilhar.",
       "remote": "Remoto",
       "remoteSketchbook": "Sketchbook remoto",
       "share": "Compartilhar...",
@@ -101,7 +103,7 @@
       "later": "Depois",
       "noBoardSelected": "Nenhuma placa selecionada.",
       "notConnected": "[não está conectado]",
-      "offlineIndicator": "Você parece estar offline. Sem uma conexão com a Internet, a CLI do Arduino poderá não ser capaz de baixar os recursos necessários e poderá causar mau funcionamento. Conecte-se à Internet e reinicie o aplicativo.",
+      "offlineIndicator": "Parece que você está offline. Sem conexão com a Internet, o Arduino CLI não será capaz de baixar os recursos exigidos e poderá provovar mau funcionamento. Por favor, conecte-se à Internet e reinicie o aplicativo.",
       "oldFormat": "O '{0}' ainda utiliza o formato antigo `.pde`. Deseja mudar para a nova extensão `.ino`?",
       "processing": "Em processamento",
       "selectBoard": "Selecione a Placa",
@@ -122,17 +124,17 @@
       "version": "Versão {0}"
     },
     "contributions": {
-      "addFile": "Adicionar Ficheiro...",
+      "addFile": "Adicionar Arquivo",
       "fileAdded": "Um arquivo adicionado ao sketch.",
       "replaceTitle": "Substituir"
     },
     "coreContribution": {
-      "copyError": "Cópia de mensagens de erro"
+      "copyError": "Mensagem de erro Copiar"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Reiniciar Daemon",
+      "start": "Iniciar Daemon",
+      "stop": "Interromper Daemon"
     },
     "debug": {
       "debugWithMessage": "Depuração - {0}",
@@ -155,13 +157,13 @@
       "previousError": "Erro Anterior"
     },
     "electron": {
-      "couldNotSave": "Não foi possível salvar o sketch. Copie seu trabalho não salvo em seu editor de texto favorito e reinicie a IDE.",
-      "unsavedChanges": "Quaisquer alterações não serão salvas."
+      "couldNotSave": "Não foi possível salvar o sketch. Por favor, copie seu trabalho não salvo para o seu editor de texto favorito e reinicie a IDE.",
+      "unsavedChanges": "Quaisquer alterações não salvas não serão salvas."
     },
     "examples": {
-      "builtInExamples": "Exemplos Incluídos",
+      "builtInExamples": "Exemplos Integrados",
       "couldNotInitializeExamples": "Não foi possível inicializar os exemplos integrados.",
-      "customLibrary": "Exemplos de Bibliotecas Customizadas",
+      "customLibrary": "Exemplos das Bibliotecas Personalizadas",
       "for": "Exemplos para {0}",
       "forAny": "Exemplos para qualquer placa",
       "menu": "Exemplos"
@@ -195,14 +197,14 @@
       "downloadButton": "Baixar",
       "downloadingNotice": "Baixando a versão mais recente do IDE do Arduino.",
       "errorCheckingForUpdates": "Erro ao verificar as atualizações do IDE do Arduino. {0}",
-      "goToDownloadButton": "Ir Para Baixar",
+      "goToDownloadButton": "Ir A Baixar",
       "goToDownloadPage": "Uma atualização para o Arduino IDE está disponível, mas não podemos baixá-la e instalá-la automaticamente. Por favor, vá para a página de download e baixe a versão mais recente de lá. ",
       "ideUpdaterDialog": "Atualização de software ",
       "newVersionAvailable": "Uma nova versão do Arduino IDE ({0}) está disponível para download.",
       "noUpdatesAvailable": "Não há atualizações recentes disponíveis para o Arduino IDE ",
       "notNowButton": "Agora não ",
-      "skipVersionButton": "Pular versão ",
-      "updateAvailable": "Atualização disponível",
+      "skipVersionButton": "Pular Versão",
+      "updateAvailable": "Atualização Disponível",
       "versionDownloaded": "O Arduino IDE {0} foi baixado. "
     },
     "library": {
@@ -210,7 +212,7 @@
       "arduinoLibraries": "Bibliotecas Arduino",
       "contributedLibraries": "Bibliotecas contribuídas",
       "dependenciesForLibrary": "Dependências da biblioteca {0}: {1}",
-      "include": "Adicionar Biblioteca",
+      "include": "Incluir Biblioteca",
       "installAll": "Instalar tudo",
       "installMissingDependencies": "Deseja instalar todas as dependências ausentes?",
       "installOneMissingDependency": "Deseja instalar a dependência ausente?",
@@ -237,7 +239,7 @@
       "unableToConnectToWebSocket": "Impossível conectar ao websocket"
     },
     "preferences": {
-      "additionalManagerURLs": "URLs Adicionais para Gerenciadores de Placas",
+      "additionalManagerURLs": "URLs do Gerenciador de Placas Adicionais",
       "auth.audience": "O OAuth2 publico.",
       "auth.clientID": "O ID do cliente OAuth2.",
       "auth.domain": "O domínio do cliente OAuth2.",
@@ -349,7 +351,7 @@
       "couldNotSave": "Não foi possível salvar o sketch. Copie seu trabalho não salvo em seu editor de texto favorito e reinicie a IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Quaisquer alterações não serão salvas.",
+      "quitMessage": "Quiasquer alterações não salvas não estarão salvas",
       "quitTitle": "Você tem certeza que quer sair?"
     },
     "debug": {
@@ -358,7 +360,7 @@
       "typeNotSupported": "O tipo de sessão de depuração \"{0}\" não é suportado."
     },
     "editor": {
-      "unsavedTitle": "Sem Nome – {0}"
+      "unsavedTitle": "Não salvo – \"1{0}\""
     },
     "messages": {
       "collapse": "Recolher",
@@ -368,7 +370,7 @@
       "deleteCurrentSketch": "Você deseja excluir o sketch atual?",
       "fileNewName": "Nome para o novo arquivo",
       "invalidExtension": "\".{0}\" não é uma extensão válida.",
-      "invalidFilename": "Arquivo inválido.",
+      "invalidFilename": "Nome de arquiov Inválido.",
       "newFileName": "Novo nome para o arquivo"
     }
   }
