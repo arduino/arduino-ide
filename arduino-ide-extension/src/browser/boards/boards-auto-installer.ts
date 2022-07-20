@@ -238,6 +238,16 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
 
     const actions: AutoInstallPromptActions = [
       {
+        key: manualInstall,
+        handler: () => {
+          this.boardsManagerFrontendContribution
+            .openView({ reveal: true })
+            .then((widget) =>
+              widget.refresh(candidate.name.toLocaleLowerCase())
+            );
+        },
+      },
+      {
         isAcceptance: true,
         key: yes,
         handler: () => {
@@ -248,16 +258,6 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
             responseService: this.responseService,
             version: candidate.availableVersions[0],
           });
-        },
-      },
-      {
-        key: manualInstall,
-        handler: () => {
-          this.boardsManagerFrontendContribution
-            .openView({ reveal: true })
-            .then((widget) =>
-              widget.refresh(candidate.name.toLocaleLowerCase())
-            );
         },
       },
     ];
