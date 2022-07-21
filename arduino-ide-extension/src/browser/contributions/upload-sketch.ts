@@ -217,6 +217,7 @@ export class UploadSketch extends CoreServiceContribution {
         verbose,
         sourceOverride,
         optimizeForDebug,
+        compileVerbose,
       ] = await Promise.all([
         this.boardsDataStore.appendConfigToFqbn(
           boardsConfig.selectedBoard?.fqbn
@@ -228,7 +229,12 @@ export class UploadSketch extends CoreServiceContribution {
         this.commandService.executeCommand<boolean>(
           'arduino-is-optimize-for-debug'
         ),
+        this.preferences.get('arduino.compile.verbose'),
       ]);
+
+      const compileStepOptions: Partial<CoreService.Compile.Options> = {
+        verbose: compileVerbose,
+      };
 
       const board = {
         ...boardsConfig.selectedBoard,
@@ -277,9 +283,12 @@ export class UploadSketch extends CoreServiceContribution {
       }
       this.outputChannelManager.getChannel('Arduino').clear();
       if (usingProgrammer) {
-        await this.coreService.uploadUsingProgrammer(options);
+        await this.coreService.uploadUsingProgrammer(
+          options,
+          compileStepOptions
+        );
       } else {
-        await this.coreService.upload(options);
+        await this.coreService.upload(options, compileStepOptions);
       }
       this.messageService.info(
         nls.localize('arduino/sketch/doneUploading', 'Done uploading.'),

@@ -163,9 +163,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  upload(options: CoreService.Upload.Options): Promise<void> {
+  upload(
+    options: CoreService.Upload.Options,
+    additionalCompileOptions: Partial<CoreService.Compile.Options>
+  ): Promise<void> {
     return this.doUpload(
       options,
+      additionalCompileOptions,
       () => new UploadRequest(),
       (client, req) => client.upload(req),
       (message: string, locations: CoreError.ErrorLocation[]) =>
@@ -175,10 +179,12 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   async uploadUsingProgrammer(
-    options: CoreService.Upload.Options
+    options: CoreService.Upload.Options,
+    additionalCompileOptions: Partial<CoreService.Compile.Options>
   ): Promise<void> {
     return this.doUpload(
       options,
+      additionalCompileOptions,
       () => new UploadUsingProgrammerRequest(),
       (client, req) => client.uploadUsingProgrammer(req),
       (message: string, locations: CoreError.ErrorLocation[]) =>
@@ -189,6 +195,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   protected async doUpload(
     options: CoreService.Upload.Options,
+    additionalCompileOptions: Partial<CoreService.Compile.Options>,
     requestFactory: () => UploadRequest | UploadUsingProgrammerRequest,
     responseHandler: (
       client: ArduinoCoreServiceClient,
@@ -200,7 +207,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     ) => ApplicationError<number, CoreError.ErrorLocation[]>,
     task: string
   ): Promise<void> {
-    await this.compile(Object.assign(options, { exportBinaries: false }));
+    await this.compile({
+      ...options,
+      ...additionalCompileOptions,
+      exportBinaries: false,
+    });
 
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;

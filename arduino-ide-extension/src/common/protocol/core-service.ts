@@ -67,8 +67,14 @@ export interface CoreService {
         compilerWarnings?: CompilerWarnings;
       }>
   ): Promise<void>;
-  upload(options: CoreService.Upload.Options): Promise<void>;
-  uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
+  upload(
+    options: CoreService.Upload.Options,
+    additionalCompileOptions: Partial<CoreService.Compile.Options>
+  ): Promise<void>;
+  uploadUsingProgrammer(
+    options: CoreService.Upload.Options,
+    additionalCompileOptions: Partial<CoreService.Compile.Options>
+  ): Promise<void>;
   burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;
 }
 
