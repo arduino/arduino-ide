@@ -122,7 +122,6 @@ export class SettingsService {
       languages,
       currentLanguage,
       editorFontSize,
-      themeId,
       autoSave,
       quickSuggestions,
       autoScaleInterface,
@@ -137,10 +136,6 @@ export class SettingsService {
       ['en', ...(await this.localizationProvider.getAvailableLanguages())],
       this.localizationProvider.getCurrentLanguage(),
       this.preferenceService.get<number>(FONT_SIZE_SETTING, 12),
-      this.preferenceService.get<string>(
-        'workbench.colorTheme',
-        'arduino-theme'
-      ),
       this.preferenceService.get<Settings.AutoSave>(
         AUTO_SAVE_SETTING,
         Settings.AutoSave.DEFAULT_ON
@@ -165,7 +160,7 @@ export class SettingsService {
     const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
     return {
       editorFontSize,
-      themeId,
+      themeId: ThemeService.get().getCurrentTheme().id,
       languages,
       currentLanguage,
       autoSave,
