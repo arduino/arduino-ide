@@ -202,16 +202,6 @@ export class ArduinoFrontendContribution
           'Secondary branding color for list selections, dropdowns, and widget borders.',
       },
       {
-        id: 'arduino.foreground',
-        defaults: {
-          dark: 'editorWidget.background',
-          light: 'editorWidget.background',
-          hc: 'editorWidget.background',
-        },
-        description:
-          'Color of the Arduino IDE foreground which is used for dialogs, such as the Select Board dialog.',
-      },
-      {
         id: 'arduino.toolbar.button.background',
         defaults: {
           dark: 'button.background',
