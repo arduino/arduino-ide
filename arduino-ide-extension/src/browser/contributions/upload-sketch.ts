@@ -214,7 +214,7 @@ export class UploadSketch extends CoreServiceContribution {
         fqbn,
         { selectedProgrammer },
         verify,
-        verbose,
+        uploadVerbose,
         sourceOverride,
         optimizeForDebug,
         compileVerbose,
@@ -232,10 +232,7 @@ export class UploadSketch extends CoreServiceContribution {
         this.preferences.get('arduino.compile.verbose'),
       ]);
 
-      const compileStepOptions: Partial<CoreService.Compile.Options> = {
-        verbose: compileVerbose,
-      };
-
+      const verbose = { compile: compileVerbose, upload: uploadVerbose };
       const board = {
         ...boardsConfig.selectedBoard,
         name: boardsConfig.selectedBoard?.name || '',
@@ -283,12 +280,9 @@ export class UploadSketch extends CoreServiceContribution {
       }
       this.outputChannelManager.getChannel('Arduino').clear();
       if (usingProgrammer) {
-        await this.coreService.uploadUsingProgrammer(
-          options,
-          compileStepOptions
-        );
+        await this.coreService.uploadUsingProgrammer(options);
       } else {
-        await this.coreService.upload(options, compileStepOptions);
+        await this.coreService.upload(options);
       }
       this.messageService.info(
         nls.localize('arduino/sketch/doneUploading', 'Done uploading.'),

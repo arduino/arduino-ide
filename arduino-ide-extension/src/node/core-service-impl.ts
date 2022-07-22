@@ -163,13 +163,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  upload(
-    options: CoreService.Upload.Options,
-    additionalCompileOptions: Partial<CoreService.Compile.Options>
-  ): Promise<void> {
+  upload(options: CoreService.Upload.Options): Promise<void> {
     return this.doUpload(
       options,
-      additionalCompileOptions,
       () => new UploadRequest(),
       (client, req) => client.upload(req),
       (message: string, locations: CoreError.ErrorLocation[]) =>
@@ -179,12 +175,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   async uploadUsingProgrammer(
-    options: CoreService.Upload.Options,
-    additionalCompileOptions: Partial<CoreService.Compile.Options>
+    options: CoreService.Upload.Options
   ): Promise<void> {
     return this.doUpload(
       options,
-      additionalCompileOptions,
       () => new UploadUsingProgrammerRequest(),
       (client, req) => client.uploadUsingProgrammer(req),
       (message: string, locations: CoreError.ErrorLocation[]) =>
@@ -195,7 +189,6 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   protected async doUpload(
     options: CoreService.Upload.Options,
-    additionalCompileOptions: Partial<CoreService.Compile.Options>,
     requestFactory: () => UploadRequest | UploadUsingProgrammerRequest,
     responseHandler: (
       client: ArduinoCoreServiceClient,
@@ -209,7 +202,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   ): Promise<void> {
     await this.compile({
       ...options,
-      ...additionalCompileOptions,
+      verbose: options.verbose.compile,
       exportBinaries: false,
     });
 
@@ -273,7 +266,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     if (programmer) {
       request.setProgrammer(programmer.id);
     }
-    request.setVerbose(options.verbose);
+    request.setVerbose(options.verbose.upload);
     request.setVerify(options.verify);
 
     options.userFields.forEach((e) => {

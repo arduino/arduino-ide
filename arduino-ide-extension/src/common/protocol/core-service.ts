@@ -67,14 +67,8 @@ export interface CoreService {
         compilerWarnings?: CompilerWarnings;
       }>
   ): Promise<void>;
-  upload(
-    options: CoreService.Upload.Options,
-    additionalCompileOptions: Partial<CoreService.Compile.Options>
-  ): Promise<void>;
-  uploadUsingProgrammer(
-    options: CoreService.Upload.Options,
-    additionalCompileOptions: Partial<CoreService.Compile.Options>
-  ): Promise<void>;
+  upload(options: CoreService.Upload.Options): Promise<void>;
+  uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
   burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;
 }
 
@@ -90,11 +84,12 @@ export namespace CoreService {
   }
 
   export namespace Upload {
-    export interface Options extends Compile.Options {
+    export interface Options extends Omit<Compile.Options, 'verbose'> {
       readonly port?: Port;
       readonly programmer?: Programmer | undefined;
       readonly verify: boolean;
       readonly userFields: BoardUserField[];
+      readonly verbose: { compile: boolean; upload: boolean };
     }
   }
 
