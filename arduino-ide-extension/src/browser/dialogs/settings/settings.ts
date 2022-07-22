@@ -168,7 +168,7 @@ export class SettingsService {
     const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
     return {
       editorFontSize,
-      themeId: ThemeService.get().getCurrentTheme().id,
+      themeId,
       languages,
       currentLanguage,
       autoSave,
