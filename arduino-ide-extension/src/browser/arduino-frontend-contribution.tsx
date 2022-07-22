@@ -47,6 +47,7 @@ import { MonitorViewContribution } from './serial/monitor/monitor-view-contribut
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
+import { MonacoThemeRegistry } from '@theia/monaco/lib/browser/textmate/monaco-theme-registry';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -78,6 +79,9 @@ export class ArduinoFrontendContribution
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
+  @inject(MonacoThemeRegistry)
+  private readonly themeRegistry: MonacoThemeRegistry;
+
   @postConstruct()
   protected async init(): Promise<void> {
     if (!window.navigator.onLine) {
@@ -89,6 +93,18 @@ export class ArduinoFrontendContribution
         )
       );
     }
+    this.themeRegistry.register({
+      id: 'arduino-theme',
+      label: 'Light (Arduino)',
+      uiTheme: 'vs',
+      json: require('../../src/browser/data/default.color-theme.json'),
+    });
+    this.themeRegistry.register({
+      id: 'arduino-theme-dark',
+      label: 'Dark (Arduino)',
+      uiTheme: 'vs-dark',
+      json: require('../../src/browser/data/dark.color-theme.json'),
+    });
   }
 
   async onStart(app: FrontendApplication): Promise<void> {

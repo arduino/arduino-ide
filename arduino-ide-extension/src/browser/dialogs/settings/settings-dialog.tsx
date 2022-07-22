@@ -16,6 +16,7 @@ import { SettingsComponent } from './settings-component';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
 import { AdditionalUrls } from '../../../common/protocol';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
+import { ThemeService } from '@theia/core/lib/browser/theming';
 
 @injectable()
 export class SettingsWidget extends ReactWidget {
@@ -34,6 +35,9 @@ export class SettingsWidget extends ReactWidget {
   @inject(AsyncLocalizationProvider)
   protected readonly localizationProvider: AsyncLocalizationProvider;
 
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
+
   protected render(): React.ReactNode {
     return (
       <SettingsComponent
@@ -42,6 +46,7 @@ export class SettingsWidget extends ReactWidget {
         fileDialogService={this.fileDialogService}
         windowService={this.windowService}
         localizationProvider={this.localizationProvider}
+        themeService={this.themeService}
       />
     );
   }

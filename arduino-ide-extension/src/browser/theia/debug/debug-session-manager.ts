@@ -49,7 +49,8 @@ export class DebugSessionManager extends TheiaDebugSessionManager {
           }
 
           const sessionId = await this.debug.createDebugSession(
-            resolved.configuration
+            resolved.configuration,
+            undefined
           );
           return this.doStart(sessionId, resolved);
         } catch (e) {

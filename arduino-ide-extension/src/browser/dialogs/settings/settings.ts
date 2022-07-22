@@ -101,6 +101,9 @@ export class SettingsService {
   @inject(CommandService)
   protected commandService: CommandService;
 
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
+
   protected readonly onDidChangeEmitter = new Emitter<Readonly<Settings>>();
   readonly onDidChange = this.onDidChangeEmitter.event;
   protected readonly onDidResetEmitter = new Emitter<Readonly<Settings>>();
@@ -226,11 +229,7 @@ export class SettingsService {
           'Invalid editor font size. It must be a positive integer.'
         );
       }
-      if (
-        !ThemeService.get()
-          .getThemes()
-          .find(({ id }) => id === themeId)
-      ) {
+      if (!this.themeService.getThemes().find(({ id }) => id === themeId)) {
         return nls.localize(
           'arduino/preferences/invalid.theme',
           'Invalid theme.'

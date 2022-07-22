@@ -82,7 +82,6 @@ import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
-import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 import {
   ArduinoDaemonPath,
   ArduinoDaemon,
@@ -310,20 +309,6 @@ import { SelectedBoard } from './contributions/selected-board';
 import { CheckForUpdates } from './contributions/check-for-updates';
 import { OpenBoardsConfig } from './contributions/open-boards-config';
 import { SketchFilesTracker } from './contributions/sketch-files-tracker';
-
-MonacoThemingService.register({
-  id: 'arduino-theme',
-  label: 'Light (Arduino)',
-  uiTheme: 'vs',
-  json: require('../../src/browser/data/default.color-theme.json'),
-});
-
-MonacoThemingService.register({
-  id: 'arduino-theme-dark',
-  label: 'Dark (Arduino)',
-  uiTheme: 'vs-dark',
-  json: require('../../src/browser/data/dark.color-theme.json'),
-});
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items

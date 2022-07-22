@@ -202,20 +202,18 @@ export class SettingsComponent extends React.Component<
               <select
                 className="theia-select"
                 value={
-                  ThemeService.get()
+                  this.props.themeService
                     .getThemes()
                     .find(({ id }) => id === this.state.themeId)?.label ||
                   nls.localize('arduino/common/unknown', 'Unknown')
                 }
                 onChange={this.themeDidChange}
               >
-                {ThemeService.get()
-                  .getThemes()
-                  .map(({ id, label }) => (
-                    <option key={id} value={label}>
-                      {label}
-                    </option>
-                  ))}
+                {this.props.themeService.getThemes().map(({ id, label }) => (
+                  <option key={id} value={label}>
+                    {label}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex-line">
@@ -588,7 +586,7 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const { selectedIndex } = event.target.options;
-    const theme = ThemeService.get().getThemes()[selectedIndex];
+    const theme = this.props.themeService.getThemes()[selectedIndex];
     if (theme) {
       this.setState({ themeId: theme.id });
     }
@@ -728,6 +726,7 @@ export namespace SettingsComponent {
     readonly fileDialogService: FileDialogService;
     readonly windowService: WindowService;
     readonly localizationProvider: AsyncLocalizationProvider;
+    readonly themeService: ThemeService;
   }
   export type State = Settings & {
     rawAdditionalUrlsValue: string;
