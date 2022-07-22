@@ -145,6 +145,7 @@ export class InoLanguage extends SketchContribution {
               name: name ? `"${name}"` : undefined,
             },
             realTimeDiagnostics,
+            silentOutput: true,
           }
         ),
       ]);

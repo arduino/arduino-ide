@@ -10,28 +10,35 @@ import {
 import {
   ApplicationShell as TheiaApplicationShell,
   DockPanel,
+  DockPanelRenderer as TheiaDockPanelRenderer,
   Panel,
+  TabBar,
   Widget,
+  SHELL_TABBAR_CONTEXT_MENU,
 } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../../common/protocol/sketches-service-client-impl';
 import { nls } from '@theia/core/lib/common';
 import URI from '@theia/core/lib/common/uri';
+import { ToolbarAwareTabBar } from './tab-bars';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
   @inject(CommandService)
-  protected readonly commandService: CommandService;
+  private readonly commandService: CommandService;
 
   @inject(MessageService)
-  protected readonly messageService: MessageService;
+  private readonly messageService: MessageService;
 
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  private readonly sketchesServiceClient: SketchesServiceClientImpl;
 
   @inject(ConnectionStatusService)
-  protected readonly connectionStatusService: ConnectionStatusService;
+  private readonly connectionStatusService: ConnectionStatusService;
 
   protected override track(widget: Widget): void {
     super.track(widget);
@@ -43,7 +50,7 @@ export class ApplicationShell extends TheiaApplicationShell {
       this.sketchesServiceClient.currentSketch().then((sketch) => {
         if (CurrentSketch.isValid(sketch)) {
           if (!this.isSketchFile(widget.editor.uri, sketch.uri)) {
-              return;
+            return;
           }
           if (Sketch.isInSketch(widget.editor.uri, sketch)) {
             widget.title.closable = false;
@@ -54,11 +61,11 @@ export class ApplicationShell extends TheiaApplicationShell {
   }
 
   private isSketchFile(uri: URI, sketchUriString: string): boolean {
-      const sketchUri = new URI(sketchUriString);
-      if (uri.parent.isEqual(sketchUri)) {
-          return true;
-      }
-      return false;
+    const sketchUri = new URI(sketchUriString);
+    if (uri.parent.isEqual(sketchUri)) {
+      return true;
+    }
+    return false;
   }
 
   override async addWidget(
@@ -120,15 +127,41 @@ export class ApplicationShell extends TheiaApplicationShell {
   }
 }
 
+export class DockPanelRenderer extends TheiaDockPanelRenderer {
+  override createTabBar(): TabBar<Widget> {
+    const renderer = this.tabBarRendererFactory();
+    // `ToolbarAwareTabBar` is from IDE2 and not from Theia. Check the imports.
+    const tabBar = new ToolbarAwareTabBar(
+      this.tabBarToolbarRegistry,
+      this.tabBarToolbarFactory,
+      this.breadcrumbsRendererFactory,
+      {
+        renderer,
+        // Scroll bar options
+        handlers: ['drag-thumb', 'keyboard', 'wheel', 'touch'],
+        useBothWheelAxes: true,
+        scrollXMarginOffset: 4,
+        suppressScrollY: true,
+      }
+    );
+    this.tabBarClasses.forEach((c) => tabBar.addClass(c));
+    renderer.tabBar = tabBar;
+    tabBar.disposed.connect(() => renderer.dispose());
+    renderer.contextMenuPath = SHELL_TABBAR_CONTEXT_MENU;
+    tabBar.currentChanged.connect(this.onCurrentTabChanged, this);
+    return tabBar;
+  }
+}
+
 const originalHandleEvent = DockPanel.prototype.handleEvent;
 
 DockPanel.prototype.handleEvent = function (event) {
   switch (event.type) {
-      case 'p-dragenter':
-      case 'p-dragleave':
-      case 'p-dragover':
-      case 'p-drop':
-        return;
+    case 'p-dragenter':
+    case 'p-dragleave':
+    case 'p-dragover':
+    case 'p-drop':
+      return;
   }
   originalHandleEvent.bind(this)(event);
 };

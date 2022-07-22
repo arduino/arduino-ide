@@ -104,7 +104,7 @@ export class ArduinoFrontendContribution
         }
       }
     });
-    this.appStateService.reachedState('initialized_layout').then(() =>
+    this.appStateService.reachedState('ready').then(() =>
       this.arduinoPreferences.ready.then(() => {
         const webContents = remote.getCurrentWebContents();
         const zoomLevel = this.arduinoPreferences.get(

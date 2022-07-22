@@ -13,6 +13,7 @@ import {
 import { ArduinoDaemon } from '../../../common/protocol';
 import { NotificationCenter } from '../../notification-center';
 import { nls } from '@theia/core/lib/common';
+import debounce = require('lodash.debounce');
 
 @injectable()
 export class FrontendConnectionStatusService extends TheiaFrontendConnectionStatusService {
@@ -36,10 +37,11 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
     this.notificationCenter.onDaemonDidStop(
       () => (this.connectedPort = undefined)
     );
-    this.wsConnectionProvider.onIncomingMessageActivity(() => {
+    const refresh = debounce(() => {
       this.updateStatus(!!this.connectedPort);
       this.schedulePing();
-    });
+    }, this.options.offlineTimeout - 10);
+    this.wsConnectionProvider.onIncomingMessageActivity(() => refresh());
   }
 }
 
