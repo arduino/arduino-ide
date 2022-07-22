@@ -1,7 +1,7 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { LabelProvider } from '@theia/core/lib/browser';
+import type { NavigatableWidgetOptions } from '@theia/core/lib/browser';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import {
   CurrentSketch,
@@ -13,16 +13,16 @@ import { nls } from '@theia/core/lib/common';
 @injectable()
 export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
   @inject(SketchesService)
-  protected readonly sketchesService: SketchesService;
+  private readonly sketchesService: SketchesService;
 
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  private readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-  @inject(LabelProvider)
-  protected override readonly labelProvider: LabelProvider;
-
-  protected override async createEditor(uri: URI): Promise<EditorWidget> {
-    const widget = await super.createEditor(uri);
+  protected override async createEditor(
+    uri: URI,
+    options: NavigatableWidgetOptions
+  ): Promise<EditorWidget> {
+    const widget = await super.createEditor(uri, options);
     return this.maybeUpdateCaption(widget);
   }
 

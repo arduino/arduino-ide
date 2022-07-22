@@ -38,7 +38,7 @@ Object.assign(dialogs, {
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMenuContribution).toSelf().inSingletonScope();
   bind(MainMenuManager).toService(ElectronMenuContribution);
-  rebind(TheiaElectronMenuContribution).to(ElectronMenuContribution);
+  rebind(TheiaElectronMenuContribution).toService(ElectronMenuContribution);
   bind(ElectronMainMenuFactory).toSelf().inSingletonScope();
   rebind(TheiaElectronMainMenuFactory).toService(ElectronMainMenuFactory);
   bind(ElectronWindowService).toSelf().inSingletonScope();

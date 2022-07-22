@@ -50,13 +50,17 @@ import {
   ApplicationShell as TheiaApplicationShell,
   ShellLayoutRestorer as TheiaShellLayoutRestorer,
   CommonFrontendContribution as TheiaCommonFrontendContribution,
+  DockPanelRenderer as TheiaDockPanelRenderer,
   TabBarRendererFactory,
   ContextMenuRenderer,
   createTreeContainer,
   TreeWidget,
 } from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
-import { ApplicationShell } from './theia/core/application-shell';
+import {
+  ApplicationShell,
+  DockPanelRenderer,
+} from './theia/core/application-shell';
 import { FrontendApplication } from './theia/core/frontend-application';
 import {
   BoardsConfigDialog,
@@ -315,6 +319,8 @@ import { OpenBoardsConfig } from './contributions/open-boards-config';
 import { SketchFilesTracker } from './contributions/sketch-files-tracker';
 import { MonacoThemeServiceIsReady } from './utils/window';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { StatusBarImpl } from './theia/core/status-bar';
+import { StatusBarImpl as TheiaStatusBarImpl } from '@theia/core/lib/browser';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -583,7 +589,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Disabled reference counter in the editor manager to avoid opening the same editor (with different opener options) multiple times.
   bind(EditorManager).toSelf().inSingletonScope();
-  rebind(TheiaEditorManager).to(EditorManager);
+  rebind(TheiaEditorManager).toService(EditorManager);
 
   // replace search icon
   rebind(TheiaSearchInWorkspaceFactory)
@@ -821,6 +827,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To avoid duplicate tabs use deepEqual instead of string equal: https://github.com/eclipse-theia/theia/issues/11309
   bind(WidgetManager).toSelf().inSingletonScope();
   rebind(TheiaWidgetManager).toService(WidgetManager);
+
+  // To avoid running a status bar update on every single `keypress` event from the editor.
+  bind(StatusBarImpl).toSelf().inSingletonScope();
+  rebind(TheiaStatusBarImpl).toService(StatusBarImpl);
+
+  // Debounced update for the tab-bar toolbar when typing in the editor.
+  bind(DockPanelRenderer).toSelf();
+  rebind(TheiaDockPanelRenderer).toService(DockPanelRenderer);
 
   // Preferences
   bindArduinoPreferences(bind);
