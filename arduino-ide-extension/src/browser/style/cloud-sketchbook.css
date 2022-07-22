@@ -96,7 +96,7 @@
 
 .cloud-sketchbook-welcome > .item .link {
     cursor: pointer;
-    color: var(--theia-arduino-branding-primary);
+    color: var(--theia-textLink-foreground);
 }
 
 .pull-sketch-icon {

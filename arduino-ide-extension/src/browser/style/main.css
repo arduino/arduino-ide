@@ -173,20 +173,20 @@
 
 /* Output */
 .theia-output .editor-container {
-    background-color: var(--theia-arduino-output-background);
+    background-color: var(--theia-terminal-background);
 }
 
 .theia-output .monaco-editor .lines-content.monaco-editor-background {
-    background-color: var(--theia-arduino-output-background);
+    background-color: var(--theia-terminal-background);
 }
 
 .theia-output .monaco-editor .lines-content.monaco-editor-background .view-lines .view-line .mtk1:not(.theia-output-error):not(.theia-output-warning) {
-    color: var(--theia-arduino-output-foreground);
+    color: var(--theia-terminal-foreground);
 }
 
 .theia-output .monaco-editor .margin {
     border-right: none;
-    background-color: var(--theia-arduino-output-background);
+    background-color: var(--theia-terminal-background);
 }
 
 
