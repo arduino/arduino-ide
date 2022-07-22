@@ -42,251 +42,256 @@
     );
   }
 
-  //---------------------------+
-  // Clean the previous state. |
-  //---------------------------+
-  // rm -rf ../working-copy
-  rm('-rf', path('..', workingCopy));
-  // Clean up the `./electron/build` folder.
-  const resourcesToKeep = [
-    'patch',
-    'resources',
-    'scripts',
-    'template-package.json',
-    'webpack.config.js'
-  ];
-  fs.readdirSync(path('..', 'build'))
-    .filter((filename) => resourcesToKeep.indexOf(filename) === -1)
-    .forEach((filename) => rm('-rf', path('..', 'build', filename)));
+  try {
+    //---------------------------+
+    // Clean the previous state. |
+    //---------------------------+
+    // rm -rf ../working-copy
+    rm('-rf', path('..', workingCopy));
+    // Clean up the `./electron/build` folder.
+    const resourcesToKeep = [
+      'patch',
+      'resources',
+      'scripts',
+      'template-package.json'
+    ];
+    fs.readdirSync(path('..', 'build'))
+      .filter((filename) => resourcesToKeep.indexOf(filename) === -1)
+      .forEach((filename) => rm('-rf', path('..', 'build', filename)));
 
-  // Clean up the `./electron/build/patch` and `./electron/build/resources` folder with Git.
-  // To avoid file duplication between bundled app and dev mode, some files are copied from `./electron-app` to `./electron/build` folder.
-  const foldersToSyncFromDev = ['patch', 'resources'];
-  foldersToSyncFromDev.forEach(filename => shell.exec(`git -C ${path('..', 'build', filename)} clean -ffxdq`, { async: false }));
+    // Clean up the `./electron/build/resources` folder with Git.
+    // To avoid file duplication between bundled app and dev mode, some files are copied from `./electron-app` to `./electron/build` folder.
+    const foldersToSyncFromDev = ['resources'];
+    foldersToSyncFromDev.forEach((filename) =>
+      shell.exec(`git -C ${path('..', 'build', filename)} clean -ffxdq`, {
+        async: false,
+      })
+    );
 
-  const extensions = require('./extensions.json');
-  echo(
-    `Building the application with the following extensions:\n${extensions
-      .map((ext) => ` - ${ext}`)
-      .join(',\n')}`
-  );
-  const allDependencies = [...extensions, 'electron-app'];
+    const extensions = require('./extensions.json');
+    echo(
+      `Building the application with the following extensions:\n${extensions
+        .map((ext) => ` - ${ext}`)
+        .join(',\n')}`
+    );
+    const allDependencies = [...extensions, 'electron-app'];
 
-  //----------------------------------------------------------------------------------------------+
-  // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
-  //----------------------------------------------------------------------------------------------+
-  mkdir('-p', path('..', workingCopy));
-  for (const filename of [
-    ...allDependencies,
-    'yarn.lock',
-    'package.json',
-    'lerna.json',
-    'i18n'
-  ]) {
-    cp('-rf', path(rootPath, filename), path('..', workingCopy));
-  }
+    //----------------------------------------------------------------------------------------------+
+    // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
+    //----------------------------------------------------------------------------------------------+
+    mkdir('-p', path('..', workingCopy));
+    for (const filename of [
+      ...allDependencies,
+      'yarn.lock',
+      'package.json',
+      'lerna.json',
+      'i18n',
+    ]) {
+      cp('-rf', path(rootPath, filename), path('..', workingCopy));
+    }
 
-  //---------------------------------------------------------------------------------------------+
-  // Copy the patched `index.js` for the frontend, the Theia preload, etc. from `./electron-app` |
-  //---------------------------------------------------------------------------------------------+
-  for (const filename of foldersToSyncFromDev) {
-    cp('-rf', path('..', workingCopy, 'electron-app', filename), path('..', 'build'));
-  }
+    //---------------------------------------------------------------------------------------------+
+    // Copy the patched `index.js` for the frontend, the Theia preload, etc. from `./electron-app` |
+    //---------------------------------------------------------------------------------------------+
+    for (const filename of foldersToSyncFromDev) {
+      cp(
+        '-rf',
+        path('..', workingCopy, 'electron-app', filename),
+        path('..', 'build')
+      );
+    }
 
-  //----------------------------------------------+
-  // Sanity check: all versions must be the same. |
-  //----------------------------------------------+
-  verifyVersions(allDependencies);
+    //----------------------------------------------+
+    // Sanity check: all versions must be the same. |
+    //----------------------------------------------+
+    verifyVersions(allDependencies);
 
-  //----------------------------------------------------------------------+
-  // Use the nightly patch version if not a release but requires publish. |
-  //----------------------------------------------------------------------+
-  if (!isRelease) {
-    for (const dependency of allDependencies) {
-      const pkg = require(`../working-copy/${dependency}/package.json`);
-      pkg.version = version;
-      for (const dependency in pkg.dependencies) {
-        if (allDependencies.indexOf(dependency) !== -1) {
-          pkg.dependencies[dependency] = version;
+    //----------------------------------------------------------------------+
+    // Use the nightly patch version if not a release but requires publish. |
+    //----------------------------------------------------------------------+
+    if (!isRelease) {
+      for (const dependency of allDependencies) {
+        const pkg = require(`../working-copy/${dependency}/package.json`);
+        pkg.version = version;
+        for (const dependency in pkg.dependencies) {
+          if (allDependencies.indexOf(dependency) !== -1) {
+            pkg.dependencies[dependency] = version;
+          }
         }
+        fs.writeFileSync(
+          path('..', workingCopy, dependency, 'package.json'),
+          JSON.stringify(pkg, null, 2)
+        );
       }
-      fs.writeFileSync(
-        path('..', workingCopy, dependency, 'package.json'),
-        JSON.stringify(pkg, null, 2)
-      );
     }
-  }
-  verifyVersions(allDependencies);
+    verifyVersions(allDependencies);
 
-  //---------------------------------------------------------------------------------------------------+
-  // Save some time: no need to build the projects that are not needed in final app. Currently unused. |
-  //---------------------------------------------------------------------------------------------------+
-  //@ts-ignore
-  const rootPackageJson = require('../working-copy/package.json');
-  const workspaces = rootPackageJson.workspaces;
-  // We cannot remove the `electron-app`. Otherwise, there is not way to collect the unused dependencies.
-  const dependenciesToRemove = [];
-  for (const dependencyToRemove of dependenciesToRemove) {
-    const index = workspaces.indexOf(dependencyToRemove);
-    if (index !== -1) {
-      workspaces.splice(index, 1);
+    //---------------------------------------------------------------------------------------------------+
+    // Save some time: no need to build the projects that are not needed in final app. Currently unused. |
+    //---------------------------------------------------------------------------------------------------+
+    //@ts-ignore
+    const rootPackageJson = require('../working-copy/package.json');
+    const workspaces = rootPackageJson.workspaces;
+    // We cannot remove the `electron-app`. Otherwise, there is not way to collect the unused dependencies.
+    const dependenciesToRemove = [];
+    for (const dependencyToRemove of dependenciesToRemove) {
+      const index = workspaces.indexOf(dependencyToRemove);
+      if (index !== -1) {
+        workspaces.splice(index, 1);
+      }
     }
-  }
-  rootPackageJson.workspaces = workspaces;
-  fs.writeFileSync(
-    path('..', workingCopy, 'package.json'),
-    JSON.stringify(rootPackageJson, null, 2)
-  );
+    rootPackageJson.workspaces = workspaces;
+    fs.writeFileSync(
+      path('..', workingCopy, 'package.json'),
+      JSON.stringify(rootPackageJson, null, 2)
+    );
 
-  //-------------------------------------------------------------------------------------------------+
-  // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
-  //-------------------------------------------------------------------------------------------------+
-  exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`,
-    `Building the ${productName} application`
-  );
+    //-------------------------------------------------------------------------------------------------+
+    // Rebuild the extension with the copied `yarn.lock`. It is a must to use the same Theia versions. |
+    //-------------------------------------------------------------------------------------------------+
+    exec(
+      `yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)}`,
+      `Building the ${productName} application`
+    );
 
-  //-------------------------------------------------------------------------------------------------------------------------+
-  // Test the application. With this approach, we cannot publish test results to GH Actions but save 6-10 minutes per builds |
-  //-------------------------------------------------------------------------------------------------------------------------+
-  exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)} test`,
-    `Testing the ${productName} application`
-  );
+    //-------------------------------------------------------------------------------------------------------------------------+
+    // Test the application. With this approach, we cannot publish test results to GH Actions but save 6-10 minutes per builds |
+    //-------------------------------------------------------------------------------------------------------------------------+
+    exec(
+      `yarn --network-timeout 1000000 --cwd ${path('..', workingCopy)} test`,
+      `Testing the ${productName} application`
+    );
 
-  // Collect all unused dependencies by the backend. We have to remove them from the electron app.
-  // The `bundle.js` already contains everything we need for the frontend.
-  // We have to do it before changing the dependencies to `local-path`.
-  const unusedDependencies = await utils.collectUnusedDependencies(
-    '../working-copy/electron-app/'
-  );
-
-  //-------------------------------------------------------------------------------------------------------------+
-  // Change the regular NPM dependencies to `local-paths`, so that we can build them without any NPM registries. |
-  //-------------------------------------------------------------------------------------------------------------+
-  for (const extension of extensions) {
-    if (extension !== 'arduino-ide-extension') {
-      // Do not unlink self.
-      // @ts-ignore
-      rootPackageJson = require(`../working-copy/${extension}/package.json`);
-      // @ts-ignore
-      rootPackageJson.dependencies['arduino-ide-extension'] =
-        'file:../arduino-ide-extension';
-      fs.writeFileSync(
-        path('..', workingCopy, extension, 'package.json'),
-        JSON.stringify(rootPackageJson, null, 2)
-      );
+    //-------------------------------------------------------------------------------------------------------------+
+    // Change the regular NPM dependencies to `local-paths`, so that we can build them without any NPM registries. |
+    //-------------------------------------------------------------------------------------------------------------+
+    for (const extension of extensions) {
+      if (extension !== 'arduino-ide-extension') {
+        // Do not unlink self.
+        // @ts-ignore
+        rootPackageJson = require(`../working-copy/${extension}/package.json`);
+        // @ts-ignore
+        rootPackageJson.dependencies['arduino-ide-extension'] =
+          'file:../arduino-ide-extension';
+        fs.writeFileSync(
+          path('..', workingCopy, extension, 'package.json'),
+          JSON.stringify(rootPackageJson, null, 2)
+        );
+      }
     }
-  }
 
-  //------------------------------------------------------------------------------------+
-  // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
-  //------------------------------------------------------------------------------------+
-  // @ts-ignore
-  const appPackageJson = require('../working-copy/electron-app/package.json');
-  template.build.files = [
-    ...template.build.files,
-    ...unusedDependencies.map((name) => `!node_modules/${name}`),
-  ];
-
-  const dependencies = {};
-  for (const extension of extensions) {
-    dependencies[extension] = `file:../working-copy/${extension}`;
-  }
-  // @ts-ignore
-  appPackageJson.dependencies = { ...appPackageJson.dependencies, ...dependencies };
-  appPackageJson.devDependencies = { ...appPackageJson.devDependencies, ...template.devDependencies };
-  // Deep-merging the Theia application configuration.
-  // @ts-ignore
-  const theia = merge(appPackageJson.theia || {}, template.theia || {});
-  const content = {
-    ...appPackageJson,
-    ...template,
-    theia,
+    //------------------------------------------------------------------------------------+
+    // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
+    //------------------------------------------------------------------------------------+
     // @ts-ignore
-    dependencies: appPackageJson.dependencies,
-    devDependencies: appPackageJson.devDependencies,
-    // VS Code extensions and the plugins folder is defined in the top level `package.json`. The template picks them up.
-    theiaPluginsDir: rootPackageJson.theiaPluginsDir,
-    theiaPlugins: rootPackageJson.theiaPlugins,
-  };
-  fs.writeFileSync(
-    path('..', 'build', 'package.json'),
-    JSON.stringify(
-      merge(content, template, { arrayMerge: (_, sourceArray) => sourceArray }),
-      null,
-      2
-    )
-  );
+    const appPackageJson = require('../working-copy/electron-app/package.json');
+    const dependencies = {};
+    for (const extension of extensions) {
+      dependencies[extension] = `file:../working-copy/${extension}`;
+    }
+    // @ts-ignore
+    appPackageJson.dependencies = {
+      ...appPackageJson.dependencies,
+      ...dependencies,
+    };
+    appPackageJson.devDependencies = {
+      ...appPackageJson.devDependencies,
+      ...template.devDependencies,
+    };
+    // Deep-merging the Theia application configuration.
+    // @ts-ignore
+    const theia = merge(appPackageJson.theia || {}, template.theia || {});
+    const content = {
+      ...appPackageJson,
+      ...template,
+      theia,
+      // @ts-ignore
+      dependencies: appPackageJson.dependencies,
+      devDependencies: appPackageJson.devDependencies,
+      // VS Code extensions and the plugins folder is defined in the top level `package.json`. The template picks them up.
+      theiaPluginsDir: rootPackageJson.theiaPluginsDir,
+      theiaPlugins: rootPackageJson.theiaPlugins,
+    };
+    fs.writeFileSync(
+      path('..', 'build', 'package.json'),
+      JSON.stringify(
+        merge(content, template, {
+          arrayMerge: (_, sourceArray) => sourceArray,
+        }),
+        null,
+        2
+      )
+    );
 
-  echo(`📜  Effective 'package.json' for the ${productName} application is:
+    echo(`📜  Effective 'package.json' for the ${productName} application is:
 -----------------------
 ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
 -----------------------
     `);
 
-  // Make sure the original `yarn.lock` file is used from the electron application.
-  if (fs.existsSync(path('..', 'build', 'yarn.lock'))) {
-    echo(`${path('..', 'build', 'yarn.lock')} must not exist.`);
-    shell.exit(1);
-  }
-  cp('-rf', path(rootPath, 'yarn.lock'), path('..', 'build'));
-  if (!fs.existsSync(path('..', 'build', 'yarn.lock'))) {
-    echo(`${path('..', 'build', 'yarn.lock')} does not exist.`);
-    shell.exit(1);
-  }
-
-  //-------------------------------------------------------------------------------------------+
-  // Install all private and public dependencies for the electron application and build Theia. |
-  //-------------------------------------------------------------------------------------------+
-  exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')}`,
-    'Installing dependencies'
-  );
-  exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build`,
-    `Building the ${productName} application`
-  );
-  exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} rebuild`,
-    'Rebuild native dependencies'
-  );
-
-  //------------------------------------------------------------------------------+
-  // Create a throw away dotenv file which we use to feed the builder with input. |
-  //------------------------------------------------------------------------------+
-  const dotenv = 'electron-builder.env';
-  if (fs.existsSync(path('..', 'build', dotenv))) {
-    rm('-rf', path('..', 'build', dotenv));
-  }
-  // For the releases we use the desired tag as is defined by `$(Release.Tag)` from Azure.
-  // For the preview builds we use the version from the `electron/build/package.json` with the short commit hash.
-  fs.writeFileSync(path('..', 'build', dotenv), `ARDUINO_VERSION=${version}`);
-
-  //-----------------------------------+
-  // Package the electron application. |
-  //-----------------------------------+
-  exec(
-    `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`,
-    `Packaging your ${productName} application`
-  );
-
-  //-----------------------------------------------------------------------------------------------------+
-  // Recalculate artifacts hash and copy to another folder (because they can change after signing them).
-  // Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |
-  //-----------------------------------------------------------------------------------------------------+
-  if (isCI) {
-    try {
-      await recalculateArtifactsHash();
-      await copyFilesToBuildArtifacts();
-    } catch (e) {
-      echo(JSON.stringify(e));
+    // Make sure the original `yarn.lock` file is used from the electron application.
+    if (fs.existsSync(path('..', 'build', 'yarn.lock'))) {
+      echo(`${path('..', 'build', 'yarn.lock')} must not exist.`);
       shell.exit(1);
     }
-  }
-  echo(`🎉  Success. Your application is at: ${path('..', 'build', 'dist')}`);
+    cp('-rf', path(rootPath, 'yarn.lock'), path('..', 'build'));
+    if (!fs.existsSync(path('..', 'build', 'yarn.lock'))) {
+      echo(`${path('..', 'build', 'yarn.lock')} does not exist.`);
+      shell.exit(1);
+    }
 
-  restore();
+    //-------------------------------------------------------------------------------------------+
+    // Install all private and public dependencies for the electron application and build Theia. |
+    //-------------------------------------------------------------------------------------------+
+    exec(
+      `yarn --network-timeout 1000000 --cwd ${path('..', 'build')}`,
+      'Installing dependencies'
+    );
+    exec(
+      `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} build`,
+      `Building the ${productName} application`
+    );
+    exec(
+      `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} rebuild`,
+      'Rebuild native dependencies'
+    );
+
+    //------------------------------------------------------------------------------+
+    // Create a throw away dotenv file which we use to feed the builder with input. |
+    //------------------------------------------------------------------------------+
+    const dotenv = 'electron-builder.env';
+    if (fs.existsSync(path('..', 'build', dotenv))) {
+      rm('-rf', path('..', 'build', dotenv));
+    }
+    // For the releases we use the desired tag as is defined by `$(Release.Tag)` from Azure.
+    // For the preview builds we use the version from the `electron/build/package.json` with the short commit hash.
+    fs.writeFileSync(path('..', 'build', dotenv), `ARDUINO_VERSION=${version}`);
+
+    //-----------------------------------+
+    // Package the electron application. |
+    //-----------------------------------+
+    exec(
+      `yarn --network-timeout 1000000 --cwd ${path('..', 'build')} package`,
+      `Packaging your ${productName} application`
+    );
+
+    //-----------------------------------------------------------------------------------------------------+
+    // Recalculate artifacts hash and copy to another folder (because they can change after signing them).
+    // Azure does not support wildcard for `PublishBuildArtifacts@1.pathToPublish` |
+    //-----------------------------------------------------------------------------------------------------+
+    if (isCI) {
+      try {
+        await recalculateArtifactsHash();
+        await copyFilesToBuildArtifacts();
+      } catch (e) {
+        echo(JSON.stringify(e));
+        shell.exit(1);
+      }
+    }
+    echo(`🎉  Success. Your application is at: ${path('..', 'build', 'dist')}`);
+  } finally {
+    restore();
+  }
 
   //--------+
   // Utils. |
@@ -514,7 +519,8 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     if (expectedVersion) {
       if (!versions.has(expectedVersion)) {
         echo(
-          `Mismatching version configuration. Expected version was: '${expectedVersion}' actual was: '${Array.from(versions)[0]
+          `Mismatching version configuration. Expected version was: '${expectedVersion}' actual was: '${
+            Array.from(versions)[0]
           }'.`
         );
         shell.exit(1);

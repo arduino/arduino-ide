@@ -1,5 +1,5 @@
 import * as React from '@theia/core/shared/react';
-import * as ReactDOM from '@theia/core/shared/react-dom';
+import type { Root } from '@theia/core/shared/react-dom/client';
 import {
   inject,
   injectable,
@@ -49,8 +49,8 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
     return this.cloudSketchbookTreeWidget;
   }
 
-  protected renderFooter(footerNode: HTMLElement): void {
-    ReactDOM.render(
+  protected renderFooter(footerRoot: Root): void {
+    footerRoot.render(
       <>
         {this._session && (
           <CreateNew
@@ -67,8 +67,7 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
           }
           authenticationService={this.authenticationService}
         />
-      </>,
-      footerNode
+      </>
     );
   }
 

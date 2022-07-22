@@ -29,6 +29,7 @@ export class DebugConfigurationModel extends TheiaDebugConfigurationModel {
     return {
       uri: this.configUri,
       configurations: this.config,
+      compounds: [],
     };
   }
 }

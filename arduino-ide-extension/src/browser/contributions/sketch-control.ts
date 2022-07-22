@@ -235,7 +235,7 @@ export class SketchControl extends SketchContribution {
     });
     registry.registerKeybinding({
       command: CommonCommands.PREVIOUS_TAB.id,
-      keybinding: 'CtrlCmd+Alt+Left', // TODO: check why electron does not show the keybindings in the UI.
+      keybinding: 'CtrlCmd+Alt+Left',
     });
     registry.registerKeybinding({
       command: CommonCommands.NEXT_TAB.id,

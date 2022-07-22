@@ -1,7 +1,7 @@
 import { nls } from '@theia/core/lib/common';
 import { shell } from 'electron';
 import * as React from '@theia/core/shared/react';
-import * as ReactDOM from '@theia/core/shared/react-dom';
+import { createRoot } from '@theia/core/shared/react-dom/client';
 import ReactMarkdown from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
@@ -30,6 +30,7 @@ export const IDEUpdaterComponent = ({
   const { version, releaseNotes } = updateInfo;
   const changelogDivRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>;
+  const changelogRoot = createRoot(changelogDivRef.current);
   React.useEffect(() => {
     if (!!releaseNotes && changelogDivRef.current) {
       let changelog: string;
@@ -38,7 +39,7 @@ export const IDEUpdaterComponent = ({
         changelog = releaseNotes.reduce((acc, item) => {
           return item.note ? (acc += `${item.note}\n\n`) : acc;
         }, '');
-      ReactDOM.render(
+      changelogRoot.render(
         <ReactMarkdown
           components={{
             a: ({ href, children, ...props }) => (
@@ -49,8 +50,7 @@ export const IDEUpdaterComponent = ({
           }}
         >
           {changelog}
-        </ReactMarkdown>,
-        changelogDivRef.current
+        </ReactMarkdown>
       );
     }
   }, [updateInfo]);

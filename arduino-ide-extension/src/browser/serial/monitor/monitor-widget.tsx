@@ -1,6 +1,5 @@
 import * as React from '@theia/core/shared/react';
 import { injectable, inject } from '@theia/core/shared/inversify';
-import { OptionsType } from 'react-select/src/types';
 import { Emitter } from '@theia/core/lib/common/event';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import {
@@ -128,9 +127,7 @@ export class MonitorWidget extends ReactWidget {
     );
   };
 
-  protected get lineEndings(): OptionsType<
-    SerialMonitorOutput.SelectOption<MonitorModel.EOL>
-  > {
+  protected get lineEndings(): SerialMonitorOutput.SelectOption<MonitorModel.EOL>[] {
     return [
       {
         label: nls.localize('arduino/serial/noLineEndings', 'No Line Ending'),

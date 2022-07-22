@@ -450,11 +450,6 @@
       "offline": "Offline",
       "quitTitle": "Are you sure you want to quit?"
     },
-    "debug": {
-      "start": "Start...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
-    },
     "editor": {
       "unsavedTitle": "Unsaved – {0}"
     },

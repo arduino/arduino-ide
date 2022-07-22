@@ -20,7 +20,7 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
 
   protected override async createEditor(
     uri: URI,
-    options: NavigatableWidgetOptions
+    options?: NavigatableWidgetOptions
   ): Promise<EditorWidget> {
     const widget = await super.createEditor(uri, options);
     return this.maybeUpdateCaption(widget);

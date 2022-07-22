@@ -71,7 +71,7 @@ namespace Chunks {
       if (current && current.buffers) {
         result.push([
           current.severity,
-          Buffer.concat(current.buffers).toString('utf-8'),
+          Buffer.concat(current.buffers).toString('utf8'),
         ]);
       }
     };

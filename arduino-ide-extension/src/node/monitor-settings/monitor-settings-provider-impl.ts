@@ -95,7 +95,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     const rawJson = await promisify(fs.readFile)(
       this.pluggableMonitorSettingsPath,
       {
-        encoding: 'utf-8',
+        encoding: 'utf8',
         flag: 'a+', // a+ = append and read, creating the file if it doesn't exist
       }
     );

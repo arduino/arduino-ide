@@ -3,10 +3,7 @@ import { ContainerModule } from '@theia/core/shared/inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import {
-  TabBarToolbarContribution,
-  TabBarToolbarFactory,
-} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 import {
   FrontendApplicationContribution,
@@ -84,10 +81,7 @@ import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
-import {
-  MonacoThemeJson,
-  MonacoThemingService,
-} from '@theia/monaco/lib/browser/monaco-theming-service';
+
 import {
   ArduinoDaemonPath,
   ArduinoDaemon,
@@ -137,7 +131,6 @@ import { Settings } from './contributions/settings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
-import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
 import { BurnBootloader } from './contributions/burn-bootloader';
@@ -181,8 +174,6 @@ import { EditorCommandContribution } from './theia/editor/editor-command';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-decorator';
 import { Debug } from './contributions/debug';
-import { DebugSessionManager } from './theia/debug/debug-session-manager';
-import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
 import { Sketchbook } from './contributions/sketchbook';
 import { DebugFrontendApplicationContribution } from './theia/debug/debug-frontend-application-contribution';
 import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
@@ -313,10 +304,6 @@ import { SelectedBoard } from './contributions/selected-board';
 import { CheckForIDEUpdates } from './contributions/check-for-ide-updates';
 import { OpenBoardsConfig } from './contributions/open-boards-config';
 import { SketchFilesTracker } from './contributions/sketch-files-tracker';
-import { MonacoThemeServiceIsReady } from './utils/window';
-import { Deferred } from '@theia/core/lib/common/promise-util';
-import { StatusBarImpl } from './theia/core/status-bar';
-import { StatusBarImpl as TheiaStatusBarImpl } from '@theia/core/lib/browser';
 import { EditorMenuContribution } from './theia/editor/editor-file';
 import { EditorMenuContribution as TheiaEditorMenuContribution } from '@theia/editor/lib/browser/editor-menu';
 import { PreferencesEditorWidget as TheiaPreferencesEditorWidget } from '@theia/preferences/lib/browser/views/preference-editor-widget';
@@ -337,32 +324,12 @@ import { InterfaceScale } from './contributions/interface-scale';
 import { OpenHandler } from '@theia/core/lib/browser/opener-service';
 import { NewCloudSketch } from './contributions/new-cloud-sketch';
 import { SketchbookCompositeWidget } from './widgets/sketchbook/sketchbook-composite-widget';
-
-const registerArduinoThemes = () => {
-  const themes: MonacoThemeJson[] = [
-    {
-      id: 'arduino-theme',
-      label: 'Light (Arduino)',
-      uiTheme: 'vs',
-      json: require('../../src/browser/data/default.color-theme.json'),
-    },
-    {
-      id: 'arduino-theme-dark',
-      label: 'Dark (Arduino)',
-      uiTheme: 'vs-dark',
-      json: require('../../src/browser/data/dark.color-theme.json'),
-    },
-  ];
-  themes.forEach((theme) => MonacoThemingService.register(theme));
-};
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const global = window as any;
-const ready = global[MonacoThemeServiceIsReady] as Deferred;
-if (ready) {
-  ready.promise.then(registerArduinoThemes);
-} else {
-  registerArduinoThemes();
-}
+import { WindowTitleUpdater } from './theia/core/window-title-updater';
+import { WindowTitleUpdater as TheiaWindowTitleUpdater } from '@theia/core/lib/browser/window/window-title-updater';
+import { ThemeService } from './theia/core/theming';
+import { ThemeService as TheiaThemeService } from '@theia/core/lib/browser/theming';
+import { MonacoThemingService } from './theia/monaco/monaco-theming-service';
+import { MonacoThemingService as TheiaMonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -587,14 +554,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .to(WorkspaceDeleteHandler)
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
-  rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) =>
-      () => {
-        const container = parentContainer.createChild();
-        container.bind(TabBarToolbar).toSelf().inSingletonScope();
-        return container.get(TabBarToolbar);
-      }
-  );
   bind(OutputChannelManager).toSelf().inSingletonScope();
   rebind(TheiaOutputChannelManager).toService(OutputChannelManager);
   bind(OutputChannelRegistryMainImpl).toSelf().inTransientScope();
@@ -838,9 +797,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(AboutDialog).toSelf().inSingletonScope();
   rebind(TheiaAboutDialog).toService(AboutDialog);
 
-  // To avoid running `Save All` when there are no dirty editors before starting the debug session.
-  bind(DebugSessionManager).toSelf().inSingletonScope();
-  rebind(TheiaDebugSessionManager).toService(DebugSessionManager);
   // To remove the `Run` menu item from the application menu.
   bind(DebugFrontendApplicationContribution).toSelf().inSingletonScope();
   rebind(TheiaDebugFrontendApplicationContribution).toService(
@@ -853,10 +809,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To avoid duplicate tabs use deepEqual instead of string equal: https://github.com/eclipse-theia/theia/issues/11309
   bind(WidgetManager).toSelf().inSingletonScope();
   rebind(TheiaWidgetManager).toService(WidgetManager);
-
-  // To avoid running a status bar update on every single `keypress` event from the editor.
-  bind(StatusBarImpl).toSelf().inSingletonScope();
-  rebind(TheiaStatusBarImpl).toService(StatusBarImpl);
 
   // Debounced update for the tab-bar toolbar when typing in the editor.
   bind(DockPanelRenderer).toSelf();
@@ -942,7 +894,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(LocalCacheFsProvider).toSelf().inSingletonScope();
   bind(FileServiceContribution).toService(LocalCacheFsProvider);
   bind(CloudSketchbookCompositeWidget).toSelf();
-  bind<WidgetFactory>(WidgetFactory).toDynamicValue((ctx) => ({
+  bind(WidgetFactory).toDynamicValue((ctx) => ({
     id: 'cloud-sketchbook-composite-widget',
     createWidget: () => ctx.container.get(CloudSketchbookCompositeWidget),
   }));
@@ -991,4 +943,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaHostedPluginSupport).toService(HostedPluginSupport);
   bind(HostedPluginEvents).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(HostedPluginEvents);
+
+  // custom window titles
+  bind(WindowTitleUpdater).toSelf().inSingletonScope();
+  rebind(TheiaWindowTitleUpdater).toService(WindowTitleUpdater);
+
+  // register Arduino themes
+  bind(ThemeService).toSelf().inSingletonScope();
+  rebind(TheiaThemeService).toService(ThemeService);
+  bind(MonacoThemingService).toSelf().inSingletonScope();
+  rebind(TheiaMonacoThemingService).toService(MonacoThemingService);
 });

@@ -5,50 +5,7 @@ const zip = require('7zip-min');
 const temp = require('temp');
 const path = require('path');
 const shell = require('shelljs');
-const depcheck = require('depcheck');
 const fromFile = require('file-type').fromFile;
-
-/**
- * Resolves to an array of `npm` package names that are declared in the `package.json` but **not** used by the project.
- */
-function collectUnusedDependencies(pathToProject = process.cwd()) {
-  const p = path.isAbsolute(pathToProject)
-    ? pathToProject
-    : path.resolve(process.cwd(), pathToProject);
-  console.log(`⏱️  >>> Collecting unused backend dependencies for ${p}...`);
-  return new Promise((resolve) => {
-    depcheck(
-      p,
-      {
-        ignoreDirs: ['frontend'],
-        parsers: {
-          '*.js': depcheck.parser.es6,
-          '*.jsx': depcheck.parser.jsx,
-        },
-        detectors: [
-          depcheck.detector.requireCallExpression,
-          depcheck.detector.importDeclaration,
-        ],
-        specials: [depcheck.special.eslint, depcheck.special.webpack],
-      },
-      (unused) => {
-        const { dependencies } = unused;
-        if (dependencies && dependencies.length > 0) {
-          console.log(
-            `👌  <<< The following unused dependencies have been found: ${JSON.stringify(
-              dependencies,
-              null,
-              2
-            )}`
-          );
-        } else {
-          console.log('👌  <<< No unused dependencies have been found.');
-        }
-        resolve(dependencies);
-      }
-    );
-  });
-}
 
 /**
  * `pathToZip` is a `path/to/your/app-name.zip`.
@@ -127,7 +84,7 @@ function unpack(what, where) {
         reject(error);
         return;
       }
-      resolve();
+      resolve(undefined);
     });
   });
 }
@@ -139,7 +96,7 @@ function pack(what, where) {
         reject(error);
         return;
       }
-      resolve();
+      resolve(undefined);
     });
   });
 }
@@ -212,7 +169,6 @@ function getChannelFile(platform) {
 }
 
 module.exports = {
-  collectUnusedDependencies,
   adjustArchiveStructure,
   isZip,
   unpack,

@@ -22,7 +22,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.TOGGLE_MAXIMIZED,
       CommonCommands.PIN_TAB,
       CommonCommands.UNPIN_TAB,
-      CommonCommands.NEW_FILE,
+      CommonCommands.NEW_UNTITLED_FILE,
     ]) {
       commandRegistry.unregisterCommand(command);
     }
