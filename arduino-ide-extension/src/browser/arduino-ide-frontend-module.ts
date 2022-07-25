@@ -555,7 +555,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Disabled reference counter in the editor manager to avoid opening the same editor (with different opener options) multiple times.
   bind(EditorManager).toSelf().inSingletonScope();
-  rebind(TheiaEditorManager).to(EditorManager);
+  rebind(TheiaEditorManager).toService(EditorManager);
 
   // replace search icon
   rebind(TheiaSearchInWorkspaceFactory)
