@@ -38,6 +38,7 @@
       "config": {
         "applicationName": "Arduino IDE",
         "defaultTheme": "arduino-theme",
+        "validatePreferencesSchema": false,
         "preferences": {
           "files.autoSave": "afterDelay",
           "editor.minimap.enabled": false,
