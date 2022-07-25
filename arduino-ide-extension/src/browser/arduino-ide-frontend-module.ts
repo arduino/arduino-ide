@@ -309,6 +309,10 @@ import { SelectedBoard } from './contributions/selected-board';
 import { CheckForUpdates } from './contributions/check-for-updates';
 import { OpenBoardsConfig } from './contributions/open-boards-config';
 import { SketchFilesTracker } from './contributions/sketch-files-tracker';
+import { ThemeService } from './theia/core/theming';
+import { ThemeService as TheiaThemeService } from '@theia/core/lib/browser/theming';
+import { MonacoThemingService } from './theia/monaco/monaco-theming-service';
+import { MonacoThemingService as TheiaMonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -598,6 +602,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To remove `New Window` from the `File` menu
   bind(WindowContribution).toSelf().inSingletonScope();
   rebind(TheiaWindowContribution).toService(WindowContribution);
+
+  // Customized theme service to dispatch the default IDE2 theme based on the OS' theme.
+  bind(ThemeService).toSelf().inSingletonScope();
+  rebind(TheiaThemeService).toService(ThemeService);
+  // The monaco part of the theme customization
+  bind(MonacoThemingService).toSelf().inSingletonScope();
+  rebind(TheiaMonacoThemingService).toService(MonacoThemingService);
 
   bind(ArduinoDaemon)
     .toDynamicValue((context) =>

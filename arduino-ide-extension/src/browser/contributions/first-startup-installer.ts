@@ -43,7 +43,7 @@ export class FirstStartupInstaller extends Contribution {
             // If arduino:avr installation fails because it's already installed we don't want to retry on next start-up
             console.error(e);
           } else {
-            // But if there is any other error (e.g.: no interntet cconnection), we want to retry next time
+            // But if there is any other error (e.g.: no Internet connection), we want to retry next time
             avrPackageError = e;
           }
         }
@@ -64,7 +64,7 @@ export class FirstStartupInstaller extends Contribution {
             // If Arduino_BuiltIn installation fails because it's already installed we don't want to retry on next start-up
             console.log('error installing core', e);
           } else {
-            // But if there is any other error (e.g.: no interntet cconnection), we want to retry next time
+            // But if there is any other error (e.g.: no Internet connection), we want to retry next time
             builtInLibraryError = e;
           }
         }
