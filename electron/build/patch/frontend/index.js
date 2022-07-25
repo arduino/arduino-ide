@@ -13,6 +13,9 @@ const {
 const {
   ApplicationProps,
 } = require('@theia/application-package/lib/application-props');
+const {
+  FrontendApplicationConfigProvider,
+} = require('@theia/core/lib/browser/frontend-application-config-provider');
 
 const lightTheme = 'arduino-theme';
 const darkTheme = 'arduino-theme-dark';
@@ -21,13 +24,19 @@ const defaultTheme =
     ? darkTheme
     : lightTheme;
 
+const originalGet = FrontendApplicationConfigProvider.get;
+FrontendApplicationConfigProvider.get = function () {
+  const originalProps = originalGet.bind(FrontendApplicationConfigProvider)();
+  return { ...originalProps, defaultTheme };
+}.bind(FrontendApplicationConfigProvider);
+
 const arduinoDarkTheme = {
   id: 'arduino-theme-dark',
   type: 'dark',
   label: 'Dark (Arduino)',
   editorTheme: 'arduino-theme-dark',
-  activate() { },
-  deactivate() { }
+  activate() {},
+  deactivate() {},
 };
 
 const arduinoLightTheme = {
@@ -35,8 +44,8 @@ const arduinoLightTheme = {
   type: 'light',
   label: 'Light (Arduino)',
   editorTheme: 'arduino-theme',
-  activate() { },
-  deactivate() { }
+  activate() {},
+  deactivate() {},
 };
 
 if (!window[ThemeServiceSymbol]) {
@@ -49,7 +58,11 @@ if (!window[ThemeServiceSymbol]) {
       );
     },
   });
-  themeService.register(...BuiltinThemeProvider.themes, arduinoDarkTheme, arduinoLightTheme);
+  themeService.register(
+    ...BuiltinThemeProvider.themes,
+    arduinoDarkTheme,
+    arduinoLightTheme
+  );
   themeService.startupTheme();
   themeService.setCurrentTheme(defaultTheme);
   window[ThemeServiceSymbol] = themeService;
