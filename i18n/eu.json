@@ -192,6 +192,7 @@
       "visit": "Bisitatu Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Itxi eta instalatu",
       "closeToInstallNotice": "Itxi softwarea eta instalatu eguneratzea zure makinan.",
       "downloadButton": "Software eguneratzea",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeitik kargatu aurretik. Lehenetsia egia da.",
       "cloud.push.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeian gorde aurretik. Lehenetsia egia da.",
       "cloud.pushpublic.warn": "Egia bada erabiltzaileek abisua jasoko dute programa publiko bat hodeian gorde aurretik. Lehenetsia egia da.",
-      "cloud.sketchSyncEnpoint": "Zerbitzari batean programak gorde eta kargatzeko amaiera-puntua. Lehenetsia Arduino Cloud API da.",
+      "cloud.sketchSyncEndpoint": "Zerbitzari batean programak gorde eta kargatzeko amaiera-puntua. Lehenetsia Arduino Cloud API da.",
       "compile": "konpilazioa",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Programa bildumaren kokaleku baliogabea: {0}",
       "invalid.theme": "Itxura baliogabea.",
       "language.log": "Egia Arduino Language Server-ek egunkari-fitxategiak sortu behar baditu programaren karpetan. Bestela, gezurra. Lehenetsia gezurra da.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Proxyaren eskuzko konfigurazioa",
       "network": "Sarea",
       "newSketchbookLocation": "Hautatu programa bilduma berriaren kokalekua",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "NL & CR biak",
       "noLineEndings": "Lerro amaierarik ez",
       "notConnected": "Ez dago konektatuta. Hautatu plaka eta ataka automatikoki konektatzeko.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Denbora-zigilua",
       "toggleTimestamp": "Txandakatu denbora-zigilua"
     },

@@ -192,6 +192,7 @@
       "visit": "Truy cập Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Đóng và cài đặt",
       "closeToInstallNotice": "Đóng ứng dụng và cài đặt bản cập nhật mới nhất lên máy bạn.",
       "downloadButton": "Tải về",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "'True' nếu người dùng muốn được cảnh báo trước khi tải xuống một cloud sketch. Mặc định là 'true'.",
       "cloud.push.warn": "'True' nếu người dùng muốn được cảnh báo trước khi đẩy lên lên một cloud sketch. Mặc định là 'true'.",
       "cloud.pushpublic.warn": "'True' nếu người dùng muốn được cảnh báo trước khi đẩy lên lên một sketch công khai lên đám mây. Mặc định là 'true'.",
-      "cloud.sketchSyncEnpoint": "Đầu cuối đùng dể đẩy lên và tải xuống sketch từ backend. Mặc định chỉ đến Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Đầu cuối đùng dể đẩy lên và tải xuống sketch từ backend. Mặc định chỉ đến Arduino Cloud API.",
       "compile": "biên dịch",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Địa điểm sketchbook không hợp lệ: {0}",
       "invalid.theme": "Chủ đề không hợp lệ.",
       "language.log": "'True' nếu như muốn Arduino Language Server tạo tệp log vào trong thư mục chứa sketch. Nếu không thì là 'false'. Mặc định là 'false'.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Cấu hình proxy thủ công",
       "network": "Mạng",
       "newSketchbookLocation": "Chọn địa điểm lưu sketchbook mới",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Vừa xuống dòng & về đầu dòng",
       "noLineEndings": "Không có kết thúc dòng",
       "notConnected": "Chưa được kết nối. Hãy chọn một bo mạch và một cổng để tự động kết nối.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Mốc thời gian",
       "toggleTimestamp": "Bật tắt mốc thời gian"
     },

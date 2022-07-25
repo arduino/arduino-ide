@@ -192,6 +192,7 @@
       "visit": "زيارة Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "قم بالاغلاق و التحديث",
       "closeToInstallNotice": "اغلق البرمجية و حّدث الجهاز الخاص بك ",
       "downloadButton": "حمّل",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "True اذا كان يجب تحذير المستخدمين قبل سحب مشروع من السحابة . True افتراضيا",
       "cloud.push.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع الى السحابة . True افتراضيا",
       "cloud.pushpublic.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع عام الى السحابة . True افتراضيا",
-      "cloud.sketchSyncEnpoint": "الوجهة المستخدمة لدفع و سحب المشاريع من الخلفية . تشير افتراضيا الى Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "الوجهة المستخدمة لدفع و سحب المشاريع من الخلفية . تشير افتراضيا الى Arduino Cloud API.",
       "compile": "الترجمة",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "موقع ملف المشروع غير صالح : {0}",
       "invalid.theme": "سمة غير صالحة",
       "language.log": "\"True\" اذا كان مخدم اللغات الخاص بArduino يستطيع توليد سجلات الى ملف المشروع , و الا \"False\", و هي كذلك بشكل افتراضي.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "اعدادات الوكيل يدوياً",
       "network": "شبكة",
       "newSketchbookLocation": "اختر مكان المشروع الجديد",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": " NL & CR معاً",
       "noLineEndings": "نهاية السطر غير موجودة",
       "notConnected": "غير متصل . اختر لوحة و منفذ للاتصال تلقائيا",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "الطابع الزمني",
       "toggleTimestamp": "تبديل الطابع الزمني"
     },

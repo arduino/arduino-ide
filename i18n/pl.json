@@ -192,6 +192,7 @@
       "visit": "Odwiedź Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
-      "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "kompilacja",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
       "invalid.theme": "Invalid theme.",
       "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Konfiguracja ręczna proxy",
       "network": "Sieć",
       "newSketchbookLocation": "Select new sketchbook location",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Nie połączono. Wybierz płytkę i port do automatycznego połączenia.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Timestamp",
       "toggleTimestamp": "Toggle Timestamp"
     },

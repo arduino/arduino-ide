@@ -192,6 +192,7 @@
       "visit": "Visiteu Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Tanca i instal·la",
       "closeToInstallNotice": "Tanqueu el programari i instal·leu l'actualització a la vostra màquina.",
       "downloadButton": "Descarregar",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "És cert si s'ha d'avisar als usuaris abans de baixar un programa del núvol. El valor predeterminat és true.",
       "cloud.push.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa del núvol. El valor predeterminat és true.",
       "cloud.pushpublic.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa públic al núvol. El valor predeterminat és true.",
-      "cloud.sketchSyncEnpoint": "El punt final s'utilitza per a enviar i descarregar programes des d'un backend. Per defecte apunta a l'API d'Arduino Cloud.",
+      "cloud.sketchSyncEndpoint": "El punt final s'utilitza per a enviar i descarregar programes des d'un backend. Per defecte apunta a l'API d'Arduino Cloud.",
       "compile": "compilar",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "La ubicació del quadern de programes no és vàlida: {0}",
       "invalid.theme": "Tema no vàlid.",
       "language.log": "És cert si el servidor d'idiomes Arduino hauria de generar fitxers de registre a la carpeta de programes. En cas contrari, fals. És fals per defecte.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Configuració manual del proxy",
       "network": "Xarxa",
       "newSketchbookLocation": "Seleccioneu una ubicació nova del quadern de programes",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Ambdós NL & CR",
       "noLineEndings": "Sense final de línia",
       "notConnected": "No connectat. Seleccioneu una tarja i un port per connectar-vos automàticament.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Marca de temps",
       "toggleTimestamp": "Activa o desactiva la marca de temps"
     },

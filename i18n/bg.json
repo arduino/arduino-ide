@@ -192,6 +192,7 @@
       "visit": "Посетете Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "True е, ако потребителите трябва да бъдат предупредени, преди да се изтегли скица от облака. По подразбиране е true.",
       "cloud.push.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде пусната скица в облака. По подразбиране е true.",
       "cloud.pushpublic.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде изпратена публична скица в облака. По подразбиране е true.",
-      "cloud.sketchSyncEnpoint": "Крайната точка, използвана за изпращане и изтегляне на скици от бекенда. По подразбиране той сочи към Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Крайната точка, използвана за изпращане и изтегляне на скици от бекенда. По подразбиране той сочи към Arduino Cloud API.",
       "compile": "компилиране",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Невалидно местоположение на скицника: {0}",
       "invalid.theme": "Невалидна тема.",
       "language.log": "True, ако езиковият сървър на Arduino трябва да генерира лог файлове в папката за скици. В противен случай false. По подразбиране е false.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ръчна конфигурация на прокси",
       "network": "Мрежа",
       "newSketchbookLocation": "Изберете местоположение за новата скицниката",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Както NL, така и CR",
       "noLineEndings": "Без край на реда",
       "notConnected": "Няма връзка. Изберете платка и порт за автоматично свързване.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Печат за време",
       "toggleTimestamp": "Превключване на клеймото за време"
     },

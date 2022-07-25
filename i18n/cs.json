@@ -192,6 +192,7 @@
       "visit": "Navštívit Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Zavřít a nainstalovat",
       "closeToInstallNotice": "Vypněte program a nainstalujte update na Váš stroj. ",
       "downloadButton": "Stáhnout",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Ano pokud by měl být uživatel varován před stahováním cloud sketche. Ano je výchozí hodnota. ",
       "cloud.push.warn": "Ano pokud by měl být uživatel varován před odesláním cloud sketche. Ano je výchozí hodnota. ",
       "cloud.pushpublic.warn": "Ano pokud by měl být uživatel varován před odesláním veřejné sketche do cloudu. Ano je výchozí hodnota. ",
-      "cloud.sketchSyncEnpoint": "Endpoint použitý pro stahování a odesílání sketchí z backendu. Ve výchozím stavu je toto směrováno na Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Endpoint použitý pro stahování a odesílání sketchí z backendu. Ve výchozím stavu je toto směrováno na Arduino Cloud API.",
       "compile": "kompilovat",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Neplatné umístění projektů:{0}",
       "invalid.theme": "Neplatné téma.",
       "language.log": "Ano pokud by jazykový server pro Arduino měl generovat logovací soubory do složky se sketchi, jinak ne. Ne je výchozí hodnota.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ruční nastavení proxy",
       "network": "Síť",
       "newSketchbookLocation": "Zvolit nové umístění projektů",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Oba NL & CR",
       "noLineEndings": "Bez konce řádku",
       "notConnected": "Nepřipojen. Zvolte desku a port pro automatické připojení.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Časová značka",
       "toggleTimestamp": "Přepnout časovou značku"
     },

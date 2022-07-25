@@ -192,6 +192,7 @@
       "visit": "Επίσκεψη Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν τραβηχτεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές.",
       "cloud.push.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
       "cloud.pushpublic.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα δημόσιο σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
-      "cloud.sketchSyncEnpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "μεταγλώττιση",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Μη-έγκυρη τοποθεσία σχεδίων: {0}",
       "invalid.theme": "Μη-έγκυρο θέμα.",
       "language.log": "Αληθές αν ο Arduino Language Server πρέπει να παράξει αρχεία κατάστασης στον φάκελο σχεδίου. Διαφορετικά, ψευδές. Είναι ψευδές απο προεπιλογή.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
       "network": "Δίκτυο",
       "newSketchbookLocation": "Επιλογή νέας τοποθεσίας σχεδίων",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Timestamp",
       "toggleTimestamp": "Toggle Timestamp"
     },
