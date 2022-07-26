@@ -84,11 +84,12 @@ export namespace CoreService {
   }
 
   export namespace Upload {
-    export interface Options extends Compile.Options {
+    export interface Options extends Omit<Compile.Options, 'verbose'> {
       readonly port?: Port;
       readonly programmer?: Programmer | undefined;
       readonly verify: boolean;
       readonly userFields: BoardUserField[];
+      readonly verbose: { compile: boolean; upload: boolean };
     }
   }
 

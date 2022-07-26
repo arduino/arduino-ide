@@ -200,7 +200,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     ) => ApplicationError<number, CoreError.ErrorLocation[]>,
     task: string
   ): Promise<void> {
-    await this.compile(Object.assign(options, { exportBinaries: false }));
+    await this.compile({
+      ...options,
+      verbose: options.verbose.compile,
+      exportBinaries: false,
+    });
 
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
@@ -262,7 +266,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     if (programmer) {
       request.setProgrammer(programmer.id);
     }
-    request.setVerbose(options.verbose);
+    request.setVerbose(options.verbose.upload);
     request.setVerify(options.verify);
 
     options.userFields.forEach((e) => {

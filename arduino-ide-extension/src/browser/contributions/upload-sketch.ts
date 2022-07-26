@@ -214,9 +214,10 @@ export class UploadSketch extends CoreServiceContribution {
         fqbn,
         { selectedProgrammer },
         verify,
-        verbose,
+        uploadVerbose,
         sourceOverride,
         optimizeForDebug,
+        compileVerbose,
       ] = await Promise.all([
         this.boardsDataStore.appendConfigToFqbn(
           boardsConfig.selectedBoard?.fqbn
@@ -228,8 +229,10 @@ export class UploadSketch extends CoreServiceContribution {
         this.commandService.executeCommand<boolean>(
           'arduino-is-optimize-for-debug'
         ),
+        this.preferences.get('arduino.compile.verbose'),
       ]);
 
+      const verbose = { compile: compileVerbose, upload: uploadVerbose };
       const board = {
         ...boardsConfig.selectedBoard,
         name: boardsConfig.selectedBoard?.name || '',
