@@ -17,7 +17,7 @@
     font-weight: 500;
     background-color: transparent;
     font-size: var(--theia-ui-font-size2);
-    color: var(--theia-list-inactiveSelectionForeground);
+    color: var(--theia-editorWidget-foreground);
     min-height: 0;
 }
 

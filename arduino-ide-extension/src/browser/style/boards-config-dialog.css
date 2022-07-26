@@ -43,7 +43,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   margin: 0;
   vertical-align: top;
   display: flex;
-  color: var(--theia-editor-foreground);
+  color: var(--theia-input-foreground);
 }
 
 #select-board-dialog .selectBoardContainer .body .search input:focus {
@@ -262,7 +262,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 .arduino-board-dropdown-footer {
-  color: var(--theia-textLink-foreground);
+  color: var(--theia-secondaryButton-foreground);
   border-top: 1px solid var(--theia-dropdown-border);
 }
 

@@ -74,7 +74,7 @@
 }
 
 .arduino-settings-dialog .react-tabs__tab-list {
-    border-bottom: 1px solid var(--theia-editorGroupHeader-tabsBorder);
+    border-color: var(--theia-tab-activeBorder);
 }
 
 .arduino-settings-dialog .react-tabs__tab-panel {

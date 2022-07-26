@@ -45,7 +45,7 @@
 .active-sketch {
   font-weight: 500;
   background-color: var(--theia-list-activeSelectionBackground) !important;
-  color: var(--theia-list-inactiveSelectionForeground) !important;
+  color: var(--theia-list-activeSelectionForeground) !important;
 
 }
 
@@ -69,6 +69,7 @@
 .theia-Tree:focus .theia-TreeNode.theia-mod-selected,
 .theia-Tree .ReactVirtualized__List:focus .theia-TreeNode.theia-mod-selected {
   background: var(--theia-list-inactiveSelectionBackground);
+  color: var(--theia-list-inactiveSelectionForeground) !important;
 }
 
 
