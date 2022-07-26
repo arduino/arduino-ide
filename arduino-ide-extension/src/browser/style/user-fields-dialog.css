@@ -14,7 +14,7 @@
 }
 
 .user-fields-dialog-content .field-label {
-  color: #2c353a;
+  color: var(--theia-editorWidget-foreground);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;

@@ -66,7 +66,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 #select-board-dialog .selectBoardContainer .body .container .content .title {
-  color: #7f8c8d;
+  color: var(--theia-editorWidget-foreground);
   padding: 0px 0px 10px 0px;
   text-transform: uppercase;
 }

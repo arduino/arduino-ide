@@ -39,7 +39,7 @@
 }
 
 .ide-updater-dialog .changelog-container a {
-  color: #018184;
+  color: var(--theia-textLink-foreground);
 }
 
 .ide-updater-dialog .changelog-container a:hover {
@@ -48,13 +48,13 @@
 }
 
 .ide-updater-dialog .changelog-container code {
-  background: #ecf1f1;
+  background: var(--theia-textBlockQuote-background);
   border-radius: 2px;
   padding: 0 2px;
 }
 
 .ide-updater-dialog .changelog-container a code {
-  color: #018184;
+  color: var(--theia-textLink-foreground);
 }
 
 .ide-updater-dialog .buttons-container {
