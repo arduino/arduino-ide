@@ -12,6 +12,7 @@ import {
   DownloadProgress,
   TaskProgress,
 } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
+import { CompileResponse } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 import {
   PlatformInstallResponse,
   PlatformUninstallResponse,
@@ -21,6 +22,11 @@ import {
   LibraryUninstallResponse,
   ZipLibraryInstallResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/lib_pb';
+import {
+  BurnBootloaderResponse,
+  UploadResponse,
+  UploadUsingProgrammerResponse,
+} from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 
 type LibraryProgressResponse =
   | LibraryInstallResponse
@@ -78,14 +84,61 @@ namespace IndexProgressResponse {
     return { download: response.getDownloadProgress() };
   }
 }
+/**
+ * These responses have neither `task` nor `progress` property but for the sake of completeness
+ * on typings (from the gRPC API) and UX, these responses represent an indefinite progress.
+ */
+type IndefiniteProgressResponse =
+  | UploadResponse
+  | UploadUsingProgrammerResponse
+  | BurnBootloaderResponse;
+namespace IndefiniteProgressResponse {
+  export function is(
+    response: unknown
+  ): response is IndefiniteProgressResponse {
+    return (
+      response instanceof UploadResponse ||
+      response instanceof UploadUsingProgrammerResponse ||
+      response instanceof BurnBootloaderResponse
+    );
+  }
+}
+type DefiniteProgressResponse = CompileResponse;
+namespace DefiniteProgressResponse {
+  export function is(response: unknown): response is DefiniteProgressResponse {
+    return response instanceof CompileResponse;
+  }
+}
+type CoreProgressResponse =
+  | DefiniteProgressResponse
+  | IndefiniteProgressResponse;
+namespace CoreProgressResponse {
+  export function is(response: unknown): response is CoreProgressResponse {
+    return (
+      DefiniteProgressResponse.is(response) ||
+      IndefiniteProgressResponse.is(response)
+    );
+  }
+  export function workUnit(response: CoreProgressResponse): UnitOfWork {
+    if (DefiniteProgressResponse.is(response)) {
+      return { task: response.getProgress() };
+    }
+    return UnitOfWork.Unknown;
+  }
+}
+
 export type ProgressResponse =
   | LibraryProgressResponse
   | PlatformProgressResponse
-  | IndexProgressResponse;
+  | IndexProgressResponse
+  | CoreProgressResponse;
 
 interface UnitOfWork {
   task?: TaskProgress;
   download?: DownloadProgress;
+}
+namespace UnitOfWork {
+  export const Unknown: UnitOfWork = {};
 }
 
 /**
@@ -115,14 +168,28 @@ export namespace ExecuteWithProgress {
           console.log(`Progress response [${uuid}]: ${json}`);
         }
       }
-      const { task, download } = resolve(response);
+      const unitOfWork = resolve(response);
+      const { task, download } = unitOfWork;
       if (!download && !task) {
-        console.warn(
-          "Implementation error. Neither 'download' nor 'task' is available."
-        );
-        // This is still an API error from the CLI, but IDE2 ignores it.
-        // Technically, it does not cause an error, but could mess up the progress reporting.
-        // See an example of an empty object `{}` repose here: https://github.com/arduino/arduino-ide/issues/906#issuecomment-1171145630.
+        // report a fake unknown progress.
+        if (unitOfWork === UnitOfWork.Unknown && progressId) {
+          if (progressId) {
+            responseService.reportProgress?.({
+              progressId,
+              message: '',
+              work: { done: Number.NaN, total: Number.NaN },
+            });
+          }
+          return;
+        }
+        if (DEBUG) {
+          // This is still an API error from the CLI, but IDE2 ignores it.
+          // Technically, it does not cause an error, but could mess up the progress reporting.
+          // See an example of an empty object `{}` repose here: https://github.com/arduino/arduino-ide/issues/906#issuecomment-1171145630.
+          console.warn(
+            "Implementation error. Neither 'download' nor 'task' is available."
+          );
+        }
         return;
       }
       if (task && download) {
@@ -132,6 +199,7 @@ export namespace ExecuteWithProgress {
       }
       if (task) {
         const message = task.getName() || task.getMessage();
+        const percent = task.getPercent();
         if (message) {
           if (progressId) {
             responseService.reportProgress?.({
@@ -141,6 +209,14 @@ export namespace ExecuteWithProgress {
             });
           }
           responseService.appendToOutput?.({ chunk: `${message}\n` });
+        } else if (percent) {
+          if (progressId) {
+            responseService.reportProgress?.({
+              progressId,
+              message,
+              work: { done: percent, total: 100 },
+            });
+          }
         }
       } else if (download) {
         if (download.getFile() && !localFile) {
@@ -191,38 +267,38 @@ export namespace ExecuteWithProgress {
       return PlatformProgressResponse.workUnit(response);
     } else if (IndexProgressResponse.is(response)) {
       return IndexProgressResponse.workUnit(response);
+    } else if (CoreProgressResponse.is(response)) {
+      return CoreProgressResponse.workUnit(response);
     }
     console.warn('Unhandled gRPC response', response);
     return {};
   }
   function toJson(response: ProgressResponse): string | undefined {
+    let object: Record<string, unknown> | undefined = undefined;
     if (response instanceof LibraryInstallResponse) {
-      return JSON.stringify(LibraryInstallResponse.toObject(false, response));
+      object = LibraryInstallResponse.toObject(false, response);
     } else if (response instanceof LibraryUninstallResponse) {
-      return JSON.stringify(LibraryUninstallResponse.toObject(false, response));
+      object = LibraryUninstallResponse.toObject(false, response);
     } else if (response instanceof ZipLibraryInstallResponse) {
-      return JSON.stringify(
-        ZipLibraryInstallResponse.toObject(false, response)
-      );
+      object = ZipLibraryInstallResponse.toObject(false, response);
     } else if (response instanceof PlatformInstallResponse) {
-      return JSON.stringify(PlatformInstallResponse.toObject(false, response));
+      object = PlatformInstallResponse.toObject(false, response);
     } else if (response instanceof PlatformUninstallResponse) {
-      return JSON.stringify(
-        PlatformUninstallResponse.toObject(false, response)
-      );
+      object = PlatformUninstallResponse.toObject(false, response);
     } else if (response instanceof UpdateIndexResponse) {
-      return JSON.stringify(UpdateIndexResponse.toObject(false, response));
+      object = UpdateIndexResponse.toObject(false, response);
     } else if (response instanceof UpdateLibrariesIndexResponse) {
-      return JSON.stringify(
-        UpdateLibrariesIndexResponse.toObject(false, response)
-      );
+      object = UpdateLibrariesIndexResponse.toObject(false, response);
     } else if (response instanceof UpdateCoreLibrariesIndexResponse) {
-      return JSON.stringify(
-        UpdateCoreLibrariesIndexResponse.toObject(false, response)
-      );
+      object = UpdateCoreLibrariesIndexResponse.toObject(false, response);
+    } else if (response instanceof CompileResponse) {
+      object = CompileResponse.toObject(false, response);
     }
-    console.warn('Unhandled gRPC response', response);
-    return undefined;
+    if (!object) {
+      console.warn('Unhandled gRPC response', response);
+      return undefined;
+    }
+    return JSON.stringify(object);
   }
 }
 

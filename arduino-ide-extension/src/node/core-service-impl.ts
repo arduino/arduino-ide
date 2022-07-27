@@ -33,6 +33,12 @@ import { tryParseError } from './cli-error-parser';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { firstToUpperCase, notEmpty } from '../common/utils';
 import { ServiceError } from './service-error';
+import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
+
+namespace Uploadable {
+  export type Request = UploadRequest | UploadUsingProgrammerRequest;
+  export type Response = UploadResponse | UploadUsingProgrammerResponse;
+}
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -45,27 +51,27 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(CommandService)
   private readonly commandService: CommandService;
 
-  async compile(
-    options: CoreService.Compile.Options & {
-      exportBinaries?: boolean;
-      compilerWarnings?: CompilerWarnings;
-    }
-  ): Promise<void> {
+  async compile(options: CoreService.Options.Compile): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     let buildPath: string | undefined = undefined;
-    const handler = this.createOnDataHandler<CompileResponse>((response) => {
+    const progressHandler = this.createProgressHandler(options);
+    const buildPathHandler = (response: CompileResponse) => {
       const currentBuildPath = response.getBuildPath();
-      if (!buildPath && currentBuildPath) {
+      if (currentBuildPath) {
         buildPath = currentBuildPath;
       } else {
-        if (!!currentBuildPath && currentBuildPath !== buildPath) {
+        if (!!buildPath && currentBuildPath !== buildPath) {
           throw new Error(
-            `The CLI has already provided a build path: <${buildPath}>, and there is a new build path value: <${currentBuildPath}>.`
+            `The CLI has already provided a build path: <${buildPath}>, and IDE2 received a new build path value: <${currentBuildPath}>.`
           );
         }
       }
-    });
+    };
+    const handler = this.createOnDataHandler<CompileResponse>(
+      progressHandler,
+      buildPathHandler
+    );
     const request = this.compileRequest(options, instance);
     return new Promise<void>((resolve, reject) => {
       client
@@ -132,20 +138,20 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   private compileRequest(
-    options: CoreService.Compile.Options & {
+    options: CoreService.Options.Compile & {
       exportBinaries?: boolean;
       compilerWarnings?: CompilerWarnings;
     },
     instance: Instance
   ): CompileRequest {
-    const { sketch, board, compilerWarnings } = options;
+    const { sketch, fqbn, compilerWarnings } = options;
     const sketchUri = sketch.uri;
     const sketchPath = FileUri.fsPath(sketchUri);
     const request = new CompileRequest();
     request.setInstance(instance);
     request.setSketchPath(sketchPath);
-    if (board?.fqbn) {
-      request.setFqbn(board.fqbn);
+    if (fqbn) {
+      request.setFqbn(fqbn);
     }
     if (compilerWarnings) {
       request.setWarnings(compilerWarnings.toLowerCase());
@@ -163,60 +169,44 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  upload(options: CoreService.Upload.Options): Promise<void> {
+  upload(options: CoreService.Options.Upload): Promise<void> {
+    const { usingProgrammer } = options;
     return this.doUpload(
       options,
-      () => new UploadRequest(),
-      (client, req) => client.upload(req),
-      (message: string, locations: CoreError.ErrorLocation[]) =>
-        CoreError.UploadFailed(message, locations),
-      'upload'
+      usingProgrammer
+        ? new UploadUsingProgrammerRequest()
+        : new UploadRequest(),
+      (client) =>
+        (usingProgrammer ? client.uploadUsingProgrammer : client.upload).bind(
+          client
+        ),
+      usingProgrammer
+        ? CoreError.UploadUsingProgrammerFailed
+        : CoreError.UploadFailed,
+      `upload${usingProgrammer ? ' using programmer' : ''}`
     );
   }
 
-  async uploadUsingProgrammer(
-    options: CoreService.Upload.Options
-  ): Promise<void> {
-    return this.doUpload(
-      options,
-      () => new UploadUsingProgrammerRequest(),
-      (client, req) => client.uploadUsingProgrammer(req),
-      (message: string, locations: CoreError.ErrorLocation[]) =>
-        CoreError.UploadUsingProgrammerFailed(message, locations),
-      'upload using programmer'
-    );
-  }
-
-  protected async doUpload(
-    options: CoreService.Upload.Options,
-    requestFactory: () => UploadRequest | UploadUsingProgrammerRequest,
-    responseHandler: (
-      client: ArduinoCoreServiceClient,
-      request: UploadRequest | UploadUsingProgrammerRequest
-    ) => ClientReadableStream<UploadResponse | UploadUsingProgrammerResponse>,
-    errorHandler: (
-      message: string,
-      locations: CoreError.ErrorLocation[]
-    ) => ApplicationError<number, CoreError.ErrorLocation[]>,
+  protected async doUpload<
+    REQ extends Uploadable.Request,
+    RESP extends Uploadable.Response
+  >(
+    options: CoreService.Options.Upload,
+    request: REQ,
+    responseFactory: (
+      client: ArduinoCoreServiceClient
+    ) => (request: REQ) => ClientReadableStream<RESP>,
+    errorCtor: ApplicationError.Constructor<number, CoreError.ErrorLocation[]>,
     task: string
   ): Promise<void> {
-    await this.compile({
-      ...options,
-      verbose: options.verbose.compile,
-      exportBinaries: false,
-    });
-
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    const request = this.uploadOrUploadUsingProgrammerRequest(
-      options,
-      instance,
-      requestFactory
-    );
-    const handler = this.createOnDataHandler();
+    const progressHandler = this.createProgressHandler(options);
+    const handler = this.createOnDataHandler(progressHandler);
+    const grpcCall = responseFactory(client);
     return this.notifyUploadWillStart(options).then(() =>
       new Promise<void>((resolve, reject) => {
-        responseHandler(client, request)
+        grpcCall(this.initUploadRequest(request, options, instance))
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
@@ -231,7 +221,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
               this.sendResponse(error.details, OutputMessage.Severity.Error);
               reject(
-                errorHandler(
+                errorCtor(
                   message,
                   tryParseError({
                     content: handler.stderr,
@@ -249,24 +239,23 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     );
   }
 
-  private uploadOrUploadUsingProgrammerRequest(
-    options: CoreService.Upload.Options,
-    instance: Instance,
-    requestFactory: () => UploadRequest | UploadUsingProgrammerRequest
-  ): UploadRequest | UploadUsingProgrammerRequest {
-    const { sketch, board, port, programmer } = options;
+  private initUploadRequest<REQ extends Uploadable.Request>(
+    request: REQ,
+    options: CoreService.Options.Upload,
+    instance: Instance
+  ): REQ {
+    const { sketch, fqbn, port, programmer } = options;
     const sketchPath = FileUri.fsPath(sketch.uri);
-    const request = requestFactory();
     request.setInstance(instance);
     request.setSketchPath(sketchPath);
-    if (board?.fqbn) {
-      request.setFqbn(board.fqbn);
+    if (fqbn) {
+      request.setFqbn(fqbn);
     }
     request.setPort(this.createPort(port));
     if (programmer) {
       request.setProgrammer(programmer.id);
     }
-    request.setVerbose(options.verbose.upload);
+    request.setVerbose(options.verbose);
     request.setVerify(options.verify);
 
     options.userFields.forEach((e) => {
@@ -275,10 +264,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  async burnBootloader(options: CoreService.Bootloader.Options): Promise<void> {
+  async burnBootloader(options: CoreService.Options.Bootloader): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    const handler = this.createOnDataHandler();
+    const progressHandler = this.createProgressHandler(options);
+    const handler = this.createOnDataHandler(progressHandler);
     const request = this.burnBootloaderRequest(options, instance);
     return this.notifyUploadWillStart(options).then(() =>
       new Promise<void>((resolve, reject) => {
@@ -315,14 +305,14 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   private burnBootloaderRequest(
-    options: CoreService.Bootloader.Options,
+    options: CoreService.Options.Bootloader,
     instance: Instance
   ): BurnBootloaderRequest {
-    const { board, port, programmer } = options;
+    const { fqbn, port, programmer } = options;
     const request = new BurnBootloaderRequest();
     request.setInstance(instance);
-    if (board?.fqbn) {
-      request.setFqbn(board.fqbn);
+    if (fqbn) {
+      request.setFqbn(fqbn);
     }
     request.setPort(this.createPort(port));
     if (programmer) {
@@ -333,8 +323,24 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
+  private createProgressHandler<R extends ProgressResponse>(
+    options: CoreService.Options.Base
+  ): (response: R) => void {
+    // If client did not provide the progress ID, do nothing.
+    if (!options.progressId) {
+      return () => {
+        /* NOOP */
+      };
+    }
+    return ExecuteWithProgress.createDataCallback<R>({
+      progressId: options.progressId,
+      responseService: this.responseService,
+    });
+  }
+
   private createOnDataHandler<R extends StreamingResponse>(
-    onResponse?: (response: R) => void
+    // TODO: why not creating a composite handler with progress, `build_path`, and out/err stream handlers?
+    ...handlers: ((response: R) => void)[]
   ): Disposable & {
     stderr: Buffer[];
     onData: (response: R) => void;
@@ -347,14 +353,14 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         }
       });
     });
-    const onData = StreamingResponse.createOnDataHandler(
+    const onData = StreamingResponse.createOnDataHandler({
       stderr,
-      (out, err) => {
+      onData: (out, err) => {
         buffer.addChunk(out);
         buffer.addChunk(err, OutputMessage.Severity.Error);
       },
-      onResponse
-    );
+      handlers,
+    });
     return {
       dispose: () => buffer.dispose(),
       stderr,
@@ -391,7 +397,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   private mergeSourceOverrides(
     req: { getSourceOverrideMap(): jspb.Map<string, string> },
-    options: CoreService.Compile.Options
+    options: CoreService.Options.Compile
   ): void {
     const sketchPath = FileUri.fsPath(options.sketch.uri);
     for (const uri of Object.keys(options.sourceOverride)) {
@@ -422,18 +428,24 @@ type StreamingResponse =
 namespace StreamingResponse {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export function createOnDataHandler<R extends StreamingResponse>(
-    stderr: Uint8Array[],
-    onData: (out: Uint8Array, err: Uint8Array) => void,
-    onResponse?: (response: R) => void
+    options: StreamingResponse.Options<R>
   ): (response: R) => void {
     return (response: R) => {
       const out = response.getOutStream_asU8();
       const err = response.getErrStream_asU8();
-      stderr.push(err);
-      onData(out, err);
-      if (onResponse) {
-        onResponse(response);
-      }
+      options.stderr.push(err);
+      options.onData(out, err);
+      options.handlers?.forEach((handler) => handler(response));
     };
+  }
+  export interface Options<R extends StreamingResponse> {
+    readonly stderr: Uint8Array[];
+    readonly onData: (out: Uint8Array, err: Uint8Array) => void;
+    /**
+     * Additional request handlers.
+     * For example, when tracing the progress of a task and
+     * collecting the output (out, err) and the `build_path` from the CLI.
+     */
+    readonly handlers?: ((response: R) => void)[];
   }
 }

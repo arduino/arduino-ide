@@ -5,6 +5,7 @@ import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { Searchable } from '../../../common/protocol/searchable';
+import { ExecuteWithProgress } from '../../../common/protocol/progressible';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { SearchBar } from './search-bar';
@@ -111,7 +112,7 @@ export class FilterableListContainer<
     version: Installable.Version
   ): Promise<void> {
     const { install, searchable } = this.props;
-    await Installable.doWithProgress({
+    await ExecuteWithProgress.doWithProgress({
       ...this.props,
       progressText:
         nls.localize('arduino/common/processing', 'Processing') +
@@ -137,7 +138,7 @@ export class FilterableListContainer<
       return;
     }
     const { uninstall, searchable } = this.props;
-    await Installable.doWithProgress({
+    await ExecuteWithProgress.doWithProgress({
       ...this.props,
       progressText:
         nls.localize('arduino/common/processing', 'Processing') +
