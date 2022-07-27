@@ -139,7 +139,10 @@ export class SettingsService {
       this.preferenceService.get<number>(FONT_SIZE_SETTING, 12),
       this.preferenceService.get<string>(
         'workbench.colorTheme',
-        'arduino-theme'
+        window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'arduino-theme-dark'
+          : 'arduino-theme'
       ),
       this.preferenceService.get<Settings.AutoSave>(
         AUTO_SAVE_SETTING,
