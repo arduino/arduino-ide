@@ -49,13 +49,16 @@ import {
   Sketch,
   CoreService,
   CoreError,
+  ResponseServiceClient,
 } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { CoreErrorHandler } from './core-error-handler';
 import { nls } from '@theia/core';
 import { OutputChannelManager } from '../theia/output/output-channel';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
+import { ExecuteWithProgress } from '../../common/protocol/progressible';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { BoardsDataStore } from '../boards/boards-data-store';
 
 export {
   Command,
@@ -167,18 +170,23 @@ export abstract class SketchContribution extends Contribution {
 }
 
 @injectable()
-export class CoreServiceContribution extends SketchContribution {
-  @inject(CoreService)
-  protected readonly coreService: CoreService;
+export abstract class CoreServiceContribution extends SketchContribution {
+  @inject(BoardsDataStore)
+  protected readonly boardsDataStore: BoardsDataStore;
 
-  @inject(CoreErrorHandler)
-  protected readonly coreErrorHandler: CoreErrorHandler;
+  @inject(BoardsServiceProvider)
+  protected readonly boardsServiceProvider: BoardsServiceProvider;
+
+  @inject(CoreService)
+  private readonly coreService: CoreService;
 
   @inject(ClipboardService)
   private readonly clipboardService: ClipboardService;
 
+  @inject(ResponseServiceClient)
+  private readonly responseService: ResponseServiceClient;
+
   protected handleError(error: unknown): void {
-    this.coreErrorHandler.tryHandle(error);
     this.tryToastErrorMessage(error);
   }
 
@@ -213,6 +221,25 @@ export class CoreServiceContribution extends SketchContribution {
     } else {
       throw error;
     }
+  }
+
+  protected async doWithProgress<T>(options: {
+    progressText: string;
+    keepOutput?: boolean;
+    task: (progressId: string, coreService: CoreService) => Promise<T>;
+  }): Promise<T> {
+    const { progressText, keepOutput, task } = options;
+    this.outputChannelManager
+      .getChannel('Arduino')
+      .show({ preserveFocus: true });
+    const result = await ExecuteWithProgress.doWithProgress({
+      messageService: this.messageService,
+      responseService: this.responseService,
+      progressText,
+      run: ({ progressId }) => task(progressId, this.coreService),
+      keepOutput,
+    });
+    return result;
   }
 }
 

@@ -1,7 +1,6 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
 import type { Location } from '@theia/core/shared/vscode-languageserver-protocol';
 import type {
-  Board,
   BoardUserField,
   Port,
 } from '../../common/protocol/boards-service';
@@ -60,46 +59,39 @@ export namespace CoreError {
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
-  compile(
-    options: CoreService.Compile.Options &
-      Readonly<{
-        exportBinaries?: boolean;
-        compilerWarnings?: CompilerWarnings;
-      }>
-  ): Promise<void>;
-  upload(options: CoreService.Upload.Options): Promise<void>;
-  uploadUsingProgrammer(options: CoreService.Upload.Options): Promise<void>;
-  burnBootloader(options: CoreService.Bootloader.Options): Promise<void>;
+  compile(options: CoreService.Options.Compile): Promise<void>;
+  upload(options: CoreService.Options.Upload): Promise<void>;
+  burnBootloader(options: CoreService.Options.Bootloader): Promise<void>;
 }
 
 export namespace CoreService {
-  export namespace Compile {
-    export interface Options {
+  export namespace Options {
+    export interface Base {
+      readonly fqbn?: string | undefined;
+      readonly verbose: boolean; // TODO: (API) why not optional with a default false?
+      readonly progressId?: string;
+    }
+    export interface SketchBased {
       readonly sketch: Sketch;
-      readonly board?: Board;
-      readonly optimizeForDebug: boolean;
-      readonly verbose: boolean;
-      readonly sourceOverride: Record<string, string>;
     }
-  }
-
-  export namespace Upload {
-    export interface Options extends Omit<Compile.Options, 'verbose'> {
+    export interface BoardBased {
       readonly port?: Port;
       readonly programmer?: Programmer | undefined;
-      readonly verify: boolean;
+      /**
+       * For the _Verify after upload_ setting.
+       */
+      readonly verify: boolean; // TODO: (API) why not optional with false as the default value?
+    }
+    export interface Compile extends Base, SketchBased {
+      readonly optimizeForDebug: boolean; // TODO: (API) make this optional
+      readonly sourceOverride: Record<string, string>; // TODO: (API) make this optional
+      readonly exportBinaries?: boolean;
+      readonly compilerWarnings?: CompilerWarnings;
+    }
+    export interface Upload extends Base, SketchBased, BoardBased {
       readonly userFields: BoardUserField[];
-      readonly verbose: { compile: boolean; upload: boolean };
+      readonly usingProgrammer?: boolean;
     }
-  }
-
-  export namespace Bootloader {
-    export interface Options {
-      readonly board?: Board;
-      readonly port?: Port;
-      readonly programmer?: Programmer | undefined;
-      readonly verbose: boolean;
-      readonly verify: boolean;
-    }
+    export interface Bootloader extends Base, BoardBased {}
   }
 }

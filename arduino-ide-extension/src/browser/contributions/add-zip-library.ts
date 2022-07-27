@@ -4,11 +4,8 @@ import URI from '@theia/core/lib/common/uri';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import {
-  Installable,
-  LibraryService,
-  ResponseServiceClient,
-} from '../../common/protocol';
+import { LibraryService, ResponseServiceClient } from '../../common/protocol';
+import { ExecuteWithProgress } from '../../common/protocol/progressible';
 import {
   SketchContribution,
   Command,
@@ -88,7 +85,7 @@ export class AddZipLibrary extends SketchContribution {
 
   private async doInstall(zipUri: string, overwrite?: boolean): Promise<void> {
     try {
-      await Installable.doWithProgress({
+      await ExecuteWithProgress.doWithProgress({
         messageService: this.messageService,
         progressText:
           nls.localize('arduino/common/processing', 'Processing') +

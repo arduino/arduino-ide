@@ -3,56 +3,47 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { BoardUserField, CoreService } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
-import { BoardsDataStore } from '../boards/boards-data-store';
-import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
-  CoreServiceContribution,
   Command,
   CommandRegistry,
   MenuModelRegistry,
   KeybindingRegistry,
   TabBarToolbarRegistry,
+  CoreServiceContribution,
 } from './contribution';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import type { VerifySketchParams } from './verify-sketch';
 
 @injectable()
 export class UploadSketch extends CoreServiceContribution {
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
-
-  @inject(BoardsDataStore)
-  protected readonly boardsDataStore: BoardsDataStore;
-
-  @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClientImpl: BoardsServiceProvider;
+  private readonly menuRegistry: MenuModelRegistry;
 
   @inject(UserFieldsDialog)
-  protected readonly userFieldsDialog: UserFieldsDialog;
+  private readonly userFieldsDialog: UserFieldsDialog;
 
-  protected cachedUserFields: Map<string, BoardUserField[]> = new Map();
+  private boardRequiresUserFields = false;
+  private readonly cachedUserFields: Map<string, BoardUserField[]> = new Map();
+  private readonly menuActionsDisposables = new DisposableCollection();
 
-  protected readonly onDidChangeEmitter = new Emitter<Readonly<void>>();
-  readonly onDidChange = this.onDidChangeEmitter.event;
-
-  protected uploadInProgress = false;
-  protected boardRequiresUserFields = false;
-
-  protected readonly menuActionsDisposables = new DisposableCollection();
+  private readonly onDidChangeEmitter = new Emitter<void>();
+  private readonly onDidChange = this.onDidChangeEmitter.event;
+  private uploadInProgress = false;
 
   protected override init(): void {
     super.init();
-    this.boardsServiceClientImpl.onBoardsConfigChanged(async () => {
+    this.boardsServiceProvider.onBoardsConfigChanged(async () => {
       const userFields =
-        await this.boardsServiceClientImpl.selectedBoardUserFields();
+        await this.boardsServiceProvider.selectedBoardUserFields();
       this.boardRequiresUserFields = userFields.length > 0;
       this.registerMenus(this.menuRegistry);
     });
   }
 
   private selectedFqbnAddress(): string {
-    const { boardsConfig } = this.boardsServiceClientImpl;
+    const { boardsConfig } = this.boardsServiceProvider;
     const fqbn = boardsConfig.selectedBoard?.fqbn;
     if (!fqbn) {
       return '';
@@ -76,7 +67,7 @@ export class UploadSketch extends CoreServiceContribution {
         if (this.boardRequiresUserFields && !this.cachedUserFields.has(key)) {
           // Deep clone the array of board fields to avoid editing the cached ones
           this.userFieldsDialog.value = (
-            await this.boardsServiceClientImpl.selectedBoardUserFields()
+            await this.boardsServiceProvider.selectedBoardUserFields()
           ).map((f) => ({ ...f }));
           const result = await this.userFieldsDialog.open();
           if (!result) {
@@ -98,8 +89,7 @@ export class UploadSketch extends CoreServiceContribution {
         const cached = this.cachedUserFields.get(key);
         // Deep clone the array of board fields to avoid editing the cached ones
         this.userFieldsDialog.value = (
-          cached ??
-          (await this.boardsServiceClientImpl.selectedBoardUserFields())
+          cached ?? (await this.boardsServiceProvider.selectedBoardUserFields())
         ).map((f) => ({ ...f }));
 
         const result = await this.userFieldsDialog.open();
@@ -130,7 +120,6 @@ export class UploadSketch extends CoreServiceContribution {
 
   override registerMenus(registry: MenuModelRegistry): void {
     this.menuActionsDisposables.dispose();
-
     this.menuActionsDisposables.push(
       registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
         commandId: UploadSketch.Commands.UPLOAD_SKETCH.id,
@@ -153,7 +142,7 @@ export class UploadSketch extends CoreServiceContribution {
           new PlaceholderMenuNode(
             ArduinoMenus.SKETCH__MAIN_GROUP,
             // commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
-            UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label!,
+            UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
             { order: '2' }
           )
         )
@@ -193,13 +182,7 @@ export class UploadSketch extends CoreServiceContribution {
   }
 
   async uploadSketch(usingProgrammer = false): Promise<void> {
-    // even with buttons disabled, better to double check if an upload is already in progress
     if (this.uploadInProgress) {
-      return;
-    }
-
-    const sketch = await this.sketchServiceClient.currentSketch();
-    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
 
@@ -207,43 +190,34 @@ export class UploadSketch extends CoreServiceContribution {
       // toggle the toolbar button and menu item state.
       // uploadInProgress will be set to false whether the upload fails or not
       this.uploadInProgress = true;
-      this.coreErrorHandler.reset();
       this.onDidChangeEmitter.fire();
-      const { boardsConfig } = this.boardsServiceClientImpl;
-      const [
-        fqbn,
-        { selectedProgrammer },
-        verify,
-        uploadVerbose,
-        sourceOverride,
-        optimizeForDebug,
-        compileVerbose,
-      ] = await Promise.all([
-        this.boardsDataStore.appendConfigToFqbn(
-          boardsConfig.selectedBoard?.fqbn
-        ),
-        this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
-        this.preferences.get('arduino.upload.verify'),
-        this.preferences.get('arduino.upload.verbose'),
-        this.sourceOverride(),
-        this.commandService.executeCommand<boolean>(
-          'arduino-is-optimize-for-debug'
-        ),
-        this.preferences.get('arduino.compile.verbose'),
-      ]);
 
-      const verbose = { compile: compileVerbose, upload: uploadVerbose };
-      const board = {
-        ...boardsConfig.selectedBoard,
-        name: boardsConfig.selectedBoard?.name || '',
-        fqbn,
-      };
-      let options: CoreService.Upload.Options | undefined = undefined;
-      const { selectedPort } = boardsConfig;
-      const port = selectedPort;
-      const userFields =
-        this.cachedUserFields.get(this.selectedFqbnAddress()) ?? [];
-      if (userFields.length === 0 && this.boardRequiresUserFields) {
+      const verifyOptions =
+        await this.commandService.executeCommand<CoreService.Options.Compile>(
+          'arduino-verify-sketch',
+          <VerifySketchParams>{
+            exportBinaries: false,
+            silent: true,
+          }
+        );
+      if (!verifyOptions) {
+        return;
+      }
+
+      const uploadOptions = await this.uploadOptions(
+        usingProgrammer,
+        verifyOptions
+      );
+      if (!uploadOptions) {
+        return;
+      }
+
+      // TODO: This does not belong here.
+      // IDE2 should not do any preliminary checks but let the CLI fail and then toast a user consumable error message.
+      if (
+        uploadOptions.userFields.length === 0 &&
+        this.boardRequiresUserFields
+      ) {
         this.messageService.error(
           nls.localize(
             'arduino/sketch/userFieldsNotFoundError',
@@ -253,37 +227,13 @@ export class UploadSketch extends CoreServiceContribution {
         return;
       }
 
-      if (usingProgrammer) {
-        const programmer = selectedProgrammer;
-        options = {
-          sketch,
-          board,
-          optimizeForDebug: Boolean(optimizeForDebug),
-          programmer,
-          port,
-          verbose,
-          verify,
-          sourceOverride,
-          userFields,
-        };
-      } else {
-        options = {
-          sketch,
-          board,
-          optimizeForDebug: Boolean(optimizeForDebug),
-          port,
-          verbose,
-          verify,
-          sourceOverride,
-          userFields,
-        };
-      }
-      this.outputChannelManager.getChannel('Arduino').clear();
-      if (usingProgrammer) {
-        await this.coreService.uploadUsingProgrammer(options);
-      } else {
-        await this.coreService.upload(options);
-      }
+      await this.doWithProgress({
+        progressText: nls.localize('arduino/sketch/uploading', 'Uploading...'),
+        task: (progressId, coreService) =>
+          coreService.upload({ ...uploadOptions, progressId }),
+        keepOutput: true,
+      });
+
       this.messageService.info(
         nls.localize('arduino/sketch/doneUploading', 'Done uploading.'),
         { timeout: 3000 }
@@ -295,6 +245,52 @@ export class UploadSketch extends CoreServiceContribution {
       this.onDidChangeEmitter.fire();
     }
   }
+
+  private async uploadOptions(
+    usingProgrammer: boolean,
+    verifyOptions: CoreService.Options.Compile
+  ): Promise<CoreService.Options.Upload | undefined> {
+    const sketch = await this.sketchServiceClient.currentSketch();
+    if (!CurrentSketch.isValid(sketch)) {
+      return undefined;
+    }
+    const userFields = this.userFields();
+    const { boardsConfig } = this.boardsServiceProvider;
+    const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
+      await Promise.all([
+        verifyOptions.fqbn, // already decorated FQBN
+        this.boardsDataStore.getData(this.sanitizeFqbn(verifyOptions.fqbn)),
+        this.preferences.get('arduino.upload.verify'),
+        this.preferences.get('arduino.upload.verbose'),
+      ]);
+    const port = boardsConfig.selectedPort;
+    return {
+      sketch,
+      fqbn,
+      ...(usingProgrammer && { programmer }),
+      port,
+      verbose,
+      verify,
+      userFields,
+    };
+  }
+
+  private userFields() {
+    return this.cachedUserFields.get(this.selectedFqbnAddress()) ?? [];
+  }
+
+  /**
+   * Converts the `VENDOR:ARCHITECTURE:BOARD_ID[:MENU_ID=OPTION_ID[,MENU2_ID=OPTION_ID ...]]` FQBN to
+   * `VENDOR:ARCHITECTURE:BOARD_ID` format.
+   * See the details of the `{build.fqbn}` entry in the [specs](https://arduino.github.io/arduino-cli/latest/platform-specification/#global-predefined-properties).
+   */
+  private sanitizeFqbn(fqbn: string | undefined): string | undefined {
+    if (!fqbn) {
+      return undefined;
+    }
+    const [vendor, arch, id] = fqbn.split(':');
+    return `${vendor}:${arch}:${id}`;
+  }
 }
 
 export namespace UploadSketch {
@@ -302,7 +298,7 @@ export namespace UploadSketch {
     export const UPLOAD_SKETCH: Command = {
       id: 'arduino-upload-sketch',
     };
-    export const UPLOAD_WITH_CONFIGURATION: Command = {
+    export const UPLOAD_WITH_CONFIGURATION: Command & { label: string } = {
       id: 'arduino-upload-with-configuration-sketch',
       label: nls.localize(
         'arduino/sketch/configureAndUpload',

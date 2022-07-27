@@ -46,5 +46,5 @@ export interface ResponseService {
 export const ResponseServiceClient = Symbol('ResponseServiceClient');
 export interface ResponseServiceClient extends ResponseService {
   onProgressDidChange: Event<ProgressMessage>;
-  clearOutput: () => void;
+  clearOutput: () => void; // TODO: this should not belong here.
 }

@@ -36,6 +36,7 @@
     "boardsManager": "Boards Manager",
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Done burning bootloader."
     },
     "burnBootloader": {
@@ -306,6 +307,7 @@
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configure And Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
@@ -327,6 +329,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Upload",
       "uploadUsingProgrammer": "Upload Using Programmer",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verify",
       "verifyOrCompile": "Verify/Compile"

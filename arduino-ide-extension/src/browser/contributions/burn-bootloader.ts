@@ -1,23 +1,16 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { nls } from '@theia/core/lib/common';
+import { injectable } from '@theia/core/shared/inversify';
+import { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { BoardsDataStore } from '../boards/boards-data-store';
-import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
-  CoreServiceContribution,
   Command,
   CommandRegistry,
+  CoreServiceContribution,
   MenuModelRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BurnBootloader extends CoreServiceContribution {
-  @inject(BoardsDataStore)
-  protected readonly boardsDataStore: BoardsDataStore;
-
-  @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClientImpl: BoardsServiceProvider;
-
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BurnBootloader.Commands.BURN_BOOTLOADER, {
       execute: () => this.burnBootloader(),
@@ -35,32 +28,19 @@ export class BurnBootloader extends CoreServiceContribution {
     });
   }
 
-  async burnBootloader(): Promise<void> {
+  private async burnBootloader(): Promise<void> {
+    const options = await this.options();
     try {
-      const { boardsConfig } = this.boardsServiceClientImpl;
-      const port = boardsConfig.selectedPort;
-      const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
-        await Promise.all([
-          this.boardsDataStore.appendConfigToFqbn(
-            boardsConfig.selectedBoard?.fqbn
-          ),
-          this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
-          this.preferences.get('arduino.upload.verify'),
-          this.preferences.get('arduino.upload.verbose'),
-        ]);
-
-      const board = {
-        ...boardsConfig.selectedBoard,
-        name: boardsConfig.selectedBoard?.name || '',
-        fqbn,
-      };
-      this.outputChannelManager.getChannel('Arduino').clear();
-      await this.coreService.burnBootloader({
-        board,
-        programmer,
-        port,
-        verify,
-        verbose,
+      await this.doWithProgress({
+        progressText: nls.localize(
+          'arduino/bootloader/burningBootloader',
+          'Burning bootloader...'
+        ),
+        task: (progressId, coreService) =>
+          coreService.burnBootloader({
+            ...options,
+            progressId,
+          }),
       });
       this.messageService.info(
         nls.localize(
@@ -74,6 +54,27 @@ export class BurnBootloader extends CoreServiceContribution {
     } catch (e) {
       this.handleError(e);
     }
+  }
+
+  private async options(): Promise<CoreService.Options.Bootloader> {
+    const { boardsConfig } = this.boardsServiceProvider;
+    const port = boardsConfig.selectedPort;
+    const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
+      await Promise.all([
+        this.boardsDataStore.appendConfigToFqbn(
+          boardsConfig.selectedBoard?.fqbn
+        ),
+        this.boardsDataStore.getData(boardsConfig.selectedBoard?.fqbn),
+        this.preferences.get('arduino.upload.verify'),
+        this.preferences.get('arduino.upload.verbose'),
+      ]);
+    return {
+      fqbn,
+      programmer,
+      port,
+      verify,
+      verbose,
+    };
   }
 }
 
