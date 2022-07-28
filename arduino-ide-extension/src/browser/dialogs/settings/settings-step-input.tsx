@@ -1,5 +1,6 @@
 import * as React from '@theia/core/shared/react';
 import classnames from 'classnames';
+import _ = require('lodash');
 
 interface SettingsStepInputProps {
   value: number;
@@ -16,64 +17,26 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   const { value, setSettingsStateValue, step, maxValue, minValue, classNames } =
     props;
 
-  const [stepUpDisabled, setStepUpDisabled] = React.useState(false);
-  const [stepDownDisabled, setStepDownDisabled] = React.useState(false);
-
-  const onStepUp = (): void => {
-    const valueRoundedToScale = Math.ceil(value / step) * step;
+  const onStep = (
+    roundingOperation: 'ceil' | 'floor',
+    stepOperation: (a: number, b: number) => number
+  ): void => {
+    const valueRoundedToScale = Math[roundingOperation](value / step) * step;
     const calculatedValue =
-      valueRoundedToScale === value ? value + step : valueRoundedToScale;
-    const newValue = limitValueByCondition(
-      calculatedValue,
-      maxValue,
-      calculatedValue >= maxValue,
-      disableStepUp
-    );
+      valueRoundedToScale === value
+        ? stepOperation(value, step)
+        : valueRoundedToScale;
+    const newValue = _.clamp(calculatedValue, minValue, maxValue);
 
     setSettingsStateValue(newValue);
+  };
+
+  const onStepUp = (): void => {
+    onStep('ceil', _.add);
   };
 
   const onStepDown = (): void => {
-    const valueRoundedToScale = Math.floor(value / step) * step;
-    const calculatedValue =
-      valueRoundedToScale === value ? value - step : valueRoundedToScale;
-    const newValue = limitValueByCondition(
-      calculatedValue,
-      minValue,
-      calculatedValue <= minValue,
-      disableStepDown
-    );
-
-    setSettingsStateValue(newValue);
-  };
-
-  const limitValueByCondition = (
-    calculatedValue: number,
-    limitedValue: number,
-    condition: boolean,
-    onConditionTrue: () => void,
-    onConditionFalse = enableButtons
-  ): number => {
-    if (condition) {
-      onConditionTrue();
-      return limitedValue;
-    } else {
-      onConditionFalse();
-      return calculatedValue;
-    }
-  };
-
-  const enableButtons = (): void => {
-    setStepUpDisabled(false);
-    setStepDownDisabled(false);
-  };
-
-  const disableStepUp = (): void => {
-    setStepUpDisabled(true);
-  };
-
-  const disableStepDown = (): void => {
-    setStepDownDisabled(true);
+    onStep('floor', _.subtract);
   };
 
   const onUserInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -86,34 +49,14 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     const number = Number(eventValue);
 
     if (!isNaN(number) && number !== value) {
-      let newValue;
-      if (number > value) {
-        newValue = limitValueByCondition(
-          number,
-          maxValue,
-          number >= maxValue,
-          disableStepUp
-        );
-      } else {
-        newValue = limitValueByCondition(
-          number,
-          minValue,
-          number <= minValue,
-          disableStepDown
-        );
-      }
+      const newValue = _.clamp(number, minValue, maxValue);
 
       setSettingsStateValue(newValue);
     }
   };
 
-  // the component does not unmount when we close the settings dialog
-  // in theia which necessitates the below useEffect
-  React.useEffect(() => {
-    if (value > minValue && value < maxValue) {
-      enableButtons();
-    }
-  }, [value, minValue, maxValue]);
+  const upDisabled = value >= maxValue;
+  const downDisabled = value <= minValue;
 
   return (
     <div className="settings-step-input-container">
@@ -127,14 +70,14 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
       <div className="settings-step-input-buttons-container">
         <button
           className="settings-step-input-button settings-step-input-up-button"
-          disabled={stepUpDisabled}
+          disabled={upDisabled}
           onClick={onStepUp}
         >
           &#9662;
         </button>
         <button
           className="settings-step-input-button"
-          disabled={stepDownDisabled}
+          disabled={downDisabled}
           onClick={onStepDown}
         >
           &#9662;
