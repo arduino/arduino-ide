@@ -188,3 +188,59 @@
     border-right: none;
     background-color: var(--theia-arduino-output-background);
 }
+
+
+/* High Contrast Theme rules */
+/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
+.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item .arduino-upload-sketch--toolbar, 
+.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item .arduino-verify-sketch--toolbar, 
+.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item .arduino-start-debug {
+    background: transparent;
+}
+
+.hc-black.hc-theia.theia-hc .arduino-verify-sketch--toolbar-icon,
+.hc-black.hc-theia.theia-hc .arduino-upload-sketch--toolbar-icon,
+.hc-black.hc-theia.theia-hc .arduino-start-debug-icon {
+    background-color: var(--theia-arduino-toolbar-button-secondary-label);
+}
+
+.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div {
+    background: transparent;
+    outline: 1px dashed var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc .item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar,
+.hc-black.hc-theia.theia-hc .item.arduino-tool-item.toggled .arduino-upload-sketch--toolbar {
+    background-color: transparent !important;
+    outline: 1px solid var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc .arduino-boards-dropdown-item:hover {
+    background: var(--theia-dropdown-background);
+}
+
+.hc-black.hc-theia.theia-hc .arduino-boards-dropdown-item:hover > div {
+    outline: 1px dashed var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc #theia-main-content-panel .p-TabBar .p-TabBar-tab.p-mod-current {
+    outline: 1px solid var(--theia-focusBorder);
+    outline-offset: -4px;
+}
+
+.hc-black.hc-theia.theia-hc #theia-main-content-panel .p-TabBar .p-TabBar-tab:hover {
+    outline: 1px dashed var(--theia-focusBorder);
+    outline-offset: -4px;
+}
+
+.hc-black.hc-theia.theia-hc .p-TabBar.theia-app-centers .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:hover {
+  outline: 1px dashed var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc .quick-input-list .monaco-list-row.focused {
+    outline: 1px dotted var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc .quick-input-list .monaco-list-row:hover {
+    outline: 1px dashed var(--theia-focusBorder);
+}
