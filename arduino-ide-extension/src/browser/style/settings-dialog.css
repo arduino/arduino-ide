@@ -6,6 +6,11 @@
 
 #arduino-settings-dialog-container > .dialogBlock > .dialogContent {
     justify-content: flex-start;
+    overflow: auto;
+}
+
+#arduino-settings-dialog-container > .dialogBlock > .dialogControl {
+    padding: 16px 0 26px;
 }
 
 .arduino-settings-dialog .content {
@@ -62,7 +67,7 @@
 }
 
 .arduino-settings-dialog .react-tabs__tab-panel {
-    padding-bottom: 25px;
+    padding-bottom: 8px;
 }
 
 .arduino-settings-dialog .react-tabs__tab-list {
