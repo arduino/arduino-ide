@@ -1,6 +1,5 @@
 import * as React from '@theia/core/shared/react';
 import classnames from 'classnames';
-import _ = require('lodash');
 
 interface SettingsStepInputProps {
   value: number;
@@ -17,6 +16,10 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   const { value, setSettingsStateValue, step, maxValue, minValue, classNames } =
     props;
 
+  const clamp = (value: number, min: number, max: number): number => {
+    return Math.min(Math.max(value, min), max);
+  };
+
   const onStep = (
     roundingOperation: 'ceil' | 'floor',
     stepOperation: (a: number, b: number) => number
@@ -26,17 +29,17 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
       valueRoundedToScale === value
         ? stepOperation(value, step)
         : valueRoundedToScale;
-    const newValue = _.clamp(calculatedValue, minValue, maxValue);
+    const newValue = clamp(calculatedValue, minValue, maxValue);
 
     setSettingsStateValue(newValue);
   };
 
   const onStepUp = (): void => {
-    onStep('ceil', _.add);
+    onStep('ceil', (a: number, b: number) => a + b);
   };
 
   const onStepDown = (): void => {
-    onStep('floor', _.subtract);
+    onStep('floor', (a: number, b: number) => a - b);
   };
 
   const onUserInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -49,7 +52,7 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     const number = Number(eventValue);
 
     if (!isNaN(number) && number !== value) {
-      const newValue = _.clamp(number, minValue, maxValue);
+      const newValue = clamp(number, minValue, maxValue);
 
       setSettingsStateValue(newValue);
     }
