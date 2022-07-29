@@ -192,6 +192,7 @@
       "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Fechar e instalar ",
       "closeToInstallNotice": "Feche o software e instale a atualização em sua máquina. ",
       "downloadButton": "Baixar",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Verdadeiro se os usuários devem ser avisados antes de baixar um sketch da nuvem. O padrão é verdadeiro.",
       "cloud.push.warn": "Verdadeiro se os usuários devem ser avisados antes de enviar um sketch para a nuvem. O padrão é verdadeiro.",
       "cloud.pushpublic.warn": "Verdadeiro se os usuários devem ser avisados antes de enviar um sketch público para a nuvem. O padrão é verdadeiro.",
-      "cloud.sketchSyncEnpoint": "O endpoint usado para enviar e baixar os sketches de um backend. Por padrão, ele aponta para a Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "O endpoint usado para enviar e baixar os sketches de um backend. Por padrão, ele aponta para a Arduino Cloud API.",
       "compile": "compilar",
       "compile.experimental": "Verdadeiro se o IDE deve trabalhar com múltiplos erros de compilação. Falso por padrão",
       "compile.revealRange": "Ajusta como os erros do compilador são revelados no editor após uma falha na verificação/upload. Valores possíveis: 'auto': Role verticalmente conforme necessário e revele uma linha. 'center': Role verticalmente conforme necessário e revele uma linha centralizada verticalmente. 'top': Role verticalmente conforme necessário e revele uma linha próxima ao topo da janela de visualização, otimizada para visualizar uma definição de código. 'centerIfOutsideViewport': Role verticalmente conforme necessário e revele uma linha centralizada verticalmente somente se estiver fora da viewport. O valor padrão é ' {0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Localização inválida para o sketchbook: {0}",
       "invalid.theme": "Tema inválido",
       "language.log": "Verdadeiro se o Arduino Language Server deverá gerar arquivos de log na pasta do sketch. Caso contrário, falso. Falso é padrão.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Configurações manuais de proxy",
       "network": "Rede",
       "newSketchbookLocation": "Escolher",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Nova linha e retorno de linha",
       "noLineEndings": "Sem final de linha",
       "notConnected": "Não conectado. Selecione uma placa e uma porta para conectar automaticamente.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Data e Hora",
       "toggleTimestamp": "Mudar Data e Hora"
     },

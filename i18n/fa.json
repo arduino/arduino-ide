@@ -192,6 +192,7 @@
       "visit": "بازدید از Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "بستن و نصب",
       "closeToInstallNotice": "نرم افزار را ببندید و به روز رسانی را روی دستگاه خود نصب کنید.",
       "downloadButton": "دانلود",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "اگر هشدار دادن به کاربران قبل از کشیدن یک طرح ابری درست می باشد ، پیش فرض ها صحیح است.",
       "cloud.push.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح ابری درست است پیش فرض ها درست می باشد",
       "cloud.pushpublic.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح عمومی به فضای درست می باشد پیش فرض ها درست است.",
-      "cloud.sketchSyncEnpoint": "نقطه ای برای ارسال و دریافت طرح ها استفاده می شود . به طور پیش فرض به رابط ابر آردوینو استفاده می کند.",
+      "cloud.sketchSyncEndpoint": "نقطه ای برای ارسال و دریافت طرح ها استفاده می شود . به طور پیش فرض به رابط ابر آردوینو استفاده می کند.",
       "compile": "کامپایل",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "مکان نامعتبر منبع طرح ها: {0}",
       "invalid.theme": "طرح زمینه موجود نیست",
       "language.log": "اگر سرور زبان آردوینو باید فایل های گزارش را در پوشه طرح ایجاد کند درست می باشد. در غیر این صورت، نادرست است. به طور پیش فرض نادرست است.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "پیکربندی دستی پروکسی",
       "network": "نتورک",
       "newSketchbookLocation": "مکان جدید منبع طرح ها را مشخص کنید",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "هم NL و هم CR",
       "noLineEndings": "بدون پایان خط",
       "notConnected": "متصل نشد. برد و پورت را انتخاب کنید تا بطور خودکار متصل شود.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "برچسب زمانی",
       "toggleTimestamp": "اتصال برچسب زمان"
     },

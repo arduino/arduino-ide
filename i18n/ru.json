@@ -11,7 +11,7 @@
       "configDialog2": "Если вы выбираете только плату, вы сможете компилировать, но не загружать свой скетч.",
       "configDialogTitle": "Выберите другую плату и порт",
       "couldNotFindPreviouslySelected": "Не удалось найти ранее выбранную плату '{0}' в установленной платформе '{1}'.Пожалуйста,  выберите плату которую хотите использовать вручную повторно. Вы хотите повторно выбрать её сейчас?",
-      "disconnected": "Disconnected",
+      "disconnected": "Плата Arduino не подключена",
       "getBoardInfo": "Получить информацию о подключенной плате",
       "inSketchbook": " (в альбоме).",
       "installManually": "Установить вручную",
@@ -25,7 +25,7 @@
       "port": "Порт{0}",
       "portLabel": "Порт:{0}",
       "programmer": "Программатор",
-      "reselectLater": "Выборать позже",
+      "reselectLater": "Перевыбрать позже",
       "selectBoard": "Выбор платы",
       "selectBoardForInfo": "Пожалуйста, выберите плату в меню инструментов для получения информации с платы.",
       "selectPortForInfo": "Пожалуйста, выберите порт в меню инструментов для получения информации с платы.",
@@ -77,7 +77,7 @@
       "offline": "Не подключено",
       "openInCloudEditor": "Открыть в облачном редакторе",
       "options": "Параметры...",
-      "privateVisibility": "Приватный. Только автор можешь просматривать скетч.",
+      "privateVisibility": "Приватно. Только Вы можете просматривать этот Скетч.",
       "profilePicture": "Фотография профиля",
       "publicVisibility": "Публичный. Любой, у кого есть ссылка, может посмотреть скетч.",
       "pull": "Выдавить",
@@ -88,14 +88,14 @@
       "pushSketch": "Выдавить скетч",
       "pushSketchMsg": "Это Публичный скетч. Перед нажатием убедитесь, что любая конфиденциальная информация определена в файлах arduino_secrets.h. Вы можете сделать скетч приватным на панели общего доступа.",
       "remote": "Удаленный",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Удалённый альбом",
       "share": "Поделиться...",
       "shareSketch": "Поделиться скетчем",
       "showHideRemoveSketchbook": "Показать/скрыть удаленный альбом",
       "signIn": "Войти",
       "signInToCloud": "Войдите в Arduino Cloud",
       "signOut": "Выйти",
-      "sync": "Sync",
+      "sync": "Синхронизация",
       "syncEditSketches": "Синхронизировать и редактировать скетчи в Arduino Cloud",
       "visitArduinoCloud": "Посетите Arduino Cloud, чтобы создать скетчи в облаке."
     },
@@ -115,7 +115,7 @@
       "error": "Ошибка компиляции: {0}"
     },
     "component": {
-      "by": "около",
+      "by": "от",
       "filterSearch": "Отфильтровать результаты поиска...",
       "install": "Установка",
       "moreInfo": "Дополнительная информация",
@@ -132,9 +132,9 @@
       "copyError": "Скопировать сообщения ошибок"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Перезапустить Daemon",
+      "start": "Запустить Daemon",
+      "stop": "Остановить Daemon"
     },
     "debug": {
       "debugWithMessage": "Отладка - {0}",
@@ -192,6 +192,7 @@
       "visit": "Перейти на сайт Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Проверьте обновления Arduino IDE",
       "closeAndInstallButton": "Закрыть и установить",
       "closeToInstallNotice": "Закройте программное обеспечение и установите обновление на вашем компьютере.",
       "downloadButton": "Скачать",
@@ -230,7 +231,7 @@
       "zipLibrary": "Библиотека"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Расширенные",
       "sketch": "Скетч",
       "tools": "Инструменты"
     },
@@ -248,15 +249,15 @@
       "board.certificates": "Список сертификатов, которые могут быть загружены в платы",
       "browse": "Обзор",
       "choose": "Выбрать",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cli.daemonDebug": "Включить отладочное логирование вызовов gRPC в Arduino CLI. Чтобы эта настройка вступила в силу, необходим перезапуск IDE. По умолчанию оно выключено.",
       "cloud.enabled": "True, если функции синхронизации скетчей включены. По умолчанию - true.",
       "cloud.pull.warn": "True, если пользователи должны быть предупреждены перед созданием облачного скетча. По умолчанию установлено значение true.",
       "cloud.push.warn": "True, если пользователи должны быть предупреждены перед запуском облачного эскиза. По умолчанию установлено значение true.",
       "cloud.pushpublic.warn": "True, если пользователи должны быть предупреждены перед отправкой общедоступного эскиза в облако. По умолчанию установлено значение true.",
-      "cloud.sketchSyncEnpoint": "Конечная точка, используемая для отправки и извлечения скетчей из серверной части. По умолчанию он указывает на Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Конечная точка, используемая для отправки и извлечения скетчей из серверной части. По умолчанию он указывает на Arduino Cloud API.",
       "compile": "компиляции",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "Включите, если IDE должна обрабатывать множественные ошибки компилятора. По умолчанию выключено",
+      "compile.revealRange": "Настраивает, как ошибки компилятора выводятся в редакторе после неудачной проверки/загрузки. Возможные значения:\n'auto': Прокручиваются вертикально по мере необходимости и раскрываются строку. \n'center': Прокручиваются вертикально по мере необходимости и выводятся в линию, центрированную по вертикали. \n'top': Прокручиваются вертикально по мере необходимости и выводятся в линию близко к верхней части области просмотра, что оптимизирует просмотр кода для выявления ошибок.\n'centerIfOutsideViewport': Прокручиваются вертикально по мере необходимости и выводятся в линию, центрированную по вертикали, только если она лежит за пределами области просмотра. Значение по умолчанию - '{0}'.",
       "compile.verbose": "True для подробного вывода компилятора. По умолчанию - false.",
       "compile.warnings": "Уровень предупреждений GCC. По умолчанию 'None'.",
       "compilerWarnings": "Предупреждения компилятора",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Неправильный путь к альбому со скетчами: {0}",
       "invalid.theme": "Неверная тема.",
       "language.log": "True - сервер Arduino Language будет создавать файлы журнала в папке скетча. В противном случае - false. По умолчанию - false.",
+      "language.realTimeDiagnostics": "Если включено, то языковой сервер проводит диагностику набранного текста в реальном времени. По умолчанию отключено.",
       "manualProxy": "Ручная настройка параметров прокси-сервера",
       "network": "Сеть",
       "newSketchbookLocation": "Выбрать новое расположение для альбома со скетчами",
@@ -278,7 +280,7 @@
       "showVerbose": "Показывать детализированный вывод при",
       "sketchbook.location": "Путь к альбому со скетчами",
       "sketchbook.showAllFiles": "True - показывать все файлы внутри скетча. По умолчанию - false.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "survey.notification": "Включите, если пользователи должны получать уведомления, когда появится новый опрос. Включено по умолчанию.",
       "unofficialBoardSupport": "Список URL-адресов поддержки неофициальных плат",
       "upload": "выгрузке на плату",
       "upload.verbose": "True - подробный вывод при загрузке скетча на плату. По умолчанию - false.",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "NL & CR",
       "noLineEndings": "Нет конца строки",
       "notConnected": "Нет соединения. Выберите плату и порт для автоматического подключения.",
+      "openSerialPlotter": "Построить графики из данных в мониторе порта",
       "timestamp": "Время отметки",
       "toggleTimestamp": "Переключить отметку времени"
     },
@@ -331,7 +334,7 @@
     "survey": {
       "answerSurvey": "Ответить на опрос",
       "dismissSurvey": "Больше не показывать",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "surveyMessage": "Пожалуйста, помоги нам стать лучше, пройдя этот супер-короткий опрос. Мы ценим наше сообщество и хотели бы узнать наших сторонников немного лучше!"
     },
     "upload": {
       "error": "{0} ошибка: {1}"

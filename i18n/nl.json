@@ -192,6 +192,7 @@
       "visit": "Bezoek Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Sluiten en installeren",
       "closeToInstallNotice": "Sluit de software en installeer de update op je machine.",
       "downloadButton": "Download",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Waar als de gebruiker verwittigd moet worden voor een cloud schets trekken. Standaard ingesteld op waar. ",
       "cloud.push.warn": "Waar als gebruikers moeten worden gewaarschuwd voordat ze een cloud schets pushen. Standaard ingesteld op waar. ",
       "cloud.pushpublic.warn": "Waar als gebruikers moeten worden gewaarschuwd voordat ze een openbare schets naar de cloud pushen. Standaard ingesteld op waar.",
-      "cloud.sketchSyncEnpoint": "Het eindpunt dat wordt gebruikt om schetsen van een backend te pushen en te trekken. Standaard verwijst het naar Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Het eindpunt dat wordt gebruikt om schetsen van een backend te pushen en te trekken. Standaard verwijst het naar Arduino Cloud API.",
       "compile": "compileren",
       "compile.experimental": "Waar als de IDE meerdere compileer fouten moet afhandelen. Standaard is het Onwaar",
       "compile.revealRange": "Regelt hoe compileer fouten in de editor getoond worden na een mislukte verificatie/upload. Mogelijke waarden: 'auto': Scroll verticaal als dat nodig is en onthul een regel. 'centreren': Scroll verticaal als nodig en onthul een verticaal gecentreerde lijn. 'top': Scroll verticaal als nodig en onthul een lijn dicht bij de bovenkant van het kijkvenster, geoptimaliseerd voor het bekijken van een code-definitie. 'centerIfOutsideViewport': Scroll verticaal als nodig en onthul een verticaal gecentreerde lijn alleen als ze buiten het kijkvenster ligt. De standaardwaarde is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Ongeldige schetsboek locatie: {0}",
       "invalid.theme": "Ongeldig Thema.",
       "language.log": "Waar als de Arduino Taal Server log bestanden moet genereren in de schets map. Anders onwaar. Standaard ingesteld op onwaar.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manuele proxy configuratie",
       "network": "Netwerk",
       "newSketchbookLocation": "Selecteer een nieuwe schetsboeklocatie.",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Zowel NL & CR",
       "noLineEndings": "Geen RegelEinde",
       "notConnected": "Niet verbonden. Kies een bord en een poort om automatisch te verbinden.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Tijdstempel",
       "toggleTimestamp": "Tijdstempel omschakelen"
     },

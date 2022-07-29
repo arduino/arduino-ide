@@ -192,6 +192,7 @@
       "visit": "Besuche Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Schließen und Installieren",
       "closeToInstallNotice": "Schließe die Software und installiere das Update auf deinem Computer",
       "downloadButton": "Download",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Wahr, wenn Benutzer vor dem Herunterladen eines Sketches aus der Cloud gewarnt werden sollen. Standardmäßig Wahr.",
       "cloud.push.warn": "Wahr, wenn Benutzer vor dem Hochladen eines Cloud-Sketches gewarnt werden sollen. Standardmäßig Wahr.",
       "cloud.pushpublic.warn": "Wahr, wenn Benutzer vor dem Hochladen eines öffentlichen Sketches in die Cloud gewarnt werden sollen. Standardmäßig Wahr.",
-      "cloud.sketchSyncEnpoint": "Der Endpunkt, um Sketches zu/von einem Backend zu laden. Standardeinstellung ist die Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Der Endpunkt, um Sketches zu/von einem Backend zu laden. Standardeinstellung ist die Arduino Cloud API.",
       "compile": "Kompilieren",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Ungültiger Sketchbook Speicherort: {0}",
       "invalid.theme": "Ungültiges Erscheinungsbild",
       "language.log": "Wahr, wenn der Arduino Language Server Logfiles in den Sketch-Ordner schreiben soll. Sonst falsch. Standardeinstellung ist falsch.\n ",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manuelle Proxy Einstellung",
       "network": "Netzwerk",
       "newSketchbookLocation": "Wähle einen neuen Ort für das Sketchbook ",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Sowohl NL als auch CR",
       "noLineEndings": "Kein Zeilenende",
       "notConnected": "Nicht verbunden. Wählen Sie ein Board und einen Port, um automatisch zu verbinden.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Zeitstempel",
       "toggleTimestamp": "Zeitstempel an/aus"
     },

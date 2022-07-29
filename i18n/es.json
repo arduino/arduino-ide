@@ -11,7 +11,7 @@
       "configDialog2": "Si seleccionas solo una placa podrás compilar, pero no cargar tu sketch.",
       "configDialogTitle": "Seleccione otra placa y puerto",
       "couldNotFindPreviouslySelected": "No se ha podido encontrar la placa previamente seleccionada '{0}' en la plataforma instalada '{1}'. Por favor, vuelve a seleccionar manualmente la placa que quieres utilizar. ¿Quieres volver a seleccionarla ahora?",
-      "disconnected": "Disconnected",
+      "disconnected": "Desconectado",
       "getBoardInfo": "Obtener información de la placa",
       "inSketchbook": " (en el Sketchbook)",
       "installManually": "Instalar manualmente",
@@ -23,7 +23,7 @@
       "platformMissing": "La plataforma seleccionada para la placa '{0}' no está instalada.",
       "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
       "port": "Puerto {0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Puerto: {0}",
       "programmer": "Programador",
       "reselectLater": "Vuelve a seleccionar más tarde",
       "selectBoard": "Seleccionar Placa",
@@ -59,11 +59,11 @@
       "uploadingCertificates": "Cargando certificados."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "'Keyboard' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Cuenta",
       "chooseSketchVisibility": "Elige la visibilidad de tu Sketch:",
       "connected": "Conectado",
       "continue": "Continuar",
@@ -95,7 +95,7 @@
       "signIn": "Iniciar sesión",
       "signInToCloud": "Iniciar sesión en Arduino Cloud",
       "signOut": "Cerrar sesión",
-      "sync": "Sync",
+      "sync": "Sincronizar",
       "syncEditSketches": "Sincroniza y edita tus Arduino Cloud Sketches",
       "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
     },
@@ -192,6 +192,7 @@
       "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Cerrar e instalar",
       "closeToInstallNotice": "Cierra el programa e instala la actualización en tu máquina.",
       "downloadButton": "Descargar",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Verdadero si se debe advertir a los usuarios antes de sacar un boceto de la nube. El valor predeterminado es verdadero.",
       "cloud.push.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto a la nube. El valor predeterminado es verdadero.",
       "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
-      "cloud.sketchSyncEnpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
+      "cloud.sketchSyncEndpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
       "compile": "Compliar",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Ruta del sketchbook no válida: {0}",
       "invalid.theme": "Tema no válido.",
       "language.log": "Verdadero si el Servidor de Lenguaje Arduino debe generar archivos de registro en la carpeta del sketch. En caso contrario, falso. Por defecto es falso.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Configuración manual del proxy",
       "network": "Red",
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Ambos NL & CR",
       "noLineEndings": "Sin ajuste de línea",
       "notConnected": "No conectado. Selecciona una placa y un puerto para conectarte automáticamente.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Marca de tiempo",
       "toggleTimestamp": "Alternar la marca de tiempo"
     },

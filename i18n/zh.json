@@ -192,6 +192,7 @@
       "visit": "访问Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "关闭并安装",
       "closeToInstallNotice": "关闭软件并安装更新。",
       "downloadButton": "下载",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "True则在拉取cloud项目之前警告用户。默认为true。",
       "cloud.push.warn": "True则在推送cloud项目之前警告用户。默认为true。",
       "cloud.pushpublic.warn": "True则将公开项目推送到cloud中之前警告用户。默认为true。",
-      "cloud.sketchSyncEnpoint": "用于从后台推送项目的端点。默认情况下，它指向Arduino Cloud API。",
+      "cloud.sketchSyncEndpoint": "用于从后台推送项目的端点。默认情况下，它指向Arduino Cloud API。",
       "compile": "编译",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "无效的项目文件夹地址：{0}",
       "invalid.theme": "无效的主题。",
       "language.log": "True则Arduino语言服务器将日志文件生成到项目文件夹中。默认为false。",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "手动配置代理",
       "network": "网络",
       "newSketchbookLocation": "选择新的项目文件夹地址",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "两者都是NL和CR",
       "noLineEndings": "没有结束符",
       "notConnected": "未连接。选择要自动连接的开发板和端口。",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "时间戳",
       "toggleTimestamp": "显示时间戳"
     },

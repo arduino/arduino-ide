@@ -11,7 +11,7 @@
       "configDialog2": "ボードのみを選択した場合、コンパイルはできますが、スケッチの書き込みはできません。",
       "configDialogTitle": "他のボードとポートを選択",
       "couldNotFindPreviouslySelected": "インストールされているプラットフォーム'{1}'で、以前に選択したボード'{0}'が見つかりませんでした。使用したいボードを手動で選択し直してください。今すぐ選択し直しますか？",
-      "disconnected": "Disconnected",
+      "disconnected": "切断中",
       "getBoardInfo": "ボード情報を取得",
       "inSketchbook": "（スケッチブック内）",
       "installManually": "手動でインストール",
@@ -23,7 +23,7 @@
       "platformMissing": "選択したボード'{0}'用のプラットフォームがインストールされていません。",
       "pleasePickBoard": "選択したポートに接続されているボードを選んでください。",
       "port": "ポート{0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "ポート: {0}",
       "programmer": "書き込み装置",
       "reselectLater": "後で選択しなおす",
       "selectBoard": "ボードを選択",
@@ -59,11 +59,11 @@
       "uploadingCertificates": "証明書を書き込み中。"
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "'Keyboard'が見つかりません。スケッチに'#include <Keyboard.h>'という行はありますか？",
+      "mouseError": "'Mouse'が見つかりません。スケッチに'#include <Mouse.h>'という行はありますか？"
     },
     "cloud": {
-      "account": "Account",
+      "account": "アカウント",
       "chooseSketchVisibility": "スケッチの可視性を選択:",
       "connected": "接続済み",
       "continue": "続ける",
@@ -88,14 +88,14 @@
       "pushSketch": "スケッチをプッシュする",
       "pushSketchMsg": "これはパブリックなスケッチです。プッシュする前に、すべての機密情報がarduino_secrets.hファイルで定義されていることを確認してください。共有パネルでスケッチをプライベートにできます。",
       "remote": "リモート",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "リモートスケッチブック",
       "share": "共有...",
       "shareSketch": "スケッチを共有",
       "showHideRemoveSketchbook": "リモートスケッチブックの表示・非表示",
       "signIn": "サインイン",
       "signInToCloud": "Arduino Cloudにサインインする",
       "signOut": "サインアウト",
-      "sync": "Sync",
+      "sync": "同期",
       "syncEditSketches": "Arduinoクラウドスケッチの同期と編集",
       "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
     },
@@ -129,12 +129,12 @@
       "replaceTitle": "置換"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "エラーメッセージをコピー"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Daemonを再起動",
+      "start": "Daemonを開始",
+      "stop": "Daemonを停止"
     },
     "debug": {
       "debugWithMessage": "デバッグ - {0}",
@@ -153,8 +153,8 @@
       "decreaseIndent": "インデントを減らす",
       "increaseFontSize": "フォントサイズを大きく",
       "increaseIndent": "インデントを増やす",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "次のエラー",
+      "previousError": "前のエラー"
     },
     "electron": {
       "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディタにコピーして、IDEを再起動してください。",
@@ -192,6 +192,7 @@
       "visit": "Arduino.ccウェブサイトを開く"
     },
     "ide-updater": {
+      "checkForUpdates": "Arduino IDEのアップデートを確認",
       "closeAndInstallButton": "終了してインストール",
       "closeToInstallNotice": "ソフトウェアを終了してアップデートをインストールする。",
       "downloadButton": "ダウンロード",
@@ -230,13 +231,13 @@
       "zipLibrary": "ライブラリ"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "詳細",
       "sketch": "スケッチ",
       "tools": "ツール"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "websocketを閉じることができません",
+      "unableToConnectToWebSocket": "websocketに接続することができません"
     },
     "preferences": {
       "additionalManagerURLs": "追加のボードマネージャのURL",
@@ -248,15 +249,15 @@
       "board.certificates": "ボードに書き込みできる証明書の一覧",
       "browse": "参照",
       "choose": "選択",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cli.daemonDebug": "Arduino CLIへのgRPC呼び出しのデバッグロギングを有効にします。この設定を有効にするにはIDEを再起動する必要があります。デフォルトはfalseです。",
       "cloud.enabled": "スケッチの同期機能が有効な場合にはtrueを指定。デフォルトではtrue。",
       "cloud.pull.warn": "クラウドスケッチをプルする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
       "cloud.push.warn": "クラウドスケッチをプッシュする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
       "cloud.pushpublic.warn": "パブリックスケッチをクラウドにプッシュする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
-      "cloud.sketchSyncEnpoint": "バックエンドからスケッチをプッシュ／プルするために使用されるエンドポイント。デフォルトではArduino Cloud APIを指します。",
+      "cloud.sketchSyncEndpoint": "バックエンドからスケッチをプッシュ／プルするために使用されるエンドポイント。デフォルトではArduino Cloud APIを指します。",
       "compile": "コンパイル",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "IDEが複数のコンパイラエラーを処理するよう設定するにはtrueを指定します。デフォルトは falseです。",
+      "compile.revealRange": "検証/アップロードに失敗した後、エディターでコンパイラエラーを表示する方法を調整します。使用可能な値: 'auto': 必要に応じて縦方向にスクロールし、行を示します。'center': 必要に応じて垂直方向にスクロールし、垂直方向の中央に行を示します。'top': 必要に応じて垂直方向にスクロールし、ビューポートの上部近くに行を表示します。'centerIfOutsideViewport': 必要に応じて垂直方向にスクロールし、ビューポートの外側にある場合のみ、垂直方向の中央に行を示します。デフォルト値は'{0}'です。",
       "compile.verbose": "コンパイル時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
       "compile.warnings": "使用する警告レベルをgccに指示します。デフォルトでは「なし」です。",
       "compilerWarnings": "コンパイラの警告",
@@ -264,13 +265,14 @@
       "editorQuickSuggestions": "エディターのクイックサジェスト",
       "enterAdditionalURLs": "追加のURLを1行ずつ入力",
       "files.inside.sketches": "スケッチ内のファイルを表示",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl": "アップデートをダウンロードするためのベースURL。デフォルトは 'https://downloads.arduino.cc/arduino-ide' です。",
       "ide.updateChannel": "アップデート元のリリースチャンネル。stableは安定版リリース、nightlyは最新の開発用ビルドです。",
       "interfaceScale": "インターフェイスのスケール",
       "invalid.editorFontSize": "エディタのフォントサイズが無効です。正の整数でなければなりません。",
       "invalid.sketchbook.location": "スケッチブックの場所が無効です: {0}",
       "invalid.theme": "無効なテーマです。",
       "language.log": "Arduino Language Serverがスケッチフォルダにログファイルを生成した方がよい場合はtrue。それ以外はfalse。デフォルトではfalse。",
+      "language.realTimeDiagnostics": "trueの場合、言語サーバーはエディターでの入力時にリアルタイムの診断を提供します。デフォルトはfalseです。",
       "manualProxy": "手動プロキシ設定",
       "network": "ネットワーク",
       "newSketchbookLocation": "新しいスケッチブックの場所を選択",
@@ -278,7 +280,7 @@
       "showVerbose": "より詳細な情報を表示する",
       "sketchbook.location": "スケッチブックの場所",
       "sketchbook.showAllFiles": "スケッチ内のすべてのスケッチファイルを表示するにはtrueを指定。デフォルトではfalse。",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "survey.notification": "アンケートが利用可能になったとき、通知を受け取る場合はTrueを指定します。デフォルトではTrue。",
       "unofficialBoardSupport": "クリックして非公式ボードをサポートするURLのリストを表示",
       "upload": "書き込み",
       "upload.verbose": "書き込み時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "CRおよびLF",
       "noLineEndings": "改行なし",
       "notConnected": "接続されていません。自動的に接続するには、ボードとポートを選択してください。",
+      "openSerialPlotter": "シリアルプロッタ",
       "timestamp": "タイムスタンプ",
       "toggleTimestamp": "タイムスタンプを表示・非表示"
     },
@@ -316,7 +319,7 @@
       "openSketchInNewWindow": "新規ウィンドウでスケッチを開く",
       "saveFolderAs": "スケッチフォルダを別名で保存…",
       "saveSketchAs": "スケッチを別名で保存…",
-      "saveTempSketch": "Save your sketch to open it again later.",
+      "saveTempSketch": "あとで再び開くためスケッチを保存する。",
       "showFolder": "スケッチフォルダを表示",
       "sketch": "スケッチ",
       "sketchbook": "スケッチブック",
@@ -329,9 +332,9 @@
       "verifyOrCompile": "検証・コンパイル"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "アンケートに回答する",
+      "dismissSurvey": "次回から表示しない",
+      "surveyMessage": "とても簡単なアンケートに答えて、私たちの改善にご協力ください。私たちはコミュニティを大切にしており、サポーターのことをもう少しよく知りたいのです。"
     },
     "upload": {
       "error": "{0} エラー: {1}"
@@ -352,7 +355,7 @@
       "daemonOffline": "CLI Daemonはオフラインです",
       "offline": "オフライン",
       "quitMessage": "未保存の変更は保存されません。",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "本当に終了しますか？"
     },
     "debug": {
       "start": "開始…",

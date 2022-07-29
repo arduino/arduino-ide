@@ -192,6 +192,7 @@
       "visit": "Vai al sito Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "Chiudi e Installa",
       "closeToInstallNotice": "Chiudi il software e installa l’aggiornamento sulla tua macchina",
       "downloadButton": "Scarica",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "Imposta su true se gli utenti devono essere avvisato dopo avere effettuato il pull dello sketch sul cloud. Il valore predefinito è true.",
       "cloud.push.warn": "Imposta su True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch cloud. Il valore predefinito è true.",
       "cloud.pushpublic.warn": "True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch pubblico nel cloud. Il valore predefinito è true.",
-      "cloud.sketchSyncEnpoint": "La destinazione utilizzata per inviare e richiedere gli schizzi da un back-end. L'impostazione predefinita utilizza Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "La destinazione utilizzata per inviare e richiedere gli schizzi da un back-end. L'impostazione predefinita utilizza Arduino Cloud API.",
       "compile": "compilazione",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "Posizione dello sketchbook non valida: {0}",
       "invalid.theme": "Tema non valido",
       "language.log": "Imposta su True se vuoi che l'Arduino Language Server generi il file di log all'interno della cartella dello sketch. Diversamente, imposta su false. L'impostazione predefinita è false.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Configurazione manuale del proxy",
       "network": "Rete",
       "newSketchbookLocation": "Seleziona un percorso per il nuovo sketchbook",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "Entrambi NL & CR",
       "noLineEndings": "Nessun fine riga",
       "notConnected": "Non collegato. Scegli una scheda e la porta di comunicazione per una connessione automatica.",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "Marca temporale",
       "toggleTimestamp": "Alterna il Timestamp"
     },

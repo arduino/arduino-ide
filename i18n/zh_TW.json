@@ -192,6 +192,7 @@
       "visit": "造訪 Arduino.cc"
     },
     "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE updates",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉軟體並安裝更新。",
       "downloadButton": "下載",
@@ -253,7 +254,7 @@
       "cloud.pull.warn": "True則在取出雲端草稿時警告使用者。預設為true。",
       "cloud.push.warn": "True則在更改雲端草稿時警告使用者。預設為True。",
       "cloud.pushpublic.warn": "True則在更改一個公開草稿到雲端時警告使用者。預設為true",
-      "cloud.sketchSyncEnpoint": "用來從後台更改與取出草稿的端點。預設的端點是指向Arduino Cloud API。",
+      "cloud.sketchSyncEndpoint": "用來從後台更改與取出草稿的端點。預設的端點是指向Arduino Cloud API。",
       "compile": "編譯",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -271,6 +272,7 @@
       "invalid.sketchbook.location": "無效的草稿資料夾位置:{0}",
       "invalid.theme": "無效的主題。",
       "language.log": "True則Arduino語言伺服器會自動在草稿資料夾產生日誌檔案。預設為false。",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "手動設置代理",
       "network": "網路",
       "newSketchbookLocation": "選取新的草稿資料夾位置",
@@ -296,6 +298,7 @@
       "newLineCarriageReturn": "兩者都是NL和CR",
       "noLineEndings": "沒有斷行符號",
       "notConnected": "未有連接，請選擇開發板、埠以自動連接",
+      "openSerialPlotter": "Serial Plotter",
       "timestamp": "時戳/時間戳記",
       "toggleTimestamp": "切換時戳"
     },
