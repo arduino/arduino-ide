@@ -144,6 +144,8 @@ button.secondary[disabled], .theia-button.secondary[disabled] {
   outline: 1px dashed var(--theia-focusBorder);
 }
 
-.hc-black.hc-theia.theia-hc .theia-button:focus {
-  outline: 1px solid var(--theia-focusBorder);
+.hc-black.hc-theia.theia-hc button.theia-button,
+.hc-black.hc-theia.theia-hc .theia-button,
+.hc-black.hc-theia.theia-hc button.theia-button.secondary {
+  border: 1px solid var(--theia-button-border);
 }
