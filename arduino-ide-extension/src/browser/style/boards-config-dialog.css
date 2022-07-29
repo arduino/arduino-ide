@@ -180,9 +180,6 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 .arduino-boards-toolbar-item--label {
-  height: 100%;
-  display: flex;
-  align-items: center;
   width: 100%;
 }
 
