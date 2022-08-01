@@ -135,3 +135,23 @@ button.secondary[disabled], .theia-button.secondary[disabled] {
 .fa-reload {
   font-size: 14px;
 }
+
+
+/* High Contrast Theme rules */
+/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
+.hc-black.hc-theia.theia-hc button.theia-button:hover, 
+.hc-black.hc-theia.theia-hc .theia-button:hover {
+  outline: 1px dashed var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc button.theia-button,
+.hc-black.hc-theia.theia-hc .theia-button,
+.hc-black.hc-theia.theia-hc button.theia-button.secondary {
+  border: 1px solid var(--theia-button-border);
+}
+
+.hc-black.hc-theia.theia-hc .theia-notification-list-item:hover:not(:focus) {
+  background-color: var(--theia-notifications-background);
+  outline: 1px dashed var(--theia-focusBorder);
+  outline-offset: -2px;
+}

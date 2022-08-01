@@ -148,6 +148,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   background: var(--theia-arduino-toolbar-dropdown-background);
   border-radius: 1px;
   color: var(--theia-arduino-toolbar-dropdown-label);
+  border: 1px solid var(--theia-dropdown-border);
   display: flex;
   gap: 10px;
   height: 28px;
@@ -263,4 +264,14 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 .arduino-board-dropdown-footer {
   color: var(--theia-arduino-branding-primary);
   border-top: 1px solid var(--theia-arduino-toolbar-dropdown-border);
+}
+
+/* High Contrast Theme rules */
+/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
+.hc-black.hc-theia.theia-hc #select-board-dialog .selectBoardContainer .body .list .item:hover {
+  outline: 1px dashed var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc div#select-board-dialog .selectBoardContainer .body .list .item.selected {
+  outline: 1px solid var(--theia-focusBorder);
 }
