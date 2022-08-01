@@ -272,6 +272,6 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   outline: 1px dashed var(--theia-focusBorder);
 }
 
-div#select-board-dialog .selectBoardContainer .body .list .item.selected {
+.hc-black.hc-theia.theia-hc div#select-board-dialog .selectBoardContainer .body .list .item.selected {
   outline: 1px solid var(--theia-focusBorder);
 }
