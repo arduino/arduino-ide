@@ -123,7 +123,10 @@ function toClangOptions(
 
 // See: https://releases.llvm.org/11.0.1/tools/clang/docs/ClangFormatStyleOptions.html
 export function style({ TabWidth, UseTab }: ClangFormatOptions): string {
-  return JSON.stringify(styleJson({ TabWidth, UseTab })).replace(/\"/g, '\\"');
+  return JSON.stringify(styleJson({ TabWidth, UseTab })).replace(
+    /[\\"]/g,
+    '\\$&'
+  );
 }
 
 function styleJson({
