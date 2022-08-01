@@ -149,3 +149,9 @@ button.secondary[disabled], .theia-button.secondary[disabled] {
 .hc-black.hc-theia.theia-hc button.theia-button.secondary {
   border: 1px solid var(--theia-button-border);
 }
+
+.hc-black.hc-theia.theia-hc .theia-notification-list-item:hover:not(:focus) {
+  background-color: var(--theia-notifications-background);
+  outline: 1px dashed var(--theia-focusBorder);
+  outline-offset: -2px;
+}
