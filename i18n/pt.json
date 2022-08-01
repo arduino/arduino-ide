@@ -11,7 +11,7 @@
       "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de carregar o seu sketch.",
       "configDialogTitle": "Selecionar Outra Placa e Porta",
       "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione manualmente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
-      "disconnected": "Disconnected",
+      "disconnected": "Desconectado",
       "getBoardInfo": "Obter Informações da Placa",
       "inSketchbook": "(no Sketchbook)",
       "installManually": "Instalar Manualmente",
@@ -23,7 +23,7 @@
       "platformMissing": "A plataforma para a placa '{0}' selecionada não está instalada.",
       "pleasePickBoard": "Escolha uma placa conectada à porta que você selecionou.",
       "port": "Porta{0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Porta{0}",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
       "selectBoard": "Selecionar Placa",
@@ -192,7 +192,7 @@
       "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Checar por Atualizações",
       "closeAndInstallButton": "Fechar e instalar ",
       "closeToInstallNotice": "Feche o software e instale a atualização em sua máquina. ",
       "downloadButton": "Baixar",
@@ -272,7 +272,7 @@
       "invalid.sketchbook.location": "Localização inválida para o sketchbook: {0}",
       "invalid.theme": "Tema inválido",
       "language.log": "Verdadeiro se o Arduino Language Server deverá gerar arquivos de log na pasta do sketch. Caso contrário, falso. Falso é padrão.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Se marcado, diagnósticos em tempo-real serão exibidos enquanto digita no editor. Fica desmarcado por padrão.",
       "manualProxy": "Configurações manuais de proxy",
       "network": "Rede",
       "newSketchbookLocation": "Escolher",
@@ -373,7 +373,7 @@
       "deleteCurrentSketch": "Você deseja excluir o sketch atual?",
       "fileNewName": "Nome para o novo arquivo",
       "invalidExtension": "\".{0}\" não é uma extensão válida.",
-      "invalidFilename": "Nome de arquiov Inválido.",
+      "invalidFilename": "Nome de arquivo inválido.",
       "newFileName": "Novo nome para o arquivo"
     }
   }

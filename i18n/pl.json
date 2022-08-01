@@ -8,24 +8,24 @@
       "board": "Płytka{0}",
       "boardInfo": "Informacje o płytce",
       "configDialog1": "Wybierz płytkę oraz port, aby wgrać szkic.",
-      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "configDialog2": "Jeżeli wybierzesz płytkę, ale nie wybierzesz portu to nie będziesz mógł wgrywać szkicy, ale nadal możesz je kompilować.",
       "configDialogTitle": "Wybierz inną płytkę i port",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Disconnected",
+      "disconnected": "Rozłączony",
       "getBoardInfo": "Pobierz informacje o płytce",
-      "inSketchbook": " (in Sketchbook)",
+      "inSketchbook": "(w Szkicowniku)",
       "installManually": "Zainstaluj ręcznie",
-      "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "installNow": "Jądro \" 1{0} 2{1} \" musi zostać zainstalowane dla wybranej płytki \"{2}\". Czy chcesz zainstalować je teraz?",
+      "noFQBN": "FQBN jest niedostępny dla wybranej płytki \" 1{0} \". Sprawdź czy zainstalowane jądro jest prawidłowe.",
       "noPortsSelected": "Nie wybrano portu dla płytki: '{0}'.",
       "noneSelected": "Nie wybrano płytki.",
       "openBoardsConfig": "Wybierz inną płytkę i port...",
       "platformMissing": "Platforma dla wybranej płytki '{0}' nie jest zainstalowana.",
       "pleasePickBoard": "Wybierz płytkę podłączoną do wybranego portu.",
-      "port": "Port{0}",
-      "portLabel": "Port: {0}",
+      "port": "Port 1{0}",
+      "portLabel": "Port: 1{0}",
       "programmer": "Programator",
-      "reselectLater": "Reselect later",
+      "reselectLater": "Wybierz ponownie później",
       "selectBoard": "Wybierz płytkę",
       "selectBoardForInfo": "Wybierz płytkę, aby uzyskać o niej informacje.",
       "selectPortForInfo": "Wybierz port, aby uzyskać informacje o płytce.",
@@ -35,11 +35,11 @@
     },
     "boardsManager": "Menedżer Płytek",
     "bootloader": {
-      "burnBootloader": "Burn Bootloader",
-      "doneBurningBootloader": "Done burning bootloader."
+      "burnBootloader": "Wypal Bootloader'a",
+      "doneBurningBootloader": "Zakończono wypalanie Bootloader'a"
     },
     "burnBootloader": {
-      "error": "Error while burning the bootloader: {0}"
+      "error": "Błąd w czasie wypalania bootloader'a: 1{0}"
     },
     "certificate": {
       "addNew": "Dodaj nowy",
@@ -47,7 +47,7 @@
       "boardAtPort": "{0} at {1}",
       "certificatesUploaded": "Certyfikaty przesłane.",
       "enterURL": "Wprowadź adres URL",
-      "noSupportedBoardConnected": "No supported board connected",
+      "noSupportedBoardConnected": "Podpięto nie wspieraną płytkę.",
       "openContext": "Open context",
       "remove": "Usuń",
       "selectBoard": "Wybierz płytkę...",
@@ -55,22 +55,22 @@
       "selectDestinationBoardToUpload": "2. Wybierz docelową płytkę i prześli certyfikat",
       "upload": "Prześlij",
       "uploadFailed": "Przesyłanie nie powiodło się. Spróbuj ponownie.",
-      "uploadRootCertificates": "Upload SSL Root Certificates",
+      "uploadRootCertificates": "Wgraj certyfikaty SSL Root.",
       "uploadingCertificates": "Przesyłanie certyfikatów."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "Nie znaleziono klawiatury. Czy szkic posiada linię kodu: '#include <Keyboard.h>'?",
+      "mouseError": "Nie znaleziono myszy. Czy szkic posiada linię kodu: '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Konto",
       "chooseSketchVisibility": "Wybierz widoczność swojego Szkicu:",
       "connected": "Połączony",
       "continue": "Kontynuuj",
       "donePulling": "Zakończono zaciąganie ‘{0}’.",
       "donePushing": "Done pushing ‘{0}’.",
       "embed": "Embed:",
-      "emptySketchbook": "Your Sketchbook is empty",
+      "emptySketchbook": "Twój Szkicownik jest pusty",
       "learnMore": "Dowiedz się więcej",
       "link": "Odnośnik:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
@@ -80,24 +80,24 @@
       "privateVisibility": "Prywatny. Tylko Ty możesz zobaczyć ten Szkic.",
       "profilePicture": "Obrazek profilowy",
       "publicVisibility": "Publiczny. Każda osoba mająca link może zobaczyć ten Szkic.",
-      "pull": "Zaciągnij",
+      "pull": "Wyciągnij",
       "pullFirst": "You have to pull first to be able to push to the Cloud.",
-      "pullSketch": "Pull Sketch",
-      "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
-      "push": "Wypchnij",
-      "pushSketch": "Push Sketch",
+      "pullSketch": "Pobierz szkic",
+      "pullSketchMsg": "Pobieranie szkicu z chmury spowoduje nadpisanie jego lokalnej wersji. Czy chcesz kontynuować?",
+      "push": "Wepchnij",
+      "pushSketch": "Dodaj szkic",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
-      "remote": "Remote",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remote": "Zdalny",
+      "remoteSketchbook": "Szkicownik zdalny",
       "share": "Udostępnij...",
       "shareSketch": "Udostępnij Szkic",
-      "showHideRemoveSketchbook": "Show/Hide Remote Sketchbook",
+      "showHideRemoveSketchbook": "Pokaż/Ukryj zdalny szkicownik",
       "signIn": "ZALOGUJ SIĘ",
       "signInToCloud": "Zaloguj się do Arduino Cloud",
       "signOut": "Wyloguj się",
-      "sync": "Sync",
-      "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
-      "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
+      "sync": "Synchronizuj",
+      "syncEditSketches": "Synchronizuj i edytuj swoje szkice w chmurze Arduino",
+      "visitArduinoCloud": "Odwiedź chmurę Arduino, aby tworzyć szkice w chmurze."
     },
     "common": {
       "later": "Później",
@@ -115,8 +115,8 @@
       "error": "Błąd kompilacji: {0}"
     },
     "component": {
-      "by": "by",
-      "filterSearch": "Filter your search...",
+      "by": "przez",
+      "filterSearch": "Filtruj przeszukiwanie....",
       "install": "ZAINSTALUJ",
       "moreInfo": "Więcej informacji",
       "uninstall": "Odinstaluj",
@@ -129,15 +129,15 @@
       "replaceTitle": "Zamień"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Kopiuj komunikat błędu"
     },
     "daemon": {
-      "restart": "Restart Daemon",
+      "restart": "Restartuj Daemon",
       "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "stop": "Zatrzymaj Daemon"
     },
     "debug": {
-      "debugWithMessage": "Debug - {0}",
+      "debugWithMessage": "Debuguj - {0}",
       "debuggingNotSupported": "Debugowanie nie jest wspierane przez '{0}'",
       "noPlatformInstalledFor": "Platforma nie jest zainstalowana dla '{0}'",
       "optimizeForDebugging": "Optymalizuj pod kątem debugowania"
@@ -148,22 +148,22 @@
     "editor": {
       "autoFormat": "Automatyczne formatowanie",
       "commentUncomment": "Zakomentuj/Odkomentuj",
-      "copyForForum": "Copy for Forum (Markdown)",
+      "copyForForum": "Kopiuj na Forum",
       "decreaseFontSize": "Zmniejsz rozmiar czcionki",
       "decreaseIndent": "Zmniejsz wcięcie",
       "increaseFontSize": "Zwiększ rozmiar czcionki",
       "increaseIndent": "Zwiększ wcięcie",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "Następny Błąd",
+      "previousError": "Poprzedni Błąd"
     },
     "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Any unsaved changes will not be saved."
+      "couldNotSave": "Wszystkie niezapisane zmiany zostaną utracone.",
+      "unsavedChanges": "Wszystkie niezapisane zmiany zostaną utracone."
     },
     "examples": {
       "builtInExamples": "Wbudowane przykłady",
-      "couldNotInitializeExamples": "Could not initialize built-in examples.",
-      "customLibrary": "Examples from Custom Libraries",
+      "couldNotInitializeExamples": "Nie można zainicjalizować wbudowanych przykładów.",
+      "customLibrary": "Przykłady z bibliotek użytkowników",
       "for": "Przykłady dla {0}",
       "forAny": "Przykłady dla dowolnej płytki",
       "menu": "Przykłady"
@@ -172,46 +172,46 @@
       "checkUpdates": "Sprawdź uaktualnienia",
       "failedInstall": "Instalacja nie powiodła się. Spróbuj ponownie.",
       "install": "Zainstaluj",
-      "installingFirmware": "Installing firmware.",
-      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "installingFirmware": "Instalacja firmware'u.",
+      "overwriteSketch": "Instalacja nadpisze szkic na płytce.",
       "selectBoard": "Wybierz płytkę",
-      "selectVersion": "Select firmware version",
-      "successfullyInstalled": "Firmware successfully installed.",
+      "selectVersion": "Wybierz wersję firmware'u",
+      "successfullyInstalled": "Firmware zainstalowany prawidłowo.",
       "updater": "WiFi101 / WiFiNINA Firmware Updater"
     },
     "help": {
       "environment": "Środowisko",
       "faq": "Najczęściej zadawane pytania",
-      "findInReference": "Find in Reference",
-      "gettingStarted": "Getting Started",
+      "findInReference": "Przeszukaj przykłady",
+      "gettingStarted": "Pierwsze kroki",
       "keyword": "Wpisz słowo kluczowe",
-      "privacyPolicy": "Privacy Policy",
-      "reference": "Reference",
+      "privacyPolicy": "Polityka prywatności",
+      "reference": "Przykłady",
       "search": "Szukaj na Arduino.cc",
       "troubleshooting": "Rozwiązywanie problemów",
       "visit": "Odwiedź Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
-      "closeAndInstallButton": "Close and Install",
-      "closeToInstallNotice": "Close the software and install the update on your machine.",
-      "downloadButton": "Download",
-      "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
-      "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
-      "goToDownloadButton": "Go To Download",
-      "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
-      "ideUpdaterDialog": "Software Update",
-      "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
-      "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
-      "notNowButton": "Not now",
-      "skipVersionButton": "Skip Version",
-      "updateAvailable": "Update Available",
-      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+      "checkForUpdates": "Sprawdź uaktualnienia dla Arduino IDE.",
+      "closeAndInstallButton": "Wyjdź i instaluj",
+      "closeToInstallNotice": "Zamknij aplikacje i zainstaluj aktualizacje.",
+      "downloadButton": "Pobierz",
+      "downloadingNotice": "Pobieranie najnowszej wersji Arduino IDE.",
+      "errorCheckingForUpdates": "Błąd podczas sprawdzania aktualizacji Arduino IDE.\n{0}",
+      "goToDownloadButton": "Przejdź do pobierania",
+      "goToDownloadPage": "Nie mogliśmy pobrać i zainstalować automatycznie aktualizacji Arduino IDE. Proszę pobrać najnowszą wersję ze strony pobierania.",
+      "ideUpdaterDialog": "Aktualizacja oprogramowania",
+      "newVersionAvailable": "Dostępna jest nowa wersja Arduino IDE( 1{0} ).",
+      "noUpdatesAvailable": "Brak nowych aktualizacji dla Arduino IDE.",
+      "notNowButton": "Nie traz",
+      "skipVersionButton": "Pomiń tą wersję.",
+      "updateAvailable": "Dostępna aktualizacja.",
+      "versionDownloaded": "Pobrano Arduino IDE 1{0}"
     },
     "library": {
       "addZip": "Dodaj bibliotekę .ZIP...",
       "arduinoLibraries": "Biblioteki Arduino",
-      "contributedLibraries": "Contributed libraries",
+      "contributedLibraries": "Przesłane biblioteki",
       "dependenciesForLibrary": "Zależności dla biblioteki {0}:{1}",
       "include": "Dołącz bibliotekę",
       "installAll": "Zainstaluj wszystko",
@@ -231,7 +231,7 @@
       "zipLibrary": "Biblioteka"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Niewłaściwy schemat.",
       "sketch": "Szkic",
       "tools": "Narzędzia"
     },
@@ -241,9 +241,9 @@
     },
     "preferences": {
       "additionalManagerURLs": "Dodatkowe adresy URL do menadżera płytek",
-      "auth.audience": "The OAuth2 audience.",
-      "auth.clientID": "The OAuth2 client ID.",
-      "auth.domain": "The OAuth2 domain.",
+      "auth.audience": "Społeczność OAuth2.",
+      "auth.clientID": "ID klienta OAuth2.",
+      "auth.domain": "Domena OAuth2.",
       "auth.registerUri": "Identyfikator URI używany do zarejestrowania nowego użytkownika.",
       "automatic": "Automatyczne",
       "board.certificates": "Lista certyfikatów, które można przesłać do płytki",
@@ -262,26 +262,26 @@
       "compile.warnings": "Ustawia poziom ostrzeżeń w kompilatorze gcc. Domyślną wartością jest 'Brak'",
       "compilerWarnings": "Ostrzeżenia kompilatora",
       "editorFontSize": "Rozmiar czcionki edytora",
-      "editorQuickSuggestions": "Editor Quick Suggestions",
+      "editorQuickSuggestions": "Podpowiedzi w edytorze",
       "enterAdditionalURLs": "Wprowadź dodatkowe adresy URL, po jednym adresie w wierszu",
-      "files.inside.sketches": "Show files inside Sketches",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "files.inside.sketches": "Pokazuj pliki w szkicach",
+      "ide.updateBaseUrl": "Podstawowy link do pobierania aktualizacji. Domyślnie 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
       "interfaceScale": "Skalowanie interfejsu",
       "invalid.editorFontSize": "Nieprawidłowy rozmiar czcionki edytora. Musi to być dodatnia liczba całkowita.",
-      "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
-      "invalid.theme": "Invalid theme.",
+      "invalid.sketchbook.location": "Błędna lokalizacja szkicownika: {0}",
+      "invalid.theme": "Nieprawidłowy schemat.",
       "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Konfiguracja ręczna proxy",
       "network": "Sieć",
-      "newSketchbookLocation": "Select new sketchbook location",
-      "noProxy": "No proxy",
-      "showVerbose": "Show verbose output during",
-      "sketchbook.location": "Sketchbook location",
+      "newSketchbookLocation": "Wybierz nową lokalizację szkicownika",
+      "noProxy": "Bez proxy",
+      "showVerbose": "Pokazuj informacje zwrotne podczas:",
+      "sketchbook.location": "Lokalizacja szkicownika",
       "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze szkicu. Fałsz jest wartością domyślną.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
-      "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+      "unofficialBoardSupport": "Kliknij, aby przejść do listy linków nieoficjalnego wsparcia dla płytek.",
       "upload": "przesyłanie",
       "upload.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas wgrywania. Fałsz jest wartością domyślną.",
       "verifyAfterUpload": "Weryfikuj kod po przesłaniu",
@@ -293,38 +293,38 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Carriage Return",
-      "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
+      "message": "Wiadomość({0} + Enter aby wysłać wiadomość do '{1}' on '{2}')",
       "newLine": "Nowa linia",
-      "newLineCarriageReturn": "Both NL & CR",
-      "noLineEndings": "No Line Ending",
+      "newLineCarriageReturn": "Razem NL i CR",
+      "noLineEndings": "Brak końca linii",
       "notConnected": "Nie połączono. Wybierz płytkę i port do automatycznego połączenia.",
-      "openSerialPlotter": "Serial Plotter",
-      "timestamp": "Timestamp",
-      "toggleTimestamp": "Toggle Timestamp"
+      "openSerialPlotter": "Ploter szeregowy",
+      "timestamp": "Znacznik czasu",
+      "toggleTimestamp": "Ustaw znacznik czasu"
     },
     "sketch": {
-      "archiveSketch": "Archive Sketch",
-      "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
-      "configureAndUpload": "Configure And Upload",
-      "createdArchive": "Created archive '{0}'.",
+      "archiveSketch": "Archiwizuj szkic",
+      "cantOpen": "Folder \" 1{0} \" już istnieje. Nie można otworzyć szkicu.",
+      "close": "Jesteś pewien, że chcesz zamknąć szkic?",
+      "configureAndUpload": "Skonfiguruj u wgraj",
+      "createdArchive": "Stwórz archiwum ' 1{0} '.",
       "doneCompiling": "Kompilacja zakończona.",
       "doneUploading": "Przesyłanie zakończone.",
-      "exportBinary": "Export Compiled Binary",
-      "moving": "Moving",
-      "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
+      "exportBinary": "Eksportuj skompilowane binarnie",
+      "moving": "Przenoszenie",
+      "movingMsg": "Plik \"{0}\" musi znajdować się w folderze szkiców o nazwie \"{1}\".\nCzy utworzyć ten folder, przenieść podany plik i kontynuować?",
       "new": "Nowy",
       "openFolder": "Otwórz folder",
       "openRecent": "Otwórz ostatnie",
       "openSketchInNewWindow": "Otwórz szkic w nowym oknie.",
-      "saveFolderAs": "Save sketch folder as...",
-      "saveSketchAs": "Save sketch folder as...",
-      "saveTempSketch": "Save your sketch to open it again later.",
-      "showFolder": "Show Sketch Folder",
+      "saveFolderAs": "Zapisz folder szkicu jako...",
+      "saveSketchAs": "Zapisz folder szkicu jako...",
+      "saveTempSketch": "Zapisz szkic, aby otworzyć go później.",
+      "showFolder": "Pokaż folder szkiców.",
       "sketch": "Szkic",
-      "sketchbook": "Sketchbook",
-      "titleLocalSketchbook": "Local Sketchbook",
-      "titleSketchbook": "Sketchbook",
+      "sketchbook": "Szkicownik",
+      "titleLocalSketchbook": "Lokalny folder szkiców",
+      "titleSketchbook": "Szkicownik",
       "upload": "Prześlij",
       "uploadUsingProgrammer": "Prześlij używając programatora",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
@@ -332,45 +332,45 @@
       "verifyOrCompile": "Weryfikuj/Kompiluj"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "Odpowiedz na ankietę",
+      "dismissSurvey": "Pomóż nam się rozwijać wypełniając tą super krótką ankietę. Cenimy naszą społeczność i chcielibyśmy lepiej poznać tych którzy nas wspierają.",
+      "surveyMessage": "Pomóż nam się rozwijać wypełniając tą super krótką ankietę. Cenimy naszą społeczność i chcielibyśmy lepiej poznać tych którzy nas wspierają."
     },
     "upload": {
-      "error": "{0} error: {1}"
+      "error": "{0} błąd: {1}"
     },
     "userFields": {
-      "cancel": "Cancel",
+      "cancel": "Anuluj",
       "upload": "Prześlij"
     }
   },
   "cloud": {
-    "GoToCloud": "GO TO CLOUD"
+    "GoToCloud": "IDŹ DO CHMURY"
   },
   "theia": {
     "core": {
       "cannotConnectBackend": "Cannot connect to the backend.",
-      "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+      "cannotConnectDaemon": "Nie można połączyć się z demonem CLI.",
+      "couldNotSave": "Nie można zapisać szkicu. Skopiuj niezapisany szkic do edytora tekstu i zrestartuj IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Any unsaved changes will not be saved.",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitMessage": "Wszystkie niezapisane zmiany zostaną utracone.",
+      "quitTitle": "Jesteś pewien, że chcesz wyjść?"
     },
     "debug": {
-      "start": "Start...",
+      "start": "Uruchamianie...",
       "startError": "There was an error starting the debug session, check the logs for more details.",
       "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
-      "unsavedTitle": "Unsaved – {0}"
+      "unsavedTitle": "Niezapisany – {0}"
     },
     "messages": {
       "collapse": "Zwiń",
       "expand": "Rozwiń"
     },
     "workspace": {
-      "deleteCurrentSketch": "Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "Chcesz usunąć aktualny szkic?",
       "fileNewName": "Nazwa nowego pliku",
       "invalidExtension": ".{0} nie jest prawidłowym rozszerzeniem",
       "invalidFilename": "Nieprawidłowa nazwa pliku.",

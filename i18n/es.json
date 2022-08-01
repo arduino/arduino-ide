@@ -88,7 +88,7 @@
       "pushSketch": "Pulsa para listar las URLs de la tarjetas no oficiales",
       "pushSketchMsg": "Este es un Sketch público. Antes de enviarlo, asegúrate de que cualquier información sensible está definida en los archivos arduino_secrets.h. Puedes hacer que un Sketch sea privado desde el panel Compartir.",
       "remote": "Remoto",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Libreria de proyectos remota",
       "share": "Compartir...",
       "shareSketch": "Compartir Sketch",
       "showHideRemoveSketchbook": "Mostrar/Ocultar Sketchbook Remoto",
@@ -129,12 +129,12 @@
       "replaceTitle": "Reemplazar"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copiar mensajes de error"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Reiniciar Daemon",
+      "start": "Iniciar Daemon",
+      "stop": "Parar Daemon"
     },
     "debug": {
       "debugWithMessage": "Debug - {0}",
@@ -153,8 +153,8 @@
       "decreaseIndent": "Disminuir sangría",
       "increaseFontSize": "Aumentar tamaño de fuente",
       "increaseIndent": "Aumentar sangría",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "Siguiente Error",
+      "previousError": "Error Anterior"
     },
     "electron": {
       "couldNotSave": "No se ha podido guardar el sketch. Por favor, copia tu trabajo no guardado en tu editor de texto favorito y reinicia el IDE.",
@@ -192,7 +192,7 @@
       "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Buscar actualizaciones para Arduino IDE",
       "closeAndInstallButton": "Cerrar e instalar",
       "closeToInstallNotice": "Cierra el programa e instala la actualización en tu máquina.",
       "downloadButton": "Descargar",
@@ -231,7 +231,7 @@
       "zipLibrary": "Biblioteca"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Avanzado",
       "sketch": "Sketch",
       "tools": "Herramientas"
     },
@@ -256,8 +256,8 @@
       "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
       "cloud.sketchSyncEndpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
       "compile": "Compliar",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "True si el IDE debe manejar multiples errores del compilador. False por defecto",
+      "compile.revealRange": "Ajusta cómo se revelan los errores del compilador en el editor después de una verificación/carga fallida. Valores posibles: 'auto': Desplázate verticalmente según sea necesario y revela una línea. 'centrar': Desplázate verticalmente según sea necesario y revela una línea centrada verticalmente. \"superior\": Desplázate verticalmente según sea necesario y revela una línea cerca de la parte superior de la ventana gráfica, optimizada para ver una definición de código. 'centerIfOutsideViewport': Desplázate verticalmente según sea necesario y revela una línea centrada verticalmente sólo si se encuentra fuera de la ventana gráfica. El valor por defecto es '{0}'.",
       "compile.verbose": "Verdadero para compilación detallada. Falso por defecto",
       "compile.warnings": "Indica a gcc qué nivel de advertencia usar. Por defecto es \"Ninguno\"",
       "compilerWarnings": "alertas de compilación",
@@ -272,7 +272,7 @@
       "invalid.sketchbook.location": "Ruta del sketchbook no válida: {0}",
       "invalid.theme": "Tema no válido.",
       "language.log": "Verdadero si el Servidor de Lenguaje Arduino debe generar archivos de registro en la carpeta del sketch. En caso contrario, falso. Por defecto es falso.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Si está habilitado, el lenguaje proveerá diagnoticos en tiepo real meintras se teclea en el editor. Deshabilitado por defecto.",
       "manualProxy": "Configuración manual del proxy",
       "network": "Red",
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
@@ -298,7 +298,7 @@
       "newLineCarriageReturn": "Ambos NL & CR",
       "noLineEndings": "Sin ajuste de línea",
       "notConnected": "No conectado. Selecciona una placa y un puerto para conectarte automáticamente.",
-      "openSerialPlotter": "Serial Plotter",
+      "openSerialPlotter": "Plotter Serie",
       "timestamp": "Marca de tiempo",
       "toggleTimestamp": "Alternar la marca de tiempo"
     },
