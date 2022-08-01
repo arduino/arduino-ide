@@ -29,7 +29,7 @@
 .ide-updater-dialog .changelog-container {
   color: var(--theia-editor-foreground);
   background-color: var(--theia-editor-background);
-  border: 1px solid var(--theia-tree-indentGuidesStroke);
+  border: 1px solid var(--theia-editorWidget-border);
   border-radius: 2px;
   font-size: 12px;
   height: 180px;
