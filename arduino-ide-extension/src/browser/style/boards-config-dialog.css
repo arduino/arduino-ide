@@ -148,7 +148,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   background: var(--theia-arduino-toolbar-dropdown-background);
   border-radius: 1px;
   color: var(--theia-arduino-toolbar-dropdown-label);
-  border: 1px solid var(--theia-dropdown-border);
+  border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
   display: flex;
   gap: 10px;
   height: 28px;
