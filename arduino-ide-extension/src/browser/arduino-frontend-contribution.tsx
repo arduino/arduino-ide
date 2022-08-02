@@ -197,8 +197,8 @@ export class ArduinoFrontendContribution
         id: 'arduino.toolbar.button.hoverBackground',
         defaults: {
           dark: 'button.hoverBackground',
-          light: 'button.foreground',
-          hc: 'textLink.foreground',
+          light: 'button.hoverBackground',
+          hc: 'button.background',
         },
         description:
           'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.',
