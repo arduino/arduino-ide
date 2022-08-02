@@ -232,6 +232,74 @@ export class ArduinoFrontendContribution
         },
         description:
           'Toggle color of the toolbar items when they are currently toggled (the command is in progress)',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.border',
+        defaults: {
+          dark: 'dropdown.border',
+          light: 'dropdown.border',
+          hc: 'dropdown.border',
+        },
+        description: 'Border color of the Board Selector.',
+      },
+
+      {
+        id: 'arduino.toolbar.dropdown.borderActive',
+        defaults: {
+          dark: 'focusBorder',
+          light: 'focusBorder',
+          hc: 'focusBorder',
+        },
+        description: "Border color of the Board Selector when it's active",
+      },
+
+      {
+        id: 'arduino.toolbar.dropdown.background',
+        defaults: {
+          dark: 'tab.unfocusedActiveBackground',
+          light: 'dropdown.background',
+          hc: 'dropdown.background',
+        },
+        description: 'Background color of the Board Selector.',
+      },
+
+      {
+        id: 'arduino.toolbar.dropdown.label',
+        defaults: {
+          dark: 'dropdown.foreground',
+          light: 'dropdown.foreground',
+          hc: 'dropdown.foreground',
+        },
+        description: 'Font color of the Board Selector.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.iconSelected',
+        defaults: {
+          dark: 'list.activeSelectionIconForeground',
+          light: 'list.activeSelectionIconForeground',
+          hc: 'list.activeSelectionIconForeground',
+        },
+        description:
+          'Color of the selected protocol icon in the Board Selector.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.option.backgroundHover',
+        defaults: {
+          dark: 'list.hoverBackground',
+          light: 'list.hoverBackground',
+          hc: 'list.hoverBackground',
+        },
+        description: 'Background color on hover of the Board Selector options.',
+      },
+      {
+        id: 'arduino.toolbar.dropdown.option.backgroundSelected',
+        defaults: {
+          dark: 'list.activeSelectionBackground',
+          light: 'list.activeSelectionBackground',
+          hc: 'list.activeSelectionBackground',
+        },
+        description:
+          'Background color of the selected board in the Board Selector.',
       }
     );
   }
