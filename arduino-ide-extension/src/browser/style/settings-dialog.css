@@ -67,7 +67,7 @@
 }
 
 .arduino-settings-dialog .react-tabs__tab--selected {
-    background: var(--theia-tab-activeBackground);
+    background: var(--theia-editorWidget-background);
     border-color: var(--theia-tab-activeBorder);
     color: var(--theia-tab-activeForeground);
     border-radius: 5px 5px 0 0;
