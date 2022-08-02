@@ -130,11 +130,14 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
             protocolIcon
           )}
         />
-        <div className="arduino-boards-dropdown-item--label">
-          <div className="arduino-boards-dropdown-item--board-label">
+        <div
+          className="arduino-boards-dropdown-item--label"
+          title={`${boardLabel}\n${port.address}`}
+        >
+          <div className="arduino-boards-dropdown-item--board-label noWrapInfo noselect">
             {boardLabel}
           </div>
-          <div className="arduino-boards-dropdown-item--port-label">
+          <div className="arduino-boards-dropdown-item--port-label noWrapInfo noselect">
             {port.address}
           </div>
         </div>
@@ -229,7 +232,8 @@ export class BoardsToolBarItem extends React.Component<
           <div
             className={classNames(
               'arduino-boards-toolbar-item--label',
-              'noWrapInfo noselect',
+              'noWrapInfo',
+              'noselect',
               { 'arduino-boards-toolbar-item--label-connected': isConnected }
             )}
           >
