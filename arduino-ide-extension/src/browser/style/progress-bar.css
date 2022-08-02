@@ -3,7 +3,7 @@
 }
 
 .progress-bar--outer {
-  background: #e5e5e5;
+  background: var(--theia-editorWidget-background);
   border-radius: 11px;
   height: 6px;
   position: relative;
@@ -13,7 +13,7 @@
 .progress-bar--inner {
   transition: width 1s;
   height: 100%;
-  background: #008184;
+  background: var(--theia-progressBar-background);
   border-radius: 11px;
 }
 

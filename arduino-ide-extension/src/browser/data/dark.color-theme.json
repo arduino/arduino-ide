@@ -8,6 +8,7 @@
     "list.inactiveSelectionForeground": "#dae3e3",
     "list.inactiveSelectionBackground": "#434f54",
     "list.hoverBackground": "#1f272a",
+    "list.activeSelectionIconForeground": "#0ca1a6",
     "progressBar.background": "#005c5f",
     "editor.background": "#1f272a",
     "editor.foreground": "#dae3e3",
@@ -16,6 +17,7 @@
     "editorCursor.foreground": "#434f54",
     "editorWhitespace.foreground": "#bfbfbf",
     "editorWidget.background": "#171e21",
+    "editorWidget.foreground": "#dae3e3",
     "focusBorder": "#dae3e3",
     "menubar.selectionBackground": "#ffffff",
     "menubar.selectionForeground": "#212121",
@@ -28,7 +30,7 @@
     "titleBar.activeBackground": "#171e21",
     "titleBar.activeForeground": "#dae3e3",
     "terminal.background": "#000000",
-    "terminal.foreground": "#e0e0e0",
+    "terminal.foreground": "#ffffff",
     "dropdown.border": "#7fcbcd",
     "dropdown.background": "#2c353a",
     "dropdown.foreground": "#dae3e3",
@@ -64,7 +66,8 @@
     "settings.headerForeground": "#dae3e3",
     "tree.indentGuidesStroke": "#374146",
     "tab.unfocusedActiveForeground": "#dae3e3",
-    "tab.inactiveBackground": "#171e21"
+    "tab.inactiveBackground": "#171e21",
+    "textLink.foreground": "#0ca1a6"
   },
   "tokenColors": [
     {

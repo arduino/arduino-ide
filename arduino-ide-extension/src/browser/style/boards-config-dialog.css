@@ -15,7 +15,7 @@ div.dialogContent.select-board-dialog > div.head .title {
   font-weight: 400;
   letter-spacing: 0.02em;
   font-size: 1.2em;
-  color: var(--theia-arduino-branding-primary);
+  color: var(--theia-editorWidget-foreground);
   margin-bottom: 10px;
 }
 
@@ -24,7 +24,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected {
 }
 
 div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
-  color: var(--theia-arduino-branding-primary);
+  color: var(--theia-list-activeSelectionIconForeground);
 }
 
 #select-board-dialog .selectBoardContainer .search,
@@ -43,7 +43,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   margin: 0;
   vertical-align: top;
   display: flex;
-  color: var(--theia-editor-foreground);
+  color: var(--theia-input-foreground);
 }
 
 #select-board-dialog .selectBoardContainer .body .search input:focus {
@@ -66,7 +66,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 #select-board-dialog .selectBoardContainer .body .container .content .title {
-  color: #7f8c8d;
+  color: var(--theia-editorWidget-foreground);
   padding: 0px 0px 10px 0px;
   text-transform: uppercase;
 }
@@ -77,7 +77,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 
 #select-board-dialog .selectBoardContainer .body .container .content .loading {
   font-size: var(--theia-ui-font-size1);
-  color: var(--theia-arduino-branding-secondary);
+  color: var(--theia-editorWidget-foreground);
   padding: 10px 5px 10px 10px;
   text-transform: uppercase;
   /* The max, min-height comes from `.body .list` 200px + 47px top padding - 2 * 10px top padding */
@@ -148,7 +148,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   background: var(--theia-arduino-toolbar-dropdown-background);
   border-radius: 1px;
   color: var(--theia-arduino-toolbar-dropdown-label);
-  border: 1px solid var(--theia-dropdown-border);
+  border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
   display: flex;
   gap: 10px;
   height: 28px;
@@ -165,10 +165,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   font-size: 16px;
 }
 
-.arduino-boards-toolbar-item--protocol {
-  color: var(--theia-arduino-toolbar-dropdown-label);
-}
-
+.arduino-boards-toolbar-item--protocol ,
 .arduino-boards-dropdown-item--protocol {
   color: var(--theia-arduino-toolbar-dropdown-label);
 }
@@ -206,6 +203,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 .arduino-boards-dropdown-list--items-container {
   overflow: auto;
   max-height: 404px;
+  background: var(--theia-arduino-toolbar-dropdown-background);
 }
 
 .arduino-boards-dropdown-list--items-container::-webkit-scrollbar {
@@ -247,8 +245,8 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 .arduino-boards-dropdown-item--selected
-  .arduino-boards-dropdown-item--port-label {
-    color: var(--theia-arduino-toolbar-dropdown-label);
+.arduino-boards-dropdown-item--port-label {
+  color: var(--theia-arduino-toolbar-dropdown-label);
 }
 
 .arduino-boards-dropdown-item--selected .fa {
@@ -260,8 +258,8 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 }
 
 .arduino-board-dropdown-footer {
-  color: var(--theia-arduino-branding-primary);
-  border-top: 1px solid var(--theia-arduino-toolbar-dropdown-border);
+  color: var(--theia-secondaryButton-foreground);
+  border-top: 1px solid var(--theia-dropdown-border);
 }
 
 /* High Contrast Theme rules */

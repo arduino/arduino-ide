@@ -184,34 +184,6 @@ export class ArduinoFrontendContribution
   registerColors(colors: ColorRegistry): void {
     colors.register(
       {
-        id: 'arduino.branding.primary',
-        defaults: {
-          dark: 'statusBar.background',
-          light: 'statusBar.background',
-        },
-        description:
-          'The primary branding color, such as dialog titles, library, and board manager list labels.',
-      },
-      {
-        id: 'arduino.branding.secondary',
-        defaults: {
-          dark: 'statusBar.background',
-          light: 'statusBar.background',
-        },
-        description:
-          'Secondary branding color for list selections, dropdowns, and widget borders.',
-      },
-      {
-        id: 'arduino.foreground',
-        defaults: {
-          dark: 'editorWidget.background',
-          light: 'editorWidget.background',
-          hc: 'editorWidget.background',
-        },
-        description:
-          'Color of the Arduino IDE foreground which is used for dialogs, such as the Select Board dialog.',
-      },
-      {
         id: 'arduino.toolbar.button.background',
         defaults: {
           dark: 'button.background',
@@ -225,8 +197,8 @@ export class ArduinoFrontendContribution
         id: 'arduino.toolbar.button.hoverBackground',
         defaults: {
           dark: 'button.hoverBackground',
-          light: 'button.foreground',
-          hc: 'textLink.foreground',
+          light: 'button.hoverBackground',
+          hc: 'button.background',
         },
         description:
           'Background color of the toolbar items when hovering over them. Such as Upload, Verify, etc.',
@@ -262,24 +234,6 @@ export class ArduinoFrontendContribution
           'Toggle color of the toolbar items when they are currently toggled (the command is in progress)',
       },
       {
-        id: 'arduino.output.foreground',
-        defaults: {
-          dark: 'editor.foreground',
-          light: 'editor.foreground',
-          hc: 'editor.foreground',
-        },
-        description: 'Color of the text in the Output view.',
-      },
-      {
-        id: 'arduino.output.background',
-        defaults: {
-          dark: 'editor.background',
-          light: 'editor.background',
-          hc: 'editor.background',
-        },
-        description: 'Background color of the Output view.',
-      },
-      {
         id: 'arduino.toolbar.dropdown.border',
         defaults: {
           dark: 'dropdown.border',
@@ -303,8 +257,8 @@ export class ArduinoFrontendContribution
         id: 'arduino.toolbar.dropdown.background',
         defaults: {
           dark: 'tab.unfocusedActiveBackground',
-          light: 'tab.unfocusedActiveBackground',
-          hc: 'tab.unfocusedActiveBackground',
+          light: 'dropdown.background',
+          hc: 'dropdown.background',
         },
         description: 'Background color of the Board Selector.',
       },
@@ -312,18 +266,18 @@ export class ArduinoFrontendContribution
       {
         id: 'arduino.toolbar.dropdown.label',
         defaults: {
-          dark: 'foreground',
-          light: 'foreground',
-          hc: 'foreground',
+          dark: 'dropdown.foreground',
+          light: 'dropdown.foreground',
+          hc: 'dropdown.foreground',
         },
         description: 'Font color of the Board Selector.',
       },
       {
         id: 'arduino.toolbar.dropdown.iconSelected',
         defaults: {
-          dark: 'statusBar.background',
-          light: 'statusBar.background',
-          hc: 'statusBar.background',
+          dark: 'list.activeSelectionIconForeground',
+          light: 'list.activeSelectionIconForeground',
+          hc: 'list.activeSelectionIconForeground',
         },
         description:
           'Color of the selected protocol icon in the Board Selector.',
@@ -331,18 +285,18 @@ export class ArduinoFrontendContribution
       {
         id: 'arduino.toolbar.dropdown.option.backgroundHover',
         defaults: {
-          dark: 'editor.background',
-          light: 'editor.background',
-          hc: 'editor.background',
+          dark: 'list.hoverBackground',
+          light: 'list.hoverBackground',
+          hc: 'list.hoverBackground',
         },
         description: 'Background color on hover of the Board Selector options.',
       },
       {
         id: 'arduino.toolbar.dropdown.option.backgroundSelected',
         defaults: {
-          dark: 'editor.background',
-          light: 'editor.background',
-          hc: 'editor.background',
+          dark: 'list.activeSelectionBackground',
+          light: 'list.activeSelectionBackground',
+          hc: 'list.activeSelectionBackground',
         },
         description:
           'Background color of the selected board in the Board Selector.',
