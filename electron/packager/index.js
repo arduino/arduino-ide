@@ -7,6 +7,8 @@
   const glob = require('glob');
   const isCI = require('is-ci');
   shell.env.THEIA_ELECTRON_SKIP_REPLACE_FFMPEG = '1'; // Do not run the ffmpeg validation for the packager.
+  // Note, this will crash on PI if the available memory is less than desired heap size.
+  // https://github.com/shelljs/shelljs/issues/1024#issuecomment-1001552543
   shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI
   shell.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'; // Skip download and avoid `ERROR: Failed to download Chromium`.
   const template = require('./config').generateTemplate(
@@ -14,7 +16,7 @@
   );
   const utils = require('./utils');
   const merge = require('deepmerge');
-  const { isRelease, isElectronPublish, getChannelFile } = utils;
+  const { isRelease, getChannelFile } = utils;
   const { version } = template;
   const { productName } = template.build;
 
@@ -58,6 +60,11 @@
     .filter((filename) => resourcesToKeep.indexOf(filename) === -1)
     .forEach((filename) => rm('-rf', path('..', 'build', filename)));
 
+  // Clean up the `./electron/build/patch` and `./electron/build/resources` folder with Git.
+  // To avoid file duplication between bundled app and dev mode, some files are copied from `./electron-app` to `./electron/build` folder.
+  const foldersToSyncFromDev = ['patch', 'resources'];
+  foldersToSyncFromDev.forEach(filename => shell.exec(`git -C ${path('..', 'build', filename)} clean -ffxdq`, { async: false }));
+
   const extensions = require('./extensions.json');
   echo(
     `Building the application with the following extensions:\n${extensions
@@ -70,20 +77,28 @@
   // Copy the following items into the `working-copy` folder. Make sure to reuse the `yarn.lock`. |
   //----------------------------------------------------------------------------------------------+
   mkdir('-p', path('..', workingCopy));
-  for (const name of [
+  for (const filename of [
     ...allDependencies,
     'yarn.lock',
     'package.json',
     'lerna.json',
     'i18n'
   ]) {
-    cp('-rf', path(rootPath, name), path('..', workingCopy));
+    cp('-rf', path(rootPath, filename), path('..', workingCopy));
+  }
+
+  //---------------------------------------------------------------------------------------------+
+  // Copy the patched `index.js` for the frontend, the Theia preload, etc. from `./electron-app` |
+  //---------------------------------------------------------------------------------------------+
+  for (const filename of foldersToSyncFromDev) {
+    cp('-rf', path('..', workingCopy, 'electron-app', filename), path('..', 'build'));
   }
 
   //----------------------------------------------+
   // Sanity check: all versions must be the same. |
   //----------------------------------------------+
   verifyVersions(allDependencies);
+
   //----------------------------------------------------------------------+
   // Use the nightly patch version if not a release but requires publish. |
   //----------------------------------------------------------------------+
@@ -438,6 +453,12 @@ ${fs.readFileSync(path('..', 'build', 'package.json')).toString()}
     }
   }
 
+  /**
+   * @param {import('fs').PathLike} file
+   * @param {string|undefined} [algorithm="sha512"]
+   * @param {BufferEncoding|undefined} [encoding="base64"]
+   * @param {object|undefined} [options]
+   */
   async function hashFile(
     file,
     algorithm = 'sha512',

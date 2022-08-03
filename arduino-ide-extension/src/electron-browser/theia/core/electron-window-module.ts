@@ -6,10 +6,6 @@ import {
   ElectronMainWindowServiceExt,
   electronMainWindowServiceExtPath,
 } from '../../../electron-common/electron-main-window-service-ext';
-import {
-  SplashService,
-  splashServicePath,
-} from '../../../electron-common/splash-service';
 import { ElectronWindowService } from './electron-window-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -22,11 +18,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         container,
         electronMainWindowServiceExtPath
       )
-    )
-    .inSingletonScope();
-  bind(SplashService)
-    .toDynamicValue(({ container }) =>
-      ElectronIpcConnectionProvider.createProxy(container, splashServicePath)
     )
     .inSingletonScope();
 });

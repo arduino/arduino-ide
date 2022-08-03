@@ -1,18 +1,15 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import {
   app,
   BrowserWindow,
-  BrowserWindowConstructorOptions,
   contentTracing,
   ipcMain,
-  screen,
   Event as ElectronEvent,
 } from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join, dirname } from 'path';
 import * as fs from 'fs-extra';
-import { initSplashScreen } from '../splash/splash-screen';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
@@ -20,7 +17,6 @@ import {
   ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainExecutionParams,
 } from '@theia/core/lib/electron-main/electron-main-application';
-import { SplashServiceImpl } from '../splash/splash-service-impl';
 import { URI } from '@theia/core/shared/vscode-uri';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
@@ -43,14 +39,6 @@ interface WorkspaceOptions {
 const WORKSPACES = 'workspaces';
 
 /**
- * Purely a dev thing. If you start the app with the `--nosplash` argument,
- * then you won't have the splash screen (which is always on top :confused:) and can debug the app at startup.
- * Note: if you start the app from VS Code with the `App (Electron)` config, the splash screen will be disabled.
- */
-const APP_STARTED_WITH_NOSPLASH =
-  typeof process !== 'undefined' && process.argv.indexOf('--nosplash') !== -1;
-
-/**
  * If the app is started with `--open-devtools` argument, the `Dev Tools` will be opened.
  */
 const APP_STARTED_WITH_DEV_TOOLS =
@@ -69,9 +57,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   private startup = false;
   private _firstWindowId: number | undefined;
   private openFilePromise = new Deferred();
-
-  @inject(SplashServiceImpl)
-  private readonly splashService: SplashServiceImpl;
 
   override async start(config: FrontendApplicationConfig): Promise<void> {
     // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
@@ -289,69 +274,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     super.onSecondInstance(event, argv, cwd);
   }
 
-  /**
-   * Use this rather than creating `BrowserWindow` instances from scratch, since some security parameters need to be set, this method will do it.
-   *
-   * @param options
-   */
   override async createWindow(
     asyncOptions: MaybePromise<TheiaBrowserWindowOptions> = this.getDefaultTheiaWindowOptions()
   ): Promise<BrowserWindow> {
-    let options = await asyncOptions;
-    options = this.avoidOverlap(options);
-    let electronWindow: BrowserWindow | undefined;
-    if (this.windows.size || APP_STARTED_WITH_NOSPLASH) {
-      electronWindow = await this.doCreateWindow(options);
-    } else {
-      const { bounds } = screen.getDisplayNearestPoint(
-        screen.getCursorScreenPoint()
-      );
-      const splashHeight = 450;
-      const splashWidth = 600;
-      const splashY = Math.floor(bounds.y + (bounds.height - splashHeight) / 2);
-      const splashX = Math.floor(bounds.x + (bounds.width - splashWidth) / 2);
-      const splashScreenOpts: BrowserWindowConstructorOptions = {
-        height: splashHeight,
-        width: splashWidth,
-        x: splashX,
-        y: splashY,
-        transparent: true,
-        alwaysOnTop: true,
-        focusable: false,
-        minimizable: false,
-        maximizable: false,
-        hasShadow: false,
-        resizable: false,
-      };
-      electronWindow = await initSplashScreen(
-        {
-          windowOpts: options,
-          templateUrl: join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            'src',
-            'electron-main',
-            'splash',
-            'static',
-            'splash.html'
-          ),
-          delay: 0,
-          minVisible: 2000,
-          splashScreenOpts,
-        },
-        (windowOptions) => this.doCreateWindow(windowOptions),
-        this.splashService.onCloseRequested
-      );
-    }
-    return electronWindow;
-  }
-
-  private async doCreateWindow(
-    options: TheiaBrowserWindowOptions
-  ): Promise<BrowserWindow> {
-    const electronWindow = await super.createWindow(options);
+    const electronWindow = await super.createWindow(asyncOptions);
     if (APP_STARTED_WITH_DEV_TOOLS) {
       electronWindow.webContents.openDevTools();
     }
