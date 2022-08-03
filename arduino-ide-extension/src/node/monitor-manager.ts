@@ -58,7 +58,7 @@ export class MonitorManager extends CoreClientAware {
    * combination specified, false in all other cases.
    */
   isStarted(board: Board, port: Port): boolean {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
     const monitor = this.monitorServices.get(monitorID);
     if (monitor) {
       return monitor.isStarted();
@@ -106,7 +106,7 @@ export class MonitorManager extends CoreClientAware {
     port: Port,
     connectToClient: (status: Status) => void
   ): Promise<void> {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
 
     let monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
@@ -138,7 +138,7 @@ export class MonitorManager extends CoreClientAware {
    * @param port port monitored
    */
   async stopMonitor(board: Board, port: Port): Promise<void> {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       // There's no monitor to stop, bail
@@ -155,7 +155,7 @@ export class MonitorManager extends CoreClientAware {
    * @returns port of the MonitorService's WebSocket
    */
   getWebsocketAddressPort(board: Board, port: Port): number {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       return -1;
@@ -168,17 +168,17 @@ export class MonitorManager extends CoreClientAware {
    * that an upload process started on that exact board/port combination.
    * This must be done so that we can stop the monitor for the time being
    * until the upload process finished.
-   * @param board board connected to port
+   * @param fqbn the FQBN of the board connected to port
    * @param port port to monitor
    */
-  async notifyUploadStarted(board?: Board, port?: Port): Promise<void> {
-    if (!board || !port) {
+  async notifyUploadStarted(fqbn?: string, port?: Port): Promise<void> {
+    if (!fqbn || !port) {
       // We have no way of knowing which monitor
       // to retrieve if we don't have this information.
       return;
     }
 
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(fqbn, port);
     this.addToMonitorIDsByUploadState('uploadInProgress', monitorID);
 
     const monitor = this.monitorServices.get(monitorID);
@@ -194,19 +194,22 @@ export class MonitorManager extends CoreClientAware {
   /**
    * Notifies the monitor service of that board/port combination
    * that an upload process started on that exact board/port combination.
-   * @param board board connected to port
+   * @param fqbn the FQBN of the board connected to port
    * @param port port to monitor
    * @returns a Status object to know if the process has been
    * started or if there have been errors.
    */
-  async notifyUploadFinished(board?: Board, port?: Port): Promise<Status> {
+  async notifyUploadFinished(
+    fqbn?: string | undefined,
+    port?: Port
+  ): Promise<Status> {
     let status: Status = Status.NOT_CONNECTED;
     let portDidChangeOnUpload = false;
 
     // We have no way of knowing which monitor
     // to retrieve if we don't have this information.
-    if (board && port) {
-      const monitorID = this.monitorID(board, port);
+    if (fqbn && port) {
+      const monitorID = this.monitorID(fqbn, port);
       this.removeFromMonitorIDsByUploadState('uploadInProgress', monitorID);
 
       const monitor = this.monitorServices.get(monitorID);
@@ -277,7 +280,7 @@ export class MonitorManager extends CoreClientAware {
     port: Port,
     settings: PluggableMonitorSettings
   ) {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
     let monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       monitor = this.createMonitor(board, port);
@@ -296,7 +299,7 @@ export class MonitorManager extends CoreClientAware {
     board: Board,
     port: Port
   ): Promise<MonitorSettings> {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
     const monitor = this.monitorServices.get(monitorID);
     if (!monitor) {
       return {};
@@ -312,7 +315,7 @@ export class MonitorManager extends CoreClientAware {
    * @returns a new instance of MonitorService ready to use.
    */
   private createMonitor(board: Board, port: Port): MonitorService {
-    const monitorID = this.monitorID(board, port);
+    const monitorID = this.monitorID(board.fqbn, port);
     const monitor = this.monitorServiceFactory({
       board,
       port,
@@ -341,12 +344,12 @@ export class MonitorManager extends CoreClientAware {
 
   /**
    * Utility function to create a unique ID for a monitor service.
-   * @param board
+   * @param fqbn
    * @param port
    * @returns a unique monitor ID
    */
-  private monitorID(board: Board, port: Port): MonitorID {
-    const splitFqbn = board?.fqbn?.split(':') || [];
+  private monitorID(fqbn: string | undefined, port: Port): MonitorID {
+    const splitFqbn = fqbn?.split(':') || [];
     const shortenedFqbn = splitFqbn.slice(0, 3).join(':') || '';
     return `${shortenedFqbn}-${port.address}-${port.protocol}`;
   }
