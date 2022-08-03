@@ -41,7 +41,7 @@ The _frontend_ is running as an Electron renderer process and can invoke service
 
 If you’re familiar with TypeScript, the [Theia IDE](https://theia-ide.org/), and if you want to contribute to the
 project, you should be able to build the Arduino IDE locally.
-Please refer to the [Theia IDE prerequisites](https://github.com/theia-ide/theia/blob/master/doc/) documentation for the setup instructions.
+Please refer to the [Theia IDE prerequisites](https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#prerequisites) documentation for the setup instructions.
 > **Note**: Node.js 14 must be used instead of the version 12 recommended at the link above.
 
 Once you have all the tools installed, you can build the editor following these steps
@@ -88,7 +88,6 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
    ```sh
     git push origin 1.2.3
    ```
-
 
 ## Notes for macOS contributors
 Beginning in macOS 10.14.5, the software [must be notarized to run](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution). The signing and notarization processes for the Arduino IDE are managed by our Continuous Integration (CI) workflows, implemented with GitHub Actions. On every push and pull request, the Arduino IDE is built and saved to a workflow artifact. These artifacts can be used by contributors and beta testers who don't want to set up a build system locally.
