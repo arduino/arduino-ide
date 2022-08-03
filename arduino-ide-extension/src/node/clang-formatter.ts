@@ -1,3 +1,4 @@
+import * as os from 'os';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -123,10 +124,23 @@ function toClangOptions(
 
 // See: https://releases.llvm.org/11.0.1/tools/clang/docs/ClangFormatStyleOptions.html
 export function style({ TabWidth, UseTab }: ClangFormatOptions): string {
-  return JSON.stringify(styleJson({ TabWidth, UseTab })).replace(
+  let styleArgument = JSON.stringify(styleJson({ TabWidth, UseTab })).replace(
     /[\\"]/g,
     '\\$&'
   );
+  if (os.platform() === 'win32') {
+    // Windows command interpreter does not use backslash escapes. This causes the argument to have alternate quoted and
+    // unquoted sections.
+    // Special characters in the unquoted sections must be caret escaped.
+    const styleArgumentSplit = styleArgument.split('"');
+    for (let i = 1; i < styleArgumentSplit.length; i += 2) {
+      styleArgumentSplit[i] = styleArgumentSplit[i].replace(/[<>^|]/g, '^$&');
+    }
+
+    styleArgument = styleArgumentSplit.join('"');
+  }
+
+  return styleArgument;
 }
 
 function styleJson({
