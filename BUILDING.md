@@ -89,6 +89,18 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
     git push origin 1.2.3
    ```
 
+## Notes for Linux contributors
+These are based on a XUbuntu 22.04 LTS system.
+You will need the following dependencies:
+
+ - Nodejs-14.0 or up
+ - Dependencies for node-native-keymap:
+
+```sudo apt-get install -y g++ gcc make python2.7 pkg-config libx11-dev libxkbfile-dev libsecret-1-dev```
+
+Source:  https://stackoverflow.com/a/55878577
+
+Yarn will then download additional dependencies automatically and start the build process. The initial setup and build with yarn takes less than 5 minutes on an AMD Athlon 200GE.
 
 ## Notes for macOS contributors
 Beginning in macOS 10.14.5, the software [must be notarized to run](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution). The signing and notarization processes for the Arduino IDE are managed by our Continuous Integration (CI) workflows, implemented with GitHub Actions. On every push and pull request, the Arduino IDE is built and saved to a workflow artifact. These artifacts can be used by contributors and beta testers who don't want to set up a build system locally.
