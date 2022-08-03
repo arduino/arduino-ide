@@ -23,7 +23,7 @@ import {
   UploadUsingProgrammerResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { ResponseService } from '../common/protocol/response-service';
-import { Board, OutputMessage, Port, Status } from '../common/protocol';
+import { OutputMessage, Port, Status } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Port as GrpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
@@ -376,23 +376,23 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }
 
   private async notifyUploadWillStart({
-    board,
+    fqbn,
     port,
   }: {
-    board?: Board | undefined;
+    fqbn?: string | undefined;
     port?: Port | undefined;
   }): Promise<void> {
-    return this.monitorManager.notifyUploadStarted(board, port);
+    return this.monitorManager.notifyUploadStarted(fqbn, port);
   }
 
   private async notifyUploadDidFinish({
-    board,
+    fqbn,
     port,
   }: {
-    board?: Board | undefined;
+    fqbn?: string | undefined;
     port?: Port | undefined;
   }): Promise<Status> {
-    return this.monitorManager.notifyUploadFinished(board, port);
+    return this.monitorManager.notifyUploadFinished(fqbn, port);
   }
 
   private mergeSourceOverrides(
