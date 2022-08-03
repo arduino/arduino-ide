@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
@@ -6,19 +10,27 @@ import {
   ConnectionStatusService,
 } from '@theia/core/lib/browser/connection-status-service';
 import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
-import { SplashService } from '../electron-common/splash-service';
+import { SplashService } from '../../../electron-common/splash-service';
 import { nls } from '@theia/core/lib/common';
+import { WindowServiceExt } from '../../../browser/theia/core/window-service-ext';
+import { ElectronMainWindowServiceExt } from '../../../electron-common/electron-main-window-service-ext';
 
 @injectable()
-export class ElectronWindowService extends TheiaElectronWindowService {
+export class ElectronWindowService
+  extends TheiaElectronWindowService
+  implements WindowServiceExt
+{
   @inject(ConnectionStatusService)
-  protected readonly connectionStatusService: ConnectionStatusService;
+  private readonly connectionStatusService: ConnectionStatusService;
 
   @inject(SplashService)
-  protected readonly splashService: SplashService;
+  private readonly splashService: SplashService;
 
   @inject(FrontendApplicationStateService)
-  protected readonly appStateService: FrontendApplicationStateService;
+  private readonly appStateService: FrontendApplicationStateService;
+
+  @inject(ElectronMainWindowServiceExt)
+  private readonly mainWindowServiceExt: ElectronMainWindowServiceExt;
 
   @postConstruct()
   protected override init(): void {
@@ -54,5 +66,16 @@ export class ElectronWindowService extends TheiaElectronWindowService {
       detail,
     });
     return response === 0; // 'Yes', close the window.
+  }
+
+  private _firstWindow: boolean | undefined;
+  async isFirstWindow(): Promise<boolean> {
+    if (this._firstWindow === undefined) {
+      const windowId = remote.getCurrentWindow().id; // This is expensive and synchronous so we check it once per FE.
+      this._firstWindow = await this.mainWindowServiceExt.isFirstWindow(
+        windowId
+      );
+    }
+    return this._firstWindow;
   }
 }

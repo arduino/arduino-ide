@@ -1,31 +1,31 @@
-import { ContainerModule } from '@theia/core/shared/inversify';
 import { JsonRpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
-import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
 import { ElectronMainWindowService } from '@theia/core/lib/electron-common/electron-main-window-service';
+import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
 import {
   ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainApplicationContribution,
 } from '@theia/core/lib/electron-main/electron-main-application';
-import {
-  SplashService,
-  splashServicePath,
-} from '../electron-common/splash-service';
-import { SplashServiceImpl } from './splash/splash-service-impl';
-import { ElectronMainApplication } from './theia/electron-main-application';
-import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
+import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
+import { ContainerModule } from '@theia/core/shared/inversify';
 import {
   IDEUpdater,
   IDEUpdaterClient,
   IDEUpdaterPath,
 } from '../common/protocol/ide-updater';
-import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
-import { TheiaElectronWindow } from './theia/theia-electron-window';
-import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
-import { SurveyNotificationServiceImpl } from '../node/survey-service-impl';
 import {
-  SurveyNotificationService,
-  SurveyNotificationServicePath,
-} from '../common/protocol/survey-service';
+  ElectronMainWindowServiceExt,
+  electronMainWindowServiceExtPath,
+} from '../electron-common/electron-main-window-service-ext';
+import {
+  SplashService,
+  splashServicePath,
+} from '../electron-common/splash-service';
+import { ElectronMainWindowServiceExtImpl } from './electron-main-window-service-ext-impl';
+import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
+import { SplashServiceImpl } from './splash/splash-service-impl';
+import { ElectronMainApplication } from './theia/electron-main-application';
+import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
+import { TheiaElectronWindow } from './theia/theia-electron-window';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMainApplication).toSelf().inSingletonScope();
@@ -67,19 +67,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(TheiaElectronWindow).toSelf();
   rebind(DefaultTheiaElectronWindow).toService(TheiaElectronWindow);
 
-  // Survey notification bindings
-  bind(SurveyNotificationServiceImpl).toSelf().inSingletonScope();
-  bind(SurveyNotificationService).toService(SurveyNotificationServiceImpl);
-  bind(ElectronMainApplicationContribution).toService(
-    SurveyNotificationService
-  );
+  bind(ElectronMainWindowServiceExt)
+    .to(ElectronMainWindowServiceExtImpl)
+    .inSingletonScope();
   bind(ElectronConnectionHandler)
     .toDynamicValue(
       (context) =>
-        new JsonRpcConnectionHandler(SurveyNotificationServicePath, () =>
-          context.container.get<SurveyNotificationService>(
-            SurveyNotificationService
-          )
+        new JsonRpcConnectionHandler(electronMainWindowServiceExtPath, () =>
+          context.container.get(ElectronMainWindowServiceExt)
         )
     )
     .inSingletonScope();

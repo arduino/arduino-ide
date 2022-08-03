@@ -104,6 +104,11 @@ import { ClangFormatter } from './clang-formatter';
 import { FormatterPath } from '../common/protocol/formatter';
 import { LocalizationBackendContribution } from './i18n/localization-backend-contribution';
 import { LocalizationBackendContribution as TheiaLocalizationBackendContribution } from '@theia/core/lib/node/i18n/localization-backend-contribution';
+import { SurveyNotificationServiceImpl } from './survey-service-impl';
+import {
+  SurveyNotificationService,
+  SurveyNotificationServicePath,
+} from '../common/protocol/survey-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -401,4 +406,17 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaLocalizationBackendContribution).toService(
     LocalizationBackendContribution
   );
+
+  // Survey notification bindings
+  // It's currently unused. https://github.com/arduino/arduino-ide/pull/1150
+  bind(SurveyNotificationServiceImpl).toSelf().inSingletonScope();
+  bind(SurveyNotificationService).toService(SurveyNotificationServiceImpl);
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      ({ container }) =>
+        new JsonRpcConnectionHandler(SurveyNotificationServicePath, () =>
+          container.get<SurveyNotificationService>(SurveyNotificationService)
+        )
+    )
+    .inSingletonScope();
 });

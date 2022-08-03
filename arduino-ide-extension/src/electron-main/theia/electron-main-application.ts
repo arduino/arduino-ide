@@ -66,11 +66,12 @@ const APP_STARTED_WITH_CONTENT_TRACE =
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
-  protected startup = false;
-  protected openFilePromise = new Deferred();
+  private startup = false;
+  private _firstWindowId: number | undefined;
+  private openFilePromise = new Deferred();
 
   @inject(SplashServiceImpl)
-  protected readonly splashService: SplashServiceImpl;
+  private readonly splashService: SplashServiceImpl;
 
   override async start(config: FrontendApplicationConfig): Promise<void> {
     // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
@@ -142,7 +143,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     })();
   }
 
-  attachFileAssociations() {
+  private attachFileAssociations(): void {
     // OSX: register open-file event
     if (os.isOSX) {
       app.on('open-file', async (event, uri) => {
@@ -158,7 +159,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected async isValidSketchPath(uri: string): Promise<boolean | undefined> {
+  private async isValidSketchPath(uri: string): Promise<boolean | undefined> {
     return typeof uri === 'string' && (await fs.pathExists(uri));
   }
 
@@ -201,7 +202,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected async launchFromArgs(
+  private async launchFromArgs(
     params: ElectronMainExecutionParams
   ): Promise<boolean> {
     // Copy to prevent manipulation of original array
@@ -223,7 +224,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return false;
   }
 
-  protected async openSketch(
+  private async openSketch(
     workspace: WorkspaceOptions | string
   ): Promise<BrowserWindow> {
     const options = await this.getLastWindowOptions();
@@ -257,7 +258,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   protected override getTitleBarStyle(
-    config: FrontendApplicationConfig
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _config: FrontendApplicationConfig
   ): 'native' | 'custom' {
     return 'native';
   }
@@ -354,6 +356,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       electronWindow.webContents.openDevTools();
     }
     this.attachListenersToWindow(electronWindow);
+    if (this._firstWindowId === undefined) {
+      this._firstWindowId = electronWindow.id;
+    }
     return electronWindow;
   }
 
@@ -389,7 +394,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           });
           event.newGuest = new BrowserWindow(options);
           event.newGuest.setMenu(null);
-          event.newGuest?.on('closed', (e: any) => {
+          event.newGuest?.on('closed', () => {
             electronWindow?.webContents.send('CLOSE_CHILD_WINDOW');
           });
           event.newGuest?.loadURL(url);
@@ -462,9 +467,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected closedWorkspaces: WorkspaceOptions[] = [];
+  private closedWorkspaces: WorkspaceOptions[] = [];
 
-  protected attachClosedWorkspace(window: BrowserWindow): void {
+  private attachClosedWorkspace(window: BrowserWindow): void {
     // Since the `before-quit` event is only fired when closing the *last* window
     // We need to keep track of recently closed windows/workspaces manually
     window.on('close', () => {
@@ -521,5 +526,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
   get browserWindows(): BrowserWindow[] {
     return Array.from(this.windows.values()).map(({ window }) => window);
+  }
+
+  get firstWindowId(): number | undefined {
+    return this._firstWindowId;
   }
 }
