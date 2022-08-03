@@ -1,17 +1,15 @@
+import * as remote from '@theia/core/electron-shared/@electron/remote';
+import {
+  ConnectionStatus,
+  ConnectionStatusService,
+} from '@theia/core/lib/browser/connection-status-service';
+import { nls } from '@theia/core/lib/common';
+import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
 import {
   inject,
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import {
-  ConnectionStatus,
-  ConnectionStatusService,
-} from '@theia/core/lib/browser/connection-status-service';
-import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
-import { SplashService } from '../../../electron-common/splash-service';
-import { nls } from '@theia/core/lib/common';
 import { WindowServiceExt } from '../../../browser/theia/core/window-service-ext';
 import { ElectronMainWindowServiceExt } from '../../../electron-common/electron-main-window-service-ext';
 
@@ -23,20 +21,14 @@ export class ElectronWindowService
   @inject(ConnectionStatusService)
   private readonly connectionStatusService: ConnectionStatusService;
 
-  @inject(SplashService)
-  private readonly splashService: SplashService;
-
-  @inject(FrontendApplicationStateService)
-  private readonly appStateService: FrontendApplicationStateService;
-
   @inject(ElectronMainWindowServiceExt)
   private readonly mainWindowServiceExt: ElectronMainWindowServiceExt;
 
   @postConstruct()
   protected override init(): void {
-    this.appStateService
-      .reachedAnyState('initialized_layout')
-      .then(() => this.splashService.requestClose());
+    // NOOP
+    // Does not listen on Theia's `window.zoomLevel` changes.
+    // TODO: IDE2 must switch to the Theia preferences and drop the custom one.
   }
 
   protected shouldUnload(): boolean {

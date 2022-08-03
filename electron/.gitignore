@@ -16,3 +16,7 @@ electron-builder.env
 
 # The generated `package.json` under the `build` folder.
 build/package.json
+
+# Resources the packager copies from dev to prod
+build/resources/preload.html
+build/patch/frontend/index.js

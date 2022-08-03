@@ -16,13 +16,8 @@ import {
   ElectronMainWindowServiceExt,
   electronMainWindowServiceExtPath,
 } from '../electron-common/electron-main-window-service-ext';
-import {
-  SplashService,
-  splashServicePath,
-} from '../electron-common/splash-service';
 import { ElectronMainWindowServiceExtImpl } from './electron-main-window-service-ext-impl';
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
-import { SplashServiceImpl } from './splash/splash-service-impl';
 import { ElectronMainApplication } from './theia/electron-main-application';
 import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
 import { TheiaElectronWindow } from './theia/theia-electron-window';
@@ -33,17 +28,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(ElectronMainWindowServiceImpl).toSelf().inSingletonScope();
   rebind(ElectronMainWindowService).toService(ElectronMainWindowServiceImpl);
-
-  bind(SplashServiceImpl).toSelf().inSingletonScope();
-  bind(SplashService).toService(SplashServiceImpl);
-  bind(ElectronConnectionHandler)
-    .toDynamicValue(
-      (context) =>
-        new JsonRpcConnectionHandler(splashServicePath, () =>
-          context.container.get(SplashService)
-        )
-    )
-    .inSingletonScope();
 
   // IDE updater bindings
   bind(IDEUpdaterImpl).toSelf().inSingletonScope();

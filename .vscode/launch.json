@@ -20,7 +20,6 @@
         "--no-app-auto-install",
         "--plugins=local-dir:../plugins",
         "--hosted-plugin-inspect=9339",
-        "--nosplash",
         "--content-trace",
         "--open-devtools"
       ],
