@@ -2,9 +2,11 @@ div#select-board-dialog {
   margin: 5px;
 }
 
-div#select-board-dialog .selectBoardContainer .body {
+div#select-board-dialog .selectBoardContainer {
   display: flex;
+  gap: 10px;
   overflow: hidden;
+  max-height: 100%;
 }
 
 .select-board-dialog .head {
@@ -19,12 +21,13 @@ div.dialogContent.select-board-dialog > div.head .title {
   margin-bottom: 10px;
 }
 
-div#select-board-dialog .selectBoardContainer .body .list .item.selected {
+
+div#select-board-dialog .selectBoardContainer .list .item.selected {
   background: var(--theia-secondaryButton-hoverBackground);
 }
 
-div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
-  color: var(--theia-list-activeSelectionIconForeground);
+div#select-board-dialog .selectBoardContainer .list .item.selected i {
+  color: var(--theia-arduino-branding-primary);
 }
 
 #select-board-dialog .selectBoardContainer .search,
@@ -34,7 +37,7 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   background: var(--theia-editor-background);
 }
 
-#select-board-dialog .selectBoardContainer .body .search input {
+#select-board-dialog .selectBoardContainer .search input {
   border: none;
   width: 100%;
   height: auto;
@@ -46,58 +49,63 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   color: var(--theia-input-foreground);
 }
 
-#select-board-dialog .selectBoardContainer .body .search input:focus {
+#select-board-dialog .selectBoardContainer .search input:focus {
   box-shadow: none;
 }
 
-#select-board-dialog .selectBoardContainer .body .container {
+#select-board-dialog .selectBoardContainer .container {
   flex: 1;
-  padding: 0px 10px 0px 0px;
-  min-width: 240px;
-  max-width: 240px;
+  overflow: hidden;
+  max-height: 100%;
 }
 
-#select-board-dialog .selectBoardContainer .body .left.container .content {
+#select-board-dialog .selectBoardContainer .container .content {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+#select-board-dialog .selectBoardContainer .left.container .content {
   margin: 0 5px 0 0;
 }
 
-#select-board-dialog .selectBoardContainer .body .right.container .content {
+#select-board-dialog .selectBoardContainer .right.container .content {
   margin: 0 0 0 5px;
 }
 
-#select-board-dialog .selectBoardContainer .body .container .content .title {
+#select-board-dialog .selectBoardContainer .container .content .title {
   color: var(--theia-editorWidget-foreground);
   padding: 0px 0px 10px 0px;
   text-transform: uppercase;
 }
 
-#select-board-dialog .selectBoardContainer .body .container .content .footer {
+#select-board-dialog .selectBoardContainer .container .content .footer {
   padding: 10px 5px 10px 0px;
 }
 
-#select-board-dialog .selectBoardContainer .body .container .content .loading {
+#select-board-dialog .selectBoardContainer .container .content .loading {
   font-size: var(--theia-ui-font-size1);
   color: var(--theia-editorWidget-foreground);
   padding: 10px 5px 10px 10px;
   text-transform: uppercase;
-  /* The max, min-height comes from `.body .list` 200px + 47px top padding - 2 * 10px top padding */
+  /* The max, min-height comes from `.list` 200px + 47px top padding - 2 * 10px top padding */
   max-height: 227px;
   min-height: 227px;
 }
 
-#select-board-dialog .selectBoardContainer .body .list .item {
+#select-board-dialog .selectBoardContainer .list .item {
   padding: 10px 5px 10px 10px;
   display: flex;
-  justify-content: end;
   white-space: nowrap;
   overflow-x: hidden;
+  flex: 1 0;
 }
 
-#select-board-dialog .selectBoardContainer .body .list .item .selected-icon {
+#select-board-dialog .selectBoardContainer .list .item .selected-icon {
   margin-left: auto;
 }
 
-#select-board-dialog .selectBoardContainer .body .list .item .details {
+#select-board-dialog .selectBoardContainer .list .item .details {
   font-size: var(--theia-ui-font-size1);
   opacity: var(--theia-mod-disabled-opacity);
   width: 155px; /* used heuristics for the calculation */
@@ -106,41 +114,34 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
   text-overflow: ellipsis;
 }
 
-#select-board-dialog .selectBoardContainer .body .list .item.missing {
+#select-board-dialog .selectBoardContainer .list .item.missing {
   opacity: var(--theia-mod-disabled-opacity);
 }
 
-#select-board-dialog .selectBoardContainer .body .list .item:hover {
+#select-board-dialog .selectBoardContainer .list .item:hover {
   background: var(--theia-secondaryButton-hoverBackground);
 }
 
-#select-board-dialog .selectBoardContainer .body .list .label {
-  max-width: 215px;
-  width: 215px;
+#select-board-dialog .selectBoardContainer .list .label {
   white-space: pre;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-#select-board-dialog .selectBoardContainer .body .list {
+#select-board-dialog .selectBoardContainer .list {
   max-height: 200px;
-  min-height: 200px;
   overflow-y: auto;
 }
 
-#select-board-dialog .selectBoardContainer .body .ports.list {
+#select-board-dialog .selectBoardContainer .ports.list {
   margin: 47px 0px 0px 0px; /* 47 is 37 as input height for the `Boards`, plus 10 margin bottom. */
 }
 
-#select-board-dialog .selectBoardContainer .body .search {
+#select-board-dialog .selectBoardContainer .search {
   margin-bottom: 10px;
   display: flex;
   align-items: center;
   padding-right: 5px;
-}
-
-.p-Widget.dialogOverlay .dialogContent.select-board-dialog {
-  width: 500px;
 }
 
 .arduino-boards-toolbar-item-container {
@@ -264,10 +265,20 @@ div#select-board-dialog .selectBoardContainer .body .list .item.selected i {
 
 /* High Contrast Theme rules */
 /* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
-.hc-black.hc-theia.theia-hc #select-board-dialog .selectBoardContainer .body .list .item:hover {
+.hc-black.hc-theia.theia-hc #select-board-dialog .selectBoardContainer .list .item:hover {
   outline: 1px dashed var(--theia-focusBorder);
 }
 
-.hc-black.hc-theia.theia-hc div#select-board-dialog .selectBoardContainer .body .list .item.selected {
+.hc-black.hc-theia.theia-hc div#select-board-dialog .selectBoardContainer .list .item.selected {
   outline: 1px solid var(--theia-focusBorder);
+}
+
+@media only screen and (max-height: 400px) {
+  div.dialogContent.select-board-dialog > div.head {
+    display: none;
+  }
+
+  #select-board-dialog .selectBoardContainer .container .content .title {
+    display: none;
+  }
 }

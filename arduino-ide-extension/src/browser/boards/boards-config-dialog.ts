@@ -1,4 +1,8 @@
-import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import {
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { DialogProps, Widget, DialogError } from '@theia/core/lib/browser';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
@@ -28,7 +32,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     @inject(BoardsConfigDialogProps)
     protected override readonly props: BoardsConfigDialogProps
   ) {
-    super(props);
+    super({ ...props, maxWidth: 500 });
 
     this.contentNode.classList.add('select-board-dialog');
     this.contentNode.appendChild(this.createDescription());
@@ -64,14 +68,6 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
   protected createDescription(): HTMLElement {
     const head = document.createElement('div');
     head.classList.add('head');
-
-    const title = document.createElement('div');
-    title.textContent = nls.localize(
-      'arduino/board/configDialogTitle',
-      'Select Other Board & Port'
-    );
-    title.classList.add('title');
-    head.appendChild(title);
 
     const text = document.createElement('div');
     text.classList.add('text');

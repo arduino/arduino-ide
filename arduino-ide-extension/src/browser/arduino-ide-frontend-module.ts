@@ -453,7 +453,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
   bind(BoardsConfigDialog).toSelf().inSingletonScope();
   bind(BoardsConfigDialogProps).toConstantValue({
-    title: nls.localize('arduino/common/selectBoard', 'Select Board'),
+    title: nls.localize(
+      'arduino/board/boardConfigDialogTitle',
+      'Select other board and port'
+    ),
   });
 
   // Core service
