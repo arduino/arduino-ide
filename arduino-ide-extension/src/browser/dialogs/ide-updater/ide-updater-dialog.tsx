@@ -130,6 +130,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
         'Software Update'
       ),
     });
+    this.node.id = 'ide-updater-dialog-container';
     this.contentNode.classList.add('ide-updater-dialog');
     this.acceptButton = undefined;
   }

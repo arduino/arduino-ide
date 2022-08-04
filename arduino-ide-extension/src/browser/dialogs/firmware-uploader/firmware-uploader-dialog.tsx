@@ -101,6 +101,7 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     protected override readonly props: UploadFirmwareDialogProps
   ) {
     super({ title: UploadFirmware.Commands.OPEN.label || '' });
+    this.node.id = 'firmware-uploader-dialog-container';
     this.contentNode.classList.add('firmware-uploader-dialog');
     this.acceptButton = undefined;
   }

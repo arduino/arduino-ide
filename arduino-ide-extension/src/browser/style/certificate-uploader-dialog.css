@@ -1,4 +1,4 @@
-.certificate-uploader-dialog {
+#certificate-uploader-dialog-container > .dialogBlock {
   width: 600px;
 }
 

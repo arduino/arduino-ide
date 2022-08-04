@@ -1,4 +1,4 @@
-.ide-updater-dialog {
+#ide-updater-dialog-container > .dialogBlock {
   width: 546px;
 }
 
@@ -24,6 +24,8 @@
   .ide-updater-dialog--content
   .ide-updater-dialog--new-version-text.dialogSection {
   margin-top: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .ide-updater-dialog .changelog-container {

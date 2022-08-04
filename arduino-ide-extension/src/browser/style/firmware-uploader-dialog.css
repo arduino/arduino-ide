@@ -1,4 +1,4 @@
-.firmware-uploader-dialog {
+#firmware-uploader-dialog-container > .dialogBlock {
   width: 600px;
 }
 
@@ -11,7 +11,6 @@
 }
 
 .firmware-uploader-dialog .dialogRow > button{
-  width: 33%;
   margin-right: 3px;
 }
 
