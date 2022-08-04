@@ -58,7 +58,10 @@ export class SaveAsSketch extends SketchContribution {
       markAsRecentlyOpened,
     }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
   ): Promise<boolean> {
-    const sketch = await this.sketchServiceClient.currentSketch();
+    const [sketch, configuration] = await Promise.all([
+      this.sketchServiceClient.currentSketch(),
+      this.configService.getConfiguration(),
+    ]);
     if (!CurrentSketch.isValid(sketch)) {
       return false;
     }
@@ -68,15 +71,23 @@ export class SaveAsSketch extends SketchContribution {
       return false;
     }
 
+    const sketchUri = new URI(sketch.uri);
+    const sketchbookDirUri = new URI(configuration.sketchDirUri);
+    // If the sketch is temp, IDE2 proposes the default sketchbook folder URI.
+    // If the sketch is not temp, but not contained in the default sketchbook folder, IDE2 proposes the default location.
+    // Otherwise, it proposes the parent folder of the current sketch.
+    const containerDirUri = isTemp
+      ? sketchbookDirUri
+      : !sketchbookDirUri.isEqualOrParent(sketchUri)
+      ? sketchbookDirUri
+      : sketchUri.parent;
+    const exists = await this.fileService.exists(
+      containerDirUri.resolve(sketch.name)
+    );
+
     // If target does not exist, propose a `directories.user`/${sketch.name} path
     // If target exists, propose `directories.user`/${sketch.name}_copy_${yyyymmddHHMMss}
-    const sketchDirUri = new URI(
-      (await this.configService.getConfiguration()).sketchDirUri
-    );
-    const exists = await this.fileService.exists(
-      sketchDirUri.resolve(sketch.name)
-    );
-    const defaultUri = sketchDirUri.resolve(
+    const defaultUri = containerDirUri.resolve(
       exists
         ? `${sketch.name}_copy_${dateFormat(new Date(), 'yyyymmddHHMMss')}`
         : sketch.name
