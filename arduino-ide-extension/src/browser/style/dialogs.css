@@ -9,11 +9,13 @@
        total = padding + margin = 96px
     */
     max-width: calc(100% - 96px) !important;
+    min-width: unset;
+    max-height: 560px;
     padding: 0 28px;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogTitle {
-    padding: 36px 0 28px;
+    padding: 20px 0;
     font-weight: 500;
     background-color: transparent;
     font-size: var(--theia-ui-font-size2);
@@ -28,6 +30,7 @@
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent {
     padding: 0;
+    overflow: auto;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent > input {
@@ -74,4 +77,11 @@
 
 .fa.disabled {
     opacity: .4;
+}
+
+
+@media only screen and (max-height: 560px) {
+    .p-Widget.dialogOverlay .dialogBlock {
+        max-height: 400px;
+    }
 }
