@@ -28,7 +28,7 @@ export class ArchiveSketch extends SketchContribution {
     });
   }
 
-  protected async archiveSketch(): Promise<void> {
+  private async archiveSketch(): Promise<void> {
     const [sketch, config] = await Promise.all([
       this.sketchServiceClient.currentSketch(),
       this.configService.getConfiguration(),
@@ -43,13 +43,16 @@ export class ArchiveSketch extends SketchContribution {
     const defaultPath = await this.fileService.fsPath(
       new URI(config.sketchDirUri).resolve(archiveBasename)
     );
-    const { filePath, canceled } = await remote.dialog.showSaveDialog({
-      title: nls.localize(
-        'arduino/sketch/saveSketchAs',
-        'Save sketch folder as...'
-      ),
-      defaultPath,
-    });
+    const { filePath, canceled } = await remote.dialog.showSaveDialog(
+      remote.getCurrentWindow(),
+      {
+        title: nls.localize(
+          'arduino/sketch/saveSketchAs',
+          'Save sketch folder as...'
+        ),
+        defaultPath,
+      }
+    );
     if (!filePath || canceled) {
       return;
     }

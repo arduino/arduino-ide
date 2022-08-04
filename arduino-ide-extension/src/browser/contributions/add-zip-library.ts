@@ -17,13 +17,13 @@ import { nls } from '@theia/core/lib/common';
 @injectable()
 export class AddZipLibrary extends SketchContribution {
   @inject(EnvVariablesServer)
-  protected readonly envVariableServer: EnvVariablesServer;
+  private readonly envVariableServer: EnvVariablesServer;
 
   @inject(ResponseServiceClient)
-  protected readonly responseService: ResponseServiceClient;
+  private readonly responseService: ResponseServiceClient;
 
   @inject(LibraryService)
-  protected readonly libraryService: LibraryService;
+  private readonly libraryService: LibraryService;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddZipLibrary.Commands.ADD_ZIP_LIBRARY, {
@@ -43,23 +43,26 @@ export class AddZipLibrary extends SketchContribution {
     });
   }
 
-  async addZipLibrary(): Promise<void> {
+  private async addZipLibrary(): Promise<void> {
     const homeUri = await this.envVariableServer.getHomeDirUri();
     const defaultPath = await this.fileService.fsPath(new URI(homeUri));
-    const { canceled, filePaths } = await remote.dialog.showOpenDialog({
-      title: nls.localize(
-        'arduino/selectZip',
-        "Select a zip file containing the library you'd like to add"
-      ),
-      defaultPath,
-      properties: ['openFile'],
-      filters: [
-        {
-          name: nls.localize('arduino/library/zipLibrary', 'Library'),
-          extensions: ['zip'],
-        },
-      ],
-    });
+    const { canceled, filePaths } = await remote.dialog.showOpenDialog(
+      remote.getCurrentWindow(),
+      {
+        title: nls.localize(
+          'arduino/selectZip',
+          "Select a zip file containing the library you'd like to add"
+        ),
+        defaultPath,
+        properties: ['openFile'],
+        filters: [
+          {
+            name: nls.localize('arduino/library/zipLibrary', 'Library'),
+            extensions: ['zip'],
+          },
+        ],
+      }
+    );
     if (!canceled && filePaths.length) {
       const zipUri = await this.fileSystemExt.getUri(filePaths[0]);
       try {

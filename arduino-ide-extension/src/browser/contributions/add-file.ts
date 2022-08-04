@@ -15,7 +15,7 @@ import { CurrentSketch } from '../../common/protocol/sketches-service-client-imp
 @injectable()
 export class AddFile extends SketchContribution {
   @inject(FileDialogService)
-  protected readonly fileDialogService: FileDialogService;
+  private readonly fileDialogService: FileDialogService;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddFile.Commands.ADD_FILE, {
@@ -31,7 +31,7 @@ export class AddFile extends SketchContribution {
     });
   }
 
-  protected async addFile(): Promise<void> {
+  private async addFile(): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return;
@@ -41,6 +41,7 @@ export class AddFile extends SketchContribution {
       canSelectFiles: true,
       canSelectFolders: false,
       canSelectMany: false,
+      modal: true,
     });
     if (!toAddUri) {
       return;
