@@ -188,15 +188,17 @@ export class SettingsComponent extends React.Component<
                 />
                 {nls.localize('arduino/preferences/automatic', 'Automatic')}
               </label>
-              <SettingsStepInput
-                value={scalePercentage}
-                setSettingsStateValue={this.setInterfaceScale}
-                step={scaleStep}
-                maxValue={maxScale}
-                minValue={minScale}
-                classNames={{ input: 'theia-input small with-margin' }}
-              />
-              %
+              <div>
+                <SettingsStepInput
+                  value={scalePercentage}
+                  setSettingsStateValue={this.setInterfaceScale}
+                  step={scaleStep}
+                  maxValue={maxScale}
+                  minValue={minScale}
+                  unitOfMeasure="%"
+                  classNames={{ input: 'theia-input small with-margin' }}
+                />
+              </div>
             </div>
             <div className="flex-line">
               <select

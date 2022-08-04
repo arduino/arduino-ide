@@ -12,7 +12,7 @@
     display: none;
     flex-direction: column;
     position: absolute;
-    right: 0px;
+    right: 14px;
     top: 50%;
     transform: translate(0px, -50%);
     height: calc(100% - 4px);
