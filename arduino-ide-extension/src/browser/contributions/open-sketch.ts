@@ -26,21 +26,21 @@ import { nls } from '@theia/core/lib/common';
 @injectable()
 export class OpenSketch extends SketchContribution {
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
+  private readonly menuRegistry: MenuModelRegistry;
 
   @inject(ContextMenuRenderer)
-  protected readonly contextMenuRenderer: ContextMenuRenderer;
+  private readonly contextMenuRenderer: ContextMenuRenderer;
 
   @inject(BuiltInExamples)
-  protected readonly builtInExamples: BuiltInExamples;
+  private readonly builtInExamples: BuiltInExamples;
 
   @inject(ExamplesService)
-  protected readonly examplesService: ExamplesService;
+  private readonly examplesService: ExamplesService;
 
   @inject(Sketchbook)
-  protected readonly sketchbook: Sketchbook;
+  private readonly sketchbook: Sketchbook;
 
-  protected readonly toDispose = new DisposableCollection();
+  private readonly toDispose = new DisposableCollection();
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketch.Commands.OPEN_SKETCH, {
@@ -130,7 +130,7 @@ export class OpenSketch extends SketchContribution {
     });
   }
 
-  async openSketch(
+  private async openSketch(
     toOpen: MaybePromise<Sketch | undefined> = this.selectSketch()
   ): Promise<void> {
     const sketch = await toOpen;
@@ -139,21 +139,24 @@ export class OpenSketch extends SketchContribution {
     }
   }
 
-  protected async selectSketch(): Promise<Sketch | undefined> {
+  private async selectSketch(): Promise<Sketch | undefined> {
     const config = await this.configService.getConfiguration();
     const defaultPath = await this.fileService.fsPath(
       new URI(config.sketchDirUri)
     );
-    const { filePaths } = await remote.dialog.showOpenDialog({
-      defaultPath,
-      properties: ['createDirectory', 'openFile'],
-      filters: [
-        {
-          name: nls.localize('arduino/sketch/sketch', 'Sketch'),
-          extensions: ['ino', 'pde'],
-        },
-      ],
-    });
+    const { filePaths } = await remote.dialog.showOpenDialog(
+      remote.getCurrentWindow(),
+      {
+        defaultPath,
+        properties: ['createDirectory', 'openFile'],
+        filters: [
+          {
+            name: nls.localize('arduino/sketch/sketch', 'Sketch'),
+            extensions: ['ino', 'pde'],
+          },
+        ],
+      }
+    );
     if (!filePaths.length) {
       return undefined;
     }

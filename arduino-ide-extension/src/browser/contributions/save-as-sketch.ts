@@ -50,7 +50,7 @@ export class SaveAsSketch extends SketchContribution {
   /**
    * Resolves `true` if the sketch was successfully saved as something.
    */
-  async saveAs(
+  private async saveAs(
     {
       execOnlyIfTemp,
       openAfterMove,
@@ -82,13 +82,16 @@ export class SaveAsSketch extends SketchContribution {
         : sketch.name
     );
     const defaultPath = await this.fileService.fsPath(defaultUri);
-    const { filePath, canceled } = await remote.dialog.showSaveDialog({
-      title: nls.localize(
-        'arduino/sketch/saveFolderAs',
-        'Save sketch folder as...'
-      ),
-      defaultPath,
-    });
+    const { filePath, canceled } = await remote.dialog.showSaveDialog(
+      remote.getCurrentWindow(),
+      {
+        title: nls.localize(
+          'arduino/sketch/saveFolderAs',
+          'Save sketch folder as...'
+        ),
+        defaultPath,
+      }
+    );
     if (!filePath || canceled) {
       return false;
     }
