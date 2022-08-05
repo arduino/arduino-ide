@@ -208,18 +208,14 @@ export class SettingsService {
     }
   }
 
-  async reset(): Promise<void> {
+  async reset(resetFromDialog: boolean): Promise<void> {
+    const prevThemeId = this._settings.prevThemeId;
     const settings = await this.loadSettings();
     await this.update(settings, false);
     this.onDidResetEmitter.fire(this._settings);
-  }
-
-  async resetFromDialog(): Promise<void> {
-    const prevThemeId = this._settings.prevThemeId;
-    if (prevThemeId) {
+    if (resetFromDialog && prevThemeId) {
       ThemeService.get().setCurrentTheme(prevThemeId);
     }
-    this.reset();
   }
 
   async validate(
