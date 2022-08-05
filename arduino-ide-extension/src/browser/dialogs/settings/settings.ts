@@ -46,7 +46,6 @@ export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 export interface Settings {
   editorFontSize: number; // `editor.fontSize`
   themeId: string; // `workbench.colorTheme`
-  prevThemeId: string; // `workbench.prevColorTheme`
   autoSave: Settings.AutoSave; // `files.autoSave`
   quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
 
@@ -124,7 +123,6 @@ export class SettingsService {
       currentLanguage,
       editorFontSize,
       themeId,
-      prevThemeId,
       autoSave,
       quickSuggestions,
       autoScaleInterface,
@@ -146,7 +144,6 @@ export class SettingsService {
           ? 'arduino-theme-dark'
           : 'arduino-theme'
       ),
-      this.preferenceService.get<string>('workbench.prevColorTheme', ''),
       this.preferenceService.get<Settings.AutoSave>(
         AUTO_SAVE_SETTING,
         Settings.AutoSave.DEFAULT_ON
@@ -172,7 +169,6 @@ export class SettingsService {
     return {
       editorFontSize,
       themeId,
-      prevThemeId,
       languages,
       currentLanguage,
       autoSave,
@@ -208,14 +204,10 @@ export class SettingsService {
     }
   }
 
-  async reset(resetFromDialog: boolean): Promise<void> {
-    const prevThemeId = this._settings.prevThemeId;
+  async reset(): Promise<void> {
     const settings = await this.loadSettings();
     await this.update(settings, false);
     this.onDidResetEmitter.fire(this._settings);
-    if (resetFromDialog && prevThemeId) {
-      ThemeService.get().setCurrentTheme(prevThemeId);
-    }
   }
 
   async validate(
@@ -267,7 +259,6 @@ export class SettingsService {
       currentLanguage,
       editorFontSize,
       themeId,
-      prevThemeId,
       autoSave,
       quickSuggestions,
       autoScaleInterface,
@@ -292,7 +283,6 @@ export class SettingsService {
 
     await this.savePreference('editor.fontSize', editorFontSize);
     await this.savePreference('workbench.colorTheme', themeId);
-    await this.savePreference('workbench.prevColorTheme', prevThemeId);
     await this.savePreference(AUTO_SAVE_SETTING, autoSave);
     await this.savePreference('editor.quickSuggestions', quickSuggestions);
     await this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface);
