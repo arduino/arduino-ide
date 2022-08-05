@@ -32,7 +32,7 @@ export class Settings extends SketchContribution {
           await this.settingsService.update(settings);
           await this.settingsService.save();
         } else {
-          await this.settingsService.reset();
+          await this.settingsService.reset(true);
         }
       },
       isEnabled: () => !this.settingsOpened,
