@@ -111,9 +111,11 @@ export class SettingsService {
 
   @postConstruct()
   protected async init(): Promise<void> {
-    const settings = await this.loadSettings();
-    this._settings = deepClone(settings);
-    this.ready.resolve();
+    this.appStateService.reachedState('ready').then(async () => {
+      const settings = await this.loadSettings();
+      this._settings = deepClone(settings);
+      this.ready.resolve();
+    });
   }
 
   protected async loadSettings(): Promise<Settings> {

@@ -19,6 +19,7 @@ import { CommandRegistry } from '@theia/core/lib/common/command';
 import { certificateList, sanifyCertString } from './utils';
 import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
 import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class UploadCertificateDialogWidget extends ReactWidget {
@@ -36,6 +37,9 @@ export class UploadCertificateDialogWidget extends ReactWidget {
 
   @inject(ArduinoFirmwareUploader)
   protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
   protected certificates: string[] = [];
   protected updatableFqbns: string[] = [];
@@ -66,10 +70,12 @@ export class UploadCertificateDialogWidget extends ReactWidget {
       }
     });
 
-    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
-      this.updatableFqbns = fqbns;
-      this.update();
-    });
+    this.appStateService.reachedState('ready').then(() =>
+      this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+        this.updatableFqbns = fqbns;
+        this.update();
+      })
+    );
 
     this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
       this.availableBoards = availableBoards;
