@@ -589,9 +589,10 @@ export class SettingsComponent extends React.Component<
   ): void => {
     const { selectedIndex } = event.target.options;
     const theme = ThemeService.get().getThemes()[selectedIndex];
-    const prevTheme = ThemeService.get().getCurrentTheme();
-    if (theme && prevTheme) {
-      this.setState({ themeId: theme.id, prevThemeId: prevTheme.id });
+    const prevThemeId =
+      this.state.prevThemeId || ThemeService.get().getCurrentTheme().id;
+    if (theme && prevThemeId) {
+      this.setState({ themeId: theme.id, prevThemeId: prevThemeId });
     }
     ThemeService.get().setCurrentTheme(theme.id);
   };
