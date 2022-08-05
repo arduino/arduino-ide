@@ -16,6 +16,7 @@ import { SettingsComponent } from './settings-component';
 import { AsyncLocalizationProvider } from '@theia/core/lib/common/i18n/localization';
 import { AdditionalUrls } from '../../../common/protocol';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
+import { ThemeService } from '@theia/core/lib/browser/theming';
 
 @injectable()
 export class SettingsWidget extends ReactWidget {
@@ -117,6 +118,17 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
     this.settingsService.reset();
 
     this.widget.activate();
+  }
+
+  override async open(): Promise<Promise<Settings> | undefined> {
+    const themeIdBeforeOpen = ThemeService.get().getCurrentTheme().id;
+    const result = await super.open();
+    if (!result) {
+      if (ThemeService.get().getCurrentTheme().id !== themeIdBeforeOpen) {
+        ThemeService.get().setCurrentTheme(themeIdBeforeOpen);
+      }
+    }
+    return result;
   }
 }
 

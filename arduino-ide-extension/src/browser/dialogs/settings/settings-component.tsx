@@ -591,6 +591,9 @@ export class SettingsComponent extends React.Component<
     const theme = ThemeService.get().getThemes()[selectedIndex];
     if (theme) {
       this.setState({ themeId: theme.id });
+      if (ThemeService.get().getCurrentTheme().id !== theme.id) {
+        ThemeService.get().setCurrentTheme(theme.id);
+      }
     }
   };
 
