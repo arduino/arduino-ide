@@ -201,12 +201,7 @@ export class SettingsComponent extends React.Component<
             <div className="flex-line">
               <select
                 className="theia-select"
-                value={
-                  ThemeService.get()
-                    .getThemes()
-                    .find(({ id }) => id === this.state.themeId)?.label ||
-                  nls.localize('arduino/common/unknown', 'Unknown')
-                }
+                value={ThemeService.get().getCurrentTheme().label}
                 onChange={this.themeDidChange}
               >
                 {ThemeService.get()
