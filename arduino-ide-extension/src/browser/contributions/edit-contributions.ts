@@ -193,6 +193,13 @@ ${value}
       ), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '3',
     });
+
+    // `Tools`
+    registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
+      commandId: EditContributions.Commands.AUTO_FORMAT.id,
+      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
+      order: '0',
+    });
   }
 
   override registerKeybindings(registry: KeybindingRegistry): void {
