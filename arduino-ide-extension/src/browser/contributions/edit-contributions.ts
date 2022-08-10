@@ -143,7 +143,7 @@ ${value}
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.AUTO_FORMAT.id,
-      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
+      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'),
       order: '3',
     });
 
