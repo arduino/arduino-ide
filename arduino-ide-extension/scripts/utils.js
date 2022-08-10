@@ -1,4 +1,15 @@
 /**
+ * Clones something from GitHub and builds it with [`Task`](https://taskfile.dev/).
+ *
+ * @param version {object} the version object.
+ * @param destinationPath {string} the absolute path of the output binary. For example, `C:\\folder\\arduino-cli.exe` or `/path/to/arduino-language-server`
+ * @param taskName {string} for the CLI logging . Can be `'CLI'` or `'language-server'`, etc.
+ */
+exports.taskBuildFromGit = (version, destinationPath, taskName) => {
+  return buildFromGit('task', version, destinationPath, taskName);
+};
+
+/**
  * Clones something from GitHub and builds it with `Golang`.
  *
  * @param version {object} the version object.
@@ -6,6 +17,13 @@
  * @param taskName {string} for the CLI logging . Can be `'CLI'` or `'language-server'`, etc.
  */
 exports.goBuildFromGit = (version, destinationPath, taskName) => {
+  return buildFromGit('go', version, destinationPath, taskName);
+};
+
+/**
+ * The `command` is either `go` or `task`.
+ */
+function buildFromGit(command, version, destinationPath, taskName) {
   const fs = require('fs');
   const path = require('path');
   const temp = require('temp');
@@ -62,7 +80,7 @@ exports.goBuildFromGit = (version, destinationPath, taskName) => {
   }
 
   shell.echo(`>>> Building the ${taskName}...`);
-  if (shell.exec('go build', { cwd: tempRepoPath }).code !== 0) {
+  if (shell.exec(`${command} build`, { cwd: tempRepoPath }).code !== 0) {
     shell.exit(1);
   }
   shell.echo(`<<< Done ${taskName} build.`);
@@ -89,4 +107,4 @@ exports.goBuildFromGit = (version, destinationPath, taskName) => {
     shell.exit(1);
   }
   shell.echo(`>>> Verified ${taskName}.`);
-};
+}

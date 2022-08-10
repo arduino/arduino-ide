@@ -6,7 +6,7 @@
   const semver = require('semver');
   const moment = require('moment');
   const downloader = require('./downloader');
-  const { goBuildFromGit } = require('./utils');
+  const { taskBuildFromGit } = require('./utils');
 
   const version = (() => {
     const pkg = require(path.join(__dirname, '..', 'package.json'));
@@ -82,6 +82,6 @@
       shell.exit(1);
     }
   } else {
-    goBuildFromGit(version, destinationPath, 'CLI');
+    taskBuildFromGit(version, destinationPath, 'CLI');
   }
 })();
