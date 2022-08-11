@@ -6,17 +6,17 @@ import ReactMarkdown from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
 
-export type UpdateProgress = {
+export interface UpdateProgress {
   progressInfo?: ProgressInfo | undefined;
   downloadFinished?: boolean;
   downloadStarted?: boolean;
   error?: Error;
-};
+}
 
-export type IDEUpdaterComponentProps = {
+export interface IDEUpdaterComponentProps {
   updateInfo: UpdateInfo;
   updateProgress: UpdateProgress;
-};
+}
 
 export const IDEUpdaterComponent = ({
   updateInfo,

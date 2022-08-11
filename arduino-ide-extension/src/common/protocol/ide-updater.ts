@@ -56,16 +56,16 @@ export interface IDEUpdater extends JsonRpcServer<IDEUpdaterClient> {
 
 export const IDEUpdaterClient = Symbol('IDEUpdaterClient');
 export interface IDEUpdaterClient {
-  onError: Event<Error>;
-  onCheckingForUpdate: Event<void>;
-  onUpdateAvailable: Event<UpdateInfo>;
-  onUpdateNotAvailable: Event<UpdateInfo>;
-  onDownloadProgressChanged: Event<ProgressInfo>;
-  onDownloadFinished: Event<UpdateInfo>;
-  notifyError(message: Error): void;
-  notifyCheckingForUpdate(message: void): void;
-  notifyUpdateAvailable(message: UpdateInfo): void;
-  notifyUpdateNotAvailable(message: UpdateInfo): void;
+  onUpdaterDidFail: Event<Error>;
+  onUpdaterDidCheckForUpdate: Event<void>;
+  onUpdaterDidFindUpdateAvailable: Event<UpdateInfo>;
+  onUpdaterDidNotFindUpdateAvailable: Event<UpdateInfo>;
+  onDownloadProgressDidChange: Event<ProgressInfo>;
+  onDownloadDidFinish: Event<UpdateInfo>;
+  notifyUpdaterFailed(message: Error): void;
+  notifyCheckedForUpdate(message: void): void;
+  notifyUpdateAvailableFound(message: UpdateInfo): void;
+  notifyUpdateAvailableNotFound(message: UpdateInfo): void;
   notifyDownloadProgressChanged(message: ProgressInfo): void;
   notifyDownloadFinished(message: UpdateInfo): void;
 }

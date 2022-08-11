@@ -5,36 +5,43 @@ import { IDEUpdaterClient } from '../../common/protocol/ide-updater';
 
 @injectable()
 export class IDEUpdaterClientImpl implements IDEUpdaterClient {
-  protected readonly onErrorEmitter = new Emitter<Error>();
-  protected readonly onCheckingForUpdateEmitter = new Emitter<void>();
-  protected readonly onUpdateAvailableEmitter = new Emitter<UpdateInfo>();
-  protected readonly onUpdateNotAvailableEmitter = new Emitter<UpdateInfo>();
-  protected readonly onDownloadProgressEmitter = new Emitter<ProgressInfo>();
-  protected readonly onDownloadFinishedEmitter = new Emitter<UpdateInfo>();
+  protected readonly onUpdaterDidFailEmitter = new Emitter<Error>();
+  protected readonly onUpdaterDidCheckForUpdateEmitter = new Emitter<void>();
+  protected readonly onUpdaterDidFindUpdateAvailableEmitter =
+    new Emitter<UpdateInfo>();
+  protected readonly onUpdaterDidNotFindUpdateAvailableEmitter =
+    new Emitter<UpdateInfo>();
+  protected readonly onDownloadProgressDidChangeEmitter =
+    new Emitter<ProgressInfo>();
+  protected readonly onDownloadDidFinishEmitter = new Emitter<UpdateInfo>();
 
-  readonly onError = this.onErrorEmitter.event;
-  readonly onCheckingForUpdate = this.onCheckingForUpdateEmitter.event;
-  readonly onUpdateAvailable = this.onUpdateAvailableEmitter.event;
-  readonly onUpdateNotAvailable = this.onUpdateNotAvailableEmitter.event;
-  readonly onDownloadProgressChanged = this.onDownloadProgressEmitter.event;
-  readonly onDownloadFinished = this.onDownloadFinishedEmitter.event;
+  readonly onUpdaterDidFail = this.onUpdaterDidFailEmitter.event;
+  readonly onUpdaterDidCheckForUpdate =
+    this.onUpdaterDidCheckForUpdateEmitter.event;
+  readonly onUpdaterDidFindUpdateAvailable =
+    this.onUpdaterDidFindUpdateAvailableEmitter.event;
+  readonly onUpdaterDidNotFindUpdateAvailable =
+    this.onUpdaterDidNotFindUpdateAvailableEmitter.event;
+  readonly onDownloadProgressDidChange =
+    this.onDownloadProgressDidChangeEmitter.event;
+  readonly onDownloadDidFinish = this.onDownloadDidFinishEmitter.event;
 
-  notifyError(message: Error): void {
-    this.onErrorEmitter.fire(message);
+  notifyUpdaterFailed(message: Error): void {
+    this.onUpdaterDidFailEmitter.fire(message);
   }
-  notifyCheckingForUpdate(message: void): void {
-    this.onCheckingForUpdateEmitter.fire(message);
+  notifyCheckedForUpdate(message: void): void {
+    this.onUpdaterDidCheckForUpdateEmitter.fire(message);
   }
-  notifyUpdateAvailable(message: UpdateInfo): void {
-    this.onUpdateAvailableEmitter.fire(message);
+  notifyUpdateAvailableFound(message: UpdateInfo): void {
+    this.onUpdaterDidFindUpdateAvailableEmitter.fire(message);
   }
-  notifyUpdateNotAvailable(message: UpdateInfo): void {
-    this.onUpdateNotAvailableEmitter.fire(message);
+  notifyUpdateAvailableNotFound(message: UpdateInfo): void {
+    this.onUpdaterDidNotFindUpdateAvailableEmitter.fire(message);
   }
   notifyDownloadProgressChanged(message: ProgressInfo): void {
-    this.onDownloadProgressEmitter.fire(message);
+    this.onDownloadProgressDidChangeEmitter.fire(message);
   }
   notifyDownloadFinished(message: UpdateInfo): void {
-    this.onDownloadFinishedEmitter.fire(message);
+    this.onDownloadDidFinishEmitter.fire(message);
   }
 }

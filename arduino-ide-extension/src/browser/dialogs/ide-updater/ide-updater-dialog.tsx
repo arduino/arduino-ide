@@ -1,11 +1,15 @@
 import * as React from '@theia/core/shared/react';
-import { inject, injectable } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
-import { Disposable, nls } from '@theia/core';
+import { nls } from '@theia/core';
 import { IDEUpdaterComponent, UpdateProgress } from './ide-updater-component';
 import {
   IDEUpdater,
@@ -29,7 +33,7 @@ export class IDEUpdaterDialogWidget extends ReactWidget {
     this.update();
   }
 
-  setUpdateProgress(updateProgress: UpdateProgress): void {
+  mergeUpdateProgress(updateProgress: UpdateProgress): void {
     this._updateProgress = { ...this._updateProgress, ...updateProgress };
     this.update();
   }
@@ -57,9 +61,6 @@ export class IDEUpdaterDialogProps extends DialogProps {}
 
 @injectable()
 export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
-  private onError: Disposable;
-  private onDownloadProgressChanged: Disposable;
-  onDownloadFinished: Disposable;
   @inject(IDEUpdaterDialogWidget)
   private readonly widget: IDEUpdaterDialogWidget;
 
@@ -90,32 +91,19 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
     this.acceptButton = undefined;
   }
 
-  private init(): void {
-    this.widget.setUpdateProgress({
-      progressInfo: undefined,
-      downloadStarted: false,
-      downloadFinished: false,
-      error: undefined,
+  @postConstruct()
+  protected init(): void {
+    this.updaterClient.onUpdaterDidFail((error) => {
+      this.appendErrorButtons();
+      this.widget.mergeUpdateProgress({ error });
     });
-    if (!this.onError) {
-      this.onError = this.updaterClient.onError((error) => {
-        this.appendErrorButtons();
-        this.widget.setUpdateProgress({ error });
-      });
-    }
-    if (!this.onDownloadProgressChanged) {
-      this.onDownloadProgressChanged =
-        this.updaterClient.onDownloadProgressChanged((progressInfo) => {
-          this.widget.setUpdateProgress({ progressInfo });
-        });
-    }
-    if (!this.onDownloadFinished) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      this.onDownloadFinished = this.updaterClient.onDownloadFinished((_) => {
-        this.appendInstallButtons();
-        this.widget.setUpdateProgress({ downloadFinished: true });
-      });
-    }
+    this.updaterClient.onDownloadProgressDidChange((progressInfo) => {
+      this.widget.mergeUpdateProgress({ progressInfo });
+    });
+    this.updaterClient.onDownloadDidFinish(() => {
+      this.appendInstallButtons();
+      this.widget.mergeUpdateProgress({ downloadFinished: true });
+    });
   }
 
   get value(): UpdateInfo {
@@ -217,7 +205,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   }
 
   private startDownload(): void {
-    this.widget.setUpdateProgress({
+    this.widget.mergeUpdateProgress({
       downloadStarted: true,
     });
     this.clearButtons();
@@ -225,7 +213,7 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   }
 
   private closeAndInstall() {
-    this.updater.quitAndInstall.bind(this);
+    this.updater.quitAndInstall();
     this.close();
   }
 
@@ -233,7 +221,12 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
     data: UpdateInfo | undefined = undefined
   ): Promise<UpdateInfo | undefined> {
     if (data && data.version) {
-      this.init();
+      this.widget.mergeUpdateProgress({
+        progressInfo: undefined,
+        downloadStarted: false,
+        downloadFinished: false,
+        error: undefined,
+      });
       this.widget.setUpdateInfo(data);
       return super.open();
     }
