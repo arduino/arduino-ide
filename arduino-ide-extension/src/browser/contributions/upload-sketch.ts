@@ -191,6 +191,7 @@ export class UploadSketch extends CoreServiceContribution {
       // uploadInProgress will be set to false whether the upload fails or not
       this.uploadInProgress = true;
       this.onDidChangeEmitter.fire();
+      this.clearVisibleNotification();
 
       const verifyOptions =
         await this.commandService.executeCommand<CoreService.Options.Compile>(

@@ -1,9 +1,10 @@
-import { injectable } from '@theia/core/shared/inversify';
 import { CancellationToken } from '@theia/core/lib/common/cancellation';
-import {
+import type {
+  Message,
   ProgressMessage,
   ProgressUpdate,
 } from '@theia/core/lib/common/message-service-protocol';
+import { injectable } from '@theia/core/shared/inversify';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 
 @injectable()
@@ -34,7 +35,9 @@ export class NotificationManager extends TheiaNotificationManager {
     this.fireUpdatedEvent();
   }
 
-  protected override toPlainProgress(update: ProgressUpdate): number | undefined {
+  protected override toPlainProgress(
+    update: ProgressUpdate
+  ): number | undefined {
     if (!update.work) {
       return undefined;
     }
@@ -42,5 +45,12 @@ export class NotificationManager extends TheiaNotificationManager {
       return Number.NaN; // This should trigger the unknown monitor.
     }
     return Math.min((update.work.done / update.work.total) * 100, 100);
+  }
+
+  /**
+   * For `public` visibility.
+   */
+  override getMessageId(message: Message): string {
+    return super.getMessageId(message);
   }
 }
