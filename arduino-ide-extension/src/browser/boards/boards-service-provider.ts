@@ -65,6 +65,13 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availablePorts: Port[] = [];
   protected _availableBoards: AvailableBoard[] = [];
 
+  private uploadInProgress = false;
+
+  private lastItemRemovedForUpload: { board: Board; port: Port } | undefined;
+  // "lastPersistingUploadPort", is a port created during an upload, that persisted after
+  // the upload finished, it's "substituting" the port selected when the user invoked the upload
+  private lastPersistingUploadPort: Port | undefined;
+
   /**
    * Unlike `onAttachedBoardsChanged` this even fires when the user modifies the selected board in the IDE.\
    * This even also fires, when the boards package was not available for the currently selected board,
@@ -80,6 +87,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   private readonly _reconciled = new Deferred<void>();
 
   onStart(): void {
+    this.notificationCenter.onUploadInProgress(
+      this.onUploadNotificationReceived.bind(this)
+    );
     this.notificationCenter.onAttachedBoardsDidChange(
       this.notifyAttachedBoardsChanged.bind(this)
     );
@@ -111,6 +121,68 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._reconciled.promise;
   }
 
+  private onUploadNotificationReceived(uploadInProgress: boolean): void {
+    this.uploadInProgress = uploadInProgress;
+  }
+
+  private checkForItemRemoved(event: AttachedBoardsChangeEvent): void {
+    if (!this.lastItemRemovedForUpload) {
+      const {
+        oldState: { ports: oldPorts, boards: oldBoards },
+        newState: { ports: newPorts },
+      } = event;
+
+      const disappearedPorts = oldPorts.filter((oldPort: Port) =>
+        newPorts.every((newPort: Port) => !Port.sameAs(oldPort, newPort))
+      );
+
+      if (disappearedPorts.length > 0) {
+        this.lastItemRemovedForUpload = {
+          board: oldBoards.find((board: Board) =>
+            Port.sameAs(board.port, disappearedPorts[0])
+          ) as Board,
+          port: disappearedPorts[0],
+        };
+      }
+
+      return;
+    }
+  }
+
+  private checkForPersistingPort(event: AttachedBoardsChangeEvent): void {
+    if (this.lastItemRemovedForUpload) {
+      const {
+        oldState: { ports: oldPorts },
+        newState: { ports: newPorts, boards: newBoards },
+      } = event;
+
+      const disappearedItem = this.lastItemRemovedForUpload;
+      this.lastItemRemovedForUpload = undefined;
+
+      const appearedPorts = newPorts.filter((newPort: Port) =>
+        oldPorts.every((oldPort: Port) => !Port.sameAs(newPort, oldPort))
+      );
+
+      if (appearedPorts.length > 0) {
+        const boardOnAppearedPort = newBoards.find((board: Board) =>
+          Port.sameAs(board.port, appearedPorts[0])
+        );
+
+        if (
+          boardOnAppearedPort &&
+          Board.sameAs(boardOnAppearedPort, disappearedItem.board)
+        ) {
+          this.lastPersistingUploadPort = appearedPorts[0];
+          return;
+        }
+      }
+
+      return;
+    }
+
+    this.lastPersistingUploadPort = undefined;
+  }
+
   protected notifyAttachedBoardsChanged(
     event: AttachedBoardsChangeEvent
   ): void {
@@ -119,10 +191,21 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.logger.info(AttachedBoardsChangeEvent.toString(event));
       this.logger.info('------------------------------------------');
     }
+
+    if (this.uploadInProgress) {
+      this.checkForItemRemoved(event);
+    } else {
+      this.checkForPersistingPort(event);
+    }
+
     this._attachedBoards = event.newState.boards;
     this._availablePorts = event.newState.ports;
     this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
-    this.reconcileAvailableBoards().then(() => this.tryReconnect());
+    this.reconcileAvailableBoards().then(() => {
+      if (!this.uploadInProgress) {
+        this.tryReconnect();
+      }
+    });
   }
 
   protected notifyPlatformInstalled(event: { item: BoardsPackage }): void {
@@ -240,6 +323,21 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       }
       // If we could not find an exact match, we compare the board FQBN-name pairs and ignore the port, as it might have changed.
       // See documentation on `latestValidBoardsConfig`.
+
+      if (!this.lastPersistingUploadPort) return false;
+
+      const lastPersistingUploadPort = this.lastPersistingUploadPort;
+      this.lastPersistingUploadPort = undefined;
+
+      if (
+        !Port.sameAs(
+          lastPersistingUploadPort,
+          this.latestValidBoardsConfig.selectedPort
+        )
+      ) {
+        return false;
+      }
+
       for (const board of this.availableBoards.filter(
         ({ state }) => state !== AvailableBoard.State.incomplete
       )) {
@@ -458,6 +556,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       const board = attachedBoards.find(({ port }) =>
         Port.sameAs(boardPort, port)
       );
+      // "board" will always be falsey for
+      // port that was originally mapped
+      // to unknown board and then selected
+      // manually by user
+
       const lastSelectedBoard = await this.getLastSelectedBoardOnPort(
         boardPort
       );
@@ -476,7 +579,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         availableBoard = {
           ...lastSelectedBoard,
           state: AvailableBoard.State.guessed,
-          selected: BoardsConfig.Config.sameAs(boardsConfig, lastSelectedBoard),
+          selected:
+            BoardsConfig.Config.sameAs(boardsConfig, lastSelectedBoard) &&
+            Port.sameAs(boardPort, boardsConfig.selectedPort), // to avoid double selection
           port: boardPort,
         };
       } else {
@@ -491,7 +596,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
     if (
       boardsConfig.selectedBoard &&
-      !availableBoards.some(({ selected }) => selected)
+      availableBoards.every(({ selected }) => !selected)
     ) {
       // If the selected board has the same port of an unknown board
       // that is already in availableBoards we might get a duplicate port.
