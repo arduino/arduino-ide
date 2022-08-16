@@ -54,6 +54,8 @@ export class BoardDiscovery
   private readonly onStreamDidCancelEmitter = new Emitter<void>(); // when the watcher is canceled by the IDE2
   private readonly toDisposeOnStopWatch = new DisposableCollection();
 
+  private uploadInProgress = false;
+
   /**
    * Keys are the `address` of the ports.
    *
@@ -121,6 +123,10 @@ export class BoardDiscovery
       this.logger.info('Canceling boards watcher...');
       this.toDisposeOnStopWatch.dispose();
     });
+  }
+
+  public setUploadInProgress(uploadAttemptInProgress: boolean): void {
+    this.uploadInProgress = uploadAttemptInProgress;
   }
 
   private createTimeout(
@@ -318,6 +324,7 @@ export class BoardDiscovery
             ports: newAvailablePorts,
             boards: newAttachedBoards,
           },
+          uploadInProgress: this.uploadInProgress,
         };
 
         this._availablePorts = newState;

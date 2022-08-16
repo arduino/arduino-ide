@@ -28,7 +28,6 @@ export interface NotificationServiceClient {
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void;
   notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void;
   notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void;
-  notifyUploadAttemptInProgress(event: boolean): void;
 }
 
 export const NotificationServicePath = '/services/notification-service';

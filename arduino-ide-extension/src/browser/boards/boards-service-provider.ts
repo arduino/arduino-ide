@@ -65,8 +65,6 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availablePorts: Port[] = [];
   protected _availableBoards: AvailableBoard[] = [];
 
-  private uploadAttemptInProgress = false;
-
   private lastItemRemovedForUpload: { board: Board; port: Port } | undefined;
   // "lastPersistingUploadPort", is a port created during an upload, that persisted after
   // the upload finished, it's "substituting" the port selected when the user invoked the upload
@@ -87,9 +85,6 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   private readonly _reconciled = new Deferred<void>();
 
   onStart(): void {
-    this.notificationCenter.onUploadAttemptInProgress(
-      this.onUploadAttemptEventReceived.bind(this)
-    );
     this.notificationCenter.onAttachedBoardsDidChange(
       this.notifyAttachedBoardsChanged.bind(this)
     );
@@ -119,10 +114,6 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
   get reconciled(): Promise<void> {
     return this._reconciled.promise;
-  }
-
-  private onUploadAttemptEventReceived(uploadAttemptInProgress: boolean): void {
-    this.uploadAttemptInProgress = uploadAttemptInProgress;
   }
 
   private checkForItemRemoved(event: AttachedBoardsChangeEvent): void {
@@ -192,7 +183,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.logger.info('------------------------------------------');
     }
 
-    if (this.uploadAttemptInProgress) {
+    const { uploadInProgress } = event;
+
+    if (uploadInProgress) {
       this.checkForItemRemoved(event);
     } else {
       this.checkForPersistingPort(event);
@@ -202,7 +195,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     this._availablePorts = event.newState.ports;
     this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
     this.reconcileAvailableBoards().then(() => {
-      if (!this.uploadAttemptInProgress) {
+      if (!uploadInProgress) {
         this.tryReconnect();
       }
     });

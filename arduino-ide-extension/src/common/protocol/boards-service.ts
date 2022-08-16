@@ -25,6 +25,7 @@ export namespace AvailablePorts {
 export interface AttachedBoardsChangeEvent {
   readonly oldState: Readonly<{ boards: Board[]; ports: Port[] }>;
   readonly newState: Readonly<{ boards: Board[]; ports: Port[] }>;
+  readonly uploadInProgress: boolean;
 }
 export namespace AttachedBoardsChangeEvent {
   export function isEmpty(event: AttachedBoardsChangeEvent): boolean {
