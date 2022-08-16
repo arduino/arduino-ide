@@ -438,19 +438,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const availableBoards: AvailableBoard[] = [];
     const attachedBoards = this._attachedBoards.filter(({ port }) => !!port);
     const availableBoardPorts = availablePorts.filter((port) => {
-      if (port.protocol === 'serial') {
-        // We always show all serial ports, even if there
-        // is no recognized board connected to it
+      if (port.protocol === 'serial' || port.protocol === 'network') {
+        // Allow all `serial` and `network` boards.
+        // IDE2 must support better label for unrecognized `network` boards: https://github.com/arduino/arduino-ide/issues/1331
         return true;
-      }
-
-      // All other ports with different protocol are
-      // only shown if there is a recognized board
-      // connected
-      for (const board of attachedBoards) {
-        if (board.port?.address === port.address) {
-          return true;
-        }
       }
       return false;
     });
