@@ -15,7 +15,6 @@ import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 import type { VerifySketchParams } from './verify-sketch';
-import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class UploadSketch extends CoreServiceContribution {
@@ -24,9 +23,6 @@ export class UploadSketch extends CoreServiceContribution {
 
   @inject(UserFieldsDialog)
   private readonly userFieldsDialog: UserFieldsDialog;
-
-  @inject(NotificationCenter)
-  private readonly notificationCenter: NotificationCenter;
 
   private boardRequiresUserFields = false;
   private readonly cachedUserFields: Map<string, BoardUserField[]> = new Map();
@@ -196,9 +192,6 @@ export class UploadSketch extends CoreServiceContribution {
       this.uploadInProgress = true;
       this.onDidChangeEmitter.fire();
       this.clearVisibleNotification();
-      this.notificationCenter.notifyUploadAttemptInProgress(
-        this.uploadInProgress
-      );
 
       const verifyOptions =
         await this.commandService.executeCommand<CoreService.Options.Compile>(
@@ -251,9 +244,6 @@ export class UploadSketch extends CoreServiceContribution {
     } finally {
       this.uploadInProgress = false;
       this.onDidChangeEmitter.fire();
-      this.notificationCenter.notifyUploadAttemptInProgress(
-        this.uploadInProgress
-      );
     }
   }
 
