@@ -41,6 +41,7 @@ import {
   SupportedUserFieldsResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { ExecuteWithProgress } from './grpc-progressible';
+import { ServiceError } from './service-error';
 
 @injectable()
 export class BoardsServiceImpl
@@ -84,19 +85,7 @@ export class BoardsServiceImpl
       (resolve, reject) =>
         client.boardDetails(detailsReq, (err, resp) => {
           if (err) {
-            // Required cores are not installed manually: https://github.com/arduino/arduino-cli/issues/954
-            if (
-              (err.message.indexOf('missing platform release') !== -1 &&
-                err.message.indexOf('referenced by board') !== -1) ||
-              // Platform is not installed.
-              (err.message.indexOf('platform') !== -1 &&
-                err.message.indexOf('not installed') !== -1)
-            ) {
-              resolve(undefined);
-              return;
-            }
-            // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
-            if (err.message.indexOf('unknown package') !== -1) {
+            if (isMissingPlatformError(err)) {
               resolve(undefined);
               return;
             }
@@ -249,26 +238,38 @@ export class BoardsServiceImpl
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
-    const supportedUserFieldsReq = new SupportedUserFieldsRequest();
-    supportedUserFieldsReq.setInstance(instance);
-    supportedUserFieldsReq.setFqbn(options.fqbn);
-    supportedUserFieldsReq.setProtocol(options.protocol);
+    const req = new SupportedUserFieldsRequest();
+    req.setInstance(instance);
+    req.setFqbn(options.fqbn);
+    req.setProtocol(options.protocol);
 
-    const supportedUserFieldsResp =
-      await new Promise<SupportedUserFieldsResponse>((resolve, reject) => {
-        client.supportedUserFields(supportedUserFieldsReq, (err, resp) => {
-          !!err ? reject(err) : resolve(resp);
+    const resp = await new Promise<SupportedUserFieldsResponse | undefined>(
+      (resolve, reject) => {
+        client.supportedUserFields(req, (err, resp) => {
+          if (err) {
+            if (isMissingPlatformError(err)) {
+              resolve(undefined);
+              return;
+            }
+            reject(err);
+            return;
+          }
+          resolve(resp);
         });
-      });
-    return supportedUserFieldsResp.getUserFieldsList().map((e) => {
-      return {
-        toolId: e.getToolId(),
-        name: e.getName(),
-        label: e.getLabel(),
-        secret: e.getSecret(),
-        value: '',
-      };
-    });
+      }
+    );
+
+    if (!resp) {
+      return [];
+    }
+
+    return resp.getUserFieldsList().map((e) => ({
+      toolId: e.getToolId(),
+      name: e.getName(),
+      label: e.getLabel(),
+      secret: e.getSecret(),
+      value: '',
+    }));
   }
 
   async search(options: { query?: string }): Promise<BoardsPackage[]> {
@@ -485,4 +486,31 @@ export class BoardsServiceImpl
     this.notificationService.notifyPlatformDidUninstall({ item });
     console.info('<<< Boards package uninstallation done.', item);
   }
+}
+
+function isMissingPlatformError(error: unknown): boolean {
+  if (ServiceError.is(error)) {
+    const message = error.details;
+    // TODO: check gRPC status code? `9 FAILED_PRECONDITION` (https://grpc.github.io/grpc/core/md_doc_statuscodes.html)
+
+    // When installing a 3rd party core that depends on a missing Arduino core.
+    // https://github.com/arduino/arduino-cli/issues/954
+    if (
+      message.includes('missing platform release') &&
+      message.includes('referenced by board')
+    ) {
+      return true;
+    }
+
+    // When the platform is not installed.
+    if (message.includes('platform') && message.includes('not installed')) {
+      return true;
+    }
+
+    // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
+    if (message.includes('unknown package')) {
+      return true;
+    }
+  }
+  return false;
 }
