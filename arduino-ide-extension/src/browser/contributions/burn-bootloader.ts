@@ -29,6 +29,7 @@ export class BurnBootloader extends CoreServiceContribution {
   }
 
   private async burnBootloader(): Promise<void> {
+    this.clearVisibleNotification();
     const options = await this.options();
     try {
       await this.doWithProgress({

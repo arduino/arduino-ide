@@ -155,7 +155,8 @@
       "increaseFontSize": "Increase Font Size",
       "increaseIndent": "Increase Indent",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",

@@ -59,6 +59,8 @@ import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 import { ExecuteWithProgress } from '../../common/protocol/progressible';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { BoardsDataStore } from '../boards/boards-data-store';
+import { NotificationManager } from '../theia/messages/notifications-manager';
+import { MessageType } from '@theia/core/lib/common/message-service-protocol';
 
 export {
   Command,
@@ -186,6 +188,22 @@ export abstract class CoreServiceContribution extends SketchContribution {
   @inject(ResponseServiceClient)
   private readonly responseService: ResponseServiceClient;
 
+  @inject(NotificationManager)
+  private readonly notificationManager: NotificationManager;
+
+  /**
+   * This is the internal (Theia) ID of the notification that is currently visible.
+   * It's stored here as a field to be able to close it before executing any new core command (such as verify, upload, etc.)
+   */
+  private visibleNotificationId: string | undefined;
+
+  protected clearVisibleNotification(): void {
+    if (this.visibleNotificationId) {
+      this.notificationManager.clear(this.visibleNotificationId);
+      this.visibleNotificationId = undefined;
+    }
+  }
+
   protected handleError(error: unknown): void {
     this.tryToastErrorMessage(error);
   }
@@ -208,6 +226,7 @@ export abstract class CoreServiceContribution extends SketchContribution {
         'arduino/coreContribution/copyError',
         'Copy error messages'
       );
+      this.visibleNotificationId = this.notificationId(message, copyAction);
       this.messageService.error(message, copyAction).then(async (action) => {
         if (action === copyAction) {
           const content = await this.outputChannelManager.contentOfChannel(
@@ -240,6 +259,14 @@ export abstract class CoreServiceContribution extends SketchContribution {
       keepOutput,
     });
     return result;
+  }
+
+  private notificationId(message: string, ...actions: string[]): string {
+    return this.notificationManager.getMessageId({
+      text: message,
+      actions,
+      type: MessageType.Error,
+    });
   }
 }
 

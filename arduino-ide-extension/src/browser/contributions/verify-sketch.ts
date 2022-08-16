@@ -108,6 +108,7 @@ export class VerifySketch extends CoreServiceContribution {
         this.verifyInProgress = true;
         this.onDidChangeEmitter.fire();
       }
+      this.clearVisibleNotification();
       this.coreErrorHandler.reset();
 
       const options = await this.options(params?.exportBinaries);

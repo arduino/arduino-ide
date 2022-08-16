@@ -196,6 +196,7 @@ export class UploadSketch extends CoreServiceContribution {
       this.uploadInProgress = true;
       this.onDidChangeEmitter.fire();
       this.notificationCenter.notifyUploadInProgress(this.uploadInProgress);
+      this.clearVisibleNotification();
 
       const verifyOptions =
         await this.commandService.executeCommand<CoreService.Options.Compile>(
