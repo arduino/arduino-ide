@@ -142,7 +142,7 @@ export interface BoardsService
 export interface Port {
   // id is the combination of address and protocol
   // formatted like "<address>|<protocol>" used
-  // to univocally recognize a port
+  // to uniquely recognize a port
   readonly id: string;
   readonly address: string;
   readonly addressLabel: string;
