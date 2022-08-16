@@ -147,10 +147,10 @@ function styleJson({
   UseTab,
 }: ClangFormatOptions): Record<string, unknown> {
   // Source: https://github.com/arduino/tooling-project-assets/tree/main/other/clang-format-configuration
-  const defaultConfig = require('../../src/node/default-formatter-config.json'); // 1. require the JSON
+  const defaultConfig = require('../../src/node/default-formatter-config.json');
   return {
     ...defaultConfig,
-    TabWidth, // 2. override the default values with the user-defined ones
+    TabWidth,
     UseTab,
   };
 }
