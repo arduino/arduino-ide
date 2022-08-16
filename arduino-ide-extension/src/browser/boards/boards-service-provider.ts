@@ -66,10 +66,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availableBoards: AvailableBoard[] = [];
 
   /**
-   * Unlike `onAttachedBoardsChanged` this even fires when the user modifies the selected board in the IDE.\
-   * This even also fires, when the boards package was not available for the currently selected board,
+   * Unlike `onAttachedBoardsChanged` this event fires when the user modifies the selected board in the IDE.\
+   * This event also fires, when the boards package was not available for the currently selected board,
    * and the user installs the board package. Note: installing a board package will set the `fqbn` of the
-   * currently selected board.\
+   * currently selected board.
+   *
    * This event is also emitted when the board package for the currently selected board was uninstalled.
    */
   readonly onBoardsConfigChanged = this.onBoardsConfigChangedEmitter.event;
