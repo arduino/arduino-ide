@@ -21,22 +21,32 @@ import {
   MenuModelRegistry,
 } from './contribution';
 import { NotificationCenter } from '../notification-center';
-import { Board, SketchRef, SketchContainer } from '../../common/protocol';
+import {
+  Board,
+  SketchRef,
+  SketchContainer,
+  SketchesError,
+  Sketch,
+  CoreService,
+} from '../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
+  private readonly commandRegistry: CommandRegistry;
 
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
+  private readonly menuRegistry: MenuModelRegistry;
 
   @inject(MainMenuManager)
   protected readonly menuManager: MainMenuManager;
 
   @inject(ExamplesService)
   protected readonly examplesService: ExamplesService;
+
+  @inject(CoreService)
+  protected readonly coreService: CoreService;
 
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
@@ -50,9 +60,15 @@ export abstract class Examples extends SketchContribution {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
   protected handleBoardChanged(board: Board | undefined): void {
     // NOOP
   }
+
+  protected abstract update(options?: {
+    board?: Board | undefined;
+    forceRefresh?: boolean;
+  }): void;
 
   override registerMenus(registry: MenuModelRegistry): void {
     try {
@@ -149,23 +165,54 @@ export abstract class Examples extends SketchContribution {
   protected createHandler(uri: string): CommandHandler {
     return {
       execute: async () => {
-        const sketch = await this.sketchService.cloneExample(uri);
-        return this.commandService.executeCommand(
-          OpenSketch.Commands.OPEN_SKETCH.id,
-          sketch
-        );
+        const sketch = await this.clone(uri);
+        if (sketch) {
+          try {
+            return this.commandService.executeCommand(
+              OpenSketch.Commands.OPEN_SKETCH.id,
+              sketch
+            );
+          } catch (err) {
+            if (SketchesError.NotFound.is(err)) {
+              // Do not toast the error message. It's handled by the `Open Sketch` command.
+              this.update({
+                board: this.boardsServiceClient.boardsConfig.selectedBoard,
+                forceRefresh: true,
+              });
+            } else {
+              throw err;
+            }
+          }
+        }
       },
     };
+  }
+
+  private async clone(uri: string): Promise<Sketch | undefined> {
+    try {
+      const sketch = await this.sketchService.cloneExample(uri);
+      return sketch;
+    } catch (err) {
+      if (SketchesError.NotFound.is(err)) {
+        this.messageService.error(err.message);
+        this.update({
+          board: this.boardsServiceClient.boardsConfig.selectedBoard,
+          forceRefresh: true,
+        });
+      } else {
+        throw err;
+      }
+    }
   }
 }
 
 @injectable()
 export class BuiltInExamples extends Examples {
   override async onReady(): Promise<void> {
-    this.register(); // no `await`
+    this.update(); // no `await`
   }
 
-  protected async register(): Promise<void> {
+  protected override async update(): Promise<void> {
     let sketchContainers: SketchContainer[] | undefined;
     try {
       sketchContainers = await this.examplesService.builtIns();
@@ -197,29 +244,34 @@ export class BuiltInExamples extends Examples {
 @injectable()
 export class LibraryExamples extends Examples {
   @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
+  private readonly notificationCenter: NotificationCenter;
 
-  protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
+  private readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
   override onStart(): void {
-    this.notificationCenter.onLibraryDidInstall(() => this.register());
-    this.notificationCenter.onLibraryDidUninstall(() => this.register());
+    this.notificationCenter.onLibraryDidInstall(() => this.update());
+    this.notificationCenter.onLibraryDidUninstall(() => this.update());
   }
 
   override async onReady(): Promise<void> {
-    this.register(); // no `await`
+    this.update(); // no `await`
   }
 
   protected override handleBoardChanged(board: Board | undefined): void {
-    this.register(board);
+    this.update({ board });
   }
 
-  protected async register(
-    board: Board | undefined = this.boardsServiceClient.boardsConfig
-      .selectedBoard
+  protected override async update(
+    options: { board?: Board; forceRefresh?: boolean } = {
+      board: this.boardsServiceClient.boardsConfig.selectedBoard,
+    }
   ): Promise<void> {
+    const { board, forceRefresh } = options;
     return this.queue.add(async () => {
       this.toDispose.dispose();
+      if (forceRefresh) {
+        await this.coreService.refresh();
+      }
       const fqbn = board?.fqbn;
       const name = board?.name;
       // Shows all examples when no board is selected, or the platform of the currently selected board is not installed.

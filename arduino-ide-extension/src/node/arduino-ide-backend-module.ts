@@ -332,6 +332,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     'fwuploader', // Arduino Firmware uploader
     'discovery-log', // Boards discovery
     'config', // Logger for the CLI config reading and manipulation
+    'sketches-service', // For creating, loading, and cloning sketches
     MonitorManagerName, // Logger for the monitor manager and its services
     MonitorServiceName,
   ].forEach((name) => bindChildLogger(bind, name));

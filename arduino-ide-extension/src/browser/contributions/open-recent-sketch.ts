@@ -15,6 +15,7 @@ import { MainMenuManager } from '../../common/main-menu-manager';
 import { OpenSketch } from './open-sketch';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
+import { SketchesError } from '../../common/protocol';
 
 @injectable()
 export class OpenRecentSketch extends SketchContribution {
@@ -33,7 +34,7 @@ export class OpenRecentSketch extends SketchContribution {
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
 
-  protected toDisposeBeforeRegister = new Map<string, DisposableCollection>();
+  protected toDispose = new DisposableCollection();
 
   override onStart(): void {
     this.notificationCenter.onRecentSketchesDidChange(({ sketches }) =>
@@ -42,8 +43,12 @@ export class OpenRecentSketch extends SketchContribution {
   }
 
   override async onReady(): Promise<void> {
+    this.update();
+  }
+
+  private update(forceUpdate?: boolean): void {
     this.sketchService
-      .recentlyOpenedSketches()
+      .recentlyOpenedSketches(forceUpdate)
       .then((sketches) => this.refreshMenu(sketches));
   }
 
@@ -62,19 +67,25 @@ export class OpenRecentSketch extends SketchContribution {
 
   protected register(sketches: Sketch[]): void {
     const order = 0;
+    this.toDispose.dispose();
     for (const sketch of sketches) {
       const { uri } = sketch;
-      const toDispose = this.toDisposeBeforeRegister.get(uri);
-      if (toDispose) {
-        toDispose.dispose();
-      }
       const command = { id: `arduino-open-recent--${uri}` };
       const handler = {
-        execute: () =>
-          this.commandRegistry.executeCommand(
-            OpenSketch.Commands.OPEN_SKETCH.id,
-            sketch
-          ),
+        execute: async () => {
+          try {
+            await this.commandRegistry.executeCommand(
+              OpenSketch.Commands.OPEN_SKETCH.id,
+              sketch
+            );
+          } catch (err) {
+            if (SketchesError.NotFound.is(err)) {
+              this.update(true);
+            } else {
+              throw err;
+            }
+          }
+        },
       };
       this.commandRegistry.registerCommand(command, handler);
       this.menuRegistry.registerMenuAction(
@@ -85,8 +96,7 @@ export class OpenRecentSketch extends SketchContribution {
           order: String(order),
         }
       );
-      this.toDisposeBeforeRegister.set(
-        sketch.uri,
+      this.toDispose.pushAll([
         new DisposableCollection(
           Disposable.create(() =>
             this.commandRegistry.unregisterCommand(command)
@@ -94,8 +104,8 @@ export class OpenRecentSketch extends SketchContribution {
           Disposable.create(() =>
             this.menuRegistry.unregisterMenuAction(command)
           )
-        )
-      );
+        ),
+      ]);
     }
   }
 }

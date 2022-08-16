@@ -94,6 +94,11 @@ export class CoreClientProvider {
     return this.onClientDidRefreshEmitter.event;
   }
 
+  async refresh(): Promise<void> {
+    const client = await this.client;
+    await this.initInstance(client);
+  }
+
   /**
    * Encapsulates both the gRPC core client creation (`CreateRequest`) and initialization (`InitRequest`).
    */
@@ -414,6 +419,10 @@ export abstract class CoreClientAware {
 
   protected get onClientDidRefresh(): Event<CoreClientProvider.Client> {
     return this.coreClientProvider.onClientDidRefresh;
+  }
+
+  refresh(): Promise<void> {
+    return this.coreClientProvider.refresh();
   }
 }
 
