@@ -1,7 +1,6 @@
 import { nls } from '@theia/core/lib/common';
 import { injectable } from '@theia/core/shared/inversify';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
   SketchContribution,
   URI,
@@ -16,11 +15,6 @@ export class NewSketch extends SketchContribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(NewSketch.Commands.NEW_SKETCH, {
       execute: () => this.newSketch(),
-    });
-    registry.registerCommand(NewSketch.Commands.NEW_SKETCH__TOOLBAR, {
-      isVisible: (widget) =>
-        ArduinoToolbar.is(widget) && widget.side === 'left',
-      execute: () => registry.executeCommand(NewSketch.Commands.NEW_SKETCH.id),
     });
   }
 
@@ -53,9 +47,6 @@ export namespace NewSketch {
   export namespace Commands {
     export const NEW_SKETCH: Command = {
       id: 'arduino-new-sketch',
-    };
-    export const NEW_SKETCH__TOOLBAR: Command = {
-      id: 'arduino-new-sketch--toolbar',
     };
   }
 }

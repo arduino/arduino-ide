@@ -21,16 +21,9 @@ export const SketchesService = Symbol('SketchesService');
 export interface SketchesService {
   /**
    * Resolves to a sketch container representing the hierarchical structure of the sketches.
-   * If `uri` is not given, `directories.user` will be user instead. Specify `exclude` global patterns to filter folders from the sketch container.
-   * If `exclude` is not set `['**\/libraries\/**', '**\/hardware\/**']` will be used instead.
+   * If `uri` is not given, `directories.user` will be user instead.
    */
-  getSketches({
-    uri,
-    exclude,
-  }: {
-    uri?: string;
-    exclude?: string[];
-  }): Promise<SketchContainer>;
+  getSketches({ uri }: { uri?: string }): Promise<SketchContainer>;
 
   /**
    * This is the TS implementation of `SketchLoad` from the CLI and should be replaced with a gRPC call eventually.
@@ -71,7 +64,7 @@ export interface SketchesService {
   copy(sketch: Sketch, options: { destinationUri: string }): Promise<string>;
 
   /**
-   * Returns with the container sketch for the input `uri`. If the `uri` is not in a sketch folder, resolved `undefined`.
+   * Returns with the container sketch for the input `uri`. If the `uri` is not in a sketch folder, the promise resolves to `undefined`.
    */
   getSketchFolder(uri: string): Promise<Sketch | undefined>;
 
@@ -82,8 +75,10 @@ export interface SketchesService {
 
   /**
    * Resolves to an array of sketches in inverse chronological order. The newest is the first.
+   * If `forceUpdate` is `true`, the array of recently opened sketches will be recalculated.
+   * Invalid and missing sketches will be removed from the list. It's `false` by default.
    */
-  recentlyOpenedSketches(): Promise<Sketch[]>;
+  recentlyOpenedSketches(forceUpdate?: boolean): Promise<Sketch[]>;
 
   /**
    * Archives the sketch, resolves to the archive URI.
@@ -114,6 +109,19 @@ export namespace SketchRef {
       uri: typeof uriLike === 'string' ? uriLike : uriLike.toString(),
     };
   }
+  export function is(arg: unknown): arg is SketchRef {
+    if (typeof arg === 'object') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const object = arg as any;
+      return (
+        'name' in object &&
+        typeof object['name'] === 'string' &&
+        'uri' in object &&
+        typeof object['name'] === 'string'
+      );
+    }
+    return false;
+  }
 }
 export interface Sketch extends SketchRef {
   readonly mainFileUri: string; // `MainFile`
@@ -122,14 +130,25 @@ export interface Sketch extends SketchRef {
   readonly rootFolderFileUris: string[]; // `RootFolderFiles` (does not include the main sketch file)
 }
 export namespace Sketch {
-  export function is(arg: any): arg is Sketch {
-    return (
-      !!arg &&
-      'name' in arg &&
-      'uri' in arg &&
-      typeof arg.name === 'string' &&
-      typeof arg.uri === 'string'
-    );
+  export function is(arg: unknown): arg is Sketch {
+    if (!SketchRef.is(arg)) {
+      return false;
+    }
+    if (typeof arg === 'object') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const object = arg as any;
+      return (
+        'mainFileUri' in object &&
+        typeof object['mainFileUri'] === 'string' &&
+        'otherSketchFileUris' in object &&
+        Array.isArray(object['otherSketchFileUris']) &&
+        'additionalFileUris' in object &&
+        Array.isArray(object['additionalFileUris']) &&
+        'rootFolderFileUris' in object &&
+        Array.isArray(object['rootFolderFileUris'])
+      );
+    }
+    return false;
   }
   export namespace Extensions {
     export const MAIN = ['.ino', '.pde'];

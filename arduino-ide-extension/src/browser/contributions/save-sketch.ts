@@ -1,7 +1,6 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { SaveAsSketch } from './save-as-sketch';
 import {
   SketchContribution,
@@ -18,12 +17,6 @@ export class SaveSketch extends SketchContribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveSketch.Commands.SAVE_SKETCH, {
       execute: () => this.saveSketch(),
-    });
-    registry.registerCommand(SaveSketch.Commands.SAVE_SKETCH__TOOLBAR, {
-      isVisible: (widget) =>
-        ArduinoToolbar.is(widget) && widget.side === 'left',
-      execute: () =>
-        registry.executeCommand(SaveSketch.Commands.SAVE_SKETCH.id),
     });
   }
 
@@ -67,9 +60,6 @@ export namespace SaveSketch {
   export namespace Commands {
     export const SAVE_SKETCH: Command = {
       id: 'arduino-save-sketch',
-    };
-    export const SAVE_SKETCH__TOOLBAR: Command = {
-      id: 'arduino-save-sketch--toolbar',
     };
   }
 }

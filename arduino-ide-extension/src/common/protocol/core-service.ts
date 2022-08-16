@@ -108,6 +108,10 @@ export interface CoreService {
   compile(options: CoreService.Options.Compile): Promise<void>;
   upload(options: CoreService.Options.Upload): Promise<void>;
   burnBootloader(options: CoreService.Options.Bootloader): Promise<void>;
+  /**
+   * Refreshes the underling core gRPC client for the Arduino CLI.
+   */
+  refresh(): Promise<void>;
 }
 
 export namespace CoreService {

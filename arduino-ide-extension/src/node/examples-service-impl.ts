@@ -11,14 +11,10 @@ import {
   SketchContainer,
 } from '../common/protocol/sketches-service';
 import { ExamplesService } from '../common/protocol/examples-service';
-import {
-  LibraryLocation,
-  LibraryPackage,
-  LibraryService,
-} from '../common/protocol';
-import { duration } from '../common/decorators';
+import { LibraryLocation, LibraryPackage } from '../common/protocol';
 import { URI } from '@theia/core/lib/common/uri';
 import { Path } from '@theia/core/lib/common/path';
+import { LibraryServiceImpl } from './library-service-impl';
 
 interface BuiltInSketchRef {
   readonly name: string;
@@ -84,8 +80,8 @@ export class BuiltInExamplesServiceImpl {
 
 @injectable()
 export class ExamplesServiceImpl implements ExamplesService {
-  @inject(LibraryService)
-  private readonly libraryService: LibraryService;
+  @inject(LibraryServiceImpl)
+  private readonly libraryService: LibraryServiceImpl;
 
   @inject(BuiltInExamplesServiceImpl)
   private readonly builtInExamplesService: BuiltInExamplesServiceImpl;
@@ -94,7 +90,6 @@ export class ExamplesServiceImpl implements ExamplesService {
     return this.builtInExamplesService.builtIns();
   }
 
-  @duration()
   async installed({ fqbn }: { fqbn?: string }): Promise<{
     user: SketchContainer[];
     current: SketchContainer[];
