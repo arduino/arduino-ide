@@ -82,8 +82,10 @@ export class NotificationServiceServerImpl
     );
   }
 
-  notifyUploadInProgress(event: boolean): void {
-    this.clients.forEach((client) => client.notifyUploadInProgress(event));
+  notifyUploadAttemptInProgress(event: boolean): void {
+    this.clients.forEach((client) =>
+      client.notifyUploadAttemptInProgress(event)
+    );
   }
 
   setClient(client: NotificationServiceClient): void {

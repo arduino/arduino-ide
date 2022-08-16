@@ -66,7 +66,7 @@ export class NotificationCenter
   }>();
   private readonly onAppStateDidChangeEmitter =
     new Emitter<FrontendApplicationState>();
-  private readonly onUploadInProgressEmitter = new Emitter<boolean>();
+  private readonly onUploadAttemptInProgressEmitter = new Emitter<boolean>();
 
   protected readonly toDispose = new DisposableCollection(
     this.indexWillUpdateEmitter,
@@ -81,7 +81,7 @@ export class NotificationCenter
     this.libraryDidInstallEmitter,
     this.libraryDidUninstallEmitter,
     this.attachedBoardsDidChangeEmitter,
-    this.onUploadInProgressEmitter
+    this.onUploadAttemptInProgressEmitter
   );
 
   readonly onIndexDidUpdate = this.indexDidUpdateEmitter.event;
@@ -99,7 +99,8 @@ export class NotificationCenter
     this.attachedBoardsDidChangeEmitter.event;
   readonly onRecentSketchesDidChange = this.recentSketchesChangedEmitter.event;
   readonly onAppStateDidChange = this.onAppStateDidChangeEmitter.event;
-  readonly onUploadInProgress = this.onUploadInProgressEmitter.event;
+  readonly onUploadAttemptInProgress =
+    this.onUploadAttemptInProgressEmitter.event;
 
   @postConstruct()
   protected init(): void {
@@ -173,7 +174,7 @@ export class NotificationCenter
     this.recentSketchesChangedEmitter.fire(event);
   }
 
-  notifyUploadInProgress(event: boolean): void {
-    this.onUploadInProgressEmitter.fire(event);
+  notifyUploadAttemptInProgress(event: boolean): void {
+    this.onUploadAttemptInProgressEmitter.fire(event);
   }
 }

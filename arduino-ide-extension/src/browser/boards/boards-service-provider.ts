@@ -65,7 +65,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availablePorts: Port[] = [];
   protected _availableBoards: AvailableBoard[] = [];
 
-  private uploadInProgress = false;
+  private uploadAttemptInProgress = false;
 
   private lastItemRemovedForUpload: { board: Board; port: Port } | undefined;
   // "lastPersistingUploadPort", is a port created during an upload, that persisted after
@@ -87,8 +87,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   private readonly _reconciled = new Deferred<void>();
 
   onStart(): void {
-    this.notificationCenter.onUploadInProgress(
-      this.onUploadNotificationReceived.bind(this)
+    this.notificationCenter.onUploadAttemptInProgress(
+      this.onUploadAttemptEventReceived.bind(this)
     );
     this.notificationCenter.onAttachedBoardsDidChange(
       this.notifyAttachedBoardsChanged.bind(this)
@@ -121,8 +121,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._reconciled.promise;
   }
 
-  private onUploadNotificationReceived(uploadInProgress: boolean): void {
-    this.uploadInProgress = uploadInProgress;
+  private onUploadAttemptEventReceived(uploadAttemptInProgress: boolean): void {
+    this.uploadAttemptInProgress = uploadAttemptInProgress;
   }
 
   private checkForItemRemoved(event: AttachedBoardsChangeEvent): void {
@@ -192,7 +192,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.logger.info('------------------------------------------');
     }
 
-    if (this.uploadInProgress) {
+    if (this.uploadAttemptInProgress) {
       this.checkForItemRemoved(event);
     } else {
       this.checkForPersistingPort(event);
@@ -202,7 +202,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     this._availablePorts = event.newState.ports;
     this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
     this.reconcileAvailableBoards().then(() => {
-      if (!this.uploadInProgress) {
+      if (!this.uploadAttemptInProgress) {
         this.tryReconnect();
       }
     });
