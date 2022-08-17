@@ -22,6 +22,9 @@ import { nls } from '@theia/core/lib/common';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
+export const LATEST_VALID_BOARDS_CONFIG = 'latest-valid-boards-config';
+export const LATEST_BOARDS_CONFIG = 'latest-boards-config';
+
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
   @inject(ILogger)
@@ -642,8 +645,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       await this.setData(key, selectedBoard);
     }
     await Promise.all([
-      this.setData('latest-valid-boards-config', this.latestValidBoardsConfig),
-      this.setData('latest-boards-config', this.latestBoardsConfig),
+      this.setData(LATEST_VALID_BOARDS_CONFIG, this.latestValidBoardsConfig),
+      this.setData(LATEST_BOARDS_CONFIG, this.latestBoardsConfig),
     ]);
   }
 
@@ -657,7 +660,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected async loadState(): Promise<void> {
     const storedLatestValidBoardsConfig = await this.getData<
       RecursiveRequired<BoardsConfig.Config>
-    >('latest-valid-boards-config');
+    >(LATEST_VALID_BOARDS_CONFIG);
     if (storedLatestValidBoardsConfig) {
       this.latestValidBoardsConfig = storedLatestValidBoardsConfig;
       if (this.canUploadTo(this.latestValidBoardsConfig)) {
@@ -667,7 +670,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       // If we could not restore the latest valid config, try to restore something, the board at least.
       let storedLatestBoardsConfig = await this.getData<
         BoardsConfig.Config | undefined
-      >('latest-boards-config');
+      >(LATEST_BOARDS_CONFIG);
       // Try to get from the URL if it was not persisted.
       if (!storedLatestBoardsConfig) {
         storedLatestBoardsConfig = BoardsConfig.Config.getConfig(

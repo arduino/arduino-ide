@@ -63,3 +63,8 @@ export const anInstalledPackage: BoardsPackage = {
   ...aPackage,
   installedVersion: 'some.ver.sion',
 };
+
+export const emptyBoardConfig: BoardsConfig.Config = {
+  selectedBoard: undefined,
+  selectedPort: undefined,
+};
