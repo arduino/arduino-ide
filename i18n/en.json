@@ -6,7 +6,7 @@
     },
     "board": {
       "board": "Board{0}",
-      "boardConfigDialogTitle": "Select other board and port",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Board Info",
       "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",

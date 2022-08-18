@@ -89,7 +89,7 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
           className="arduino-boards-dropdown-item arduino-board-dropdown-footer"
           onClick={() => this.props.openBoardsConfig()}
         >
-          <div>{footerLabel}...</div>
+          <div>{footerLabel}</div>
         </div>
       </div>
     );

@@ -455,7 +455,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BoardsConfigDialogProps).toConstantValue({
     title: nls.localize(
       'arduino/board/boardConfigDialogTitle',
-      'Select other board and port'
+      'Select Other Board and Port'
     ),
   });
 
