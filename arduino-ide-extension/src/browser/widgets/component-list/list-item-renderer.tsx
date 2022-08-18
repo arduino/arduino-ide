@@ -5,6 +5,7 @@ import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { ComponentListItem } from './component-list-item';
 import { nls } from '@theia/core/lib/common';
+import { Unknown } from '../../../common/nls';
 
 @injectable()
 export class ListItemRenderer<T extends ArduinoComponent> {
@@ -42,11 +43,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     } else if ((item as any).id) {
       nameAndAuthor = <span className="name">{(item as any).id}</span>;
     } else {
-      nameAndAuthor = (
-        <span className="name">
-          {nls.localize('arduino/common/unknown', 'Unknown')}
-        </span>
-      );
+      nameAndAuthor = <span className="name">{Unknown}</span>;
     }
     const onClickUninstall = () => uninstall(item);
     const installedVersion = !!item.installedVersion && (

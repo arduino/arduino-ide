@@ -13,6 +13,7 @@ import {
   AttachedBoardsChangeEvent,
   BoardWithPackage,
   BoardUserField,
+  AvailablePorts,
 } from '../../common/protocol';
 import { BoardsConfig } from './boards-config';
 import { naturalCompare } from '../../common/utils';
@@ -21,6 +22,7 @@ import { StorageWrapper } from '../storage-wrapper';
 import { nls } from '@theia/core/lib/common';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { Unknown } from '../../common/nls';
 
 @injectable()
 export class BoardsServiceProvider implements FrontendApplicationContribution {
@@ -96,11 +98,12 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     );
 
     this.appStateService.reachedState('ready').then(async () => {
-      const [attachedBoards, availablePorts] = await Promise.all([
-        this.boardsService.getAttachedBoards(),
-        this.boardsService.getAvailablePorts(),
+      const [state] = await Promise.all([
+        this.boardsService.getState(),
         this.loadState(),
       ]);
+      const { boards: attachedBoards, ports: availablePorts } =
+        AvailablePorts.split(state);
       this._attachedBoards = attachedBoards;
       this._availablePorts = availablePorts;
       this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
@@ -558,7 +561,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         };
       } else {
         availableBoard = {
-          name: nls.localize('arduino/common/unknown', 'Unknown'),
+          name: Unknown,
           port: boardPort,
           state: AvailableBoard.State.incomplete,
         };

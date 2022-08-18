@@ -5,7 +5,7 @@ import { ArduinoComponent } from './arduino-component';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
-  export function byProtocol(
+  export function groupByProtocol(
     availablePorts: AvailablePorts
   ): Map<string, AvailablePorts> {
     const grouped = new Map<string, AvailablePorts>();
@@ -19,6 +19,21 @@ export namespace AvailablePorts {
       grouped.set(port.protocol, ports);
     }
     return grouped;
+  }
+  export function split(
+    state: AvailablePorts
+  ): Readonly<{ boards: Board[]; ports: Port[] }> {
+    const availablePorts: Port[] = [];
+    const attachedBoards: Board[] = [];
+    for (const key of Object.keys(state)) {
+      const [port, boards] = state[key];
+      availablePorts.push(port);
+      attachedBoards.push(...boards);
+    }
+    return {
+      boards: attachedBoards,
+      ports: availablePorts,
+    };
   }
 }
 
@@ -117,16 +132,6 @@ export const BoardsService = Symbol('BoardsService');
 export interface BoardsService
   extends Installable<BoardsPackage>,
     Searchable<BoardsPackage> {
-  /**
-   * Deprecated. `getState` should be used to correctly map a board with a port.
-   * @deprecated
-   */
-  getAttachedBoards(): Promise<Board[]>;
-  /**
-   * Deprecated. `getState` should be used to correctly map a board with a port.
-   * @deprecated
-   */
-  getAvailablePorts(): Promise<Port[]>;
   getState(): Promise<AvailablePorts>;
   getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
   getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
@@ -141,28 +146,55 @@ export interface BoardsService
 }
 
 export interface Port {
-  // id is the combination of address and protocol
-  // formatted like "<address>|<protocol>" used
-  // to uniquely recognize a port
-  readonly id: string;
   readonly address: string;
   readonly addressLabel: string;
   readonly protocol: string;
   readonly protocolLabel: string;
+  readonly properties?: Record<string, string>;
 }
 export namespace Port {
-  export function is(arg: any): arg is Port {
-    return (
-      !!arg &&
-      'address' in arg &&
-      typeof arg['address'] === 'string' &&
-      'protocol' in arg &&
-      typeof arg['protocol'] === 'string'
-    );
+  export type Properties = Record<string, string>;
+  export namespace Properties {
+    export function create(
+      properties: [string, string][] | undefined
+    ): Properties {
+      if (!properties) {
+        return {};
+      }
+      return properties.reduce((acc, curr) => {
+        const [key, value] = curr;
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
+    }
+  }
+  export function is(arg: unknown): arg is Port {
+    if (typeof arg === 'object') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const object = arg as any;
+      return (
+        'address' in object &&
+        typeof object['address'] === 'string' &&
+        'addressLabel' in object &&
+        typeof object['addressLabel'] === 'string' &&
+        'protocol' in object &&
+        typeof object['protocol'] === 'string' &&
+        'protocolLabel' in object &&
+        typeof object['protocolLabel'] === 'string'
+      );
+    }
+    return false;
   }
 
-  export function toString(port: Port): string {
-    return `${port.addressLabel} ${port.protocolLabel}`;
+  /**
+   * Key is the combination of address and protocol formatted like `'${address}|${protocol}'` used to uniquely identify a port.
+   */
+  export function keyOf({ address, protocol }: Port): string {
+    return `${address}|${protocol}`;
+  }
+
+  export function toString({ addressLabel, protocolLabel }: Port): string {
+    return `${addressLabel} ${protocolLabel}`;
   }
 
   export function compare(left: Port, right: Port): number {

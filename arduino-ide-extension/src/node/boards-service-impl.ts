@@ -6,7 +6,6 @@ import {
   Installable,
   BoardsPackage,
   Board,
-  Port,
   BoardDetails,
   Tool,
   ConfigOption,
@@ -63,14 +62,6 @@ export class BoardsServiceImpl
 
   async getState(): Promise<AvailablePorts> {
     return this.boardDiscovery.availablePorts;
-  }
-
-  async getAttachedBoards(): Promise<Board[]> {
-    return this.boardDiscovery.getAttachedBoards();
-  }
-
-  async getAvailablePorts(): Promise<Port[]> {
-    return this.boardDiscovery.getAvailablePorts();
   }
 
   async getBoardDetails(options: {

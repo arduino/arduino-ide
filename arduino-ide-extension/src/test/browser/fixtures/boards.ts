@@ -5,7 +5,6 @@ export const aBoard: Board = {
   fqbn: 'some:board:fqbn',
   name: 'Some Arduino Board',
   port: {
-    id: '/lol/port1234|serial',
     address: '/lol/port1234',
     addressLabel: '/lol/port1234',
     protocol: 'serial',
@@ -13,7 +12,6 @@ export const aBoard: Board = {
   },
 };
 export const aPort: Port = {
-  id: aBoard.port!.id,
   address: aBoard.port!.address,
   addressLabel: aBoard.port!.addressLabel,
   protocol: aBoard.port!.protocol,
@@ -27,7 +25,6 @@ export const anotherBoard: Board = {
   fqbn: 'another:board:fqbn',
   name: 'Another Arduino Board',
   port: {
-    id: '/kek/port5678|serial',
     address: '/kek/port5678',
     addressLabel: '/kek/port5678',
     protocol: 'serial',
@@ -35,7 +32,6 @@ export const anotherBoard: Board = {
   },
 };
 export const anotherPort: Port = {
-  id: anotherBoard.port!.id,
   address: anotherBoard.port!.address,
   addressLabel: anotherBoard.port!.addressLabel,
   protocol: anotherBoard.port!.protocol,

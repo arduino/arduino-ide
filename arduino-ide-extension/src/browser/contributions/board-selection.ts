@@ -331,7 +331,7 @@ PID: ${PID}`;
       }
     };
 
-    const grouped = AvailablePorts.byProtocol(availablePorts);
+    const grouped = AvailablePorts.groupByProtocol(availablePorts);
     let protocolOrder = 100;
     // We first show serial and network ports, then all the rest
     ['serial', 'network'].forEach((protocol) => {

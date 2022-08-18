@@ -25,7 +25,7 @@ import {
 import { ResponseService } from '../common/protocol/response-service';
 import { OutputMessage, Port, Status } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { Port as GrpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
 import { MonitorManager } from './monitor-manager';
 import { AutoFlushingBuffer } from './utils/buffers';
@@ -411,15 +411,20 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
   }
 
-  private createPort(port: Port | undefined): GrpcPort {
-    const grpcPort = new GrpcPort();
+  private createPort(port: Port | undefined): RpcPort {
+    const rpcPort = new RpcPort();
     if (port) {
-      grpcPort.setAddress(port.address);
-      grpcPort.setLabel(port.addressLabel);
-      grpcPort.setProtocol(port.protocol);
-      grpcPort.setProtocolLabel(port.protocolLabel);
+      rpcPort.setAddress(port.address);
+      rpcPort.setLabel(port.addressLabel);
+      rpcPort.setProtocol(port.protocol);
+      rpcPort.setProtocolLabel(port.protocolLabel);
+      if (port.properties) {
+        for (const [key, value] of Object.entries(port.properties)) {
+          rpcPort.getPropertiesMap().set(key, value);
+        }
+      }
     }
-    return grpcPort;
+    return rpcPort;
   }
 }
 type StreamingResponse =

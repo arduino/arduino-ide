@@ -12,7 +12,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
 import { CoreClientAware } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
-import { Port as gRPCPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { Port as RpcPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
   MonitorSettings,
   PluggableMonitorSettings,
@@ -193,10 +193,10 @@ export class MonitorService extends CoreClientAware implements Disposable {
       monitorRequest.setFqbn(this.board.fqbn);
     }
     if (this.port?.address && this.port?.protocol) {
-      const port = new gRPCPort();
-      port.setAddress(this.port.address);
-      port.setProtocol(this.port.protocol);
-      monitorRequest.setPort(port);
+      const rpcPort = new RpcPort();
+      rpcPort.setAddress(this.port.address);
+      rpcPort.setProtocol(this.port.protocol);
+      monitorRequest.setPort(rpcPort);
     }
     const config = new MonitorPortConfiguration();
     for (const id in this.settings.pluggableMonitorSettings) {

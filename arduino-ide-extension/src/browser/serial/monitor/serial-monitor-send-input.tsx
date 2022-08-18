@@ -5,6 +5,7 @@ import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
+import { Unknown } from '../../../common/nls';
 
 export namespace SerialMonitorSendInput {
   export interface Props {
@@ -86,8 +87,8 @@ export class SerialMonitorSendInput extends React.Component<
         ? Board.toString(board, {
             useFqbn: false,
           })
-        : 'unknown',
-      port ? port.address : 'unknown'
+        : Unknown,
+      port ? port.address : Unknown
     );
   }
 
