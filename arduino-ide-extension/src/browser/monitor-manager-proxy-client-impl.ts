@@ -145,7 +145,10 @@ export class MonitorManagerProxyClientImpl
             if (
               selectedBoard?.fqbn !==
                 this.lastConnectedBoard?.selectedBoard?.fqbn ||
-              selectedPort?.id !== this.lastConnectedBoard?.selectedPort?.id
+              Port.keyOf(selectedPort) !==
+                (this.lastConnectedBoard.selectedPort
+                  ? Port.keyOf(this.lastConnectedBoard.selectedPort)
+                  : undefined)
             ) {
               this.onMonitorShouldResetEmitter.fire(null);
               this.lastConnectedBoard = {

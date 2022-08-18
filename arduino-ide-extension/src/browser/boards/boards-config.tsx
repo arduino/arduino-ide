@@ -354,7 +354,7 @@ export class BoardsConfig extends React.Component<
       <div className="ports list">
         {ports.map((port) => (
           <Item<Port>
-            key={`${port.id}`}
+            key={`${Port.keyOf(port)}`}
             item={port}
             label={Port.toString(port)}
             selected={Port.sameAs(this.state.selectedPort, port)}

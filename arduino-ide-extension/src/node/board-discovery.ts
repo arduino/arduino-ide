@@ -1,27 +1,30 @@
-import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { ClientDuplexStream } from '@grpc/grpc-js';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
-import { CoreClientAware } from './core-client-provider';
+import { Deferred } from '@theia/core/lib/common/promise-util';
+import { BackendApplicationContribution } from '@theia/core/lib/node';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
+import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
+import { v4 } from 'uuid';
+import { Unknown } from '../common/nls';
+import {
+  AttachedBoardsChangeEvent,
+  AvailablePorts,
+  Board,
+  NotificationServiceServer,
+  Port,
+} from '../common/protocol';
 import {
   BoardListWatchRequest,
   BoardListWatchResponse,
+  DetectedPort as RpcDetectedPort,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
-import {
-  Board,
-  Port,
-  NotificationServiceServer,
-  AvailablePorts,
-  AttachedBoardsChangeEvent,
-} from '../common/protocol';
-import { Emitter, Event } from '@theia/core/lib/common/event';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { v4 } from 'uuid';
+import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { CoreClientAware } from './core-client-provider';
 import { ServiceError } from './service-error';
-import { BackendApplicationContribution } from '@theia/core/lib/node';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 
 type Duplex = ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse>;
 interface StreamWrapper extends Disposable {
@@ -125,8 +128,8 @@ export class BoardDiscovery
     });
   }
 
-  setUploadInProgress(uploadAttemptInProgress: boolean): void {
-    this.uploadInProgress = uploadAttemptInProgress;
+  setUploadInProgress(uploadInProgress: boolean): void {
+    this.uploadInProgress = uploadInProgress;
   }
 
   private createTimeout(
@@ -216,7 +219,7 @@ export class BoardDiscovery
     } else {
       throw new Error(`Unhandled object type: ${arg}`);
     }
-    return JSON.stringify(object);
+    return JSON.stringify(object, null, 2); // TODO: remove `space`?
   }
 
   async start(): Promise<void> {
@@ -234,103 +237,7 @@ export class BoardDiscovery
     this.logger.info('start new deferred');
     const { client, instance } = await this.coreClient;
     const wrapper = await this.createWrapper(client);
-    wrapper.stream.on('data', async (resp: BoardListWatchResponse) => {
-      this.logger.info('onData', this.toJson(resp));
-      if (resp.getEventType() === 'quit') {
-        this.logger.info('quit received');
-        this.stop();
-        return;
-      }
-
-      const detectedPort = resp.getPort();
-      if (detectedPort) {
-        let eventType: 'add' | 'remove' | 'unknown' = 'unknown';
-        if (resp.getEventType() === 'add') {
-          eventType = 'add';
-        } else if (resp.getEventType() === 'remove') {
-          eventType = 'remove';
-        } else {
-          eventType = 'unknown';
-        }
-
-        if (eventType === 'unknown') {
-          throw new Error(`Unexpected event type: '${resp.getEventType()}'`);
-        }
-
-        const oldState = deepClone(this._availablePorts);
-        const newState = deepClone(this._availablePorts);
-
-        const address = (detectedPort as any).getPort().getAddress();
-        const protocol = (detectedPort as any).getPort().getProtocol();
-        // Different discoveries can detect the same port with different
-        // protocols, so we consider the combination of address and protocol
-        // to be the id of a certain port to distinguish it from others.
-        // If we'd use only the address of a port to store it in a map
-        // we can have conflicts the same port is found with multiple
-        // protocols.
-        const portID = `${address}|${protocol}`;
-        const label = (detectedPort as any).getPort().getLabel();
-        const protocolLabel = (detectedPort as any)
-          .getPort()
-          .getProtocolLabel();
-        const port = {
-          id: portID,
-          address,
-          addressLabel: label,
-          protocol,
-          protocolLabel,
-        };
-        const boards: Board[] = [];
-        for (const item of detectedPort.getMatchingBoardsList()) {
-          boards.push({
-            fqbn: item.getFqbn(),
-            name: item.getName() || 'unknown',
-            port,
-          });
-        }
-
-        if (eventType === 'add') {
-          if (newState[portID]) {
-            const [, knownBoards] = newState[portID];
-            this.logger.warn(
-              `Port '${Port.toString(
-                port
-              )}' was already available. Known boards before override: ${JSON.stringify(
-                knownBoards
-              )}`
-            );
-          }
-          newState[portID] = [port, boards];
-        } else if (eventType === 'remove') {
-          if (!newState[portID]) {
-            this.logger.warn(
-              `Port '${Port.toString(port)}' was not available. Skipping`
-            );
-            return;
-          }
-          delete newState[portID];
-        }
-
-        const oldAvailablePorts = this.getAvailablePorts(oldState);
-        const oldAttachedBoards = this.getAttachedBoards(oldState);
-        const newAvailablePorts = this.getAvailablePorts(newState);
-        const newAttachedBoards = this.getAttachedBoards(newState);
-        const event: AttachedBoardsChangeEvent = {
-          oldState: {
-            ports: oldAvailablePorts,
-            boards: oldAttachedBoards,
-          },
-          newState: {
-            ports: newAvailablePorts,
-            boards: newAttachedBoards,
-          },
-          uploadInProgress: this.uploadInProgress,
-        };
-
-        this._availablePorts = newState;
-        this.notificationService.notifyAttachedBoardsDidChange(event);
-      }
-    });
+    wrapper.stream.on('data', (resp) => this.onBoardListWatchResponse(resp));
     this.logger.info('start request start watch');
     await this.requestStartWatch(
       new BoardListWatchRequest().setInstance(instance),
@@ -341,21 +248,124 @@ export class BoardDiscovery
     this.logger.info('start resolved watching');
   }
 
-  getAttachedBoards(state: AvailablePorts = this.availablePorts): Board[] {
-    const attachedBoards: Board[] = [];
-    for (const portID of Object.keys(state)) {
-      const [, boards] = state[portID];
-      attachedBoards.push(...boards);
+  // XXX: make this `protected` and override for tests if IDE2 wants to mock events from the CLI.
+  private onBoardListWatchResponse(resp: BoardListWatchResponse): void {
+    this.logger.info(this.toJson(resp));
+    const eventType = EventType.parse(resp.getEventType());
+
+    if (eventType === EventType.Quit) {
+      this.logger.info('quit received');
+      this.stop();
+      return;
     }
-    return attachedBoards;
+
+    const detectedPort = resp.getPort();
+    if (detectedPort) {
+      const { port, boards } = this.fromRpc(detectedPort);
+      if (!port) {
+        if (!!boards.length) {
+          console.warn(
+            `Could not detect the port, but unexpectedly received discovered boards. This is most likely a bug! Response was: ${this.toJson(
+              resp
+            )}`
+          );
+        }
+        return;
+      }
+      const oldState = deepClone(this._availablePorts);
+      const newState = deepClone(this._availablePorts);
+      const key = Port.keyOf(port);
+
+      if (eventType === EventType.Add) {
+        if (newState[key]) {
+          const [, knownBoards] = newState[key];
+          this.logger.warn(
+            `Port '${Port.toString(
+              port
+            )}' was already available. Known boards before override: ${JSON.stringify(
+              knownBoards
+            )}`
+          );
+        }
+        newState[key] = [port, boards];
+      } else if (eventType === EventType.Remove) {
+        if (!newState[key]) {
+          this.logger.warn(
+            `Port '${Port.toString(port)}' was not available. Skipping`
+          );
+          return;
+        }
+        delete newState[key];
+      }
+
+      const event: AttachedBoardsChangeEvent = {
+        oldState: {
+          ...AvailablePorts.split(oldState),
+        },
+        newState: {
+          ...AvailablePorts.split(newState),
+        },
+        uploadInProgress: this.uploadInProgress,
+      };
+
+      this._availablePorts = newState;
+      this.notificationService.notifyAttachedBoardsDidChange(event);
+    }
   }
 
-  getAvailablePorts(state: AvailablePorts = this.availablePorts): Port[] {
-    const availablePorts: Port[] = [];
-    for (const portID of Object.keys(state)) {
-      const [port] = state[portID];
-      availablePorts.push(port);
-    }
-    return availablePorts;
+  private fromRpc(detectedPort: RpcDetectedPort): DetectedPort {
+    const rpcPort = detectedPort.getPort();
+    const port = rpcPort && this.fromRpcPort(rpcPort);
+    const boards = detectedPort.getMatchingBoardsList().map(
+      (board) =>
+        ({
+          fqbn: board.getFqbn(),
+          name: board.getName() || Unknown,
+          port,
+        } as Board)
+    );
+    return {
+      boards,
+      port,
+    };
   }
+
+  private fromRpcPort(rpcPort: RpcPort): Port {
+    const port = {
+      address: rpcPort.getAddress(),
+      addressLabel: rpcPort.getLabel(),
+      protocol: rpcPort.getProtocol(),
+      protocolLabel: rpcPort.getProtocolLabel(),
+      properties: Port.Properties.create(rpcPort.getPropertiesMap().toObject()),
+    };
+    return port;
+  }
+}
+
+enum EventType {
+  Add,
+  Remove,
+  Quit,
+}
+namespace EventType {
+  export function parse(type: string): EventType {
+    const normalizedType = type.toLowerCase();
+    switch (normalizedType) {
+      case 'add':
+        return EventType.Add;
+      case 'remove':
+        return EventType.Remove;
+      case 'quit':
+        return EventType.Quit;
+      default:
+        throw new Error(
+          `Unexpected 'BoardListWatchResponse' event type: '${type}.'`
+        );
+    }
+  }
+}
+
+interface DetectedPort {
+  port: Port | undefined;
+  boards: Board[];
 }

@@ -3,6 +3,7 @@ import { sha256 } from 'hash.js';
 import { randomBytes } from 'crypto';
 import btoa = require('btoa'); // TODO: check why we cannot
 import { AuthenticationSession } from './types';
+import { Unknown } from '../../common/nls';
 
 export interface IToken {
   accessToken: string; // When unable to refresh due to network problems, the access token becomes undefined
@@ -62,10 +63,10 @@ export function token2IToken(token: Token): IToken {
     sessionId: parsedIdToken.sub,
     scope: token.scope,
     account: {
-      id: parsedIdToken.sub || 'unknown',
-      email: parsedIdToken.email || 'unknown',
-      nickname: parsedIdToken.nickname || 'unknown',
-      picture: parsedIdToken.picture || 'unknown',
+      id: parsedIdToken.sub || Unknown,
+      email: parsedIdToken.email || Unknown,
+      nickname: parsedIdToken.nickname || Unknown,
+      picture: parsedIdToken.picture || Unknown,
     },
   };
 }
