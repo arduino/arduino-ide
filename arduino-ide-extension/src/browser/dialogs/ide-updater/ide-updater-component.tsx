@@ -1,4 +1,3 @@
-import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { nls } from '@theia/core/lib/common';
 import { shell } from 'electron';
 import * as React from '@theia/core/shared/react';
@@ -7,36 +6,32 @@ import ReactMarkdown from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
 
-export type IDEUpdaterComponentProps = {
-  updateInfo: UpdateInfo;
-  windowService: WindowService;
+export interface UpdateProgress {
+  progressInfo?: ProgressInfo | undefined;
   downloadFinished?: boolean;
   downloadStarted?: boolean;
-  progress?: ProgressInfo;
   error?: Error;
-  onDownload: () => void;
-  onClose: () => void;
-  onSkipVersion: () => void;
-  onCloseAndInstall: () => void;
-};
+}
+
+export interface IDEUpdaterComponentProps {
+  updateInfo: UpdateInfo;
+  updateProgress: UpdateProgress;
+}
 
 export const IDEUpdaterComponent = ({
-  updateInfo: { version, releaseNotes },
-  downloadStarted = false,
-  downloadFinished = false,
-  windowService,
-  progress,
-  error,
-  onDownload,
-  onClose,
-  onSkipVersion,
-  onCloseAndInstall,
+  updateInfo,
+  updateProgress: {
+    downloadStarted = false,
+    downloadFinished = false,
+    progressInfo,
+    error,
+  },
 }: IDEUpdaterComponentProps): React.ReactElement => {
-  const changelogDivRef = React.useRef() as React.MutableRefObject<
-    HTMLDivElement
-  >;
+  const { version, releaseNotes } = updateInfo;
+  const changelogDivRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>;
   React.useEffect(() => {
-    if (!!releaseNotes) {
+    if (!!releaseNotes && changelogDivRef.current) {
       let changelog: string;
       if (typeof releaseNotes === 'string') changelog = releaseNotes;
       else
@@ -58,12 +53,7 @@ export const IDEUpdaterComponent = ({
         changelogDivRef.current
       );
     }
-  }, [releaseNotes]);
-  const closeButton = (
-    <button onClick={onClose} type="button" className="theia-button secondary">
-      {nls.localize('arduino/ide-updater/notNowButton', 'Not now')}
-    </button>
-  );
+  }, [updateInfo]);
 
   const DownloadCompleted: () => React.ReactElement = () => (
     <div className="ide-updater-dialog--downloaded">
@@ -80,19 +70,6 @@ export const IDEUpdaterComponent = ({
           'Close the software and install the update on your machine.'
         )}
       </div>
-      <div className="buttons-container">
-        {closeButton}
-        <button
-          onClick={onCloseAndInstall}
-          type="button"
-          className="theia-button close-and-install"
-        >
-          {nls.localize(
-            'arduino/ide-updater/closeAndInstallButton',
-            'Close and Install'
-          )}
-        </button>
-      </div>
     </div>
   );
 
@@ -104,7 +81,7 @@ export const IDEUpdaterComponent = ({
           'Downloading the latest version of the Arduino IDE.'
         )}
       </div>
-      <ProgressBar percent={progress?.percent} showPercentage />
+      <ProgressBar percent={progressInfo?.percent} showPercentage />
     </div>
   );
 
@@ -130,45 +107,13 @@ export const IDEUpdaterComponent = ({
           )}
         </div>
         {releaseNotes && (
-          <div className="dialogRow">
-            <div className="changelog-container" ref={changelogDivRef} />
+          <div className="dialogRow changelog-container">
+            <div className="changelog" ref={changelogDivRef} />
           </div>
         )}
-        <div className="buttons-container">
-          <button
-            onClick={onSkipVersion}
-            type="button"
-            className="theia-button secondary skip-version"
-          >
-            {nls.localize(
-              'arduino/ide-updater/skipVersionButton',
-              'Skip Version'
-            )}
-          </button>
-          <div className="push"></div>
-          {closeButton}
-          <button
-            onClick={onDownload}
-            type="button"
-            className="theia-button primary"
-          >
-            {nls.localize('arduino/ide-updater/downloadButton', 'Download')}
-          </button>
-        </div>
       </div>
     </div>
   );
-
-  const onGoToDownloadClick = (
-    event: React.SyntheticEvent<HTMLAnchorElement, Event>
-  ) => {
-    const { target } = event.nativeEvent;
-    if (target instanceof HTMLAnchorElement) {
-      event.nativeEvent.preventDefault();
-      windowService.openNewWindow(target.href, { external: true });
-      onClose();
-    }
-  };
 
   const GoToDownloadPage: () => React.ReactElement = () => (
     <div className="ide-updater-dialog--go-to-download-page">
@@ -177,19 +122,6 @@ export const IDEUpdaterComponent = ({
           'arduino/ide-updater/goToDownloadPage',
           "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there."
         )}
-      </div>
-      <div className="buttons-container">
-        {closeButton}
-        <a
-          className="theia-button primary"
-          href="https://www.arduino.cc/en/software#experimental-software"
-          onClick={onGoToDownloadClick}
-        >
-          {nls.localize(
-            'arduino/ide-updater/goToDownloadButton',
-            'Go To Download'
-          )}
-        </a>
       </div>
     </div>
   );

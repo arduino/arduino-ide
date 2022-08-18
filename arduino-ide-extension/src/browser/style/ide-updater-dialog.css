@@ -1,4 +1,4 @@
-.ide-updater-dialog {
+#ide-updater-dialog-container > .dialogBlock {
   width: 546px;
 }
 
@@ -8,6 +8,10 @@
 
 .ide-updater-dialog--pre-download {
   display: flex;
+}
+
+.ide-updater-dialog--downloading {
+  flex: 1;
 }
 
 .ide-updater-dialog--logo-container {
@@ -23,37 +27,49 @@
 .dialogContent.ide-updater-dialog
   .ide-updater-dialog--content
   .ide-updater-dialog--new-version-text.dialogSection {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   margin-top: 0;
+  min-width: 0;
 }
 
-.ide-updater-dialog .changelog-container {
+.ide-updater-dialog .changelog {
   color: var(--theia-editor-foreground);
   background-color: var(--theia-editor-background);
-  border: 1px solid var(--theia-editorWidget-border);
-  border-radius: 2px;
   font-size: 12px;
-  height: 180px;
   overflow: auto;
   padding: 0 12px;
   cursor: text;
 }
 
-.ide-updater-dialog .changelog-container a {
+.dialogContent.ide-updater-dialog
+  .ide-updater-dialog--content
+  .ide-updater-dialog--new-version-text
+  .dialogRow.changelog-container {
+  align-items: flex-start;
+  border: 1px solid var(--theia-editorWidget-border);
+  border-radius: 2px;
+  overflow: auto;
+  max-height: 180px;
+}
+
+.ide-updater-dialog .changelog a {
   color: var(--theia-textLink-foreground);
 }
 
-.ide-updater-dialog .changelog-container a:hover {
+.ide-updater-dialog .changelog a:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
-.ide-updater-dialog .changelog-container code {
+.ide-updater-dialog .changelog code {
   background: var(--theia-textBlockQuote-background);
   border-radius: 2px;
   padding: 0 2px;
 }
 
-.ide-updater-dialog .changelog-container a code {
+.ide-updater-dialog .changelog a code {
   color: var(--theia-textLink-foreground);
 }
 
@@ -75,5 +91,16 @@
 }
 
 .ide-updater-dialog .buttons-container .push {
+  margin-right: auto;
+}
+
+.ide-updater-dialog--content {
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+#ide-updater-dialog-container .skip-version-button {
+  margin-left: 79px;
   margin-right: auto;
 }

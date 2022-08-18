@@ -7,14 +7,22 @@ interface SettingsStepInputProps {
   step: number;
   maxValue: number;
   minValue: number;
+  unitOfMeasure?: string;
   classNames?: { [key: string]: string };
 }
 
 const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   props: SettingsStepInputProps
 ) => {
-  const { value, setSettingsStateValue, step, maxValue, minValue, classNames } =
-    props;
+  const {
+    value,
+    setSettingsStateValue,
+    step,
+    maxValue,
+    minValue,
+    unitOfMeasure,
+    classNames,
+  } = props;
 
   const clamp = (value: number, min: number, max: number): number => {
     return Math.min(Math.max(value, min), max);
@@ -86,6 +94,7 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
           &#9662;
         </button>
       </div>
+      {unitOfMeasure && `${unitOfMeasure}`}
     </div>
   );
 };

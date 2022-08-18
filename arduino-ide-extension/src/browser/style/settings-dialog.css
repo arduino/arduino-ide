@@ -21,6 +21,7 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
+    flex-wrap: wrap;
 }
 
 .arduino-settings-dialog .with-margin {

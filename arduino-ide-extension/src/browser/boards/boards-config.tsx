@@ -258,14 +258,14 @@ export class BoardsConfig extends React.Component<
 
   override render(): React.ReactNode {
     return (
-      <div className="body">
+      <>
         {this.renderContainer('boards', this.renderBoards.bind(this))}
         {this.renderContainer(
           'ports',
           this.renderPorts.bind(this),
           this.renderPortsFooter.bind(this)
         )}
-      </div>
+      </>
     );
   }
 

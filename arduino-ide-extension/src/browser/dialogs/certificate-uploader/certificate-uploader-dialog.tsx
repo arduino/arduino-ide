@@ -1,5 +1,9 @@
 import * as React from '@theia/core/shared/react';
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../../theia/dialogs/dialogs';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
@@ -153,6 +157,7 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
         'Upload SSL Root Certificates'
       ),
     });
+    this.node.id = 'certificate-uploader-dialog-container';
     this.contentNode.classList.add('certificate-uploader-dialog');
     this.acceptButton = undefined;
   }

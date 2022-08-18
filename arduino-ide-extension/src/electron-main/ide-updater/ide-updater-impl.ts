@@ -19,13 +19,13 @@ export class IDEUpdaterImpl implements IDEUpdater {
 
   constructor() {
     this.updater.on('checking-for-update', (e) => {
-      this.clients.forEach((c) => c.notifyCheckingForUpdate(e));
+      this.clients.forEach((c) => c.notifyCheckedForUpdate(e));
     });
     this.updater.on('update-available', (e) => {
-      this.clients.forEach((c) => c.notifyUpdateAvailable(e));
+      this.clients.forEach((c) => c.notifyUpdateAvailableFound(e));
     });
     this.updater.on('update-not-available', (e) => {
-      this.clients.forEach((c) => c.notifyUpdateNotAvailable(e));
+      this.clients.forEach((c) => c.notifyUpdateAvailableNotFound(e));
     });
     this.updater.on('download-progress', (e) => {
       this.clients.forEach((c) => c.notifyDownloadProgressChanged(e));
@@ -34,7 +34,7 @@ export class IDEUpdaterImpl implements IDEUpdater {
       this.clients.forEach((c) => c.notifyDownloadFinished(e));
     });
     this.updater.on('error', (e) => {
-      this.clients.forEach((c) => c.notifyError(e));
+      this.clients.forEach((c) => c.notifyUpdaterFailed(e));
     });
   }
 
@@ -58,10 +58,8 @@ export class IDEUpdaterImpl implements IDEUpdater {
       this.isAlreadyChecked = true;
     }
 
-    const {
-      updateInfo,
-      cancellationToken,
-    } = await this.updater.checkForUpdates();
+    const { updateInfo, cancellationToken } =
+      await this.updater.checkForUpdates();
 
     this.cancellationToken = cancellationToken;
     if (this.updater.currentVersion.compare(updateInfo.version) === -1) {
@@ -104,7 +102,7 @@ export class IDEUpdaterImpl implements IDEUpdater {
       await this.updater.downloadUpdate(this.cancellationToken);
     } catch (e) {
       if (e.message === 'cancelled') return;
-      this.clients.forEach((c) => c.notifyError(e));
+      this.clients.forEach((c) => c.notifyUpdaterFailed(e));
     }
   }
 
