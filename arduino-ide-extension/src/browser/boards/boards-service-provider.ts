@@ -59,10 +59,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
    * We have to listen on such changes and auto-reconnect the same board on another port.
    * See: https://arduino.slack.com/archives/CJJHJCJSJ/p1568645417013000?thread_ts=1568640504.009400&cid=CJJHJCJSJ
    */
-  protected latestValidBoardsConfig:
+  protected _latestValidBoardsConfig:
     | RecursiveRequired<BoardsConfig.Config>
     | undefined = undefined;
-  protected latestBoardsConfig: BoardsConfig.Config | undefined = undefined;
+  protected _latestBoardsConfig: BoardsConfig.Config | undefined = undefined;
   protected _boardsConfig: BoardsConfig.Config = {};
   protected _attachedBoards: Board[] = []; // This does not contain the `Unknown` boards. They're visible from the available ports only.
   protected _availablePorts: Port[] = [];
@@ -304,16 +304,16 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   }
 
   protected tryReconnect(): boolean {
-    if (this.latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
+    if (this._latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
       for (const board of this.availableBoards.filter(
         ({ state }) => state !== AvailableBoard.State.incomplete
       )) {
         if (
-          this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
-          Port.sameAs(this.latestValidBoardsConfig.selectedPort, board.port)
+          this._latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
+          this._latestValidBoardsConfig.selectedBoard.name === board.name &&
+          Port.sameAs(this._latestValidBoardsConfig.selectedPort, board.port)
         ) {
-          this.boardsConfig = this.latestValidBoardsConfig;
+          this.boardsConfig = this._latestValidBoardsConfig;
           return true;
         }
       }
@@ -338,13 +338,13 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         ({ state }) => state !== AvailableBoard.State.incomplete
       )) {
         if (
-          this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
-          this.latestValidBoardsConfig.selectedPort.protocol ===
+          this._latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
+          this._latestValidBoardsConfig.selectedBoard.name === board.name &&
+          this._latestValidBoardsConfig.selectedPort.protocol ===
             board.port?.protocol
         ) {
           this.boardsConfig = {
-            ...this.latestValidBoardsConfig,
+            ...this._latestValidBoardsConfig,
             selectedPort: board.port,
           };
           return true;
@@ -367,12 +367,22 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._boardsConfig;
   }
 
+  get latestValidBoardsConfig():
+    | RecursiveRequired<BoardsConfig.Config>
+    | undefined {
+    return this._latestValidBoardsConfig;
+  }
+
+  get latestBoardsConfig(): BoardsConfig.Config | undefined {
+    return this._latestBoardsConfig;
+  }
+
   protected setBoardsConfig(config: BoardsConfig.Config): void {
     this.logger.debug('Board config changed: ', JSON.stringify(config));
     this._boardsConfig = config;
-    this.latestBoardsConfig = this._boardsConfig;
+    this._latestBoardsConfig = this._boardsConfig;
     if (this.canUploadTo(this._boardsConfig)) {
-      this.latestValidBoardsConfig = this._boardsConfig;
+      this._latestValidBoardsConfig = this._boardsConfig;
     }
   }
 
@@ -630,7 +640,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected async getLastSelectedBoardOnPort(
     port: Port
   ): Promise<Board | undefined> {
-    const key = this.getLastSelectedBoardOnPortKey(port);
+    const key = getLastSelectedBoardOnPortKey(port);
     return this.getData<Board>(key);
   }
 
@@ -641,20 +651,13 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     // https://github.com/arduino/arduino-cli/issues/623
     const { selectedBoard, selectedPort } = this.boardsConfig;
     if (selectedBoard && selectedPort) {
-      const key = this.getLastSelectedBoardOnPortKey(selectedPort);
+      const key = getLastSelectedBoardOnPortKey(selectedPort);
       await this.setData(key, selectedBoard);
     }
     await Promise.all([
-      this.setData(LATEST_VALID_BOARDS_CONFIG, this.latestValidBoardsConfig),
-      this.setData(LATEST_BOARDS_CONFIG, this.latestBoardsConfig),
+      this.setData(LATEST_VALID_BOARDS_CONFIG, this._latestValidBoardsConfig),
+      this.setData(LATEST_BOARDS_CONFIG, this._latestBoardsConfig),
     ]);
-  }
-
-  protected getLastSelectedBoardOnPortKey(port: Port | string): string {
-    // TODO: we lose the port's `protocol` info (`serial`, `network`, etc.) here if the `port` is a `string`.
-    return `last-selected-board-on-port:${
-      typeof port === 'string' ? port : port.address
-    }`;
   }
 
   protected async loadState(): Promise<void> {
@@ -662,9 +665,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       RecursiveRequired<BoardsConfig.Config>
     >(LATEST_VALID_BOARDS_CONFIG);
     if (storedLatestValidBoardsConfig) {
-      this.latestValidBoardsConfig = storedLatestValidBoardsConfig;
-      if (this.canUploadTo(this.latestValidBoardsConfig)) {
-        this.boardsConfig = this.latestValidBoardsConfig;
+      this._latestValidBoardsConfig = storedLatestValidBoardsConfig;
+      if (this.canUploadTo(this._latestValidBoardsConfig)) {
+        this.boardsConfig = this._latestValidBoardsConfig;
       }
     } else {
       // If we could not restore the latest valid config, try to restore something, the board at least.
@@ -678,8 +681,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         );
       }
       if (storedLatestBoardsConfig) {
-        this.latestBoardsConfig = storedLatestBoardsConfig;
-        this.boardsConfig = this.latestBoardsConfig;
+        this._latestBoardsConfig = storedLatestBoardsConfig;
+        this.boardsConfig = this._latestBoardsConfig;
       }
     }
   }
@@ -773,4 +776,11 @@ export namespace AvailableBoard {
     }
     return naturalCompare(left.port?.address!, right.port?.address!);
   };
+}
+
+export function getLastSelectedBoardOnPortKey(port: Port | string): string {
+  // TODO: we lose the port's `protocol` info (`serial`, `network`, etc.) here if the `port` is a `string`.
+  return `last-selected-board-on-port:${
+    typeof port === 'string' ? port : port.address
+  }`;
 }
