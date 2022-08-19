@@ -213,7 +213,7 @@ describe.only('BoardsServiceProvider', () => {
         .setup((b) => b.getAttachedBoards())
         .returns(async () => [aBoard]);
     });
-    context('and there is one unrecognized devicec available on a port', () => {
+    context('and there is one unrecognized device available on a port', () => {
       beforeEach(async () => {
         boardsService
           .setup((b) => b.getAvailablePorts())
@@ -244,8 +244,8 @@ describe.only('BoardsServiceProvider', () => {
               () => {
                 beforeEach(async () => {
                   subject.boardsConfig = {
-                    selectedBoard: { ...aBoard, port: anotherPort },
-                    selectedPort: anotherPort,
+                    selectedBoard: aBoard,
+                    selectedPort: aPort,
                   };
                   await tick();
                 });
@@ -268,7 +268,7 @@ describe.only('BoardsServiceProvider', () => {
                     });
 
                     it('board should remain selected with NO port selected', async () => {
-                      expect(subject.boardsConfig).to.equal({
+                      expect(subject.boardsConfig).to.deep.equal({
                         selectedBoard: aBoard,
                         selectedPort: undefined,
                       });
@@ -286,13 +286,13 @@ describe.only('BoardsServiceProvider', () => {
                               boards: [],
                               ports: [anotherPort],
                             },
-                            uploadInProgress: true,
+                            uploadInProgress: false,
                           });
                           await tick();
                         });
 
                         it('board should remain selected with NO port selected', async () => {
-                          expect(subject.boardsConfig).to.equal({
+                          expect(subject.boardsConfig).to.deep.equal({
                             selectedBoard: aBoard,
                             selectedPort: aPort,
                           });
