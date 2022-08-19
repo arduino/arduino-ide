@@ -328,7 +328,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       if (
         !Port.sameAs(
           lastPersistingUploadPort,
-          this.latestValidBoardsConfig.selectedPort
+          this._latestValidBoardsConfig.selectedPort
         )
       ) {
         return false;

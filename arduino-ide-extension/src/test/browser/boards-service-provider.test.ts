@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { enableJSDOM } from '@theia/core/lib/browser/test/jsdom';
 enableJSDOM();
 
@@ -134,6 +133,7 @@ describe.only('BoardsServiceProvider', () => {
               boards: [],
               ports: [],
             },
+            uploadInProgress: false,
           });
         });
 
@@ -249,50 +249,58 @@ describe.only('BoardsServiceProvider', () => {
                   };
                   await tick();
                 });
-                context('and the recognized board gets unplugged', () => {
-                  beforeEach(async () => {
-                    attachedBoardsChange({
-                      newState: {
-                        boards: [],
-                        ports: [anotherPort],
-                      },
-                      oldState: {
-                        boards: [aBoard],
-                        ports: [aPort, anotherPort],
-                      },
-                    });
-                    await tick();
-                  });
-
-                  it('board should remain selected with NO port selected', async () => {
-                    expect(subject.boardsConfig).to.equal({
-                      selectedBoard: aBoard,
-                      selectedPort: undefined,
-                    });
-                  });
-                  context('and the recognized board gets plugged in again into the same port', () => {
+                context(
+                  'and the recognized board gets unplugged because of an upload in progress',
+                  () => {
                     beforeEach(async () => {
                       attachedBoardsChange({
                         newState: {
-                          boards: [aBoard],
-                          ports: [aPort, anotherPort],
-                        },
-                        oldState: {
                           boards: [],
                           ports: [anotherPort],
                         },
+                        oldState: {
+                          boards: [aBoard],
+                          ports: [aPort, anotherPort],
+                        },
+                        uploadInProgress: true,
                       });
                       await tick();
                     });
-  
+
                     it('board should remain selected with NO port selected', async () => {
                       expect(subject.boardsConfig).to.equal({
                         selectedBoard: aBoard,
-                        selectedPort: aPort,
+                        selectedPort: undefined,
                       });
                     });
-                  });
-                });
+                    context(
+                      'and the recognized board gets plugged in again into the same port',
+                      () => {
+                        beforeEach(async () => {
+                          attachedBoardsChange({
+                            newState: {
+                              boards: [aBoard],
+                              ports: [aPort, anotherPort],
+                            },
+                            oldState: {
+                              boards: [],
+                              ports: [anotherPort],
+                            },
+                            uploadInProgress: true,
+                          });
+                          await tick();
+                        });
+
+                        it('board should remain selected with NO port selected', async () => {
+                          expect(subject.boardsConfig).to.equal({
+                            selectedBoard: aBoard,
+                            selectedPort: aPort,
+                          });
+                        });
+                      }
+                    );
+                  }
+                );
               }
             );
           }
