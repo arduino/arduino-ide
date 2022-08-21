@@ -743,7 +743,7 @@ export class CompilerErrors
     }
     console.warn(
       'compiler-errors',
-      `could not found editor widget for URI: ${uri}`
+      `could not find editor widget for URI: ${uri}`
     );
     return undefined;
   }

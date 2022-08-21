@@ -97,7 +97,7 @@ export class SketchesServiceClientImpl
                         );
                         if (!this.sketches.has(toAdd.uri)) {
                           console.log(
-                            `New sketch '${toAdd.name}' was crated in sketchbook '${sketchDirUri}'.`
+                            `New sketch '${toAdd.name}' was created in sketchbook '${sketchDirUri}'.`
                           );
                           this.sketches.set(toAdd.uri, toAdd);
                           this.fireSoon(toAdd, 'created');

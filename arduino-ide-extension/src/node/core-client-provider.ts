@@ -144,7 +144,7 @@ export class CoreClientProvider {
         await this.updateIndexes(client); // TODO: this should run without the 3rd party URLs
         await this.initInstance(client);
         console.info(
-          `Downloaded the primary packages indexes, and successfully initialized the core gRPC client.`
+          `Downloaded the primary package indexes, and successfully initialized the core gRPC client.`
         );
       } else {
         console.error(

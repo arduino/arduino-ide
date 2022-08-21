@@ -99,7 +99,7 @@ const getTranslationDownloadStatus = async (language, downloadRequestId) => {
     const { organization, project, resource } = await transifex.credentials();
     const translationsDirectory = process.argv[2];
     if (!translationsDirectory) {
-        shell.echo('Traslations directory not specified');
+        shell.echo('Translations directory not specified');
         shell.exit(1);
     }
 
