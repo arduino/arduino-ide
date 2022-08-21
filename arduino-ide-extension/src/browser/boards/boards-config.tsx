@@ -306,7 +306,10 @@ export class BoardsConfig extends React.Component<
             type="search"
             value={query}
             className="theia-input"
-            placeholder="SEARCH BOARD"
+            placeholder={nls.localize(
+              'arduino/board/searchBoard',
+              'SEARCH BOARD'
+            )}
             onChange={this.updateBoards}
             ref={this.focusNodeSet}
           />
@@ -344,7 +347,9 @@ export class BoardsConfig extends React.Component<
       });
     }
     return !ports.length ? (
-      <div className="loading noselect">No ports discovered</div>
+      <div className="loading noselect">
+        {nls.localize('arduino/board/noPortsDiscovered', 'No ports discovered')}
+      </div>
     ) : (
       <div className="ports list">
         {ports.map((port) => (

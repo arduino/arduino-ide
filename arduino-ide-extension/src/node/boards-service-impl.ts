@@ -42,6 +42,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { ExecuteWithProgress } from './grpc-progressible';
 import { ServiceError } from './service-error';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsServiceImpl
@@ -319,7 +320,10 @@ export class BoardsServiceImpl
           .join(', '),
         installable: true,
         deprecated: platform.getDeprecated(),
-        summary: 'Boards included in this package:',
+        summary: nls.localize(
+          'arduino/component/boardsIncluded',
+          'Boards included in this package:'
+        ),
         installedVersion,
         boards: platform
           .getBoardsList()
