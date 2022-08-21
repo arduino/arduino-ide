@@ -63,7 +63,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       } else {
         if (!!buildPath && currentBuildPath !== buildPath) {
           throw new Error(
-            `The CLI has already provided a build path: <${buildPath}>, and IDE2 received a new build path value: <${currentBuildPath}>.`
+            `The CLI has already provided a build path: <${buildPath}>, and IDE received a new build path value: <${currentBuildPath}>.`
           );
         }
       }
