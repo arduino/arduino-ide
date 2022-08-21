@@ -65,7 +65,11 @@ export const UserFieldsComponent = ({
                     type={field.secret ? 'password' : 'text'}
                     value={field.value}
                     className="theia-input"
-                    placeholder={'Enter ' + field.label}
+                    placeholder={nls.localize(
+                      'arduino/userFields/enterField',
+                      'Enter {0}',
+                      field.label
+                    )}
                     onChange={updateUserField(index)}
                   />
                 </div>

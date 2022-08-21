@@ -17,6 +17,7 @@
       "installManually": "Install Manually",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No ports selected for board: '{0}'.",
       "noneSelected": "No boards selected.",
       "openBoardsConfig": "Select other board and port…",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programmer",
       "reselectLater": "Reselect later",
+      "searchBoard": "SEARCH BOARD",
       "selectBoard": "Select Board",
       "selectBoardForInfo": "Please select a board to obtain board info.",
       "selectPortForInfo": "Please select a port to obtain board info.",
@@ -115,6 +117,7 @@
       "error": "Compilation error: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "Filter your search...",
       "install": "INSTALL",
@@ -344,6 +347,7 @@
     },
     "userFields": {
       "cancel": "Cancel",
+      "enterField": "Enter {0}",
       "upload": "Upload"
     }
   },
