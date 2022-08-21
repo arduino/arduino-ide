@@ -41,7 +41,9 @@ export class Help extends Contribution {
     );
     registry.registerCommand(
       Help.Commands.ENVIRONMENT,
-      createOpenHandler('https://www.arduino.cc/en/Guide/Environment')
+      createOpenHandler(
+        'https://docs.arduino.cc/software/ide-v2/tutorials/getting-started-ide-v2'
+      )
     );
     registry.registerCommand(
       Help.Commands.TROUBLESHOOTING,
