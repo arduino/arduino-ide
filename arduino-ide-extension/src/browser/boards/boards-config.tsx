@@ -308,7 +308,7 @@ export class BoardsConfig extends React.Component<
             className="theia-input"
             placeholder={nls.localize(
               'arduino/board/searchBoard',
-              'SEARCH BOARD'
+              'Search board'
             )}
             onChange={this.updateBoards}
             ref={this.focusNodeSet}
