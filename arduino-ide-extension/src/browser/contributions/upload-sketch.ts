@@ -190,6 +190,9 @@ export class UploadSketch extends CoreServiceContribution {
       // toggle the toolbar button and menu item state.
       // uploadInProgress will be set to false whether the upload fails or not
       this.uploadInProgress = true;
+      this.boardsServiceProvider.setLastBoardsConfigOnUpload(
+        this.boardsServiceProvider.boardsConfig
+      );
       this.onDidChangeEmitter.fire();
       this.clearVisibleNotification();
 

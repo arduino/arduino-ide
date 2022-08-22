@@ -65,10 +65,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availablePorts: Port[] = [];
   protected _availableBoards: AvailableBoard[] = [];
 
-  private lastItemRemovedForUpload: { board: Board; port: Port } | undefined;
+  private lastBoardsConfigOnUpload: BoardsConfig.Config | undefined;
   // "lastPersistingUploadPort", is a port created during an upload, that persisted after
   // the upload finished, it's "substituting" the port selected when the user invoked the upload
-  private lastPersistingUploadPort: Port | undefined;
+  private lastPersistingUploadPortWithBoard: BoardsConfig.Config | undefined;
 
   /**
    * Unlike `onAttachedBoardsChanged` this even fires when the user modifies the selected board in the IDE.\
@@ -116,62 +116,57 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._reconciled.promise;
   }
 
-  private checkForItemRemoved(event: AttachedBoardsChangeEvent): void {
-    if (!this.lastItemRemovedForUpload) {
-      const {
-        oldState: { ports: oldPorts, boards: oldBoards },
-        newState: { ports: newPorts },
-      } = event;
-
-      const disappearedPorts = oldPorts.filter((oldPort: Port) =>
-        newPorts.every((newPort: Port) => !Port.sameAs(oldPort, newPort))
-      );
-
-      if (disappearedPorts.length > 0) {
-        this.lastItemRemovedForUpload = {
-          board: oldBoards.find((board: Board) =>
-            Port.sameAs(board.port, disappearedPorts[0])
-          ) as Board,
-          port: disappearedPorts[0],
-        };
-      }
-
-      return;
-    }
+  public setLastBoardsConfigOnUpload(
+    value: BoardsConfig.Config | undefined
+  ): void {
+    this.lastBoardsConfigOnUpload = value;
   }
 
-  private checkForPersistingPort(event: AttachedBoardsChangeEvent): void {
-    if (this.lastItemRemovedForUpload) {
-      const {
-        oldState: { ports: oldPorts },
-        newState: { ports: newPorts, boards: newBoards },
-      } = event;
-
-      const disappearedItem = this.lastItemRemovedForUpload;
-      this.lastItemRemovedForUpload = undefined;
-
-      const appearedPorts = newPorts.filter((newPort: Port) =>
-        oldPorts.every((oldPort: Port) => !Port.sameAs(newPort, oldPort))
-      );
-
-      if (appearedPorts.length > 0) {
-        const boardOnAppearedPort = newBoards.find((board: Board) =>
-          Port.sameAs(board.port, appearedPorts[0])
-        );
-
-        if (
-          boardOnAppearedPort &&
-          Board.sameAs(boardOnAppearedPort, disappearedItem.board)
-        ) {
-          this.lastPersistingUploadPort = appearedPorts[0];
-          return;
-        }
-      }
-
+  private derivePersistingUploadPort(event: AttachedBoardsChangeEvent): void {
+    if (!this.lastBoardsConfigOnUpload) {
+      this.lastPersistingUploadPortWithBoard = undefined;
       return;
     }
 
-    this.lastPersistingUploadPort = undefined;
+    const {
+      oldState: { ports: oldPorts },
+      newState: { ports: newPorts, boards: newBoards },
+    } = event;
+
+    if (newPorts.length === 0) {
+      setTimeout(() => {
+        this.setLastBoardsConfigOnUpload(undefined);
+      }, 5000);
+      return;
+    }
+
+    const lastSelectionOnUpload = this.lastBoardsConfigOnUpload;
+    this.setLastBoardsConfigOnUpload(undefined);
+
+    const appearedPorts =
+      oldPorts.length > 0
+        ? newPorts.filter((newPort: Port) =>
+            oldPorts.every((oldPort: Port) => !Port.sameAs(newPort, oldPort))
+          )
+        : newPorts;
+
+    if (appearedPorts.length > 0) {
+      const boardOnAppearedPort = newBoards.find((board: Board) =>
+        Port.sameAs(board.port, appearedPorts[0])
+      );
+
+      if (
+        boardOnAppearedPort &&
+        lastSelectionOnUpload.selectedBoard &&
+        Board.sameAs(boardOnAppearedPort, lastSelectionOnUpload.selectedBoard)
+      ) {
+        this.lastPersistingUploadPortWithBoard = {
+          selectedBoard: boardOnAppearedPort,
+          selectedPort: appearedPorts[0],
+        };
+        return;
+      }
+    }
   }
 
   protected notifyAttachedBoardsChanged(
@@ -185,10 +180,8 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
     const { uploadInProgress } = event;
 
-    if (uploadInProgress) {
-      this.checkForItemRemoved(event);
-    } else {
-      this.checkForPersistingPort(event);
+    if (!uploadInProgress) {
+      this.derivePersistingUploadPort(event);
     }
 
     this._attachedBoards = event.newState.boards;
@@ -317,36 +310,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       // If we could not find an exact match, we compare the board FQBN-name pairs and ignore the port, as it might have changed.
       // See documentation on `latestValidBoardsConfig`.
 
-      if (!this.lastPersistingUploadPort) return false;
+      if (!this.lastPersistingUploadPortWithBoard) return false;
 
-      const lastPersistingUploadPort = this.lastPersistingUploadPort;
-      this.lastPersistingUploadPort = undefined;
-
-      if (
-        !Port.sameAs(
-          lastPersistingUploadPort,
-          this.latestValidBoardsConfig.selectedPort
-        )
-      ) {
-        return false;
-      }
-
-      for (const board of this.availableBoards.filter(
-        ({ state }) => state !== AvailableBoard.State.incomplete
-      )) {
-        if (
-          this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
-          this.latestValidBoardsConfig.selectedPort.protocol ===
-            board.port?.protocol
-        ) {
-          this.boardsConfig = {
-            ...this.latestValidBoardsConfig,
-            selectedPort: board.port,
-          };
-          return true;
-        }
-      }
+      this.boardsConfig = this.lastPersistingUploadPortWithBoard;
+      this.lastPersistingUploadPortWithBoard = undefined;
+      return true;
     }
     return false;
   }
