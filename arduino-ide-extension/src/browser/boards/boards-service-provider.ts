@@ -129,16 +129,16 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     }
 
     const {
-      oldState: { ports: oldPorts },
-      newState: { ports: newPorts, boards: newBoards },
+      newState: { ports: newPorts },
     } = event;
-
     if (newPorts.length === 0) {
-      setTimeout(() => {
-        this.setLastBoardsConfigOnUpload(undefined);
-      }, 5000);
       return;
     }
+
+    const {
+      oldState: { ports: oldPorts },
+      newState: { boards: newBoards },
+    } = event;
 
     const lastSelectionOnUpload = this.lastBoardsConfigOnUpload;
     this.setLastBoardsConfigOnUpload(undefined);
