@@ -66,9 +66,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availableBoards: AvailableBoard[] = [];
 
   private lastBoardsConfigOnUpload: BoardsConfig.Config | undefined;
-  // "lastPersistingUploadPort", is a port created during an upload, that persisted after
-  // the upload finished, it's "substituting" the port selected when the user invoked the upload
-  private lastPersistingUploadPortWithBoard: BoardsConfig.Config | undefined;
+  private boardConfigToSelect: BoardsConfig.Config | undefined;
 
   /**
    * Unlike `onAttachedBoardsChanged` this even fires when the user modifies the selected board in the IDE.\
@@ -124,24 +122,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
   private derivePersistingUploadPort(event: AttachedBoardsChangeEvent): void {
     if (!this.lastBoardsConfigOnUpload) {
-      this.lastPersistingUploadPortWithBoard = undefined;
-      return;
-    }
-
-    const {
-      newState: { ports: newPorts },
-    } = event;
-    if (newPorts.length === 0) {
+      this.boardConfigToSelect = undefined;
       return;
     }
 
     const {
       oldState: { ports: oldPorts },
-      newState: { boards: newBoards },
+      newState: { ports: newPorts, boards: newBoards },
     } = event;
-
-    const lastSelectionOnUpload = this.lastBoardsConfigOnUpload;
-    this.setLastBoardsConfigOnUpload(undefined);
 
     const appearedPorts =
       oldPorts.length > 0
@@ -151,6 +139,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         : newPorts;
 
     if (appearedPorts.length > 0) {
+      const lastSelectionOnUpload = this.lastBoardsConfigOnUpload;
+      this.setLastBoardsConfigOnUpload(undefined);
+
       const boardOnAppearedPort = newBoards.find((board: Board) =>
         Port.sameAs(board.port, appearedPorts[0])
       );
@@ -160,7 +151,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         lastSelectionOnUpload.selectedBoard &&
         Board.sameAs(boardOnAppearedPort, lastSelectionOnUpload.selectedBoard)
       ) {
-        this.lastPersistingUploadPortWithBoard = {
+        this.boardConfigToSelect = {
           selectedBoard: boardOnAppearedPort,
           selectedPort: appearedPorts[0],
         };
@@ -307,13 +298,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
           return true;
         }
       }
-      // If we could not find an exact match, we compare the board FQBN-name pairs and ignore the port, as it might have changed.
-      // See documentation on `latestValidBoardsConfig`.
 
-      if (!this.lastPersistingUploadPortWithBoard) return false;
+      if (!this.boardConfigToSelect) return false;
 
-      this.boardsConfig = this.lastPersistingUploadPortWithBoard;
-      this.lastPersistingUploadPortWithBoard = undefined;
+      this.boardsConfig = this.boardConfigToSelect;
+      this.boardConfigToSelect = undefined;
       return true;
     }
     return false;
