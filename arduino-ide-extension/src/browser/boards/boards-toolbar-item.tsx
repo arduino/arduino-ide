@@ -138,7 +138,7 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
             {boardLabel}
           </div>
           <div className="arduino-boards-dropdown-item--port-label noWrapInfo noselect">
-            {port.address}
+            {port.addressLabel}
           </div>
         </div>
         {selected ? <div className="fa fa-check" /> : ''}

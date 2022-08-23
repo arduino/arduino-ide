@@ -288,7 +288,7 @@ PID: ${PID}`;
       for (let i = 0; i < sortedIDs.length; i++) {
         const portID = sortedIDs[i];
         const [port, boards] = ports[portID];
-        let label = `${port.address}`;
+        let label = `${port.addressLabel}`;
         if (boards.length) {
           const boardsList = boards.map((board) => board.name).join(', ');
           label = `${label} (${boardsList})`;
