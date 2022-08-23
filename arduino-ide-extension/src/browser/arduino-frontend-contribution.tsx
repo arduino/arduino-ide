@@ -5,17 +5,14 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
-import { SketchesService } from '../common/protocol';
 import {
   MAIN_MENU_BAR,
   MenuContribution,
   MenuModelRegistry,
 } from '@theia/core';
 import {
-  Dialog,
   FrontendApplication,
   FrontendApplicationContribution,
-  OnWillStopAction,
 } from '@theia/core/lib/browser';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
@@ -34,14 +31,9 @@ import { EditorCommands, EditorMainMenu } from '@theia/editor/lib/browser';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import {
-  CurrentSketch,
-  SketchesServiceClientImpl,
-} from '../common/protocol/sketches-service-client-impl';
 import { ArduinoPreferences } from './arduino-preferences';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
-import { SaveAsSketch } from './contributions/save-as-sketch';
 import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
@@ -63,17 +55,11 @@ export class ArduinoFrontendContribution
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  @inject(SketchesService)
-  private readonly sketchService: SketchesService;
-
   @inject(CommandRegistry)
   private readonly commandRegistry: CommandRegistry;
 
   @inject(ArduinoPreferences)
   private readonly arduinoPreferences: ArduinoPreferences;
-
-  @inject(SketchesServiceClientImpl)
-  private readonly sketchServiceClient: SketchesServiceClientImpl;
 
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
@@ -91,7 +77,7 @@ export class ArduinoFrontendContribution
     }
   }
 
-  async onStart(app: FrontendApplication): Promise<void> {
+  onStart(app: FrontendApplication): void {
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
@@ -302,59 +288,5 @@ export class ArduinoFrontendContribution
           'Background color of the selected board in the Board Selector.',
       }
     );
-  }
-
-  // TODO: should be handled by `Close` contribution. https://github.com/arduino/arduino-ide/issues/1016
-  onWillStop(): OnWillStopAction {
-    return {
-      reason: 'temp-sketch',
-      action: () => {
-        return this.showTempSketchDialog();
-      },
-    };
-  }
-
-  private async showTempSketchDialog(): Promise<boolean> {
-    const sketch = await this.sketchServiceClient.currentSketch();
-    if (!CurrentSketch.isValid(sketch)) {
-      return true;
-    }
-    const isTemp = await this.sketchService.isTemp(sketch);
-    if (!isTemp) {
-      return true;
-    }
-    const messageBoxResult = await remote.dialog.showMessageBox(
-      remote.getCurrentWindow(),
-      {
-        message: nls.localize(
-          'arduino/sketch/saveTempSketch',
-          'Save your sketch to open it again later.'
-        ),
-        title: nls.localize(
-          'theia/core/quitTitle',
-          'Are you sure you want to quit?'
-        ),
-        type: 'question',
-        buttons: [
-          Dialog.CANCEL,
-          nls.localizeByDefault('Save As...'),
-          nls.localizeByDefault("Don't Save"),
-        ],
-      }
-    );
-    const result = messageBoxResult.response;
-    if (result === 2) {
-      return true;
-    } else if (result === 1) {
-      return !!(await this.commandRegistry.executeCommand(
-        SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-        {
-          execOnlyIfTemp: false,
-          openAfterMove: false,
-          wipeOriginal: true,
-        }
-      ));
-    }
-    return false;
   }
 }
