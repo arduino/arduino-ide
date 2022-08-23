@@ -66,7 +66,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availableBoards: AvailableBoard[] = [];
 
   private lastBoardsConfigOnUpload: BoardsConfig.Config | undefined;
-  private boardConfigToSelect: BoardsConfig.Config | undefined;
+  private boardConfigToAutoSelect: BoardsConfig.Config | undefined;
 
   /**
    * Unlike `onAttachedBoardsChanged` this even fires when the user modifies the selected board in the IDE.\
@@ -120,9 +120,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     this.lastBoardsConfigOnUpload = value;
   }
 
-  private derivePersistingUploadPort(event: AttachedBoardsChangeEvent): void {
+  private deriveBoardConfigToAutoSelect(
+    event: AttachedBoardsChangeEvent
+  ): void {
     if (!this.lastBoardsConfigOnUpload) {
-      this.boardConfigToSelect = undefined;
+      this.boardConfigToAutoSelect = undefined;
       return;
     }
 
@@ -142,8 +144,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       const lastSelectionOnUpload = this.lastBoardsConfigOnUpload;
       this.setLastBoardsConfigOnUpload(undefined);
 
+      const appearedPort = appearedPorts[0];
+
       const boardOnAppearedPort = newBoards.find((board: Board) =>
-        Port.sameAs(board.port, appearedPorts[0])
+        Port.sameAs(board.port, appearedPort)
       );
 
       if (
@@ -151,9 +155,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         lastSelectionOnUpload.selectedBoard &&
         Board.sameAs(boardOnAppearedPort, lastSelectionOnUpload.selectedBoard)
       ) {
-        this.boardConfigToSelect = {
+        this.boardConfigToAutoSelect = {
           selectedBoard: boardOnAppearedPort,
-          selectedPort: appearedPorts[0],
+          selectedPort: appearedPort,
         };
         return;
       }
@@ -172,7 +176,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const { uploadInProgress } = event;
 
     if (!uploadInProgress) {
-      this.derivePersistingUploadPort(event);
+      this.deriveBoardConfigToAutoSelect(event);
     }
 
     this._attachedBoards = event.newState.boards;
@@ -299,10 +303,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         }
       }
 
-      if (!this.boardConfigToSelect) return false;
+      if (!this.boardConfigToAutoSelect) return false;
 
-      this.boardsConfig = this.boardConfigToSelect;
-      this.boardConfigToSelect = undefined;
+      this.boardsConfig = this.boardConfigToAutoSelect;
+      this.boardConfigToAutoSelect = undefined;
       return true;
     }
     return false;
