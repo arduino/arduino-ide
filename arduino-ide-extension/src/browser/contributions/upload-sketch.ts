@@ -244,7 +244,7 @@ export class UploadSketch extends CoreServiceContribution {
       this.handleError(e);
     } finally {
       this.uploadInProgress = false;
-      this.boardsServiceProvider.forcePostUploadReconnect();
+      this.boardsServiceProvider.attemptPostUploadAutoSelect();
       this.onDidChangeEmitter.fire();
     }
   }

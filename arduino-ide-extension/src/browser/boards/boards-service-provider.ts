@@ -130,28 +130,39 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     this.lastAvailablePortsOnUpload = value;
   }
 
-  public forcePostUploadReconnect(): void {
+  private portToAutoSelectCanBeDerived(): boolean {
+    return Boolean(
+      this.lastBoardsConfigOnUpload && this.lastAvailablePortsOnUpload
+    );
+  }
+
+  public attemptPostUploadAutoSelect(): void {
     setTimeout(() => {
-      const newState = {
-        ports: this._availablePorts,
-        boards: this._availableBoards,
-      };
-      this.deriveBoardConfigToAutoSelect(newState);
-      if (this.lastBoardsConfigOnUpload) {
-        this.tryReconnect();
+      if (this.portToAutoSelectCanBeDerived()) {
+        this.attemptAutoSelect({
+          ports: this._availablePorts,
+          boards: this._availableBoards,
+        });
       }
     }, 2000); // 2 second delay same as IDE 1.8
+  }
+
+  private attemptAutoSelect(
+    newState: AttachedBoardsChangeEvent['newState']
+  ): void {
+    this.deriveBoardConfigToAutoSelect(newState);
+    this.tryReconnect();
   }
 
   private deriveBoardConfigToAutoSelect(
     newState: AttachedBoardsChangeEvent['newState']
   ): void {
-    if (!this.lastBoardsConfigOnUpload || !this.lastAvailablePortsOnUpload) {
+    if (!this.portToAutoSelectCanBeDerived()) {
       this.boardConfigToAutoSelect = undefined;
       return;
     }
 
-    const oldPorts = this.lastAvailablePortsOnUpload;
+    const oldPorts = this.lastAvailablePortsOnUpload!;
     const { ports: newPorts, boards: newBoards } = newState;
 
     const appearedPorts =
@@ -167,12 +178,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
           Port.sameAs(board.port, port)
         );
 
+        const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload!;
+
         if (
           boardOnAppearedPort &&
-          this.lastBoardsConfigOnUpload.selectedBoard &&
+          lastBoardsConfigOnUpload.selectedBoard &&
           Board.sameAs(
             boardOnAppearedPort,
-            this.lastBoardsConfigOnUpload.selectedBoard
+            lastBoardsConfigOnUpload.selectedBoard
           )
         ) {
           this.setLastBoardsConfigOnUpload(undefined);
@@ -197,18 +210,15 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.logger.info('------------------------------------------');
     }
 
-    const { uploadInProgress } = event;
-
-    if (!uploadInProgress) {
-      this.deriveBoardConfigToAutoSelect(event.newState);
-    }
-
     this._attachedBoards = event.newState.boards;
     this._availablePorts = event.newState.ports;
     this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
     this.reconcileAvailableBoards().then(() => {
+      const { uploadInProgress } = event;
+      // avoid attempting "auto-selection" while an
+      // upload is in progress
       if (!uploadInProgress) {
-        this.tryReconnect();
+        this.attemptAutoSelect(event.newState);
       }
     });
   }
