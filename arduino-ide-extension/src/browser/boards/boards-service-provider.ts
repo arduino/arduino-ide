@@ -66,6 +66,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availableBoards: AvailableBoard[] = [];
 
   private lastBoardsConfigOnUpload: BoardsConfig.Config | undefined;
+  private lastAvailablePortsOnUpload: Port[] | undefined;
   private boardConfigToAutoSelect: BoardsConfig.Config | undefined;
 
   /**
@@ -114,24 +115,44 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._reconciled.promise;
   }
 
-  public setLastBoardsConfigOnUpload(
+  public snapshotBoardDiscoveryOnUpload(): void {
+    this.setLastBoardsConfigOnUpload(this.boardsConfig);
+    this.setAvailablePortsOnUpload(this._availablePorts);
+  }
+
+  private setLastBoardsConfigOnUpload(
     value: BoardsConfig.Config | undefined
   ): void {
     this.lastBoardsConfigOnUpload = value;
   }
 
+  private setAvailablePortsOnUpload(value: Port[] | undefined): void {
+    this.lastAvailablePortsOnUpload = value;
+  }
+
+  public forcePostUploadReconnect(): void {
+    setTimeout(() => {
+      const newState = {
+        ports: this._availablePorts,
+        boards: this._availableBoards,
+      };
+      this.deriveBoardConfigToAutoSelect(newState);
+      if (this.lastBoardsConfigOnUpload) {
+        this.tryReconnect();
+      }
+    }, 2000); // 2 second delay same as IDE 1.8
+  }
+
   private deriveBoardConfigToAutoSelect(
-    event: AttachedBoardsChangeEvent
+    newState: AttachedBoardsChangeEvent['newState']
   ): void {
-    if (!this.lastBoardsConfigOnUpload) {
+    if (!this.lastBoardsConfigOnUpload || !this.lastAvailablePortsOnUpload) {
       this.boardConfigToAutoSelect = undefined;
       return;
     }
 
-    const {
-      oldState: { ports: oldPorts },
-      newState: { ports: newPorts, boards: newBoards },
-    } = event;
+    const oldPorts = this.lastAvailablePortsOnUpload;
+    const { ports: newPorts, boards: newBoards } = newState;
 
     const appearedPorts =
       oldPorts.length > 0
@@ -141,25 +162,28 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         : newPorts;
 
     if (appearedPorts.length > 0) {
-      const lastSelectionOnUpload = this.lastBoardsConfigOnUpload;
-      this.setLastBoardsConfigOnUpload(undefined);
+      for (const port of appearedPorts) {
+        const boardOnAppearedPort = newBoards.find((board: Board) =>
+          Port.sameAs(board.port, port)
+        );
 
-      const appearedPort = appearedPorts[0];
+        if (
+          boardOnAppearedPort &&
+          this.lastBoardsConfigOnUpload.selectedBoard &&
+          Board.sameAs(
+            boardOnAppearedPort,
+            this.lastBoardsConfigOnUpload.selectedBoard
+          )
+        ) {
+          this.setLastBoardsConfigOnUpload(undefined);
+          this.setAvailablePortsOnUpload(undefined);
 
-      const boardOnAppearedPort = newBoards.find((board: Board) =>
-        Port.sameAs(board.port, appearedPort)
-      );
-
-      if (
-        boardOnAppearedPort &&
-        lastSelectionOnUpload.selectedBoard &&
-        Board.sameAs(boardOnAppearedPort, lastSelectionOnUpload.selectedBoard)
-      ) {
-        this.boardConfigToAutoSelect = {
-          selectedBoard: boardOnAppearedPort,
-          selectedPort: appearedPort,
-        };
-        return;
+          this.boardConfigToAutoSelect = {
+            selectedBoard: boardOnAppearedPort,
+            selectedPort: port,
+          };
+          return;
+        }
       }
     }
   }
@@ -176,7 +200,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const { uploadInProgress } = event;
 
     if (!uploadInProgress) {
-      this.deriveBoardConfigToAutoSelect(event);
+      this.deriveBoardConfigToAutoSelect(event.newState);
     }
 
     this._attachedBoards = event.newState.boards;
