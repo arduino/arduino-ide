@@ -23,8 +23,8 @@ import {
 } from '@theia/core/lib/common/i18n/localization';
 import SettingsStepInput from './settings-step-input';
 
-const maxScale = 200;
-const minScale = -100;
+const maxScale = 280;
+const minScale = -60;
 const scaleStep = 20;
 
 const maxFontSize = 72;
