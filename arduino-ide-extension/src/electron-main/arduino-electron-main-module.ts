@@ -16,6 +16,7 @@ import {
   ElectronMainWindowServiceExt,
   electronMainWindowServiceExtPath,
 } from '../electron-common/electron-main-window-service-ext';
+import { IsTempSketch } from '../node/is-temp-sketch';
 import { ElectronMainWindowServiceExtImpl } from './electron-main-window-service-ext-impl';
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
 import { ElectronMainApplication } from './theia/electron-main-application';
@@ -62,4 +63,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  bind(IsTempSketch).toSelf().inSingletonScope();
 });

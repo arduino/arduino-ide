@@ -1,4 +1,4 @@
-import { injectable } from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   app,
   BrowserWindow,
@@ -22,6 +22,7 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
 import { Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
 import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
+import { IsTempSketch } from '../../node/is-temp-sketch';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -54,6 +55,8 @@ const APP_STARTED_WITH_CONTENT_TRACE =
 
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
+  @inject(IsTempSketch)
+  private readonly isTempSketch: IsTempSketch;
   private startup = false;
   private _firstWindowId: number | undefined;
   private openFilePromise = new Deferred();
@@ -176,6 +179,12 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       );
       for (const workspace of workspaces) {
         if (await this.isValidSketchPath(workspace.file)) {
+          if (this.isTempSketch.is(workspace.file)) {
+            console.info(
+              `Skipped opening sketch. The sketch was detected as temporary. Workspace path: ${workspace.file}.`
+            );
+            continue;
+          }
           useDefault = false;
           await this.openSketch(workspace);
         }
@@ -405,6 +414,15 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         const workspaceUri = URI.file(workspace);
         const bounds = window.getNormalBounds();
         const now = Date.now();
+        // Do not try to reopen the sketch if it was temp.
+        // Unfortunately, IDE2 has two different logic of restoring recent sketches: the Theia default `recentworkspace.json` and there is the `recent-sketches.json`.
+        const file = workspaceUri.fsPath;
+        if (this.isTempSketch.is(file)) {
+          console.info(
+            `Ignored marking workspace as a closed sketch. The sketch was detected as temporary. Workspace URI: ${workspaceUri.toString()}.`
+          );
+          return;
+        }
         console.log(
           `Marking workspace as a closed sketch. Workspace URI: ${workspaceUri.toString()}. Date: ${now}.`
         );

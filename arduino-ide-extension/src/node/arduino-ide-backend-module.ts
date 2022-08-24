@@ -109,6 +109,7 @@ import {
   SurveyNotificationService,
   SurveyNotificationServicePath,
 } from '../common/protocol/survey-service';
+import { IsTempSketch } from './is-temp-sketch';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -419,4 +420,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  bind(IsTempSketch).toSelf().inSingletonScope();
 });

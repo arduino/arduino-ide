@@ -104,16 +104,17 @@ export class SaveAsSketch extends SketchContribution {
       await this.saveOntoCopiedSketch(sketch.mainFileUri, sketch.uri, workspaceUri);
     }
     if (workspaceUri && openAfterMove) {
-      if (wipeOriginal || (openAfterMove && execOnlyIfTemp)) {
-        try {
-          await this.fileService.delete(new URI(sketch.uri), {
-            recursive: true,
-          });
-        } catch {
-          /* NOOP: from time to time, it's not possible to wipe the old resource from the temp dir on Windows */
-        }
-      }
       this.windowService.setSafeToShutDown();
+      if (wipeOriginal || (openAfterMove && execOnlyIfTemp)) {
+        // This window will navigate away.
+        // Explicitly stop the contribution to dispose the file watcher before deleting the temp sketch.
+        // Otherwise, users might see irrelevant _Unable to watch for file changes in this large workspace._ notification.
+        // https://github.com/arduino/arduino-ide/issues/39.
+        this.sketchServiceClient.onStop();
+        // TODO: consider implementing the temp sketch deletion the following way:
+        // Open the other sketch with a `delete the temp sketch` startup-task.
+        this.sketchService.notifyDeleteSketch(sketch); // This is a notification and will execute on the backend.
+      }
       this.workspaceService.open(new URI(workspaceUri), {
         preserveWindow: true,
       });

@@ -1,26 +1,16 @@
 import { promises as fs, constants } from 'fs';
 import { injectable, inject } from '@theia/core/shared/inversify';
-import { ILogger } from '@theia/core/lib/common/logger';
 import { DefaultWorkspaceServer as TheiaDefaultWorkspaceServer } from '@theia/workspace/lib/node/default-workspace-server';
-import { ConfigService } from '../../../common/protocol/config-service';
 import { SketchesService } from '../../../common/protocol';
 import { FileUri } from '@theia/core/lib/node';
+import { IsTempSketch } from '../../is-temp-sketch';
 
 @injectable()
 export class DefaultWorkspaceServer extends TheiaDefaultWorkspaceServer {
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
-
-  @inject(ILogger)
-  protected readonly logger: ILogger;
-
   @inject(SketchesService)
   private readonly sketchesService: SketchesService;
-
-  override async onStart(): Promise<void> {
-    // NOOP
-    // No need to remove untitled workspaces. IDE2 does not use workspaces.
-  }
+  @inject(IsTempSketch)
+  private readonly isTempSketch: IsTempSketch;
 
   override async getMostRecentlyUsedWorkspace(): Promise<string | undefined> {
     const uri = await super.getMostRecentlyUsedWorkspace();
@@ -51,6 +41,35 @@ export class DefaultWorkspaceServer extends TheiaDefaultWorkspaceServer {
     return listUri;
   }
 
+  protected override async writeToUserHome(
+    data: RecentWorkspacePathsData
+  ): Promise<void> {
+    return super.writeToUserHome(this.filterTempSketches(data));
+  }
+
+  protected override async readRecentWorkspacePathsFromUserHome(): Promise<
+    RecentWorkspacePathsData | undefined
+  > {
+    const data = await super.readRecentWorkspacePathsFromUserHome();
+    return data ? this.filterTempSketches(data) : undefined;
+  }
+
+  protected override async removeOldUntitledWorkspaces(): Promise<void> {
+    // NOOP
+    // No need to remove untitled workspaces. IDE2 does not use workspaces.
+  }
+
+  private filterTempSketches(
+    data: RecentWorkspacePathsData
+  ): RecentWorkspacePathsData {
+    const recentRoots = data.recentRoots.filter(
+      (uri) => !this.isTempSketch.is(FileUri.fsPath(uri))
+    );
+    return {
+      recentRoots,
+    };
+  }
+
   private async exists(uri: string): Promise<boolean> {
     try {
       await fs.access(FileUri.fsPath(uri), constants.R_OK | constants.W_OK);
@@ -59,4 +78,9 @@ export class DefaultWorkspaceServer extends TheiaDefaultWorkspaceServer {
       return false;
     }
   }
+}
+
+// Remove after https://github.com/eclipse-theia/theia/pull/11603
+interface RecentWorkspacePathsData {
+  recentRoots: string[];
 }
