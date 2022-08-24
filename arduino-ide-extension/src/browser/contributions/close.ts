@@ -8,6 +8,7 @@ import {
   CommandRegistry,
   MenuModelRegistry,
   KeybindingRegistry,
+  Sketch,
   URI,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
@@ -47,12 +48,12 @@ export class Close extends SketchContribution {
     return {
       reason: 'temp-sketch',
       action: () => {
-        return this.showTempSketchDialog();
+        return this.showSaveTempSketchDialog();
       },
     };
   }
 
-  private async showTempSketchDialog(): Promise<boolean> {
+  private async showSaveTempSketchDialog(): Promise<boolean> {
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return true;
@@ -61,6 +62,15 @@ export class Close extends SketchContribution {
     if (!isTemp) {
       return true;
     }
+
+    // If non of the sketch files were ever touched, do not prompt the save dialog. (#1274)
+    const wereTouched = await Promise.all(
+      Sketch.uris(sketch).map((uri) => this.wasTouched(uri))
+    );
+    if (wereTouched.every((wasTouched) => !Boolean(wasTouched))) {
+      return true;
+    }
+
     const messageBoxResult = await remote.dialog.showMessageBox(
       remote.getCurrentWindow(),
       {
