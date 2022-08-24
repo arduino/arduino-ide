@@ -115,19 +115,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._reconciled.promise;
   }
 
-  public snapshotBoardDiscoveryOnUpload(): void {
-    this.setLastBoardsConfigOnUpload(this.boardsConfig);
-    this.setAvailablePortsOnUpload(this._availablePorts);
+  snapshotBoardDiscoveryOnUpload(): void {
+    this.lastBoardsConfigOnUpload = this._boardsConfig;
+    this.lastAvailablePortsOnUpload = this._availablePorts;
   }
 
-  private setLastBoardsConfigOnUpload(
-    value: BoardsConfig.Config | undefined
-  ): void {
-    this.lastBoardsConfigOnUpload = value;
-  }
-
-  private setAvailablePortsOnUpload(value: Port[] | undefined): void {
-    this.lastAvailablePortsOnUpload = value;
+  clearBoardDiscoverySnapshot(): void {
+    this.lastBoardsConfigOnUpload = undefined;
+    this.lastAvailablePortsOnUpload = undefined;
   }
 
   private portToAutoSelectCanBeDerived(): boolean {
@@ -136,7 +131,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     );
   }
 
-  public attemptPostUploadAutoSelect(): void {
+  attemptPostUploadAutoSelect(): void {
     setTimeout(() => {
       if (this.portToAutoSelectCanBeDerived()) {
         this.attemptAutoSelect({
@@ -172,31 +167,28 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
           )
         : newPorts;
 
-    if (appearedPorts.length > 0) {
-      for (const port of appearedPorts) {
-        const boardOnAppearedPort = newBoards.find((board: Board) =>
-          Port.sameAs(board.port, port)
-        );
+    for (const port of appearedPorts) {
+      const boardOnAppearedPort = newBoards.find((board: Board) =>
+        Port.sameAs(board.port, port)
+      );
 
-        const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload!;
+      const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload!;
 
-        if (
-          boardOnAppearedPort &&
-          lastBoardsConfigOnUpload.selectedBoard &&
-          Board.sameAs(
-            boardOnAppearedPort,
-            lastBoardsConfigOnUpload.selectedBoard
-          )
-        ) {
-          this.setLastBoardsConfigOnUpload(undefined);
-          this.setAvailablePortsOnUpload(undefined);
+      if (
+        boardOnAppearedPort &&
+        lastBoardsConfigOnUpload.selectedBoard &&
+        Board.sameAs(
+          boardOnAppearedPort,
+          lastBoardsConfigOnUpload.selectedBoard
+        )
+      ) {
+        this.clearBoardDiscoverySnapshot();
 
-          this.boardConfigToAutoSelect = {
-            selectedBoard: boardOnAppearedPort,
-            selectedPort: port,
-          };
-          return;
-        }
+        this.boardConfigToAutoSelect = {
+          selectedBoard: boardOnAppearedPort,
+          selectedPort: port,
+        };
+        return;
       }
     }
   }

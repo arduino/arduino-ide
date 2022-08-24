@@ -53,7 +53,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private readonly commandService: CommandService;
 
   @inject(BoardDiscovery)
-  protected readonly boardDiscovery: BoardDiscovery;
+  private readonly boardDiscovery: BoardDiscovery;
 
   async compile(options: CoreService.Options.Compile): Promise<void> {
     const coreClient = await this.coreClient;

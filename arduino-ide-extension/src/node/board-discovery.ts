@@ -125,7 +125,7 @@ export class BoardDiscovery
     });
   }
 
-  public setUploadInProgress(uploadAttemptInProgress: boolean): void {
+  setUploadInProgress(uploadAttemptInProgress: boolean): void {
     this.uploadInProgress = uploadAttemptInProgress;
   }
 
