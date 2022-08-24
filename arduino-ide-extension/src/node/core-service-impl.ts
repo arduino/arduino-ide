@@ -34,6 +34,7 @@ import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { firstToUpperCase, notEmpty } from '../common/utils';
 import { ServiceError } from './service-error';
 import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
+import { BoardDiscovery } from './board-discovery';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
@@ -50,6 +51,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   @inject(CommandService)
   private readonly commandService: CommandService;
+
+  @inject(BoardDiscovery)
+  private readonly boardDiscovery: BoardDiscovery;
 
   async compile(options: CoreService.Options.Compile): Promise<void> {
     const coreClient = await this.coreClient;
@@ -378,6 +382,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     fqbn?: string | undefined;
     port?: Port | undefined;
   }): Promise<void> {
+    this.boardDiscovery.setUploadInProgress(true);
     return this.monitorManager.notifyUploadStarted(fqbn, port);
   }
 
@@ -388,6 +393,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     fqbn?: string | undefined;
     port?: Port | undefined;
   }): Promise<Status> {
+    this.boardDiscovery.setUploadInProgress(false);
     return this.monitorManager.notifyUploadFinished(fqbn, port);
   }
 

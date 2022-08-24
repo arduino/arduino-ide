@@ -65,6 +65,10 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
   protected _availablePorts: Port[] = [];
   protected _availableBoards: AvailableBoard[] = [];
 
+  private lastBoardsConfigOnUpload: BoardsConfig.Config | undefined;
+  private lastAvailablePortsOnUpload: Port[] | undefined;
+  private boardConfigToAutoSelect: BoardsConfig.Config | undefined;
+
   /**
    * Unlike `onAttachedBoardsChanged` this event fires when the user modifies the selected board in the IDE.\
    * This event also fires, when the boards package was not available for the currently selected board,
@@ -112,6 +116,84 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._reconciled.promise;
   }
 
+  snapshotBoardDiscoveryOnUpload(): void {
+    this.lastBoardsConfigOnUpload = this._boardsConfig;
+    this.lastAvailablePortsOnUpload = this._availablePorts;
+  }
+
+  clearBoardDiscoverySnapshot(): void {
+    this.lastBoardsConfigOnUpload = undefined;
+    this.lastAvailablePortsOnUpload = undefined;
+  }
+
+  private portToAutoSelectCanBeDerived(): boolean {
+    return Boolean(
+      this.lastBoardsConfigOnUpload && this.lastAvailablePortsOnUpload
+    );
+  }
+
+  attemptPostUploadAutoSelect(): void {
+    setTimeout(() => {
+      if (this.portToAutoSelectCanBeDerived()) {
+        this.attemptAutoSelect({
+          ports: this._availablePorts,
+          boards: this._availableBoards,
+        });
+      }
+    }, 2000); // 2 second delay same as IDE 1.8
+  }
+
+  private attemptAutoSelect(
+    newState: AttachedBoardsChangeEvent['newState']
+  ): void {
+    this.deriveBoardConfigToAutoSelect(newState);
+    this.tryReconnect();
+  }
+
+  private deriveBoardConfigToAutoSelect(
+    newState: AttachedBoardsChangeEvent['newState']
+  ): void {
+    if (!this.portToAutoSelectCanBeDerived()) {
+      this.boardConfigToAutoSelect = undefined;
+      return;
+    }
+
+    const oldPorts = this.lastAvailablePortsOnUpload!;
+    const { ports: newPorts, boards: newBoards } = newState;
+
+    const appearedPorts =
+      oldPorts.length > 0
+        ? newPorts.filter((newPort: Port) =>
+            oldPorts.every((oldPort: Port) => !Port.sameAs(newPort, oldPort))
+          )
+        : newPorts;
+
+    for (const port of appearedPorts) {
+      const boardOnAppearedPort = newBoards.find((board: Board) =>
+        Port.sameAs(board.port, port)
+      );
+
+      const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload!;
+
+      if (
+        boardOnAppearedPort &&
+        lastBoardsConfigOnUpload.selectedBoard &&
+        Board.sameAs(
+          boardOnAppearedPort,
+          lastBoardsConfigOnUpload.selectedBoard
+        )
+      ) {
+        this.clearBoardDiscoverySnapshot();
+
+        this.boardConfigToAutoSelect = {
+          selectedBoard: boardOnAppearedPort,
+          selectedPort: port,
+        };
+        return;
+      }
+    }
+  }
+
   protected notifyAttachedBoardsChanged(
     event: AttachedBoardsChangeEvent
   ): void {
@@ -120,10 +202,18 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       this.logger.info(AttachedBoardsChangeEvent.toString(event));
       this.logger.info('------------------------------------------');
     }
+
     this._attachedBoards = event.newState.boards;
     this._availablePorts = event.newState.ports;
     this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
-    this.reconcileAvailableBoards().then(() => this.tryReconnect());
+    this.reconcileAvailableBoards().then(() => {
+      const { uploadInProgress } = event;
+      // avoid attempting "auto-selection" while an
+      // upload is in progress
+      if (!uploadInProgress) {
+        this.attemptAutoSelect(event.newState);
+      }
+    });
   }
 
   protected notifyPlatformInstalled(event: { item: BoardsPackage }): void {
@@ -239,24 +329,12 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
           return true;
         }
       }
-      // If we could not find an exact match, we compare the board FQBN-name pairs and ignore the port, as it might have changed.
-      // See documentation on `latestValidBoardsConfig`.
-      for (const board of this.availableBoards.filter(
-        ({ state }) => state !== AvailableBoard.State.incomplete
-      )) {
-        if (
-          this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
-          this.latestValidBoardsConfig.selectedPort.protocol ===
-            board.port?.protocol
-        ) {
-          this.boardsConfig = {
-            ...this.latestValidBoardsConfig,
-            selectedPort: board.port,
-          };
-          return true;
-        }
-      }
+
+      if (!this.boardConfigToAutoSelect) return false;
+
+      this.boardsConfig = this.boardConfigToAutoSelect;
+      this.boardConfigToAutoSelect = undefined;
+      return true;
     }
     return false;
   }
@@ -450,6 +528,11 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       const board = attachedBoards.find(({ port }) =>
         Port.sameAs(boardPort, port)
       );
+      // "board" will always be falsey for
+      // port that was originally mapped
+      // to unknown board and then selected
+      // manually by user
+
       const lastSelectedBoard = await this.getLastSelectedBoardOnPort(
         boardPort
       );
@@ -468,7 +551,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         availableBoard = {
           ...lastSelectedBoard,
           state: AvailableBoard.State.guessed,
-          selected: BoardsConfig.Config.sameAs(boardsConfig, lastSelectedBoard),
+          selected:
+            BoardsConfig.Config.sameAs(boardsConfig, lastSelectedBoard) &&
+            Port.sameAs(boardPort, boardsConfig.selectedPort), // to avoid double selection
           port: boardPort,
         };
       } else {
@@ -483,7 +568,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
     if (
       boardsConfig.selectedBoard &&
-      !availableBoards.some(({ selected }) => selected)
+      availableBoards.every(({ selected }) => !selected)
     ) {
       // If the selected board has the same port of an unknown board
       // that is already in availableBoards we might get a duplicate port.
