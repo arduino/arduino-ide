@@ -2,14 +2,13 @@ import { injectable, inject } from '@theia/core/shared/inversify';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as temp from 'temp';
-import * as tempDir from 'temp-dir';
+
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { ncp } from 'ncp';
 import { promisify } from 'util';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node';
-import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { ConfigServiceImpl } from './config-service-impl';
 import {
   SketchesService,
@@ -18,7 +17,6 @@ import {
   SketchContainer,
   SketchesError,
 } from '../common/protocol/sketches-service';
-import { firstToLowerCase } from '../common/utils';
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { CoreClientAware } from './core-client-provider';
@@ -30,10 +28,11 @@ import { duration } from '../common/decorators';
 import * as glob from 'glob';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { ServiceError } from './service-error';
-
-const WIN32_DRIVE_REGEXP = /^[a-zA-Z]:\\/;
-
-const prefix = '.arduinoIDE-unsaved';
+import {
+  IsTempSketch,
+  maybeNormalizeDrive,
+  TempSketchPrefix,
+} from './is-temp-sketch';
 
 @injectable()
 export class SketchesServiceImpl
@@ -42,22 +41,18 @@ export class SketchesServiceImpl
 {
   private sketchSuffixIndex = 1;
   private lastSketchBaseName: string;
-  // If on macOS, the `temp-dir` lib will make sure there is resolved realpath.
-  // If on Windows, the `C:\Users\KITTAA~1\AppData\Local\Temp` path will be resolved and normalized to `C:\Users\kittaakos\AppData\Local\Temp`.
-  // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
-  // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
-  private tempDirRealpath = isOSX
-    ? tempDir
-    : maybeNormalizeDrive(fs.realpathSync.native(tempDir));
 
   @inject(ConfigServiceImpl)
-  protected readonly configService: ConfigServiceImpl;
+  private readonly configService: ConfigServiceImpl;
 
   @inject(NotificationServiceServerImpl)
-  protected readonly notificationService: NotificationServiceServerImpl;
+  private readonly notificationService: NotificationServiceServerImpl;
 
   @inject(EnvVariablesServer)
-  protected readonly envVariableServer: EnvVariablesServer;
+  private readonly envVariableServer: EnvVariablesServer;
+
+  @inject(IsTempSketch)
+  private readonly isTempSketch: IsTempSketch;
 
   async getSketches({
     uri,
@@ -424,7 +419,7 @@ void loop() {
    */
   private createTempFolder(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      temp.mkdir({ prefix }, (createError, dirPath) => {
+      temp.mkdir({ prefix: TempSketchPrefix }, (createError, dirPath) => {
         if (createError) {
           reject(createError);
           return;
@@ -475,20 +470,7 @@ void loop() {
   }
 
   async isTemp(sketch: SketchRef): Promise<boolean> {
-    // Consider the following paths:
-    // macOS:
-    // - Temp folder: /var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T
-    // - Sketch folder: /private/var/folders/k3/d2fkvv1j16v3_rz93k7f74180000gn/T/arduino-ide2-A0337D47F86B24A51DF3DBCF2CC17925
-    // Windows:
-    // - Temp folder: C:\Users\KITTAA~1\AppData\Local\Temp
-    // - Sketch folder: c:\Users\kittaakos\AppData\Local\Temp\.arduinoIDE-unsaved2022431-21824-116kfaz.9ljl\sketch_may31a
-    // Both sketches are valid and temp, but this function will give a false-negative result if we use the default `os.tmpdir()` logic.
-    const sketchPath = maybeNormalizeDrive(FileUri.fsPath(sketch.uri));
-    const tempPath = this.tempDirRealpath; // https://github.com/sindresorhus/temp-dir
-    const result =
-      sketchPath.indexOf(prefix) !== -1 && sketchPath.startsWith(tempPath);
-    console.log('isTemp?', result, sketch.uri);
-    return result;
+    return this.isTempSketch.is(FileUri.fsPath(sketch.uri));
   }
 
   async copy(
@@ -578,6 +560,17 @@ void loop() {
     const suffix = crypto.createHash('md5').update(sketchPath).digest('hex');
     return path.join(os.tmpdir(), `arduino-ide2-${suffix}`);
   }
+
+  notifyDeleteSketch(sketch: Sketch): void {
+    const sketchPath = FileUri.fsPath(sketch.uri);
+    fs.rm(sketchPath, { recursive: true, maxRetries: 5 }, (error) => {
+      if (error) {
+        console.error(`Failed to delete sketch at ${sketchPath}.`, error);
+      } else {
+        console.error(`Successfully delete sketch at ${sketchPath}.`);
+      }
+    });
+  }
 }
 
 interface SketchWithDetails extends Sketch {
@@ -616,16 +609,6 @@ function fixErrorMessage(
 
 function isNotFoundError(err: unknown): err is ServiceError {
   return ServiceError.is(err) && err.code === 5; // `NOT_FOUND` https://grpc.github.io/grpc/core/md_doc_statuscodes.html
-}
-
-/**
- * If on Windows, will change the input `C:\\path\\to\\somewhere` to `c:\\path\\to\\somewhere`.
- */
-function maybeNormalizeDrive(input: string): string {
-  if (isWindows && WIN32_DRIVE_REGEXP.test(input)) {
-    return firstToLowerCase(input);
-  }
-  return input;
 }
 
 /*

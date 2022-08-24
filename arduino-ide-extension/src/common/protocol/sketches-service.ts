@@ -95,6 +95,11 @@ export interface SketchesService {
    * Based on https://github.com/arduino/arduino-cli/blob/550179eefd2d2bca299d50a4af9e9bfcfebec649/arduino/builder/builder.go#L30-L38
    */
   getIdeTempFolderUri(sketch: Sketch): Promise<string>;
+
+  /**
+   * Notifies the backend to recursively delete the sketch folder with all its content.
+   */
+  notifyDeleteSketch(sketch: Sketch): void;
 }
 
 export interface SketchRef {
