@@ -462,6 +462,16 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     return this._availableBoards;
   }
 
+  /**
+   * @deprecated Do not use this API, it will be removed. This is a hack to be able to set the missing port `properties` before an upload.
+   *
+   * See: https://github.com/arduino/arduino-ide/pull/1335#issuecomment-1224355236.
+   */
+  // TODO: remove this API and fix the selected board config store/restore correctly.
+  get availablePorts(): Port[] {
+    return this._availablePorts.slice();
+  }
+
   async waitUntilAvailable(
     what: Board & { port: Port },
     timeout?: number

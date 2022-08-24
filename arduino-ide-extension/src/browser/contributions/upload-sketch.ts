@@ -1,6 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import { BoardUserField, CoreService } from '../../common/protocol';
+import { BoardUserField, CoreService, Port } from '../../common/protocol';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
@@ -12,7 +12,7 @@ import {
   CoreServiceContribution,
 } from './contribution';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
-import { DisposableCollection, nls } from '@theia/core/lib/common';
+import { deepClone, DisposableCollection, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 import type { VerifySketchParams } from './verify-sketch';
 
@@ -266,7 +266,7 @@ export class UploadSketch extends CoreServiceContribution {
         this.preferences.get('arduino.upload.verify'),
         this.preferences.get('arduino.upload.verbose'),
       ]);
-    const port = boardsConfig.selectedPort;
+    const port = this.maybeUpdatePortProperties(boardsConfig.selectedPort);
     return {
       sketch,
       fqbn,
@@ -278,7 +278,29 @@ export class UploadSketch extends CoreServiceContribution {
     };
   }
 
-  private userFields() {
+  /**
+   * This is a hack to ensure that the port object has the `properties` when uploading.(https://github.com/arduino/arduino-ide/issues/740)
+   * This method works around a bug when restoring a `port` persisted by an older version of IDE2. See the bug [here](https://github.com/arduino/arduino-ide/pull/1335#issuecomment-1224355236).
+   *
+   * Before the upload, this method checks the available ports and makes sure that the `properties` of an available port, and the port selected by the user have the same `properties`.
+   * This method does not update any state (for example, the `BoardsConfig.Config`) but uses the correct `properties` for the `upload`.
+   */
+  private maybeUpdatePortProperties(port: Port | undefined): Port | undefined {
+    if (port) {
+      const key = Port.keyOf(port);
+      for (const candidate of this.boardsServiceProvider.availablePorts) {
+        if (key === Port.keyOf(candidate) && candidate.properties) {
+          return {
+            ...port,
+            properties: deepClone(candidate.properties),
+          };
+        }
+      }
+    }
+    return port;
+  }
+
+  private userFields(): BoardUserField[] {
     return this.cachedUserFields.get(this.selectedFqbnAddress()) ?? [];
   }
 
