@@ -321,6 +321,8 @@ import { MonacoThemeServiceIsReady } from './utils/window';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { StatusBarImpl } from './theia/core/status-bar';
 import { StatusBarImpl as TheiaStatusBarImpl } from '@theia/core/lib/browser';
+import { EditorMenuContribution } from './theia/editor/editor-file';
+import { EditorMenuContribution as TheiaEditorMenuContribution } from '@theia/editor/lib/browser/editor-menu';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -639,6 +641,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To remove `New Window` from the `File` menu
   bind(WindowContribution).toSelf().inSingletonScope();
   rebind(TheiaWindowContribution).toService(WindowContribution);
+
+  // To remove `File` > `Close Editor`.
+  bind(EditorMenuContribution).toSelf().inSingletonScope();
+  rebind(TheiaEditorMenuContribution).toService(EditorMenuContribution);
 
   bind(ArduinoDaemon)
     .toDynamicValue((context) =>
