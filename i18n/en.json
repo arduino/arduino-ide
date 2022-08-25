@@ -324,8 +324,8 @@
       "openRecent": "Open Recent",
       "openSketchInNewWindow": "Open Sketch in New Window",
       "saveFolderAs": "Save sketch folder as...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Save sketch folder as...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Show Sketch Folder",
       "sketch": "Sketch",
       "sketchbook": "Sketchbook",
@@ -362,7 +362,6 @@
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Any unsaved changes will not be saved.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {
