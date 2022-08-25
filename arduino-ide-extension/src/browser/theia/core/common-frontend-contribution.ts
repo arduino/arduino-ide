@@ -5,6 +5,7 @@ import {
   CommonCommands,
 } from '@theia/core/lib/browser/common-frontend-contribution';
 import { CommandRegistry } from '@theia/core/lib/common/command';
+import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application';
 
 @injectable()
 export class CommonFrontendContribution extends TheiaCommonFrontendContribution {
@@ -47,5 +48,10 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
     ]) {
       registry.unregisterMenuAction(command);
     }
+  }
+
+  override onWillStop(): OnWillStopAction | undefined {
+    // This is NOOP here. All window close and app quit requests are handled in the `Close` contribution.
+    return undefined;
   }
 }

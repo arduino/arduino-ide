@@ -1,6 +1,5 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import {
@@ -15,9 +14,9 @@ import {
   TabBar,
   Widget,
   SHELL_TABBAR_CONTEXT_MENU,
+  SaveOptions,
 } from '@theia/core/lib/browser';
 import { Sketch } from '../../../common/protocol';
-import { SaveAsSketch } from '../../contributions/save-as-sketch';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
@@ -28,9 +27,6 @@ import { ToolbarAwareTabBar } from './tab-bars';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
-  @inject(CommandService)
-  private readonly commandService: CommandService;
-
   @inject(MessageService)
   private readonly messageService: MessageService;
 
@@ -106,7 +102,7 @@ export class ApplicationShell extends TheiaApplicationShell {
     return topPanel;
   }
 
-  override async saveAll(): Promise<void> {
+  override async saveAll(options?: SaveOptions): Promise<void> {
     if (
       this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE
     ) {
@@ -118,12 +114,7 @@ export class ApplicationShell extends TheiaApplicationShell {
       );
       return; // Theia does not reject on failed save: https://github.com/eclipse-theia/theia/pull/8803
     }
-    await super.saveAll();
-    const options = { execOnlyIfTemp: true, openAfterMove: true };
-    await this.commandService.executeCommand(
-      SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-      options
-    );
+    return super.saveAll(options);
   }
 }
 
