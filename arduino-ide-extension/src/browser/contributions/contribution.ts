@@ -222,6 +222,14 @@ export abstract class CoreServiceContribution extends SketchContribution {
       } catch {}
     }
     if (message) {
+      if (
+        message.includes(
+          'Compilation error: Missing FQBN (Fully Qualified Board Name)'
+        )
+      ) {
+        message =
+          'No board selected. Please select your Arduino board from the Tools > Board menu.';
+      }
       const copyAction = nls.localize(
         'arduino/coreContribution/copyError',
         'Copy error messages'
