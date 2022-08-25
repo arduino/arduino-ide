@@ -1,4 +1,5 @@
 import { injectable } from '@theia/core/shared/inversify';
+import { toArray } from '@theia/core/shared/@phosphor/algorithm';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import type { MaybePromise } from '@theia/core/lib/common/types';
@@ -35,7 +36,28 @@ export class Close extends SketchContribution {
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(Close.Commands.CLOSE, {
-      execute: () => remote.getCurrentWindow().close(),
+      execute: () => {
+        // Close current editor if closeable.
+        const { currentEditor } = this.editorManager;
+        if (currentEditor && currentEditor.title.closable) {
+          currentEditor.close();
+          return;
+        }
+
+        if (this.shell) {
+          // Close current widget from the main area if possible.
+          const { currentWidget } = this.shell;
+          if (currentWidget) {
+            const currentWidgetInMain = toArray(
+              this.shell.mainPanel.widgets()
+            ).find((widget) => widget === currentWidget);
+            if (currentWidgetInMain && currentWidgetInMain.title.closable) {
+              return currentWidgetInMain.close();
+            }
+          }
+        }
+        return remote.getCurrentWindow().close();
+      },
     });
   }
 
