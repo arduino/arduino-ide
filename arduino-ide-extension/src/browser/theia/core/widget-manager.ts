@@ -7,6 +7,7 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { EditorWidget } from '@theia/editor/lib/browser';
+import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 import deepEqual = require('deep-equal');
 import {
   CurrentSketch,
@@ -21,19 +22,50 @@ export class WidgetManager extends TheiaWidgetManager {
 
   @postConstruct()
   protected init(): void {
-    this.sketchesServiceClient.onCurrentSketchDidChange((currentSketch) => {
-      if (CurrentSketch.isValid(currentSketch)) {
-        const sketchFileUris = new Set(Sketch.uris(currentSketch));
-        for (const widget of this.widgets.values()) {
-          if (widget instanceof EditorWidget) {
-            const uri = widget.editor.uri.toString();
-            if (sketchFileUris.has(uri)) {
-              widget.title.closable = false;
-            }
-          }
+    this.sketchesServiceClient.onCurrentSketchDidChange((sketch) =>
+      this.maybeSetWidgetUncloseable(
+        sketch,
+        ...Array.from(this.widgets.values())
+      )
+    );
+  }
+
+  override getOrCreateWidget<T extends Widget>(
+    factoryId: string,
+    options?: unknown
+  ): Promise<T> {
+    const unresolvedWidget = super.getOrCreateWidget<T>(factoryId, options);
+    unresolvedWidget.then(async (widget) => {
+      const sketch = await this.sketchesServiceClient.currentSketch();
+      this.maybeSetWidgetUncloseable(sketch, widget);
+    });
+    return unresolvedWidget;
+  }
+
+  private maybeSetWidgetUncloseable(
+    sketch: CurrentSketch,
+    ...widgets: Widget[]
+  ): void {
+    const sketchFileUris =
+      CurrentSketch.isValid(sketch) && new Set(Sketch.uris(sketch));
+    for (const widget of widgets) {
+      if (widget instanceof OutputWidget) {
+        this.setWidgetUncloseable(widget); // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
+      } else if (widget instanceof EditorWidget) {
+        // Make the editor un-closeable asynchronously.
+        const uri = widget.editor.uri.toString();
+        if (!!sketchFileUris && sketchFileUris.has(uri)) {
+          this.setWidgetUncloseable(widget);
         }
       }
-    });
+    }
+  }
+
+  private setWidgetUncloseable(widget: Widget): void {
+    const { title } = widget;
+    if (title.closable) {
+      title.closable = false;
+    }
   }
 
   /**
