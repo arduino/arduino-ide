@@ -1,28 +1,20 @@
-import { injectable, inject } from '@theia/core/shared/inversify';
-import { EditorWidget } from '@theia/editor/lib/browser';
-import { MessageService } from '@theia/core/lib/common/message-service';
-import { OutputWidget } from '@theia/output/lib/browser/output-widget';
-import {
-  ConnectionStatusService,
-  ConnectionStatus,
-} from '@theia/core/lib/browser/connection-status-service';
 import {
   ApplicationShell as TheiaApplicationShell,
   DockPanel,
   DockPanelRenderer as TheiaDockPanelRenderer,
   Panel,
+  SaveOptions,
+  SHELL_TABBAR_CONTEXT_MENU,
   TabBar,
   Widget,
-  SHELL_TABBAR_CONTEXT_MENU,
-  SaveOptions,
 } from '@theia/core/lib/browser';
-import { Sketch } from '../../../common/protocol';
 import {
-  CurrentSketch,
-  SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
-import { nls } from '@theia/core/lib/common';
-import URI from '@theia/core/lib/common/uri';
+  ConnectionStatus,
+  ConnectionStatusService,
+} from '@theia/core/lib/browser/connection-status-service';
+import { nls } from '@theia/core/lib/common/nls';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { ToolbarAwareTabBar } from './tab-bars';
 
 @injectable()
@@ -30,39 +22,8 @@ export class ApplicationShell extends TheiaApplicationShell {
   @inject(MessageService)
   private readonly messageService: MessageService;
 
-  @inject(SketchesServiceClientImpl)
-  private readonly sketchesServiceClient: SketchesServiceClientImpl;
-
   @inject(ConnectionStatusService)
   private readonly connectionStatusService: ConnectionStatusService;
-
-  protected override track(widget: Widget): void {
-    super.track(widget);
-    if (widget instanceof OutputWidget) {
-      widget.title.closable = false; // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
-    }
-    if (widget instanceof EditorWidget) {
-      // Make the editor un-closeable asynchronously.
-      this.sketchesServiceClient.currentSketch().then((sketch) => {
-        if (CurrentSketch.isValid(sketch)) {
-          if (!this.isSketchFile(widget.editor.uri, sketch.uri)) {
-            return;
-          }
-          if (Sketch.isInSketch(widget.editor.uri, sketch)) {
-            widget.title.closable = false;
-          }
-        }
-      });
-    }
-  }
-
-  private isSketchFile(uri: URI, sketchUriString: string): boolean {
-    const sketchUri = new URI(sketchUriString);
-    if (uri.parent.isEqual(sketchUri)) {
-      return true;
-    }
-    return false;
-  }
 
   override async addWidget(
     widget: Widget,
