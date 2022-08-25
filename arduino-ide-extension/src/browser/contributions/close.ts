@@ -1,6 +1,13 @@
 import { injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
+import type { MaybePromise } from '@theia/core/lib/common/types';
+import type {
+  FrontendApplication,
+  OnWillStopAction,
+} from '@theia/core/lib/browser/frontend-application';
+import { nls } from '@theia/core/lib/common/nls';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   SketchContribution,
@@ -11,17 +18,21 @@ import {
   Sketch,
   URI,
 } from './contribution';
-import { nls } from '@theia/core/lib/common';
 import { Dialog } from '@theia/core/lib/browser/dialogs';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from './save-as-sketch';
-import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application';
 
 /**
  * Closes the `current` closeable editor, or any closeable current widget from the main area, or the current sketch window.
  */
 @injectable()
 export class Close extends SketchContribution {
+  private shell: ApplicationShell | undefined;
+
+  override onStart(app: FrontendApplication): MaybePromise<void> {
+    this.shell = app.shell;
+  }
+
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(Close.Commands.CLOSE, {
       execute: () => remote.getCurrentWindow().close(),
@@ -46,20 +57,41 @@ export class Close extends SketchContribution {
   // `FrontendApplicationContribution#onWillStop`
   onWillStop(): OnWillStopAction {
     return {
-      reason: 'temp-sketch',
+      reason: 'save-sketch',
       action: () => {
-        return this.showSaveTempSketchDialog();
+        return this.showSaveSketchDialog();
       },
     };
   }
 
-  private async showSaveTempSketchDialog(): Promise<boolean> {
-    const sketch = await this.sketchServiceClient.currentSketch();
-    if (!CurrentSketch.isValid(sketch)) {
-      return true;
-    }
-    const isTemp = await this.sketchService.isTemp(sketch);
-    if (!isTemp) {
+  /**
+   * If returns with `true`, IDE2 will close. Otherwise, it won't.
+   */
+  private async showSaveSketchDialog(): Promise<boolean> {
+    const sketch = await this.isCurrentSketchTemp();
+    if (!sketch) {
+      // Normal close workflow: if there are dirty editors prompt the user.
+      if (!this.shell) {
+        console.error(
+          `Could not get the application shell. Something went wrong.`
+        );
+        return true;
+      }
+      if (this.shell.canSaveAll()) {
+        const prompt = await this.prompt(false);
+        switch (prompt) {
+          case Prompt.DoNotSave:
+            return true;
+          case Prompt.Cancel:
+            return false;
+          case Prompt.Save: {
+            await this.shell.saveAll();
+            return true;
+          }
+          default:
+            throw new Error(`Unexpected prompt: ${prompt}`);
+        }
+      }
       return true;
     }
 
@@ -71,11 +103,36 @@ export class Close extends SketchContribution {
       return true;
     }
 
-    const messageBoxResult = await remote.dialog.showMessageBox(
+    const prompt = await this.prompt(true);
+    switch (prompt) {
+      case Prompt.DoNotSave:
+        return true;
+      case Prompt.Cancel:
+        return false;
+      case Prompt.Save: {
+        // If `save as` was canceled by user, the result will be `undefined`, otherwise the new URI.
+        const result = await this.commandService.executeCommand(
+          SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+          {
+            execOnlyIfTemp: false,
+            openAfterMove: false,
+            wipeOriginal: true,
+            markAsRecentlyOpened: true,
+          }
+        );
+        return !!result;
+      }
+      default:
+        throw new Error(`Unexpected prompt: ${prompt}`);
+    }
+  }
+
+  private async prompt(isTemp: boolean): Promise<Prompt> {
+    const { response } = await remote.dialog.showMessageBox(
       remote.getCurrentWindow(),
       {
         message: nls.localize(
-          'arduino/sketch/saveTempSketch',
+          'arduino/sketch/saveSketch',
           'Save your sketch to open it again later.'
         ),
         title: nls.localize(
@@ -84,24 +141,32 @@ export class Close extends SketchContribution {
         ),
         type: 'question',
         buttons: [
-          Dialog.CANCEL,
-          nls.localizeByDefault('Save As...'),
           nls.localizeByDefault("Don't Save"),
+          Dialog.CANCEL,
+          nls.localizeByDefault(isTemp ? 'Save As...' : 'Save'),
         ],
+        defaultId: 2, // `Save`/`Save As...` button index is the default.
       }
     );
-    const result = messageBoxResult.response;
-    if (result === 2) {
-      return true;
-    } else if (result === 1) {
-      return !!(await this.commandService.executeCommand(
-        SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-        {
-          execOnlyIfTemp: false,
-          openAfterMove: false,
-          wipeOriginal: true,
-        }
-      ));
+    switch (response) {
+      case 0:
+        return Prompt.DoNotSave;
+      case 1:
+        return Prompt.Cancel;
+      case 2:
+        return Prompt.Save;
+      default:
+        throw new Error(`Unexpected response: ${response}`);
+    }
+  }
+
+  private async isCurrentSketchTemp(): Promise<false | Sketch> {
+    const currentSketch = await this.sketchServiceClient.currentSketch();
+    if (CurrentSketch.isValid(currentSketch)) {
+      const isTemp = await this.sketchService.isTemp(currentSketch);
+      if (isTemp) {
+        return currentSketch;
+      }
     }
     return false;
   }
@@ -126,6 +191,12 @@ export class Close extends SketchContribution {
   private isInteger(arg: unknown): arg is number {
     return Number.isInteger(arg);
   }
+}
+
+enum Prompt {
+  Save,
+  DoNotSave,
+  Cancel,
 }
 
 export namespace Close {

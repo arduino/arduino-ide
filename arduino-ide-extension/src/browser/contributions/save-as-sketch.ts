@@ -57,6 +57,7 @@ export class SaveAsSketch extends SketchContribution {
       execOnlyIfTemp,
       openAfterMove,
       wipeOriginal,
+      markAsRecentlyOpened,
     }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
   ): Promise<boolean> {
     const sketch = await this.sketchServiceClient.currentSketch();
@@ -102,6 +103,9 @@ export class SaveAsSketch extends SketchContribution {
     });
     if (workspaceUri) {
       await this.saveOntoCopiedSketch(sketch.mainFileUri, sketch.uri, workspaceUri);
+      if (markAsRecentlyOpened) {
+        this.sketchService.markAsRecentlyOpened(workspaceUri);
+      }
     }
     if (workspaceUri && openAfterMove) {
       this.windowService.setSafeToShutDown();
@@ -171,12 +175,14 @@ export namespace SaveAsSketch {
      * Ignored if `openAfterMove` is `false`.
      */
     readonly wipeOriginal?: boolean;
+    readonly markAsRecentlyOpened?: boolean;
   }
   export namespace Options {
     export const DEFAULT: Options = {
       execOnlyIfTemp: false,
       openAfterMove: true,
       wipeOriginal: false,
+      markAsRecentlyOpened: false,
     };
   }
 }
