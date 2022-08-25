@@ -61,7 +61,11 @@ export class UploadSketch extends CoreServiceContribution {
     registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
       execute: async () => {
         const key = this.selectedFqbnAddress();
-        if (this.boardRequiresUserFields && !this.cachedUserFields.has(key)) {
+        if (
+          this.boardRequiresUserFields &&
+          key &&
+          !this.cachedUserFields.has(key)
+        ) {
           // Deep clone the array of board fields to avoid editing the cached ones
           this.userFieldsDialog.value = (
             await this.boardsServiceProvider.selectedBoardUserFields()
