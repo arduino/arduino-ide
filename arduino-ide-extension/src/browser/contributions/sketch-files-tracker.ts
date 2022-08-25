@@ -30,10 +30,7 @@ export class SketchFilesTracker extends SketchContribution {
 
   override onReady(): void {
     this.sketchServiceClient.currentSketch().then(async (sketch) => {
-      if (
-        CurrentSketch.isValid(sketch) &&
-        !(await this.sketchService.isTemp(sketch))
-      ) {
+      if (CurrentSketch.isValid(sketch)) {
         this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
         this.toDisposeOnStop.push(
           this.fileService.onDidFilesChange(async (event) => {
