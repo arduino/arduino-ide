@@ -10,7 +10,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { Sketch, SketchesService } from '../../common/protocol';
 import { ConfigService } from './config-service';
-import { SketchContainer, SketchRef } from './sketches-service';
+import { SketchContainer, SketchesError, SketchRef } from './sketches-service';
 import {
   ARDUINO_CLOUD_FOLDER,
   REMOTE_SKETCHBOOK_FOLDER,
@@ -79,6 +79,7 @@ export class SketchesServiceClientImpl
             this.sketches.set(sketch.uri, sketch);
           }
           this.toDispose.push(
+            // Watch changes in the sketchbook to update `File` > `Sketchbook` menu items.
             this.fileService.watch(new URI(sketchDirUri), {
               recursive: true,
               excludes: [],
@@ -87,6 +88,34 @@ export class SketchesServiceClientImpl
           this.toDispose.push(
             this.fileService.onDidFilesChange(async (event) => {
               for (const { type, resource } of event.changes) {
+                // The file change events have higher precedence in the current sketch over the sketchbook.
+                if (
+                  CurrentSketch.isValid(this._currentSketch) &&
+                  new URI(this._currentSketch.uri).isEqualOrParent(resource)
+                ) {
+                  if (type === FileChangeType.UPDATED) {
+                    return;
+                  }
+
+                  let reloadedSketch: Sketch | undefined = undefined;
+                  try {
+                    reloadedSketch = await this.sketchService.loadSketch(
+                      this._currentSketch.uri
+                    );
+                  } catch (err) {
+                    if (!SketchesError.NotFound.is(err)) {
+                      throw err;
+                    }
+                  }
+
+                  if (!reloadedSketch) {
+                    return;
+                  }
+
+                  // TODO: check if current is the same as reloaded?
+                  this.useCurrentSketch(reloadedSketch, true);
+                  return;
+                }
                 // We track main sketch files changes only. // TODO: check sketch folder changes. One can rename the folder without renaming the `.ino` file.
                 if (sketchbookUri.isEqualOrParent(resource)) {
                   if (Sketch.isSketchFile(resource)) {
@@ -125,10 +154,29 @@ export class SketchesServiceClientImpl
       .reachedState('started_contributions')
       .then(async () => {
         const currentSketch = await this.loadCurrentSketch();
-        this._currentSketch = currentSketch;
-        this.currentSketchDidChangeEmitter.fire(this._currentSketch);
-        this.currentSketchLoaded.resolve(this._currentSketch);
+        if (CurrentSketch.isValid(currentSketch)) {
+          this.toDispose.pushAll([
+            // Watch the file changes of the current sketch
+            this.fileService.watch(new URI(currentSketch.uri), {
+              recursive: true,
+              excludes: [],
+            }),
+          ]);
+        }
+        this.useCurrentSketch(currentSketch);
       });
+  }
+
+  private useCurrentSketch(
+    currentSketch: CurrentSketch,
+    reassignPromise = false
+  ) {
+    this._currentSketch = currentSketch;
+    if (reassignPromise) {
+      this.currentSketchLoaded = new Deferred();
+    }
+    this.currentSketchLoaded.resolve(this._currentSketch);
+    this.currentSketchDidChangeEmitter.fire(this._currentSketch);
   }
 
   onStop(): void {
