@@ -219,7 +219,7 @@ export class BoardDiscovery
     } else {
       throw new Error(`Unhandled object type: ${arg}`);
     }
-    return JSON.stringify(object, null, 2); // TODO: remove `space`?
+    return JSON.stringify(object);
   }
 
   async start(): Promise<void> {
