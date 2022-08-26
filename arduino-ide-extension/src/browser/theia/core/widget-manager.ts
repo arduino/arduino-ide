@@ -66,6 +66,11 @@ export class WidgetManager extends TheiaWidgetManager {
     if (title.closable) {
       title.closable = false;
     }
+    // Show the dirty indicator on uncloseable widgets when hovering over the title. Instead of showing the `X` for close.
+    const uncloseableClass = 'a-mod-uncloseable';
+    if (!title.className.includes(uncloseableClass)) {
+      title.className += title.className + ` ${uncloseableClass}`;
+    }
   }
 
   /**
