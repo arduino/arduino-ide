@@ -141,8 +141,6 @@ import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handl
 import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
-import { OutputWidget as TheiaOutputWidget } from '@theia/output/lib/browser/output-widget';
-import { OutputWidget } from './theia/output/output-widget';
 import { BurnBootloader } from './contributions/burn-bootloader';
 import {
   ExamplesServicePath,
@@ -215,7 +213,10 @@ import { SearchInWorkspaceFactory } from './theia/search-in-workspace/search-in-
 import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
 import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
-import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
+import {
+  MonacoEditorFactory,
+  MonacoEditorProvider as TheiaMonacoEditorProvider,
+} from '@theia/monaco/lib/browser/monaco-editor-provider';
 import { StorageWrapper } from './storage-wrapper';
 import { NotificationManager } from './theia/messages/notifications-manager';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
@@ -332,6 +333,7 @@ import {
   LibraryFilterRenderer,
 } from './widgets/component-list/filter-renderer';
 import { CheckForUpdates } from './contributions/check-for-updates';
+import { OutputEditorFactory } from './theia/output/output-editor-factory';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -587,8 +589,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         return container.get(TabBarToolbar);
       }
   );
-  bind(OutputWidget).toSelf().inSingletonScope();
-  rebind(TheiaOutputWidget).toService(OutputWidget);
   bind(OutputChannelManager).toSelf().inSingletonScope();
   rebind(TheiaOutputChannelManager).toService(OutputChannelManager);
   bind(OutputChannelRegistryMainImpl).toSelf().inTransientScope();
@@ -656,6 +656,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To remove `File` > `Close Editor`.
   bind(EditorMenuContribution).toSelf().inSingletonScope();
   rebind(TheiaEditorMenuContribution).toService(EditorMenuContribution);
+
+  // To disable the highlighting of non-unicode characters in the _Output_ view
+  bind(OutputEditorFactory).toSelf().inSingletonScope();
+  // Rebind to `TheiaOutputEditorFactory` when https://github.com/eclipse-theia/theia/pull/11615 is available.
+  rebind(MonacoEditorFactory).toService(OutputEditorFactory);
 
   bind(ArduinoDaemon)
     .toDynamicValue((context) =>
