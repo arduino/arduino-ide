@@ -13,7 +13,6 @@ import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../../../common/protocol/sketches-service-client-impl';
-import { Sketch } from '../../contributions/contribution';
 
 @injectable()
 export class WidgetManager extends TheiaWidgetManager {
@@ -47,7 +46,8 @@ export class WidgetManager extends TheiaWidgetManager {
     ...widgets: Widget[]
   ): void {
     const sketchFileUris =
-      CurrentSketch.isValid(sketch) && new Set(Sketch.uris(sketch));
+      CurrentSketch.isValid(sketch) &&
+      new Set([sketch.mainFileUri, ...sketch.rootFolderFileUris]);
     for (const widget of widgets) {
       if (widget instanceof OutputWidget) {
         this.setWidgetUncloseable(widget); // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
