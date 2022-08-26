@@ -163,7 +163,7 @@
       "version": {
         "owner": "arduino",
         "repo": "arduino-cli",
-        "commitish": "test_1"
+        "commitish": "63f1e18"
       }
     },
     "fwuploader": {
