@@ -222,6 +222,12 @@ export abstract class CoreServiceContribution extends SketchContribution {
       } catch {}
     }
     if (message) {
+      if (message.includes('Missing FQBN (Fully Qualified Board Name)')) {
+        message = nls.localize(
+          'arduino/coreContribution/noBoardSelected',
+          'No board selected. Please select your Arduino board from the Tools > Board menu.'
+        );
+      }
       const copyAction = nls.localize(
         'arduino/coreContribution/copyError',
         'Copy error messages'
