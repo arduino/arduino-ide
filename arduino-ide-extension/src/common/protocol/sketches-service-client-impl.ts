@@ -93,7 +93,17 @@ export class SketchesServiceClientImpl
                   CurrentSketch.isValid(this._currentSketch) &&
                   new URI(this._currentSketch.uri).isEqualOrParent(resource)
                 ) {
-                  if (type === FileChangeType.UPDATED) {
+                  // https://github.com/arduino/arduino-ide/pull/1351#pullrequestreview-1086666656
+                  // On a sketch file rename, the FS watcher will contain two changes:
+                  //  - Deletion of the original file,
+                  //  - Update of the new file,
+                  // Hence, `UPDATE` events must be processed but only and if only there is a `DELETED` change in the same event.
+                  // Otherwise, IDE2 would ask CLI to reload the sketch content on every save event in IDE2.
+                  if (
+                    type === FileChangeType.UPDATED &&
+                    event.changes.length === 1
+                  ) {
+                    // If the event contains only one `UPDATE` change, it cannot be a rename.
                     return;
                   }
 
@@ -112,8 +122,9 @@ export class SketchesServiceClientImpl
                     return;
                   }
 
-                  // TODO: check if current is the same as reloaded?
-                  this.useCurrentSketch(reloadedSketch, true);
+                  if (!Sketch.sameAs(this._currentSketch, reloadedSketch)) {
+                    this.useCurrentSketch(reloadedSketch, true);
+                  }
                   return;
                 }
                 // We track main sketch files changes only. // TODO: check sketch folder changes. One can rename the folder without renaming the `.ino` file.

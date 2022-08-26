@@ -162,6 +162,74 @@ export namespace Sketch {
     const { mainFileUri, otherSketchFileUris, additionalFileUris } = sketch;
     return [mainFileUri, ...otherSketchFileUris, ...additionalFileUris];
   }
+  const primitiveProps: Array<keyof Sketch> = ['name', 'uri', 'mainFileUri'];
+  const arrayProps: Array<keyof Sketch> = [
+    'additionalFileUris',
+    'otherSketchFileUris',
+    'rootFolderFileUris',
+  ];
+  export function sameAs(left: Sketch, right: Sketch): boolean {
+    for (const prop of primitiveProps) {
+      const leftValue = left[prop];
+      const rightValue = right[prop];
+      assertIsNotArray(leftValue, prop, left);
+      assertIsNotArray(rightValue, prop, right);
+      if (leftValue !== rightValue) {
+        return false;
+      }
+    }
+    for (const prop of arrayProps) {
+      const leftValue = left[prop];
+      const rightValue = right[prop];
+      assertIsArray(leftValue, prop, left);
+      assertIsArray(rightValue, prop, right);
+      if (leftValue.length !== rightValue.length) {
+        return false;
+      }
+    }
+    for (const prop of arrayProps) {
+      const leftValue = left[prop];
+      const rightValue = right[prop];
+      assertIsArray(leftValue, prop, left);
+      assertIsArray(rightValue, prop, right);
+      if (
+        toSortedString(leftValue as string[]) !==
+        toSortedString(rightValue as string[])
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+  function toSortedString(array: string[]): string {
+    return array.slice().sort().join(',');
+  }
+  function assertIsNotArray(
+    toTest: unknown,
+    prop: keyof Sketch,
+    object: Sketch
+  ): void {
+    if (Array.isArray(toTest)) {
+      throw new Error(
+        `Expected a non-array type. Got: ${toTest}. Property was: ${prop}. Object was: ${JSON.stringify(
+          object
+        )}`
+      );
+    }
+  }
+  function assertIsArray(
+    toTest: unknown,
+    prop: keyof Sketch,
+    object: Sketch
+  ): void {
+    if (!Array.isArray(toTest)) {
+      throw new Error(
+        `Expected an array type. Got: ${toTest}. Property was: ${prop}. Object was: ${JSON.stringify(
+          object
+        )}`
+      );
+    }
+  }
 }
 
 export interface SketchContainer {
