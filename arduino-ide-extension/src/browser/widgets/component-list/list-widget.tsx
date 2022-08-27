@@ -60,6 +60,7 @@ export abstract class ListWidget<
     this.title.closable = true;
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
+    this.scrollOptions = undefined;
     this.toDispose.push(this.filterTextChangeEmitter);
   }
 
