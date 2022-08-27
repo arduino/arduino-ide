@@ -8,6 +8,7 @@ export interface LibraryService
   extends Installable<LibraryPackage>,
     Searchable<LibraryPackage> {
   list(options: LibraryService.List.Options): Promise<LibraryPackage[]>;
+  search(options: LibrarySearch): Promise<LibraryPackage[]>;
   /**
    * When `installDependencies` is not set, it is `true` by default. If you want to skip the installation of required dependencies, set it to `false`.
    */
@@ -36,6 +37,38 @@ export interface LibraryService
     version: Installable.Version;
     filterSelf?: boolean;
   }): Promise<LibraryDependency[]>;
+}
+
+export interface LibrarySearch extends Searchable.Options {
+  readonly type?: LibrarySearch.Type;
+  readonly topic?: LibrarySearch.Topic;
+}
+export namespace LibrarySearch {
+  export const TypeLiterals = [
+    'All',
+    'Updatable',
+    'Installed',
+    'Arduino',
+    'Partner',
+    'Recommended',
+    'Contributed',
+    'Retired',
+  ] as const;
+  export type Type = typeof TypeLiterals[number];
+  export const TopicLiterals = [
+    'All',
+    'Communication',
+    'Data Processing',
+    'Data Storage',
+    'Device Control',
+    'Display',
+    'Others',
+    'Sensors',
+    'Signal Input/Output',
+    'Timing',
+    'Uncategorized',
+  ];
+  export type Topic = typeof TopicLiterals[number];
 }
 
 export namespace LibraryService {
