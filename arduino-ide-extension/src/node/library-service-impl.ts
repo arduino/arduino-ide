@@ -3,6 +3,7 @@ import {
   LibraryDependency,
   LibraryLocation,
   LibraryPackage,
+  LibrarySearch,
   LibraryService,
 } from '../common/protocol/library-service';
 import { CoreClientAware } from './core-client-provider';
@@ -26,6 +27,7 @@ import { ILogger, notEmpty } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node';
 import { ResponseService, NotificationServiceServer } from '../common/protocol';
 import { ExecuteWithProgress } from './grpc-progressible';
+import { duration } from '../common/decorators';
 
 @injectable()
 export class LibraryServiceImpl
@@ -44,7 +46,8 @@ export class LibraryServiceImpl
   @inject(NotificationServiceServer)
   protected readonly notificationServer: NotificationServiceServer;
 
-  async search(options: { query?: string }): Promise<LibraryPackage[]> {
+  @duration()
+  async search(options: LibrarySearch): Promise<LibraryPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
@@ -78,7 +81,6 @@ export class LibraryServiceImpl
     const items = resp
       .getLibrariesList()
       .filter((item) => !!item.getLatest())
-      .slice(0, 50)
       .map((item) => {
         // TODO: This seems to contain only the latest item instead of all of the items.
         const availableVersions = item
@@ -103,7 +105,42 @@ export class LibraryServiceImpl
         );
       });
 
-    return items;
+    const typePredicate = this.typePredicate(options);
+    const topicPredicate = this.topicPredicate(options);
+    return items.filter((item) => typePredicate(item) && topicPredicate(item));
+  }
+
+  private typePredicate(
+    options: LibrarySearch
+  ): (item: LibraryPackage) => boolean {
+    const { type } = options;
+    if (!type || type === 'All') {
+      return () => true;
+    }
+    switch (options.type) {
+      case 'Installed':
+        return Installable.Installed;
+      case 'Updatable':
+        return Installable.Updateable;
+      case 'Arduino':
+      case 'Partner':
+      case 'Recommended':
+      case 'Contributed':
+      case 'Retired':
+        return ({ types }: LibraryPackage) => !!types && types.includes(type);
+      default:
+        throw new Error(`Unhandled type: ${options.type}`);
+    }
+  }
+
+  private topicPredicate(
+    options: LibrarySearch
+  ): (item: LibraryPackage) => boolean {
+    const { topic } = options;
+    if (!topic || topic === 'All') {
+      return () => true;
+    }
+    return (item: LibraryPackage) => item.category === topic;
   }
 
   async list({
@@ -408,5 +445,7 @@ function toLibrary(
     description: lib.getSentence(),
     moreInfoLink: lib.getWebsite(),
     summary: lib.getParagraph(),
+    category: lib.getCategory(),
+    types: lib.getTypesList(),
   };
 }

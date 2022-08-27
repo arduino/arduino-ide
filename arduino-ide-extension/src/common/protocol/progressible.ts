@@ -39,7 +39,7 @@ export namespace ExecuteWithProgress {
     );
   }
 
-  async function withProgress<T>(
+  export async function withProgress<T>(
     text: string,
     messageService: MessageService,
     cb: (progress: Progress, token: CancellationToken) => Promise<T>

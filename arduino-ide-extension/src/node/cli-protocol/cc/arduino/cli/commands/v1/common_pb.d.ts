@@ -159,6 +159,11 @@ export class Platform extends jspb.Message {
     getDeprecated(): boolean;
     setDeprecated(value: boolean): Platform;
 
+    clearTypeList(): void;
+    getTypeList(): Array<string>;
+    setTypeList(value: Array<string>): Platform;
+    addType(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -182,6 +187,7 @@ export namespace Platform {
         boardsList: Array<Board.AsObject>,
         manuallyInstalled: boolean,
         deprecated: boolean,
+        typeList: Array<string>,
     }
 }
 

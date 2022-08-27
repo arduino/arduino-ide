@@ -2,6 +2,8 @@ import { naturalCompare } from './../utils';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
+import { nls } from '@theia/core/lib/common/nls';
+import { All, Contributed, Partner, Type, Updatable } from '../nls';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
@@ -131,7 +133,7 @@ export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService
   extends Installable<BoardsPackage>,
-    Searchable<BoardsPackage> {
+    Searchable<BoardsPackage, BoardSearch> {
   getState(): Promise<AvailablePorts>;
   getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
   getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
@@ -143,6 +145,40 @@ export interface BoardsService
     fqbn: string;
     protocol: string;
   }): Promise<BoardUserField[]>;
+}
+
+export interface BoardSearch extends Searchable.Options {
+  readonly type?: BoardSearch.Type;
+}
+export namespace BoardSearch {
+  export const TypeLiterals = [
+    'All',
+    'Updatable',
+    'Arduino',
+    'Contributed',
+    'Arduino Certified',
+    'Partner',
+    'Arduino@Heart',
+  ] as const;
+  export type Type = typeof TypeLiterals[number];
+  export const TypeLabels: Record<Type, string> = {
+    All: All,
+    Updatable: Updatable,
+    Arduino: 'Arduino',
+    Contributed: Contributed,
+    'Arduino Certified': nls.localize(
+      'arduino/boardsType/arduinoCertified',
+      'Arduino Certified'
+    ),
+    Partner: Partner,
+    'Arduino@Heart': 'Arduino@Heart',
+  };
+  export const PropertyLabels: Record<
+    keyof Omit<BoardSearch, 'query'>,
+    string
+  > = {
+    type: Type,
+  };
 }
 
 export interface Port {
