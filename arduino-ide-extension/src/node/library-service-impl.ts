@@ -26,6 +26,7 @@ import { ILogger, notEmpty } from '@theia/core';
 import { FileUri } from '@theia/core/lib/node';
 import { ResponseService, NotificationServiceServer } from '../common/protocol';
 import { ExecuteWithProgress } from './grpc-progressible';
+import { duration } from '../common/decorators';
 
 @injectable()
 export class LibraryServiceImpl
@@ -44,6 +45,7 @@ export class LibraryServiceImpl
   @inject(NotificationServiceServer)
   protected readonly notificationServer: NotificationServiceServer;
 
+  @duration()
   async search(options: { query?: string }): Promise<LibraryPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
@@ -78,7 +80,6 @@ export class LibraryServiceImpl
     const items = resp
       .getLibrariesList()
       .filter((item) => !!item.getLatest())
-      .slice(0, 50)
       .map((item) => {
         // TODO: This seems to contain only the latest item instead of all of the items.
         const availableVersions = item
