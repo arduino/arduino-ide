@@ -66,8 +66,7 @@ export class FilterableListContainer<
   }
 
   protected renderComponentList(): React.ReactNode {
-    const { itemLabel, itemDeprecated, resolveContainer, itemRenderer } =
-      this.props;
+    const { itemLabel, itemDeprecated, itemRenderer } = this.props;
     return (
       <ComponentList<T>
         items={this.state.items}
@@ -76,14 +75,13 @@ export class FilterableListContainer<
         itemRenderer={itemRenderer}
         install={this.install.bind(this)}
         uninstall={this.uninstall.bind(this)}
-        resolveContainer={resolveContainer}
       />
     );
   }
 
   protected handleFilterTextChange = (
     filterText: string = this.state.filterText
-  ) => {
+  ): void => {
     this.setState({ filterText });
     this.search(filterText);
   };
@@ -159,7 +157,7 @@ export namespace FilterableListContainer {
     readonly itemLabel: (item: T) => string;
     readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
-    readonly resolveContainer: (element: HTMLElement) => void;
+    // readonly resolveContainer: (element: HTMLElement) => void;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
     readonly filterTextChangeEvent: Event<string | undefined>;
     readonly messageService: MessageService;

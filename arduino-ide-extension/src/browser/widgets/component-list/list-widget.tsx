@@ -6,9 +6,7 @@ import {
 } from '@theia/core/shared/inversify';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 import { Emitter } from '@theia/core/lib/common/event';
-import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -42,7 +40,7 @@ export abstract class ListWidget<
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
    */
   protected focusNode: HTMLElement | undefined;
-  protected readonly deferredContainer = new Deferred<HTMLElement>();
+  // protected readonly deferredContainer = new Deferred<HTMLElement>();
   protected readonly filterTextChangeEmitter = new Emitter<
     string | undefined
   >();
@@ -62,9 +60,6 @@ export abstract class ListWidget<
     this.title.closable = true;
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
-    this.scrollOptions = {
-      suppressScrollX: true,
-    };
     this.toDispose.push(this.filterTextChangeEmitter);
   }
 
@@ -75,10 +70,6 @@ export abstract class ListWidget<
       this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
-  }
-
-  protected override getScrollContainer(): MaybePromise<HTMLElement> {
-    return this.deferredContainer.promise;
   }
 
   protected override onAfterShow(message: Message): void {
@@ -109,7 +100,7 @@ export abstract class ListWidget<
     this.updateScrollBar();
   }
 
-  protected onFocusResolved = (element: HTMLElement | undefined) => {
+  protected onFocusResolved = (element: HTMLElement | undefined): void => {
     this.focusNode = element;
   };
 
@@ -139,7 +130,6 @@ export abstract class ListWidget<
     return (
       <FilterableListContainer<T>
         container={this}
-        resolveContainer={this.deferredContainer.resolve}
         resolveFocus={this.onFocusResolved}
         searchable={this.options.searchable}
         install={this.install.bind(this)}
@@ -160,9 +150,7 @@ export abstract class ListWidget<
    * If it is `undefined`, updates the view state by re-running the search with the current `filterText` term.
    */
   refresh(filterText: string | undefined): void {
-    this.deferredContainer.promise.then(() =>
-      this.filterTextChangeEmitter.fire(filterText)
-    );
+    this.filterTextChangeEmitter.fire(filterText);
   }
 
   updateScrollBar(): void {

@@ -39,7 +39,7 @@ export class ComponentListItem<
     await this.props.uninstall(item);
   }
 
-  protected onVersionChange(version: Installable.Version) {
+  protected onVersionChange(version: Installable.Version): void {
     this.setState({ selectedVersion: version });
   }
 

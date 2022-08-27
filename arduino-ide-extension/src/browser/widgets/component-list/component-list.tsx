@@ -1,43 +1,129 @@
 import * as React from '@theia/core/shared/react';
-import { Installable } from '../../../common/protocol/installable';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import {
+  CellMeasurer,
+  CellMeasurerCache,
+} from 'react-virtualized/dist/commonjs/CellMeasurer';
+import type {
+  ListRowProps,
+  ListRowRenderer,
+} from 'react-virtualized/dist/commonjs/List';
+import List from 'react-virtualized/dist/commonjs/List';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
+import { Installable } from '../../../common/protocol/installable';
 import { ComponentListItem } from './component-list-item';
 import { ListItemRenderer } from './list-item-renderer';
 
 export class ComponentList<T extends ArduinoComponent> extends React.Component<
-  ComponentList.Props<T>
+  ComponentList.Props<T>,
+  ComponentList.State
 > {
-  protected container?: HTMLElement;
+  private readonly cache: CellMeasurerCache;
+  private resizeAllFlag: boolean;
+  private list: List | undefined;
+  private mostRecentWidth: number | undefined;
+
+  constructor(props: ComponentList.Props<T>) {
+    super(props);
+    this.state = { focusIndex: 'none' };
+    this.cache = new CellMeasurerCache({
+      defaultHeight: 200,
+      fixedWidth: true,
+    });
+  }
 
   override render(): React.ReactNode {
     return (
-      <div className={'items-container'} ref={this.setRef}>
-        {this.props.items.map((item) => this.createItem(item))}
-      </div>
+      <AutoSizer>
+        {({ width, height }) => {
+          if (this.mostRecentWidth && this.mostRecentWidth !== width) {
+            this.resizeAllFlag = true;
+            setTimeout(this.clearAll, 0);
+          }
+          this.mostRecentWidth = width;
+          return (
+            <List
+              rowRenderer={this.createItem}
+              overscanRowCount={100}
+              height={height}
+              width={width}
+              rowCount={this.props.items.length}
+              rowHeight={this.cache.rowHeight}
+              deferredMeasurementCache={this.cache}
+              ref={this.setListRef}
+            />
+          );
+        }}
+      </AutoSizer>
     );
   }
 
-  override componentDidMount(): void {
-    if (this.container && this.props.resolveContainer) {
-      this.props.resolveContainer(this.container);
+  override componentDidUpdate(
+    prevProps: ComponentList.Props<T>,
+    prevState: ComponentList.State
+  ): void {
+    if (this.resizeAllFlag || this.props.items !== prevProps.items) {
+      this.clearAll();
+    } else if (this.state.focusIndex !== prevState.focusIndex) {
+      if (typeof this.state.focusIndex === 'number') {
+        this.clear(this.state.focusIndex);
+      }
+      if (typeof prevState.focusIndex === 'number') {
+        this.clear(prevState.focusIndex);
+      }
     }
   }
 
-  protected setRef = (element: HTMLElement | null) => {
-    this.container = element || undefined;
+  private setListRef = (ref: List | null): void => {
+    this.list = ref || undefined;
   };
 
-  protected createItem(item: T): React.ReactNode {
-    return (
-      <ComponentListItem<T>
-        key={this.props.itemLabel(item)}
-        item={item}
-        itemRenderer={this.props.itemRenderer}
-        install={this.props.install}
-        uninstall={this.props.uninstall}
-      />
-    );
+  private clearAll(): void {
+    this.resizeAllFlag = false;
+    this.cache.clearAll();
+    if (this.list) {
+      this.list.recomputeRowHeights();
+    }
   }
+
+  private clear(index: number): void {
+    this.cache.clear(index, 0);
+    if (this.list) {
+      this.list.recomputeRowHeights(index);
+    }
+  }
+
+  private createItem: ListRowRenderer = ({
+    index,
+    parent,
+    key,
+    style,
+  }: ListRowProps): React.ReactNode => {
+    const item = this.props.items[index];
+    return (
+      <CellMeasurer
+        cache={this.cache}
+        columnIndex={0}
+        key={key}
+        rowIndex={index}
+        parent={parent}
+      >
+        <div
+          style={style}
+          onMouseEnter={() => this.setState({ focusIndex: index })}
+          onMouseLeave={() => this.setState({ focusIndex: 'none' })}
+        >
+          <ComponentListItem<T>
+            key={this.props.itemLabel(item)}
+            item={item}
+            itemRenderer={this.props.itemRenderer}
+            install={this.props.install}
+            uninstall={this.props.uninstall}
+          />
+        </div>
+      </CellMeasurer>
+    );
+  };
 }
 
 export namespace ComponentList {
@@ -48,6 +134,8 @@ export namespace ComponentList {
     readonly itemRenderer: ListItemRenderer<T>;
     readonly install: (item: T, version?: Installable.Version) => Promise<void>;
     readonly uninstall: (item: T) => Promise<void>;
-    readonly resolveContainer: (element: HTMLElement) => void;
+  }
+  export interface State {
+    focusIndex: number | 'none';
   }
 }
