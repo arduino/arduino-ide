@@ -323,6 +323,10 @@ import { StatusBarImpl } from './theia/core/status-bar';
 import { StatusBarImpl as TheiaStatusBarImpl } from '@theia/core/lib/browser';
 import { EditorMenuContribution } from './theia/editor/editor-file';
 import { EditorMenuContribution as TheiaEditorMenuContribution } from '@theia/editor/lib/browser/editor-menu';
+import { PreferencesEditorWidget as TheiaPreferencesEditorWidget } from '@theia/preferences/lib/browser/views/preference-editor-widget';
+import { PreferencesEditorWidget } from './theia/preferences/preference-editor-widget';
+import { PreferencesWidget } from '@theia/preferences/lib/browser/views/preference-widget';
+import { createPreferencesWidgetContainer } from '@theia/preferences/lib/browser/views/preference-widget-bindings';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -844,6 +848,18 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Debounced update for the tab-bar toolbar when typing in the editor.
   bind(DockPanelRenderer).toSelf();
   rebind(TheiaDockPanelRenderer).toService(DockPanelRenderer);
+
+  // Avoid running the "reset scroll" interval tasks until the preference editor opens.
+  rebind(PreferencesWidget)
+    .toDynamicValue(({ container }) => {
+      const child = createPreferencesWidgetContainer(container);
+      child.bind(PreferencesEditorWidget).toSelf().inSingletonScope();
+      child
+        .rebind(TheiaPreferencesEditorWidget)
+        .toService(PreferencesEditorWidget);
+      return child.get(PreferencesWidget);
+    })
+    .inSingletonScope();
 
   // Preferences
   bindArduinoPreferences(bind);
