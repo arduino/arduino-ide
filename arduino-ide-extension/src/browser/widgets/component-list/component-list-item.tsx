@@ -14,11 +14,38 @@ export class ComponentListItem<
       )[0];
       this.state = {
         selectedVersion: version,
+        focus: false,
       };
     }
   }
 
-  protected async install(item: T): Promise<void> {
+  override componentDidUpdate(
+    prevProps: ComponentListItem.Props<T>,
+    prevState: ComponentListItem.State
+  ): void {
+    if (this.state.focus !== prevState.focus) {
+      this.props.onFocusDidChange();
+    }
+  }
+
+  override render(): React.ReactNode {
+    const { item, itemRenderer } = this.props;
+    return (
+      <div
+        onMouseEnter={() => this.setState({ focus: true })}
+        onMouseLeave={() => this.setState({ focus: false })}
+      >
+        {itemRenderer.renderItem(
+          Object.assign(this.state, { item }),
+          this.install.bind(this),
+          this.uninstall.bind(this),
+          this.onVersionChange.bind(this)
+        )}
+      </div>
+    );
+  }
+
+  private async install(item: T): Promise<void> {
     const toInstall = this.state.selectedVersion;
     const version = this.props.item.availableVersions.filter(
       (version) => version !== this.state.selectedVersion
@@ -35,22 +62,12 @@ export class ComponentListItem<
     }
   }
 
-  protected async uninstall(item: T): Promise<void> {
+  private async uninstall(item: T): Promise<void> {
     await this.props.uninstall(item);
   }
 
-  protected onVersionChange(version: Installable.Version) {
+  private onVersionChange(version: Installable.Version): void {
     this.setState({ selectedVersion: version });
-  }
-
-  override render(): React.ReactNode {
-    const { item, itemRenderer } = this.props;
-    return itemRenderer.renderItem(
-      Object.assign(this.state, { item }),
-      this.install.bind(this),
-      this.uninstall.bind(this),
-      this.onVersionChange.bind(this)
-    );
   }
 }
 
@@ -60,9 +77,11 @@ export namespace ComponentListItem {
     readonly install: (item: T, version?: Installable.Version) => Promise<void>;
     readonly uninstall: (item: T) => Promise<void>;
     readonly itemRenderer: ListItemRenderer<T>;
+    readonly onFocusDidChange: () => void;
   }
 
   export interface State {
     selectedVersion?: Installable.Version;
+    focus: boolean;
   }
 }

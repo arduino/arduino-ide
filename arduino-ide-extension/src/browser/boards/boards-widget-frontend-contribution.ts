@@ -1,10 +1,16 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { BoardsListWidget } from './boards-list-widget';
-import { BoardsPackage } from '../../common/protocol/boards-service';
+import type {
+  BoardSearch,
+  BoardsPackage,
+} from '../../common/protocol/boards-service';
 import { ListWidgetFrontendContribution } from '../widgets/component-list/list-widget-frontend-contribution';
 
 @injectable()
-export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<BoardsPackage> {
+export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<
+  BoardsPackage,
+  BoardSearch
+> {
   constructor() {
     super({
       widgetId: BoardsListWidget.WIDGET_ID,

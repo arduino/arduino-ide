@@ -241,6 +241,14 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: false,
     },
+    'arduino.checkForUpdates': {
+      type: 'boolean',
+      description: nls.localize(
+        'arduino/preferences/checkForUpdate',
+        "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default."
+      ),
+      default: true,
+    },
   },
 };
 
@@ -270,6 +278,7 @@ export interface ArduinoConfiguration {
   'arduino.auth.registerUri': string;
   'arduino.survey.notification': boolean;
   'arduino.cli.daemon.debug': boolean;
+  'arduino.checkForUpdates': boolean;
 }
 
 export const ArduinoPreferences = Symbol('ArduinoPreferences');

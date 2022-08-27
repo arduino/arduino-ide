@@ -12,6 +12,7 @@ import { Installable, ResponseServiceClient } from '../../common/protocol';
 import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
 import { nls } from '@theia/core/lib/common';
 import { NotificationCenter } from '../notification-center';
+import { InstallManually } from '../../common/nls';
 
 interface AutoInstallPromptAction {
   // isAcceptance, whether or not the action indicates acceptance of auto-install proposal
@@ -231,19 +232,18 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
     candidate: BoardsPackage
   ): AutoInstallPromptActions {
     const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
-    const manualInstall = nls.localize(
-      'arduino/board/installManually',
-      'Install Manually'
-    );
 
     const actions: AutoInstallPromptActions = [
       {
-        key: manualInstall,
+        key: InstallManually,
         handler: () => {
           this.boardsManagerFrontendContribution
             .openView({ reveal: true })
             .then((widget) =>
-              widget.refresh(candidate.name.toLocaleLowerCase())
+              widget.refresh({
+                query: candidate.name.toLocaleLowerCase(),
+                type: 'All',
+              })
             );
         },
       },

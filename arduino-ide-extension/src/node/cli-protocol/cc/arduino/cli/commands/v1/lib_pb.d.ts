@@ -134,6 +134,69 @@ export namespace LibraryInstallResponse {
     }
 }
 
+export class LibraryUpgradeRequest extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryUpgradeRequest;
+
+    getName(): string;
+    setName(value: string): LibraryUpgradeRequest;
+
+    getNoDeps(): boolean;
+    setNoDeps(value: boolean): LibraryUpgradeRequest;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryUpgradeRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryUpgradeRequest): LibraryUpgradeRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryUpgradeRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryUpgradeRequest;
+    static deserializeBinaryFromReader(message: LibraryUpgradeRequest, reader: jspb.BinaryReader): LibraryUpgradeRequest;
+}
+
+export namespace LibraryUpgradeRequest {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        name: string,
+        noDeps: boolean,
+    }
+}
+
+export class LibraryUpgradeResponse extends jspb.Message { 
+
+    hasProgress(): boolean;
+    clearProgress(): void;
+    getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
+    setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): LibraryUpgradeResponse;
+
+
+    hasTaskProgress(): boolean;
+    clearTaskProgress(): void;
+    getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
+    setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): LibraryUpgradeResponse;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LibraryUpgradeResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: LibraryUpgradeResponse): LibraryUpgradeResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LibraryUpgradeResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LibraryUpgradeResponse;
+    static deserializeBinaryFromReader(message: LibraryUpgradeResponse, reader: jspb.BinaryReader): LibraryUpgradeResponse;
+}
+
+export namespace LibraryUpgradeResponse {
+    export type AsObject = {
+        progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
+        taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+    }
+}
+
 export class LibraryUninstallRequest extends jspb.Message { 
 
     hasInstance(): boolean;

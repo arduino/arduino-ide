@@ -1,19 +1,28 @@
-import { injectable, postConstruct, inject } from '@theia/core/shared/inversify';
+import {
+  injectable,
+  postConstruct,
+  inject,
+} from '@theia/core/shared/inversify';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { addEventListener } from '@theia/core/lib/browser/widgets/widget';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
 import {
   LibraryPackage,
+  LibrarySearch,
   LibraryService,
 } from '../../common/protocol/library-service';
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
+import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
 
 @injectable()
-export class LibraryListWidget extends ListWidget<LibraryPackage> {
+export class LibraryListWidget extends ListWidget<
+  LibraryPackage,
+  LibrarySearch
+> {
   static WIDGET_ID = 'library-list-widget';
   static WIDGET_LABEL = nls.localize(
     'arduino/library/title',
@@ -21,9 +30,9 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
   );
 
   constructor(
-    @inject(LibraryService) protected service: LibraryService,
-    @inject(ListItemRenderer)
-    protected itemRenderer: ListItemRenderer<LibraryPackage>
+    @inject(LibraryService) private service: LibraryService,
+    @inject(ListItemRenderer) itemRenderer: ListItemRenderer<LibraryPackage>,
+    @inject(LibraryFilterRenderer) filterRenderer: LibraryFilterRenderer
   ) {
     super({
       id: LibraryListWidget.WIDGET_ID,
@@ -34,6 +43,8 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
       itemLabel: (item: LibraryPackage) => item.name,
       itemDeprecated: (item: LibraryPackage) => item.deprecated,
       itemRenderer,
+      filterRenderer,
+      defaultSearchOptions: { query: '', type: 'All', topic: 'All' },
     });
   }
 
@@ -41,7 +52,9 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
   protected override init(): void {
     super.init();
     this.toDispose.pushAll([
-      this.notificationCenter.onLibraryDidInstall(() => this.refresh(undefined)),
+      this.notificationCenter.onLibraryDidInstall(() =>
+        this.refresh(undefined)
+      ),
       this.notificationCenter.onLibraryDidUninstall(() =>
         this.refresh(undefined)
       ),

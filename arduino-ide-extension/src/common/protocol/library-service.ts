@@ -1,13 +1,24 @@
 import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
+import { nls } from '@theia/core/lib/common/nls';
+import {
+  All,
+  Contributed,
+  Partner,
+  Recommended,
+  Retired,
+  Type,
+  Updatable,
+} from '../nls';
 
 export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
 export interface LibraryService
   extends Installable<LibraryPackage>,
-    Searchable<LibraryPackage> {
+    Searchable<LibraryPackage, LibrarySearch> {
   list(options: LibraryService.List.Options): Promise<LibraryPackage[]>;
+  search(options: LibrarySearch): Promise<LibraryPackage[]>;
   /**
    * When `installDependencies` is not set, it is `true` by default. If you want to skip the installation of required dependencies, set it to `false`.
    */
@@ -36,6 +47,86 @@ export interface LibraryService
     version: Installable.Version;
     filterSelf?: boolean;
   }): Promise<LibraryDependency[]>;
+}
+
+export interface LibrarySearch extends Searchable.Options {
+  readonly type?: LibrarySearch.Type;
+  readonly topic?: LibrarySearch.Topic;
+}
+export namespace LibrarySearch {
+  export const TypeLiterals = [
+    'All',
+    'Updatable',
+    'Installed',
+    'Arduino',
+    'Partner',
+    'Recommended',
+    'Contributed',
+    'Retired',
+  ] as const;
+  export type Type = typeof TypeLiterals[number];
+  export const TypeLabels: Record<Type, string> = {
+    All: All,
+    Updatable: Updatable,
+    Installed: nls.localize('arduino/libraryType/installed', 'Installed'),
+    Arduino: 'Arduino',
+    Partner: Partner,
+    Recommended: Recommended,
+    Contributed: Contributed,
+    Retired: Retired,
+  };
+  export const TopicLiterals = [
+    'All',
+    'Communication',
+    'Data Processing',
+    'Data Storage',
+    'Device Control',
+    'Display',
+    'Other',
+    'Sensors',
+    'Signal Input/Output',
+    'Timing',
+    'Uncategorized',
+  ] as const;
+  export type Topic = typeof TopicLiterals[number];
+  export const TopicLabels: Record<Topic, string> = {
+    All: All,
+    Communication: nls.localize(
+      'arduino/libraryTopic/communication',
+      'Communication'
+    ),
+    'Data Processing': nls.localize(
+      'arduino/libraryTopic/dataProcessing',
+      'Data Processing'
+    ),
+    'Data Storage': nls.localize(
+      'arduino/libraryTopic/dataStorage',
+      'Data Storage'
+    ),
+    'Device Control': nls.localize(
+      'arduino/libraryTopic/deviceControl',
+      'Device Control'
+    ),
+    Display: nls.localize('arduino/libraryTopic/display', 'Display'),
+    Other: nls.localize('arduino/libraryTopic/other', 'Other'),
+    Sensors: nls.localize('arduino/libraryTopic/sensors', 'Sensors'),
+    'Signal Input/Output': nls.localize(
+      'arduino/libraryTopic/signalInputOutput',
+      'Signal Input/Output'
+    ),
+    Timing: nls.localize('arduino/libraryTopic/timing', 'Timing'),
+    Uncategorized: nls.localize(
+      'arduino/libraryTopic/uncategorized',
+      'Uncategorized'
+    ),
+  };
+  export const PropertyLabels: Record<
+    keyof Omit<LibrarySearch, 'query'>,
+    string
+  > = {
+    topic: nls.localize('arduino/librarySearchProperty/topic', 'Topic'),
+    type: Type,
+  };
 }
 
 export namespace LibraryService {
@@ -85,6 +176,10 @@ export interface LibraryPackage extends ArduinoComponent {
   readonly exampleUris: string[];
   readonly location: LibraryLocation;
   readonly installDirUri?: string;
+  /**
+   * This is the `Topic` in the IDE (1.x) UI.
+   */
+  readonly category: string;
 }
 export namespace LibraryPackage {
   export function is(arg: any): arg is LibraryPackage {
