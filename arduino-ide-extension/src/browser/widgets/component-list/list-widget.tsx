@@ -6,9 +6,7 @@ import {
 } from '@theia/core/shared/inversify';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { Deferred } from '@theia/core/lib/common/promise-util';
 import { Emitter } from '@theia/core/lib/common/event';
-import { MaybePromise } from '@theia/core/lib/common/types';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -21,10 +19,12 @@ import {
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
+import { FilterRenderer } from './filter-renderer';
 
 @injectable()
 export abstract class ListWidget<
-  T extends ArduinoComponent
+  T extends ArduinoComponent,
+  S extends Searchable.Options
 > extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
@@ -42,9 +42,8 @@ export abstract class ListWidget<
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
    */
   protected focusNode: HTMLElement | undefined;
-  protected readonly deferredContainer = new Deferred<HTMLElement>();
-  protected readonly filterTextChangeEmitter = new Emitter<
-    string | undefined
+  protected readonly searchOptionsChangeEmitter = new Emitter<
+    Partial<S> | undefined
   >();
   /**
    * Instead of running an `update` from the `postConstruct` `init` method,
@@ -52,7 +51,7 @@ export abstract class ListWidget<
    */
   protected firstActivate = true;
 
-  constructor(protected options: ListWidget.Options<T>) {
+  constructor(protected options: ListWidget.Options<T, S>) {
     super();
     const { id, label, iconClass } = options;
     this.id = id;
@@ -62,10 +61,8 @@ export abstract class ListWidget<
     this.title.closable = true;
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
-    this.scrollOptions = {
-      suppressScrollX: true,
-    };
-    this.toDispose.push(this.filterTextChangeEmitter);
+    this.scrollOptions = undefined;
+    this.toDispose.push(this.searchOptionsChangeEmitter);
   }
 
   @postConstruct()
@@ -75,10 +72,6 @@ export abstract class ListWidget<
       this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
-  }
-
-  protected override getScrollContainer(): MaybePromise<HTMLElement> {
-    return this.deferredContainer.promise;
   }
 
   protected override onAfterShow(message: Message): void {
@@ -109,7 +102,7 @@ export abstract class ListWidget<
     this.updateScrollBar();
   }
 
-  protected onFocusResolved = (element: HTMLElement | undefined) => {
+  protected onFocusResolved = (element: HTMLElement | undefined): void => {
     this.focusNode = element;
   };
 
@@ -137,9 +130,9 @@ export abstract class ListWidget<
 
   render(): React.ReactNode {
     return (
-      <FilterableListContainer<T>
+      <FilterableListContainer<T, S>
+        defaultSearchOptions={this.options.defaultSearchOptions}
         container={this}
-        resolveContainer={this.deferredContainer.resolve}
         resolveFocus={this.onFocusResolved}
         searchable={this.options.searchable}
         install={this.install.bind(this)}
@@ -147,7 +140,8 @@ export abstract class ListWidget<
         itemLabel={this.options.itemLabel}
         itemDeprecated={this.options.itemDeprecated}
         itemRenderer={this.options.itemRenderer}
-        filterTextChangeEvent={this.filterTextChangeEmitter.event}
+        filterRenderer={this.options.filterRenderer}
+        searchOptionsDidChange={this.searchOptionsChangeEmitter.event}
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
@@ -159,10 +153,8 @@ export abstract class ListWidget<
    * If `filterText` is defined, sets the filter text to the argument.
    * If it is `undefined`, updates the view state by re-running the search with the current `filterText` term.
    */
-  refresh(filterText: string | undefined): void {
-    this.deferredContainer.promise.then(() =>
-      this.filterTextChangeEmitter.fire(filterText)
-    );
+  refresh(searchOptions: Partial<S> | undefined): void {
+    this.searchOptionsChangeEmitter.fire(searchOptions);
   }
 
   updateScrollBar(): void {
@@ -173,14 +165,19 @@ export abstract class ListWidget<
 }
 
 export namespace ListWidget {
-  export interface Options<T extends ArduinoComponent> {
+  export interface Options<
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  > {
     readonly id: string;
     readonly label: string;
     readonly iconClass: string;
     readonly installable: Installable<T>;
-    readonly searchable: Searchable<T>;
+    readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
     readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
+    readonly filterRenderer: FilterRenderer<S>;
+    readonly defaultSearchOptions: S;
   }
 }

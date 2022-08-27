@@ -14,7 +14,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
 
   protected onMoreInfoClick = (
     event: React.SyntheticEvent<HTMLAnchorElement, Event>
-  ) => {
+  ): void => {
     const { target } = event.nativeEvent;
     if (target instanceof HTMLAnchorElement) {
       this.windowService.openNewWindow(target.href, { external: true });
@@ -28,7 +28,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     uninstall: (item: T) => Promise<void>,
     onVersionChange: (version: Installable.Version) => void
   ): React.ReactNode {
-    const { item } = input;
+    const { item, focus } = input;
     let nameAndAuthor: JSX.Element;
     if (item.name && item.author) {
       const name = <span className="name">{item.name}</span>;
@@ -120,10 +120,12 @@ export class ListItemRenderer<T extends ArduinoComponent> {
           {description}
         </div>
         <div className="info">{moreInfo}</div>
-        <div className="footer">
-          {versions}
-          {installButton}
-        </div>
+        {focus && (
+          <div className="footer">
+            {versions}
+            {installButton}
+          </div>
+        )}
       </div>
     );
   }

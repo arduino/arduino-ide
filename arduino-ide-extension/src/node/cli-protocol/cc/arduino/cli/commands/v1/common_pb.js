@@ -987,7 +987,7 @@ proto.cc.arduino.cli.commands.v1.Programmer.prototype.setName = function(value) 
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.Platform.repeatedFields_ = [8];
+proto.cc.arduino.cli.commands.v1.Platform.repeatedFields_ = [8,11];
 
 
 
@@ -1030,7 +1030,8 @@ proto.cc.arduino.cli.commands.v1.Platform.toObject = function(includeInstance, m
     boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
     proto.cc.arduino.cli.commands.v1.Board.toObject, includeInstance),
     manuallyInstalled: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
-    deprecated: jspb.Message.getBooleanFieldWithDefault(msg, 10, false)
+    deprecated: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
+    typeList: (f = jspb.Message.getRepeatedField(msg, 11)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1107,6 +1108,10 @@ proto.cc.arduino.cli.commands.v1.Platform.deserializeBinaryFromReader = function
     case 10:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setDeprecated(value);
+      break;
+    case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addType(value);
       break;
     default:
       reader.skipField();
@@ -1205,6 +1210,13 @@ proto.cc.arduino.cli.commands.v1.Platform.serializeBinaryToWriter = function(mes
   if (f) {
     writer.writeBool(
       10,
+      f
+    );
+  }
+  f = message.getTypeList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      11,
       f
     );
   }
@@ -1408,6 +1420,43 @@ proto.cc.arduino.cli.commands.v1.Platform.prototype.getDeprecated = function() {
  */
 proto.cc.arduino.cli.commands.v1.Platform.prototype.setDeprecated = function(value) {
   return jspb.Message.setProto3BooleanField(this, 10, value);
+};
+
+
+/**
+ * repeated string type = 11;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.getTypeList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 11));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.setTypeList = function(value) {
+  return jspb.Message.setField(this, 11, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.addType = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 11, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.clearTypeList = function() {
+  return this.setTypeList([]);
 };
 
 

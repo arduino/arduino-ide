@@ -1,6 +1,7 @@
 import { nls } from '@theia/core/lib/common/nls';
 import { injectable } from '@theia/core/shared/inversify';
 import type { EditorOpenerOptions } from '@theia/editor/lib/browser/editor-manager';
+import { Later } from '../../common/nls';
 import { SketchesError } from '../../common/protocol';
 import {
   Command,
@@ -41,20 +42,18 @@ export class OpenSketchFiles extends SketchContribution {
           sketch.name
         );
         const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
-        this.messageService
-          .info(message, nls.localize('arduino/common/later', 'Later'), yes)
-          .then(async (answer) => {
-            if (answer === yes) {
-              this.commandService.executeCommand(
-                SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-                {
-                  execOnlyIfTemp: false,
-                  openAfterMove: true,
-                  wipeOriginal: false,
-                }
-              );
-            }
-          });
+        this.messageService.info(message, Later, yes).then((answer) => {
+          if (answer === yes) {
+            this.commandService.executeCommand(
+              SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+              {
+                execOnlyIfTemp: false,
+                openAfterMove: true,
+                wipeOriginal: false,
+              }
+            );
+          }
+        });
       }
     } catch (err) {
       if (SketchesError.NotFound.is(err)) {

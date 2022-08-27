@@ -8,11 +8,33 @@
 }
 
 .arduino-list-widget .search-bar {
-    margin: 0px 10px 10px 15px;
+    margin: 0px 10px 5px 15px;
 }
 
 .arduino-list-widget .search-bar:focus {
     border-color: var(--theia-focusBorder);
+}
+
+.arduino-list-widget .filter-bar {
+    margin: 0px 10px 5px 15px;
+}
+
+.arduino-list-widget .filter-bar > * {
+    padding: 5px 5px 0px 0px;
+}
+
+.arduino-list-widget .filter-bar .filter {
+    display: flex;
+    align-items: center;
+}
+
+.arduino-list-widget .filter-bar .filter > select {
+    width: 120px;
+}
+
+.arduino-list-widget .filter-bar .filter-label {
+    display: flex;
+    width: 50px;
 }
 
 .filterable-list-container {
@@ -23,31 +45,22 @@
 }
 
 .filterable-list-container .items-container {
-    height: 100%; /* This has to be propagated down from the widget. */
-    position: relative; /* To fix the `top` of the vertical toolbar.  */
+    padding-bottom: calc(2 * var(--theia-statusBar-height));
 }
 
-.filterable-list-container .items-container > div:nth-child(odd) {
+.filterable-list-container .items-container > div > div:nth-child(odd) {
     background-color: var(--theia-sideBar-background);
     filter: contrast(105%);
 }
 
-.filterable-list-container .items-container > div:nth-child(even) {
+.filterable-list-container .items-container > div > div:nth-child(even) {
     background-color: var(--theia-sideBar-background);
     filter: contrast(95%);
 }
 
-.filterable-list-container .items-container > div:hover {
+.filterable-list-container .items-container > div > div:hover {
     background-color: var(--theia-sideBar-background);
     filter: contrast(90%);
-}
-
-/* Perfect scrollbar does not like if we explicitly set the `background-color` of the contained elements.
-See above: `.filterable-list-container .items-container > div:nth-child(odd|event)`.
-We have to increase `z-index` of the scroll-bar thumb. Otherwise, the thumb is not visible.
-https://github.com/arduino/arduino-pro-ide/issues/82 */
-.arduino-list-widget .filterable-list-container .items-container .ps__rail-y {
-    z-index: 1;
 }
 
 .component-list-item {
@@ -113,17 +126,13 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 
 .component-list-item[min-width~="170px"] .footer {
     padding: 5px 5px 0px 0px;
-    min-height: 30px;
+    min-height: 35px;
     display: flex;
     flex-direction: row-reverse;
 }
 
 .component-list-item .footer {
     flex-direction: column-reverse;
-}
-
-.component-list-item .footer > * {
-    display: none
 }
 
 .component-list-item:hover .footer > * {

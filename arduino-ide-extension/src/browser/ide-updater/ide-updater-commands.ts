@@ -54,8 +54,8 @@ export class IDEUpdaterCommands implements CommandContribution {
 export namespace IDEUpdaterCommands {
   export const CHECK_FOR_UPDATES: Command = Command.toLocalizedCommand(
     {
-      id: 'arduino-ide-check-for-updates',
-      label: 'Check for Arduino IDE updates',
+      id: 'arduino-check-for-ide-updates',
+      label: 'Check for Arduino IDE Updates',
       category: 'Arduino',
     },
     'arduino/ide-updater/checkForUpdates'

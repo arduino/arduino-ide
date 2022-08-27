@@ -489,6 +489,28 @@ function deserialize_cc_arduino_cli_commands_v1_LibraryUpgradeAllResponse(buffer
   return cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeAllResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_v1_LibraryUpgradeRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.LibraryUpgradeRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_LibraryUpgradeRequest(buffer_arg) {
+  return cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_LibraryUpgradeResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.LibraryUpgradeResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_LibraryUpgradeResponse(buffer_arg) {
+  return cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_v1_ListProgrammersAvailableForUploadRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_upload_pb.ListProgrammersAvailableForUploadRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.ListProgrammersAvailableForUploadRequest');
@@ -1324,6 +1346,18 @@ libraryInstall: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryInstallRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_LibraryInstallResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryInstallResponse,
+  },
+  // Upgrade a library to the newest version available.
+libraryUpgrade: {
+    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/LibraryUpgrade',
+    requestStream: false,
+    responseStream: true,
+    requestType: cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeRequest,
+    responseType: cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeResponse,
+    requestSerialize: serialize_cc_arduino_cli_commands_v1_LibraryUpgradeRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryUpgradeRequest,
+    responseSerialize: serialize_cc_arduino_cli_commands_v1_LibraryUpgradeResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryUpgradeResponse,
   },
   // Install a library from a Zip File
 zipLibraryInstall: {

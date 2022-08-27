@@ -16,6 +16,7 @@ import {
   AvailablePorts,
   BoardWithPackage,
   BoardUserField,
+  BoardSearch,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -264,7 +265,7 @@ export class BoardsServiceImpl
     }));
   }
 
-  async search(options: { query?: string }): Promise<BoardsPackage[]> {
+  async search(options: BoardSearch): Promise<BoardsPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
@@ -310,6 +311,7 @@ export class BoardsServiceImpl
           .map((b) => b.getName())
           .join(', '),
         installable: true,
+        types: platform.getTypeList(),
         deprecated: platform.getDeprecated(),
         summary: nls.localize(
           'arduino/component/boardsIncluded',
@@ -380,7 +382,29 @@ export class BoardsServiceImpl
       }
     }
 
-    return [...packages.values()];
+    const filter = this.typePredicate(options);
+    return [...packages.values()].filter(filter);
+  }
+
+  private typePredicate(
+    options: BoardSearch
+  ): (item: BoardsPackage) => boolean {
+    const { type } = options;
+    if (!type || type === 'All') {
+      return () => true;
+    }
+    switch (options.type) {
+      case 'Updatable':
+        return Installable.Updateable;
+      case 'Arduino':
+      case 'Partner':
+      case 'Arduino@Heart':
+      case 'Contributed':
+      case 'Arduino Certified':
+        return ({ types }: BoardsPackage) => !!types && types?.includes(type);
+      default:
+        throw new Error(`Unhandled type: ${options.type}`);
+    }
   }
 
   async install(options: {
