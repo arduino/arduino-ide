@@ -22,7 +22,8 @@ import { NotificationCenter } from '../../notification-center';
 
 @injectable()
 export abstract class ListWidget<
-  T extends ArduinoComponent
+  T extends ArduinoComponent,
+  S extends Searchable.Options
 > extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
@@ -50,7 +51,7 @@ export abstract class ListWidget<
    */
   protected firstActivate = true;
 
-  constructor(protected options: ListWidget.Options<T>) {
+  constructor(protected options: ListWidget.Options<T, S>) {
     super();
     const { id, label, iconClass } = options;
     this.id = id;
@@ -129,7 +130,7 @@ export abstract class ListWidget<
 
   render(): React.ReactNode {
     return (
-      <FilterableListContainer<T>
+      <FilterableListContainer<T, S>
         container={this}
         resolveFocus={this.onFocusResolved}
         searchable={this.options.searchable}
@@ -162,12 +163,15 @@ export abstract class ListWidget<
 }
 
 export namespace ListWidget {
-  export interface Options<T extends ArduinoComponent> {
+  export interface Options<
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  > {
     readonly id: string;
     readonly label: string;
     readonly iconClass: string;
     readonly installable: Installable<T>;
-    readonly searchable: Searchable<T>;
+    readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
     readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;

@@ -131,7 +131,7 @@ export const BoardsServicePath = '/services/boards-service';
 export const BoardsService = Symbol('BoardsService');
 export interface BoardsService
   extends Installable<BoardsPackage>,
-    Searchable<BoardsPackage> {
+    Searchable<BoardsPackage, BoardSearch> {
   getState(): Promise<AvailablePorts>;
   getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
   getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
@@ -143,6 +143,22 @@ export interface BoardsService
     fqbn: string;
     protocol: string;
   }): Promise<BoardUserField[]>;
+}
+
+export interface BoardSearch extends Searchable.Options {
+  readonly type?: BoardSearch.Type;
+}
+export namespace BoardSearch {
+  export const TypeLiterals = [
+    'All',
+    'Updatable',
+    'Arduino',
+    'Contributed',
+    'Arduino Certified',
+    'Partner',
+    'Arduino@Heart',
+  ] as const;
+  export type Type = typeof TypeLiterals[number];
 }
 
 export interface Port {

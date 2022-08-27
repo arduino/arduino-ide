@@ -16,23 +16,24 @@ import { ResponseServiceClient } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
 export class FilterableListContainer<
-  T extends ArduinoComponent
+  T extends ArduinoComponent,
+  S extends Searchable.Options
 > extends React.Component<
-  FilterableListContainer.Props<T>,
-  FilterableListContainer.State<T>
+  FilterableListContainer.Props<T, S>,
+  FilterableListContainer.State<T, S>
 > {
-  constructor(props: Readonly<FilterableListContainer.Props<T>>) {
+  constructor(props: Readonly<FilterableListContainer.Props<T, S>>) {
     super(props);
     this.state = {
-      filterText: '',
+      searchOptions: { query: '' } as S,
       items: [],
     };
   }
 
   override componentDidMount(): void {
     this.search = debounce(this.search, 500);
-    this.handleFilterTextChange('');
-    this.props.filterTextChangeEvent(this.handleFilterTextChange.bind(this));
+    this.handleQueryChange('');
+    this.props.filterTextChangeEvent(this.handleQueryChange.bind(this));
   }
 
   override componentDidUpdate(): void {
@@ -59,8 +60,8 @@ export class FilterableListContainer<
     return (
       <SearchBar
         resolveFocus={this.props.resolveFocus}
-        filterText={this.state.filterText}
-        onFilterTextChanged={this.handleFilterTextChange}
+        filterText={this.state.searchOptions.query ?? ''}
+        onFilterTextChanged={this.handleQueryChange}
       />
     );
   }
@@ -79,17 +80,21 @@ export class FilterableListContainer<
     );
   }
 
-  protected handleFilterTextChange = (
-    filterText: string = this.state.filterText
+  protected handleQueryChange = (
+    query: string = this.state.searchOptions.query ?? ''
   ): void => {
-    this.setState({ filterText });
-    this.search(filterText);
+    const newSearchOptions = {
+      ...this.state.searchOptions,
+      query,
+    };
+    this.setState({ searchOptions: newSearchOptions });
+    this.search(newSearchOptions);
   };
 
-  protected search(query: string): void {
+  protected search(searchOptions: S): void {
     const { searchable } = this.props;
     searchable
-      .search({ query: query.trim() })
+      .search(searchOptions)
       .then((items) => this.setState({ items: this.sort(items) }));
   }
 
@@ -117,7 +122,7 @@ export class FilterableListContainer<
         ` ${item.name}:${version}`,
       run: ({ progressId }) => install({ item, progressId, version }),
     });
-    const items = await searchable.search({ query: this.state.filterText });
+    const items = await searchable.search(this.state.searchOptions);
     this.setState({ items: this.sort(items) });
   }
 
@@ -145,15 +150,18 @@ export class FilterableListContainer<
         }`,
       run: ({ progressId }) => uninstall({ item, progressId }),
     });
-    const items = await searchable.search({ query: this.state.filterText });
+    const items = await searchable.search(this.state.searchOptions);
     this.setState({ items: this.sort(items) });
   }
 }
 
 export namespace FilterableListContainer {
-  export interface Props<T extends ArduinoComponent> {
-    readonly container: ListWidget<T>;
-    readonly searchable: Searchable<T>;
+  export interface Props<
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  > {
+    readonly container: ListWidget<T, S>;
+    readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
     readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
@@ -181,8 +189,8 @@ export namespace FilterableListContainer {
     readonly commandService: CommandService;
   }
 
-  export interface State<T> {
-    filterText: string;
+  export interface State<T, S extends Searchable.Options> {
+    searchOptions: S;
     items: T[];
   }
 }

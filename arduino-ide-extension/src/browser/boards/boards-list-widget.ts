@@ -4,6 +4,7 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import {
+  BoardSearch,
   BoardsPackage,
   BoardsService,
 } from '../../common/protocol/boards-service';
@@ -12,7 +13,7 @@ import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
-export class BoardsListWidget extends ListWidget<BoardsPackage> {
+export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
   static WIDGET_ID = 'boards-list-widget';
   static WIDGET_LABEL = nls.localize('arduino/boardsManager', 'Boards Manager');
 

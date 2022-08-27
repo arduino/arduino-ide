@@ -6,7 +6,7 @@ export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
 export interface LibraryService
   extends Installable<LibraryPackage>,
-    Searchable<LibraryPackage> {
+    Searchable<LibraryPackage, LibrarySearch> {
   list(options: LibraryService.List.Options): Promise<LibraryPackage[]>;
   search(options: LibrarySearch): Promise<LibraryPackage[]>;
   /**
