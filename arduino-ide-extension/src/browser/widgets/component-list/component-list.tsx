@@ -63,7 +63,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
     prevState: ComponentList.State
   ): void {
     if (this.resizeAllFlag || this.props.items !== prevProps.items) {
-      this.clearAll();
+      this.clearAll(true);
     } else if (this.state.focusIndex !== prevState.focusIndex) {
       if (typeof this.state.focusIndex === 'number') {
         this.clear(this.state.focusIndex);
@@ -78,11 +78,14 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
     this.list = ref || undefined;
   };
 
-  private clearAll(): void {
+  private clearAll(scrollToTop = false): void {
     this.resizeAllFlag = false;
     this.cache.clearAll();
     if (this.list) {
       this.list.recomputeRowHeights();
+      if (scrollToTop) {
+        this.list.scrollToPosition(0);
+      }
     }
   }
 
