@@ -43,6 +43,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
           this.mostRecentWidth = width;
           return (
             <List
+              className={'items-container'}
               rowRenderer={this.createItem}
               overscanRowCount={100}
               height={height}
