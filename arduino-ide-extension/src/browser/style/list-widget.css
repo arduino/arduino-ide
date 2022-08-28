@@ -20,6 +20,10 @@
     margin: 0px 10px 5px 15px;
 }
 
+.arduino-list-widget .filter-bar > * {
+    padding: 0px 5px 0px 0px;
+}
+
 .filterable-list-container {
     display: flex;
     flex-direction: column;
