@@ -23,8 +23,7 @@
 }
 
 .filterable-list-container .items-container {
-    height: 100%; /* This has to be propagated down from the widget. */
-    position: relative; /* To fix the `top` of the vertical toolbar.  */
+    padding-bottom: calc(2 * var(--theia-statusBar-height));
 }
 
 .filterable-list-container .items-container > div > div:nth-child(odd) {
@@ -40,14 +39,6 @@
 .filterable-list-container .items-container > div > div:hover {
     background-color: var(--theia-sideBar-background);
     filter: contrast(90%);
-}
-
-/* Perfect scrollbar does not like if we explicitly set the `background-color` of the contained elements.
-See above: `.filterable-list-container .items-container > div:nth-child(odd|event)`.
-We have to increase `z-index` of the scroll-bar thumb. Otherwise, the thumb is not visible.
-https://github.com/arduino/arduino-pro-ide/issues/82 */
-.arduino-list-widget .filterable-list-container .items-container .ps__rail-y {
-    z-index: 1;
 }
 
 .component-list-item {
@@ -113,17 +104,13 @@ https://github.com/arduino/arduino-pro-ide/issues/82 */
 
 .component-list-item[min-width~="170px"] .footer {
     padding: 5px 5px 0px 0px;
-    min-height: 30px;
+    min-height: 35px;
     display: flex;
     flex-direction: row-reverse;
 }
 
 .component-list-item .footer {
     flex-direction: column-reverse;
-}
-
-.component-list-item .footer > * {
-    display: none
 }
 
 .component-list-item:hover .footer > * {

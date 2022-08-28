@@ -14,9 +14,26 @@ import { Installable } from '../../../common/protocol/installable';
 import { ComponentListItem } from './component-list-item';
 import { ListItemRenderer } from './list-item-renderer';
 
+function sameAs<T>(left: T[], right: T[], key: (item: T) => string): boolean {
+  if (left === right) {
+    return true;
+  }
+  const leftLength = left.length;
+  if (leftLength !== right.length) {
+    return false;
+  }
+  for (let i = 0; i < leftLength; i++) {
+    const leftKey = key(left[i]);
+    const rightKey = key(right[i]);
+    if (leftKey !== rightKey) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export class ComponentList<T extends ArduinoComponent> extends React.Component<
-  ComponentList.Props<T>,
-  ComponentList.State
+  ComponentList.Props<T>
 > {
   private readonly cache: CellMeasurerCache;
   private resizeAllFlag: boolean;
@@ -25,9 +42,8 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
 
   constructor(props: ComponentList.Props<T>) {
     super(props);
-    this.state = { focusIndex: 'none' };
     this.cache = new CellMeasurerCache({
-      defaultHeight: 200,
+      defaultHeight: 300,
       fixedWidth: true,
     });
   }
@@ -38,14 +54,13 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
         {({ width, height }) => {
           if (this.mostRecentWidth && this.mostRecentWidth !== width) {
             this.resizeAllFlag = true;
-            setTimeout(this.clearAll, 0);
+            setTimeout(() => this.clearAll(), 0);
           }
           this.mostRecentWidth = width;
           return (
             <List
               className={'items-container'}
               rowRenderer={this.createItem}
-              overscanRowCount={100}
               height={height}
               width={width}
               rowCount={this.props.items.length}
@@ -59,19 +74,12 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
     );
   }
 
-  override componentDidUpdate(
-    prevProps: ComponentList.Props<T>,
-    prevState: ComponentList.State
-  ): void {
-    if (this.resizeAllFlag || this.props.items !== prevProps.items) {
+  override componentDidUpdate(prevProps: ComponentList.Props<T>): void {
+    if (
+      this.resizeAllFlag ||
+      !sameAs(this.props.items, prevProps.items, this.props.itemLabel)
+    ) {
       this.clearAll(true);
-    } else if (this.state.focusIndex !== prevState.focusIndex) {
-      if (typeof this.state.focusIndex === 'number') {
-        this.clear(this.state.focusIndex);
-      }
-      if (typeof prevState.focusIndex === 'number') {
-        this.clear(prevState.focusIndex);
-      }
     }
   }
 
@@ -112,17 +120,14 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
         rowIndex={index}
         parent={parent}
       >
-        <div
-          style={style}
-          onMouseEnter={() => this.setState({ focusIndex: index })}
-          onMouseLeave={() => this.setState({ focusIndex: 'none' })}
-        >
+        <div style={style}>
           <ComponentListItem<T>
             key={this.props.itemLabel(item)}
             item={item}
             itemRenderer={this.props.itemRenderer}
             install={this.props.install}
             uninstall={this.props.uninstall}
+            onFocusDidChange={() => this.clear(index)}
           />
         </div>
       </CellMeasurer>
@@ -138,8 +143,5 @@ export namespace ComponentList {
     readonly itemRenderer: ListItemRenderer<T>;
     readonly install: (item: T, version?: Installable.Version) => Promise<void>;
     readonly uninstall: (item: T) => Promise<void>;
-  }
-  export interface State {
-    focusIndex: number | 'none';
   }
 }
