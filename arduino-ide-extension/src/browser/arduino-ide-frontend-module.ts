@@ -327,6 +327,10 @@ import { PreferencesEditorWidget as TheiaPreferencesEditorWidget } from '@theia/
 import { PreferencesEditorWidget } from './theia/preferences/preference-editor-widget';
 import { PreferencesWidget } from '@theia/preferences/lib/browser/views/preference-widget';
 import { createPreferencesWidgetContainer } from '@theia/preferences/lib/browser/views/preference-widget-bindings';
+import {
+  BoardsFilterRenderer,
+  LibraryFilterRenderer,
+} from './widgets/component-list/filter-renderer';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -368,6 +372,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Renderer for both the library and the core widgets.
   bind(ListItemRenderer).toSelf().inSingletonScope();
+  bind(LibraryFilterRenderer).toSelf().inSingletonScope();
+  bind(BoardsFilterRenderer).toSelf().inSingletonScope();
 
   // Library service
   bind(LibraryService)

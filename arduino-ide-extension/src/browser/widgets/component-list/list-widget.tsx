@@ -19,6 +19,7 @@ import {
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
+import { FilterRenderer } from './filter-renderer';
 
 @injectable()
 export abstract class ListWidget<
@@ -131,6 +132,7 @@ export abstract class ListWidget<
   render(): React.ReactNode {
     return (
       <FilterableListContainer<T, S>
+        defaultSearchOptions={this.options.defaultSearchOptions}
         container={this}
         resolveFocus={this.onFocusResolved}
         searchable={this.options.searchable}
@@ -139,6 +141,7 @@ export abstract class ListWidget<
         itemLabel={this.options.itemLabel}
         itemDeprecated={this.options.itemDeprecated}
         itemRenderer={this.options.itemRenderer}
+        filterRenderer={this.options.filterRenderer}
         filterTextChangeEvent={this.filterTextChangeEmitter.event}
         messageService={this.messageService}
         commandService={this.commandService}
@@ -175,5 +178,7 @@ export namespace ListWidget {
     readonly itemLabel: (item: T) => string;
     readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
+    readonly filterRenderer: FilterRenderer<S>;
+    readonly defaultSearchOptions: S;
   }
 }

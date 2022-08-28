@@ -11,6 +11,7 @@ import {
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
+import { BoardsFilterRenderer } from '../widgets/component-list/filter-renderer';
 
 @injectable()
 export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
@@ -18,9 +19,9 @@ export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
   static WIDGET_LABEL = nls.localize('arduino/boardsManager', 'Boards Manager');
 
   constructor(
-    @inject(BoardsService) protected service: BoardsService,
-    @inject(ListItemRenderer)
-    protected itemRenderer: ListItemRenderer<BoardsPackage>
+    @inject(BoardsService) service: BoardsService,
+    @inject(ListItemRenderer) itemRenderer: ListItemRenderer<BoardsPackage>,
+    @inject(BoardsFilterRenderer) filterRenderer: BoardsFilterRenderer
   ) {
     super({
       id: BoardsListWidget.WIDGET_ID,
@@ -31,6 +32,8 @@ export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
       itemLabel: (item: BoardsPackage) => item.name,
       itemDeprecated: (item: BoardsPackage) => item.deprecated,
       itemRenderer,
+      filterRenderer,
+      defaultSearchOptions: { query: '', type: 'All' },
     });
   }
 

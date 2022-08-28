@@ -8,11 +8,16 @@
 }
 
 .arduino-list-widget .search-bar {
-    margin: 0px 10px 10px 15px;
+    margin: 0px 10px 5px 15px;
 }
 
 .arduino-list-widget .search-bar:focus {
     border-color: var(--theia-focusBorder);
+}
+
+.arduino-list-widget .filter-bar {
+    display: flex;
+    margin: 0px 10px 5px 15px;
 }
 
 .filterable-list-container {

@@ -14,6 +14,7 @@ import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceClient } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
+import { FilterRenderer } from './filter-renderer';
 
 export class FilterableListContainer<
   T extends ArduinoComponent,
@@ -25,15 +26,15 @@ export class FilterableListContainer<
   constructor(props: Readonly<FilterableListContainer.Props<T, S>>) {
     super(props);
     this.state = {
-      searchOptions: { query: '' } as S,
+      searchOptions: props.defaultSearchOptions,
       items: [],
     };
   }
 
   override componentDidMount(): void {
     this.search = debounce(this.search, 500);
-    this.handleQueryChange('');
-    this.props.filterTextChangeEvent(this.handleQueryChange.bind(this));
+    this.search(this.state.searchOptions);
+    this.props.filterTextChangeEvent(this.handlePropChange.bind(this));
   }
 
   override componentDidUpdate(): void {
@@ -45,15 +46,22 @@ export class FilterableListContainer<
   override render(): React.ReactNode {
     return (
       <div className={'filterable-list-container'}>
-        {this.renderSearchFilter()}
         {this.renderSearchBar()}
+        {this.renderSearchFilter()}
         {this.renderComponentList()}
       </div>
     );
   }
 
   protected renderSearchFilter(): React.ReactNode {
-    return undefined;
+    return (
+      <>
+        {this.props.filterRenderer.render(
+          this.state.searchOptions,
+          this.handlePropChange.bind(this)
+        )}
+      </>
+    );
   }
 
   protected renderSearchBar(): React.ReactNode {
@@ -61,7 +69,9 @@ export class FilterableListContainer<
       <SearchBar
         resolveFocus={this.props.resolveFocus}
         filterText={this.state.searchOptions.query ?? ''}
-        onFilterTextChanged={this.handleQueryChange}
+        onFilterTextChanged={(query) =>
+          this.handlePropChange('query', query as S['query'])
+        }
       />
     );
   }
@@ -80,15 +90,12 @@ export class FilterableListContainer<
     );
   }
 
-  protected handleQueryChange = (
-    query: string = this.state.searchOptions.query ?? ''
-  ): void => {
-    const newSearchOptions = {
+  protected handlePropChange = (prop: keyof S, value: S[keyof S]): void => {
+    const searchOptions = {
       ...this.state.searchOptions,
-      query,
+      [prop]: value,
     };
-    this.setState({ searchOptions: newSearchOptions });
-    this.search(newSearchOptions);
+    this.setState({ searchOptions }, () => this.search(searchOptions));
   };
 
   protected search(searchOptions: S): void {
@@ -160,12 +167,13 @@ export namespace FilterableListContainer {
     T extends ArduinoComponent,
     S extends Searchable.Options
   > {
+    readonly defaultSearchOptions: S;
     readonly container: ListWidget<T, S>;
     readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
     readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
-    // readonly resolveContainer: (element: HTMLElement) => void;
+    readonly filterRenderer: FilterRenderer<S>;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
     readonly filterTextChangeEvent: Event<string | undefined>;
     readonly messageService: MessageService;

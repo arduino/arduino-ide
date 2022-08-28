@@ -16,6 +16,7 @@ import { ListWidget } from '../widgets/component-list/list-widget';
 import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
+import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
 
 @injectable()
 export class LibraryListWidget extends ListWidget<
@@ -29,9 +30,9 @@ export class LibraryListWidget extends ListWidget<
   );
 
   constructor(
-    @inject(LibraryService) protected service: LibraryService,
-    @inject(ListItemRenderer)
-    protected itemRenderer: ListItemRenderer<LibraryPackage>
+    @inject(LibraryService) private service: LibraryService,
+    @inject(ListItemRenderer) itemRenderer: ListItemRenderer<LibraryPackage>,
+    @inject(LibraryFilterRenderer) filterRenderer: LibraryFilterRenderer
   ) {
     super({
       id: LibraryListWidget.WIDGET_ID,
@@ -42,6 +43,8 @@ export class LibraryListWidget extends ListWidget<
       itemLabel: (item: LibraryPackage) => item.name,
       itemDeprecated: (item: LibraryPackage) => item.deprecated,
       itemRenderer,
+      filterRenderer,
+      defaultSearchOptions: { query: '', type: 'All', topic: 'All' },
     });
   }
 
