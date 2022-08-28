@@ -100,8 +100,11 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
 
   private clear(index: number): void {
     this.cache.clear(index, 0);
-    if (this.list) {
-      this.list.recomputeRowHeights(index);
+    this.list?.recomputeRowHeights(index);
+    // Update the last item if the if the one before was updated
+    if (index === this.props.items.length - 2) {
+      this.cache.clear(index + 1, 0);
+      this.list?.recomputeRowHeights(index + 1);
     }
   }
 

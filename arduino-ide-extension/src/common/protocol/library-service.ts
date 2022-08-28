@@ -118,6 +118,8 @@ export interface LibraryPackage extends ArduinoComponent {
   readonly exampleUris: string[];
   readonly location: LibraryLocation;
   readonly installDirUri?: string;
+  readonly category?: string;
+  readonly maintainer?: string;
 }
 export namespace LibraryPackage {
   export function is(arg: any): arg is LibraryPackage {

@@ -3,6 +3,7 @@ import {
   LibraryDependency,
   LibraryLocation,
   LibraryPackage,
+  LibrarySearch,
   LibraryService,
 } from '../common/protocol/library-service';
 import { CoreClientAware } from './core-client-provider';
@@ -46,7 +47,7 @@ export class LibraryServiceImpl
   protected readonly notificationServer: NotificationServiceServer;
 
   @duration()
-  async search(options: { query?: string }): Promise<LibraryPackage[]> {
+  async search(options: LibrarySearch): Promise<LibraryPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
@@ -104,7 +105,60 @@ export class LibraryServiceImpl
         );
       });
 
-    return items;
+    const typePredicate = this.typePredicate(options);
+    const topicPredicate = this.topicPredicate(options);
+    return items.filter((item) => typePredicate(item) && topicPredicate(item));
+  }
+
+  private typePredicate(
+    options: LibrarySearch
+  ): (item: LibraryPackage) => boolean {
+    if (!options.type) {
+      return () => true;
+    }
+    switch (options.type) {
+      case 'All':
+        return () => true;
+      case 'Arduino':
+        return ({ maintainer }: LibraryPackage) =>
+          maintainer === 'Arduino <info@arduino.cc>';
+      case 'Installed':
+        return ({ installedVersion }: LibraryPackage) => !!installedVersion;
+      case 'Retired':
+        return ({ deprecated }: LibraryPackage) => deprecated;
+      case 'Updatable':
+        return (item: LibraryPackage) => {
+          const { installedVersion } = item;
+          if (!installedVersion) {
+            return false;
+          }
+          const latestVersion = item.availableVersions[0];
+          if (!latestVersion) {
+            console.warn(
+              `Installed version ${installedVersion} is available for ${item.name}, but available versions are mission. Skipping.`
+            );
+            return false;
+          }
+          const result = Installable.Version.COMPARATOR(
+            latestVersion,
+            installedVersion
+          );
+          return result > 0;
+        };
+      default: {
+        console.error('unhandled type: ' + options.type);
+        return () => true;
+      }
+    }
+  }
+
+  private topicPredicate(
+    options: LibrarySearch
+  ): (item: LibraryPackage) => boolean {
+    if (!options.topic || options.topic === 'All') {
+      return () => true;
+    }
+    return (item: LibraryPackage) => item.category === options.topic;
   }
 
   async list({
@@ -409,5 +463,7 @@ function toLibrary(
     description: lib.getSentence(),
     moreInfoLink: lib.getWebsite(),
     summary: lib.getParagraph(),
+    category: lib.getCategory(),
+    maintainer: lib.getMaintainer(),
   };
 }
