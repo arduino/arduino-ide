@@ -80,25 +80,6 @@ export class CheckForUpdates extends Contribution {
     ]);
     this.promptUpdateBoards(boardsPackages);
     this.promptUpdateLibraries(libraryPackages);
-    // const args = this.infoArgs(libraryPackages, boardsPackages);
-    // if (args) {
-    //   const { message, actions } = args;
-    //   this.messageService.info(message, ...actions).then((answer) => {
-    //     if (answer === InstallAll) {
-    //       const tasks = this.installAllTasks(
-    //         libraryPackages,
-    //         boardsPackages,
-    //         answer
-    //       );
-    //       return this.executeTasks(tasks);
-    //     }
-    //     // Install manually is not available if both boards and libraries can be updated.
-    //     if (answer === InstallManually) {
-
-    //     }
-    //   });
-    // } else if (!silent) {
-    // }
     if (!libraryPackages.length && !boardsPackages.length && !silent) {
       this.messageService.info(NoUpdates);
     }
