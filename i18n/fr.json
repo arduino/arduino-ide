@@ -6,26 +6,28 @@
     },
     "board": {
       "board": "Carte{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Information de la carte",
       "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
       "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez compiler votre croquis, mais pas le téléverser.",
-      "configDialogTitle": "Sélectionner une autre carte et un autre port",
       "couldNotFindPreviouslySelected": "Impossible de trouver la carte précédente sélectionnée \"{0}\" dans les plateformes installées \"{1}\". Merci de re-sélectionner manuellement la carte que vous souhaitez utiliser. Souhaitez vous la re-sélectionner maintenant ?",
-      "disconnected": "Disconnected",
+      "disconnected": "Déconnecté",
       "getBoardInfo": "Obtenir les informations sur la carte",
       "inSketchbook": "(dans le Croquis)",
       "installManually": "Installer manuellement.",
       "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
       "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Aucun porte sélectionné pour la carte : '{0}'",
       "noneSelected": "Aucune carte sélectionnée.",
       "openBoardsConfig": "Sélectionner une autre carte et un autre port ...",
       "platformMissing": "La plateforme pour la carte '{0}' sélectionnée n'est pas installée.",
       "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
       "port": "Port{0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Port : {0}",
       "programmer": "Programmeur",
       "reselectLater": "Re-sélectionner plus tard",
+      "searchBoard": "Search board",
       "selectBoard": "Selectionner une carte",
       "selectBoardForInfo": "Merci de choisir une carte pour obtenir ses informations.",
       "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
@@ -36,6 +38,7 @@
     "boardsManager": "Gestionnaire de carte",
     "bootloader": {
       "burnBootloader": "Graver la séquence d'initialisation",
+      "burningBootloader": "Gravage du bootloader...",
       "doneBurningBootloader": "Le bootloader à été gravé."
     },
     "burnBootloader": {
@@ -63,7 +66,7 @@
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Compte",
       "chooseSketchVisibility": "Choisissez la visibilité du croquis :",
       "connected": "Connecté",
       "continue": "Continuer",
@@ -88,7 +91,7 @@
       "pushSketch": "Push le croquis",
       "pushSketchMsg": "Ceci est un croquis public. Avant de le publier, assurez-vous que les informations sensibles sont bien définies dans le fichier arduino_secrets.h. Vous pouvez rendre priver le croquis à partir du panneau de Partage.",
       "remote": "A distance",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Carnet de croquis à distance",
       "share": "Partager...",
       "shareSketch": "Partager le croquis",
       "showHideRemoveSketchbook": "Montrer / Cacher le carnet de croquis distant.",
@@ -106,7 +109,6 @@
       "offlineIndicator": "Il semblerait que vous êtes déconnecté. Sans connexion internet la CLI d'Arduino pourrait ne pas être en mesure de télécharger les resources requises, ce qui pourrait provoquer des dysfonctionnements. Merci de vous connecter à Internet et de redémarrer l'application.",
       "oldFormat": "Le '{0}' utilise toujours l'ancien format `.pde`. Souhaitez-vous utiliser le nouveau format `.ino`?",
       "processing": "Traitement en cours",
-      "selectBoard": "Selectionner une carte",
       "selectedOn": "sur {0}",
       "serialMonitor": "Moniteur série",
       "unknown": "Inconnu"
@@ -115,6 +117,7 @@
       "error": "Erreur de compilation : {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "par",
       "filterSearch": "Filtrez votre recherche...",
       "install": "INSTALLER",
@@ -129,12 +132,13 @@
       "replaceTitle": "Remplacer"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copier les messages d'erreur",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Redémarrer Daemon",
+      "start": "Démarrer Daemon",
+      "stop": "Arrêter Daemon"
     },
     "debug": {
       "debugWithMessage": "Débogage - {0}",
@@ -153,8 +157,9 @@
       "decreaseIndent": "Diminuer le retrait",
       "increaseFontSize": "Augmenter la taille de la police",
       "increaseIndent": "Augmenter le retrait",
-      "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "nextError": "Prochaine erreur",
+      "previousError": "Erreur précédente",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Impossible d'enregistrer le croquis. Veuillez copier votre travail non enregistré dans votre éditeur de texte favori et redémarrer l'IDE.",
@@ -192,7 +197,7 @@
       "visit": "Visitez Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Vérifier les mises à jour de l'IDE Arduino",
       "closeAndInstallButton": "Fermer et installer",
       "closeToInstallNotice": "Fermez le logiciel et installez la mise à jour sur votre machine.",
       "downloadButton": "Télécharger",
@@ -231,13 +236,13 @@
       "zipLibrary": "Bibliothèque"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Avancé",
       "sketch": "Croquis",
       "tools": "Outils"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "Impossible de fermer le web socket",
+      "unableToConnectToWebSocket": "Impossible de se connecter au web socket"
     },
     "preferences": {
       "additionalManagerURLs": "URL de gestionnaire de cartes supplémentaires",
@@ -256,8 +261,8 @@
       "cloud.pushpublic.warn": "Vrai si les utilisateurs devrait être avertit avant de publier un croquis public sur le cloud. Vrai par défaut.",
       "cloud.sketchSyncEndpoint": "L'endpoint est utilisé pour pousser et tirer des croquis à partir du backend. Par défault, il pointe vers l'Arduino Cloud API.",
       "compile": "compiler",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "Vrai si l'IDE doit gérer les multiples erreurs du compilateur. Faux par défaut",
+      "compile.revealRange": "Règle la façon dont les erreurs de compilation sont révélées dans l'éditeur après un échec de la vérification/du téléversement. Valeurs possibles : 'auto' : Fais défiler verticalement si nécessaire et révèle une ligne. 'center' : Fais défiler l'écran verticalement si nécessaire et affiche une ligne centrée verticalement. 'top' : Fais défiler l'écran verticalement si nécessaire et affiche une ligne proche du haut de la fenêtre d'affichage, optimisée pour afficher une définition de code. 'centerIfOutsideViewport' : Fais défiler verticalement si nécessaire et révèle une ligne centrée verticalement uniquement si elle se trouve en dehors du viewport. La valeur par défaut est '{0}'.",
       "compile.verbose": "Vrai pour une sortie de compilation verbeuse. Faux par défaut.",
       "compile.warnings": "Dis à GCC quel niveau d'avertissement à utiliser. Valeur par défaut : 'None'.",
       "compilerWarnings": "Avertissements du compilateur ",
@@ -265,14 +270,14 @@
       "editorQuickSuggestions": "Suggestion rapide pour l'éditeur",
       "enterAdditionalURLs": "Entrer des URLs additionnelles, une par colonne",
       "files.inside.sketches": "Afficher les fichiers à l’intérieur de Sketches.",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl": "L'URL de base où sont téléchargées les mises à jour. La valeur par défaut est 'https://downloads.arduino.cc/arduino-ide'.",
       "ide.updateChannel": "Canal de mise à jour à partir de 'stable' est la version stable, 'nightly' est la dernière version de développement.",
       "interfaceScale": "Échelle de l'interface",
       "invalid.editorFontSize": "Police de l'éditeur invalide. La taille doit être un entier positif.",
       "invalid.sketchbook.location": "Localisation invalide du croquis : {0}",
       "invalid.theme": "Thème invalide.",
       "language.log": "Vrai si le serveur de langage Arduino devrait générer des fichiers logs dans le dossier du croquis. Si non faux. La valeur par défaut est faux.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Si c'est vrai, le serveur de langue fournit des diagnostics en temps réel lors de la saisie dans l'éditeur. C'est faux par défaut.",
       "manualProxy": "Configuration manuelle du proxy",
       "network": "Réseau",
       "newSketchbookLocation": "Sélectionner la localisation du nouveau croquis.",
@@ -280,7 +285,7 @@
       "showVerbose": "Afficher la sortie de débogage verbeuse pendant",
       "sketchbook.location": "Localisation du croquis.",
       "sketchbook.showAllFiles": "Vrai pour montrer tous les fichiers croquis à l'intérieur du croquis. La valeur par défaut est faux.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "survey.notification": "Vrai si les utilisateurs doivent être avertis si une enquête est disponible. Vrai par défaut.",
       "unofficialBoardSupport": "Cliquer pour la liste non-officielle des URLs des support de cartes",
       "upload": "téléverser",
       "upload.verbose": "Vrai si le téléchargement en mode verbose. Faux par défaut.",
@@ -298,7 +303,7 @@
       "newLineCarriageReturn": "Les deux, NL et CR",
       "noLineEndings": "Pas de fin de ligne",
       "notConnected": "Déconnecté. Sélectionnez une carte ainsi qu'un port pour vous connecter automatiquement.",
-      "openSerialPlotter": "Serial Plotter",
+      "openSerialPlotter": "Traceur série",
       "timestamp": "horodatage",
       "toggleTimestamp": "Activer l'horodatage"
     },
@@ -306,6 +311,7 @@
       "archiveSketch": "Archiver le croquis",
       "cantOpen": "Un dossier nommé « {0} » existe déjà. Impossible d''ouvrir le croquis.",
       "close": "Êtes-vous sûr de vouloir fermer ce croquis ?",
+      "compile": "Compilation du programme...",
       "configureAndUpload": "Configurer et téléverser",
       "createdArchive": "Archive créer '{0}'",
       "doneCompiling": "Compilation terminée.",
@@ -318,8 +324,8 @@
       "openRecent": "Ouvrir les récents",
       "openSketchInNewWindow": "Ouvrir le croquis dans une nouvelle fenêtre",
       "saveFolderAs": "Sauvegarder le dossier de croquis en tant que ...",
+      "saveSketch": "Enregistrer son programme pour le rouvrir plus tard.",
       "saveSketchAs": "Sauvegarder un dossier de croquis comme ...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Ouvrir le dossier de croquis",
       "sketch": "Croquis",
       "sketchbook": "Carnet de croquis",
@@ -327,20 +333,22 @@
       "titleSketchbook": "Carnet de croquis",
       "upload": "Téléverser",
       "uploadUsingProgrammer": "Téléverser en utilisant un programmateur",
+      "uploading": "Téléversement...",
       "userFieldsNotFoundError": "Impossible de trouver un champ utilisateur pour les cartes connectés",
       "verify": "Vérifier",
       "verifyOrCompile": "Vérifier / Compiler"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "Enquête sur les réponses",
+      "dismissSurvey": "Ne pas montrer de nouveau",
+      "surveyMessage": "Aide-nous à nous améliorer en répondant à cette enquête très courte. Nous apprécions notre communauté et nous aimerions connaître un peu mieux nos supporters."
     },
     "upload": {
       "error": "{0} erreur : {1}"
     },
     "userFields": {
       "cancel": "Annuler",
+      "enterField": "Enter {0}",
       "upload": "Téléverser"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Impossible d'enregistrer le croquis. Veuillez copier votre travail non enregistré dans votre éditeur de texte favori et redémarrer l'IDE.",
       "daemonOffline": "CLI Deamon hors ligne",
       "offline": "Hors-ligne",
-      "quitMessage": "Les modifications non enregistrées seront perdues.",
       "quitTitle": "Est que-vous sur vous voulez quitter? "
     },
     "debug": {

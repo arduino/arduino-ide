@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Alaplap {0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Alaplapi információk",
       "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
-      "configDialogTitle": "Egyéb Alaplap és Port választása",
       "couldNotFindPreviouslySelected": "Nem található a korábban kiválasztott  '{0}' alaplap a/az '{1}' telepített platformon. Válaszd ki  újra a használni kívánt alaplapot. Szeretnéd most újra megadni?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Alaplap információk beszerzése",
@@ -17,6 +17,7 @@
       "installManually": "Kézi telepítés",
       "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
       "noFQBN": "Az FQBN nem érhető el a kiválasztott „{0}” alaplapon. A megfelelő mag/core telepítve van? ",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nincsen port kiválasztva a alaplaphoz: '{0}'. ",
       "noneSelected": "Nincs alaplap kiválasztva",
       "openBoardsConfig": "Válassz másik alaplapot és portot… ",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programozó",
       "reselectLater": "Később újra válaszd ki",
+      "searchBoard": "Search board",
       "selectBoard": "Alaplap választás",
       "selectBoardForInfo": "Válassz egy alaplapot az információinak megtekintéséhez. ",
       "selectPortForInfo": "Válassz egy portot az alaplap információinak megtekintéséhez. ",
@@ -36,6 +38,7 @@
     "boardsManager": "Alaplap-kezelő",
     "bootloader": {
       "burnBootloader": "Bootloader égetése",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Bootloader égetés kész."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Az internet nem érhető el. Internetkapcsolat nélkül előfordulhat, hogy az Arduino CLI nem tudja letölteni a szükséges erőforrásokat, és hibás működést okozhat. Csatlakozz az internethez és indítsd újra az alkalmazást. ",
       "oldFormat": "A „{0}” továbbra is a régi „.pde” formátumot használja. Szeretnéd átírni az új `.ino` kiterjesztésre? ",
       "processing": "Feldolgozás",
-      "selectBoard": "Alaplap választás",
       "selectedOn": "{0}-n",
       "serialMonitor": "Soros monitor",
       "unknown": "ismeretlen"
@@ -115,6 +117,7 @@
       "error": "Összeállítási hiba: {0} "
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "által",
       "filterSearch": "Keresési eredmény szűrése... ",
       "install": "TELEPÍTÉS",
@@ -129,7 +132,8 @@
       "replaceTitle": "Csere"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Betűméret növelése",
       "increaseIndent": "Behúzás növelése",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Nem sikerült menteni a vázlatot/sketch-et. Másold át a nem mentett munkát kedvenc szövegszerkesztődbe és indítsd újra az IDE-t. ",
@@ -306,6 +311,7 @@
       "archiveSketch": "Vázlat/sketch archiválása",
       "cantOpen": "Már létezik a/az {0} nevű mappa. A vázlat/sketch nem nyitható meg. ",
       "close": "Biztosan bezárod a vázlatot/sketch-et? ",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Konfigurálás és feltöltés",
       "createdArchive": "Archívum létrehozva: {0}. ",
       "doneCompiling": "Fordítás kész.",
@@ -318,8 +324,8 @@
       "openRecent": "Legutóbbi megnyitása",
       "openSketchInNewWindow": "Vázlat/sketch megnyitása új ablakban",
       "saveFolderAs": "Vázlat-/sketch-mappa mentése másként... ",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Vázlat-/sketch-mappa mentése másként... ",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Vázlat-/sketch-mappa megjelenítése",
       "sketch": "Vázlat/sketch",
       "sketchbook": "Vázlatfüzet/sketchbook ",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Vázlatfüzet/sketchbook ",
       "upload": "Feltöltés",
       "uploadUsingProgrammer": "Feltöltés programozó segítségével",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Nem találhatók felhasználói adatok a csatlakoztatott kártyához",
       "verify": "Ellenőrzés",
       "verifyOrCompile": "Ellenőrzés/fordítás"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Mégsem",
+      "enterField": "Enter {0}",
       "upload": "Feltöltés"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Nem sikerült menteni a vázlatot/sketch-et. Másold át a nem mentett munkát kedvenc szövegszerkesztődbe és indítsd újra az IDE-t. ",
       "daemonOffline": "CLI Daemon offline/elérhetetlen ",
       "offline": "Offline / nincs hálózat",
-      "quitMessage": "A nem mentett módosítások nem kerülnek mentésre. ",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

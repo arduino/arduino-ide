@@ -1,31 +1,33 @@
 {
   "arduino": {
     "about": {
-      "detail": "Versione: {0}\nData: {1}{2}\nVersione CLI : {3}{4} [{5}]\n{6}",
+      "detail": "Versione: {0}\nData: {1}{2}\nVersione CLI: {3}{4} [{5}]\n\n{6}",
       "label": "Informazioni su {0}"
     },
     "board": {
       "board": "Scheda{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Informazioni sulla scheda",
-      "configDialog1": "Seleziona una scheda ed una porta se vuoi inviare lo sketch.",
-      "configDialog2": "Se selezioni solo una Board potrai compilare, ma non caricare il tuo sketch.",
-      "configDialogTitle": "Seleziona un'altra scheda o porta",
-      "couldNotFindPreviouslySelected": "Impossibile trovare la scehda selezionata '{0}' nelle piattaforme installate '{1}'. Scegli nuovamente la scheda che vuoi utilizzare. Vuoi sceglierla ora?",
-      "disconnected": "Disconnected",
-      "getBoardInfo": "Acquisisci informazioni sulla Scheda",
-      "inSketchbook": " (nella raccolta sketch)",
+      "configDialog1": "Seleziona una scheda ed una porta se vuoi caricare uno sketch.",
+      "configDialog2": "Se selezioni solo una scheda, potrai compilare, ma non potrai caricare il tuo sketch.",
+      "couldNotFindPreviouslySelected": "Impossibile trovare la scheda selezionata '{0}' nella piattaforma installata '{1}'. Scegli nuovamente la scheda che vuoi utilizzare. Vuoi sceglierla ora?",
+      "disconnected": "Disconnesso",
+      "getBoardInfo": "Acquisisci informazioni sulla scheda",
+      "inSketchbook": "(nella raccolta degli sketch)",
       "installManually": "Installa manualmente",
       "installNow": "Il \"{0} {1}\" core non è installato per la scheda  \"{2}\" . Vuoi installarlo ora?",
       "noFQBN": "La FQBN non è disponibile per la scheda selezionata\"{0}\". Sei sicuro che il core specifico sia stato installato?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nessuna porta selezionata per la scheda: '{0}'.",
       "noneSelected": "Nessuna scheda selezionata.",
       "openBoardsConfig": "Scegli un'altra scheda e un altra porta...",
       "platformMissing": "La piattaforma per la scheda '{0}' non è installata.",
       "pleasePickBoard": "Scegli la scheda collegata alla porta che hai selezionato.",
       "port": "Porta{0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Porta: {0}",
       "programmer": "Programmatore",
       "reselectLater": "Riselezionare più tardi",
+      "searchBoard": "Search board",
       "selectBoard": "Seleziona la scheda",
       "selectBoardForInfo": "Seleziona la scheda per la quale desideri informazioni.",
       "selectPortForInfo": "Selezionare la porta per ottenere info sulla scheda.",
@@ -36,6 +38,7 @@
     "boardsManager": "Gestore schede",
     "bootloader": {
       "burnBootloader": "Scrivi il bootloader",
+      "burningBootloader": "Masterizzazione del bootloader in corso...",
       "doneBurningBootloader": "La scritture de bootloader è terminata."
     },
     "burnBootloader": {
@@ -70,7 +73,7 @@
       "donePulling": "Pulling terminato ‘{0}’.",
       "donePushing": "Invio terminato ‘{0}’.",
       "embed": "Includi:",
-      "emptySketchbook": "Lo Sketchbook è vuoto",
+      "emptySketchbook": "La raccolta degli sketch è vuota",
       "learnMore": "Più informazioni",
       "link": "Link:",
       "notYetPulled": "Sul Cloud non puoi effettuare il push se non hai ancora fatto il pull",
@@ -88,10 +91,10 @@
       "pushSketch": "Invia lo Sketch",
       "pushSketchMsg": "Questo è uno sketch pubblico. Prima di inviarlo, verifica che tutte le informazioni sensibili siano all'interno di arduino_secrets.h. Eventualmente puoi rendere lo sketch privato dal Pannello di Condivisione.",
       "remote": "Remoto",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Raccolta remota degli sketch",
       "share": "Condividi...",
       "shareSketch": "Condividi sketch",
-      "showHideRemoveSketchbook": "Mostra/Nascondi la raccolta Remota degli Schetch",
+      "showHideRemoveSketchbook": "Mostra/Nascondi la raccolta remota degli sketch",
       "signIn": "COLLEGATI",
       "signInToCloud": "Effettua la registrazione su Arduino Cloud",
       "signOut": "Disconnetti",
@@ -106,7 +109,6 @@
       "offlineIndicator": "Sembra che tu sia offline. Senza una connessione Internet, l'Arduino CLI potrebbe non essere in grado di scaricare le risorse richieste e potrebbe causare un malfunzionamento. Verificare la connessione a Internet e riavviare l'applicazione.",
       "oldFormat": "Il '{0}' utilizza ancora il vecchio formato `.pde` . Vuoi sostituirlo con la nuova estensione `.ino?",
       "processing": "In elaborazione",
-      "selectBoard": "Seleziona Scheda",
       "selectedOn": "su {0}",
       "serialMonitor": "Monitor seriale",
       "unknown": "Sconosciuto"
@@ -115,6 +117,7 @@
       "error": "Errore di compilazione: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "da",
       "filterSearch": "Filtra la tua ricerca...",
       "install": "Installa",
@@ -129,12 +132,13 @@
       "replaceTitle": "Sostituisci"
     },
     "coreContribution": {
-      "copyError": "Copia messaggi di errore"
+      "copyError": "Copia messaggi di errore",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Riavvia il demone",
+      "start": "Avvia il demone",
+      "stop": "Ferma il demone"
     },
     "debug": {
       "debugWithMessage": "Debug - {0}",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Aumenta la dimensione del font",
       "increaseIndent": "Aumenta indentazione",
       "nextError": "Errore Successivo",
-      "previousError": "Errore Precedente"
+      "previousError": "Errore Precedente",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l' Arduino IDE. ",
@@ -192,7 +197,7 @@
       "visit": "Vai al sito Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Controlla gli aggiornamenti dell'IDE di Arduino",
       "closeAndInstallButton": "Chiudi e Installa",
       "closeToInstallNotice": "Chiudi il software e installa l’aggiornamento sulla tua macchina",
       "downloadButton": "Scarica",
@@ -236,8 +241,8 @@
       "tools": "Strumenti"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "Impossibile chiudere il websocket",
+      "unableToConnectToWebSocket": "Impossibile connettersi al websocket"
     },
     "preferences": {
       "additionalManagerURLs": "URL aggiuntive per il Gestore schede",
@@ -249,15 +254,15 @@
       "board.certificates": "Lista dei certificati che possono essere caricati nelle schede",
       "browse": "Sfoglia",
       "choose": "Scegli",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cli.daemonDebug": "Abilita il debug logging delle chiamate gRPC alla CLI di Arduino. Per rendere effettiva questa impostazione, è necessario un riavvio dell'IDE. L'impostazione predefinita è false.",
       "cloud.enabled": "Imposta su true per abilitare le funzioni di sincronia dello sketch. Il valore predefinito è true.",
       "cloud.pull.warn": "Imposta su true se gli utenti devono essere avvisato dopo avere effettuato il pull dello sketch sul cloud. Il valore predefinito è true.",
       "cloud.push.warn": "Imposta su True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch cloud. Il valore predefinito è true.",
-      "cloud.pushpublic.warn": "True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch pubblico nel cloud. Il valore predefinito è true.",
+      "cloud.pushpublic.warn": "Imposta su true se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch pubblico nel cloud. Il valore predefinito è true.",
       "cloud.sketchSyncEndpoint": "La destinazione utilizzata per inviare e richiedere gli schizzi da un back-end. L'impostazione predefinita utilizza Arduino Cloud API.",
       "compile": "compilazione",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "Imposta su true se l'IDE deve gestire errori multipli del compilatore. Il valore predefinito è false.",
+      "compile.revealRange": "Regola il modo in cui gli errori del compilatore vengono rivelati nell'editor, dopo una verifica/caricamento non andato a buon fine. Valori possibili: 'auto': scorre verticalmente come necessario e rivela una riga. 'center': scorre verticalmente come necessario e rivela una riga centrata verticalmente. 'top': scorre verticalmente come necessario e rivela una riga vicino alla parte superiore della finestra, ottimizzata per la visualizzazione di una definizione di codice. 'centerIfOutsideViewport': scorre in verticale come necessario e rivela una riga centrata verticalmente solo se si trova al di fuori della finestra di visualizzazione. Il valore predefinito è '{0}'.",
       "compile.verbose": "Vero per compilazione esplicita. Falso come opzione predefinita",
       "compile.warnings": "Indica a gcc il livello di avviso che deve mostrare. Il valore predefinito è 'None' ",
       "compilerWarnings": "Warning del compilatore",
@@ -272,15 +277,15 @@
       "invalid.sketchbook.location": "Posizione dello sketchbook non valida: {0}",
       "invalid.theme": "Tema non valido",
       "language.log": "Imposta su True se vuoi che l'Arduino Language Server generi il file di log all'interno della cartella dello sketch. Diversamente, imposta su false. L'impostazione predefinita è false.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Se vero, il server linguistico fornisce una diagnostica in tempo reale durante la digitazione nell'editor. Per impostazione predefinita è falso.",
       "manualProxy": "Configurazione manuale del proxy",
       "network": "Rete",
       "newSketchbookLocation": "Seleziona un percorso per il nuovo sketchbook",
       "noProxy": "Nessun proxy",
       "showVerbose": "Mostra un output dettagliato durante",
-      "sketchbook.location": "Percorso della cartella degli sketch",
+      "sketchbook.location": "Posizione della raccolta degli sketch",
       "sketchbook.showAllFiles": "Vero per mostrare tutti i file relativi contenuti all'interno dello sketch. L'opzione predefinita è falso.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "survey.notification": "Vero se gli utenti devono essere avvisati quando è disponibile un sondaggio. Vero per impostazione predefinita.",
       "unofficialBoardSupport": "Clicca per ottenere la lista di collegamenti per le schede di terze parti, non schede ufficiali.",
       "upload": "caricamento",
       "upload.verbose": " Seleziona Vero per un rapporto dettagliato durante l'upload. Il valore predefinito è impostato su falso",
@@ -298,7 +303,7 @@
       "newLineCarriageReturn": "Entrambi NL & CR",
       "noLineEndings": "Nessun fine riga",
       "notConnected": "Non collegato. Scegli una scheda e la porta di comunicazione per una connessione automatica.",
-      "openSerialPlotter": "Serial Plotter",
+      "openSerialPlotter": "Plotter seriale",
       "timestamp": "Marca temporale",
       "toggleTimestamp": "Alterna il Timestamp"
     },
@@ -306,6 +311,7 @@
       "archiveSketch": "Archivia sketch",
       "cantOpen": "Una cartella di nome \"{0}\" esiste già. Impossibile aprire lo sketch.",
       "close": "Sei sicuro di voler chiudere lo sketch?",
+      "compile": "Compilazione dello sketch in corso...",
       "configureAndUpload": "Configurare e caricare",
       "createdArchive": "Creato l'archivio '{0}'.",
       "doneCompiling": "Compilazione completata.",
@@ -318,8 +324,8 @@
       "openRecent": "Apri recenti",
       "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra.",
       "saveFolderAs": "Salva la cartella sketch come...",
+      "saveSketch": "Salva il tuo sketch per riaprirlo in seguito.",
       "saveSketchAs": "Salva la cartella dello sketch come...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Mostra la cartella dello Sketch",
       "sketch": "Sketch",
       "sketchbook": "Raccolta degli sketch",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Caricare",
       "uploadUsingProgrammer": "Carica tramite Programmatore",
+      "uploading": "Caricamento in corso...",
       "userFieldsNotFoundError": "Non è possibile trovare i campi utente per connettere la scheda",
       "verify": "Verifica",
       "verifyOrCompile": "Verifica/Compila"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Annulla",
+      "enterField": "Enter {0}",
       "upload": "Carica"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l' Arduino IDE. ",
       "daemonOffline": "Il CLI Daemon è disconnesso",
       "offline": "Disconnesso",
-      "quitMessage": "Eventuali modifiche non salvate verranno perse",
       "quitTitle": "Sei sicuro di volere chiudere?"
     },
     "debug": {

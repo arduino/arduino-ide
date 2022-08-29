@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Placa{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Informações da Placa",
       "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
       "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de carregar o seu sketch.",
-      "configDialogTitle": "Selecionar Outra Placa e Porta",
       "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione manualmente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
       "disconnected": "Desconectado",
       "getBoardInfo": "Obter Informações da Placa",
@@ -17,6 +17,7 @@
       "installManually": "Instalar Manualmente",
       "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
       "noFQBN": "O FQBN não está disponível para a placa selecionada \"{0}\". Você tem o núcleo correspondente instalado?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nenhuma porta selecionada para placa: '{0}'.",
       "noneSelected": "Nenhuma placa selecionada.",
       "openBoardsConfig": "Selecione outra placa e porta...",
@@ -26,6 +27,7 @@
       "portLabel": "Porta{0}",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
+      "searchBoard": "Search board",
       "selectBoard": "Selecionar Placa",
       "selectBoardForInfo": "Selecione uma placa para obter informações sobre ela.",
       "selectPortForInfo": "Selecione uma porta para obter informações sobre a placa.",
@@ -36,6 +38,7 @@
     "boardsManager": "Gerenciador de Placas",
     "bootloader": {
       "burnBootloader": "Gravar bootloader",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Feita a gravação do bootloader."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Parece que você está offline. Sem conexão com a Internet, o Arduino CLI não será capaz de baixar os recursos exigidos e poderá provovar mau funcionamento. Por favor, conecte-se à Internet e reinicie o aplicativo.",
       "oldFormat": "O '{0}' ainda utiliza o formato antigo `.pde`. Deseja mudar para a nova extensão `.ino`?",
       "processing": "Em processamento",
-      "selectBoard": "Selecione a Placa",
       "selectedOn": "em {0}",
       "serialMonitor": "Monitor Serial",
       "unknown": "Desconhecido"
@@ -115,6 +117,7 @@
       "error": "Erro de compilação: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "por",
       "filterSearch": "Filtrar a sua pesquisa…",
       "install": "Instalar",
@@ -129,7 +132,8 @@
       "replaceTitle": "Substituir"
     },
     "coreContribution": {
-      "copyError": "Mensagem de erro Copiar"
+      "copyError": "Mensagem de erro Copiar",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Reiniciar Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Aumentar o Tamanho da Fonte",
       "increaseIndent": "Aumentar Recuo",
       "nextError": "Próximo Erro",
-      "previousError": "Erro Anterior"
+      "previousError": "Erro Anterior",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Não foi possível salvar o sketch. Por favor, copie seu trabalho não salvo para o seu editor de texto favorito e reinicie a IDE.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Arquivar Sketch",
       "cantOpen": "Directoria chamada \"{0}\" já existe. Não é possível abrir o rascunho.",
       "close": "Tem certeza que deseja fechar o sketch?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configurar e Fazer Envio",
       "createdArchive": "Arquivo criado '{0}'.",
       "doneCompiling": "Compilação concluída.",
@@ -318,8 +324,8 @@
       "openRecent": "Abrir Recente",
       "openSketchInNewWindow": "Abrir sketch em uma nova janela",
       "saveFolderAs": "Salvar a pasta de sketch como...",
+      "saveSketch": "Salve seu sketch para abrí-lo novamente mais tarde",
       "saveSketchAs": "Salvar a pasta de sketch como...",
-      "saveTempSketch": "Salve seu sketch para abrí-lo novamente mais tarde",
       "showFolder": "Mostrar a pasta de Sketches",
       "sketch": "Sketch",
       "sketchbook": "Sketchbook",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Enviar usando Programador",
       "uploadUsingProgrammer": "Enviar Usando Programador",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Não é possível encontrar dados de usuário para placa conectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Cancelar",
+      "enterField": "Enter {0}",
       "upload": "Carregar"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Não foi possível salvar o sketch. Copie seu trabalho não salvo em seu editor de texto favorito e reinicie a IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Quiasquer alterações não salvas não estarão salvas",
       "quitTitle": "Você tem certeza que quer sair?"
     },
     "debug": {

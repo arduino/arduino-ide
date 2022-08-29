@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "ဘုတ်{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်",
       "configDialog1": "ကုတ်ဖိုင်တစ်ခုကို upload တင်လိုပါက ဘုတ်နှင့်အပေါက် နှစ်ခုလုံးကို ရွေးပေးပါ။",
       "configDialog2": "သင် ဘုတ်တစ်ခုထဲကိုသာ ရွေးချယ်ထားပါက compile ပြုလုပ်နိုင်သော်လည်း ကုဒ်ဖိုင်ကိုတော့ upload မတင်နိုင်ပါ။",
-      "configDialogTitle": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ပါ",
       "couldNotFindPreviouslySelected": "တပ်ဆင်ထားသည့် ပလက်ဖောင်း '{1}' ထဲမှာ ယခင်ရွေးချယ်ထားသည့်ဘုတ် '{0}' ကို ရှာမတွေ့ပါ။ ကျေးဇူးပြု၍ မိမိအသုံးပြုလိုသည့် ဘုတ်ကို မိမိကိုယ်တိုင် ပြန်လည်ရွေးချယ်ပေးပါ။ သင်အခု ပြန်လည်ရွေးချယ် လိုပါသလား?",
       "disconnected": "မချိတ်ဆက်ထားပါ",
       "getBoardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်ရယူမည်",
@@ -17,6 +17,7 @@
       "installManually": "ကိုယ်တိုင်တပ်ဆင်မည်",
       "installNow": "လက်ရှိရွေးချယ်ထားသည့် \"{2}\" ဘုတ်အတွက် \"{0} {1}\" core အား တပ်ဆင်ဖို့လိုပါသည်။ သင်ယခု တပ်ဆင်လိုပါသလား?",
       "noFQBN": "ရွေးချယ်ထားသည့် ဘုတ် \"{0}\" အတွက် FQBN မရနိုင်သေးပါ။ သင့်မှာ သက်ဆိုင်ရာတပ်ဆင်ထားသည့် core ရှိပါသလား?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "'{0}' ဘုတ် အတွက် မည်သည့်အပေါက်မှ မရွေးချယ်ထားပါ။",
       "noneSelected": "ဘုတ်မရွေးချယ်ထားပါ။",
       "openBoardsConfig": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ရန်...",
@@ -26,6 +27,7 @@
       "portLabel": "အပေါက် - {0}",
       "programmer": "ပရိုဂရမ်မာ",
       "reselectLater": "နောက်မှ ပြန်ရွေးချယ်မည်",
+      "searchBoard": "Search board",
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
       "selectBoardForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် ဘုတ်ရွေးချယ်ပါ",
       "selectPortForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် အပေါက်ကို ရွေးချယ်ပါ။",
@@ -36,6 +38,7 @@
     "boardsManager": "ဘုတ်မန်နေဂျာ",
     "bootloader": {
       "burnBootloader": "ဘုလုတ်ဒါ ရေးသွင်းမည်",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "ဘုလုတ်ဒါ ရေးသွင်းပြီးပါပြီ။"
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "အော့ဖ်လိုင်းဖြစ်နေသည်။ အင်တာနက်မရှိလျှင် Arduino CLIသည် လိုအပ်သော ဒေတာများမရယူနိုင်သောကြောင့် လုပ်ဆောင်ချက်ချို့ယွင်းမှုဖြစ်ပေါ်မည်။ အင်တာနက်နှင့်ချိတ်ဆက်ပြီး အပ္ပလီကေးရှင်းကို ပြန်စတင်ပေးပါ။",
       "oldFormat": "'{0}'သည် မူပုံစံအဟောင်း `.pde`ကိုအသုံးပြုထားသည်။ ဖိုင်လ်တိုးချဲ့အမှတ်အသားအသစ် `.ino` သို့ ပြောင်းလဲမှာလား။",
       "processing": "အဆင့်ဆင့်ဆောင်ရွက်နေသည်",
-      "selectBoard": "ဘုတ်ရွေးချယ်မည်",
       "selectedOn": "{0}တွင်",
       "serialMonitor": "အတန်းလိုက်ဆက်သွယ်မှုမော်နီတာ",
       "unknown": "မသိ"
@@ -115,6 +117,7 @@
       "error": "Compilation error: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "မှ",
       "filterSearch": "Filter your search...",
       "install": "တပ်ဆင်မည်",
@@ -129,7 +132,8 @@
       "replaceTitle": "အစားထိုးမည်"
     },
     "coreContribution": {
-      "copyError": "အမှားပြစာများကို ကော်ပီဆွဲသည်"
+      "copyError": "အမှားပြစာများကို ကော်ပီဆွဲသည်",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Daemon ပြန်စမည်",
@@ -154,7 +158,8 @@
       "increaseFontSize": "ဖောင့်အရွယ်အစားတိုးမည်",
       "increaseIndent": "အင်တင်းခြင်းတိုးမည်",
       "nextError": "နောက်ကအမှား",
-      "previousError": "ရှေ့ကအမှား"
+      "previousError": "ရှေ့ကအမှား",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "ကုတ်ပုံကြမ်းကို မသိမ်းဆည်းနိုင်ခဲ့ပါ။ ကျေးဇူးပြု၍ သင်၏ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာ စာသားတည်းဖြတ်မှုဆော့ဖ်ဝဲထဲသို့ ကူးယူပြီး IDE ကို ပြန်စတင်ပါ။",
@@ -306,6 +311,7 @@
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configure And Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
@@ -318,8 +324,8 @@
       "openRecent": "Open Recent",
       "openSketchInNewWindow": "Open Sketch in New Window",
       "saveFolderAs": "Save sketch folder as...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Save sketch folder as...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "ကုတ်ပုံကြမ်းဖိုလ်ဒါပြမည်",
       "sketch": "ကုတ်ပုံကြမ်း",
       "sketchbook": "Sketchbook",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Upload",
       "uploadUsingProgrammer": "Upload Using Programmer",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verify",
       "verifyOrCompile": "Verify/Compile"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "ပယ်ဖျက်မည်",
+      "enterField": "Enter {0}",
       "upload": "အပ်လုတ်တင်မည်"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "ကုတ်ဖိုင်လ်ကိုမသိမ်းဆည်းနိုင်ခဲ့ပါ။ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာစာသားတည်းဖြတ်ပရိုဂရမ်သို့ ကူးယူပြီး အိုင်ဒီအီး ပြန်စတင်ပါ။",
       "daemonOffline": "CLIနောက်ကွယ်လုပ်ဆောင်ပရိုဂရမ် အော့ဖ်လိုင်းဖြစ်နေသည်",
       "offline": "အော့ဖ်လိုင်း",
-      "quitMessage": "Any unsaved changes will not be saved.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

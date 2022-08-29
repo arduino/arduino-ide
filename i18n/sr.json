@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Плоча{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Информације о плочи",
       "configDialog1": "Одабери и плочу и порт ако желиш да спустиш рад.",
       "configDialog2": "Ако одабереш само плочу моћи ћеш само да преведеш, али не и да спустиш рад.",
-      "configDialogTitle": "Одабери другу плочу или порт",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Дохвати информације о плочи",
@@ -17,6 +17,7 @@
       "installManually": "Инсталирај ручно",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Ниједан порт није одабран за плочу: '{0}'.",
       "noneSelected": "Ниједна плоча није одабрана.",
       "openBoardsConfig": "Одабери другу плочу и порт...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Програмер",
       "reselectLater": "Одабери поново касније",
+      "searchBoard": "Search board",
       "selectBoard": "Одабери плочу",
       "selectBoardForInfo": "Одабери плочу да добијеш информације о њој.",
       "selectPortForInfo": "Одабери порт да добијеш информације о плочи",
@@ -36,6 +38,7 @@
     "boardsManager": "Управљач плочама",
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Done burning bootloader."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Изгледа да сте ван мреже. Без интернет везе, Arduino CLI можда неће моћи да преузме потребне ресурсе и може изазвати квар. Повежите се на Интернет и поново покрените апликацију.",
       "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
       "processing": "Обрађује се",
-      "selectBoard": "Одабери плочу",
       "selectedOn": "на {0}",
       "serialMonitor": "Монитор серијског порта",
       "unknown": "Непознато"
@@ -115,6 +117,7 @@
       "error": "Грешка приликом превођења: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "од",
       "filterSearch": "Филтрирај претрагу...",
       "install": "ИНСТАЛИРАЈ",
@@ -129,7 +132,8 @@
       "replaceTitle": "Замјени"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Повећај величину текста",
       "increaseIndent": "Повећај увлачење",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Архивирај рад",
       "cantOpen": "Директоријум \"{0}\" већ постоји. Није могуће отворити рад.",
       "close": "Да ли желиш да затвориш рад?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Конфигуриши и спусти",
       "createdArchive": "Направљена архива '{0}'.",
       "doneCompiling": "Превођење завршено.",
@@ -318,8 +324,8 @@
       "openRecent": "Отвори недавно",
       "openSketchInNewWindow": "Отвори рад у новом прозору",
       "saveFolderAs": "Сачувај радни директоријум као...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Сачувај радни фолдер као...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Прикажи радни директоријум",
       "sketch": "Рад",
       "sketchbook": "Радна свеска",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Радна свеска",
       "upload": "Спусти",
       "uploadUsingProgrammer": "Спусти помоћу програмера",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Није могуће пронаћи корисничка поља за повезану плочу.",
       "verify": "Провјери",
       "verifyOrCompile": "Провјери/Преведи"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Одустани",
+      "enterField": "Enter {0}",
       "upload": "Спусти"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Није на мрежи",
-      "quitMessage": "Ниједна несачувана промјена неће бити сачувана.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

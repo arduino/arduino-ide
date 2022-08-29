@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Board{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Board-Informationen",
       "configDialog1": "Wählen Sie ein Board und einen Port, wenn Sie den Sketch hochladen möchten.",
       "configDialog2": "Wenn Sie nur ein Board auswählen, werden Sie den Sketch nur kompilieren können, jedoch nicht hochladen.",
-      "configDialogTitle": "Andere Boards und Ports wählen",
       "couldNotFindPreviouslySelected": "Zuvor gewähltes Board '{0}' wurde nicht in der installierten Plaftform '{1}' gefunden. Bitte Board erneut auswählen. Jetzt auswählen?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Board-Informationen abrufen",
@@ -17,6 +17,7 @@
       "installManually": "Manuell installieren",
       "installNow": "Der \"{0} {1}\" Core muss für das ausgewählte \"{2}\" Board installiert werden. Jetzt installieren?",
       "noFQBN": "Der FQBN ist für das gewählte Board \"{0}\" nicht verfügbar. Wurde der zugehörige Core installiert?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Kein Port für das Board : '{0}' ausgewählt.",
       "noneSelected": "Kein Board ausgewählt.",
       "openBoardsConfig": "Wähle einen anderes Board und einen anderen Port...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programmer",
       "reselectLater": "Später auswählen",
+      "searchBoard": "Search board",
       "selectBoard": "Board wählen",
       "selectBoardForInfo": "Wähle ein Board für die Board-Informationen.",
       "selectPortForInfo": "Wähle ein Port, um Informationen über das Board zu erhalten.",
@@ -36,6 +38,7 @@
     "boardsManager": "Board-Verwaltung",
     "bootloader": {
       "burnBootloader": "Bootloader brennen",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Bootloader erfolgreich gebrannt."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Anscheinend bist du offline. Ohne eine aktive Internetverbindung kann das Arduino CLI nicht die nötigen Ressourcen herunterladen, was zu Problemen führen kann. Bitte überprüfe deine Internetverbindung und starte das Programm neu. ",
       "oldFormat": "Der Sketch '{0}' verwendet noch das alte '.pde' Format. Möchtest du auf die neuere '.ino' Endung wechseln?",
       "processing": "Verarbeiten",
-      "selectBoard": "Board wählen",
       "selectedOn": "an {0}",
       "serialMonitor": "Serieller Monitor",
       "unknown": "unbekannt"
@@ -115,6 +117,7 @@
       "error": "Fehler beim kompilieren: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "von",
       "filterSearch": "Filtern Sie Ihre Suche...",
       "install": "Installieren",
@@ -129,7 +132,8 @@
       "replaceTitle": "Ersetzten"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Schriftgröße vergrößern ",
       "increaseIndent": "Einrückung erweitern",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Der Sketch konnte nicht gesichert werden. Bitte kopiere deine ungesicherte Arbeit in deinen bevorzugten Texteditor und starte die IDE neu.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Sketch archivieren",
       "cantOpen": "Ein Ordner mit dem Namen \"{0}\" ist bereits vorhanden. Der Sketch kann nicht geöffnet werden.",
       "close": "Sind Sie sicher, dass Sie diesen Sketch schließen möchten?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Konfigurieren und hochladen",
       "createdArchive": "Archiv '{0}' erstellt.",
       "doneCompiling": "Kompilieren erfolgreich!",
@@ -318,8 +324,8 @@
       "openRecent": "Zuletzt geöffnet",
       "openSketchInNewWindow": "Sketch in neuen Fenster öffnen",
       "saveFolderAs": "Sketch Ordner speichern als...",
+      "saveSketch": "Sketch speichern und später wieder öffnen",
       "saveSketchAs": "Sketch Ordner speichern als...",
-      "saveTempSketch": "Sketch speichern und später wieder öffnen",
       "showFolder": "Zeige Sketch Ordner",
       "sketch": "Sketch",
       "sketchbook": "Sketchbook",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Hochladen",
       "uploadUsingProgrammer": "Mit Programmer hochladen",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "User Fields für das angeschlossene Board nicht gefunden",
       "verify": "Überprüfen",
       "verifyOrCompile": "Überprüfen/Kompilieren"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "abbrechen",
+      "enterField": "Enter {0}",
       "upload": "Hochladen"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Der Sketch konnte nicht gesichert werden. Bitte kopiere deine ungesicherte Arbeit in deinen bevorzugten Texteditor und starte die IDE neu.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Alle ungesicherten Änderung werden nicht gespeichert.",
       "quitTitle": "Sind Sie sicher, dass das Fenster schließen möchten?"
     },
     "debug": {

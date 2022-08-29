@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Платка{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Информация за платка",
       "configDialog1": "Изберете както платка, така и порт, ако искате да качите скица.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
-      "configDialogTitle": "Изберете друга платка и порт",
       "couldNotFindPreviouslySelected": "Не можа да се намери по-рано избрана платка „{0}“ в инсталираната платформа „{1}“. Моля, изберете отново ръчно платката, която искате да използвате. Искате ли да я изберете отново сега?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Вземи информация за платката",
@@ -17,6 +17,7 @@
       "installManually": "Инсталирай ръчно",
       "installNow": "Ядрото „{0} {1}“ трябва да бъде инсталирано за текущо избраната платка „{2}“. Искате ли да го инсталирате сега?",
       "noFQBN": "FQBN не е наличен за избраната платка „{0}“. Имате ли инсталирано съответното ядро?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Няма избрани портове за платка: „{0}“.",
       "noneSelected": "Няма избрани платка.",
       "openBoardsConfig": "Изберете друга платка и порт...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Програматор",
       "reselectLater": "Изберете отново по-късно",
+      "searchBoard": "Search board",
       "selectBoard": "Изберете платка",
       "selectBoardForInfo": "Моля, изберете платка, за да получите информация за нея.",
       "selectPortForInfo": "Моля, изберете порт, за да получите информация за платката.",
@@ -36,6 +38,7 @@
     "boardsManager": "Мениджър на платки",
     "bootloader": {
       "burnBootloader": "Запишете буутлоудъра",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Записването на буутлоудъра приключи."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Изглежда, че сте офлайн. Без интернет връзка, Arduino CLI може да не успее да изтегли необходимите ресурси и може да причини неизправност. Моля, свържете се с интернет и рестартирайте приложението.",
       "oldFormat": "„{0}“ все още използва стария формат .pde. Искате ли да преминете към новото разширение `.ino`?",
       "processing": "Обработва се",
-      "selectBoard": "Изберете платка",
       "selectedOn": "на {0}",
       "serialMonitor": "Сериен Монитор",
       "unknown": "Неизвестно"
@@ -115,6 +117,7 @@
       "error": "Грешка при компилация: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "от",
       "filterSearch": "Филтрирайте търсенето си...",
       "install": "ИНСТАЛИРАЙ",
@@ -129,7 +132,8 @@
       "replaceTitle": "Замени"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Увеличете размера на шрифта",
       "increaseIndent": "Увеличете отстъпа",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Архивирай скица",
       "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
       "close": "Наистина ли искате да затворите скицата?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Конфигуриране и качване",
       "createdArchive": "Създаден е архив „{0}“.",
       "doneCompiling": "Готово е компилирането.",
@@ -318,8 +324,8 @@
       "openRecent": "Отвори Скорошен",
       "openSketchInNewWindow": "Отвори скицата в нов прозорец",
       "saveFolderAs": "Запазете папката със скица като...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Запазете папката със скици като...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Показване на папка за скици",
       "sketch": "Скица",
       "sketchbook": "Скицник",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Скицник",
       "upload": "Качване",
       "uploadUsingProgrammer": "Качване с помощта на програмист",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Не мога да намеря потребителски полета за свързаната платка",
       "verify": "Потвърдете",
       "verifyOrCompile": "Проверете/компилирайте"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Отмяна",
+      "enterField": "Enter {0}",
       "upload": "Качване"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
       "daemonOffline": "CLI Daemon офлайн",
       "offline": "Офлайн",
-      "quitMessage": "Всички незапазени промени няма да бъдат запазени.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

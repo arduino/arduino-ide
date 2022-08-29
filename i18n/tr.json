@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Kart{0}",
+      "boardConfigDialogTitle": "Başka Kart ve Port Seç",
       "boardInfo": "Kart Bilgisi",
       "configDialog1": "Bir eskiz yüklemek istiyorsanız Kart ve Port seçmelisiniz.",
       "configDialog2": "Sadece Kart seçerseniz eskizinizi derleyebilir, ancak yükleyemezsiniz.",
-      "configDialogTitle": "Başka Kart ve Port Seç",
       "couldNotFindPreviouslySelected": "Kurulu '{1}' platformunda daha önce seçili kart '{0}' bulunamadı. Lütfen kullanmak istediğiniz kartı elle yeniden seçin. Şimdi tekrar seçmek istiyor musunuz?",
       "disconnected": "Bağlantı Kesildi",
       "getBoardInfo": "Kart Bilgisini Al",
@@ -17,15 +17,17 @@
       "installManually": "Elle Kur",
       "installNow": "Mevcut seçili \"{2}\" kartı için \"{0} {1}\" çekirdeğinin kurulması gerekiyor. Bunu şimdi kurmak istiyor musunuz?",
       "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
+      "noPortsDiscovered": "Port bulunamadı",
       "noPortsSelected": "'{0}' kartı için port seçilmedi",
       "noneSelected": "Kart seçilmedi.",
-      "openBoardsConfig": "Başka kart ve portu seç...",
+      "openBoardsConfig": "Başka Kart ve Port Seç",
       "platformMissing": "Seçili '{0}' kart için platform kurulmadı.",
       "pleasePickBoard": "Lütfen seçtiğiniz porta bağlı kartı seçin.",
       "port": "Port{0}",
       "portLabel": "Port{0}",
       "programmer": "Programlayıcı",
       "reselectLater": "Daha sonra tekrar seç",
+      "searchBoard": "Kart ara",
       "selectBoard": "Kart Seç",
       "selectBoardForInfo": "Kart bilgisi almak için lütfen bir kart seçin.",
       "selectPortForInfo": "Kart bilgisi almak için lütfen bir port seçin.",
@@ -36,6 +38,7 @@
     "boardsManager": "Kart Yöneticisi",
     "bootloader": {
       "burnBootloader": "Bootloader'ı Yükle",
+      "burningBootloader": "Bootloader yükleniyor...",
       "doneBurningBootloader": "Bootloader yüklemesi bitti."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Çevrimdışı görünüyorsunuz. Arduino CLI internet bağlantısı olmadan gerekli kaynakları indiremeyebilir ve hatalı çalışabilir. Lütfen internete bağlanın ve uygulamayı yeniden başlatın.",
       "oldFormat": "'{0}' hala eski `.pde` biçimini kullanıyor. Yeni `.ino` uzantısına geçmek istiyor musunuz?",
       "processing": "Processing",
-      "selectBoard": "Kart Seç",
       "selectedOn": "{0}'da",
       "serialMonitor": "Seri Port Ekranı",
       "unknown": "Bilinmeyen"
@@ -115,6 +117,7 @@
       "error": "Derleme hatası: {0}"
     },
     "component": {
+      "boardsIncluded": "Bu pakete dahil kartlar:",
       "by": "-",
       "filterSearch": "Aramayı Filtrele...",
       "install": "KUR",
@@ -129,7 +132,8 @@
       "replaceTitle": "Değiştir"
     },
     "coreContribution": {
-      "copyError": "Hata mesajlarını kopyala"
+      "copyError": "Hata mesajlarını kopyala",
+      "noBoardSelected": "Kart seçili değil. Lütfen Araçlar > Kart menüsünden Arduino kartınızı seçin."
     },
     "daemon": {
       "restart": "Arthizmeti Yeniden Başlat",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Yazı Tipi Boyutunu Büyüt",
       "increaseIndent": "Girintiyi Artır",
       "nextError": "Sonraki Hata",
-      "previousError": "Önceki Hata"
+      "previousError": "Önceki Hata",
+      "revealError": "Gösterim Hatası"
     },
     "electron": {
       "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Eskizi Arşivle",
       "cantOpen": "\"{0}\" klasörü zaten mevcut. Eskiz açılamadı.",
       "close": "Eskizi kapatmak istediğinizden emin misiniz?",
+      "compile": "Eskiz derleniyor...",
       "configureAndUpload": "Ayarla ve Yükle",
       "createdArchive": "'{0}' arşivi oluşturuldu.",
       "doneCompiling": "Derleme bitti.",
@@ -318,8 +324,8 @@
       "openRecent": "Yakın Geçmiş",
       "openSketchInNewWindow": "Eskizi Yeni Pencerede Aç",
       "saveFolderAs": "Eskiz klasörünü farklı kaydet...",
+      "saveSketch": "Daha sonra tekrar açmak için eskizinizi kaydedin.",
       "saveSketchAs": "Eskiz klasörünü farklı kaydet...",
-      "saveTempSketch": "Daha sonra tekrar açmak için eskizinizi kaydedin.",
       "showFolder": "Eskiz Klasörünü Göster",
       "sketch": "Eskiz",
       "sketchbook": "Eskiz Defteri",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Eskiz Defteri",
       "upload": "Yükle",
       "uploadUsingProgrammer": "Programlayıcı Kullanarak Yükle",
+      "uploading": "Yükleniyor...",
       "userFieldsNotFoundError": "Bağlı kart için kullanıcı alanları bulunamadı",
       "verify": "Doğrula",
       "verifyOrCompile": "Doğrula/Derle"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "İptal",
+      "enterField": "{0} gir",
       "upload": "Yükle"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
       "daemonOffline": "CLI Daemon Çevrimdışı",
       "offline": "Çevrimdışı",
-      "quitMessage": "Kaydedilmemiş değişiklikler kaybedilecek.",
       "quitTitle": "Çıkmak istediğinizden emin misiniz?"
     },
     "debug": {

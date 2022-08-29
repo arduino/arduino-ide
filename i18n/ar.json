@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "اللوحة {0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "معلومات اللوحة",
       "configDialog1": "اختر لوحة و منفذ معا اذا اردت ان ترفع السكتش",
       "configDialog2": "اذا قمت باختيار لوحة فقط ستسطيع ان تترجم لكن بدون ان ترفع المشروع",
-      "configDialogTitle": "اختر لوحات اخرى و المنفذ",
       "couldNotFindPreviouslySelected": "تعذر ايجاد اللوحة '{0}'  المختارة مسبقا في المنصة المثبتة '{1}' . الرجاء اعادة اختيار اللوحة التي تريد استعمالها يدويا . هل تريد باعادة الاختيار الان؟",
       "disconnected": "Disconnected",
       "getBoardInfo": "الحصول على معلومات اللوحة",
@@ -17,6 +17,7 @@
       "installManually": "ثبّت يدويا",
       "installNow": "نواة \"{0} {1}\" يجب تثبيتها للوحة \"{2}\" التي تم اختيارها . هل تريد تثبيتها الان ؟",
       "noFQBN": "FQBN غير متاح للوحة المختارة \"{0}\" . هل قمت بتثبيت النواة المعنية ؟",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "لا يوجد اية منافذ متاحة للوحة '{0}'",
       "noneSelected": "لم يتم اختيار اي لوحة",
       "openBoardsConfig": "قم باختيار لوحة و منفذ مختلفين",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "المبرمجة",
       "reselectLater": "اعد الاختيار لاحقا",
+      "searchBoard": "Search board",
       "selectBoard": "اختر لوحة",
       "selectBoardForInfo": "الرجاء اختيار لوحة من احل الحصول على معلومات اللوحة",
       "selectPortForInfo": "الرجاء اختيار منفذ من اجل الحصول على معلومات اللوحة",
@@ -36,6 +38,7 @@
     "boardsManager": "مدير اللوحة",
     "bootloader": {
       "burnBootloader": "ثبت محمل برنامج الإقلاع",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "تم حرق محمل الاقلاع"
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "انت غير متصل بالانترنت على الارجح , بدون الاتصال بالانترنت لن تستطيع واجهة سطر الاوامر الخاصة بالاردوينو \"Arduino CLI\" تحميل الموارد المطلوبة و من الممكن ان تسبب باخطاء , الرجاء الاتصال بالانترنت و اعادة تشغيل البرنامج",
       "oldFormat": "ال '{0}' ما زالت تستخدم صيغة `.pde` القديمة . هل تريد الانتقال الى صيغة `.ino`  الجديدة ؟",
       "processing": "تتم المعالجة",
-      "selectBoard": "اختر لوحة",
       "selectedOn": "{0} شغّل",
       "serialMonitor": "مراقب المنفذ التسلسلي \"سيريال بورت\"\n ",
       "unknown": "غير معروف"
@@ -115,6 +117,7 @@
       "error": "خطا في الترجمة : {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "بواسطة",
       "filterSearch": "ترشيح بحثك...",
       "install": "تنصيب",
@@ -129,7 +132,8 @@
       "replaceTitle": "استبدال"
     },
     "coreContribution": {
-      "copyError": "نسخ رسالة الخطأ"
+      "copyError": "نسخ رسالة الخطأ",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "تكبير حجم الخط",
       "increaseIndent": "زيادة مسافة البادئة",
       "nextError": "الخطأ التالي",
-      "previousError": "الخطأ السابق"
+      "previousError": "الخطأ السابق",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "تعذر حفظ المشروع . الرجاء نسخ عملك الغير محفوظ الى محرر النصوص المفضل لديك و اعادة تشغيل Arduino IDE",
@@ -306,6 +311,7 @@
       "archiveSketch": "ارشفة الشيفرة البرمجية",
       "cantOpen": "المجلد المسمى \"{0}\" موجود مسبقا. لا يمكن فتح الشيفرة البرمجية",
       "close": "هل انت متاكد بانك تريد اغلاق المشروع ؟",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "تهيئة و رفع",
       "createdArchive": "تم انشاء ارشيف '{0}'",
       "doneCompiling": "تمت الترجمة بنجاح.",
@@ -318,8 +324,8 @@
       "openRecent": "فُتِحَ مؤخرا ",
       "openSketchInNewWindow": "فتح المشروع في نافذة جديدة",
       "saveFolderAs": "احفظ مجلد المشروع باسم",
+      "saveSketch": "احفظ ملف المشروع لفتحه مرة اخرى لاحقا",
       "saveSketchAs": "حفظ ملف المشروع باسم ...",
-      "saveTempSketch": "احفظ ملف المشروع لفتحه مرة اخرى لاحقا",
       "showFolder": "اعرض ملف المشروع",
       "sketch": "مشروع",
       "sketchbook": "مجلد المشاريع",
@@ -327,6 +333,7 @@
       "titleSketchbook": "مجلد المشاريع",
       "upload": "رفع",
       "uploadUsingProgrammer": "الرفع باستخدام مبرمجة",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "تعذر ايجاد حقول المستخدم للوحة المتصلة",
       "verify": "تحقق",
       "verifyOrCompile": "تحقق/ترجم"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "الغاء",
+      "enterField": "Enter {0}",
       "upload": "رفع"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "تعذر حفظ المشروع . الرجاء نسخ عملك الغير محفوظ الى محرر النصوص المفضل لديك و اعادة تشغيل Arduino IDE",
       "daemonOffline": "CLI Daemon غير متصل",
       "offline": "غير متصل",
-      "quitMessage": "اي تغييرات لم تحفظ لن يتم حفظها",
       "quitTitle": "هل انت متاكد بانك تريد الخروج؟"
     },
     "debug": {

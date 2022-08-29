@@ -6,26 +6,28 @@
     },
     "board": {
       "board": "1{0} 開發板",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "開發板資訊",
       "configDialog1": "若要上傳 Sketch 請選擇一片板子及一個埠",
       "configDialog2": "如果你只有選擇板子你可以編譯，但不能上傳 Sketch",
-      "configDialogTitle": "選擇其他電路板或通訊埠",
       "couldNotFindPreviouslySelected": "在安装的平台{1}中找不到以前選擇的開發板{0}。請手動選擇要使用的開發板。你想現在重新選擇它吗？",
-      "disconnected": "Disconnected",
+      "disconnected": "斷開連接",
       "getBoardInfo": "取得開發板資訊",
       "inSketchbook": "(在草稿資料夾中)",
       "installManually": "手動安裝",
       "installNow": "必須為目前選定的 {2} 開發板安裝 1{0} 2{1} 核心程式，你要現在安裝嗎？",
       "noFQBN": "FQBN無法用於所選擇的\"{0}\"開發版。你是否安裝了對應的核心?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "沒有選到 '{0}' 板的埠",
       "noneSelected": "沒有選擇電路板",
       "openBoardsConfig": "選擇其他的電路板或埠...",
       "platformMissing": "選擇的'{0}'開發版平台並未安裝",
       "pleasePickBoard": "請選擇要連接的開發版",
       "port": "1{0} 埠",
-      "portLabel": "Port: {0}",
+      "portLabel": "端口: {0}",
       "programmer": "燒錄器",
       "reselectLater": "請晚一點再選擇",
+      "searchBoard": "Search board",
       "selectBoard": "選擇開發版",
       "selectBoardForInfo": "請選擇電路板以取得板子的資訊",
       "selectPortForInfo": "請選定一個埠，以便能取得板子的資訊",
@@ -36,6 +38,7 @@
     "boardsManager": "開發板管理器",
     "bootloader": {
       "burnBootloader": "燒錄 Bootloader",
+      "burningBootloader": "正在燒錄引導程式...",
       "doneBurningBootloader": "Bootloader 燒錄完成"
     },
     "burnBootloader": {
@@ -63,7 +66,7 @@
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "帳戶",
       "chooseSketchVisibility": "選擇草稿的能見度：",
       "connected": "已連接",
       "continue": "繼續",
@@ -95,7 +98,7 @@
       "signIn": "登入",
       "signInToCloud": "登入Arduino Cloud",
       "signOut": "登出",
-      "sync": "Sync",
+      "sync": "同步",
       "syncEditSketches": "同步和編輯您的Arduino Clou草稿",
       "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
     },
@@ -106,7 +109,6 @@
       "offlineIndicator": "您目前處於離線狀態，在沒有網路的情況下，Arduino命令列介面將無法下載需要的資源，並可能導致錯誤。請連接至網路並重新啟動程式。",
       "oldFormat": "'{0}'仍然使用舊的 `.pde` 格式，是否要轉換至新的 `.ino` 擴充?",
       "processing": "資料處理中",
-      "selectBoard": "選擇開發版",
       "selectedOn": "在 1{0}",
       "serialMonitor": "序列埠監控",
       "unknown": "未知"
@@ -115,6 +117,7 @@
       "error": "1{0} 編譯錯誤"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "過濾你的搜尋 ...",
       "install": "安裝",
@@ -129,7 +132,8 @@
       "replaceTitle": "替代"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "加大字體",
       "increaseIndent": "增加縮排",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "無法儲存草稿，請複製你未存檔的工作到你偏好的文字編輯器中並重新啟動 IDE 整合開發環境",
@@ -298,7 +303,7 @@
       "newLineCarriageReturn": "兩者都是NL和CR",
       "noLineEndings": "沒有斷行符號",
       "notConnected": "未有連接，請選擇開發板、埠以自動連接",
-      "openSerialPlotter": "Serial Plotter",
+      "openSerialPlotter": "串口繪圖視窗",
       "timestamp": "時戳/時間戳記",
       "toggleTimestamp": "切換時戳"
     },
@@ -306,6 +311,7 @@
       "archiveSketch": "儲存草稿",
       "cantOpen": "命名為\"{0}\"的資料夾已存在。無法開啟草稿。",
       "close": "你確定要關閉 Sketch？",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "組態配置並上傳",
       "createdArchive": "已創建文件{0}。",
       "doneCompiling": "編譯完成",
@@ -318,8 +324,8 @@
       "openRecent": "開啟最近的",
       "openSketchInNewWindow": "在新視窗開啟草稿",
       "saveFolderAs": "另存 Sketch 資料夾",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "另存 Sketch 資料夾",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "顯示 Sketch 資料夾",
       "sketch": "草稿",
       "sketchbook": "草稿資料夾",
@@ -327,6 +333,7 @@
       "titleSketchbook": "草稿資料夾",
       "upload": "上傳",
       "uploadUsingProgrammer": "使用燒錄器上傳",
+      "uploading": "上傳...",
       "userFieldsNotFoundError": "找不到已連接開發版中的用戶字段",
       "verify": "驗證",
       "verifyOrCompile": "驗證/編譯"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "取消",
+      "enterField": "Enter {0}",
       "upload": "上傳"
     }
   },
@@ -354,8 +362,7 @@
       "couldNotSave": "無法儲存草稿，請複製你未存檔的工作到你偏好的文字編輯器中並重新啟動 IDE 整合開發環境",
       "daemonOffline": "CLI 命令列常駐程式離線",
       "offline": "離線",
-      "quitMessage": "任何沒有儲存的修改將不會被儲存",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "你確定要退出嗎？"
     },
     "debug": {
       "start": "開始 ....",

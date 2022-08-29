@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Board{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Board Info",
       "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
-      "configDialogTitle": "Select Other Board & Port",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Get Board Info",
@@ -17,6 +17,7 @@
       "installManually": "Install Manually",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No ports selected for board: '{0}'.",
       "noneSelected": "Geen bord gekies nie.",
       "openBoardsConfig": "Kies ander bord en poort...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programeerder",
       "reselectLater": "Herselekteer later",
+      "searchBoard": "Search board",
       "selectBoard": "Kies Bord",
       "selectBoardForInfo": "Please select a board to obtain board info.",
       "selectPortForInfo": "Please select a port to obtain board info.",
@@ -36,6 +38,7 @@
     "boardsManager": "Boards Manager",
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Done burning bootloader."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Dit lyk of jy van af lyn is. Sonder 'n internetverbinding kan die Arduino CLI moontlik nie die nodige hulpbronne aflaai nie en kan dit wanfunksionering veroorsaak. Koppel asseblief aan die internet en herbegin die toepassing.",
       "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
       "processing": "Verwerking",
-      "selectBoard": "Kies Bord",
       "selectedOn": "aan {0}",
       "serialMonitor": "Seriaal Monitor",
       "unknown": "Onbekend"
@@ -115,6 +117,7 @@
       "error": "Compilation error: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "Filter your search...",
       "install": "INSTALLEER",
@@ -129,7 +132,8 @@
       "replaceTitle": "Vervang"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Increase Font Size",
       "increaseIndent": "Increase Indent",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configure And Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
@@ -318,8 +324,8 @@
       "openRecent": "Open Recent",
       "openSketchInNewWindow": "Open Sketch in New Window",
       "saveFolderAs": "Save sketch folder as...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Save sketch folder as...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Show Sketch Folder",
       "sketch": "Skets",
       "sketchbook": "Sketchbook",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Upload",
       "uploadUsingProgrammer": "Upload Using Programmer",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verify",
       "verifyOrCompile": "Verify/Compile"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Cancel",
+      "enterField": "Enter {0}",
       "upload": "Upload"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Aflyn",
-      "quitMessage": "Enige ongestoorde veranderinge sal nie gestoor word nie.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {
