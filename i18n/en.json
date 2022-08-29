@@ -126,6 +126,7 @@
       "retired": "Retired",
       "selectedOn": "on {0}",
       "serialMonitor": "Serial Monitor",
+      "type": "Type",
       "unknown": "Unknown",
       "updateable": "Updatable"
     },
@@ -250,6 +251,9 @@
       "title": "Library Manager",
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
       "zipLibrary": "Library"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
     },
     "libraryTopic": {
       "communication": "Communication",

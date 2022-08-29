@@ -5,7 +5,6 @@ import {
   LibrarySearch,
   Searchable,
 } from '../../../common/protocol';
-import { firstToUpperCase } from '../../../common/utils';
 
 @injectable()
 export abstract class FilterRenderer<S extends Searchable.Options> {
@@ -20,8 +19,7 @@ export abstract class FilterRenderer<S extends Searchable.Options> {
           .filter(([prop]) => props.includes(prop as keyof S))
           .map(([prop, value]) => (
             <div key={prop}>
-              {/* TODO: translations? */}
-              {firstToUpperCase(prop)}:
+              {this.propertyLabel(prop as keyof S)}:
               <select
                 className="theia-select"
                 value={value}
@@ -32,7 +30,7 @@ export abstract class FilterRenderer<S extends Searchable.Options> {
               >
                 {this.options(prop as keyof S).map((key) => (
                   <option key={key} value={key}>
-                    {this.label(prop as keyof S, key)}
+                    {this.valueLabel(prop as keyof S, key)}
                   </option>
                 ))}
               </select>
@@ -43,7 +41,8 @@ export abstract class FilterRenderer<S extends Searchable.Options> {
   }
   protected abstract props(): (keyof S)[];
   protected abstract options(prop: keyof S): string[];
-  protected abstract label(prop: keyof S, key: string): string;
+  protected abstract valueLabel(prop: keyof S, key: string): string;
+  protected abstract propertyLabel(prop: keyof S): string;
 }
 
 @injectable()
@@ -60,11 +59,19 @@ export class BoardsFilterRenderer extends FilterRenderer<BoardSearch> {
         throw new Error(`Unexpected prop: ${prop}`);
     }
   }
-  protected label(prop: keyof BoardSearch, key: string): string {
+  protected valueLabel(prop: keyof BoardSearch, key: string): string {
     switch (prop) {
       case 'type':
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (BoardSearch.TypeLabels as any)[key];
+      default:
+        throw new Error(`Unexpected key: ${prop}`);
+    }
+  }
+  protected propertyLabel(prop: keyof BoardSearch): string {
+    switch (prop) {
+      case 'type':
+        return BoardSearch.PropertyLabels[prop];
       default:
         throw new Error(`Unexpected key: ${prop}`);
     }
@@ -88,7 +95,16 @@ export class LibraryFilterRenderer extends FilterRenderer<LibrarySearch> {
         throw new Error(`Unexpected prop: ${prop}`);
     }
   }
-  protected label(prop: keyof LibrarySearch, key: string): string {
+  protected propertyLabel(prop: keyof LibrarySearch): string {
+    switch (prop) {
+      case 'type':
+      case 'topic':
+        return LibrarySearch.PropertyLabels[prop];
+      default:
+        throw new Error(`Unexpected key: ${prop}`);
+    }
+  }
+  protected valueLabel(prop: keyof LibrarySearch, key: string): string {
     switch (prop) {
       case 'type':
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

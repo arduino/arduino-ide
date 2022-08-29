@@ -8,6 +8,7 @@ import {
   Partner,
   Recommended,
   Retired,
+  Type,
   Updatable,
 } from '../nls';
 
@@ -118,6 +119,13 @@ export namespace LibrarySearch {
       'arduino/libraryTopic/uncategorized',
       'Uncategorized'
     ),
+  };
+  export const PropertyLabels: Record<
+    keyof Omit<LibrarySearch, 'query'>,
+    string
+  > = {
+    topic: nls.localize('arduino/librarySearchProperty/topic', 'Topic'),
+    type: Type,
   };
 }
 

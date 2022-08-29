@@ -4,6 +4,7 @@ export const Unknown = nls.localize('arduino/common/unknown', 'Unknown');
 export const Later = nls.localize('arduino/common/later', 'Later');
 export const Updatable = nls.localize('arduino/common/updateable', 'Updatable');
 export const All = nls.localize('arduino/common/all', 'All');
+export const Type = nls.localize('arduino/common/type', 'Type');
 export const Partner = nls.localize('arduino/common/partner', 'Partner');
 export const Contributed = nls.localize(
   'arduino/common/contributed',

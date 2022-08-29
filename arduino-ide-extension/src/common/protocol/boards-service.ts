@@ -3,7 +3,7 @@ import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
 import { nls } from '@theia/core/lib/common/nls';
-import { All, Contributed, Partner, Updatable } from '../nls';
+import { All, Contributed, Partner, Type, Updatable } from '../nls';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
@@ -172,6 +172,12 @@ export namespace BoardSearch {
     ),
     Partner: Partner,
     'Arduino@Heart': 'Arduino@Heart',
+  };
+  export const PropertyLabels: Record<
+    keyof Omit<BoardSearch, 'query'>,
+    string
+  > = {
+    type: Type,
   };
 }
 
