@@ -1,3 +1,4 @@
+import type { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { InstallManually, Later } from '../../common/nls';
@@ -10,18 +11,17 @@ import {
   ResponseServiceClient,
   Searchable,
 } from '../../common/protocol';
-import { Contribution, CommandRegistry, Command } from './contribution';
 import { Installable } from '../../common/protocol/installable';
 import { ExecuteWithProgress } from '../../common/protocol/progressible';
-import { WindowServiceExt } from '../theia/core/window-service-ext';
 import { BoardsListWidgetFrontendContribution } from '../boards/boards-widget-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from '../library/library-widget-frontend-contribution';
-import { ListWidget } from '../widgets/component-list/list-widget';
-import { AbstractViewContribution } from '@theia/core/lib/browser';
+import { WindowServiceExt } from '../theia/core/window-service-ext';
+import type { ListWidget } from '../widgets/component-list/list-widget';
+import { Command, CommandRegistry, Contribution } from './contribution';
 
 const NoUpdates = nls.localize(
   'arduino/checkForUpdates/noUpdates',
-  'No updates were found.'
+  'There are no recent updates available.'
 );
 const UpdatesBoards = nls.localize(
   'arduino/checkForUpdates/updatedBoth',
