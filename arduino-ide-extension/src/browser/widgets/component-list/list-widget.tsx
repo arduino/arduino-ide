@@ -42,9 +42,8 @@ export abstract class ListWidget<
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
    */
   protected focusNode: HTMLElement | undefined;
-  // protected readonly deferredContainer = new Deferred<HTMLElement>();
-  protected readonly filterTextChangeEmitter = new Emitter<
-    string | undefined
+  protected readonly searchOptionsChangeEmitter = new Emitter<
+    Partial<S> | undefined
   >();
   /**
    * Instead of running an `update` from the `postConstruct` `init` method,
@@ -63,7 +62,7 @@ export abstract class ListWidget<
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
     this.scrollOptions = undefined;
-    this.toDispose.push(this.filterTextChangeEmitter);
+    this.toDispose.push(this.searchOptionsChangeEmitter);
   }
 
   @postConstruct()
@@ -142,7 +141,7 @@ export abstract class ListWidget<
         itemDeprecated={this.options.itemDeprecated}
         itemRenderer={this.options.itemRenderer}
         filterRenderer={this.options.filterRenderer}
-        filterTextChangeEvent={this.filterTextChangeEmitter.event}
+        searchOptionsDidChange={this.searchOptionsChangeEmitter.event}
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
@@ -154,8 +153,8 @@ export abstract class ListWidget<
    * If `filterText` is defined, sets the filter text to the argument.
    * If it is `undefined`, updates the view state by re-running the search with the current `filterText` term.
    */
-  refresh(filterText: string | undefined): void {
-    this.filterTextChangeEmitter.fire(filterText);
+  refresh(searchOptions: Partial<S> | undefined): void {
+    this.searchOptionsChangeEmitter.fire(searchOptions);
   }
 
   updateScrollBar(): void {

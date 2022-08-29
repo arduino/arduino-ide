@@ -105,29 +105,37 @@ export class CheckForUpdates extends Contribution {
   }
 
   private promptUpdateLibraries(items: LibraryPackage[]): void {
-    this.prompt(
+    this.prompt({
       items,
-      this.libraryService,
-      this.librariesContribution,
-      UpdatesLibraries
-    );
+      installable: this.libraryService,
+      viewContribution: this.librariesContribution,
+      message: UpdatesLibraries,
+      viewSearchOptions: { query: '', type: 'Updatable', topic: 'All' },
+    });
   }
 
   private promptUpdateBoards(items: BoardsPackage[]): void {
-    this.prompt(
+    this.prompt({
       items,
-      this.boardsService,
-      this.boardsContribution,
-      UpdatesBoards
-    );
+      installable: this.boardsService,
+      viewContribution: this.boardsContribution,
+      message: UpdatesBoards,
+      viewSearchOptions: { query: '', type: 'Updatable' },
+    });
   }
 
-  private prompt<T extends ArduinoComponent, S extends Searchable.Options>(
-    items: T[],
-    installable: Installable<T>,
-    viewContribution: AbstractViewContribution<ListWidget<T, S>>,
-    message: string
-  ): void {
+  private prompt<
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  >(options: {
+    items: T[];
+    installable: Installable<T>;
+    viewContribution: AbstractViewContribution<ListWidget<T, S>>;
+    viewSearchOptions: S;
+    message: string;
+  }): void {
+    const { items, installable, viewContribution, message, viewSearchOptions } =
+      options;
     if (!items.length) {
       return;
     }
@@ -139,7 +147,7 @@ export class CheckForUpdates extends Contribution {
       } else if (answer === InstallManually) {
         viewContribution
           .openView({ reveal: true })
-          .then((widget) => widget.refresh(candidate.name.toLocaleLowerCase()));
+          .then((widget) => widget.refresh(viewSearchOptions));
       }
     });
   }

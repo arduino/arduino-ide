@@ -240,7 +240,10 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
           this.boardsManagerFrontendContribution
             .openView({ reveal: true })
             .then((widget) =>
-              widget.refresh(candidate.name.toLocaleLowerCase())
+              widget.refresh({
+                query: candidate.name.toLocaleLowerCase(),
+                type: 'All',
+              })
             );
         },
       },

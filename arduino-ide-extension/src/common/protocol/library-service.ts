@@ -87,7 +87,7 @@ export namespace LibrarySearch {
     'Signal Input/Output',
     'Timing',
     'Uncategorized',
-  ];
+  ] as const;
   export type Topic = typeof TopicLiterals[number];
   export const TopicLabels: Record<Topic, string> = {
     All: All,

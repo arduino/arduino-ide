@@ -34,7 +34,10 @@ export class FilterableListContainer<
   override componentDidMount(): void {
     this.search = debounce(this.search, 500);
     this.search(this.state.searchOptions);
-    this.props.filterTextChangeEvent(this.handlePropChange.bind(this));
+    this.props.searchOptionsDidChange((newSearchOptions) => {
+      const { searchOptions } = this.state;
+      this.setSearchOptionsAndUpdate({ ...searchOptions, ...newSearchOptions });
+    });
   }
 
   override componentDidUpdate(): void {
@@ -95,8 +98,12 @@ export class FilterableListContainer<
       ...this.state.searchOptions,
       [prop]: value,
     };
-    this.setState({ searchOptions }, () => this.search(searchOptions));
+    this.setSearchOptionsAndUpdate(searchOptions);
   };
+
+  private setSearchOptionsAndUpdate(searchOptions: S) {
+    this.setState({ searchOptions }, () => this.search(searchOptions));
+  }
 
   protected search(searchOptions: S): void {
     const { searchable } = this.props;
@@ -175,7 +182,7 @@ export namespace FilterableListContainer {
     readonly itemRenderer: ListItemRenderer<T>;
     readonly filterRenderer: FilterRenderer<S>;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
-    readonly filterTextChangeEvent: Event<string | undefined>;
+    readonly searchOptionsDidChange: Event<Partial<S> | undefined>;
     readonly messageService: MessageService;
     readonly responseService: ResponseServiceClient;
     readonly install: ({
