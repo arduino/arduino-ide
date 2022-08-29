@@ -113,52 +113,38 @@ export class LibraryServiceImpl
   private typePredicate(
     options: LibrarySearch
   ): (item: LibraryPackage) => boolean {
-    if (!options.type) {
+    const { type } = options;
+    if (!type || type === 'All') {
       return () => true;
     }
     switch (options.type) {
-      case 'All':
-        return () => true;
-      case 'Arduino':
-        return ({ maintainer }: LibraryPackage) =>
-          maintainer === 'Arduino <info@arduino.cc>';
       case 'Installed':
-        return ({ installedVersion }: LibraryPackage) => !!installedVersion;
-      case 'Retired':
-        return ({ deprecated }: LibraryPackage) => deprecated;
+        return Installable.Installed;
       case 'Updatable':
-        return (item: LibraryPackage) => {
-          const { installedVersion } = item;
-          if (!installedVersion) {
-            return false;
-          }
-          const latestVersion = item.availableVersions[0];
-          if (!latestVersion) {
-            console.warn(
-              `Installed version ${installedVersion} is available for ${item.name}, but available versions are mission. Skipping.`
-            );
-            return false;
-          }
-          const result = Installable.Version.COMPARATOR(
-            latestVersion,
-            installedVersion
-          );
-          return result > 0;
-        };
-      default: {
-        console.error('unhandled type: ' + options.type);
-        return () => true;
-      }
+        return Installable.Updateable;
+      case 'Arduino':
+      case 'Partner':
+      case 'Recommended':
+      case 'Contributed':
+      case 'Retired':
+        return ({ types }: LibraryPackage) => !!types && types.includes(type);
+      default:
+        throw new Error(`Unhandled type: ${options.type}`);
     }
   }
 
   private topicPredicate(
     options: LibrarySearch
   ): (item: LibraryPackage) => boolean {
-    if (!options.topic || options.topic === 'All') {
+    const { topic } = options;
+    if (!topic || topic === 'All') {
       return () => true;
     }
-    return (item: LibraryPackage) => item.category === options.topic;
+    return (item: LibraryPackage) => item.category === topic;
+  }
+
+  async updateables(): Promise<LibraryPackage[]> {
+    return this.search({ type: 'Updatable' });
   }
 
   async list({
@@ -464,6 +450,6 @@ function toLibrary(
     moreInfoLink: lib.getWebsite(),
     summary: lib.getParagraph(),
     category: lib.getCategory(),
-    maintainer: lib.getMaintainer(),
+    types: lib.getTypesList(),
   };
 }

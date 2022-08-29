@@ -7,11 +7,13 @@ export interface ArduinoComponent {
   readonly summary: string;
   readonly description: string;
   readonly moreInfoLink?: string;
-
   readonly availableVersions: Installable.Version[];
   readonly installable: boolean;
-
   readonly installedVersion?: Installable.Version;
+  /**
+   * This is the `Type` in IDE (1.x) UI.
+   */
+  readonly types: string[];
 }
 export namespace ArduinoComponent {
   export function is(arg: any): arg is ArduinoComponent {

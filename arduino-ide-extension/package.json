@@ -161,9 +161,9 @@
   "arduino": {
     "cli": {
       "version": {
-        "owner": "arduino",
+        "owner": "cmaglie",
         "repo": "arduino-cli",
-        "commitish": "63f1e18"
+        "commitish": "new_grpc_field_in_platform"
       }
     },
     "fwuploader": {

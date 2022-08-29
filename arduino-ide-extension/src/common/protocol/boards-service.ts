@@ -2,6 +2,8 @@ import { naturalCompare } from './../utils';
 import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
+import { nls } from '@theia/core/lib/common/nls';
+import { All, Contributed, Partner, Updatable } from '../nls';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
@@ -159,6 +161,18 @@ export namespace BoardSearch {
     'Arduino@Heart',
   ] as const;
   export type Type = typeof TypeLiterals[number];
+  export const TypeLabels: Record<Type, string> = {
+    All: All,
+    Updatable: Updatable,
+    Arduino: 'Arduino',
+    Contributed: Contributed,
+    'Arduino Certified': nls.localize(
+      'arduino/boardsType/arduinoCertified',
+      'Arduino Certified'
+    ),
+    Partner: Partner,
+    'Arduino@Heart': 'Arduino@Heart',
+  };
 }
 
 export interface Port {

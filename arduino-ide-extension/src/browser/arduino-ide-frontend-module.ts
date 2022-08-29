@@ -314,7 +314,7 @@ import { FirstStartupInstaller } from './contributions/first-startup-installer';
 import { OpenSketchFiles } from './contributions/open-sketch-files';
 import { InoLanguage } from './contributions/ino-language';
 import { SelectedBoard } from './contributions/selected-board';
-import { CheckForUpdates } from './contributions/check-for-updates';
+import { CheckForIDEUpdates } from './contributions/check-for-ide-updates';
 import { OpenBoardsConfig } from './contributions/open-boards-config';
 import { SketchFilesTracker } from './contributions/sketch-files-tracker';
 import { MonacoThemeServiceIsReady } from './utils/window';
@@ -331,6 +331,7 @@ import {
   BoardsFilterRenderer,
   LibraryFilterRenderer,
 } from './widgets/component-list/filter-renderer';
+import { CheckForUpdates } from './contributions/check-for-updates';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -747,9 +748,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, OpenSketchFiles);
   Contribution.configure(bind, InoLanguage);
   Contribution.configure(bind, SelectedBoard);
-  Contribution.configure(bind, CheckForUpdates);
+  Contribution.configure(bind, CheckForIDEUpdates);
   Contribution.configure(bind, OpenBoardsConfig);
   Contribution.configure(bind, SketchFilesTracker);
+  Contribution.configure(bind, CheckForUpdates);
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.

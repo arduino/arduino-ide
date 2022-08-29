@@ -1,6 +1,15 @@
 import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
+import { nls } from '@theia/core/lib/common/nls';
+import {
+  All,
+  Contributed,
+  Partner,
+  Recommended,
+  Retired,
+  Updatable,
+} from '../nls';
 
 export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
@@ -55,6 +64,16 @@ export namespace LibrarySearch {
     'Retired',
   ] as const;
   export type Type = typeof TypeLiterals[number];
+  export const TypeLabels: Record<Type, string> = {
+    All: All,
+    Updatable: Updatable,
+    Installed: nls.localize('arduino/libraryType/installed', 'Installed'),
+    Arduino: 'Arduino',
+    Partner: Partner,
+    Recommended: Recommended,
+    Contributed: Contributed,
+    Retired: Retired,
+  };
   export const TopicLiterals = [
     'All',
     'Communication',
@@ -69,6 +88,37 @@ export namespace LibrarySearch {
     'Uncategorized',
   ];
   export type Topic = typeof TopicLiterals[number];
+  export const TopicLabels: Record<Topic, string> = {
+    All: All,
+    Communication: nls.localize(
+      'arduino/libraryTopic/communication',
+      'Communication'
+    ),
+    'Data Processing': nls.localize(
+      'arduino/libraryTopic/dataProcessing',
+      'Data Processing'
+    ),
+    'Data Storage': nls.localize(
+      'arduino/libraryTopic/dataStorage',
+      'Date Storage'
+    ),
+    'Device Control': nls.localize(
+      'arduino/libraryTopic/deviceControl',
+      'Device Control'
+    ),
+    Display: nls.localize('arduino/libraryTopic/display', 'Display'),
+    Others: nls.localize('arduino/libraryTopic/others', 'Others'),
+    Sensors: nls.localize('arduino/libraryTopic/sensors', 'Sensors'),
+    'Signal Input/Output': nls.localize(
+      'arduino/libraryTopic/signalInputOutput',
+      'Signal Input/Output'
+    ),
+    Timing: nls.localize('arduino/libraryTopic/timing', 'Timing'),
+    Uncategorized: nls.localize(
+      'arduino/libraryTopic/uncategorized',
+      'Uncategorized'
+    ),
+  };
 }
 
 export namespace LibraryService {
@@ -118,8 +168,10 @@ export interface LibraryPackage extends ArduinoComponent {
   readonly exampleUris: string[];
   readonly location: LibraryLocation;
   readonly installDirUri?: string;
-  readonly category?: string;
-  readonly maintainer?: string;
+  /**
+   * This is the `Topic` in the IDE (1.x) UI.
+   */
+  readonly category: string;
 }
 export namespace LibraryPackage {
   export function is(arg: any): arg is LibraryPackage {

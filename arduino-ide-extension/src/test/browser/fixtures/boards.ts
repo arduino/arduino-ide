@@ -53,6 +53,7 @@ export const aPackage: BoardsPackage = {
   moreInfoLink: 'http://www.some-url.lol/',
   name: 'Some Arduino Package',
   summary: 'Boards included in this package:',
+  types: ['Arduino'],
 };
 
 export const anInstalledPackage: BoardsPackage = {
