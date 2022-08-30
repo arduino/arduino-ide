@@ -23,6 +23,16 @@
     padding: 0px 5px 0px 0px;
 }
 
+.arduino-list-widget .filter-bar .filter {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.arduino-list-widget .filter-bar .filter > * {
+    flex-grow: 1;
+}
+
 .filterable-list-container {
     display: flex;
     flex-direction: column;
