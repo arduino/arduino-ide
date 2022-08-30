@@ -26,6 +26,7 @@ goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryDependency', null, gl
 goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryDependencyStatus', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryDownloadRequest', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryDownloadResponse', null, global);
+goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryInstallLocation', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryInstallRequest', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryInstallResponse', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.commands.v1.LibraryLayout', null, global);
@@ -1012,7 +1013,8 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.toObject = function(inclu
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     version: jspb.Message.getFieldWithDefault(msg, 3, ""),
     noDeps: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
-    noOverwrite: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
+    noOverwrite: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+    installLocation: jspb.Message.getFieldWithDefault(msg, 6, 0)
   };
 
   if (includeInstance) {
@@ -1069,6 +1071,10 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.deserializeBinaryFromRead
     case 5:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setNoOverwrite(value);
+      break;
+    case 6:
+      var value = /** @type {!proto.cc.arduino.cli.commands.v1.LibraryInstallLocation} */ (reader.readEnum());
+      msg.setInstallLocation(value);
       break;
     default:
       reader.skipField();
@@ -1132,6 +1138,13 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.serializeBinaryToWriter =
   if (f) {
     writer.writeBool(
       5,
+      f
+    );
+  }
+  f = message.getInstallLocation();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      6,
       f
     );
   }
@@ -1244,6 +1257,24 @@ proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.getNoOverwrite 
  */
 proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.setNoOverwrite = function(value) {
   return jspb.Message.setProto3BooleanField(this, 5, value);
+};
+
+
+/**
+ * optional LibraryInstallLocation install_location = 6;
+ * @return {!proto.cc.arduino.cli.commands.v1.LibraryInstallLocation}
+ */
+proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.getInstallLocation = function() {
+  return /** @type {!proto.cc.arduino.cli.commands.v1.LibraryInstallLocation} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/**
+ * @param {!proto.cc.arduino.cli.commands.v1.LibraryInstallLocation} value
+ * @return {!proto.cc.arduino.cli.commands.v1.LibraryInstallRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.LibraryInstallRequest.prototype.setInstallLocation = function(value) {
+  return jspb.Message.setProto3EnumField(this, 6, value);
 };
 
 
@@ -7060,6 +7091,14 @@ proto.cc.arduino.cli.commands.v1.GitLibraryInstallResponse.prototype.hasTaskProg
 /**
  * @enum {number}
  */
+proto.cc.arduino.cli.commands.v1.LibraryInstallLocation = {
+  LIBRARY_INSTALL_LOCATION_USER: 0,
+  LIBRARY_INSTALL_LOCATION_BUILTIN: 1
+};
+
+/**
+ * @enum {number}
+ */
 proto.cc.arduino.cli.commands.v1.LibrarySearchStatus = {
   LIBRARY_SEARCH_STATUS_FAILED: 0,
   LIBRARY_SEARCH_STATUS_SUCCESS: 1
@@ -7077,7 +7116,7 @@ proto.cc.arduino.cli.commands.v1.LibraryLayout = {
  * @enum {number}
  */
 proto.cc.arduino.cli.commands.v1.LibraryLocation = {
-  LIBRARY_LOCATION_IDE_BUILTIN: 0,
+  LIBRARY_LOCATION_BUILTIN: 0,
   LIBRARY_LOCATION_USER: 1,
   LIBRARY_LOCATION_PLATFORM_BUILTIN: 2,
   LIBRARY_LOCATION_REFERENCED_PLATFORM_BUILTIN: 3,

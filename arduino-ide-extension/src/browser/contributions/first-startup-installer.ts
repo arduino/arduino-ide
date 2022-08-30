@@ -1,6 +1,10 @@
 import { LocalStorageService } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { BoardsService, LibraryService } from '../../common/protocol';
+import {
+  BoardsService,
+  LibraryLocation,
+  LibraryService,
+} from '../../common/protocol';
 import { Contribution } from './contribution';
 
 @injectable()
@@ -57,6 +61,7 @@ export class FirstStartupInstaller extends Contribution {
             item: builtInLibrary,
             installDependencies: true,
             noOverwrite: true, // We don't want to automatically replace custom libraries the user might already have in place
+            installLocation: LibraryLocation.BUILTIN,
           });
         } catch (e) {
           // There's no error code, I need to parse the error message: https://github.com/arduino/arduino-cli/commit/2ea3608453b17b1157f8a1dc892af2e13e40f4f0#diff-1de7569144d4e260f8dde0e0d00a4e2a218c57966d583da1687a70d518986649R95

@@ -28,6 +28,7 @@ export interface LibraryService
     version?: Installable.Version;
     installDependencies?: boolean;
     noOverwrite?: boolean;
+    installLocation?: LibraryLocation.BUILTIN | LibraryLocation.USER;
   }): Promise<void>;
   installZip(options: {
     zipUri: string;
@@ -141,7 +142,7 @@ export enum LibraryLocation {
   /**
    * In the `libraries` subdirectory of the Arduino IDE installation.
    */
-  IDE_BUILTIN = 0,
+  BUILTIN = 0,
 
   /**
    * In the `libraries` subdirectory of the user directory (sketchbook).
