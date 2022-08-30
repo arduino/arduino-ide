@@ -23,11 +23,11 @@ const NoUpdates = nls.localize(
   'arduino/checkForUpdates/noUpdates',
   'There are no recent updates available.'
 );
-const UpdatesBoards = nls.localize(
+const UpdateBoards = nls.localize(
   'arduino/checkForUpdates/updatedBoth',
   'Updates are available for some of your boards.'
 );
-const UpdatesLibraries = nls.localize(
+const UpdateLibraries = nls.localize(
   'arduino/checkForUpdates/updatedBoth',
   'Updates are available for some of your libraries.'
 );
@@ -37,9 +37,11 @@ const InstallAll = nls.localize(
 );
 
 interface Task<T extends ArduinoComponent> {
-  run: () => Promise<void>;
-  item: T;
+  readonly run: () => Promise<void>;
+  readonly item: T;
 }
+
+const Updatable = { type: 'Updatable' } as const;
 
 @injectable()
 export class CheckForUpdates extends Contribution {
@@ -74,9 +76,9 @@ export class CheckForUpdates extends Contribution {
   }
 
   private async checkForUpdates(silent = true) {
-    const [libraryPackages, boardsPackages] = await Promise.all([
-      this.libraryService.updateables(),
-      this.boardsService.updateables(),
+    const [boardsPackages, libraryPackages] = await Promise.all([
+      this.boardsService.search(Updatable),
+      this.libraryService.search(Updatable),
     ]);
     this.promptUpdateBoards(boardsPackages);
     this.promptUpdateLibraries(libraryPackages);
@@ -90,8 +92,8 @@ export class CheckForUpdates extends Contribution {
       items,
       installable: this.libraryService,
       viewContribution: this.librariesContribution,
-      message: UpdatesLibraries,
-      viewSearchOptions: { query: '', type: 'Updatable', topic: 'All' },
+      viewSearchOptions: { query: '', topic: 'All', ...Updatable },
+      message: UpdateLibraries,
     });
   }
 
@@ -100,8 +102,8 @@ export class CheckForUpdates extends Contribution {
       items,
       installable: this.boardsService,
       viewContribution: this.boardsContribution,
-      message: UpdatesBoards,
-      viewSearchOptions: { query: '', type: 'Updatable' },
+      viewSearchOptions: { query: '', ...Updatable },
+      message: UpdateBoards,
     });
   }
 
@@ -120,17 +122,20 @@ export class CheckForUpdates extends Contribution {
     if (!items.length) {
       return;
     }
-    const actions = [Later, InstallManually, InstallAll];
-    this.messageService.info(message, ...actions).then((answer) => {
-      if (answer === InstallAll) {
-        const tasks = items.map((item) => this.installTask(item, installable));
-        return this.executeTasks(tasks);
-      } else if (answer === InstallManually) {
-        viewContribution
-          .openView({ reveal: true })
-          .then((widget) => widget.refresh(viewSearchOptions));
-      }
-    });
+    this.messageService
+      .info(message, Later, InstallManually, InstallAll)
+      .then((answer) => {
+        if (answer === InstallAll) {
+          const tasks = items.map((item) =>
+            this.createInstallTask(item, installable)
+          );
+          this.executeTasks(tasks);
+        } else if (answer === InstallManually) {
+          viewContribution
+            .openView({ reveal: true })
+            .then((widget) => widget.refresh(viewSearchOptions));
+        }
+      });
   }
 
   private async executeTasks(tasks: Task<ArduinoComponent>[]): Promise<void> {
@@ -139,21 +144,33 @@ export class CheckForUpdates extends Contribution {
         nls.localize('arduino/checkForUpdates/updating', 'Updating'),
         this.messageService,
         async (progress) => {
-          const total = tasks.length;
-          let count = 0;
-          for (const { run, item } of tasks) {
-            progress.report({
-              message: item.name,
-            });
-            await run();
-            progress.report({ work: { total, done: ++count } });
+          try {
+            const total = tasks.length;
+            let count = 0;
+            for (const { run, item } of tasks) {
+              // progress.report({
+              //   message: item.name,
+              // });
+              try {
+                await run(); // runs update sequentially. // TODO: is parallel update desired?
+              } catch (err) {
+                console.error(err);
+                this.messageService.error(
+                  `Failed to update ${item.name}. ${err}`
+                );
+              } finally {
+                progress.report({ work: { total, done: ++count } });
+              }
+            }
+          } finally {
+            progress.cancel();
           }
         }
       );
     }
   }
 
-  private installTask<T extends ArduinoComponent>(
+  private createInstallTask<T extends ArduinoComponent>(
     item: T,
     installable: Installable<T>
   ): Task<T> {

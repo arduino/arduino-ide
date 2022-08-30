@@ -190,10 +190,6 @@ export class BoardsServiceImpl
     );
   }
 
-  updateables(): Promise<BoardsPackage[]> {
-    return this.search({ type: 'Updatable' });
-  }
-
   async searchBoards({
     query,
   }: {

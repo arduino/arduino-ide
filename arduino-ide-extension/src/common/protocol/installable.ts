@@ -20,11 +20,6 @@ export interface Installable<T extends ArduinoComponent> {
    * Uninstalls the given component. It is a NOOP if not installed.
    */
   uninstall(options: { item: T; progressId?: string }): Promise<void>;
-
-  /**
-   * Returns with a promise which resolves all component that is installed but has a more recent version available.
-   */
-  updateables(): Promise<T[]>;
 }
 export namespace Installable {
   export type Version = string;

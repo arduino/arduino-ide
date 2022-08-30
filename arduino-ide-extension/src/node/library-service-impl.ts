@@ -143,10 +143,6 @@ export class LibraryServiceImpl
     return (item: LibraryPackage) => item.category === topic;
   }
 
-  async updateables(): Promise<LibraryPackage[]> {
-    return this.search({ type: 'Updatable' });
-  }
-
   async list({
     fqbn,
   }: {
