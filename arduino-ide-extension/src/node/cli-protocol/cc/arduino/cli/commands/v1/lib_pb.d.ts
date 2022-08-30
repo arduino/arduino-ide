@@ -82,6 +82,9 @@ export class LibraryInstallRequest extends jspb.Message {
     getNoOverwrite(): boolean;
     setNoOverwrite(value: boolean): LibraryInstallRequest;
 
+    getInstallLocation(): LibraryInstallLocation;
+    setInstallLocation(value: LibraryInstallLocation): LibraryInstallRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryInstallRequest.AsObject;
@@ -100,6 +103,7 @@ export namespace LibraryInstallRequest {
         version: string,
         noDeps: boolean,
         noOverwrite: boolean,
+        installLocation: LibraryInstallLocation,
     }
 }
 
@@ -962,6 +966,11 @@ export namespace GitLibraryInstallResponse {
     }
 }
 
+export enum LibraryInstallLocation {
+    LIBRARY_INSTALL_LOCATION_USER = 0,
+    LIBRARY_INSTALL_LOCATION_BUILTIN = 1,
+}
+
 export enum LibrarySearchStatus {
     LIBRARY_SEARCH_STATUS_FAILED = 0,
     LIBRARY_SEARCH_STATUS_SUCCESS = 1,
@@ -973,7 +982,7 @@ export enum LibraryLayout {
 }
 
 export enum LibraryLocation {
-    LIBRARY_LOCATION_IDE_BUILTIN = 0,
+    LIBRARY_LOCATION_BUILTIN = 0,
     LIBRARY_LOCATION_USER = 1,
     LIBRARY_LOCATION_PLATFORM_BUILTIN = 2,
     LIBRARY_LOCATION_REFERENCED_PLATFORM_BUILTIN = 3,
