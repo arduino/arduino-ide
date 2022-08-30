@@ -20,16 +20,19 @@
 }
 
 .arduino-list-widget .filter-bar > * {
-    padding: 0px 5px 0px 0px;
+    padding: 5px 5px 0px 0px;
 }
 
 .arduino-list-widget .filter-bar .filter {
     display: flex;
     align-items: center;
-    flex-grow: 1;
 }
 
-.arduino-list-widget .filter-bar .filter > * {
+.arduino-list-widget .filter-bar .filter > select {
+    width: 170px;
+}
+
+.arduino-list-widget .filter-bar .filter-label {
     flex-grow: 1;
 }
 
@@ -57,6 +60,13 @@
 .filterable-list-container .items-container > div > div:hover {
     background-color: var(--theia-sideBar-background);
     filter: contrast(90%);
+}
+
+.filterable-list-container .no-match {
+    font-weight: bold;
+    color: var(--theia-panelTitle-inactiveForeground);
+    align-items: center;
+    margin: 10px;
 }
 
 .component-list-item {
