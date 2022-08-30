@@ -272,6 +272,9 @@
     "libraryType": {
       "installed": "Installed"
     },
+    "listWidget": {
+      "noMatch": "No match"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "Sketch",

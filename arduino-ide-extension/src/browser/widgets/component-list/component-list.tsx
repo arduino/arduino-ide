@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/common/nls';
 import * as React from '@theia/core/shared/react';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import {
@@ -67,6 +68,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
               rowHeight={this.cache.rowHeight}
               deferredMeasurementCache={this.cache}
               ref={this.setListRef}
+              noRowsRenderer={this.renderNoMatch}
             />
           );
         }}
@@ -134,6 +136,14 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
           />
         </div>
       </CellMeasurer>
+    );
+  };
+
+  private renderNoMatch = (): JSX.Element => {
+    return (
+      <div className="no-match">
+        {nls.localize('arduino/listWidget/noMatch', 'No match')}
+      </div>
     );
   };
 }

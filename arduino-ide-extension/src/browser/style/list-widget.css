@@ -59,6 +59,13 @@
     filter: contrast(90%);
 }
 
+.filterable-list-container .no-match {
+    font-weight: bold;
+    color: var(--theia-panelTitle-inactiveForeground);
+    align-items: center;
+    margin-top: 10px;
+}
+
 .component-list-item {
     padding: 10px 10px 10px 15px;
     font-size: var(--theia-ui-font-size1);
