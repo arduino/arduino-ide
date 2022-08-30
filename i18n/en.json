@@ -67,8 +67,10 @@
       "checkForUpdates": "Check for Arduino Updates",
       "installAll": "Install All",
       "noUpdates": "There are no recent updates available.",
-      "updatedBoth": "Updates are available for some of your libraries.",
-      "updating": "Updating"
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
