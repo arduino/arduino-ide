@@ -19,7 +19,9 @@ export abstract class FilterRenderer<S extends Searchable.Options> {
           .filter(([prop]) => props.includes(prop as keyof S))
           .map(([prop, value]) => (
             <div key={prop} className="filter">
-              {this.propertyLabel(prop as keyof S)}:
+              <div className="filter-label">
+                {`${this.propertyLabel(prop as keyof S)}:`}
+              </div>
               <select
                 className="theia-select"
                 value={value}
