@@ -29,11 +29,12 @@
 }
 
 .arduino-list-widget .filter-bar .filter > select {
-    width: 170px;
+    width: 120px;
 }
 
 .arduino-list-widget .filter-bar .filter-label {
-    flex-grow: 1;
+    display: flex;
+    width: 50px;
 }
 
 .filterable-list-container {
