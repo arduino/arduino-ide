@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Πλακέτα{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Πληροφορίες Πλακέτας",
       "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
-      "configDialogTitle": "Επιλέξτε Άλλη Πλακέτα & Θύρα",
       "couldNotFindPreviouslySelected": "Δεν έγινε εντοπισμός της προηγουμένως επιλεγμένης πλακέτας '{0}' στην εγκατεστημένη πλατφόρμα '{1}'. Παρακαλώ επίλεξε πάλι χειροκίνητα την πλακέτα που θέλεις να χρησιμοποιήσεις. Θέλεις να την επιλέξεις τώρα;",
       "disconnected": "Disconnected",
       "getBoardInfo": "Εμφάνιση Πληροφοριών Πλακέτας",
@@ -17,6 +17,7 @@
       "installManually": "Χειροκίνητη Εγκατάσταση",
       "installNow": "Ο πυρήνας \"{0} {1}\" πρέπει να εγκατασταθεί για την επιλεγμένη πλακέτα {2}. Θέλεις να την εγκαταστήσεις τώρα;",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Δεν επιλέχθηκε θύρα για την πλακέτα: '{0}'.",
       "noneSelected": "Δεν επιλέχθηκε πλακέτα",
       "openBoardsConfig": "Επιλογή διαφορετικής πλακέτας και θύρας...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Προγραμματιστής",
       "reselectLater": "Επιλογή αργότερα",
+      "searchBoard": "Search board",
       "selectBoard": "Επιλογή Πλακέτας",
       "selectBoardForInfo": "Παρακαλώ επίλεξε μια πλακέτα για εμφάνιση πληροφοριών πλακέτας.",
       "selectPortForInfo": "Παρακαλώ επίλεξε μια θύρα για εμφάνιση πληροφοριών πλακέτας.",
@@ -36,6 +38,7 @@
     "boardsManager": "Διαχειριστής Πλακετών",
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Done burning bootloader."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Φαίνεται πως είστε εκτός σύνδεσης. Χωρίς σύνδεση στο Internet, το Arduino CLI ίσως να μη μπορεί να κάνει λήψη των απαιτούμενων πόρων και να υπάρξει δυσλειτουργία. Παρακαλώ συνδεθείτε στο Internet και επανεκκινήστε την εφαρμογή.",
       "oldFormat": "Το '{0}' χρησιμοποιεί ακόμα το παλιό '.pde' στυλ. Θέλετε να αλλάξετε στην νέα κατάληξη '.ino';",
       "processing": "Επεξεργασία",
-      "selectBoard": "Επιλογή Πλακέτας",
       "selectedOn": "στο {0}",
       "serialMonitor": "Παρακολούθηση Σειριακής",
       "unknown": "Άγνωστο"
@@ -115,6 +117,7 @@
       "error": "Σφάλμα μεταγλώττισης: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "από",
       "filterSearch": "Filter your search...",
       "install": "ΕΓΚΑΤΑΣΤΑΣΗ",
@@ -129,7 +132,8 @@
       "replaceTitle": "Αντικατάσταση"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Increase Font Size",
       "increaseIndent": "Increase Indent",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configure And Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
@@ -318,8 +324,8 @@
       "openRecent": "Άνοιγμα πρόσφατου",
       "openSketchInNewWindow": "Open Sketch in New Window",
       "saveFolderAs": "Save sketch folder as...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Save sketch folder as...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Show Sketch Folder",
       "sketch": "Σχέδιο",
       "sketchbook": "Sketchbook",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Ανέβασμα",
       "uploadUsingProgrammer": "Ανέβασμα μέσω προγραμματιστή",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Επαλήθευση",
       "verifyOrCompile": "Επικύρωση"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Ακύρωση",
+      "enterField": "Enter {0}",
       "upload": "Ανέβασμα"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Δεν έγινε αποθήκευση του προγράμματος. Παρακαλώ αντιγράψτε ό,τι δεν έχει αποθηκευθεί στον αγαπημένο σας επεξεργαστή κειμένου, και επανεκινήστε το Ολοκληρωμένο Περιβάλλον Ανάπτυξης IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Εκτός Σύνδεσης",
-      "quitMessage": "Οι μη αποθηκευμένες αλλαγές θα χαθούν.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

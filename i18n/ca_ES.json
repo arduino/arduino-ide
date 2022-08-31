@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Tarja{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Informació de la Tarja",
       "configDialog1": "Seleccioneu una Tarja i un port si voleu carregar un programa.",
       "configDialog2": "Si només seleccioneu una Tarja, podreu compilar, però no carregar el vostre programa.",
-      "configDialogTitle": "Selecciona una altre Tarja i Port",
       "couldNotFindPreviouslySelected": "No s'ha pogut trobar la Tarja seleccionada anteriorment '{0}' a la plataforma instal·lada '{1}'. Torneu a seleccionar manualment la tarja que voleu utilitzar. Vols tornar a seleccionar-la ara?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Obtenir informació de la Tarja",
@@ -17,6 +17,7 @@
       "installManually": "Instal·la Manualment",
       "installNow": "El nucli de \"{0} {1}\"  s'ha d'instal·lar per a la Tarja \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
       "noFQBN": "El FQBN no està disponible per la Tarja seleccionada \"{0}\". Tens instal·lat el nucli corresponent?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No hi ha cap port seleccionat per a la tarja: '{0}'.",
       "noneSelected": "No hi ha cap tarja seleccionada.",
       "openBoardsConfig": "Selecciona una altre tarja i port...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programador",
       "reselectLater": "Torneu a seleccionar més tard",
+      "searchBoard": "Search board",
       "selectBoard": "Seleccioneu la Tarja",
       "selectBoardForInfo": "Seleccioneu una tarja per obtenir informació sobre ella.",
       "selectPortForInfo": "Seleccioneu un port per obtenir la informació de la tarja.",
@@ -36,6 +38,7 @@
     "boardsManager": "Gestor de Targetes",
     "bootloader": {
       "burnBootloader": "Grava el carregador d'arrencada (Bootloader)",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "S'ha acabat de gravar el carregador d'arrencada (Bootloader)."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Sembla que estàs fora de línia. Sense connexió a Internet, és possible que l'Arduino CLI no pugui descarregar els recursos necessaris i podria provocar un mal funcionament. Connecteu-vos a Internet i reinicieu l'aplicació.",
       "oldFormat": "El '{0}' encara utilitza l'antic format `.pde`. Voleu canviar a la nova extensió '.ino'`?",
       "processing": "Processant",
-      "selectBoard": "Seleccioneu la Tarja",
       "selectedOn": "sobre {0}",
       "serialMonitor": "Monitor sèrie",
       "unknown": "Desconegut"
@@ -115,6 +117,7 @@
       "error": "Error de compilació: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "per",
       "filterSearch": "Filtra la teva cerca...",
       "install": "INSTAL·LA",
@@ -129,7 +132,8 @@
       "replaceTitle": "Substitueix"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Augmenta la mida de la lletra",
       "increaseIndent": "Augmenta el sagnat",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Guardar programa",
       "cantOpen": "Ja existeix una carpeta anomenada \"{0}\". No es pot obrir el programa.",
       "close": "Esteu segur que voleu tancar el programa?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configura i puja",
       "createdArchive": "S'ha creat l'arxiu '{0}'.",
       "doneCompiling": "S'ha fet la compilació.",
@@ -318,8 +324,8 @@
       "openRecent": "Obre Recent",
       "openSketchInNewWindow": "Obriu el programa a una finestra nova",
       "saveFolderAs": "Desa la carpeta de programa com a...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Desa la carpeta de programa com a...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Mostra la carpeta de programa",
       "sketch": "Programa",
       "sketchbook": "Quadern de programes",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Quadern de programes",
       "upload": "Carrega",
       "uploadUsingProgrammer": "Càrrega mitjançant el programador",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "No s'han trobat camps d'usuari per a la tarja connectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Cancel · lar",
+      "enterField": "Enter {0}",
       "upload": "Carrega"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
       "daemonOffline": "CLI Daemon fora de línia",
       "offline": "Fora de línia",
-      "quitMessage": "Els canvis no desats no es desaran.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

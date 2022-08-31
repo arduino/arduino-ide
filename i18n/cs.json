@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Deska {0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Info o desce",
       "configDialog1": "Pokud chcete nahrát sketch, musíte zvolit jak desku tak i port.",
       "configDialog2": "Pokud zvolíte jen desku, budete schopni kompilovat sketch, ale nebudete ji moci nahrát do desky.",
-      "configDialogTitle": "Zvolte desku a port",
       "couldNotFindPreviouslySelected": "Dříve zvolená deska '{0}' v instalované platformě '{1}' nebyla nalezena. Zvolte prosím manuálně desku kterou chcete použít. Chcete tuto desku zvolit nyní? ",
       "disconnected": "Disconnected",
       "getBoardInfo": "Získat info o desce.",
@@ -17,6 +17,7 @@
       "installManually": "Instalovat ručně",
       "installNow": "\"{0}{1}\" jádro musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
       "noFQBN": "FQBN není dostupné pro zvolenou desku \"{0}\". Máte nainstalované příslušné jádro? ",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nebyl zvolen port pro desku '{0}'.",
       "noneSelected": "Nebyla zvolena deska.",
       "openBoardsConfig": "Zvolte jinou desku a port...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programátor",
       "reselectLater": "Zvolit později",
+      "searchBoard": "Search board",
       "selectBoard": "Zvolit desku",
       "selectBoardForInfo": "Prosím zvolte desku pro získání informací o desce.",
       "selectPortForInfo": "Prosím zvolte port pro získání informací o desce.",
@@ -36,6 +38,7 @@
     "boardsManager": "Manažér desek",
     "bootloader": {
       "burnBootloader": "Nahrát zavaděč",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Nahrání zavaděče bylo dokončeno. "
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Nejspíše nejste online. Bez Internetového připojení nebude Arduino CLI schopno stáhnout potřebné zdroje a toto může způsobit chybu. Prosím připojte se k Internetu a restartujte aplikaci.",
       "oldFormat": "{0}používá stále starý formát `.pde`. Chcete ho převést na soubor s příponou `.ino`?",
       "processing": "Zpracovávám",
-      "selectBoard": "Zvolte desku",
       "selectedOn": "zapnuto{0}",
       "serialMonitor": "Seriový monitor",
       "unknown": "Neznámý"
@@ -115,6 +117,7 @@
       "error": "Chyba kompilace: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "od",
       "filterSearch": "Filtrovat vyhledávání... ",
       "install": "Instalovat",
@@ -129,7 +132,8 @@
       "replaceTitle": "Vyměnit"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Zvýšit velikost písma",
       "increaseIndent": "Zvětšit odrážku",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Nebylo možné uložit sketch. Zkopírujte prosím neuloženou práci do Vašeho oblíbeného textového editoru a restartujte IDE. ",
@@ -306,6 +311,7 @@
       "archiveSketch": "Archivovat sketch",
       "cantOpen": "Složka s názvem \"{0}\" již existuje, proto nemohu otevřít sketch. ",
       "close": "Opravdu chcete zavřít tuto sketch? ",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Nastavit a nahrát",
       "createdArchive": "Vytvořen archív '{0}'.",
       "doneCompiling": "Ověřování dokončeno.",
@@ -318,8 +324,8 @@
       "openRecent": "Otevřít nedávné",
       "openSketchInNewWindow": "Otevřít sketch v novém okně",
       "saveFolderAs": "Uložit složku sketche jako...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Uložit složku sketche jako...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Zobrazit složku sketche",
       "sketch": "Sketch",
       "sketchbook": "Projekty",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Projekty",
       "upload": "Nahrát",
       "uploadUsingProgrammer": "Nahrát pomocí programátoru",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Nemohu nalézt uživatelská pole pro připojenou desku",
       "verify": "Ověřit",
       "verifyOrCompile": "Ověřit/Kompilovat"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Zrušit",
+      "enterField": "Enter {0}",
       "upload": "Nahrát"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Nebylo možné uložit sketch. Zkopírujte prosím neuloženou práci do Vašeho oblíbeného textového editoru a restartujte IDE. ",
       "daemonOffline": "CLI Daemon nepřipojen",
       "offline": "Nepřipojen",
-      "quitMessage": "Jakékoli změny nebudou uloženy. ",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

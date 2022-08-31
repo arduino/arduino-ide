@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "ボード{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "ボード情報",
       "configDialog1": "スケッチを書き込みたい場合には、ボードとポートの両方を選択してください。",
       "configDialog2": "ボードのみを選択した場合、コンパイルはできますが、スケッチの書き込みはできません。",
-      "configDialogTitle": "他のボードとポートを選択",
       "couldNotFindPreviouslySelected": "インストールされているプラットフォーム'{1}'で、以前に選択したボード'{0}'が見つかりませんでした。使用したいボードを手動で選択し直してください。今すぐ選択し直しますか？",
       "disconnected": "切断中",
       "getBoardInfo": "ボード情報を取得",
@@ -17,6 +17,7 @@
       "installManually": "手動でインストール",
       "installNow": "現在選択されているボード\"{2}\"用にコア\"{0} {1}\"をインストールする必要があります。今すぐインストールしますか？",
       "noFQBN": "選択されたボード\"{0}\"にはFQBNがありません。対応するコアをインストール済みですか？",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "ボード用に選択されたポートがありません: '{0}'.",
       "noneSelected": "ボード未選択です。",
       "openBoardsConfig": "他のボードとポートを選択…",
@@ -26,6 +27,7 @@
       "portLabel": "ポート: {0}",
       "programmer": "書き込み装置",
       "reselectLater": "後で選択しなおす",
+      "searchBoard": "Search board",
       "selectBoard": "ボードを選択",
       "selectBoardForInfo": "ボード情報を得るには、ボードを選択してください。",
       "selectPortForInfo": "ボード情報を得るには、ポートを選択してください。",
@@ -36,6 +38,7 @@
     "boardsManager": "ボードマネージャ",
     "bootloader": {
       "burnBootloader": "ブートローダを書き込む",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "ブートローダの書き込みが完了しました。"
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "オフラインのようです。 インターネットに接続していないと、Arduino CLIが必要なリソースをダウンロードできず、誤動作を引き起こす可能性があります。 インターネットに接続して、アプリケーションを再起動してください。",
       "oldFormat": "'{0}'はまだ古い`.pde`形式を使用しています。新しい`.ino`拡張子に切り替えますか？",
       "processing": "処理中",
-      "selectBoard": "ボードを選択",
       "selectedOn": "{0}の",
       "serialMonitor": "シリアルモニタ",
       "unknown": "不明"
@@ -115,6 +117,7 @@
       "error": "コンパイルエラー: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "検索をフィルタ…",
       "install": "インストール",
@@ -129,7 +132,8 @@
       "replaceTitle": "置換"
     },
     "coreContribution": {
-      "copyError": "エラーメッセージをコピー"
+      "copyError": "エラーメッセージをコピー",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Daemonを再起動",
@@ -154,7 +158,8 @@
       "increaseFontSize": "フォントサイズを大きく",
       "increaseIndent": "インデントを増やす",
       "nextError": "次のエラー",
-      "previousError": "前のエラー"
+      "previousError": "前のエラー",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディタにコピーして、IDEを再起動してください。",
@@ -306,6 +311,7 @@
       "archiveSketch": "スケッチをアーカイブする",
       "cantOpen": "「{0}」というフォルダはすでに存在します。スケッチを開けません。",
       "close": "本当にスケッチを閉じますか？",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "構成と書き込み",
       "createdArchive": "アーカイブ'{0}'を作成しました。",
       "doneCompiling": "コンパイル完了。",
@@ -318,8 +324,8 @@
       "openRecent": "最近使った項目を開く",
       "openSketchInNewWindow": "新規ウィンドウでスケッチを開く",
       "saveFolderAs": "スケッチフォルダを別名で保存…",
+      "saveSketch": "あとで再び開くためスケッチを保存する。",
       "saveSketchAs": "スケッチを別名で保存…",
-      "saveTempSketch": "あとで再び開くためスケッチを保存する。",
       "showFolder": "スケッチフォルダを表示",
       "sketch": "スケッチ",
       "sketchbook": "スケッチブック",
@@ -327,6 +333,7 @@
       "titleSketchbook": "スケッチブック",
       "upload": "書き込み",
       "uploadUsingProgrammer": "書き込み装置を使って書き込む",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "接続されたボードのユーザーフィールドが見つかりません。",
       "verify": "検証",
       "verifyOrCompile": "検証・コンパイル"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "キャンセル",
+      "enterField": "Enter {0}",
       "upload": "マイコンボードに書き込む"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディタにコピーして、IDEを再起動してください。",
       "daemonOffline": "CLI Daemonはオフラインです",
       "offline": "オフライン",
-      "quitMessage": "未保存の変更は保存されません。",
       "quitTitle": "本当に終了しますか？"
     },
     "debug": {

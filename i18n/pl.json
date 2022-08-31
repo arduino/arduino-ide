@@ -6,17 +6,18 @@
     },
     "board": {
       "board": "Płytka{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Informacje o płytce",
       "configDialog1": "Wybierz płytkę oraz port, aby wgrać szkic.",
       "configDialog2": "Jeżeli wybierzesz płytkę, ale nie wybierzesz portu to nie będziesz mógł wgrywać szkicy, ale nadal możesz je kompilować.",
-      "configDialogTitle": "Wybierz inną płytkę i port",
-      "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+      "couldNotFindPreviouslySelected": "Nie można znaleźć poprzednio wybranej płytki '{0}' na zainstalowanej platformie '{1}'. Wybierz ręcznie ponownie płytkęę, której chcesz użyć. Czy chcesz ją teraz ponownie wybrać?",
       "disconnected": "Rozłączony",
       "getBoardInfo": "Pobierz informacje o płytce",
       "inSketchbook": "(w Szkicowniku)",
       "installManually": "Zainstaluj ręcznie",
       "installNow": "Jądro \" 1{0} 2{1} \" musi zostać zainstalowane dla wybranej płytki \"{2}\". Czy chcesz zainstalować je teraz?",
       "noFQBN": "FQBN jest niedostępny dla wybranej płytki \" 1{0} \". Sprawdź czy zainstalowane jądro jest prawidłowe.",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nie wybrano portu dla płytki: '{0}'.",
       "noneSelected": "Nie wybrano płytki.",
       "openBoardsConfig": "Wybierz inną płytkę i port...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: 1{0}",
       "programmer": "Programator",
       "reselectLater": "Wybierz ponownie później",
+      "searchBoard": "Search board",
       "selectBoard": "Wybierz płytkę",
       "selectBoardForInfo": "Wybierz płytkę, aby uzyskać o niej informacje.",
       "selectPortForInfo": "Wybierz port, aby uzyskać informacje o płytce.",
@@ -36,6 +38,7 @@
     "boardsManager": "Menedżer Płytek",
     "bootloader": {
       "burnBootloader": "Wypal Bootloader'a",
+      "burningBootloader": "Wypalanie bootloadera...",
       "doneBurningBootloader": "Zakończono wypalanie Bootloader'a"
     },
     "burnBootloader": {
@@ -44,11 +47,11 @@
     "certificate": {
       "addNew": "Dodaj nowy",
       "addURL": "Dodaj adres URL, aby pobrać certyfikat SSL",
-      "boardAtPort": "{0} at {1}",
+      "boardAtPort": "1{0} w 2{1}",
       "certificatesUploaded": "Certyfikaty przesłane.",
       "enterURL": "Wprowadź adres URL",
       "noSupportedBoardConnected": "Podpięto nie wspieraną płytkę.",
-      "openContext": "Open context",
+      "openContext": "Otwórz kontekst",
       "remove": "Usuń",
       "selectBoard": "Wybierz płytkę...",
       "selectCertificateToUpload": "1. Wybierz certyfikat do przesłania",
@@ -68,12 +71,12 @@
       "connected": "Połączony",
       "continue": "Kontynuuj",
       "donePulling": "Zakończono zaciąganie ‘{0}’.",
-      "donePushing": "Done pushing ‘{0}’.",
-      "embed": "Embed:",
+      "donePushing": "Gotowe pchanie ‘{0}’.\n ",
+      "embed": "Osadzić:",
       "emptySketchbook": "Twój Szkicownik jest pusty",
       "learnMore": "Dowiedz się więcej",
       "link": "Odnośnik:",
-      "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
+      "notYetPulled": "Nie można wysłać do chmury. Nie jest jeszcze wyciągnięty.",
       "offline": "Offline",
       "openInCloudEditor": "Otwórz w Cloud Editor",
       "options": "Opcje...",
@@ -81,12 +84,12 @@
       "profilePicture": "Obrazek profilowy",
       "publicVisibility": "Publiczny. Każda osoba mająca link może zobaczyć ten Szkic.",
       "pull": "Wyciągnij",
-      "pullFirst": "You have to pull first to be able to push to the Cloud.",
+      "pullFirst": "Musisz najpierw wyciągnąć, aby móc wysłać do chmury.",
       "pullSketch": "Pobierz szkic",
       "pullSketchMsg": "Pobieranie szkicu z chmury spowoduje nadpisanie jego lokalnej wersji. Czy chcesz kontynuować?",
       "push": "Wepchnij",
       "pushSketch": "Dodaj szkic",
-      "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+      "pushSketchMsg": "To jest szkic publiczny. Przed wysłaniem upewnij się, że wszelkie poufne informacje są zdefiniowane w plikach arduino_secrets.h. Możesz ustawić szkic jako prywatny z panelu Udostępnij.",
       "remote": "Zdalny",
       "remoteSketchbook": "Szkicownik zdalny",
       "share": "Udostępnij...",
@@ -106,8 +109,7 @@
       "offlineIndicator": "Wygląda na to, że jesteś w trybie offline. Bez połączenia z Internetem Arduino CLI może nie być w stanie pobrać wymaganych zasobów i może spowodować awarię. Połącz się z Internetem i uruchom ponownie aplikację.",
       "oldFormat": "'{0}' nadal używa starego formatu `.pde`. Czy chcesz się przełączyć na nowe rozszerzenie `.ino`?",
       "processing": "Przetwarzanie",
-      "selectBoard": "Wybierz płytkę",
-      "selectedOn": "on {0}",
+      "selectedOn": "na 1{0}",
       "serialMonitor": "Monitor portu szeregowego",
       "unknown": "Nieznany"
     },
@@ -115,6 +117,7 @@
       "error": "Błąd kompilacji: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "przez",
       "filterSearch": "Filtruj przeszukiwanie....",
       "install": "ZAINSTALUJ",
@@ -129,7 +132,8 @@
       "replaceTitle": "Zamień"
     },
     "coreContribution": {
-      "copyError": "Kopiuj komunikat błędu"
+      "copyError": "Kopiuj komunikat błędu",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restartuj Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Zwiększ rozmiar czcionki",
       "increaseIndent": "Zwiększ wcięcie",
       "nextError": "Następny Błąd",
-      "previousError": "Poprzedni Błąd"
+      "previousError": "Poprzedni Błąd",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Wszystkie niezapisane zmiany zostaną utracone.",
@@ -236,8 +241,8 @@
       "tools": "Narzędzia"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "Nie można zamknąć gniazda sieciowego",
+      "unableToConnectToWebSocket": "Nie można połączyć się z gniazdem sieciowym"
     },
     "preferences": {
       "additionalManagerURLs": "Dodatkowe adresy URL do menadżera płytek",
@@ -249,15 +254,15 @@
       "board.certificates": "Lista certyfikatów, które można przesłać do płytki",
       "browse": "Przeglądaj",
       "choose": "Wybierz",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
-      "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
-      "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
-      "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
-      "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
-      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "cli.daemonDebug": "Włącz rejestrowanie debugowania wywołań gRPC do interfejsu Arduino CLI. Aby to ustawienie zaczęło obowiązywać, konieczne jest ponowne uruchomienie środowiska IDE. Domyślnie jest to fałszywy.",
+      "cloud.enabled": "Prawdziwy jeśli włączone są funkcje synchronizacji szkicu. Wartość domyślna to prawdziwy.",
+      "cloud.pull.warn": "Prawdziwy, jeśli użytkownicy powinni zostać ostrzeżeni przed wyciągnięciem szkicu z chmury. Wartość domyślna to prawdziwy.",
+      "cloud.push.warn": "Prawdziwy, jeśli użytkownicy powinni zostać ostrzeżeni przed wysłaniem szkicu do chmury. Wartość domyślna to prawdziwy.",
+      "cloud.pushpublic.warn": "Prawdziwy, jeśli użytkownicy powinni zostać ostrzeżeni przed przesłaniem szkicu publicznego do chmury. Wartość domyślna to prawdziwy.",
+      "cloud.sketchSyncEndpoint": "Punkt końcowy używany do wypychania i wyciągania szkiców z zaplecza. Domyślnie wskazuje na Arduino Cloud API.",
       "compile": "kompilacja",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "Prawdziwy, jeśli IDE powinno obsługiwać wiele błędów kompilatora. Nieprawdziwy domyślnie",
+      "compile.revealRange": "Dostosowuje sposób ujawniania błędów kompilatora w edytorze po nieudanej weryfikacji/przesłaniu. Możliwe wartości: „auto”: Przewiń w pionie w razie potrzeby i odsłoń linię. 'środek': Przewiń w pionie w razie potrzeby i odsłoń linię wyśrodkowaną w pionie. „góra”: przewiń w pionie w razie potrzeby i odsłoń linię blisko górnej części widocznego obszaru, zoptymalizowaną pod kątem wyświetlania definicji kodu. 'centerIfOutsideViewport': Przewiń w pionie w razie potrzeby i odsłoń linię wyśrodkowaną w pionie tylko wtedy, gdy leży poza rzutnią. Domyślna wartość to '1{0}'.",
       "compile.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas kompilacji. Fałsz jest wartością domyślną.",
       "compile.warnings": "Ustawia poziom ostrzeżeń w kompilatorze gcc. Domyślną wartością jest 'Brak'",
       "compilerWarnings": "Ostrzeżenia kompilatora",
@@ -266,13 +271,13 @@
       "enterAdditionalURLs": "Wprowadź dodatkowe adresy URL, po jednym adresie w wierszu",
       "files.inside.sketches": "Pokazuj pliki w szkicach",
       "ide.updateBaseUrl": "Podstawowy link do pobierania aktualizacji. Domyślnie 'https://downloads.arduino.cc/arduino-ide'",
-      "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+      "ide.updateChannel": "Kanał wydań, z którego chcesz otrzymywać aktualizacje. 'stable' to stabilna wersja, 'nightly' to najnowsza wersja rozwojowa.",
       "interfaceScale": "Skalowanie interfejsu",
       "invalid.editorFontSize": "Nieprawidłowy rozmiar czcionki edytora. Musi to być dodatnia liczba całkowita.",
       "invalid.sketchbook.location": "Błędna lokalizacja szkicownika: {0}",
       "invalid.theme": "Nieprawidłowy schemat.",
       "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Jeśli prawdziwy, serwer języka zapewnia diagnostykę w czasie rzeczywistym podczas pisania w edytorze. Domyślnie jest nieprawdziwy.",
       "manualProxy": "Konfiguracja ręczna proxy",
       "network": "Sieć",
       "newSketchbookLocation": "Wybierz nową lokalizację szkicownika",
@@ -280,7 +285,7 @@
       "showVerbose": "Pokazuj informacje zwrotne podczas:",
       "sketchbook.location": "Lokalizacja szkicownika",
       "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze szkicu. Fałsz jest wartością domyślną.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "survey.notification": "Prawdziwy, jeśli użytkownicy powinni być powiadamiani o dostępności ankiety. Domyślnie prawdwdziwy.",
       "unofficialBoardSupport": "Kliknij, aby przejść do listy linków nieoficjalnego wsparcia dla płytek.",
       "upload": "przesyłanie",
       "upload.verbose": "Prawda, aby pokazywać szczegółowe informacje podczas wgrywania. Fałsz jest wartością domyślną.",
@@ -292,10 +297,10 @@
     "selectZip": "Wybierz plik ZIP zawierający bibliotekę, którą chcesz dodać",
     "serial": {
       "autoscroll": "Autoscroll",
-      "carriageReturn": "Carriage Return",
+      "carriageReturn": "Powrót karetki",
       "message": "Wiadomość({0} + Enter aby wysłać wiadomość do '{1}' on '{2}')",
       "newLine": "Nowa linia",
-      "newLineCarriageReturn": "Razem NL i CR",
+      "newLineCarriageReturn": "Nowa linia i powrót karetki",
       "noLineEndings": "Brak końca linii",
       "notConnected": "Nie połączono. Wybierz płytkę i port do automatycznego połączenia.",
       "openSerialPlotter": "Ploter szeregowy",
@@ -306,6 +311,7 @@
       "archiveSketch": "Archiwizuj szkic",
       "cantOpen": "Folder \" 1{0} \" już istnieje. Nie można otworzyć szkicu.",
       "close": "Jesteś pewien, że chcesz zamknąć szkic?",
+      "compile": "Kompilowanie szkicu...",
       "configureAndUpload": "Skonfiguruj u wgraj",
       "createdArchive": "Stwórz archiwum ' 1{0} '.",
       "doneCompiling": "Kompilacja zakończona.",
@@ -318,8 +324,8 @@
       "openRecent": "Otwórz ostatnie",
       "openSketchInNewWindow": "Otwórz szkic w nowym oknie.",
       "saveFolderAs": "Zapisz folder szkicu jako...",
+      "saveSketch": "Zapisz szkic, aby otworzyć go później.",
       "saveSketchAs": "Zapisz folder szkicu jako...",
-      "saveTempSketch": "Zapisz szkic, aby otworzyć go później.",
       "showFolder": "Pokaż folder szkiców.",
       "sketch": "Szkic",
       "sketchbook": "Szkicownik",
@@ -327,7 +333,8 @@
       "titleSketchbook": "Szkicownik",
       "upload": "Prześlij",
       "uploadUsingProgrammer": "Prześlij używając programatora",
-      "userFieldsNotFoundError": "Can't find user fields for connected board",
+      "uploading": "Przesyłanie...",
+      "userFieldsNotFoundError": "Nie można znaleźć pól użytkownika dla podłączonej płytki",
       "verify": "Weryfikuj",
       "verifyOrCompile": "Weryfikuj/Kompiluj"
     },
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Anuluj",
+      "enterField": "Enter {0}",
       "upload": "Prześlij"
     }
   },
@@ -349,18 +357,17 @@
   },
   "theia": {
     "core": {
-      "cannotConnectBackend": "Cannot connect to the backend.",
+      "cannotConnectBackend": "Nie można połączyć się z backendem.",
       "cannotConnectDaemon": "Nie można połączyć się z demonem CLI.",
       "couldNotSave": "Nie można zapisać szkicu. Skopiuj niezapisany szkic do edytora tekstu i zrestartuj IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Wszystkie niezapisane zmiany zostaną utracone.",
       "quitTitle": "Jesteś pewien, że chcesz wyjść?"
     },
     "debug": {
       "start": "Uruchamianie...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
+      "startError": "Wystąpił błąd podczas uruchamiania sesji debugowania. Więcej szczegółów znajdziesz w dziennikach.",
+      "typeNotSupported": "Typ sesji debugowania\" 1{0} \" nie jest obsługiwany."
     },
     "editor": {
       "unsavedTitle": "Niezapisany – {0}"

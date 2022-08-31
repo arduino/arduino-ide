@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Bord{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Bord Informatie",
       "configDialog1": "Selecteer een Bord en een Poort als U een schets wilt uploaden.",
       "configDialog2": "Als je alleen een Board kiest, kun je wel compileren, maar niet je schets uploaden.",
-      "configDialogTitle": "Selecteer een ander Bord en Poort",
       "couldNotFindPreviouslySelected": "Kon het voordien geselecteerde bord '{0}' in het geïnstalleerde platform '{1}' niet vinden. Gelieve manueel het bord te kiezen dat U wilt gebruiken. Wilt U het bord nu selecteren?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Verkrijg Bord Informatie",
@@ -17,6 +17,7 @@
       "installManually": "Handmatig installeren",
       "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn om het huidige geselecteerde \"{2}\" bord. Wilt U dit nu installeren?",
       "noFQBN": "De FQBN is niet beschikbaar voor het geselecteerde bord \"{0}\". Heeft U de bijhorende kern geïnstalleerd?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Geen poorten geselecteerd voor bord: '{0}'.",
       "noneSelected": "Geen borden geselecteerd.",
       "openBoardsConfig": "Selecteer een ander bord en poort...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programmeerapparaat",
       "reselectLater": "Later opnieuw selecteren",
+      "searchBoard": "Search board",
       "selectBoard": "Selecteer Bord",
       "selectBoardForInfo": "Selecteer een bord om bord informatie te bekomen.",
       "selectPortForInfo": "Selecteer een poort om bord informatie te bekomen.",
@@ -36,6 +38,7 @@
     "boardsManager": "Borden Beheerder",
     "bootloader": {
       "burnBootloader": "Bootloader branden",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Klaar met het branden van de bootloader."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Je lijkt offline te zijn. Zonder een internetverbinding kan de Arduino CLI mogelijk niet de vereiste bronnen downloaden en dit kan storingen veroorzaken. Maak verbinding met het internet en start de applicatie opnieuw. ",
       "oldFormat": "De '{0}' gebruikt nog steeds het oude '.pde' formaat. Wil je overstappen naar de nieuwe `.ino` extensie?",
       "processing": "Verwerken",
-      "selectBoard": "Selecteer Bord",
       "selectedOn": "aan {0}",
       "serialMonitor": "Seriële Monitor",
       "unknown": "Onbekend"
@@ -115,6 +117,7 @@
       "error": "Compilatiefout: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "door",
       "filterSearch": "Filter je zoekopdracht...",
       "install": "INSTALLEREN",
@@ -129,7 +132,8 @@
       "replaceTitle": "Vervangen"
     },
     "coreContribution": {
-      "copyError": "Foutmeldingen kopiëren"
+      "copyError": "Foutmeldingen kopiëren",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Lettergrootte vergroten",
       "increaseIndent": "Inspringing vergroten",
       "nextError": "Volgende Fout",
-      "previousError": "Vorige Fout"
+      "previousError": "Vorige Fout",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Kan de schets niet opslaan. Kopieer uw niet-opgeslagen werk naar uw favoriete teksteditor en start de IDE opnieuw. ",
@@ -306,6 +311,7 @@
       "archiveSketch": "Archiveer Schets",
       "cantOpen": "Er bestaat al een map met de naam \"{0}\". Kan schets niet openen.",
       "close": "Weet je zeker dat je de schets wilt sluiten?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Configureren en uploaden",
       "createdArchive": "Archief '{0}' gemaakt.",
       "doneCompiling": "Klaar met compileren.",
@@ -318,8 +324,8 @@
       "openRecent": "Recentelijk geopend",
       "openSketchInNewWindow": "Schets openen in nieuw venster",
       "saveFolderAs": "Sla de schets map op als...",
+      "saveSketch": "Bewaar je schets om hem later weer te openen.",
       "saveSketchAs": "Sla de schetsmap op als...",
-      "saveTempSketch": "Bewaar je schets om hem later weer te openen.",
       "showFolder": "Schetsmap tonen",
       "sketch": "Schets",
       "sketchbook": "Schetsboek",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Schetsboek",
       "upload": "Uploaden",
       "uploadUsingProgrammer": "Uploaden met behulp van Programmeerapparaat",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Kan gebruiker veld van verbonden bord niet vinden",
       "verify": "Verifiëren",
       "verifyOrCompile": "Verifiëren/Compileren"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Annuleer",
+      "enterField": "Enter {0}",
       "upload": "Uploaden"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Kan de schets niet opslaan. Kopieer uw niet-opgeslagen werk naar uw favoriete teksteditor en start de IDE opnieuw. ",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
-      "quitMessage": "Niet opgeslagen wijzigingen worden niet opgeslagen.",
       "quitTitle": "Weet je zeker dat je wilt stoppen?"
     },
     "debug": {

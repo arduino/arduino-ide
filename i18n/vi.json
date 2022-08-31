@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "Bo mạch {0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Thông tin bo mạch",
       "configDialog1": "Chọn đồng thời một bo mạch và một cổng nếu bạn muốn nạp một sketch.",
       "configDialog2": "Nếu bạn chỉ chọn một bo mạch thì bạn sẽ có khả năng biên dịch, nhưng không thể nạp sketch của bạn lên.",
-      "configDialogTitle": "Chọn Bo Mạch & Cổng Khác",
       "couldNotFindPreviouslySelected": "Không thể tìm thấy bo mạch '{0}' được chọn trước đó trong nền tảng '{1}' đã được cài đặt. Hãy chọn lại thủ công bo mạch mà bạn muốn dùng. Bạn có muốn chọn lại ngay?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Lấy thông tin bo mạch",
@@ -17,6 +17,7 @@
       "installManually": "Cài thủ công",
       "installNow": "Nhân \"{0} {1}\" phải được cài đặt cho bo mạch \"{2}\" đang được chọn. Bạn có muốn cài đặt ngay?",
       "noFQBN": "Không có FQBN khả dụng cho bo mạch \"{0}\" được chọn. Bạn đã cài đặt nhân tương ứng chưa?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Không có cổng được chọn cho bo mạch: '{0}'.",
       "noneSelected": "Không có bo mạch được chọn.",
       "openBoardsConfig": "Chọn bo mạch và cổng khác...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programmer",
       "reselectLater": "Chọn lại sau",
+      "searchBoard": "Search board",
       "selectBoard": "Lựa chọn bo mạch",
       "selectBoardForInfo": "Hãy chọn một bo mạch để lấy thông tin.",
       "selectPortForInfo": "Hãy chọn một cổng để lấy thông tin bo mạch.",
@@ -36,6 +38,7 @@
     "boardsManager": "Trình quản lý bo mạch",
     "bootloader": {
       "burnBootloader": "Nạp bootloader",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Hoàn tất nạp bootloader."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Bạn dường như đang ngoại tuyến. Không có kết nối mạng, Arduino CLI có thể sẽ không thể tải về những tài nguyên cần thiết và có thể sẽ gây ra sự cố. Hãy kết nối Internet và khởi động lại ứng dụng.",
       "oldFormat": "'{0}' vẫn đang sử dụng đuôi '.pde' cũ. Bạn có muốn chuyển sang đuôi '.ino' mới hơn không?",
       "processing": "Đang sử lý",
-      "selectBoard": "Lựa chọn bo mạch",
       "selectedOn": "tại {0}",
       "serialMonitor": "Serial Monitor",
       "unknown": "Không xác định"
@@ -115,6 +117,7 @@
       "error": "Lỗi biên dịch: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "bởi",
       "filterSearch": "Lọc kết quả tìm kiếm của bạn...",
       "install": "CÀI ĐẶT",
@@ -129,7 +132,8 @@
       "replaceTitle": "Thay thế"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Tăng cỡ chữ",
       "increaseIndent": "Thụt dòng vào",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Không thể lưu sketch. Hãy sao chép tất cả những phần việc chưa được lưu lại vào trình chỉnh sửa văn bản yêu thích của bạn, và khởi động lại IDE.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Nén sketch",
       "cantOpen": "Một thư mục tên \"{0}\" đã tồn tại. Không thể mở sketch.",
       "close": "Bạn có chắc muốn đóng sketch này không?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Cấu hình và nạp",
       "createdArchive": "Đã tạo tệp nén '{0]'.",
       "doneCompiling": "Biên dịch hoàn tất.",
@@ -318,8 +324,8 @@
       "openRecent": "Mở gần đây",
       "openSketchInNewWindow": "Mở sketch trong cửa sổ mới",
       "saveFolderAs": "Lưu thư mục sketch như là...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Lưu thư mục sketch như là...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Hiện thư mục sketch",
       "sketch": "Sketch",
       "sketchbook": "Sketchbook",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Nạp",
       "uploadUsingProgrammer": "Nạp sử dụng Programmer",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Không thể tìm thấy các trường người dùng cho bo mạch đã kết nối",
       "verify": "Xác thực",
       "verifyOrCompile": "Xác thực/Biên dịch"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Hủy",
+      "enterField": "Enter {0}",
       "upload": "Nạp"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Không thể lưu sketch. Hãy sao chép tất cả những phần việc chưa được lưu lại vào trình chỉnh sửa văn bản yêu thích của bạn, và khởi động lại IDE.",
       "daemonOffline": "Trình chạy nền CLI ngoại tuyến",
       "offline": "Ngoại tuyến",
-      "quitMessage": "Tất cả các thay đổi chưa được lưu sẽ không được lưu lại.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

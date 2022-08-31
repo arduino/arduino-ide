@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "{0} plaka",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Plakaren informazioa",
       "configDialog1": "Hautatu plaka bat eta ataka bat programa bat kargatu nahi baduzu.",
       "configDialog2": "Plaka bakarrik hautatzen baduzu, programa konpilatu ahal izango duzu, baina ez kargatu.",
-      "configDialogTitle": "Hautatu beste plaka eta ataka bat",
       "couldNotFindPreviouslySelected": "Ezin izan da aurkitu aurrez hautatutako '{0}' plaka instalatutako '{1}' plataforman. Hautatu berriz eskuz erabili nahi duzun plaka. Orain berriz hautatu nahi duzu?",
       "disconnected": "Disconnected",
       "getBoardInfo": "Eskuratu plakaren informazioa",
@@ -17,6 +17,7 @@
       "installManually": "Instalatu eskuz",
       "installNow": "\"{0} {1}\" nukleoa instalatu behar da unean hautatutako \"{2}\" plakarentzat. Orain instalatu nahi duzu?",
       "noFQBN": "FQBN ez dago erabilgarri hautatutako \"{0}\" plakarentzat. Dagokion nukleoa instalatuta daukazu?",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Ez da atakarik hautatu plakarentzat: '{0}'",
       "noneSelected": "Plakarik ez da hautatu",
       "openBoardsConfig": "Hautatu beste plaka eta ataka bat...",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "Programatzailea",
       "reselectLater": "Hautatu berriz geroago",
+      "searchBoard": "Search board",
       "selectBoard": "Hautatu plaka",
       "selectBoardForInfo": "Hautatu plaka bat plakaren informazioa eskuratzeko.",
       "selectPortForInfo": "Hautatu ataka bat plakaren informazioa eskuratzeko.",
@@ -36,6 +38,7 @@
     "boardsManager": "Plaka kudeatzailea",
     "bootloader": {
       "burnBootloader": "Kargatu abiarazte-kudeatzailea",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "Abiarazte-kudeatzailearen karga burutu da."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "Deskonektatuta zaudela dirudi. Interneterako konexiorik gabe, baliteke Arduino CLI ez izatea gai beharrezko baliabideak deskargatzeko, eta funtzionamendu txarra eragin lezake. Mesedez, konektatu Internetera eta berrabiarazi aplikazioa.",
       "oldFormat": "'{0}' programak `.pde` formatu zaharra erabiltzen du oraindik. `.ino` luzapen berrira aldatu nahi duzu?",
       "processing": "Prozesatzen",
-      "selectBoard": "Hautatu plaka",
       "selectedOn": "Non: {0}",
       "serialMonitor": "Serieko monitorea",
       "unknown": "Ezezaguna"
@@ -115,6 +117,7 @@
       "error": "Konpilazio-errorea: {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "Egilea:",
       "filterSearch": "Iragazi zure bilaketa...",
       "install": "INSTALATU",
@@ -129,7 +132,8 @@
       "replaceTitle": "Ordezkatu"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "Handitu letra-tamaina",
       "increaseIndent": "Handitu koska",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "Ezin izan da programa gorde. Kopiatu gorde gabeko zure lana zure testu-editore gogokoenera eta berrabiarazi IDEa.",
@@ -306,6 +311,7 @@
       "archiveSketch": "Artxibatu programa",
       "cantOpen": "\"{0}\" izeneko karpeta badago dagoeneko. Ezin da programa ireki.",
       "close": "Ziur zaude programa itxi nahi duzula?",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "Konfiguratu eta kargatu",
       "createdArchive": "'{0}' artxiboa sortu da.",
       "doneCompiling": "Konpilazioa burutu da.",
@@ -318,8 +324,8 @@
       "openRecent": "Ireki azkenaldikoa",
       "openSketchInNewWindow": "Ireki programa leiho berrian",
       "saveFolderAs": "Gorde programen karpeta honela...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Gorde programen karpeta honela...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "Erakutsi programen karpeta",
       "sketch": "Programa",
       "sketchbook": "Programa bilduma",
@@ -327,6 +333,7 @@
       "titleSketchbook": "Programa bilduma",
       "upload": "Kargatu",
       "uploadUsingProgrammer": "Kargatu programatzailea erabiliz",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "Ezin dira erabiltzaile eremuak aurkitu konektatutako plakarentzat",
       "verify": "Egiaztatu",
       "verifyOrCompile": "Egiaztatu/Konpilatu"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "Utzi",
+      "enterField": "Enter {0}",
       "upload": "Kargatu"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "Ezin izan da programa gorde. Kopiatu gorde gabeko zure lana zure testu-editore gogokoenera eta berrabiarazi IDEa.",
       "daemonOffline": "CLI daemon-a lineaz kanpo",
       "offline": "Lineaz kanpo",
-      "quitMessage": "Gorde gabeko aldaketak galduko dira.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

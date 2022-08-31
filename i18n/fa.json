@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "بورد {0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "مشخصات برد",
       "configDialog1": "اگر می‌خواهید طرحی را آپلود کنید، هم یک تابلو و هم یک پورت انتخاب کنید.",
       "configDialog2": "اگر فقط تابلو را انتخاب کنید، می توانید کامپایل کنید، اما نمی توانید طرح خود را آپلود کنید.",
-      "configDialogTitle": "انتخاب یک بورد و پورت دیگر",
       "couldNotFindPreviouslySelected": "نمی توان برد انتخاب شده قبلی '{0}' در پلتفرم نصب شده '{1}' را پیدا کرد. لطفاً تابلویی را که می‌خواهید استفاده کنید، مجدداً به‌صورت دستی انتخاب کنید. آیا اکنون می خواهید آن را مجدداً انتخاب کنید؟",
       "disconnected": "Disconnected",
       "getBoardInfo": "دریافت راهنمای برد",
@@ -17,6 +17,7 @@
       "installManually": "دستی نصب کن",
       "installNow": "هسته \"{0}{1}\" باید برای برد \"{2}\" انتخاب شده فعلی نصب شود. آیا الان می خواهید نصبش کنید؟",
       "noFQBN": "FQBN برای برد انتخاب شده \"{0}\" موجود نیست. آیا هسته مربوطه را نصب کرده اید؟",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "هیچ پورتی برای برد انتخاب نشده است.{0}",
       "noneSelected": "هیچ بردی انتخاب نشده است.",
       "openBoardsConfig": "انتخاب سایر برد ها و پورت ها",
@@ -26,6 +27,7 @@
       "portLabel": "Port: {0}",
       "programmer": "برنامه ریز",
       "reselectLater": "بعدا انتخاب کنید",
+      "searchBoard": "Search board",
       "selectBoard": "انتخاب برد",
       "selectBoardForInfo": "لطفاً یک برد را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
       "selectPortForInfo": "لطفاً یک پورت را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
@@ -36,6 +38,7 @@
     "boardsManager": "مدیریت برد ها",
     "bootloader": {
       "burnBootloader": "بارگذاری بوت لودر.",
+      "burningBootloader": "Burning bootloader...",
       "doneBurningBootloader": "اتمام بارگذاری بوت لودر."
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "به نظر می رسد آفلاین هستید. بدون اتصال به اینترنت، رابط ترمینال آردوینو ممکن است نتواند منابع مورد نیاز را دانلود کند و باعث اختلال در عملکرد شود. لطفاً به اینترنت متصل شوید و برنامه را مجدداً راه اندازی کنید.",
       "oldFormat": "'{0}' هنوز از قالب قدیمی `.pde` استفاده می کند. آیا می‌خواهید به برنامه افزودنی «.ino» جدید بروید؟",
       "processing": "در حال محاسبه",
-      "selectBoard": "انتخاب برد",
       "selectedOn": "روشن {0}",
       "serialMonitor": "نمایشگر ترمینال سریال",
       "unknown": "نامعلوم"
@@ -115,6 +117,7 @@
       "error": "خطای کامپایل : {0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "توسط",
       "filterSearch": "محدود کردن جستجوی شما ...",
       "install": "نصب",
@@ -129,7 +132,8 @@
       "replaceTitle": "جایگذاری"
     },
     "coreContribution": {
-      "copyError": "Copy error messages"
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "Restart Daemon",
@@ -154,7 +158,8 @@
       "increaseFontSize": "افزایش اندازه فونت",
       "increaseIndent": "افزودن دندانه",
       "nextError": "Next Error",
-      "previousError": "Previous Error"
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "ابر طرح را ذخیره نکرد. لطفا کار ذخیره نشده خود را به ویرایشگر متن مورد علاقه خود کپی کنید، و آردوینو را دوباره راه اندازی کنید.",
@@ -306,6 +311,7 @@
       "archiveSketch": "آرشیو طرح",
       "cantOpen": "پوشه ای با نام \"{0}\" از قبل وجود دارد. طرح را نمی توان باز کرد",
       "close": "آیا شما می خواهید این طرح را ببندید؟",
+      "compile": "Compiling sketch...",
       "configureAndUpload": "پیکربندی و بارگذاری",
       "createdArchive": "آرشیو {0} ایجاد شد.",
       "doneCompiling": "پایان کامپایل کردن",
@@ -318,8 +324,8 @@
       "openRecent": "باز کردن آخرین ها",
       "openSketchInNewWindow": "باز کردن طرح در پنجره جدید.",
       "saveFolderAs": "ذخیره پوشه طرح در ...",
+      "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "ذخیره پوشه طرح در ...",
-      "saveTempSketch": "Save your sketch to open it again later.",
       "showFolder": "نمایش پوشه ظرح",
       "sketch": "طرح",
       "sketchbook": "منبع طرح ها",
@@ -327,6 +333,7 @@
       "titleSketchbook": "منبع طرح ها",
       "upload": "آپلود",
       "uploadUsingProgrammer": "بارگذاری با استفاده از پروگرامر",
+      "uploading": "Uploading...",
       "userFieldsNotFoundError": "عدم یافت شدن فیلد های کاربر برای برد متصل",
       "verify": "تائید",
       "verifyOrCompile": "تائید / کامپایل"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "لغو",
+      "enterField": "Enter {0}",
       "upload": "بارگذاری"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "ابر طرح را ذخیره نکرد. لطفا کار ذخیره نشده خود را به ویرایشگر متن مورد علاقه خود کپی کنید، و آردوینو را دوباره راه اندازی کنید.",
       "daemonOffline": "CLI آفلاین پس زمینه",
       "offline": "آفلاین",
-      "quitMessage": "هر تغییری که انجام می دهید ذخیره نمی شود.",
       "quitTitle": "Are you sure you want to quit?"
     },
     "debug": {

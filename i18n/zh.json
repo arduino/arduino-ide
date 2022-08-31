@@ -6,10 +6,10 @@
     },
     "board": {
       "board": "开发板 {0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "开发板信息",
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
-      "configDialogTitle": "选择其他开发板和端口",
       "couldNotFindPreviouslySelected": "在安装的平台 ‘{1}’ 中找不到以前选择的开发板 ‘{0}’。请手动选择要使用的开发板。你想现在重新选择它吗？",
       "disconnected": "已断开",
       "getBoardInfo": "获得开发板信息",
@@ -17,6 +17,7 @@
       "installManually": "手动安装",
       "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
       "noFQBN": "FQBN 不可用于所选开发板 “{0}”。你是否安装了相应的内核？",
+      "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "没有为开发板选择端口：‘{0}’。",
       "noneSelected": "未选择任何开发板。",
       "openBoardsConfig": "选择其他开发板和接口......",
@@ -26,6 +27,7 @@
       "portLabel": "端口：{0}",
       "programmer": "编程器",
       "reselectLater": "稍后重新选择",
+      "searchBoard": "Search board",
       "selectBoard": "选择开发板",
       "selectBoardForInfo": "请选择一个开发板以获取开发板信息。",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
@@ -36,6 +38,7 @@
     "boardsManager": "开发板管理器",
     "bootloader": {
       "burnBootloader": "烧录引导程序",
+      "burningBootloader": "正在烧录引导程序。。。",
       "doneBurningBootloader": "完成烧录引导程序。"
     },
     "burnBootloader": {
@@ -106,7 +109,6 @@
       "offlineIndicator": "你似乎处于离线状态。如果没有网络连接，Arduino CLI 可能无法下载所需的资源，并可能导致故障。请连接网络并重新启动程序。",
       "oldFormat": "‘{0}’ 仍然使用旧的 ‘.pde’ 格式。是否要切换到新的 ‘.ino’ 扩展？",
       "processing": "正在处理中",
-      "selectBoard": "选择开发板",
       "selectedOn": "on {0}",
       "serialMonitor": "串口监视器",
       "unknown": "未知"
@@ -115,6 +117,7 @@
       "error": "编译错误：{0}"
     },
     "component": {
+      "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "筛选搜索结果......",
       "install": "安装",
@@ -129,7 +132,8 @@
       "replaceTitle": "替换"
     },
     "coreContribution": {
-      "copyError": "复制错误信息"
+      "copyError": "复制错误信息",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
     "daemon": {
       "restart": "重启守护进程",
@@ -154,7 +158,8 @@
       "increaseFontSize": "放大字体",
       "increaseIndent": "增加缩进",
       "nextError": "下一个错误",
-      "previousError": "上一个错误"
+      "previousError": "上一个错误",
+      "revealError": "Reveal Error"
     },
     "electron": {
       "couldNotSave": "无法保存项目。请将未保存的工作复制到你喜爱的文本编辑器中，然后重新启动 IDE。",
@@ -295,7 +300,7 @@
       "carriageReturn": "回车",
       "message": "消息（{0}+Enter 将消息发送到 {2} 上的 {1}）",
       "newLine": "换行",
-      "newLineCarriageReturn": "两者都是 NL 和 CR",
+      "newLineCarriageReturn": "换行 和 回车 两者都是",
       "noLineEndings": "没有结束符",
       "notConnected": "未连接。选择要自动连接的开发板和端口。",
       "openSerialPlotter": "串口绘图仪",
@@ -306,6 +311,7 @@
       "archiveSketch": "项目存档",
       "cantOpen": "“{0}” 文件夹已存在。无法打开项目。",
       "close": "是否确实要关闭项目？",
+      "compile": "正在编译项目。。。",
       "configureAndUpload": "配置和上传",
       "createdArchive": "已创建存档 ‘{0}’。",
       "doneCompiling": "编译完成",
@@ -318,8 +324,8 @@
       "openRecent": "打开最近",
       "openSketchInNewWindow": "在新窗口打开项目",
       "saveFolderAs": "将项目文件夹另存为。。。",
+      "saveSketch": "保存你的项目，以便以后再次打开它。",
       "saveSketchAs": "将项目文件夹另存为。。。",
-      "saveTempSketch": "保存你的项目，以便以后再次打开它。",
       "showFolder": "显示项目文件夹",
       "sketch": "项目",
       "sketchbook": "项目文件夹",
@@ -327,6 +333,7 @@
       "titleSketchbook": "项目文件夹",
       "upload": "上传",
       "uploadUsingProgrammer": "使用编程器上传",
+      "uploading": "正在上传。。。",
       "userFieldsNotFoundError": "找不到已连接开发板的用户字段",
       "verify": "验证",
       "verifyOrCompile": "验证/编译"
@@ -341,6 +348,7 @@
     },
     "userFields": {
       "cancel": "取消",
+      "enterField": "Enter {0}",
       "upload": "上传"
     }
   },
@@ -354,7 +362,6 @@
       "couldNotSave": "无法保存项目。请将未保存的工作复制到您喜爱的文本编辑器中，然后重新启动 IDE。",
       "daemonOffline": "CLI 守护进程离线",
       "offline": "离线",
-      "quitMessage": "将不会保存任何未保存的更改。",
       "quitTitle": "你确定你要退出吗？"
     },
     "debug": {
