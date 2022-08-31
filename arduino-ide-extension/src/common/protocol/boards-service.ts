@@ -259,6 +259,32 @@ export namespace Port {
     }
     return false;
   }
+  // See https://github.com/arduino/arduino-ide/commit/79ea0fa9a6ad2b01eaac22cef2f494d3b68284e6#diff-fb37f20bea00881acee3aafddb1ecefcecf41ce59845ca1510da79e918ee0837L338-L348
+  // See https://github.com/arduino/arduino-ide/commit/79ea0fa9a6ad2b01eaac22cef2f494d3b68284e6#diff-e42c82bb67e277cfa4598239952afd65db44dba55dc7d68df619dfccfa648279L441-L455
+  // See https://github.com/arduino/arduino-ide/commit/74bfdc4c56d7a1577a4e800a378c21b82c1da5f8#diff-e42c82bb67e277cfa4598239952afd65db44dba55dc7d68df619dfccfa648279L405-R424
+  /**
+   * All ports with `'serial'` or `'network'` `protocol`, or any other port `protocol` that has at least one recognized board connected to.
+   */
+  export function visiblePorts(
+    boardsHaystack: ReadonlyArray<Board>
+  ): (port: Port) => boolean {
+    return (port: Port) => {
+      if (port.protocol === 'serial' || port.protocol === 'network') {
+        // Allow all `serial` and `network` boards.
+        // IDE2 must support better label for unrecognized `network` boards: https://github.com/arduino/arduino-ide/issues/1331
+        return true;
+      }
+      // All other ports with different protocol are
+      // only shown if there is a recognized board
+      // connected
+      for (const board of boardsHaystack) {
+        if (board.port?.address === port.address) {
+          return true;
+        }
+      }
+      return false;
+    };
+  }
 }
 
 export interface BoardsPackage extends ArduinoComponent {
