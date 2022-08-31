@@ -277,7 +277,7 @@ export class SketchesServiceImpl
     } catch {
       return;
     }
-    if (await this.isTemp(sketch)) {
+    if ((await this.isTemp(sketch)) && sketch.name.includes('sketch_')) {
       return;
     }
 
