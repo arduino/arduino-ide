@@ -6,6 +6,7 @@
     },
     "board": {
       "board": "开发板 {0}",
+      "boardConfigDialogTitle": "选择其他板和端口",
       "boardInfo": "开发板信息",
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
@@ -26,6 +27,7 @@
       "portLabel": "端口：{0}",
       "programmer": "编程器",
       "reselectLater": "稍后重新选择",
+      "searchBoard": "搜索板",
       "selectBoard": "选择开发板",
       "selectBoardForInfo": "请选择一个开发板以获取开发板信息。",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
@@ -36,6 +38,7 @@
     "boardsManager": "开发板管理器",
     "bootloader": {
       "burnBootloader": "烧录引导程序",
+      "burningBootloader": "加载烧录引导程序...",
       "doneBurningBootloader": "完成烧录引导程序。"
     },
     "burnBootloader": {
@@ -115,6 +118,7 @@
       "error": "编译错误：{0}"
     },
     "component": {
+      "boardsIncluded": "此包中包含的板:",
       "by": "by",
       "filterSearch": "筛选搜索结果......",
       "install": "安装",
@@ -129,7 +133,8 @@
       "replaceTitle": "替换"
     },
     "coreContribution": {
-      "copyError": "复制错误信息"
+      "copyError": "复制错误信息",
+      "noBoardSelected": "没有选择董事会。请从工具中选择您的Arduino板 > 板菜单."
     },
     "daemon": {
       "restart": "重启守护进程",
@@ -154,7 +159,8 @@
       "increaseFontSize": "放大字体",
       "increaseIndent": "增加缩进",
       "nextError": "下一个错误",
-      "previousError": "上一个错误"
+      "previousError": "上一个错误",
+      "revealError": "显示错误"
     },
     "electron": {
       "couldNotSave": "无法保存项目。请将未保存的工作复制到你喜爱的文本编辑器中，然后重新启动 IDE。",
@@ -306,6 +312,7 @@
       "archiveSketch": "项目存档",
       "cantOpen": "“{0}” 文件夹已存在。无法打开项目。",
       "close": "是否确实要关闭项目？",
+      "compile": "编译草图...",
       "configureAndUpload": "配置和上传",
       "createdArchive": "已创建存档 ‘{0}’。",
       "doneCompiling": "编译完成",
@@ -327,6 +334,7 @@
       "titleSketchbook": "项目文件夹",
       "upload": "上传",
       "uploadUsingProgrammer": "使用编程器上传",
+      "uploading": "上传...",
       "userFieldsNotFoundError": "找不到已连接开发板的用户字段",
       "verify": "验证",
       "verifyOrCompile": "验证/编译"
@@ -341,6 +349,7 @@
     },
     "userFields": {
       "cancel": "取消",
+      "enterField": "进入 {0}",
       "upload": "上传"
     }
   },
