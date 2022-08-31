@@ -337,14 +337,9 @@ export class BoardsConfig extends React.Component<
     if (this.state.showAllPorts) {
       ports = this.state.knownPorts;
     } else {
-      ports = this.state.knownPorts.filter((port) => {
-        if (port.protocol === 'serial' || port.protocol === 'network') {
-          // Allow all `serial` and `network` boards.
-          // IDE2 must support better label for unrecognized `network` boards: https://github.com/arduino/arduino-ide/issues/1331
-          return true;
-        }
-        return false;
-      });
+      ports = this.state.knownPorts.filter(
+        Port.visiblePorts(this.availableBoards)
+      );
     }
     return !ports.length ? (
       <div className="loading noselect">

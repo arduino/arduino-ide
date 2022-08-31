@@ -528,14 +528,9 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     const currentAvailableBoards = this._availableBoards;
     const availableBoards: AvailableBoard[] = [];
     const attachedBoards = this._attachedBoards.filter(({ port }) => !!port);
-    const availableBoardPorts = availablePorts.filter((port) => {
-      if (port.protocol === 'serial' || port.protocol === 'network') {
-        // Allow all `serial` and `network` boards.
-        // IDE2 must support better label for unrecognized `network` boards: https://github.com/arduino/arduino-ide/issues/1331
-        return true;
-      }
-      return false;
-    });
+    const availableBoardPorts = availablePorts.filter(
+      Port.visiblePorts(attachedBoards)
+    );
 
     for (const boardPort of availableBoardPorts) {
       const board = attachedBoards.find(({ port }) =>
