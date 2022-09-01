@@ -2,7 +2,6 @@ import { injectable } from '@theia/core/shared/inversify';
 import type {
   NotificationServiceServer,
   NotificationServiceClient,
-  AttachedBoardsChangeEvent,
   BoardsPackage,
   LibraryPackage,
   ConfigState,
@@ -11,6 +10,7 @@ import type {
   IndexUpdateWillStartParams,
   IndexUpdateDidCompleteParams,
   IndexUpdateDidFailParams,
+  DetectedPorts,
 } from '../common/protocol';
 
 @injectable()
@@ -69,9 +69,9 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyLibraryDidUninstall(event));
   }
 
-  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void {
+  notifyDetectedPortsDidChange(event: { detectedPorts: DetectedPorts }): void {
     this.clients.forEach((client) =>
-      client.notifyAttachedBoardsDidChange(event)
+      client.notifyDetectedPortsDidChange(event)
     );
   }
 

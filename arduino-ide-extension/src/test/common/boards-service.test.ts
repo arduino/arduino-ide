@@ -1,8 +1,6 @@
-import { Deferred } from '@theia/core/lib/common/promise-util';
-import { Mutable } from '@theia/core/lib/common/types';
+import type { Mutable } from '@theia/core/lib/common/types';
 import { expect } from 'chai';
 import {
-  AttachedBoardsChangeEvent,
   BoardInfo,
   getBoardInfo,
   noNativeSerialPort,
@@ -11,88 +9,10 @@ import {
   selectPortForInfo,
   unknownBoard,
 } from '../../common/protocol';
+import { createBoardList } from '../../common/protocol/board-list';
 import { firstToUpperCase } from '../../common/utils';
 
 describe('boards-service', () => {
-  describe('AttachedBoardsChangeEvent', () => {
-    it('should detect one attached port', () => {
-      const event = <AttachedBoardsChangeEvent & any>{
-        oldState: {
-          boards: [
-            {
-              name: 'Arduino MKR1000',
-              fqbn: 'arduino:samd:mkr1000',
-              port: '/dev/cu.usbmodem14601',
-            },
-            {
-              name: 'Arduino Uno',
-              fqbn: 'arduino:avr:uno',
-              port: '/dev/cu.usbmodem14501',
-            },
-          ],
-          ports: [
-            {
-              protocol: 'serial',
-              address: '/dev/cu.usbmodem14501',
-            },
-            {
-              protocol: 'serial',
-              address: '/dev/cu.usbmodem14601',
-            },
-            {
-              protocol: 'serial',
-              address: '/dev/cu.Bluetooth-Incoming-Port',
-            },
-            { protocol: 'serial', address: '/dev/cu.MALS' },
-            { protocol: 'serial', address: '/dev/cu.SOC' },
-          ],
-        },
-        newState: {
-          boards: [
-            {
-              name: 'Arduino MKR1000',
-              fqbn: 'arduino:samd:mkr1000',
-              port: '/dev/cu.usbmodem1460',
-            },
-            {
-              name: 'Arduino Uno',
-              fqbn: 'arduino:avr:uno',
-              port: '/dev/cu.usbmodem14501',
-            },
-          ],
-          ports: [
-            {
-              protocol: 'serial',
-              address: '/dev/cu.SLAB_USBtoUART',
-            },
-            {
-              protocol: 'serial',
-              address: '/dev/cu.usbmodem14501',
-            },
-            {
-              protocol: 'serial',
-              address: '/dev/cu.usbmodem14601',
-            },
-            {
-              protocol: 'serial',
-              address: '/dev/cu.Bluetooth-Incoming-Port',
-            },
-            { protocol: 'serial', address: '/dev/cu.MALS' },
-            { protocol: 'serial', address: '/dev/cu.SOC' },
-          ],
-        },
-      };
-      const diff = AttachedBoardsChangeEvent.diff(event);
-      expect(diff.attached.boards).to.be.empty; // tslint:disable-line:no-unused-expression
-      expect(diff.detached.boards).to.be.empty; // tslint:disable-line:no-unused-expression
-      expect(diff.detached.ports).to.be.empty; // tslint:disable-line:no-unused-expression
-      expect(diff.attached.ports.length).to.be.equal(1);
-      expect(diff.attached.ports[0].address).to.be.equal(
-        '/dev/cu.SLAB_USBtoUART'
-      );
-    });
-  });
-
   describe('getBoardInfo', () => {
     const vid = '0x0';
     const pid = '0x1';
@@ -112,7 +32,7 @@ describe('boards-service', () => {
     });
 
     it('should handle when no port is selected', async () => {
-      const info = await getBoardInfo(undefined, never());
+      const info = await getBoardInfo(createBoardList({}));
       expect(info).to.be.equal(selectPortForInfo);
     });
 
@@ -125,7 +45,11 @@ describe('boards-service', () => {
             protocolLabel: firstToUpperCase(protocol),
             protocol,
           };
-          const info = await getBoardInfo(selectedPort, never());
+          const boardList = createBoardList(
+            { [Port.keyOf(selectedPort)]: { port: selectedPort } },
+            { selectedPort, selectedBoard: undefined }
+          );
+          const info = await getBoardInfo(boardList);
           expect(info).to.be.equal(nonSerialPort);
         })
       );
@@ -140,18 +64,26 @@ describe('boards-service', () => {
       ];
       for (const properties of insufficientProperties) {
         const port = selectedPort(properties);
-        const info = await getBoardInfo(port, {
-          [Port.keyOf(port)]: [port, []],
-        });
+        const boardList = createBoardList(
+          {
+            [Port.keyOf(port)]: { port },
+          },
+          { selectedPort: port, selectedBoard: undefined }
+        );
+        const info = await getBoardInfo(boardList);
         expect(info).to.be.equal(noNativeSerialPort);
       }
     });
 
     it("should detect a port as non-native serial, if protocol is 'serial' and VID/PID are available", async () => {
       const port = selectedPort({ vid, pid });
-      const info = await getBoardInfo(port, {
-        [Port.keyOf(port)]: [port, []],
-      });
+      const boardList = createBoardList(
+        {
+          [Port.keyOf(port)]: { port },
+        },
+        { selectedPort: port, selectedBoard: undefined }
+      );
+      const info = await getBoardInfo(boardList);
       expect(typeof info).to.be.equal('object');
       const boardInfo = <BoardInfo>info;
       expect(boardInfo.VID).to.be.equal(vid);
@@ -162,9 +94,13 @@ describe('boards-service', () => {
 
     it("should show the 'SN' even if no matching board was detected for the port", async () => {
       const port = selectedPort({ vid, pid, serialNumber });
-      const info = await getBoardInfo(port, {
-        [Port.keyOf(port)]: [port, []],
-      });
+      const boardList = createBoardList(
+        {
+          [Port.keyOf(port)]: { port },
+        },
+        { selectedPort: port, selectedBoard: undefined }
+      );
+      const info = await getBoardInfo(boardList);
       expect(typeof info).to.be.equal('object');
       const boardInfo = <BoardInfo>info;
       expect(boardInfo.VID).to.be.equal(vid);
@@ -175,9 +111,13 @@ describe('boards-service', () => {
 
     it("should use the name of the matching board as 'BN' if available", async () => {
       const port = selectedPort({ vid, pid });
-      const info = await getBoardInfo(port, {
-        [Port.keyOf(port)]: [port, [selectedBoard]],
-      });
+      const boardList = createBoardList(
+        {
+          [Port.keyOf(port)]: { port, boards: [selectedBoard] },
+        },
+        { selectedPort: port, selectedBoard: undefined }
+      );
+      const info = await getBoardInfo(boardList);
       expect(typeof info).to.be.equal('object');
       const boardInfo = <BoardInfo>info;
       expect(boardInfo.VID).to.be.equal(vid);
@@ -187,7 +127,3 @@ describe('boards-service', () => {
     });
   });
 });
-
-function never<T>(): Promise<T> {
-  return new Deferred<T>().promise;
-}

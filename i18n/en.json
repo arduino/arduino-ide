@@ -18,24 +18,21 @@
       "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Disconnected",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "No ports selected for board: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "No boards selected.",
       "openBoardsConfig": "Select other board and port…",
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
-      "portLabel": "Port: {0}",
       "ports": "ports",
       "programmer": "Programmer",
       "reselectLater": "Reselect later",
+      "revertBoardsConfig": "Revert the selected '{0}' board to '{1}' detected on '{2}'",
       "searchBoard": "Search board",
       "selectBoard": "Select Board",
       "selectPortForInfo": "Please select a port to obtain board info.",
@@ -214,6 +211,11 @@
       "noPlatformInstalledFor": "Platform is not installed for '{0}'",
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
     },
     "dialog": {
       "dontAskAgain": "Don't ask again"

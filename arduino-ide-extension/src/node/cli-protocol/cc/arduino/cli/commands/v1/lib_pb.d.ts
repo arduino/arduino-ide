@@ -409,6 +409,9 @@ export class LibrarySearchRequest extends jspb.Message {
     getOmitReleasesDetails(): boolean;
     setOmitReleasesDetails(value: boolean): LibrarySearchRequest;
 
+    getSearchArgs(): string;
+    setSearchArgs(value: string): LibrarySearchRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibrarySearchRequest.AsObject;
@@ -425,6 +428,7 @@ export namespace LibrarySearchRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         query: string,
         omitReleasesDetails: boolean,
+        searchArgs: string,
     }
 }
 

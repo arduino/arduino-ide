@@ -27,7 +27,10 @@ import { SketchesServiceClientImpl } from './sketches-service-client-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
-import { BoardsServiceProvider } from './boards/boards-service-provider';
+import {
+  BoardListDumper,
+  BoardsServiceProvider,
+} from './boards/boards-service-provider';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { WorkspaceService } from './theia/workspace/workspace-service';
 import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
@@ -61,7 +64,6 @@ import {
   BoardsConfigDialog,
   BoardsConfigDialogProps,
 } from './boards/boards-config-dialog';
-import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
 import { ScmContribution as TheiaScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { ScmContribution } from './theia/scm/scm-contribution';
 import { SearchInWorkspaceFrontendContribution as TheiaSearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
@@ -358,7 +360,7 @@ import { UpdateArduinoState } from './contributions/update-arduino-state';
 import { TerminalWidgetImpl } from './theia/terminal/terminal-widget-impl';
 import { TerminalWidget } from '@theia/terminal/lib/browser/base/terminal-widget';
 import { TerminalFrontendContribution } from './theia/terminal/terminal-frontend-contribution';
-import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } from '@theia/terminal/lib/browser/terminal-frontend-contribution'
+import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -447,6 +449,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BoardsServiceProvider).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(BoardsServiceProvider);
   bind(CommandContribution).toService(BoardsServiceProvider);
+  bind(BoardListDumper).toSelf().inSingletonScope();
 
   // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
   bind(FrontendApplicationContribution)
@@ -480,7 +483,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(OpenHandler).toService(BoardsListWidgetFrontendContribution);
 
   // Board select dialog
-  bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
   bind(BoardsConfigDialog).toSelf().inSingletonScope();
   bind(BoardsConfigDialogProps).toConstantValue({
     title: nls.localize(
@@ -1034,5 +1036,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Patch terminal issues.
   rebind(TerminalWidget).to(TerminalWidgetImpl).inTransientScope();
   bind(TerminalFrontendContribution).toSelf().inSingletonScope();
-  rebind(TheiaTerminalFrontendContribution).toService(TerminalFrontendContribution);
+  rebind(TheiaTerminalFrontendContribution).toService(
+    TerminalFrontendContribution
+  );
 });

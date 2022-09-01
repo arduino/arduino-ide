@@ -3,6 +3,7 @@ import type { MaybePromise } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
+import { dump, load } from 'js-yaml';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import { sync as deleteSync } from 'rimraf';
@@ -66,16 +67,11 @@ describe('core-client-provider', () => {
     const configDirPath = await prepareTestConfigDir();
     deleteSync(join(configDirPath, 'data'));
 
-    const now = new Date().toISOString();
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(container, ({ coreClientProvider }) => {
       const { indexUpdateSummaryBeforeInit } = coreClientProvider;
-      const libUpdateTimestamp = indexUpdateSummaryBeforeInit['library'];
-      expect(libUpdateTimestamp).to.be.not.empty;
-      expect(libUpdateTimestamp.localeCompare(now)).to.be.greaterThan(0);
-      const platformUpdateTimestamp = indexUpdateSummaryBeforeInit['platform'];
-      expect(platformUpdateTimestamp).to.be.not.empty;
-      expect(platformUpdateTimestamp.localeCompare(now)).to.be.greaterThan(0);
+      expect(indexUpdateSummaryBeforeInit).to.be.not.undefined;
+      expect(indexUpdateSummaryBeforeInit).to.be.empty;
     });
   });
 
@@ -90,14 +86,11 @@ describe('core-client-provider', () => {
     );
     deleteSync(primaryPackageIndexPath);
 
-    const now = new Date().toISOString();
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(container, ({ coreClientProvider }) => {
       const { indexUpdateSummaryBeforeInit } = coreClientProvider;
-      expect(indexUpdateSummaryBeforeInit['library']).to.be.undefined;
-      const platformUpdateTimestamp = indexUpdateSummaryBeforeInit['platform'];
-      expect(platformUpdateTimestamp).to.be.not.empty;
-      expect(platformUpdateTimestamp.localeCompare(now)).to.be.greaterThan(0);
+      expect(indexUpdateSummaryBeforeInit).to.be.not.undefined;
+      expect(indexUpdateSummaryBeforeInit).to.be.empty;
     });
     const rawJson = await fs.readFile(primaryPackageIndexPath, {
       encoding: 'utf8',
@@ -149,14 +142,11 @@ describe('core-client-provider', () => {
     );
     deleteSync(libraryPackageIndexPath);
 
-    const now = new Date().toISOString();
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(container, ({ coreClientProvider }) => {
       const { indexUpdateSummaryBeforeInit } = coreClientProvider;
-      const libUpdateTimestamp = indexUpdateSummaryBeforeInit['library'];
-      expect(libUpdateTimestamp).to.be.not.empty;
-      expect(libUpdateTimestamp.localeCompare(now)).to.be.greaterThan(0);
-      expect(indexUpdateSummaryBeforeInit['platform']).to.be.undefined;
+      expect(indexUpdateSummaryBeforeInit).to.be.not.undefined;
+      expect(indexUpdateSummaryBeforeInit).to.be.empty;
     });
     const rawJson = await fs.readFile(libraryPackageIndexPath, {
       encoding: 'utf8',
@@ -191,19 +181,37 @@ describe('core-client-provider', () => {
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(
       container,
-      async ({ coreClientProvider, boardsService, coreService }) => {
+      async ({ coreClientProvider, boardsService }) => {
         const { indexUpdateSummaryBeforeInit } = coreClientProvider;
         expect(indexUpdateSummaryBeforeInit).to.be.not.undefined;
         expect(indexUpdateSummaryBeforeInit).to.be.empty;
-
-        // IDE2 cannot recover from a 3rd party package index issue.
-        // Only when the primary package or library index is corrupt.
-        // https://github.com/arduino/arduino-ide/issues/2021
-        await coreService.updateIndex({ types: ['platform'] });
-
         await assertTeensyAvailable(boardsService);
       }
     );
+  });
+
+  it("should recover when invalid 3rd package URL is defined in the CLI config and the 'directories.data' folder is missing", async function () {
+    this.timeout(timeout);
+    const configDirPath = await prepareTestConfigDir();
+    deleteSync(join(configDirPath, 'data'));
+
+    // set an invalid URL so the CLI will try to download it
+    const cliConfigPath = join(configDirPath, 'arduino-cli.yaml');
+    const rawYaml = await fs.readFile(cliConfigPath, { encoding: 'utf8' });
+    const config: DefaultCliConfig = load(rawYaml);
+    expect(config.board_manager).to.be.undefined;
+    config.board_manager = { additional_urls: ['https://invalidUrl'] };
+    expect(config.board_manager?.additional_urls?.[0]).to.be.equal(
+      'https://invalidUrl'
+    );
+    await fs.writeFile(cliConfigPath, dump(config));
+
+    const container = await startCli(configDirPath, toDispose);
+    await assertFunctionalCli(container, ({ coreClientProvider }) => {
+      const { indexUpdateSummaryBeforeInit } = coreClientProvider;
+      expect(indexUpdateSummaryBeforeInit).to.be.not.undefined;
+      expect(indexUpdateSummaryBeforeInit).to.be.empty;
+    });
   });
 });
 
@@ -277,7 +285,7 @@ async function prepareTestConfigDir(
   const params = { configDirPath: newTempConfigDirPath(), configOverrides };
   const container = await createContainer(params);
   const daemon = container.get<ArduinoDaemonImpl>(ArduinoDaemonImpl);
-  const cliPath = await daemon.getExecPath();
+  const cliPath = daemon.getExecPath();
   const configDirUriProvider =
     container.get<ConfigDirUriProvider>(ConfigDirUriProvider);
   const configDirPath = FileUri.fsPath(configDirUriProvider.configDirUri());

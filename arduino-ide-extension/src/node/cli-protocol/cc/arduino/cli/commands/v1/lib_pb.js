@@ -3209,7 +3209,8 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.toObject = function(includ
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     query: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    omitReleasesDetails: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    omitReleasesDetails: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    searchArgs: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -3259,6 +3260,10 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.deserializeBinaryFromReade
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setOmitReleasesDetails(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSearchArgs(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3307,6 +3312,13 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.serializeBinaryToWriter = 
   if (f) {
     writer.writeBool(
       3,
+      f
+    );
+  }
+  f = message.getSearchArgs();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
       f
     );
   }
@@ -3383,6 +3395,24 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getOmitReleasesD
  */
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setOmitReleasesDetails = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+/**
+ * optional string search_args = 4;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getSearchArgs = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.LibrarySearchRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setSearchArgs = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

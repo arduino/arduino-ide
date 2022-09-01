@@ -7,12 +7,13 @@ import { Mutex } from 'async-mutex';
 import {
   ArduinoDaemon,
   assertSanitizedFqbn,
+  BoardIdentifier,
   BoardsService,
   ExecutableService,
+  isBoardIdentifierChangeEvent,
   sanitizeFqbn,
 } from '../../common/protocol';
 import { CurrentSketch } from '../sketches-service-client-impl';
-import { BoardsConfig } from '../boards/boards-config';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { HostedPluginEvents } from '../hosted-plugin-events';
 import { NotificationCenter } from '../notification-center';
@@ -48,7 +49,7 @@ export class InoLanguage extends SketchContribution {
 
   override onReady(): void {
     const start = (
-      { selectedBoard }: BoardsConfig.Config,
+      selectedBoard: BoardIdentifier | undefined,
       forceStart = false
     ) => {
       if (selectedBoard) {
@@ -59,12 +60,16 @@ export class InoLanguage extends SketchContribution {
       }
     };
     const forceRestart = () => {
-      start(this.boardsServiceProvider.boardsConfig, true);
+      start(this.boardsServiceProvider.boardsConfig.selectedBoard, true);
     };
     this.toDispose.pushAll([
-      this.boardsServiceProvider.onBoardsConfigChanged(start),
+      this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+        if (isBoardIdentifierChangeEvent(event)) {
+          start(event.selectedBoard);
+        }
+      }),
       this.hostedPluginEvents.onPluginsDidStart(() =>
-        start(this.boardsServiceProvider.boardsConfig)
+        start(this.boardsServiceProvider.boardsConfig.selectedBoard)
       ),
       this.hostedPluginEvents.onPluginsWillUnload(
         () => (this.languageServerFqbn = undefined)
@@ -101,12 +106,12 @@ export class InoLanguage extends SketchContribution {
             matchingFqbn &&
             boardsConfig.selectedBoard?.fqbn === matchingFqbn
           ) {
-            start(boardsConfig);
+            start(boardsConfig.selectedBoard);
           }
         }
       }),
     ]);
-    start(this.boardsServiceProvider.boardsConfig);
+    start(this.boardsServiceProvider.boardsConfig.selectedBoard);
   }
 
   onStop(): void {

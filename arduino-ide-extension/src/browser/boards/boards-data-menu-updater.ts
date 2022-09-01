@@ -7,7 +7,12 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { BoardsServiceProvider } from './boards-service-provider';
-import { Board, ConfigOption, Programmer } from '../../common/protocol';
+import {
+  BoardIdentifier,
+  ConfigOption,
+  isBoardIdentifierChangeEvent,
+  Programmer,
+} from '../../common/protocol';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
@@ -30,7 +35,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
   protected readonly boardsDataStore: BoardsDataStore;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
+  protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
@@ -43,21 +48,21 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
       .reachedState('ready')
       .then(() =>
         this.updateMenuActions(
-          this.boardsServiceClient.boardsConfig.selectedBoard
+          this.boardsServiceProvider.boardsConfig.selectedBoard
         )
       );
     this.boardsDataStore.onChanged(() =>
-      this.updateMenuActions(
-        this.boardsServiceClient.boardsConfig.selectedBoard
-      )
+      this.updateMenuActions(this.boardsServiceProvider.boardsConfig.selectedBoard)
     );
-    this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
-      this.updateMenuActions(selectedBoard)
-    );
+    this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+      if (isBoardIdentifierChangeEvent(event)) {
+        this.updateMenuActions(event.selectedBoard);
+      }
+    });
   }
 
   protected async updateMenuActions(
-    selectedBoard: Board | undefined
+    selectedBoard: BoardIdentifier | undefined
   ): Promise<void> {
     return this.queue.add(async () => {
       this.toDisposeOnBoardChange.dispose();

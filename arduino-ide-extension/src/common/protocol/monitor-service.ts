@@ -1,5 +1,8 @@
-import { ApplicationError, Event, JsonRpcServer, nls } from '@theia/core';
-import { Board, Port } from './boards-service';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
+import type { Event } from '@theia/core/lib/common/event';
+import type { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
+import { nls } from '@theia/core/lib/common/nls';
+import type { BoardIdentifier, PortIdentifier } from './boards-service';
 
 export type PluggableMonitorSettings = Record<string, PluggableMonitorSetting>;
 export interface MonitorSettings {
@@ -15,17 +18,20 @@ export const MonitorManagerProxy = Symbol('MonitorManagerProxy');
 export interface MonitorManagerProxy
   extends JsonRpcServer<MonitorManagerProxyClient> {
   startMonitor(
-    board: Board,
-    port: Port,
+    board: BoardIdentifier,
+    port: PortIdentifier,
     settings?: PluggableMonitorSettings
   ): Promise<void>;
   changeMonitorSettings(
-    board: Board,
-    port: Port,
+    board: BoardIdentifier,
+    port: PortIdentifier,
     settings: MonitorSettings
   ): Promise<void>;
-  stopMonitor(board: Board, port: Port): Promise<void>;
-  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
+  stopMonitor(board: BoardIdentifier, port: PortIdentifier): Promise<void>;
+  getCurrentSettings(
+    board: BoardIdentifier,
+    port: PortIdentifier
+  ): Promise<MonitorSettings>;
 }
 
 export const MonitorManagerProxyClient = Symbol('MonitorManagerProxyClient');
@@ -38,7 +44,10 @@ export interface MonitorManagerProxyClient {
   getWebSocketPort(): number | undefined;
   isWSConnected(): Promise<boolean>;
   startMonitor(settings?: PluggableMonitorSettings): Promise<void>;
-  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
+  getCurrentSettings(
+    board: BoardIdentifier,
+    port: PortIdentifier
+  ): Promise<MonitorSettings>;
   send(message: string): void;
   changeSettings(settings: MonitorSettings): void;
 }
@@ -95,7 +104,7 @@ export const MissingConfigurationError = declareMonitorError(
 );
 
 export function createConnectionFailedError(
-  port: Port,
+  port: PortIdentifier,
   details?: string
 ): ApplicationError<number, PortDescriptor> {
   const { protocol, address } = port;
@@ -120,7 +129,7 @@ export function createConnectionFailedError(
   return ConnectionFailedError(message, { protocol, address });
 }
 export function createNotConnectedError(
-  port: Port
+  port: PortIdentifier
 ): ApplicationError<number, PortDescriptor> {
   const { protocol, address } = port;
   return NotConnectedError(
@@ -134,7 +143,7 @@ export function createNotConnectedError(
   );
 }
 export function createAlreadyConnectedError(
-  port: Port
+  port: PortIdentifier
 ): ApplicationError<number, PortDescriptor> {
   const { protocol, address } = port;
   return AlreadyConnectedError(
@@ -148,7 +157,7 @@ export function createAlreadyConnectedError(
   );
 }
 export function createMissingConfigurationError(
-  port: Port
+  port: PortIdentifier
 ): ApplicationError<number, PortDescriptor> {
   const { protocol, address } = port;
   return MissingConfigurationError(

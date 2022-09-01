@@ -29,13 +29,12 @@ import { join } from 'node:path';
 import { path as tempPath, track } from 'temp';
 import {
   ArduinoDaemon,
-  AttachedBoardsChangeEvent,
-  AvailablePorts,
   BoardsPackage,
   BoardsService,
   ConfigService,
   ConfigState,
   CoreService,
+  DetectedPorts,
   IndexUpdateDidCompleteParams,
   IndexUpdateDidFailParams,
   IndexUpdateParams,
@@ -160,7 +159,7 @@ class SilentArduinoDaemon extends ArduinoDaemonImpl {
 
 @injectable()
 class TestBoardDiscovery extends BoardDiscovery {
-  mutableAvailablePorts: AvailablePorts = {};
+  mutableDetectedPorts: DetectedPorts = {};
 
   override async start(): Promise<void> {
     // NOOP
@@ -168,8 +167,8 @@ class TestBoardDiscovery extends BoardDiscovery {
   override async stop(): Promise<void> {
     // NOOP
   }
-  override get availablePorts(): AvailablePorts {
-    return this.mutableAvailablePorts;
+  override get detectedPorts(): DetectedPorts {
+    return this.mutableDetectedPorts;
   }
 }
 
@@ -221,7 +220,7 @@ class TestNotificationServiceServer implements NotificationServiceServer {
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void {
     this.events.push(`notifyLibraryDidUninstall:${JSON.stringify(event)}`);
   }
-  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void {
+  notifyDetectedPortsDidChange(event: { detectedPorts: DetectedPorts }): void {
     this.events.push(`notifyAttachedBoardsDidChange:${JSON.stringify(event)}`);
   }
   notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void {

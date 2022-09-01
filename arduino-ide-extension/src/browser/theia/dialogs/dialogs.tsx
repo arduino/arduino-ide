@@ -18,7 +18,6 @@ export abstract class AbstractDialog<T> extends TheiaAbstractDialog<T> {
     @inject(DialogProps) protected override readonly props: DialogProps
   ) {
     super(props);
-
     this.closeCrossNode.classList.remove(...codiconArray('close'));
     this.closeCrossNode.classList.add('fa', 'fa-close');
   }

@@ -1,8 +1,6 @@
-import { naturalCompare } from './../utils';
-import { Searchable } from './searchable';
-import { Installable } from './installable';
-import { ArduinoComponent } from './arduino-component';
 import { nls } from '@theia/core/lib/common/nls';
+import type { MaybePromise } from '@theia/core/lib/common/types';
+import URI from '@theia/core/lib/common/uri';
 import {
   All,
   Contributed,
@@ -10,131 +8,46 @@ import {
   Type as TypeLabel,
   Updatable,
 } from '../nls';
-import URI from '@theia/core/lib/common/uri';
-import { MaybePromise } from '@theia/core/lib/common/types';
+import { Defined } from '../types';
+import { naturalCompare } from './../utils';
+import type { ArduinoComponent } from './arduino-component';
+import type { BoardList } from './board-list';
+import { Installable } from './installable';
+import { Searchable } from './searchable';
 
-export type AvailablePorts = Record<string, [Port, Array<Board>]>;
-export namespace AvailablePorts {
-  export function groupByProtocol(
-    availablePorts: AvailablePorts
-  ): Map<string, AvailablePorts> {
-    const grouped = new Map<string, AvailablePorts>();
-    for (const portID of Object.keys(availablePorts)) {
-      const [port, boards] = availablePorts[portID];
-      let ports = grouped.get(port.protocol);
-      if (!ports) {
-        ports = {} as AvailablePorts;
-      }
-      ports[portID] = [port, boards];
-      grouped.set(port.protocol, ports);
-    }
-    return grouped;
-  }
-  export function split(
-    state: AvailablePorts
-  ): Readonly<{ boards: Board[]; ports: Port[] }> {
-    const availablePorts: Port[] = [];
-    const attachedBoards: Board[] = [];
-    for (const key of Object.keys(state)) {
-      const [port, boards] = state[key];
-      availablePorts.push(port);
-      attachedBoards.push(...boards);
-    }
-    return {
-      boards: attachedBoards,
-      ports: availablePorts,
-    };
-  }
+export interface DetectedPort {
+  readonly port: Port;
+  readonly boards?: Pick<Board, 'name' | 'fqbn'>[];
 }
 
-export interface AttachedBoardsChangeEvent {
-  readonly oldState: Readonly<{ boards: Board[]; ports: Port[] }>;
-  readonly newState: Readonly<{ boards: Board[]; ports: Port[] }>;
-  readonly uploadInProgress: boolean;
+export function findMatchingPortIndex(
+  toFind: PortIdentifier | undefined,
+  ports: readonly DetectedPort[] | readonly Port[]
+): number {
+  if (!toFind) {
+    return -1;
+  }
+  const toFindPortKey = Port.keyOf(toFind);
+  return ports.findIndex((port) => Port.keyOf(port) === toFindPortKey);
 }
-export namespace AttachedBoardsChangeEvent {
-  export function isEmpty(event: AttachedBoardsChangeEvent): boolean {
-    const { detached, attached } = diff(event);
-    return (
-      !!detached.boards.length &&
-      !!detached.ports.length &&
-      !!attached.boards.length &&
-      !!attached.ports.length
-    );
-  }
 
-  export function toString(event: AttachedBoardsChangeEvent): string {
-    const rows: string[] = [];
-    if (!isEmpty(event)) {
-      const { attached, detached } = diff(event);
-      const visitedAttachedPorts: Port[] = [];
-      const visitedDetachedPorts: Port[] = [];
-      for (const board of attached.boards) {
-        const port = board.port ? ` on ${Port.toString(board.port)}` : '';
-        rows.push(` - Attached board: ${Board.toString(board)}${port}`);
-        if (board.port) {
-          visitedAttachedPorts.push(board.port);
-        }
-      }
-      for (const board of detached.boards) {
-        const port = board.port ? ` from ${Port.toString(board.port)}` : '';
-        rows.push(` - Detached board: ${Board.toString(board)}${port}`);
-        if (board.port) {
-          visitedDetachedPorts.push(board.port);
-        }
-      }
-      for (const port of attached.ports) {
-        if (!visitedAttachedPorts.find((p) => Port.sameAs(port, p))) {
-          rows.push(` - New port is available on ${Port.toString(port)}`);
-        }
-      }
-      for (const port of detached.ports) {
-        if (!visitedDetachedPorts.find((p) => Port.sameAs(port, p))) {
-          rows.push(` - Port is no longer available on ${Port.toString(port)}`);
-        }
-      }
-    }
-    return rows.length ? rows.join('\n') : 'No changes.';
-  }
+/**
+ * The closest representation what the Arduino CLI detects with the `board list --watch` gRPC equivalent.
+ * The keys are unique identifiers generated from the port object (via `Port#keyOf`).
+ * The values are the detected ports with all their optional `properties` and matching board list.
+ */
+export type DetectedPorts = Readonly<Record<string, DetectedPort>>;
 
-  export function diff(event: AttachedBoardsChangeEvent): Readonly<{
-    attached: {
-      boards: Board[];
-      ports: Port[];
-    };
-    detached: {
-      boards: Board[];
-      ports: Port[];
-    };
-  }> {
-    // In `lefts` AND not in `rights`.
-    const diff = <T>(
-      lefts: T[],
-      rights: T[],
-      sameAs: (left: T, right: T) => boolean
-    ) => {
-      return lefts.filter(
-        (left) => rights.findIndex((right) => sameAs(left, right)) === -1
-      );
-    };
-    const { boards: newBoards } = event.newState;
-    const { boards: oldBoards } = event.oldState;
-    const { ports: newPorts } = event.newState;
-    const { ports: oldPorts } = event.oldState;
-    const boardSameAs = (left: Board, right: Board) =>
-      Board.sameAs(left, right);
-    const portSameAs = (left: Port, right: Port) => Port.sameAs(left, right);
-    return {
-      detached: {
-        boards: diff(oldBoards, newBoards, boardSameAs),
-        ports: diff(oldPorts, newPorts, portSameAs),
-      },
-      attached: {
-        boards: diff(newBoards, oldBoards, boardSameAs),
-        ports: diff(newPorts, oldPorts, portSameAs),
-      },
-    };
+export function resolveDetectedPort(
+  port: PortIdentifier,
+  detectedPorts: DetectedPorts
+): Port | undefined {
+  const portKey = Port.keyOf(port);
+  const detectedPort = detectedPorts[portKey];
+  if (detectedPort) {
+    return detectedPort.port;
   }
+  return undefined;
 }
 
 export const BoardsServicePath = '/services/boards-service';
@@ -152,14 +65,17 @@ export interface BoardsService
      */
     skipPostInstall?: boolean;
   }): Promise<void>;
-  getState(): Promise<AvailablePorts>;
+  getDetectedPorts(): Promise<DetectedPorts>;
   getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
-  getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
+  getBoardPackage(options: {
+    id: string /* TODO: change to PlatformIdentifier type? */;
+  }): Promise<BoardsPackage | undefined>;
   getContainerBoardPackage(options: {
     fqbn: string;
   }): Promise<BoardsPackage | undefined>;
   searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
   getInstalledBoards(): Promise<BoardWithPackage[]>;
+  getInstalledPlatforms(): Promise<BoardsPackage[]>;
   getBoardUserFields(options: {
     fqbn: string;
     protocol: string;
@@ -180,7 +96,7 @@ export namespace BoardSearch {
     'Partner',
     'Arduino@Heart',
   ] as const;
-  export type Type = typeof TypeLiterals[number];
+  export type Type = (typeof TypeLiterals)[number];
   export namespace Type {
     export function is(arg: unknown): arg is Type {
       return typeof arg === 'string' && TypeLiterals.includes(arg as Type);
@@ -252,9 +168,9 @@ export namespace Port {
   export namespace Properties {
     export function create(
       properties: [string, string][] | undefined
-    ): Properties {
-      if (!properties) {
-        return {};
+    ): Properties | undefined {
+      if (!properties || !properties.length) {
+        return undefined;
       }
       return properties.reduce((acc, curr) => {
         const [key, value] = curr;
@@ -282,10 +198,13 @@ export namespace Port {
   }
 
   /**
-   * Key is the combination of address and protocol formatted like `'${address}|${protocol}'` used to uniquely identify a port.
+   * Key is the combination of address and protocol formatted like `'arduino+${protocol}://${address}'` used to uniquely identify a port.
    */
-  export function keyOf({ address, protocol }: Port): string {
-    return `${address}|${protocol}`;
+  export function keyOf(port: PortIdentifier | Port | DetectedPort): string {
+    if (isPortIdentifier(port)) {
+      return `arduino+${port.protocol}://${port.address}`;
+    }
+    return keyOf(port.port);
   }
 
   export function toString({ addressLabel, protocolLabel }: Port): string {
@@ -297,16 +216,8 @@ export namespace Port {
     // 1. Serial
     // 2. Network
     // 3. Other protocols
-    if (left.protocol === 'serial' && right.protocol !== 'serial') {
-      return -1;
-    } else if (left.protocol !== 'serial' && right.protocol === 'serial') {
-      return 1;
-    } else if (left.protocol === 'network' && right.protocol !== 'network') {
-      return -1;
-    } else if (left.protocol !== 'network' && right.protocol === 'network') {
-      return 1;
-    }
-    return naturalCompare(left.address!, right.address!);
+    const priorityResult = portProtocolComparator(left, right);
+    return priorityResult || naturalCompare(left.address, right.address);
   }
 
   export function sameAs(
@@ -324,35 +235,28 @@ export namespace Port {
   /**
    * All ports with `'serial'` or `'network'` `protocol`, or any other port `protocol` that has at least one recognized board connected to.
    */
-  export function visiblePorts(
-    boardsHaystack: ReadonlyArray<Board>
-  ): (port: Port) => boolean {
-    return (port: Port) => {
-      if (port.protocol === 'serial' || port.protocol === 'network') {
-        // Allow all `serial` and `network` boards.
-        // IDE2 must support better label for unrecognized `network` boards: https://github.com/arduino/arduino-ide/issues/1331
-        return true;
-      }
-      // All other ports with different protocol are
-      // only shown if there is a recognized board
-      // connected
-      for (const board of boardsHaystack) {
-        if (board.port?.address === port.address) {
-          return true;
-        }
-      }
-      return false;
-    };
+  export function isVisiblePort(detectedPort: DetectedPort): boolean {
+    const protocol = detectedPort.port.protocol;
+    if (protocol === 'serial' || protocol === 'network') {
+      // Allow all `serial` and `network` boards.
+      // IDE2 must support better label for unrecognized `network` boards: https://github.com/arduino/arduino-ide/issues/1331
+      return true;
+    }
+    // All other ports with different protocol are
+    // only shown if there is a recognized board
+    // connected
+    return Boolean(detectedPort?.boards?.length);
   }
 
   export namespace Protocols {
+    // IDE2 does not want to handle any other port protocols in a special way
     export const KnownProtocolLiterals = ['serial', 'network'] as const;
-    export type KnownProtocol = typeof KnownProtocolLiterals[number];
+    export type KnownProtocol = (typeof KnownProtocolLiterals)[number];
     export namespace KnownProtocol {
       export function is(protocol: unknown): protocol is KnownProtocol {
         return (
           typeof protocol === 'string' &&
-          KnownProtocolLiterals.indexOf(protocol as KnownProtocol) >= 0
+          KnownProtocolLiterals.includes(protocol as KnownProtocol)
         );
       }
     }
@@ -377,29 +281,12 @@ export namespace BoardsPackage {
   export function equals(left: BoardsPackage, right: BoardsPackage): boolean {
     return left.id === right.id;
   }
-
-  export function contains(
-    selectedBoard: Board,
-    { id, boards }: BoardsPackage
-  ): boolean {
-    if (boards.some((board) => Board.sameAs(board, selectedBoard))) {
-      return true;
-    }
-    if (selectedBoard.fqbn) {
-      const [platform, architecture] = selectedBoard.fqbn.split(':');
-      if (platform && architecture) {
-        return `${platform}:${architecture}` === id;
-      }
-    }
-    return false;
-  }
 }
 
-export interface Board {
-  readonly name: string;
-  readonly fqbn?: string;
-  readonly port?: Port;
-}
+/**
+ * @deprecated user `BoardIdentifier` instead.
+ */
+export type Board = BoardIdentifier;
 
 export interface BoardUserField {
   readonly toolId: string;
@@ -411,14 +298,19 @@ export interface BoardUserField {
 
 export interface BoardWithPackage extends Board {
   readonly packageName: string;
-  readonly packageId: string;
+  readonly packageId: PlatformIdentifier;
   readonly manuallyInstalled: boolean;
 }
 export namespace BoardWithPackage {
-  export function is(
-    board: Board & Partial<{ packageName: string; packageId: string }>
-  ): board is BoardWithPackage {
-    return !!board.packageId && !!board.packageName;
+  export function is(arg: unknown): arg is BoardWithPackage {
+    return (
+      isBoardIdentifier(arg) &&
+      (<BoardWithPackage>arg).packageName !== undefined &&
+      typeof (<BoardWithPackage>arg).packageName === 'string' &&
+      isPlatformIdentifier((<BoardWithPackage>arg).packageId) &&
+      (<BoardWithPackage>arg).manuallyInstalled !== undefined &&
+      typeof (<BoardWithPackage>arg).manuallyInstalled === 'boolean'
+    );
   }
 }
 
@@ -456,18 +348,6 @@ export interface ConfigOption {
   readonly values: ConfigValue[];
 }
 export namespace ConfigOption {
-  export function is(arg: any): arg is ConfigOption {
-    return (
-      !!arg &&
-      'option' in arg &&
-      'label' in arg &&
-      'values' in arg &&
-      typeof arg['option'] === 'string' &&
-      typeof arg['label'] === 'string' &&
-      Array.isArray(arg['values'])
-    );
-  }
-
   /**
    * Appends the configuration options to the `fqbn` argument.
    * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
@@ -555,24 +435,15 @@ export namespace Board {
     return left.name === right.name && left.fqbn === right.fqbn;
   }
 
-  export function hardwareIdEquals(left: Board, right: Board): boolean {
-    if (left.port && right.port) {
-      const { hardwareId: leftHardwareId } = left.port;
-      const { hardwareId: rightHardwareId } = right.port;
-
-      if (leftHardwareId && rightHardwareId) {
-        return leftHardwareId === rightHardwareId;
-      }
-    }
-
-    return false;
-  }
-
-  export function sameAs(left: Board, right: string | Board): boolean {
+  export function sameAs(
+    left: BoardIdentifier,
+    right: string | BoardIdentifier
+  ): boolean {
     // How to associate a selected board with one of the available cores: https://typefox.slack.com/archives/CJJHJCJSJ/p1571142327059200
     // 1. How to use the FQBN if any and infer the package ID from it: https://typefox.slack.com/archives/CJJHJCJSJ/p1571147549069100
     // 2. How to trim the `/Genuino` from the name: https://arduino.slack.com/archives/CJJHJCJSJ/p1571146951066800?thread_ts=1571142327.059200&cid=CJJHJCJSJ
-    const other = typeof right === 'string' ? { name: right } : right;
+    const other: BoardIdentifier =
+      typeof right === 'string' ? { name: right, fqbn: undefined } : right;
     if (left.fqbn && other.fqbn) {
       return left.fqbn === other.fqbn;
     }
@@ -594,7 +465,7 @@ export namespace Board {
   }
 
   export function toString(
-    board: Board,
+    board: BoardIdentifier,
     options: { useFqbn: boolean } = { useFqbn: true }
   ): string {
     const fqbn =
@@ -607,14 +478,15 @@ export namespace Board {
       selected: boolean;
       missing: boolean;
       packageName: string;
-      packageId: string;
+      packageId: PlatformIdentifier;
       details?: string;
       manuallyInstalled: boolean;
     }>;
   export function decorateBoards(
-    selectedBoard: Board | undefined,
+    selectedBoard: BoardIdentifier | BoardWithPackage | undefined,
     boards: Array<BoardWithPackage>
   ): Array<Detailed> {
+    let foundSelected = false;
     // Board names are not unique. We show the corresponding core name as a detail.
     // https://github.com/arduino/arduino-cli/pull/294#issuecomment-513764948
     const distinctBoardNames = new Map<string, number>();
@@ -622,21 +494,42 @@ export namespace Board {
       const counter = distinctBoardNames.get(name) || 0;
       distinctBoardNames.set(name, counter + 1);
     }
-
-    // Due to the non-unique board names, we have to check the package name as well.
-    const selected = (board: BoardWithPackage) => {
-      if (!!selectedBoard) {
-        if (Board.equals(board, selectedBoard)) {
-          if ('packageName' in selectedBoard) {
-            return board.packageName === (selectedBoard as any).packageName;
-          }
-          if ('packageId' in selectedBoard) {
-            return board.packageId === (selectedBoard as any).packageId;
-          }
-          return true;
+    const selectedBoardPackageId = selectedBoard
+      ? createPlatformIdentifier(selectedBoard)
+      : undefined;
+    const selectedBoardFqbn = selectedBoard?.fqbn;
+    // Due to the non-unique board names, IDE2 has to check the package name when boards are not installed and the FQBN is absent.
+    const isSelected = (board: BoardWithPackage) => {
+      if (!selectedBoard) {
+        return false;
+      }
+      if (foundSelected) {
+        return false;
+      }
+      let selected = false;
+      if (board.fqbn && selectedBoardFqbn) {
+        if (boardIdentifierEquals(board, selectedBoard)) {
+          selected = true;
         }
       }
-      return false;
+      if (!selected) {
+        if (board.name === selectedBoard.name) {
+          if (selectedBoardPackageId) {
+            const boardPackageId = createPlatformIdentifier(board);
+            if (boardPackageId) {
+              if (
+                platformIdentifierEquals(boardPackageId, selectedBoardPackageId)
+              ) {
+                selected = true;
+              }
+            }
+          }
+        }
+      }
+      if (selected) {
+        foundSelected = true;
+      }
+      return selected;
     };
     return boards.map((board) => ({
       ...board,
@@ -644,7 +537,7 @@ export namespace Board {
         (distinctBoardNames.get(board.name) || 0) > 1
           ? ` - ${board.packageName}`
           : undefined,
-      selected: selected(board),
+      selected: isSelected(board),
       missing: !installed(board),
     }));
   }
@@ -674,10 +567,254 @@ export function sanitizeFqbn(fqbn: string | undefined): string | undefined {
   return `${vendor}:${arch}:${id}`;
 }
 
-export interface BoardConfig {
-  selectedBoard?: Board;
-  selectedPort?: Port;
+export type PlatformIdentifier = Readonly<{ vendorId: string; arch: string }>;
+export function createPlatformIdentifier(
+  board: BoardWithPackage
+): PlatformIdentifier;
+export function createPlatformIdentifier(
+  board: BoardIdentifier
+): PlatformIdentifier | undefined;
+export function createPlatformIdentifier(
+  fqbn: string
+): PlatformIdentifier | undefined;
+export function createPlatformIdentifier(
+  arg: BoardIdentifier | BoardWithPackage | string
+): PlatformIdentifier | undefined {
+  if (BoardWithPackage.is(arg)) {
+    return arg.packageId;
+  }
+  const toSplit = typeof arg === 'string' ? arg : arg.fqbn;
+  if (toSplit) {
+    const [vendorId, arch] = toSplit.split(':');
+    if (vendorId && arch) {
+      return { vendorId, arch };
+    }
+  }
+  return undefined;
 }
+
+export function isPlatformIdentifier(arg: unknown): arg is PlatformIdentifier {
+  return (
+    Boolean(arg) &&
+    typeof arg === 'object' &&
+    (<PlatformIdentifier>arg).vendorId !== undefined &&
+    typeof (<PlatformIdentifier>arg).vendorId === 'string' &&
+    (<PlatformIdentifier>arg).arch !== undefined &&
+    typeof (<PlatformIdentifier>arg).arch === 'string'
+  );
+}
+
+export function serializePlatformIdentifier({
+  vendorId,
+  arch,
+}: PlatformIdentifier): string {
+  return `${vendorId}:${arch}`;
+}
+
+export function platformIdentifierEquals(
+  left: PlatformIdentifier,
+  right: PlatformIdentifier
+) {
+  return left.vendorId === right.vendorId && left.arch === right.arch;
+}
+
+/**
+ * Bare minimum information to identify port.
+ */
+export type PortIdentifier = Readonly<Pick<Port, 'protocol' | 'address'>>;
+
+export function portIdentifierEquals(
+  left: PortIdentifier | undefined,
+  right: PortIdentifier | undefined
+): boolean {
+  if (!left) {
+    return !right;
+  }
+  if (!right) {
+    return !left;
+  }
+  return left.protocol === right.protocol && left.address === right.address;
+}
+
+export function isPortIdentifier(arg: unknown): arg is PortIdentifier {
+  return (
+    Boolean(arg) &&
+    typeof arg === 'object' &&
+    (<PortIdentifier>arg).protocol !== undefined &&
+    typeof (<PortIdentifier>arg).protocol === 'string' &&
+    (<PortIdentifier>arg).address !== undefined &&
+    typeof (<PortIdentifier>arg).address === 'string'
+  );
+}
+
+// the smaller the number, the higher the priority
+const portProtocolPriorities: Record<string, number> = {
+  serial: 0,
+  network: 1,
+} as const;
+
+/**
+ * See `boardListItemComparator`.
+ */
+export function portProtocolComparator(
+  left: PortIdentifier,
+  right: PortIdentifier
+): number {
+  const leftPriority =
+    portProtocolPriorities[left.protocol] ?? Number.MAX_SAFE_INTEGER;
+  const rightPriority =
+    portProtocolPriorities[right.protocol] ?? Number.MAX_SAFE_INTEGER;
+  return leftPriority - rightPriority;
+}
+
+/**
+ * Lightweight information to identify a board.\
+ * \
+ * Note: the `name` property of the board identifier must never participate in the board's identification.
+ * Hence, it should only be used as the final fallback for the UI when the board's platform is not installed and only the board's name is available.
+ */
+export interface BoardIdentifier {
+  /**
+   * The name of the board. It's only purpose is to provide a fallback for the UI. Preferably do not use this property for any sophisticated logic. When
+   */
+  readonly name: string;
+  /**
+   * The FQBN might contain boards config options if selected from the discovered ports (see [arduino/arduino-ide#1588](https://github.com/arduino/arduino-ide/issues/1588)).
+   */
+  // TODO: decide whether to persist the boards config if any
+  readonly fqbn: string | undefined;
+}
+
+export function isBoardIdentifier(arg: unknown): arg is BoardIdentifier {
+  return (
+    Boolean(arg) &&
+    typeof arg === 'object' &&
+    (<BoardIdentifier>arg).name !== undefined &&
+    typeof (<BoardIdentifier>arg).name === 'string' &&
+    ((<BoardIdentifier>arg).fqbn === undefined ||
+      ((<BoardIdentifier>arg).fqbn !== undefined &&
+        typeof (<BoardIdentifier>arg).fqbn === 'string'))
+  );
+}
+
+/**
+ * @param options if `looseFqbn` is `true`, FQBN config options are ignored. Hence, `{ name: 'x', fqbn: 'a:b:c:o1=v1 }` equals `{ name: 'y', fqbn: 'a:b:c' }`. It's `true` by default.
+ */
+export function boardIdentifierEquals(
+  left: BoardIdentifier | undefined,
+  right: BoardIdentifier | undefined,
+  options: { looseFqbn: boolean } = { looseFqbn: true }
+): boolean {
+  if (!left) {
+    return !right;
+  }
+  if (!right) {
+    return !left;
+  }
+  if ((left.fqbn && !right.fqbn) || (!left.fqbn && right.fqbn)) {
+    // This can be very tricky when comparing boards
+    // the CLI's board search returns with falsy FQBN when the platform is not installed
+    // the CLI's board list returns with the full FQBN (for detected boards) even if the platform is not installed
+    // when there are multiple boards with the same name (Arduino Nano RP2040) from different platforms (Mbed Nano OS vs. the deprecated global Mbed OS)
+    // maybe add some 3rd party platform overhead (https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json)
+    // and it will get very tricky when comparing a board which has a FQBN and which does not.
+    return false; // TODO: This a strict now. Maybe compare name in the future.
+  }
+  if (left.fqbn && right.fqbn) {
+    const leftFqbn = options.looseFqbn ? sanitizeFqbn(left.fqbn) : left.fqbn;
+    const rightFqbn = options.looseFqbn ? sanitizeFqbn(right.fqbn) : right.fqbn;
+    return leftFqbn === rightFqbn;
+  }
+  // No more Genuino hack.
+  // https://github.com/arduino/arduino-ide/blob/f6a43254f5c416a2e4fa888875358336b42dd4d5/arduino-ide-extension/src/common/protocol/boards-service.ts#L572-L581
+  return left.name === right.name;
+}
+
+/**
+ * See `boardListItemComparator`.
+ */
+export function boardIdentifierComparator(
+  left: BoardIdentifier | undefined,
+  right: BoardIdentifier | undefined
+): number {
+  if (!left) {
+    return right ? 1 : 0;
+  }
+  if (!right) {
+    return left ? -1 : 0;
+  }
+  let leftVendor: string | undefined = undefined;
+  let rightVendor: string | undefined = undefined;
+  if (left.fqbn) {
+    const [vendor] = left.fqbn.split(':');
+    leftVendor = vendor;
+  }
+  if (right.fqbn) {
+    const [vendor] = right.fqbn.split(':');
+    rightVendor = vendor;
+  }
+  if (leftVendor === 'arduino' && rightVendor !== 'arduino') {
+    return -1;
+  }
+  if (leftVendor !== 'arduino' && rightVendor === 'arduino') {
+    return 1;
+  }
+  return naturalCompare(left.name, right.name);
+}
+
+export interface BoardsConfig {
+  selectedBoard: BoardIdentifier | undefined;
+  selectedPort: PortIdentifier | undefined;
+}
+
+/**
+ * Creates a new board config object with `undefined` properties.
+ */
+export function emptyBoardsConfig(): BoardsConfig {
+  return {
+    selectedBoard: undefined,
+    selectedPort: undefined,
+  };
+}
+
+export function isDefinedBoardsConfig(
+  boardsConfig: BoardsConfig | undefined
+): boardsConfig is Defined<BoardsConfig> {
+  if (!boardsConfig) {
+    return false;
+  }
+  return (
+    boardsConfig.selectedBoard !== undefined &&
+    boardsConfig.selectedPort !== undefined
+  );
+}
+
+export interface BoardIdentifierChangeEvent {
+  readonly previousSelectedBoard: BoardIdentifier | undefined;
+  readonly selectedBoard: BoardIdentifier | undefined;
+}
+
+export function isBoardIdentifierChangeEvent(
+  event: BoardsConfigChangeEvent
+): event is BoardIdentifierChangeEvent {
+  return 'previousSelectedBoard' in event && 'selectedBoard' in event;
+}
+
+export interface PortIdentifierChangeEvent {
+  readonly previousSelectedPort: PortIdentifier | undefined;
+  readonly selectedPort: PortIdentifier | undefined;
+}
+
+export function isPortIdentifierChangeEvent(
+  event: BoardsConfigChangeEvent
+): event is PortIdentifierChangeEvent {
+  return 'previousSelectedPort' in event && 'selectedPort' in event;
+}
+
+export type BoardsConfigChangeEvent =
+  | BoardIdentifierChangeEvent
+  | PortIdentifierChangeEvent
+  | (BoardIdentifierChangeEvent & PortIdentifierChangeEvent);
 
 export interface BoardInfo {
   /**
@@ -719,45 +856,40 @@ export const unknownBoard = nls.localize(
  * The returned promise resolves to a `BoardInfo` if available to show in the UI or an info message explaining why showing the board info is not possible.
  */
 export async function getBoardInfo(
-  selectedPort: Port | undefined,
-  availablePorts: MaybePromise<AvailablePorts>
+  boardListProvider: MaybePromise<BoardList>
 ): Promise<BoardInfo | string> {
-  if (!selectedPort) {
+  const boardList = await boardListProvider;
+  const ports = boardList.ports();
+  const detectedPort = ports[ports.matchingIndex];
+  if (!detectedPort) {
     return selectPortForInfo;
   }
+  const { port: selectedPort, boards } = detectedPort;
   // IDE2 must show the board info based on the selected port.
   // https://github.com/arduino/arduino-ide/issues/1489
   // IDE 1.x supports only serial port protocol
   if (selectedPort.protocol !== 'serial') {
     return nonSerialPort;
   }
-  const selectedPortKey = Port.keyOf(selectedPort);
-  const state = await availablePorts;
-  const boardListOnSelectedPort = Object.entries(state).filter(
-    ([portKey, [port]]) =>
-      portKey === selectedPortKey && isNonNativeSerial(port)
-  );
-
-  if (!boardListOnSelectedPort.length) {
+  if (!isNonNativeSerial(selectedPort)) {
     return noNativeSerialPort;
   }
 
-  const [, [port, boards]] = boardListOnSelectedPort[0];
-  if (boardListOnSelectedPort.length > 1 || boards.length > 1) {
+  if (boards && boards.length > 1) {
     console.warn(
       `Detected more than one available boards on the selected port : ${JSON.stringify(
-        selectedPort
+        detectedPort
       )}. Detected boards were: ${JSON.stringify(
-        boardListOnSelectedPort
-      )}. Using the first one: ${JSON.stringify([port, boards])}`
+        boards
+      )}. Using the first one: ${JSON.stringify(boards[0])}`
     );
   }
 
-  const board = boards[0];
+  const board = boards ? boards[0] : undefined;
   const BN = board?.name ?? unknownBoard;
-  const VID = readProperty('vid', port);
-  const PID = readProperty('pid', port);
-  const SN = readProperty('serialNumber', port);
+  const VID = readProperty('vid', selectedPort);
+  const PID = readProperty('pid', selectedPort);
+  const SN = readProperty('serialNumber', selectedPort);
   return { VID, PID, SN, BN };
 }
 

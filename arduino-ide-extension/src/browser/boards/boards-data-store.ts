@@ -1,63 +1,64 @@
-import { injectable, inject, named } from '@theia/core/shared/inversify';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
-import { Event, Emitter } from '@theia/core/lib/common/event';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
 import {
-  FrontendApplicationContribution,
-  LocalStorageService,
-} from '@theia/core/lib/browser';
-import { notEmpty } from '../../common/utils';
-import {
+  BoardDetails,
   BoardsService,
   ConfigOption,
-  BoardDetails,
   Programmer,
 } from '../../common/protocol';
+import { notEmpty } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
 
 @injectable()
 export class BoardsDataStore implements FrontendApplicationContribution {
   @inject(ILogger)
   @named('store')
-  protected readonly logger: ILogger;
-
+  private readonly logger: ILogger;
   @inject(BoardsService)
-  protected readonly boardsService: BoardsService;
-
+  private readonly boardsService: BoardsService;
   @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
-
+  private readonly notificationCenter: NotificationCenter;
   @inject(LocalStorageService)
-  protected readonly storageService: LocalStorageService;
+  private readonly storageService: LocalStorageService;
 
-  protected readonly onChangedEmitter = new Emitter<string[]>();
+  private readonly onChangedEmitter = new Emitter<string[]>();
+  private readonly toDispose = new DisposableCollection(this.onChangedEmitter);
 
   onStart(): void {
-    this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
-      const dataDidChangePerFqbn: string[] = [];
-      for (const fqbn of item.boards
-        .map(({ fqbn }) => fqbn)
-        .filter(notEmpty)
-        .filter((fqbn) => !!fqbn)) {
-        const key = this.getStorageKey(fqbn);
-        let data = await this.storageService.getData<
-          ConfigOption[] | undefined
-        >(key);
-        if (!data || !data.length) {
-          const details = await this.getBoardDetailsSafe(fqbn);
-          if (details) {
-            data = details.configOptions;
-            if (data.length) {
-              await this.storageService.setData(key, data);
-              dataDidChangePerFqbn.push(fqbn);
+    this.toDispose.push(
+      this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
+        const dataDidChangePerFqbn: string[] = [];
+        for (const fqbn of item.boards
+          .map(({ fqbn }) => fqbn)
+          .filter(notEmpty)
+          .filter((fqbn) => !!fqbn)) {
+          const key = this.getStorageKey(fqbn);
+          let data = await this.storageService.getData<ConfigOption[]>(key);
+          if (!data || !data.length) {
+            const details = await this.getBoardDetailsSafe(fqbn);
+            if (details) {
+              data = details.configOptions;
+              if (data.length) {
+                await this.storageService.setData(key, data);
+                dataDidChangePerFqbn.push(fqbn);
+              }
             }
           }
         }
-      }
-      if (dataDidChangePerFqbn.length) {
-        this.fireChanged(...dataDidChangePerFqbn);
-      }
-    });
+        if (dataDidChangePerFqbn.length) {
+          this.fireChanged(...dataDidChangePerFqbn);
+        }
+      })
+    );
+  }
+
+  onStop(): void {
+    this.toDispose.dispose();
   }
 
   get onChanged(): Event<string[]> {
@@ -65,7 +66,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
   }
 
   async appendConfigToFqbn(
-    fqbn: string | undefined,
+    fqbn: string | undefined
   ): Promise<string | undefined> {
     if (!fqbn) {
       return undefined;
@@ -100,12 +101,13 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     return data;
   }
 
-  async selectProgrammer(
-    {
-      fqbn,
-      selectedProgrammer,
-    }: { fqbn: string; selectedProgrammer: Programmer },
-  ): Promise<boolean> {
+  async selectProgrammer({
+    fqbn,
+    selectedProgrammer,
+  }: {
+    fqbn: string;
+    selectedProgrammer: Programmer;
+  }): Promise<boolean> {
     const data = deepClone(await this.getData(fqbn));
     const { programmers } = data;
     if (!programmers.find((p) => Programmer.equals(selectedProgrammer, p))) {
@@ -120,13 +122,15 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     return true;
   }
 
-  async selectConfigOption(
-    {
-      fqbn,
-      option,
-      selectedValue,
-    }: { fqbn: string; option: string; selectedValue: string }
-  ): Promise<boolean> {
+  async selectConfigOption({
+    fqbn,
+    option,
+    selectedValue,
+  }: {
+    fqbn: string;
+    option: string;
+    selectedValue: string;
+  }): Promise<boolean> {
     const data = deepClone(await this.getData(fqbn));
     const { configOptions } = data;
     const configOption = configOptions.find((c) => c.option === option);

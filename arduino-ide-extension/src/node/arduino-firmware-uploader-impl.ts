@@ -65,7 +65,7 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
       ]);
       return output;
     } finally {
-      await this.monitorManager.notifyUploadFinished(board.fqbn, port);
+      await this.monitorManager.notifyUploadFinished(board.fqbn, port, port); // here the before and after ports are assumed to be always the same
     }
   }
 

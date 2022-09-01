@@ -1,15 +1,18 @@
-import {
-  ApplicationError,
-  Disposable,
-  Emitter,
-  MessageService,
-  nls,
-} from '@theia/core';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
+import { Disposable } from '@theia/core/lib/common/disposable';
+import { Emitter } from '@theia/core/lib/common/event';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { MessageType } from '@theia/core/lib/common/message-service-protocol';
+import { nls } from '@theia/core/lib/common/nls';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { NotificationManager } from '@theia/messages/lib/browser/notifications-manager';
-import { MessageType } from '@theia/core/lib/common/message-service-protocol';
-import { Board, Port } from '../common/protocol';
+import { BoardIdentifier, PortIdentifier } from '../common/protocol';
+import {
+  BoardListItem,
+  boardListItemEquals,
+  getInferredBoardOrBoard,
+} from '../common/protocol/board-list';
 import {
   Monitor,
   MonitorManagerProxyClient,
@@ -17,7 +20,6 @@ import {
   MonitorSettings,
   PluggableMonitorSettings,
 } from '../common/protocol/monitor-service';
-import { BoardsConfig } from './boards/boards-config';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 
 @injectable()
@@ -55,8 +57,8 @@ export class MonitorManagerProxyClientImpl
   // frontend and backend.
   private webSocket?: WebSocket;
   private wsPort?: number;
-  private lastConnectedBoard: BoardsConfig.Config;
-  private onBoardsConfigChanged: Disposable | undefined;
+  private lastConnectedBoard: BoardListItem | undefined;
+  private onBoardListDidChange: Disposable | undefined;
 
   getWebSocketPort(): number | undefined {
     return this.wsPort;
@@ -110,8 +112,8 @@ export class MonitorManagerProxyClientImpl
     if (!this.webSocket) {
       return;
     }
-    this.onBoardsConfigChanged?.dispose();
-    this.onBoardsConfigChanged = undefined;
+    this.onBoardListDidChange?.dispose();
+    this.onBoardListDidChange = undefined;
     try {
       this.webSocket.close();
       this.webSocket = undefined;
@@ -134,51 +136,52 @@ export class MonitorManagerProxyClientImpl
   }
 
   async startMonitor(settings?: PluggableMonitorSettings): Promise<void> {
-    await this.boardsServiceProvider.reconciled;
-    this.lastConnectedBoard = {
-      selectedBoard: this.boardsServiceProvider.boardsConfig.selectedBoard,
-      selectedPort: this.boardsServiceProvider.boardsConfig.selectedPort,
-    };
-
-    if (!this.onBoardsConfigChanged) {
-      this.onBoardsConfigChanged =
-        this.boardsServiceProvider.onBoardsConfigChanged(
-          async ({ selectedBoard, selectedPort }) => {
-            if (
-              typeof selectedBoard === 'undefined' ||
-              typeof selectedPort === 'undefined'
-            )
+    const { boardList } = this.boardsServiceProvider;
+    this.lastConnectedBoard = boardList[boardList.selectedIndex];
+    if (!this.onBoardListDidChange) {
+      this.onBoardListDidChange =
+        this.boardsServiceProvider.onBoardListDidChange(
+          async (newBoardList) => {
+            const currentConnectedBoard =
+              newBoardList[newBoardList.selectedIndex];
+            if (!currentConnectedBoard) {
               return;
+            }
 
-            // a board is plugged and it's different from the old connected board
             if (
-              selectedBoard?.fqbn !==
-                this.lastConnectedBoard?.selectedBoard?.fqbn ||
-              Port.keyOf(selectedPort) !==
-                (this.lastConnectedBoard.selectedPort
-                  ? Port.keyOf(this.lastConnectedBoard.selectedPort)
-                  : undefined)
+              !this.lastConnectedBoard ||
+              boardListItemEquals(
+                currentConnectedBoard,
+                this.lastConnectedBoard
+              )
             ) {
-              this.lastConnectedBoard = {
-                selectedBoard: selectedBoard,
-                selectedPort: selectedPort,
-              };
-              this.onMonitorShouldResetEmitter.fire();
-            } else {
               // a board is plugged and it's the same as prev, rerun "this.startMonitor" to
               // recreate the listener callback
               this.startMonitor();
+            } else {
+              // a board is plugged and it's different from the old connected board
+              this.lastConnectedBoard = currentConnectedBoard;
+              this.onMonitorShouldResetEmitter.fire();
             }
           }
         );
     }
 
-    const { selectedBoard, selectedPort } =
-      this.boardsServiceProvider.boardsConfig;
-    if (!selectedBoard || !selectedBoard.fqbn || !selectedPort) return;
+    if (!this.lastConnectedBoard) {
+      return;
+    }
+
+    const board = getInferredBoardOrBoard(this.lastConnectedBoard);
+    if (!board) {
+      return;
+    }
     try {
       this.clearVisibleNotification();
-      await this.server().startMonitor(selectedBoard, selectedPort, settings);
+      await this.server().startMonitor(
+        board,
+        this.lastConnectedBoard.port,
+        settings
+      );
     } catch (err) {
       const message = ApplicationError.is(err) ? err.message : String(err);
       this.previousNotificationId = this.notificationId(message);
@@ -186,7 +189,10 @@ export class MonitorManagerProxyClientImpl
     }
   }
 
-  getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {
+  getCurrentSettings(
+    board: BoardIdentifier,
+    port: PortIdentifier
+  ): Promise<MonitorSettings> {
     return this.server().getCurrentSettings(board, port);
   }
 

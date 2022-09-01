@@ -1,15 +1,15 @@
-import { nls } from '@theia/core/lib/common/nls';
 import { ApplicationError } from '@theia/core/lib/common/application-error';
+import { nls } from '@theia/core/lib/common/nls';
 import type {
   Location,
-  Range,
   Position,
+  Range,
 } from '@theia/core/shared/vscode-languageserver-protocol';
-import type { BoardUserField, Port, Installable } from '../../common/protocol/';
-import type { Programmer } from './boards-service';
-import type { Sketch } from './sketches-service';
-import { IndexUpdateSummary } from './notification-service';
 import type { CompileSummary as ApiCompileSummary } from 'vscode-arduino-api';
+import type { BoardUserField, Installable } from '../../common/protocol/';
+import { isPortIdentifier, PortIdentifier, Programmer } from './boards-service';
+import type { IndexUpdateSummary } from './notification-service';
+import type { Sketch } from './sketches-service';
 
 export const CompilerWarningLiterals = [
   'None',
@@ -148,11 +148,25 @@ export function isCompileSummary(arg: unknown): arg is CompileSummary {
   );
 }
 
+export interface UploadResponse {
+  readonly portBeforeUpload?: PortIdentifier | undefined;
+  readonly portAfterUpload: PortIdentifier;
+}
+export function isUploadResponse(arg: unknown): arg is UploadResponse {
+  return (
+    Boolean(arg) &&
+    typeof arg === 'object' &&
+    ((<UploadResponse>arg).portBeforeUpload === undefined ||
+      isPortIdentifier((<UploadResponse>arg).portBeforeUpload)) &&
+    isPortIdentifier((<UploadResponse>arg).portAfterUpload)
+  );
+}
+
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
   compile(options: CoreService.Options.Compile): Promise<void>;
-  upload(options: CoreService.Options.Upload): Promise<void>;
+  upload(options: CoreService.Options.Upload): Promise<UploadResponse>;
   burnBootloader(options: CoreService.Options.Bootloader): Promise<void>;
   /**
    * Refreshes the underling core gRPC client for the Arduino CLI.
@@ -198,7 +212,7 @@ export namespace CoreService {
       readonly sketch: Sketch;
     }
     export interface BoardBased {
-      readonly port?: Port;
+      readonly port?: PortIdentifier;
       readonly programmer?: Programmer | undefined;
       /**
        * For the _Verify after upload_ setting.

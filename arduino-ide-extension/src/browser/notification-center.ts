@@ -14,13 +14,13 @@ import {
   NotificationServiceClient,
   NotificationServiceServer,
 } from '../common/protocol/notification-service';
-import {
-  AttachedBoardsChangeEvent,
+import type {
   BoardsPackage,
   LibraryPackage,
   ConfigState,
   Sketch,
   ProgressMessage,
+  DetectedPorts,
 } from '../common/protocol';
 import {
   FrontendApplicationStateService,
@@ -61,8 +61,9 @@ export class NotificationCenter
   private readonly libraryDidUninstallEmitter = new Emitter<{
     item: LibraryPackage;
   }>();
-  private readonly attachedBoardsDidChangeEmitter =
-    new Emitter<AttachedBoardsChangeEvent>();
+  private readonly detectedPortsDidChangeEmitter = new Emitter<{
+    detectedPorts: DetectedPorts;
+  }>();
   private readonly recentSketchesChangedEmitter = new Emitter<{
     sketches: Sketch[];
   }>();
@@ -82,7 +83,7 @@ export class NotificationCenter
     this.platformDidUninstallEmitter,
     this.libraryDidInstallEmitter,
     this.libraryDidUninstallEmitter,
-    this.attachedBoardsDidChangeEmitter
+    this.detectedPortsDidChangeEmitter
   );
 
   readonly onDidReinitialize = this.didReinitializeEmitter.event;
@@ -97,8 +98,7 @@ export class NotificationCenter
   readonly onPlatformDidUninstall = this.platformDidUninstallEmitter.event;
   readonly onLibraryDidInstall = this.libraryDidInstallEmitter.event;
   readonly onLibraryDidUninstall = this.libraryDidUninstallEmitter.event;
-  readonly onAttachedBoardsDidChange =
-    this.attachedBoardsDidChangeEmitter.event;
+  readonly onDetectedPortsDidChange = this.detectedPortsDidChangeEmitter.event;
   readonly onRecentSketchesDidChange = this.recentSketchesChangedEmitter.event;
   readonly onAppStateDidChange = this.onAppStateDidChangeEmitter.event;
 
@@ -166,8 +166,8 @@ export class NotificationCenter
     this.libraryDidUninstallEmitter.fire(event);
   }
 
-  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void {
-    this.attachedBoardsDidChangeEmitter.fire(event);
+  notifyDetectedPortsDidChange(event: { detectedPorts: DetectedPorts }): void {
+    this.detectedPortsDidChangeEmitter.fire(event);
   }
 
   notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void {

@@ -171,10 +171,14 @@
   ],
   "arduino": {
     "cli": {
-      "version": "0.33.1"
+      "version": {
+        "owner": "cmaglie",
+        "repo": "arduino-cli",
+        "commitish": "board_port_after_upload"
+      }
     },
     "fwuploader": {
-      "version": "2.2.2"
+      "version": "2.3.0"
     },
     "clangd": {
       "version": "14.0.0"

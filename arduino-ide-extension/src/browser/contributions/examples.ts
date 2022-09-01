@@ -28,6 +28,8 @@ import {
   CoreService,
   SketchesService,
   Sketch,
+  isBoardIdentifierChangeEvent,
+  BoardIdentifier,
 } from '../../common/protocol';
 import { nls } from '@theia/core/lib/common/nls';
 import { unregisterSubmenu } from '../menu/arduino-menus';
@@ -108,7 +110,7 @@ export abstract class Examples extends SketchContribution {
   protected readonly coreService: CoreService;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
+  protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
@@ -117,12 +119,14 @@ export abstract class Examples extends SketchContribution {
 
   protected override init(): void {
     super.init();
-    this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
-      this.handleBoardChanged(selectedBoard)
-    );
+    this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+      if (isBoardIdentifierChangeEvent(event)) {
+        this.handleBoardChanged(event.selectedBoard);
+      }
+    });
     this.notificationCenter.onDidReinitialize(() =>
       this.update({
-        board: this.boardsServiceClient.boardsConfig.selectedBoard,
+        board: this.boardsServiceProvider.boardsConfig.selectedBoard,
         // No force refresh. The core client was already refreshed.
       })
     );
@@ -134,7 +138,7 @@ export abstract class Examples extends SketchContribution {
   }
 
   protected abstract update(options?: {
-    board?: Board | undefined;
+    board?: BoardIdentifier | undefined;
     forceRefresh?: boolean;
   }): void;
 
@@ -225,7 +229,7 @@ export abstract class Examples extends SketchContribution {
   protected createHandler(uri: string): CommandHandler {
     const forceUpdate = () =>
       this.update({
-        board: this.boardsServiceClient.boardsConfig.selectedBoard,
+        board: this.boardsServiceProvider.boardsConfig.selectedBoard,
         forceRefresh: true,
       });
     return {
@@ -306,7 +310,7 @@ export class LibraryExamples extends Examples {
 
   protected override async update(
     options: { board?: Board; forceRefresh?: boolean } = {
-      board: this.boardsServiceClient.boardsConfig.selectedBoard,
+      board: this.boardsServiceProvider.boardsConfig.selectedBoard,
     }
   ): Promise<void> {
     const { board, forceRefresh } = options;

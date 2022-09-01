@@ -78,16 +78,30 @@ export namespace UploadRequest {
 }
 
 export class UploadResponse extends jspb.Message { 
+
+    hasOutStream(): boolean;
+    clearOutStream(): void;
     getOutStream(): Uint8Array | string;
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): UploadResponse;
 
+
+    hasErrStream(): boolean;
+    clearErrStream(): void;
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): UploadResponse;
 
+
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): UploadResult | undefined;
+    setResult(value?: UploadResult): UploadResponse;
+
+
+    getMessageCase(): UploadResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadResponse.AsObject;
@@ -103,6 +117,43 @@ export namespace UploadResponse {
     export type AsObject = {
         outStream: Uint8Array | string,
         errStream: Uint8Array | string,
+        result?: UploadResult.AsObject,
+    }
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+    
+    OUT_STREAM = 1,
+
+    ERR_STREAM = 2,
+
+    RESULT = 3,
+
+    }
+
+}
+
+export class UploadResult extends jspb.Message { 
+
+    hasUpdatedUploadPort(): boolean;
+    clearUpdatedUploadPort(): void;
+    getUpdatedUploadPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
+    setUpdatedUploadPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): UploadResult;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UploadResult.AsObject;
+    static toObject(includeInstance: boolean, msg: UploadResult): UploadResult.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UploadResult, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UploadResult;
+    static deserializeBinaryFromReader(message: UploadResult, reader: jspb.BinaryReader): UploadResult;
+}
+
+export namespace UploadResult {
+    export type AsObject = {
+        updatedUploadPort?: cc_arduino_cli_commands_v1_port_pb.Port.AsObject,
     }
 }
 

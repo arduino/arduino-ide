@@ -377,12 +377,6 @@ export namespace VersionResponse {
 }
 
 export class NewSketchRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): NewSketchRequest;
-
     getSketchName(): string;
     setSketchName(value: string): NewSketchRequest;
 
@@ -405,7 +399,6 @@ export class NewSketchRequest extends jspb.Message {
 
 export namespace NewSketchRequest {
     export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         sketchName: string,
         sketchDir: string,
         overwrite: boolean,
@@ -434,12 +427,6 @@ export namespace NewSketchResponse {
 }
 
 export class LoadSketchRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LoadSketchRequest;
-
     getSketchPath(): string;
     setSketchPath(value: string): LoadSketchRequest;
 
@@ -456,7 +443,6 @@ export class LoadSketchRequest extends jspb.Message {
 
 export namespace LoadSketchRequest {
     export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         sketchPath: string,
     }
 }
@@ -483,6 +469,15 @@ export class LoadSketchResponse extends jspb.Message {
     setRootFolderFilesList(value: Array<string>): LoadSketchResponse;
     addRootFolderFiles(value: string, index?: number): string;
 
+    getDefaultFqbn(): string;
+    setDefaultFqbn(value: string): LoadSketchResponse;
+
+    getDefaultPort(): string;
+    setDefaultPort(value: string): LoadSketchResponse;
+
+    getDefaultProtocol(): string;
+    setDefaultProtocol(value: string): LoadSketchResponse;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LoadSketchResponse.AsObject;
@@ -501,6 +496,9 @@ export namespace LoadSketchResponse {
         otherSketchFilesList: Array<string>,
         additionalFilesList: Array<string>,
         rootFolderFilesList: Array<string>,
+        defaultFqbn: string,
+        defaultPort: string,
+        defaultProtocol: string,
     }
 }
 
@@ -551,6 +549,68 @@ export class ArchiveSketchResponse extends jspb.Message {
 
 export namespace ArchiveSketchResponse {
     export type AsObject = {
+    }
+}
+
+export class SetSketchDefaultsRequest extends jspb.Message { 
+    getSketchPath(): string;
+    setSketchPath(value: string): SetSketchDefaultsRequest;
+
+    getDefaultFqbn(): string;
+    setDefaultFqbn(value: string): SetSketchDefaultsRequest;
+
+    getDefaultPortAddress(): string;
+    setDefaultPortAddress(value: string): SetSketchDefaultsRequest;
+
+    getDefaultPortProtocol(): string;
+    setDefaultPortProtocol(value: string): SetSketchDefaultsRequest;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SetSketchDefaultsRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: SetSketchDefaultsRequest): SetSketchDefaultsRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SetSketchDefaultsRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SetSketchDefaultsRequest;
+    static deserializeBinaryFromReader(message: SetSketchDefaultsRequest, reader: jspb.BinaryReader): SetSketchDefaultsRequest;
+}
+
+export namespace SetSketchDefaultsRequest {
+    export type AsObject = {
+        sketchPath: string,
+        defaultFqbn: string,
+        defaultPortAddress: string,
+        defaultPortProtocol: string,
+    }
+}
+
+export class SetSketchDefaultsResponse extends jspb.Message { 
+    getDefaultFqbn(): string;
+    setDefaultFqbn(value: string): SetSketchDefaultsResponse;
+
+    getDefaultPortAddress(): string;
+    setDefaultPortAddress(value: string): SetSketchDefaultsResponse;
+
+    getDefaultPortProtocol(): string;
+    setDefaultPortProtocol(value: string): SetSketchDefaultsResponse;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SetSketchDefaultsResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: SetSketchDefaultsResponse): SetSketchDefaultsResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SetSketchDefaultsResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SetSketchDefaultsResponse;
+    static deserializeBinaryFromReader(message: SetSketchDefaultsResponse, reader: jspb.BinaryReader): SetSketchDefaultsResponse;
+}
+
+export namespace SetSketchDefaultsResponse {
+    export type AsObject = {
+        defaultFqbn: string,
+        defaultPortAddress: string,
+        defaultPortProtocol: string,
     }
 }
 

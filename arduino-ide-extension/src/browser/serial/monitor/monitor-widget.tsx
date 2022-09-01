@@ -173,7 +173,6 @@ export class MonitorWidget extends ReactWidget {
 
   private async startMonitor(): Promise<void> {
     await this.appStateService.reachedState('ready');
-    await this.boardsServiceProvider.reconciled;
     await this.syncSettings();
     await this.monitorManagerProxy.startMonitor();
   }

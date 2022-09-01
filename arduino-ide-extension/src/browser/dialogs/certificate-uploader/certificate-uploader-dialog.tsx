@@ -1,61 +1,50 @@
-import * as React from '@theia/core/shared/react';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import {
+  PreferenceScope,
+  PreferenceService,
+} from '@theia/core/lib/browser/preferences/preference-service';
+import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
+import { CommandRegistry } from '@theia/core/lib/common/command';
+import { nls } from '@theia/core/lib/common/nls';
+import type { Message } from '@theia/core/shared/@phosphor/messaging';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import {
   inject,
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { DialogProps } from '@theia/core/lib/browser/dialogs';
-import { AbstractDialog } from '../../theia/dialogs/dialogs';
-import { Widget } from '@theia/core/shared/@phosphor/widgets';
-import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
-import {
-  AvailableBoard,
-  BoardsServiceProvider,
-} from '../../boards/boards-service-provider';
-import { CertificateUploaderComponent } from './certificate-uploader-component';
-import { ArduinoPreferences } from '../../arduino-preferences';
-import {
-  PreferenceScope,
-  PreferenceService,
-} from '@theia/core/lib/browser/preferences/preference-service';
-import { CommandRegistry } from '@theia/core/lib/common/command';
-import { certificateList, sanifyCertString } from './utils';
+import * as React from '@theia/core/shared/react';
 import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
-import { nls } from '@theia/core/lib/common';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { createBoardList } from '../../../common/protocol/board-list';
+import { ArduinoPreferences } from '../../arduino-preferences';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { AbstractDialog } from '../../theia/dialogs/dialogs';
+import { CertificateUploaderComponent } from './certificate-uploader-component';
+import { certificateList, sanifyCertString } from './utils';
 
 @injectable()
 export class UploadCertificateDialogWidget extends ReactWidget {
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
-
+  private readonly boardsServiceProvider: BoardsServiceProvider;
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
-
+  private readonly arduinoPreferences: ArduinoPreferences;
   @inject(PreferenceService)
-  protected readonly preferenceService: PreferenceService;
-
+  private readonly preferenceService: PreferenceService;
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
-
+  private readonly commandRegistry: CommandRegistry;
   @inject(ArduinoFirmwareUploader)
-  protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
-
+  private readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
-  protected certificates: string[] = [];
-  protected updatableFqbns: string[] = [];
-  protected availableBoards: AvailableBoard[] = [];
+  private certificates: string[] = [];
+  private updatableFqbns: string[] = [];
+  private boardList = createBoardList({});
 
-  public busyCallback = (busy: boolean) => {
+  busyCallback = (busy: boolean) => {
     return;
   };
-
-  constructor() {
-    super();
-  }
 
   @postConstruct()
   protected init(): void {
@@ -81,8 +70,8 @@ export class UploadCertificateDialogWidget extends ReactWidget {
       })
     );
 
-    this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
-      this.availableBoards = availableBoards;
+    this.boardsServiceProvider.onBoardListDidChange((boardList) => {
+      this.boardList = boardList;
       this.update();
     });
   }
@@ -126,7 +115,7 @@ export class UploadCertificateDialogWidget extends ReactWidget {
   protected render(): React.ReactNode {
     return (
       <CertificateUploaderComponent
-        availableBoards={this.availableBoards}
+        boardList={this.boardList}
         certificates={this.certificates}
         updatableFqbns={this.updatableFqbns}
         addCertificate={this.addCertificate.bind(this)}
@@ -143,7 +132,7 @@ export class UploadCertificateDialogProps extends DialogProps {}
 @injectable()
 export class UploadCertificateDialog extends AbstractDialog<void> {
   @inject(UploadCertificateDialogWidget)
-  protected readonly widget: UploadCertificateDialogWidget;
+  private readonly widget: UploadCertificateDialogWidget;
 
   private busy = false;
 
