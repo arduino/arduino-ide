@@ -14,41 +14,30 @@ export class UploadRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): UploadRequest;
-
     getFqbn(): string;
     setFqbn(value: string): UploadRequest;
-
     getSketchPath(): string;
     setSketchPath(value: string): UploadRequest;
-
 
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
     setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): UploadRequest;
-
     getVerbose(): boolean;
     setVerbose(value: boolean): UploadRequest;
-
     getVerify(): boolean;
     setVerify(value: boolean): UploadRequest;
-
     getImportFile(): string;
     setImportFile(value: string): UploadRequest;
-
     getImportDir(): string;
     setImportDir(value: string): UploadRequest;
-
     getProgrammer(): string;
     setProgrammer(value: string): UploadRequest;
-
     getDryRun(): boolean;
     setDryRun(value: boolean): UploadRequest;
 
-
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadRequest.AsObject;
@@ -78,16 +67,27 @@ export namespace UploadRequest {
 }
 
 export class UploadResponse extends jspb.Message { 
+
+    hasOutStream(): boolean;
+    clearOutStream(): void;
     getOutStream(): Uint8Array | string;
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): UploadResponse;
 
+    hasErrStream(): boolean;
+    clearErrStream(): void;
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): UploadResponse;
 
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): UploadResult | undefined;
+    setResult(value?: UploadResult): UploadResponse;
+
+    getMessageCase(): UploadResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadResponse.AsObject;
@@ -103,6 +103,38 @@ export namespace UploadResponse {
     export type AsObject = {
         outStream: Uint8Array | string,
         errStream: Uint8Array | string,
+        result?: UploadResult.AsObject,
+    }
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        OUT_STREAM = 1,
+        ERR_STREAM = 2,
+        RESULT = 3,
+    }
+
+}
+
+export class UploadResult extends jspb.Message { 
+
+    hasUpdatedUploadPort(): boolean;
+    clearUpdatedUploadPort(): void;
+    getUpdatedUploadPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
+    setUpdatedUploadPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): UploadResult;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UploadResult.AsObject;
+    static toObject(includeInstance: boolean, msg: UploadResult): UploadResult.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UploadResult, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UploadResult;
+    static deserializeBinaryFromReader(message: UploadResult, reader: jspb.BinaryReader): UploadResult;
+}
+
+export namespace UploadResult {
+    export type AsObject = {
+        updatedUploadPort?: cc_arduino_cli_commands_v1_port_pb.Port.AsObject,
     }
 }
 
@@ -129,41 +161,30 @@ export class UploadUsingProgrammerRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): UploadUsingProgrammerRequest;
-
     getFqbn(): string;
     setFqbn(value: string): UploadUsingProgrammerRequest;
-
     getSketchPath(): string;
     setSketchPath(value: string): UploadUsingProgrammerRequest;
-
 
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
     setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): UploadUsingProgrammerRequest;
-
     getVerbose(): boolean;
     setVerbose(value: boolean): UploadUsingProgrammerRequest;
-
     getVerify(): boolean;
     setVerify(value: boolean): UploadUsingProgrammerRequest;
-
     getImportFile(): string;
     setImportFile(value: string): UploadUsingProgrammerRequest;
-
     getImportDir(): string;
     setImportDir(value: string): UploadUsingProgrammerRequest;
-
     getProgrammer(): string;
     setProgrammer(value: string): UploadUsingProgrammerRequest;
-
     getDryRun(): boolean;
     setDryRun(value: boolean): UploadUsingProgrammerRequest;
 
-
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadUsingProgrammerRequest.AsObject;
@@ -197,12 +218,10 @@ export class UploadUsingProgrammerResponse extends jspb.Message {
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): UploadUsingProgrammerResponse;
-
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): UploadUsingProgrammerResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadUsingProgrammerResponse.AsObject;
@@ -227,32 +246,24 @@ export class BurnBootloaderRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BurnBootloaderRequest;
-
     getFqbn(): string;
     setFqbn(value: string): BurnBootloaderRequest;
-
 
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
     setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): BurnBootloaderRequest;
-
     getVerbose(): boolean;
     setVerbose(value: boolean): BurnBootloaderRequest;
-
     getVerify(): boolean;
     setVerify(value: boolean): BurnBootloaderRequest;
-
     getProgrammer(): string;
     setProgrammer(value: string): BurnBootloaderRequest;
-
     getDryRun(): boolean;
     setDryRun(value: boolean): BurnBootloaderRequest;
 
-
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BurnBootloaderRequest.AsObject;
@@ -283,12 +294,10 @@ export class BurnBootloaderResponse extends jspb.Message {
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): BurnBootloaderResponse;
-
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): BurnBootloaderResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BurnBootloaderResponse.AsObject;
@@ -313,10 +322,8 @@ export class ListProgrammersAvailableForUploadRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): ListProgrammersAvailableForUploadRequest;
-
     getFqbn(): string;
     setFqbn(value: string): ListProgrammersAvailableForUploadRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListProgrammersAvailableForUploadRequest.AsObject;
@@ -341,7 +348,6 @@ export class ListProgrammersAvailableForUploadResponse extends jspb.Message {
     setProgrammersList(value: Array<cc_arduino_cli_commands_v1_common_pb.Programmer>): ListProgrammersAvailableForUploadResponse;
     addProgrammers(value?: cc_arduino_cli_commands_v1_common_pb.Programmer, index?: number): cc_arduino_cli_commands_v1_common_pb.Programmer;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListProgrammersAvailableForUploadResponse.AsObject;
     static toObject(includeInstance: boolean, msg: ListProgrammersAvailableForUploadResponse): ListProgrammersAvailableForUploadResponse.AsObject;
@@ -364,13 +370,10 @@ export class SupportedUserFieldsRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): SupportedUserFieldsRequest;
-
     getFqbn(): string;
     setFqbn(value: string): SupportedUserFieldsRequest;
-
     getProtocol(): string;
     setProtocol(value: string): SupportedUserFieldsRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SupportedUserFieldsRequest.AsObject;
@@ -393,16 +396,12 @@ export namespace SupportedUserFieldsRequest {
 export class UserField extends jspb.Message { 
     getToolId(): string;
     setToolId(value: string): UserField;
-
     getName(): string;
     setName(value: string): UserField;
-
     getLabel(): string;
     setLabel(value: string): UserField;
-
     getSecret(): boolean;
     setSecret(value: boolean): UserField;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UserField.AsObject;
@@ -428,7 +427,6 @@ export class SupportedUserFieldsResponse extends jspb.Message {
     getUserFieldsList(): Array<UserField>;
     setUserFieldsList(value: Array<UserField>): SupportedUserFieldsResponse;
     addUserFields(value?: UserField, index?: number): UserField;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SupportedUserFieldsResponse.AsObject;

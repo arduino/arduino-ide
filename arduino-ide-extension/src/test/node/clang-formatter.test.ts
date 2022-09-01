@@ -12,7 +12,7 @@ import {
   ClangFormatter,
 } from '../../node/clang-formatter';
 import { spawnCommand } from '../../node/exec-util';
-import { createBaseContainer, startDaemon } from './test-bindings';
+import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 const unformattedContent = `void  setup ( )  { pinMode(LED_BUILTIN, OUTPUT);
 }

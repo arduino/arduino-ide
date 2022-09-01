@@ -94,6 +94,13 @@
         "--colors",
         "**/${fileBasenameNoExtension}.js"
       ],
+      "outFiles": [
+        "${workspaceRoot}/electron-app/src-gen/backend/*.js",
+        "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
+        "${workspaceRoot}/electron-app/lib/**/*.js",
+        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js",
+        "${workspaceRoot}/node_modules/@theia/**/*.js"
+      ],
       "env": {
         "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
         "IDE2_TEST": "true"

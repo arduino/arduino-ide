@@ -6,15 +6,16 @@ import type { ArduinoState } from 'vscode-arduino-api';
 import {
   BoardsService,
   CompileSummary,
-  Port,
   isCompileSummary,
+  BoardsConfig,
+  PortIdentifier,
+  resolveDetectedPort,
 } from '../../common/protocol';
 import {
   toApiBoardDetails,
   toApiCompileSummary,
   toApiPort,
 } from '../../common/protocol/arduino-context-mapper';
-import type { BoardsConfig } from '../boards/boards-config';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { CurrentSketch } from '../sketches-service-client-impl';
@@ -44,8 +45,8 @@ export class UpdateArduinoState extends SketchContribution {
 
   override onStart(): void {
     this.toDispose.pushAll([
-      this.boardsServiceProvider.onBoardsConfigChanged((config) =>
-        this.updateBoardsConfig(config)
+      this.boardsServiceProvider.onBoardsConfigDidChange(() =>
+        this.updateBoardsConfig(this.boardsServiceProvider.boardsConfig)
       ),
       this.sketchServiceClient.onCurrentSketchDidChange((sketch) =>
         this.updateSketchPath(sketch)
@@ -75,9 +76,7 @@ export class UpdateArduinoState extends SketchContribution {
   }
 
   override onReady(): void {
-    this.boardsServiceProvider.reconciled.then(() => {
-      this.updateBoardsConfig(this.boardsServiceProvider.boardsConfig);
-    });
+    this.updateBoardsConfig(this.boardsServiceProvider.boardsConfig); // TODO: verify!
     this.updateSketchPath(this.sketchServiceClient.tryGetCurrentSketch());
     this.updateUserDirPath(this.configService.tryGetSketchDirUri());
     this.updateDataDirPath(this.configService.tryGetDataDirUri());
@@ -106,9 +105,7 @@ export class UpdateArduinoState extends SketchContribution {
     });
   }
 
-  private async updateBoardsConfig(
-    boardsConfig: BoardsConfig.Config
-  ): Promise<void> {
+  private async updateBoardsConfig(boardsConfig: BoardsConfig): Promise<void> {
     const fqbn = boardsConfig.selectedBoard?.fqbn;
     const port = boardsConfig.selectedPort;
     await this.updateFqbn(fqbn);
@@ -146,8 +143,11 @@ export class UpdateArduinoState extends SketchContribution {
     });
   }
 
-  private async updatePort(port: Port | undefined): Promise<void> {
-    const apiPort = port && toApiPort(port);
+  private async updatePort(port: PortIdentifier | undefined): Promise<void> {
+    const resolvedPort =
+      port &&
+      resolveDetectedPort(port, this.boardsServiceProvider.detectedPorts);
+    const apiPort = resolvedPort && toApiPort(resolvedPort);
     return this.updateState({ key: 'port', value: apiPort });
   }
 
@@ -171,9 +171,6 @@ export class UpdateArduinoState extends SketchContribution {
     params: UpdateStateParams<T>
   ): Promise<void> {
     await this.hostedPluginSupport.didStart;
-    return this.commandService.executeCommand(
-      'arduinoAPI.updateState',
-      params
-    );
+    return this.commandService.executeCommand('arduinoAPI.updateState', params);
   }
 }

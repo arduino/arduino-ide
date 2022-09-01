@@ -11,7 +11,7 @@ import {
   SketchesService,
   isCompileSummary,
 } from '../../common/protocol';
-import { createBaseContainer, startDaemon } from './test-bindings';
+import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 const testTimeout = 30_000;
 const setupTimeout = 5 * 60 * 1_000; // five minutes

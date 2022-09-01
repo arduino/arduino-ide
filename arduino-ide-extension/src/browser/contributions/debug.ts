@@ -5,8 +5,10 @@ import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { NotificationCenter } from '../notification-center';
 import {
   Board,
+  BoardIdentifier,
   BoardsService,
   ExecutableService,
+  isBoardIdentifierChangeEvent,
   Sketch,
 } from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
@@ -88,9 +90,11 @@ export class Debug extends SketchContribution {
             : Debug.Commands.START_DEBUGGING.label
         }`)
     );
-    this.boardsServiceProvider.onBoardsConfigChanged(({ selectedBoard }) =>
-      this.refreshState(selectedBoard)
-    );
+    this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+      if (isBoardIdentifierChangeEvent(event)) {
+        this.refreshState(event.selectedBoard);
+      }
+    });
     this.notificationCenter.onPlatformDidInstall(() => this.refreshState());
     this.notificationCenter.onPlatformDidUninstall(() => this.refreshState());
   }
@@ -169,7 +173,7 @@ export class Debug extends SketchContribution {
   }
 
   private async startDebug(
-    board: Board | undefined = this.boardsServiceProvider.boardsConfig
+    board: BoardIdentifier | undefined = this.boardsServiceProvider.boardsConfig
       .selectedBoard
   ): Promise<void> {
     if (!board) {

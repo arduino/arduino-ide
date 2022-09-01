@@ -1,37 +1,38 @@
 import { nls } from '@theia/core/lib/common';
 import React from '@theia/core/shared/react';
-import { AvailableBoard } from '../../boards/boards-service-provider';
+import {
+  BoardList,
+  BoardListItemWithBoard,
+  InferredBoardListItem,
+  isInferredBoardListItem,
+} from '../../../common/protocol/board-list';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 
-type BoardOption = { value: string; label: string };
+export type BoardOptionValue = BoardListItemWithBoard | InferredBoardListItem;
+type BoardOption = { value: BoardOptionValue | undefined; label: string };
 
 export const SelectBoardComponent = ({
-  availableBoards,
+  boardList,
   updatableFqbns,
-  onBoardSelect,
-  selectedBoard,
+  onItemSelect,
+  selectedItem,
   busy,
 }: {
-  availableBoards: AvailableBoard[];
+  boardList: BoardList;
   updatableFqbns: string[];
-  onBoardSelect: (board: AvailableBoard | null) => void;
-  selectedBoard: AvailableBoard | null;
+  onItemSelect: (item: BoardOptionValue | null) => void;
+  selectedItem: BoardOptionValue | null;
   busy: boolean;
 }): React.ReactElement => {
   const [selectOptions, setSelectOptions] = React.useState<BoardOption[]>([]);
 
-  const [selectBoardPlaceholder, setSelectBoardPlaceholder] =
-    React.useState('');
+  const [selectItemPlaceholder, setSelectBoardPlaceholder] = React.useState('');
 
   const selectOption = React.useCallback(
-    (boardOpt: BoardOption) => {
-      onBoardSelect(
-        (boardOpt &&
-          availableBoards.find((board) => board.fqbn === boardOpt.value)) ||
-          null
-      );
+    (boardOpt: BoardOption | null) => {
+      onItemSelect(boardOpt?.value ?? null);
     },
-    [availableBoards, onBoardSelect]
+    [onItemSelect]
   );
 
   React.useEffect(() => {
@@ -44,26 +45,33 @@ export const SelectBoardComponent = ({
       'arduino/certificate/selectBoard',
       'Select a board...'
     );
+    const updatableBoards = boardList.boards.filter((item) => {
+      const fqbn = (
+        isInferredBoardListItem(item) ? item.inferredBoard : item.board
+      ).fqbn;
+      return fqbn && updatableFqbns.includes(fqbn);
+    });
     let selBoard = -1;
-    const updatableBoards = availableBoards.filter(
-      (board) => board.port && board.fqbn && updatableFqbns.includes(board.fqbn)
-    );
-    const boardsList: BoardOption[] = updatableBoards.map((board, i) => {
-      if (board.selected) {
+
+    const boardOptions: BoardOption[] = updatableBoards.map((item, i) => {
+      if (selectedItem === item) {
         selBoard = i;
       }
+      const board = isInferredBoardListItem(item)
+        ? item.inferredBoard
+        : item.board;
       return {
         label: nls.localize(
           'arduino/certificate/boardAtPort',
           '{0} at {1}',
           board.name,
-          board.port?.address ?? ''
+          item.port?.address ?? ''
         ),
-        value: board.fqbn || '',
+        value: item,
       };
     });
 
-    if (boardsList.length === 0) {
+    if (boardOptions.length === 0) {
       placeholderTxt = nls.localize(
         'arduino/certificate/noSupportedBoardConnected',
         'No supported board connected'
@@ -71,32 +79,32 @@ export const SelectBoardComponent = ({
     }
 
     setSelectBoardPlaceholder(placeholderTxt);
-    setSelectOptions(boardsList);
+    setSelectOptions(boardOptions);
 
-    if (selectedBoard) {
-      selBoard = boardsList
-        .map((boardOpt) => boardOpt.value)
-        .indexOf(selectedBoard.fqbn || '');
+    if (selectedItem) {
+      selBoard = updatableBoards.indexOf(selectedItem);
     }
 
-    selectOption(boardsList[selBoard] || null);
-  }, [busy, availableBoards, selectOption, updatableFqbns, selectedBoard]);
-
+    selectOption(boardOptions[selBoard] || null);
+  }, [busy, boardList, selectOption, updatableFqbns, selectedItem]);
   return (
     <ArduinoSelect
       id="board-select"
       menuPosition="fixed"
       isDisabled={selectOptions.length === 0 || busy}
-      placeholder={selectBoardPlaceholder}
+      placeholder={selectItemPlaceholder}
       options={selectOptions}
       value={
-        (selectedBoard && {
-          value: selectedBoard.fqbn,
+        (selectedItem && {
+          value: selectedItem,
           label: nls.localize(
             'arduino/certificate/boardAtPort',
             '{0} at {1}',
-            selectedBoard.name,
-            selectedBoard.port?.address ?? ''
+            (isInferredBoardListItem(selectedItem)
+              ? selectedItem.inferredBoard
+              : selectedItem.board
+            ).name,
+            selectedItem.port.address ?? ''
           ),
         }) ||
         null

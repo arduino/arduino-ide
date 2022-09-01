@@ -5,7 +5,6 @@
 /* eslint-disable */
 
 import * as grpc from "@grpc/grpc-js";
-import {handleClientStreamingCall} from "@grpc/grpc-js/build/src/server-call";
 import * as cc_arduino_cli_commands_v1_commands_pb from "../../../../../cc/arduino/cli/commands/v1/commands_pb";
 import * as google_rpc_status_pb from "../../../../../google/rpc/status_pb";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
@@ -26,6 +25,7 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     newSketch: IArduinoCoreServiceService_INewSketch;
     loadSketch: IArduinoCoreServiceService_ILoadSketch;
     archiveSketch: IArduinoCoreServiceService_IArchiveSketch;
+    setSketchDefaults: IArduinoCoreServiceService_ISetSketchDefaults;
     boardDetails: IArduinoCoreServiceService_IBoardDetails;
     boardList: IArduinoCoreServiceService_IBoardList;
     boardListAll: IArduinoCoreServiceService_IBoardListAll;
@@ -137,6 +137,15 @@ interface IArduinoCoreServiceService_IArchiveSketch extends grpc.MethodDefinitio
     requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest>;
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse>;
+}
+interface IArduinoCoreServiceService_ISetSketchDefaults extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/SetSketchDefaults";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse>;
 }
 interface IArduinoCoreServiceService_IBoardDetails extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardDetails";
@@ -402,7 +411,7 @@ interface IArduinoCoreServiceService_IEnumerateMonitorPortSettings extends grpc.
 
 export const ArduinoCoreServiceService: IArduinoCoreServiceService;
 
-export interface IArduinoCoreServiceServer {
+export interface IArduinoCoreServiceServer extends grpc.UntypedServiceImplementation {
     create: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.CreateRequest, cc_arduino_cli_commands_v1_commands_pb.CreateResponse>;
     init: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.InitRequest, cc_arduino_cli_commands_v1_commands_pb.InitResponse>;
     destroy: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, cc_arduino_cli_commands_v1_commands_pb.DestroyResponse>;
@@ -412,6 +421,7 @@ export interface IArduinoCoreServiceServer {
     newSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse>;
     loadSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse>;
     archiveSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse>;
+    setSketchDefaults: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse>;
     boardDetails: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse>;
     boardList: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardListRequest, cc_arduino_cli_commands_v1_board_pb.BoardListResponse>;
     boardListAll: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardListAllRequest, cc_arduino_cli_commands_v1_board_pb.BoardListAllResponse>;
@@ -468,6 +478,9 @@ export interface IArduinoCoreServiceClient {
     archiveSketch(request: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse) => void): grpc.ClientUnaryCall;
     archiveSketch(request: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse) => void): grpc.ClientUnaryCall;
     archiveSketch(request: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse) => void): grpc.ClientUnaryCall;
+    setSketchDefaults(request: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse) => void): grpc.ClientUnaryCall;
+    setSketchDefaults(request: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse) => void): grpc.ClientUnaryCall;
+    setSketchDefaults(request: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse) => void): grpc.ClientUnaryCall;
     boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
@@ -568,6 +581,9 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public archiveSketch(request: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse) => void): grpc.ClientUnaryCall;
     public archiveSketch(request: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse) => void): grpc.ClientUnaryCall;
     public archiveSketch(request: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse) => void): grpc.ClientUnaryCall;
+    public setSketchDefaults(request: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse) => void): grpc.ClientUnaryCall;
+    public setSketchDefaults(request: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse) => void): grpc.ClientUnaryCall;
+    public setSketchDefaults(request: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse) => void): grpc.ClientUnaryCall;
     public boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     public boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     public boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;

@@ -12,7 +12,7 @@ import { sync as rimrafSync } from 'rimraf';
 import { Sketch, SketchesService } from '../../common/protocol';
 import { SketchesServiceImpl } from '../../node/sketches-service-impl';
 import { ErrnoException } from '../../node/utils/errors';
-import { createBaseContainer, startDaemon } from './test-bindings';
+import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 const testTimeout = 10_000;
 

@@ -15,26 +15,21 @@ export class MonitorRequest extends jspb.Message {
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): MonitorRequest;
 
-
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
     setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): MonitorRequest;
-
     getFqbn(): string;
     setFqbn(value: string): MonitorRequest;
-
     getTxData(): Uint8Array | string;
     getTxData_asU8(): Uint8Array;
     getTxData_asB64(): string;
     setTxData(value: Uint8Array | string): MonitorRequest;
 
-
     hasPortConfiguration(): boolean;
     clearPortConfiguration(): void;
     getPortConfiguration(): MonitorPortConfiguration | undefined;
     setPortConfiguration(value?: MonitorPortConfiguration): MonitorRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorRequest.AsObject;
@@ -62,7 +57,6 @@ export class MonitorPortConfiguration extends jspb.Message {
     setSettingsList(value: Array<MonitorPortSetting>): MonitorPortConfiguration;
     addSettings(value?: MonitorPortSetting, index?: number): MonitorPortSetting;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorPortConfiguration.AsObject;
     static toObject(includeInstance: boolean, msg: MonitorPortConfiguration): MonitorPortConfiguration.AsObject;
@@ -82,20 +76,16 @@ export namespace MonitorPortConfiguration {
 export class MonitorResponse extends jspb.Message { 
     getError(): string;
     setError(value: string): MonitorResponse;
-
     getRxData(): Uint8Array | string;
     getRxData_asU8(): Uint8Array;
     getRxData_asB64(): string;
     setRxData(value: Uint8Array | string): MonitorResponse;
-
     clearAppliedSettingsList(): void;
     getAppliedSettingsList(): Array<MonitorPortSetting>;
     setAppliedSettingsList(value: Array<MonitorPortSetting>): MonitorResponse;
     addAppliedSettings(value?: MonitorPortSetting, index?: number): MonitorPortSetting;
-
     getSuccess(): boolean;
     setSuccess(value: boolean): MonitorResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorResponse.AsObject;
@@ -119,10 +109,8 @@ export namespace MonitorResponse {
 export class MonitorPortSetting extends jspb.Message { 
     getSettingId(): string;
     setSettingId(value: string): MonitorPortSetting;
-
     getValue(): string;
     setValue(value: string): MonitorPortSetting;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorPortSetting.AsObject;
@@ -147,13 +135,10 @@ export class EnumerateMonitorPortSettingsRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): EnumerateMonitorPortSettingsRequest;
-
     getPortProtocol(): string;
     setPortProtocol(value: string): EnumerateMonitorPortSettingsRequest;
-
     getFqbn(): string;
     setFqbn(value: string): EnumerateMonitorPortSettingsRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): EnumerateMonitorPortSettingsRequest.AsObject;
@@ -179,7 +164,6 @@ export class EnumerateMonitorPortSettingsResponse extends jspb.Message {
     setSettingsList(value: Array<MonitorPortSettingDescriptor>): EnumerateMonitorPortSettingsResponse;
     addSettings(value?: MonitorPortSettingDescriptor, index?: number): MonitorPortSettingDescriptor;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): EnumerateMonitorPortSettingsResponse.AsObject;
     static toObject(includeInstance: boolean, msg: EnumerateMonitorPortSettingsResponse): EnumerateMonitorPortSettingsResponse.AsObject;
@@ -199,21 +183,16 @@ export namespace EnumerateMonitorPortSettingsResponse {
 export class MonitorPortSettingDescriptor extends jspb.Message { 
     getSettingId(): string;
     setSettingId(value: string): MonitorPortSettingDescriptor;
-
     getLabel(): string;
     setLabel(value: string): MonitorPortSettingDescriptor;
-
     getType(): string;
     setType(value: string): MonitorPortSettingDescriptor;
-
     clearEnumValuesList(): void;
     getEnumValuesList(): Array<string>;
     setEnumValuesList(value: Array<string>): MonitorPortSettingDescriptor;
     addEnumValues(value: string, index?: number): string;
-
     getValue(): string;
     setValue(value: string): MonitorPortSettingDescriptor;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorPortSettingDescriptor.AsObject;

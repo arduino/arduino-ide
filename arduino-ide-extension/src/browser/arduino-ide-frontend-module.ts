@@ -27,7 +27,10 @@ import { SketchesServiceClientImpl } from './sketches-service-client-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
-import { BoardsServiceProvider } from './boards/boards-service-provider';
+import {
+  BoardListDumper,
+  BoardsServiceProvider,
+} from './boards/boards-service-provider';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { WorkspaceService } from './theia/workspace/workspace-service';
 import { OutlineViewContribution as TheiaOutlineViewContribution } from '@theia/outline-view/lib/browser/outline-view-contribution';
@@ -61,7 +64,6 @@ import {
   BoardsConfigDialog,
   BoardsConfigDialogProps,
 } from './boards/boards-config-dialog';
-import { BoardsConfigDialogWidget } from './boards/boards-config-dialog-widget';
 import { ScmContribution as TheiaScmContribution } from '@theia/scm/lib/browser/scm-contribution';
 import { ScmContribution } from './theia/scm/scm-contribution';
 import { SearchInWorkspaceFrontendContribution as TheiaSearchInWorkspaceFrontendContribution } from '@theia/search-in-workspace/lib/browser/search-in-workspace-frontend-contribution';
@@ -100,7 +102,7 @@ import {
   FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
   ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution,
 } from '@theia/core/lib/browser/connection-status-service';
-import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
+import { BoardsDataMenuUpdater } from './contributions/boards-data-menu-updater';
 import { BoardsDataStore } from './boards/boards-data-store';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { bindContributionProvider } from '@theia/core/lib/common/contribution-provider';
@@ -445,11 +447,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BoardsServiceProvider).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(BoardsServiceProvider);
   bind(CommandContribution).toService(BoardsServiceProvider);
+  bind(BoardListDumper).toSelf().inSingletonScope();
 
   // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
-  bind(FrontendApplicationContribution)
-    .to(BoardsDataMenuUpdater)
-    .inSingletonScope();
   bind(BoardsDataStore).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(BoardsDataStore);
   // Logger for the Arduino daemon
@@ -478,7 +478,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(OpenHandler).toService(BoardsListWidgetFrontendContribution);
 
   // Board select dialog
-  bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
   bind(BoardsConfigDialog).toSelf().inSingletonScope();
   bind(BoardsConfigDialogProps).toConstantValue({
     title: nls.localize(
@@ -751,6 +750,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, CloudSketchbookContribution);
   Contribution.configure(bind, CreateCloudCopy);
   Contribution.configure(bind, UpdateArduinoState);
+  Contribution.configure(bind, BoardsDataMenuUpdater);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

@@ -13,22 +13,16 @@ export class PlatformInstallRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformInstallRequest;
-
     getPlatformPackage(): string;
     setPlatformPackage(value: string): PlatformInstallRequest;
-
     getArchitecture(): string;
     setArchitecture(value: string): PlatformInstallRequest;
-
     getVersion(): string;
     setVersion(value: string): PlatformInstallRequest;
-
     getSkipPostInstall(): boolean;
     setSkipPostInstall(value: boolean): PlatformInstallRequest;
-
     getNoOverwrite(): boolean;
     setNoOverwrite(value: boolean): PlatformInstallRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallRequest.AsObject;
@@ -58,12 +52,10 @@ export class PlatformInstallResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): PlatformInstallResponse;
 
-
     hasTaskProgress(): boolean;
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformInstallResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallResponse.AsObject;
@@ -105,16 +97,12 @@ export class PlatformDownloadRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformDownloadRequest;
-
     getPlatformPackage(): string;
     setPlatformPackage(value: string): PlatformDownloadRequest;
-
     getArchitecture(): string;
     setArchitecture(value: string): PlatformDownloadRequest;
-
     getVersion(): string;
     setVersion(value: string): PlatformDownloadRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformDownloadRequest.AsObject;
@@ -142,7 +130,6 @@ export class PlatformDownloadResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): PlatformDownloadResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformDownloadResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformDownloadResponse): PlatformDownloadResponse.AsObject;
@@ -165,13 +152,10 @@ export class PlatformUninstallRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformUninstallRequest;
-
     getPlatformPackage(): string;
     setPlatformPackage(value: string): PlatformUninstallRequest;
-
     getArchitecture(): string;
     setArchitecture(value: string): PlatformUninstallRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUninstallRequest.AsObject;
@@ -197,7 +181,6 @@ export class PlatformUninstallResponse extends jspb.Message {
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformUninstallResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUninstallResponse.AsObject;
@@ -238,16 +221,12 @@ export class PlatformUpgradeRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformUpgradeRequest;
-
     getPlatformPackage(): string;
     setPlatformPackage(value: string): PlatformUpgradeRequest;
-
     getArchitecture(): string;
     setArchitecture(value: string): PlatformUpgradeRequest;
-
     getSkipPostInstall(): boolean;
     setSkipPostInstall(value: boolean): PlatformUpgradeRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeRequest.AsObject;
@@ -275,18 +254,15 @@ export class PlatformUpgradeResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): PlatformUpgradeResponse;
 
-
     hasTaskProgress(): boolean;
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformUpgradeResponse;
 
-
     hasPlatform(): boolean;
     clearPlatform(): void;
     getPlatform(): cc_arduino_cli_commands_v1_common_pb.Platform | undefined;
     setPlatform(value?: cc_arduino_cli_commands_v1_common_pb.Platform): PlatformUpgradeResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeResponse.AsObject;
@@ -312,13 +288,10 @@ export class PlatformSearchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformSearchRequest;
-
     getSearchArgs(): string;
     setSearchArgs(value: string): PlatformSearchRequest;
-
     getAllVersions(): boolean;
     setAllVersions(value: boolean): PlatformSearchRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformSearchRequest.AsObject;
@@ -344,7 +317,6 @@ export class PlatformSearchResponse extends jspb.Message {
     setSearchOutputList(value: Array<cc_arduino_cli_commands_v1_common_pb.Platform>): PlatformSearchResponse;
     addSearchOutput(value?: cc_arduino_cli_commands_v1_common_pb.Platform, index?: number): cc_arduino_cli_commands_v1_common_pb.Platform;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformSearchResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformSearchResponse): PlatformSearchResponse.AsObject;
@@ -367,13 +339,10 @@ export class PlatformListRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformListRequest;
-
     getUpdatableOnly(): boolean;
     setUpdatableOnly(value: boolean): PlatformListRequest;
-
     getAll(): boolean;
     setAll(value: boolean): PlatformListRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformListRequest.AsObject;
@@ -398,7 +367,6 @@ export class PlatformListResponse extends jspb.Message {
     getInstalledPlatformsList(): Array<cc_arduino_cli_commands_v1_common_pb.Platform>;
     setInstalledPlatformsList(value: Array<cc_arduino_cli_commands_v1_common_pb.Platform>): PlatformListResponse;
     addInstalledPlatforms(value?: cc_arduino_cli_commands_v1_common_pb.Platform, index?: number): cc_arduino_cli_commands_v1_common_pb.Platform;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformListResponse.AsObject;

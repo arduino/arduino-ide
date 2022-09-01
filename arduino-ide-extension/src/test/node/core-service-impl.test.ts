@@ -1,5 +1,10 @@
 import { expect } from 'chai';
-import { Port } from '../../node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import {
+  PortIdentifier,
+  portIdentifierEquals,
+  Port,
+} from '../../common/protocol/boards-service';
+import { Port as RpcPort } from '../../node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { CoreServiceImpl } from '../../node/core-service-impl';
 
 describe('core-service-impl', () => {
@@ -22,9 +27,18 @@ describe('core-service-impl', () => {
         protocolLabel: 'serial port',
         properties,
       } as const;
-      const actual = new CoreServiceImpl()['createPort'](port);
+      const resolve = (toResolve: PortIdentifier): Port | undefined => {
+        if (portIdentifierEquals(toResolve, port)) {
+          return port;
+        }
+        return undefined;
+      };
+      const actual = new CoreServiceImpl()['createPort'](
+        { protocol: port.protocol, address: port.address },
+        resolve
+      );
       expect(actual).to.be.not.undefined;
-      const expected = new Port()
+      const expected = new RpcPort()
         .setAddress(port.address)
         .setHardwareId(port.hardwareId)
         .setLabel(port.addressLabel)
@@ -33,7 +47,7 @@ describe('core-service-impl', () => {
       Object.entries(properties).forEach(([key, value]) =>
         expected.getPropertiesMap().set(key, value)
       );
-      expect((<Port>actual).toObject(false)).to.be.deep.equal(
+      expect((<RpcPort>actual).toObject(false)).to.be.deep.equal(
         expected.toObject(false)
       );
     });

@@ -172,20 +172,19 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
   width: 210px;
 }
 
-.arduino-boards-toolbar-item--protocol, 
+.arduino-boards-toolbar-item--protocol,
 .arduino-boards-dropdown-item--protocol {
   align-items: center;
   display: flex;
   font-size: 16px;
 }
 
-.arduino-boards-toolbar-item--protocol ,
+.arduino-boards-toolbar-item--protocol,
 .arduino-boards-dropdown-item--protocol {
   color: var(--theia-arduino-toolbar-dropdown-label);
 }
 
-.arduino-boards-toolbar-item-container
-  .arduino-boards-toolbar-item {
+.arduino-boards-toolbar-item-container .arduino-boards-toolbar-item {
   display: flex;
   align-items: baseline;
   width: 100%;
@@ -196,7 +195,10 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 }
 
 .arduino-boards-toolbar-item--label-connected {
+  font-family: 'Open Sans Bold';
+  font-style: normal;
   font-weight: 700;
+  font-size: 14px;
 }
 
 .arduino-boards-toolbar-item-container .caret {
@@ -208,6 +210,10 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
   margin: -1px;
   z-index: 1;
   border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
 }
 
 .arduino-boards-dropdown-list:focus {
@@ -230,9 +236,13 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
   cursor: default;
   display: flex;
   font-size: var(--theia-ui-font-size1);
-  gap: 10px;
   justify-content: space-between;
   padding: 10px;
+}
+
+.arduino-boards-dropdown-item--board-header {
+  display: flex;
+  align-items: center;
 }
 
 .arduino-boards-dropdown-item--label {
@@ -240,8 +250,31 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
   flex: 1;
 }
 
+/* Redefine default codicon size https://github.com/microsoft/vscode/commit/38cd0a377b7abef34fb07fe770fc633e68819ba6 */
+.arduino-boards-dropdown-item .codicon[class*='codicon-'] {
+  font-size: 14px;
+}
+
+.arduino-boards-dropdown-item .p-TabBar-toolbar {
+  padding: 0px;
+  margin: 0px;
+  flex-direction: column;
+}
+
+.arduino-boards-dropdown-item .p-TabBar-toolbar .item {
+  margin: 0px;
+}
+
+.arduino-boards-dropdown-item .p-TabBar-toolbar .item .action-label {
+  padding: 0px;
+}
+
 .arduino-boards-dropdown-item--board-label {
   font-size: 14px;
+}
+
+.arduino-boards-dropdown-item .arduino-boards-dropdown-item--protocol {
+  margin-right: 10px;
 }
 
 .arduino-boards-dropdown-item--port-label {
@@ -265,10 +298,6 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 
 .arduino-boards-dropdown-item--selected .fa {
   color: var(--theia-arduino-toolbar-dropdown-iconSelected);
-}
-
-.arduino-boards-dropdown-item .fa-check {
-  align-self: center;
 }
 
 .arduino-board-dropdown-footer {

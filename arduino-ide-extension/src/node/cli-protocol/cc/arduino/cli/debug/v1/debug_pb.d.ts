@@ -14,15 +14,12 @@ export class DebugRequest extends jspb.Message {
     clearDebugRequest(): void;
     getDebugRequest(): DebugConfigRequest | undefined;
     setDebugRequest(value?: DebugConfigRequest): DebugRequest;
-
     getData(): Uint8Array | string;
     getData_asU8(): Uint8Array;
     getData_asB64(): string;
     setData(value: Uint8Array | string): DebugRequest;
-
     getSendInterrupt(): boolean;
     setSendInterrupt(value: boolean): DebugRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DebugRequest.AsObject;
@@ -48,28 +45,21 @@ export class DebugConfigRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): DebugConfigRequest;
-
     getFqbn(): string;
     setFqbn(value: string): DebugConfigRequest;
-
     getSketchPath(): string;
     setSketchPath(value: string): DebugConfigRequest;
-
 
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
     setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): DebugConfigRequest;
-
     getInterpreter(): string;
     setInterpreter(value: string): DebugConfigRequest;
-
     getImportDir(): string;
     setImportDir(value: string): DebugConfigRequest;
-
     getProgrammer(): string;
     setProgrammer(value: string): DebugConfigRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DebugConfigRequest.AsObject;
@@ -98,10 +88,8 @@ export class DebugResponse extends jspb.Message {
     getData_asU8(): Uint8Array;
     getData_asB64(): string;
     setData(value: Uint8Array | string): DebugResponse;
-
     getError(): string;
     setError(value: string): DebugResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DebugResponse.AsObject;
@@ -123,30 +111,22 @@ export namespace DebugResponse {
 export class GetDebugConfigResponse extends jspb.Message { 
     getExecutable(): string;
     setExecutable(value: string): GetDebugConfigResponse;
-
     getToolchain(): string;
     setToolchain(value: string): GetDebugConfigResponse;
-
     getToolchainPath(): string;
     setToolchainPath(value: string): GetDebugConfigResponse;
-
     getToolchainPrefix(): string;
     setToolchainPrefix(value: string): GetDebugConfigResponse;
-
     getServer(): string;
     setServer(value: string): GetDebugConfigResponse;
-
     getServerPath(): string;
     setServerPath(value: string): GetDebugConfigResponse;
-
 
     getToolchainConfigurationMap(): jspb.Map<string, string>;
     clearToolchainConfigurationMap(): void;
 
-
     getServerConfigurationMap(): jspb.Map<string, string>;
     clearServerConfigurationMap(): void;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetDebugConfigResponse.AsObject;

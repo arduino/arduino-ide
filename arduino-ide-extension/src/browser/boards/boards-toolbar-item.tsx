@@ -1,16 +1,21 @@
-import React from '@theia/core/shared/react';
-import * as ReactDOM from '@theia/core/shared/react-dom';
+import { TabBarToolbar } from '@theia/core/lib/browser/shell/tab-bar-toolbar/tab-bar-toolbar';
+import { codicon } from '@theia/core/lib/browser/widgets/widget';
 import { CommandRegistry } from '@theia/core/lib/common/command';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { Port } from '../../common/protocol';
-import { OpenBoardsConfig } from '../contributions/open-boards-config';
 import {
-  BoardsServiceProvider,
-  AvailableBoard,
-} from './boards-service-provider';
-import { nls } from '@theia/core/lib/common';
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { nls } from '@theia/core/lib/common/nls';
+import React from '@theia/core/shared/react';
+import ReactDOM from '@theia/core/shared/react-dom';
 import classNames from 'classnames';
-import { BoardsConfig } from './boards-config';
+import { boardIdentifierLabel, Port } from '../../common/protocol';
+import { BoardListItemUI } from '../../common/protocol/board-list';
+import { assertUnreachable } from '../../common/utils';
+import type {
+  BoardListUI,
+  BoardsServiceProvider,
+} from './boards-service-provider';
 
 export interface BoardsDropDownListCoords {
   readonly top: number;
@@ -22,18 +27,18 @@ export interface BoardsDropDownListCoords {
 export namespace BoardsDropDown {
   export interface Props {
     readonly coords: BoardsDropDownListCoords | 'hidden';
-    readonly items: Array<AvailableBoard & { onClick: () => void; port: Port }>;
+    readonly boardList: BoardListUI;
     readonly openBoardsConfig: () => void;
+    readonly hide: () => void;
   }
 }
 
-export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
-  protected dropdownElement: HTMLElement;
+export class BoardListDropDown extends React.Component<BoardsDropDown.Props> {
+  private dropdownElement: HTMLElement;
   private listRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: BoardsDropDown.Props) {
     super(props);
-
     this.listRef = React.createRef();
     let list = document.getElementById('boards-dropdown-container');
     if (!list) {
@@ -51,11 +56,14 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
   }
 
   override render(): React.ReactNode {
-    return ReactDOM.createPortal(this.renderNode(), this.dropdownElement);
+    return ReactDOM.createPortal(
+      this.renderBoardListItems(),
+      this.dropdownElement
+    );
   }
 
-  protected renderNode(): React.ReactNode {
-    const { coords, items } = this.props;
+  private renderBoardListItems(): React.ReactNode {
+    const { coords, boardList } = this.props;
     if (coords === 'hidden') {
       return '';
     }
@@ -74,14 +82,12 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
         tabIndex={0}
       >
         <div className="arduino-boards-dropdown-list--items-container">
-          {items
-            .map(({ name, port, selected, onClick }) => ({
-              boardLabel: name,
-              port,
-              selected,
-              onClick,
-            }))
-            .map(this.renderItem)}
+          {boardList.items.map((item, index) =>
+            this.renderBoardListItem({
+              item,
+              selected: index === boardList.selectedIndex,
+            })
+          )}
         </div>
         <div
           key={footerLabel}
@@ -95,31 +101,43 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
     );
   }
 
-  protected renderItem({
-    boardLabel,
-    port,
+  private readonly onDefaultAction = (item: BoardListItemUI): unknown => {
+    const { boardList, hide } = this.props;
+    const { type, params } = item.defaultAction;
+    hide();
+    switch (type) {
+      case 'select-boards-config': {
+        return boardList.select(params);
+      }
+      case 'edit-boards-config': {
+        return boardList.edit(params);
+      }
+      default:
+        return assertUnreachable(type);
+    }
+  };
+
+  private renderBoardListItem({
+    item,
     selected,
-    onClick,
   }: {
-    boardLabel: string;
-    port: Port;
-    selected?: boolean;
-    onClick: () => void;
+    item: BoardListItemUI;
+    selected: boolean;
   }): React.ReactNode {
-    const protocolIcon = iconNameFromProtocol(port.protocol);
+    const { boardLabel, portLabel, portProtocol, tooltip } = item.labels;
+    const port = item.port;
     const onKeyUp = (e: React.KeyboardEvent) => {
       if (e.key === 'Enter') {
-        onClick();
+        this.onDefaultAction(item);
       }
     };
-
     return (
       <div
-        key={`board-item--${boardLabel}-${port.address}`}
+        key={`board-item--${Port.keyOf(port)}`}
         className={classNames('arduino-boards-dropdown-item', {
           'arduino-boards-dropdown-item--selected': selected,
         })}
-        onClick={onClick}
+        onClick={() => this.onDefaultAction(item)}
         onKeyUp={onKeyUp}
         tabIndex={0}
       >
@@ -127,21 +145,81 @@ export class BoardsDropDown extends React.Component<BoardsDropDown.Props> {
           className={classNames(
             'arduino-boards-dropdown-item--protocol',
             'fa',
-            protocolIcon
+            iconNameFromProtocol(portProtocol)
           )}
         />
-        <div
-          className="arduino-boards-dropdown-item--label"
-          title={`${boardLabel}\n${port.address}`}
-        >
-          <div className="arduino-boards-dropdown-item--board-label noWrapInfo noselect">
-            {boardLabel}
+        <div className="arduino-boards-dropdown-item--label" title={tooltip}>
+          <div className="arduino-boards-dropdown-item--board-header">
+            <div className="arduino-boards-dropdown-item--board-label noWrapInfo noselect">
+              {boardLabel}
+            </div>
           </div>
           <div className="arduino-boards-dropdown-item--port-label noWrapInfo noselect">
-            {port.addressLabel}
+            {portLabel}
           </div>
         </div>
-        {selected ? <div className="fa fa-check" /> : ''}
+        {this.renderActions(item)}
+      </div>
+    );
+  }
+
+  private renderActions(item: BoardListItemUI): React.ReactNode {
+    const { boardList, hide } = this.props;
+    const { revert, edit } = item.otherActions;
+    if (!edit && !revert) {
+      return undefined;
+    }
+    const handleOnClick = (
+      event: React.MouseEvent<HTMLElement, MouseEvent>,
+      callback: () => void
+    ) => {
+      event.preventDefault();
+      event.stopPropagation();
+      hide();
+      callback();
+    };
+    return (
+      <div className={TabBarToolbar.Styles.TAB_BAR_TOOLBAR}>
+        {edit && (
+          <div
+            className={`${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} enabled`}
+          >
+            {
+              <div
+                id="edit"
+                className={codicon('pencil', true)}
+                title={nls.localize(
+                  'arduino/board/editBoardsConfig',
+                  'Edit Board and Port...'
+                )}
+                onClick={(event) =>
+                  handleOnClick(event, () => boardList.edit(edit.params))
+                }
+              />
+            }
+          </div>
+        )}
+        {revert && (
+          <div
+            className={`${TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM} enabled`}
+          >
+            {
+              <div
+                id="revert"
+                className={codicon('discard', true)}
+                title={nls.localize(
+                  'arduino/board/revertBoardsConfig',
+                  "Use '{0}' discovered on '{1}'",
+                  boardIdentifierLabel(revert.params.selectedBoard),
+                  item.labels.portLabel
+                )}
+                onClick={(event) =>
+                  handleOnClick(event, () => boardList.select(revert.params))
+                }
+              />
+            }
+          </div>
+        )}
       </div>
     );
   }
@@ -153,26 +231,27 @@ export class BoardsToolBarItem extends React.Component<
 > {
   static TOOLBAR_ID: 'boards-toolbar';
 
-  protected readonly toDispose: DisposableCollection =
-    new DisposableCollection();
+  private readonly toDispose: DisposableCollection;
 
   constructor(props: BoardsToolBarItem.Props) {
     super(props);
-
-    const { availableBoards } = props.boardsServiceProvider;
+    const { boardList } = props.boardsServiceProvider;
     this.state = {
-      availableBoards,
+      boardList,
       coords: 'hidden',
     };
-
-    document.addEventListener('click', () => {
-      this.setState({ coords: 'hidden' });
-    });
+    const listener = () => this.setState({ coords: 'hidden' });
+    document.addEventListener('click', listener);
+    this.toDispose = new DisposableCollection(
+      Disposable.create(() => document.removeEventListener('click', listener))
+    );
   }
 
   override componentDidMount(): void {
-    this.props.boardsServiceProvider.onAvailableBoardsChanged(
-      (availableBoards) => this.setState({ availableBoards })
+    this.toDispose.push(
+      this.props.boardsServiceProvider.onBoardListDidChange((boardList) =>
+        this.setState({ boardList })
+      )
     );
   }
 
@@ -180,7 +259,7 @@ export class BoardsToolBarItem extends React.Component<
     this.toDispose.dispose();
   }
 
-  protected readonly show = (event: React.MouseEvent<HTMLElement>): void => {
+  private readonly show = (event: React.MouseEvent<HTMLElement>): void => {
     const { currentTarget: element } = event;
     if (element instanceof HTMLElement) {
       if (this.state.coords === 'hidden') {
@@ -201,31 +280,26 @@ export class BoardsToolBarItem extends React.Component<
     event.nativeEvent.stopImmediatePropagation();
   };
 
+  private readonly hide = () => {
+    this.setState({ coords: 'hidden' });
+  };
+
   override render(): React.ReactNode {
-    const { coords, availableBoards } = this.state;
-    const { selectedBoard, selectedPort } =
-      this.props.boardsServiceProvider.boardsConfig;
-
-    const boardLabel =
-      selectedBoard?.name ||
-      nls.localize('arduino/board/selectBoard', 'Select Board');
-    const selectedPortLabel = portLabel(selectedPort?.address);
-
-    const isConnected = Boolean(selectedBoard && selectedPort);
-    const protocolIcon = isConnected
-      ? iconNameFromProtocol(selectedPort?.protocol || '')
+    const { coords, boardList } = this.state;
+    const { boardLabel, selected, portProtocol, tooltip } = boardList.labels;
+    const protocolIcon = portProtocol
+      ? iconNameFromProtocol(portProtocol)
       : null;
     const protocolIconClassNames = classNames(
       'arduino-boards-toolbar-item--protocol',
       'fa',
       protocolIcon
     );
-
     return (
       <React.Fragment>
         <div
           className="arduino-boards-toolbar-item-container"
-          title={selectedPortLabel}
+          title={tooltip}
           onClick={this.show}
         >
           {protocolIcon && <div className={protocolIconClassNames} />}
@@ -234,57 +308,22 @@ export class BoardsToolBarItem extends React.Component<
               'arduino-boards-toolbar-item--label',
               'noWrapInfo',
               'noselect',
-              { 'arduino-boards-toolbar-item--label-connected': isConnected }
+              { 'arduino-boards-toolbar-item--label-connected': selected }
             )}
           >
             {boardLabel}
           </div>
           <div className="fa fa-caret-down caret" />
         </div>
-        <BoardsDropDown
+        <BoardListDropDown
           coords={coords}
-          items={availableBoards
-            .filter(AvailableBoard.hasPort)
-            .map((board) => ({
-              ...board,
-              onClick: () => {
-                if (!board.fqbn) {
-                  const previousBoardConfig =
-                    this.props.boardsServiceProvider.boardsConfig;
-                  this.props.boardsServiceProvider.boardsConfig = {
-                    selectedPort: board.port,
-                  };
-                  this.openDialog(previousBoardConfig);
-                } else {
-                  this.props.boardsServiceProvider.boardsConfig = {
-                    selectedBoard: board,
-                    selectedPort: board.port,
-                  };
-                }
-                this.setState({ coords: 'hidden' });
-              },
-            }))}
-          openBoardsConfig={this.openDialog}
-        ></BoardsDropDown>
+          boardList={boardList}
+          openBoardsConfig={() => boardList.edit({ query: '' })}
+          hide={this.hide}
+        />
       </React.Fragment>
     );
   }
-
-  protected openDialog = async (
-    previousBoardConfig?: BoardsConfig.Config
-  ): Promise<void> => {
-    const selectedBoardConfig =
-      await this.props.commands.executeCommand<BoardsConfig.Config>(
-        OpenBoardsConfig.Commands.OPEN_DIALOG.id
-      );
-    if (
-      previousBoardConfig &&
-      (!selectedBoardConfig?.selectedPort ||
-        !selectedBoardConfig?.selectedBoard)
-    ) {
-      this.props.boardsServiceProvider.boardsConfig = previousBoardConfig;
-    }
-  };
 }
 export namespace BoardsToolBarItem {
   export interface Props {
@@ -293,7 +332,7 @@ export namespace BoardsToolBarItem {
   }
 
   export interface State {
-    availableBoards: AvailableBoard[];
+    boardList: BoardListUI;
     coords: BoardsDropDownListCoords | 'hidden';
   }
 }
@@ -304,19 +343,10 @@ function iconNameFromProtocol(protocol: string): string {
       return 'fa-arduino-technology-usb';
     case 'network':
       return 'fa-arduino-technology-connection';
-    /* 
-      Bluetooth ports are not listed yet from the CLI;
-      Not sure about the naming ('bluetooth'); make sure it's correct before uncommenting the following lines
-    */
-    // case 'bluetooth':
-    //   return 'fa-arduino-technology-bluetooth';
+    // it is fine to assign dedicated icons to the protocols used by the official boards,
+    // but other than that it is best to avoid implementing any special handling
+    // for specific protocols in the IDE codebase.
     default:
       return 'fa-arduino-technology-3dimensionscube';
   }
-}
-
-function portLabel(portName?: string): string {
-  return portName
-    ? nls.localize('arduino/board/portLabel', 'Port: {0}', portName)
-    : nls.localize('arduino/board/disconnected', 'Disconnected');
 }

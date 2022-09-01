@@ -9,23 +9,17 @@ import * as jspb from "google-protobuf";
 export class Port extends jspb.Message { 
     getAddress(): string;
     setAddress(value: string): Port;
-
     getLabel(): string;
     setLabel(value: string): Port;
-
     getProtocol(): string;
     setProtocol(value: string): Port;
-
     getProtocolLabel(): string;
     setProtocolLabel(value: string): Port;
 
-
     getPropertiesMap(): jspb.Map<string, string>;
     clearPropertiesMap(): void;
-
     getHardwareId(): string;
     setHardwareId(value: string): Port;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Port.AsObject;

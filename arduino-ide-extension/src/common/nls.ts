@@ -1,5 +1,6 @@
 import { nls } from '@theia/core/lib/common/nls';
 
+// TODO: rename constants: `Unknown` should be `unknownLabel`, change `Later` to `laterLabel`, etc.
 export const Unknown = nls.localize('arduino/common/unknown', 'Unknown');
 export const Later = nls.localize('arduino/common/later', 'Later');
 export const Updatable = nls.localize('arduino/common/updateable', 'Updatable');

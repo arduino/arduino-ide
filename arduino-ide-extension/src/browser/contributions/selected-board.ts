@@ -4,7 +4,10 @@ import {
 } from '@theia/core/lib/browser/status-bar/status-bar';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { BoardsConfig } from '../boards/boards-config';
+import type {
+  BoardList,
+  BoardListItem,
+} from '../../common/protocol/board-list';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { Contribution } from './contribution';
 
@@ -12,21 +15,21 @@ import { Contribution } from './contribution';
 export class SelectedBoard extends Contribution {
   @inject(StatusBar)
   private readonly statusBar: StatusBar;
-
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
   override onStart(): void {
-    this.boardsServiceProvider.onBoardsConfigChanged((config) =>
-      this.update(config)
+    this.boardsServiceProvider.onBoardListDidChange(() =>
+      this.update(this.boardsServiceProvider.boardList)
     );
   }
 
   override onReady(): void {
-    this.update(this.boardsServiceProvider.boardsConfig);
+    this.update(this.boardsServiceProvider.boardList);
   }
 
-  private update({ selectedBoard, selectedPort }: BoardsConfig.Config): void {
+  private update(boardList: BoardList): void {
+    const { selectedBoard, selectedPort } = boardList.boardsConfig;
     this.statusBar.setElement('arduino-selected-board', {
       alignment: StatusBarAlignment.RIGHT,
       text: selectedBoard
@@ -38,17 +41,30 @@ export class SelectedBoard extends Contribution {
       className: 'arduino-selected-board',
     });
     if (selectedBoard) {
+      const notConnectedLabel = nls.localize(
+        'arduino/common/notConnected',
+        '[not connected]'
+      );
+      let portLabel = notConnectedLabel;
+      if (selectedPort) {
+        portLabel = nls.localize(
+          'arduino/common/selectedOn',
+          'on {0}',
+          selectedPort.address
+        );
+        const selectedItem: BoardListItem | undefined =
+          boardList.items[boardList.selectedIndex];
+        if (!selectedItem) {
+          portLabel += ` ${notConnectedLabel}`; // append ` [not connected]` when the port is selected but it's not detected by the CLI
+        }
+      }
       this.statusBar.setElement('arduino-selected-port', {
         alignment: StatusBarAlignment.RIGHT,
-        text: selectedPort
-          ? nls.localize(
-              'arduino/common/selectedOn',
-              'on {0}',
-              selectedPort.address
-            )
-          : nls.localize('arduino/common/notConnected', '[not connected]'),
+        text: portLabel,
         className: 'arduino-selected-port',
       });
+    } else {
+      this.statusBar.removeElement('arduino-selected-port');
     }
   }
 }

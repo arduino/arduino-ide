@@ -15,89 +15,64 @@ export class CompileRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): CompileRequest;
-
     getFqbn(): string;
     setFqbn(value: string): CompileRequest;
-
     getSketchPath(): string;
     setSketchPath(value: string): CompileRequest;
-
     getShowProperties(): boolean;
     setShowProperties(value: boolean): CompileRequest;
-
     getPreprocess(): boolean;
     setPreprocess(value: boolean): CompileRequest;
-
     getBuildCachePath(): string;
     setBuildCachePath(value: string): CompileRequest;
-
     getBuildPath(): string;
     setBuildPath(value: string): CompileRequest;
-
     clearBuildPropertiesList(): void;
     getBuildPropertiesList(): Array<string>;
     setBuildPropertiesList(value: Array<string>): CompileRequest;
     addBuildProperties(value: string, index?: number): string;
-
     getWarnings(): string;
     setWarnings(value: string): CompileRequest;
-
     getVerbose(): boolean;
     setVerbose(value: boolean): CompileRequest;
-
     getQuiet(): boolean;
     setQuiet(value: boolean): CompileRequest;
-
     getJobs(): number;
     setJobs(value: number): CompileRequest;
-
     clearLibrariesList(): void;
     getLibrariesList(): Array<string>;
     setLibrariesList(value: Array<string>): CompileRequest;
     addLibraries(value: string, index?: number): string;
-
     getOptimizeForDebug(): boolean;
     setOptimizeForDebug(value: boolean): CompileRequest;
-
     getExportDir(): string;
     setExportDir(value: string): CompileRequest;
-
     getClean(): boolean;
     setClean(value: boolean): CompileRequest;
-
     getCreateCompilationDatabaseOnly(): boolean;
     setCreateCompilationDatabaseOnly(value: boolean): CompileRequest;
 
-
     getSourceOverrideMap(): jspb.Map<string, string>;
     clearSourceOverrideMap(): void;
-
 
     hasExportBinaries(): boolean;
     clearExportBinaries(): void;
     getExportBinaries(): google_protobuf_wrappers_pb.BoolValue | undefined;
     setExportBinaries(value?: google_protobuf_wrappers_pb.BoolValue): CompileRequest;
-
     clearLibraryList(): void;
     getLibraryList(): Array<string>;
     setLibraryList(value: Array<string>): CompileRequest;
     addLibrary(value: string, index?: number): string;
-
     getKeysKeychain(): string;
     setKeysKeychain(value: string): CompileRequest;
-
     getSignKey(): string;
     setSignKey(value: string): CompileRequest;
-
     getEncryptKey(): string;
     setEncryptKey(value: string): CompileRequest;
-
     getSkipLibrariesDiscovery(): boolean;
     setSkipLibrariesDiscovery(value: boolean): CompileRequest;
-
     getDoNotExpandBuildProperties(): boolean;
     setDoNotExpandBuildProperties(value: boolean): CompileRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -145,48 +120,39 @@ export class CompileResponse extends jspb.Message {
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): CompileResponse;
-
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): CompileResponse;
-
     getBuildPath(): string;
     setBuildPath(value: string): CompileResponse;
-
     clearUsedLibrariesList(): void;
     getUsedLibrariesList(): Array<cc_arduino_cli_commands_v1_lib_pb.Library>;
     setUsedLibrariesList(value: Array<cc_arduino_cli_commands_v1_lib_pb.Library>): CompileResponse;
     addUsedLibraries(value?: cc_arduino_cli_commands_v1_lib_pb.Library, index?: number): cc_arduino_cli_commands_v1_lib_pb.Library;
-
     clearExecutableSectionsSizeList(): void;
     getExecutableSectionsSizeList(): Array<ExecutableSectionSize>;
     setExecutableSectionsSizeList(value: Array<ExecutableSectionSize>): CompileResponse;
     addExecutableSectionsSize(value?: ExecutableSectionSize, index?: number): ExecutableSectionSize;
-
 
     hasBoardPlatform(): boolean;
     clearBoardPlatform(): void;
     getBoardPlatform(): cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference | undefined;
     setBoardPlatform(value?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference): CompileResponse;
 
-
     hasBuildPlatform(): boolean;
     clearBuildPlatform(): void;
     getBuildPlatform(): cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference | undefined;
     setBuildPlatform(value?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference): CompileResponse;
 
-
     hasProgress(): boolean;
     clearProgress(): void;
     getProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): CompileResponse;
-
     clearBuildPropertiesList(): void;
     getBuildPropertiesList(): Array<string>;
     setBuildPropertiesList(value: Array<string>): CompileResponse;
     addBuildProperties(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileResponse.AsObject;
@@ -215,13 +181,10 @@ export namespace CompileResponse {
 export class ExecutableSectionSize extends jspb.Message { 
     getName(): string;
     setName(value: string): ExecutableSectionSize;
-
     getSize(): number;
     setSize(value: number): ExecutableSectionSize;
-
     getMaxSize(): number;
     setMaxSize(value: number): ExecutableSectionSize;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecutableSectionSize.AsObject;

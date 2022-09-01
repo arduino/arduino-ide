@@ -19,6 +19,28 @@
 'use strict';
 var cc_arduino_cli_settings_v1_settings_pb = require('../../../../../cc/arduino/cli/settings/v1/settings_pb.js');
 
+function serialize_cc_arduino_cli_settings_v1_DeleteRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_settings_v1_settings_pb.DeleteRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.settings.v1.DeleteRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_settings_v1_DeleteRequest(buffer_arg) {
+  return cc_arduino_cli_settings_v1_settings_pb.DeleteRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_settings_v1_DeleteResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_settings_v1_settings_pb.DeleteResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.settings.v1.DeleteResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_settings_v1_DeleteResponse(buffer_arg) {
+  return cc_arduino_cli_settings_v1_settings_pb.DeleteResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_settings_v1_GetAllRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_settings_v1_settings_pb.GetAllRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.settings.v1.GetAllRequest');
@@ -192,6 +214,18 @@ write: {
     requestDeserialize: deserialize_cc_arduino_cli_settings_v1_WriteRequest,
     responseSerialize: serialize_cc_arduino_cli_settings_v1_WriteResponse,
     responseDeserialize: deserialize_cc_arduino_cli_settings_v1_WriteResponse,
+  },
+  // Deletes an entry and rewrites the file settings
+delete: {
+    path: '/cc.arduino.cli.settings.v1.SettingsService/Delete',
+    requestStream: false,
+    responseStream: false,
+    requestType: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest,
+    responseType: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse,
+    requestSerialize: serialize_cc_arduino_cli_settings_v1_DeleteRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_settings_v1_DeleteRequest,
+    responseSerialize: serialize_cc_arduino_cli_settings_v1_DeleteResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_settings_v1_DeleteResponse,
   },
 };
 

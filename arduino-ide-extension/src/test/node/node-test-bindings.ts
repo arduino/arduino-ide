@@ -1,18 +1,9 @@
 import {
-  CommandContribution,
-  CommandRegistry,
-  CommandService,
-} from '@theia/core/lib/common/command';
-import { bindContributionProvider } from '@theia/core/lib/common/contribution-provider';
-import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { ILogger, Loggable } from '@theia/core/lib/common/logger';
-import { LogLevel } from '@theia/core/lib/common/logger-protocol';
 import { waitForEvent } from '@theia/core/lib/common/promise-util';
-import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { ProcessUtils } from '@theia/core/lib/node/process-utils';
@@ -23,19 +14,18 @@ import {
   interfaces,
 } from '@theia/core/shared/inversify';
 import deepmerge from 'deepmerge';
-import { promises as fs, mkdirSync } from 'node:fs';
 import { dump as dumpYaml } from 'js-yaml';
+import { mkdirSync, promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import { path as tempPath, track } from 'temp';
 import {
   ArduinoDaemon,
-  AttachedBoardsChangeEvent,
-  AvailablePorts,
   BoardsPackage,
   BoardsService,
   ConfigService,
   ConfigState,
   CoreService,
+  DetectedPorts,
   IndexUpdateDidCompleteParams,
   IndexUpdateDidFailParams,
   IndexUpdateParams,
@@ -52,7 +42,7 @@ import {
 import { ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
 import { BoardDiscovery } from '../../node/board-discovery';
 import { BoardsServiceImpl } from '../../node/boards-service-impl';
-import { CLI_CONFIG, CliConfig, DefaultCliConfig } from '../../node/cli-config';
+import { CliConfig, CLI_CONFIG, DefaultCliConfig } from '../../node/cli-config';
 import { ConfigServiceImpl } from '../../node/config-service-impl';
 import { CoreClientProvider } from '../../node/core-client-provider';
 import { CoreServiceImpl } from '../../node/core-service-impl';
@@ -70,86 +60,9 @@ import {
   ConfigDirUriProvider,
   EnvVariablesServer,
 } from '../../node/theia/env-variables/env-variables-server';
+import { bindCommon } from '../common/common-test-bindings';
 
 const tracked = track();
-
-@injectable()
-class ConsoleLogger extends MockLogger {
-  override log(
-    logLevel: number,
-    arg2: string | Loggable | Error,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...params: any[]
-  ): Promise<void> {
-    if (arg2 instanceof Error) {
-      return this.error(String(arg2), params);
-    }
-    switch (logLevel) {
-      case LogLevel.INFO:
-        return this.info(arg2, params);
-      case LogLevel.WARN:
-        return this.warn(arg2, params);
-      case LogLevel.TRACE:
-        return this.trace(arg2, params);
-      case LogLevel.ERROR:
-        return this.error(arg2, params);
-      case LogLevel.FATAL:
-        return this.fatal(arg2, params);
-      default:
-        return this.info(arg2, params);
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override async info(arg: string | Loggable, ...params: any[]): Promise<void> {
-    if (params.length) {
-      console.info(arg, ...params);
-    } else {
-      console.info(arg);
-    }
-  }
-
-  override async trace(
-    arg: string | Loggable,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...params: any[]
-  ): Promise<void> {
-    if (params.length) {
-      console.trace(arg, ...params);
-    } else {
-      console.trace(arg);
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override async warn(arg: string | Loggable, ...params: any[]): Promise<void> {
-    if (params.length) {
-      console.warn(arg, ...params);
-    } else {
-      console.warn(arg);
-    }
-  }
-
-  override async error(
-    arg: string | Loggable,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...params: any[]
-  ): Promise<void> {
-    if (params.length) {
-      console.error(arg, ...params);
-    } else {
-      console.error(arg);
-    }
-  }
-
-  override async fatal(
-    arg: string | Loggable,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...params: any[]
-  ): Promise<void> {
-    return this.error(arg, params);
-  }
-}
 
 @injectable()
 class SilentArduinoDaemon extends ArduinoDaemonImpl {
@@ -160,7 +73,7 @@ class SilentArduinoDaemon extends ArduinoDaemonImpl {
 
 @injectable()
 class TestBoardDiscovery extends BoardDiscovery {
-  mutableAvailablePorts: AvailablePorts = {};
+  mutableDetectedPorts: DetectedPorts = {};
 
   override async start(): Promise<void> {
     // NOOP
@@ -168,8 +81,8 @@ class TestBoardDiscovery extends BoardDiscovery {
   override async stop(): Promise<void> {
     // NOOP
   }
-  override get availablePorts(): AvailablePorts {
-    return this.mutableAvailablePorts;
+  override get detectedPorts(): DetectedPorts {
+    return this.mutableDetectedPorts;
   }
 }
 
@@ -221,7 +134,7 @@ class TestNotificationServiceServer implements NotificationServiceServer {
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void {
     this.events.push(`notifyLibraryDidUninstall:${JSON.stringify(event)}`);
   }
-  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void {
+  notifyDetectedPortsDidChange(event: { detectedPorts: DetectedPorts }): void {
     this.events.push(`notifyAttachedBoardsDidChange:${JSON.stringify(event)}`);
   }
   notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void {
@@ -309,6 +222,7 @@ export async function createBaseContainer(
   }
   const container = new Container({ defaultScope: 'Singleton' });
   const module = new ContainerModule((bind, unbind, isBound, rebind) => {
+    bindCommon(bind);
     bind(CoreClientProvider).toSelf().inSingletonScope();
     bind(CoreServiceImpl).toSelf().inSingletonScope();
     bind(CoreService).toService(CoreServiceImpl);
@@ -336,15 +250,10 @@ export async function createBaseContainer(
     bind(SilentArduinoDaemon).toSelf().inSingletonScope();
     bind(ArduinoDaemon).toService(SilentArduinoDaemon);
     bind(ArduinoDaemonImpl).toService(SilentArduinoDaemon);
-    bind(ConsoleLogger).toSelf().inSingletonScope();
-    bind(ILogger).toService(ConsoleLogger);
     bind(TestNotificationServiceServer).toSelf().inSingletonScope();
     bind(NotificationServiceServer).toService(TestNotificationServiceServer);
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
     bind(ConfigService).toService(ConfigServiceImpl);
-    bind(CommandRegistry).toSelf().inSingletonScope();
-    bind(CommandService).toService(CommandRegistry);
-    bindContributionProvider(bind, CommandContribution);
     bind(TestBoardDiscovery).toSelf().inSingletonScope();
     bind(BoardDiscovery).toService(TestBoardDiscovery);
     bind(IsTempSketch).toSelf().inSingletonScope();

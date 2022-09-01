@@ -21,7 +21,7 @@ export class UserFields extends Contribution {
 
   protected override init(): void {
     super.init();
-    this.boardsServiceProvider.onBoardsConfigChanged(async () => {
+    this.boardsServiceProvider.onBoardsConfigDidChange(async () => {
       const userFields =
         await this.boardsServiceProvider.selectedBoardUserFields();
       this.boardRequiresUserFields = userFields.length > 0;
@@ -43,10 +43,7 @@ export class UserFields extends Contribution {
     if (!fqbn) {
       return undefined;
     }
-    const address =
-      boardsConfig.selectedBoard?.port?.address ||
-      boardsConfig.selectedPort?.address ||
-      '';
+    const address = boardsConfig.selectedPort?.address || '';
     return fqbn + '|' + address;
   }
 

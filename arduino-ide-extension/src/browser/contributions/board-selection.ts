@@ -1,57 +1,58 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
-import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
-  DisposableCollection,
   Disposable,
+  DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { BoardsConfig } from '../boards/boards-config';
+import { MenuModelRegistry } from '@theia/core/lib/common/menu/menu-model-registry';
+import type { MenuPath } from '@theia/core/lib/common/menu/menu-types';
+import { nls } from '@theia/core/lib/common/nls';
+import { Deferred } from '@theia/core/lib/common/promise-util';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { MainMenuManager } from '../../common/main-menu-manager';
+import {
+  BoardsService,
+  BoardWithPackage,
+  createPlatformIdentifier,
+  getBoardInfo,
+  InstalledBoardWithPackage,
+  platformIdentifierEquals,
+  Port,
+  serializePlatformIdentifier,
+} from '../../common/protocol';
+import type { BoardList } from '../../common/protocol/board-list';
 import { BoardsListWidget } from '../boards/boards-list-widget';
-import { NotificationCenter } from '../notification-center';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   ArduinoMenus,
   PlaceholderMenuNode,
   unregisterSubmenu,
 } from '../menu/arduino-menus';
-import {
-  BoardsService,
-  InstalledBoardWithPackage,
-  AvailablePorts,
-  Port,
-  getBoardInfo,
-} from '../../common/protocol';
-import { SketchContribution, Command, CommandRegistry } from './contribution';
-import { nls } from '@theia/core/lib/common';
+import { NotificationCenter } from '../notification-center';
+import { Command, CommandRegistry, SketchContribution } from './contribution';
 
 @injectable()
 export class BoardSelection extends SketchContribution {
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
-
+  private readonly commandRegistry: CommandRegistry;
   @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
-
+  private readonly mainMenuManager: MainMenuManager;
   @inject(MenuModelRegistry)
-  protected readonly menuModelRegistry: MenuModelRegistry;
-
+  private readonly menuModelRegistry: MenuModelRegistry;
   @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
-
+  private readonly notificationCenter: NotificationCenter;
   @inject(BoardsService)
-  protected readonly boardsService: BoardsService;
-
+  private readonly boardsService: BoardsService;
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  protected readonly toDisposeBeforeMenuRebuild = new DisposableCollection();
+  private readonly toDisposeBeforeMenuRebuild = new DisposableCollection();
+  // do not query installed platforms on every change
+  private _installedBoards: Deferred<InstalledBoardWithPackage[]> | undefined;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BoardSelection.Commands.GET_BOARD_INFO, {
       execute: async () => {
         const boardInfo = await getBoardInfo(
-          this.boardsServiceProvider.boardsConfig.selectedPort,
-          this.boardsService.getState()
+          this.boardsServiceProvider.boardList
         );
         if (typeof boardInfo === 'string') {
           this.messageService.info(boardInfo);
@@ -76,34 +77,35 @@ SN: ${SN}
   }
 
   override onStart(): void {
-    this.notificationCenter.onPlatformDidInstall(() => this.updateMenus());
-    this.notificationCenter.onPlatformDidUninstall(() => this.updateMenus());
-    this.boardsServiceProvider.onBoardsConfigChanged(() => this.updateMenus());
-    this.boardsServiceProvider.onAvailableBoardsChanged(() =>
-      this.updateMenus()
+    this.notificationCenter.onPlatformDidInstall(() => this.updateMenus(true));
+    this.notificationCenter.onPlatformDidUninstall(() =>
+      this.updateMenus(true)
     );
-    this.boardsServiceProvider.onAvailablePortsChanged(() =>
-      this.updateMenus()
-    );
+    this.boardsServiceProvider.onBoardListDidChange(() => this.updateMenus());
   }
 
   override async onReady(): Promise<void> {
     this.updateMenus();
   }
 
-  protected async updateMenus(): Promise<void> {
-    const [installedBoards, availablePorts, config] = await Promise.all([
-      this.installedBoards(),
-      this.boardsService.getState(),
-      this.boardsServiceProvider.boardsConfig,
-    ]);
-    this.rebuildMenus(installedBoards, availablePorts, config);
+  private async updateMenus(discardCache = false): Promise<void> {
+    if (discardCache) {
+      this._installedBoards?.reject();
+      this._installedBoards = undefined;
+    }
+    if (!this._installedBoards) {
+      this._installedBoards = new Deferred();
+      this.installedBoards().then((installedBoards) =>
+        this._installedBoards?.resolve(installedBoards)
+      );
+    }
+    const installedBoards = await this._installedBoards.promise;
+    this.rebuildMenus(installedBoards, this.boardsServiceProvider.boardList);
   }
 
-  protected rebuildMenus(
+  private rebuildMenus(
     installedBoards: InstalledBoardWithPackage[],
-    availablePorts: AvailablePorts,
-    config: BoardsConfig.Config
+    boardList: BoardList
   ): void {
     this.toDisposeBeforeMenuRebuild.dispose();
 
@@ -112,7 +114,8 @@ SN: ${SN}
       ...ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
       '1_boards',
     ];
-    const boardsSubmenuLabel = config.selectedBoard?.name;
+    const { selectedBoard, selectedPort } = boardList.boardsConfig;
+    const boardsSubmenuLabel = selectedBoard?.name;
     // Note: The submenu order starts from `100` because `Auto Format`, `Serial Monitor`, etc starts from `0` index.
     // The board specific items, and the rest, have order with `z`. We needed something between `0` and `z` with natural-order.
     this.menuModelRegistry.registerSubmenu(
@@ -132,7 +135,7 @@ SN: ${SN}
 
     // Ports submenu
     const portsSubmenuPath = ArduinoMenus.TOOLS__PORTS_SUBMENU;
-    const portsSubmenuLabel = config.selectedPort?.address;
+    const portsSubmenuLabel = selectedPort?.address;
     this.menuModelRegistry.registerSubmenu(
       portsSubmenuPath,
       nls.localize(
@@ -171,69 +174,116 @@ SN: ${SN}
       label: `${BoardsListWidget.WIDGET_LABEL}...`,
     });
 
+    const selectedBoardPlatformId = selectedBoard
+      ? createPlatformIdentifier(selectedBoard)
+      : undefined;
+
+    // Keys are the vendor IDs
+    type BoardsPerVendor = Record<string, BoardWithPackage[]>;
+    // Group boards by their platform names. The keys are the platform names as menu labels.
+    // If there is a platform name (menu label) collision, refine the menu label with the vendor ID.
+    const groupedBoards = new Map<string, BoardsPerVendor>();
+    for (const board of installedBoards) {
+      const { packageId, packageName } = board;
+      const { vendorId } = packageId;
+      let boardsPerPackageName = groupedBoards.get(packageName);
+      if (!boardsPerPackageName) {
+        boardsPerPackageName = {} as BoardsPerVendor;
+        groupedBoards.set(packageName, boardsPerPackageName);
+      }
+      let boardPerVendor: BoardWithPackage[] | undefined =
+        boardsPerPackageName[vendorId];
+      if (!boardPerVendor) {
+        boardPerVendor = [];
+        boardsPerPackageName[vendorId] = boardPerVendor;
+      }
+      boardPerVendor.push(board);
+    }
+
     // Installed boards
-    installedBoards.forEach((board, index) => {
-      const { packageId, packageName, fqbn, name, manuallyInstalled } = board;
+    Array.from(groupedBoards.entries()).forEach(
+      ([packageName, boardsPerPackage]) => {
+        const useVendorSuffix = Object.keys(boardsPerPackage).length > 1;
+        Object.entries(boardsPerPackage).forEach(([vendorId, boards]) => {
+          let platformMenuPath: MenuPath | undefined = undefined;
+          boards.forEach((board, index) => {
+            const { packageId, fqbn, name, manuallyInstalled } = board;
+            // create the platform submenu once.
+            // creating and registering the same submenu twice in Theia is a noop, though.
+            if (!platformMenuPath) {
+              let packageLabel =
+                packageName +
+                `${
+                  manuallyInstalled
+                    ? nls.localize(
+                        'arduino/board/inSketchbook',
+                        ' (in Sketchbook)'
+                      )
+                    : ''
+                }`;
+              if (
+                selectedBoardPlatformId &&
+                platformIdentifierEquals(packageId, selectedBoardPlatformId)
+              ) {
+                packageLabel = `● ${packageLabel}`;
+              }
+              if (useVendorSuffix) {
+                packageLabel += ` (${vendorId})`;
+              }
+              // Platform submenu
+              platformMenuPath = [
+                ...boardsPackagesGroup,
+                serializePlatformIdentifier(packageId),
+              ];
+              this.menuModelRegistry.registerSubmenu(
+                platformMenuPath,
+                packageLabel,
+                {
+                  order: packageName.toLowerCase(),
+                }
+              );
+            }
 
-      const packageLabel =
-        packageName +
-        `${
-          manuallyInstalled
-            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
-            : ''
-        }`;
-      // Platform submenu
-      const platformMenuPath = [...boardsPackagesGroup, packageId];
-      // Note: Registering the same submenu twice is a noop. No need to group the boards per platform.
-      this.menuModelRegistry.registerSubmenu(platformMenuPath, packageLabel, {
-        order: packageName.toLowerCase(),
-      });
-
-      const id = `arduino-select-board--${fqbn}`;
-      const command = { id };
-      const handler = {
-        execute: () => {
-          if (
-            fqbn !== this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn
-          ) {
-            this.boardsServiceProvider.boardsConfig = {
-              selectedBoard: {
-                name,
-                fqbn,
-                port: this.boardsServiceProvider.boardsConfig.selectedBoard
-                  ?.port, // TODO: verify!
-              },
-              selectedPort:
-                this.boardsServiceProvider.boardsConfig.selectedPort,
+            const id = `arduino-select-board--${fqbn}`;
+            const command = { id };
+            const handler = {
+              execute: () =>
+                this.boardsServiceProvider.updateConfig({
+                  name: name,
+                  fqbn: fqbn,
+                }),
+              isToggled: () => fqbn === selectedBoard?.fqbn,
             };
-          }
-        },
-        isToggled: () =>
-          fqbn === this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn,
-      };
 
-      // Board menu
-      const menuAction = {
-        commandId: id,
-        label: name,
-        order: String(index).padStart(4), // pads with leading zeros for alphanumeric sort where order is 1, 2, 11, and NOT 1, 11, 2
-      };
-      this.commandRegistry.registerCommand(command, handler);
-      this.toDisposeBeforeMenuRebuild.push(
-        Disposable.create(() => this.commandRegistry.unregisterCommand(command))
-      );
-      this.menuModelRegistry.registerMenuAction(platformMenuPath, menuAction);
-      // Note: we do not dispose the menu actions individually. Calling `unregisterSubmenu` on the parent will wipe the children menu nodes recursively.
-    });
+            // Board menu
+            const menuAction = {
+              commandId: id,
+              label: name,
+              order: String(index).padStart(4), // pads with leading zeros for alphanumeric sort where order is 1, 2, 11, and NOT 1, 11, 2
+            };
+            this.commandRegistry.registerCommand(command, handler);
+            this.toDisposeBeforeMenuRebuild.push(
+              Disposable.create(() =>
+                this.commandRegistry.unregisterCommand(command)
+              )
+            );
+            this.menuModelRegistry.registerMenuAction(
+              platformMenuPath,
+              menuAction
+            );
+            // Note: we do not dispose the menu actions individually. Calling `unregisterSubmenu` on the parent will wipe the children menu nodes recursively.
+          });
+        });
+      }
+    );
 
-    // Installed ports
+    // Detected ports
     const registerPorts = (
       protocol: string,
-      protocolOrder: number,
-      ports: AvailablePorts
+      ports: ReturnType<BoardList['ports']>,
+      protocolOrder: number
     ) => {
-      const portIDs = Object.keys(ports);
-      if (!portIDs.length) {
+      if (!ports.length) {
         return;
       }
 
@@ -258,46 +308,26 @@ SN: ${SN}
         )
       );
 
-      // First we show addresses with recognized boards connected,
-      // then all the rest.
-      const sortedIDs = Object.keys(ports).sort(
-        (left: string, right: string): number => {
-          const [, leftBoards] = ports[left];
-          const [, rightBoards] = ports[right];
-          return rightBoards.length - leftBoards.length;
-        }
-      );
-
-      for (let i = 0; i < sortedIDs.length; i++) {
-        const portID = sortedIDs[i];
-        const [port, boards] = ports[portID];
+      for (let i = 0; i < ports.length; i++) {
+        const { port, boards } = ports[i];
+        const portKey = Port.keyOf(port);
         let label = `${port.addressLabel}`;
-        if (boards.length) {
+        if (boards?.length) {
           const boardsList = boards.map((board) => board.name).join(', ');
           label = `${label} (${boardsList})`;
         }
-        const id = `arduino-select-port--${portID}`;
+        const id = `arduino-select-port--${portKey}`;
         const command = { id };
         const handler = {
           execute: () => {
-            if (
-              !Port.sameAs(
-                port,
-                this.boardsServiceProvider.boardsConfig.selectedPort
-              )
-            ) {
-              this.boardsServiceProvider.boardsConfig = {
-                selectedBoard:
-                  this.boardsServiceProvider.boardsConfig.selectedBoard,
-                selectedPort: port,
-              };
-            }
+            this.boardsServiceProvider.updateConfig({
+              protocol: port.protocol,
+              address: port.address,
+            });
           },
-          isToggled: () =>
-            Port.sameAs(
-              port,
-              this.boardsServiceProvider.boardsConfig.selectedPort
-            ),
+          isToggled: () => {
+            return i === ports.matchingIndex;
+          },
         };
         const menuAction = {
           commandId: id,
@@ -314,22 +344,12 @@ SN: ${SN}
       }
     };
 
-    const grouped = AvailablePorts.groupByProtocol(availablePorts);
+    const groupedPorts = boardList.portsGroupedByProtocol();
     let protocolOrder = 100;
-    // We first show serial and network ports, then all the rest
-    ['serial', 'network'].forEach((protocol) => {
-      const ports = grouped.get(protocol);
-      if (ports) {
-        registerPorts(protocol, protocolOrder, ports);
-        grouped.delete(protocol);
-        protocolOrder = protocolOrder + 100;
-      }
+    Object.entries(groupedPorts).forEach(([protocol, ports]) => {
+      registerPorts(protocol, ports, protocolOrder);
+      protocolOrder += 100;
     });
-    grouped.forEach((ports, protocol) => {
-      registerPorts(protocol, protocolOrder, ports);
-      protocolOrder = protocolOrder + 100;
-    });
-
     this.mainMenuManager.update();
   }
 

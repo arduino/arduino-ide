@@ -3,13 +3,14 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { relative } from 'node:path';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
-import { ClientReadableStream } from '@grpc/grpc-js';
+import type { ClientReadableStream } from '@grpc/grpc-js';
 import {
   CompilerWarnings,
   CoreService,
   CoreError,
   CompileSummary,
   isCompileSummary,
+  isUploadResponse,
 } from '../common/protocol/core-service';
 import {
   CompileRequest,
@@ -25,7 +26,13 @@ import {
   UploadUsingProgrammerResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { ResponseService } from '../common/protocol/response-service';
-import { OutputMessage, Port } from '../common/protocol';
+import {
+  resolveDetectedPort,
+  OutputMessage,
+  PortIdentifier,
+  Port,
+  UploadResponse as ApiUploadResponse,
+} from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
@@ -36,8 +43,8 @@ import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { firstToUpperCase, notEmpty } from '../common/utils';
 import { ServiceError } from './service-error';
 import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
-import { BoardDiscovery } from './board-discovery';
-import { Mutable } from '@theia/core/lib/common/types';
+import type { Mutable } from '@theia/core/lib/common/types';
+import { BoardDiscovery, createApiPort } from './board-discovery';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
@@ -50,13 +57,10 @@ type CompileSummaryFragment = Partial<Mutable<CompileSummary>>;
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(ResponseService)
   private readonly responseService: ResponseService;
-
   @inject(MonitorManager)
   private readonly monitorManager: MonitorManager;
-
   @inject(CommandService)
   private readonly commandService: CommandService;
-
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
 
@@ -172,7 +176,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  upload(options: CoreService.Options.Upload): Promise<void> {
+  upload(options: CoreService.Options.Upload): Promise<ApiUploadResponse> {
     const { usingProgrammer } = options;
     return this.doUpload(
       options,
@@ -201,14 +205,45 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     ) => (request: REQ) => ClientReadableStream<RESP>,
     errorCtor: ApplicationError.Constructor<number, CoreError.ErrorLocation[]>,
     task: string
-  ): Promise<void> {
+  ): Promise<ApiUploadResponse> {
+    const portBeforeUpload = options.port;
+    const uploadResponseFragment: Mutable<Partial<ApiUploadResponse>> = {
+      portAfterUpload: options.port, // assume no port changes during the upload
+    };
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const progressHandler = this.createProgressHandler(options);
-    const handler = this.createOnDataHandler(progressHandler);
+    // Track responses for port changes. No port changes are expected when uploading using a programmer.
+    const updateUploadResponseFragmentHandler = (response: RESP) => {
+      if (response instanceof UploadResponse) {
+        // TODO: this instanceof should not be here but in `upload`. the upload and upload using programmer gRPC APIs are not symmetric
+        const uploadResult = response.getResult();
+        if (uploadResult) {
+          const port = uploadResult.getUpdatedUploadPort();
+          if (port) {
+            uploadResponseFragment.portAfterUpload = createApiPort(port);
+            console.info(
+              `Received port after upload [${
+                options.port ? Port.keyOf(options.port) : ''
+              }, ${options.fqbn}, ${
+                options.sketch.name
+              }]. Before port: ${JSON.stringify(
+                portBeforeUpload
+              )}, after port: ${JSON.stringify(
+                uploadResponseFragment.portAfterUpload
+              )}`
+            );
+          }
+        }
+      }
+    };
+    const handler = this.createOnDataHandler(
+      progressHandler,
+      updateUploadResponseFragmentHandler
+    );
     const grpcCall = responseFactory(client);
     return this.notifyUploadWillStart(options).then(() =>
-      new Promise<void>((resolve, reject) => {
+      new Promise<ApiUploadResponse>((resolve, reject) => {
         grpcCall(this.initUploadRequest(request, options, instance))
           .on('data', handler.onData)
           .on('error', (error) => {
@@ -234,10 +269,28 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               );
             }
           })
-          .on('end', resolve);
+          .on('end', () => {
+            if (isUploadResponse(uploadResponseFragment)) {
+              resolve(uploadResponseFragment);
+            } else {
+              reject(
+                new Error(
+                  `Could not detect the port after the upload. Upload options were: ${JSON.stringify(
+                    options
+                  )}, upload response was: ${JSON.stringify(
+                    uploadResponseFragment
+                  )}`
+                )
+              );
+            }
+          });
       }).finally(async () => {
         handler.dispose();
-        await this.notifyUploadDidFinish(options);
+        await this.notifyUploadDidFinish(
+          Object.assign(options, {
+            afterPort: uploadResponseFragment.portAfterUpload,
+          })
+        );
       })
     );
   }
@@ -302,7 +355,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           .on('end', resolve);
       }).finally(async () => {
         handler.dispose();
-        await this.notifyUploadDidFinish(options);
+        await this.notifyUploadDidFinish(
+          Object.assign(options, { afterPort: options.port })
+        );
       })
     );
   }
@@ -379,21 +434,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     port,
   }: {
     fqbn?: string | undefined;
-    port?: Port | undefined;
+    port?: PortIdentifier;
   }): Promise<void> {
-    this.boardDiscovery.setUploadInProgress(true);
-    return this.monitorManager.notifyUploadStarted(fqbn, port);
+    if (fqbn && port) {
+      return this.monitorManager.notifyUploadStarted(fqbn, port);
+    }
   }
 
   private async notifyUploadDidFinish({
     fqbn,
     port,
+    afterPort,
   }: {
     fqbn?: string | undefined;
-    port?: Port | undefined;
+    port?: PortIdentifier;
+    afterPort?: PortIdentifier;
   }): Promise<void> {
-    this.boardDiscovery.setUploadInProgress(false);
-    return this.monitorManager.notifyUploadFinished(fqbn, port);
+    if (fqbn && port && afterPort) {
+      return this.monitorManager.notifyUploadFinished(fqbn, port, afterPort);
+    }
   }
 
   private mergeSourceOverrides(
@@ -410,21 +469,28 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
   }
 
-  private createPort(port: Port | undefined): RpcPort | undefined {
+  private createPort(
+    port: PortIdentifier | undefined,
+    resolve: (port: PortIdentifier) => Port | undefined = (port) =>
+      resolveDetectedPort(port, this.boardDiscovery.detectedPorts)
+  ): RpcPort | undefined {
     if (!port) {
       return undefined;
     }
+    const resolvedPort = resolve(port);
     const rpcPort = new RpcPort();
-    rpcPort.setAddress(port.address);
-    rpcPort.setLabel(port.addressLabel);
     rpcPort.setProtocol(port.protocol);
-    rpcPort.setProtocolLabel(port.protocolLabel);
-    if (port.hardwareId !== undefined) {
-      rpcPort.setHardwareId(port.hardwareId);
-    }
-    if (port.properties) {
-      for (const [key, value] of Object.entries(port.properties)) {
-        rpcPort.getPropertiesMap().set(key, value);
+    rpcPort.setAddress(port.address);
+    if (resolvedPort) {
+      rpcPort.setLabel(resolvedPort.addressLabel);
+      rpcPort.setProtocolLabel(resolvedPort.protocolLabel);
+      if (resolvedPort.hardwareId !== undefined) {
+        rpcPort.setHardwareId(resolvedPort.hardwareId);
+      }
+      if (resolvedPort.properties) {
+        for (const [key, value] of Object.entries(resolvedPort.properties)) {
+          rpcPort.getPropertiesMap().set(key, value);
+        }
       }
     }
     return rpcPort;

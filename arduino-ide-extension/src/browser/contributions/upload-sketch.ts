@@ -1,29 +1,29 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import { CoreService, Port, sanitizeFqbn } from '../../common/protocol';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { CoreService, sanitizeFqbn } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
   Command,
   CommandRegistry,
-  MenuModelRegistry,
-  KeybindingRegistry,
-  TabBarToolbarRegistry,
   CoreServiceContribution,
+  KeybindingRegistry,
+  MenuModelRegistry,
+  TabBarToolbarRegistry,
 } from './contribution';
-import { deepClone, nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../sketches-service-client-impl';
-import type { VerifySketchParams } from './verify-sketch';
 import { UserFields } from './user-fields';
+import type { VerifySketchParams } from './verify-sketch';
 
 @injectable()
 export class UploadSketch extends CoreServiceContribution {
+  @inject(UserFields)
+  private readonly userFields: UserFields;
+
   private readonly onDidChangeEmitter = new Emitter<void>();
   private readonly onDidChange = this.onDidChangeEmitter.event;
   private uploadInProgress = false;
-
-  @inject(UserFields)
-  private readonly userFields: UserFields;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
@@ -107,7 +107,6 @@ export class UploadSketch extends CoreServiceContribution {
       // uploadInProgress will be set to false whether the upload fails or not
       this.uploadInProgress = true;
       this.menuManager.update();
-      this.boardsServiceProvider.snapshotBoardDiscoveryOnUpload();
       this.onDidChangeEmitter.fire();
       this.clearVisibleNotification();
 
@@ -135,12 +134,14 @@ export class UploadSketch extends CoreServiceContribution {
         return;
       }
 
-      await this.doWithProgress({
+      const uploadResponse = await this.doWithProgress({
         progressText: nls.localize('arduino/sketch/uploading', 'Uploading...'),
         task: (progressId, coreService) =>
           coreService.upload({ ...uploadOptions, progressId }),
         keepOutput: true,
       });
+      // the port update is NOOP if nothing has changed
+      this.boardsServiceProvider.updateConfig(uploadResponse.portAfterUpload);
 
       this.messageService.info(
         nls.localize('arduino/sketch/doneUploading', 'Done uploading.'),
@@ -150,9 +151,10 @@ export class UploadSketch extends CoreServiceContribution {
       this.userFields.notifyFailedWithError(e);
       this.handleError(e);
     } finally {
+      // TODO: here comes the port change if happened during the upload
+      // https://github.com/arduino/arduino-cli/issues/2245
       this.uploadInProgress = false;
       this.menuManager.update();
-      this.boardsServiceProvider.attemptPostUploadAutoSelect();
       this.onDidChangeEmitter.fire();
     }
   }
@@ -174,7 +176,7 @@ export class UploadSketch extends CoreServiceContribution {
         this.preferences.get('arduino.upload.verify'),
         this.preferences.get('arduino.upload.verbose'),
       ]);
-    const port = this.maybeUpdatePortProperties(boardsConfig.selectedPort);
+    const port = boardsConfig.selectedPort;
     return {
       sketch,
       fqbn,
@@ -184,28 +186,6 @@ export class UploadSketch extends CoreServiceContribution {
       verify,
       userFields,
     };
-  }
-
-  /**
-   * This is a hack to ensure that the port object has the `properties` when uploading.(https://github.com/arduino/arduino-ide/issues/740)
-   * This method works around a bug when restoring a `port` persisted by an older version of IDE2. See the bug [here](https://github.com/arduino/arduino-ide/pull/1335#issuecomment-1224355236).
-   *
-   * Before the upload, this method checks the available ports and makes sure that the `properties` of an available port, and the port selected by the user have the same `properties`.
-   * This method does not update any state (for example, the `BoardsConfig.Config`) but uses the correct `properties` for the `upload`.
-   */
-  private maybeUpdatePortProperties(port: Port | undefined): Port | undefined {
-    if (port) {
-      const key = Port.keyOf(port);
-      for (const candidate of this.boardsServiceProvider.availablePorts) {
-        if (key === Port.keyOf(candidate) && candidate.properties) {
-          return {
-            ...port,
-            properties: deepClone(candidate.properties),
-          };
-        }
-      }
-    }
-    return port;
   }
 }
 

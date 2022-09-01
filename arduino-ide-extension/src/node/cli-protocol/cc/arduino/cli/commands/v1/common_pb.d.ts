@@ -10,7 +10,6 @@ export class Instance extends jspb.Message {
     getId(): number;
     setId(value: number): Instance;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Instance.AsObject;
     static toObject(includeInstance: boolean, msg: Instance): Instance.AsObject;
@@ -34,18 +33,15 @@ export class DownloadProgress extends jspb.Message {
     getStart(): DownloadProgressStart | undefined;
     setStart(value?: DownloadProgressStart): DownloadProgress;
 
-
     hasUpdate(): boolean;
     clearUpdate(): void;
     getUpdate(): DownloadProgressUpdate | undefined;
     setUpdate(value?: DownloadProgressUpdate): DownloadProgress;
 
-
     hasEnd(): boolean;
     clearEnd(): void;
     getEnd(): DownloadProgressEnd | undefined;
     setEnd(value?: DownloadProgressEnd): DownloadProgress;
-
 
     getMessageCase(): DownloadProgress.MessageCase;
 
@@ -68,13 +64,9 @@ export namespace DownloadProgress {
 
     export enum MessageCase {
         MESSAGE_NOT_SET = 0,
-    
-    START = 1,
-
-    UPDATE = 2,
-
-    END = 3,
-
+        START = 1,
+        UPDATE = 2,
+        END = 3,
     }
 
 }
@@ -82,10 +74,8 @@ export namespace DownloadProgress {
 export class DownloadProgressStart extends jspb.Message { 
     getUrl(): string;
     setUrl(value: string): DownloadProgressStart;
-
     getLabel(): string;
     setLabel(value: string): DownloadProgressStart;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DownloadProgressStart.AsObject;
@@ -107,10 +97,8 @@ export namespace DownloadProgressStart {
 export class DownloadProgressUpdate extends jspb.Message { 
     getDownloaded(): number;
     setDownloaded(value: number): DownloadProgressUpdate;
-
     getTotalSize(): number;
     setTotalSize(value: number): DownloadProgressUpdate;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DownloadProgressUpdate.AsObject;
@@ -132,10 +120,8 @@ export namespace DownloadProgressUpdate {
 export class DownloadProgressEnd extends jspb.Message { 
     getSuccess(): boolean;
     setSuccess(value: boolean): DownloadProgressEnd;
-
     getMessage(): string;
     setMessage(value: string): DownloadProgressEnd;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DownloadProgressEnd.AsObject;
@@ -157,16 +143,12 @@ export namespace DownloadProgressEnd {
 export class TaskProgress extends jspb.Message { 
     getName(): string;
     setName(value: string): TaskProgress;
-
     getMessage(): string;
     setMessage(value: string): TaskProgress;
-
     getCompleted(): boolean;
     setCompleted(value: boolean): TaskProgress;
-
     getPercent(): number;
     setPercent(value: number): TaskProgress;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TaskProgress.AsObject;
@@ -190,13 +172,10 @@ export namespace TaskProgress {
 export class Programmer extends jspb.Message { 
     getPlatform(): string;
     setPlatform(value: string): Programmer;
-
     getId(): string;
     setId(value: string): Programmer;
-
     getName(): string;
     setName(value: string): Programmer;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Programmer.AsObject;
@@ -219,53 +198,39 @@ export namespace Programmer {
 export class Platform extends jspb.Message { 
     getId(): string;
     setId(value: string): Platform;
-
     getInstalled(): string;
     setInstalled(value: string): Platform;
-
     getLatest(): string;
     setLatest(value: string): Platform;
-
     getName(): string;
     setName(value: string): Platform;
-
     getMaintainer(): string;
     setMaintainer(value: string): Platform;
-
     getWebsite(): string;
     setWebsite(value: string): Platform;
-
     getEmail(): string;
     setEmail(value: string): Platform;
-
     clearBoardsList(): void;
     getBoardsList(): Array<Board>;
     setBoardsList(value: Array<Board>): Platform;
     addBoards(value?: Board, index?: number): Board;
-
     getManuallyInstalled(): boolean;
     setManuallyInstalled(value: boolean): Platform;
-
     getDeprecated(): boolean;
     setDeprecated(value: boolean): Platform;
-
     clearTypeList(): void;
     getTypeList(): Array<string>;
     setTypeList(value: Array<string>): Platform;
     addType(value: string, index?: number): string;
 
-
     hasHelp(): boolean;
     clearHelp(): void;
     getHelp(): HelpResources | undefined;
     setHelp(value?: HelpResources): Platform;
-
     getIndexed(): boolean;
     setIndexed(value: boolean): Platform;
-
     getMissingMetadata(): boolean;
     setMissingMetadata(value: boolean): Platform;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -299,16 +264,12 @@ export namespace Platform {
 export class InstalledPlatformReference extends jspb.Message { 
     getId(): string;
     setId(value: string): InstalledPlatformReference;
-
     getVersion(): string;
     setVersion(value: string): InstalledPlatformReference;
-
     getInstallDir(): string;
     setInstallDir(value: string): InstalledPlatformReference;
-
     getPackageUrl(): string;
     setPackageUrl(value: string): InstalledPlatformReference;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): InstalledPlatformReference.AsObject;
@@ -332,10 +293,8 @@ export namespace InstalledPlatformReference {
 export class Board extends jspb.Message { 
     getName(): string;
     setName(value: string): Board;
-
     getFqbn(): string;
     setFqbn(value: string): Board;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Board.AsObject;
@@ -357,10 +316,8 @@ export namespace Board {
 export class Profile extends jspb.Message { 
     getName(): string;
     setName(value: string): Profile;
-
     getFqbn(): string;
     setFqbn(value: string): Profile;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Profile.AsObject;
@@ -382,7 +339,6 @@ export namespace Profile {
 export class HelpResources extends jspb.Message { 
     getOnline(): string;
     setOnline(value: string): HelpResources;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): HelpResources.AsObject;

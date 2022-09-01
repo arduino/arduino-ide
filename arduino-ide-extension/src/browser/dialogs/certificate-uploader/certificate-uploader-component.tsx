@@ -1,20 +1,30 @@
+import { nls } from '@theia/core/lib/common/nls';
 import React from '@theia/core/shared/react';
 import Tippy from '@tippyjs/react';
-import { AvailableBoard } from '../../boards/boards-service-provider';
-import { CertificateListComponent } from './certificate-list';
-import { SelectBoardComponent } from './select-board-components';
+import {
+  BoardList,
+  isInferredBoardListItem,
+} from '../../../common/protocol/board-list';
+import {
+  boardIdentifierEquals,
+  portIdentifierEquals,
+} from '../../../common/protocol/boards-service';
 import { CertificateAddComponent } from './certificate-add-new';
-import { nls } from '@theia/core/lib/common';
+import { CertificateListComponent } from './certificate-list';
+import {
+  BoardOptionValue,
+  SelectBoardComponent,
+} from './select-board-components';
 
 export const CertificateUploaderComponent = ({
-  availableBoards,
+  boardList,
   certificates,
   addCertificate,
   updatableFqbns,
   uploadCertificates,
   openContextMenu,
 }: {
-  availableBoards: AvailableBoard[];
+  boardList: BoardList;
   certificates: string[];
   addCertificate: (cert: string) => void;
   updatableFqbns: string[];
@@ -33,11 +43,17 @@ export const CertificateUploaderComponent = ({
 
   const [selectedCerts, setSelectedCerts] = React.useState<string[]>([]);
 
-  const [selectedBoard, setSelectedBoard] =
-    React.useState<AvailableBoard | null>(null);
+  const [selectedItem, setSelectedItem] =
+    React.useState<BoardOptionValue | null>(null);
 
   const installCertificates = async () => {
-    if (!selectedBoard || !selectedBoard.fqbn || !selectedBoard.port) {
+    if (!selectedItem) {
+      return;
+    }
+    const board = isInferredBoardListItem(selectedItem)
+      ? selectedItem.inferredBoard
+      : selectedItem.board;
+    if (!board.fqbn) {
       return;
     }
 
@@ -45,8 +61,8 @@ export const CertificateUploaderComponent = ({
 
     try {
       await uploadCertificates(
-        selectedBoard.fqbn,
-        selectedBoard.port.address,
+        board.fqbn,
+        selectedItem.port.address,
         selectedCerts
       );
       setInstallFeedback('ok');
@@ -55,17 +71,29 @@ export const CertificateUploaderComponent = ({
     }
   };
 
-  const onBoardSelect = React.useCallback(
-    (board: AvailableBoard) => {
-      const newFqbn = (board && board.fqbn) || null;
-      const prevFqbn = (selectedBoard && selectedBoard.fqbn) || null;
+  const onItemSelect = React.useCallback(
+    (item: BoardOptionValue | null) => {
+      if (!item) {
+        return;
+      }
+      const board = isInferredBoardListItem(item)
+        ? item.inferredBoard
+        : item.board;
+      const selectedBoard = isInferredBoardListItem(selectedItem)
+        ? selectedItem.inferredBoard
+        : selectedItem?.board;
+      const port = item.port;
+      const selectedPort = selectedItem?.port;
 
-      if (newFqbn !== prevFqbn) {
+      if (
+        !boardIdentifierEquals(board, selectedBoard) ||
+        !portIdentifierEquals(port, selectedPort)
+      ) {
         setInstallFeedback(null);
-        setSelectedBoard(board);
+        setSelectedItem(item);
       }
     },
-    [selectedBoard]
+    [selectedItem]
   );
 
   return (
@@ -125,10 +153,10 @@ export const CertificateUploaderComponent = ({
         <div className="dialogRow">
           <div className="fl1">
             <SelectBoardComponent
-              availableBoards={availableBoards}
+              boardList={boardList}
               updatableFqbns={updatableFqbns}
-              onBoardSelect={onBoardSelect}
-              selectedBoard={selectedBoard}
+              onItemSelect={onItemSelect}
+              selectedItem={selectedItem}
               busy={installFeedback === 'installing'}
             />
           </div>
@@ -167,7 +195,7 @@ export const CertificateUploaderComponent = ({
             type="button"
             className="theia-button primary install-cert-btn"
             onClick={installCertificates}
-            disabled={selectedCerts.length === 0 || !selectedBoard}
+            disabled={selectedCerts.length === 0 || !selectedItem}
           >
             {nls.localize('arduino/certificate/upload', 'Upload')}
           </button>

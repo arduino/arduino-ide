@@ -2,7 +2,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { BoardSearch, BoardsService } from '../../common/protocol';
-import { createBaseContainer, startDaemon } from './test-bindings';
+import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 describe('boards-service-impl', () => {
   let boardService: BoardsService;

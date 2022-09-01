@@ -13,13 +13,10 @@ export class LibraryDownloadRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryDownloadRequest;
-
     getName(): string;
     setName(value: string): LibraryDownloadRequest;
-
     getVersion(): string;
     setVersion(value: string): LibraryDownloadRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryDownloadRequest.AsObject;
@@ -46,7 +43,6 @@ export class LibraryDownloadResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): LibraryDownloadResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryDownloadResponse.AsObject;
     static toObject(includeInstance: boolean, msg: LibraryDownloadResponse): LibraryDownloadResponse.AsObject;
@@ -69,22 +65,16 @@ export class LibraryInstallRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryInstallRequest;
-
     getName(): string;
     setName(value: string): LibraryInstallRequest;
-
     getVersion(): string;
     setVersion(value: string): LibraryInstallRequest;
-
     getNoDeps(): boolean;
     setNoDeps(value: boolean): LibraryInstallRequest;
-
     getNoOverwrite(): boolean;
     setNoOverwrite(value: boolean): LibraryInstallRequest;
-
     getInstallLocation(): LibraryInstallLocation;
     setInstallLocation(value: LibraryInstallLocation): LibraryInstallRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryInstallRequest.AsObject;
@@ -114,12 +104,10 @@ export class LibraryInstallResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): LibraryInstallResponse;
 
-
     hasTaskProgress(): boolean;
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): LibraryInstallResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryInstallResponse.AsObject;
@@ -144,13 +132,10 @@ export class LibraryUpgradeRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryUpgradeRequest;
-
     getName(): string;
     setName(value: string): LibraryUpgradeRequest;
-
     getNoDeps(): boolean;
     setNoDeps(value: boolean): LibraryUpgradeRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryUpgradeRequest.AsObject;
@@ -177,12 +162,10 @@ export class LibraryUpgradeResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): LibraryUpgradeResponse;
 
-
     hasTaskProgress(): boolean;
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): LibraryUpgradeResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryUpgradeResponse.AsObject;
@@ -207,13 +190,10 @@ export class LibraryUninstallRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryUninstallRequest;
-
     getName(): string;
     setName(value: string): LibraryUninstallRequest;
-
     getVersion(): string;
     setVersion(value: string): LibraryUninstallRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryUninstallRequest.AsObject;
@@ -240,7 +220,6 @@ export class LibraryUninstallResponse extends jspb.Message {
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): LibraryUninstallResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryUninstallResponse.AsObject;
     static toObject(includeInstance: boolean, msg: LibraryUninstallResponse): LibraryUninstallResponse.AsObject;
@@ -263,7 +242,6 @@ export class LibraryUpgradeAllRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryUpgradeAllRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryUpgradeAllRequest.AsObject;
@@ -288,12 +266,10 @@ export class LibraryUpgradeAllResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): LibraryUpgradeAllResponse;
 
-
     hasTaskProgress(): boolean;
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): LibraryUpgradeAllResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryUpgradeAllResponse.AsObject;
@@ -318,13 +294,10 @@ export class LibraryResolveDependenciesRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryResolveDependenciesRequest;
-
     getName(): string;
     setName(value: string): LibraryResolveDependenciesRequest;
-
     getVersion(): string;
     setVersion(value: string): LibraryResolveDependenciesRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryResolveDependenciesRequest.AsObject;
@@ -350,7 +323,6 @@ export class LibraryResolveDependenciesResponse extends jspb.Message {
     setDependenciesList(value: Array<LibraryDependencyStatus>): LibraryResolveDependenciesResponse;
     addDependencies(value?: LibraryDependencyStatus, index?: number): LibraryDependencyStatus;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryResolveDependenciesResponse.AsObject;
     static toObject(includeInstance: boolean, msg: LibraryResolveDependenciesResponse): LibraryResolveDependenciesResponse.AsObject;
@@ -370,13 +342,10 @@ export namespace LibraryResolveDependenciesResponse {
 export class LibraryDependencyStatus extends jspb.Message { 
     getName(): string;
     setName(value: string): LibraryDependencyStatus;
-
     getVersionRequired(): string;
     setVersionRequired(value: string): LibraryDependencyStatus;
-
     getVersionInstalled(): string;
     setVersionInstalled(value: string): LibraryDependencyStatus;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryDependencyStatus.AsObject;
@@ -402,13 +371,12 @@ export class LibrarySearchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibrarySearchRequest;
-
     getQuery(): string;
     setQuery(value: string): LibrarySearchRequest;
-
     getOmitReleasesDetails(): boolean;
     setOmitReleasesDetails(value: boolean): LibrarySearchRequest;
-
+    getSearchArgs(): string;
+    setSearchArgs(value: string): LibrarySearchRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibrarySearchRequest.AsObject;
@@ -425,6 +393,7 @@ export namespace LibrarySearchRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         query: string,
         omitReleasesDetails: boolean,
+        searchArgs: string,
     }
 }
 
@@ -433,10 +402,8 @@ export class LibrarySearchResponse extends jspb.Message {
     getLibrariesList(): Array<SearchedLibrary>;
     setLibrariesList(value: Array<SearchedLibrary>): LibrarySearchResponse;
     addLibraries(value?: SearchedLibrary, index?: number): SearchedLibrary;
-
     getStatus(): LibrarySearchStatus;
     setStatus(value: LibrarySearchStatus): LibrarySearchResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibrarySearchResponse.AsObject;
@@ -459,21 +426,17 @@ export class SearchedLibrary extends jspb.Message {
     getName(): string;
     setName(value: string): SearchedLibrary;
 
-
     getReleasesMap(): jspb.Map<string, LibraryRelease>;
     clearReleasesMap(): void;
-
 
     hasLatest(): boolean;
     clearLatest(): void;
     getLatest(): LibraryRelease | undefined;
     setLatest(value?: LibraryRelease): SearchedLibrary;
-
     clearAvailableVersionsList(): void;
     getAvailableVersionsList(): Array<string>;
     setAvailableVersionsList(value: Array<string>): SearchedLibrary;
     addAvailableVersions(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SearchedLibrary.AsObject;
@@ -498,54 +461,41 @@ export namespace SearchedLibrary {
 export class LibraryRelease extends jspb.Message { 
     getAuthor(): string;
     setAuthor(value: string): LibraryRelease;
-
     getVersion(): string;
     setVersion(value: string): LibraryRelease;
-
     getMaintainer(): string;
     setMaintainer(value: string): LibraryRelease;
-
     getSentence(): string;
     setSentence(value: string): LibraryRelease;
-
     getParagraph(): string;
     setParagraph(value: string): LibraryRelease;
-
     getWebsite(): string;
     setWebsite(value: string): LibraryRelease;
-
     getCategory(): string;
     setCategory(value: string): LibraryRelease;
-
     clearArchitecturesList(): void;
     getArchitecturesList(): Array<string>;
     setArchitecturesList(value: Array<string>): LibraryRelease;
     addArchitectures(value: string, index?: number): string;
-
     clearTypesList(): void;
     getTypesList(): Array<string>;
     setTypesList(value: Array<string>): LibraryRelease;
     addTypes(value: string, index?: number): string;
 
-
     hasResources(): boolean;
     clearResources(): void;
     getResources(): DownloadResource | undefined;
     setResources(value?: DownloadResource): LibraryRelease;
-
     getLicense(): string;
     setLicense(value: string): LibraryRelease;
-
     clearProvidesIncludesList(): void;
     getProvidesIncludesList(): Array<string>;
     setProvidesIncludesList(value: Array<string>): LibraryRelease;
     addProvidesIncludes(value: string, index?: number): string;
-
     clearDependenciesList(): void;
     getDependenciesList(): Array<LibraryDependency>;
     setDependenciesList(value: Array<LibraryDependency>): LibraryRelease;
     addDependencies(value?: LibraryDependency, index?: number): LibraryDependency;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryRelease.AsObject;
@@ -578,10 +528,8 @@ export namespace LibraryRelease {
 export class LibraryDependency extends jspb.Message { 
     getName(): string;
     setName(value: string): LibraryDependency;
-
     getVersionConstraint(): string;
     setVersionConstraint(value: string): LibraryDependency;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryDependency.AsObject;
@@ -603,19 +551,14 @@ export namespace LibraryDependency {
 export class DownloadResource extends jspb.Message { 
     getUrl(): string;
     setUrl(value: string): DownloadResource;
-
     getArchiveFilename(): string;
     setArchiveFilename(value: string): DownloadResource;
-
     getChecksum(): string;
     setChecksum(value: string): DownloadResource;
-
     getSize(): number;
     setSize(value: number): DownloadResource;
-
     getCachePath(): string;
     setCachePath(value: string): DownloadResource;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DownloadResource.AsObject;
@@ -643,19 +586,14 @@ export class LibraryListRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibraryListRequest;
-
     getAll(): boolean;
     setAll(value: boolean): LibraryListRequest;
-
     getUpdatable(): boolean;
     setUpdatable(value: boolean): LibraryListRequest;
-
     getName(): string;
     setName(value: string): LibraryListRequest;
-
     getFqbn(): string;
     setFqbn(value: string): LibraryListRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryListRequest.AsObject;
@@ -683,7 +621,6 @@ export class LibraryListResponse extends jspb.Message {
     setInstalledLibrariesList(value: Array<InstalledLibrary>): LibraryListResponse;
     addInstalledLibraries(value?: InstalledLibrary, index?: number): InstalledLibrary;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryListResponse.AsObject;
     static toObject(includeInstance: boolean, msg: LibraryListResponse): LibraryListResponse.AsObject;
@@ -707,12 +644,10 @@ export class InstalledLibrary extends jspb.Message {
     getLibrary(): Library | undefined;
     setLibrary(value?: Library): InstalledLibrary;
 
-
     hasRelease(): boolean;
     clearRelease(): void;
     getRelease(): LibraryRelease | undefined;
     setRelease(value?: LibraryRelease): InstalledLibrary;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): InstalledLibrary.AsObject;
@@ -734,92 +669,66 @@ export namespace InstalledLibrary {
 export class Library extends jspb.Message { 
     getName(): string;
     setName(value: string): Library;
-
     getAuthor(): string;
     setAuthor(value: string): Library;
-
     getMaintainer(): string;
     setMaintainer(value: string): Library;
-
     getSentence(): string;
     setSentence(value: string): Library;
-
     getParagraph(): string;
     setParagraph(value: string): Library;
-
     getWebsite(): string;
     setWebsite(value: string): Library;
-
     getCategory(): string;
     setCategory(value: string): Library;
-
     clearArchitecturesList(): void;
     getArchitecturesList(): Array<string>;
     setArchitecturesList(value: Array<string>): Library;
     addArchitectures(value: string, index?: number): string;
-
     clearTypesList(): void;
     getTypesList(): Array<string>;
     setTypesList(value: Array<string>): Library;
     addTypes(value: string, index?: number): string;
-
     getInstallDir(): string;
     setInstallDir(value: string): Library;
-
     getSourceDir(): string;
     setSourceDir(value: string): Library;
-
     getUtilityDir(): string;
     setUtilityDir(value: string): Library;
-
     getContainerPlatform(): string;
     setContainerPlatform(value: string): Library;
-
     getDotALinkage(): boolean;
     setDotALinkage(value: boolean): Library;
-
     getPrecompiled(): boolean;
     setPrecompiled(value: boolean): Library;
-
     getLdFlags(): string;
     setLdFlags(value: string): Library;
-
     getIsLegacy(): boolean;
     setIsLegacy(value: boolean): Library;
-
     getVersion(): string;
     setVersion(value: string): Library;
-
     getLicense(): string;
     setLicense(value: string): Library;
 
-
     getPropertiesMap(): jspb.Map<string, string>;
     clearPropertiesMap(): void;
-
     getLocation(): LibraryLocation;
     setLocation(value: LibraryLocation): Library;
-
     getLayout(): LibraryLayout;
     setLayout(value: LibraryLayout): Library;
-
     clearExamplesList(): void;
     getExamplesList(): Array<string>;
     setExamplesList(value: Array<string>): Library;
     addExamples(value: string, index?: number): string;
-
     clearProvidesIncludesList(): void;
     getProvidesIncludesList(): Array<string>;
     setProvidesIncludesList(value: Array<string>): Library;
     addProvidesIncludes(value: string, index?: number): string;
 
-
     getCompatibleWithMap(): jspb.Map<string, boolean>;
     clearCompatibleWithMap(): void;
-
     getInDevelopment(): boolean;
     setInDevelopment(value: boolean): Library;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Library.AsObject;
@@ -870,13 +779,10 @@ export class ZipLibraryInstallRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): ZipLibraryInstallRequest;
-
     getPath(): string;
     setPath(value: string): ZipLibraryInstallRequest;
-
     getOverwrite(): boolean;
     setOverwrite(value: boolean): ZipLibraryInstallRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ZipLibraryInstallRequest.AsObject;
@@ -903,7 +809,6 @@ export class ZipLibraryInstallResponse extends jspb.Message {
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): ZipLibraryInstallResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ZipLibraryInstallResponse.AsObject;
     static toObject(includeInstance: boolean, msg: ZipLibraryInstallResponse): ZipLibraryInstallResponse.AsObject;
@@ -926,13 +831,10 @@ export class GitLibraryInstallRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): GitLibraryInstallRequest;
-
     getUrl(): string;
     setUrl(value: string): GitLibraryInstallRequest;
-
     getOverwrite(): boolean;
     setOverwrite(value: boolean): GitLibraryInstallRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GitLibraryInstallRequest.AsObject;
@@ -958,7 +860,6 @@ export class GitLibraryInstallResponse extends jspb.Message {
     clearTaskProgress(): void;
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): GitLibraryInstallResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GitLibraryInstallResponse.AsObject;

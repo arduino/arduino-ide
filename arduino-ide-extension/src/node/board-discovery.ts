@@ -1,18 +1,22 @@
-import { ClientDuplexStream } from '@grpc/grpc-js';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import type { ClientDuplexStream } from '@grpc/grpc-js';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import { BackendApplicationContribution } from '@theia/core/lib/node';
+import type { Mutable } from '@theia/core/lib/common/types';
+import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { Disposable } from '@theia/core/lib/common/disposable';
+import { isDeepStrictEqual } from 'util';
 import { v4 } from 'uuid';
 import { Unknown } from '../common/nls';
 import {
-  AttachedBoardsChangeEvent,
-  AvailablePorts,
   Board,
+  DetectedPort,
+  DetectedPorts,
   NotificationServiceServer,
   Port,
 } from '../common/protocol';
@@ -22,7 +26,7 @@ import {
   DetectedPort as RpcDetectedPort,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import type { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { CoreClientAware } from './core-client-provider';
 import { ServiceError } from './service-error';
 
@@ -57,23 +61,9 @@ export class BoardDiscovery
   private readonly onStreamDidCancelEmitter = new Emitter<void>(); // when the watcher is canceled by the IDE2
   private readonly toDisposeOnStopWatch = new DisposableCollection();
 
-  private uploadInProgress = false;
-
-  /**
-   * Keys are the `address` of the ports.
-   *
-   * The `protocol` is ignored because the board detach event does not carry the protocol information,
-   * just the address.
-   * ```json
-   * {
-   *  "type": "remove",
-   *  "address": "/dev/cu.usbmodem14101"
-   * }
-   * ```
-   */
-  private _availablePorts: AvailablePorts = {};
-  get availablePorts(): AvailablePorts {
-    return this._availablePorts;
+  private _detectedPorts: DetectedPorts = {};
+  get detectedPorts(): DetectedPorts {
+    return this._detectedPorts;
   }
 
   onStart(): void {
@@ -118,10 +108,6 @@ export class BoardDiscovery
       this.logger.info('Canceling boards watcher...');
       this.toDisposeOnStopWatch.dispose();
     });
-  }
-
-  setUploadInProgress(uploadInProgress: boolean): void {
-    this.uploadInProgress = uploadInProgress;
   }
 
   private createTimeout(
@@ -202,18 +188,6 @@ export class BoardDiscovery
     return wrapper;
   }
 
-  private toJson(arg: BoardListWatchRequest | BoardListWatchResponse): string {
-    let object: Record<string, unknown> | undefined = undefined;
-    if (arg instanceof BoardListWatchRequest) {
-      object = BoardListWatchRequest.toObject(false, arg);
-    } else if (arg instanceof BoardListWatchResponse) {
-      object = BoardListWatchResponse.toObject(false, arg);
-    } else {
-      throw new Error(`Unhandled object type: ${arg}`);
-    }
-    return JSON.stringify(object);
-  }
-
   async start(): Promise<void> {
     this.logger.info('start');
     if (this.stopping) {
@@ -240,9 +214,8 @@ export class BoardDiscovery
     this.logger.info('start resolved watching');
   }
 
-  // XXX: make this `protected` and override for tests if IDE2 wants to mock events from the CLI.
-  private onBoardListWatchResponse(resp: BoardListWatchResponse): void {
-    this.logger.info(this.toJson(resp));
+  protected onBoardListWatchResponse(resp: BoardListWatchResponse): void {
+    this.logger.info(JSON.stringify(resp.toObject(false)));
     const eventType = EventType.parse(resp.getEventType());
 
     if (eventType === EventType.Quit) {
@@ -251,69 +224,161 @@ export class BoardDiscovery
       return;
     }
 
-    const detectedPort = resp.getPort();
-    if (detectedPort) {
-      const { port, boards } = this.fromRpc(detectedPort);
-      if (!port) {
-        if (!!boards.length) {
-          console.warn(
-            `Could not detect the port, but unexpectedly received discovered boards. This is most likely a bug! Response was: ${this.toJson(
-              resp
-            )}`
-          );
-        }
-        return;
+    const rpcDetectedPort = resp.getPort();
+    if (rpcDetectedPort) {
+      const detectedPort = this.fromRpc(rpcDetectedPort);
+      if (detectedPort) {
+        this.fireSoon({ detectedPort, eventType });
+      } else {
+        this.logger.warn(
+          `Could not extract the detected port from ${rpcDetectedPort.toObject(
+            false
+          )}`
+        );
       }
-      const oldState = deepClone(this._availablePorts);
-      const newState = deepClone(this._availablePorts);
-      const key = Port.keyOf(port);
-
-      if (eventType === EventType.Add) {
-        if (newState[key]) {
-          const [, knownBoards] = newState[key];
-          this.logger.warn(
-            `Port '${Port.toString(
-              port
-            )}' was already available. Known boards before override: ${JSON.stringify(
-              knownBoards
-            )}`
-          );
-        }
-        newState[key] = [port, boards];
-      } else if (eventType === EventType.Remove) {
-        if (!newState[key]) {
-          this.logger.warn(
-            `Port '${Port.toString(port)}' was not available. Skipping`
-          );
-          return;
-        }
-        delete newState[key];
-      }
-
-      const event: AttachedBoardsChangeEvent = {
-        oldState: {
-          ...AvailablePorts.split(oldState),
-        },
-        newState: {
-          ...AvailablePorts.split(newState),
-        },
-        uploadInProgress: this.uploadInProgress,
-      };
-
-      this._availablePorts = newState;
-      this.notificationService.notifyAttachedBoardsDidChange(event);
+    } else if (resp.getError()) {
+      this.logger.error(
+        `Could not extract any detected 'port' from the board list watch response. An 'error' has occurred: ${resp.getError()}`
+      );
     }
   }
 
-  private fromRpc(detectedPort: RpcDetectedPort): DetectedPort {
+  private fromRpc(detectedPort: RpcDetectedPort): DetectedPort | undefined {
     const rpcPort = detectedPort.getPort();
-    const port = rpcPort && this.fromRpcPort(rpcPort);
+    if (!rpcPort) {
+      return undefined;
+    }
+    const port = createApiPort(rpcPort);
+    // if (port.address === '/dev/cu.Bluetooth-Incoming-Port') {
+    //   return {
+    //     port: {
+    //       address: 'COM41',
+    //       addressLabel: 'COM41',
+    //       protocol: 'serial',
+    //       protocolLabel: 'Serial Port (USB)',
+    //       properties: {
+    //         pid: '0x1001',
+    //         serialNumber: '',
+    //         vid: '0x303A',
+    //       },
+    //     },
+    //     boards: [
+    //       {
+    //         name: 'Adafruit QT Py ESP32-C3',
+    //         fqbn: 'esp32:esp32:adafruit_qtpy_esp32c3',
+    //       },
+    //       {
+    //         name: 'AirM2M_CORE_ESP32C3',
+    //         fqbn: 'esp32:esp32:AirM2M_CORE_ESP32C3',
+    //       },
+    //       {
+    //         name: 'Crabik Slot ESP32-S3',
+    //         fqbn: 'esp32:esp32:crabik_slot_esp32_s3',
+    //       },
+    //       {
+    //         name: 'DFRobot Beetle ESP32-C3',
+    //         fqbn: 'esp32:esp32:dfrobot_beetle_esp32c3',
+    //       },
+    //       {
+    //         name: 'DFRobot Firebeetle 2 ESP32-S3',
+    //         fqbn: 'esp32:esp32:dfrobot_firebeetle2_esp32s3',
+    //       },
+    //       {
+    //         name: 'DFRobot Romeo ESP32-S3',
+    //         fqbn: 'esp32:esp32:dfrobot_romeo_esp32s3',
+    //       },
+    //       {
+    //         name: 'ESP32C3 Dev Module',
+    //         fqbn: 'esp32:esp32:esp32c3',
+    //       },
+    //       {
+    //         name: 'ESP32S3 Dev Module',
+    //         fqbn: 'esp32:esp32:esp32s3',
+    //       },
+    //       {
+    //         name: 'ESP32-S3-Box',
+    //         fqbn: 'esp32:esp32:esp32s3box',
+    //       },
+    //       {
+    //         name: 'ESP32S3 CAM LCD',
+    //         fqbn: 'esp32:esp32:esp32s3camlcd',
+    //       },
+    //       {
+    //         name: 'ESP32-S3-USB-OTG',
+    //         fqbn: 'esp32:esp32:esp32s3usbotg',
+    //       },
+    //       {
+    //         name: 'Heltec WiFi Kit 32(V3)',
+    //         fqbn: 'esp32:esp32:heltec_wifi_kit_32_V3',
+    //       },
+    //       {
+    //         name: 'Heltec WiFi LoRa 32(V3) / Wireless shell(V3) / Wireless stick lite (V3)',
+    //         fqbn: 'esp32:esp32:heltec_wifi_lora_32_V3',
+    //       },
+    //       {
+    //         name: 'LilyGo T-Display-S3',
+    //         fqbn: 'esp32:esp32:lilygo_t_display_s3',
+    //       },
+    //       {
+    //         name: 'LOLIN C3 Mini',
+    //         fqbn: 'esp32:esp32:lolin_c3_mini',
+    //       },
+    //       {
+    //         name: 'LOLIN S3',
+    //         fqbn: 'esp32:esp32:lolin_s3',
+    //       },
+    //       {
+    //         name: 'M5Stack-ATOMS3',
+    //         fqbn: 'esp32:esp32:m5stack-atoms3',
+    //       },
+    //       {
+    //         name: 'M5Stack-CoreS3',
+    //         fqbn: 'esp32:esp32:m5stack-cores3',
+    //       },
+    //       {
+    //         name: 'Nebula S3',
+    //         fqbn: 'esp32:esp32:nebulas3',
+    //       },
+    //       {
+    //         name: 'u-blox NORA-W10 series (ESP32-S3)',
+    //         fqbn: 'esp32:esp32:nora_w10',
+    //       },
+    //       {
+    //         name: 'RedPill(+) ESP32-S3',
+    //         fqbn: 'esp32:esp32:redpill_esp32s3',
+    //       },
+    //       {
+    //         name: 'STAMP-S3',
+    //         fqbn: 'esp32:esp32:stamp-s3',
+    //       },
+    //       {
+    //         name: 'TAMC Termod S3',
+    //         fqbn: 'esp32:esp32:tamc_termod_s3',
+    //       },
+    //       {
+    //         name: 'VALTRACK_V4_MFW_ESP32_C3',
+    //         fqbn: 'esp32:esp32:VALTRACK_V4_MFW_ESP32_C3',
+    //       },
+    //       {
+    //         name: 'VALTRACK_V4_VTS_ESP32_C3',
+    //         fqbn: 'esp32:esp32:VALTRACK_V4_VTS_ESP32_C3',
+    //       },
+    //       {
+    //         name: 'WiFiduinoV2',
+    //         fqbn: 'esp32:esp32:wifiduino32c3',
+    //       },
+    //       {
+    //         name: 'WiFiduino32S3',
+    //         fqbn: 'esp32:esp32:wifiduino32s3',
+    //       },
+    //     ],
+    //   };
+    // }
     const boards = detectedPort.getMatchingBoardsList().map(
       (board) =>
         ({
-          fqbn: board.getFqbn(),
+          fqbn: board.getFqbn() || undefined, // prefer undefined fqbn over empty string
           name: board.getName() || Unknown,
-          port,
         } as Board)
     );
     return {
@@ -322,15 +387,55 @@ export class BoardDiscovery
     };
   }
 
-  private fromRpcPort(rpcPort: RpcPort): Port {
-    return {
-      address: rpcPort.getAddress(),
-      addressLabel: rpcPort.getLabel(),
-      protocol: rpcPort.getProtocol(),
-      protocolLabel: rpcPort.getProtocolLabel(),
-      properties: Port.Properties.create(rpcPort.getPropertiesMap().toObject()),
-      hardwareId: rpcPort.getHardwareId(),
-    };
+  private fireSoonHandle: NodeJS.Timeout | undefined;
+  private readonly bufferedEvents: DetectedPortChangeEvent[] = [];
+  private fireSoon(event: DetectedPortChangeEvent): void {
+    this.bufferedEvents.push(event);
+    clearTimeout(this.fireSoonHandle);
+    this.fireSoonHandle = setTimeout(() => {
+      const current = deepClone(this.detectedPorts);
+      const newState = this.calculateNewState(this.bufferedEvents, current);
+      if (!isDeepStrictEqual(current, newState)) {
+        this._detectedPorts = newState;
+        this.notificationService.notifyDetectedPortsDidChange({
+          detectedPorts: this._detectedPorts,
+        });
+      }
+      this.bufferedEvents.length = 0;
+    }, 100);
+  }
+
+  private calculateNewState(
+    events: DetectedPortChangeEvent[],
+    prevState: Mutable<DetectedPorts>
+  ): DetectedPorts {
+    const newState = deepClone(prevState);
+    for (const { detectedPort, eventType } of events) {
+      const { port, boards } = detectedPort;
+      const key = Port.keyOf(port);
+      if (eventType === EventType.Add) {
+        const alreadyDetectedPort = newState[key];
+        if (alreadyDetectedPort) {
+          console.warn(
+            `Detected a new port that has been already discovered. The old value will be overridden. Old value: ${JSON.stringify(
+              alreadyDetectedPort
+            )}, new value: ${JSON.stringify(detectedPort)}`
+          );
+        }
+        newState[key] = { port, boards };
+      } else if (eventType === EventType.Remove) {
+        const alreadyDetectedPort = newState[key];
+        if (!alreadyDetectedPort) {
+          console.warn(
+            `Detected a port removal but it has not been discovered. This is most likely a bug! Detected port was: ${JSON.stringify(
+              detectedPort
+            )}`
+          );
+        }
+        delete newState[key];
+      }
+    }
+    return newState;
   }
 }
 
@@ -357,7 +462,18 @@ namespace EventType {
   }
 }
 
-interface DetectedPort {
-  port: Port | undefined;
-  boards: Board[];
+interface DetectedPortChangeEvent {
+  readonly detectedPort: DetectedPort;
+  readonly eventType: EventType.Add | EventType.Remove;
+}
+
+export function createApiPort(rpcPort: RpcPort): Port {
+  return {
+    address: rpcPort.getAddress(),
+    addressLabel: rpcPort.getLabel(),
+    protocol: rpcPort.getProtocol(),
+    protocolLabel: rpcPort.getProtocolLabel(),
+    properties: Port.Properties.create(rpcPort.getPropertiesMap().toObject()),
+    hardwareId: rpcPort.getHardwareId() || undefined, // prefer undefined over empty string
+  };
 }

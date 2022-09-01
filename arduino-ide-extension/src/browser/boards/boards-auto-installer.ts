@@ -1,281 +1,229 @@
-import { injectable, inject } from '@theia/core/shared/inversify';
-import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import {
-  BoardsService,
-  BoardsPackage,
-  Board,
-  Port,
-} from '../../common/protocol/boards-service';
-import { BoardsServiceProvider } from './boards-service-provider';
-import { Installable, ResponseServiceClient } from '../../common/protocol';
-import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
-import { nls } from '@theia/core/lib/common';
-import { NotificationCenter } from '../notification-center';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { MessageType } from '@theia/core/lib/common/message-service-protocol';
+import { nls } from '@theia/core/lib/common/nls';
+import { notEmpty } from '@theia/core/lib/common/objects';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { NotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 import { InstallManually } from '../../common/nls';
-
-interface AutoInstallPromptAction {
-  // isAcceptance, whether or not the action indicates acceptance of auto-install proposal
-  isAcceptance?: boolean;
-  key: string;
-  handler: (...args: unknown[]) => unknown;
-}
-
-type AutoInstallPromptActions = AutoInstallPromptAction[];
+import { Installable, ResponseServiceClient } from '../../common/protocol';
+import {
+  BoardIdentifier,
+  BoardsPackage,
+  BoardsService,
+  createPlatformIdentifier,
+  isBoardIdentifierChangeEvent,
+  PlatformIdentifier,
+  platformIdentifierEquals,
+  serializePlatformIdentifier,
+} from '../../common/protocol/boards-service';
+import { NotificationCenter } from '../notification-center';
+import { BoardsServiceProvider } from './boards-service-provider';
+import { BoardsListWidgetFrontendContribution } from './boards-widget-frontend-contribution';
 
 /**
- * Listens on `BoardsConfig.Config` changes, if a board is selected which does not
+ * Listens on `BoardsConfigChangeEvent`s, if a board is selected which does not
  * have the corresponding core installed, it proposes the user to install the core.
  */
-
-// * Cases in which we do not show the auto-install prompt:
-// 1. When a related platform is already installed
-// 2. When a prompt is already showing in the UI
-// 3. When a board is unplugged
 @injectable()
 export class BoardsAutoInstaller implements FrontendApplicationContribution {
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
-
   @inject(MessageService)
-  protected readonly messageService: MessageService;
-
+  private readonly messageService: MessageService;
+  @inject(NotificationManager)
+  private readonly notificationManager: NotificationManager;
   @inject(BoardsService)
-  protected readonly boardsService: BoardsService;
-
+  private readonly boardsService: BoardsService;
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
-
+  private readonly boardsServiceProvider: BoardsServiceProvider;
   @inject(ResponseServiceClient)
-  protected readonly responseService: ResponseServiceClient;
-
+  private readonly responseService: ResponseServiceClient;
   @inject(BoardsListWidgetFrontendContribution)
-  protected readonly boardsManagerFrontendContribution: BoardsListWidgetFrontendContribution;
+  private readonly boardsManagerWidgetContribution: BoardsListWidgetFrontendContribution;
 
   // Workaround for https://github.com/eclipse-theia/theia/issues/9349
-  protected notifications: Board[] = [];
-
-  // * "refusal" meaning a "prompt action" not accepting the auto-install offer ("X" or "install manually")
-  // we can use "portSelectedOnLastRefusal" to deduce when a board is unplugged after a user has "refused"
-  // an auto-install prompt. Important to know as we do not want "an unplug" to trigger a "refused" prompt
-  // showing again
-  private portSelectedOnLastRefusal: Port | undefined;
-  private lastRefusedPackageId: string | undefined;
+  private readonly installNotificationInfos: Readonly<{
+    boardName: string;
+    platformId: string;
+    notificationId: string;
+  }>[] = [];
+  private readonly toDispose = new DisposableCollection();
 
   onStart(): void {
-    const setEventListeners = () => {
-      this.boardsServiceClient.onBoardsConfigChanged((config) => {
-        const { selectedBoard, selectedPort } = config;
-
-        const boardWasUnplugged =
-          !selectedPort && this.portSelectedOnLastRefusal;
-
-        this.clearLastRefusedPromptInfo();
-
-        if (
-          boardWasUnplugged ||
-          !selectedBoard ||
-          this.promptAlreadyShowingForBoard(selectedBoard)
-        ) {
-          return;
+    this.toDispose.pushAll([
+      this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+        if (isBoardIdentifierChangeEvent(event)) {
+          this.ensureCoreExists(event.selectedBoard);
         }
-
-        this.ensureCoreExists(selectedBoard, selectedPort);
-      });
-
-      // we "clearRefusedPackageInfo" if a "refused" package is eventually
-      // installed, though this is not strictly necessary. It's more of a
-      // cleanup, to ensure the related variables are representative of
-      // current state.
-      this.notificationCenter.onPlatformDidInstall((installed) => {
-        if (this.lastRefusedPackageId === installed.item.id) {
-          this.clearLastRefusedPromptInfo();
-        }
-      });
-    };
-
-    // we should invoke this.ensureCoreExists only once we're sure
-    // everything has been reconciled
-    this.boardsServiceClient.reconciled.then(() => {
-      const { selectedBoard, selectedPort } =
-        this.boardsServiceClient.boardsConfig;
-
-      if (selectedBoard) {
-        this.ensureCoreExists(selectedBoard, selectedPort);
-      }
-
-      setEventListeners();
+      }),
+      this.notificationCenter.onPlatformDidInstall((event) =>
+        this.clearAllNotificationForPlatform(event.item.id)
+      ),
+    ]);
+    this.boardsServiceProvider.ready.then(() => {
+      const { selectedBoard } = this.boardsServiceProvider.boardsConfig;
+      this.ensureCoreExists(selectedBoard);
     });
   }
 
-  private removeNotificationByBoard(selectedBoard: Board): void {
-    const index = this.notifications.findIndex((notification) =>
-      Board.sameAs(notification, selectedBoard)
-    );
-    if (index !== -1) {
-      this.notifications.splice(index, 1);
+  private async findPlatformToInstall(
+    selectedBoard: BoardIdentifier
+  ): Promise<BoardsPackage | undefined> {
+    const platformId = await this.findPlatformIdToInstall(selectedBoard);
+    if (!platformId) {
+      return undefined;
     }
+    const id = serializePlatformIdentifier(platformId);
+    const platform = await this.boardsService.getBoardPackage({ id });
+    if (!platform) {
+      console.warn(`Could not resolve platform for ID: ${id}`);
+      return undefined;
+    }
+    if (platform.installedVersion) {
+      return undefined;
+    }
+    return platform;
   }
 
-  private clearLastRefusedPromptInfo(): void {
-    this.lastRefusedPackageId = undefined;
-    this.portSelectedOnLastRefusal = undefined;
-  }
-
-  private setLastRefusedPromptInfo(
-    packageId: string,
-    selectedPort?: Port
-  ): void {
-    this.lastRefusedPackageId = packageId;
-    this.portSelectedOnLastRefusal = selectedPort;
-  }
-
-  private promptAlreadyShowingForBoard(board: Board): boolean {
-    return Boolean(
-      this.notifications.find((notification) =>
-        Board.sameAs(notification, board)
-      )
-    );
-  }
-
-  protected ensureCoreExists(selectedBoard: Board, selectedPort?: Port): void {
-    this.notifications.push(selectedBoard);
-    this.boardsService.search({}).then((packages) => {
-      const candidate = this.getInstallCandidate(packages, selectedBoard);
-
-      if (candidate) {
-        this.showAutoInstallPrompt(candidate, selectedBoard, selectedPort);
-      } else {
-        this.removeNotificationByBoard(selectedBoard);
+  private async findPlatformIdToInstall(
+    selectedBoard: BoardIdentifier
+  ): Promise<PlatformIdentifier | undefined> {
+    const selectedBoardPlatformId = createPlatformIdentifier(selectedBoard);
+    // The board is installed or the FQBN is available from the `board list watch` for Arduino boards. The latter might change!
+    if (selectedBoardPlatformId) {
+      const installedPlatforms =
+        await this.boardsService.getInstalledPlatforms();
+      const installedPlatformIds = installedPlatforms
+        .map((platform) => createPlatformIdentifier(platform.id))
+        .filter(notEmpty);
+      if (
+        installedPlatformIds.every(
+          (installedPlatformId) =>
+            !platformIdentifierEquals(
+              installedPlatformId,
+              selectedBoardPlatformId
+            )
+        )
+      ) {
+        return selectedBoardPlatformId;
       }
-    });
+    } else {
+      // IDE2 knows that selected board is not installed. Look for board `name` match in not yet installed platforms.
+      // The order should be correct when there is a board name collision (e.g. Arduino Nano RP2040 from Arduino Mbed OS Nano Boards, [DEPRECATED] Arduino Mbed OS Nano Boards). The CLI boosts the platforms, so picking the first name match should be fine.
+      const platforms = await this.boardsService.search({});
+      for (const platform of platforms) {
+        // Ignore installed platforms
+        if (platform.installedVersion) {
+          continue;
+        }
+        if (
+          platform.boards.some((board) => board.name === selectedBoard.name)
+        ) {
+          const platformId = createPlatformIdentifier(platform.id);
+          if (platformId) {
+            return platformId;
+          }
+        }
+      }
+    }
+    return undefined;
   }
 
-  private getInstallCandidate(
-    packages: BoardsPackage[],
-    selectedBoard: Board
-  ): BoardsPackage | undefined {
-    // filter packagesForBoard selecting matches from the cli (installed packages)
-    // and matches based on the board name
-    // NOTE: this ensures the Deprecated & new packages are all in the array
-    // so that we can check if any of the valid packages is already installed
-    const packagesForBoard = packages.filter(
-      (pkg) =>
-        BoardsPackage.contains(selectedBoard, pkg) ||
-        pkg.boards.some((board) => board.name === selectedBoard.name)
-    );
-
-    // check if one of the packages for the board is already installed. if so, no hint
-    if (packagesForBoard.some(({ installedVersion }) => !!installedVersion)) {
+  private async ensureCoreExists(
+    selectedBoard: BoardIdentifier | undefined
+  ): Promise<void> {
+    if (!selectedBoard) {
       return;
     }
+    const candidate = await this.findPlatformToInstall(selectedBoard);
+    if (!candidate) {
+      return;
+    }
+    const platformIdToInstall = candidate.id;
+    const selectedBoardName = selectedBoard.name;
+    if (
+      this.installNotificationInfos.some(
+        ({ boardName, platformId }) =>
+          platformIdToInstall === platformId && selectedBoardName === boardName
+      )
+    ) {
+      // Already has a notification for the board with the same platform. Nothing to do.
+      return;
+    }
+    this.clearAllNotificationForPlatform(platformIdToInstall);
 
-    // filter the installable (not installed) packages,
-    // CLI returns the packages already sorted with the deprecated ones at the end of the list
-    // in order to ensure the new ones are preferred
-    const candidates = packagesForBoard.filter(
-      ({ installedVersion }) => !installedVersion
-    );
-
-    return candidates[0];
-  }
-
-  private showAutoInstallPrompt(
-    candidate: BoardsPackage,
-    selectedBoard: Board,
-    selectedPort?: Port
-  ): void {
-    const candidateName = candidate.name;
     const version = candidate.availableVersions[0]
       ? `[v ${candidate.availableVersions[0]}]`
       : '';
-
-    const info = this.generatePromptInfoText(
-      candidateName,
+    const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
+    const message = nls.localize(
+      'arduino/board/installNow',
+      'The "{0} {1}" core has to be installed for the currently selected "{2}" board. Do you want to install it now?',
+      candidate.name,
       version,
       selectedBoard.name
     );
-
-    const actions = this.createPromptActions(candidate);
-
-    const onRefuse = () => {
-      this.setLastRefusedPromptInfo(candidate.id, selectedPort);
-    };
-    const handleAction = this.createOnAnswerHandler(actions, onRefuse);
-
-    const onAnswer = (answer: string) => {
-      this.removeNotificationByBoard(selectedBoard);
-
-      handleAction(answer);
-    };
-
-    this.messageService
-      .info(info, ...actions.map((action) => action.key))
-      .then(onAnswer);
-  }
-
-  private generatePromptInfoText(
-    candidateName: string,
-    version: string,
-    boardName: string
-  ): string {
-    return nls.localize(
-      'arduino/board/installNow',
-      'The "{0} {1}" core has to be installed for the currently selected "{2}" board. Do you want to install it now?',
-      candidateName,
-      version,
-      boardName
+    const notificationId = this.notificationId(message, InstallManually, yes);
+    this.installNotificationInfos.push({
+      boardName: selectedBoardName,
+      platformId: platformIdToInstall,
+      notificationId,
+    });
+    const answer = await this.messageService.info(
+      message,
+      InstallManually,
+      yes
     );
-  }
-
-  private createPromptActions(
-    candidate: BoardsPackage
-  ): AutoInstallPromptActions {
-    const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
-
-    const actions: AutoInstallPromptActions = [
-      {
-        key: InstallManually,
-        handler: () => {
-          this.boardsManagerFrontendContribution
-            .openView({ reveal: true })
-            .then((widget) =>
-              widget.refresh({
-                query: candidate.name.toLocaleLowerCase(),
-                type: 'All',
-              })
-            );
-        },
-      },
-      {
-        isAcceptance: true,
-        key: yes,
-        handler: () => {
-          return Installable.installWithProgress({
-            installable: this.boardsService,
-            item: candidate,
-            messageService: this.messageService,
-            responseService: this.responseService,
-            version: candidate.availableVersions[0],
-          });
-        },
-      },
-    ];
-
-    return actions;
-  }
-
-  private createOnAnswerHandler(
-    actions: AutoInstallPromptActions,
-    onRefuse?: () => void
-  ): (answer: string) => void {
-    return (answer) => {
-      const actionToHandle = actions.find((action) => action.key === answer);
-      actionToHandle?.handler();
-
-      if (!actionToHandle?.isAcceptance && onRefuse) {
-        onRefuse();
+    if (answer) {
+      const index = this.installNotificationInfos.findIndex(
+        ({ boardName, platformId }) =>
+          platformIdToInstall === platformId && selectedBoardName === boardName
+      );
+      if (index !== -1) {
+        this.installNotificationInfos.splice(index, 1);
       }
-    };
+      if (answer === yes) {
+        await Installable.installWithProgress({
+          installable: this.boardsService,
+          item: candidate,
+          messageService: this.messageService,
+          responseService: this.responseService,
+          version: candidate.availableVersions[0],
+        });
+        return;
+      }
+      if (answer === InstallManually) {
+        this.boardsManagerWidgetContribution
+          .openView({ reveal: true })
+          .then((widget) =>
+            widget.refresh({
+              query: candidate.name.toLocaleLowerCase(),
+              type: 'All',
+            })
+          );
+      }
+    }
+  }
+
+  private clearAllNotificationForPlatform(predicatePlatformId: string): void {
+    // Discard all install notifications for the same platform.
+    const notificationsLength = this.installNotificationInfos.length;
+    for (let i = notificationsLength - 1; i >= 0; i--) {
+      const { notificationId, platformId } = this.installNotificationInfos[i];
+      if (platformId === predicatePlatformId) {
+        this.installNotificationInfos.splice(i, 1);
+        this.notificationManager.clear(notificationId);
+      }
+    }
+  }
+
+  private notificationId(message: string, ...actions: string[]): string {
+    return this.notificationManager['getMessageId']({
+      text: message,
+      actions,
+      type: MessageType.Info,
+    });
   }
 }
