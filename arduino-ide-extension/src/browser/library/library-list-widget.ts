@@ -126,13 +126,13 @@ export class LibraryListWidget extends ListWidget<
         ),
         message,
         buttons: [
-          nls.localize('arduino/library/installAll', 'Install all'),
+          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
           nls.localize(
             'arduino/library/installOnly',
             'Install {0} only',
             item.name
           ),
-          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+          nls.localize('arduino/library/installAll', 'Install all'),
         ],
         maxWidth: 740, // Aligned with `settings-dialog.css`.
       }).open();
@@ -201,7 +201,8 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
       options.buttons || [nls.localize('vscode/issueMainService/ok', 'OK')]
     ).forEach((text, index) => {
       const button = this.createButton(text);
-      button.classList.add(index === 0 ? 'main' : 'secondary');
+      const i = options.buttons ? options.buttons?.length - 1 : 0;
+      button.classList.add(index === i ? 'main' : 'secondary');
       this.controlPanel.appendChild(button);
       this.toDisposeOnDetach.push(
         addEventListener(button, 'click', () => {
