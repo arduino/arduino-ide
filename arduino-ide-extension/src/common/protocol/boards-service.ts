@@ -3,6 +3,7 @@ import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
 import { nls } from '@theia/core/lib/common/nls';
+import URI from '@theia/core/lib/common/uri';
 import {
   All,
   Contributed,
@@ -10,8 +11,11 @@ import {
   Type as TypeLabel,
   Updatable,
 } from '../nls';
-import URI from '@theia/core/lib/common/uri';
+import stableJsonStringify = require('fast-json-stable-stringify');
 
+/**
+ * Keys come from `Port#keyOf`.
+ */
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
   export function groupByProtocol(
@@ -43,6 +47,11 @@ export namespace AvailablePorts {
       boards: attachedBoards,
       ports: availablePorts,
     };
+  }
+  export function sameAs(left: AvailablePorts, right: AvailablePorts): boolean {
+    return (
+      left === right || stableJsonStringify(left) === stableJsonStringify(right)
+    );
   }
 }
 
