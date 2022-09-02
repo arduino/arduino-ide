@@ -1,3 +1,4 @@
+import 'react-virtualized/styles.css';
 import * as React from '@theia/core/shared/react';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import {
@@ -14,7 +15,11 @@ import { Installable } from '../../../common/protocol/installable';
 import { ComponentListItem } from './component-list-item';
 import { ListItemRenderer } from './list-item-renderer';
 
-function sameAs<T>(left: T[], right: T[], key: (item: T) => string): boolean {
+function sameAs<T>(
+  left: T[],
+  right: T[],
+  ...compareProps: (keyof T)[]
+): boolean {
   if (left === right) {
     return true;
   }
@@ -23,10 +28,12 @@ function sameAs<T>(left: T[], right: T[], key: (item: T) => string): boolean {
     return false;
   }
   for (let i = 0; i < leftLength; i++) {
-    const leftKey = key(left[i]);
-    const rightKey = key(right[i]);
-    if (leftKey !== rightKey) {
-      return false;
+    for (const prop of compareProps) {
+      const leftValue = left[i][prop];
+      const rightValue = right[i][prop];
+      if (leftValue !== rightValue) {
+        return false;
+      }
     }
   }
   return true;
@@ -43,7 +50,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
   constructor(props: ComponentList.Props<T>) {
     super(props);
     this.cache = new CellMeasurerCache({
-      defaultHeight: 300,
+      defaultHeight: 140,
       fixedWidth: true,
     });
   }
@@ -67,6 +74,11 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
               rowHeight={this.cache.rowHeight}
               deferredMeasurementCache={this.cache}
               ref={this.setListRef}
+              estimatedRowSize={140}
+              // If default value, then `react-virtualized` will optimize and list item will not receive a `:hover` event.
+              // Hence, install and version `<select>` won't be visible even if the mouse cursor is over the `<div>`.
+              // See https://github.com/bvaughn/react-virtualized/blob/005be24a608add0344284053dae7633be86053b2/source/Grid/Grid.js#L38-L42
+              scrollingResetTimeInterval={0}
             />
           );
         }}
@@ -77,13 +89,13 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
   override componentDidUpdate(prevProps: ComponentList.Props<T>): void {
     if (
       this.resizeAllFlag ||
-      !sameAs(this.props.items, prevProps.items, this.props.itemLabel)
+      !sameAs(this.props.items, prevProps.items, 'name', 'installedVersion')
     ) {
       this.clearAll(true);
     }
   }
 
-  private setListRef = (ref: List | null): void => {
+  private readonly setListRef = (ref: List | null): void => {
     this.list = ref || undefined;
   };
 
@@ -98,17 +110,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
     }
   }
 
-  private clear(index: number): void {
-    this.cache.clear(index, 0);
-    this.list?.recomputeRowHeights(index);
-    // Update the last item if the if the one before was updated
-    if (index === this.props.items.length - 2) {
-      this.cache.clear(index + 1, 0);
-      this.list?.recomputeRowHeights(index + 1);
-    }
-  }
-
-  private createItem: ListRowRenderer = ({
+  private readonly createItem: ListRowRenderer = ({
     index,
     parent,
     key,
@@ -123,16 +125,20 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
         rowIndex={index}
         parent={parent}
       >
-        <div style={style}>
-          <ComponentListItem<T>
-            key={this.props.itemLabel(item)}
-            item={item}
-            itemRenderer={this.props.itemRenderer}
-            install={this.props.install}
-            uninstall={this.props.uninstall}
-            onFocusDidChange={() => this.clear(index)}
-          />
-        </div>
+        {({ measure, registerChild }) => (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <div ref={registerChild} style={style}>
+            <ComponentListItem<T>
+              key={this.props.itemLabel(item)}
+              item={item}
+              itemRenderer={this.props.itemRenderer}
+              install={this.props.install}
+              uninstall={this.props.uninstall}
+              onFocusDidChange={() => measure()}
+            />
+          </div>
+        )}
       </CellMeasurer>
     );
   };
