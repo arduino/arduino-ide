@@ -51,7 +51,9 @@ export class FilterableListContainer<
       <div className={'filterable-list-container'}>
         {this.renderSearchBar()}
         {this.renderSearchFilter()}
-        {this.renderComponentList()}
+        <div className="filterable-list-container">
+          {this.renderComponentList()}
+        </div>
       </div>
     );
   }
