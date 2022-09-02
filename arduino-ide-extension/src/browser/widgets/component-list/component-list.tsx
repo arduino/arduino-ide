@@ -1,3 +1,4 @@
+import 'react-virtualized/styles.css';
 import * as React from '@theia/core/shared/react';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import {
@@ -43,7 +44,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
   constructor(props: ComponentList.Props<T>) {
     super(props);
     this.cache = new CellMeasurerCache({
-      defaultHeight: 300,
+      defaultHeight: 140,
       fixedWidth: true,
     });
   }
@@ -67,6 +68,11 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
               rowHeight={this.cache.rowHeight}
               deferredMeasurementCache={this.cache}
               ref={this.setListRef}
+              estimatedRowSize={140}
+              // If default value, then `react-virtualized` will optimize and list item will not receive a `:hover` event.
+              // Hence, install and version `<select>` won't be visible even if the mouse cursor is over the `<div>`.
+              // See https://github.com/bvaughn/react-virtualized/blob/005be24a608add0344284053dae7633be86053b2/source/Grid/Grid.js#L38-L42
+              scrollingResetTimeInterval={0}
             />
           );
         }}
@@ -83,7 +89,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
     }
   }
 
-  private setListRef = (ref: List | null): void => {
+  private readonly setListRef = (ref: List | null): void => {
     this.list = ref || undefined;
   };
 
@@ -101,14 +107,22 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
   private clear(index: number): void {
     this.cache.clear(index, 0);
     this.list?.recomputeRowHeights(index);
-    // Update the last item if the if the one before was updated
-    if (index === this.props.items.length - 2) {
-      this.cache.clear(index + 1, 0);
-      this.list?.recomputeRowHeights(index + 1);
+    // The last item needs extra space for the footer on :hover.
+    if (index === this.props.items.length - 1) {
+      // First, recompute the grid size
+      this.list?.recomputeGridSize();
+      // Then, scroll to the very end of the list so that the footer will be visible. (#1387)
+      const endPosition = this.list?.getOffsetForRow({
+        index,
+        alignment: 'end',
+      });
+      if (endPosition) {
+        this.list?.scrollToPosition(endPosition);
+      }
     }
   }
 
-  private createItem: ListRowRenderer = ({
+  private readonly createItem: ListRowRenderer = ({
     index,
     parent,
     key,

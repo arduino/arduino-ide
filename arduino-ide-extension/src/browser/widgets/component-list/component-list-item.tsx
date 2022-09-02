@@ -32,7 +32,7 @@ export class ComponentListItem<
     const { item, itemRenderer } = this.props;
     return (
       <div
-        onMouseEnter={() => this.setState({ focus: true })}
+        onMouseOver={() => this.setState({ focus: true })}
         onMouseLeave={() => this.setState({ focus: false })}
       >
         {itemRenderer.renderItem(

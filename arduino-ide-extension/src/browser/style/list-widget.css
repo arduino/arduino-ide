@@ -44,10 +44,6 @@
     height: 100%; /* This has top be 100% down to the `scrollContainer`. */
 }
 
-.filterable-list-container .items-container {
-    padding-bottom: calc(2 * var(--theia-statusBar-height));
-}
-
 .filterable-list-container .items-container > div > div:nth-child(odd) {
     background-color: var(--theia-sideBar-background);
     filter: contrast(105%);
