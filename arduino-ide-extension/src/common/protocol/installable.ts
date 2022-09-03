@@ -27,10 +27,25 @@ export namespace Installable {
   export namespace Version {
     /**
      * Most recent version comes first, then the previous versions. (`1.8.1`, `1.6.3`, `1.6.2`, `1.6.1` and so on.)
+     *
+     * If `coerce` is `true` tries to convert any invalid semver strings to a valid semver based on [these](https://github.com/npm/node-semver#coercion) rules.
      */
-    export const COMPARATOR = (left: Version, right: Version): number => {
-      if (semver.valid(left) && semver.valid(right)) {
-        return semver.compare(left, right);
+    export const COMPARATOR = (
+      left: Version,
+      right: Version,
+      coerce = false
+    ): number => {
+      const validLeft = semver.parse(left);
+      const validRight = semver.parse(right);
+      if (validLeft && validRight) {
+        return semver.compare(validLeft, validRight);
+      }
+      if (coerce) {
+        const coercedLeft = validLeft ?? semver.coerce(left);
+        const coercedRight = validRight ?? semver.coerce(right);
+        if (coercedLeft && coercedRight) {
+          return semver.compare(coercedLeft, coercedRight);
+        }
       }
       return naturalCompare(left, right);
     };
@@ -56,7 +71,8 @@ export namespace Installable {
     }
     const result = Installable.Version.COMPARATOR(
       latestVersion,
-      installedVersion
+      installedVersion,
+      true
     );
     return result > 0;
   };
