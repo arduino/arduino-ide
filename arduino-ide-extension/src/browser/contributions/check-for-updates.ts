@@ -161,6 +161,10 @@ export class CheckForUpdates extends Contribution {
     tasks: Task<ArduinoComponent>[]
   ): Promise<void> {
     if (tasks.length) {
+      // Run task without composite progress.
+      if (tasks.length === 1) {
+        return tasks[0].run();
+      }
       return ExecuteWithProgress.withProgress(
         message,
         this.messageService,
