@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Obtenir informació de la Tarja",
       "inSketchbook": "(al quadern de programes)",
-      "installManually": "Instal·la Manualment",
       "installNow": "El nucli de \"{0} {1}\"  s'ha d'instal·lar per a la Tarja \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
       "noFQBN": "El FQBN no està disponible per la Tarja seleccionada \"{0}\". Tens instal·lat el nucli corresponent?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Plataforma desinstal·lada correctament {0}:{1}"
     },
     "boardsManager": "Gestor de Targetes",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Grava el carregador d'arrencada (Bootloader)",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "La càrrega ha fallat. Si us plau, torna-ho a provar.",
       "uploadRootCertificates": "Carregueu els certificats arrel SSL",
       "uploadingCertificates": "Càrrega de certificats."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Visiteu Arduino Cloud per crear programes al núvol."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Instal·la Manualment",
       "later": "Més tard",
       "noBoardSelected": "No s'ha seleccionat cap tarja",
       "notConnected": "[no connectat]",
       "offlineIndicator": "Sembla que estàs fora de línia. Sense connexió a Internet, és possible que l'Arduino CLI no pugui descarregar els recursos necessaris i podria provocar un mal funcionament. Connecteu-vos a Internet i reinicieu l'aplicació.",
       "oldFormat": "El '{0}' encara utilitza l'antic format `.pde`. Voleu canviar a la nova extensió '.ino'`?",
+      "partner": "Partner",
       "processing": "Processant",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "sobre {0}",
       "serialMonitor": "Monitor sèrie",
-      "unknown": "Desconegut"
+      "type": "Type",
+      "unknown": "Desconegut",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Error de compilació: {0}"
@@ -197,7 +216,7 @@
       "visit": "Visiteu Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Tanca i instal·la",
       "closeToInstallNotice": "Tanqueu el programari i instal·leu l'actualització a la vostra màquina.",
       "downloadButton": "Descarregar",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Llibreria desinstal·lada correctament {0}:{1}",
       "zipLibrary": "Llibreria"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "Programa",
@@ -253,6 +290,7 @@
       "automatic": "Automàtic",
       "board.certificates": "Llista de certificats que es poden carregar a les targes",
       "browse": "Navega",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Tria",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "És cert si les funcions de sincronització del programa estan habilitades. El valor predeterminat és true.",

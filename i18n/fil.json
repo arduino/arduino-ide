@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
-      "installManually": "Install Manually",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}"
     },
     "boardsManager": "Boards Manager",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Upload failed. Please try again.",
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Install Manually",
       "later": "Mamaya",
       "noBoardSelected": "Walang board na pinili. ",
       "notConnected": "[hindi konektado] ",
       "offlineIndicator": "Mukhang ikaw ay offline. Kung walang internet, maaaring hindi madownload ng Arduino CLI ang mga kakailanganin nitong resources at mag-malfunction. Kumonekta sa internet at i-restart ang application. ",
       "oldFormat": "Ang '{0}' ay gumagamit pa ng lumang `.pde` format. Gusto mo bang gamitin ang bagong `.ino` extension?",
+      "partner": "Partner",
       "processing": "Pinoproseso",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "on {0}",
       "serialMonitor": "Serial Monitor",
-      "unknown": "Hindi alam"
+      "type": "Type",
+      "unknown": "Hindi alam",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Compilation error: {0}"
@@ -197,7 +216,7 @@
       "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
       "zipLibrary": "Library"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "Sketch",
@@ -253,6 +290,7 @@
       "automatic": "Automatic",
       "board.certificates": "Listahan ng mga sertipikong maaaring ma-upload sa ma board.",
       "browse": "Browse",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Choose",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True kapag ang sketch sync function ay gumagana. Ito ay true by default.",

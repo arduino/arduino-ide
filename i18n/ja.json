@@ -14,7 +14,6 @@
       "disconnected": "切断中",
       "getBoardInfo": "ボード情報を取得",
       "inSketchbook": "（スケッチブック内）",
-      "installManually": "手動でインストール",
       "installNow": "現在選択されているボード\"{2}\"用にコア\"{0} {1}\"をインストールする必要があります。今すぐインストールしますか？",
       "noFQBN": "選択されたボード\"{0}\"にはFQBNがありません。対応するコアをインストール済みですか？",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "プラットフォーム{0}:{1}のアンインストールに成功しました"
     },
     "boardsManager": "ボードマネージャ",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "ブートローダを書き込む",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "書き込みに失敗しました。もう一度試してください。",
       "uploadRootCertificates": "SSLルート証明書を書き込み",
       "uploadingCertificates": "証明書を書き込み中。"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard'が見つかりません。スケッチに'#include <Keyboard.h>'という行はありますか？",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "手動でインストール",
       "later": "後で",
       "noBoardSelected": "ボード未選択",
       "notConnected": "[未接続]",
       "offlineIndicator": "オフラインのようです。 インターネットに接続していないと、Arduino CLIが必要なリソースをダウンロードできず、誤動作を引き起こす可能性があります。 インターネットに接続して、アプリケーションを再起動してください。",
       "oldFormat": "'{0}'はまだ古い`.pde`形式を使用しています。新しい`.ino`拡張子に切り替えますか？",
+      "partner": "Partner",
       "processing": "処理中",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "{0}の",
       "serialMonitor": "シリアルモニタ",
-      "unknown": "不明"
+      "type": "Type",
+      "unknown": "不明",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "コンパイルエラー: {0}"
@@ -197,7 +216,7 @@
       "visit": "Arduino.ccウェブサイトを開く"
     },
     "ide-updater": {
-      "checkForUpdates": "Arduino IDEのアップデートを確認",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "終了してインストール",
       "closeToInstallNotice": "ソフトウェアを終了してアップデートをインストールする。",
       "downloadButton": "ダウンロード",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "ライブラリ{0}:{1}のアンインストールに成功しました。",
       "zipLibrary": "ライブラリ"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "詳細",
       "sketch": "スケッチ",
@@ -253,6 +290,7 @@
       "automatic": "自動",
       "board.certificates": "ボードに書き込みできる証明書の一覧",
       "browse": "参照",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "選択",
       "cli.daemonDebug": "Arduino CLIへのgRPC呼び出しのデバッグロギングを有効にします。この設定を有効にするにはIDEを再起動する必要があります。デフォルトはfalseです。",
       "cloud.enabled": "スケッチの同期機能が有効な場合にはtrueを指定。デフォルトではtrue。",

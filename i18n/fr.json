@@ -14,7 +14,6 @@
       "disconnected": "Déconnecté",
       "getBoardInfo": "Obtenir les informations sur la carte",
       "inSketchbook": "(dans le Croquis)",
-      "installManually": "Installer manuellement.",
       "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
       "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}"
     },
     "boardsManager": "Gestionnaire de carte",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Graver la séquence d'initialisation",
       "burningBootloader": "Gravage du bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Erreur de transfert. Merci de réessayer. ",
       "uploadRootCertificates": "Téléverser les certificats racine SSL",
       "uploadingCertificates": "Transfert des certificats"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Visitez Arduino Cloud pour créer des croquis sut le cloud."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Installer manuellement.",
       "later": "Plus tard",
       "noBoardSelected": "Aucune carte sélectionnée.",
       "notConnected": "[hors ligne]",
       "offlineIndicator": "Il semblerait que vous êtes déconnecté. Sans connexion internet la CLI d'Arduino pourrait ne pas être en mesure de télécharger les resources requises, ce qui pourrait provoquer des dysfonctionnements. Merci de vous connecter à Internet et de redémarrer l'application.",
       "oldFormat": "Le '{0}' utilise toujours l'ancien format `.pde`. Souhaitez-vous utiliser le nouveau format `.ino`?",
+      "partner": "Partner",
       "processing": "Traitement en cours",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "sur {0}",
       "serialMonitor": "Moniteur série",
-      "unknown": "Inconnu"
+      "type": "Type",
+      "unknown": "Inconnu",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Erreur de compilation : {0}"
@@ -197,7 +216,7 @@
       "visit": "Visitez Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Vérifier les mises à jour de l'IDE Arduino",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Fermer et installer",
       "closeToInstallNotice": "Fermez le logiciel et installez la mise à jour sur votre machine.",
       "downloadButton": "Télécharger",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Bibliothèque désinstallée avec succès {0}:{1}",
       "zipLibrary": "Bibliothèque"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Avancé",
       "sketch": "Croquis",
@@ -253,6 +290,7 @@
       "automatic": "Automatique",
       "board.certificates": "Liste des certificats pouvant être téléversé vers les cartes.",
       "browse": "Parcourir",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Choisir",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Vrai si les fonctions de synchronisation de croquis est activé. Par défaut, la valeur est vrai.",

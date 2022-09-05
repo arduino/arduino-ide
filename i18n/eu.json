@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Eskuratu plakaren informazioa",
       "inSketchbook": "(programa bilduman)",
-      "installManually": "Instalatu eskuz",
       "installNow": "\"{0} {1}\" nukleoa instalatu behar da unean hautatutako \"{2}\" plakarentzat. Orain instalatu nahi duzu?",
       "noFQBN": "FQBN ez dago erabilgarri hautatutako \"{0}\" plakarentzat. Dagokion nukleoa instalatuta daukazu?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "{0}:{1} plataforma behar bezala desinstalatu da"
     },
     "boardsManager": "Plaka kudeatzailea",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Kargatu abiarazte-kudeatzailea",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Kargak huts egin du. Mesedez saiatu berriro.",
       "uploadRootCertificates": "Kargatu SSL erro-ziurtagiriak",
       "uploadingCertificates": "Ziurtagiriak kargatzen."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Instalatu eskuz",
       "later": "Gero",
       "noBoardSelected": "Plakarik ez da hautatu",
       "notConnected": "[konektatu gabe]",
       "offlineIndicator": "Deskonektatuta zaudela dirudi. Interneterako konexiorik gabe, baliteke Arduino CLI ez izatea gai beharrezko baliabideak deskargatzeko, eta funtzionamendu txarra eragin lezake. Mesedez, konektatu Internetera eta berrabiarazi aplikazioa.",
       "oldFormat": "'{0}' programak `.pde` formatu zaharra erabiltzen du oraindik. `.ino` luzapen berrira aldatu nahi duzu?",
+      "partner": "Partner",
       "processing": "Prozesatzen",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "Non: {0}",
       "serialMonitor": "Serieko monitorea",
-      "unknown": "Ezezaguna"
+      "type": "Type",
+      "unknown": "Ezezaguna",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Konpilazio-errorea: {0}"
@@ -197,7 +216,7 @@
       "visit": "Bisitatu Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Itxi eta instalatu",
       "closeToInstallNotice": "Itxi softwarea eta instalatu eguneratzea zure makinan.",
       "downloadButton": "Software eguneratzea",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "{0}:{1} liburutegia behar bezala desinstalatu da",
       "zipLibrary": "Liburutegia"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "Programa",
@@ -253,6 +290,7 @@
       "automatic": "Automatikoa",
       "board.certificates": "Plaketara kargatu daitezkeen ziurtagirien zerrenda",
       "browse": "Arakatu",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Aukeratu",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Egia programaren sinkronizazio-funtzioak gaituta badaude. Lehenetsia egia da.",

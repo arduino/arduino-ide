@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
-      "installManually": "Instalează Manual",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}"
     },
     "boardsManager": "Boards Manager",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Upload failed. Please try again.",
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Instalează Manual",
       "later": "Mai târziu",
       "noBoardSelected": "Placa de dezvoltare nu a fost aleasă.",
       "notConnected": "[neconectat]",
       "offlineIndicator": "Se pare că nu ești conectat la internet. Fără o conexiune la internet, Arduino CLI nu poate descarca resursele necesare și poate cauza funcționare anormală. Conectează-te la internet și repornește aplicația.",
       "oldFormat": "'{0}' utilizează formatul vechi `.pde`. Vrei să treci la noua extensie `ino`?",
+      "partner": "Partner",
       "processing": "Procesare",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "pe {0}",
       "serialMonitor": "Monitor Serial",
-      "unknown": "Necunoscut"
+      "type": "Type",
+      "unknown": "Necunoscut",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Compilation error: {0}"
@@ -197,7 +216,7 @@
       "visit": "Vizitează Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
       "zipLibrary": "Librărie"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "Schița",
@@ -253,6 +290,7 @@
       "automatic": "Automat",
       "board.certificates": "Lista de certificate ce pot fi încarcate pe plăcile de dezvoltare",
       "browse": "Selectează",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Selectează",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "Adevărat dacă funcțile schiței sunt activate. Valoarea implictă este adevarată.",

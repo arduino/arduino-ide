@@ -14,7 +14,6 @@
       "disconnected": "Rozłączony",
       "getBoardInfo": "Pobierz informacje o płytce",
       "inSketchbook": "(w Szkicowniku)",
-      "installManually": "Zainstaluj ręcznie",
       "installNow": "Jądro \" 1{0} 2{1} \" musi zostać zainstalowane dla wybranej płytki \"{2}\". Czy chcesz zainstalować je teraz?",
       "noFQBN": "FQBN jest niedostępny dla wybranej płytki \" 1{0} \". Sprawdź czy zainstalowane jądro jest prawidłowe.",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Pomyślnie odinstalowano platformę {0}:{1}"
     },
     "boardsManager": "Menedżer Płytek",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Wypal Bootloader'a",
       "burningBootloader": "Wypalanie bootloadera...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Przesyłanie nie powiodło się. Spróbuj ponownie.",
       "uploadRootCertificates": "Wgraj certyfikaty SSL Root.",
       "uploadingCertificates": "Przesyłanie certyfikatów."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "Nie znaleziono klawiatury. Czy szkic posiada linię kodu: '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Odwiedź chmurę Arduino, aby tworzyć szkice w chmurze."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Zainstaluj ręcznie",
       "later": "Później",
       "noBoardSelected": "Nie wybrano płytki",
       "notConnected": "[nie podłączone]",
       "offlineIndicator": "Wygląda na to, że jesteś w trybie offline. Bez połączenia z Internetem Arduino CLI może nie być w stanie pobrać wymaganych zasobów i może spowodować awarię. Połącz się z Internetem i uruchom ponownie aplikację.",
       "oldFormat": "'{0}' nadal używa starego formatu `.pde`. Czy chcesz się przełączyć na nowe rozszerzenie `.ino`?",
+      "partner": "Partner",
       "processing": "Przetwarzanie",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "na 1{0}",
       "serialMonitor": "Monitor portu szeregowego",
-      "unknown": "Nieznany"
+      "type": "Type",
+      "unknown": "Nieznany",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Błąd kompilacji: {0}"
@@ -197,7 +216,7 @@
       "visit": "Odwiedź Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Sprawdź uaktualnienia dla Arduino IDE.",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Wyjdź i instaluj",
       "closeToInstallNotice": "Zamknij aplikacje i zainstaluj aktualizacje.",
       "downloadButton": "Pobierz",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Pomyślnie odinstalowano bibliotekę {0}:{1}",
       "zipLibrary": "Biblioteka"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Niewłaściwy schemat.",
       "sketch": "Szkic",
@@ -253,6 +290,7 @@
       "automatic": "Automatyczne",
       "board.certificates": "Lista certyfikatów, które można przesłać do płytki",
       "browse": "Przeglądaj",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Wybierz",
       "cli.daemonDebug": "Włącz rejestrowanie debugowania wywołań gRPC do interfejsu Arduino CLI. Aby to ustawienie zaczęło obowiązywać, konieczne jest ponowne uruchomienie środowiska IDE. Domyślnie jest to fałszywy.",
       "cloud.enabled": "Prawdziwy jeśli włączone są funkcje synchronizacji szkicu. Wartość domyślna to prawdziwy.",

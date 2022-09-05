@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
-      "installManually": "Install Manually",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}"
     },
     "boardsManager": "Boards Manager",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Burn Bootloader",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Upload failed. Please try again.",
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Install Manually",
       "later": "나중에",
       "noBoardSelected": "선택된 보드 없음",
       "notConnected": "[연결되지 않음]",
       "offlineIndicator": "오프라인 상태인 것 같습니다. 인터넷 연결이 없으면 Arduino CLI가 필요한 리소스를 다운로드하지 못하고 오작동을 일으킬 수 있습니다. 인터넷에 연결하고 애플리케이션을 다시 시작해주세요.",
       "oldFormat": "'{0}' 파일은 오래된 `.pde` 확장자로 되어있어요. 새로운 `.ino` 확장자로 변경하시겠어요?",
+      "partner": "Partner",
       "processing": "처리 중",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "{0} 켜기",
       "serialMonitor": "시리얼 모니터",
-      "unknown": "알 수 없음"
+      "type": "Type",
+      "unknown": "알 수 없음",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Compilation error: {0}"
@@ -197,7 +216,7 @@
       "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "닫고 설치하기",
       "closeToInstallNotice": "소프트웨어를 닫고 장치에 업데이트를 설치해주세요.",
       "downloadButton": "다운로드",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
       "zipLibrary": "Library"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "스케치",
@@ -253,6 +290,7 @@
       "automatic": "Automatic",
       "board.certificates": "List of certificates that can be uploaded to boards",
       "browse": "Browse",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Choose",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",

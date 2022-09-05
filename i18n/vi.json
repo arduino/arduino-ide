@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Lấy thông tin bo mạch",
       "inSketchbook": "(trong Sketchbook)",
-      "installManually": "Cài thủ công",
       "installNow": "Nhân \"{0} {1}\" phải được cài đặt cho bo mạch \"{2}\" đang được chọn. Bạn có muốn cài đặt ngay?",
       "noFQBN": "Không có FQBN khả dụng cho bo mạch \"{0}\" được chọn. Bạn đã cài đặt nhân tương ứng chưa?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Hoàn tất gỡ cài đặt nền tảng {0}:{1}"
     },
     "boardsManager": "Trình quản lý bo mạch",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Nạp bootloader",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Nạp thất bại. Vui lòng thử lại.",
       "uploadRootCertificates": "Nạp lên các chứng chỉ gốc SSL",
       "uploadingCertificates": "Đang nạp các chứng chỉ."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Truy cập Arduino Cloud để tạo Cloud Sketch."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Cài thủ công",
       "later": "Để sau",
       "noBoardSelected": "Không có bo mạch được chọn",
       "notConnected": "[Chưa được kết nối]",
       "offlineIndicator": "Bạn dường như đang ngoại tuyến. Không có kết nối mạng, Arduino CLI có thể sẽ không thể tải về những tài nguyên cần thiết và có thể sẽ gây ra sự cố. Hãy kết nối Internet và khởi động lại ứng dụng.",
       "oldFormat": "'{0}' vẫn đang sử dụng đuôi '.pde' cũ. Bạn có muốn chuyển sang đuôi '.ino' mới hơn không?",
+      "partner": "Partner",
       "processing": "Đang sử lý",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "tại {0}",
       "serialMonitor": "Serial Monitor",
-      "unknown": "Không xác định"
+      "type": "Type",
+      "unknown": "Không xác định",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Lỗi biên dịch: {0}"
@@ -197,7 +216,7 @@
       "visit": "Truy cập Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Đóng và cài đặt",
       "closeToInstallNotice": "Đóng ứng dụng và cài đặt bản cập nhật mới nhất lên máy bạn.",
       "downloadButton": "Tải về",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Hoàn tất gỡ cài đặt thư viện {0}:{1}",
       "zipLibrary": "Thư viện"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "Sketch",
@@ -253,6 +290,7 @@
       "automatic": "Tự động",
       "board.certificates": "Danh sách các chứng chỉ có thể nạp lên bo mạch",
       "browse": "Duyệt",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Chọn",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "'True' nếu chức năng đồng bộ sketch được bật. Mặc định là 'true'.",
