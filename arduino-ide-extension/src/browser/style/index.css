@@ -109,6 +109,13 @@ button.secondary[disabled], .theia-button.secondary[disabled] {
   background-color: var(--theia-secondaryButton-background);
 }
 
+button.theia-button.message-box-dialog-button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
 /* To make the progress-bar slightly thicker, and use the color from the status bar */
 .theia-progress-bar-container {
   width: 100%;
