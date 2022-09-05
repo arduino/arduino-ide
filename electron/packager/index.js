@@ -119,14 +119,14 @@
   }
   verifyVersions(allDependencies);
 
-  //-------------------------------------------------------------+
-  // Save some time: no need to build the `browser-app` example. |
-  //-------------------------------------------------------------+
+  //---------------------------------------------------------------------------------------------------+
+  // Save some time: no need to build the projects that are not needed in final app. Currently unused. |
+  //---------------------------------------------------------------------------------------------------+
   //@ts-ignore
   let pkg = require('../working-copy/package.json');
   const workspaces = pkg.workspaces;
   // We cannot remove the `electron-app`. Otherwise, there is not way to collect the unused dependencies.
-  const dependenciesToRemove = ['browser-app'];
+  const dependenciesToRemove = [];
   for (const dependencyToRemove of dependenciesToRemove) {
     const index = workspaces.indexOf(dependencyToRemove);
     if (index !== -1) {

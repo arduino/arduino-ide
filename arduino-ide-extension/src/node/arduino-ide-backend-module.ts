@@ -1,4 +1,4 @@
-import { ContainerModule } from '@theia/core/shared/inversify';
+import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import {
   ArduinoFirmwareUploader,
@@ -110,6 +110,7 @@ import {
   SurveyNotificationServicePath,
 } from '../common/protocol/survey-service';
 import { IsTempSketch } from './is-temp-sketch';
+import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -288,6 +289,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+  rebindNsfwFileSystemWatcher(rebind);
 
   // Output service per connection.
   bind(ConnectionContainerModule).toConstantValue(
@@ -325,58 +327,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
   );
 
-  // Logger for the Arduino daemon
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('daemon');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('daemon');
-
-  // Logger for the Arduino daemon
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('fwuploader');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('fwuploader');
-
-  // Logger for the "serial discovery".
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('discovery-log'); // TODO: revert
-    })
-    .inSingletonScope()
-    .whenTargetNamed('discovery-log'); // TODO: revert
-
-  // Logger for the CLI config service. From the CLI config (FS path aware), we make a URI-aware app config.
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('config');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('config');
-
-  // Logger for the monitor manager and its services
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child(MonitorManagerName);
-    })
-    .inSingletonScope()
-    .whenTargetNamed(MonitorManagerName);
-
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child(MonitorServiceName);
-    })
-    .inSingletonScope()
-    .whenTargetNamed(MonitorServiceName);
+  [
+    'daemon', // Logger for the Arduino daemon
+    'fwuploader', // Arduino Firmware uploader
+    'discovery-log', // Boards discovery
+    'config', // Logger for the CLI config reading and manipulation
+    MonitorManagerName, // Logger for the monitor manager and its services
+    MonitorServiceName,
+  ].forEach((name) => bindChildLogger(bind, name));
 
   // Remote sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
@@ -423,3 +381,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(IsTempSketch).toSelf().inSingletonScope();
 });
+
+function bindChildLogger(bind: interfaces.Bind, name: string): void {
+  bind(ILogger)
+    .toDynamicValue(({ container }) =>
+      container.get<ILogger>(ILogger).child(name)
+    )
+    .inSingletonScope()
+    .whenTargetNamed(name);
+}

@@ -12,7 +12,7 @@ https://github.com/arduino/arduino-ide/pulls/app%2Fgithub-actions
 
 ## ⚙ Create the release on GitHub
 
-First of all, you need to **set the new version in all the `package.json` files** across the app (`./package.json`, `./arduino-ide-extension/package.json`, `./browser-app/package.json`, `./electron-app/package.json`), create a PR, and merge it on the `main` branch.
+First of all, you need to **set the new version in all the `package.json` files** across the app (`./package.json`, `./arduino-ide-extension/package.json`, and `./electron-app/package.json`), create a PR, and merge it on the `main` branch.
 
 To do so, you can make use of the `update:version` script.
 

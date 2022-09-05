@@ -1,54 +1,41 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { injectable, inject } from '@theia/core/shared/inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { EditorWidget } from '@theia/editor/lib/browser';
-import { LabelProvider } from '@theia/core/lib/browser/label-provider';
-import { MessageService } from '@theia/core/lib/common/message-service';
 import { ApplicationServer } from '@theia/core/lib/common/application-protocol';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { FocusTracker, Widget } from '@theia/core/lib/browser';
-import { DEFAULT_WINDOW_HASH } from '@theia/core/lib/common/window';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import {
+  DEFAULT_WINDOW_HASH,
+  NewWindowOptions,
+} from '@theia/core/lib/common/window';
 import {
   WorkspaceInput,
   WorkspaceService as TheiaWorkspaceService,
 } from '@theia/workspace/lib/browser/workspace-service';
-import { ConfigService } from '../../../common/protocol/config-service';
 import {
   SketchesService,
   Sketch,
 } from '../../../common/protocol/sketches-service';
-import { BoardsServiceProvider } from '../../boards/boards-service-provider';
-import { BoardsConfig } from '../../boards/boards-config';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import {
   StartupTask,
-  StartupTasks,
-} from '../../widgets/sketchbook/startup-task';
-import { setURL } from '../../utils/window';
+  StartupTaskProvider,
+} from '../../../electron-common/startup-task';
+import { WindowServiceExt } from '../core/window-service-ext';
+import { ContributionProvider } from '@theia/core/lib/common/contribution-provider';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
   @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
-
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
-
-  @inject(LabelProvider)
-  protected override readonly labelProvider: LabelProvider;
-
-  @inject(MessageService)
-  protected override readonly messageService: MessageService;
-
+  private readonly sketchService: SketchesService;
   @inject(ApplicationServer)
-  protected readonly applicationServer: ApplicationServer;
-
-  @inject(FrontendApplicationStateService)
-  protected readonly appStateService: FrontendApplicationStateService;
-
-  @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
+  private readonly applicationServer: ApplicationServer;
+  @inject(WindowServiceExt)
+  private readonly windowServiceExt: WindowServiceExt;
+  @inject(ContributionProvider)
+  @named(StartupTaskProvider)
+  private readonly providers: ContributionProvider<StartupTaskProvider>;
 
   private version?: string;
 
@@ -156,27 +143,33 @@ export class WorkspaceService extends TheiaWorkspaceService {
   }
 
   protected override reloadWindow(options?: WorkspaceInput): void {
-    if (StartupTasks.WorkspaceInput.is(options)) {
-      setURL(StartupTask.append(options.tasks, new URL(window.location.href)));
-    }
-    super.reloadWindow();
+    const tasks = this.tasks(options);
+    this.setURLFragment(this._workspace?.resource.path.toString() || '');
+    this.windowServiceExt.reload({ tasks });
   }
 
   protected override openNewWindow(
     workspacePath: string,
     options?: WorkspaceInput
   ): void {
-    const { boardsConfig } = this.boardsServiceProvider;
-    let url = BoardsConfig.Config.setConfig(
-      boardsConfig,
-      new URL(window.location.href)
-    ); // Set the current boards config for the new browser window.
-    url.hash = workspacePath;
-    if (StartupTasks.WorkspaceInput.is(options)) {
-      url = StartupTask.append(options.tasks, url);
-    }
+    const tasks = this.tasks(options);
+    const url = new URL(window.location.href);
+    url.hash = encodeURI(workspacePath);
+    this.windowService.openNewWindow(
+      url.toString(),
+      Object.assign({} as NewWindowOptions, { tasks })
+    );
+  }
 
-    this.windowService.openNewWindow(url.toString());
+  private tasks(options?: WorkspaceInput): StartupTask[] {
+    const tasks = this.providers
+      .getContributions()
+      .map((contribution) => contribution.tasks())
+      .reduce((prev, curr) => prev.concat(curr), []);
+    if (StartupTask.has(options)) {
+      tasks.push(...options.tasks);
+    }
+    return tasks;
   }
 
   protected onCurrentWidgetChange({

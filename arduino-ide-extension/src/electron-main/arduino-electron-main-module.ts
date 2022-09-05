@@ -12,12 +12,8 @@ import {
   IDEUpdaterClient,
   IDEUpdaterPath,
 } from '../common/protocol/ide-updater';
-import {
-  ElectronMainWindowServiceExt,
-  electronMainWindowServiceExtPath,
-} from '../electron-common/electron-main-window-service-ext';
+import { electronMainWindowServiceExtPath } from '../electron-common/electron-main-window-service-ext';
 import { IsTempSketch } from '../node/is-temp-sketch';
-import { ElectronMainWindowServiceExtImpl } from './electron-main-window-service-ext-impl';
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
 import { ElectronMainApplication } from './theia/electron-main-application';
 import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
@@ -52,14 +48,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(TheiaElectronWindow).toSelf();
   rebind(DefaultTheiaElectronWindow).toService(TheiaElectronWindow);
 
-  bind(ElectronMainWindowServiceExt)
-    .to(ElectronMainWindowServiceExtImpl)
-    .inSingletonScope();
   bind(ElectronConnectionHandler)
     .toDynamicValue(
       (context) =>
         new JsonRpcConnectionHandler(electronMainWindowServiceExtPath, () =>
-          context.container.get(ElectronMainWindowServiceExt)
+          context.container.get(ElectronMainWindowServiceImpl)
         )
     )
     .inSingletonScope();

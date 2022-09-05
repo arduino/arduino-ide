@@ -105,7 +105,8 @@ import {
 } from '@theia/core/lib/browser/connection-status-service';
 import { BoardsDataMenuUpdater } from './boards/boards-data-menu-updater';
 import { BoardsDataStore } from './boards/boards-data-store';
-import { ILogger } from '@theia/core';
+import { ILogger } from '@theia/core/lib/common/logger';
+import { bindContributionProvider } from '@theia/core/lib/common/contribution-provider';
 import {
   FileSystemExt,
   FileSystemExtPath,
@@ -308,7 +309,7 @@ import { CoreErrorHandler } from './contributions/core-error-handler';
 import { CompilerErrors } from './contributions/compiler-errors';
 import { WidgetManager } from './theia/core/widget-manager';
 import { WidgetManager as TheiaWidgetManager } from '@theia/core/lib/browser/widget-manager';
-import { StartupTasks } from './widgets/sketchbook/startup-task';
+import { StartupTasks } from './contributions/startup-task';
 import { IndexesUpdateProgress } from './contributions/indexes-update-progress';
 import { Daemon } from './contributions/daemon';
 import { FirstStartupInstaller } from './contributions/first-startup-installer';
@@ -334,6 +335,8 @@ import {
 } from './widgets/component-list/filter-renderer';
 import { CheckForUpdates } from './contributions/check-for-updates';
 import { OutputEditorFactory } from './theia/output/output-editor-factory';
+import { StartupTaskProvider } from '../electron-common/startup-task';
+import { DeleteSketch } from './contributions/delete-sketch';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -433,6 +436,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Boards service client to receive and delegate notifications from the backend.
   bind(BoardsServiceProvider).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(BoardsServiceProvider);
+  bind(CommandContribution).toService(BoardsServiceProvider);
 
   // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
   bind(FrontendApplicationContribution)
@@ -757,6 +761,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, OpenBoardsConfig);
   Contribution.configure(bind, SketchFilesTracker);
   Contribution.configure(bind, CheckForUpdates);
+  Contribution.configure(bind, DeleteSketch);
+
+  bindContributionProvider(bind, StartupTaskProvider);
+  bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
 
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.

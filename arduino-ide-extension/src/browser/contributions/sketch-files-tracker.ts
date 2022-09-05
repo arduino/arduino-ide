@@ -4,7 +4,7 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { FileChangeType } from '@theia/filesystem/lib/common/files';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
-import { Sketch, SketchContribution, URI } from './contribution';
+import { Sketch, SketchContribution } from './contribution';
 import { OpenSketchFiles } from './open-sketch-files';
 
 @injectable()
@@ -31,7 +31,6 @@ export class SketchFilesTracker extends SketchContribution {
   override onReady(): void {
     this.sketchServiceClient.currentSketch().then(async (sketch) => {
       if (CurrentSketch.isValid(sketch)) {
-        this.toDisposeOnStop.push(this.fileService.watch(new URI(sketch.uri)));
         this.toDisposeOnStop.push(
           this.fileService.onDidFilesChange(async (event) => {
             for (const { type, resource } of event.changes) {
