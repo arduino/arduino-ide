@@ -97,9 +97,9 @@ export interface SketchesService {
   getIdeTempFolderUri(sketch: Sketch): Promise<string>;
 
   /**
-   * Notifies the backend to recursively delete the sketch folder with all its content.
+   * Recursively deletes the sketch folder with all its content.
    */
-  notifyDeleteSketch(sketch: Sketch): void;
+  deleteSketch(sketch: Sketch): Promise<void>;
 }
 
 export interface SketchRef {

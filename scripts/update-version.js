@@ -27,7 +27,6 @@ console.log(`🛠️ Updating current version from '${currentVersion}' to '${tar
 for (const toUpdate of [
     path.join(repoRootPath, 'package.json'),
     path.join(repoRootPath, 'electron-app', 'package.json'),
-    path.join(repoRootPath, 'browser-app', 'package.json'),
     path.join(repoRootPath, 'arduino-ide-extension', 'package.json')
 ]) {
     process.stdout.write(`  Updating ${toUpdate}'...`);

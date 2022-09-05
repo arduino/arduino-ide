@@ -413,53 +413,5 @@ export namespace BoardsConfig {
       const { name } = selectedBoard;
       return `${name}${port ? ` at ${port.address}` : ''}`;
     }
-
-    export function setConfig(
-      config: Config | undefined,
-      urlToAttachTo: URL
-    ): URL {
-      const copy = new URL(urlToAttachTo.toString());
-      if (!config) {
-        copy.searchParams.delete('boards-config');
-        return copy;
-      }
-
-      const selectedBoard = config.selectedBoard
-        ? {
-            name: config.selectedBoard.name,
-            fqbn: config.selectedBoard.fqbn,
-          }
-        : undefined;
-      const selectedPort = config.selectedPort
-        ? {
-            protocol: config.selectedPort.protocol,
-            address: config.selectedPort.address,
-          }
-        : undefined;
-      const jsonConfig = JSON.stringify({ selectedBoard, selectedPort });
-      copy.searchParams.set('boards-config', encodeURIComponent(jsonConfig));
-      return copy;
-    }
-
-    export function getConfig(url: URL): Config | undefined {
-      const encoded = url.searchParams.get('boards-config');
-      if (!encoded) {
-        return undefined;
-      }
-      try {
-        const raw = decodeURIComponent(encoded);
-        const candidate = JSON.parse(raw);
-        if (typeof candidate === 'object') {
-          return candidate;
-        }
-        console.warn(
-          `Expected candidate to be an object. It was ${typeof candidate}. URL was: ${url}`
-        );
-        return undefined;
-      } catch (e) {
-        console.log(`Could not get board config from URL: ${url}.`, e);
-        return undefined;
-      }
-    }
   }
 }

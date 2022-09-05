@@ -1,12 +1,15 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { ipcMain, IpcMainEvent } from '@theia/electron/shared/electron';
-import { StopReason } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import {
+  RELOAD_REQUESTED_SIGNAL,
+  StopReason,
+} from '@theia/core/lib/electron-common/messaging/electron-messages';
 import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
 import { FileUri } from '@theia/core/lib/node';
 import URI from '@theia/core/lib/common/uri';
-import { FrontendApplicationState } from '@theia/core/lib/common/frontend-application-state';
 import { createDisposableListener } from '@theia/core/lib/electron-main/event-utils';
-import { APPLICATION_STATE_CHANGE_SIGNAL } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import { StartupTask } from '../../electron-common/startup-task';
+import { load } from './window';
 
 @injectable()
 export class TheiaElectronWindow extends DefaultTheiaElectronWindow {
@@ -38,30 +41,42 @@ export class TheiaElectronWindow extends DefaultTheiaElectronWindow {
     return false;
   }
 
-  // Note: does the same as the Theia impl, but logs state changes.
-  protected override trackApplicationState(): void {
+  protected override reload(tasks?: StartupTask[]): void {
+    this.handleStopRequest(() => {
+      this.applicationState = 'init';
+      if (tasks && tasks.length) {
+        load(this._window, (electronWindow) => electronWindow.reload()).then(
+          (electronWindow) =>
+            electronWindow.webContents.send(
+              StartupTask.Messaging.STARTUP_TASKS_SIGNAL,
+              { tasks }
+            )
+        );
+      } else {
+        this._window.reload();
+      }
+    }, StopReason.Reload);
+  }
+
+  protected override attachReloadListener(): void {
     createDisposableListener(
       ipcMain,
-      APPLICATION_STATE_CHANGE_SIGNAL,
-      (e: IpcMainEvent, state: FrontendApplicationState) => {
-        console.log(
-          'app-state-change',
-          `>>> new app state <${state} was received from sender <${e.sender.id}>. current window ID: ${this._window.id}`
-        );
+      RELOAD_REQUESTED_SIGNAL,
+      (e: IpcMainEvent, arg: unknown) => {
         if (this.isSender(e)) {
-          this.applicationState = state;
-          console.log(
-            'app-state-change',
-            `<<< new app state is <${this.applicationState}> for window <${this._window.id}>`
-          );
-        } else {
-          console.log(
-            'app-state-change',
-            `<<< new app state <${state}> is ignored from <${e.sender.id}>. current window ID is <${this._window.id}>`
-          );
+          if (StartupTask.has(arg)) {
+            this.reload(arg.tasks);
+          } else {
+            this.reload();
+          }
         }
       },
       this.toDispose
     );
+  }
+
+  // https://github.com/eclipse-theia/theia/issues/11600#issuecomment-1240657481
+  protected override isSender(e: IpcMainEvent): boolean {
+    return e.sender.id === this._window.webContents.id;
   }
 }

@@ -1,7 +1,12 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { CommandService } from '@theia/core/lib/common/command';
+import {
+  Command,
+  CommandContribution,
+  CommandRegistry,
+  CommandService,
+} from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import { RecursiveRequired } from '../../common/types';
@@ -23,9 +28,18 @@ import { nls } from '@theia/core/lib/common';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { Unknown } from '../../common/nls';
+import {
+  StartupTask,
+  StartupTaskProvider,
+} from '../../electron-common/startup-task';
 
 @injectable()
-export class BoardsServiceProvider implements FrontendApplicationContribution {
+export class BoardsServiceProvider
+  implements
+    FrontendApplicationContribution,
+    StartupTaskProvider,
+    CommandContribution
+{
   @inject(ILogger)
   protected logger: ILogger;
 
@@ -50,6 +64,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
     AvailableBoard[]
   >();
   protected readonly onAvailablePortsChangedEmitter = new Emitter<Port[]>();
+  private readonly inheritedConfig = new Deferred<BoardsConfig.Config>();
 
   /**
    * Used for the auto-reconnecting. Sometimes, the attached board gets disconnected after uploading something to it.
@@ -112,6 +127,13 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
 
       this.tryReconnect();
       this._reconciled.resolve();
+    });
+  }
+
+  registerCommands(registry: CommandRegistry): void {
+    registry.registerCommand(USE_INHERITED_CONFIG, {
+      execute: (inheritedConfig: BoardsConfig.Config) =>
+        this.inheritedConfig.resolve(inheritedConfig),
     });
   }
 
@@ -655,11 +677,14 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       let storedLatestBoardsConfig = await this.getData<
         BoardsConfig.Config | undefined
       >('latest-boards-config');
-      // Try to get from the URL if it was not persisted.
+      // Try to get from the startup task. Wait for it, then timeout. Maybe it never arrives.
       if (!storedLatestBoardsConfig) {
-        storedLatestBoardsConfig = BoardsConfig.Config.getConfig(
-          new URL(window.location.href)
-        );
+        storedLatestBoardsConfig = await Promise.race([
+          this.inheritedConfig.promise,
+          new Promise<undefined>((resolve) =>
+            setTimeout(() => resolve(undefined), 2_000)
+          ),
+        ]);
       }
       if (storedLatestBoardsConfig) {
         this.latestBoardsConfig = storedLatestBoardsConfig;
@@ -682,7 +707,30 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       key
     );
   }
+
+  tasks(): StartupTask[] {
+    return [
+      {
+        command: USE_INHERITED_CONFIG.id,
+        args: [this.boardsConfig],
+      },
+    ];
+  }
 }
+
+/**
+ * It should be neither visible nor called from outside.
+ *
+ * This service creates a startup task with the current board config and
+ * passes the task to the electron-main process so that the new window
+ * can inherit the boards config state of this service.
+ *
+ * Note that the state is always set, but new windows might ignore it.
+ * For example, the new window already has a valid boards config persisted to the local storage.
+ */
+const USE_INHERITED_CONFIG: Command = {
+  id: 'arduino-use-inherited-boards-config',
+};
 
 /**
  * Representation of a ready-to-use board, either the user has configured it or was automatically recognized by the CLI.

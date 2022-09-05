@@ -165,15 +165,6 @@ export class SketchesServiceClientImpl
       .reachedState('started_contributions')
       .then(async () => {
         const currentSketch = await this.loadCurrentSketch();
-        if (CurrentSketch.isValid(currentSketch)) {
-          this.toDispose.pushAll([
-            // Watch the file changes of the current sketch
-            this.fileService.watch(new URI(currentSketch.uri), {
-              recursive: true,
-              excludes: [],
-            }),
-          ]);
-        }
         this.useCurrentSketch(currentSketch);
       });
   }

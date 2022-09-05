@@ -13,31 +13,9 @@
       }
     },
     {
-      "label": "Arduino IDE - Start Browser App",
-      "type": "shell",
-      "command": "yarn --cwd ./browser-app start",
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "clear": true
-      }
-    },
-    {
       "label": "Arduino IDE - Watch IDE Extension",
       "type": "shell",
       "command": "yarn --cwd ./arduino-ide-extension watch",
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "clear": false
-      }
-    },
-    {
-      "label": "Arduino IDE - Watch Browser App",
-      "type": "shell",
-      "command": "yarn --cwd ./browser-app watch",
       "group": "build",
       "presentation": {
         "reveal": "always",
@@ -55,14 +33,6 @@
         "panel": "new",
         "clear": false
       }
-    },
-    {
-      "label": "Arduino IDE - Watch All [Browser]",
-      "type": "shell",
-      "dependsOn": [
-        "Arduino IDE - Watch IDE Extension",
-        "Arduino IDE - Watch Browser App"
-      ]
     },
     {
       "label": "Arduino IDE - Watch All [Electron]",

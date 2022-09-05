@@ -561,14 +561,18 @@ void loop() {
     return path.join(os.tmpdir(), `arduino-ide2-${suffix}`);
   }
 
-  notifyDeleteSketch(sketch: Sketch): void {
-    const sketchPath = FileUri.fsPath(sketch.uri);
-    fs.rm(sketchPath, { recursive: true, maxRetries: 5 }, (error) => {
-      if (error) {
-        console.error(`Failed to delete sketch at ${sketchPath}.`, error);
-      } else {
-        console.error(`Successfully delete sketch at ${sketchPath}.`);
-      }
+  async deleteSketch(sketch: Sketch): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const sketchPath = FileUri.fsPath(sketch.uri);
+      fs.rm(sketchPath, { recursive: true, maxRetries: 5 }, (error) => {
+        if (error) {
+          console.error(`Failed to delete sketch at ${sketchPath}.`, error);
+          reject(error);
+        } else {
+          console.log(`Successfully deleted sketch at ${sketchPath}.`);
+          resolve();
+        }
+      });
     });
   }
 }

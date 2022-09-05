@@ -12,21 +12,19 @@ import {
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
 import { ApplicationShell, NavigatableWidget, Saveable } from '@theia/core/lib/browser';
-import { EditorManager } from '@theia/editor/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { WorkspaceInput } from '@theia/workspace/lib/browser';
+import { StartupTask } from '../../electron-common/startup-task';
+import { DeleteSketch } from './delete-sketch';
 
 @injectable()
 export class SaveAsSketch extends SketchContribution {
-
   @inject(ApplicationShell)
-  protected readonly applicationShell: ApplicationShell;
-
-  @inject(EditorManager)
-  protected override readonly editorManager: EditorManager;
+  private readonly applicationShell: ApplicationShell;
 
   @inject(WindowService)
-  protected readonly windowService: WindowService;
+  private readonly windowService: WindowService;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
@@ -107,21 +105,19 @@ export class SaveAsSketch extends SketchContribution {
         this.sketchService.markAsRecentlyOpened(workspaceUri);
       }
     }
+    const options: WorkspaceInput & StartupTask.Owner = {
+      preserveWindow: true,
+      tasks: [],
+    };
     if (workspaceUri && openAfterMove) {
       this.windowService.setSafeToShutDown();
       if (wipeOriginal || (openAfterMove && execOnlyIfTemp)) {
-        // This window will navigate away.
-        // Explicitly stop the contribution to dispose the file watcher before deleting the temp sketch.
-        // Otherwise, users might see irrelevant _Unable to watch for file changes in this large workspace._ notification.
-        // https://github.com/arduino/arduino-ide/issues/39.
-        this.sketchServiceClient.onStop();
-        // TODO: consider implementing the temp sketch deletion the following way:
-        // Open the other sketch with a `delete the temp sketch` startup-task.
-        this.sketchService.notifyDeleteSketch(sketch); // This is a notification and will execute on the backend.
+        options.tasks.push({
+          command: DeleteSketch.Commands.DELETE_SKETCH.id,
+          args: [sketch.uri],
+        });
       }
-      this.workspaceService.open(new URI(workspaceUri), {
-        preserveWindow: true,
-      });
+      this.workspaceService.open(new URI(workspaceUri), options);
     }
     return !!workspaceUri;
   }
