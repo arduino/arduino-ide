@@ -1,7 +1,6 @@
 import * as React from '@theia/core/shared/react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board } from '../../../common/protocol/boards-service';
-import { isOSX } from '@theia/core/lib/common/os';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
@@ -81,8 +80,7 @@ export class SerialMonitorSendInput extends React.Component<
     const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
     return nls.localize(
       'arduino/serial/message',
-      "Message ({0} + Enter to send message to '{1}' on '{2}')",
-      isOSX ? '⌘' : nls.localize('vscode/keybindingLabels/ctrlKey', 'Ctrl'),
+      "Message (Enter to send message to '{0}' on '{1}')",
       board
         ? Board.toString(board, {
             useFqbn: false,
@@ -110,8 +108,8 @@ export class SerialMonitorSendInput extends React.Component<
   protected onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
     const keyCode = KeyCode.createKeyCode(event.nativeEvent);
     if (keyCode) {
-      const { key, meta, ctrl } = keyCode;
-      if (key === Key.ENTER && ((isOSX && meta) || (!isOSX && ctrl))) {
+      const { key } = keyCode;
+      if (key === Key.ENTER) {
         this.onSend();
       }
     }
