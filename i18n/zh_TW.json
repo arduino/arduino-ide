@@ -14,7 +14,6 @@
       "disconnected": "斷開連接",
       "getBoardInfo": "取得開發板資訊",
       "inSketchbook": "(在草稿資料夾中)",
-      "installManually": "手動安裝",
       "installNow": "必須為目前選定的 {2} 開發板安裝 1{0} 2{1} 核心程式，你要現在安裝嗎？",
       "noFQBN": "FQBN無法用於所選擇的\"{0}\"開發版。你是否安裝了對應的核心?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "平台已成功移除 1[0]：2[1]"
     },
     "boardsManager": "開發板管理器",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "燒錄 Bootloader",
       "burningBootloader": "正在燒錄引導程式...",
@@ -60,6 +62,15 @@
       "uploadFailed": "上傳失敗，請再試一次",
       "uploadRootCertificates": "上傳SSL根證書",
       "uploadingCertificates": "上傳證書"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "手動安裝",
       "later": "稍後再說",
       "noBoardSelected": "沒有選擇開發版",
       "notConnected": "[未連接]",
       "offlineIndicator": "您目前處於離線狀態，在沒有網路的情況下，Arduino命令列介面將無法下載需要的資源，並可能導致錯誤。請連接至網路並重新啟動程式。",
       "oldFormat": "'{0}'仍然使用舊的 `.pde` 格式，是否要轉換至新的 `.ino` 擴充?",
+      "partner": "Partner",
       "processing": "資料處理中",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "在 1{0}",
       "serialMonitor": "序列埠監控",
-      "unknown": "未知"
+      "type": "Type",
+      "unknown": "未知",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "1{0} 編譯錯誤"
@@ -197,7 +216,7 @@
       "visit": "造訪 Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉軟體並安裝更新。",
       "downloadButton": "下載",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "成功移除安裝的 1{0}：2{1} 函式庫",
       "zipLibrary": "函式庫"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Advanced",
       "sketch": "草稿",
@@ -253,6 +290,7 @@
       "automatic": "自動調整",
       "board.certificates": "可上傳至開發版的證書列表",
       "browse": "瀏覽",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "選擇",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True則啟用草稿同步功能。預設為true。",

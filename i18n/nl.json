@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "Verkrijg Bord Informatie",
       "inSketchbook": "(in Schetsboek)",
-      "installManually": "Handmatig installeren",
       "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn om het huidige geselecteerde \"{2}\" bord. Wilt U dit nu installeren?",
       "noFQBN": "De FQBN is niet beschikbaar voor het geselecteerde bord \"{0}\". Heeft U de bijhorende kern geïnstalleerd?",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Platform {0}:{1} is succesvol verwijderd"
     },
     "boardsManager": "Borden Beheerder",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Bootloader branden",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Upload mislukt. Probeer het opnieuw.",
       "uploadRootCertificates": "SSL-rootcertificaten uploaden",
       "uploadingCertificates": "Certificaten uploaden."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' niet gevonden. Bevat je schets de regel '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Sketches te maken."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Handmatig installeren",
       "later": "Later",
       "noBoardSelected": "Geen bord geselecteerd",
       "notConnected": "[niet verbonden]",
       "offlineIndicator": "Je lijkt offline te zijn. Zonder een internetverbinding kan de Arduino CLI mogelijk niet de vereiste bronnen downloaden en dit kan storingen veroorzaken. Maak verbinding met het internet en start de applicatie opnieuw. ",
       "oldFormat": "De '{0}' gebruikt nog steeds het oude '.pde' formaat. Wil je overstappen naar de nieuwe `.ino` extensie?",
+      "partner": "Partner",
       "processing": "Verwerken",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "aan {0}",
       "serialMonitor": "Seriële Monitor",
-      "unknown": "Onbekend"
+      "type": "Type",
+      "unknown": "Onbekend",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Compilatiefout: {0}"
@@ -197,7 +216,7 @@
       "visit": "Bezoek Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Sluiten en installeren",
       "closeToInstallNotice": "Sluit de software en installeer de update op je machine.",
       "downloadButton": "Download",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Bibliotheek {0}:{1} succesvol verwijdert",
       "zipLibrary": "Bibliotheek"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Geavanceerd",
       "sketch": "Schets",
@@ -253,6 +290,7 @@
       "automatic": "Automatisch",
       "board.certificates": "Lijst met certificaten die kunnen worden geüpload naar borden",
       "browse": "Bladeren",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Kies",
       "cli.daemonDebug": "Schakel debug logging van de gRPC aanroepen naar de Arduino CLI in. Een herstart van de IDE is nodig om deze instelling in werking te laten treden. Standaard Onwaar.",
       "cloud.enabled": "Waar als de schets synchronisatie functies zijn ingeschakeld. Standaard ingesteld op waar.",

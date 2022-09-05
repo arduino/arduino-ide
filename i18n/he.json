@@ -14,14 +14,13 @@
       "disconnected": "מנותק",
       "getBoardInfo": "פרטי הלוח",
       "inSketchbook": "(בסקיצה)",
-      "installManually": "התקן ידנית",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "לא נמצאו פורטים",
       "noPortsSelected": "לא נבחרו פורטים ללוחות '{0}'.",
       "noneSelected": "לא נבחרו לוחות.",
       "openBoardsConfig": "בחר לוח ופורט אחר...",
-      "platformMissing": "הפלטפורמה ל'{0}' ללוח הנבחר לא הותקן.",
+      "platformMissing": "הפלטפורמה ל'{0}' בלוח הנבחר לא הותקן.",
       "pleasePickBoard": "יש לבחור את הלוח המחובר לפורט הנבחר.",
       "port": "פורט{0}",
       "portLabel": "פורט: {0}",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "פלטפורמה הוסרה בהצלחה {0}:{1}"
     },
     "boardsManager": "מנהל לוחות",
+    "boardsType": {
+      "arduinoCertified": "מוסמך ע\"י ארדואינו"
+    },
     "bootloader": {
       "burnBootloader": "צריבת מנהל אתחול",
       "burningBootloader": "צורב מנהל אתחול",
@@ -60,6 +62,15 @@
       "uploadFailed": "העלאה נכשלה. נסה שוב.",
       "uploadRootCertificates": "העלאת תעודת SSL Root",
       "uploadingCertificates": "העלאת תעודה."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "בדיקת עדכונים לארדואינו",
+      "installAll": "להתקין הכל",
+      "noUpdates": "אין עדכונים אחרונים זמינים.",
+      "promptUpdateBoards": "עדכונים זמינים ללוחות מסויימים.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "מעדכן לוחות...",
+      "updatingLibraries": "מעדכן ספריות..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "כנס.י לענן של ארדואינו ליצור סקיצה בענן"
     },
     "common": {
+      "all": "הכל",
+      "contributed": "Contributed",
+      "installManually": "התקן ידנית",
       "later": "אחר כך",
       "noBoardSelected": "לא נבחר לוח",
       "notConnected": "[לא מחובר]",
       "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
       "oldFormat": "ה'{0}' עדיין משתמש בפורמט הישן `.pde`. האם תרצה להחליף לסיומת החדשה `.ino` ? ",
+      "partner": "Partner",
       "processing": "מעבד",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "ב {0}",
       "serialMonitor": "מוניטור סיריאלי",
-      "unknown": "לא ידוע"
+      "type": "Type",
+      "unknown": "לא ידוע",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "שגיאת קומפילציה: {0}"
@@ -162,13 +181,13 @@
       "revealError": "הראה שגיאה"
     },
     "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+      "couldNotSave": "לא ניתן לשמור את הסקיצה. נא להעתיק את העבודה הלא שמורה לתוך עורך טקסט חיצוני, ולהפעיל מחדש את הIDE.",
       "unsavedChanges": "כל השינויים שלא נשמרו לא ישמרו."
     },
     "examples": {
       "builtInExamples": "דוגמאות מובנות",
-      "couldNotInitializeExamples": "Could not initialize built-in examples.",
-      "customLibrary": "Examples from Custom Libraries",
+      "couldNotInitializeExamples": "לא ניתן להפעיל את הדוגמאות מובנות מראש.",
+      "customLibrary": "דוגמאות מספריות בהתאמה אישית",
       "for": "דוגמאות עבור {0}",
       "forAny": "דוגמאות לכל לוח",
       "menu": "דוגמאות"
@@ -178,7 +197,7 @@
       "failedInstall": "ההתקנה נכשלה. נסה.י שוב בבקשה",
       "install": "התקן",
       "installingFirmware": "מתקין קושחה.",
-      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "overwriteSketch": "ההתקנה תדרוס את הסקיצה בלוח.",
       "selectBoard": "בחר לוח",
       "selectVersion": "בחירות גרסת קושחה",
       "successfullyInstalled": "הקושחה הותקנה בהצלחה.",
@@ -197,14 +216,14 @@
       "visit": "בקר ב Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "בדיקת עדכונים לArduino IDE.",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "סגור והתקן",
       "closeToInstallNotice": "סגור את התוכנה והתקן את העדכון על המכונה שלך.",
       "downloadButton": "הורד",
       "downloadingNotice": "מוריד את הגרסה המעודכנת האחרונה של Arduino IDE.",
       "errorCheckingForUpdates": "שגיאה בעת בדיקת עדכונים ל Arduino IDE.\n{0}",
       "goToDownloadButton": "לך להורדות",
-      "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+      "goToDownloadPage": "העדכון לArduino IDE זמין, אבל לא ניתן היה להוריד ולהתקין אותו אוטומטית. נא ללכת לדף ההורדות ולהוריד את הגרסה האחרונה משם.",
       "ideUpdaterDialog": "עדכון תוכנה",
       "newVersionAvailable": "גרסה חדשה של Arduino IDE ({0}) מוכנה להורדה.",
       "noUpdatesAvailable": "אין עדכונים חדשים זמינים ל Arduino IDE",
@@ -216,7 +235,7 @@
     "library": {
       "addZip": "הוספת ספריית .zip",
       "arduinoLibraries": "ספריות ארדואינו",
-      "contributedLibraries": "Contributed libraries",
+      "contributedLibraries": "ספריות שנתרמו",
       "dependenciesForLibrary": "תלויות בספריה {0}:{1}",
       "include": "השתמש בספריה",
       "installAll": "התקן הכל",
@@ -234,6 +253,24 @@
       "title": "מנהל ספריות",
       "uninstalledSuccessfully": "ספריה הוסרה בהצלחה {0}:{1}",
       "zipLibrary": "ספריה"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "תקשורת",
+      "dataProcessing": "עיבוד מידע",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "צג",
+      "other": "אחר",
+      "sensors": "חיישנים",
+      "signalInputOutput": "קלט\\פלט אות",
+      "timing": "תזמון",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
     },
     "menu": {
       "advanced": "מתקדם",
@@ -253,6 +290,7 @@
       "automatic": "אוטומטי",
       "board.certificates": "רשימת תעודות שיכולות לעלות ללוח.",
       "browse": "בחר",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "בחרו",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
@@ -321,7 +359,7 @@
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
       "new": "חדש",
       "openFolder": "פתח תיקיה",
-      "openRecent": "Open Recent",
+      "openRecent": "נפתח לאחרונה",
       "openSketchInNewWindow": "Open Sketch in New Window",
       "saveFolderAs": "שמירת תיקיית הסקיצה כ...",
       "saveSketch": "שמירת הסקיצה לפתיחה מאוחרת יותר.",
@@ -332,9 +370,9 @@
       "titleLocalSketchbook": "ספר סקיצות מקומי",
       "titleSketchbook": "ספר סקיצות",
       "upload": "העלאה",
-      "uploadUsingProgrammer": "Upload Using Programmer",
+      "uploadUsingProgrammer": "העלאה על ידי התכנת",
       "uploading": "עולה...",
-      "userFieldsNotFoundError": "Can't find user fields for connected board",
+      "userFieldsNotFoundError": "לא נמצאו שדות משתמש ללוח המחובר",
       "verify": "בדיקה",
       "verifyOrCompile": "בדיקה\\קומפילציה"
     },
@@ -348,26 +386,26 @@
     },
     "userFields": {
       "cancel": "ביטול",
-      "enterField": "Enter {0}",
+      "enterField": "יש להקליד {0}",
       "upload": "העלאה"
     }
   },
   "cloud": {
-    "GoToCloud": "GO TO CLOUD"
+    "GoToCloud": "לך לענן"
   },
   "theia": {
     "core": {
-      "cannotConnectBackend": "Cannot connect to the backend.",
-      "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "daemonOffline": "CLI Daemon Offline",
+      "cannotConnectBackend": "אינו יכול להתחבר לצד שרת.",
+      "cannotConnectDaemon": "אינו יכול להתחבר לCLI daemon.",
+      "couldNotSave": "לא ניתן לשמור את הסקיצה. נא להעתיק את העבודה הלא שמורה לתוך עורך טקסט חיצוני, ולהפעיל מחדש את הIDE.",
+      "daemonOffline": "CLI daemon במצב לא מקוון",
       "offline": "מנותק",
       "quitTitle": "בטוח.ה שתרצה.י לצאת?"
     },
     "debug": {
       "start": "התחל...",
       "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
+      "typeNotSupported": "הפעלת ניפוי באגים מסוג \"{0}\" אינה נתמכת."
     },
     "editor": {
       "unsavedTitle": "לא שמור – {0}"

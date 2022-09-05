@@ -14,7 +14,6 @@
       "disconnected": "Плата Arduino не подключена",
       "getBoardInfo": "Получить информацию о подключенной плате",
       "inSketchbook": " (в альбоме).",
-      "installManually": "Установить вручную",
       "installNow": "Необходимо установить ядро «{0} {1}»  для выбранной в данный момент «{2}» платы. Вы хотите установить его сейчас?",
       "noFQBN": "FQBN недоступен для выбранной платы \"{0}\". Проверьте наличие необходимого ядра.",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}"
     },
     "boardsManager": "Менеджер плат",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "Записать Загрузчик",
       "burningBootloader": "Прошивка загрузчика...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Загрузка не удалась. Повторите попытку.",
       "uploadRootCertificates": "Загрузка корневого сертификата SSL",
       "uploadingCertificates": "Загрузка сертификатов."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' не найдено. В вашем скетче есть строка '#include <Keyboard.h>'?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Посетите Arduino Cloud, чтобы создать скетчи в облаке."
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Установить вручную",
       "later": "Позже",
       "noBoardSelected": "Плата не выбрана",
       "notConnected": "[не подключено].",
       "offlineIndicator": "Похоже, у Вас нет подключения к Интернету. Без подключения к Интернету Arduino CLI не сможет загрузить необходимые ресурсы и упадет. Подключитесь к Интернету и перезапустите приложение.",
       "oldFormat": "'{0}' использует старый формат `.pde`. Хотите сконвертировать в новый формат `.ino`?",
+      "partner": "Partner",
       "processing": "Обработка",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "вкл. {0}",
       "serialMonitor": "Монитор порта",
-      "unknown": "Неизвестно"
+      "type": "Type",
+      "unknown": "Неизвестно",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "Ошибка компиляции: {0}"
@@ -197,7 +216,7 @@
       "visit": "Перейти на сайт Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Проверьте обновления Arduino IDE",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Закрыть и установить",
       "closeToInstallNotice": "Закройте программное обеспечение и установите обновление на вашем компьютере.",
       "downloadButton": "Скачать",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "Успешно удалена библиотека {0}:{1}",
       "zipLibrary": "Библиотека"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "Расширенные",
       "sketch": "Скетч",
@@ -253,6 +290,7 @@
       "automatic": "Автоматика",
       "board.certificates": "Список сертификатов, которые могут быть загружены в платы",
       "browse": "Обзор",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "Выбрать",
       "cli.daemonDebug": "Включить отладочное логирование вызовов gRPC в Arduino CLI. Чтобы эта настройка вступила в силу, необходим перезапуск IDE. По умолчанию оно выключено.",
       "cloud.enabled": "True, если функции синхронизации скетчей включены. По умолчанию - true.",

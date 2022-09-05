@@ -14,7 +14,6 @@
       "disconnected": "Bağlantı Kesildi",
       "getBoardInfo": "Kart Bilgisini Al",
       "inSketchbook": "(Eskiz Defteri'nde)",
-      "installManually": "Elle Kur",
       "installNow": "Mevcut seçili \"{2}\" kartı için \"{0} {1}\" çekirdeğinin kurulması gerekiyor. Bunu şimdi kurmak istiyor musunuz?",
       "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
       "noPortsDiscovered": "Port bulunamadı",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "Platform başarıyla kaldırıldı {0}:{1}"
     },
     "boardsManager": "Kart Yöneticisi",
+    "boardsType": {
+      "arduinoCertified": "Arduino Onaylı"
+    },
     "bootloader": {
       "burnBootloader": "Bootloader'ı Yükle",
       "burningBootloader": "Bootloader yükleniyor...",
@@ -60,6 +62,15 @@
       "uploadFailed": "Yükleme başarısız. Lütfen tekrar deneyin.",
       "uploadRootCertificates": "SSL Kök Sertifikalarını Yükle",
       "uploadingCertificates": "Sertifikalar yükleniyor."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Arduino Güncellemelerini kontrol et",
+      "installAll": "Tümünü kur",
+      "noUpdates": "Yeni bir güncelleme bulunmuyor.",
+      "promptUpdateBoards": "Kartlarınızdan bazıları için güncelleme mevcut.",
+      "promptUpdateLibraries": "Kütüphanelerinizden bazıları için güncelleme mevcut.",
+      "updatingBoards": "Kartlar güncelleniyor...",
+      "updatingLibraries": "Kütüphaneler güncelleniyor..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' bulunamadı. Eskiziniz '#include <Keyboard.h>' satırını içeriyor mu?",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "Bulut Eskizleri oluşturmak için Arduino Cloud'u ziyaret edin."
     },
     "common": {
+      "all": "Tümü",
+      "contributed": "Eklenen",
+      "installManually": "Elle Kur",
       "later": "Daha sonra",
       "noBoardSelected": "Kart seçili değil",
       "notConnected": "[bağlı değil]",
       "offlineIndicator": "Çevrimdışı görünüyorsunuz. Arduino CLI internet bağlantısı olmadan gerekli kaynakları indiremeyebilir ve hatalı çalışabilir. Lütfen internete bağlanın ve uygulamayı yeniden başlatın.",
       "oldFormat": "'{0}' hala eski `.pde` biçimini kullanıyor. Yeni `.ino` uzantısına geçmek istiyor musunuz?",
+      "partner": "Ortaklık",
       "processing": "Processing",
+      "recommended": "Önerilen",
+      "retired": "Emekli",
       "selectedOn": "{0}'da",
       "serialMonitor": "Seri Port Ekranı",
-      "unknown": "Bilinmeyen"
+      "type": "Tür",
+      "unknown": "Bilinmeyen",
+      "updateable": "Güncellenebilir"
     },
     "compile": {
       "error": "Derleme hatası: {0}"
@@ -197,7 +216,7 @@
       "visit": "Arduino.cc'yi Ziyaret Et"
     },
     "ide-updater": {
-      "checkForUpdates": "Arduino IDE güncellemelerini kontrol et",
+      "checkForUpdates": "Arduino IDE Güncellemelerini kontrol et",
       "closeAndInstallButton": "Kapat ve Kur",
       "closeToInstallNotice": "Yazılımı kapatın ve güncellemeyi makinanıza yükleyin.",
       "downloadButton": "İndir",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "{0}:{1} kütüphanesi başarıyla kaldırıldı",
       "zipLibrary": "Kütüphane"
     },
+    "librarySearchProperty": {
+      "topic": "Konu"
+    },
+    "libraryTopic": {
+      "communication": "İletişim",
+      "dataProcessing": "Veri İşleme",
+      "dataStorage": "Veri Depolama",
+      "deviceControl": "Cihaz Kontrolü",
+      "display": "Ekran",
+      "other": "Diğer",
+      "sensors": "Sensörler",
+      "signalInputOutput": "Sinyal Giriş/Çıkış",
+      "timing": "Zamanlama",
+      "uncategorized": "Kategori Dışı"
+    },
+    "libraryType": {
+      "installed": "Kurulu"
+    },
     "menu": {
       "advanced": "Gelişmiş",
       "sketch": "Eskiz",
@@ -253,6 +290,7 @@
       "automatic": "Otomatik",
       "board.certificates": "Kartlara yüklenebilecek sertifikaların listesi",
       "browse": "Gözat",
+      "checkForUpdate": "IDE, kartlar ve kütüphaneler için mevcut güncellemelerin bildirimlerini al. Değişiklik sonrasında IDE'nin yeniden başlatılmasını gerektirir. Varsayılan olarak açık.",
       "choose": "Seç",
       "cli.daemonDebug": "Arduino CLI tarafına yapılan gRPC bağlantılarının debug kaydını etkinleştirir. Bu ayarın geçerli olması için IDE'nin yeniden başlatılması gerekir. Varsayılan olarak kapalıdır.",
       "cloud.enabled": "Eskiz eşitleme fonksiyonları etkinse açın. Varsayılan: Açık.",

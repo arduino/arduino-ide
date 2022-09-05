@@ -14,7 +14,6 @@
       "disconnected": "Disconnected",
       "getBoardInfo": "الحصول على معلومات اللوحة",
       "inSketchbook": "(داخل ملف المشاريع)",
-      "installManually": "ثبّت يدويا",
       "installNow": "نواة \"{0} {1}\" يجب تثبيتها للوحة \"{2}\" التي تم اختيارها . هل تريد تثبيتها الان ؟",
       "noFQBN": "FQBN غير متاح للوحة المختارة \"{0}\" . هل قمت بتثبيت النواة المعنية ؟",
       "noPortsDiscovered": "No ports discovered",
@@ -36,6 +35,9 @@
       "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح"
     },
     "boardsManager": "مدير اللوحة",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
     "bootloader": {
       "burnBootloader": "ثبت محمل برنامج الإقلاع",
       "burningBootloader": "Burning bootloader...",
@@ -60,6 +62,15 @@
       "uploadFailed": "فشل الرفع . الرجاء اعادة المحاولة لاحقا",
       "uploadRootCertificates": "رفع شهادات SSL Root",
       "uploadingCertificates": "جار رفع الشهادة"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
     },
     "cli-error-parser": {
       "keyboardError": "تعذر ايجاد لوحة المفاتيح 'Keyboard' . هل يحتوي مشروعك على '#include <Keyboard.h>' ؟",
@@ -103,15 +114,23 @@
       "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
     },
     "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "ثبّت يدويا",
       "later": "لاحقا",
       "noBoardSelected": "لم يتم اختيار اي لوحة",
       "notConnected": "[غير متصل]",
       "offlineIndicator": "انت غير متصل بالانترنت على الارجح , بدون الاتصال بالانترنت لن تستطيع واجهة سطر الاوامر الخاصة بالاردوينو \"Arduino CLI\" تحميل الموارد المطلوبة و من الممكن ان تسبب باخطاء , الرجاء الاتصال بالانترنت و اعادة تشغيل البرنامج",
       "oldFormat": "ال '{0}' ما زالت تستخدم صيغة `.pde` القديمة . هل تريد الانتقال الى صيغة `.ino`  الجديدة ؟",
+      "partner": "Partner",
       "processing": "تتم المعالجة",
+      "recommended": "Recommended",
+      "retired": "Retired",
       "selectedOn": "{0} شغّل",
       "serialMonitor": "مراقب المنفذ التسلسلي \"سيريال بورت\"\n ",
-      "unknown": "غير معروف"
+      "type": "Type",
+      "unknown": "غير معروف",
+      "updateable": "Updatable"
     },
     "compile": {
       "error": "خطا في الترجمة : {0}"
@@ -197,7 +216,7 @@
       "visit": "زيارة Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE updates",
+      "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "قم بالاغلاق و التحديث",
       "closeToInstallNotice": "اغلق البرمجية و حّدث الجهاز الخاص بك ",
       "downloadButton": "حمّل",
@@ -235,6 +254,24 @@
       "uninstalledSuccessfully": "تم الغاء تثبيت المكتبة {0}:{1} بنجاح",
       "zipLibrary": "المكتبة"
     },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
     "menu": {
       "advanced": "متقدم",
       "sketch": "مشروع",
@@ -253,6 +290,7 @@
       "automatic": "تلقائي",
       "board.certificates": "قائمة الشهادات التي يمكن رفعها الى اللوحات",
       "browse": "استعرض",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
       "choose": "اختر",
       "cli.daemonDebug": "تفعيل تسجيل تصحيح الاخطاء لـ  gRPC calls الى CLI الاردوينو (Enable debug logging of the gRPC calls to the Arduino CLI)  يجب اعادة تشغيل ide لكي يصبح هذا الخيار فعالا .  الخيار غير مفعل افتراضيا",
       "cloud.enabled": "True اذا كانت مهام المزامنة مفعلة . True افتراضيا",
