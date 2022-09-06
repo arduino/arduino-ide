@@ -29,6 +29,7 @@ import * as glob from 'glob';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { ServiceError } from './service-error';
 import {
+  ExampleTempSketchPrefix,
   IsTempSketch,
   maybeNormalizeDrive,
   TempSketchPrefix,
@@ -277,7 +278,10 @@ export class SketchesServiceImpl
     } catch {
       return;
     }
-    if ((await this.isTemp(sketch)) && sketch.name.includes('sketch_')) {
+    if (
+      (await this.isTemp(sketch)) &&
+      !this.isTempSketch.isExample(FileUri.fsPath(sketch.uri))
+    ) {
       return;
     }
 
@@ -336,7 +340,7 @@ export class SketchesServiceImpl
 
   async cloneExample(uri: string): Promise<Sketch> {
     const sketch = await this.loadSketch(uri);
-    const parentPath = await this.createTempFolder();
+    const parentPath = await this.createTempFolder(false);
     const destinationUri = FileUri.create(
       path.join(parentPath, sketch.name)
     ).toString();
@@ -417,21 +421,24 @@ void loop() {
    * For example, on Windows, instead of getting an [8.3 filename](https://en.wikipedia.org/wiki/8.3_filename), callers will get a fully resolved path.
    * `C:\\Users\\KITTAA~1\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a` will be `C:\\Users\\kittaakos\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a`
    */
-  private createTempFolder(): Promise<string> {
+  private createTempFolder(isTemp = true): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      temp.mkdir({ prefix: TempSketchPrefix }, (createError, dirPath) => {
-        if (createError) {
-          reject(createError);
-          return;
-        }
-        fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
-          if (resolveError) {
-            reject(resolveError);
+      temp.mkdir(
+        { prefix: isTemp ? TempSketchPrefix : ExampleTempSketchPrefix },
+        (createError, dirPath) => {
+          if (createError) {
+            reject(createError);
             return;
           }
-          resolve(resolvedDirPath);
-        });
-      });
+          fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
+            if (resolveError) {
+              reject(resolveError);
+              return;
+            }
+            resolve(resolvedDirPath);
+          });
+        }
+      );
     });
   }
 
