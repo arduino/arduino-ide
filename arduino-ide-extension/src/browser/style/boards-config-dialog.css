@@ -1,3 +1,8 @@
+#select-board-dialog-container > .dialogBlock {
+  width: 640px;
+  height: 500px;
+}
+
 div#select-board-dialog {
   margin: 5px;
 }

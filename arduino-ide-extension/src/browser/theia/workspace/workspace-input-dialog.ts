@@ -18,6 +18,7 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     protected override readonly labelProvider: LabelProvider
   ) {
     super(props, labelProvider);
+    this.node.classList.add('workspace-input-dialog');
     this.appendCloseButton(
       nls.localize('vscode/issueMainService/cancel', 'Cancel')
     );
