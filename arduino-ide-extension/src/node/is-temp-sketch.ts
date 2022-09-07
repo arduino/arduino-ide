@@ -3,11 +3,9 @@ import * as tempDir from 'temp-dir';
 import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { injectable } from '@theia/core/shared/inversify';
 import { firstToLowerCase } from '../common/utils';
-import { join } from 'path';
 
 const Win32DriveRegex = /^[a-zA-Z]:\\/;
 export const TempSketchPrefix = '.arduinoIDE-unsaved';
-export const ExampleTempSketchPrefix = `${TempSketchPrefix}-example`;
 
 @injectable()
 export class IsTempSketch {
@@ -33,16 +31,6 @@ export class IsTempSketch {
       normalizedSketchPath.startsWith(this.tempDirRealpath) &&
       normalizedSketchPath.includes(TempSketchPrefix);
     console.debug(`isTempSketch: ${result}. Input was ${normalizedSketchPath}`);
-    return result;
-  }
-
-  isExample(sketchPath: string): boolean {
-    const normalizedSketchPath = maybeNormalizeDrive(sketchPath);
-    const result =
-      normalizedSketchPath.startsWith(this.tempDirRealpath) &&
-      normalizedSketchPath.includes(
-        join(this.tempDirRealpath, ExampleTempSketchPrefix)
-      );
     return result;
   }
 }

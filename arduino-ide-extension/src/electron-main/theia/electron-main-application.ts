@@ -183,10 +183,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       );
       for (const workspace of workspaces) {
         if (await this.isValidSketchPath(workspace.file)) {
-          if (
-            this.isTempSketch.is(workspace.file) &&
-            !this.isTempSketch.isExample(workspace.file)
-          ) {
+          if (this.isTempSketch.is(workspace.file)) {
             console.info(
               `Skipped opening sketch. The sketch was detected as temporary. Workspace path: ${workspace.file}.`
             );
@@ -430,7 +427,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         // Do not try to reopen the sketch if it was temp.
         // Unfortunately, IDE2 has two different logic of restoring recent sketches: the Theia default `recentworkspace.json` and there is the `recent-sketches.json`.
         const file = workspaceUri.fsPath;
-        if (this.isTempSketch.is(file) && !this.isTempSketch.isExample(file)) {
+        if (this.isTempSketch.is(file)) {
           console.info(
             `Ignored marking workspace as a closed sketch. The sketch was detected as temporary. Workspace URI: ${workspaceUri.toString()}.`
           );

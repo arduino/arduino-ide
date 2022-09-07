@@ -78,12 +78,12 @@ export interface SketchesService {
   /**
    * Marks the sketch with the given URI as recently opened. It does nothing if the sketch is temp or not valid.
    */
-  markAsRecentlyOpened(uri: string): Promise<void>;
+  markAsRecentlyOpened(uriOrRef: string | ExampleRef): Promise<void>;
 
   /**
    * Resolves to an array of sketches in inverse chronological order. The newest is the first.
    */
-  recentlyOpenedSketches(): Promise<Sketch[]>;
+  recentlyOpenedSketches(): Promise<(Sketch | ExampleRef)[]>;
 
   /**
    * Archives the sketch, resolves to the archive URI.
@@ -100,6 +100,27 @@ export interface SketchesService {
    * Recursively deletes the sketch folder with all its content.
    */
   deleteSketch(sketch: Sketch): Promise<void>;
+}
+
+export interface ExampleRef {
+  /**
+   * Name of the example.
+   */
+  readonly name: string;
+  /**
+   * This is the location where the example is. IDE2 will clone the sketch from this location.
+   */
+  readonly sourceUri: string;
+}
+export namespace ExampleRef {
+  export function is(arg: unknown): arg is ExampleRef {
+    return (
+      (arg as ExampleRef).name !== undefined &&
+      typeof (arg as ExampleRef).name === 'string' &&
+      (arg as ExampleRef).sourceUri !== undefined &&
+      typeof (arg as ExampleRef).sourceUri === 'string'
+    );
+  }
 }
 
 export interface SketchRef {

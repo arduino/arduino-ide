@@ -15,6 +15,7 @@ import { MainMenuManager } from '../../common/main-menu-manager';
 import { OpenSketch } from './open-sketch';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
+import { ExampleRef } from '../../common/protocol';
 
 @injectable()
 export class OpenRecentSketch extends SketchContribution {
@@ -55,26 +56,30 @@ export class OpenRecentSketch extends SketchContribution {
     );
   }
 
-  private refreshMenu(sketches: Sketch[]): void {
+  private refreshMenu(sketches: (Sketch | ExampleRef)[]): void {
     this.register(sketches);
     this.mainMenuManager.update();
   }
 
-  protected register(sketches: Sketch[]): void {
+  protected register(sketches: (Sketch | ExampleRef)[]): void {
     const order = 0;
     for (const sketch of sketches) {
-      const { uri } = sketch;
+      const uri = Sketch.is(sketch) ? sketch.uri : sketch.sourceUri;
       const toDispose = this.toDisposeBeforeRegister.get(uri);
       if (toDispose) {
         toDispose.dispose();
       }
       const command = { id: `arduino-open-recent--${uri}` };
       const handler = {
-        execute: () =>
+        execute: async () => {
+          const toOpen = Sketch.is(sketch)
+            ? sketch
+            : await this.sketchService.cloneExample(sketch.sourceUri);
           this.commandRegistry.executeCommand(
             OpenSketch.Commands.OPEN_SKETCH.id,
-            sketch
-          ),
+            toOpen
+          );
+        },
       };
       this.commandRegistry.registerCommand(command, handler);
       this.menuRegistry.registerMenuAction(
@@ -86,7 +91,7 @@ export class OpenRecentSketch extends SketchContribution {
         }
       );
       this.toDisposeBeforeRegister.set(
-        sketch.uri,
+        uri,
         new DisposableCollection(
           Disposable.create(() =>
             this.commandRegistry.unregisterCommand(command)

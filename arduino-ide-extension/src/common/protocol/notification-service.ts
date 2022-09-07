@@ -5,6 +5,7 @@ import type {
   Config,
   ProgressMessage,
   Sketch,
+  ExampleRef,
 } from '../protocol';
 import type { LibraryPackage } from './library-service';
 
@@ -27,7 +28,9 @@ export interface NotificationServiceClient {
   notifyLibraryDidInstall(event: { item: LibraryPackage }): void;
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void;
   notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void;
-  notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void;
+  notifyRecentSketchesDidChange(event: {
+    sketches: (Sketch | ExampleRef)[];
+  }): void;
 }
 
 export const NotificationServicePath = '/services/notification-service';

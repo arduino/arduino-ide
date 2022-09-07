@@ -16,6 +16,7 @@ import {
   SketchRef,
   SketchContainer,
   SketchesError,
+  ExampleRef,
 } from '../common/protocol/sketches-service';
 import { NotificationServiceServerImpl } from './notification-service-server';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
@@ -29,7 +30,6 @@ import * as glob from 'glob';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { ServiceError } from './service-error';
 import {
-  ExampleTempSketchPrefix,
   IsTempSketch,
   maybeNormalizeDrive,
   TempSketchPrefix,
@@ -258,9 +258,7 @@ export class SketchesServiceImpl
       .then((uri) => path.join(FileUri.fsPath(uri), 'recent-sketches.json'));
   }
 
-  private async loadRecentSketches(
-    fsPath: string
-  ): Promise<Record<string, number>> {
+  private async loadRecentSketches(fsPath: string): Promise<RecentSketches> {
     let data: Record<string, number> = {};
     try {
       const raw = await promisify(fs.readFile)(fsPath, {
@@ -271,32 +269,39 @@ export class SketchesServiceImpl
     return data;
   }
 
-  async markAsRecentlyOpened(uri: string): Promise<void> {
+  async markAsRecentlyOpened(uriOrRef: string | ExampleRef): Promise<void> {
+    const isExample = typeof uriOrRef !== 'string';
+    const uri = isExample ? uriOrRef.sourceUri : uriOrRef;
     let sketch: Sketch | undefined = undefined;
     try {
       sketch = await this.loadSketch(uri);
     } catch {
       return;
     }
-    if (
-      (await this.isTemp(sketch)) &&
-      !this.isTempSketch.isExample(FileUri.fsPath(sketch.uri))
-    ) {
+    if (await this.isTemp(sketch)) {
       return;
     }
 
     const fsPath = await this.recentSketchesFsPath;
     const data = await this.loadRecentSketches(fsPath);
     const now = Date.now();
-    data[sketch.uri] = now;
+    data[sketch.uri] = isExample ? { type: 'example', mtimeMs: now } : now;
 
     let toDeleteUri: string | undefined = undefined;
     if (Object.keys(data).length > 10) {
       let min = Number.MAX_SAFE_INTEGER;
       for (const uri of Object.keys(data)) {
-        if (min > data[uri]) {
-          min = data[uri];
-          toDeleteUri = uri;
+        const value = data[uri];
+        if (typeof value === 'number') {
+          if (min > value) {
+            min = value;
+            toDeleteUri = uri;
+          }
+        } else {
+          if (min > value.mtimeMs) {
+            min = value.mtimeMs;
+            toDeleteUri = uri;
+          }
         }
       }
     }
@@ -311,13 +316,13 @@ export class SketchesServiceImpl
     );
   }
 
-  async recentlyOpenedSketches(): Promise<Sketch[]> {
+  async recentlyOpenedSketches(): Promise<(Sketch | ExampleRef)[]> {
     const configDirUri = await this.envVariableServer.getConfigDirUri();
     const fsPath = path.join(
       FileUri.fsPath(configDirUri),
       'recent-sketches.json'
     );
-    let data: Record<string, number> = {};
+    let data: RecentSketches = {};
     try {
       const raw = await promisify(fs.readFile)(fsPath, {
         encoding: 'utf8',
@@ -325,14 +330,25 @@ export class SketchesServiceImpl
       data = JSON.parse(raw);
     } catch {}
 
-    const sketches: SketchWithDetails[] = [];
-    for (const uri of Object.keys(data).sort(
-      (left, right) => data[right] - data[left]
-    )) {
-      try {
-        const sketch = await this.loadSketch(uri);
-        sketches.push(sketch);
-      } catch {}
+    const sketches: (Sketch | ExampleRef)[] = [];
+    for (const uri of Object.keys(data).sort((left, right) => {
+      const leftValue = data[left];
+      const rightValue = data[right];
+      const leftMtimeMs =
+        typeof leftValue === 'number' ? leftValue : leftValue.mtimeMs;
+      const rightMtimeMs =
+        typeof rightValue === 'number' ? rightValue : rightValue.mtimeMs;
+      return leftMtimeMs - rightMtimeMs;
+    })) {
+      const value = data[uri];
+      if (typeof value === 'number') {
+        try {
+          const sketch = await this.loadSketch(uri);
+          sketches.push(sketch);
+        } catch {}
+      } else {
+        sketches.push({ name: new URI(uri).path.base, sourceUri: uri });
+      }
     }
 
     return sketches;
@@ -340,7 +356,7 @@ export class SketchesServiceImpl
 
   async cloneExample(uri: string): Promise<Sketch> {
     const sketch = await this.loadSketch(uri);
-    const parentPath = await this.createTempFolder(false);
+    const parentPath = await this.createTempFolder();
     const destinationUri = FileUri.create(
       path.join(parentPath, sketch.name)
     ).toString();
@@ -421,24 +437,21 @@ void loop() {
    * For example, on Windows, instead of getting an [8.3 filename](https://en.wikipedia.org/wiki/8.3_filename), callers will get a fully resolved path.
    * `C:\\Users\\KITTAA~1\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a` will be `C:\\Users\\kittaakos\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a`
    */
-  private createTempFolder(isTemp = true): Promise<string> {
+  private createTempFolder(prefix: string = TempSketchPrefix): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      temp.mkdir(
-        { prefix: isTemp ? TempSketchPrefix : ExampleTempSketchPrefix },
-        (createError, dirPath) => {
-          if (createError) {
-            reject(createError);
+      temp.mkdir({ prefix }, (createError, dirPath) => {
+        if (createError) {
+          reject(createError);
+          return;
+        }
+        fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
+          if (resolveError) {
+            reject(resolveError);
             return;
           }
-          fs.realpath.native(dirPath, (resolveError, resolvedDirPath) => {
-            if (resolveError) {
-              reject(resolveError);
-              return;
-            }
-            resolve(resolvedDirPath);
-          });
-        }
-      );
+          resolve(resolvedDirPath);
+        });
+      });
     });
   }
 
@@ -641,3 +654,8 @@ function sketchIndexToLetters(num: number): string {
   } while (pow > 0);
   return out;
 }
+
+type RecentSketches = Record<
+  string,
+  number | { type: 'example'; mtimeMs: number }
+>;
