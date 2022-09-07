@@ -18,13 +18,9 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     protected override readonly labelProvider: LabelProvider
   ) {
     super(props, labelProvider);
-    if (this.acceptButton) {
-      this.controlPanel.removeChild(this.acceptButton);
-      this.appendCloseButton(
-        nls.localize('vscode/issueMainService/cancel', 'Cancel')
-      );
-      this.appendAcceptButton();
-    }
+    this.appendCloseButton(
+      nls.localize('vscode/issueMainService/cancel', 'Cancel')
+    );
   }
 
   protected override appendParentPath(): void {
@@ -45,5 +41,15 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     if (this.wasTouched) {
       this.errorMessageNode.innerText = DialogError.getMessage(error);
     }
+  }
+
+  protected override appendCloseButton(text: string): HTMLButtonElement {
+    this.closeButton = this.createButton(text);
+    this.controlPanel.insertBefore(
+      this.closeButton,
+      this.controlPanel.firstChild
+    );
+    this.closeButton.classList.add('secondary');
+    return this.closeButton;
   }
 }
