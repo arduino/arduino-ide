@@ -14,6 +14,10 @@ import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
 import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
+import {
+  CLOSE_PLOTTER_WINDOW,
+  SHOW_PLOTTER_WINDOW,
+} from '../../../common/ipc-communication';
 
 const queryString = require('query-string');
 
@@ -58,7 +62,7 @@ export class PlotterFrontendContribution extends Contribution {
   override onStart(app: FrontendApplication): MaybePromise<void> {
     this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
 
-    ipcRenderer.on('CLOSE_CHILD_WINDOW', async () => {
+    ipcRenderer.on(CLOSE_PLOTTER_WINDOW, async () => {
       if (!!this.window) {
         this.window = null;
       }
@@ -96,7 +100,7 @@ export class PlotterFrontendContribution extends Contribution {
   async startPlotter(): Promise<void> {
     await this.monitorManagerProxy.startMonitor();
     if (!!this.window) {
-      this.window.focus();
+      ipcRenderer.send(SHOW_PLOTTER_WINDOW);
       return;
     }
     const wsPort = this.monitorManagerProxy.getWebSocketPort();
