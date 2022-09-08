@@ -25,6 +25,7 @@ export class UploadSketch extends CoreServiceContribution {
   private readonly userFieldsDialog: UserFieldsDialog;
 
   private boardRequiresUserFields = false;
+  private userFieldsSet = false;
   private readonly cachedUserFields: Map<string, BoardUserField[]> = new Map();
   private readonly menuActionsDisposables = new DisposableCollection();
 
@@ -61,20 +62,22 @@ export class UploadSketch extends CoreServiceContribution {
     registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
       execute: async () => {
         const key = this.selectedFqbnAddress();
+        /*
+          If the board requires to be configured with user fields, we want
+          to show the user fields dialog, but if they weren't already
+          filled in or if they were filled in, but the previous upload failed.
+        */
         if (
           this.boardRequiresUserFields &&
           key &&
-          !this.cachedUserFields.has(key)
+          (!this.cachedUserFields.has(key) || !this.userFieldsSet)
         ) {
-          // Deep clone the array of board fields to avoid editing the cached ones
-          this.userFieldsDialog.value = (
-            await this.boardsServiceProvider.selectedBoardUserFields()
-          ).map((f) => ({ ...f }));
-          const result = await this.userFieldsDialog.open();
-          if (!result) {
+          const userFieldsFilledIn = Boolean(
+            await this.showUserFieldsDialog(key)
+          );
+          if (!userFieldsFilledIn) {
             return;
           }
-          this.cachedUserFields.set(key, result);
         }
         this.uploadSketch();
       },
@@ -86,18 +89,12 @@ export class UploadSketch extends CoreServiceContribution {
         if (!key) {
           return;
         }
-
-        const cached = this.cachedUserFields.get(key);
-        // Deep clone the array of board fields to avoid editing the cached ones
-        this.userFieldsDialog.value = (
-          cached ?? (await this.boardsServiceProvider.selectedBoardUserFields())
-        ).map((f) => ({ ...f }));
-
-        const result = await this.userFieldsDialog.open();
-        if (!result) {
+        const userFieldsFilledIn = Boolean(
+          await this.showUserFieldsDialog(key)
+        );
+        if (!userFieldsFilledIn) {
           return;
         }
-        this.cachedUserFields.set(key, result);
         this.uploadSketch();
       },
       isEnabled: () => !this.uploadInProgress && this.boardRequiresUserFields,
@@ -215,19 +212,20 @@ export class UploadSketch extends CoreServiceContribution {
         return;
       }
 
-      // TODO: This does not belong here.
-      // IDE2 should not do any preliminary checks but let the CLI fail and then toast a user consumable error message.
-      if (
-        uploadOptions.userFields.length === 0 &&
-        this.boardRequiresUserFields
-      ) {
-        this.messageService.error(
-          nls.localize(
-            'arduino/sketch/userFieldsNotFoundError',
-            "Can't find user fields for connected board"
-          )
-        );
-        return;
+      if (this.boardRequiresUserFields) {
+        // TODO: This does not belong here.
+        // IDE2 should not do any preliminary checks but let the CLI fail and then toast a user consumable error message.
+        if (uploadOptions.userFields.length === 0) {
+          this.messageService.error(
+            nls.localize(
+              'arduino/sketch/userFieldsNotFoundError',
+              "Can't find user fields for connected board"
+            )
+          );
+          this.userFieldsSet = false;
+          return;
+        }
+        this.userFieldsSet = true;
       }
 
       await this.doWithProgress({
@@ -242,6 +240,13 @@ export class UploadSketch extends CoreServiceContribution {
         { timeout: 3000 }
       );
     } catch (e) {
+      if (
+        this.boardRequiresUserFields &&
+        typeof e.message === 'string' &&
+        e.message.startsWith('Upload error:')
+      ) {
+        this.userFieldsSet = false;
+      }
       this.handleError(e);
     } finally {
       this.uploadInProgress = false;
@@ -316,6 +321,23 @@ export class UploadSketch extends CoreServiceContribution {
     }
     const [vendor, arch, id] = fqbn.split(':');
     return `${vendor}:${arch}:${id}`;
+  }
+
+  private async showUserFieldsDialog(
+    key: string
+  ): Promise<BoardUserField[] | undefined> {
+    const cached = this.cachedUserFields.get(key);
+    // Deep clone the array of board fields to avoid editing the cached ones
+    this.userFieldsDialog.value = (
+      cached ?? (await this.boardsServiceProvider.selectedBoardUserFields())
+    ).map((f) => ({ ...f }));
+    const result = await this.userFieldsDialog.open();
+    if (!result) {
+      return;
+    }
+    this.userFieldsSet = true;
+    this.cachedUserFields.set(key, result);
+    return result;
   }
 }
 
