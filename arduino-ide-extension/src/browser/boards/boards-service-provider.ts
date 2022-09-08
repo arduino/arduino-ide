@@ -578,6 +578,7 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
       boardsConfig.selectedBoard &&
       availableBoards.every(({ selected }) => !selected)
     ) {
+      let port = boardsConfig.selectedPort
       // If the selected board has the same port of an unknown board
       // that is already in availableBoards we might get a duplicate port.
       // So we remove the one already in the array and add the selected one.
@@ -585,11 +586,15 @@ export class BoardsServiceProvider implements FrontendApplicationContribution {
         (board) => board.port?.address === boardsConfig.selectedPort?.address
       );
       if (found >= 0) {
+        // get the "Unknown board port" that we will substitute,
+        // then we can include it in the "availableBoard object"
+        // pushed below; to ensure addressLabel is included
+        port = availableBoards[found].port
         availableBoards.splice(found, 1);
       }
       availableBoards.push({
         ...boardsConfig.selectedBoard,
-        port: boardsConfig.selectedPort,
+        port,
         selected: true,
         state: AvailableBoard.State.incomplete,
       });
