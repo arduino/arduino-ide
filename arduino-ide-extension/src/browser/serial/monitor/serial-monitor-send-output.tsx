@@ -109,7 +109,7 @@ const _Row = ({
 }) => {
   const timestamp =
     (data.timestamp &&
-      `${dateFormat(data.lines[index].timestamp, 'H:M:ss.l')} -> `) ||
+      `${dateFormat(data.lines[index].timestamp, 'HH:MM:ss.l')} -> `) ||
     '';
   return (
     (data.lines[index].lineLen && (
