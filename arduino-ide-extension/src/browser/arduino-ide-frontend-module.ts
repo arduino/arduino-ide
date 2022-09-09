@@ -337,6 +337,7 @@ import { CheckForUpdates } from './contributions/check-for-updates';
 import { OutputEditorFactory } from './theia/output/output-editor-factory';
 import { StartupTaskProvider } from '../electron-common/startup-task';
 import { DeleteSketch } from './contributions/delete-sketch';
+import { UserFields } from './contributions/user-fields';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -761,6 +762,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, OpenBoardsConfig);
   Contribution.configure(bind, SketchFilesTracker);
   Contribution.configure(bind, CheckForUpdates);
+  Contribution.configure(bind, UserFields);
   Contribution.configure(bind, DeleteSketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
