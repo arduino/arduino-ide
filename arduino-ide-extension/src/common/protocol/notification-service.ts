@@ -5,27 +5,62 @@ import type {
   Config,
   ProgressMessage,
   Sketch,
+  IndexType,
 } from '../protocol';
 import type { LibraryPackage } from './library-service';
 
+/**
+ * Values are [ISO 8601](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
+ * strings representing the date-time when the update of the index has been completed.
+ */
+export type IndexUpdateSummary = {
+  [T in IndexType]: string;
+} & { message?: string };
+export interface IndexUpdateParams {
+  /**
+   * Application unique ID of the progress.
+   */
+  readonly progressId: string;
+  /**
+   * The type of the index is which is being updated.
+   */
+  readonly types: IndexType[];
+}
+export type IndexUpdateWillStartParams = IndexUpdateParams;
+export interface IndexUpdateDidCompleteParams
+  extends Omit<IndexUpdateParams, 'types'> {
+  readonly summary: IndexUpdateSummary;
+}
+export interface IndexUpdateDidFailParams extends IndexUpdateParams {
+  /**
+   * Describes the reason of the index update failure.
+   */
+  readonly message: string;
+}
+
 export interface NotificationServiceClient {
-  notifyIndexWillUpdate(progressId: string): void;
+  // Index
+  notifyIndexUpdateWillStart(params: IndexUpdateWillStartParams): void;
   notifyIndexUpdateDidProgress(progressMessage: ProgressMessage): void;
-  notifyIndexDidUpdate(progressId: string): void;
-  notifyIndexUpdateDidFail({
-    progressId,
-    message,
-  }: {
-    progressId: string;
-    message: string;
-  }): void;
+  notifyIndexUpdateDidComplete(params: IndexUpdateDidCompleteParams): void;
+  notifyIndexUpdateDidFail(params: IndexUpdateDidFailParams): void;
+
+  // Daemon
   notifyDaemonDidStart(port: string): void;
   notifyDaemonDidStop(): void;
+
+  // CLI config
   notifyConfigDidChange(event: { config: Config | undefined }): void;
+
+  // Platforms
   notifyPlatformDidInstall(event: { item: BoardsPackage }): void;
   notifyPlatformDidUninstall(event: { item: BoardsPackage }): void;
+
+  // Libraries
   notifyLibraryDidInstall(event: { item: LibraryPackage }): void;
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void;
+
+  // Boards discovery
   notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void;
   notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void;
 }

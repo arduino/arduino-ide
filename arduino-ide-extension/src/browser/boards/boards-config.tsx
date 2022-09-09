@@ -132,7 +132,7 @@ export class BoardsConfig extends React.Component<
       this.props.notificationCenter.onPlatformDidUninstall(() =>
         this.updateBoards(this.state.query)
       ),
-      this.props.notificationCenter.onIndexDidUpdate(() =>
+      this.props.notificationCenter.onIndexUpdateDidComplete(() =>
         this.updateBoards(this.state.query)
       ),
       this.props.notificationCenter.onDaemonDidStart(() =>

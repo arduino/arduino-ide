@@ -220,6 +220,9 @@ export class UpdateIndexRequest extends jspb.Message {
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): UpdateIndexRequest;
 
+    getIgnoreCustomPackageIndexes(): boolean;
+    setIgnoreCustomPackageIndexes(value: boolean): UpdateIndexRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UpdateIndexRequest.AsObject;
@@ -234,6 +237,7 @@ export class UpdateIndexRequest extends jspb.Message {
 export namespace UpdateIndexRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        ignoreCustomPackageIndexes: boolean,
     }
 }
 

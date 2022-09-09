@@ -8,6 +8,9 @@ import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import {
+  IndexUpdateDidCompleteParams,
+  IndexUpdateDidFailParams,
+  IndexUpdateWillStartParams,
   NotificationServiceClient,
   NotificationServiceServer,
 } from '../common/protocol/notification-service';
@@ -29,48 +32,48 @@ export class NotificationCenter
   implements NotificationServiceClient, FrontendApplicationContribution
 {
   @inject(NotificationServiceServer)
-  protected readonly server: JsonRpcProxy<NotificationServiceServer>;
+  private readonly server: JsonRpcProxy<NotificationServiceServer>;
 
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
-  protected readonly indexDidUpdateEmitter = new Emitter<string>();
-  protected readonly indexWillUpdateEmitter = new Emitter<string>();
-  protected readonly indexUpdateDidProgressEmitter =
+  private readonly indexUpdateDidCompleteEmitter =
+    new Emitter<IndexUpdateDidCompleteParams>();
+  private readonly indexUpdateWillStartEmitter =
+    new Emitter<IndexUpdateWillStartParams>();
+  private readonly indexUpdateDidProgressEmitter =
     new Emitter<ProgressMessage>();
-  protected readonly indexUpdateDidFailEmitter = new Emitter<{
-    progressId: string;
-    message: string;
-  }>();
-  protected readonly daemonDidStartEmitter = new Emitter<string>();
-  protected readonly daemonDidStopEmitter = new Emitter<void>();
-  protected readonly configDidChangeEmitter = new Emitter<{
+  private readonly indexUpdateDidFailEmitter =
+    new Emitter<IndexUpdateDidFailParams>();
+  private readonly daemonDidStartEmitter = new Emitter<string>();
+  private readonly daemonDidStopEmitter = new Emitter<void>();
+  private readonly configDidChangeEmitter = new Emitter<{
     config: Config | undefined;
   }>();
-  protected readonly platformDidInstallEmitter = new Emitter<{
+  private readonly platformDidInstallEmitter = new Emitter<{
     item: BoardsPackage;
   }>();
-  protected readonly platformDidUninstallEmitter = new Emitter<{
+  private readonly platformDidUninstallEmitter = new Emitter<{
     item: BoardsPackage;
   }>();
-  protected readonly libraryDidInstallEmitter = new Emitter<{
+  private readonly libraryDidInstallEmitter = new Emitter<{
     item: LibraryPackage;
   }>();
-  protected readonly libraryDidUninstallEmitter = new Emitter<{
+  private readonly libraryDidUninstallEmitter = new Emitter<{
     item: LibraryPackage;
   }>();
-  protected readonly attachedBoardsDidChangeEmitter =
+  private readonly attachedBoardsDidChangeEmitter =
     new Emitter<AttachedBoardsChangeEvent>();
-  protected readonly recentSketchesChangedEmitter = new Emitter<{
+  private readonly recentSketchesChangedEmitter = new Emitter<{
     sketches: Sketch[];
   }>();
   private readonly onAppStateDidChangeEmitter =
     new Emitter<FrontendApplicationState>();
 
-  protected readonly toDispose = new DisposableCollection(
-    this.indexWillUpdateEmitter,
+  private readonly toDispose = new DisposableCollection(
+    this.indexUpdateWillStartEmitter,
     this.indexUpdateDidProgressEmitter,
-    this.indexDidUpdateEmitter,
+    this.indexUpdateDidCompleteEmitter,
     this.indexUpdateDidFailEmitter,
     this.daemonDidStartEmitter,
     this.daemonDidStopEmitter,
@@ -82,8 +85,8 @@ export class NotificationCenter
     this.attachedBoardsDidChangeEmitter
   );
 
-  readonly onIndexDidUpdate = this.indexDidUpdateEmitter.event;
-  readonly onIndexWillUpdate = this.indexDidUpdateEmitter.event;
+  readonly onIndexUpdateDidComplete = this.indexUpdateDidCompleteEmitter.event;
+  readonly onIndexUpdateWillStart = this.indexUpdateWillStartEmitter.event;
   readonly onIndexUpdateDidProgress = this.indexUpdateDidProgressEmitter.event;
   readonly onIndexUpdateDidFail = this.indexUpdateDidFailEmitter.event;
   readonly onDaemonDidStart = this.daemonDidStartEmitter.event;
@@ -112,26 +115,20 @@ export class NotificationCenter
     this.toDispose.dispose();
   }
 
-  notifyIndexWillUpdate(progressId: string): void {
-    this.indexWillUpdateEmitter.fire(progressId);
+  notifyIndexUpdateWillStart(params: IndexUpdateWillStartParams): void {
+    this.indexUpdateWillStartEmitter.fire(params);
   }
 
   notifyIndexUpdateDidProgress(progressMessage: ProgressMessage): void {
     this.indexUpdateDidProgressEmitter.fire(progressMessage);
   }
 
-  notifyIndexDidUpdate(progressId: string): void {
-    this.indexDidUpdateEmitter.fire(progressId);
+  notifyIndexUpdateDidComplete(params: IndexUpdateDidCompleteParams): void {
+    this.indexUpdateDidCompleteEmitter.fire(params);
   }
 
-  notifyIndexUpdateDidFail({
-    progressId,
-    message,
-  }: {
-    progressId: string;
-    message: string;
-  }): void {
-    this.indexUpdateDidFailEmitter.fire({ progressId, message });
+  notifyIndexUpdateDidFail(params: IndexUpdateDidFailParams): void {
+    this.indexUpdateDidFailEmitter.fire(params);
   }
 
   notifyDaemonDidStart(port: string): void {

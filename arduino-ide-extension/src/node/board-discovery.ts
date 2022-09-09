@@ -6,7 +6,7 @@ import { deepClone } from '@theia/core/lib/common/objects';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { BackendApplicationContribution } from '@theia/core/lib/node';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
+import { Disposable } from '@theia/core/lib/common/disposable';
 import { v4 } from 'uuid';
 import { Unknown } from '../common/nls';
 import {
@@ -78,14 +78,6 @@ export class BoardDiscovery
 
   onStart(): void {
     this.start();
-    this.onClientDidRefresh(() => this.restart());
-  }
-
-  private async restart(): Promise<void> {
-    this.logger.info('restarting before stop');
-    await this.stop();
-    this.logger.info('restarting after stop');
-    return this.start();
   }
 
   onStop(): void {
