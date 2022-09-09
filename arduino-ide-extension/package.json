@@ -158,7 +158,11 @@
   ],
   "arduino": {
     "cli": {
-      "version": "0.27.1"
+      "version": {
+        "owner": "cmaglie",
+        "repo": "arduino-cli",
+        "commitish": "download_progress_refactor"
+      }
     },
     "fwuploader": {
       "version": "2.2.0"

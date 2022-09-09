@@ -5,7 +5,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { Emitter, Event } from '@theia/core/lib/common/event';
+import { Emitter } from '@theia/core/lib/common/event';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
@@ -19,8 +19,15 @@ import {
   UpdateLibrariesIndexResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { NotificationServiceServer } from '../common/protocol';
-import { Deferred, retry } from '@theia/core/lib/common/promise-util';
+import {
+  IndexType,
+  IndexUpdateDidCompleteParams,
+  IndexUpdateSummary,
+  IndexUpdateDidFailParams,
+  IndexUpdateWillStartParams,
+  NotificationServiceServer,
+} from '../common/protocol';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
   Status as RpcStatus,
   Status,
@@ -32,6 +39,7 @@ import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
 import {
   IndexesUpdateProgressHandler,
   ExecuteWithProgress,
+  DownloadResult,
 } from './grpc-progressible';
 import type { DefaultCliConfig } from './cli-config';
 import { ServiceError } from './service-error';
@@ -45,16 +53,19 @@ export class CoreClientProvider {
   @inject(NotificationServiceServer)
   private readonly notificationService: NotificationServiceServer;
 
-  private ready = new Deferred<void>();
-  private pending: Deferred<CoreClientProvider.Client> | undefined;
-  private _client: CoreClientProvider.Client | undefined;
-  private readonly toDisposeBeforeCreate = new DisposableCollection();
+  /**
+   * See `CoreService#indexUpdateSummaryBeforeInit`.
+   */
+  private readonly beforeInitSummary = {} as IndexUpdateSummary;
+  private readonly toDisposeOnCloseClient = new DisposableCollection();
   private readonly toDisposeAfterDidCreate = new DisposableCollection();
   private readonly onClientReadyEmitter =
     new Emitter<CoreClientProvider.Client>();
   private readonly onClientReady = this.onClientReadyEmitter.event;
-  private readonly onClientDidRefreshEmitter =
-    new Emitter<CoreClientProvider.Client>();
+
+  private ready = new Deferred<void>();
+  private pending: Deferred<CoreClientProvider.Client> | undefined;
+  private _client: CoreClientProvider.Client | undefined;
 
   @postConstruct()
   protected init(): void {
@@ -65,7 +76,9 @@ export class CoreClientProvider {
     });
     this.daemon.onDaemonStarted((port) => this.create(port));
     this.daemon.onDaemonStopped(() => this.closeClient());
-    this.configService.onConfigChange(() => this.refreshIndexes());
+    this.configService.onConfigChange(
+      () => this.client.then((client) => this.updateIndex(client, ['platform'])) // Assuming 3rd party URL changes. No library index update is required.
+    );
   }
 
   get tryGetClient(): CoreClientProvider.Client | undefined {
@@ -80,7 +93,7 @@ export class CoreClientProvider {
     if (!this.pending) {
       this.pending = new Deferred();
       this.toDisposeAfterDidCreate.pushAll([
-        Disposable.create(() => (this.pending = undefined)),
+        Disposable.create(() => (this.pending = undefined)), // TODO: reject all pending requests before unsetting the ref?
         this.onClientReady((client) => {
           this.pending?.resolve(client);
           this.toDisposeAfterDidCreate.dispose();
@@ -88,10 +101,6 @@ export class CoreClientProvider {
       ]);
     }
     return this.pending.promise;
-  }
-
-  get onClientDidRefresh(): Event<CoreClientProvider.Client> {
-    return this.onClientDidRefreshEmitter.event;
   }
 
   async refresh(): Promise<void> {
@@ -106,7 +115,7 @@ export class CoreClientProvider {
     this.closeClient();
     const address = this.address(port);
     const client = await this.createClient(address);
-    this.toDisposeBeforeCreate.pushAll([
+    this.toDisposeOnCloseClient.pushAll([
       Disposable.create(() => client.client.close()),
       Disposable.create(() => {
         this.ready.reject(
@@ -118,7 +127,6 @@ export class CoreClientProvider {
       }),
     ]);
     await this.initInstanceWithFallback(client);
-    setTimeout(async () => this.refreshIndexes(), 10_000); // Update the indexes asynchronously
     return this.useClient(client);
   }
 
@@ -141,12 +149,17 @@ export class CoreClientProvider {
     try {
       await this.initInstance(client);
     } catch (err) {
-      if (err instanceof IndexUpdateRequiredBeforeInitError) {
+      if (err instanceof MustUpdateIndexesBeforeInitError) {
         console.error(
           'The primary packages indexes are missing. Running indexes update before initializing the core gRPC client',
           err.message
         );
-        await this.updateIndexes(client); // TODO: this should run without the 3rd party URLs
+        await this.updateIndex(client, Array.from(err.indexTypesToUpdate));
+        const updatedAt = new Date().toISOString();
+        // Clients will ask for it after they connect.
+        err.indexTypesToUpdate.forEach(
+          (type) => (this.beforeInitSummary[type] = updatedAt)
+        );
         await this.initInstance(client);
         console.info(
           `Downloaded the primary package indexes, and successfully initialized the core gRPC client.`
@@ -170,7 +183,7 @@ export class CoreClientProvider {
   }
 
   private closeClient(): void {
-    return this.toDisposeBeforeCreate.dispose();
+    return this.toDisposeOnCloseClient.dispose();
   }
 
   private async createClient(
@@ -253,45 +266,66 @@ export class CoreClientProvider {
   }
 
   /**
-   * Updates all indexes and runs an init to [reload the indexes](https://github.com/arduino/arduino-cli/pull/1274#issue-866154638).
+   * `update3rdPartyPlatforms` has not effect if `types` is `['library']`.
    */
-  private async refreshIndexes(): Promise<void> {
-    const client = this._client;
-    if (client) {
-      const progressHandler = this.createProgressHandler();
-      try {
-        await this.updateIndexes(client, progressHandler);
+  async updateIndex(
+    client: CoreClientProvider.Client,
+    types: IndexType[]
+  ): Promise<void> {
+    let error: unknown | undefined = undefined;
+    const progressHandler = this.createProgressHandler(types);
+    try {
+      const updates: Promise<void>[] = [];
+      if (types.includes('platform')) {
+        updates.push(this.updatePlatformIndex(client, progressHandler));
+      }
+      if (types.includes('library')) {
+        updates.push(this.updateLibraryIndex(client, progressHandler));
+      }
+      await Promise.all(updates);
+    } catch (err) {
+      // This is suboptimal but the core client must be re-initialized even if the index update has failed and the request was rejected.
+      error = err;
+    } finally {
+      // IDE2 reloads the index only and if only at least one download success is available.
+      if (
+        progressHandler.results.some(
+          (result) => !DownloadResult.isError(result)
+        )
+      ) {
         await this.initInstance(client);
         // notify clients about the index update only after the client has been "re-initialized" and the new content is available.
         progressHandler.reportEnd();
-        this.onClientDidRefreshEmitter.fire(client);
-      } catch (err) {
-        console.error('Failed to update indexes', err);
-        progressHandler.reportError(
-          ServiceError.is(err) ? err.details : String(err)
-        );
+      }
+      if (error) {
+        console.error(`Failed to update ${types.join(', ')} indexes.`, error);
+        const downloadErrors = progressHandler.results
+          .filter(DownloadResult.isError)
+          .map(({ url, message }) => `${message}: ${url}`)
+          .join(' ');
+        const message = ServiceError.is(error)
+          ? `${error.details}${downloadErrors ? ` ${downloadErrors}` : ''}`
+          : String(error);
+        // IDE2 keeps only the most recent error message. Previous errors might have been fixed with the fallback initialization.
+        this.beforeInitSummary.message = message;
+        // Toast the error message, so tha the user has chance to fix it if it was a client error (HTTP 4xx).
+        progressHandler.reportError(message);
       }
     }
   }
 
-  private async updateIndexes(
-    client: CoreClientProvider.Client,
-    progressHandler?: IndexesUpdateProgressHandler
-  ): Promise<void> {
-    await Promise.all([
-      this.updateIndex(client, progressHandler),
-      this.updateLibraryIndex(client, progressHandler),
-    ]);
+  get indexUpdateSummaryBeforeInit(): IndexUpdateSummary {
+    return { ...this.beforeInitSummary };
   }
 
-  private async updateIndex(
+  private async updatePlatformIndex(
     client: CoreClientProvider.Client,
     progressHandler?: IndexesUpdateProgressHandler
   ): Promise<void> {
     return this.doUpdateIndex(
       () =>
         client.client.updateIndex(
-          new UpdateIndexRequest().setInstance(client.instance)
+          new UpdateIndexRequest().setInstance(client.instance) // Always updates both the primary and the 3rd party package indexes.
         ),
       progressHandler,
       'platform-index'
@@ -323,50 +357,45 @@ export class CoreClientProvider {
     task?: string
   ): Promise<void> {
     const progressId = progressHandler?.progressId;
-    return retry(
-      () =>
-        new Promise<void>((resolve, reject) => {
-          responseProvider()
-            .on(
-              'data',
-              ExecuteWithProgress.createDataCallback({
-                responseService: {
-                  appendToOutput: ({ chunk: message }) => {
-                    console.log(
-                      `core-client-provider${task ? ` [${task}]` : ''}`,
-                      message
-                    );
-                    progressHandler?.reportProgress(message);
-                  },
-                },
-                progressId,
-              })
-            )
-            .on('error', reject)
-            .on('end', resolve);
-        }),
-      50,
-      3
-    );
+    return new Promise<void>((resolve, reject) => {
+      responseProvider()
+        .on(
+          'data',
+          ExecuteWithProgress.createDataCallback({
+            responseService: {
+              appendToOutput: ({ chunk: message }) => {
+                console.log(
+                  `core-client-provider${task ? ` [${task}]` : ''}`,
+                  message
+                );
+                progressHandler?.reportProgress(message);
+              },
+              reportResult: (result) => progressHandler?.reportResult(result),
+            },
+            progressId,
+          })
+        )
+        .on('error', reject)
+        .on('end', resolve);
+    });
   }
 
-  private createProgressHandler(): IndexesUpdateProgressHandler {
+  private createProgressHandler(
+    types: IndexType[]
+  ): IndexesUpdateProgressHandler {
     const additionalUrlsCount =
       this.configService.cliConfiguration?.board_manager?.additional_urls
         ?.length ?? 0;
-    return new IndexesUpdateProgressHandler(
-      additionalUrlsCount,
-      (progressMessage) =>
+    return new IndexesUpdateProgressHandler(types, additionalUrlsCount, {
+      onProgress: (progressMessage) =>
         this.notificationService.notifyIndexUpdateDidProgress(progressMessage),
-      ({ progressId, message }) =>
-        this.notificationService.notifyIndexUpdateDidFail({
-          progressId,
-          message,
-        }),
-      (progressId) =>
-        this.notificationService.notifyIndexWillUpdate(progressId),
-      (progressId) => this.notificationService.notifyIndexDidUpdate(progressId)
-    );
+      onError: (params: IndexUpdateDidFailParams) =>
+        this.notificationService.notifyIndexUpdateDidFail(params),
+      onStart: (params: IndexUpdateWillStartParams) =>
+        this.notificationService.notifyIndexUpdateWillStart(params),
+      onComplete: (params: IndexUpdateDidCompleteParams) =>
+        this.notificationService.notifyIndexUpdateDidComplete(params),
+    });
   }
 
   private address(port: string): string {
@@ -410,6 +439,7 @@ export namespace CoreClientProvider {
 export abstract class CoreClientAware {
   @inject(CoreClientProvider)
   private readonly coreClientProvider: CoreClientProvider;
+
   /**
    * Returns with a promise that resolves when the core client is initialized and ready.
    */
@@ -417,8 +447,17 @@ export abstract class CoreClientAware {
     return this.coreClientProvider.client;
   }
 
-  protected get onClientDidRefresh(): Event<CoreClientProvider.Client> {
-    return this.coreClientProvider.onClientDidRefresh;
+  /**
+   * Updates the index of the given `type` and returns with a promise which resolves when the core gPRC client has been reinitialized.
+   */
+  async updateIndex({ types }: { types: IndexType[] }): Promise<void> {
+    const client = await this.coreClient;
+    return this.coreClientProvider.updateIndex(client, types);
+  }
+
+  async indexUpdateSummaryBeforeInit(): Promise<IndexUpdateSummary> {
+    await this.coreClient;
+    return this.coreClientProvider.indexUpdateSummaryBeforeInit;
   }
 
   refresh(): Promise<void> {
@@ -426,15 +465,20 @@ export abstract class CoreClientAware {
   }
 }
 
-class IndexUpdateRequiredBeforeInitError extends Error {
-  constructor(causes: RpcStatus.AsObject[]) {
+class MustUpdateIndexesBeforeInitError extends Error {
+  readonly indexTypesToUpdate: Set<IndexType>;
+  constructor(causes: [RpcStatus.AsObject, IndexType][]) {
     super(`The index of the cores and libraries must be updated before initializing the core gRPC client.
 The following problems were detected during the gRPC client initialization:
 ${causes
-  .map(({ code, message }) => ` - code: ${code}, message: ${message}`)
+  .map(
+    ([{ code, message }, type]) =>
+      `[${type}-index] - code: ${code}, message: ${message}`
+  )
   .join('\n')}
 `);
-    Object.setPrototypeOf(this, IndexUpdateRequiredBeforeInitError.prototype);
+    Object.setPrototypeOf(this, MustUpdateIndexesBeforeInitError.prototype);
+    this.indexTypesToUpdate = new Set(causes.map(([, type]) => type));
     if (!causes.length) {
       throw new Error(`expected non-empty 'causes'`);
     }
@@ -444,39 +488,64 @@ ${causes
 function isIndexUpdateRequiredBeforeInit(
   status: RpcStatus[],
   cliConfig: DefaultCliConfig
-): IndexUpdateRequiredBeforeInitError | undefined {
-  const causes = status
-    .filter((s) =>
-      IndexUpdateRequiredBeforeInit.map((predicate) =>
-        predicate(s, cliConfig)
-      ).some(Boolean)
-    )
-    .map((s) => RpcStatus.toObject(false, s));
+): MustUpdateIndexesBeforeInitError | undefined {
+  const causes = status.reduce((acc, curr) => {
+    for (const [predicate, type] of IndexUpdateRequiredPredicates) {
+      if (predicate(curr, cliConfig)) {
+        acc.push([curr.toObject(false), type]);
+        return acc;
+      }
+    }
+    return acc;
+  }, [] as [RpcStatus.AsObject, IndexType][]);
   return causes.length
-    ? new IndexUpdateRequiredBeforeInitError(causes)
+    ? new MustUpdateIndexesBeforeInitError(causes)
     : undefined;
 }
-const IndexUpdateRequiredBeforeInit = [
-  isPackageIndexMissingStatus,
-  isDiscoveryNotFoundStatus,
+interface Predicate {
+  (
+    status: RpcStatus,
+    {
+      directories: { data },
+    }: DefaultCliConfig
+  ): boolean;
+}
+const IndexUpdateRequiredPredicates: [Predicate, IndexType][] = [
+  [isPrimaryPackageIndexMissingStatus, 'platform'],
+  [isDiscoveryNotFoundStatus, 'platform'],
+  [isLibraryIndexMissingStatus, 'library'],
 ];
-function isPackageIndexMissingStatus(
+// Loading index file: loading json index file /path/to/package_index.json: open /path/to/package_index.json: no such file or directory
+function isPrimaryPackageIndexMissingStatus(
   status: RpcStatus,
   { directories: { data } }: DefaultCliConfig
 ): boolean {
   const predicate = ({ message }: RpcStatus.AsObject) =>
     message.includes('loading json index file') &&
-    (message.includes(join(data, 'package_index.json')) ||
-      message.includes(join(data, 'library_index.json')));
+    message.includes(join(data, 'package_index.json'));
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
   return evaluate(status, predicate);
 }
+// Error loading hardware platform: discovery $TOOL_NAME not found
 function isDiscoveryNotFoundStatus(status: RpcStatus): boolean {
   const predicate = ({ message }: RpcStatus.AsObject) =>
     message.includes('discovery') &&
-    (message.includes('not found') || message.includes('not installed'));
+    (message.includes('not found') ||
+      message.includes('loading hardware platform'));
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L740
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/loader.go#L744
+  return evaluate(status, predicate);
+}
+// Loading index file: reading library_index.json: open /path/to/library_index.json: no such file or directory
+function isLibraryIndexMissingStatus(
+  status: RpcStatus,
+  { directories: { data } }: DefaultCliConfig
+): boolean {
+  const predicate = ({ message }: RpcStatus.AsObject) =>
+    message.includes('index file') &&
+    message.includes('reading') &&
+    message.includes(join(data, 'library_index.json'));
+  // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
   return evaluate(status, predicate);
 }
 function evaluate(

@@ -332,6 +332,7 @@ import { OutputEditorFactory } from './theia/output/output-editor-factory';
 import { StartupTaskProvider } from '../electron-common/startup-task';
 import { DeleteSketch } from './contributions/delete-sketch';
 import { UserFields } from './contributions/user-fields';
+import { UpdateIndexes } from './contributions/update-indexes';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -744,6 +745,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, CheckForUpdates);
   Contribution.configure(bind, UserFields);
   Contribution.configure(bind, DeleteSketch);
+  Contribution.configure(bind, UpdateIndexes);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

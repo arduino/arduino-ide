@@ -16,7 +16,7 @@ export class IndexesUpdateProgress extends Contribution {
     | undefined;
 
   override onStart(): void {
-    this.notificationCenter.onIndexWillUpdate((progressId) =>
+    this.notificationCenter.onIndexUpdateWillStart(({ progressId }) =>
       this.getOrCreateProgress(progressId)
     );
     this.notificationCenter.onIndexUpdateDidProgress((progress) => {
@@ -24,7 +24,7 @@ export class IndexesUpdateProgress extends Contribution {
         delegate.report(progress)
       );
     });
-    this.notificationCenter.onIndexDidUpdate((progressId) => {
+    this.notificationCenter.onIndexUpdateDidComplete(({ progressId }) => {
       this.cancelProgress(progressId);
     });
     this.notificationCenter.onIndexUpdateDidFail(({ progressId, message }) => {

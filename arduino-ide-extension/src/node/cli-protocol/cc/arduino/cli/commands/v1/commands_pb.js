@@ -1811,7 +1811,8 @@ proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.prototype.toObject = functio
  */
 proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f)
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
+    ignoreCustomPackageIndexes: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
   };
 
   if (includeInstance) {
@@ -1853,6 +1854,10 @@ proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.deserializeBinaryFromReader 
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
       msg.setInstance(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIgnoreCustomPackageIndexes(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1888,6 +1893,13 @@ proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.serializeBinaryToWriter = fu
       1,
       f,
       cc_arduino_cli_commands_v1_common_pb.Instance.serializeBinaryToWriter
+    );
+  }
+  f = message.getIgnoreCustomPackageIndexes();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
     );
   }
 };
@@ -1927,6 +1939,24 @@ proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.prototype.clearInstance = fu
  */
 proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional bool ignore_custom_package_indexes = 2;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.prototype.getIgnoreCustomPackageIndexes = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.UpdateIndexRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UpdateIndexRequest.prototype.setIgnoreCustomPackageIndexes = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 

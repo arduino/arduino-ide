@@ -1,5 +1,12 @@
 import { v4 } from 'uuid';
 import {
+  IndexType,
+  IndexUpdateDidCompleteParams,
+  IndexUpdateDidFailParams,
+  IndexUpdateSummary,
+  IndexUpdateWillStartParams,
+} from '../common/protocol';
+import {
   ProgressMessage,
   ResponseService,
 } from '../common/protocol/response-service';
@@ -11,6 +18,9 @@ import {
 import {
   DownloadProgress,
   TaskProgress,
+  DownloadProgressStart,
+  DownloadProgressUpdate,
+  DownloadProgressEnd,
 } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { CompileResponse } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 import {
@@ -81,7 +91,9 @@ namespace IndexProgressResponse {
     );
   }
   export function workUnit(response: IndexProgressResponse): UnitOfWork {
-    return { download: response.getDownloadProgress() };
+    return {
+      download: response.getDownloadProgress(),
+    };
   }
 }
 /**
@@ -151,7 +163,9 @@ export namespace ExecuteWithProgress {
      * _unknown_ progress if falsy.
      */
     readonly progressId?: string;
-    readonly responseService: Partial<ResponseService>;
+    readonly responseService: Partial<
+      ResponseService & { reportResult: (result: DownloadResult) => void }
+    >;
   }
 
   export function createDataCallback<R extends ProgressResponse>({
@@ -159,19 +173,21 @@ export namespace ExecuteWithProgress {
     progressId,
   }: ExecuteWithProgress.Options): (response: R) => void {
     const uuid = v4();
-    let localFile = '';
-    let localTotalSize = Number.NaN;
+    let message = '';
+    let url = '';
     return (response: R) => {
       if (DEBUG) {
         const json = toJson(response);
         if (json) {
-          console.log(`Progress response [${uuid}]: ${json}`);
+          console.debug(`[gRPC progress] Progress response [${uuid}]: ${json}`);
         }
       }
       const unitOfWork = resolve(response);
       const { task, download } = unitOfWork;
       if (!download && !task) {
-        // report a fake unknown progress.
+        // Report a fake unknown progress if progress ID is available.
+        // When a progress ID is available, a connected client is setting the progress ID.
+        // Hence, it's listening to progress updates.
         if (unitOfWork === UnitOfWork.Unknown && progressId) {
           if (progressId) {
             responseService.reportProgress?.({
@@ -187,7 +203,7 @@ export namespace ExecuteWithProgress {
           // Technically, it does not cause an error, but could mess up the progress reporting.
           // See an example of an empty object `{}` repose here: https://github.com/arduino/arduino-ide/issues/906#issuecomment-1171145630.
           console.warn(
-            "Implementation error. Neither 'download' nor 'task' is available."
+            `Implementation error. None of the following properties were available on the response: 'task', 'download'`
           );
         }
         return;
@@ -219,43 +235,32 @@ export namespace ExecuteWithProgress {
           }
         }
       } else if (download) {
-        if (download.getFile() && !localFile) {
-          localFile = download.getFile();
-        }
-        if (download.getTotalSize() > 0 && Number.isNaN(localTotalSize)) {
-          localTotalSize = download.getTotalSize();
-        }
-
-        // This happens only once per file download.
-        if (download.getTotalSize() && localFile) {
-          responseService.appendToOutput?.({ chunk: `${localFile}\n` });
-        }
-
-        if (progressId && localFile) {
-          let work: ProgressMessage.Work | undefined = undefined;
-          if (download.getDownloaded() > 0 && !Number.isNaN(localTotalSize)) {
-            work = {
-              total: localTotalSize,
-              done: download.getDownloaded(),
-            };
-          }
-          responseService.reportProgress?.({
-            progressId,
-            message: `Downloading ${localFile}`,
-            work,
-          });
-        }
-        if (download.getCompleted()) {
-          // Discard local state.
-          if (progressId && !Number.isNaN(localTotalSize)) {
+        const phase = phaseOf(download);
+        if (phase instanceof DownloadProgressStart) {
+          message = phase.getLabel();
+          url = phase.getUrl();
+          responseService.appendToOutput?.({ chunk: `${message}\n` });
+        } else if (phase instanceof DownloadProgressUpdate) {
+          if (progressId && message) {
             responseService.reportProgress?.({
               progressId,
-              message: '',
-              work: { done: Number.NaN, total: Number.NaN },
+              message,
+              work: {
+                total: phase.getTotalSize(),
+                done: phase.getDownloaded(),
+              },
             });
           }
-          localFile = '';
-          localTotalSize = Number.NaN;
+        } else if (phase instanceof DownloadProgressEnd) {
+          if (url) {
+            responseService.reportResult?.({
+              url,
+              message: phase.getMessage(),
+              success: phase.getSuccess(),
+            });
+          }
+          message = '';
+          url = '';
         }
       }
     };
@@ -274,31 +279,40 @@ export namespace ExecuteWithProgress {
     return {};
   }
   function toJson(response: ProgressResponse): string | undefined {
-    let object: Record<string, unknown> | undefined = undefined;
-    if (response instanceof LibraryInstallResponse) {
-      object = LibraryInstallResponse.toObject(false, response);
-    } else if (response instanceof LibraryUninstallResponse) {
-      object = LibraryUninstallResponse.toObject(false, response);
-    } else if (response instanceof ZipLibraryInstallResponse) {
-      object = ZipLibraryInstallResponse.toObject(false, response);
-    } else if (response instanceof PlatformInstallResponse) {
-      object = PlatformInstallResponse.toObject(false, response);
-    } else if (response instanceof PlatformUninstallResponse) {
-      object = PlatformUninstallResponse.toObject(false, response);
-    } else if (response instanceof UpdateIndexResponse) {
-      object = UpdateIndexResponse.toObject(false, response);
-    } else if (response instanceof UpdateLibrariesIndexResponse) {
-      object = UpdateLibrariesIndexResponse.toObject(false, response);
-    } else if (response instanceof UpdateCoreLibrariesIndexResponse) {
-      object = UpdateCoreLibrariesIndexResponse.toObject(false, response);
-    } else if (response instanceof CompileResponse) {
-      object = CompileResponse.toObject(false, response);
+    return JSON.stringify(response.toObject(false));
+  }
+  function phaseOf(
+    download: DownloadProgress
+  ): DownloadProgressStart | DownloadProgressUpdate | DownloadProgressEnd {
+    let start: undefined | DownloadProgressStart = undefined;
+    let update: undefined | DownloadProgressUpdate = undefined;
+    let end: undefined | DownloadProgressEnd = undefined;
+    if (download.hasStart()) {
+      start = download.getStart();
+    } else if (download.hasUpdate()) {
+      update = download.getUpdate();
+    } else if (download.hasEnd()) {
+      end = download.getEnd();
+    } else {
+      throw new Error(
+        `Download progress does not have a 'start', 'update', and 'end'. ${JSON.stringify(
+          download.toObject(false)
+        )}`
+      );
     }
-    if (!object) {
-      console.warn('Unhandled gRPC response', response);
-      return undefined;
+    if (start) {
+      return start;
+    } else if (update) {
+      return update;
+    } else if (end) {
+      return end;
+    } else {
+      throw new Error(
+        `Download progress does not have a 'start', 'update', and 'end'. ${JSON.stringify(
+          download.toObject(false)
+        )}`
+      );
     }
-    return JSON.stringify(object);
   }
 }
 
@@ -306,33 +320,39 @@ export class IndexesUpdateProgressHandler {
   private done = 0;
   private readonly total: number;
   readonly progressId: string;
+  readonly results: DownloadResult[];
 
   constructor(
+    private types: IndexType[],
     additionalUrlsCount: number,
-    private readonly onProgress: (progressMessage: ProgressMessage) => void,
-    private readonly onError?: ({
-      progressId,
-      message,
-    }: {
-      progressId: string;
-      message: string;
-    }) => void,
-    private readonly onStart?: (progressId: string) => void,
-    private readonly onEnd?: (progressId: string) => void
+    private readonly options: {
+      onProgress: (progressMessage: ProgressMessage) => void;
+      onError?: (params: IndexUpdateDidFailParams) => void;
+      onStart?: (params: IndexUpdateWillStartParams) => void;
+      onComplete?: (params: IndexUpdateDidCompleteParams) => void;
+    }
   ) {
     this.progressId = v4();
-    this.total = IndexesUpdateProgressHandler.total(additionalUrlsCount);
+    this.results = [];
+    this.total = IndexesUpdateProgressHandler.total(types, additionalUrlsCount);
     // Note: at this point, the IDE2 backend might not have any connected clients, so this notification is not delivered to anywhere
-    // Hence, clients must handle gracefully when no `willUpdate` is received before any `didProgress`.
-    this.onStart?.(this.progressId);
+    // Hence, clients must handle gracefully when no `willStart` event is received before any `didProgress`.
+    this.options.onStart?.({ progressId: this.progressId, types });
   }
 
   reportEnd(): void {
-    this.onEnd?.(this.progressId);
+    const updatedAt = new Date().toISOString();
+    this.options.onComplete?.({
+      progressId: this.progressId,
+      summary: this.types.reduce((summary, type) => {
+        summary[type] = updatedAt;
+        return summary;
+      }, {} as IndexUpdateSummary),
+    });
   }
 
   reportProgress(message: string): void {
-    this.onProgress({
+    this.options.onProgress({
       message,
       progressId: this.progressId,
       work: { total: this.total, done: ++this.done },
@@ -340,15 +360,44 @@ export class IndexesUpdateProgressHandler {
   }
 
   reportError(message: string): void {
-    this.onError?.({ progressId: this.progressId, message });
+    this.options.onError?.({
+      progressId: this.progressId,
+      message,
+      types: this.types,
+    });
   }
 
-  private static total(additionalUrlsCount: number): number {
-    // +1 for the `package_index.tar.bz2` when updating the platform index.
-    const totalPlatformIndexCount = additionalUrlsCount + 1;
-    // The `library_index.json.gz` and `library_index.json.sig` when running the library index update.
-    const totalLibraryIndexCount = 2;
+  reportResult(result: DownloadResult): void {
+    this.results.push(result);
+  }
+
+  private static total(
+    types: IndexType[],
+    additionalUrlsCount: number
+  ): number {
+    let total = 0;
+    if (types.includes('library')) {
+      // The `library_index.json.gz` and `library_index.json.sig` when running the library index update.
+      total += 2;
+    }
+    if (types.includes('platform')) {
+      // +1 for the `package_index.tar.bz2` when updating the platform index.
+      total += additionalUrlsCount + 1;
+    }
     // +1 for the `initInstance` call after the index update (`reportEnd`)
-    return totalPlatformIndexCount + totalLibraryIndexCount + 1;
+    return total + 1;
+  }
+}
+
+export interface DownloadResult {
+  readonly url: string;
+  readonly success: boolean;
+  readonly message?: string;
+}
+export namespace DownloadResult {
+  export function isError(
+    arg: DownloadResult
+  ): arg is DownloadResult & { message: string } {
+    return !!arg.message && !arg.success;
   }
 }

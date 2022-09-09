@@ -8,6 +8,9 @@ import type {
   Config,
   Sketch,
   ProgressMessage,
+  IndexUpdateWillStartParams,
+  IndexUpdateDidCompleteParams,
+  IndexUpdateDidFailParams,
 } from '../common/protocol';
 
 @injectable()
@@ -16,8 +19,8 @@ export class NotificationServiceServerImpl
 {
   private readonly clients: NotificationServiceClient[] = [];
 
-  notifyIndexWillUpdate(progressId: string): void {
-    this.clients.forEach((client) => client.notifyIndexWillUpdate(progressId));
+  notifyIndexUpdateWillStart(params: IndexUpdateWillStartParams): void {
+    this.clients.forEach((client) => client.notifyIndexUpdateWillStart(params));
   }
 
   notifyIndexUpdateDidProgress(progressMessage: ProgressMessage): void {
@@ -26,20 +29,14 @@ export class NotificationServiceServerImpl
     );
   }
 
-  notifyIndexDidUpdate(progressId: string): void {
-    this.clients.forEach((client) => client.notifyIndexDidUpdate(progressId));
+  notifyIndexUpdateDidComplete(params: IndexUpdateDidCompleteParams): void {
+    this.clients.forEach((client) =>
+      client.notifyIndexUpdateDidComplete(params)
+    );
   }
 
-  notifyIndexUpdateDidFail({
-    progressId,
-    message,
-  }: {
-    progressId: string;
-    message: string;
-  }): void {
-    this.clients.forEach((client) =>
-      client.notifyIndexUpdateDidFail({ progressId, message })
-    );
+  notifyIndexUpdateDidFail(params: IndexUpdateDidFailParams): void {
+    this.clients.forEach((client) => client.notifyIndexUpdateDidFail(params));
   }
 
   notifyDaemonDidStart(port: string): void {

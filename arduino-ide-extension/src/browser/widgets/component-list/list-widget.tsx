@@ -68,7 +68,7 @@ export abstract class ListWidget<
   @postConstruct()
   protected init(): void {
     this.toDispose.pushAll([
-      this.notificationCenter.onIndexDidUpdate(() => this.refresh(undefined)),
+      this.notificationCenter.onIndexUpdateDidComplete(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
