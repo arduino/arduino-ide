@@ -8,6 +8,12 @@ contact_links:
   - name: Support request
     url: https://forum.arduino.cc/
     about: We can help you out on the Arduino Forum!
+  - name: Issue report guide
+    url: https://github.com/arduino/arduino-ide/blob/main/docs/issues.md#issue-report-guide
+    about: Learn about submitting issue reports to this repository.
+  - name: Contributor guide
+    url: https://github.com/arduino/arduino-ide/blob/main/docs/CONTRIBUTING.md#contributor-guide
+    about: Learn about contributing to this project.
   - name: Discuss development work on the project
     url: https://groups.google.com/a/arduino.cc/g/developers
     about: Arduino Developers Mailing List

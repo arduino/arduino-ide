@@ -1,4 +1,4 @@
-<!-- Source: https://github.com/arduino/tooling-project-assets/blob/main/documentation-templates/contributor-guide/application/beta-testing.md -->
+<!-- Source: https://github.com/arduino/tooling-project-assets/blob/main/documentation-templates/contributor-guide/application/contributor-guide/beta-testing.md -->
 
 # Beta Testing Guide
 
