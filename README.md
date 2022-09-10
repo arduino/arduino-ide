@@ -14,32 +14,7 @@ The Arduino IDE 2.x is a major rewrite, sharing no code with the IDE 1.x. It is 
 
 ## Download
 
-You can download the latest version from the [software download page on the Arduino website](https://www.arduino.cc/en/software#experimental-software).
-
-### Nightly builds
-
-These builds are generated every day at 03:00 GMT from the `main` branch and
-should be considered unstable:
-
-| Platform  | 32 bit                   | 64 bit                                                                                                 |
-| --------- | ------------------------ | ------------------------------------------------------------------------------------------------------ |
-| Linux     |                          | [Nightly Linux AppImage 64 bit]<br />[Nightly Linux ZIP file 64 bit]                                   |
-| Linux ARM | [🚧 Work in progress...] | [🚧 Work in progress...]                                                                               |
-| Windows   |                          | [Nightly Windows 64 bit installer]<br />[Nightly Windows 64 bit MSI]<br />[Nightly Windows 64 bit ZIP] |
-| macOS     |                          | [Nightly macOS 64 bit]                                                                                 |
-
-[🚧 work in progress...]: https://github.com/arduino/arduino-ide/issues/107
-[nightly linux appimage 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.AppImage
-[nightly linux zip file 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Linux_64bit.zip
-[nightly windows 64 bit installer]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.exe
-[nightly windows 64 bit msi]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.msi
-[nightly windows 64 bit zip]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_Windows_64bit.zip
-[nightly macos 64 bit]: https://downloads.arduino.cc/arduino-ide/nightly/arduino-ide_nightly-latest_macOS_64bit.dmg
-
-> These links return an HTTP `302: Found` response, redirecting to latest
-> generated builds by replacing `latest` with the latest available build
-> date, using the format YYYYMMDD (i.e for 2019/Aug/06 `latest` is
-> replaced with `20190806`)
+You can download the latest release version and nightly builds from the [software download page on the Arduino website](https://www.arduino.cc/en/software#experimental-software).
 
 ## Support
 
