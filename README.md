@@ -20,10 +20,9 @@ If you need assistance, see the [Help Center](https://support.arduino.cc/hc/en-u
 
 ## Bugs & Issues
 
-If you want to report an issue, you can submit it to the [issue tracker](https://github.com/arduino/arduino-ide/issues) of this repository. A few rules apply:
+If you want to report an issue, you can submit it to the [issue tracker](https://github.com/arduino/arduino-ide/issues) of this repository.
 
-- Before posting, please check if the same problem has been already reported by someone else to avoid duplicates.
-- Remember to include as much detail as you can about your hardware set-up, code and steps for reproducing the issue. Make sure you're using an original Arduino board.
+See [**the issue report guide**](docs/contributor-guide/issues.md#issue-report-guide) for instructions.
 
 ### Security
 
@@ -35,16 +34,15 @@ e-mail contact: security@arduino.cc
 
 ## Contributions and development
 
-Contributions are very welcome! You can browse the list of open issues to see what's needed and then you can submit your code using a Pull Request. Please provide detailed descriptions. We also appreciate any help in testing issues and patches contributed by other users.
+Contributions are very welcome! There are several ways to participate in this project, including:
 
-This repository contains the main code, but two more repositories are included during the build process:
+- Fixing bugs
+- Beta testing
+- Translation
 
-- [vscode-arduino-tools](https://github.com/arduino/vscode-arduino-tools): provides support for the language server and the debugger
-- [arduino-language-server](https://github.com/arduino/arduino-language-server): provides the language server that parses Arduino code
+See [**the contributor guide**](docs/CONTRIBUTING.md#contributor-guide) for more information.
 
-See the [development guide](docs/development.md) for a technical overview of the application and instructions for building the code.
-
-You can help with the translation of the Arduino IDE to your language here: [Arduino IDE on Transifex](https://www.transifex.com/arduino-1/ide2/dashboard/).
+See the [**development guide**](docs/development.md) for a technical overview of the application and instructions for building the code.
 
 ## Donations
 
