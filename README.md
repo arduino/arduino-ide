@@ -42,7 +42,7 @@ This repository contains the main code, but two more repositories are included d
 - [vscode-arduino-tools](https://github.com/arduino/vscode-arduino-tools): provides support for the language server and the debugger
 - [arduino-language-server](https://github.com/arduino/arduino-language-server): provides the language server that parses Arduino code
 
-See the [BUILDING.md](BUILDING.md) for a technical overview of the application and instructions for building the code.
+See the [development guide](docs/development.md) for a technical overview of the application and instructions for building the code.
 
 You can help with the translation of the Arduino IDE to your language here: [Arduino IDE on Transifex](https://www.transifex.com/arduino-1/ide2/dashboard/).
 

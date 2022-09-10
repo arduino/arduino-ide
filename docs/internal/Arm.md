@@ -41,7 +41,7 @@ Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`)
     - `libx11-dev`, and
     - `libxkbfile-dev`
 
-4. [Build it](../../BUILDING.md#build-from-source) from the source:
+4. [Build it](../development.md#build-from-source) from the source:
     ```
     git clone https://github.com/arduino/arduino-ide.git \
     && cd arduino-ide \
