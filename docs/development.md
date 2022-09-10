@@ -36,6 +36,12 @@ The _frontend_ is running as an Electron renderer process and can invoke service
 [1]: https://www.electronjs.org/docs/tutorial/application-architecture#differences-between-main-process-and-renderer-process
 [2]: https://code.visualstudio.com/Docs/editor/tasks
 
+### Additional Components
+
+This repository contains the main code, but two more repositories are included during the build process:
+
+- [vscode-arduino-tools](https://github.com/arduino/vscode-arduino-tools): provides support for the language server and the debugger
+- [arduino-language-server](https://github.com/arduino/arduino-language-server): provides the language server that parses Arduino code
 
 ## Build from source
 
