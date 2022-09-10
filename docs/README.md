@@ -1,7 +1,7 @@
 # Remote Sketchbook
 
 Arduino IDE provides a Remote Sketchbook feature that can be used to upload sketches to Arduino Cloud.
-![](static/remote.png)
+![](assets/remote.png)
 
 
 
@@ -13,7 +13,7 @@ A developer could use the content of this repo to create a customized version of
 
 ### 1. Changing remote connection parameters in the Preferences panel (be careful while editing the Preferences panel!)
 Here a screenshot of the Preferences panel
-![](static/preferences.png)
+![](assets/preferences.png)
 - The settings under _Arduino > Auth_ should be edited to match the OAuth2 configuration of your custom remote sketchbook storage
 - The setting under _Arduino > Sketch Sync Endpoint_ should be edited to point to your custom remote sketchbook storage service
 ### 2. Implementing the Arduino Cloud Store APIs for your custom remote sketchbook storage
