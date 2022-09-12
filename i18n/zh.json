@@ -6,7 +6,7 @@
     },
     "board": {
       "board": "开发板 {0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "选择其他开发板和端口",
       "boardInfo": "开发板信息",
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
@@ -16,7 +16,7 @@
       "inSketchbook": "（在项目文件夹中）",
       "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
       "noFQBN": "FQBN 不可用于所选开发板 “{0}”。你是否安装了相应的内核？",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "未发现端口",
       "noPortsSelected": "没有为开发板选择端口：‘{0}’。",
       "noneSelected": "未选择任何开发板。",
       "openBoardsConfig": "选择其他开发板和接口......",
@@ -26,7 +26,7 @@
       "portLabel": "端口：{0}",
       "programmer": "编程器",
       "reselectLater": "稍后重新选择",
-      "searchBoard": "Search board",
+      "searchBoard": "搜索开发坂",
       "selectBoard": "选择开发板",
       "selectBoardForInfo": "请选择一个开发板以获取开发板信息。",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
@@ -36,7 +36,7 @@
     },
     "boardsManager": "开发板管理器",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Arduino 认证"
     },
     "bootloader": {
       "burnBootloader": "烧录引导程序",
@@ -54,7 +54,7 @@
       "enterURL": "输入地址",
       "noSupportedBoardConnected": "未连接受支持的开发板",
       "openContext": "打开上下文",
-      "remove": "删除",
+      "remove": "移除",
       "selectBoard": "选择开发板...",
       "selectCertificateToUpload": "1.选择要上传的证书",
       "selectDestinationBoardToUpload": "2.选择开发板并上传证书",
@@ -64,13 +64,13 @@
       "uploadingCertificates": "上传证书。"
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "检查 Arduino 更新",
+      "installAll": "全部安装",
+      "noUpdates": "没有可用的更新。",
+      "promptUpdateBoards": "您的某些开发板有可用更新。",
+      "promptUpdateLibraries": "您的某些库有可用更新。",
+      "updatingBoards": "更新开发板中...",
+      "updatingLibraries": "更新库中..."
     },
     "cli-error-parser": {
       "keyboardError": "没有找到 ‘Keyboard’，请检查您的项目是否包含 ‘#include<Keyboard.h>’？",
@@ -114,29 +114,29 @@
       "visitArduinoCloud": "访问 Arduino Cloud 以创建云项目。"
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "全部",
+      "contributed": "已贡献",
       "installManually": "手动安装",
       "later": "之后",
       "noBoardSelected": "没有选择开发板",
       "notConnected": "[没有连接]",
       "offlineIndicator": "你似乎处于离线状态。如果没有网络连接，Arduino CLI 可能无法下载所需的资源，并可能导致故障。请连接网络并重新启动程序。",
       "oldFormat": "‘{0}’ 仍然使用旧的 ‘.pde’ 格式。是否要切换到新的 ‘.ino’ 扩展？",
-      "partner": "Partner",
+      "partner": "合作伙伴",
       "processing": "正在处理中",
-      "recommended": "Recommended",
+      "recommended": "推荐",
       "retired": "Retired",
       "selectedOn": "on {0}",
       "serialMonitor": "串口监视器",
-      "type": "Type",
+      "type": "类型",
       "unknown": "未知",
-      "updateable": "Updatable"
+      "updateable": "可更新"
     },
     "compile": {
       "error": "编译错误：{0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "包含在此包中的开发板：",
       "by": "by",
       "filterSearch": "筛选搜索结果......",
       "install": "安装",
@@ -152,7 +152,7 @@
     },
     "coreContribution": {
       "copyError": "复制错误信息",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "noBoardSelected": "未选择开发板。请从工具 > 板菜单中选择您的 Arduino 开发板。"
     },
     "daemon": {
       "restart": "重启守护进程",
@@ -178,7 +178,7 @@
       "increaseIndent": "增加缩进",
       "nextError": "下一个错误",
       "previousError": "上一个错误",
-      "revealError": "Reveal Error"
+      "revealError": "显示错误"
     },
     "electron": {
       "couldNotSave": "无法保存项目。请将未保存的工作复制到你喜爱的文本编辑器中，然后重新启动 IDE。",
@@ -216,7 +216,7 @@
       "visit": "访问 Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "检查 Arduino IDE 更新",
       "closeAndInstallButton": "关闭并安装",
       "closeToInstallNotice": "关闭软件并安装更新。",
       "downloadButton": "下载",
@@ -255,22 +255,22 @@
       "zipLibrary": "库"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "话题"
     },
     "libraryTopic": {
       "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "dataProcessing": "数据处理",
+      "dataStorage": "数据存储",
+      "deviceControl": "设备控制",
+      "display": "显示",
+      "other": "其他",
+      "sensors": "传感器",
+      "signalInputOutput": "信号输入/输出",
+      "timing": "定时",
+      "uncategorized": "未分类"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "安装"
     },
     "menu": {
       "advanced": "高级设置",
@@ -290,7 +290,7 @@
       "automatic": " 自动调整",
       "board.certificates": "可上传到开发板的证书列表",
       "browse": "浏览",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "接收 IDE、开发板和库的可用更新通知。更改后需要重启IDE。默认情况为开启。",
       "choose": "选择",
       "cli.daemonDebug": "启用对 Arduino CLI 的 gRPC 调用的调试记录。该设置需要重新启动 IDE 才能生效。默认不启用。",
       "cloud.enabled": "True 则启用项目同步功能。默认为 True。",
@@ -386,7 +386,7 @@
     },
     "userFields": {
       "cancel": "取消",
-      "enterField": "Enter {0}",
+      "enterField": "输入 {0}",
       "upload": "上传"
     }
   },
