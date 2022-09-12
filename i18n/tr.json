@@ -126,7 +126,7 @@
       "processing": "Processing",
       "recommended": "Önerilen",
       "retired": "Emekli",
-      "selectedOn": "{0}'da",
+      "selectedOn": "- {0}",
       "serialMonitor": "Seri Port Ekranı",
       "type": "Tür",
       "unknown": "Bilinmeyen",

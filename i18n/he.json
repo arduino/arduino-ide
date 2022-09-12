@@ -115,22 +115,22 @@
     },
     "common": {
       "all": "הכל",
-      "contributed": "Contributed",
+      "contributed": "נתרם",
       "installManually": "התקן ידנית",
       "later": "אחר כך",
       "noBoardSelected": "לא נבחר לוח",
       "notConnected": "[לא מחובר]",
       "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
       "oldFormat": "ה'{0}' עדיין משתמש בפורמט הישן `.pde`. האם תרצה להחליף לסיומת החדשה `.ino` ? ",
-      "partner": "Partner",
+      "partner": "שותף",
       "processing": "מעבד",
-      "recommended": "Recommended",
+      "recommended": "מומלץ",
       "retired": "Retired",
       "selectedOn": "ב {0}",
       "serialMonitor": "מוניטור סיריאלי",
-      "type": "Type",
+      "type": "סוג",
       "unknown": "לא ידוע",
-      "updateable": "Updatable"
+      "updateable": "ניתן לעדכון"
     },
     "compile": {
       "error": "שגיאת קומפילציה: {0}"
@@ -216,7 +216,7 @@
       "visit": "בקר ב Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "בדיקת עדכונים לArduino IDE",
       "closeAndInstallButton": "סגור והתקן",
       "closeToInstallNotice": "סגור את התוכנה והתקן את העדכון על המכונה שלך.",
       "downloadButton": "הורד",
@@ -310,13 +310,13 @@
       "files.inside.sketches": "הראה קבצים בתוך הסקיצה",
       "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
-      "interfaceScale": "Interface scale",
+      "interfaceScale": "מידת ממשק",
       "invalid.editorFontSize": "גודל גופן לא חוקי. חייב להיות מספר חיובי.",
-      "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
+      "invalid.sketchbook.location": "מיקום סקיצה לא חוקי: {0}",
       "invalid.theme": "ערכת נושא לא חוקית.",
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
-      "manualProxy": "Manual proxy configuration",
+      "manualProxy": "הגדרת פרוקסי ידנית",
       "network": "רשת",
       "newSketchbookLocation": "Select new sketchbook location",
       "noProxy": "ללא פרוקסי",
