@@ -20,8 +20,7 @@ import {
 import { LocalStorageService } from '@theia/core/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 
-const DOWNLOAD_PAGE_URL =
-  'https://www.arduino.cc/en/software#experimental-software';
+const DOWNLOAD_PAGE_URL = 'https://www.arduino.cc/en/software';
 
 @injectable()
 export class IDEUpdaterDialogWidget extends ReactWidget {
