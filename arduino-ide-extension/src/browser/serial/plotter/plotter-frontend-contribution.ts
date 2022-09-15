@@ -18,6 +18,7 @@ import {
   CLOSE_PLOTTER_WINDOW,
   SHOW_PLOTTER_WINDOW,
 } from '../../../common/ipc-communication';
+import { nls } from '@theia/core/lib/common/nls';
 
 const queryString = require('query-string');
 
@@ -107,7 +108,12 @@ export class PlotterFrontendContribution extends Contribution {
     if (wsPort) {
       this.open(wsPort);
     } else {
-      this.messageService.error(`Couldn't open serial plotter`);
+      this.messageService.error(
+        nls.localize(
+          'arduino/contributions/plotter/couldNotOpen',
+          "Couldn't open serial plotter"
+        )
+      );
     }
   }
 

@@ -55,7 +55,14 @@ export class ListItemRenderer<T extends ArduinoComponent> {
             item.installedVersion
           )}
         </span>
-        <span className="installed" onClick={onClickUninstall} />
+        <span
+          className="installed"
+          onClick={onClickUninstall}
+          {...{
+            install: nls.localize('arduino/component/install', 'INSTALL'),
+            uninstall: nls.localize('arduino/component/uninstall', 'Uninstall'),
+          }}
+        />
       </div>
     );
 

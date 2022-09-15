@@ -5,7 +5,6 @@ import {
   DisposableCollection,
   Disposable,
 } from '@theia/core/lib/common/disposable';
-import { firstToUpperCase } from '../../common/utils';
 import { BoardsConfig } from '../boards/boards-config';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsListWidget } from '../boards/boards-list-widget';
@@ -267,7 +266,11 @@ PID: ${PID}`;
       ];
       const placeholder = new PlaceholderMenuNode(
         menuPath,
-        `${firstToUpperCase(protocol)} ports`,
+        nls.localize(
+          'arduino/board/typeOfPorts',
+          '{0} ports',
+          Port.Protocols.protocolLabel(protocol)
+        ),
         { order: protocolOrder.toString() }
       );
       this.menuModelRegistry.registerMenuNode(menuPath, placeholder);

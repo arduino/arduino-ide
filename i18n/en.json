@@ -8,6 +8,7 @@
       "board": "Board{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Board Info",
+      "boards": "boards",
       "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
@@ -25,6 +26,7 @@
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programmer",
       "reselectLater": "Reselect later",
       "searchBoard": "Search board",
@@ -32,8 +34,10 @@
       "selectBoardForInfo": "Please select a board to obtain board info.",
       "selectPortForInfo": "Please select a port to obtain board info.",
       "showAllAvailablePorts": "Shows all available ports when enabled",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
-      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}"
+      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Boards Manager",
     "boardsType": {
@@ -149,7 +153,18 @@
     "contributions": {
       "addFile": "Add File",
       "fileAdded": "One file added to the sketch.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Replace"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -282,6 +297,10 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "portProtocol": {
+      "network": "Network",
+      "serial": "Serial"
+    },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
       "auth.audience": "The OAuth2 audience.",
@@ -321,6 +340,12 @@
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noProxy": "No proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Show verbose output during",
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",

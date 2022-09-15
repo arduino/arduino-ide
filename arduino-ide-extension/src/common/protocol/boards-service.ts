@@ -285,6 +285,29 @@ export namespace Port {
       return false;
     };
   }
+
+  export namespace Protocols {
+    export const KnownProtocolLiterals = ['serial', 'network'] as const;
+    export type KnownProtocol = typeof KnownProtocolLiterals[number];
+    export namespace KnownProtocol {
+      export function is(protocol: unknown): protocol is KnownProtocol {
+        return (
+          typeof protocol === 'string' &&
+          KnownProtocolLiterals.indexOf(protocol as KnownProtocol) >= 0
+        );
+      }
+    }
+    export const ProtocolLabels: Record<KnownProtocol, string> = {
+      serial: nls.localize('arduino/portProtocol/serial', 'Serial'),
+      network: nls.localize('arduino/portProtocol/network', 'Network'),
+    };
+    export function protocolLabel(protocol: string): string {
+      if (KnownProtocol.is(protocol)) {
+        return ProtocolLabels[protocol];
+      }
+      return protocol;
+    }
+  }
 }
 
 export interface BoardsPackage extends ArduinoComponent {

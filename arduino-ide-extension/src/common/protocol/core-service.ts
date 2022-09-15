@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/common/nls';
 import { ApplicationError } from '@theia/core/lib/common/application-error';
 import type {
   Location,
@@ -18,6 +19,17 @@ export const CompilerWarningLiterals = [
   'All',
 ] as const;
 export type CompilerWarnings = typeof CompilerWarningLiterals[number];
+export namespace CompilerWarnings {
+  export function labelOf(warning: CompilerWarnings): string {
+    return CompilerWarningLabels[warning];
+  }
+  const CompilerWarningLabels: Record<CompilerWarnings, string> = {
+    None: nls.localize('arduino/core/compilerWarnings/none', 'None'),
+    Default: nls.localize('arduino/core/compilerWarnings/default', 'Default'),
+    More: nls.localize('arduino/core/compilerWarnings/more', 'More'),
+    All: nls.localize('arduino/core/compilerWarnings/all', 'All'),
+  };
+}
 export namespace CoreError {
   export interface ErrorLocationRef {
     readonly message: string;

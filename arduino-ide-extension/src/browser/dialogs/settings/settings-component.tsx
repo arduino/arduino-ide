@@ -10,6 +10,7 @@ import { FileDialogService } from '@theia/filesystem/lib/browser/file-dialog/fil
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import {
   AdditionalUrls,
+  CompilerWarnings,
   CompilerWarningLiterals,
   Network,
   ProxySettings,
@@ -260,7 +261,7 @@ export class SettingsComponent extends React.Component<
               >
                 {CompilerWarningLiterals.map((value) => (
                   <option key={value} value={value}>
-                    {value}
+                    {CompilerWarnings.labelOf(value)}
                   </option>
                 ))}
               </select>
@@ -398,10 +399,22 @@ export class SettingsComponent extends React.Component<
           </form>
           <div className="flex-line proxy-settings">
             <div className="column">
-              <div className="flex-line">Host name:</div>
-              <div className="flex-line">Port number:</div>
-              <div className="flex-line">Username:</div>
-              <div className="flex-line">Password:</div>
+              <div className="flex-line">{`${nls.localize(
+                'arduino/preferences/proxySettings/hostname',
+                'Host name'
+              )}:`}</div>
+              <div className="flex-line">{`${nls.localize(
+                'arduino/preferences/proxySettings/port',
+                'Port number'
+              )}:`}</div>
+              <div className="flex-line">{`${nls.localize(
+                'arduino/preferences/proxySettings/username',
+                'Username'
+              )}:`}</div>
+              <div className="flex-line">{`${nls.localize(
+                'arduino/preferences/proxySettings/password',
+                'Password'
+              )}:`}</div>
             </div>
             <div className="column stretch">
               <div className="flex-line">
