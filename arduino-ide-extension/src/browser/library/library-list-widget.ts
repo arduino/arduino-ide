@@ -202,7 +202,7 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
     ).forEach((text, index) => {
       const button = this.createButton(text);
       const isPrimaryButton =
-        index === (options.buttons ? options.buttons?.length - 1 : 0);
+        index === (options.buttons ? options.buttons.length - 1 : 0);
       button.classList.add(isPrimaryButton ? 'main' : 'secondary');
       this.controlPanel.appendChild(button);
       this.toDisposeOnDetach.push(
