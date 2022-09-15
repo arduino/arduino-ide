@@ -28,7 +28,7 @@ export class UploadSketch extends CoreServiceContribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadSketch.Commands.UPLOAD_SKETCH, {
       execute: async () => {
-        if (await this.userFields.checkUserFieldsDialog(false)) {
+        if (await this.userFields.checkUserFieldsDialog()) {
           this.uploadSketch();
         }
       },

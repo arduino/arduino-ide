@@ -1,6 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { DisposableCollection, nls } from '@theia/core/lib/common';
-import { BoardUserField } from '../../common/protocol';
+import { BoardUserField, CoreError } from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
@@ -18,7 +18,7 @@ export class UserFields extends Contribution {
   private readonly userFieldsDialog: UserFieldsDialog;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(MenuModelRegistry)
   private readonly menuRegistry: MenuModelRegistry;
@@ -58,17 +58,17 @@ export class UserFields extends Contribution {
     }
   }
 
-  private selectedFqbnAddress(): string {
+  private selectedFqbnAddress(): string | undefined  {
     const { boardsConfig } = this.boardsServiceProvider;
     const fqbn = boardsConfig.selectedBoard?.fqbn;
     if (!fqbn) {
-      return '';
+      return undefined;
     }
     const address =
       boardsConfig.selectedBoard?.port?.address ||
       boardsConfig.selectedPort?.address;
     if (!address) {
-      return '';
+      return undefined;
     }
     return fqbn + '|' + address;
   }
@@ -78,9 +78,7 @@ export class UserFields extends Contribution {
   ): Promise<BoardUserField[] | undefined> {
     const cached = this.cachedUserFields.get(key);
     // Deep clone the array of board fields to avoid editing the cached ones
-    this.userFieldsDialog.value = (
-      cached ?? (await this.boardsServiceProvider.selectedBoardUserFields())
-    ).map((f) => ({ ...f }));
+    this.userFieldsDialog.value = cached ? cached.slice() : await this.boardsServiceProvider.selectedBoardUserFields();
     const result = await this.userFieldsDialog.open();
     if (!result) {
       return;
@@ -91,7 +89,7 @@ export class UserFields extends Contribution {
     return result;
   }
 
-  async checkUserFieldsDialog(forceOpen: boolean): Promise<boolean> {
+  async checkUserFieldsDialog(forceOpen = false): Promise<boolean> {
     const key = this.selectedFqbnAddress();
     if (!key) {
       return false;
@@ -130,7 +128,11 @@ export class UserFields extends Contribution {
   }
 
   getUserFields(): BoardUserField[] {
-    return this.cachedUserFields.get(this.selectedFqbnAddress()) ?? [];
+    const fqbnAddress = this.selectedFqbnAddress();
+    if (!fqbnAddress) {
+      return [];
+    }
+    return this.cachedUserFields.get(fqbnAddress) ?? [];
   }
 
   isRequired(): boolean {
@@ -140,8 +142,7 @@ export class UserFields extends Contribution {
   notifyFailedWithError(e: Error): void {
     if (
       this.boardRequiresUserFields &&
-      typeof e.message === 'string' &&
-      e.message.startsWith('Upload error:')
+      CoreError.UploadFailed.is(e)
     ) {
       this.userFieldsSet = false;
     }
