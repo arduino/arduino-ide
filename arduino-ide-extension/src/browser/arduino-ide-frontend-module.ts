@@ -53,8 +53,6 @@ import {
   DockPanelRenderer as TheiaDockPanelRenderer,
   TabBarRendererFactory,
   ContextMenuRenderer,
-  createTreeContainer,
-  TreeWidget,
 } from '@theia/core/lib/browser';
 import { MenuContribution } from '@theia/core/lib/common/menu';
 import {
@@ -207,12 +205,8 @@ import { WorkspaceVariableContribution as TheiaWorkspaceVariableContribution } f
 import { WorkspaceVariableContribution } from './theia/workspace/workspace-variable-contribution';
 import { DebugConfigurationManager } from './theia/debug/debug-configuration-manager';
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
-import { SearchInWorkspaceWidget as TheiaSearchInWorkspaceWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-widget';
-import { SearchInWorkspaceWidget } from './theia/search-in-workspace/search-in-workspace-widget';
 import { SearchInWorkspaceFactory as TheiaSearchInWorkspaceFactory } from '@theia/search-in-workspace/lib/browser/search-in-workspace-factory';
 import { SearchInWorkspaceFactory } from './theia/search-in-workspace/search-in-workspace-factory';
-import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
-import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
 import {
   MonacoEditorFactory,
@@ -605,9 +599,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(MonacoEditorProvider).toSelf().inSingletonScope();
   rebind(TheiaMonacoEditorProvider).toService(MonacoEditorProvider);
 
-  bind(SearchInWorkspaceWidget).toSelf();
-  rebind(TheiaSearchInWorkspaceWidget).toService(SearchInWorkspaceWidget);
-
   // Disabled reference counter in the editor manager to avoid opening the same editor (with different opener options) multiple times.
   bind(EditorManager).toSelf().inSingletonScope();
   rebind(TheiaEditorManager).toService(EditorManager);
@@ -616,17 +607,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaSearchInWorkspaceFactory)
     .to(SearchInWorkspaceFactory)
     .inSingletonScope();
-
-  rebind(TheiaSearchInWorkspaceResultTreeWidget).toDynamicValue(
-    ({ container }) => {
-      const childContainer = createTreeContainer(container);
-      childContainer.bind(SearchInWorkspaceResultTreeWidget).toSelf();
-      childContainer
-        .rebind(TreeWidget)
-        .toService(SearchInWorkspaceResultTreeWidget);
-      return childContainer.get(SearchInWorkspaceResultTreeWidget);
-    }
-  );
 
   // Show a disconnected status bar, when the daemon is not available
   bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();

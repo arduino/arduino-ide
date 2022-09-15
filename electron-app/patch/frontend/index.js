@@ -17,6 +17,53 @@ const {
   FrontendApplicationConfigProvider,
 } = require('@theia/core/lib/browser/frontend-application-config-provider');
 
+function fetchFrom(path) {
+  const { Endpoint } = require('@theia/core/lib/browser/endpoint');
+  const endpoint = new Endpoint({ path }).getRestUrl().toString();
+  return fetch(endpoint);
+}
+
+async function loadTranslations() {
+  const { nls } = require('@theia/core/lib/common/nls');
+  const defaultLocale = typeof window === 'object' && window && window.localStorage.getItem(nls.localeId) || '';
+  if (defaultLocale && !nls.locale) {
+      Object.assign(nls, {
+          locale: defaultLocale
+      });
+  }
+  if (nls.locale) {
+      const response = await fetchFrom(`/i18n/${nls.locale}`);
+      nls.localization = await response.json();
+  }
+}
+
+async function loadBackendOS() {
+  const response = await fetchFrom('/os');
+  const osType = await response.text();
+  const isWindows = osType === 'Windows';
+  const isOSX = osType === 'OSX';
+  OS.backend.isOSX = isOSX;
+  OS.backend.isWindows = isWindows;
+  OS.backend.type = () => osType;
+}
+
+function customizeMonacoNls() {
+  const MonacoNls = require('@theia/monaco-editor-core/esm/vs/nls');
+  const { nls: TheiaNls } = require('@theia/core/lib/common/nls');
+  const { Localization } = require('@theia/core/lib/common/i18n/localization');
+  Object.assign(MonacoNls, {
+    localize(_, label, ...args) {
+      if (TheiaNls.locale) {
+        const defaultKey = TheiaNls.getDefaultKey(label);
+        if (defaultKey) {
+          return TheiaNls.localize(defaultKey, label, ...args);
+        }
+      }
+      return Localization.format(label, args);
+    }
+  });
+}
+
 // It is a mighty hack to support theme updates in the bundled IDE2.
 // If the custom theme registration happens before the restoration of the existing monaco themes, then any custom theme changes will be ignored.
 // This patch introduces a static deferred promise in the monaco-theming service that will be resolved when the restoration is ready.
@@ -25,8 +72,14 @@ const {
 // This patch customizes the monaco theme service behavior before loading the DI containers via the preload.
 // The preload is called only once before the app loads. The Theia extensions are not loaded at that point, but the app config provider is ready.
 const preloader = require('@theia/core/lib/browser/preloader');
-const originalPreload = preloader.preload;
 preloader.preload = async function () {
+  // Must require the monaco frontend module to activate the NLS customization for monaco.
+  // Otherwise, the NLS customization would trigger after the monaco UI components with all their translations are already loaded.
+  await Promise.allSettled([
+    loadTranslations(),
+    loadBackendOS(),
+  ]);
+  customizeMonacoNls();
   const { MonacoThemingService } = require('@theia/monaco/lib/browser/monaco-theming-service');
   const { MonacoThemeServiceIsReady } = require('arduino-ide-extension/lib/browser/utils/window');
   const { Deferred } = require('@theia/core/lib/common/promise-util');
@@ -42,7 +95,6 @@ preloader.preload = async function () {
     await this.restore();
     ready.resolve();
   }.bind(MonacoThemingService);
-  return originalPreload();
 }.bind(preloader);
 
 const lightTheme = 'arduino-theme';

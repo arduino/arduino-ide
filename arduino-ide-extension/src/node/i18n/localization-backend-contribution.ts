@@ -23,8 +23,8 @@ export class LocalizationBackendContribution extends TheiaLocalizationBackendCon
     app.get('/i18n/:locale', async (req, res) => {
       let locale = req.params.locale;
       /*
-        Waiting for the deploy of the language plugins is neecessary to avoid checking the available
-        languages before they're finished to be loaded: https://github.com/eclipse-theia/theia/issues/11471 
+        Waiting for the deploy of the language plugins is necessary to avoid checking the available
+        languages before they're finished to be loaded: https://github.com/eclipse-theia/theia/issues/11471
       */
       const start = performance.now();
       await this.initialized.promise;

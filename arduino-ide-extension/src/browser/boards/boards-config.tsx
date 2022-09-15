@@ -259,9 +259,12 @@ export class BoardsConfig extends React.Component<
   override render(): React.ReactNode {
     return (
       <>
-        {this.renderContainer('boards', this.renderBoards.bind(this))}
         {this.renderContainer(
-          'ports',
+          nls.localize('arduino/board/boards', 'boards'),
+          this.renderBoards.bind(this)
+        )}
+        {this.renderContainer(
+          nls.localize('arduino/board/ports', 'ports'),
           this.renderPorts.bind(this),
           this.renderPortsFooter.bind(this)
         )}
@@ -384,7 +387,9 @@ export class BoardsConfig extends React.Component<
             defaultChecked={this.state.showAllPorts}
             onChange={this.toggleFilterPorts}
           />
-          <span>Show all ports</span>
+          <span>
+            {nls.localize('arduino/board/showAllPorts', 'Show all ports')}
+          </span>
         </label>
       </div>
     );

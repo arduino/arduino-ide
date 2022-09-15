@@ -123,8 +123,8 @@
   // Save some time: no need to build the projects that are not needed in final app. Currently unused. |
   //---------------------------------------------------------------------------------------------------+
   //@ts-ignore
-  let pkg = require('../working-copy/package.json');
-  const workspaces = pkg.workspaces;
+  const rootPackageJson = require('../working-copy/package.json');
+  const workspaces = rootPackageJson.workspaces;
   // We cannot remove the `electron-app`. Otherwise, there is not way to collect the unused dependencies.
   const dependenciesToRemove = [];
   for (const dependencyToRemove of dependenciesToRemove) {
@@ -133,10 +133,10 @@
       workspaces.splice(index, 1);
     }
   }
-  pkg.workspaces = workspaces;
+  rootPackageJson.workspaces = workspaces;
   fs.writeFileSync(
     path('..', workingCopy, 'package.json'),
-    JSON.stringify(pkg, null, 2)
+    JSON.stringify(rootPackageJson, null, 2)
   );
 
   //-------------------------------------------------------------------------------------------------+
@@ -169,13 +169,13 @@
     if (extension !== 'arduino-ide-extension') {
       // Do not unlink self.
       // @ts-ignore
-      pkg = require(`../working-copy/${extension}/package.json`);
+      rootPackageJson = require(`../working-copy/${extension}/package.json`);
       // @ts-ignore
-      pkg.dependencies['arduino-ide-extension'] =
+      rootPackageJson.dependencies['arduino-ide-extension'] =
         'file:../arduino-ide-extension';
       fs.writeFileSync(
         path('..', workingCopy, extension, 'package.json'),
-        JSON.stringify(pkg, null, 2)
+        JSON.stringify(rootPackageJson, null, 2)
       );
     }
   }
@@ -184,7 +184,7 @@
   // Merge the `working-copy/package.json` with `electron/build/template-package.json`. |
   //------------------------------------------------------------------------------------+
   // @ts-ignore
-  pkg = require('../working-copy/electron-app/package.json');
+  const appPackageJson = require('../working-copy/electron-app/package.json');
   template.build.files = [
     ...template.build.files,
     ...unusedDependencies.map((name) => `!node_modules/${name}`),
@@ -195,25 +195,26 @@
     dependencies[extension] = `file:../working-copy/${extension}`;
   }
   // @ts-ignore
-  pkg.dependencies = { ...pkg.dependencies, ...dependencies };
-  pkg.devDependencies = { ...pkg.devDependencies, ...template.devDependencies };
-  // Deep-merging the Theia application configuration. We enable the electron window reload in dev mode but not for the final product. (arduino/arduino-pro-ide#187)
+  appPackageJson.dependencies = { ...appPackageJson.dependencies, ...dependencies };
+  appPackageJson.devDependencies = { ...appPackageJson.devDependencies, ...template.devDependencies };
+  // Deep-merging the Theia application configuration.
   // @ts-ignore
-  const theia = merge(pkg.theia || {}, template.theia || {});
+  const theia = merge(appPackageJson.theia || {}, template.theia || {});
   const content = {
-    ...pkg,
+    ...appPackageJson,
     ...template,
     theia,
     // @ts-ignore
-    dependencies: pkg.dependencies,
-    devDependencies: pkg.devDependencies,
+    dependencies: appPackageJson.dependencies,
+    devDependencies: appPackageJson.devDependencies,
+    // VS Code extensions and the plugins folder is defined in the top level `package.json`. The template picks them up.
+    theiaPluginsDir: rootPackageJson.theiaPluginsDir,
+    theiaPlugins: rootPackageJson.theiaPlugins,
   };
-  const overwriteMerge = (destinationArray, sourceArray, options) =>
-    sourceArray;
   fs.writeFileSync(
     path('..', 'build', 'package.json'),
     JSON.stringify(
-      merge(content, template, { arrayMerge: overwriteMerge }),
+      merge(content, template, { arrayMerge: (_, sourceArray) => sourceArray }),
       null,
       2
     )
