@@ -65,9 +65,11 @@ Build the version of the Arduino IDE you want to test from source instead of usi
 
 ---
 
-1. Use [this guide](https://help.apple.com/xcode/mac/10.2/index.html?localePath=en.lproj#/dev9b7736b0e), in order to disable Gatekeeper (at your own risk!).
-1. Beta test the tester build.
-1. Re-enable Gatekeeper after tests are done, following the guide linked above.
+1. Start the tester build.<br />
+   A warning will appear:
+   > "Arduino IDE" cannot be opened because the developer cannot be verified.
+1. Follow the instructions from the "**If you want to open an app that hasn't been notarized or is from an unidentified developer**" section of this page to bypass the security restriction:<br />
+   [https://support.apple.com/en-us/HT202491](https://support.apple.com/en-us/HT202491#:~:text=If%20you%20want%20to%20open%20an%20app%20that%20hasn%E2%80%99t%20been%20notarized%20or%20is%20from%20an%20unidentified%20developer)
 
 ### Feedback
 
