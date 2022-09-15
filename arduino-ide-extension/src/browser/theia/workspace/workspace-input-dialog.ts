@@ -47,7 +47,7 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     this.closeButton = this.createButton(text);
     this.controlPanel.insertBefore(
       this.closeButton,
-      this.controlPanel.firstChild
+      this.controlPanel.lastChild
     );
     this.closeButton.classList.add('secondary');
     return this.closeButton;
