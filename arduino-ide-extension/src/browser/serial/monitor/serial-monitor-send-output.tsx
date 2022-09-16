@@ -114,7 +114,7 @@ const _Row = ({
   return (
     (data.lines[index].lineLen && (
       <div style={style}>
-        <pre>
+        <pre style={{ margin: 0 }}>
           {timestamp}
           {data.lines[index].message}
         </pre>
