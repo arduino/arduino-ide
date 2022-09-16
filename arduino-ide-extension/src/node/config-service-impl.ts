@@ -56,7 +56,10 @@ export class ConfigServiceImpl
     this.loadCliConfig().then(async (cliConfig) => {
       this.cliConfig = cliConfig;
       if (this.cliConfig) {
-        const config = await this.mapCliConfigToAppConfig(this.cliConfig);
+        const [config] = await Promise.all([
+          this.mapCliConfigToAppConfig(this.cliConfig),
+          this.ensureUserDirExists(this.cliConfig),
+        ]);
         if (config) {
           this.config = config;
           this.ready.resolve();
@@ -262,5 +265,12 @@ export class ConfigServiceImpl
       `localhost:${port}`,
       grpc.credentials.createInsecure()
     ) as SettingsServiceClient;
+  }
+
+  // #1445
+  private async ensureUserDirExists(
+    cliConfig: DefaultCliConfig
+  ): Promise<void> {
+    await fs.mkdir(cliConfig.directories.user, { recursive: true });
   }
 }
