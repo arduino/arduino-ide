@@ -17,7 +17,6 @@ import {
   SketchesServiceClientImpl,
 } from '../../../common/protocol/sketches-service-client-impl';
 import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { SingleTextInputDialog } from '@theia/core/lib/browser';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
@@ -161,20 +160,26 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
       return;
     }
     const initialValue = uri.path.base;
-    const dialog = new SingleTextInputDialog({
-      title: nls.localize('theia/workspace/newFileName', 'New name for file'),
-      initialValue,
-      initialSelectionRange: {
-        start: 0,
-        end: uri.path.name.length,
+    const parentUri = parent.resource;
+
+    const dialog = new WorkspaceInputDialog(
+      {
+        title: nls.localize('theia/workspace/newFileName', 'New name for file'),
+        initialValue,
+        parentUri,
+        initialSelectionRange: {
+          start: 0,
+          end: uri.path.name.length,
+        },
+        validate: (name, mode) => {
+          if (initialValue === name && mode === 'preview') {
+            return false;
+          }
+          return this.validateFileName(name, parent, false);
+        },
       },
-      validate: (name, mode) => {
-        if (initialValue === name && mode === 'preview') {
-          return false;
-        }
-        return this.validateFileName(name, parent, false);
-      },
-    });
+      this.labelProvider
+    );
     const newName = await dialog.open();
     const newNameWithExt = this.maybeAppendInoExt(newName);
     if (newNameWithExt) {
