@@ -48,6 +48,7 @@
             "comments": false,
             "strings": false
           },
+          "editor.maxTokenizationLineLength": 500,
           "breadcrumbs.enabled": false,
           "workbench.tree.renderIndentGuides": "none",
           "explorer.compactFolders": false
