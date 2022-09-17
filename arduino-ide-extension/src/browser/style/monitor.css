@@ -14,6 +14,10 @@
     font-family: monospace
 }
 
+.serial-monitor-messages pre {
+    margin: 0px;
+}
+
 .serial-monitor .head {
     display: flex;
     padding: 5px;
