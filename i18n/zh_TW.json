@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "自動滾頁面",
       "carriageReturn": "回車",
-      "message": "訊息 (1{0}+Enter將訊息發送到'{2}'上的2{1})",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "換行",
       "newLineCarriageReturn": "兩者都是NL和CR",
       "noLineEndings": "沒有斷行符號",

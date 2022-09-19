@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Автопрокрутка",
       "carriageReturn": "CR Возврат каретки",
-      "message": "Сообщение ({0} + Enter, чтобы отправить сообщение для '{1}' на '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Новая строка",
       "newLineCarriageReturn": "NL & CR",
       "noLineEndings": "Нет конца строки",

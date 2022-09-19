@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "အလိုအလျောက်လှိမ့်ဆွဲခြင်း",
       "carriageReturn": "လက်နှိပ်စက်အတံပြန်အက္ခရာ",
-      "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "စာကြောင်းအသစ်အက္ခရာ",
       "newLineCarriageReturn": "စာကြောင်းအသစ်နှင့်လက်နှိပ်စက်အတံပြန်အက္ခရာနှစ်ခုလုံး",
       "noLineEndings": "စာကြောင်းအဆုံးသတ်အက္ခရာမရှိ",

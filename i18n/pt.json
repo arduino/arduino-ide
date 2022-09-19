@@ -16,7 +16,7 @@
       "inSketchbook": "(no Sketchbook)",
       "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
       "noFQBN": "O FQBN não está disponível para a placa selecionada \"{0}\". Você tem o núcleo correspondente instalado?",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "Nenhuma porta detectada",
       "noPortsSelected": "Nenhuma porta selecionada para placa: '{0}'.",
       "noneSelected": "Nenhuma placa selecionada.",
       "openBoardsConfig": "Selecione outra placa e porta...",
@@ -26,7 +26,7 @@
       "portLabel": "Porta{0}",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
-      "searchBoard": "Search board",
+      "searchBoard": "Procurar placa",
       "selectBoard": "Selecionar Placa",
       "selectBoardForInfo": "Selecione uma placa para obter informações sobre ela.",
       "selectPortForInfo": "Selecione uma porta para obter informações sobre a placa.",
@@ -65,12 +65,12 @@
     },
     "checkForUpdates": {
       "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
+      "installAll": "Instalar todas",
+      "noUpdates": "Não há atualizações recentes disponíveis.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "updatingBoards": "Atualizando placas...",
+      "updatingLibraries": "Atualizando bibliotecas..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' não encontrado. O seu sketch inclue a linha '#include <Keyboard.h>'?",
@@ -115,7 +115,7 @@
     },
     "common": {
       "all": "All",
-      "contributed": "Contributed",
+      "contributed": "Contribuído",
       "installManually": "Instalar Manualmente",
       "later": "Depois",
       "noBoardSelected": "Nenhuma placa selecionada.",
@@ -124,11 +124,11 @@
       "oldFormat": "O '{0}' ainda utiliza o formato antigo `.pde`. Deseja mudar para a nova extensão `.ino`?",
       "partner": "Partner",
       "processing": "Em processamento",
-      "recommended": "Recommended",
+      "recommended": "Recomendado",
       "retired": "Retired",
       "selectedOn": "em {0}",
       "serialMonitor": "Monitor Serial",
-      "type": "Type",
+      "type": "Tipo",
       "unknown": "Desconhecido",
       "updateable": "Updatable"
     },
@@ -136,7 +136,7 @@
       "error": "Erro de compilação: {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "Placas incluídas nesse pacote:",
       "by": "por",
       "filterSearch": "Filtrar a sua pesquisa…",
       "install": "Instalar",
@@ -216,7 +216,7 @@
       "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Checar atualizações da Arduino IDE",
       "closeAndInstallButton": "Fechar e instalar ",
       "closeToInstallNotice": "Feche o software e instale a atualização em sua máquina. ",
       "downloadButton": "Baixar",
@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Avanço automático de linha",
       "carriageReturn": "Retorno de linha",
-      "message": "Mensagem ({0} + Enter para enviar mensagem para '{1}' em '{2}'",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nova linha",
       "newLineCarriageReturn": "Nova linha e retorno de linha",
       "noLineEndings": "Sem final de linha",

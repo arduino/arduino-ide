@@ -6,27 +6,27 @@
     },
     "board": {
       "board": "Bord{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "Selecteer Ander Bord en Poort",
       "boardInfo": "Bord Informatie",
       "configDialog1": "Selecteer een Bord en een Poort als U een schets wilt uploaden.",
       "configDialog2": "Als je alleen een Board kiest, kun je wel compileren, maar niet je schets uploaden.",
       "couldNotFindPreviouslySelected": "Kon het voordien geselecteerde bord '{0}' in het geïnstalleerde platform '{1}' niet vinden. Gelieve manueel het bord te kiezen dat U wilt gebruiken. Wilt U het bord nu selecteren?",
-      "disconnected": "Disconnected",
+      "disconnected": "Losgekoppeld",
       "getBoardInfo": "Verkrijg Bord Informatie",
       "inSketchbook": "(in Schetsboek)",
       "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn om het huidige geselecteerde \"{2}\" bord. Wilt U dit nu installeren?",
       "noFQBN": "De FQBN is niet beschikbaar voor het geselecteerde bord \"{0}\". Heeft U de bijhorende kern geïnstalleerd?",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "Geen poorten gevonden",
       "noPortsSelected": "Geen poorten geselecteerd voor bord: '{0}'.",
       "noneSelected": "Geen borden geselecteerd.",
       "openBoardsConfig": "Selecteer een ander bord en poort...",
       "platformMissing": "Het platform voor het geselecteerde '{0}' bord is niet geïnstalleerd.",
       "pleasePickBoard": "Gelieve een bord te selecteren dat verbonden is met de door U gekozen poort.",
       "port": "Poort{0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Poort: {0}",
       "programmer": "Programmeerapparaat",
       "reselectLater": "Later opnieuw selecteren",
-      "searchBoard": "Search board",
+      "searchBoard": "Bord zoeken",
       "selectBoard": "Selecteer Bord",
       "selectBoardForInfo": "Selecteer een bord om bord informatie te bekomen.",
       "selectPortForInfo": "Selecteer een poort om bord informatie te bekomen.",
@@ -36,11 +36,11 @@
     },
     "boardsManager": "Borden Beheerder",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Arduino gecertificeerd"
     },
     "bootloader": {
       "burnBootloader": "Bootloader branden",
-      "burningBootloader": "Burning bootloader...",
+      "burningBootloader": "Bootloader branden...",
       "doneBurningBootloader": "Klaar met het branden van de bootloader."
     },
     "burnBootloader": {
@@ -64,13 +64,13 @@
       "uploadingCertificates": "Certificaten uploaden."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "Controleren op Arduino-updates",
+      "installAll": "Alles installeren",
+      "noUpdates": "Er zijn geen recente updates beschikbaar.",
+      "promptUpdateBoards": "Voor sommige van je borden zijn updates beschikbaar.",
+      "promptUpdateLibraries": "Voor sommige van je bibliotheken zijn updates beschikbaar.",
+      "updatingBoards": "Borden bijwerken...",
+      "updatingLibraries": "Bibliotheken bijwerken..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' niet gevonden. Bevat je schets de regel '#include <Keyboard.h>'?",
@@ -114,8 +114,8 @@
       "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Sketches te maken."
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "Alle",
+      "contributed": "Bijgedragen",
       "installManually": "Handmatig installeren",
       "later": "Later",
       "noBoardSelected": "Geen bord geselecteerd",
@@ -124,19 +124,19 @@
       "oldFormat": "De '{0}' gebruikt nog steeds het oude '.pde' formaat. Wil je overstappen naar de nieuwe `.ino` extensie?",
       "partner": "Partner",
       "processing": "Verwerken",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "Aanbevolen",
+      "retired": "Stopgezet",
       "selectedOn": "aan {0}",
       "serialMonitor": "Seriële Monitor",
       "type": "Type",
       "unknown": "Onbekend",
-      "updateable": "Updatable"
+      "updateable": "Bijwerkbaar"
     },
     "compile": {
       "error": "Compilatiefout: {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "Borden in dit pakket:",
       "by": "door",
       "filterSearch": "Filter je zoekopdracht...",
       "install": "INSTALLEREN",
@@ -152,11 +152,11 @@
     },
     "coreContribution": {
       "copyError": "Foutmeldingen kopiëren",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "noBoardSelected": "Geen bord geselecteerd. Selecteer je Arduino-bord in het menu Extra > Board."
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
+      "restart": "Daemon opnieuw starten",
+      "start": "Daemon starten",
       "stop": "Stop Daemon"
     },
     "debug": {
@@ -178,7 +178,7 @@
       "increaseIndent": "Inspringing vergroten",
       "nextError": "Volgende Fout",
       "previousError": "Vorige Fout",
-      "revealError": "Reveal Error"
+      "revealError": "Onthul fout"
     },
     "electron": {
       "couldNotSave": "Kan de schets niet opslaan. Kopieer uw niet-opgeslagen werk naar uw favoriete teksteditor en start de IDE opnieuw. ",
@@ -216,7 +216,7 @@
       "visit": "Bezoek Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Controleren op Arduino IDE-updates",
       "closeAndInstallButton": "Sluiten en installeren",
       "closeToInstallNotice": "Sluit de software en installeer de update op je machine.",
       "downloadButton": "Download",
@@ -255,22 +255,22 @@
       "zipLibrary": "Bibliotheek"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "Onderwerp"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
+      "communication": "Communicatie",
+      "dataProcessing": "Gegevensverwerking",
+      "dataStorage": "Gegevensopslag",
+      "deviceControl": "Apparaatcontrole",
+      "display": "Toon",
+      "other": "Andere",
+      "sensors": "Sensoren",
+      "signalInputOutput": "Signaalingang/uitgang",
       "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "uncategorized": "Geen categorie"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Geïnstalleerd"
     },
     "menu": {
       "advanced": "Geavanceerd",
@@ -290,7 +290,7 @@
       "automatic": "Automatisch",
       "board.certificates": "Lijst met certificaten die kunnen worden geüpload naar borden",
       "browse": "Bladeren",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "Meldingen ontvangen van beschikbare updates voor de IDE, borden en bibliotheken. Vereist een IDE herstart na wijziging. Standaard waar.",
       "choose": "Kies",
       "cli.daemonDebug": "Schakel debug logging van de gRPC aanroepen naar de Arduino CLI in. Een herstart van de IDE is nodig om deze instelling in werking te laten treden. Standaard Onwaar.",
       "cloud.enabled": "Waar als de schets synchronisatie functies zijn ingeschakeld. Standaard ingesteld op waar.",
@@ -315,7 +315,7 @@
       "invalid.sketchbook.location": "Ongeldige schetsboek locatie: {0}",
       "invalid.theme": "Ongeldig Thema.",
       "language.log": "Waar als de Arduino Taal Server log bestanden moet genereren in de schets map. Anders onwaar. Standaard ingesteld op onwaar.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Indien waar, geeft de taalserver real-time diagnostiek tijdens het typen in de editor. Standaard is dit onwaar.",
       "manualProxy": "Manuele proxy configuratie",
       "network": "Netwerk",
       "newSketchbookLocation": "Selecteer een nieuwe schetsboeklocatie.",
@@ -336,12 +336,12 @@
     "serial": {
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Carriage Return",
-      "message": "Bericht ({0} + Enter om bericht te verzenden naar '{1}' op '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nieuwe Regel",
       "newLineCarriageReturn": "Zowel NL & CR",
       "noLineEndings": "Geen RegelEinde",
       "notConnected": "Niet verbonden. Kies een bord en een poort om automatisch te verbinden.",
-      "openSerialPlotter": "Serial Plotter",
+      "openSerialPlotter": "Seriële plotter",
       "timestamp": "Tijdstempel",
       "toggleTimestamp": "Tijdstempel omschakelen"
     },
@@ -349,7 +349,7 @@
       "archiveSketch": "Archiveer Schets",
       "cantOpen": "Er bestaat al een map met de naam \"{0}\". Kan schets niet openen.",
       "close": "Weet je zeker dat je de schets wilt sluiten?",
-      "compile": "Compiling sketch...",
+      "compile": "Sketch compileren...",
       "configureAndUpload": "Configureren en uploaden",
       "createdArchive": "Archief '{0}' gemaakt.",
       "doneCompiling": "Klaar met compileren.",
@@ -371,7 +371,7 @@
       "titleSketchbook": "Schetsboek",
       "upload": "Uploaden",
       "uploadUsingProgrammer": "Uploaden met behulp van Programmeerapparaat",
-      "uploading": "Uploading...",
+      "uploading": "Uploaden...",
       "userFieldsNotFoundError": "Kan gebruiker veld van verbonden bord niet vinden",
       "verify": "Verifiëren",
       "verifyOrCompile": "Verifiëren/Compileren"
@@ -386,7 +386,7 @@
     },
     "userFields": {
       "cancel": "Annuleer",
-      "enterField": "Enter {0}",
+      "enterField": "Ga naar {0}",
       "upload": "Uploaden"
     }
   },

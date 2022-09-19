@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Otomatik Kaydırma",
       "carriageReturn": "Satır Başı",
-      "message": "Mesaj ({0} + Mesaj göndermek için Enter '{1}' / '{2}')",
+      "message": "Mesaj ('{0}' - '{1}''a mesaj göndermek için Enter'a basın)",
       "newLine": "Yeni Satır",
       "newLineCarriageReturn": "NL ve CR ile Birlikte",
       "noLineEndings": "Satır Sonu Yok",

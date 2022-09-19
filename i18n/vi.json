@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Tự động cuộn",
       "carriageReturn": "Về đầu dòng",
-      "message": "Nhắn tin ({0} + Enter để gửi tin nhắn tới '{1}' trên cổng '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Dòng mới",
       "newLineCarriageReturn": "Vừa xuống dòng & về đầu dòng",
       "noLineEndings": "Không có kết thúc dòng",
