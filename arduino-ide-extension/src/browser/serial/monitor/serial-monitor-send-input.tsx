@@ -7,21 +7,21 @@ import { MonitorModel } from '../../monitor-model';
 import { Unknown } from '../../../common/nls';
 
 class RingList {
-  protected ring: string[];
-  protected size: number;
-  protected begin: number;
-  protected index: number;
-  protected end: number;
+  private ring: string[];
+  private size: number;
+  private begin: number;
+  private index: number;
+  private end: number;
 
   constructor(size: number = 100) {
-    this.Init = this.Init.bind(this);
-    this.Push = this.Push.bind(this);
-    this.Prev = this.Prev.bind(this);
-    this.Next = this.Next.bind(this);
-    this.Init(size);
+    this.init = this.init.bind(this);
+    this.push = this.push.bind(this);
+    this.prev = this.prev.bind(this);
+    this.next = this.next.bind(this);
+    this.init(size);
   }
 
-  public Init(size: number = 100)
+  private init(size: number = 100)
   {
     this.ring = [];
     this.size = (size > 0) ? size : 1;
@@ -30,7 +30,7 @@ class RingList {
     this.end = -1;
   }
 
-  public Push(val: string): number {
+  push(val: string): number {
     this.end++;
     if (this.ring.length >= this.size)
     {
@@ -49,9 +49,9 @@ class RingList {
     return this.index;
   }
 
-  public Prev(): string {
+  prev(): string {
     if (this.ring.length < 1) {
-      return "";
+      return '';
     }
 
     if (this.index !== this.begin) {
@@ -61,9 +61,9 @@ class RingList {
     return this.ring[this.index];
   }
 
-  public Next(): string {
+  next(): string {
     if (this.ring.length < 1) {
-      return "";
+      return '';
     }
 
     if (this.index !== this.end) {
@@ -72,7 +72,6 @@ class RingList {
 
     return this.ring[this.index];
   }
-
 }
 
 export namespace SerialMonitorSendInput {
@@ -183,14 +182,16 @@ export class SerialMonitorSendInput extends React.Component<
         // NOTE: order of operations is critical here. Push the current state.text
         // onto the history stack before sending. After sending, state.text is empty
         // and you'd end up pushing '' onto the history stack.
-        if (this.state.text.length > 0) this.state.history.Push(this.state.text);
+        if (this.state.text.length > 0) {
+          this.state.history.push(this.state.text);
+        }
         this.onSend();
-      } else
-      if (key === Key.ARROW_UP) {
-        this.setState({ text: this.state.history.Prev()});
-      } else
-      if (key === Key.ARROW_DOWN) {
-        this.setState({ text: this.state.history.Next()});
+      } 
+      else if (key === Key.ARROW_UP) {
+        this.setState({ text: this.state.history.prev()});
+      } 
+      else if (key === Key.ARROW_DOWN) {
+        this.setState({ text: this.state.history.next()});
       }
     }
   }
