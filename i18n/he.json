@@ -15,7 +15,7 @@
       "getBoardInfo": "פרטי הלוח",
       "inSketchbook": "(בסקיצה)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noFQBN": "הFQBN אינו זמין ללוח \"{0}\". האם הותקן הליבה המתאימה?",
       "noPortsDiscovered": "לא נמצאו פורטים",
       "noPortsSelected": "לא נבחרו פורטים ללוחות '{0}'.",
       "noneSelected": "לא נבחרו לוחות.",
@@ -110,7 +110,7 @@
       "signInToCloud": "התחברות לענן של ארדואינו Arduino Cloud",
       "signOut": "התנתק",
       "sync": "סנכרון",
-      "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
+      "syncEditSketches": "סנכרון ועריכת הסקיצה בענן של ארדואינו",
       "visitArduinoCloud": "כנס.י לענן של ארדואינו ליצור סקיצה בענן"
     },
     "common": {
@@ -125,7 +125,7 @@
       "partner": "שותף",
       "processing": "מעבד",
       "recommended": "מומלץ",
-      "retired": "Retired",
+      "retired": "פרש",
       "selectedOn": "ב {0}",
       "serialMonitor": "מוניטור סיריאלי",
       "type": "סוג",
@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "גלילה אוטומטית",
       "carriageReturn": "Carriage Return",
-      "message": "Message ({0} + Enter to send message to '{1}' on '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "שורה חדשה",
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "ללא סיום שורה",

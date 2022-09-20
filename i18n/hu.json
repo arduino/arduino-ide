@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Automatikus görgetés",
       "carriageReturn": "Kocsi vissza",
-      "message": "Üzenet ({0} + Enter az üzenet elküldéséhez az {1} itt: {2})",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Új sor",
       "newLineCarriageReturn": "Mindkettő: Új sor és Kocsi vissza - NL&CR",
       "noLineEndings": "Nincs sorvége ",

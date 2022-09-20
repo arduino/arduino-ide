@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Korritze automatikoa",
       "carriageReturn": "Orga-itzulera",
-      "message": "Mezua ({0} + Enter honi mezua bidaltzeko: '{1}' hemen: '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Lerro berria",
       "newLineCarriageReturn": "NL & CR biak",
       "noLineEndings": "Lerro amaierarik ez",

@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Enter (CR)",
-      "message": "Zpráva ({0}+ Enter pro odeslání zprávy do '{1}'  na  '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nový řádek (NL)",
       "newLineCarriageReturn": "Oba NL & CR",
       "noLineEndings": "Bez konce řádku",

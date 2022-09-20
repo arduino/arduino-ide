@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "تمرير تلقائي",
       "carriageReturn": "اعادة الحمل",
-      "message": "الرسالة ({0} + ادخل لارسال رسالة الى  '{1}'  على '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "سطر جديد",
       "newLineCarriageReturn": " NL & CR معاً",
       "noLineEndings": "نهاية السطر غير موجودة",

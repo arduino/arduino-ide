@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Retorno de carro",
-      "message": "Mensaje ({0} + Enter para enviar el mensaje a '{1}' en '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nueva línea",
       "newLineCarriageReturn": "Ambos NL & CR",
       "noLineEndings": "Sin ajuste de línea",

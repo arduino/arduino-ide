@@ -336,7 +336,7 @@
     "serial": {
       "autoscroll": "Desplaçament automàtic",
       "carriageReturn": "Retorn de carro",
-      "message": "Missatge ({0}+ Intro per enviar el missatge a '{1}' a '{2}')",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nova Línia",
       "newLineCarriageReturn": "Ambdós NL & CR",
       "noLineEndings": "Sense final de línia",

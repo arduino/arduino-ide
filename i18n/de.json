@@ -6,27 +6,27 @@
     },
     "board": {
       "board": "Board{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "Anderes Boards und Ports wählen",
       "boardInfo": "Board-Informationen",
       "configDialog1": "Wählen Sie ein Board und einen Port, wenn Sie den Sketch hochladen möchten.",
       "configDialog2": "Wenn Sie nur ein Board auswählen, werden Sie den Sketch nur kompilieren können, jedoch nicht hochladen.",
       "couldNotFindPreviouslySelected": "Zuvor gewähltes Board '{0}' wurde nicht in der installierten Plaftform '{1}' gefunden. Bitte Board erneut auswählen. Jetzt auswählen?",
-      "disconnected": "Disconnected",
+      "disconnected": " Verbindung getrennt",
       "getBoardInfo": "Board-Informationen abrufen",
       "inSketchbook": "(im Sketchbook)",
       "installNow": "Der \"{0} {1}\" Core muss für das ausgewählte \"{2}\" Board installiert werden. Jetzt installieren?",
       "noFQBN": "Der FQBN ist für das gewählte Board \"{0}\" nicht verfügbar. Wurde der zugehörige Core installiert?",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "Keine Ports gefunden",
       "noPortsSelected": "Kein Port für das Board : '{0}' ausgewählt.",
       "noneSelected": "Kein Board ausgewählt.",
       "openBoardsConfig": "Wähle einen anderes Board und einen anderen Port...",
       "platformMissing": "Die Plattform für das gewählte '{0}' Board ist nicht installiert.",
       "pleasePickBoard": "Bitte wählen Sie das Board, welches am ausgewählten Port angeschlossen ist.",
       "port": "Port{0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Port{0}",
       "programmer": "Programmer",
       "reselectLater": "Später auswählen",
-      "searchBoard": "Search board",
+      "searchBoard": "Board suchen",
       "selectBoard": "Board wählen",
       "selectBoardForInfo": "Wähle ein Board für die Board-Informationen.",
       "selectPortForInfo": "Wähle ein Port, um Informationen über das Board zu erhalten.",
@@ -36,11 +36,11 @@
     },
     "boardsManager": "Board-Verwaltung",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Arduino-zertifiziert"
     },
     "bootloader": {
       "burnBootloader": "Bootloader brennen",
-      "burningBootloader": "Burning bootloader...",
+      "burningBootloader": "Brenne Bootloader...",
       "doneBurningBootloader": "Bootloader erfolgreich gebrannt."
     },
     "burnBootloader": {
@@ -64,20 +64,20 @@
       "uploadingCertificates": "Zertifikate hochladen..."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "Nach Arduino Updates suchen",
+      "installAll": "Alle installieren",
+      "noUpdates": "Es sind keine aktuellen Updates verfügbar.",
+      "promptUpdateBoards": "Es sind Updates für einige ihrer Boards verfügbar.",
+      "promptUpdateLibraries": "Es sind Updates für einige ihrer Blibliotheken verfügbar.",
+      "updatingBoards": "Boards werden aktualisiert...",
+      "updatingLibraries": "Bibliotheken werden aktualisiert..."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "'Keyboard' nicht gefunden. Enthält ihr Sketch die Zeile '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' nicht gefunden. Enthält ihr Sketch die Zeile '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Konto",
       "chooseSketchVisibility": "Wähle die Sichtbarkeit deines Sketches:",
       "connected": "Verbunden",
       "continue": "Fortfahren",
@@ -102,20 +102,20 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "Das ist ein öffentliches Sketch. Vor dem Pushen solltest du überprüfen, ob alle sensiblen Informationen in arduino_secrets.h definiert sind. Du kannst einen Sketch mit dem Teilen-Feld privat machen.",
       "remote": "Remote",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Cloud Sketchbook",
       "share": "Teilen....",
       "shareSketch": "Sketch teilen",
       "showHideRemoveSketchbook": "Zeige/Verstecke Remote Sketchbook",
       "signIn": "Anmelden",
       "signInToCloud": "Anmelden zur Arduino Cloud",
       "signOut": "Abmelden",
-      "sync": "Sync",
+      "sync": "Synchronisiere",
       "syncEditSketches": "Synchronisiere und editiere deine Arduino Cloud Sketches.",
       "visitArduinoCloud": "Besuche Arduino Cloud um Cloud Sketche zu erstellen."
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "Alle",
+      "contributed": "Beigetragen",
       "installManually": "Manuell installieren",
       "later": "später",
       "noBoardSelected": "Kein Board ausgewählt",
@@ -124,19 +124,19 @@
       "oldFormat": "Der Sketch '{0}' verwendet noch das alte '.pde' Format. Möchtest du auf die neuere '.ino' Endung wechseln?",
       "partner": "Partner",
       "processing": "Verarbeiten",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "Empfohlen",
+      "retired": "Zurückgezogen",
       "selectedOn": "an {0}",
       "serialMonitor": "Serieller Monitor",
-      "type": "Type",
+      "type": "Typ",
       "unknown": "unbekannt",
-      "updateable": "Updatable"
+      "updateable": "Aktualisierbar"
     },
     "compile": {
       "error": "Fehler beim kompilieren: {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "In diesem Paket enthaltene Boards:",
       "by": "von",
       "filterSearch": "Filtern Sie Ihre Suche...",
       "install": "Installieren",
@@ -151,13 +151,13 @@
       "replaceTitle": "Ersetzten"
     },
     "coreContribution": {
-      "copyError": "Copy error messages",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "copyError": "Fehlermeldungen kopieren",
+      "noBoardSelected": "Kein Board ausgewählt. Bitte Arduino Board im Menü wählen mit Werkzeuge > Board"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Dämon neu starten",
+      "start": "Dämon starten",
+      "stop": "Dämon stoppen"
     },
     "debug": {
       "debugWithMessage": "Debug - {0}",
@@ -176,9 +176,9 @@
       "decreaseIndent": "Einrückung verringern ",
       "increaseFontSize": "Schriftgröße vergrößern ",
       "increaseIndent": "Einrückung erweitern",
-      "nextError": "Next Error",
-      "previousError": "Previous Error",
-      "revealError": "Reveal Error"
+      "nextError": "Nächster Fehler",
+      "previousError": "Vorheriger Fehler",
+      "revealError": "Fehler zeigen"
     },
     "electron": {
       "couldNotSave": "Der Sketch konnte nicht gesichert werden. Bitte kopiere deine ungesicherte Arbeit in deinen bevorzugten Texteditor und starte die IDE neu.",
@@ -216,7 +216,7 @@
       "visit": "Besuche Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Nach Arduino IDE Updates suchen",
       "closeAndInstallButton": "Schließen und Installieren",
       "closeToInstallNotice": "Schließe die Software und installiere das Update auf deinem Computer",
       "downloadButton": "Download",
@@ -255,25 +255,25 @@
       "zipLibrary": "Bibliothek"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "Thema"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
+      "communication": "Kommunikation",
+      "dataProcessing": "Datenverarbeitung",
+      "dataStorage": "Datenspeicher",
+      "deviceControl": "Gerätesteuerung",
+      "display": "Anzeige",
+      "other": "Andere/s",
+      "sensors": "Sensoren",
+      "signalInputOutput": "Signal Ein-/Ausgang",
       "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "uncategorized": "Nicht kategoriesiert"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Installiert"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Fortgeschritten",
       "sketch": "Sketch",
       "tools": "Werkzeuge"
     },
@@ -290,7 +290,7 @@
       "automatic": "Automatisch",
       "board.certificates": "Liste der Zertifikate, welche zu den Boards hochgeladen werden können.",
       "browse": "Durchsuchen",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "Erhalte Benachrichtigungen bei verfügbaren Updates für die IDE, die Boards und Bibliotheken. Nach Änderung ist ein Neustart der IDE notwendig. Standardmäßig eingeschaltet.",
       "choose": "Wähle",
       "cli.daemonDebug": "Aktivieren Sie die Debug-Protokollierung der gRPC-Aufrufe an das Arduino CLI. Ein Neustart der IDE ist erforderlich, damit diese Einstellung wirksam wird. Standardmäßig ist sie deaktiviert.",
       "cloud.enabled": "Wahr, wenn die Sketch-Syncfunctionen aktiv sind. Standardeinstellung ist wahr.",
@@ -299,8 +299,8 @@
       "cloud.pushpublic.warn": "Wahr, wenn Benutzer vor dem Hochladen eines öffentlichen Sketches in die Cloud gewarnt werden sollen. Standardmäßig Wahr.",
       "cloud.sketchSyncEndpoint": "Der Endpunkt, um Sketches zu/von einem Backend zu laden. Standardeinstellung ist die Arduino Cloud API.",
       "compile": "Kompilieren",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "Aktivieren, wenn die IDE mehrere Fehler des Compiler behandeln soll. Standardmäßig ausgeschaltet.",
+      "compile.revealRange": "Legt fest, wie Compilerfehler im Editor nach einer fehlgeschlagenen Überprüfung/einem fehlgeschlagenen Upload angezeigt werden. Mögliche Werte: 'auto': bei Bedarf vertikal scrollen, um die Zeile anzuzeigen. 'center': bei Bedarf vertikal scrollen und die Zeile zentriert anzeigen. 'top': bei Bedarf vertikal scrollen und die Zeile nahe am oberen Ende des Darstellungsbereichs anzeigen. Optimiert für das Betrachten einer Codedefinition. 'centerIfOutsideViewport': bei Bedarf vertikal scrollen und die Zeile nur anzeigen, wenn sie außerhalb des Anzeigebereichs liegt. Der Standardwert ist '{0}'.",
       "compile.verbose": "Wahr für ausführliche Compilerausgaben. Standardmäßig Falsch",
       "compile.warnings": "Einstellung des Warnlevels für den GCC. Standardeinstellung ist 'None'.",
       "compilerWarnings": "Warnungen des Übersetzers",
@@ -315,7 +315,7 @@
       "invalid.sketchbook.location": "Ungültiger Sketchbook Speicherort: {0}",
       "invalid.theme": "Ungültiges Erscheinungsbild",
       "language.log": "Wahr, wenn der Arduino Language Server Logfiles in den Sketch-Ordner schreiben soll. Sonst falsch. Standardeinstellung ist falsch.\n ",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Wenn aktiviert, bietet der Sprachserver bei der Eingabe im Editor eine Echtzeitdiagnose. Ist standardmäßig deaktiviert.",
       "manualProxy": "Manuelle Proxy Einstellung",
       "network": "Netzwerk",
       "newSketchbookLocation": "Wähle einen neuen Ort für das Sketchbook ",
@@ -336,12 +336,12 @@
     "serial": {
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Zeilenumbruch",
-      "message": "Nachricht ({0} + Enter, um Nachricht an '{1}' auf '{2}') zu senden",
+      "message": "Nachicht (Enter um Nachricht für '{0}' auf '{1}' zu senden)",
       "newLine": "Neue Zeile",
       "newLineCarriageReturn": "Sowohl NL als auch CR",
       "noLineEndings": "Kein Zeilenende",
       "notConnected": "Nicht verbunden. Wählen Sie ein Board und einen Port, um automatisch zu verbinden.",
-      "openSerialPlotter": "Serial Plotter",
+      "openSerialPlotter": "Serieller Plotter",
       "timestamp": "Zeitstempel",
       "toggleTimestamp": "Zeitstempel an/aus"
     },
@@ -349,7 +349,7 @@
       "archiveSketch": "Sketch archivieren",
       "cantOpen": "Ein Ordner mit dem Namen \"{0}\" ist bereits vorhanden. Der Sketch kann nicht geöffnet werden.",
       "close": "Sind Sie sicher, dass Sie diesen Sketch schließen möchten?",
-      "compile": "Compiling sketch...",
+      "compile": "Kompiliere Sketch...",
       "configureAndUpload": "Konfigurieren und hochladen",
       "createdArchive": "Archiv '{0}' erstellt.",
       "doneCompiling": "Kompilieren erfolgreich!",
@@ -371,7 +371,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Hochladen",
       "uploadUsingProgrammer": "Mit Programmer hochladen",
-      "uploading": "Uploading...",
+      "uploading": "Hochladen...",
       "userFieldsNotFoundError": "User Fields für das angeschlossene Board nicht gefunden",
       "verify": "Überprüfen",
       "verifyOrCompile": "Überprüfen/Kompilieren"
@@ -386,7 +386,7 @@
     },
     "userFields": {
       "cancel": "abbrechen",
-      "enterField": "Enter {0}",
+      "enterField": "Eingabe {0}",
       "upload": "Hochladen"
     }
   },
