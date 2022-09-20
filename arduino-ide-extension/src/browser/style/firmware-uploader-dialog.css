@@ -7,7 +7,7 @@
 }
 .firmware-uploader-dialog .arduino-select__control {
   height: 31px;
-  background: var(--theia-menubar-selectionBackground) !important;
+  background: var(--theia-input-background) !important;
 }
 
 .firmware-uploader-dialog .dialogRow > button{
