@@ -9,7 +9,8 @@
        total = padding + margin = 96px
     */
     max-width: calc(100% - 96px) !important;
-    min-width: unset;
+    
+    min-width: 424px;
     max-height: 560px;
     padding: 0 28px;
 }
@@ -85,3 +86,4 @@
         max-height: 400px;
     }
 }
+    

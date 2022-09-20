@@ -34,6 +34,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
   ) {
     super({ ...props, maxWidth: 500 });
 
+    this.node.id = 'select-board-dialog-container';
     this.contentNode.classList.add('select-board-dialog');
     this.contentNode.appendChild(this.createDescription());
 
