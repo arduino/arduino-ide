@@ -88,10 +88,12 @@
 }
 
 .additional-urls-dialog textarea {
-    width: 100%;
+    resize: none;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent.additional-urls-dialog {
-    display: block;
+    display: flex;
     overflow: hidden;
+    padding: 0 1px;
+    margin: 0 -1px;
 }

@@ -155,7 +155,6 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
 
     this.textArea = document.createElement('textarea');
     this.textArea.className = 'theia-input';
-    this.textArea.setAttribute('style', 'flex: 0;');
     this.textArea.value = urls
       .filter((url) => url.trim())
       .filter((url) => !!url)
