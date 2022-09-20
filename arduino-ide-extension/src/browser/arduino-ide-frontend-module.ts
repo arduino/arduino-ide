@@ -338,6 +338,10 @@ import { OutputEditorFactory } from './theia/output/output-editor-factory';
 import { StartupTaskProvider } from '../electron-common/startup-task';
 import { DeleteSketch } from './contributions/delete-sketch';
 import { UserFields } from './contributions/user-fields';
+import { KeybindingRegistry } from './theia/core/keybinding';
+import { KeybindingRegistry as TheiaKeybindingRegistry } from '@theia/core/lib/browser/keybinding';
+import { KeyboardLayoutService } from './theia/core/keyboard-layout-service';
+import { KeyboardLayoutService as TheiaKeyboardLayoutService } from '@theia/core/lib/browser/keyboard/keyboard-layout-service';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -996,4 +1000,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaHostedPluginSupport).toService(HostedPluginSupport);
   bind(HostedPluginEvents).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(HostedPluginEvents);
+
+  // #1428
+  bind(KeybindingRegistry).toSelf().inSingletonScope();
+  rebind(TheiaKeybindingRegistry).toService(KeybindingRegistry);
+  bind(KeyboardLayoutService).toSelf().inSingletonScope();
+  rebind(TheiaKeyboardLayoutService).toService(KeyboardLayoutService);
 });

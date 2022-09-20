@@ -111,6 +111,8 @@ import {
 } from '../common/protocol/survey-service';
 import { IsTempSketch } from './is-temp-sketch';
 import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
+import { ElectronKeyboardLayoutProvider } from '../electron-node/theia/electron-keyboard-layout-provider';
+import { ElectronKeyboardLayoutProvider as TheiaElectronKeyboardLayoutProvider } from '@theia/core/lib/electron-node/keyboard/electron-keyboard-layout-provider';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -380,6 +382,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
 
   bind(IsTempSketch).toSelf().inSingletonScope();
+
+  // #1428
+  bind(ElectronKeyboardLayoutProvider).toSelf().inSingletonScope();
+  rebind(TheiaElectronKeyboardLayoutProvider).toService(
+    ElectronKeyboardLayoutProvider
+  );
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {
