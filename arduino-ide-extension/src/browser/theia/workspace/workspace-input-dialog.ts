@@ -14,7 +14,8 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
   constructor(
     @inject(WorkspaceInputDialogProps)
     protected override readonly props: WorkspaceInputDialogProps,
-    @inject(LabelProvider) protected override readonly labelProvider: LabelProvider
+    @inject(LabelProvider)
+    protected override readonly labelProvider: LabelProvider
   ) {
     super(props, labelProvider);
     this.appendCloseButton(
@@ -40,5 +41,15 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     if (this.wasTouched) {
       this.errorMessageNode.innerText = DialogError.getMessage(error);
     }
+  }
+
+  protected override appendCloseButton(text: string): HTMLButtonElement {
+    this.closeButton = this.createButton(text);
+    this.controlPanel.insertBefore(
+      this.closeButton,
+      this.controlPanel.lastChild
+    );
+    this.closeButton.classList.add('secondary');
+    return this.closeButton;
   }
 }

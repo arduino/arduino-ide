@@ -93,4 +93,5 @@
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent.additional-urls-dialog {
     display: block;
+    overflow: hidden;
 }

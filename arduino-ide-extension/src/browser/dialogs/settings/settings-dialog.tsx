@@ -181,10 +181,10 @@ export class AdditionalUrlsDialog extends AbstractDialog<string[]> {
     );
     this.contentNode.appendChild(anchor);
 
-    this.appendAcceptButton(nls.localize('vscode/issueMainService/ok', 'OK'));
     this.appendCloseButton(
       nls.localize('vscode/issueMainService/cancel', 'Cancel')
     );
+    this.appendAcceptButton(nls.localize('vscode/issueMainService/ok', 'OK'));
   }
 
   get value(): string[] {
