@@ -299,6 +299,18 @@ export class BoardsConfig extends React.Component<
       }
     }
 
+    const boardsList = Array.from(distinctBoards.values()).map((board) => (
+      <Item<BoardWithPackage>
+        key={toKey(board)}
+        item={board}
+        label={board.name}
+        details={board.details}
+        selected={board.selected}
+        onClick={this.selectBoard}
+        missing={board.missing}
+      />
+    ));
+
     return (
       <React.Fragment>
         <div className="search">
@@ -315,19 +327,17 @@ export class BoardsConfig extends React.Component<
           />
           <i className="fa fa-search"></i>
         </div>
-        <div className="boards list">
-          {Array.from(distinctBoards.values()).map((board) => (
-            <Item<BoardWithPackage>
-              key={toKey(board)}
-              item={board}
-              label={board.name}
-              details={board.details}
-              selected={board.selected}
-              onClick={this.selectBoard}
-              missing={board.missing}
-            />
-          ))}
-        </div>
+        {boardsList.length > 0 ? (
+          <div className="boards list">{boardsList}</div>
+        ) : (
+          <div className="no-result">
+            {nls.localize(
+              'arduino/board/noBoardsFound',
+              'No boards found for "{0}"',
+              query
+            )}
+          </div>
+        )}
       </React.Fragment>
     );
   }
@@ -342,7 +352,7 @@ export class BoardsConfig extends React.Component<
       );
     }
     return !ports.length ? (
-      <div className="loading noselect">
+      <div className="no-result">
         {nls.localize('arduino/board/noPortsDiscovered', 'No ports discovered')}
       </div>
     ) : (

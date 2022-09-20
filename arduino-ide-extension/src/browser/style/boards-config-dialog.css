@@ -295,3 +295,11 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     display: none;
   }
 }
+
+#select-board-dialog .no-result {
+  text-transform: uppercase;
+  height: 100%;
+  user-select: none;
+  padding: 10px 5px;
+  overflow-wrap: break-word;
+}

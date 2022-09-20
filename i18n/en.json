@@ -15,6 +15,7 @@
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No ports selected for board: '{0}'.",
