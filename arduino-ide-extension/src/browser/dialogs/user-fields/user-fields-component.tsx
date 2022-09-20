@@ -71,6 +71,7 @@ export const UserFieldsComponent = ({
                       field.label
                     )}
                     onChange={updateUserField(index)}
+                    autoFocus={index === 0}
                   />
                 </div>
               </div>
