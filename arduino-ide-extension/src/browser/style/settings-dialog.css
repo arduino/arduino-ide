@@ -89,6 +89,7 @@
 
 .additional-urls-dialog textarea {
     resize: none;
+    white-space: nowrap;
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent.additional-urls-dialog {
