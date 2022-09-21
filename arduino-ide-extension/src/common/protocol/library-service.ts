@@ -8,9 +8,10 @@ import {
   Partner,
   Recommended,
   Retired,
-  Type,
+  Type as TypeLabel,
   Updatable,
 } from '../nls';
+import URI from '@theia/core/lib/common/uri';
 
 export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
@@ -55,6 +56,7 @@ export interface LibrarySearch extends Searchable.Options {
   readonly topic?: LibrarySearch.Topic;
 }
 export namespace LibrarySearch {
+  export const Default: LibrarySearch = { type: 'All', topic: 'All' };
   export const TypeLiterals = [
     'All',
     'Updatable',
@@ -66,6 +68,11 @@ export namespace LibrarySearch {
     'Retired',
   ] as const;
   export type Type = typeof TypeLiterals[number];
+  export namespace Type {
+    export function is(arg: unknown): arg is Type {
+      return typeof arg === 'string' && TypeLiterals.includes(arg as Type);
+    }
+  }
   export const TypeLabels: Record<Type, string> = {
     All: All,
     Updatable: Updatable,
@@ -90,6 +97,11 @@ export namespace LibrarySearch {
     'Uncategorized',
   ] as const;
   export type Topic = typeof TopicLiterals[number];
+  export namespace Topic {
+    export function is(arg: unknown): arg is Topic {
+      return typeof arg === 'string' && TopicLiterals.includes(arg as Topic);
+    }
+  }
   export const TopicLabels: Record<Topic, string> = {
     All: All,
     Communication: nls.localize(
@@ -126,8 +138,60 @@ export namespace LibrarySearch {
     string
   > = {
     topic: nls.localize('arduino/librarySearchProperty/topic', 'Topic'),
-    type: Type,
+    type: TypeLabel,
   };
+  export namespace UriParser {
+    export const authority = 'librarymanager';
+    export function parse(uri: URI): LibrarySearch | undefined {
+      if (uri.scheme !== 'http') {
+        throw new Error(
+          `Invalid 'scheme'. Expected 'http'. URI was: ${uri.toString()}.`
+        );
+      }
+      if (uri.authority !== authority) {
+        throw new Error(
+          `Invalid 'authority'. Expected: '${authority}'. URI was: ${uri.toString()}.`
+        );
+      }
+      const segments = Searchable.UriParser.normalizedSegmentsOf(uri);
+      // Special magic handling for `Signal Input/Output`.
+      // TODO: IDE2 deserves a better lib/boards URL spec.
+      // https://github.com/arduino/arduino-ide/issues/1442#issuecomment-1252136377
+      if (segments.length === 3) {
+        const [type, topicHead, topicTail] = segments;
+        const maybeTopic = `${topicHead}/${topicTail}`;
+        if (
+          LibrarySearch.Topic.is(maybeTopic) &&
+          maybeTopic === 'Signal Input/Output' &&
+          LibrarySearch.Type.is(type)
+        ) {
+          return {
+            type,
+            topic: maybeTopic,
+            ...Searchable.UriParser.parseQuery(uri),
+          };
+        }
+      }
+      let searchOptions: LibrarySearch | undefined = undefined;
+      const [type, topic] = segments;
+      if (!type && !topic) {
+        searchOptions = LibrarySearch.Default;
+      } else if (LibrarySearch.Type.is(type)) {
+        if (!topic) {
+          searchOptions = { ...LibrarySearch.Default, type };
+        } else if (LibrarySearch.Topic.is(topic)) {
+          searchOptions = { type, topic };
+        }
+      }
+      if (searchOptions) {
+        return {
+          ...searchOptions,
+          ...Searchable.UriParser.parseQuery(uri),
+        };
+      }
+      return undefined;
+    }
+  }
 }
 
 export namespace LibraryService {

@@ -334,6 +334,7 @@ import { DeleteSketch } from './contributions/delete-sketch';
 import { UserFields } from './contributions/user-fields';
 import { UpdateIndexes } from './contributions/update-indexes';
 import { InterfaceScale } from './contributions/interface-scale';
+import { OpenHandler } from '@theia/core/lib/browser/opener-service';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -398,6 +399,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(FrontendApplicationContribution).toService(
     LibraryListWidgetFrontendContribution
   );
+  bind(OpenHandler).toService(LibraryListWidgetFrontendContribution);
 
   // Sketch list service
   bind(SketchesService)
@@ -464,6 +466,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(FrontendApplicationContribution).toService(
     BoardsListWidgetFrontendContribution
   );
+  bind(OpenHandler).toService(BoardsListWidgetFrontendContribution);
 
   // Board select dialog
   bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
