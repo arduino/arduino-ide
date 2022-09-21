@@ -3,7 +3,14 @@ import { Searchable } from './searchable';
 import { Installable } from './installable';
 import { ArduinoComponent } from './arduino-component';
 import { nls } from '@theia/core/lib/common/nls';
-import { All, Contributed, Partner, Type, Updatable } from '../nls';
+import {
+  All,
+  Contributed,
+  Partner,
+  Type as TypeLabel,
+  Updatable,
+} from '../nls';
+import URI from '@theia/core/lib/common/uri';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
@@ -151,6 +158,7 @@ export interface BoardSearch extends Searchable.Options {
   readonly type?: BoardSearch.Type;
 }
 export namespace BoardSearch {
+  export const Default: BoardSearch = { type: 'All' };
   export const TypeLiterals = [
     'All',
     'Updatable',
@@ -161,6 +169,11 @@ export namespace BoardSearch {
     'Arduino@Heart',
   ] as const;
   export type Type = typeof TypeLiterals[number];
+  export namespace Type {
+    export function is(arg: unknown): arg is Type {
+      return typeof arg === 'string' && TypeLiterals.includes(arg as Type);
+    }
+  }
   export const TypeLabels: Record<Type, string> = {
     All: All,
     Updatable: Updatable,
@@ -177,8 +190,41 @@ export namespace BoardSearch {
     keyof Omit<BoardSearch, 'query'>,
     string
   > = {
-    type: Type,
+    type: TypeLabel,
   };
+  export namespace UriParser {
+    export const authority = 'boardsmanager';
+    export function parse(uri: URI): BoardSearch | undefined {
+      if (uri.scheme !== 'http') {
+        throw new Error(
+          `Invalid 'scheme'. Expected 'http'. URI was: ${uri.toString()}.`
+        );
+      }
+      if (uri.authority !== authority) {
+        throw new Error(
+          `Invalid 'authority'. Expected: '${authority}'. URI was: ${uri.toString()}.`
+        );
+      }
+      const segments = Searchable.UriParser.normalizedSegmentsOf(uri);
+      if (segments.length !== 1) {
+        return undefined;
+      }
+      let searchOptions: BoardSearch | undefined = undefined;
+      const [type] = segments;
+      if (!type) {
+        searchOptions = BoardSearch.Default;
+      } else if (BoardSearch.Type.is(type)) {
+        searchOptions = { type };
+      }
+      if (searchOptions) {
+        return {
+          ...searchOptions,
+          ...Searchable.UriParser.parseQuery(uri),
+        };
+      }
+      return undefined;
+    }
+  }
 }
 
 export interface Port {

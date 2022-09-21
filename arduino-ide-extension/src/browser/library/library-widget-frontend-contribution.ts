@@ -1,16 +1,17 @@
-import { injectable } from '@theia/core/shared/inversify';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import { MenuModelRegistry } from '@theia/core';
-import { LibraryListWidget } from './library-list-widget';
-import { ArduinoMenus } from '../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
+import { MenuModelRegistry } from '@theia/core/lib/common/menu';
+import { injectable } from '@theia/core/shared/inversify';
+import { LibraryPackage, LibrarySearch } from '../../common/protocol';
+import { URI } from '../contributions/contribution';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { ListWidgetFrontendContribution } from '../widgets/component-list/list-widget-frontend-contribution';
+import { LibraryListWidget } from './library-list-widget';
 
 @injectable()
-export class LibraryListWidgetFrontendContribution
-  extends AbstractViewContribution<LibraryListWidget>
-  implements FrontendApplicationContribution
-{
+export class LibraryListWidgetFrontendContribution extends ListWidgetFrontendContribution<
+  LibraryPackage,
+  LibrarySearch
+> {
   constructor() {
     super({
       widgetId: LibraryListWidget.WIDGET_ID,
@@ -24,10 +25,6 @@ export class LibraryListWidgetFrontendContribution
     });
   }
 
-  async initializeLayout(): Promise<void> {
-    this.openView();
-  }
-
   override registerMenus(menus: MenuModelRegistry): void {
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
@@ -39,5 +36,18 @@ export class LibraryListWidgetFrontendContribution
         order: '3',
       });
     }
+  }
+
+  protected canParse(uri: URI): boolean {
+    try {
+      LibrarySearch.UriParser.parse(uri);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  protected parse(uri: URI): LibrarySearch | undefined {
+    return LibrarySearch.UriParser.parse(uri);
   }
 }
