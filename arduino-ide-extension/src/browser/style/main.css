@@ -2,6 +2,12 @@
     background: var(--theia-editorGroupHeader-tabsBackground);
 }
 
+/* Negative values to lower the priority in order to avoid the problem that
+   the Intellisense widget may be cover by the bottom panel partially. */
+#theia-bottom-content-panel {
+   z-index: -1;
+}
+    
 .p-TabBar-toolbar .item.arduino-tool-item {
     margin-left: 0;
 }
