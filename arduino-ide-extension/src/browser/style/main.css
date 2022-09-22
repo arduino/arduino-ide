@@ -2,10 +2,14 @@
     background: var(--theia-editorGroupHeader-tabsBackground);
 }
 
-/* Negative values to lower the priority in order to avoid the problem that
-   the Intellisense widget may be cover by the bottom panel partially. */
-#theia-bottom-content-panel {
-   z-index: -1;
+/* Avoid the Intellisense widget may be cover by the bottom panel partially.
+   TODO: This issue may be resolved after monaco-editor upgrade */
+#theia-main-content-panel {
+    z-index: auto
+}
+
+#theia-main-content-panel div[id^="code-editor-opener"] {
+    z-index: auto;
 }
     
 .p-TabBar-toolbar .item.arduino-tool-item {
