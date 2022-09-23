@@ -37,16 +37,17 @@ export class CheckForIDEUpdates extends Contribution {
   }
 
   override onReady(): void {
-    const checkForUpdates = this.preferences['arduino.checkForUpdates'];
-    if (!checkForUpdates) {
-      return;
-    }
     this.updater
       .init(
         this.preferences.get('arduino.ide.updateChannel'),
         this.preferences.get('arduino.ide.updateBaseUrl')
       )
-      .then(() => this.updater.checkForUpdates(true))
+      .then(() => {
+        if (!this.preferences['arduino.checkForUpdates']) {
+          return;
+        }
+        return this.updater.checkForUpdates(true);
+      })
       .then(async (updateInfo) => {
         if (!updateInfo) return;
         const versionToSkip = await this.localStorage.getData<string>(
