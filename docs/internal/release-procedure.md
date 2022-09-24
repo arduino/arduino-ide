@@ -10,9 +10,9 @@ It will be shown in these search results:
 
 https://github.com/arduino/arduino-ide/pulls/app%2Fgithub-actions
 
-## ⚙ Create the release on GitHub
+## ⚙ Update metadata of packages
 
-First of all, you need to **set the new version in all the `package.json` files** across the app (`./package.json`, `./arduino-ide-extension/package.json`, and `./electron-app/package.json`), create a PR, and merge it on the `main` branch.
+You need to **set the new version in all the `package.json` files** across the app (`./package.json`, `./arduino-ide-extension/package.json`, and `./electron-app/package.json`), create a PR, and merge it on the `main` branch.
 
 To do so, you can make use of the `update:version` script.
 
@@ -28,6 +28,8 @@ git push origin version-<YOUR_VERSION>
 ```
 
 replacing `<YOUR_VERSION>` with the version you want to release. Then create a PR and merge it.
+
+## 🚢 Create the release on GitHub
 
 Then, you need to **create and push the new tag** and wait for the release to appear on [the "**Releases**" page](https://github.com/arduino/arduino-ide/releases).
 
