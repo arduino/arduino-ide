@@ -9,7 +9,7 @@ contact_links:
     url: https://forum.arduino.cc/
     about: We can help you out on the Arduino Forum!
   - name: Issue report guide
-    url: https://github.com/arduino/arduino-ide/blob/main/docs/issues.md#issue-report-guide
+    url: https://github.com/arduino/arduino-ide/blob/main/docs/contributor-guide/issues.md#issue-report-guide
     about: Learn about submitting issue reports to this repository.
   - name: Contributor guide
     url: https://github.com/arduino/arduino-ide/blob/main/docs/CONTRIBUTING.md#contributor-guide
