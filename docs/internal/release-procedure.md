@@ -1,6 +1,10 @@
 # Release Procedure
 
-## 1. 🗺️ Merge localization sync PR
+## Steps
+
+The following are the steps to follow to make a release of Arduino IDE:
+
+### 1. 🗺️ Merge localization sync PR
 
 A pull request titled "**Update translation files**" is submitted periodically by the "**github-actions**" bot to pull in the localization data from [**Transifex**](https://www.transifex.com/arduino-1/ide2/dashboard/).
 
@@ -10,26 +14,24 @@ It will be shown in these search results:
 
 https://github.com/arduino/arduino-ide/pulls/app%2Fgithub-actions
 
-## 2. ⚙ Update metadata of packages
+### 2. 👀 Check version of packages
 
-You need to **set the new version in all the `package.json` files** across the app (`./package.json`, `./arduino-ide-extension/package.json`, and `./electron-app/package.json`), create a PR, and merge it on the `main` branch.
+The [`version` field](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version) of the project's `package.json` metadata files received a patch version bump (e.g., `2.0.1` -> `2.0.2`) at the time of the previous release.
 
-To do so, you can make use of the `update:version` script.
+If this is a patch release, the current metadata values are correct and no action is needed.
 
-For example, if you want to release the version `<YOUR_VERSION>`, you should run the following commands:
+The changes contained in this release might be considered to change the project's "API". If so, a patch version bump will not be appropriate and the version must be adjusted in compliance with the [**Semantic Versioning Specification**](https://semver.org/).
 
-```text
-git checkout main
-git pull
-git checkout -b version-<YOUR_VERSION>
-yarn update:version <YOUR_VERSION>
-git commit -am <YOUR_VERSION>
-git push origin version-<YOUR_VERSION>
-```
+Follow the instructions for updating the version metadata [**here**](#update-version-metadata).
 
-replacing `<YOUR_VERSION>` with the version you want to release. Then create a PR and merge it.
+#### Examples
 
-## 3. 🚢 Create the release on GitHub
+If the version number of the previous release was `2.0.1`:
+
+- If this is considered a minor release (non-breaking changes to the "API"), the `version` values must be changed to `2.1.0`.
+- If this is considered a major release (breaking changes to the "API"), the `version` values must be changed to `3.0.0`.
+
+### 3. 🚢 Create the release on GitHub
 
 Then, you need to **create and push the new tag** and wait for the release to appear on [the "**Releases**" page](https://github.com/arduino/arduino-ide/releases).
 
@@ -44,7 +46,13 @@ git push origin <YOUR_VERSION>
 
 Pushing a tag will trigger a **GitHub Actions** workflow on the `main` branch. Check the "**Arduino IDE**" workflow and see that everything goes right. If the workflow succeeds, a new release will be created automatically and you should see it on the ["**Releases**"](https://github.com/arduino/arduino-ide/releases) page.
 
-## 4. 📄 Create the changelog
+### 4. ⬆️ Bump version metadata of packages
+
+In order for the version number of the tester and nightly builds to have correct precedence compared to the release version, the `version` field of the project's `package.json` files must be given a patch version bump (e.g., `2.0.1` -> `2.0.2`) **after** the creation of the release tag.
+
+Follow the instructions for updating the version metadata [**here**](#update-version-metadata).
+
+### 5. 📄 Create the changelog
 
 **Create GitHub issues for the known issues** that we haven't solved in the current release:
 
@@ -63,7 +71,7 @@ Add a list of mentions of GitHub users who contributed to the release in any of 
 
 Add a "**Known Issues**" section at the bottom of the changelog.
 
-## 5. ✎ Update the "**Software**" Page
+### 6. ✎ Update the "**Software**" Page
 
 Open a PR on the [bcmi-labs/wiki-content](https://github.com/bcmi-labs/wiki-content) repository to update the links and texts.
 
@@ -80,7 +88,7 @@ When the deploy workflow is done, check if links on the "**Software**" page are 
 
 https://www.arduino.cc/en/software#future-version-of-the-arduino-ide
 
-## 6. 😎 Brag about it
+### 7. 😎 Brag about it
 
 - Ask in the `#product_releases` **Slack** channel to write a post for the social media and, if needed, a blog post.
 - Post a message on the forum (ask @per1234).<br />
@@ -99,3 +107,28 @@ https://www.arduino.cc/en/software#future-version-of-the-arduino-ide
   >
   > To see the details, you can take a look at the [Changelog](https://github.com/arduino/arduino-ide/releases/tag/2.0.0-beta.12)
   > If you want to post about it on social media and you need more details feel free to ask us on #team_tooling! :wink:
+
+## Operations
+
+The following are detailed descriptions of operations performed during the release process:
+
+<a id="update-version-metadata"></a>
+
+### ⚙ Update version metadata of packages
+
+You need to **set the new version in all the `package.json` files** across the app (`./package.json`, `./arduino-ide-extension/package.json`, and `./electron-app/package.json`), create a PR, and merge it on the `main` branch.
+
+To do so, you can make use of the `update:version` script.
+
+For example, if you want to update the version to `<YOUR_VERSION>`, you should run the following commands:
+
+```text
+git checkout main
+git pull
+git checkout -b version-<YOUR_VERSION>
+yarn update:version <YOUR_VERSION>
+git commit -am <YOUR_VERSION>
+git push origin version-<YOUR_VERSION>
+```
+
+replacing `<YOUR_VERSION>` with the version you want. Then create a PR and merge it.
