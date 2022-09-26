@@ -10,12 +10,17 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import { DisposableCollection, nls } from '@theia/core/lib/common';
+import {
+  DisposableCollection,
+  MaybePromise,
+  nls,
+} from '@theia/core/lib/common';
 import type { ICodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/browser/editorBrowser';
 import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneCodeEditor';
 
 import { Settings } from '../dialogs/settings/settings';
 import { MainMenuManager } from '../../common/main-menu-manager';
+import debounce = require('lodash.debounce');
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
@@ -39,25 +44,24 @@ export class EditContributions extends Contribution {
     decrease: true,
   };
 
-  private checkInterfaceScaleMenuActions(settings: Settings): void {
-    let newFontScalingEnabled: EditContributions.FontScalingEnabled = {
-      increase: true,
-      decrease: true,
+  private currentScale: EditContributions.ScaleSettings;
+  private currentSettings: Settings;
+  private updateSettingsDebounced = debounce(
+    async () => {
+      await this.settingsService.update(this.currentSettings);
+      await this.settingsService.save();
+    },
+    100,
+    { maxWait: 200 }
+  );
+
+  override onStart(): MaybePromise<void> {
+    const updateCurrent = (settings: Settings) => {
+      this.currentSettings = settings;
+      this.currentScale = { ...settings };
     };
-    if (settings.autoScaleInterface) {
-      newFontScalingEnabled = {
-        increase: settings.interfaceScale < EditContributions.ZoomLevel.MAX,
-        decrease: settings.interfaceScale > EditContributions.ZoomLevel.MIN,
-      };
-    }
-    const isChanged = Object.keys(newFontScalingEnabled).some(
-      (key: keyof EditContributions.FontScalingEnabled) =>
-        newFontScalingEnabled[key] !== this.fontScalingEnabled[key]
-    );
-    if (isChanged) {
-      this.registerInterfaceScaleMenuActions(newFontScalingEnabled);
-    }
-    this.fontScalingEnabled = newFontScalingEnabled;
+    this.settingsService.onDidChange((settings) => updateCurrent(settings));
+    this.settingsService.settings().then((settings) => updateCurrent(settings));
   }
 
   override registerCommands(registry: CommandRegistry): void {
@@ -86,31 +90,11 @@ export class EditContributions extends Contribution {
       execute: () => this.run('editor.action.previousSelectionMatchFindAction'),
     });
     registry.registerCommand(EditContributions.Commands.INCREASE_FONT_SIZE, {
-      execute: async () => {
-        const settings = await this.settingsService.settings();
-        if (settings.autoScaleInterface) {
-          settings.interfaceScale = settings.interfaceScale + 1;
-        } else {
-          settings.editorFontSize = settings.editorFontSize + 1;
-        }
-        await this.settingsService.update(settings);
-        await this.settingsService.save();
-        this.checkInterfaceScaleMenuActions(settings);
-      },
+      execute: () => this.updateFontSize('increase'),
       isEnabled: () => this.fontScalingEnabled.increase,
     });
     registry.registerCommand(EditContributions.Commands.DECREASE_FONT_SIZE, {
-      execute: async () => {
-        const settings = await this.settingsService.settings();
-        if (settings.autoScaleInterface) {
-          settings.interfaceScale = settings.interfaceScale - 1;
-        } else {
-          settings.editorFontSize = settings.editorFontSize - 1;
-        }
-        await this.settingsService.update(settings);
-        await this.settingsService.save();
-        this.checkInterfaceScaleMenuActions(settings);
-      },
+      execute: () => this.updateFontSize('decrease'),
       isEnabled: () => this.fontScalingEnabled.decrease,
     });
     /* Tools */ registry.registerCommand(
@@ -371,6 +355,44 @@ ${value}
       }
     }
   }
+
+  private async updateFontSize(mode: 'increase' | 'decrease'): Promise<void> {
+    if (this.currentSettings.autoScaleInterface) {
+      mode === 'increase'
+        ? this.currentScale.interfaceScale++
+        : this.currentScale.interfaceScale--;
+    } else {
+      mode === 'increase'
+        ? this.currentScale.editorFontSize++
+        : this.currentScale.editorFontSize++;
+    }
+    this.currentSettings = {
+      ...this.currentSettings,
+      editorFontSize: this.currentScale.editorFontSize,
+      interfaceScale: this.currentScale.interfaceScale,
+    };
+    let newFontScalingEnabled: EditContributions.FontScalingEnabled = {
+      increase: true,
+      decrease: true,
+    };
+    if (this.currentSettings.autoScaleInterface) {
+      newFontScalingEnabled = {
+        increase:
+          this.currentSettings.interfaceScale < EditContributions.ZoomLevel.MAX,
+        decrease:
+          this.currentSettings.interfaceScale > EditContributions.ZoomLevel.MIN,
+      };
+    }
+    const isChanged = Object.keys(newFontScalingEnabled).some(
+      (key: keyof EditContributions.FontScalingEnabled) =>
+        newFontScalingEnabled[key] !== this.fontScalingEnabled[key]
+    );
+    if (isChanged) {
+      this.registerInterfaceScaleMenuActions(newFontScalingEnabled);
+    }
+    this.fontScalingEnabled = newFontScalingEnabled;
+    this.updateSettingsDebounced();
+  }
 }
 
 export namespace EditContributions {
@@ -422,4 +444,9 @@ export namespace EditContributions {
     increase: boolean;
     decrease: boolean;
   }
+
+  export type ScaleSettings = Pick<
+    Settings,
+    'interfaceScale' | 'editorFontSize'
+  >;
 }
