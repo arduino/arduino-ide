@@ -23,14 +23,22 @@ import {
   LanguageInfo,
 } from '@theia/core/lib/common/i18n/localization';
 import SettingsStepInput from './settings-step-input';
+import { InterfaceScale } from '../../contributions/interface-scale';
 
-const maxScale = 280;
-const minScale = -60;
-const scaleStep = 20;
+const maxScale = InterfaceScale.ZoomLevel.toPercentage(
+  InterfaceScale.ZoomLevel.MAX
+);
+const minScale = InterfaceScale.ZoomLevel.toPercentage(
+  InterfaceScale.ZoomLevel.MIN
+);
+const scaleStep = InterfaceScale.ZoomLevel.Step.fromPercentage(
+  InterfaceScale.ZoomLevel.STEP
+);
 
-const maxFontSize = 72;
-const minFontSize = 0;
-const fontSizeStep = 2;
+const maxFontSize = InterfaceScale.FontSize.MAX;
+const minFontSize = InterfaceScale.FontSize.MIN;
+const fontSizeStep = InterfaceScale.FontSize.STEP;
+
 export class SettingsComponent extends React.Component<
   SettingsComponent.Props,
   SettingsComponent.State
@@ -554,8 +562,7 @@ export class SettingsComponent extends React.Component<
   };
 
   private setInterfaceScale = (percentage: number) => {
-    const interfaceScale = (percentage - 100) / 20;
-
+    const interfaceScale = InterfaceScale.ZoomLevel.fromPercentage(percentage);
     this.setState({ interfaceScale });
   };
 

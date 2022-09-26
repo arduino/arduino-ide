@@ -9,18 +9,10 @@ import {
   KeybindingRegistry,
   CommandRegistry,
 } from './contribution';
-import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import {
-  DisposableCollection,
-  MaybePromise,
-  nls,
-} from '@theia/core/lib/common';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/common';
 import type { ICodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/browser/editorBrowser';
 import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneCodeEditor';
-
-import { Settings } from '../dialogs/settings/settings';
-import { MainMenuManager } from '../../common/main-menu-manager';
-import debounce = require('lodash.debounce');
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
@@ -31,38 +23,6 @@ export class EditContributions extends Contribution {
 
   @inject(ClipboardService)
   private readonly clipboardService: ClipboardService;
-
-  @inject(MenuModelRegistry)
-  private readonly menuRegistry: MenuModelRegistry;
-
-  @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
-
-  private readonly menuActionsDisposables = new DisposableCollection();
-  private fontScalingEnabled: EditContributions.FontScalingEnabled = {
-    increase: true,
-    decrease: true,
-  };
-
-  private currentScale: EditContributions.ScaleSettings;
-  private currentSettings: Settings;
-  private updateSettingsDebounced = debounce(
-    async () => {
-      await this.settingsService.update(this.currentSettings);
-      await this.settingsService.save();
-    },
-    100,
-    { maxWait: 200 }
-  );
-
-  override onStart(): MaybePromise<void> {
-    const updateCurrent = (settings: Settings) => {
-      this.currentSettings = settings;
-      this.currentScale = { ...settings };
-    };
-    this.settingsService.onDidChange((settings) => updateCurrent(settings));
-    this.settingsService.settings().then((settings) => updateCurrent(settings));
-  }
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(EditContributions.Commands.GO_TO_LINE, {
@@ -88,14 +48,6 @@ export class EditContributions extends Contribution {
     });
     registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, {
       execute: () => this.run('editor.action.previousSelectionMatchFindAction'),
-    });
-    registry.registerCommand(EditContributions.Commands.INCREASE_FONT_SIZE, {
-      execute: () => this.updateFontSize('increase'),
-      isEnabled: () => this.fontScalingEnabled.increase,
-    });
-    registry.registerCommand(EditContributions.Commands.DECREASE_FONT_SIZE, {
-      execute: () => this.updateFontSize('decrease'),
-      isEnabled: () => this.fontScalingEnabled.decrease,
     });
     /* Tools */ registry.registerCommand(
       EditContributions.Commands.AUTO_FORMAT,
@@ -207,70 +159,6 @@ ${value}
       label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '0',
     });
-
-    this.registerInterfaceScaleMenuActions();
-  }
-
-  private registerInterfaceScaleMenuActions(
-    newFontScalingEnabled = this.fontScalingEnabled
-  ): void {
-    this.menuActionsDisposables.dispose();
-    const increaseFontSizeMenuAction = {
-      commandId: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      label: nls.localize(
-        'arduino/editor/increaseFontSize',
-        'Increase Font Size'
-      ),
-      order: '0',
-    };
-    const decreaseFontSizeMenuAction = {
-      commandId: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      label: nls.localize(
-        'arduino/editor/decreaseFontSize',
-        'Decrease Font Size'
-      ),
-      order: '1',
-    };
-
-    if (newFontScalingEnabled.increase) {
-      this.menuActionsDisposables.push(
-        this.menuRegistry.registerMenuAction(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          increaseFontSizeMenuAction
-        )
-      );
-    } else {
-      this.menuActionsDisposables.push(
-        this.menuRegistry.registerMenuNode(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          new PlaceholderMenuNode(
-            ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-            increaseFontSizeMenuAction.label,
-            { order: increaseFontSizeMenuAction.order }
-          )
-        )
-      );
-    }
-    if (newFontScalingEnabled.decrease) {
-      this.menuActionsDisposables.push(
-        this.menuRegistry.registerMenuAction(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          decreaseFontSizeMenuAction
-        )
-      );
-    } else {
-      this.menuActionsDisposables.push(
-        this.menuRegistry.registerMenuNode(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          new PlaceholderMenuNode(
-            ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-            decreaseFontSizeMenuAction.label,
-            { order: decreaseFontSizeMenuAction.order }
-          )
-        )
-      );
-    }
-    this.mainMenuManager.update();
   }
 
   override registerKeybindings(registry: KeybindingRegistry): void {
@@ -289,15 +177,6 @@ ${value}
       command: EditContributions.Commands.TOGGLE_COMMENT.id,
       keybinding: 'CtrlCmd+/',
       when: 'editorFocus',
-    });
-
-    registry.registerKeybinding({
-      command: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      keybinding: 'CtrlCmd+=',
-    });
-    registry.registerKeybinding({
-      command: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      keybinding: 'CtrlCmd+-',
     });
 
     registry.registerKeybinding({
@@ -355,44 +234,6 @@ ${value}
       }
     }
   }
-
-  private async updateFontSize(mode: 'increase' | 'decrease'): Promise<void> {
-    if (this.currentSettings.autoScaleInterface) {
-      mode === 'increase'
-        ? this.currentScale.interfaceScale++
-        : this.currentScale.interfaceScale--;
-    } else {
-      mode === 'increase'
-        ? this.currentScale.editorFontSize++
-        : this.currentScale.editorFontSize++;
-    }
-    this.currentSettings = {
-      ...this.currentSettings,
-      editorFontSize: this.currentScale.editorFontSize,
-      interfaceScale: this.currentScale.interfaceScale,
-    };
-    let newFontScalingEnabled: EditContributions.FontScalingEnabled = {
-      increase: true,
-      decrease: true,
-    };
-    if (this.currentSettings.autoScaleInterface) {
-      newFontScalingEnabled = {
-        increase:
-          this.currentSettings.interfaceScale < EditContributions.ZoomLevel.MAX,
-        decrease:
-          this.currentSettings.interfaceScale > EditContributions.ZoomLevel.MIN,
-      };
-    }
-    const isChanged = Object.keys(newFontScalingEnabled).some(
-      (key: keyof EditContributions.FontScalingEnabled) =>
-        newFontScalingEnabled[key] !== this.fontScalingEnabled[key]
-    );
-    if (isChanged) {
-      this.registerInterfaceScaleMenuActions(newFontScalingEnabled);
-    }
-    this.fontScalingEnabled = newFontScalingEnabled;
-    this.updateSettingsDebounced();
-  }
 }
 
 export namespace EditContributions {
@@ -424,29 +265,8 @@ export namespace EditContributions {
     export const USE_FOR_FIND: Command = {
       id: 'arduino-for-find',
     };
-    export const INCREASE_FONT_SIZE: Command = {
-      id: 'arduino-increase-font-size',
-    };
-    export const DECREASE_FONT_SIZE: Command = {
-      id: 'arduino-decrease-font-size',
-    };
     export const AUTO_FORMAT: Command = {
       id: 'arduino-auto-format', // `Auto Format` should belong to `Tool`.
     };
   }
-
-  export namespace ZoomLevel {
-    export const MIN = -8;
-    export const MAX = 9;
-  }
-
-  export interface FontScalingEnabled {
-    increase: boolean;
-    decrease: boolean;
-  }
-
-  export type ScaleSettings = Pick<
-    Settings,
-    'interfaceScale' | 'editorFontSize'
-  >;
 }
