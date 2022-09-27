@@ -11,7 +11,7 @@
 #theia-main-content-panel div[id^="code-editor-opener"] {
     z-index: auto;
 }
-    
+
 .p-TabBar-toolbar .item.arduino-tool-item {
     margin-left: 0;
 }
@@ -97,8 +97,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--theia-titleBar-activeBackground);   
-
+    background-color: var(--theia-titleBar-activeBackground);
 }
 
 #arduino-toolbar-container {
@@ -252,4 +251,11 @@
 .hc-black.hc-theia.theia-hc .quick-input-widget {
     outline: 1px solid var(--theia-contrastBorder);
     outline-offset: -1px;
+}
+
+.monaco-hover p {
+    margin: 8px 0;
+}
+.monaco-hover .monaco-tokenized-source {
+    margin-top: 8px;
 }
