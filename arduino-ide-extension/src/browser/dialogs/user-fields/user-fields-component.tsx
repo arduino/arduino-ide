@@ -16,9 +16,9 @@ export const UserFieldsComponent = ({
   const [boardUserFields, setBoardUserFields] = React.useState<
     BoardUserField[]
   >(initialBoardUserFields);
-
   const [uploadButtonDisabled, setUploadButtonDisabled] =
     React.useState<boolean>(true);
+  const firstInputElement = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     setBoardUserFields(initialBoardUserFields);
@@ -48,7 +48,10 @@ export const UserFieldsComponent = ({
   React.useEffect(() => {
     updateUserFields(boardUserFields);
     setUploadButtonDisabled(!allFieldsHaveValues(boardUserFields));
-  }, [boardUserFields]);
+    if (firstInputElement.current) {
+      firstInputElement.current.focus();
+    }
+  }, [boardUserFields, updateUserFields]);
 
   return (
     <div>
@@ -71,7 +74,7 @@ export const UserFieldsComponent = ({
                       field.label
                     )}
                     onChange={updateUserField(index)}
-                    autoFocus={index === 0}
+                    ref={index === 0 ? firstInputElement : undefined}
                   />
                 </div>
               </div>

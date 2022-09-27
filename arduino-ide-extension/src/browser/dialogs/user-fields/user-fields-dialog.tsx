@@ -13,7 +13,7 @@ import { BoardUserField } from '../../../common/protocol';
 
 @injectable()
 export class UserFieldsDialogWidget extends ReactWidget {
-  protected _currentUserFields: BoardUserField[] = [];
+  private _currentUserFields: BoardUserField[] = [];
 
   constructor(private cancel: () => void, private accept: () => Promise<void>) {
     super();
@@ -34,7 +34,7 @@ export class UserFieldsDialogWidget extends ReactWidget {
     });
   }
 
-  protected setUserFields(userFields: BoardUserField[]): void {
+  private setUserFields(userFields: BoardUserField[]): void {
     this._currentUserFields = userFields;
   }
 
