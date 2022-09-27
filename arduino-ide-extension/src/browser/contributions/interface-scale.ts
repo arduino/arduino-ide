@@ -31,7 +31,6 @@ export class InterfaceScale extends Contribution {
     decrease: true,
   };
 
-  private currentScale: InterfaceScale.ScaleSettings;
   private currentSettings: Settings;
   private updateSettingsDebounced = debounce(
     async () => {
@@ -45,7 +44,6 @@ export class InterfaceScale extends Contribution {
   override onStart(): MaybePromise<void> {
     const updateCurrent = (settings: Settings) => {
       this.currentSettings = settings;
-      this.currentScale = { ...settings };
     };
     this.settingsService.onDidChange((settings) => updateCurrent(settings));
     this.settingsService.settings().then((settings) => updateCurrent(settings));
@@ -125,18 +123,13 @@ export class InterfaceScale extends Contribution {
   private async updateFontSize(mode: 'increase' | 'decrease'): Promise<void> {
     if (this.currentSettings.autoScaleInterface) {
       mode === 'increase'
-        ? (this.currentScale.interfaceScale += InterfaceScale.ZoomLevel.STEP)
-        : (this.currentScale.interfaceScale -= InterfaceScale.ZoomLevel.STEP);
+        ? (this.currentSettings.interfaceScale += InterfaceScale.ZoomLevel.STEP)
+        : (this.currentSettings.interfaceScale -= InterfaceScale.ZoomLevel.STEP);
     } else {
       mode === 'increase'
-        ? (this.currentScale.editorFontSize += InterfaceScale.FontSize.STEP)
-        : (this.currentScale.editorFontSize -= InterfaceScale.FontSize.STEP);
+        ? (this.currentSettings.editorFontSize += InterfaceScale.FontSize.STEP)
+        : (this.currentSettings.editorFontSize -= InterfaceScale.FontSize.STEP);
     }
-    this.currentSettings = {
-      ...this.currentSettings,
-      editorFontSize: this.currentScale.editorFontSize,
-      interfaceScale: this.currentScale.interfaceScale,
-    };
     let newFontScalingEnabled: InterfaceScale.FontScalingEnabled = {
       increase: true,
       decrease: true,
@@ -225,9 +218,4 @@ export namespace InterfaceScale {
     increase: boolean;
     decrease: boolean;
   }
-
-  export type ScaleSettings = Pick<
-    Settings,
-    'interfaceScale' | 'editorFontSize'
-  >;
 }
