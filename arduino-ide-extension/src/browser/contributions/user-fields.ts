@@ -58,7 +58,7 @@ export class UserFields extends Contribution {
     }
   }
 
-  private selectedFqbnAddress(): string | undefined  {
+  private selectedFqbnAddress(): string | undefined {
     const { boardsConfig } = this.boardsServiceProvider;
     const fqbn = boardsConfig.selectedBoard?.fqbn;
     if (!fqbn) {
@@ -78,7 +78,9 @@ export class UserFields extends Contribution {
   ): Promise<BoardUserField[] | undefined> {
     const cached = this.cachedUserFields.get(key);
     // Deep clone the array of board fields to avoid editing the cached ones
-    this.userFieldsDialog.value = cached ? cached.slice() : await this.boardsServiceProvider.selectedBoardUserFields();
+    this.userFieldsDialog.value = cached
+      ? cached.slice()
+      : await this.boardsServiceProvider.selectedBoardUserFields();
     const result = await this.userFieldsDialog.open();
     if (!result) {
       return;
@@ -140,10 +142,7 @@ export class UserFields extends Contribution {
   }
 
   notifyFailedWithError(e: Error): void {
-    if (
-      this.boardRequiresUserFields &&
-      CoreError.UploadFailed.is(e)
-    ) {
+    if (this.boardRequiresUserFields && CoreError.UploadFailed.is(e)) {
       this.userFieldsSet = false;
     }
   }

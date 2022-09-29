@@ -115,6 +115,8 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
       Widget.detach(this.widget);
     }
     Widget.attach(this.widget, this.contentNode);
+    const firstButton = this.widget.node.querySelector('button');
+    firstButton?.focus();
     this.widget.busyCallback = this.busyCallback.bind(this);
     super.onAfterAttach(msg);
     this.update();

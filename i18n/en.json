@@ -376,7 +376,7 @@
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Configure And Upload",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Done uploading.",

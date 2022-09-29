@@ -229,7 +229,7 @@ export namespace UploadSketch {
       id: 'arduino-upload-with-configuration-sketch',
       label: nls.localize(
         'arduino/sketch/configureAndUpload',
-        'Configure And Upload'
+        'Configure and Upload'
       ),
       category: 'Arduino',
     };
