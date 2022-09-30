@@ -59,7 +59,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
           className="installed"
           onClick={onClickUninstall}
           {...{
-            install: nls.localize('arduino/component/install', 'INSTALL'),
+            install: nls.localize('arduino/component/installed', 'INSTALLED'),
             uninstall: nls.localize('arduino/component/uninstall', 'Uninstall'),
           }}
         />
