@@ -145,6 +145,7 @@
       "by": "by",
       "filterSearch": "Filter your search...",
       "install": "INSTALL",
+      "installed": "INSTALLED",
       "moreInfo": "More info",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
