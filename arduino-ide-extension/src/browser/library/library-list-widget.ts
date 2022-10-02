@@ -139,12 +139,12 @@ export class LibraryListWidget extends ListWidget<
 
       if (result) {
         const { response } = result;
-        if (response === 0) {
-          // All
-          installDependencies = true;
-        } else if (response === 1) {
+        if (response === 1) {
           // Current only
           installDependencies = false;
+        } else if (response === 2) {
+          // All
+          installDependencies = true;
         }
       }
     } else {
