@@ -120,11 +120,12 @@ export class InterfaceScale extends Contribution {
     this.mainMenuManager.update();
   }
 
-  private async updateFontSize(mode: 'increase' | 'decrease'): Promise<void> {
+  private updateFontSize(mode: 'increase' | 'decrease'): void {
     if (this.currentSettings.autoScaleInterface) {
       mode === 'increase'
         ? (this.currentSettings.interfaceScale += InterfaceScale.ZoomLevel.STEP)
-        : (this.currentSettings.interfaceScale -= InterfaceScale.ZoomLevel.STEP);
+        : (this.currentSettings.interfaceScale -=
+            InterfaceScale.ZoomLevel.STEP);
     } else {
       mode === 'increase'
         ? (this.currentSettings.editorFontSize += InterfaceScale.FontSize.STEP)
