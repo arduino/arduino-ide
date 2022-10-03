@@ -31,7 +31,7 @@ const maxScale = InterfaceScale.ZoomLevel.toPercentage(
 const minScale = InterfaceScale.ZoomLevel.toPercentage(
   InterfaceScale.ZoomLevel.MIN
 );
-const scaleStep = InterfaceScale.ZoomLevel.Step.fromPercentage(
+const scaleStep = InterfaceScale.ZoomLevel.Step.toPercentage(
   InterfaceScale.ZoomLevel.STEP
 );
 
