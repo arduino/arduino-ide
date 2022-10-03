@@ -23,7 +23,7 @@ export class InterfaceScale extends Contribution {
   private readonly menuRegistry: MenuModelRegistry;
 
   @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
+  private readonly mainMenuManager: MainMenuManager;
 
   private readonly menuActionsDisposables = new DisposableCollection();
   private fontScalingEnabled: InterfaceScale.FontScalingEnabled = {
