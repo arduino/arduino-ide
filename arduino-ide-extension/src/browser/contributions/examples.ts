@@ -19,10 +19,11 @@ import {
   SketchContribution,
   CommandRegistry,
   MenuModelRegistry,
+  URI,
 } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { Board, SketchRef, SketchContainer } from '../../common/protocol';
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -150,10 +151,13 @@ export abstract class Examples extends SketchContribution {
     return {
       execute: async () => {
         const sketch = await this.sketchService.cloneExample(uri);
-        return this.commandService.executeCommand(
-          OpenSketch.Commands.OPEN_SKETCH.id,
-          sketch
-        );
+        return this.commandService
+          .executeCommand(OpenSketch.Commands.OPEN_SKETCH.id, sketch)
+          .then((result) => {
+            const name = new URI(uri).path.base;
+            this.sketchService.markAsRecentlyOpened({ name, sourceUri: uri }); // no await
+            return result;
+          });
       },
     };
   }

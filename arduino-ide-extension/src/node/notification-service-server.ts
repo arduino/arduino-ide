@@ -8,6 +8,7 @@ import type {
   Config,
   Sketch,
   ProgressMessage,
+  ExampleRef,
 } from '../common/protocol';
 
 @injectable()
@@ -76,7 +77,9 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyConfigDidChange(event));
   }
 
-  notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void {
+  notifyRecentSketchesDidChange(event: {
+    sketches: (Sketch | ExampleRef)[];
+  }): void {
     this.clients.forEach((client) =>
       client.notifyRecentSketchesDidChange(event)
     );
