@@ -44,6 +44,7 @@ export class InterfaceScale extends Contribution {
   override onStart(): MaybePromise<void> {
     const updateCurrent = (settings: Settings) => {
       this.currentSettings = settings;
+      this.updateFontScalingEnabled();
     };
     this.settingsService.onDidChange((settings) => updateCurrent(settings));
     this.settingsService.settings().then((settings) => updateCurrent(settings));
@@ -120,6 +121,42 @@ export class InterfaceScale extends Contribution {
     this.mainMenuManager.update();
   }
 
+  private updateFontScalingEnabled(): void {
+    let fontScalingEnabled = {
+      increase: true,
+      decrease: true,
+    };
+
+    if (this.currentSettings.autoScaleInterface) {
+      fontScalingEnabled = {
+        increase:
+          this.currentSettings.interfaceScale + InterfaceScale.ZoomLevel.STEP <=
+          InterfaceScale.ZoomLevel.MAX,
+        decrease:
+          this.currentSettings.interfaceScale - InterfaceScale.ZoomLevel.STEP >=
+          InterfaceScale.ZoomLevel.MIN,
+      };
+    } else {
+      fontScalingEnabled = {
+        increase:
+          this.currentSettings.editorFontSize + InterfaceScale.FontSize.STEP <=
+          InterfaceScale.FontSize.MAX,
+        decrease:
+          this.currentSettings.editorFontSize - InterfaceScale.FontSize.STEP >=
+          InterfaceScale.FontSize.MIN,
+      };
+    }
+
+    const isChanged = Object.keys(fontScalingEnabled).some(
+      (key: keyof InterfaceScale.FontScalingEnabled) =>
+        fontScalingEnabled[key] !== this.fontScalingEnabled[key]
+    );
+    if (isChanged) {
+      this.fontScalingEnabled = fontScalingEnabled;
+      this.registerMenus(this.menuRegistry);
+    }
+  }
+
   private updateFontSize(mode: 'increase' | 'decrease'): void {
     if (this.currentSettings.autoScaleInterface) {
       mode === 'increase'
@@ -131,37 +168,7 @@ export class InterfaceScale extends Contribution {
         ? (this.currentSettings.editorFontSize += InterfaceScale.FontSize.STEP)
         : (this.currentSettings.editorFontSize -= InterfaceScale.FontSize.STEP);
     }
-    let newFontScalingEnabled: InterfaceScale.FontScalingEnabled = {
-      increase: true,
-      decrease: true,
-    };
-    if (this.currentSettings.autoScaleInterface) {
-      newFontScalingEnabled = {
-        increase:
-          this.currentSettings.interfaceScale + InterfaceScale.ZoomLevel.STEP <=
-          InterfaceScale.ZoomLevel.MAX,
-        decrease:
-          this.currentSettings.interfaceScale - InterfaceScale.ZoomLevel.STEP >=
-          InterfaceScale.ZoomLevel.MIN,
-      };
-    } else {
-      newFontScalingEnabled = {
-        increase:
-          this.currentSettings.editorFontSize + InterfaceScale.FontSize.STEP <=
-          InterfaceScale.FontSize.MAX,
-        decrease:
-          this.currentSettings.editorFontSize - InterfaceScale.FontSize.STEP >=
-          InterfaceScale.FontSize.MIN,
-      };
-    }
-    const isChanged = Object.keys(newFontScalingEnabled).some(
-      (key: keyof InterfaceScale.FontScalingEnabled) =>
-        newFontScalingEnabled[key] !== this.fontScalingEnabled[key]
-    );
-    if (isChanged) {
-      this.fontScalingEnabled = newFontScalingEnabled;
-      this.registerMenus(this.menuRegistry);
-    }
+    this.updateFontScalingEnabled();
     this.updateSettingsDebounced();
   }
 
