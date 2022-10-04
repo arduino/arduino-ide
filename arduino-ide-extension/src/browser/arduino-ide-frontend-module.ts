@@ -1,3 +1,4 @@
+// no merge!!!
 import '../../src/browser/style/index.css';
 import { ContainerModule } from '@theia/core/shared/inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
