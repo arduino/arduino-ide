@@ -33,6 +33,7 @@ import {
   BoardDetailsRequest,
   BoardDetailsResponse,
   BoardListAllRequest,
+  BoardListAllResponse,
   BoardSearchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import {
@@ -200,37 +201,28 @@ export class BoardsServiceImpl
     const req = new BoardSearchRequest();
     req.setSearchArgs(query || '');
     req.setInstance(instance);
-    const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
-      client.boardSearch(req, (error, resp) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        const boards: Array<BoardWithPackage> = [];
-        for (const board of resp.getBoardsList()) {
-          const platform = board.getPlatform();
-          if (platform) {
-            boards.push({
-              name: board.getName(),
-              fqbn: board.getFqbn(),
-              packageId: platform.getId(),
-              packageName: platform.getName(),
-              manuallyInstalled: platform.getManuallyInstalled(),
-            });
-          }
-        }
-        resolve(boards);
-      });
-    });
-    return boards;
+    return this.handleListBoards(client.boardSearch.bind(client), req);
   }
 
   async getInstalledBoards(): Promise<BoardWithPackage[]> {
     const { instance, client } = await this.coreClient;
     const req = new BoardListAllRequest();
     req.setInstance(instance);
+    return this.handleListBoards(client.boardListAll.bind(client), req);
+  }
+
+  async handleListBoards(
+    getBoards: (
+      request: BoardListAllRequest | BoardSearchRequest,
+      callback: (
+        error: ServiceError | null,
+        response: BoardListAllResponse
+      ) => void
+    ) => void,
+    request: BoardListAllRequest | BoardSearchRequest
+  ): Promise<BoardWithPackage[]> {
     const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
-      client.boardListAll(req, (error, resp) => {
+      getBoards(request, (error, resp) => {
         if (error) {
           reject(error);
           return;
