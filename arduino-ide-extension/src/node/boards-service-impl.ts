@@ -32,7 +32,7 @@ import { CoreClientAware } from './core-client-provider';
 import {
   BoardDetailsRequest,
   BoardDetailsResponse,
-  BoardSearchRequest,
+  BoardListAllRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import {
   ListProgrammersAvailableForUploadRequest,
@@ -196,11 +196,11 @@ export class BoardsServiceImpl
     query?: string;
   }): Promise<BoardWithPackage[]> {
     const { instance, client } = await this.coreClient;
-    const req = new BoardSearchRequest();
-    req.setSearchArgs(query || '');
+    const req = new BoardListAllRequest();
+    req.addSearchArgs(query || '');
     req.setInstance(instance);
     const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
-      client.boardSearch(req, (error, resp) => {
+      client.boardListAll(req, (error, resp) => {
         if (error) {
           reject(error);
           return;
