@@ -141,6 +141,7 @@ export interface BoardsService
     fqbn: string;
   }): Promise<BoardsPackage | undefined>;
   searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
+  getInstalledBoards(): Promise<BoardWithPackage[]>;
   getBoardUserFields(options: {
     fqbn: string;
     protocol: string;

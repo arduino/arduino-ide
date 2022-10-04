@@ -33,6 +33,7 @@ import {
   BoardDetailsRequest,
   BoardDetailsResponse,
   BoardListAllRequest,
+  BoardSearchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import {
   ListProgrammersAvailableForUploadRequest,
@@ -196,8 +197,37 @@ export class BoardsServiceImpl
     query?: string;
   }): Promise<BoardWithPackage[]> {
     const { instance, client } = await this.coreClient;
+    const req = new BoardSearchRequest();
+    req.setSearchArgs(query || '');
+    req.setInstance(instance);
+    const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
+      client.boardSearch(req, (error, resp) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        const boards: Array<BoardWithPackage> = [];
+        for (const board of resp.getBoardsList()) {
+          const platform = board.getPlatform();
+          if (platform) {
+            boards.push({
+              name: board.getName(),
+              fqbn: board.getFqbn(),
+              packageId: platform.getId(),
+              packageName: platform.getName(),
+              manuallyInstalled: platform.getManuallyInstalled(),
+            });
+          }
+        }
+        resolve(boards);
+      });
+    });
+    return boards;
+  }
+
+  async getInstalledBoards(): Promise<BoardWithPackage[]> {
+    const { instance, client } = await this.coreClient;
     const req = new BoardListAllRequest();
-    req.addSearchArgs(query || '');
     req.setInstance(instance);
     const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
       client.boardListAll(req, (error, resp) => {
