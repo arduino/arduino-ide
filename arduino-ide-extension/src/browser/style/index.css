@@ -55,7 +55,8 @@
 /* Makes the sidepanel a bit wider when opening the widget */
 .p-DockPanel-widget {
   min-width: 200px;
-  min-height: 200px;
+  min-height: 20px;
+  height: 200px;
 }
 
 /* Overrule the default Theia CSS button styles. */
