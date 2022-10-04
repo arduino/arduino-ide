@@ -137,6 +137,9 @@ button.secondary[disabled], .theia-button.secondary[disabled] {
   font-size: 14px;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
 
 /* High Contrast Theme rules */
 /* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/

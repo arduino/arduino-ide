@@ -61,10 +61,10 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
           </div>
         </div>
         <button
-          className="theia-button"
+          className="theia-button uppercase"
           onClick={() => shell.openExternal('https://create.arduino.cc/editor')}
         >
-          {nls.localize('cloud/GoToCloud', 'GO TO CLOUD')}
+          {nls.localize('arduino/cloud/goToCloud', 'Go to Cloud')}
         </button>
         <div className="center item"></div>
       </div>

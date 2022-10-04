@@ -90,6 +90,7 @@
       "donePushing": "Done pushing ‘{0}’.",
       "embed": "Embed:",
       "emptySketchbook": "Your Sketchbook is empty",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Learn more",
       "link": "Link:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
@@ -144,8 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "Filter your search...",
-      "install": "INSTALL",
-      "installed": "INSTALLED",
+      "install": "Install",
+      "installed": "Installed",
       "moreInfo": "More info",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
@@ -421,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Upload"
     }
-  },
-  "cloud": {
-    "GoToCloud": "GO TO CLOUD"
   },
   "theia": {
     "core": {
