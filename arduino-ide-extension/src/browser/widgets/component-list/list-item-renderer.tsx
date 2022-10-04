@@ -56,10 +56,10 @@ export class ListItemRenderer<T extends ArduinoComponent> {
           )}
         </span>
         <span
-          className="installed"
+          className="installed uppercase"
           onClick={onClickUninstall}
           {...{
-            install: nls.localize('arduino/component/installed', 'INSTALLED'),
+            install: nls.localize('arduino/component/installed', 'Installed'),
             uninstall: nls.localize('arduino/component/uninstall', 'Uninstall'),
           }}
         />
@@ -77,10 +77,10 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     const onClickInstall = () => install(item);
     const installButton = item.installable && (
       <button
-        className="theia-button secondary install"
+        className="theia-button secondary install uppercase"
         onClick={onClickInstall}
       >
-        {nls.localize('arduino/component/install', 'INSTALL')}
+        {nls.localize('arduino/component/install', 'Install')}
       </button>
     );
 

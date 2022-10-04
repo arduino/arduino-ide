@@ -112,14 +112,12 @@
     max-height: calc(1em + 4px);
     color: var(--theia-button-foreground);
     content: attr(install);
-    text-transform: uppercase;
 }
 
 .component-list-item .header .installed:hover:before {
     background-color: var(--theia-button-foreground);
     color: var(--theia-button-background);
     content: attr(uninstall);
-    text-transform: uppercase;
 }
 
 .component-list-item[min-width~="170px"] .footer {
