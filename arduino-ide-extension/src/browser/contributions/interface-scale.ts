@@ -159,10 +159,9 @@ export class InterfaceScale extends Contribution {
         newFontScalingEnabled[key] !== this.fontScalingEnabled[key]
     );
     if (isChanged) {
-      this.registerMenus(this.menuRegistry);
       this.fontScalingEnabled = newFontScalingEnabled;
+      this.registerMenus(this.menuRegistry);
     }
-    this.fontScalingEnabled = newFontScalingEnabled;
     this.updateSettingsDebounced();
   }
 
