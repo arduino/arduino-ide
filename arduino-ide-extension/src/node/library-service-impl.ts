@@ -66,7 +66,7 @@ export class LibraryServiceImpl
       if (installedLib.hasLibrary()) {
         const lib = installedLib.getLibrary();
         if (lib) {
-          installedLibsIdx.set(lib.getRealName(), installedLib);
+          installedLibsIdx.set(lib.getName(), installedLib);
         }
       }
     }
@@ -210,7 +210,6 @@ export class LibraryServiceImpl
         return toLibrary(
           {
             name: library.getName(),
-            label: library.getRealName(),
             installedVersion,
             installable: true,
             description: library.getSentence(),
@@ -443,7 +442,6 @@ function toLibrary(
 ): LibraryPackage {
   return {
     name: '',
-    label: '',
     exampleUris: [],
     installable: false,
     deprecated: false,

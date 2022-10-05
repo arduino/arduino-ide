@@ -765,9 +765,6 @@ export class Library extends jspb.Message {
     getContainerPlatform(): string;
     setContainerPlatform(value: string): Library;
 
-    getRealName(): string;
-    setRealName(value: string): Library;
-
     getDotALinkage(): boolean;
     setDotALinkage(value: boolean): Library;
 
@@ -836,7 +833,6 @@ export namespace Library {
         sourceDir: string,
         utilityDir: string,
         containerPlatform: string,
-        realName: string,
         dotALinkage: boolean,
         precompiled: boolean,
         ldFlags: string,

@@ -124,11 +124,11 @@ export class ExamplesServiceImpl implements ExamplesService {
    * location of the examples. Otherwise it creates the example container from the direct examples FS paths.
    */
   private async tryGroupExamples({
-    label,
+    name,
     exampleUris,
     installDirUri,
   }: LibraryPackage): Promise<SketchContainer> {
-    const container = SketchContainer.create(label);
+    const container = SketchContainer.create(name);
     if (!installDirUri || !exampleUris.length) {
       return container;
     }
