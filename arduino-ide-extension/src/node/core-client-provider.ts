@@ -370,8 +370,8 @@ export class CoreClientProvider {
                 );
                 progressHandler?.reportProgress(message);
               },
-              reportResult: (result) => progressHandler?.reportResult(result),
             },
+            reportResult: (result) => progressHandler?.reportResult(result),
             progressId,
           })
         )

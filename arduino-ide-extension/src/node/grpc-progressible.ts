@@ -163,14 +163,17 @@ export namespace ExecuteWithProgress {
      * _unknown_ progress if falsy.
      */
     readonly progressId?: string;
-    readonly responseService: Partial<
-      ResponseService & { reportResult: (result: DownloadResult) => void }
-    >;
+    readonly responseService: Partial<ResponseService>;
+    /**
+     * It's only relevant for index updates to build a summary of possible client (4xx) and server (5xx) errors when downloading the files during the index update. It's missing for lib/platform installations.
+     */
+    readonly reportResult?: (result: DownloadResult) => void;
   }
 
   export function createDataCallback<R extends ProgressResponse>({
     responseService,
     progressId,
+    reportResult,
   }: ExecuteWithProgress.Options): (response: R) => void {
     const uuid = v4();
     let message = '';
@@ -252,8 +255,8 @@ export namespace ExecuteWithProgress {
             });
           }
         } else if (phase instanceof DownloadProgressEnd) {
-          if (url) {
-            responseService.reportResult?.({
+          if (url && reportResult) {
+            reportResult({
               url,
               message: phase.getMessage(),
               success: phase.getSuccess(),
