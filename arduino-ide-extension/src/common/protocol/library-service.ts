@@ -163,12 +163,6 @@ export enum LibraryLocation {
 
 export interface LibraryPackage extends ArduinoComponent {
   /**
-   * Same as [`Library#real_name`](https://arduino.github.io/arduino-cli/latest/rpc/commands/#library).
-   * Should be used for the UI, and `name` is used to uniquely identify a library. It does not have an ID.
-   */
-  readonly label: string;
-
-  /**
    * An array of string that should be included into the `ino` file if this library is used.
    * For example, including `SD` will prepend `#include <SD.h>` to the `ino` file. While including `Bridge`
    * requires multiple `#include` declarations: `YunClient`, `YunServer`, `Bridge`, etc.

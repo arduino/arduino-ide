@@ -159,9 +159,9 @@
   "arduino": {
     "cli": {
       "version": {
-        "owner": "cmaglie",
+        "owner": "arduino",
         "repo": "arduino-cli",
-        "commitish": "download_progress_refactor"
+        "commitish": "c8ff042"
       }
     },
     "fwuploader": {

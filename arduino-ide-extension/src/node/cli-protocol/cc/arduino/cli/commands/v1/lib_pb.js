@@ -5447,7 +5447,6 @@ proto.cc.arduino.cli.commands.v1.Library.toObject = function(includeInstance, ms
     sourceDir: jspb.Message.getFieldWithDefault(msg, 11, ""),
     utilityDir: jspb.Message.getFieldWithDefault(msg, 12, ""),
     containerPlatform: jspb.Message.getFieldWithDefault(msg, 14, ""),
-    realName: jspb.Message.getFieldWithDefault(msg, 16, ""),
     dotALinkage: jspb.Message.getBooleanFieldWithDefault(msg, 17, false),
     precompiled: jspb.Message.getBooleanFieldWithDefault(msg, 18, false),
     ldFlags: jspb.Message.getFieldWithDefault(msg, 19, ""),
@@ -5547,10 +5546,6 @@ proto.cc.arduino.cli.commands.v1.Library.deserializeBinaryFromReader = function(
     case 14:
       var value = /** @type {string} */ (reader.readString());
       msg.setContainerPlatform(value);
-      break;
-    case 16:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setRealName(value);
       break;
     case 17:
       var value = /** @type {boolean} */ (reader.readBool());
@@ -5721,13 +5716,6 @@ proto.cc.arduino.cli.commands.v1.Library.serializeBinaryToWriter = function(mess
   if (f.length > 0) {
     writer.writeString(
       14,
-      f
-    );
-  }
-  f = message.getRealName();
-  if (f.length > 0) {
-    writer.writeString(
-      16,
       f
     );
   }
@@ -6081,24 +6069,6 @@ proto.cc.arduino.cli.commands.v1.Library.prototype.getContainerPlatform = functi
  */
 proto.cc.arduino.cli.commands.v1.Library.prototype.setContainerPlatform = function(value) {
   return jspb.Message.setProto3StringField(this, 14, value);
-};
-
-
-/**
- * optional string real_name = 16;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.v1.Library.prototype.getRealName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.v1.Library} returns this
- */
-proto.cc.arduino.cli.commands.v1.Library.prototype.setRealName = function(value) {
-  return jspb.Message.setProto3StringField(this, 16, value);
 };
 
 
