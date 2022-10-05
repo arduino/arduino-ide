@@ -7,6 +7,8 @@ import {
 } from '../../common/protocol';
 import { Contribution } from './contribution';
 
+const Arduino_BuiltIn = 'Arduino_BuiltIn';
+
 @injectable()
 export class FirstStartupInstaller extends Contribution {
   @inject(LocalStorageService)
@@ -25,8 +27,8 @@ export class FirstStartupInstaller extends Contribution {
         id: 'arduino:avr',
       });
       const builtInLibrary = (
-        await this.libraryService.search({ query: 'Arduino_BuiltIn' })
-      )[0];
+        await this.libraryService.search({ query: Arduino_BuiltIn })
+      ).find(({ name }) => name === Arduino_BuiltIn); // Filter by `name` to ensure "exact match". See: https://github.com/arduino/arduino-ide/issues/1526.
 
       let avrPackageError: Error | undefined;
       let builtInLibraryError: Error | undefined;
@@ -84,7 +86,7 @@ export class FirstStartupInstaller extends Contribution {
       }
       if (builtInLibraryError) {
         this.messageService.error(
-          `Could not install ${builtInLibrary.name} library: ${builtInLibraryError}`
+          `Could not install ${Arduino_BuiltIn} library: ${builtInLibraryError}`
         );
       }
 
