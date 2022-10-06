@@ -211,7 +211,7 @@ export class BoardsServiceImpl
     return this.handleListBoards(client.boardListAll.bind(client), req);
   }
 
-  async handleListBoards(
+  private async handleListBoards(
     getBoards: (
       request: BoardListAllRequest | BoardSearchRequest,
       callback: (
