@@ -333,6 +333,7 @@ import { StartupTaskProvider } from '../electron-common/startup-task';
 import { DeleteSketch } from './contributions/delete-sketch';
 import { UserFields } from './contributions/user-fields';
 import { UpdateIndexes } from './contributions/update-indexes';
+import { InterfaceScale } from './contributions/interface-scale';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -746,6 +747,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UserFields);
   Contribution.configure(bind, DeleteSketch);
   Contribution.configure(bind, UpdateIndexes);
+  Contribution.configure(bind, InterfaceScale);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

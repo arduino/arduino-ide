@@ -49,30 +49,6 @@ export class EditContributions extends Contribution {
     registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, {
       execute: () => this.run('editor.action.previousSelectionMatchFindAction'),
     });
-    registry.registerCommand(EditContributions.Commands.INCREASE_FONT_SIZE, {
-      execute: async () => {
-        const settings = await this.settingsService.settings();
-        if (settings.autoScaleInterface) {
-          settings.interfaceScale = settings.interfaceScale + 1;
-        } else {
-          settings.editorFontSize = settings.editorFontSize + 1;
-        }
-        await this.settingsService.update(settings);
-        await this.settingsService.save();
-      },
-    });
-    registry.registerCommand(EditContributions.Commands.DECREASE_FONT_SIZE, {
-      execute: async () => {
-        const settings = await this.settingsService.settings();
-        if (settings.autoScaleInterface) {
-          settings.interfaceScale = settings.interfaceScale - 1;
-        } else {
-          settings.editorFontSize = settings.editorFontSize - 1;
-        }
-        await this.settingsService.update(settings);
-        await this.settingsService.save();
-      },
-    });
     /* Tools */ registry.registerCommand(
       EditContributions.Commands.AUTO_FORMAT,
       { execute: () => this.run('editor.action.formatDocument') }
@@ -147,23 +123,6 @@ ${value}
       order: '3',
     });
 
-    registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
-      commandId: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      label: nls.localize(
-        'arduino/editor/increaseFontSize',
-        'Increase Font Size'
-      ),
-      order: '0',
-    });
-    registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
-      commandId: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      label: nls.localize(
-        'arduino/editor/decreaseFontSize',
-        'Decrease Font Size'
-      ),
-      order: '1',
-    });
-
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND.id,
       label: nls.localize('vscode/findController/startFindAction', 'Find'),
@@ -218,15 +177,6 @@ ${value}
       command: EditContributions.Commands.TOGGLE_COMMENT.id,
       keybinding: 'CtrlCmd+/',
       when: 'editorFocus',
-    });
-
-    registry.registerKeybinding({
-      command: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      keybinding: 'CtrlCmd+=',
-    });
-    registry.registerKeybinding({
-      command: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      keybinding: 'CtrlCmd+-',
     });
 
     registry.registerKeybinding({
@@ -314,12 +264,6 @@ export namespace EditContributions {
     };
     export const USE_FOR_FIND: Command = {
       id: 'arduino-for-find',
-    };
-    export const INCREASE_FONT_SIZE: Command = {
-      id: 'arduino-increase-font-size',
-    };
-    export const DECREASE_FONT_SIZE: Command = {
-      id: 'arduino-decrease-font-size',
     };
     export const AUTO_FORMAT: Command = {
       id: 'arduino-auto-format', // `Auto Format` should belong to `Tool`.
