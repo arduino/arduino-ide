@@ -189,6 +189,32 @@ export class LibraryListWidget extends ListWidget<
       { timeout: 3000 }
     );
   }
+
+  protected override filterableListSort(
+    items: LibraryPackage[]
+  ): LibraryPackage[] {
+    const isArduinoMaintainedComparator = (
+      left: LibraryPackage,
+      right: LibraryPackage
+    ) => {
+      if (left.isArduinoMaintained && !right.isArduinoMaintained) {
+        return -1;
+      }
+
+      if (!left.isArduinoMaintained && right.isArduinoMaintained) {
+        return 1;
+      }
+
+      return 0;
+    };
+
+    return items.sort((left, right) => {
+      return (
+        isArduinoMaintainedComparator(left, right) ||
+        this.defaultSortComparator(left, right)
+      );
+    });
+  }
 }
 
 class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {

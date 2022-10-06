@@ -456,5 +456,6 @@ function toLibrary(
     summary: lib.getParagraph(),
     category: lib.getCategory(),
     types: lib.getTypesList(),
+    isArduinoMaintained: lib.getAuthor() === 'Arduino', // TODO check if .getMaintainer is more appropriate
   };
 }

@@ -10,6 +10,7 @@ export interface ArduinoComponent {
   readonly availableVersions: Installable.Version[];
   readonly installable: boolean;
   readonly installedVersion?: Installable.Version;
+  readonly isArduinoMaintained?: boolean;
   /**
    * This is the `Type` in IDE (1.x) UI.
    */
