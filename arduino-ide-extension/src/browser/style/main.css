@@ -253,9 +253,9 @@
     outline-offset: -1px;
 }
 
-.monaco-hover p {
-    margin: 8px 0;
+.monaco-hover .hover-row.markdown-hover:first-child p {
+    margin-top: 8px;
 }
-.monaco-hover .monaco-tokenized-source {
+.monaco-hover .hover-row.markdown-hover:first-child .monaco-tokenized-source {
     margin-top: 8px;
 }
