@@ -243,7 +243,7 @@ PID: ${PID}`;
       const menuAction = {
         commandId: id,
         label: name,
-        order: `${index}`,
+        order: String(index).padStart(4), // pads with leading zeros for alphanumeric sort where order is 1, 2, 11, and NOT 1, 11, 2
       };
       this.commandRegistry.registerCommand(command, handler);
       this.toDisposeBeforeMenuRebuild.push(
@@ -329,7 +329,7 @@ PID: ${PID}`;
         const menuAction = {
           commandId: id,
           label,
-          order: `${protocolOrder + i + 1}`,
+          order: String(protocolOrder + i + 1).padStart(4),
         };
         this.commandRegistry.registerCommand(command, handler);
         this.toDisposeBeforeMenuRebuild.push(

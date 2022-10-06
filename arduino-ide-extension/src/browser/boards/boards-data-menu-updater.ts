@@ -111,7 +111,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                   const { label } = commands.get(commandId)!;
                   this.menuRegistry.registerMenuAction(menuPath, {
                     commandId,
-                    order: `${i}`,
+                    order: String(i).padStart(4),
                     label,
                   });
                   return Disposable.create(() =>
