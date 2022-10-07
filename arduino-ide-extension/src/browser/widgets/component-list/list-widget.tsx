@@ -146,11 +146,11 @@ export abstract class ListWidget<
       const aIsArduinoType = left.types.includes('Arduino');
       const bIsArduinoType = right.types.includes('Arduino');
 
-      if (aIsArduinoType && !bIsArduinoType) {
+      if (aIsArduinoType && !bIsArduinoType && !left.deprecated) {
         return -1;
       }
 
-      if (!aIsArduinoType && bIsArduinoType) {
+      if (!aIsArduinoType && bIsArduinoType && !right.deprecated) {
         return 1;
       }
 
