@@ -24,6 +24,8 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     classNames,
   } = props;
 
+  const [tempValue, setTempValue] = React.useState<string>(String(value));
+
   const clamp = (value: number, min: number, max: number): number => {
     return Math.min(Math.max(value, min), max);
   };
@@ -52,17 +54,24 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
 
   const onUserInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { value: eventValue } = event.target;
+    setTempValue(eventValue);
+  };
 
-    if (eventValue === '') {
-      setSettingsStateValue(0);
+  /* Prevent the user from entering invalid values */
+  const onBlur = (): void => {
+    const tempValueAsNumber = Number(tempValue);
+
+    /* If the user input is not a number, reset the input to the previous value */
+    if (isNaN(tempValueAsNumber) || tempValue === '') {
+      setTempValue(String(value));
+      return;
     }
-
-    const number = Number(eventValue);
-
-    if (!isNaN(number) && number !== value) {
-      const newValue = clamp(number, minValue, maxValue);
+    if (tempValueAsNumber !== value) {
+      /* If the user input is a number, clamp it to the min and max values */
+      const newValue = clamp(tempValueAsNumber, minValue, maxValue);
 
       setSettingsStateValue(newValue);
+      setTempValue(String(newValue));
     }
   };
 
@@ -73,8 +82,9 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     <div className="settings-step-input-container">
       <input
         className={classnames('settings-step-input-element', classNames?.input)}
-        value={value.toString()}
+        value={tempValue.toString()}
         onChange={onUserInput}
+        onBlur={onBlur}
         type="number"
         pattern="[0-9]+"
       />
