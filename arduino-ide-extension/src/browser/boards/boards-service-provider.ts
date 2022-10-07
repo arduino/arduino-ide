@@ -63,7 +63,10 @@ export class BoardsServiceProvider
   protected readonly onAvailableBoardsChangedEmitter = new Emitter<
     AvailableBoard[]
   >();
-  protected readonly onAvailablePortsChangedEmitter = new Emitter<Port[]>();
+  protected readonly onAvailablePortsChangedEmitter = new Emitter<{
+    newState: Port[];
+    oldState: Port[];
+  }>();
   private readonly inheritedConfig = new Deferred<BoardsConfig.Config>();
 
   /**
@@ -120,8 +123,12 @@ export class BoardsServiceProvider
       const { boards: attachedBoards, ports: availablePorts } =
         AvailablePorts.split(state);
       this._attachedBoards = attachedBoards;
+      const oldState = this._availablePorts.slice();
       this._availablePorts = availablePorts;
-      this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
+      this.onAvailablePortsChangedEmitter.fire({
+        newState: this._availablePorts.slice(),
+        oldState,
+      });
 
       await this.reconcileAvailableBoards();
 
@@ -229,8 +236,12 @@ export class BoardsServiceProvider
     }
 
     this._attachedBoards = event.newState.boards;
+    const oldState = this._availablePorts.slice();
     this._availablePorts = event.newState.ports;
-    this.onAvailablePortsChangedEmitter.fire(this._availablePorts);
+    this.onAvailablePortsChangedEmitter.fire({
+      newState: this._availablePorts.slice(),
+      oldState,
+    });
     this.reconcileAvailableBoards().then(() => {
       const { uploadInProgress } = event;
       // avoid attempting "auto-selection" while an
