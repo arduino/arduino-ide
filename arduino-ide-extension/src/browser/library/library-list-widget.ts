@@ -126,11 +126,9 @@ export class LibraryListWidget extends ListWidget<
         ),
         message,
         buttons: [
-          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
           nls.localize(
-            'arduino/library/installOnly',
-            'Install {0} only',
-            item.name
+            'arduino/library/installWithoutDependencies',
+            'Install without dependencies'
           ),
           nls.localize('arduino/library/installAll', 'Install all'),
         ],

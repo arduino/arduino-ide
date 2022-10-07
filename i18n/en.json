@@ -259,7 +259,7 @@
       "installAll": "Install all",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
-      "installOnly": "Install {0} only",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Successfully installed library {0}:{1}",
       "libraryAlreadyExists": "A library already exists. Do you want to overwrite it?",
       "manageLibraries": "Manage Libraries...",
