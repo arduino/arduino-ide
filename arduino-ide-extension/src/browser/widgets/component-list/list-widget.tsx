@@ -74,14 +74,14 @@ export abstract class ListWidget<
 
       return itemLabel(left).localeCompare(itemLabel(right));
     };
-
-    this.filterableListSort = this.filterableListSort.bind(this);
   }
 
   @postConstruct()
   protected init(): void {
     this.toDispose.pushAll([
-      this.notificationCenter.onIndexUpdateDidComplete(() => this.refresh(undefined)),
+      this.notificationCenter.onIndexUpdateDidComplete(() =>
+        this.refresh(undefined)
+      ),
       this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
@@ -141,9 +141,9 @@ export abstract class ListWidget<
     return this.options.installable.uninstall({ item, progressId });
   }
 
-  protected filterableListSort(items: T[]): T[] {
+  protected filterableListSort = (items: T[]): T[] => {
     return items.sort(this.defaultSortComparator);
-  }
+  };
 
   render(): React.ReactNode {
     return (

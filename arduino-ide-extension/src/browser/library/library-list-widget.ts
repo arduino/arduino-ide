@@ -190,18 +190,21 @@ export class LibraryListWidget extends ListWidget<
     );
   }
 
-  protected override filterableListSort(
+  protected override filterableListSort = (
     items: LibraryPackage[]
-  ): LibraryPackage[] {
-    const isArduinoMaintainedComparator = (
+  ): LibraryPackage[] => {
+    const isArduinoTypeComparator = (
       left: LibraryPackage,
       right: LibraryPackage
     ) => {
-      if (left.isArduinoMaintained && !right.isArduinoMaintained) {
+      const aIsArduinoType = left.types.includes('Arduino');
+      const bIsArduinoType = right.types.includes('Arduino');
+
+      if (aIsArduinoType && !bIsArduinoType) {
         return -1;
       }
 
-      if (!left.isArduinoMaintained && right.isArduinoMaintained) {
+      if (!aIsArduinoType && bIsArduinoType) {
         return 1;
       }
 
@@ -210,11 +213,11 @@ export class LibraryListWidget extends ListWidget<
 
     return items.sort((left, right) => {
       return (
-        isArduinoMaintainedComparator(left, right) ||
+        isArduinoTypeComparator(left, right) ||
         this.defaultSortComparator(left, right)
       );
     });
-  }
+  };
 }
 
 class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
