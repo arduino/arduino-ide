@@ -189,35 +189,6 @@ export class LibraryListWidget extends ListWidget<
       { timeout: 3000 }
     );
   }
-
-  protected override filterableListSort = (
-    items: LibraryPackage[]
-  ): LibraryPackage[] => {
-    const isArduinoTypeComparator = (
-      left: LibraryPackage,
-      right: LibraryPackage
-    ) => {
-      const aIsArduinoType = left.types.includes('Arduino');
-      const bIsArduinoType = right.types.includes('Arduino');
-
-      if (aIsArduinoType && !bIsArduinoType) {
-        return -1;
-      }
-
-      if (!aIsArduinoType && bIsArduinoType) {
-        return 1;
-      }
-
-      return 0;
-    };
-
-    return items.sort((left, right) => {
-      return (
-        isArduinoTypeComparator(left, right) ||
-        this.defaultSortComparator(left, right)
-      );
-    });
-  };
 }
 
 class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {

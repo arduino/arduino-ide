@@ -142,7 +142,27 @@ export abstract class ListWidget<
   }
 
   protected filterableListSort = (items: T[]): T[] => {
-    return items.sort(this.defaultSortComparator);
+    const isArduinoTypeComparator = (left: T, right: T) => {
+      const aIsArduinoType = left.types.includes('Arduino');
+      const bIsArduinoType = right.types.includes('Arduino');
+
+      if (aIsArduinoType && !bIsArduinoType) {
+        return -1;
+      }
+
+      if (!aIsArduinoType && bIsArduinoType) {
+        return 1;
+      }
+
+      return 0;
+    };
+
+    return items.sort((left, right) => {
+      return (
+        isArduinoTypeComparator(left, right) ||
+        this.defaultSortComparator(left, right)
+      );
+    });
   };
 
   render(): React.ReactNode {
