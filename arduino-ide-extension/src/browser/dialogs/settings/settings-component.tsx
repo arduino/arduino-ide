@@ -180,7 +180,8 @@ export class SettingsComponent extends React.Component<
           <div className="column">
             <div className="flex-line">
               <SettingsStepInput
-                value={this.state.editorFontSize}
+                key={`font-size-stepper-${String(this.state.editorFontSize)}`}
+                initialValue={this.state.editorFontSize}
                 setSettingsStateValue={this.setFontSize}
                 step={fontSizeStep}
                 maxValue={maxFontSize}
@@ -199,13 +200,18 @@ export class SettingsComponent extends React.Component<
               </label>
               <div>
                 <SettingsStepInput
-                  value={scalePercentage}
+                  key={`scale-stepper-${String(scalePercentage)}`}
+                  initialValue={scalePercentage}
                   setSettingsStateValue={this.setInterfaceScale}
                   step={scaleStep}
                   maxValue={maxScale}
                   minValue={minScale}
                   unitOfMeasure="%"
-                  classNames={{ input: 'theia-input small with-margin' }}
+                  classNames={{
+                    input: 'theia-input small with-margin',
+                    buttonsContainer:
+                      'settings-step-input-buttons-container-perc',
+                  }}
                 />
               </div>
             </div>

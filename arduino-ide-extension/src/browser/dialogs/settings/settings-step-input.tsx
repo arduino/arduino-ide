@@ -2,7 +2,7 @@ import * as React from '@theia/core/shared/react';
 import classnames from 'classnames';
 
 interface SettingsStepInputProps {
-  value: number;
+  initialValue: number;
   setSettingsStateValue: (value: number) => void;
   step: number;
   maxValue: number;
@@ -15,7 +15,7 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   props: SettingsStepInputProps
 ) => {
   const {
-    value,
+    initialValue,
     setSettingsStateValue,
     step,
     maxValue,
@@ -24,7 +24,14 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     classNames,
   } = props;
 
-  const [tempValue, setTempValue] = React.useState<string>(String(value));
+  const [valueState, setValueState] = React.useState<{
+    currentValue: number;
+    isEmptyString: boolean;
+  }>({
+    currentValue: initialValue,
+    isEmptyString: false,
+  });
+  const { currentValue, isEmptyString } = valueState;
 
   const clamp = (value: number, min: number, max: number): number => {
     return Math.min(Math.max(value, min), max);
@@ -34,10 +41,11 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     roundingOperation: 'ceil' | 'floor',
     stepOperation: (a: number, b: number) => number
   ): void => {
-    const valueRoundedToScale = Math[roundingOperation](value / step) * step;
+    const valueRoundedToScale =
+      Math[roundingOperation](currentValue / step) * step;
     const calculatedValue =
-      valueRoundedToScale === value
-        ? stepOperation(value, step)
+      valueRoundedToScale === currentValue
+        ? stepOperation(currentValue, step)
         : valueRoundedToScale;
     const newValue = clamp(calculatedValue, minValue, maxValue);
 
@@ -54,41 +62,54 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
 
   const onUserInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { value: eventValue } = event.target;
-    setTempValue(eventValue);
+    setValueState({
+      currentValue: Number(eventValue),
+      isEmptyString: eventValue === '',
+    });
   };
 
   /* Prevent the user from entering invalid values */
   const onBlur = (): void => {
-    const tempValueAsNumber = Number(tempValue);
-
-    /* If the user input is not a number, reset the input to the previous value */
-    if (isNaN(tempValueAsNumber) || tempValue === '') {
-      setTempValue(String(value));
+    if ((currentValue === 0 && minValue > 0) || isNaN(currentValue)) {
+      setValueState({
+        currentValue: initialValue,
+        isEmptyString: false,
+      });
       return;
     }
-    if (tempValueAsNumber !== value) {
+
+    if (currentValue !== initialValue) {
       /* If the user input is a number, clamp it to the min and max values */
-      const newValue = clamp(tempValueAsNumber, minValue, maxValue);
+      const newValue = clamp(currentValue, minValue, maxValue);
 
       setSettingsStateValue(newValue);
-      setTempValue(String(newValue));
     }
   };
 
-  const upDisabled = value >= maxValue;
-  const downDisabled = value <= minValue;
+  const valueIsNotWithinRange =
+    currentValue < minValue || currentValue > maxValue;
+  const isDisabledException =
+    valueIsNotWithinRange || isEmptyString || isNaN(currentValue);
+
+  const upDisabled = isDisabledException || currentValue >= maxValue;
+  const downDisabled = isDisabledException || currentValue <= minValue;
 
   return (
     <div className="settings-step-input-container">
       <input
         className={classnames('settings-step-input-element', classNames?.input)}
-        value={tempValue.toString()}
+        value={isEmptyString ? '' : String(currentValue)}
         onChange={onUserInput}
         onBlur={onBlur}
         type="number"
         pattern="[0-9]+"
       />
-      <div className="settings-step-input-buttons-container">
+      <div
+        className={classnames(
+          'settings-step-input-buttons-container',
+          classNames?.buttonsContainer
+        )}
+      >
         <button
           className="settings-step-input-button settings-step-input-up-button"
           disabled={upDisabled}
