@@ -133,7 +133,7 @@
     flex-direction: column-reverse;
 }
 
-.component-list-item:hover .footer > * {
+.component-list-item .footer > * {
     display: inline-block;
     margin: 5px 0px 0px 10px;
 }

@@ -15,6 +15,7 @@ export class ComponentListItem<
       this.state = {
         selectedVersion: version,
         focus: false,
+        versionUpdate: false,
       };
     }
   }
@@ -33,7 +34,9 @@ export class ComponentListItem<
     return (
       <div
         onMouseEnter={() => this.setState({ focus: true })}
-        onMouseLeave={() => this.setState({ focus: false })}
+        onMouseLeave={() => {
+          if (!this.state.versionUpdate) this.setState({ focus: false });
+        }}
       >
         {itemRenderer.renderItem(
           Object.assign(this.state, { item }),
@@ -52,6 +55,7 @@ export class ComponentListItem<
     )[0];
     this.setState({
       selectedVersion: version,
+      versionUpdate: false,
     });
     try {
       await this.props.install(item, toInstall);
@@ -67,7 +71,7 @@ export class ComponentListItem<
   }
 
   private onVersionChange(version: Installable.Version): void {
-    this.setState({ selectedVersion: version });
+    this.setState({ selectedVersion: version, versionUpdate: true });
   }
 }
 
@@ -83,5 +87,6 @@ export namespace ComponentListItem {
   export interface State {
     selectedVersion?: Installable.Version;
     focus: boolean;
+    versionUpdate: boolean;
   }
 }
