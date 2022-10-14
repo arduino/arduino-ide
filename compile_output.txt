@@ -1,0 +1,17 @@
+yarn install v1.22.19
+[1/5] Validating package.json...
+[2/5] Resolving packages...
+success Already up-to-date.
+$ lerna run prepare && yarn download:plugins
+arduino-ide-extension: yarn run v1.22.19
+arduino-ide-extension: $ yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn copy-i18n && yarn clean && yarn download-examples && yarn build && yarn test
+arduino-ide-extension: $ node ./scripts/download-cli.js
+arduino-ide-extension: Building CLI from https://github.com/arduino/arduino-cli.git. Commitish: c8ff042
+arduino-ide-extension: >>> Cloning CLI source to C:\Users\nicol\AppData\Local\Temp\d-2022913-10576-1gzrhxh.8o37...
+arduino-ide-extension: <<< Cloned CLI repo.
+arduino-ide-extension: >>> Checking out c8ff042...
+arduino-ide-extension: <<< Checked out c8ff042.
+arduino-ide-extension: >>> Building the CLI...
+arduino-ide-extension: info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+arduino-ide-extension: info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.

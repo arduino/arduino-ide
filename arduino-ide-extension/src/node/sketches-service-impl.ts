@@ -447,18 +447,10 @@ export class SketchesServiceImpl
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
     await fs.mkdir(sketchDir, { recursive: true });
+    let defaultContent = await this.loadDefault();
     await fs.writeFile(
       sketchFile,
-      `void setup() {
-  // put your setup code here, to run once:
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
-`,
+      defaultContent,
       { encoding: 'utf8' }
     );
     return this.loadSketch(FileUri.create(sketchDir).toString());
@@ -636,6 +628,40 @@ void loop() {
     } catch {
       return false;
     }
+  }
+
+  // Returns the default.ino from the default folder
+  private async loadDefault(): Promise<string> {
+    const root = await this.root(await this.sketchbookUri());
+    let result : string;
+    result =  `void setup() {
+  // put your setup code here, to run once:
+
+}
+      
+void loop() {
+  // put your main code here, to run repeatedly:
+  
+}`;
+
+    let filename = `${root}/default/default.ino`;
+    let exists = false;
+    let raw = "";
+
+    try {
+      raw = await fs.readFile(filename, {encoding: 'utf8', });
+      exists = true;
+    } catch {
+      exists = false;
+    }
+
+    if (exists) {      
+        result = raw;
+      this.logger.info (`-- Default found at ${filename}`)
+    } else {
+      this.logger.info (`-- Default sketch not found at ${filename}`)
+    }
+    return result;
   }
 }
 
