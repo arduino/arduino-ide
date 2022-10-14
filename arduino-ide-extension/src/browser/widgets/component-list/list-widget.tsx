@@ -51,9 +51,11 @@ export abstract class ListWidget<
    */
   protected firstActivate = true;
 
+  protected readonly defaultSortComparator: (left: T, right: T) => number;
+
   constructor(protected options: ListWidget.Options<T, S>) {
     super();
-    const { id, label, iconClass } = options;
+    const { id, label, iconClass, itemDeprecated, itemLabel } = options;
     this.id = id;
     this.title.label = label;
     this.title.caption = label;
@@ -63,12 +65,23 @@ export abstract class ListWidget<
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
     this.scrollOptions = undefined;
     this.toDispose.push(this.searchOptionsChangeEmitter);
+
+    this.defaultSortComparator = (left, right): number => {
+      // always put deprecated items at the bottom of the list
+      if (itemDeprecated(left)) {
+        return 1;
+      }
+
+      return itemLabel(left).localeCompare(itemLabel(right));
+    };
   }
 
   @postConstruct()
   protected init(): void {
     this.toDispose.pushAll([
-      this.notificationCenter.onIndexUpdateDidComplete(() => this.refresh(undefined)),
+      this.notificationCenter.onIndexUpdateDidComplete(() =>
+        this.refresh(undefined)
+      ),
       this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
@@ -128,6 +141,30 @@ export abstract class ListWidget<
     return this.options.installable.uninstall({ item, progressId });
   }
 
+  protected filterableListSort = (items: T[]): T[] => {
+    const isArduinoTypeComparator = (left: T, right: T) => {
+      const aIsArduinoType = left.types.includes('Arduino');
+      const bIsArduinoType = right.types.includes('Arduino');
+
+      if (aIsArduinoType && !bIsArduinoType && !left.deprecated) {
+        return -1;
+      }
+
+      if (!aIsArduinoType && bIsArduinoType && !right.deprecated) {
+        return 1;
+      }
+
+      return 0;
+    };
+
+    return items.sort((left, right) => {
+      return (
+        isArduinoTypeComparator(left, right) ||
+        this.defaultSortComparator(left, right)
+      );
+    });
+  };
+
   render(): React.ReactNode {
     return (
       <FilterableListContainer<T, S>
@@ -145,6 +182,7 @@ export abstract class ListWidget<
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
+        sort={this.filterableListSort}
       />
     );
   }

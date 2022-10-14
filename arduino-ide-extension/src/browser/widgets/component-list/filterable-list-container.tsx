@@ -111,19 +111,7 @@ export class FilterableListContainer<
     const { searchable } = this.props;
     searchable
       .search(searchOptions)
-      .then((items) => this.setState({ items: this.sort(items) }));
-  }
-
-  protected sort(items: T[]): T[] {
-    const { itemLabel, itemDeprecated } = this.props;
-    return items.sort((left, right) => {
-      // always put deprecated items at the bottom of the list
-      if (itemDeprecated(left)) {
-        return 1;
-      }
-
-      return itemLabel(left).localeCompare(itemLabel(right));
-    });
+      .then((items) => this.setState({ items: this.props.sort(items) }));
   }
 
   protected async install(
@@ -139,7 +127,7 @@ export class FilterableListContainer<
       run: ({ progressId }) => install({ item, progressId, version }),
     });
     const items = await searchable.search(this.state.searchOptions);
-    this.setState({ items: this.sort(items) });
+    this.setState({ items: this.props.sort(items) });
   }
 
   protected async uninstall(item: T): Promise<void> {
@@ -167,7 +155,7 @@ export class FilterableListContainer<
       run: ({ progressId }) => uninstall({ item, progressId }),
     });
     const items = await searchable.search(this.state.searchOptions);
-    this.setState({ items: this.sort(items) });
+    this.setState({ items: this.props.sort(items) });
   }
 }
 
@@ -204,6 +192,7 @@ export namespace FilterableListContainer {
       progressId: string;
     }) => Promise<void>;
     readonly commandService: CommandService;
+    readonly sort: (items: T[]) => T[];
   }
 
   export interface State<T, S extends Searchable.Options> {
