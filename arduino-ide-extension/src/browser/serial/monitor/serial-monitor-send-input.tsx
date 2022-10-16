@@ -74,17 +74,15 @@ class HistoryList {
     if (this.index !== this.end) {
       this.traverse = true;
       this.index = (++this.index < this.size) ? this.index : 0;
-      return this.ring[this.index];
+      if(this.index === this.end)
+        this.traverse = false;
     }
     else {
       if (!this.traverse) {
         return '';
       }
-      else {
-        this.traverse = false;
-        return this.ring[this.index];
-      }
     }
+    return this.ring[this.index];
   }
 }
 
