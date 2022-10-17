@@ -199,14 +199,15 @@ PID: ${PID}`;
     });
 
     // Installed boards
-    for (const board of installedBoards) {
+    installedBoards.forEach((board, index) => {
       const { packageId, packageName, fqbn, name, manuallyInstalled } = board;
 
       const packageLabel =
         packageName +
-        `${manuallyInstalled
-          ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
-          : ''
+        `${
+          manuallyInstalled
+            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
+            : ''
         }`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
@@ -239,14 +240,18 @@ PID: ${PID}`;
       };
 
       // Board menu
-      const menuAction = { commandId: id, label: name };
+      const menuAction = {
+        commandId: id,
+        label: name,
+        order: String(index).padStart(4), // pads with leading zeros for alphanumeric sort where order is 1, 2, 11, and NOT 1, 11, 2
+      };
       this.commandRegistry.registerCommand(command, handler);
       this.toDisposeBeforeMenuRebuild.push(
         Disposable.create(() => this.commandRegistry.unregisterCommand(command))
       );
       this.menuModelRegistry.registerMenuAction(platformMenuPath, menuAction);
       // Note: we do not dispose the menu actions individually. Calling `unregisterSubmenu` on the parent will wipe the children menu nodes recursively.
-    }
+    });
 
     // Installed ports
     const registerPorts = (
@@ -282,11 +287,13 @@ PID: ${PID}`;
 
       // First we show addresses with recognized boards connected,
       // then all the rest.
-      const sortedIDs = Object.keys(ports).sort((left: string, right: string): number => {
-        const [, leftBoards] = ports[left];
-        const [, rightBoards] = ports[right];
-        return rightBoards.length - leftBoards.length;
-      });
+      const sortedIDs = Object.keys(ports).sort(
+        (left: string, right: string): number => {
+          const [, leftBoards] = ports[left];
+          const [, rightBoards] = ports[right];
+          return rightBoards.length - leftBoards.length;
+        }
+      );
 
       for (let i = 0; i < sortedIDs.length; i++) {
         const portID = sortedIDs[i];
@@ -322,7 +329,7 @@ PID: ${PID}`;
         const menuAction = {
           commandId: id,
           label,
-          order: `${protocolOrder + i + 1}`,
+          order: String(protocolOrder + i + 1).padStart(4),
         };
         this.commandRegistry.registerCommand(command, handler);
         this.toDisposeBeforeMenuRebuild.push(
@@ -354,7 +361,7 @@ PID: ${PID}`;
   }
 
   protected async installedBoards(): Promise<InstalledBoardWithPackage[]> {
-    const allBoards = await this.boardsService.searchBoards({});
+    const allBoards = await this.boardsService.getInstalledBoards();
     return allBoards.filter(InstalledBoardWithPackage.is);
   }
 }

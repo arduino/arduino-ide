@@ -176,7 +176,7 @@ export class SketchControl extends SketchContribution {
               {
                 commandId: command.id,
                 label: this.labelProvider.getName(uri),
-                order: `${i}`,
+                order: String(i).padStart(4),
               }
             );
             this.toDisposeBeforeCreateNewContextMenu.push(

@@ -32,6 +32,8 @@ import { CoreClientAware } from './core-client-provider';
 import {
   BoardDetailsRequest,
   BoardDetailsResponse,
+  BoardListAllRequest,
+  BoardListAllResponse,
   BoardSearchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import {
@@ -199,8 +201,28 @@ export class BoardsServiceImpl
     const req = new BoardSearchRequest();
     req.setSearchArgs(query || '');
     req.setInstance(instance);
+    return this.handleListBoards(client.boardSearch.bind(client), req);
+  }
+
+  async getInstalledBoards(): Promise<BoardWithPackage[]> {
+    const { instance, client } = await this.coreClient;
+    const req = new BoardListAllRequest();
+    req.setInstance(instance);
+    return this.handleListBoards(client.boardListAll.bind(client), req);
+  }
+
+  private async handleListBoards(
+    getBoards: (
+      request: BoardListAllRequest | BoardSearchRequest,
+      callback: (
+        error: ServiceError | null,
+        response: BoardListAllResponse
+      ) => void
+    ) => void,
+    request: BoardListAllRequest | BoardSearchRequest
+  ): Promise<BoardWithPackage[]> {
     const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
-      client.boardSearch(req, (error, resp) => {
+      getBoards(request, (error, resp) => {
         if (error) {
           reject(error);
           return;
