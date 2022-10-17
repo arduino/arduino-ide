@@ -16,6 +16,7 @@ import {
 import {
   SketchesService,
   Sketch,
+  SketchesError,
 } from '../../../common/protocol/sketches-service';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import {
@@ -38,6 +39,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
   private readonly providers: ContributionProvider<StartupTaskProvider>;
 
   private version?: string;
+  private _workspaceError: Error | undefined;
 
   async onStart(application: FrontendApplication): Promise<void> {
     const info = await this.applicationServer.getApplicationInfo();
@@ -51,6 +53,10 @@ export class WorkspaceService extends TheiaWorkspaceService {
     this.onCurrentWidgetChange({ newValue, oldValue: null });
   }
 
+  get workspaceError(): Error | undefined {
+    return this._workspaceError;
+  }
+
   protected override async toFileStat(
     uri: string | URI | undefined
   ): Promise<FileStat | undefined> {
@@ -58,6 +64,31 @@ export class WorkspaceService extends TheiaWorkspaceService {
     if (!stat) {
       const newSketchUri = await this.sketchService.createNewSketch();
       return this.toFileStat(newSketchUri.uri);
+    }
+    // When opening a file instead of a directory, IDE2 (and Theia) expects a workspace JSON file.
+    // Nothing will work if the workspace file is invalid. Users tend to start (see #964) IDE2 from the `.ino` files,
+    // so here, IDE2 tries to load the sketch via the CLI from the main sketch file URI.
+    // If loading the sketch is OK, IDE2 starts and uses the sketch folder as the workspace root instead of the sketch file.
+    // If loading fails due to invalid name error, IDE2 loads a temp sketch and preserves the startup error, and offers the sketch move to the user later.
+    // If loading the sketch fails, create a fallback sketch and open the new temp sketch folder as the workspace root.
+    if (stat.isFile && stat.resource.path.ext === '.ino') {
+      try {
+        const sketch = await this.sketchService.loadSketch(
+          stat.resource.toString()
+        );
+        return this.toFileStat(sketch.uri);
+      } catch (err) {
+        if (SketchesError.InvalidName.is(err)) {
+          this._workspaceError = err;
+          const newSketchUri = await this.sketchService.createNewSketch();
+          return this.toFileStat(newSketchUri.uri);
+        } else if (SketchesError.NotFound.is(err)) {
+          this._workspaceError = err;
+          const newSketchUri = await this.sketchService.createNewSketch();
+          return this.toFileStat(newSketchUri.uri);
+        }
+        throw err;
+      }
     }
     return stat;
   }

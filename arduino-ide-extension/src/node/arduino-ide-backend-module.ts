@@ -4,7 +4,6 @@ import {
   ArduinoFirmwareUploader,
   ArduinoFirmwareUploaderPath,
 } from '../common/protocol/arduino-firmware-uploader';
-
 import { ILogger } from '@theia/core/lib/common/logger';
 import {
   BackendApplicationContribution,
@@ -26,7 +25,7 @@ import { ConnectionContainerModule } from '@theia/core/lib/node/messaging/connec
 import { CoreClientProvider } from './core-client-provider';
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { DefaultWorkspaceServer } from './theia/workspace/default-workspace-server';
-import { WorkspaceServer as TheiaWorkspaceServer } from '@theia/workspace/lib/common';
+import { WorkspaceServer as TheiaWorkspaceServer } from '@theia/workspace/lib/common/workspace-protocol';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import {
   SketchesService,
@@ -40,7 +39,6 @@ import {
   ArduinoDaemon,
   ArduinoDaemonPath,
 } from '../common/protocol/arduino-daemon';
-
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
