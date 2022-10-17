@@ -8,8 +8,8 @@ import {
 } from '@theia/core/electron-shared/electron';
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
-import { join, dirname } from 'path';
-import * as fs from 'fs-extra';
+import { join, isAbsolute, resolve } from 'path';
+import { promises as fs, Stats } from 'fs';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
@@ -27,6 +27,7 @@ import {
   CLOSE_PLOTTER_WINDOW,
   SHOW_PLOTTER_WINDOW,
 } from '../../common/ipc-communication';
+import isValidPath = require('is-valid-path');
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -69,8 +70,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
     // See: https://github.com/electron-userland/electron-builder/issues/2468
     // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
+    console.log(`${config.applicationName} ${app.getVersion()}`);
     app.on('ready', () => app.setName(config.applicationName));
-    this.attachFileAssociations();
+    const cwd = process.cwd();
+    this.attachFileAssociations(cwd);
     this.useNativeWindowFrame = this.getTitleBarStyle(config) === 'native';
     this._config = config;
     this.hookApplicationEvents();
@@ -84,7 +87,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return this.launch({
       secondInstance: false,
       argv: this.processArgv.getProcessArgvWithoutBin(process.argv),
-      cwd: process.cwd(),
+      cwd,
     });
   }
 
@@ -119,7 +122,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       let traceFile: string | undefined;
       if (appPath) {
         const tracesPath = join(appPath, 'traces');
-        await fs.promises.mkdir(tracesPath, { recursive: true });
+        await fs.mkdir(tracesPath, { recursive: true });
         traceFile = join(tracesPath, `trace-${new Date().toISOString()}.trace`);
       }
       console.log('>>> Content tracing has started...');
@@ -135,14 +138,18 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     })();
   }
 
-  private attachFileAssociations(): void {
+  private attachFileAssociations(cwd: string): void {
     // OSX: register open-file event
     if (os.isOSX) {
-      app.on('open-file', async (event, uri) => {
+      app.on('open-file', async (event, path) => {
         event.preventDefault();
-        if (uri.endsWith('.ino') && (await fs.pathExists(uri))) {
-          this.openFilePromise.reject();
-          await this.openSketch(dirname(uri));
+        const resolvedPath = await this.resolvePath(path, cwd);
+        if (resolvedPath) {
+          const sketchFolderPath = await this.isValidSketchPath(resolvedPath);
+          if (sketchFolderPath) {
+            this.openFilePromise.reject(new InterruptWorkspaceRestoreError());
+            await this.openSketch(sketchFolderPath);
+          }
         }
       });
       setTimeout(() => this.openFilePromise.resolve(), 500);
@@ -151,8 +158,68 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  private async isValidSketchPath(uri: string): Promise<boolean | undefined> {
-    return typeof uri === 'string' && (await fs.pathExists(uri));
+  /**
+   * The `path` argument is valid, if accessible and either pointing to a `.ino` file,
+   * or it's a directory, and one of the files in the directory is an `.ino` file.
+   *
+   * If `undefined`, `path` was pointing to neither an accessible sketch file nor a sketch folder.
+   *
+   * The sketch folder name and sketch file name can be different. This method is not sketch folder name compliant.
+   * The `path` must be an absolute, resolved path.
+   */
+  private async isValidSketchPath(path: string): Promise<string | undefined> {
+    let stats: Stats | undefined = undefined;
+    try {
+      stats = await fs.stat(path);
+    } catch (err) {
+      if ('code' in err && err.code === 'ENOENT') {
+        return undefined;
+      }
+      throw err;
+    }
+    if (!stats) {
+      return undefined;
+    }
+    if (stats.isFile() && path.endsWith('.ino')) {
+      return path;
+    }
+    try {
+      const entries = await fs.readdir(path, { withFileTypes: true });
+      const sketchFilename = entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith('.ino'))
+        .map(({ name }) => name)
+        .sort((left, right) => left.localeCompare(right))[0];
+      if (sketchFilename) {
+        return join(path, sketchFilename);
+      }
+      // If no sketches found in the folder, but the folder exists,
+      // return with the path of the empty folder and let IDE2's frontend
+      // figure out the workspace root.
+      return path;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private async resolvePath(
+    maybePath: string,
+    cwd: string
+  ): Promise<string | undefined> {
+    if (!isValidPath(maybePath)) {
+      return undefined;
+    }
+    if (isAbsolute(maybePath)) {
+      return maybePath;
+    }
+    try {
+      const resolved = await fs.realpath(resolve(cwd, maybePath));
+      return resolved;
+    } catch (err) {
+      if ('code' in err && err.code === 'ENOENT') {
+        return undefined;
+      }
+      throw err;
+    }
   }
 
   protected override async launch(
@@ -163,12 +230,15 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       // 1. The `open-file` command has been received by the app, rejecting the promise
       // 2. A short timeout resolves the promise automatically, falling back to the usual app launch
       await this.openFilePromise.promise;
-    } catch {
-      // Application has received the `open-file` event and will skip the default application launch
-      return;
+    } catch (err) {
+      if (err instanceof InterruptWorkspaceRestoreError) {
+        // Application has received the `open-file` event and will skip the default application launch
+        return;
+      }
+      throw err;
     }
 
-    if (!os.isOSX && (await this.launchFromArgs(params))) {
+    if (await this.launchFromArgs(params)) {
       // Application has received a file in its arguments and will skip the default application launch
       return;
     }
@@ -182,7 +252,13 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         `Restoring workspace roots: ${workspaces.map(({ file }) => file)}`
       );
       for (const workspace of workspaces) {
-        if (await this.isValidSketchPath(workspace.file)) {
+        const resolvedPath = await this.resolvePath(workspace.file, params.cwd);
+        if (!resolvedPath) {
+          continue;
+        }
+        const sketchFolderPath = await this.isValidSketchPath(resolvedPath);
+        if (sketchFolderPath) {
+          workspace.file = sketchFolderPath;
           if (this.isTempSketch.is(workspace.file)) {
             console.info(
               `Skipped opening sketch. The sketch was detected as temporary. Workspace path: ${workspace.file}.`
@@ -205,38 +281,40 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   ): Promise<boolean> {
     // Copy to prevent manipulation of original array
     const argCopy = [...params.argv];
-    let uri: string | undefined;
-    for (const possibleUri of argCopy) {
-      if (
-        possibleUri.endsWith('.ino') &&
-        (await this.isValidSketchPath(possibleUri))
-      ) {
-        uri = possibleUri;
+    let path: string | undefined;
+    for (const maybePath of argCopy) {
+      const resolvedPath = await this.resolvePath(maybePath, params.cwd);
+      if (!resolvedPath) {
+        continue;
+      }
+      const sketchFolderPath = await this.isValidSketchPath(resolvedPath);
+      if (sketchFolderPath) {
+        path = sketchFolderPath;
         break;
       }
     }
-    if (uri) {
-      await this.openSketch(dirname(uri));
+    if (path) {
+      await this.openSketch(path);
       return true;
     }
     return false;
   }
 
   private async openSketch(
-    workspace: WorkspaceOptions | string
+    workspaceOrPath: WorkspaceOptions | string
   ): Promise<BrowserWindow> {
     const options = await this.getLastWindowOptions();
     let file: string;
-    if (typeof workspace === 'object') {
-      options.x = workspace.x;
-      options.y = workspace.y;
-      options.width = workspace.width;
-      options.height = workspace.height;
-      options.isMaximized = workspace.isMaximized;
-      options.isFullScreen = workspace.isFullScreen;
-      file = workspace.file;
+    if (typeof workspaceOrPath === 'object') {
+      options.x = workspaceOrPath.x;
+      options.y = workspaceOrPath.y;
+      options.width = workspaceOrPath.width;
+      options.height = workspaceOrPath.height;
+      options.isMaximized = workspaceOrPath.isMaximized;
+      options.isFullScreen = workspaceOrPath.isFullScreen;
+      file = workspaceOrPath.file;
     } else {
-      file = workspace;
+      file = workspaceOrPath;
     }
     const [uri, electronWindow] = await Promise.all([
       this.createWindowUri(),
@@ -484,5 +562,14 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
   get firstWindowId(): number | undefined {
     return this._firstWindowId;
+  }
+}
+
+class InterruptWorkspaceRestoreError extends Error {
+  constructor() {
+    super(
+      "Received 'open-file' event. Interrupting the default launch workflow."
+    );
+    Object.setPrototypeOf(this, InterruptWorkspaceRestoreError.prototype);
   }
 }

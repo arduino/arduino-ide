@@ -12,7 +12,6 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
 
 import {
@@ -61,6 +60,7 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { NotificationManager } from '../theia/messages/notifications-manager';
 import { MessageType } from '@theia/core/lib/common/message-service-protocol';
+import { WorkspaceService } from '../theia/workspace/workspace-service';
 
 export {
   Command,

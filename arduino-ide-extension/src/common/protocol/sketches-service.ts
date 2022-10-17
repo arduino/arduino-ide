@@ -4,6 +4,7 @@ import URI from '@theia/core/lib/common/uri';
 export namespace SketchesError {
   export const Codes = {
     NotFound: 5001,
+    InvalidName: 5002,
   };
   export const NotFound = ApplicationError.declare(
     Codes.NotFound,
@@ -11,6 +12,15 @@ export namespace SketchesError {
       return {
         message,
         data: { uri },
+      };
+    }
+  );
+  export const InvalidName = ApplicationError.declare(
+    Codes.InvalidName,
+    (message: string, invalidMainSketchUri: string) => {
+      return {
+        message,
+        data: { invalidMainSketchUri },
       };
     }
   );

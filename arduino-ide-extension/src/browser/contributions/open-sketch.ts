@@ -1,7 +1,13 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { nls } from '@theia/core/lib/common/nls';
 import { injectable } from '@theia/core/shared/inversify';
-import { SketchesError, SketchRef } from '../../common/protocol';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { LabelProvider } from '@theia/core/lib/browser/label-provider';
+import {
+  SketchesError,
+  SketchesService,
+  SketchRef,
+} from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   Command,
@@ -108,45 +114,11 @@ export class OpenSketch extends SketchContribution {
       return sketch;
     }
     if (Sketch.isSketchFile(sketchFileUri)) {
-      const name = new URI(sketchFileUri).path.name;
-      const nameWithExt = this.labelProvider.getName(new URI(sketchFileUri));
-      const { response } = await remote.dialog.showMessageBox({
-        title: nls.localize('arduino/sketch/moving', 'Moving'),
-        type: 'question',
-        buttons: [
-          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
-          nls.localize('vscode/issueMainService/ok', 'OK'),
-        ],
-        message: nls.localize(
-          'arduino/sketch/movingMsg',
-          'The file "{0}" needs to be inside a sketch folder named "{1}".\nCreate this folder, move the file, and continue?',
-          nameWithExt,
-          name
-        ),
+      return promptMoveSketch(sketchFileUri, {
+        fileService: this.fileService,
+        sketchService: this.sketchService,
+        labelProvider: this.labelProvider,
       });
-      if (response === 1) {
-        // OK
-        const newSketchUri = new URI(sketchFileUri).parent.resolve(name);
-        const exists = await this.fileService.exists(newSketchUri);
-        if (exists) {
-          await remote.dialog.showMessageBox({
-            type: 'error',
-            title: nls.localize('vscode/dialog/dialogErrorMessage', 'Error'),
-            message: nls.localize(
-              'arduino/sketch/cantOpen',
-              'A folder named "{0}" already exists. Can\'t open sketch.',
-              name
-            ),
-          });
-          return undefined;
-        }
-        await this.fileService.createFolder(newSketchUri);
-        await this.fileService.move(
-          new URI(sketchFileUri),
-          new URI(newSketchUri.resolve(nameWithExt).toString())
-        );
-        return this.sketchService.getSketchFolder(newSketchUri.toString());
-      }
     }
   }
 }
@@ -156,5 +128,57 @@ export namespace OpenSketch {
     export const OPEN_SKETCH: Command = {
       id: 'arduino-open-sketch',
     };
+  }
+}
+
+export async function promptMoveSketch(
+  sketchFileUri: string | URI,
+  options: {
+    fileService: FileService;
+    sketchService: SketchesService;
+    labelProvider: LabelProvider;
+  }
+): Promise<Sketch | undefined> {
+  const { fileService, sketchService, labelProvider } = options;
+  const uri =
+    sketchFileUri instanceof URI ? sketchFileUri : new URI(sketchFileUri);
+  const name = uri.path.name;
+  const nameWithExt = labelProvider.getName(uri);
+  const { response } = await remote.dialog.showMessageBox({
+    title: nls.localize('arduino/sketch/moving', 'Moving'),
+    type: 'question',
+    buttons: [
+      nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+      nls.localize('vscode/issueMainService/ok', 'OK'),
+    ],
+    message: nls.localize(
+      'arduino/sketch/movingMsg',
+      'The file "{0}" needs to be inside a sketch folder named "{1}".\nCreate this folder, move the file, and continue?',
+      nameWithExt,
+      name
+    ),
+  });
+  if (response === 1) {
+    // OK
+    const newSketchUri = uri.parent.resolve(name);
+    const exists = await fileService.exists(newSketchUri);
+    if (exists) {
+      await remote.dialog.showMessageBox({
+        type: 'error',
+        title: nls.localize('vscode/dialog/dialogErrorMessage', 'Error'),
+        message: nls.localize(
+          'arduino/sketch/cantOpen',
+          'A folder named "{0}" already exists. Can\'t open sketch.',
+          name
+        ),
+      });
+      return undefined;
+    }
+    await fileService.createFolder(newSketchUri);
+    await fileService.move(
+      uri,
+      new URI(newSketchUri.resolve(nameWithExt).toString())
+    );
+    return sketchService.getSketchFolder(newSketchUri.toString());
   }
 }

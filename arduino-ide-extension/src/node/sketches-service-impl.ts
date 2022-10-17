@@ -187,11 +187,22 @@ export class SketchesServiceImpl
     const sketch = await new Promise<SketchWithDetails>((resolve, reject) => {
       client.loadSketch(req, async (err, resp) => {
         if (err) {
-          reject(
-            isNotFoundError(err)
-              ? SketchesError.NotFound(err.details, uri)
-              : err
-          );
+          let rejectWith: unknown = err;
+          if (isNotFoundError(err)) {
+            const invalidMainSketchFilePath = await isInvalidSketchNameError(
+              err,
+              requestSketchPath
+            );
+            if (invalidMainSketchFilePath) {
+              rejectWith = SketchesError.InvalidName(
+                err.details,
+                FileUri.create(invalidMainSketchFilePath).toString()
+              );
+            } else {
+              rejectWith = SketchesError.NotFound(err.details, uri);
+            }
+          }
+          reject(rejectWith);
           return;
         }
         const responseSketchPath = maybeNormalizeDrive(resp.getLocationPath());
@@ -301,7 +312,10 @@ export class SketchesServiceImpl
           )} before marking it as recently opened.`
         );
       } catch (err) {
-        if (SketchesError.NotFound.is(err)) {
+        if (
+          SketchesError.NotFound.is(err) ||
+          SketchesError.InvalidName.is(err)
+        ) {
           this.logger.debug(
             `Could not load sketch from '${uri}'. Not marking as recently opened.`
           );
@@ -515,7 +529,7 @@ void loop() {
       const sketch = await this.loadSketch(uri);
       return sketch;
     } catch (err) {
-      if (SketchesError.NotFound.is(err)) {
+      if (SketchesError.NotFound.is(err) || SketchesError.InvalidName.is(err)) {
         return undefined;
       }
       throw err;
@@ -646,6 +660,63 @@ interface SketchWithDetails extends Sketch {
 function isNotFoundError(err: unknown): err is ServiceError {
   return ServiceError.is(err) && err.code === 5; // `NOT_FOUND` https://grpc.github.io/grpc/core/md_doc_statuscodes.html
 }
+
+/**
+ * Tries to detect whether the error was caused by an invalid main sketch file name.
+ * IDE2 should handle gracefully when there is an invalid sketch folder name. See the [spec](https://arduino.github.io/arduino-cli/latest/sketch-specification/#sketch-root-folder) for details.
+ * The CLI does not have error codes (https://github.com/arduino/arduino-cli/issues/1762), so IDE2 parses the error message and tries to guess it.
+ * Nothing guarantees that the invalid existing main sketch file still exits by the time client performs the sketch move.
+ */
+async function isInvalidSketchNameError(
+  cliErr: unknown,
+  requestSketchPath: string
+): Promise<string | undefined> {
+  if (isNotFoundError(cliErr)) {
+    const ino = requestSketchPath.endsWith('.ino');
+    if (ino) {
+      const sketchFolderPath = path.dirname(requestSketchPath);
+      const sketchName = path.basename(sketchFolderPath);
+      const pattern = `${invalidSketchNameErrorRegExpPrefix}${path.join(
+        sketchFolderPath,
+        `${sketchName}.ino`
+      )}`.replace(/\\/g, '\\\\'); // make windows path separator with \\ to have a valid regexp.
+      if (new RegExp(pattern, 'i').test(cliErr.details)) {
+        try {
+          await fs.access(requestSketchPath);
+          return requestSketchPath;
+        } catch {
+          return undefined;
+        }
+      }
+    } else {
+      try {
+        const resources = await fs.readdir(requestSketchPath, {
+          withFileTypes: true,
+        });
+        return (
+          resources
+            .filter((resource) => resource.isFile())
+            .filter((resource) => resource.name.endsWith('.ino'))
+            // A folder might contain multiple sketches. It's OK to ick the first one as IDE2 cannot do much,
+            // but ensure a deterministic behavior as `readdir(3)` does not guarantee an order. Sort them.
+            .sort(({ name: left }, { name: right }) =>
+              left.localeCompare(right)
+            )
+            .map(({ name }) => name)
+            .map((name) => path.join(requestSketchPath, name))[0]
+        );
+      } catch (err) {
+        if ('code' in err && err.code === 'ENOTDIR') {
+          return undefined;
+        }
+        throw err;
+      }
+    }
+  }
+  return undefined;
+}
+const invalidSketchNameErrorRegExpPrefix =
+  '.*: main file missing from sketch: ';
 
 /*
  * When a new sketch is created, add a suffix to distinguish it

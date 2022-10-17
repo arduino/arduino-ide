@@ -45,6 +45,7 @@
     "@types/deepmerge": "^2.2.0",
     "@types/glob": "^7.2.0",
     "@types/google-protobuf": "^3.7.2",
+    "@types/is-valid-path": "^0.1.0",
     "@types/js-yaml": "^3.12.2",
     "@types/keytar": "^4.4.0",
     "@types/lodash.debounce": "^4.0.6",
