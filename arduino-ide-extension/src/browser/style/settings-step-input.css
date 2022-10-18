@@ -2,10 +2,10 @@
     position: relative
 }
 
-.settings-step-input-element::-webkit-inner-spin-button, 
+.settings-step-input-element::-webkit-inner-spin-button,
 .settings-step-input-element::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .settings-step-input-buttons-container {
@@ -25,7 +25,7 @@
     right: 14px;
 }
 
-.settings-step-input-container:hover > .settings-step-input-buttons-container {
+.settings-step-input-container:hover>.settings-step-input-buttons-container {
     display: flex;
 }
 

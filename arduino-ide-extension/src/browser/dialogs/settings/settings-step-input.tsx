@@ -69,8 +69,16 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   };
 
   /* Prevent the user from entering invalid values */
-  const onBlur = (): void => {
-    if ((currentValue === 0 && minValue > 0) || isNaN(currentValue)) {
+  const onBlur = (event: React.FocusEvent): void => {
+    if (event.currentTarget.contains(event.relatedTarget as Node)) {
+      return;
+    }
+
+    if (
+      (currentValue === 0 && minValue > 0) ||
+      isNaN(currentValue) ||
+      isEmptyString
+    ) {
       setValueState({
         currentValue: initialValue,
         isEmptyString: false,
@@ -95,12 +103,11 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   const downDisabled = isDisabledException || currentValue <= minValue;
 
   return (
-    <div className="settings-step-input-container">
+    <div className="settings-step-input-container" onBlur={onBlur}>
       <input
         className={classnames('settings-step-input-element', classNames?.input)}
         value={isEmptyString ? '' : String(currentValue)}
         onChange={onUserInput}
-        onBlur={onBlur}
         type="number"
         pattern="[0-9]+"
       />
