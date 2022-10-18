@@ -409,14 +409,16 @@ export class BoardsServiceProvider
   }
 
   async selectedBoardUserFields(): Promise<BoardUserField[]> {
-    if (!this._boardsConfig.selectedBoard || !this._boardsConfig.selectedPort) {
+    if (!this._boardsConfig.selectedBoard) {
       return [];
     }
     const fqbn = this._boardsConfig.selectedBoard.fqbn;
     if (!fqbn) {
       return [];
     }
-    const protocol = this._boardsConfig.selectedPort.protocol;
+    // Protocol must be set to `default` when uploading without a port selected:
+    // https://arduino.github.io/arduino-cli/dev/platform-specification/#sketch-upload-configuration
+    const protocol = this._boardsConfig.selectedPort?.protocol || 'default';
     return await this.boardsService.getBoardUserFields({ fqbn, protocol });
   }
 

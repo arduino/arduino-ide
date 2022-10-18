@@ -66,10 +66,8 @@ export class UserFields extends Contribution {
     }
     const address =
       boardsConfig.selectedBoard?.port?.address ||
-      boardsConfig.selectedPort?.address;
-    if (!address) {
-      return undefined;
-    }
+      boardsConfig.selectedPort?.address ||
+      '';
     return fqbn + '|' + address;
   }
 
