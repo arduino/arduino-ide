@@ -119,10 +119,8 @@ export class LibraryListWidget extends ListWidget<
       message.appendChild(question);
       const result = await new MessageBoxDialog({
         title: nls.localize(
-          'arduino/library/dependenciesForLibrary',
-          'Dependencies for library {0}:{1}',
-          item.name,
-          version
+          'arduino/library/installLibraryDependencies',
+          'Install library dependencies'
         ),
         message,
         buttons: [
@@ -201,6 +199,7 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
       const button = this.createButton(text);
       const isPrimaryButton =
         index === (options.buttons ? options.buttons.length - 1 : 0);
+      button.title = text;
       button.classList.add(
         isPrimaryButton ? 'main' : 'secondary',
         'message-box-dialog-button'
