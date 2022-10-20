@@ -125,7 +125,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
         rowIndex={index}
         parent={parent}
       >
-        {({ measure, registerChild }) => (
+        {({ registerChild }) => (
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           <div ref={registerChild} style={style}>
@@ -135,7 +135,6 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
               itemRenderer={this.props.itemRenderer}
               install={this.props.install}
               uninstall={this.props.uninstall}
-              onFocusDidChange={() => measure()}
             />
           </div>
         )}

@@ -64,7 +64,6 @@ export namespace ComponentListItem {
     readonly install: (item: T, version?: Installable.Version) => Promise<void>;
     readonly uninstall: (item: T) => Promise<void>;
     readonly itemRenderer: ListItemRenderer<T>;
-    readonly onFocusDidChange: () => void;
   }
 
   export interface State {
