@@ -14,30 +14,14 @@ export class ComponentListItem<
       )[0];
       this.state = {
         selectedVersion: version,
-        focus: false,
-        versionUpdate: false,
       };
-    }
-  }
-
-  override componentDidUpdate(
-    prevProps: ComponentListItem.Props<T>,
-    prevState: ComponentListItem.State
-  ): void {
-    if (this.state.focus !== prevState.focus) {
-      this.props.onFocusDidChange();
     }
   }
 
   override render(): React.ReactNode {
     const { item, itemRenderer } = this.props;
     return (
-      <div
-        onMouseEnter={() => this.setState({ focus: true })}
-        onMouseLeave={() => {
-          if (!this.state.versionUpdate) this.setState({ focus: false });
-        }}
-      >
+      <div>
         {itemRenderer.renderItem(
           Object.assign(this.state, { item }),
           this.install.bind(this),
@@ -55,7 +39,6 @@ export class ComponentListItem<
     )[0];
     this.setState({
       selectedVersion: version,
-      versionUpdate: false,
     });
     try {
       await this.props.install(item, toInstall);
@@ -71,7 +54,7 @@ export class ComponentListItem<
   }
 
   private onVersionChange(version: Installable.Version): void {
-    this.setState({ selectedVersion: version, versionUpdate: true });
+    this.setState({ selectedVersion: version });
   }
 }
 
@@ -86,7 +69,5 @@ export namespace ComponentListItem {
 
   export interface State {
     selectedVersion?: Installable.Version;
-    focus: boolean;
-    versionUpdate: boolean;
   }
 }

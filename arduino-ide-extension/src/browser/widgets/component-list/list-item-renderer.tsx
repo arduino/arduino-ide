@@ -28,7 +28,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     uninstall: (item: T) => Promise<void>,
     onVersionChange: (version: Installable.Version) => void
   ): React.ReactNode {
-    const { item, focus } = input;
+    const { item } = input;
     let nameAndAuthor: JSX.Element;
     if (item.name && item.author) {
       const name = <span className="name">{item.name}</span>;
@@ -127,12 +127,10 @@ export class ListItemRenderer<T extends ArduinoComponent> {
           {description}
         </div>
         <div className="info">{moreInfo}</div>
-        {focus && (
-          <div className="footer">
-            {versions}
-            {installButton}
-          </div>
-        )}
+        <div className="footer">
+          {versions}
+          {installButton}
+        </div>
       </div>
     );
   }
