@@ -37,6 +37,12 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     return Math.min(Math.max(value, min), max);
   };
 
+  const setValidValue = (value: number): void => {
+    const clampedValue = clamp(value, minValue, maxValue);
+    setValueState({ currentValue: clampedValue, isEmptyString: false });
+    setSettingsStateValue(clampedValue);
+  };
+
   const onStep = (
     roundingOperation: 'ceil' | 'floor',
     stepOperation: (a: number, b: number) => number
@@ -47,9 +53,7 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
       valueRoundedToScale === currentValue
         ? stepOperation(currentValue, step)
         : valueRoundedToScale;
-    const newValue = clamp(calculatedValue, minValue, maxValue);
-
-    setSettingsStateValue(newValue);
+    setValidValue(calculatedValue);
   };
 
   const onStepUp = (): void => {
@@ -87,10 +91,7 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     }
 
     if (currentValue !== initialValue) {
-      /* If the user input is a number, clamp it to the min and max values */
-      const newValue = clamp(currentValue, minValue, maxValue);
-
-      setSettingsStateValue(newValue);
+      setValidValue(currentValue);
     }
   };
 
