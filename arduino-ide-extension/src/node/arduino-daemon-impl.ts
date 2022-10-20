@@ -162,8 +162,6 @@ export class ArduinoDaemonImpl
       '--config-file',
       `"${cliConfigPath}"`,
       '-v',
-      '--log-format',
-      'json',
     ];
     if (debug) {
       args.push('--debug');
