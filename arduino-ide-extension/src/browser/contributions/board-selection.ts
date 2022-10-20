@@ -276,7 +276,7 @@ PID: ${PID}`;
           '{0} ports',
           Port.Protocols.protocolLabel(protocol)
         ),
-        { order: protocolOrder.toString() }
+        { order: protocolOrder.toString().padStart(4) }
       );
       this.menuModelRegistry.registerMenuNode(menuPath, placeholder);
       this.toDisposeBeforeMenuRebuild.push(
