@@ -119,30 +119,26 @@ export class LibraryListWidget extends ListWidget<
       message.appendChild(question);
       const result = await new MessageBoxDialog({
         title: nls.localize(
-          'arduino/library/dependenciesForLibrary',
-          'Dependencies for library {0}:{1}',
-          item.name,
-          version
+          'arduino/library/installLibraryDependencies',
+          'Install library dependencies'
         ),
         message,
         buttons: [
-          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
           nls.localize(
-            'arduino/library/installOnly',
-            'Install {0} only',
-            item.name
+            'arduino/library/installWithoutDependencies',
+            'Install without dependencies'
           ),
-          nls.localize('arduino/library/installAll', 'Install all'),
+          nls.localize('arduino/library/installAll', 'Install All'),
         ],
         maxWidth: 740, // Aligned with `settings-dialog.css`.
       }).open();
 
       if (result) {
         const { response } = result;
-        if (response === 1) {
+        if (response === 0) {
           // Current only
           installDependencies = false;
-        } else if (response === 2) {
+        } else if (response === 1) {
           // All
           installDependencies = true;
         }
@@ -203,7 +199,11 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
       const button = this.createButton(text);
       const isPrimaryButton =
         index === (options.buttons ? options.buttons.length - 1 : 0);
-      button.classList.add(isPrimaryButton ? 'main' : 'secondary');
+      button.title = text;
+      button.classList.add(
+        isPrimaryButton ? 'main' : 'secondary',
+        'message-box-dialog-button'
+      );
       this.controlPanel.appendChild(button);
       this.toDisposeOnDetach.push(
         addEventListener(button, 'click', () => {
