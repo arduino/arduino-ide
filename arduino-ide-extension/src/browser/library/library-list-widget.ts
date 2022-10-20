@@ -128,17 +128,17 @@ export class LibraryListWidget extends ListWidget<
             'arduino/library/installWithoutDependencies',
             'Install without dependencies'
           ),
-          nls.localize('arduino/library/installAll', 'Install all'),
+          nls.localize('arduino/library/installAll', 'Install All'),
         ],
         maxWidth: 740, // Aligned with `settings-dialog.css`.
       }).open();
 
       if (result) {
         const { response } = result;
-        if (response === 1) {
+        if (response === 0) {
           // Current only
           installDependencies = false;
-        } else if (response === 2) {
+        } else if (response === 1) {
           // All
           installDependencies = true;
         }

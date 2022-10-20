@@ -255,7 +255,7 @@
       "arduinoLibraries": "Arduino libraries",
       "contributedLibraries": "Contributed libraries",
       "include": "Include Library",
-      "installAll": "Install all",
+      "installAll": "Install All",
       "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
