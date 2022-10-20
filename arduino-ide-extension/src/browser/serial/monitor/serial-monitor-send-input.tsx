@@ -7,82 +7,49 @@ import { MonitorModel } from '../../monitor-model';
 import { Unknown } from '../../../common/nls';
 
 class HistoryList {
-  private ring: string[];
-  private size: number;
-  private begin: number;
-  private index: number;
-  private end: number;
-  private traverse: boolean;
+  private readonly items: string[] = [];
+  private index = -1;
 
-  constructor(size: number = 100) {
-    this.init = this.init.bind(this);
-    this.push = this.push.bind(this);
-    this.prev = this.prev.bind(this);
-    this.next = this.next.bind(this);
-    this.init(size);
-  }
-  private init(size: number = 100) {
-    this.ring = [];
-    this.size = (size > 0) ? size : 1;
-    this.begin = 0;
-    this.index = 0;
-    this.end = -1;
-    this.traverse = false;
+  constructor(private readonly size = 100) {}
+
+  push(val: string): void {
+    if (val !== this.items[this.items.length - 1]) {
+      this.items.push(val);
+    }
+    while (this.items.length > this.size) {
+      this.items.shift();
+    }
+    this.index = -1;
   }
 
-  push(val: string): number {
-    this.end++;
-    if (this.ring.length >= this.size) {
-      if (this.end >= this.size)
-        this.end = 0;
-      if (this.end === this.begin) {
-        this.begin++;
-        if (this.begin >= this.size)
-          this.begin = 0;
-      }
+  previous(): string {
+    if (this.index === -1) {
+      this.index = this.items.length - 1;
+      return this.items[this.index];
     }
-    this.ring[this.end] = val;
-    this.index = this.end;
-    this.traverse = false;
-    return this.index;
+    if (this.hasPrevious) {
+      return this.items[--this.index];
+    }
+    return this.items[this.index];
   }
 
-  prev(): string {
-    if (this.ring.length < 1) {
-      return '';
-    }
-    if (this.index === this.end) {
-      this.traverse = true;
-      this.index--;
-      return this.ring[this.end];
-    }
-    if (this.index !== this.begin) {
-      if (this.traverse) {
-        this.traverse = false;
-      }
-      else
-        this.index = (this.index > 0) ? --this.index : this.size - 1;
-    }
-
-    return this.ring[this.index];
+  private get hasPrevious(): boolean {
+    return this.index >= 1;
   }
 
   next(): string {
-    if (this.ring.length < 1) {
+    if (this.index === this.items.length - 1) {
+      this.index = -1;
       return '';
     }
-    if (this.index !== this.end) {
-      this.traverse = true;
-      this.index = (++this.index < this.size) ? this.index : 0;
-      if(this.index === this.end)
-        this.traverse = false;
+    if (this.hasNext) {
+      return this.items[++this.index];
     }
-    else {
-      if (!this.traverse) {
-        return '';
-      }
-    }
-    return this.ring[this.index];
+    return '';
+  }
+
+  private get hasNext(): boolean {
+    return this.index >= 0 && this.index !== this.items.length - 1;
   }
 }
 
@@ -171,7 +138,7 @@ export class SerialMonitorSendInput extends React.Component<
     );
   }
 
-  protected setRef = (element: HTMLElement | null) => {
+  protected setRef = (element: HTMLElement | null): void => {
     if (this.props.resolveFocus) {
       this.props.resolveFocus(element || undefined);
     }
@@ -191,22 +158,17 @@ export class SerialMonitorSendInput extends React.Component<
     if (keyCode) {
       const { key } = keyCode;
       if (key === Key.ENTER) {
-        // NOTE: order of operations is critical here. Push the current state.text
-        // onto the history stack before sending. After sending, state.text is empty
-        // and you'd end up pushing '' onto the history stack.
-        if (this.state.text.length > 0) {
-          this.state.history.push(this.state.text);
-        }
+        const { text } = this.state;
         this.onSend();
-      } 
-      else if (key === Key.ARROW_UP) {
-        this.setState({ text: this.state.history.prev()});
-      } 
-      else if (key === Key.ARROW_DOWN) {
-        this.setState({ text: this.state.history.next()});
-      }
-      else if (key === Key.ESCAPE) {
-        this.setState({ text: ''});
+        if (text) {
+          this.state.history.push(text);
+        }
+      } else if (key === Key.ARROW_UP) {
+        this.setState({ text: this.state.history.previous() });
+      } else if (key === Key.ARROW_DOWN) {
+        this.setState({ text: this.state.history.next() });
+      } else if (key === Key.ESCAPE) {
+        this.setState({ text: '' });
       }
     }
   }
