@@ -37,10 +37,11 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     return Math.min(Math.max(value, min), max);
   };
 
-  const setValidValue = (value: number): void => {
-    const clampedValue = clamp(value, minValue, maxValue);
-    setValueState({ currentValue: clampedValue, isEmptyString: false });
-    setSettingsStateValue(clampedValue);
+  const resetToInitialState = (): void => {
+    setValueState({
+      currentValue: initialValue,
+      isEmptyString: false,
+    });
   };
 
   const onStep = (
@@ -53,7 +54,9 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
       valueRoundedToScale === currentValue
         ? stepOperation(currentValue, step)
         : valueRoundedToScale;
-    setValidValue(calculatedValue);
+    const newValue = clamp(calculatedValue, minValue, maxValue);
+
+    setSettingsStateValue(newValue);
   };
 
   const onStepUp = (): void => {
@@ -74,25 +77,20 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
 
   /* Prevent the user from entering invalid values */
   const onBlur = (event: React.FocusEvent): void => {
-    if (event.currentTarget.contains(event.relatedTarget as Node)) {
-      return;
-    }
-
     if (
-      (currentValue === 0 && minValue > 0) ||
-      isNaN(currentValue) ||
-      isEmptyString
+      (currentValue === initialValue && !isEmptyString) ||
+      event.currentTarget.contains(event.relatedTarget as Node)
     ) {
-      setValueState({
-        currentValue: initialValue,
-        isEmptyString: false,
-      });
       return;
     }
 
-    if (currentValue !== initialValue) {
-      setValidValue(currentValue);
+    const clampedValue = clamp(currentValue, minValue, maxValue);
+    if (clampedValue === initialValue || isNaN(currentValue) || isEmptyString) {
+      resetToInitialState();
+      return;
     }
+
+    setSettingsStateValue(clampedValue);
   };
 
   const valueIsNotWithinRange =
