@@ -2,7 +2,7 @@ import * as React from '@theia/core/shared/react';
 import classnames from 'classnames';
 
 interface SettingsStepInputProps {
-  value: number;
+  initialValue: number;
   setSettingsStateValue: (value: number) => void;
   step: number;
   maxValue: number;
@@ -15,7 +15,7 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
   props: SettingsStepInputProps
 ) => {
   const {
-    value,
+    initialValue,
     setSettingsStateValue,
     step,
     maxValue,
@@ -24,18 +24,35 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
     classNames,
   } = props;
 
+  const [valueState, setValueState] = React.useState<{
+    currentValue: number;
+    isEmptyString: boolean;
+  }>({
+    currentValue: initialValue,
+    isEmptyString: false,
+  });
+  const { currentValue, isEmptyString } = valueState;
+
   const clamp = (value: number, min: number, max: number): number => {
     return Math.min(Math.max(value, min), max);
+  };
+
+  const resetToInitialState = (): void => {
+    setValueState({
+      currentValue: initialValue,
+      isEmptyString: false,
+    });
   };
 
   const onStep = (
     roundingOperation: 'ceil' | 'floor',
     stepOperation: (a: number, b: number) => number
   ): void => {
-    const valueRoundedToScale = Math[roundingOperation](value / step) * step;
+    const valueRoundedToScale =
+      Math[roundingOperation](currentValue / step) * step;
     const calculatedValue =
-      valueRoundedToScale === value
-        ? stepOperation(value, step)
+      valueRoundedToScale === currentValue
+        ? stepOperation(currentValue, step)
         : valueRoundedToScale;
     const newValue = clamp(calculatedValue, minValue, maxValue);
 
@@ -52,33 +69,53 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
 
   const onUserInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { value: eventValue } = event.target;
-
-    if (eventValue === '') {
-      setSettingsStateValue(0);
-    }
-
-    const number = Number(eventValue);
-
-    if (!isNaN(number) && number !== value) {
-      const newValue = clamp(number, minValue, maxValue);
-
-      setSettingsStateValue(newValue);
-    }
+    setValueState({
+      currentValue: Number(eventValue),
+      isEmptyString: eventValue === '',
+    });
   };
 
-  const upDisabled = value >= maxValue;
-  const downDisabled = value <= minValue;
+  /* Prevent the user from entering invalid values */
+  const onBlur = (event: React.FocusEvent): void => {
+    if (
+      (currentValue === initialValue && !isEmptyString) ||
+      event.currentTarget.contains(event.relatedTarget as Node)
+    ) {
+      return;
+    }
+
+    const clampedValue = clamp(currentValue, minValue, maxValue);
+    if (clampedValue === initialValue || isNaN(currentValue) || isEmptyString) {
+      resetToInitialState();
+      return;
+    }
+
+    setSettingsStateValue(clampedValue);
+  };
+
+  const valueIsNotWithinRange =
+    currentValue < minValue || currentValue > maxValue;
+  const isDisabledException =
+    valueIsNotWithinRange || isEmptyString || isNaN(currentValue);
+
+  const upDisabled = isDisabledException || currentValue >= maxValue;
+  const downDisabled = isDisabledException || currentValue <= minValue;
 
   return (
-    <div className="settings-step-input-container">
+    <div className="settings-step-input-container" onBlur={onBlur}>
       <input
         className={classnames('settings-step-input-element', classNames?.input)}
-        value={value.toString()}
+        value={isEmptyString ? '' : String(currentValue)}
         onChange={onUserInput}
         type="number"
         pattern="[0-9]+"
       />
-      <div className="settings-step-input-buttons-container">
+      <div
+        className={classnames(
+          'settings-step-input-buttons-container',
+          classNames?.buttonsContainer
+        )}
+      >
         <button
           className="settings-step-input-button settings-step-input-up-button"
           disabled={upDisabled}

@@ -2,17 +2,17 @@
     position: relative
 }
 
-.settings-step-input-element::-webkit-inner-spin-button, 
+.settings-step-input-element::-webkit-inner-spin-button,
 .settings-step-input-element::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .settings-step-input-buttons-container {
     display: none;
     flex-direction: column;
     position: absolute;
-    right: 14px;
+    right: 0px;
     top: 50%;
     transform: translate(0px, -50%);
     height: calc(100% - 4px);
@@ -21,7 +21,11 @@
     background: var(--theia-input-background);
 }
 
-.settings-step-input-container:hover > .settings-step-input-buttons-container {
+.settings-step-input-buttons-container-perc {
+    right: 14px;
+}
+
+.settings-step-input-container:hover>.settings-step-input-buttons-container {
     display: flex;
 }
 
