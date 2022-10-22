@@ -32,6 +32,7 @@ import {
   maybeNormalizeDrive,
   TempSketchPrefix,
 } from './is-temp-sketch';
+import { join } from 'path';
 
 const RecentSketches = 'recent-sketches.json';
 
@@ -47,6 +48,7 @@ export class SketchesServiceImpl
     autoStart: true,
     concurrency: 1,
   });
+  private bluePrintContent : string;
 
   @inject(ILogger)
   @named('sketches-service')
@@ -447,10 +449,11 @@ export class SketchesServiceImpl
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
     await fs.mkdir(sketchDir, { recursive: true });
-    let defaultContent = await this.loadDefault();
+    this.bluePrintContent = this.bluePrintContent || await this.loadDefault();
+
     await fs.writeFile(
       sketchFile,
-      defaultContent,
+      this.bluePrintContent,
       { encoding: 'utf8' }
     );
     return this.loadSketch(FileUri.create(sketchDir).toString());
@@ -630,9 +633,21 @@ export class SketchesServiceImpl
     }
   }
 
-  // Returns the default.ino from the default folder
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private tryParse(raw: string): any | undefined {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return undefined;
+    }
+  }
+
+  // Returns the default.ino from the settings or from default folder.
   private async loadDefault(): Promise<string> {
     const root = await this.root(await this.sketchbookUri());
+    const configDirUri = await this.envVariableServer.getConfigDirUri(); 
+    const configDirPath = FileUri.fsPath(configDirUri);
+
     let result : string;
     result =  `void setup() {
   // put your setup code here, to run once:
@@ -644,23 +659,30 @@ void loop() {
   
 }`;
 
-    let filename = `${root}/default/default.ino`;
-    let exists = false;
-    let raw = "";
+    try { 
+      const raw = await fs.readFile(join(configDirPath, 'settings.json'), { 
+        encoding: 'utf8', 
+      }); 
+      const json = this.tryParse(raw); 
+      if (json) { 
+        const value = json['arduino.sketch.inoBlueprint']; 
 
-    try {
-      raw = await fs.readFile(filename, {encoding: 'utf8', });
-      exists = true;
-    } catch {
-      exists = false;
-    }
+        let filename = (typeof value === 'string' && !!value) ? value : `${root}/default/default.ino`;
 
-    if (exists) {      
+        let raw = '';
+
+        raw = await fs.readFile(filename, {encoding: 'utf8', });
         result = raw;
-      this.logger.info (`-- Default found at ${filename}`)
-    } else {
-      this.logger.info (`-- Default sketch not found at ${filename}`)
+
+        this.logger.info (`-- Default found at ${filename}`)   
+      } 
+    } catch (error) { 
+      if ('code' in error && error.code === 'ENOENT') { 
+        return result;
+      } 
+      throw error; 
     }
+
     return result;
   }
 }
