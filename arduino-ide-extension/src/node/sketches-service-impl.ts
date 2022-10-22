@@ -48,7 +48,7 @@ export class SketchesServiceImpl
     autoStart: true,
     concurrency: 1,
   });
-  private bluePrintContent : string;
+  private bluePrintContent: string;
 
   @inject(ILogger)
   @named('sketches-service')
@@ -449,13 +449,9 @@ export class SketchesServiceImpl
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
     await fs.mkdir(sketchDir, { recursive: true });
-    this.bluePrintContent = this.bluePrintContent || await this.loadDefault();
+    this.bluePrintContent = this.bluePrintContent || (await this.loadDefault());
 
-    await fs.writeFile(
-      sketchFile,
-      this.bluePrintContent,
-      { encoding: 'utf8' }
-    );
+    await fs.writeFile(sketchFile, this.bluePrintContent, { encoding: 'utf8' });
     return this.loadSketch(FileUri.create(sketchDir).toString());
   }
 
@@ -645,11 +641,11 @@ export class SketchesServiceImpl
   // Returns the default.ino from the settings or from default folder.
   private async loadDefault(): Promise<string> {
     const root = await this.root(await this.sketchbookUri());
-    const configDirUri = await this.envVariableServer.getConfigDirUri(); 
+    const configDirUri = await this.envVariableServer.getConfigDirUri();
     const configDirPath = FileUri.fsPath(configDirUri);
 
-    let result : string;
-    result =  `void setup() {
+    let result: string;
+    result = `void setup() {
   // put your setup code here, to run once:
 
 }
@@ -659,28 +655,31 @@ void loop() {
   
 }`;
 
-    try { 
-      const raw = await fs.readFile(join(configDirPath, 'settings.json'), { 
-        encoding: 'utf8', 
-      }); 
-      const json = this.tryParse(raw); 
-      if (json) { 
-        const value = json['arduino.sketch.inoBlueprint']; 
+    try {
+      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
+        encoding: 'utf8',
+      });
+      const json = this.tryParse(raw);
+      if (json) {
+        const value = json['arduino.sketch.inoBlueprint'];
 
-        let filename = (typeof value === 'string' && !!value) ? value : `${root}/default/default.ino`;
+        const filename =
+          typeof value === 'string' && !!value
+            ? value
+            : `${root}/default/default.ino`;
 
         let raw = '';
 
-        raw = await fs.readFile(filename, {encoding: 'utf8', });
+        raw = await fs.readFile(filename, { encoding: 'utf8' });
         result = raw;
 
-        this.logger.info (`-- Default found at ${filename}`)   
-      } 
-    } catch (error) { 
-      if ('code' in error && error.code === 'ENOENT') { 
+        this.logger.info(`-- Default found at ${filename}`);
+      }
+    } catch (error) {
+      if ('code' in error && error.code === 'ENOENT') {
         return result;
-      } 
-      throw error; 
+      }
+      throw error;
     }
 
     return result;
