@@ -21,14 +21,14 @@ export class ComponentListItem<
   override render(): React.ReactNode {
     const { item, itemRenderer } = this.props;
     return (
-      <div>
+      <>
         {itemRenderer.renderItem(
           Object.assign(this.state, { item }),
           this.install.bind(this),
           this.uninstall.bind(this),
           this.onVersionChange.bind(this)
         )}
-      </div>
+      </>
     );
   }
 
