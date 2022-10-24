@@ -8,6 +8,7 @@
       "board": "Bo mạch {0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Thông tin bo mạch",
+      "boards": "boards",
       "configDialog1": "Chọn đồng thời một bo mạch và một cổng nếu bạn muốn nạp một sketch.",
       "configDialog2": "Nếu bạn chỉ chọn một bo mạch thì bạn sẽ có khả năng biên dịch, nhưng không thể nạp sketch của bạn lên.",
       "couldNotFindPreviouslySelected": "Không thể tìm thấy bo mạch '{0}' được chọn trước đó trong nền tảng '{1}' đã được cài đặt. Hãy chọn lại thủ công bo mạch mà bạn muốn dùng. Bạn có muốn chọn lại ngay?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Lấy thông tin bo mạch",
       "inSketchbook": "(trong Sketchbook)",
       "installNow": "Nhân \"{0} {1}\" phải được cài đặt cho bo mạch \"{2}\" đang được chọn. Bạn có muốn cài đặt ngay?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "Không có FQBN khả dụng cho bo mạch \"{0}\" được chọn. Bạn đã cài đặt nhân tương ứng chưa?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Không có cổng được chọn cho bo mạch: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Hãy chọn một bo mạch được kết nối tới cổng mà bạn đã chọn.",
       "port": "Cổng {0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programmer",
       "reselectLater": "Chọn lại sau",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Hãy chọn một bo mạch để lấy thông tin.",
       "selectPortForInfo": "Hãy chọn một cổng để lấy thông tin bo mạch.",
       "showAllAvailablePorts": "Hiển thị tất cả các cổng khả dụng khi được kích hoạt",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Hoàn tất cài đặt nền tảng {0}:{1}",
-      "succesfullyUninstalledPlatform": "Hoàn tất gỡ cài đặt nền tảng {0}:{1}"
+      "succesfullyUninstalledPlatform": "Hoàn tất gỡ cài đặt nền tảng {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Trình quản lý bo mạch",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Hoàn tất đẩy lên '{0}'.",
       "embed": "Nhúng: ",
       "emptySketchbook": "Sketchbook của bạn đang trống",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Tìm hiểu thêm",
       "link": "Liên kết:",
       "notYetPulled": "Không thể đẩy lên Cloud. Nó chưa được tải xuống.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "bởi",
       "filterSearch": "Lọc kết quả tìm kiếm của bạn...",
-      "install": "CÀI ĐẶT",
+      "install": "Cài đặt",
+      "installed": "Installed",
       "moreInfo": "Thêm thông tin",
       "uninstall": "Gỡ cài đặt",
       "uninstallMsg": "Bạn có muốn gỡ cài đặt {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Thêm tệp...",
       "fileAdded": "Một tệp đã được thêm vào sketch.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Thay thế"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Thêm thư viện đuôi .ZIP...",
       "arduinoLibraries": "Thư viện Arduino",
       "contributedLibraries": "Thư viện cộng đồng đóng góp",
-      "dependenciesForLibrary": "Thư viện bổ trợ cho thư viện {0}:{1}",
       "include": "Thêm thư viện",
-      "installAll": "Cài tất cả",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Bạn có muốn cài tất cả các thư viện bổ trợ còn thiếu không?",
       "installOneMissingDependency": "Bạn có muốn cài thư viện bổ trợ còn thiếu không?",
-      "installOnly": "Chỉ cài {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Hoàn tất cài đặt thư viện {0}:{1}",
       "libraryAlreadyExists": "Đã tồn tại một thư viện. Bạn có muốn ghi đè lên nó?",
       "manageLibraries": "Quản lý thư viện...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Mạng",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Địa chỉ URLs của các trình quản lý thêm bo mạch",
@@ -320,6 +342,12 @@
       "network": "Mạng",
       "newSketchbookLocation": "Chọn địa điểm lưu sketchbook mới",
       "noProxy": "Không có proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Hiển thị đầu ra chi tiết trong khi",
       "sketchbook.location": "Địa điểm chứa sketchbook",
       "sketchbook.showAllFiles": "'True' để hiển thị tất cả các tệp sketch trong sketch. Mặc định là 'false'.",
@@ -350,7 +378,7 @@
       "cantOpen": "Một thư mục tên \"{0}\" đã tồn tại. Không thể mở sketch.",
       "close": "Bạn có chắc muốn đóng sketch này không?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Cấu hình và nạp",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Đã tạo tệp nén '{0]'.",
       "doneCompiling": "Biên dịch hoàn tất.",
       "doneUploading": "Nạp hoàn tất.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "Lỗi {0}: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Nạp"
     }
-  },
-  "cloud": {
-    "GoToCloud": "ĐI ĐẾN CLOUD"
   },
   "theia": {
     "core": {

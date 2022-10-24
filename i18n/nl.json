@@ -8,6 +8,7 @@
       "board": "Bord{0}",
       "boardConfigDialogTitle": "Selecteer Ander Bord en Poort",
       "boardInfo": "Bord Informatie",
+      "boards": "boards",
       "configDialog1": "Selecteer een Bord en een Poort als U een schets wilt uploaden.",
       "configDialog2": "Als je alleen een Board kiest, kun je wel compileren, maar niet je schets uploaden.",
       "couldNotFindPreviouslySelected": "Kon het voordien geselecteerde bord '{0}' in het geïnstalleerde platform '{1}' niet vinden. Gelieve manueel het bord te kiezen dat U wilt gebruiken. Wilt U het bord nu selecteren?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Verkrijg Bord Informatie",
       "inSketchbook": "(in Schetsboek)",
       "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn om het huidige geselecteerde \"{2}\" bord. Wilt U dit nu installeren?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "De FQBN is niet beschikbaar voor het geselecteerde bord \"{0}\". Heeft U de bijhorende kern geïnstalleerd?",
       "noPortsDiscovered": "Geen poorten gevonden",
       "noPortsSelected": "Geen poorten geselecteerd voor bord: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Gelieve een bord te selecteren dat verbonden is met de door U gekozen poort.",
       "port": "Poort{0}",
       "portLabel": "Poort: {0}",
+      "ports": "ports",
       "programmer": "Programmeerapparaat",
       "reselectLater": "Later opnieuw selecteren",
       "searchBoard": "Bord zoeken",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Selecteer een bord om bord informatie te bekomen.",
       "selectPortForInfo": "Selecteer een poort om bord informatie te bekomen.",
       "showAllAvailablePorts": "Toont alle beschikbare poorten indien ingeschakeld",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Platform {0}:{1} succesvol geïnstalleerd",
-      "succesfullyUninstalledPlatform": "Platform {0}:{1} is succesvol verwijderd"
+      "succesfullyUninstalledPlatform": "Platform {0}:{1} is succesvol verwijderd",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Borden Beheerder",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Klaar met pushen van '{0}'.",
       "embed": "Integreren:",
       "emptySketchbook": "Je schetsboek is leeg",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Leer meer",
       "link": "Koppeling:",
       "notYetPulled": "Kan niet pushen naar Cloud. Het is nog niet getrokken.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Borden in dit pakket:",
       "by": "door",
       "filterSearch": "Filter je zoekopdracht...",
-      "install": "INSTALLEREN",
+      "install": "Installeren",
+      "installed": "Geïnstalleerd",
       "moreInfo": "Meer informatie",
       "uninstall": "Verwijderen",
       "uninstallMsg": "Wil je {0} verwijderen?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Bestand Toevoegen",
       "fileAdded": "Één bestand toegevoegd aan de schets.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Vervangen"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Alle",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Foutmeldingen kopiëren",
@@ -236,12 +254,12 @@
       "addZip": ".ZIP-bibliotheek toevoegen...",
       "arduinoLibraries": "Arduino Bibliotheken",
       "contributedLibraries": "Bijgedragen bibliotheken",
-      "dependenciesForLibrary": "Afhankelijkheden voor bibliotheek {0}:{1}",
       "include": "Bibliotheek Gebruiken",
       "installAll": "Alles installeren",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Wilt u de ontbrekende afhankelijkheid installeren?",
       "installOneMissingDependency": "Wilt u de ontbrekende afhankelijkheid installeren?",
-      "installOnly": "Installeer enkel {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Bibliotheek {0}:{1} succesvol geïnstalleerd",
       "libraryAlreadyExists": "Er bestaat al een bibliotheek. Wil U het overschrijven? ",
       "manageLibraries": "Bibliotheken Beheren...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Kan websocket niet sluiten",
       "unableToConnectToWebSocket": "Kan geen verbinding maken met websocket"
+    },
+    "portProtocol": {
+      "network": "Netwerk",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Bijkomende Borden Beheerder URL's",
@@ -320,6 +342,12 @@
       "network": "Netwerk",
       "newSketchbookLocation": "Selecteer een nieuwe schetsboeklocatie.",
       "noProxy": "Geen proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Uitgebreide uitvoer weergeven tijdens",
       "sketchbook.location": "Schetsboek locatie",
       "sketchbook.showAllFiles": "Waar om al de schets bestanden in de schets weer te geven. Standaard ingesteld op onwaar.",
@@ -350,7 +378,7 @@
       "cantOpen": "Er bestaat al een map met de naam \"{0}\". Kan schets niet openen.",
       "close": "Weet je zeker dat je de schets wilt sluiten?",
       "compile": "Sketch compileren...",
-      "configureAndUpload": "Configureren en uploaden",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Archief '{0}' gemaakt.",
       "doneCompiling": "Klaar met compileren.",
       "doneUploading": "Klaar met uploaden.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Niet meer laten zien",
       "surveyMessage": "Help ons alsjeblieft te verbeteren door deze super korte enquête te beantwoorden. We waarderen onze gemeenschap en willen onze supporters graag wat beter leren kennen."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} fout: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Ga naar {0}",
       "upload": "Uploaden"
     }
-  },
-  "cloud": {
-    "GoToCloud": "GA NAAR CLOUD"
   },
   "theia": {
     "core": {

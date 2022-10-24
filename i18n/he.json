@@ -8,6 +8,7 @@
       "board": "לוח{0}",
       "boardConfigDialogTitle": "יש לבחור לוח ופורט אחר",
       "boardInfo": "פרטי הלוח",
+      "boards": "boards",
       "configDialog1": "נא לבחור סוג לוח ופורט כדי להעלות את הסקיצה.",
       "configDialog2": "אם נבחר לוח ניתן יהיה לקמפל, אבל לא להעלות את הסקיצה.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "פרטי הלוח",
       "inSketchbook": "(בסקיצה)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "הFQBN אינו זמין ללוח \"{0}\". האם הותקן הליבה המתאימה?",
       "noPortsDiscovered": "לא נמצאו פורטים",
       "noPortsSelected": "לא נבחרו פורטים ללוחות '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "יש לבחור את הלוח המחובר לפורט הנבחר.",
       "port": "פורט{0}",
       "portLabel": "פורט: {0}",
+      "ports": "ports",
       "programmer": "תכנת",
       "reselectLater": "בחר מחדש מאוחר יותר",
       "searchBoard": "חפש לוח",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "אנא בחר לוח לקבל מידע אודותיו.",
       "selectPortForInfo": "אנא בחר פורט לקבלת מידע אודותיו.",
       "showAllAvailablePorts": "הצג את כל הפורטים הזמינים כשמופעל",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "פלטפורמה הותקנה בהצלחה {0}:{1}",
-      "succesfullyUninstalledPlatform": "פלטפורמה הוסרה בהצלחה {0}:{1}"
+      "succesfullyUninstalledPlatform": "פלטפורמה הוסרה בהצלחה {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "מנהל לוחות",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "סיים לדחוף '{0}'.",
       "embed": "הטמע:",
       "emptySketchbook": "הסקיצה ריקה.",
+      "goToCloud": "Go to Cloud",
       "learnMore": "למדו עוד",
       "link": "קישור:",
       "notYetPulled": "לא ניתן לדחוף לענן. עדיין לא נמשך.",
@@ -140,6 +146,7 @@
       "by": "על ידי",
       "filterSearch": "סנן את החיפוש...",
       "install": "התקן",
+      "installed": "Installed",
       "moreInfo": "מידע נוסף",
       "uninstall": "הסרה",
       "uninstallMsg": "האם ברצונך להסיר את {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "הוסף קובץ",
       "fileAdded": "קובץ אחד נוסף לסקיצה.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "החלף"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "הכל",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "העתקת הודעת שגיאה",
@@ -236,12 +254,12 @@
       "addZip": "הוספת ספריית .zip",
       "arduinoLibraries": "ספריות ארדואינו",
       "contributedLibraries": "ספריות שנתרמו",
-      "dependenciesForLibrary": "תלויות בספריה {0}:{1}",
       "include": "השתמש בספריה",
-      "installAll": "התקן הכל",
+      "installAll": "להתקין הכל",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
-      "installOnly": "התקן רק את {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "ספריה הותקנה בהצלחה {0}:{1}",
       "libraryAlreadyExists": "הספריה כבר קיימת.  האם תרצ.י להחליץ אותה?",
       "manageLibraries": "נהל ספריות...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "רשת",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
@@ -320,6 +342,12 @@
       "network": "רשת",
       "newSketchbookLocation": "Select new sketchbook location",
       "noProxy": "ללא פרוקסי",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Show verbose output during",
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
@@ -350,7 +378,7 @@
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "בטוח.ה שתרצה.י לסגור את הסקיצה?",
       "compile": "מקמפל סקיצה...",
-      "configureAndUpload": "הגדר והעלה ",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "ארכיון ׳{0}׳ נוצר.",
       "doneCompiling": "קומפילציה הסתיימה.",
       "doneUploading": "העלאה הסתיימה.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "אל תראה שוב.",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} שגיאה: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "יש להקליד {0}",
       "upload": "העלאה"
     }
-  },
-  "cloud": {
-    "GoToCloud": "לך לענן"
   },
   "theia": {
     "core": {

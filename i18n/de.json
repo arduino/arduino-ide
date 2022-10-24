@@ -8,13 +8,15 @@
       "board": "Board{0}",
       "boardConfigDialogTitle": "Anderes Boards und Ports wählen",
       "boardInfo": "Board-Informationen",
+      "boards": "Boards",
       "configDialog1": "Wählen Sie ein Board und einen Port, wenn Sie den Sketch hochladen möchten.",
       "configDialog2": "Wenn Sie nur ein Board auswählen, werden Sie den Sketch nur kompilieren können, jedoch nicht hochladen.",
-      "couldNotFindPreviouslySelected": "Zuvor gewähltes Board '{0}' wurde nicht in der installierten Plaftform '{1}' gefunden. Bitte Board erneut auswählen. Jetzt auswählen?",
+      "couldNotFindPreviouslySelected": "Zuvor gewähltes Board '{0}' wurde nicht in der installierten Plattform '{1}' gefunden. Bitte Board erneut auswählen. Jetzt auswählen?",
       "disconnected": " Verbindung getrennt",
       "getBoardInfo": "Board-Informationen abrufen",
       "inSketchbook": "(im Sketchbook)",
       "installNow": "Der \"{0} {1}\" Core muss für das ausgewählte \"{2}\" Board installiert werden. Jetzt installieren?",
+      "noBoardsFound": "Für \"{0}\" wurden keine Boards gefunden.",
       "noFQBN": "Der FQBN ist für das gewählte Board \"{0}\" nicht verfügbar. Wurde der zugehörige Core installiert?",
       "noPortsDiscovered": "Keine Ports gefunden",
       "noPortsSelected": "Kein Port für das Board : '{0}' ausgewählt.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Bitte wählen Sie das Board, welches am ausgewählten Port angeschlossen ist.",
       "port": "Port{0}",
       "portLabel": "Port{0}",
+      "ports": "Ports",
       "programmer": "Programmer",
       "reselectLater": "Später auswählen",
       "searchBoard": "Board suchen",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Wähle ein Board für die Board-Informationen.",
       "selectPortForInfo": "Wähle ein Port, um Informationen über das Board zu erhalten.",
       "showAllAvailablePorts": "Zeige alle verfügbaren Ports, wenn aktiviert.",
+      "showAllPorts": "Zeige alle Ports",
       "succesfullyInstalledPlatform": "Plattform erfolgreich installiert {0}:{1}",
-      "succesfullyUninstalledPlatform": "Plattform erfolgreich deinstalliert {0}:{1}"
+      "succesfullyUninstalledPlatform": "Plattform erfolgreich deinstalliert {0}:{1}",
+      "typeOfPorts": "{0} Ports"
     },
     "boardsManager": "Board-Verwaltung",
     "boardsType": {
@@ -40,11 +45,11 @@
     },
     "bootloader": {
       "burnBootloader": "Bootloader brennen",
-      "burningBootloader": "Brenne Bootloader...",
+      "burningBootloader": "Bootloader überschreiben...",
       "doneBurningBootloader": "Bootloader erfolgreich gebrannt."
     },
     "burnBootloader": {
-      "error": "Fehler beim Brennen des Bootloaders: {0}"
+      "error": "Fehler beim Überschreiben des Bootloaders: {0}"
     },
     "certificate": {
       "addNew": "Neu hinzufügen",
@@ -67,8 +72,8 @@
       "checkForUpdates": "Nach Arduino Updates suchen",
       "installAll": "Alle installieren",
       "noUpdates": "Es sind keine aktuellen Updates verfügbar.",
-      "promptUpdateBoards": "Es sind Updates für einige ihrer Boards verfügbar.",
-      "promptUpdateLibraries": "Es sind Updates für einige ihrer Blibliotheken verfügbar.",
+      "promptUpdateBoards": "Es sind Updates für einige Ihrer Boards verfügbar.",
+      "promptUpdateLibraries": "Es sind Updates für einige Ihrer Blibliotheken verfügbar.",
       "updatingBoards": "Boards werden aktualisiert...",
       "updatingLibraries": "Bibliotheken werden aktualisiert..."
     },
@@ -85,6 +90,7 @@
       "donePushing": "Hochladen von '{0}' erfolgreich.",
       "embed": "Einbetten:",
       "emptySketchbook": "Dein Sketchbook ist leer",
+      "goToCloud": "Zur Cloud gehen",
       "learnMore": "Mehr erfahren",
       "link": "Link:",
       "notYetPulled": "Kann nicht in die Cloud geschoben werden. Es ist noch nicht heruntergeladen.",
@@ -140,24 +146,36 @@
       "by": "von",
       "filterSearch": "Filtern Sie Ihre Suche...",
       "install": "Installieren",
+      "installed": "Installiert",
       "moreInfo": "Mehr Information",
-      "uninstall": "deinstalieren",
+      "uninstall": "Deinstallieren",
       "uninstallMsg": "Möchten Sie {0} deinstallieren?",
       "version": "Version {0}"
     },
     "contributions": {
       "addFile": "Datei hinzufügen...",
       "fileAdded": "Eine Datei wurde zum Sketch hinzugefügt.",
-      "replaceTitle": "Ersetzten"
+      "plotter": {
+        "couldNotOpen": "Konnte den seriellen Plotter nicht öffnen"
+      },
+      "replaceTitle": "Ersetzen"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Alle",
+        "default": "Standard",
+        "more": "Mehr",
+        "none": "Kein/e/r"
+      }
     },
     "coreContribution": {
       "copyError": "Fehlermeldungen kopieren",
       "noBoardSelected": "Kein Board ausgewählt. Bitte Arduino Board im Menü wählen mit Werkzeuge > Board"
     },
     "daemon": {
-      "restart": "Dämon neu starten",
-      "start": "Dämon starten",
-      "stop": "Dämon stoppen"
+      "restart": "Daemon neustarten",
+      "start": "Daemon starten",
+      "stop": "Stoppe Daemon"
     },
     "debug": {
       "debugWithMessage": "Debug - {0}",
@@ -181,7 +199,7 @@
       "revealError": "Fehler zeigen"
     },
     "electron": {
-      "couldNotSave": "Der Sketch konnte nicht gesichert werden. Bitte kopiere deine ungesicherte Arbeit in deinen bevorzugten Texteditor und starte die IDE neu.",
+      "couldNotSave": "Der Sketch konnte nicht gespeichert werden. Bitte kopieren Sie Ihre ungespeicherte Arbeit in Ihren bevorzugten Texteditor und starten Sie die IDE neu.",
       "unsavedChanges": "Alle ungesicherten Änderung werden nicht gespeichert."
     },
     "examples": {
@@ -193,7 +211,7 @@
       "menu": "Beispiele"
     },
     "firmware": {
-      "checkUpdates": "Nach Updates Suchen",
+      "checkUpdates": "Nach Updates suchen",
       "failedInstall": "Installation fehlgeschlagen. Bitte versuche es erneut ",
       "install": "Installieren",
       "installingFirmware": "Firmware wird installiert.",
@@ -236,12 +254,12 @@
       "addZip": ".ZIP-Bibliothek hinzufügen...",
       "arduinoLibraries": "Arduino Bibliotheken",
       "contributedLibraries": "Bibliotheken, zu denen beigetragen wurde",
-      "dependenciesForLibrary": "Abhängigkeiten für die Bibliothek {0}:{1}",
       "include": "Bibliothek einbinden",
       "installAll": "Alle installieren",
+      "installLibraryDependencies": "Bibliotheksabhängigkeiten installieren",
       "installMissingDependencies": "Möchten Sie alle fehlenden Ressourcen installieren?",
       "installOneMissingDependency": "Möchten Sie die fehlende Ressource installieren?",
-      "installOnly": "Nur {0} installieren",
+      "installWithoutDependencies": "Ohne Abhängigkeiten installieren",
       "installedSuccessfully": "Bibliothek {0}:{1} erfolgreich installiert",
       "libraryAlreadyExists": "Eine Bibliothek existiert bereits. Möchten sie diese überschreiben?",
       "manageLibraries": "Bibliotheken verwalten...",
@@ -267,7 +285,7 @@
       "sensors": "Sensoren",
       "signalInputOutput": "Signal Ein-/Ausgang",
       "timing": "Timing",
-      "uncategorized": "Nicht kategoriesiert"
+      "uncategorized": "Nicht kategorisiert"
     },
     "libraryType": {
       "installed": "Installiert"
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Websocket wurde nicht geschlossen",
       "unableToConnectToWebSocket": "Websocket wurde nicht verbunden"
+    },
+    "portProtocol": {
+      "network": "Netzwerk",
+      "serial": "Seriell"
     },
     "preferences": {
       "additionalManagerURLs": "Zusätzliche Boardverwalter-URLs",
@@ -301,34 +323,40 @@
       "compile": "Kompilieren",
       "compile.experimental": "Aktivieren, wenn die IDE mehrere Fehler des Compiler behandeln soll. Standardmäßig ausgeschaltet.",
       "compile.revealRange": "Legt fest, wie Compilerfehler im Editor nach einer fehlgeschlagenen Überprüfung/einem fehlgeschlagenen Upload angezeigt werden. Mögliche Werte: 'auto': bei Bedarf vertikal scrollen, um die Zeile anzuzeigen. 'center': bei Bedarf vertikal scrollen und die Zeile zentriert anzeigen. 'top': bei Bedarf vertikal scrollen und die Zeile nahe am oberen Ende des Darstellungsbereichs anzeigen. Optimiert für das Betrachten einer Codedefinition. 'centerIfOutsideViewport': bei Bedarf vertikal scrollen und die Zeile nur anzeigen, wenn sie außerhalb des Anzeigebereichs liegt. Der Standardwert ist '{0}'.",
-      "compile.verbose": "Wahr für ausführliche Compilerausgaben. Standardmäßig Falsch",
-      "compile.warnings": "Einstellung des Warnlevels für den GCC. Standardeinstellung ist 'None'.",
-      "compilerWarnings": "Warnungen des Übersetzers",
+      "compile.verbose": "Aktivieren Sie diese Option, wenn ausführliche Compiler-Meldungen angezeigt werden sollen. Standardgemäß deaktiviert.",
+      "compile.warnings": "Einstellung der Compiler-Warnungen für den GCC. Standardeinstellung ist 'Keine'. ",
+      "compilerWarnings": "Compiler-Meldungen",
       "editorFontSize": "Editor Schriftgröße",
       "editorQuickSuggestions": "Schnelle Editor Vorschläge",
       "enterAdditionalURLs": "Füge zusätzliche URLs hinzu, jede Reihe einzeln",
       "files.inside.sketches": "Dateien im Sketch zeigen",
-      "ide.updateBaseUrl": "Die URL wovon Updates heruntergeladen werden. Standardmäßig bei 'https://downloads.arduino.cc/arduino-ide'",
-      "ide.updateChannel": "Von welchem Kannal die Updates kommen sollen. 'stabil' ist die stabile Version, 'nächtlich' ist die neueste Entwicklerversion",
-      "interfaceScale": "Fenster Skalierung",
-      "invalid.editorFontSize": "Ungültige Editor Schriftgröße. Sie muss eine positive, ganze Zahl sein.",
+      "ide.updateBaseUrl": "URL für den Download von Updates. Standard-URL: \"https://downloads.arduino.cc/arduino-ide\"",
+      "ide.updateChannel": "Release-Channel, von dem Updates bezogen werden sollen. 'stable' für stabile und getestete Updates. 'nightly' für allerneuste Updates, welche jedoch noch nicht ausreichend getestet wurden.",
+      "interfaceScale": "Größe der Benutzeroberfläche",
+      "invalid.editorFontSize": "Ungültige Editor-Schriftgröße. Wert muss eine Ganzzahl größer 0 (Null) sein.",
       "invalid.sketchbook.location": "Ungültiger Sketchbook Speicherort: {0}",
       "invalid.theme": "Ungültiges Erscheinungsbild",
-      "language.log": "Wahr, wenn der Arduino Language Server Logfiles in den Sketch-Ordner schreiben soll. Sonst falsch. Standardeinstellung ist falsch.\n ",
+      "language.log": "Wenn aktivert, werden Arduino-Sprach-Server-Logdateien in den Sketch-Ordner geschrieben. Standardgemäß deaktivert.",
       "language.realTimeDiagnostics": "Wenn aktiviert, bietet der Sprachserver bei der Eingabe im Editor eine Echtzeitdiagnose. Ist standardmäßig deaktiviert.",
       "manualProxy": "Manuelle Proxy Einstellung",
       "network": "Netzwerk",
       "newSketchbookLocation": "Wähle einen neuen Ort für das Sketchbook ",
       "noProxy": "Kein Proxy",
-      "showVerbose": "Debug Informationen während",
+      "proxySettings": {
+        "hostname": "Hostname",
+        "password": "Passwort",
+        "port": "Portnummer",
+        "username": "Benutzername"
+      },
+      "showVerbose": "Compiler-Meldungen anzeigen beim",
       "sketchbook.location": "Dateipfad des Sketchbooks",
-      "sketchbook.showAllFiles": "Wahr, um alle Dateien im Sketch anzuzeigen. Standardmäßig Falsch.",
-      "survey.notification": "Wahr, wenn Benutzer benachrichtigt werden sollen, wenn eine Umfrage verfügbar ist. Standardeinstellung ist wahr.",
+      "sketchbook.showAllFiles": "Wenn aktiviert, werden alle Sketch-Dateien innerhalb des Sketch angezeigt. Standardgemäß deaktiviert. ",
+      "survey.notification": "Wenn aktiviert, werden Nutzer benachrichtigt, wenn eine Umfrage verfügbar ist. Standardgemäß aktiviert.",
       "unofficialBoardSupport": "Klicke hier für eine Liste von inoffiziell unterstützten Boards",
       "upload": "Hochladen",
-      "upload.verbose": "Wahr für ausführliche Ausgaben während dem Hochladen. Standardmäßig Falsch.",
+      "upload.verbose": "Wenn aktiviert, werden ausführliche Compiler-Meldungen angezeigt. Standardgemäß deaktiviert.",
       "verifyAfterUpload": "Code nach Hochladen überprüfen ",
-      "window.autoScale": "Ist wahr, wenn die Benutzeroberfläche automatisch mit der Schriftgröße skaliert wird.",
+      "window.autoScale": "Wenn aktiviert: Benutzeroberfläche soll mit Schriftgröße skalieren.",
       "window.zoomLevel": "Stelle die Zoomstufe des Fensters ein. Der Standardwert ist 0, jede Vergrößerung (z.B.: 1) oder Verringerung (z.B.: -1) um eins steht für 20% Vergrößerung bzw. Verkleinerung des Fensters. Du kannst auch Kommazahlen eingeben, um die Zoomstufe feiner einzustellen.\n "
     },
     "replaceMsg": "Existierende Version von {0} ersetzen?",
@@ -350,7 +378,7 @@
       "cantOpen": "Ein Ordner mit dem Namen \"{0}\" ist bereits vorhanden. Der Sketch kann nicht geöffnet werden.",
       "close": "Sind Sie sicher, dass Sie diesen Sketch schließen möchten?",
       "compile": "Kompiliere Sketch...",
-      "configureAndUpload": "Konfigurieren und hochladen",
+      "configureAndUpload": "Konfigurieren und Hochladen",
       "createdArchive": "Archiv '{0}' erstellt.",
       "doneCompiling": "Kompilieren erfolgreich!",
       "doneUploading": "Hochladen erfolgreich! ",
@@ -381,22 +409,24 @@
       "dismissSurvey": "Nicht erneut anzeigen",
       "surveyMessage": "Helfen Sie uns, uns zu verbessern, indem Sie diese kurze Umfrage ausfüllen. Wir wissen unsere Community wertzuschätzen und möchten unsere Unterstützer gerne ein wenig besser kennenlernen."
     },
+    "updateIndexes": {
+      "updateIndexes": "Indizes aktualisieren",
+      "updateLibraryIndex": "Bibliotheksverzeichnis aktualisieren",
+      "updatePackageIndex": "Paketindex aktualisieren"
+    },
     "upload": {
       "error": "{0} Fehler: {1}"
     },
     "userFields": {
-      "cancel": "abbrechen",
+      "cancel": "Abbrechen",
       "enterField": "Eingabe {0}",
       "upload": "Hochladen"
     }
   },
-  "cloud": {
-    "GoToCloud": "Zur Cloud gehen"
-  },
   "theia": {
     "core": {
-      "cannotConnectBackend": "Keine Verbindung zum Backend.",
-      "cannotConnectDaemon": "Keine Verbindung zum CLI Daemon.",
+      "cannotConnectBackend": "Verbindung zum Backend kann nicht hergestellt werden.",
+      "cannotConnectDaemon": "Verbindung zum CLI Daemon kann nicht hergestellt werden.",
       "couldNotSave": "Der Sketch konnte nicht gesichert werden. Bitte kopiere deine ungesicherte Arbeit in deinen bevorzugten Texteditor und starte die IDE neu.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",

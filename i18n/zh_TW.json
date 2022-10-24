@@ -6,8 +6,9 @@
     },
     "board": {
       "board": "1{0} 開發板",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "選擇其他開發板和埠",
       "boardInfo": "開發板資訊",
+      "boards": "boards",
       "configDialog1": "若要上傳 Sketch 請選擇一片板子及一個埠",
       "configDialog2": "如果你只有選擇板子你可以編譯，但不能上傳 Sketch",
       "couldNotFindPreviouslySelected": "在安装的平台{1}中找不到以前選擇的開發板{0}。請手動選擇要使用的開發板。你想現在重新選擇它吗？",
@@ -15,8 +16,9 @@
       "getBoardInfo": "取得開發板資訊",
       "inSketchbook": "(在草稿資料夾中)",
       "installNow": "必須為目前選定的 {2} 開發板安裝 1{0} 2{1} 核心程式，你要現在安裝嗎？",
+      "noBoardsFound": "未找到開發板 {0}",
       "noFQBN": "FQBN無法用於所選擇的\"{0}\"開發版。你是否安裝了對應的核心?",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "未找到埠",
       "noPortsSelected": "沒有選到 '{0}' 板的埠",
       "noneSelected": "沒有選擇電路板",
       "openBoardsConfig": "選擇其他的電路板或埠...",
@@ -24,19 +26,22 @@
       "pleasePickBoard": "請選擇要連接的開發版",
       "port": "1{0} 埠",
       "portLabel": "端口: {0}",
+      "ports": "ports",
       "programmer": "燒錄器",
-      "reselectLater": "請晚一點再選擇",
-      "searchBoard": "Search board",
+      "reselectLater": "請稍後在選擇",
+      "searchBoard": "搜尋開發板",
       "selectBoard": "選擇開發版",
       "selectBoardForInfo": "請選擇電路板以取得板子的資訊",
       "selectPortForInfo": "請選定一個埠，以便能取得板子的資訊",
       "showAllAvailablePorts": "當開啟時，顯示所有可用的埠",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "平台已成功安裝 1[0]：2[1]",
-      "succesfullyUninstalledPlatform": "平台已成功移除 1[0]：2[1]"
+      "succesfullyUninstalledPlatform": "平台已成功移除 1[0]：2[1]",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "開發板管理器",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Arduino 認證"
     },
     "bootloader": {
       "burnBootloader": "燒錄 Bootloader",
@@ -64,17 +69,17 @@
       "uploadingCertificates": "上傳證書"
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "檢查 Arduino 更新",
+      "installAll": "安裝所有",
+      "noUpdates": "沒有可用的最新更新。",
+      "promptUpdateBoards": "您的部分開發板有可用更新。",
+      "promptUpdateLibraries": "您的部分函數庫有可用更新。",
+      "updatingBoards": "更新開發板中...",
+      "updatingLibraries": "更新函數庫中..."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "找不到 'Keyboard'，請檢查項目是否包含 '#include <Keyboard.h>'。",
+      "mouseError": "找不到 'Mouse'，請檢查項目是否包含 '#include <Mouse.h>'。"
     },
     "cloud": {
       "account": "帳戶",
@@ -85,6 +90,7 @@
       "donePushing": "完成更改'{0}'。",
       "embed": "嵌入：",
       "emptySketchbook": "您的草稿資料夾是空的",
+      "goToCloud": "Go to Cloud",
       "learnMore": "了解更多",
       "link": "連結：",
       "notYetPulled": "無法更改至雲端。尚未被讀取。",
@@ -102,7 +108,7 @@
       "pushSketch": "更改草稿",
       "pushSketchMsg": "這是一個公開草稿，在更改前，請確認所有敏感資訊都定義在arduino_secrets.h中。可以在分享介面設定為私人草稿。",
       "remote": "遠端",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "遠端資料夾",
       "share": "分享...",
       "shareSketch": "分享草稿",
       "showHideRemoveSketchbook": "顯示/隱藏遠端草稿資料夾",
@@ -114,32 +120,33 @@
       "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "所有",
+      "contributed": "已貢獻",
       "installManually": "手動安裝",
       "later": "稍後再說",
       "noBoardSelected": "沒有選擇開發版",
       "notConnected": "[未連接]",
       "offlineIndicator": "您目前處於離線狀態，在沒有網路的情況下，Arduino命令列介面將無法下載需要的資源，並可能導致錯誤。請連接至網路並重新啟動程式。",
       "oldFormat": "'{0}'仍然使用舊的 `.pde` 格式，是否要轉換至新的 `.ino` 擴充?",
-      "partner": "Partner",
+      "partner": "合作夥伴",
       "processing": "資料處理中",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "推薦",
+      "retired": "不在支援",
       "selectedOn": "在 1{0}",
       "serialMonitor": "序列埠監控",
-      "type": "Type",
+      "type": "類型",
       "unknown": "未知",
-      "updateable": "Updatable"
+      "updateable": "可更新"
     },
     "compile": {
       "error": "1{0} 編譯錯誤"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "包含在此包的開發版:",
       "by": "by",
       "filterSearch": "過濾你的搜尋 ...",
       "install": "安裝",
+      "installed": "安裝",
       "moreInfo": "更多資訊",
       "uninstall": "移除安裝",
       "uninstallMsg": "你要移除 1{0}？",
@@ -148,16 +155,27 @@
     "contributions": {
       "addFile": "加入檔案",
       "fileAdded": "一個檔案加入到 Sketch",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "替代"
     },
+    "core": {
+      "compilerWarnings": {
+        "all": "所有",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
     "coreContribution": {
-      "copyError": "Copy error messages",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "copyError": "複製錯誤訊息",
+      "noBoardSelected": "未選擇開發版。請從 工具 > 開發版 中選擇您的開發版"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "重啟進程",
+      "start": "開啟進程",
+      "stop": "關閉進程"
     },
     "debug": {
       "debugWithMessage": "除錯 - {0}",
@@ -176,9 +194,9 @@
       "decreaseIndent": "減少縮排",
       "increaseFontSize": "加大字體",
       "increaseIndent": "增加縮排",
-      "nextError": "Next Error",
-      "previousError": "Previous Error",
-      "revealError": "Reveal Error"
+      "nextError": "下一個錯誤",
+      "previousError": "上一個錯誤",
+      "revealError": "顯示錯誤"
     },
     "electron": {
       "couldNotSave": "無法儲存草稿，請複製你未存檔的工作到你偏好的文字編輯器中並重新啟動 IDE 整合開發環境",
@@ -216,7 +234,7 @@
       "visit": "造訪 Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "檢查 Arduino IDE 最新版本",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉軟體並安裝更新。",
       "downloadButton": "下載",
@@ -236,12 +254,12 @@
       "addZip": "加入 .zip 函式庫 ...",
       "arduinoLibraries": "Arduino函式庫",
       "contributedLibraries": "貢獻函式庫",
-      "dependenciesForLibrary": "與 1{0}：2{1} 函式庫相依",
       "include": "含括函式庫",
-      "installAll": "全部安裝",
+      "installAll": "安裝所有",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "是否安裝所有缺少的附屬程式？",
       "installOneMissingDependency": "是否安裝缺少的附屬程式?",
-      "installOnly": "只安裝 1[0]",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "成功安裝 1{0}：2{1} 函式庫",
       "libraryAlreadyExists": "函式庫已經存在，你要覆寫它嗎？",
       "manageLibraries": "管理函式庫",
@@ -255,31 +273,35 @@
       "zipLibrary": "函式庫"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "主題"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "communication": "討論",
+      "dataProcessing": "資料處理",
+      "dataStorage": "資料存儲",
+      "deviceControl": "設備管理",
+      "display": "顯示",
+      "other": "其它",
+      "sensors": "傳感器",
+      "signalInputOutput": "信號輸入/輸出",
+      "timing": "定時",
+      "uncategorized": "未分類"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "安裝"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "進階設定",
       "sketch": "草稿",
       "tools": "工具"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "無法關閉 websocket",
+      "unableToConnectToWebSocket": "無法連接到 websocket"
+    },
+    "portProtocol": {
+      "network": "網路",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "其他開發版管理器網址",
@@ -290,17 +312,17 @@
       "automatic": "自動調整",
       "board.certificates": "可上傳至開發版的證書列表",
       "browse": "瀏覽",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "接收有關 IDE、板和庫的可用更新的通知。 更改後需要重新啟動 IDE。 默認開啟。",
       "choose": "選擇",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cli.daemonDebug": "啟用對 Arduino CLI 的 gRPC 調用的調試日誌記錄。 此設置需要重新啟動 IDE 才能生效。 默認關閉。",
       "cloud.enabled": "True則啟用草稿同步功能。預設為true。",
       "cloud.pull.warn": "True則在取出雲端草稿時警告使用者。預設為true。",
       "cloud.push.warn": "True則在更改雲端草稿時警告使用者。預設為True。",
       "cloud.pushpublic.warn": "True則在更改一個公開草稿到雲端時警告使用者。預設為true",
       "cloud.sketchSyncEndpoint": "用來從後台更改與取出草稿的端點。預設的端點是指向Arduino Cloud API。",
       "compile": "編譯",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.experimental": "開啟則 IDE 處理多個編譯器錯誤。 默認關閉",
+      "compile.revealRange": "調整驗證/上傳失敗後編譯器錯誤在編輯器中的顯示方式。 可能的值：'auto'：根據需要垂直滾動並顯示一行。 'center'：根據需要垂直滾動並顯示垂直居中的線條。 'top'：根據需要垂直滾動並顯示靠近視口頂部的一行，針對查看代碼定義進行了優化。 'centerIfOutsideViewport'：根據需要垂直滾動，僅當它位於視口之外時才顯示垂直居中的線。 默認為 '{0}'",
       "compile.verbose": "True則輸出詳細編譯資訊。預設為False",
       "compile.warnings": "設定gcc警告等級。預設為'None'",
       "compilerWarnings": "編譯器警告",
@@ -308,7 +330,7 @@
       "editorQuickSuggestions": "編輯器快速建議",
       "enterAdditionalURLs": "輸入其他網址，每行一個",
       "files.inside.sketches": "顯示草稿中的檔案",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl": "下載更新網址。默認為: 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "前往版本釋出頻道獲取更新。 'stable'表示為穩定的版本， 'nightly' 則是最新的開發版本。",
       "interfaceScale": "介面比例",
       "invalid.editorFontSize": "無效的編輯器字體大小。它必須是正整數。",
@@ -320,6 +342,12 @@
       "network": "網路",
       "newSketchbookLocation": "選取新的草稿資料夾位置",
       "noProxy": "無代理",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "顯示詳細輸出",
       "sketchbook.location": "草稿資料夾位置",
       "sketchbook.showAllFiles": "True則顯示所有草稿中的草稿檔案。預設為false。",
@@ -349,8 +377,8 @@
       "archiveSketch": "儲存草稿",
       "cantOpen": "命名為\"{0}\"的資料夾已存在。無法開啟草稿。",
       "close": "你確定要關閉 Sketch？",
-      "compile": "Compiling sketch...",
-      "configureAndUpload": "組態配置並上傳",
+      "compile": "編譯中...",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "已創建文件{0}。",
       "doneCompiling": "編譯完成",
       "doneUploading": "上傳完畢",
@@ -362,7 +390,7 @@
       "openRecent": "開啟最近的",
       "openSketchInNewWindow": "在新視窗開啟草稿",
       "saveFolderAs": "另存 Sketch 資料夾",
-      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketch": "保存您的項目，以便以後再次打開它。",
       "saveSketchAs": "另存 Sketch 資料夾",
       "showFolder": "顯示 Sketch 資料夾",
       "sketch": "草稿",
@@ -377,21 +405,23 @@
       "verifyOrCompile": "驗證/編譯"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "回覆問卷",
+      "dismissSurvey": "不要再顯示",
+      "surveyMessage": "請通過回答這個超簡短的調查來幫助我們改進。 我們重視我們的社群，並希望更好地了解我們的支持者。"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
     },
     "upload": {
       "error": "1 [0] 錯誤：2 [1]"
     },
     "userFields": {
       "cancel": "取消",
-      "enterField": "Enter {0}",
+      "enterField": "輸入 {0}",
       "upload": "上傳"
     }
-  },
-  "cloud": {
-    "GoToCloud": "前往雲端"
   },
   "theia": {
     "core": {

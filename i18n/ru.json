@@ -8,6 +8,7 @@
       "board": "Плата{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Информация о плате",
+      "boards": "boards",
       "configDialog1": "Выберите плату и порт, если Вы хотите загрузить скетч в плату.",
       "configDialog2": "Если вы выбираете только плату, вы сможете компилировать, но не загружать свой скетч.",
       "couldNotFindPreviouslySelected": "Не удалось найти ранее выбранную плату '{0}' в установленной платформе '{1}'.Пожалуйста,  выберите плату которую хотите использовать вручную повторно. Вы хотите повторно выбрать её сейчас?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Получить информацию о подключенной плате",
       "inSketchbook": " (в альбоме).",
       "installNow": "Необходимо установить ядро «{0} {1}»  для выбранной в данный момент «{2}» платы. Вы хотите установить его сейчас?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN недоступен для выбранной платы \"{0}\". Проверьте наличие необходимого ядра.",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Не выбраны порты для платы: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Пожалуйста, выберите плату, подключенную к выбранному вами порту.",
       "port": "Порт{0}",
       "portLabel": "Порт:{0}",
+      "ports": "ports",
       "programmer": "Программатор",
       "reselectLater": "Перевыбрать позже",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Пожалуйста, выберите плату в меню инструментов для получения информации с платы.",
       "selectPortForInfo": "Пожалуйста, выберите порт в меню инструментов для получения информации с платы.",
       "showAllAvailablePorts": "Показать все доступные порты при включении",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Платформа установлена успешно {0}:{1}",
-      "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}"
+      "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Менеджер плат",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Отправлено ‘{0}’.",
       "embed": "Встроить:",
       "emptySketchbook": "Ваш альбом пуст",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Узнать больше",
       "link": "Ссылка:",
       "notYetPulled": "Не удается отправить в облако. Он еще не вытащен.",
@@ -140,6 +146,7 @@
       "by": "от",
       "filterSearch": "Отфильтровать результаты поиска...",
       "install": "Установка",
+      "installed": "Installed",
       "moreInfo": "Дополнительная информация",
       "uninstall": "Удалить",
       "uninstallMsg": "Вы хотите удалить  {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Добавить файл...",
       "fileAdded": "Один файл добавлен в скетч.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Заменить"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Скопировать сообщения ошибок",
@@ -236,12 +254,12 @@
       "addZip": "Добавить .ZIP библиотеку...",
       "arduinoLibraries": "Библиотеки Arduino",
       "contributedLibraries": "Сторонние библиотеки",
-      "dependenciesForLibrary": "Зависимости для библиотеки {0}:{1}",
       "include": "Подключить библиотеку",
-      "installAll": "Установить все",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Установить все недостающие зависимости?",
       "installOneMissingDependency": "Установить недостающую зависимость?",
-      "installOnly": "Установить только {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Успешно установлена библиотека {0}:{1}",
       "libraryAlreadyExists": "Библиотека уже существует. Вы хотите ее заменить?",
       "manageLibraries": "Управление библиотеками...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Не удалось закрыть веб-сокет.",
       "unableToConnectToWebSocket": "Не удается подключиться к веб-сокету."
+    },
+    "portProtocol": {
+      "network": "Сеть",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Дополнительные ссылки для Менеджера плат",
@@ -320,6 +342,12 @@
       "network": "Сеть",
       "newSketchbookLocation": "Выбрать новое расположение для альбома со скетчами",
       "noProxy": "Не использовать прокси-сервер",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Показывать детализированный вывод при",
       "sketchbook.location": "Путь к альбому со скетчами",
       "sketchbook.showAllFiles": "True - показывать все файлы внутри скетча. По умолчанию - false.",
@@ -350,7 +378,7 @@
       "cantOpen": "Папка \"{0}\" уже существует. Невозможно открыть скетч.",
       "close": "Вы действительно хотите закрыть скетч?",
       "compile": "Компиляция скетча...",
-      "configureAndUpload": "Настроить и загрузить",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Создать архив '{0}'.",
       "doneCompiling": "Компиляция завершена.",
       "doneUploading": "Загрузка завершена.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Больше не показывать",
       "surveyMessage": "Пожалуйста, помоги нам стать лучше, пройдя этот супер-короткий опрос. Мы ценим наше сообщество и хотели бы узнать наших сторонников немного лучше!"
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} ошибка: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Загрузка"
     }
-  },
-  "cloud": {
-    "GoToCloud": "Переход в облако"
   },
   "theia": {
     "core": {

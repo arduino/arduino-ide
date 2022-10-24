@@ -8,6 +8,7 @@
       "board": "اللوحة {0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "معلومات اللوحة",
+      "boards": "boards",
       "configDialog1": "اختر لوحة و منفذ معا اذا اردت ان ترفع السكتش",
       "configDialog2": "اذا قمت باختيار لوحة فقط ستسطيع ان تترجم لكن بدون ان ترفع المشروع",
       "couldNotFindPreviouslySelected": "تعذر ايجاد اللوحة '{0}'  المختارة مسبقا في المنصة المثبتة '{1}' . الرجاء اعادة اختيار اللوحة التي تريد استعمالها يدويا . هل تريد باعادة الاختيار الان؟",
@@ -15,6 +16,7 @@
       "getBoardInfo": "الحصول على معلومات اللوحة",
       "inSketchbook": "(داخل ملف المشاريع)",
       "installNow": "نواة \"{0} {1}\" يجب تثبيتها للوحة \"{2}\" التي تم اختيارها . هل تريد تثبيتها الان ؟",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN غير متاح للوحة المختارة \"{0}\" . هل قمت بتثبيت النواة المعنية ؟",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "لا يوجد اية منافذ متاحة للوحة '{0}'",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "من فضلك اختر لوحة متصلة على المنفذ الذي اخترته",
       "port": "المنفذ {0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "المبرمجة",
       "reselectLater": "اعد الاختيار لاحقا",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "الرجاء اختيار لوحة من احل الحصول على معلومات اللوحة",
       "selectPortForInfo": "الرجاء اختيار منفذ من اجل الحصول على معلومات اللوحة",
       "showAllAvailablePorts": "يظهر كل المنافذ المتاحة عند تفعيله",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "تم تثبيت المنصة {0}:{1} بنجاح",
-      "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح"
+      "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "مدير اللوحة",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "تم الدفع بنجاح '{0}'",
       "embed": "تضمين:",
       "emptySketchbook": "ملف المشاريع الخاص بك فارغ",
+      "goToCloud": "Go to Cloud",
       "learnMore": "تعرف على المزيد",
       "link": "الرابط:",
       "notYetPulled": "تعذر الدفع الى Cloud . انها لم تسحب الى الان",
@@ -140,6 +146,7 @@
       "by": "بواسطة",
       "filterSearch": "ترشيح بحثك...",
       "install": "تنصيب",
+      "installed": "Installed",
       "moreInfo": "عرض المزيد",
       "uninstall": "الغاء التثبيت",
       "uninstallMsg": "هل تريد الغاء تثبيت {0}؟",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "اضف ملف...",
       "fileAdded": "تمت اضافة ملف واحد الى المشروع",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "استبدال"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "نسخ رسالة الخطأ",
@@ -236,12 +254,12 @@
       "addZip": "اضف مكتبة .ZIP ...",
       "arduinoLibraries": "مكتبات Arduino",
       "contributedLibraries": "المكتبات التي سوهم بها",
-      "dependenciesForLibrary": "تبعيات المكتبة {0}:{1}",
       "include": "ضمّن مكتبة",
-      "installAll": "تثبيت الكل",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "هل تريد تثبيت التبعيات المفقودة؟",
       "installOneMissingDependency": "هل تريد تثبيت التبعية المفقودة ؟",
-      "installOnly": "تثبيت {0} فقط",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "تم تثبيت المكتبة {0}:{1} بنجاح",
       "libraryAlreadyExists": "المكتبة موجودة مسبقا . هل تريد الكتابة فوقها ؟",
       "manageLibraries": "ادارة المكتبات",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "تعذر اغلاق مقبس الويب",
       "unableToConnectToWebSocket": "تعذر الاتصال بمقبس الويب"
+    },
+    "portProtocol": {
+      "network": "شبكة",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "مدير اللوحات الاضافية",
@@ -320,6 +342,12 @@
       "network": "شبكة",
       "newSketchbookLocation": "اختر مكان المشروع الجديد",
       "noProxy": "لا يوجد وكيل",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "اظهر خرج مطوّل خلال",
       "sketchbook.location": "موقع ملف المشاريع",
       "sketchbook.showAllFiles": "True لعرض كل مجلدات مشاريع داخل المشروع . False افتراضيا",
@@ -350,7 +378,7 @@
       "cantOpen": "المجلد المسمى \"{0}\" موجود مسبقا. لا يمكن فتح الشيفرة البرمجية",
       "close": "هل انت متاكد بانك تريد اغلاق المشروع ؟",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "تهيئة و رفع",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "تم انشاء ارشيف '{0}'",
       "doneCompiling": "تمت الترجمة بنجاح.",
       "doneUploading": "تم الرفع بنجاح.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "لا تظهر مرة اخرى",
       "surveyMessage": "يرجى ان تساعدنا لنحسن ادائنا من خلال الاجابة على هذا الاستبيان القصير جدا . نحن نحترم المجتمع الخاص بنا و نريد ان نتعرف بشكل افضل على داعمينا "
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "خطا {0} : {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "رفع"
     }
-  },
-  "cloud": {
-    "GoToCloud": "الانتقال الى السحابة"
   },
   "theia": {
     "core": {

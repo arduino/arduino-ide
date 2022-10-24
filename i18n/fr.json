@@ -8,6 +8,7 @@
       "board": "Carte{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Information de la carte",
+      "boards": "boards",
       "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
       "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez compiler votre croquis, mais pas le téléverser.",
       "couldNotFindPreviouslySelected": "Impossible de trouver la carte précédente sélectionnée \"{0}\" dans les plateformes installées \"{1}\". Merci de re-sélectionner manuellement la carte que vous souhaitez utiliser. Souhaitez vous la re-sélectionner maintenant ?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Obtenir les informations sur la carte",
       "inSketchbook": "(dans le Croquis)",
       "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Aucun porte sélectionné pour la carte : '{0}'",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
       "port": "Port{0}",
       "portLabel": "Port : {0}",
+      "ports": "ports",
       "programmer": "Programmeur",
       "reselectLater": "Re-sélectionner plus tard",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Merci de choisir une carte pour obtenir ses informations.",
       "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
       "showAllAvailablePorts": "Affiche les ports disponibles quand activer.",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Plateforme installé avec succès {0}:{1}",
-      "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}"
+      "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Gestionnaire de carte",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Téléchargement terminé pour '{0}'",
       "embed": "Embarqué : ",
       "emptySketchbook": "Votre carnet de croquis est vide",
+      "goToCloud": "Go to Cloud",
       "learnMore": "En savoir plus",
       "link": "Lien :",
       "notYetPulled": "Impossible de push sur le Cloud. Rien n'a été pull jusque la.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "par",
       "filterSearch": "Filtrez votre recherche...",
-      "install": "INSTALLER",
+      "install": "Installer",
+      "installed": "Installed",
       "moreInfo": "Plus d'information",
       "uninstall": "Désinstaller",
       "uninstallMsg": "Voulez vous désinstaller {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Ajouter un fichier",
       "fileAdded": "Un fichier a été ajouté au croquis",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Remplacer"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copier les messages d'erreur",
@@ -236,12 +254,12 @@
       "addZip": "Ajouter la bibliothèque .ZIP...",
       "arduinoLibraries": "Bibliothèques Arduino",
       "contributedLibraries": "Bibliothèques tierce-partie",
-      "dependenciesForLibrary": "Ressources liées pour la libraire {0}:{1}",
       "include": "Importer une bibliothèque",
-      "installAll": "Tout installer",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Souhaitez vous installer toutes les ressources liées manquantes ?",
       "installOneMissingDependency": "Souhaitez-vous installer la ressource liée manquante?",
-      "installOnly": "Installer {0} seulement",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Librairie installée avec succès {0}:{1}",
       "libraryAlreadyExists": "Cette librairie existe déjà. Souhaitez-vous l'écraser ?",
       "manageLibraries": "Gérer les bibliothèques...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Impossible de fermer le web socket",
       "unableToConnectToWebSocket": "Impossible de se connecter au web socket"
+    },
+    "portProtocol": {
+      "network": "Réseau",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "URL de gestionnaire de cartes supplémentaires",
@@ -320,6 +342,12 @@
       "network": "Réseau",
       "newSketchbookLocation": "Sélectionner la localisation du nouveau croquis.",
       "noProxy": "Aucun proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Afficher la sortie de débogage verbeuse pendant",
       "sketchbook.location": "Localisation du croquis.",
       "sketchbook.showAllFiles": "Vrai pour montrer tous les fichiers croquis à l'intérieur du croquis. La valeur par défaut est faux.",
@@ -350,7 +378,7 @@
       "cantOpen": "Un dossier nommé « {0} » existe déjà. Impossible d''ouvrir le croquis.",
       "close": "Êtes-vous sûr de vouloir fermer ce croquis ?",
       "compile": "Compilation du programme...",
-      "configureAndUpload": "Configurer et téléverser",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Archive créer '{0}'",
       "doneCompiling": "Compilation terminée.",
       "doneUploading": "Téléversement fait.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Ne pas montrer de nouveau",
       "surveyMessage": "Aide-nous à nous améliorer en répondant à cette enquête très courte. Nous apprécions notre communauté et nous aimerions connaître un peu mieux nos supporters."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} erreur : {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Téléverser"
     }
-  },
-  "cloud": {
-    "GoToCloud": "ALLER AU CLOUD"
   },
   "theia": {
     "core": {

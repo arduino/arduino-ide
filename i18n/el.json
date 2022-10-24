@@ -8,6 +8,7 @@
       "board": "Πλακέτα{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Πληροφορίες Πλακέτας",
+      "boards": "boards",
       "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Δεν έγινε εντοπισμός της προηγουμένως επιλεγμένης πλακέτας '{0}' στην εγκατεστημένη πλατφόρμα '{1}'. Παρακαλώ επίλεξε πάλι χειροκίνητα την πλακέτα που θέλεις να χρησιμοποιήσεις. Θέλεις να την επιλέξεις τώρα;",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Εμφάνιση Πληροφοριών Πλακέτας",
       "inSketchbook": "(στα Σχέδια)",
       "installNow": "Ο πυρήνας \"{0} {1}\" πρέπει να εγκατασταθεί για την επιλεγμένη πλακέτα {2}. Θέλεις να την εγκαταστήσεις τώρα;",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Δεν επιλέχθηκε θύρα για την πλακέτα: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Πσρακαλώ επίλεξε μια πλακέτα που συνδέθηκε στην θύρα που έχεις επιλέξει.",
       "port": "Θύρα{0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Προγραμματιστής",
       "reselectLater": "Επιλογή αργότερα",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Παρακαλώ επίλεξε μια πλακέτα για εμφάνιση πληροφοριών πλακέτας.",
       "selectPortForInfo": "Παρακαλώ επίλεξε μια θύρα για εμφάνιση πληροφοριών πλακέτας.",
       "showAllAvailablePorts": "Εμφανίζει όλες τις διαθέσιμες θύρες όταν είναι ενεργοποιημένο.",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Επιτυχής εγκατάσταση πλατφόρμας {0}:{1}",
-      "succesfullyUninstalledPlatform": "Επιτυχής απεγκατάσταση πλατφόρμας {0}:{1}"
+      "succesfullyUninstalledPlatform": "Επιτυχής απεγκατάσταση πλατφόρμας {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Διαχειριστής Πλακετών",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Done pushing ‘{0}’.",
       "embed": "Ενσωμάτωση:",
       "emptySketchbook": "Τα Σχέδια σου είναι άδεια.",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Μάθε περισσότερα",
       "link": "Σύνδεσμος:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "από",
       "filterSearch": "Filter your search...",
-      "install": "ΕΓΚΑΤΑΣΤΑΣΗ",
+      "install": "Εγκατάσταση",
+      "installed": "Installed",
       "moreInfo": "Περισσότερες πληροφορίες",
       "uninstall": "Απεγκατάσταση",
       "uninstallMsg": "Do you want to uninstall {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Προσθήκη αρχείου",
       "fileAdded": "Ένα αρχείο προστέθηκε στον κώδικα.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Αντικατάσταση"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Προσθέστε μια βιβλιοθήκη μορφής .ZIP",
       "arduinoLibraries": "Βιβλιοθήκες Arduino",
       "contributedLibraries": "Contributed libraries",
-      "dependenciesForLibrary": "Dependencies for library {0}:{1}",
       "include": "Συμπεριλάβετε βιβλιοθήκη",
-      "installAll": "Εγκατάσταση όλων",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
-      "installOnly": "Εγκατάσταση {0} μόνο",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Successfully installed library {0}:{1}",
       "libraryAlreadyExists": "Μια βιβλιοθήκη υπάρχει ήδη. Θέλετε να την αντικαταστήσετε;",
       "manageLibraries": "Διαχείριση βιβλιοθηκών...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Δίκτυο",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Πρόσθετοι Σύνδεσμοι Διαχειριστή Πλακετών",
@@ -320,6 +342,12 @@
       "network": "Δίκτυο",
       "newSketchbookLocation": "Επιλογή νέας τοποθεσίας σχεδίων",
       "noProxy": "No proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Εμφάνιση λεπτομερούς εξόδου κατά τη διάρκεια",
       "sketchbook.location": "Τοποθεσία σχεδίων",
       "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
@@ -350,7 +378,7 @@
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Configure And Upload",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Ολοκλήρωση ανεβάσματος",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} σφάλμα: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Ανέβασμα"
     }
-  },
-  "cloud": {
-    "GoToCloud": "GO TO CLOUD"
   },
   "theia": {
     "core": {

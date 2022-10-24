@@ -8,6 +8,7 @@
       "board": "Deska {0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Info o desce",
+      "boards": "boards",
       "configDialog1": "Pokud chcete nahrát sketch, musíte zvolit jak desku tak i port.",
       "configDialog2": "Pokud zvolíte jen desku, budete schopni kompilovat sketch, ale nebudete ji moci nahrát do desky.",
       "couldNotFindPreviouslySelected": "Dříve zvolená deska '{0}' v instalované platformě '{1}' nebyla nalezena. Zvolte prosím manuálně desku kterou chcete použít. Chcete tuto desku zvolit nyní? ",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Získat info o desce.",
       "inSketchbook": "(v projektech)",
       "installNow": "\"{0}{1}\" jádro musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN není dostupné pro zvolenou desku \"{0}\". Máte nainstalované příslušné jádro? ",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nebyl zvolen port pro desku '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Vyberte prosím desku která je připojená k zvolenému portu. ",
       "port": "Port {0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programátor",
       "reselectLater": "Zvolit později",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Prosím zvolte desku pro získání informací o desce.",
       "selectPortForInfo": "Prosím zvolte port pro získání informací o desce.",
       "showAllAvailablePorts": "Zobrazit všechny dostupné porty (pokud je zaškrtnuto)",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Platforma {0}:{1} byla úspěšně nainstalována.",
-      "succesfullyUninstalledPlatform": "Platforma {0}:{1} byla úspěšně odinstalována."
+      "succesfullyUninstalledPlatform": "Platforma {0}:{1} byla úspěšně odinstalována.",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Manažér desek",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Odesílání dokončeno ‘{0}’.",
       "embed": "Vložit: ",
       "emptySketchbook": "Umístění projektů je prázdné",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Zjistit více",
       "link": "Adresa: ",
       "notYetPulled": "Nemohu odeslat do cloudu jelikož z něj ještě nebylo staženo.",
@@ -140,6 +146,7 @@
       "by": "od",
       "filterSearch": "Filtrovat vyhledávání... ",
       "install": "Instalovat",
+      "installed": "Installed",
       "moreInfo": "Více informací",
       "uninstall": "Odinstalovat",
       "uninstallMsg": "Chcete odinstalovat {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Přidat soubor",
       "fileAdded": "Soubor byl přidán do sketche.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Vyměnit"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Přidat .ZIP knihovnu...",
       "arduinoLibraries": "Arduino knihovny",
       "contributedLibraries": "Přispěné knihovny",
-      "dependenciesForLibrary": "Závislosti pro knihovny {0}:{1}",
       "include": "Zahrnout knihovnu",
-      "installAll": "Instalovat vše",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Chcete nainstalovat všechny chybějící závislosti? ",
       "installOneMissingDependency": "Chcete nainstalovat chybějící závislost? ",
-      "installOnly": "Instalovat pouze {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Knihovna {0}:{1}byla úspěšně nainstalována",
       "libraryAlreadyExists": "Knihovna již existuje. Chcete jí přepsat?",
       "manageLibraries": "Spravovat knihovny...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Síť",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Další URL pro manager desek",
@@ -320,6 +342,12 @@
       "network": "Síť",
       "newSketchbookLocation": "Zvolit nové umístění projektů",
       "noProxy": "Bez proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Zobrazit podrobný výstup během",
       "sketchbook.location": "Umístění sketche",
       "sketchbook.showAllFiles": "Ano pro zobrazení všech souborů sketche. Ne je výchozí hodnota. ",
@@ -350,7 +378,7 @@
       "cantOpen": "Složka s názvem \"{0}\" již existuje, proto nemohu otevřít sketch. ",
       "close": "Opravdu chcete zavřít tuto sketch? ",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Nastavit a nahrát",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Vytvořen archív '{0}'.",
       "doneCompiling": "Ověřování dokončeno.",
       "doneUploading": "Nahrávání dokončeno. ",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0}chyba: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Nahrát"
     }
-  },
-  "cloud": {
-    "GoToCloud": "Přejdi do Cloudu"
   },
   "theia": {
     "core": {
