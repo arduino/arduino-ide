@@ -33,6 +33,22 @@
   height: 100%;
 }
 
+.sketchbook-trees-container .create-new {
+  min-height: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/*
+By default, theia-button has a left-margin. IDE2 does not need the left margin
+for the _New Remote? Sketch_. Otherwise, the button does not fit the default
+widget width.
+*/
+.sketchbook-trees-container .create-new .theia-button {
+  margin-left: unset;
+}
+
 .sketchbook-tree__opts {
   background-color: var(--theia-foreground);
   -webkit-mask: url(./sketchbook-opts-icon.svg);

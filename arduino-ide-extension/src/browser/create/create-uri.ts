@@ -7,7 +7,9 @@ export namespace CreateUri {
   export const scheme = 'arduino-create';
   export const root = toUri(posix.sep);
 
-  export function toUri(posixPathOrResource: string | Create.Resource): URI {
+  export function toUri(
+    posixPathOrResource: string | Create.Resource | Create.Sketch
+  ): URI {
     const posixPath =
       typeof posixPathOrResource === 'string'
         ? posixPathOrResource

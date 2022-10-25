@@ -335,6 +335,8 @@ import { UserFields } from './contributions/user-fields';
 import { UpdateIndexes } from './contributions/update-indexes';
 import { InterfaceScale } from './contributions/interface-scale';
 import { OpenHandler } from '@theia/core/lib/browser/opener-service';
+import { NewCloudSketch } from './contributions/new-cloud-sketch';
+import { SketchbookCompositeWidget } from './widgets/sketchbook/sketchbook-composite-widget';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -751,6 +753,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, DeleteSketch);
   Contribution.configure(bind, UpdateIndexes);
   Contribution.configure(bind, InterfaceScale);
+  Contribution.configure(bind, NewCloudSketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
@@ -904,6 +907,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(WidgetFactory).toDynamicValue(({ container }) => ({
     id: 'arduino-sketchbook-widget',
     createWidget: () => container.get(SketchbookWidget),
+  }));
+  bind(SketchbookCompositeWidget).toSelf();
+  bind<WidgetFactory>(WidgetFactory).toDynamicValue((ctx) => ({
+    id: 'sketchbook-composite-widget',
+    createWidget: () => ctx.container.get(SketchbookCompositeWidget),
   }));
 
   bind(CloudSketchbookWidget).toSelf();

@@ -11,15 +11,21 @@ import { Disposable } from '@theia/core/lib/common/disposable';
 import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
-import { CloudSketchbookCompositeWidget } from '../cloud-sketchbook/cloud-sketchbook-composite-widget';
 import { URI } from '../../contributions/contribution';
+import {
+  BaseSketchbookCompositeWidget,
+  SketchbookCompositeWidget,
+} from './sketchbook-composite-widget';
 
 @injectable()
 export class SketchbookWidget extends BaseWidget {
-  static LABEL = nls.localize('arduino/sketch/titleSketchbook', 'Sketchbook');
+  static readonly LABEL = nls.localize(
+    'arduino/sketch/titleSketchbook',
+    'Sketchbook'
+  );
 
-  @inject(SketchbookTreeWidget)
-  protected readonly localSketchbookTreeWidget: SketchbookTreeWidget;
+  @inject(SketchbookCompositeWidget)
+  protected readonly sketchbookCompositeWidget: SketchbookCompositeWidget;
 
   protected readonly sketchbookTreesContainer: DockPanel;
 
@@ -36,7 +42,7 @@ export class SketchbookWidget extends BaseWidget {
 
   @postConstruct()
   protected init(): void {
-    this.sketchbookTreesContainer.addWidget(this.localSketchbookTreeWidget);
+    this.sketchbookTreesContainer.addWidget(this.sketchbookCompositeWidget);
   }
 
   protected override onAfterAttach(message: Message): void {
@@ -48,7 +54,7 @@ export class SketchbookWidget extends BaseWidget {
   }
 
   getTreeWidget(): SketchbookTreeWidget {
-    return this.localSketchbookTreeWidget;
+    return this.sketchbookCompositeWidget.treeWidget;
   }
 
   activeTreeWidgetId(): string | undefined {
@@ -80,8 +86,8 @@ export class SketchbookWidget extends BaseWidget {
       if (widget instanceof SketchbookTreeWidget) {
         return widget;
       }
-      if (widget instanceof CloudSketchbookCompositeWidget) {
-        return widget.getTreeWidget();
+      if (widget instanceof BaseSketchbookCompositeWidget) {
+        return widget.treeWidget;
       }
       return undefined;
     };

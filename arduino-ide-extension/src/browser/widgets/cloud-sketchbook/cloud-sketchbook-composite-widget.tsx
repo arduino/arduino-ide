@@ -1,78 +1,78 @@
 import * as React from '@theia/core/shared/react';
 import * as ReactDOM from '@theia/core/shared/react-dom';
-import { inject, injectable } from '@theia/core/shared/inversify';
-import { Widget } from '@theia/core/shared/@phosphor/widgets';
-import { Message, MessageLoop } from '@theia/core/shared/@phosphor/messaging';
-import { Disposable } from '@theia/core/lib/common/disposable';
-import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { UserStatus } from './cloud-user-status';
+import { nls } from '@theia/core/lib/common/nls';
 import { CloudSketchbookTreeWidget } from './cloud-sketchbook-tree-widget';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
-import { nls } from '@theia/core/lib/common';
+import { BaseSketchbookCompositeWidget } from '../sketchbook/sketchbook-composite-widget';
+import { CreateNew } from '../sketchbook/create-new';
+import { AuthenticationSession } from '../../../node/auth/types';
 
 @injectable()
-export class CloudSketchbookCompositeWidget extends BaseWidget {
+export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidget<CloudSketchbookTreeWidget> {
   @inject(AuthenticationClientService)
-  protected readonly authenticationService: AuthenticationClientService;
-
+  private readonly authenticationService: AuthenticationClientService;
   @inject(CloudSketchbookTreeWidget)
-  protected readonly cloudSketchbookTreeWidget: CloudSketchbookTreeWidget;
-
-  private compositeNode: HTMLElement;
-  private cloudUserStatusNode: HTMLElement;
+  private readonly cloudSketchbookTreeWidget: CloudSketchbookTreeWidget;
+  private _session: AuthenticationSession | undefined;
 
   constructor() {
     super();
-    this.compositeNode = document.createElement('div');
-    this.compositeNode.classList.add('composite-node');
-    this.cloudUserStatusNode = document.createElement('div');
-    this.cloudUserStatusNode.classList.add('cloud-status-node');
-    this.compositeNode.appendChild(this.cloudUserStatusNode);
-    this.node.appendChild(this.compositeNode);
+    this.id = 'cloud-sketchbook-composite-widget';
     this.title.caption = nls.localize(
       'arduino/cloud/remoteSketchbook',
       'Remote Sketchbook'
     );
     this.title.iconClass = 'cloud-sketchbook-tree-icon';
-    this.title.closable = false;
-    this.id = 'cloud-sketchbook-composite-widget';
   }
 
-  public getTreeWidget(): CloudSketchbookTreeWidget {
+  @postConstruct()
+  protected init(): void {
+    this.toDispose.push(
+      this.authenticationService.onSessionDidChange((session) => {
+        const oldSession = this._session;
+        this._session = session;
+        if (!!oldSession !== !!this._session) {
+          this.updateFooter();
+        }
+      })
+    );
+  }
+
+  get treeWidget(): CloudSketchbookTreeWidget {
     return this.cloudSketchbookTreeWidget;
   }
 
-  protected override onAfterAttach(message: Message): void {
-    super.onAfterAttach(message);
-    Widget.attach(this.cloudSketchbookTreeWidget, this.compositeNode);
+  protected renderFooter(footerNode: HTMLElement): void {
     ReactDOM.render(
-      <UserStatus
-        model={this.cloudSketchbookTreeWidget.model as CloudSketchbookTreeModel}
-        authenticationService={this.authenticationService}
-      />,
-      this.cloudUserStatusNode
-    );
-    this.toDisposeOnDetach.push(
-      Disposable.create(() => Widget.detach(this.cloudSketchbookTreeWidget))
+      <>
+        {this._session && (
+          <CreateNew
+            label={nls.localize(
+              'arduino/sketchbook/newRemoteSketch',
+              'New Remote Sketch'
+            )}
+            onClick={this.onDidClickCreateNew}
+          />
+        )}
+        <UserStatus
+          model={
+            this.cloudSketchbookTreeWidget.model as CloudSketchbookTreeModel
+          }
+          authenticationService={this.authenticationService}
+        />
+      </>,
+      footerNode
     );
   }
 
-  protected override onActivateRequest(msg: Message): void {
-    super.onActivateRequest(msg);
-
-    /* 
-      Sending a resize message is needed because otherwise the cloudSketchbookTreeWidget
-      would render empty
-    */
-    this.onResize(Widget.ResizeMessage.UnknownSize);
-  }
-
-  protected override onResize(message: Widget.ResizeMessage): void {
-    super.onResize(message);
-    MessageLoop.sendMessage(
-      this.cloudSketchbookTreeWidget,
-      Widget.ResizeMessage.UnknownSize
-    );
-  }
+  private onDidClickCreateNew: () => void = () => {
+    this.commandService.executeCommand('arduino-new-cloud-sketch');
+  };
 }

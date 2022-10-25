@@ -2,8 +2,10 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX } from '@theia/core/lib/common/os';
 import {
+  ActionMenuNode,
   CompositeMenuNode,
   MAIN_MENU_BAR,
+  MenuNode,
   MenuPath,
 } from '@theia/core/lib/common/menu';
 import {
@@ -134,7 +136,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
   }
 
   protected override handleElectronDefault(
-    menuNode: CompositeMenuNode,
+    menuNode: MenuNode,
     args: any[] = [],
     options?: ElectronMenuOptions
   ): Electron.MenuItemConstructorOptions[] {
@@ -148,5 +150,120 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       ];
     }
     return [];
+  }
+
+  // Copied from 1.25.0 Theia as is to customize the enablement of the menu items.
+  // Source: https://github.com/eclipse-theia/theia/blob/ca417a31e402bd35717d3314bf6254049d1dae44/packages/core/src/electron-browser/menu/electron-main-menu-factory.ts#L125-L220
+  // See https://github.com/arduino/arduino-ide/issues/1533
+  protected override fillMenuTemplate(
+    items: Electron.MenuItemConstructorOptions[],
+    menuModel: CompositeMenuNode,
+    args: any[] = [],
+    options?: ElectronMenuOptions
+  ): Electron.MenuItemConstructorOptions[] {
+    const showDisabled =
+      options?.showDisabled === undefined ? true : options?.showDisabled;
+    for (const menu of menuModel.children) {
+      if (menu instanceof CompositeMenuNode) {
+        if (menu.children.length > 0) {
+          // do not render empty nodes
+
+          if (menu.isSubmenu) {
+            // submenu node
+
+            const submenu = this.fillMenuTemplate([], menu, args, options);
+            if (submenu.length === 0) {
+              continue;
+            }
+
+            items.push({
+              label: menu.label,
+              submenu,
+            });
+          } else {
+            // group node
+
+            // process children
+            const submenu = this.fillMenuTemplate([], menu, args, options);
+            if (submenu.length === 0) {
+              continue;
+            }
+
+            if (items.length > 0) {
+              // do not put a separator above the first group
+
+              items.push({
+                type: 'separator',
+              });
+            }
+
+            // render children
+            items.push(...submenu);
+          }
+        }
+      } else if (menu instanceof ActionMenuNode) {
+        const node =
+          menu.altNode && this.context.altPressed ? menu.altNode : menu;
+        const commandId = node.action.commandId;
+
+        // That is only a sanity check at application startup.
+        if (!this.commandRegistry.getCommand(commandId)) {
+          console.debug(
+            `Skipping menu item with missing command: "${commandId}".`
+          );
+          continue;
+        }
+
+        if (
+          !this.commandRegistry.isVisible(commandId, ...args) ||
+          (!!node.action.when &&
+            !this.contextKeyService.match(node.action.when))
+        ) {
+          continue;
+        }
+
+        // We should omit rendering context-menu items which are disabled.
+        if (
+          !showDisabled &&
+          !this.commandRegistry.isEnabled(commandId, ...args)
+        ) {
+          continue;
+        }
+
+        const bindings =
+          this.keybindingRegistry.getKeybindingsForCommand(commandId);
+
+        const accelerator = bindings[0] && this.acceleratorFor(bindings[0]);
+
+        const menuItem: Electron.MenuItemConstructorOptions = {
+          id: node.id,
+          label: node.label,
+          type: this.commandRegistry.getToggledHandler(commandId, ...args)
+            ? 'checkbox'
+            : 'normal',
+          checked: this.commandRegistry.isToggled(commandId, ...args),
+          enabled: this.commandRegistry.isEnabled(commandId, ...args), // Unlike Theia https://github.com/eclipse-theia/theia/blob/ca417a31e402bd35717d3314bf6254049d1dae44/packages/core/src/electron-browser/menu/electron-main-menu-factory.ts#L197
+          visible: true,
+          accelerator,
+          click: () => this.execute(commandId, args),
+        };
+
+        if (isOSX) {
+          const role = this.roleFor(node.id);
+          if (role) {
+            menuItem.role = role;
+            delete menuItem.click;
+          }
+        }
+        items.push(menuItem);
+
+        if (this.commandRegistry.getToggledHandler(commandId, ...args)) {
+          this._toggledCommands.add(commandId);
+        }
+      } else {
+        items.push(...this.handleElectronDefault(menu, args, options));
+      }
+    }
+    return items;
   }
 }

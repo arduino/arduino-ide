@@ -59,6 +59,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
       'Local Sketchbook'
     );
     this.title.closable = false;
+    this.addClass('tree-container'); // Adds `height: 100%` to the tree. Otherwise you cannot see it.
   }
 
   @postConstruct()

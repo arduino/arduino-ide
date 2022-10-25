@@ -54,7 +54,7 @@ export class OpenSketch extends SketchContribution {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: OpenSketch.Commands.OPEN_SKETCH.id,
       label: nls.localize('vscode/workspaceActions/openFileFolder', 'Open...'),
-      order: '1',
+      order: '2',
     });
   }
 

@@ -1,5 +1,5 @@
 import * as React from '@theia/core/shared/react';
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { TreeModel } from '@theia/core/lib/browser/tree/tree-model';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
@@ -26,12 +26,6 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
 
   @inject(CloudSketchbookTree)
   protected readonly cloudSketchbookTree: CloudSketchbookTree;
-
-  @postConstruct()
-  protected override async init(): Promise<void> {
-    await super.init();
-    this.addClass('tree-container'); // Adds `height: 100%` to the tree. Otherwise you cannot see it.
-  }
 
   protected override renderTree(model: TreeModel): React.ReactNode {
     if (this.shouldShowWelcomeView()) return this.renderViewWelcome();
