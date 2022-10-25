@@ -252,11 +252,11 @@ export const ArduinoConfigSchema: PreferenceSchema = {
     'arduino.sketch.inoBlueprint': {
       type: 'string',
       markdownDescription: nls.localize(
-      'arduino/preferences/sketch/inoBlueprint',
-      'Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect.'
-      ),      
+        'arduino/preferences/sketch/inoBlueprint',
+        'Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect.'
+      ),
       default: undefined,
-      },
+    },
   },
 };
 
