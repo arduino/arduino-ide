@@ -136,7 +136,7 @@ export class CloudSketchbookTree extends SketchbookTree {
         return;
       }
     }
-    this.runWithState(node, 'pulling', async (node) => {
+    return this.runWithState(node, 'pulling', async (node) => {
       const commandsCopy = node.commands;
       node.commands = [];
 
@@ -196,7 +196,7 @@ export class CloudSketchbookTree extends SketchbookTree {
         return;
       }
     }
-    this.runWithState(node, 'pushing', async (node) => {
+    return this.runWithState(node, 'pushing', async (node) => {
       if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
         throw new Error(
           nls.localize(

@@ -335,6 +335,7 @@ import { UserFields } from './contributions/user-fields';
 import { UpdateIndexes } from './contributions/update-indexes';
 import { InterfaceScale } from './contributions/interface-scale';
 import { OpenHandler } from '@theia/core/lib/browser/opener-service';
+import { NewCloudSketch } from './contributions/new-cloud-sketch';
 
 const registerArduinoThemes = () => {
   const themes: MonacoThemeJson[] = [
@@ -751,6 +752,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, DeleteSketch);
   Contribution.configure(bind, UpdateIndexes);
   Contribution.configure(bind, InterfaceScale);
+  Contribution.configure(bind, NewCloudSketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

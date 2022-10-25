@@ -29,6 +29,10 @@
     min-height: 0;
 }
 
+.p-Widget.dialogOverlay .dialogBlock .dialogControl .error {
+    word-break: normal;
+}
+
 .p-Widget.dialogOverlay .dialogBlock .dialogContent {
     padding: 0;
     overflow: auto;
@@ -80,10 +84,8 @@
     opacity: .4;
 }
 
-
 @media only screen and (max-height: 560px) {
     .p-Widget.dialogOverlay .dialogBlock {
         max-height: 400px;
     }
 }
-    
