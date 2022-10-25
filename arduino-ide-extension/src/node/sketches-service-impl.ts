@@ -37,10 +37,14 @@ import { join } from 'path';
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
   // put your setup code here, to run once:
+
 }
+
 void loop() {
   // put your main code here, to run repeatedly:
-}`;
+
+}
+`;
 
 @injectable()
 export class SketchesServiceImpl
