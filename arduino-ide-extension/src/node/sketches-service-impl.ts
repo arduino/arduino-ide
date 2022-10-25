@@ -35,6 +35,12 @@ import {
 import { join } from 'path';
 
 const RecentSketches = 'recent-sketches.json';
+const DefaultIno = `void setup() {
+  // put your setup code here, to run once:
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+}`;
 
 @injectable()
 export class SketchesServiceImpl
@@ -48,7 +54,7 @@ export class SketchesServiceImpl
     autoStart: true,
     concurrency: 1,
   });
-  private bluePrintContent: string;
+  private inoContent: Deferred<string> | undefined;
 
   @inject(ILogger)
   @named('sketches-service')
@@ -448,10 +454,11 @@ export class SketchesServiceImpl
 
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
-    await fs.mkdir(sketchDir, { recursive: true });
-    this.bluePrintContent = this.bluePrintContent || (await this.loadDefault());
-
-    await fs.writeFile(sketchFile, this.bluePrintContent, { encoding: 'utf8' });
+    const [inoContent] = await Promise.all([
+      this.loadInoContent(),
+      fs.mkdir(sketchDir, { recursive: true }),
+    ]);
+    await fs.writeFile(sketchFile, inoContent, { encoding: 'utf8' });
     return this.loadSketch(FileUri.create(sketchDir).toString());
   }
 
@@ -629,8 +636,26 @@ export class SketchesServiceImpl
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private tryParse(raw: string): any | undefined {
+  // Returns the default.ino from the settings or from default folder.
+  private async readSettings(): Promise<Record<string, unknown> | undefined> {
+    const configDirUri = await this.envVariableServer.getConfigDirUri();
+    const configDirPath = FileUri.fsPath(configDirUri);
+
+    try {
+      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
+        encoding: 'utf8',
+      });
+
+      return this.tryParse(raw);
+    } catch (err) {
+      if ('code' in err && err.code === 'ENOENT') {
+        return undefined;
+      }
+      throw err;
+    }
+  }
+
+  private tryParse(raw: string): Record<string, unknown> | undefined {
     try {
       return JSON.parse(raw);
     } catch {
@@ -639,50 +664,31 @@ export class SketchesServiceImpl
   }
 
   // Returns the default.ino from the settings or from default folder.
-  private async loadDefault(): Promise<string> {
-    const root = await this.root(await this.sketchbookUri());
-    const configDirUri = await this.envVariableServer.getConfigDirUri();
-    const configDirPath = FileUri.fsPath(configDirUri);
-
-    let result: string;
-    result = `void setup() {
-  // put your setup code here, to run once:
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}`;
-
-    try {
-      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
-        encoding: 'utf8',
-      });
-      const json = this.tryParse(raw);
-      if (json) {
-        const value = json['arduino.sketch.inoBlueprint'];
-
-        const filename =
-          typeof value === 'string' && !!value
-            ? value
-            : `${root}/default/default.ino`;
-
-        let raw = '';
-
-        raw = await fs.readFile(filename, { encoding: 'utf8' });
-        result = raw;
-
-        this.logger.info(`-- Default found at ${filename}`);
+  private async loadInoContent(): Promise<string> {
+    if (!this.inoContent) {
+      this.inoContent = new Deferred<string>();
+      const settings = await this.readSettings();
+      if (settings) {
+        const inoBlueprintPath = settings['arduino.sketch.inoBlueprint'];
+        if (inoBlueprintPath && typeof inoBlueprintPath === 'string') {
+          try {
+            const inoContent = await fs.readFile(inoBlueprintPath, {
+              encoding: 'utf8',
+            });
+            this.inoContent.resolve(inoContent);
+          } catch (err) {
+            if ('code' in err && err.code === 'ENOENT') {
+              // Ignored. The custom `.ino` blueprint file is optional.
+            } else {
+              throw err;
+            }
+          }
+        }
       }
-    } catch (error) {
-      if ('code' in error && error.code === 'ENOENT') {
-        return result;
-      }
-      throw error;
+      this.inoContent.resolve(DefaultIno);
     }
 
-    return result;
+    return this.inoContent.promise;
   }
 }
 
