@@ -34,7 +34,6 @@ export class LocalCacheFsProvider
   @inject(AuthenticationClientService)
   protected readonly authenticationService: AuthenticationClientService;
 
-  // TODO: do we need this? Cannot we `await` on the `init` call from `registerFileSystemProviders`?
   readonly ready = new Deferred<void>();
 
   private _localCacheRoot: URI;
@@ -153,7 +152,7 @@ export class LocalCacheFsProvider
     return uri;
   }
 
-  private toUri(session: AuthenticationSession): URI {
+  toUri(session: AuthenticationSession): URI {
     // Hack: instead of getting the UUID only, we get `auth0|UUID` after the authentication. `|` cannot be part of filesystem path or filename.
     return this._localCacheRoot.resolve(session.id.split('|')[1]);
   }

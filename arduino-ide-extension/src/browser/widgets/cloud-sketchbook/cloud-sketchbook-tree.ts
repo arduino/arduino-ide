@@ -136,7 +136,7 @@ export class CloudSketchbookTree extends SketchbookTree {
         return;
       }
     }
-    this.runWithState(node, 'pulling', async (node) => {
+    return this.runWithState(node, 'pulling', async (node) => {
       const commandsCopy = node.commands;
       node.commands = [];
 
@@ -196,7 +196,7 @@ export class CloudSketchbookTree extends SketchbookTree {
         return;
       }
     }
-    this.runWithState(node, 'pushing', async (node) => {
+    return this.runWithState(node, 'pushing', async (node) => {
       if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
         throw new Error(
           nls.localize(
@@ -269,7 +269,7 @@ export class CloudSketchbookTree extends SketchbookTree {
         return prev;
       }
 
-      // do not map "do_not_sync" files/directoris and their descendants
+      // do not map "do_not_sync" files/directories and their descendants
       const segments = path[1].split(posix.sep) || [];
       if (
         segments.some((segment) => Create.do_not_sync_files.includes(segment))

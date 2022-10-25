@@ -80,10 +80,8 @@
     opacity: .4;
 }
 
-
 @media only screen and (max-height: 560px) {
     .p-Widget.dialogOverlay .dialogBlock {
         max-height: 400px;
     }
 }
-    

@@ -21,7 +21,7 @@ export class NewSketch extends SketchContribution {
   override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: NewSketch.Commands.NEW_SKETCH.id,
-      label: nls.localize('arduino/sketch/new', 'New'),
+      label: nls.localize('arduino/sketch/new', 'New Sketch'),
       order: '0',
     });
   }

@@ -65,7 +65,7 @@ export class Close extends SketchContribution {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: Close.Commands.CLOSE.id,
       label: nls.localize('vscode/editor.contribution/close', 'Close'),
-      order: '5',
+      order: '6',
     });
   }
 
