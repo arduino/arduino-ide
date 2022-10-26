@@ -32,8 +32,19 @@ import {
   maybeNormalizeDrive,
   TempSketchPrefix,
 } from './is-temp-sketch';
+import { join } from 'path';
 
 const RecentSketches = 'recent-sketches.json';
+const DefaultIno = `void setup() {
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
+`;
 
 @injectable()
 export class SketchesServiceImpl
@@ -47,6 +58,7 @@ export class SketchesServiceImpl
     autoStart: true,
     concurrency: 1,
   });
+  private inoContent: Deferred<string> | undefined;
 
   @inject(ILogger)
   @named('sketches-service')
@@ -446,21 +458,11 @@ export class SketchesServiceImpl
 
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
-    await fs.mkdir(sketchDir, { recursive: true });
-    await fs.writeFile(
-      sketchFile,
-      `void setup() {
-  // put your setup code here, to run once:
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
-`,
-      { encoding: 'utf8' }
-    );
+    const [inoContent] = await Promise.all([
+      this.loadInoContent(),
+      fs.mkdir(sketchDir, { recursive: true }),
+    ]);
+    await fs.writeFile(sketchFile, inoContent, { encoding: 'utf8' });
     return this.loadSketch(FileUri.create(sketchDir).toString());
   }
 
@@ -636,6 +638,61 @@ void loop() {
     } catch {
       return false;
     }
+  }
+
+  // Returns the default.ino from the settings or from default folder.
+  private async readSettings(): Promise<Record<string, unknown> | undefined> {
+    const configDirUri = await this.envVariableServer.getConfigDirUri();
+    const configDirPath = FileUri.fsPath(configDirUri);
+
+    try {
+      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
+        encoding: 'utf8',
+      });
+
+      return this.tryParse(raw);
+    } catch (err) {
+      if ('code' in err && err.code === 'ENOENT') {
+        return undefined;
+      }
+      throw err;
+    }
+  }
+
+  private tryParse(raw: string): Record<string, unknown> | undefined {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return undefined;
+    }
+  }
+
+  // Returns the default.ino from the settings or from default folder.
+  private async loadInoContent(): Promise<string> {
+    if (!this.inoContent) {
+      this.inoContent = new Deferred<string>();
+      const settings = await this.readSettings();
+      if (settings) {
+        const inoBlueprintPath = settings['arduino.sketch.inoBlueprint'];
+        if (inoBlueprintPath && typeof inoBlueprintPath === 'string') {
+          try {
+            const inoContent = await fs.readFile(inoBlueprintPath, {
+              encoding: 'utf8',
+            });
+            this.inoContent.resolve(inoContent);
+          } catch (err) {
+            if ('code' in err && err.code === 'ENOENT') {
+              // Ignored. The custom `.ino` blueprint file is optional.
+            } else {
+              throw err;
+            }
+          }
+        }
+      }
+      this.inoContent.resolve(DefaultIno);
+    }
+
+    return this.inoContent.promise;
   }
 }
 
