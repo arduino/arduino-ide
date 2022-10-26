@@ -86,20 +86,16 @@
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
       "connected": "Connected",
       "continue": "Continue",
-      "createSketch": "New Remote Sketch...",
       "donePulling": "Done pulling ‘{0}’.",
       "donePushing": "Done pushing ‘{0}’.",
       "embed": "Embed:",
       "emptySketchbook": "Your Sketchbook is empty",
       "goToCloud": "Go to Cloud",
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 37 characters.",
       "learnMore": "Learn more",
       "link": "Link:",
-      "newSketchTitle": "Name of a new remote sketch",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
       "offline": "Offline",
       "openInCloudEditor": "Open in Cloud Editor",
-      "openNewSketch": "Do you want to pull the new remote sketch {0} and open it in a new window?",
       "options": "Options...",
       "privateVisibility": "Private. Only you can view the Sketch.",
       "profilePicture": "Profile picture",
@@ -119,7 +115,6 @@
       "signIn": "SIGN IN",
       "signInToCloud": "Sign in to Arduino Cloud",
       "signOut": "Sign Out",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists.",
       "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
@@ -303,6 +298,13 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "createSketch": "New Remote Sketch...",
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new remote sketch",
+      "openNewSketch": "Do you want to pull the new remote sketch {0} and open it in a new window?",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
     },
     "portProtocol": {
       "network": "Network",
