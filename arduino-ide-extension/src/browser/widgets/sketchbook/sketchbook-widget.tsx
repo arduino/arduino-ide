@@ -8,11 +8,13 @@ import { IDragEvent } from '@theia/core/shared/@phosphor/dragdrop';
 import { DockPanel, Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message, MessageLoop } from '@theia/core/shared/@phosphor/messaging';
 import { Disposable } from '@theia/core/lib/common/disposable';
-import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
+import { BaseWidget, Title } from '@theia/core/lib/browser/widgets/widget';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
+import { Event, Emitter } from '@theia/core/lib/common/event';
 import { CloudSketchbookCompositeWidget } from '../cloud-sketchbook/cloud-sketchbook-composite-widget';
 import { URI } from '../../contributions/contribution';
+import { TheiaDockPanel } from '@theia/core/lib/browser/shell/theia-dock-panel';
 
 @injectable()
 export class SketchbookWidget extends BaseWidget {
@@ -21,7 +23,8 @@ export class SketchbookWidget extends BaseWidget {
   @inject(SketchbookTreeWidget)
   protected readonly localSketchbookTreeWidget: SketchbookTreeWidget;
 
-  protected readonly sketchbookTreesContainer: DockPanel;
+  protected readonly sketchbookTreesContainer: NoopDragOverDockPanel;
+  private readonly onCurrentTreeDidChangeEmitter: Emitter<Widget | undefined>;
 
   constructor() {
     super();
@@ -32,6 +35,15 @@ export class SketchbookWidget extends BaseWidget {
     this.title.closable = true;
     this.node.tabIndex = 0;
     this.sketchbookTreesContainer = this.createTreesContainer();
+    this.onCurrentTreeDidChangeEmitter = new Emitter<Widget | undefined>();
+    this.toDispose.pushAll([
+      this.onCurrentTreeDidChangeEmitter,
+      this.sketchbookTreesContainer.onCurrentDidChange((title) =>
+        this.onCurrentTreeDidChangeEmitter.fire(
+          title?.owner instanceof SketchbookTreeWidget ? title.owner : undefined
+        )
+      ),
+    ]);
   }
 
   @postConstruct()
@@ -45,6 +57,10 @@ export class SketchbookWidget extends BaseWidget {
     this.toDisposeOnDetach.push(
       Disposable.create(() => Widget.detach(this.sketchbookTreesContainer))
     );
+  }
+
+  get onCurrentTreeDidChange(): Event<Widget | undefined> {
+    return this.onCurrentTreeDidChangeEmitter.event;
   }
 
   getTreeWidget(): SketchbookTreeWidget {
@@ -129,7 +145,7 @@ export class SketchbookWidget extends BaseWidget {
     this.onResize(Widget.ResizeMessage.UnknownSize);
   }
 
-  protected createTreesContainer(): DockPanel {
+  protected createTreesContainer(): NoopDragOverDockPanel {
     const panel = new NoopDragOverDockPanel({
       spacing: 0,
       mode: 'single-document',
@@ -140,13 +156,28 @@ export class SketchbookWidget extends BaseWidget {
   }
 }
 
-export class NoopDragOverDockPanel extends DockPanel {
+class NoopDragOverDockPanel extends TheiaDockPanel {
+  private readonly onCurrentDidChangeEmitter = new Emitter<
+    Title<Widget> | undefined
+  >();
+  readonly onCurrentDidChange = this.onCurrentDidChangeEmitter.event;
+
   constructor(options?: DockPanel.IOptions) {
     super(options);
-    NoopDragOverDockPanel.prototype['_evtDragOver'] = (event: IDragEvent) => {
+    super['_evtDragOver'] = (event: IDragEvent) => {
       event.preventDefault();
       event.stopPropagation();
       event.dropAction = 'none';
     };
+  }
+
+  override markAsCurrent(title: Title<Widget> | undefined): void {
+    super.markAsCurrent(title);
+    this.onCurrentDidChangeEmitter.fire(title);
+  }
+
+  override dispose(): void {
+    super.dispose();
+    this.onCurrentDidChangeEmitter.dispose();
   }
 }

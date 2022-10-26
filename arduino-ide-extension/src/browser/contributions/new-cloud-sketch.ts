@@ -17,12 +17,15 @@ import { CloudSketchbookTreeModel } from '../widgets/cloud-sketchbook/cloud-sket
 import { CloudSketchbookTreeWidget } from '../widgets/cloud-sketchbook/cloud-sketchbook-tree-widget';
 import { SketchbookCommands } from '../widgets/sketchbook/sketchbook-commands';
 import { SketchbookWidget } from '../widgets/sketchbook/sketchbook-widget';
+import { SketchbookWidgetContribution } from '../widgets/sketchbook/sketchbook-widget-contribution';
 import { Command, CommandRegistry, Contribution, URI } from './contribution';
 
 @injectable()
 export class NewCloudSketch extends Contribution {
   @inject(CreateApi)
   private readonly createApi: CreateApi;
+  @inject(SketchbookWidgetContribution)
+  private readonly sketchbookWidgetContribution: SketchbookWidgetContribution;
 
   private toDisposeOnNewTreeModel: Disposable | undefined;
   private treeModel: CloudSketchbookTreeModel | undefined;
@@ -30,6 +33,24 @@ export class NewCloudSketch extends Contribution {
   private readonly toDisposeOnStop = new DisposableCollection(
     this.onDidChangeEmitter
   );
+
+  override onReady(): void {
+    const handleCurrentTreeDidChange = (widget: SketchbookWidget) => {
+      this.toDisposeOnStop.push(
+        widget.onCurrentTreeDidChange(() => this.onDidChangeEmitter.fire())
+      );
+      const treeWidget = widget.getTreeWidget();
+      if (treeWidget instanceof CloudSketchbookTreeWidget) {
+        this.onDidChangeEmitter.fire();
+      }
+    };
+    const widget = this.sketchbookWidgetContribution.tryGetWidget();
+    if (widget) {
+      handleCurrentTreeDidChange(widget);
+    } else {
+      this.sketchbookWidgetContribution.widget.then(handleCurrentTreeDidChange);
+    }
+  }
 
   onStop(): void {
     this.toDisposeOnStop.dispose();
