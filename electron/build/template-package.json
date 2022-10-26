@@ -15,7 +15,7 @@
     "electron-notarize": "^1.1.1",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.5"
   },
   "scripts": {
     "build": "yarn download:plugins && theia build --mode production && yarn patch",

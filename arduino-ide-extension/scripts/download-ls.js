@@ -88,6 +88,12 @@
       lsSuffix = 'Linux_64bit.tar.gz';
       clangdSuffix = 'Linux_64bit';
       break;
+    case 'linux-arm':
+        clangdExecutablePath = path.join(build, 'clangd');
+        clangFormatExecutablePath = path.join(build, 'clang-format');
+        lsSuffix = 'Linux_ARMv7.tar.gz';
+        clangdSuffix = 'Linux_ARMv6'; // there is no ARNv7 available/ but armv7l GNU/Linux can run ARMv6 artifacts
+        break;
     case 'win32-x64':
       clangdExecutablePath = path.join(build, 'clangd.exe');
       clangFormatExecutablePath = path.join(build, 'clang-format.exe');
