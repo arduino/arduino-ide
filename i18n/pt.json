@@ -8,6 +8,7 @@
       "board": "Placa{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Informações da Placa",
+      "boards": "boards",
       "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
       "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de carregar o seu sketch.",
       "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione manualmente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Obter Informações da Placa",
       "inSketchbook": "(no Sketchbook)",
       "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "O FQBN não está disponível para a placa selecionada \"{0}\". Você tem o núcleo correspondente instalado?",
       "noPortsDiscovered": "Nenhuma porta detectada",
       "noPortsSelected": "Nenhuma porta selecionada para placa: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Escolha uma placa conectada à porta que você selecionou.",
       "port": "Porta{0}",
       "portLabel": "Porta{0}",
+      "ports": "ports",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
       "searchBoard": "Procurar placa",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Selecione uma placa para obter informações sobre ela.",
       "selectPortForInfo": "Selecione uma porta para obter informações sobre a placa.",
       "showAllAvailablePorts": "Mostrar todas as portas disponíveis quando habilitado",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Plataforma instalada com sucesso {0}: {1}",
-      "succesfullyUninstalledPlatform": "Plataforma desinstalada com sucesso {0}: {1}"
+      "succesfullyUninstalledPlatform": "Plataforma desinstalada com sucesso {0}: {1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Gerenciador de Placas",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Concluído o envio de ‘{0}’.",
       "embed": "Embutir:",
       "emptySketchbook": "O seu Sketchbook está vazio",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Saiba mais",
       "link": "Endereço",
       "notYetPulled": "Não é possível enviar para a nuvem. Ainda não foi baixado.",
@@ -140,6 +146,7 @@
       "by": "por",
       "filterSearch": "Filtrar a sua pesquisa…",
       "install": "Instalar",
+      "installed": "Installed",
       "moreInfo": "Mais informações",
       "uninstall": "Desinstalar",
       "uninstallMsg": "Deseja desinstalar {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Adicionar Arquivo",
       "fileAdded": "Um arquivo adicionado ao sketch.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Substituir"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Mensagem de erro Copiar",
@@ -236,12 +254,12 @@
       "addZip": "Adicionar biblioteca .ZIP...",
       "arduinoLibraries": "Bibliotecas Arduino",
       "contributedLibraries": "Bibliotecas contribuídas",
-      "dependenciesForLibrary": "Dependências da biblioteca {0}: {1}",
       "include": "Incluir Biblioteca",
-      "installAll": "Instalar tudo",
+      "installAll": "Instalar todas",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Deseja instalar todas as dependências ausentes?",
       "installOneMissingDependency": "Deseja instalar a dependência ausente?",
-      "installOnly": "Instalar apenas {0} ",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Biblioteca instalada com sucesso {0}: {1}",
       "libraryAlreadyExists": "Essa biblioteca já existe. Você deseja sobrescreve-la?",
       "manageLibraries": "Gerenciar bibliotecas...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Impossível fechar websocket",
       "unableToConnectToWebSocket": "Impossível conectar ao websocket"
+    },
+    "portProtocol": {
+      "network": "Rede",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "URLs do Gerenciador de Placas Adicionais",
@@ -320,6 +342,12 @@
       "network": "Rede",
       "newSketchbookLocation": "Escolher",
       "noProxy": "Sem proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Mostrar a saída detalhada durante",
       "sketchbook.location": "Localização dos Sketchbooks",
       "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de sketch dentro do sketch. Falso é padrão.",
@@ -350,7 +378,7 @@
       "cantOpen": "Directoria chamada \"{0}\" já existe. Não é possível abrir o rascunho.",
       "close": "Tem certeza que deseja fechar o sketch?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Configurar e Fazer Envio",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Arquivo criado '{0}'.",
       "doneCompiling": "Compilação concluída.",
       "doneUploading": "Envio concluído.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Não mostrar novamente",
       "surveyMessage": "Por favor, ajude-nos a melhorar respondendo essa pequena pesquisa. Nós valorizamos nossa comunidade  e gostaríamos de conhecer nossos colaboradores um pouco melhor."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} erro: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Carregar"
     }
-  },
-  "cloud": {
-    "GoToCloud": "IR PARA A NUVEM"
   },
   "theia": {
     "core": {

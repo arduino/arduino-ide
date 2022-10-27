@@ -8,6 +8,7 @@
       "board": "Платка{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Информация за платка",
+      "boards": "boards",
       "configDialog1": "Изберете както платка, така и порт, ако искате да качите скица.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Не можа да се намери по-рано избрана платка „{0}“ в инсталираната платформа „{1}“. Моля, изберете отново ръчно платката, която искате да използвате. Искате ли да я изберете отново сега?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Вземи информация за платката",
       "inSketchbook": "(в Скицника)",
       "installNow": "Ядрото „{0} {1}“ трябва да бъде инсталирано за текущо избраната платка „{2}“. Искате ли да го инсталирате сега?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN не е наличен за избраната платка „{0}“. Имате ли инсталирано съответното ядро?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Няма избрани портове за платка: „{0}“.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Моля, изберете платка, свързана към порта, който сте избрали.",
       "port": "Порт{0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Програматор",
       "reselectLater": "Изберете отново по-късно",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Моля, изберете платка, за да получите информация за нея.",
       "selectPortForInfo": "Моля, изберете порт, за да получите информация за платката.",
       "showAllAvailablePorts": "Показва всички налични портове, когато е активиран",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Успешно инсталирана платформа {0}:{1}",
-      "succesfullyUninstalledPlatform": "Успешно деинсталирана платформа {0}:{1}"
+      "succesfullyUninstalledPlatform": "Успешно деинсталирана платформа {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Мениджър на платки",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Изпращането на „{0}“ приключи.",
       "embed": "Вграждане:",
       "emptySketchbook": "Вашият Скицник е празен",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Научете повече",
       "link": "Връзка:",
       "notYetPulled": "Не може да се изпрати към облака. Още не е изтеглен.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "от",
       "filterSearch": "Филтрирайте търсенето си...",
-      "install": "ИНСТАЛИРАЙ",
+      "install": "Инсталирай",
+      "installed": "Installed",
       "moreInfo": "Повече информация",
       "uninstall": "Деинсталиране",
       "uninstallMsg": "Искате ли да деинсталирате {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Добави файл",
       "fileAdded": "Към скицата е добавен един файл.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Замени"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Добавяне на .ZIP библиотека...",
       "arduinoLibraries": "Arduino библиотеки",
       "contributedLibraries": "Допринесени библиотеки",
-      "dependenciesForLibrary": "Зависимости за библиотека {0}:{1}",
       "include": "Включи библиотека",
-      "installAll": "Инсталирай всички",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Искате ли да инсталирате всички липсващи зависимости?",
       "installOneMissingDependency": "Искате ли да инсталирате липсващата зависимост?",
-      "installOnly": "Инсталирайте само {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Успешно инсталирана библиотека {0}:{1}",
       "libraryAlreadyExists": "Библиотека вече съществува. Искате ли да я презапишете?",
       "manageLibraries": "Управление на библиотеки...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Мрежа",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Допълнителни URL адреси на мениджър на платки",
@@ -320,6 +342,12 @@
       "network": "Мрежа",
       "newSketchbookLocation": "Изберете местоположение за новата скицниката",
       "noProxy": "Без прокси",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Показване на подробен изход по време на",
       "sketchbook.location": "Местоположение на скицника",
       "sketchbook.showAllFiles": "True , за да се покажат всички файлове вътре в скицата. По подразбиране е false.",
@@ -350,7 +378,7 @@
       "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
       "close": "Наистина ли искате да затворите скицата?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Конфигуриране и качване",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Създаден е архив „{0}“.",
       "doneCompiling": "Готово е компилирането.",
       "doneUploading": "Качването приключи.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} грешка: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Качване"
     }
-  },
-  "cloud": {
-    "GoToCloud": "КЪМ ОБЛАКА"
   },
   "theia": {
     "core": {

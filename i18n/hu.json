@@ -8,6 +8,7 @@
       "board": "Alaplap {0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Alaplapi információk",
+      "boards": "boards",
       "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Nem található a korábban kiválasztott  '{0}' alaplap a/az '{1}' telepített platformon. Válaszd ki  újra a használni kívánt alaplapot. Szeretnéd most újra megadni?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Alaplap információk beszerzése",
       "inSketchbook": "(a vázlatfüzetben/sketchbook-ban) ",
       "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "Az FQBN nem érhető el a kiválasztott „{0}” alaplapon. A megfelelő mag/core telepítve van? ",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Nincsen port kiválasztva a alaplaphoz: '{0}'. ",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Válassz alaplapot, amely a kiválasztott porthoz csatlakozik. ",
       "port": "Port {0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programozó",
       "reselectLater": "Később újra válaszd ki",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Válassz egy alaplapot az információinak megtekintéséhez. ",
       "selectPortForInfo": "Válassz egy portot az alaplap információinak megtekintéséhez. ",
       "showAllAvailablePorts": "Elérhető portok mutatása - ha engedélyezett",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Sikeresen telepített platform {0}:{1}",
-      "succesfullyUninstalledPlatform": "A platform sikeresen eltávolítva: {0}:{1} "
+      "succesfullyUninstalledPlatform": "A platform sikeresen eltávolítva: {0}:{1} ",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Alaplap-kezelő",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Feltöltés kész: '{0}'.",
       "embed": "Beágyazva:",
       "emptySketchbook": "A vázlatfüzeted/Sketchbook-od üres ",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Tudj meg többet",
       "link": "Link:",
       "notYetPulled": "Nem küldhető a felhőbe. Még nem lett letöltve. ",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "által",
       "filterSearch": "Keresési eredmény szűrése... ",
-      "install": "TELEPÍTÉS",
+      "install": "Telepítés",
+      "installed": "Installed",
       "moreInfo": "Több info",
       "uninstall": "Eltávolítás",
       "uninstallMsg": "El szeretnéd távolítani a következőt: {0}? ",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Fájl hozzáadása",
       "fileAdded": "Egy fájl hozzáadása megtörtént a vázlathoz/sketch-hez. ",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Csere"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "ZIP könyvtár hozzáadása...",
       "arduinoLibraries": "Arduino könyvtárak",
       "contributedLibraries": "Közreműködő könyvtárak ",
-      "dependenciesForLibrary": "A/az {0} könyvtár függőségei: {1}",
       "include": "Tartalmazza a könyvtárat",
-      "installAll": "Minden telepítése",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Szeretnéd telepíteni az összes hiányzó függőséget?",
       "installOneMissingDependency": "Szeretnéd telepíteni a hiányzó függőséget? ",
-      "installOnly": "Csak {0} telepítése",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Sikeresen telepített könyvtár {0}:{1}",
       "libraryAlreadyExists": "Már létezik a könyvtár. Felül akarod írni? ",
       "manageLibraries": "Könyvtárak kezelése... ",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Hálózat",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Kiegészítő alaplapok URL-jei",
@@ -320,6 +342,12 @@
       "network": "Hálózat",
       "newSketchbookLocation": "Új Vázlatfüzet/Sketchbook elérési út",
       "noProxy": "Nincs proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Részletes kimenet megjelenítése eközben: ",
       "sketchbook.location": "SketchBook elérési helye ",
       "sketchbook.showAllFiles": "Kipipálva: az összes vázlatfájl/sketch megjelenítése a vázlaton/sketch-en belül. Alapértelmezés szerint: nincs kipipálva.",
@@ -350,7 +378,7 @@
       "cantOpen": "Már létezik a/az {0} nevű mappa. A vázlat/sketch nem nyitható meg. ",
       "close": "Biztosan bezárod a vázlatot/sketch-et? ",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Konfigurálás és feltöltés",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Archívum létrehozva: {0}. ",
       "doneCompiling": "Fordítás kész.",
       "doneUploading": "Feltöltés kész.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} hiba: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Feltöltés"
     }
-  },
-  "cloud": {
-    "GoToCloud": "UGRÁS A FELHŐHÖZ "
   },
   "theia": {
     "core": {

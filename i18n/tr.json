@@ -8,6 +8,7 @@
       "board": "Kart{0}",
       "boardConfigDialogTitle": "Başka Kart ve Port Seç",
       "boardInfo": "Kart Bilgisi",
+      "boards": "kartlar",
       "configDialog1": "Bir eskiz yüklemek istiyorsanız Kart ve Port seçmelisiniz.",
       "configDialog2": "Sadece Kart seçerseniz eskizinizi derleyebilir, ancak yükleyemezsiniz.",
       "couldNotFindPreviouslySelected": "Kurulu '{1}' platformunda daha önce seçili kart '{0}' bulunamadı. Lütfen kullanmak istediğiniz kartı elle yeniden seçin. Şimdi tekrar seçmek istiyor musunuz?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Kart Bilgisini Al",
       "inSketchbook": "(Eskiz Defteri'nde)",
       "installNow": "Mevcut seçili \"{2}\" kartı için \"{0} {1}\" çekirdeğinin kurulması gerekiyor. Bunu şimdi kurmak istiyor musunuz?",
+      "noBoardsFound": "\"{0}\" için kart bulunamadı",
       "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
       "noPortsDiscovered": "Port bulunamadı",
       "noPortsSelected": "'{0}' kartı için port seçilmedi",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Lütfen seçtiğiniz porta bağlı kartı seçin.",
       "port": "Port{0}",
       "portLabel": "Port{0}",
+      "ports": "portlar",
       "programmer": "Programlayıcı",
       "reselectLater": "Daha sonra tekrar seç",
       "searchBoard": "Kart ara",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Kart bilgisi almak için lütfen bir kart seçin.",
       "selectPortForInfo": "Kart bilgisi almak için lütfen bir port seçin.",
       "showAllAvailablePorts": "Etkinleştirildiğinde tüm mevcut portları görüntüler",
+      "showAllPorts": "Tüm portları göster",
       "succesfullyInstalledPlatform": "Platform başarıyla kuruldu {0}:{1}",
-      "succesfullyUninstalledPlatform": "Platform başarıyla kaldırıldı {0}:{1}"
+      "succesfullyUninstalledPlatform": "Platform başarıyla kaldırıldı {0}:{1}",
+      "typeOfPorts": "{0} portlar"
     },
     "boardsManager": "Kart Yöneticisi",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Gönderme bitti: ‘{0}’.",
       "embed": "Yerleştir:",
       "emptySketchbook": "Eskiz Defteriniz boş",
+      "goToCloud": "Buluta Git",
       "learnMore": "Daha fazlasını öğren",
       "link": "Bağlantı:",
       "notYetPulled": "Bulut'a gönderilemedi. Henüz çekilmemiş.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Bu pakete dahil kartlar:",
       "by": "-",
       "filterSearch": "Aramayı Filtrele...",
-      "install": "KUR",
+      "install": "Kur",
+      "installed": "Kurulu",
       "moreInfo": "Daha fazla bilgi",
       "uninstall": "Kaldır",
       "uninstallMsg": "{0} kaldırılsın mı?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Dosya Ekle",
       "fileAdded": "Eskize bir dosya eklendi.",
+      "plotter": {
+        "couldNotOpen": "Seri Çizici açılamadı"
+      },
       "replaceTitle": "Değiştir"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Tümü",
+        "default": "Varsayılan",
+        "more": "Daha fazla",
+        "none": "Hiçbiri"
+      }
     },
     "coreContribution": {
       "copyError": "Hata mesajlarını kopyala",
@@ -236,12 +254,12 @@
       "addZip": ".ZIP Kütüphanesi Ekle...",
       "arduinoLibraries": "Arduino kütüphaneleri",
       "contributedLibraries": "Eklenmiş kütüphaneler",
-      "dependenciesForLibrary": "{0}:{1} kütüphanesi için gereklilikler",
       "include": "Kütüphane Ekle",
       "installAll": "Tümünü kur",
+      "installLibraryDependencies": "Kütüphane gerekliliklerini kur",
       "installMissingDependencies": "Tüm eksik gereklilikleri kurmak ister misiniz?",
       "installOneMissingDependency": "Eksik gereklilikleri kurmak istiyor musunuz?",
-      "installOnly": "Sadece {0}'u kur",
+      "installWithoutDependencies": "Gereklilikler olmadan kur",
       "installedSuccessfully": "{0}:{1} kütüphanesi başarıyla kuruldu",
       "libraryAlreadyExists": "Kütüphane zaten mevcut. Üzerine yazmak istiyor musunuz?",
       "manageLibraries": "Kütüphaneleri Yönet...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Websocket kapatılamadı ",
       "unableToConnectToWebSocket": "Websocket'e bağlanılamadı"
+    },
+    "portProtocol": {
+      "network": "Ağ",
+      "serial": "Seri"
     },
     "preferences": {
       "additionalManagerURLs": "Ek Kart Yöneticisi URL'leri",
@@ -320,6 +342,12 @@
       "network": "Ağ",
       "newSketchbookLocation": "Yeni eskiz defteri konumu seç",
       "noProxy": "Vekil yok",
+      "proxySettings": {
+        "hostname": "Host adı",
+        "password": "Parola",
+        "port": "Port numarası",
+        "username": "Kullanıcı adı"
+      },
       "showVerbose": "Ayrıntılı çıktıyı görüntüle",
       "sketchbook.location": "Eskiz Defteri konumu",
       "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için açın. Varsayılan: kapalı.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Tekrar gösterme",
       "surveyMessage": "Lütfen bu çok kısa anketi yanıtlayarak gelişmemize yardım edin. Topluluğumuza değer veriyoruz e destekçilerimizi biraz daha iyi tanımak isteriz."
     },
+    "updateIndexes": {
+      "updateIndexes": "Katalogları Güncelle",
+      "updateLibraryIndex": "Kütüphane Kataloğunu Güncelle",
+      "updatePackageIndex": "Paket Kataloğunu Güncelle"
+    },
     "upload": {
       "error": "{0} hata: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "{0} gir",
       "upload": "Yükle"
     }
-  },
-  "cloud": {
-    "GoToCloud": "BULUTA GİT"
   },
   "theia": {
     "core": {

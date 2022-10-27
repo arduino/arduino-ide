@@ -8,6 +8,7 @@
       "board": "Board{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Board Info",
+      "boards": "boards",
       "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No ports selected for board: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programmer",
       "reselectLater": "Reselect later",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Please select a board to obtain board info.",
       "selectPortForInfo": "Please select a port to obtain board info.",
       "showAllAvailablePorts": "Shows all available ports when enabled",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
-      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}"
+      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Boards Manager",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Done pushing ‘{0}’.",
       "embed": "Embed:",
       "emptySketchbook": "Your Sketchbook is empty",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Learn more",
       "link": "Link:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "by",
       "filterSearch": "Filter your search...",
-      "install": "INSTALL",
+      "install": "Install",
+      "installed": "Installed",
       "moreInfo": "More info",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Add File",
       "fileAdded": "One file added to the sketch.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Replace"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Add .ZIP Library...",
       "arduinoLibraries": "Arduino libraries",
       "contributedLibraries": "Contributed libraries",
-      "dependenciesForLibrary": "Dependencies for library {0}:{1}",
       "include": "Include Library",
-      "installAll": "Install all",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
-      "installOnly": "Install {0} only",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Successfully installed library {0}:{1}",
       "libraryAlreadyExists": "A library already exists. Do you want to overwrite it?",
       "manageLibraries": "Manage Libraries...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Network",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
@@ -320,6 +342,12 @@
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noProxy": "No proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Show verbose output during",
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
@@ -350,7 +378,7 @@
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Configure And Upload",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Done uploading.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} error: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Upload"
     }
-  },
-  "cloud": {
-    "GoToCloud": "GO TO CLOUD"
   },
   "theia": {
     "core": {

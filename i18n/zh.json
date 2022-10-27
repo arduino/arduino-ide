@@ -8,6 +8,7 @@
       "board": "开发板 {0}",
       "boardConfigDialogTitle": "选择其他开发板和端口",
       "boardInfo": "开发板信息",
+      "boards": "开发板",
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
       "couldNotFindPreviouslySelected": "在安装的平台 ‘{1}’ 中找不到以前选择的开发板 ‘{0}’。请手动选择要使用的开发板。你想现在重新选择它吗？",
@@ -15,6 +16,7 @@
       "getBoardInfo": "获得开发板信息",
       "inSketchbook": "（在项目文件夹中）",
       "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
+      "noBoardsFound": "没有找到 “{0}” 相关开发板",
       "noFQBN": "FQBN 不可用于所选开发板 “{0}”。你是否安装了相应的内核？",
       "noPortsDiscovered": "未发现端口",
       "noPortsSelected": "没有为开发板选择端口：‘{0}’。",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "请选择要连接的开发板。",
       "port": "端口 {0}",
       "portLabel": "端口：{0}",
+      "ports": "端口",
       "programmer": "编程器",
       "reselectLater": "稍后重新选择",
       "searchBoard": "搜索开发坂",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "请选择一个开发板以获取开发板信息。",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
       "showAllAvailablePorts": "启用时显示所有可用端口",
+      "showAllPorts": "显示所有端口",
       "succesfullyInstalledPlatform": "已成功安装平台 {0}：{1}",
-      "succesfullyUninstalledPlatform": "已成功卸载平台 {0}：{1}"
+      "succesfullyUninstalledPlatform": "已成功卸载平台 {0}：{1}",
+      "typeOfPorts": "{0} 端口"
     },
     "boardsManager": "开发板管理器",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "已完成推送 ‘{0}’。",
       "embed": "嵌入：",
       "emptySketchbook": "你的项目文件夹是空的",
+      "goToCloud": "Go to Cloud",
       "learnMore": "查看更多",
       "link": "链接：",
       "notYetPulled": "无法推送到 Cloud。未被拉取。",
@@ -125,7 +131,7 @@
       "partner": "合作伙伴",
       "processing": "正在处理中",
       "recommended": "推荐",
-      "retired": "Retired",
+      "retired": "不再支持的",
       "selectedOn": "on {0}",
       "serialMonitor": "串口监视器",
       "type": "类型",
@@ -140,6 +146,7 @@
       "by": "by",
       "filterSearch": "筛选搜索结果......",
       "install": "安装",
+      "installed": "安装",
       "moreInfo": "更多信息",
       "uninstall": "卸载",
       "uninstallMsg": "是否要卸载 {0}？",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "添加文件",
       "fileAdded": "将一个文件添加到项目中。",
+      "plotter": {
+        "couldNotOpen": "无法打开串口绘图仪"
+      },
       "replaceTitle": "替换"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "全部",
+        "default": "默认",
+        "more": "较多",
+        "none": "无"
+      }
     },
     "coreContribution": {
       "copyError": "复制错误信息",
@@ -236,12 +254,12 @@
       "addZip": "添加 .ZIP 库...",
       "arduinoLibraries": "arduino 库",
       "contributedLibraries": "贡献库",
-      "dependenciesForLibrary": "{0} 库的依赖：{1}",
       "include": "包含库",
       "installAll": "全部安装",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "是否安装所有缺少的依赖？",
       "installOneMissingDependency": "是否安装缺少的依赖？",
-      "installOnly": "仅安装 {0}",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "已成功安装 {0} 库：{1}",
       "libraryAlreadyExists": "库已经存在。是否要覆盖它？",
       "manageLibraries": "管理库...",
@@ -258,7 +276,7 @@
       "topic": "话题"
     },
     "libraryTopic": {
-      "communication": "Communication",
+      "communication": "交流",
       "dataProcessing": "数据处理",
       "dataStorage": "数据存储",
       "deviceControl": "设备控制",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "无法关闭 websocket",
       "unableToConnectToWebSocket": "无法连接 websocket"
+    },
+    "portProtocol": {
+      "network": "网络",
+      "serial": "串口"
     },
     "preferences": {
       "additionalManagerURLs": "其他开发板管理器地址",
@@ -320,6 +342,12 @@
       "network": "网络",
       "newSketchbookLocation": "选择新的项目文件夹地址",
       "noProxy": "无代理",
+      "proxySettings": {
+        "hostname": "主机名",
+        "password": "密码",
+        "port": "端口号",
+        "username": "用户名"
+      },
       "showVerbose": "显示详细输出",
       "sketchbook.location": "项目文件夹地址",
       "sketchbook.showAllFiles": "True 则显示项目中的所有项目文件。默认情况下为 False。",
@@ -336,7 +364,7 @@
     "serial": {
       "autoscroll": "自动滚屏",
       "carriageReturn": "回车",
-      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "message": "消息（按回车将消息发送到“{1}”上的“{0}”）",
       "newLine": "换行",
       "newLineCarriageReturn": "换行 和 回车 两者都是",
       "noLineEndings": "没有结束符",
@@ -350,7 +378,7 @@
       "cantOpen": "“{0}” 文件夹已存在。无法打开项目。",
       "close": "是否确实要关闭项目？",
       "compile": "正在编译项目。。。",
-      "configureAndUpload": "配置和上传",
+      "configureAndUpload": "配置并上传",
       "createdArchive": "已创建存档 ‘{0}’。",
       "doneCompiling": "编译完成",
       "doneUploading": "上传完成",
@@ -381,6 +409,11 @@
       "dismissSurvey": "不要再显示",
       "surveyMessage": "请回答这份很短的调查来帮助我们改进。我们重视我们的社区，也希望能够更好地了解我们的支持者。"
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} 错误：{1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "输入 {0}",
       "upload": "上传"
     }
-  },
-  "cloud": {
-    "GoToCloud": "前往 CLOUD"
   },
   "theia": {
     "core": {

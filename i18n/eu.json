@@ -8,6 +8,7 @@
       "board": "{0} plaka",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Plakaren informazioa",
+      "boards": "boards",
       "configDialog1": "Hautatu plaka bat eta ataka bat programa bat kargatu nahi baduzu.",
       "configDialog2": "Plaka bakarrik hautatzen baduzu, programa konpilatu ahal izango duzu, baina ez kargatu.",
       "couldNotFindPreviouslySelected": "Ezin izan da aurkitu aurrez hautatutako '{0}' plaka instalatutako '{1}' plataforman. Hautatu berriz eskuz erabili nahi duzun plaka. Orain berriz hautatu nahi duzu?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Eskuratu plakaren informazioa",
       "inSketchbook": "(programa bilduman)",
       "installNow": "\"{0} {1}\" nukleoa instalatu behar da unean hautatutako \"{2}\" plakarentzat. Orain instalatu nahi duzu?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN ez dago erabilgarri hautatutako \"{0}\" plakarentzat. Dagokion nukleoa instalatuta daukazu?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Ez da atakarik hautatu plakarentzat: '{0}'",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Aukeratu hautatu duzun atakara konektatutako plaka bat.",
       "port": "{0} ataka",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programatzailea",
       "reselectLater": "Hautatu berriz geroago",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Hautatu plaka bat plakaren informazioa eskuratzeko.",
       "selectPortForInfo": "Hautatu ataka bat plakaren informazioa eskuratzeko.",
       "showAllAvailablePorts": "Gaituta dagoenean erabilgarri dauden ataka guztiak erakusten ditu",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "{0}:{1} plataforma behar bezala instalatu da",
-      "succesfullyUninstalledPlatform": "{0}:{1} plataforma behar bezala desinstalatu da"
+      "succesfullyUninstalledPlatform": "{0}:{1} plataforma behar bezala desinstalatu da",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Plaka kudeatzailea",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "Hodeian gordetzea burututa: '{0}'.",
       "embed": "Kapsulatu:",
       "emptySketchbook": "Zure programa bilduma hutsik dago",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Ikasi gehiago",
       "link": "Esteka:",
       "notYetPulled": "Ezin da Hodeian gorde. Ez da Hodeitik kargatu oraindik.",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "Egilea:",
       "filterSearch": "Iragazi zure bilaketa...",
-      "install": "INSTALATU",
+      "install": "Instalatu",
+      "installed": "Installed",
       "moreInfo": "Informazio gehiago",
       "uninstall": "Desinstalatu",
       "uninstallMsg": "{0} desinstalatu nahi duzu?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Gehitu fitxategia",
       "fileAdded": "Fitxategi bat gehitu da programara.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Ordezkatu"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Gehitu .ZIP liburutegia...",
       "arduinoLibraries": "Arduino liburutegiak",
       "contributedLibraries": "Hirugarrengoen liburutegiak",
-      "dependenciesForLibrary": "{0} liburutegiaren mendekotasunak: {1}",
       "include": "Hartu barne liburutegia",
-      "installAll": "Instalatu guztiak",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Falta diren mendekotasun guztiak instalatu nahi dituzu?",
       "installOneMissingDependency": "Falta den mendekotasuna instalatu nahi duzu?",
-      "installOnly": "Instalatu {0} bakarrik",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "{0}:{1} liburutegia behar bezala instalatu da",
       "libraryAlreadyExists": "Liburutegi bat badago dagoeneko. Gainidatzi nahi duzu?",
       "manageLibraries": "Kudeatu liburutegiak...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Sarea",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Plaka kudeatzaile gehigarrien URLak:",
@@ -320,6 +342,12 @@
       "network": "Sarea",
       "newSketchbookLocation": "Hautatu programa bilduma berriaren kokalekua",
       "noProxy": "Proxyrik ez",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Erakutsi irteera xehatua honetan zehar:",
       "sketchbook.location": "Programa bildumaren kokalekua",
       "sketchbook.showAllFiles": "Egia programaren barruko programa-fitxategi guztiak erakusteko. Lehenetsia gezurra da.",
@@ -350,7 +378,7 @@
       "cantOpen": "\"{0}\" izeneko karpeta badago dagoeneko. Ezin da programa ireki.",
       "close": "Ziur zaude programa itxi nahi duzula?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Konfiguratu eta kargatu",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "'{0}' artxiboa sortu da.",
       "doneCompiling": "Konpilazioa burutu da.",
       "doneUploading": "Karga burutu da.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} errorea: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Kargatu"
     }
-  },
-  "cloud": {
-    "GoToCloud": "JOAN HODEIRA"
   },
   "theia": {
     "core": {

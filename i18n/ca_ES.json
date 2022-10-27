@@ -8,6 +8,7 @@
       "board": "Tarja{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
       "boardInfo": "Informació de la Tarja",
+      "boards": "boards",
       "configDialog1": "Seleccioneu una Tarja i un port si voleu carregar un programa.",
       "configDialog2": "Si només seleccioneu una Tarja, podreu compilar, però no carregar el vostre programa.",
       "couldNotFindPreviouslySelected": "No s'ha pogut trobar la Tarja seleccionada anteriorment '{0}' a la plataforma instal·lada '{1}'. Torneu a seleccionar manualment la tarja que voleu utilitzar. Vols tornar a seleccionar-la ara?",
@@ -15,6 +16,7 @@
       "getBoardInfo": "Obtenir informació de la Tarja",
       "inSketchbook": "(al quadern de programes)",
       "installNow": "El nucli de \"{0} {1}\"  s'ha d'instal·lar per a la Tarja \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "El FQBN no està disponible per la Tarja seleccionada \"{0}\". Tens instal·lat el nucli corresponent?",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No hi ha cap port seleccionat per a la tarja: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "Si us plau, trieu una tarja connectada al port que heu seleccionat.",
       "port": "Port {0}",
       "portLabel": "Port: {0}",
+      "ports": "ports",
       "programmer": "Programador",
       "reselectLater": "Torneu a seleccionar més tard",
       "searchBoard": "Search board",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "Seleccioneu una tarja per obtenir informació sobre ella.",
       "selectPortForInfo": "Seleccioneu un port per obtenir la informació de la tarja.",
       "showAllAvailablePorts": "Mostra tots els ports disponibles quan estiguin habilitats",
+      "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Plataforma instal·lada correctament {0}:{1}",
-      "succesfullyUninstalledPlatform": "Plataforma desinstal·lada correctament {0}:{1}"
+      "succesfullyUninstalledPlatform": "Plataforma desinstal·lada correctament {0}:{1}",
+      "typeOfPorts": "{0} ports"
     },
     "boardsManager": "Gestor de Targetes",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "S'ha acabat de enviar '{0}'.",
       "embed": "Incrustar:",
       "emptySketchbook": "El teu quadern de programes està buit",
+      "goToCloud": "Go to Cloud",
       "learnMore": "Aprèn més",
       "link": "Enllaç:",
       "notYetPulled": "No es pot enviar cap als núvol. Encara no ha estat baixat",
@@ -139,7 +145,8 @@
       "boardsIncluded": "Boards included in this package:",
       "by": "per",
       "filterSearch": "Filtra la teva cerca...",
-      "install": "INSTAL·LA",
+      "install": "Instal·lar",
+      "installed": "Installed",
       "moreInfo": "Més informació",
       "uninstall": "Desinstal·la",
       "uninstallMsg": "Vols desinstal·lar {0}?",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "Afegeix un fitxer",
       "fileAdded": "S'ha afegit un fitxer al programa.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
       "replaceTitle": "Substitueix"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
     },
     "coreContribution": {
       "copyError": "Copy error messages",
@@ -236,12 +254,12 @@
       "addZip": "Afegeix llibreria .ZIP...",
       "arduinoLibraries": "Llibreries Arduino",
       "contributedLibraries": "Llibreriess aportades",
-      "dependenciesForLibrary": "Dependències de la llibreria {0}:{1}",
       "include": "Inclou llibreria",
-      "installAll": "Instal·leu-ho tot",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Voleu instal·lar totes les dependències que falten?",
       "installOneMissingDependency": "Voleu instal·lar la dependència que falta?",
-      "installOnly": "Instal·leu {0} només",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Llibreria instal·lada correctament {0}:{1}",
       "libraryAlreadyExists": "Ja existeix una llibreria. Voleu sobreescriure-la?",
       "manageLibraries": "Gestiona les Llibreries...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "portProtocol": {
+      "network": "Xarxa",
+      "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "URL addicionals del gestor de targetes",
@@ -320,6 +342,12 @@
       "network": "Xarxa",
       "newSketchbookLocation": "Seleccioneu una ubicació nova del quadern de programes",
       "noProxy": "Sense proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
       "showVerbose": "Mostra la sortida detallada durant",
       "sketchbook.location": "Ubicació del quadern de programes",
       "sketchbook.showAllFiles": "True per mostrar tots els fitxers del programa dins del programa. És fals per defecte.",
@@ -350,7 +378,7 @@
       "cantOpen": "Ja existeix una carpeta anomenada \"{0}\". No es pot obrir el programa.",
       "close": "Esteu segur que voleu tancar el programa?",
       "compile": "Compiling sketch...",
-      "configureAndUpload": "Configura i puja",
+      "configureAndUpload": "Configure and Upload",
       "createdArchive": "S'ha creat l'arxiu '{0}'.",
       "doneCompiling": "S'ha fet la compilació.",
       "doneUploading": "S'ha acabat de carregar.",
@@ -381,6 +409,11 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
     "upload": {
       "error": "{0} error: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "Enter {0}",
       "upload": "Carrega"
     }
-  },
-  "cloud": {
-    "GoToCloud": "VES AL NÚVOL"
   },
   "theia": {
     "core": {

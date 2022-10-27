@@ -6,8 +6,9 @@
     },
     "board": {
       "board": "ဘုတ်{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ပါ",
       "boardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်",
+      "boards": "ဘုတ်များ",
       "configDialog1": "ကုတ်ဖိုင်တစ်ခုကို upload တင်လိုပါက ဘုတ်နှင့်အပေါက် နှစ်ခုလုံးကို ရွေးပေးပါ။",
       "configDialog2": "သင် ဘုတ်တစ်ခုထဲကိုသာ ရွေးချယ်ထားပါက compile ပြုလုပ်နိုင်သော်လည်း ကုဒ်ဖိုင်ကိုတော့ upload မတင်နိုင်ပါ။",
       "couldNotFindPreviouslySelected": "တပ်ဆင်ထားသည့် ပလက်ဖောင်း '{1}' ထဲမှာ ယခင်ရွေးချယ်ထားသည့်ဘုတ် '{0}' ကို ရှာမတွေ့ပါ။ ကျေးဇူးပြု၍ မိမိအသုံးပြုလိုသည့် ဘုတ်ကို မိမိကိုယ်တိုင် ပြန်လည်ရွေးချယ်ပေးပါ။ သင်အခု ပြန်လည်ရွေးချယ် လိုပါသလား?",
@@ -15,8 +16,9 @@
       "getBoardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်ရယူမည်",
       "inSketchbook": " (Sketchbook ဖိုင်တွဲထဲ)",
       "installNow": "လက်ရှိရွေးချယ်ထားသည့် \"{2}\" ဘုတ်အတွက် \"{0} {1}\" core အား တပ်ဆင်ဖို့လိုပါသည်။ သင်ယခု တပ်ဆင်လိုပါသလား?",
+      "noBoardsFound": "\"{0}\"အတွက် ဘုတ်ရှာမတွေ့ပါ",
       "noFQBN": "ရွေးချယ်ထားသည့် ဘုတ် \"{0}\" အတွက် FQBN မရနိုင်သေးပါ။ သင့်မှာ သက်ဆိုင်ရာတပ်ဆင်ထားသည့် core ရှိပါသလား?",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "မည်သည့်အပေါက်မှမတွေ့ပါ",
       "noPortsSelected": "'{0}' ဘုတ် အတွက် မည်သည့်အပေါက်မှ မရွေးချယ်ထားပါ။",
       "noneSelected": "ဘုတ်မရွေးချယ်ထားပါ။",
       "openBoardsConfig": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ရန်...",
@@ -24,23 +26,26 @@
       "pleasePickBoard": "သင်ရွေးချယ်ထားသော အပေါက်နှင့် ချိတ်ဆက်ထားသည့် ဘုတ်ကို ကျေးဇူးပြု၍ ရွေးပေးပါ။",
       "port": "အပေါက်{0}",
       "portLabel": "အပေါက် - {0}",
+      "ports": "အပေါက်များ",
       "programmer": "ပရိုဂရမ်မာ",
       "reselectLater": "နောက်မှ ပြန်ရွေးချယ်မည်",
-      "searchBoard": "Search board",
+      "searchBoard": "ဘုတ်ရှာမည်",
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
       "selectBoardForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် ဘုတ်ရွေးချယ်ပါ",
       "selectPortForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် အပေါက်ကို ရွေးချယ်ပါ။",
       "showAllAvailablePorts": "အမှန်ခြစ်ထားပါက ရွေးချယ်နိုင်သော အပေါက်များအားလုံးကို ဖော်ပြပေးမည်",
+      "showAllPorts": "အပေါက်အားလုံးပြ",
       "succesfullyInstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ တပ်ဆင်ပြီးသည် :{1}",
-      "succesfullyUninstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ ဖြုတ်ချပြီးသည် :{1}"
+      "succesfullyUninstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ ဖြုတ်ချပြီးသည် :{1}",
+      "typeOfPorts": "{0} အပေါက်များ"
     },
     "boardsManager": "ဘုတ်မန်နေဂျာ",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "အာဒီနိုအသိမှတ်ပြု"
     },
     "bootloader": {
       "burnBootloader": "ဘုလုတ်ဒါ ရေးသွင်းမည်",
-      "burningBootloader": "Burning bootloader...",
+      "burningBootloader": "ဘုလုတ်ဒါ ရေးသွင်းနေသည်…",
       "doneBurningBootloader": "ဘုလုတ်ဒါ ရေးသွင်းပြီးပါပြီ။"
     },
     "burnBootloader": {
@@ -53,7 +58,7 @@
       "certificatesUploaded": "လက်မှတ်များ တင်သွင်းပြီးပါပြီ။",
       "enterURL": "URLရေးသွင်းပါ",
       "noSupportedBoardConnected": "ထောက်ပံ့ပေးသည့် ဘုတ်ကို မချိတ်ဆက်ထားပါ",
-      "openContext": "Open context",
+      "openContext": "ဆက်စပ်အကြောင်းအရာကြည့်မည်",
       "remove": "ဖယ်ရှားမည်",
       "selectBoard": "ဘုတ်တစ်ခုကို ရွေးချယ်ရန်...",
       "selectCertificateToUpload": "1. အပ်လုတ်တင်ရန် လက်မှတ်ရွေးပါ",
@@ -64,13 +69,13 @@
       "uploadingCertificates": "လက်မှတ်များကို အပ်လုတ်တင်နေသည်။"
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "အာဒီနိုအပ်ဒိတ်စစ်မည်",
+      "installAll": "အားလုံးတပ်ဆင်မည်",
+      "noUpdates": "လတ်တလော အပ်ဒိတ်တင်ရန် မရှိသေးပါ။",
+      "promptUpdateBoards": "ဘုတ်အချို့တွက် အပ်ဒိတ်ရရှိပါပြီ။",
+      "promptUpdateLibraries": "ကုတ်ကြည့်တိုက်အချို့တွက် အပ်ဒိတ်ရရှိပါပြီ။",
+      "updatingBoards": "ဘုတ်အပ်ဒိတ်တင်နေသည်…",
+      "updatingLibraries": "ကုတ်ကြည့်တိုက်အပ်ဒိတ်တင်နေသည်"
     },
     "cli-error-parser": {
       "keyboardError": "'ကီးဘုတ်' ရှာမတွေ့ပါ။ '#include <Keyboard.h>' ကုတ်စာကြောင်းကို သင့်ကုတ်ပုံကြမ်းထဲတွင် ထည့်ရေးထားပါသလား?",
@@ -85,6 +90,7 @@
       "donePushing": "‘{0}’တွန်းပို့ပြီးပါပြီ။",
       "embed": "မြှုပ်သွင်းထားသော -",
       "emptySketchbook": "သင့်ကုတ်ပုံကြမ်းဖိုင်တွဲထဲတွင် ဘာမှမရှိပါ",
+      "goToCloud": "ကလောက်သို့သွားမည်",
       "learnMore": "ပိုမိုလေ့လာရန်",
       "link": "လင့်ခ်-",
       "notYetPulled": "Cloudသို့တွန်းပို့၍မရသေးပါ။ မဆွဲယူရသေးသောကြောင့်ဖြစ်သည်။",
@@ -111,35 +117,36 @@
       "signOut": "လက်မှတ်ထိုးထွက်",
       "sync": "ထပ်တူပြုခြင်း",
       "syncEditSketches": "သင်၏Arduino Cloud ကုတ်ဖိုင်လ်များကို အင်တာနက်မှတဆင့် အချိန်နှင့်တပြေးညီ ရယူကိုက်ညီစေပြီး တည်းဖြတ်လိုက်ပါ",
-      "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
+      "visitArduinoCloud": "ကလောက်ကုတ်ဖိုင်ဖန်တီးရန် Arduino Cloudသို့သွားပါ။"
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "အားလုံး",
+      "contributed": "ကူညီရေးသားထားသည်များ",
       "installManually": "ကိုယ်တိုင်တပ်ဆင်မည်",
       "later": "နောက်မှ",
       "noBoardSelected": "ဘုတ် မရွေးချယ်ထားပါ",
       "notConnected": "[မချိတ်ဆက်ထားပါ]",
       "offlineIndicator": "အော့ဖ်လိုင်းဖြစ်နေသည်။ အင်တာနက်မရှိလျှင် Arduino CLIသည် လိုအပ်သော ဒေတာများမရယူနိုင်သောကြောင့် လုပ်ဆောင်ချက်ချို့ယွင်းမှုဖြစ်ပေါ်မည်။ အင်တာနက်နှင့်ချိတ်ဆက်ပြီး အပ္ပလီကေးရှင်းကို ပြန်စတင်ပေးပါ။",
       "oldFormat": "'{0}'သည် မူပုံစံအဟောင်း `.pde`ကိုအသုံးပြုထားသည်။ ဖိုင်လ်တိုးချဲ့အမှတ်အသားအသစ် `.ino` သို့ ပြောင်းလဲမှာလား။",
-      "partner": "Partner",
+      "partner": "တွဲဘက်",
       "processing": "အဆင့်ဆင့်ဆောင်ရွက်နေသည်",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "အသုံးပြုရန်အကြုံပြုထားသည်များ",
+      "retired": "အငြိမ်းစား",
       "selectedOn": "{0}တွင်",
       "serialMonitor": "အတန်းလိုက်ဆက်သွယ်မှုမော်နီတာ",
-      "type": "Type",
+      "type": "အမျိုးအစား",
       "unknown": "မသိ",
-      "updateable": "Updatable"
+      "updateable": "အပ်ဒိတ်တင်၍ရသော"
     },
     "compile": {
-      "error": "Compilation error: {0}"
+      "error": "ကုတ်ပေါင်းခြင်းဆိုင်ရာအမှား- {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "ဤပတ်ကေ့တွင်ပါဝင်သောဘုတ်များ-",
       "by": "မှ",
-      "filterSearch": "Filter your search...",
+      "filterSearch": "သင်၏ရှာဖွေမှုရလဒ်ကိုစစ်ထုတ်မည်…",
       "install": "တပ်ဆင်မည်",
+      "installed": "တပ်ဆင်ထားပြီး",
       "moreInfo": "နောက်ထပ်အချက်အလက်များ",
       "uninstall": "ဖြုတ်ချ",
       "uninstallMsg": "သင် {0} ကိုဖြုတ်ချချင်ပါသလား?",
@@ -148,11 +155,22 @@
     "contributions": {
       "addFile": "ဖိုင်လ်ထည့်မည်",
       "fileAdded": "ကုတ်ပုံကြမ်းထဲသို့ ဖိုင်တစ်ခု ထည့်လိုက်သည်။",
+      "plotter": {
+        "couldNotOpen": "အတန်းလိုက်ပုံဆွဲကိရိယာကိုမဖွင့်နိုင်ခဲ့ပါ"
+      },
       "replaceTitle": "အစားထိုးမည်"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "အားလုံး",
+        "default": "မူလ",
+        "more": "နောက်ထပ်",
+        "none": "မရှိ"
+      }
     },
     "coreContribution": {
       "copyError": "အမှားပြစာများကို ကော်ပီဆွဲသည်",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "noBoardSelected": "မည်သည့်ဘုတ်မှ မရွေးထားပါ။ သင်၏အာဒီနိုဘုတ်ကို ကိရိယာများ>ဘုတ် မီနူးတွင် ရွေးချယ်ပါ။"
     },
     "daemon": {
       "restart": "Daemon ပြန်စမည်",
@@ -178,15 +196,15 @@
       "increaseIndent": "အင်တင်းခြင်းတိုးမည်",
       "nextError": "နောက်ကအမှား",
       "previousError": "ရှေ့ကအမှား",
-      "revealError": "Reveal Error"
+      "revealError": "အမှားဖော်ပြ"
     },
     "electron": {
       "couldNotSave": "ကုတ်ပုံကြမ်းကို မသိမ်းဆည်းနိုင်ခဲ့ပါ။ ကျေးဇူးပြု၍ သင်၏ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာ စာသားတည်းဖြတ်မှုဆော့ဖ်ဝဲထဲသို့ ကူးယူပြီး IDE ကို ပြန်စတင်ပါ။",
-      "unsavedChanges": "Any unsaved changes will not be saved."
+      "unsavedChanges": "မသိမ်းရသေးသောပြောင်းလဲမှုများကိုသိမ်းမည်မဟုတ်ပါ။"
     },
     "examples": {
-      "builtInExamples": "Built-in examples",
-      "couldNotInitializeExamples": "Could not initialize built-in examples.",
+      "builtInExamples": "နဂိုပါဝင်သောဥပမာများ",
+      "couldNotInitializeExamples": "နဂိုပါဝင်သောဥပမာများကို မစတင်နိုင်ခဲ့ပါ။",
       "customLibrary": "စိတ်ကြိုက် Libraries များမှ ဥပမာများ",
       "for": "{0} အတွက် ဥပမာများ",
       "forAny": "ဘယ်ဘုတ်ပဲလာလာ အတွက် ဥပမာများ",
@@ -197,7 +215,7 @@
       "failedInstall": "ထည့်သွင်းခြင်း မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။",
       "install": "တပ်ဆင်မည်",
       "installingFirmware": "ဖမ်းဝဲလ် သွင်းနေသည်။",
-      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "overwriteSketch": "တပ်ဆင်မှုသည် ဘုတ်ပေါ်ရှိကုတ်ဖိုင်လ်ကို ဖျက်ရေးသွားမည်",
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
       "selectVersion": "ဖမ်းဝဲလ်ဗားရှင်း ရွေးပါ",
       "successfullyInstalled": "ဖမ်းဝဲလ်ကို အောင်မြင်စွာ သွင်းပြီးပါပြီ။",
@@ -216,7 +234,7 @@
       "visit": "Arduino.cc ကိုသွားကြည့်မယ်ကွာ"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "အာဒီနိုအိုင်ဒီအီးအပ်ဒိတ်များစစ်မည်",
       "closeAndInstallButton": "ပိတ်ပြီးသွင်းမယ်",
       "closeToInstallNotice": "ဆော့ဖ်ဝဲလ်ပိတ်ပြီး  အသစ်ကိုသွင်းမယ်။",
       "downloadButton": "ဒေါင်းလုတ်ဆွဲမယ်",
@@ -236,162 +254,174 @@
       "addZip": "ကုတ်ကြည့်တိုက် .ZIPထည့်မည်…",
       "arduinoLibraries": "Arduinoကုတ်ကြည့်တိုက်များ",
       "contributedLibraries": "ပါဝင်ကူညီပေးထားသော libraries များ",
-      "dependenciesForLibrary": "library အတွက် dependencies များ {0}:{1}",
       "include": "Library သွင်းမည်",
       "installAll": "အားလုံးတပ်ဆင်မည်",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "လိုအပ်နေသော dependencies များအားလုံးကို ထည့်သွင်းလိုပါသလား?",
       "installOneMissingDependency": "လိုအပ်နေသော dependency ကို ထည့်သွင်းလိုပါသလား?",
-      "installOnly": "{0}ကိုသာတပ်ဆင်မည်",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ library {0}:{1}",
       "libraryAlreadyExists": "Library ရှိပြီးသားပါ။ ထပ်ရေးလိုပါသလား?",
       "manageLibraries": "Libraries စီမံခြင်း...",
       "namedLibraryAlreadyExists": "{0} ခေါ် library ဖိုင်တွဲမှာရှိပြီးသားပါ။ ထပ်ရေးလိုပါသလား?",
-      "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
-      "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
+      "needsMultipleDependencies": "ကုတ်ကြည့်တိုက် <b>{0}:{1}</b> သည် မတပ်ဆင်ရသေးသော အခြားကုတ်ကြည့်တိုက်များကို လိုအပ်သည်-",
+      "needsOneDependency": "ကုတ်ကြည့်တိုက် <b>{0}:{1}</b> သည် မတပ်ဆင်ရသေးသော အခြားကုတ်ကြည့်တိုက်ကို လိုအပ်သည်-",
       "overwriteExistingLibrary": "ရှိနေပြီးသား library ကို ထပ်ရေးလိုပါသလား?",
-      "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
+      "successfullyInstalledZipLibrary": "{0} မှ ကုတ်ကြည့်တိုက်ကို အောင်မြင်စွာထည့်သွင်းပြီးပါပြီ",
       "title": "ကုတ်ကြည့်တိုက်မန်နေဂျာ",
-      "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
+      "uninstalledSuccessfully": "အောင်မြင်စွာ ဖြုတ်ချပြီးသော ကုတ်ကြည့်တိုက် {0}:{1}",
       "zipLibrary": "ကုတ်ကြည့်တိုက်"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "ခေါင်းစဉ်"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "communication": "ဆယ်သွယ်ရေး",
+      "dataProcessing": "ဒေတာခွဲခြားစီမံခြင်း",
+      "dataStorage": "ဒေတာသိမ်းဆည်းမှု",
+      "deviceControl": "စက််ထိန်းချုပ်ရေး",
+      "display": "ရုပ်ပြမှန်ပြင်",
+      "other": "အခြား",
+      "sensors": "အာရုံခံစက်များ",
+      "signalInputOutput": "အချက်ပြ အသွင်း/အထုတ်",
+      "timing": "အချက်",
+      "uncategorized": "အမျိုးအစားခွဲမထားသော"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "တပ်ဆင်ထားပြီး"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "အဆင့်မြင့်",
       "sketch": "ကုတ်ဖိုင်လ်ဆိုင်ရာ",
       "tools": "ကိရိယာများ"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "ဝက်ဘ်ဆော့ကတ်ကိုမပိတ်နိုင်ပါ",
+      "unableToConnectToWebSocket": "ဝက်ဘ်ဆော့ကတ်သို့မချိတ်ဆက်နိုင်ပါ"
+    },
+    "portProtocol": {
+      "network": "ကွန်ရက်",
+      "serial": "အတန်းလိုက်"
     },
     "preferences": {
-      "additionalManagerURLs": "Additional Boards Manager URLs",
-      "auth.audience": "The OAuth2 audience.",
-      "auth.clientID": "The OAuth2 client ID.",
-      "auth.domain": "The OAuth2 domain.",
-      "auth.registerUri": "The URI used to register a new user.",
+      "additionalManagerURLs": "နောက်ထပ်ဘုတ်မန်နေဂျာURLs",
+      "auth.audience": "OAuth2 ပရိတ်သတ်",
+      "auth.clientID": "OAuth2အသုံးပြုစက်အိုင်ဒီ",
+      "auth.domain": "OAuth2ဒိုမိန်း",
+      "auth.registerUri": "အသုံးပြုသူအသစ် မှတ်ပုံတင်ရန် သုံးသောURI",
       "automatic": "အလိုအလျောက်",
-      "board.certificates": "List of certificates that can be uploaded to boards",
+      "board.certificates": "ဘုတ်သို့အပ်လုတ်တင်နိုင်သောအသိအမှတ်ပြုစာချွန်လွှာစာရင်း",
       "browse": "လျှောက်ကြည့်မည်",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "အပ်ဒိတ်တင်ရန် အသိပေးချက်များ လက်ခံမည်။ တန်ဖိုးပြောင်းပါက ပရိုဂရမ်ကို ပြန်စတင်ရမည်။ မူရင်းတန်ဖိုး - အမှန်",
       "choose": "ရွေးချယ်မည်",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
-      "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
-      "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
-      "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
-      "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
-      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "cli.daemonDebug": "ဒီဘက်မှတ်တမ်းတင်ခြင်းဖွင့်မည်။ မူရင်းတန်ဖိုး - အမှား",
+      "cloud.enabled": "ဆင့် ဖန်ရှင်းများ ဖွင့်မည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.pull.warn": "ကလောက်ကုတ်ဖိုင်လ်ကို စက်ထဲ့သို့ မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.push.warn": "ကလောက်ကုတ်ဖိုင်လ်သို့ ကုတ်ဖိုင်လ် မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.pushpublic.warn": "ကလောက်သို့ အများသုံးကုတ်ဖိုင်လ် မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.sketchSyncEndpoint": "နောက်ကွယ်လုပ်ဆောင်မှုစနစ်မှ ကုတ်ဖိုင်လ် ရယူခြင်း သို့ ပေးပို့ခြင်းလုပ်ရန် အသုံးပြုသော အဆုံးမှတ်။ မူရင်းတန်းဖိုး - အာဒီနိုကလောက်အေပီအိုင်သို့ ညွှန်ပြနေသည်။",
       "compile": "စက်ဘာသာပြန်",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
-      "compile.verbose": "True for verbose compile output. False by default",
-      "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
+      "compile.experimental": "ကုတ်ပေါင်းမှုဆိုင်ရာပြဿနာများအား အိုင်ဒီအီးမှ ကိုင်တွယ်မည်။ မူရင်းတန်ဖိုး - အမှား",
+      "compile.revealRange": "စစ်ဆေး/အပ်လုတ် မအောင်မြင်ခဲ့လျှင် အယ်ဒီတာတွင် ကုတ်ပေါင်းမှုဆိုင်ရာ အမှားအယွင်းဖော်ပြချက် ချိန်ညှိသည်။ အသုံးပြုနိုင်သော တန်ဖိုးများ - 'auto' - ဒေါင်လိုက်လှိမ့်ဆွဲပြီးစာကြောင်းသို့ သွားမည်။ 'center' - ဒေါင်လိုက်လှိမ့်ဆွဲပြီး စာကြောင်းကို အလယ်တည့်တည့်တွင် ထားမည်။ 'top' - ဒေါင်လိုက်လှိမ့်ဆွဲပြီး စာကြောင်းကို မြင်ကွင်း၏ထိပ်နားတွင် ပြမည်။ 'centerIfOutsideViewport' - စာကြောင်းသည် မြင်ကွင်းအပြင်ရောက်နေပါက ဒေါင်လိုက်လှိမ့်ဆွဲပြီး စာကြောင်းကို အလယ်တည့်တည့်တွင် ထားမည်။ မူရင်းတန်ဖိုး - {0}",
+      "compile.verbose": "ကုတ်ပေါင်းကိရိယာမှ အသေးစိတ်အချက်အလက်များ ထုတ်ပြမည်။ မူရင်းတန်ဖိုး - အမှား",
+      "compile.warnings": "အသုံးပြုမည့်gccသတိပေးမှုအဆင့်။ မူရင်းအဆင့် - 'None'",
       "compilerWarnings": "စက်ဘာသာပြန်ကိရိယာသတိပေးချက်များ",
       "editorFontSize": "အယ်ဒီတာဖောင့်အရွယ်အစား",
-      "editorQuickSuggestions": "Editor Quick Suggestions",
-      "enterAdditionalURLs": "Enter additional URLs, one for each row",
-      "files.inside.sketches": "Show files inside Sketches",
-      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
-      "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+      "editorQuickSuggestions": "အယ်ဒီတာအကြံပြုချက်များ",
+      "enterAdditionalURLs": "နောက်ထပ်URLများကို တစ်ခုလျှင် တစ်တန်းဆီ ရေးသွင်းပါ",
+      "files.inside.sketches": "ကုတ်ဖိုင်လ်များအတွင်း ဖိုင်လ်များပြမည်",
+      "ide.updateBaseUrl": "အပ်ဒိတ်များဒေါင်းလုတ်ဆွဲရန်အတွက် URL။ မူရင်းတန်ဖိုး - 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "အပ်ဒိတ်တင်ရန်အတွက် ထုတ်ဝေမှုချန်နယ်။ 'stable'သည်  တည်ငြိမ်မှုဦးစားပေးချန်နယ်။ 'nightly'သည် နောက်ဆုံးပေါ်ထုတ်ဝေမှုချန်နယ်။",
       "interfaceScale": "အင်တာဖေ့စ်စကေး",
-      "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
-      "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
-      "invalid.theme": "Invalid theme.",
-      "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
-      "manualProxy": "Manual proxy configuration",
+      "invalid.editorFontSize": "အယ်ဒီတာဖောင့်အရွယ်အစားမမှန်ကန်ပါ။ အပေါင်းကိန်းပြည့်ဖြစ်ရပါမည်။",
+      "invalid.sketchbook.location": "မမှန်ကန်သောကုတ်ဖိုင်လ်စာအုပ်တည်နေရာ-{0}",
+      "invalid.theme": "မမှန်ကန်သောသင်း",
+      "language.log": "အမှန်ဖြစ်နေပါက Arduinoဘာသာစကားစစ်ဆေးမှုဆာဗာသည် မှတ်တမ်းဖိုင်လ်များကို ကုတ်ဖိုင်လ်ဖိုလ်ဒါတွင် ထုတ်ပေးမည်။ မူရင်းတန်းဖိုးသည် အမှားဖြစ်သည်။",
+      "language.realTimeDiagnostics": "အမှန်ခြစ်ထားပါက အယ်ဒီတာတွင် စာရေးသောအခါ ဘာသာစကားစစ်ဆေးမှုဆာဗာသည် အချိန်နှင့်တပြေးညီ စစ်ဆေးပေးမည်။ မူလတန်ဖိုးသည် အမှားဖြစ်သည်။",
+      "manualProxy": "ကိုယ်တိုင် ကြားခံကွန်ရက်ပြင်ဆင်ခြင်း",
       "network": "ကွန်ရက်",
-      "newSketchbookLocation": "Select new sketchbook location",
+      "newSketchbookLocation": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာအသစ်ရွေးမည်",
       "noProxy": "ကြားခံကွန်ရက်မရှိ",
+      "proxySettings": {
+        "hostname": "အိမ်ရှင်အမည်",
+        "password": "စကားဝှက်",
+        "port": "အပေါက်နံပါတ်",
+        "username": "အသုံးပြုသူအမည်"
+      },
       "showVerbose": "နောက်ပါလုပ်နေစဉ် အချက်အလက်များပိုမိုများပြားစွာပြမည်",
-      "sketchbook.location": "Sketchbook location",
-      "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
-      "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+      "sketchbook.location": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာ",
+      "sketchbook.showAllFiles": "အမှန်ဖြစ်ပါက ကုတ်ဖိုင်လ်အတွင်း ဖိုင်လ်အားလုံးပြမည်။ မူရင်းတန်ဖိုး - အမှား",
+      "survey.notification": "စစ်တမ်းကောက်ပါက အသုံးပြုသူကို အသိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "unofficialBoardSupport": "တရားမဝင်ဘုတ် ထောက်ပံ့မှုURLစာရင်းအတွက် ကလစ်လိုက်ပါ",
       "upload": "အပ်လုတ်တင်",
-      "upload.verbose": "True for verbose upload output. False by default.",
+      "upload.verbose": "အပ်လုတ်တင်မှုဆိုင်အချက်အလက်များ အသေးစိတ်ဖော်ပြမည်။ မူရင်းတန်ဖိုး - အမှား",
       "verifyAfterUpload": "အပ်လုတ်တင်ပြီးလျှင်ကုတ်ကိုစစ်ဆေးပါ",
-      "window.autoScale": "True if the user interface automatically scales with the font size.",
-      "window.zoomLevel": "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity."
+      "window.autoScale": "အမှန်ဖြစ်နေပါက အသုံးပြုသူအင်တာဖေ့သည် ဖောင့်အရွယ်အစားနှင့်အတူ အလိုလိုချိန်ညှိမည်။",
+      "window.zoomLevel": "ဝင်းဒိုး၏မြင်ကွင်းချဲ့မှုပမာဏ ပြောင်းလဲမည်။ မူရင်းတန်ဖိုးသည် 0 ဖြစ်၍ (1) သို့မဟုတ် (-1) တိုးခြင်းသည် မြင်ကွင်း 20%ချဲ့ခြင်း သို့ ခြုံ့ခြင်းဖြစ်စေမည်။"
     },
-    "replaceMsg": "Replace the existing version of {0}?",
-    "selectZip": "Select a zip file containing the library you'd like to add",
+    "replaceMsg": "{0}၏ရှိနှင့်ပြီးဗားရှင်းကို အစားထိုးမည်လား။",
+    "selectZip": "သင်ထည့်သွင်းချင်သော ကုတ်ကြည့်တိုက်ပါဝင်သည့်ဇစ်ဖိုင်လ်ရွေးပါ",
     "serial": {
       "autoscroll": "အလိုအလျောက်လှိမ့်ဆွဲခြင်း",
       "carriageReturn": "လက်နှိပ်စက်အတံပြန်အက္ခရာ",
-      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "message": "စာတို (စာတိုကို  '{0}'သို့ '{1}'တွင် ပို့ရန် ရိုက်နှိပ်ပါ)",
       "newLine": "စာကြောင်းအသစ်အက္ခရာ",
       "newLineCarriageReturn": "စာကြောင်းအသစ်နှင့်လက်နှိပ်စက်အတံပြန်အက္ခရာနှစ်ခုလုံး",
       "noLineEndings": "စာကြောင်းအဆုံးသတ်အက္ခရာမရှိ",
-      "notConnected": "Not connected. Select a board and a port to connect automatically.",
-      "openSerialPlotter": "Serial Plotter",
+      "notConnected": "မချိတ်ဆက်ထားပါ။ ဘုတ်နှင့်အပေါက်ကိုရွေးချယ်ပါ",
+      "openSerialPlotter": "အတန်းလိုက်ဆက်သွယ်မှုပုံဆွဲကိရိယာ",
       "timestamp": "အချိန်တံဆိပ်ခေါင်း",
-      "toggleTimestamp": "Toggle Timestamp"
+      "toggleTimestamp": "အချိန်တံဆိပ်ဖွင့်/ပိတ်"
     },
     "sketch": {
-      "archiveSketch": "Archive Sketch",
-      "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
-      "compile": "Compiling sketch...",
-      "configureAndUpload": "Configure And Upload",
-      "createdArchive": "Created archive '{0}'.",
-      "doneCompiling": "Done compiling.",
-      "doneUploading": "Done uploading.",
-      "exportBinary": "Export Compiled Binary",
+      "archiveSketch": "ကုတ်ဖိုင်လ်သိမ်းမည်",
+      "cantOpen": "\"{0}\" အမည်ဖြင့်ဖိုလ်ဒါရှိနှင့်ပြီးဖြစ်သည်။ ကုတ်ဖိုင်လ်ကို မဖွင့်နိုင်ပါ။",
+      "close": "ကုတ်ဖိုင်လ်ပိတ်မှာသေချာပါသလား။",
+      "compile": "ကုတ်ဖိုင်လ်ကို ကုတ်ပေါင်းနေသည်…",
+      "configureAndUpload": "ပြင်ဆင်၍အပ်လုတ်တင်မည်",
+      "createdArchive": "ဖန်းတီးပြီးသော သိမ်းဆည်းဖိုင်လ် '{0}'။",
+      "doneCompiling": "ကုတ်ပေါင်းပြီးပါပြီ။",
+      "doneUploading": "အပ်လုတ်တင်ပြီးပါပြီ။",
+      "exportBinary": "ကုတ်ပေါင်းထားသောဘိုင်နရီဖိုင် ထုတ်ပို့မည်",
       "moving": "ရွှေ့နေသည်",
-      "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
+      "movingMsg": "ဖိုင်လ် \"{0}\" သည် ကုတ်ဖိုင်လ်ဖိုလ်ဒါ \"{1}\"အတွင်းရှိရန်လိုသည်။\nဖိုလ်ဒါတည်ဆောက်ပြီးဖိုင်လ်ကိုရွှေ့မည်လား။",
       "new": "အသစ်",
       "openFolder": "ဖိုလ်ဒါဖွင့်မည်",
-      "openRecent": "Open Recent",
-      "openSketchInNewWindow": "Open Sketch in New Window",
-      "saveFolderAs": "Save sketch folder as...",
-      "saveSketch": "Save your sketch to open it again later.",
-      "saveSketchAs": "Save sketch folder as...",
+      "openRecent": "လတ်တလောဖိုင်လ်ဖွင့်မည်",
+      "openSketchInNewWindow": "ကုတ်ဖိုင်လ်ကို ဝင်းဒိုးအသစ်တွင်ဖွင့်မည်",
+      "saveFolderAs": "ကုတ်ဖိုင်လ် ဖိုလ်ဒါကို သိမ်းမည်…",
+      "saveSketch": "သင်၏ကုတ်ဖိုင်လ်ကို နောင်အခါပြန်ကြည့်၍ရရန် မှတ်သားပါ။",
+      "saveSketchAs": "ကုတ်ဖိုင်လ် ဖိုလ်ဒါကို သိမ်းမည်…",
       "showFolder": "ကုတ်ပုံကြမ်းဖိုလ်ဒါပြမည်",
       "sketch": "ကုတ်ပုံကြမ်း",
-      "sketchbook": "Sketchbook",
-      "titleLocalSketchbook": "Local Sketchbook",
-      "titleSketchbook": "Sketchbook",
-      "upload": "Upload",
-      "uploadUsingProgrammer": "Upload Using Programmer",
-      "uploading": "Uploading...",
-      "userFieldsNotFoundError": "Can't find user fields for connected board",
-      "verify": "Verify",
-      "verifyOrCompile": "Verify/Compile"
+      "sketchbook": "ကုတ်ဖိုင်လ်စာအုပ်",
+      "titleLocalSketchbook": "စက်တွင်းကုတ်ဖိုင်လ်စာအုပ်",
+      "titleSketchbook": "ကုတ်ဖိုင်လ်စာအုပ်",
+      "upload": "အပ်လုတ်",
+      "uploadUsingProgrammer": "ပရိုဂရမ်မာဘုတ်သုံး၍အပ်လုတ်တင်မည်",
+      "uploading": "အပ်လုတ်တင်နေသည်…",
+      "userFieldsNotFoundError": "ချိတ်ဆက်ထားသောဘုတ်အတွက်အသုံးပြုသူဆိုင်ရာအချက်အလက်များရှာမတွေ့ပါ",
+      "verify": "စစ်ဆေး",
+      "verifyOrCompile": "စစ်ဆေး/ကုတ်ပေါင်း"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "စစ်တမ်းကိုဖြေဆိုပါ",
+      "dismissSurvey": "နောက်ထပ်မပြပါနှင့်",
+      "surveyMessage": "ဤစစ်တမ်းကိုဖြေဆိုခြင်းအားဖြင့် ကျွန်ုပ်တို့အား ကူညီလိုက်ပါ။"
+    },
+    "updateIndexes": {
+      "updateIndexes": "အပ်ဒိတ်စာရင်းများ",
+      "updateLibraryIndex": "ကုတ်ကြည့်တိုက်အပ်ဒိတ်စာရင်း",
+      "updatePackageIndex": "ပတ်ကေ့အပ်ဒိတ်စာရင်း"
     },
     "upload": {
-      "error": "{0} error: {1}"
+      "error": "{0} အမှား- {1}"
     },
     "userFields": {
       "cancel": "ပယ်ဖျက်မည်",
-      "enterField": "Enter {0}",
+      "enterField": "{0} ရိုက်သွင်းပါ",
       "upload": "အပ်လုတ်တင်မည်"
     }
-  },
-  "cloud": {
-    "GoToCloud": "CLOUDသို့သွားမည်"
   },
   "theia": {
     "core": {
@@ -400,7 +430,7 @@
       "couldNotSave": "ကုတ်ဖိုင်လ်ကိုမသိမ်းဆည်းနိုင်ခဲ့ပါ။ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာစာသားတည်းဖြတ်ပရိုဂရမ်သို့ ကူးယူပြီး အိုင်ဒီအီး ပြန်စတင်ပါ။",
       "daemonOffline": "CLIနောက်ကွယ်လုပ်ဆောင်ပရိုဂရမ် အော့ဖ်လိုင်းဖြစ်နေသည်",
       "offline": "အော့ဖ်လိုင်း",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "သင်ထွက်မှာသေချာပါသလား။"
     },
     "debug": {
       "start": "စတင်မည်…",

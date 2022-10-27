@@ -8,6 +8,7 @@
       "board": "ボード{0}",
       "boardConfigDialogTitle": "他のボードとポートを選択",
       "boardInfo": "ボード情報",
+      "boards": "ボード",
       "configDialog1": "スケッチを書き込みたい場合には、ボードとポートの両方を選択してください。",
       "configDialog2": "ボードのみを選択した場合、コンパイルはできますが、スケッチの書き込みはできません。",
       "couldNotFindPreviouslySelected": "インストールされているプラットフォーム'{1}'で、以前に選択したボード'{0}'が見つかりませんでした。使用したいボードを手動で選択し直してください。今すぐ選択し直しますか？",
@@ -15,6 +16,7 @@
       "getBoardInfo": "ボード情報を取得",
       "inSketchbook": "（スケッチブック内）",
       "installNow": "現在選択されているボード\"{2}\"用にコア\"{0} {1}\"をインストールする必要があります。今すぐインストールしますか？",
+      "noBoardsFound": "\"{0}\"のボードが見つかりませんでした",
       "noFQBN": "選択されたボード\"{0}\"にはFQBNがありません。対応するコアをインストール済みですか？",
       "noPortsDiscovered": "ポートが見つかりませんでした",
       "noPortsSelected": "ボード用に選択されたポートがありません: '{0}'.",
@@ -24,6 +26,7 @@
       "pleasePickBoard": "選択したポートに接続されているボードを選んでください。",
       "port": "ポート{0}",
       "portLabel": "ポート: {0}",
+      "ports": "ポート",
       "programmer": "書き込み装置",
       "reselectLater": "後で選択しなおす",
       "searchBoard": "ボードを検索",
@@ -31,8 +34,10 @@
       "selectBoardForInfo": "ボード情報を得るには、ボードを選択してください。",
       "selectPortForInfo": "ボード情報を得るには、ポートを選択してください。",
       "showAllAvailablePorts": "有効な場合、利用可能なすべてのポートを表示",
+      "showAllPorts": "全てのポートを表示",
       "succesfullyInstalledPlatform": "プラットフォーム{0}:{1}のインストールに成功しました",
-      "succesfullyUninstalledPlatform": "プラットフォーム{0}:{1}のアンインストールに成功しました"
+      "succesfullyUninstalledPlatform": "プラットフォーム{0}:{1}のアンインストールに成功しました",
+      "typeOfPorts": "{0}ポート"
     },
     "boardsManager": "ボードマネージャ",
     "boardsType": {
@@ -85,6 +90,7 @@
       "donePushing": "‘{0}’のプッシュが完了しました。",
       "embed": "埋め込み:",
       "emptySketchbook": "スケッチブックは空です",
+      "goToCloud": "Go to Cloud",
       "learnMore": "詳細はこちら",
       "link": "リンク:",
       "notYetPulled": "クラウドにプッシュできません。まだプルされていません。",
@@ -140,6 +146,7 @@
       "by": "by",
       "filterSearch": "検索をフィルタ…",
       "install": "インストール",
+      "installed": "インストール済み",
       "moreInfo": "詳細情報",
       "uninstall": "アンインストール",
       "uninstallMsg": "{0}をアンインストールしますか？",
@@ -148,7 +155,18 @@
     "contributions": {
       "addFile": "ファイルを追加...",
       "fileAdded": "スケッチにファイルが1つ追加されました。",
+      "plotter": {
+        "couldNotOpen": "シリアルプロッタを開けませんでした"
+      },
       "replaceTitle": "置換"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "全て",
+        "default": "デフォルト",
+        "more": "詳細",
+        "none": "なし"
+      }
     },
     "coreContribution": {
       "copyError": "エラーメッセージをコピー",
@@ -236,12 +254,12 @@
       "addZip": ".ZIP形式のライブラリをインストール...",
       "arduinoLibraries": "Arduinoライブラリ",
       "contributedLibraries": "提供されたライブラリ",
-      "dependenciesForLibrary": "ライブラリ{0}:{1}の依存関係",
       "include": "ライブラリをインクルード",
       "installAll": "全てをインストール",
+      "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "不足している全ての依存関係をインストールしますか？",
       "installOneMissingDependency": "不足している依存関係をインストールしますか？",
-      "installOnly": "{0}のみインストール",
+      "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "ライブラリ{0}:{1}のインストールに成功しました。",
       "libraryAlreadyExists": "ライブラリはすでに存在しています。上書きしますか？",
       "manageLibraries": "ライブラリを管理...",
@@ -280,6 +298,10 @@
     "monitor": {
       "unableToCloseWebSocket": "websocketを閉じることができません",
       "unableToConnectToWebSocket": "websocketに接続することができません"
+    },
+    "portProtocol": {
+      "network": "ネットワーク",
+      "serial": "シリアル"
     },
     "preferences": {
       "additionalManagerURLs": "追加のボードマネージャのURL",
@@ -320,6 +342,12 @@
       "network": "ネットワーク",
       "newSketchbookLocation": "新しいスケッチブックの場所を選択",
       "noProxy": "プロキシなし",
+      "proxySettings": {
+        "hostname": "ホスト名",
+        "password": "パスワード",
+        "port": "ポート番号",
+        "username": "ユーザ名"
+      },
       "showVerbose": "より詳細な情報を表示する",
       "sketchbook.location": "スケッチブックの場所",
       "sketchbook.showAllFiles": "スケッチ内のすべてのスケッチファイルを表示するにはtrueを指定。デフォルトではfalse。",
@@ -336,7 +364,7 @@
     "serial": {
       "autoscroll": "自動スクロール",
       "carriageReturn": "CRのみ",
-      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "message": "メッセージ（'{1}'の{0}にメッセージを送信するにはEnter）",
       "newLine": "LFのみ",
       "newLineCarriageReturn": "CRおよびLF",
       "noLineEndings": "改行なし",
@@ -381,6 +409,11 @@
       "dismissSurvey": "次回から表示しない",
       "surveyMessage": "とても簡単なアンケートに答えて、私たちの改善にご協力ください。私たちはコミュニティを大切にしており、サポーターのことをもう少しよく知りたいのです。"
     },
+    "updateIndexes": {
+      "updateIndexes": "インデックスを更新",
+      "updateLibraryIndex": "ライブラリのインデックスを更新",
+      "updatePackageIndex": "パッケージのインデックスを更新"
+    },
     "upload": {
       "error": "{0} エラー: {1}"
     },
@@ -389,9 +422,6 @@
       "enterField": "{0}を入力",
       "upload": "マイコンボードに書き込む"
     }
-  },
-  "cloud": {
-    "GoToCloud": "クラウドへ"
   },
   "theia": {
     "core": {
