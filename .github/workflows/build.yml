@@ -183,7 +183,7 @@ jobs:
           OUTPUT_SAFE_BODY="${BODY//'%'/'%25'}"
           OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\n'/'%0A'}"
           OUTPUT_SAFE_BODY="${OUTPUT_SAFE_BODY//$'\r'/'%0D'}"
-          echo "::set-output name=BODY::$OUTPUT_SAFE_BODY"
+          echo "BODY=$OUTPUT_SAFE_BODY" >> $GITHUB_OUTPUT
           echo "$BODY" > CHANGELOG.txt
 
       - name: Upload Changelog [GitHub Actions]
@@ -228,7 +228,7 @@ jobs:
       - name: Get Tag
         id: tag_name
         run: |
-          echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Publish Release [GitHub]
         uses: svenstaro/upload-release-action@2.3.0
