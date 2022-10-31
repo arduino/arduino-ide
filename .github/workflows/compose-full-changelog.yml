@@ -27,7 +27,7 @@ jobs:
       - name: Get Tag
         id: tag_name
         run: |
-          echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Create full changelog
         id: full-changelog
