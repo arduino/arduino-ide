@@ -35,7 +35,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
       const author = <span className="author">{item.author}</span>;
       nameAndAuthor = (
         <span>
-          {name} {nls.localize('arduino/component/by', 'by')} {author}
+          {name} <br /> {nls.localize('arduino/component/by', 'by')} {author}
         </span>
       );
     } else if (item.name) {

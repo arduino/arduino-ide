@@ -51,12 +51,12 @@
 
 .filterable-list-container .items-container > div > div:nth-child(even) {
     background-color: var(--theia-sideBar-background);
-    filter: contrast(95%);
+    filter: contrast(85%);
 }
 
 .filterable-list-container .items-container > div > div:hover {
     background-color: var(--theia-sideBar-background);
-    filter: contrast(90%);
+    filter: contrast(95%);
 }
 
 .component-list-item {
@@ -78,6 +78,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 2px;
 }
 
 .component-list-item .header .name {
@@ -94,6 +95,7 @@
 }
 
 .component-list-item .header .version {
+    font-weight: bold;
     color: var(--theia-panelTitle-inactiveForeground);
 }
 
@@ -127,8 +129,25 @@
     flex-direction: row-reverse;
 }
 
+.component-list-item .summary {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .component-list-item .footer {
     flex-direction: column-reverse;
+}
+
+.component-list-item .footer > select {
+    margin: 0px;
+}
+
+.component-list-item .footer > button {
+    visibility: hidden;
+}
+
+.component-list-item:hover .footer > button {
+    visibility: visible;
 }
 
 .component-list-item .footer > * {
