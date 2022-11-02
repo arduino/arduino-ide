@@ -16,6 +16,7 @@ import { BackendApplicationContribution } from '@theia/core/lib/node/backend-app
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath, spawnCommand } from './exec-util';
+import { ErrnoException } from './utils/errors';
 
 @injectable()
 export class ArduinoDaemonImpl
@@ -184,7 +185,7 @@ export class ArduinoDaemonImpl
       }
       return false;
     } catch (error) {
-      if ('code' in error && error.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(error)) {
         return false;
       }
       throw error;

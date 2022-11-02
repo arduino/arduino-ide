@@ -28,6 +28,7 @@ import {
   SHOW_PLOTTER_WINDOW,
 } from '../../common/ipc-communication';
 import isValidPath = require('is-valid-path');
+import { ErrnoException } from '../../node/utils/errors';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -172,7 +173,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     try {
       stats = await fs.stat(path);
     } catch (err) {
-      if ('code' in err && err.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(err)) {
         return undefined;
       }
       throw err;
@@ -215,7 +216,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       const resolved = await fs.realpath(resolve(cwd, maybePath));
       return resolved;
     } catch (err) {
-      if ('code' in err && err.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(err)) {
         return undefined;
       }
       throw err;

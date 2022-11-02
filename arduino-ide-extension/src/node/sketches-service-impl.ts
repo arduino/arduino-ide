@@ -33,6 +33,7 @@ import {
   TempSketchPrefix,
 } from './is-temp-sketch';
 import { join } from 'path';
+import { ErrnoException } from './utils/errors';
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -278,7 +279,7 @@ export class SketchesServiceImpl
         );
       }
     } catch (err) {
-      if ('code' in err && err.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(err)) {
         this.logger.debug(
           `<<< '${RecentSketches}' does not exist yet. This is normal behavior. Falling back to empty data.`
         );
@@ -666,7 +667,7 @@ export class SketchesServiceImpl
 
       return this.tryParse(raw);
     } catch (err) {
-      if ('code' in err && err.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(err)) {
         return undefined;
       }
       throw err;
@@ -695,7 +696,7 @@ export class SketchesServiceImpl
             });
             this.inoContent.resolve(inoContent);
           } catch (err) {
-            if ('code' in err && err.code === 'ENOENT') {
+            if (ErrnoException.isENOENT(err)) {
               // Ignored. The custom `.ino` blueprint file is optional.
             } else {
               throw err;
@@ -763,7 +764,7 @@ async function isInvalidSketchNameError(
             .map((name) => path.join(requestSketchPath, name))[0]
         );
       } catch (err) {
-        if ('code' in err && err.code === 'ENOTDIR') {
+        if (ErrnoException.isENOENT(err) || ErrnoException.isENOTDIR(err)) {
           return undefined;
         }
         throw err;
