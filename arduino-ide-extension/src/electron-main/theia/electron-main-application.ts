@@ -355,10 +355,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     argv: string[],
     cwd: string
   ): Promise<void> {
-    if (
-      !os.isOSX &&
-      (await this.launchFromArgs({ cwd, argv, secondInstance: true }))
-    ) {
+    if (await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
       // Application has received a file in its arguments
       return;
     }
