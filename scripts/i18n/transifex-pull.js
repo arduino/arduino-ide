@@ -54,7 +54,7 @@ const requestTranslationDownload = async (relationships) => {
 
 const getTranslationDownloadStatus = async (language, downloadRequestId) => {
     // The download request status must be asked from time to time, if it's
-    // still pending we try again using exponentional backoff starting from 2.5 seconds.
+    // still pending we try again using exponential backoff starting from 2.5 seconds.
     let backoffMs = 2500;
     while (true) {
         const url = transifex.url(
