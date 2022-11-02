@@ -181,8 +181,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     if (!stats) {
       return undefined;
     }
-    if (stats.isFile() && path.endsWith('.ino')) {
-      return path;
+    if (stats.isFile()) {
+      return path.endsWith('.ino') ? path : undefined;
     }
     try {
       const entries = await fs.readdir(path, { withFileTypes: true });
