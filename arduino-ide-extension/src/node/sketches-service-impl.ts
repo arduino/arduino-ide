@@ -660,7 +660,7 @@ export class SketchesServiceImpl
 
   private async exists(pathLike: string): Promise<boolean> {
     try {
-      await fs.access(pathLike, constants.R_OK | constants.W_OK);
+      await fs.access(pathLike, constants.R_OK);
       return true;
     } catch {
       return false;
