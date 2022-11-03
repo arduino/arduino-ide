@@ -26,6 +26,7 @@ import {
   LoadSketchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { escapeRegExpCharacters } from '@theia/core/lib/common/strings';
 import { ServiceError } from './service-error';
 import {
   IsTempSketch,
@@ -158,7 +159,7 @@ export class SketchesServiceImpl
       const sketchName = segments[segments.length - 2];
       const sketchFilename = segments[segments.length - 1];
       const sketchFileExtension = segments[segments.length - 1].replace(
-        new RegExp(sketchName),
+        new RegExp(escapeRegExpCharacters(sketchName)),
         ''
       );
       if (sketchFileExtension !== '.ino' && sketchFileExtension !== '.pde') {
@@ -746,10 +747,12 @@ async function isInvalidSketchNameError(
     if (ino) {
       const sketchFolderPath = path.dirname(requestSketchPath);
       const sketchName = path.basename(sketchFolderPath);
-      const pattern = `${invalidSketchNameErrorRegExpPrefix}${path.join(
-        sketchFolderPath,
-        `${sketchName}.ino`
-      )}`.replace(/\\/g, '\\\\'); // make windows path separator with \\ to have a valid regexp.
+      const pattern = escapeRegExpCharacters(
+        `${invalidSketchNameErrorRegExpPrefix}${path.join(
+          sketchFolderPath,
+          `${sketchName}.ino`
+        )}`
+      );
       if (new RegExp(pattern, 'i').test(cliErr.details)) {
         try {
           await fs.access(requestSketchPath);
