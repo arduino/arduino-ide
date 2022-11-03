@@ -62,7 +62,7 @@ export function spawnCommand(
     });
     cp.on('exit', (code, signal) => {
       if (code === 0) {
-        const result = Buffer.concat(outBuffers).toString('utf8').trim();
+        const result = Buffer.concat(outBuffers).toString('utf8');
         resolve(result);
         return;
       }
