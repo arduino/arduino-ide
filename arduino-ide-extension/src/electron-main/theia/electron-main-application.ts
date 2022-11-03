@@ -27,7 +27,6 @@ import {
   CLOSE_PLOTTER_WINDOW,
   SHOW_PLOTTER_WINDOW,
 } from '../../common/ipc-communication';
-import isValidPath = require('is-valid-path');
 import { ErrnoException } from '../../node/utils/errors';
 
 app.commandLine.appendSwitch('disable-http-cache');
@@ -206,9 +205,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     maybePath: string,
     cwd: string
   ): Promise<string | undefined> {
-    if (!isValidPath(maybePath)) {
-      return undefined;
-    }
     if (isAbsolute(maybePath)) {
       return maybePath;
     }

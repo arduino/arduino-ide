@@ -3118,11 +3118,6 @@
   resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.1.tgz#0ea7b61496902b95890dc4c3a116b60cb8dae812"
   integrity sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==
 
-"@types/is-valid-path@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@types/is-valid-path/-/is-valid-path-0.1.0.tgz#d5c6e96801303112c9626d44268c6fabc72d272f"
-  integrity sha512-2ontWtpN8O2nf5S7EjDDJ0DwrRa2t7wmS3Wmo322yWYG6yFBYC1QCaLhz4Iz+mzJy8Kf4zP5yVyEd1ANPDmOFQ==
-
 "@types/js-yaml@^3.12.2":
   version "3.12.7"
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.12.7.tgz#330c5d97a3500e9c903210d6e49f02964af04a0e"
