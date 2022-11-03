@@ -109,7 +109,7 @@ jobs:
           yarn --cwd ./electron/packager/ package
 
       - name: Upload [GitHub Actions]
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: electron/build/dist/build-artifacts/
@@ -146,7 +146,7 @@ jobs:
           path: ${{ env.JOB_TRANSFER_ARTIFACT }}
 
       - name: Upload tester build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.artifact.name }}
           path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
@@ -188,7 +188,7 @@ jobs:
 
       - name: Upload Changelog [GitHub Actions]
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: CHANGELOG.txt
