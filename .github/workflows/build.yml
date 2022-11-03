@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js 16.x
         uses: actions/setup-node@v3
@@ -158,7 +158,7 @@ jobs:
       BODY: ${{ steps.changelog.outputs.BODY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # To fetch all history for all branches and tags.
 
