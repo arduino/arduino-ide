@@ -263,6 +263,6 @@ jobs:
 
     steps:
       - name: Remove unneeded job transfer artifact
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
