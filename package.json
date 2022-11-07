@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "engines": {
-    "node": ">=16.0.0 <17"
+    "node": ">=16.0.0 <=18"
   },
   "devDependencies": {
     "@theia/cli": "1.25.0",
