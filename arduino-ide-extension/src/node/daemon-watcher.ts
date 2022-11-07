@@ -1,4 +1,4 @@
-import * as psTree from 'ps-tree';
+import psTree from 'ps-tree';
 const kill = require('tree-kill');
 const [theiaPid, daemonPid] = process.argv
   .slice(2)

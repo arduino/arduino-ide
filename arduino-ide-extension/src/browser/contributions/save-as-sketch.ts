@@ -1,6 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
-import * as dateFormat from 'dateformat';
+import dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   SketchContribution,
@@ -138,7 +138,7 @@ export class SaveAsSketch extends SketchContribution {
 
   private async saveOntoCopiedSketch(mainFileUri: string, sketchUri: string, newSketchUri: string): Promise<void> {
     const widgets = this.applicationShell.widgets;
-    const snapshots = new Map<string, object>();
+    const snapshots = new Map<string, Saveable.Snapshot>();
     for (const widget of widgets) {
       const saveable = Saveable.getDirty(widget);
       const uri = NavigatableWidget.getUri(widget);

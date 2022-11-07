@@ -1,5 +1,5 @@
 import * as os from 'os';
-import * as which from 'which';
+import which from 'which';
 import * as semver from 'semver';
 import { join } from 'path';
 import { spawn } from 'child_process';

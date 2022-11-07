@@ -19,7 +19,7 @@ import {
   AuthOptions,
 } from './types';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import * as open from 'open';
+import open from 'open';
 
 const LOGIN_TIMEOUT = 30 * 1000;
 const REFRESH_INTERVAL = 10 * 60 * 1000;

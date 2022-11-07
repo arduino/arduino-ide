@@ -1,5 +1,5 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { isOSX, isWindows } from '@theia/core/lib/common/os';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';

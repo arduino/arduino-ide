@@ -1,4 +1,4 @@
-import * as PQueue from 'p-queue';
+import PQueue from 'p-queue';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
