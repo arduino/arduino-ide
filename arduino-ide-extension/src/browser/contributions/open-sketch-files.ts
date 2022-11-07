@@ -1,5 +1,5 @@
 import { nls } from '@theia/core/lib/common/nls';
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import type { EditorOpenerOptions } from '@theia/editor/lib/browser/editor-manager';
 import { Later } from '../../common/nls';
 import { Sketch, SketchesError } from '../../common/protocol';
@@ -15,14 +15,9 @@ import { ApplicationError } from '@theia/core/lib/common/application-error';
 import { Deferred, wait } from '@theia/core/lib/common/promise-util';
 import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
-import { ContextKeyService as VSCodeContextKeyService } from '@theia/monaco-editor-core/esm/vs/platform/contextkey/browser/contextKeyService';
 
 @injectable()
 export class OpenSketchFiles extends SketchContribution {
-  @inject(VSCodeContextKeyService)
-  private readonly contextKeyService: VSCodeContextKeyService;
-
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketchFiles.Commands.OPEN_SKETCH_FILES, {
       execute: (uri: URI) => this.openSketchFiles(uri),
@@ -135,39 +130,36 @@ export class OpenSketchFiles extends SketchContribution {
     const widget = this.editorManager.all.find(
       (widget) => widget.editor.uri.toString() === uri
     );
+    if (widget && !forceOpen) {
+      return widget;
+    }
+
     const disposables = new DisposableCollection();
-    if (!widget || forceOpen) {
-      const deferred = new Deferred<EditorWidget>();
+    const deferred = new Deferred<EditorWidget>();
+    // An editor can be in two primary states:
+    // - The editor is not yet opened. The `widget` is `undefined`. With `editorManager#open`, Theia will create an editor and fire an `editorManager#onCreated` event.
+    // - The editor is opened. Can be active, current, or open.
+    //   - If the editor has the focus (the cursor blinks in the editor): it's the active editor.
+    //   - If the editor does not have the focus (the focus is on a different widget or the context menu is opened in the editor): it's the current editor.
+    //   - If the editor is not the top editor in the main area, it's opened.
+    if (!widget) {
+      // If the widget is `undefined`, IDE2 expects one `onCreate` event. Subscribe to the `onCreated` event
+      // and resolve the promise with the editor only when the new editor's visibility changes.
       disposables.push(
         this.editorManager.onCreated((editor) => {
           if (editor.editor.uri.toString() === uri) {
-            if (editor.isVisible) {
-              disposables.dispose();
+            if (editor.isAttached && editor.isVisible) {
               deferred.resolve(editor);
             } else {
-              // In Theia, the promise resolves after opening the editor, but the editor is neither attached to the DOM, nor visible.
-              // This is a hack to first get an event from monaco after the widget update request, then IDE2 waits for the next monaco context key event.
-              // Here, the monaco context key event is not used, but this is the first event after the editor is visible in the UI.
               disposables.push(
-                (editor.editor as MonacoEditor).onDidResize((dimension) => {
-                  if (dimension) {
-                    const isKeyOwner = (
-                      arg: unknown
-                    ): arg is { key: string } => {
-                      if (typeof arg === 'object') {
-                        const object = arg as Record<string, unknown>;
-                        return typeof object['key'] === 'string';
-                      }
-                      return false;
-                    };
-                    disposables.push(
-                      this.contextKeyService.onDidChangeContext((e) => {
-                        // `commentIsEmpty` is the first context key change event received from monaco after the editor is for real visible in the UI.
-                        if (isKeyOwner(e) && e.key === 'commentIsEmpty') {
-                          deferred.resolve(editor);
-                          disposables.dispose();
-                        }
-                      })
+                editor.onDidChangeVisibility((visible) => {
+                  if (visible) {
+                    // wait an animation frame. although the visible and attached props are true the editor is not there.
+                    // let the browser render the widget
+                    setTimeout(
+                      () =>
+                        requestAnimationFrame(() => deferred.resolve(editor)),
+                      0
                     );
                   }
                 })
@@ -176,29 +168,41 @@ export class OpenSketchFiles extends SketchContribution {
           }
         })
       );
-      this.editorManager.open(
+    }
+
+    this.editorManager
+      .open(
         new URI(uri),
         options ?? {
           mode: 'reveal',
           preview: false,
           counter: 0,
         }
+      )
+      .then((editorWidget) => {
+        // If the widget was defined, it was already opened.
+        // The editor is expected to be attached to the shell and visible in the UI.
+        // The deferred promise does not have to wait for the `editorManager#onCreated` event.
+        // It can resolve earlier.
+        if (!widget) {
+          deferred.resolve(editorWidget);
+        }
+      });
+
+    const timeout = 5_000; // number of ms IDE2 waits for the editor to show up in the UI
+    const result = await Promise.race([
+      deferred.promise,
+      wait(timeout).then(() => {
+        disposables.dispose();
+        return 'timeout';
+      }),
+    ]);
+    if (result === 'timeout') {
+      console.warn(
+        `Timeout after ${timeout} millis. The editor has not shown up in time. URI: ${uri}`
       );
-      const timeout = 5_000; // number of ms IDE2 waits for the editor to show up in the UI
-      const result = await Promise.race([
-        deferred.promise,
-        wait(timeout).then(() => {
-          disposables.dispose();
-          return 'timeout';
-        }),
-      ]);
-      if (result === 'timeout') {
-        console.warn(
-          `Timeout after ${timeout} millis. The editor has not shown up in time. URI: ${uri}`
-        );
-      }
-      return result;
     }
+    return result;
   }
 }
 export namespace OpenSketchFiles {
