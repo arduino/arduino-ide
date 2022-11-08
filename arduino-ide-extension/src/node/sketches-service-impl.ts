@@ -734,62 +734,68 @@ function isNotFoundError(err: unknown): err is ServiceError {
 
 /**
  * Tries to detect whether the error was caused by an invalid main sketch file name.
- * IDE2 should handle gracefully when there is an invalid sketch folder name. See the [spec](https://arduino.github.io/arduino-cli/latest/sketch-specification/#sketch-root-folder) for details.
- * The CLI does not have error codes (https://github.com/arduino/arduino-cli/issues/1762), so IDE2 parses the error message and tries to guess it.
+ * IDE2 should handle gracefully when there is an invalid sketch folder name.
+ * See the [spec](https://arduino.github.io/arduino-cli/latest/sketch-specification/#sketch-root-folder) for details.
+ * The CLI does not have error codes (https://github.com/arduino/arduino-cli/issues/1762),
+ * IDE2 cannot parse the error message (https://github.com/arduino/arduino-cli/issues/1968#issuecomment-1306936142)
+ * so it checks if a sketch even if it's invalid can be discovered from the requested path.
  * Nothing guarantees that the invalid existing main sketch file still exits by the time client performs the sketch move.
  */
 async function isInvalidSketchNameError(
   cliErr: unknown,
   requestSketchPath: string
 ): Promise<string | undefined> {
-  if (isNotFoundError(cliErr)) {
-    const ino = requestSketchPath.endsWith('.ino');
-    if (ino) {
-      const sketchFolderPath = path.dirname(requestSketchPath);
-      const sketchName = path.basename(sketchFolderPath);
-      const pattern = escapeRegExpCharacters(
-        `${invalidSketchNameErrorRegExpPrefix}${path.join(
-          sketchFolderPath,
-          `${sketchName}.ino`
-        )}`
-      );
-      if (new RegExp(pattern, 'i').test(cliErr.details)) {
-        try {
-          await fs.access(requestSketchPath);
-          return requestSketchPath;
-        } catch {
-          return undefined;
-        }
-      }
-    } else {
-      try {
-        const resources = await fs.readdir(requestSketchPath, {
-          withFileTypes: true,
-        });
-        return (
-          resources
-            .filter((resource) => resource.isFile())
-            .filter((resource) => resource.name.endsWith('.ino'))
-            // A folder might contain multiple sketches. It's OK to ick the first one as IDE2 cannot do much,
-            // but ensure a deterministic behavior as `readdir(3)` does not guarantee an order. Sort them.
-            .sort(({ name: left }, { name: right }) =>
-              left.localeCompare(right)
-            )
-            .map(({ name }) => name)
-            .map((name) => path.join(requestSketchPath, name))[0]
-        );
-      } catch (err) {
-        if (ErrnoException.isENOENT(err) || ErrnoException.isENOTDIR(err)) {
-          return undefined;
-        }
-        throw err;
-      }
-    }
-  }
-  return undefined;
+  return isNotFoundError(cliErr)
+    ? isAccessibleSketchPath(requestSketchPath)
+    : undefined;
 }
-const invalidSketchNameErrorRegExpPrefix =
-  '.*: main file missing from sketch: ';
+
+/**
+ * The `path` argument is valid, if accessible and either pointing to a `.ino` file,
+ * or it's a directory, and one of the files in the directory is an `.ino` file.
+ *
+ * `undefined` if `path` was pointing to neither an accessible sketch file nor a sketch folder.
+ *
+ * The sketch folder name and sketch file name can be different. This method is not sketch folder name compliant.
+ * The `path` must be an absolute, resolved path. This method does not handle EACCES (Permission denied) errors.
+ *
+ * When `fallbackToInvalidFolderPath` is `true`, and the `path` is an accessible folder without any sketch files,
+ * this method returns with the `path` argument instead of `undefined`.
+ */
+export async function isAccessibleSketchPath(
+  path: string,
+  fallbackToInvalidFolderPath = false
+): Promise<string | undefined> {
+  let stats: Stats | undefined = undefined;
+  try {
+    stats = await fs.stat(path);
+  } catch (err) {
+    if (ErrnoException.isENOENT(err)) {
+      return undefined;
+    }
+    throw err;
+  }
+  if (!stats) {
+    return undefined;
+  }
+  if (stats.isFile()) {
+    return path.endsWith('.ino') ? path : undefined;
+  }
+  const entries = await fs.readdir(path, { withFileTypes: true });
+  const sketchFilename = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.ino'))
+    .map(({ name }) => name)
+    // A folder might contain multiple sketches. It's OK to pick the first one as IDE2 cannot do much,
+    // but ensure a deterministic behavior as `readdir(3)` does not guarantee an order. Sort them.
+    .sort((left, right) => left.localeCompare(right))[0];
+  if (sketchFilename) {
+    return join(path, sketchFilename);
+  }
+  // If no sketches found in the folder, but the folder exists,
+  // return with the path of the empty folder and let IDE2's frontend
+  // figure out the workspace root.
+  return fallbackToInvalidFolderPath ? path : undefined;
+}
 
 /*
  * When a new sketch is created, add a suffix to distinguish it
