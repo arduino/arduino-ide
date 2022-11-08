@@ -102,7 +102,7 @@ export class OpenSketchFiles extends SketchContribution {
   ): Promise<Sketch | undefined> {
     const { invalidMainSketchUri } = err.data;
     requestAnimationFrame(() => this.messageService.error(err.message));
-    await wait(10); // let IDE2 toast the error message.
+    await wait(250); // let IDE2 open the editor and toast the error message, then open the modal dialog
     const movedSketch = await promptMoveSketch(invalidMainSketchUri, {
       fileService: this.fileService,
       sketchService: this.sketchService,
