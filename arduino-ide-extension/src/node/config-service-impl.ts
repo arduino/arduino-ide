@@ -26,6 +26,7 @@ import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone } from '@theia/core';
+import { ErrnoException } from './utils/errors';
 
 const deepmerge = require('deepmerge');
 
@@ -146,7 +147,7 @@ export class ConfigServiceImpl
       const fallbackModel = await this.getFallbackCliConfig();
       return deepmerge(fallbackModel, model) as DefaultCliConfig;
     } catch (error) {
-      if ('code' in error && error.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(error)) {
         if (initializeIfAbsent) {
           await this.initCliConfigTo(dirname(cliConfigPath));
           return this.loadCliConfig(false);

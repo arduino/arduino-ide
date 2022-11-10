@@ -33,6 +33,7 @@ import {
   TempSketchPrefix,
 } from './is-temp-sketch';
 import { join } from 'path';
+import { ErrnoException } from './utils/errors';
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -187,6 +188,13 @@ export class SketchesServiceImpl
   }
 
   async loadSketch(uri: string): Promise<SketchWithDetails> {
+    return this.doLoadSketch(uri);
+  }
+
+  private async doLoadSketch(
+    uri: string,
+    detectInvalidSketchNameError = true
+  ): Promise<SketchWithDetails> {
     const { client, instance } = await this.coreClient;
     const req = new LoadSketchRequest();
     const requestSketchPath = FileUri.fsPath(uri);
@@ -201,17 +209,19 @@ export class SketchesServiceImpl
         if (err) {
           let rejectWith: unknown = err;
           if (isNotFoundError(err)) {
-            const invalidMainSketchFilePath = await isInvalidSketchNameError(
-              err,
-              requestSketchPath
-            );
-            if (invalidMainSketchFilePath) {
-              rejectWith = SketchesError.InvalidName(
-                err.details,
-                FileUri.create(invalidMainSketchFilePath).toString()
+            rejectWith = SketchesError.NotFound(err.details, uri);
+            // detecting the invalid sketch name error is not for free as it requires multiple filesystem access.
+            if (detectInvalidSketchNameError) {
+              const invalidMainSketchFilePath = await isInvalidSketchNameError(
+                err,
+                requestSketchPath
               );
-            } else {
-              rejectWith = SketchesError.NotFound(err.details, uri);
+              if (invalidMainSketchFilePath) {
+                rejectWith = SketchesError.InvalidName(
+                  err.details,
+                  FileUri.create(invalidMainSketchFilePath).toString()
+                );
+              }
             }
           }
           reject(rejectWith);
@@ -278,7 +288,7 @@ export class SketchesServiceImpl
         );
       }
     } catch (err) {
-      if ('code' in err && err.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(err)) {
         this.logger.debug(
           `<<< '${RecentSketches}' does not exist yet. This is normal behavior. Falling back to empty data.`
         );
@@ -317,7 +327,7 @@ export class SketchesServiceImpl
 
       let sketch: Sketch | undefined = undefined;
       try {
-        sketch = await this.loadSketch(uri);
+        sketch = await this.doLoadSketch(uri, false);
         this.logger.debug(
           `Loaded sketch ${JSON.stringify(
             sketch
@@ -390,7 +400,7 @@ export class SketchesServiceImpl
       )) {
         let sketch: SketchWithDetails | undefined = undefined;
         try {
-          sketch = await this.loadSketch(uri);
+          sketch = await this.doLoadSketch(uri, false);
         } catch {}
         if (!sketch) {
           needsUpdate = true;
@@ -413,14 +423,14 @@ export class SketchesServiceImpl
 
   async cloneExample(uri: string): Promise<Sketch> {
     const [sketch, parentPath] = await Promise.all([
-      this.loadSketch(uri),
+      this.doLoadSketch(uri, false),
       this.createTempFolder(),
     ]);
     const destinationUri = FileUri.create(
       path.join(parentPath, sketch.name)
     ).toString();
     const copiedSketchUri = await this.copy(sketch, { destinationUri });
-    return this.loadSketch(copiedSketchUri);
+    return this.doLoadSketch(copiedSketchUri, false);
   }
 
   async createNewSketch(): Promise<Sketch> {
@@ -477,7 +487,7 @@ export class SketchesServiceImpl
       fs.mkdir(sketchDir, { recursive: true }),
     ]);
     await fs.writeFile(sketchFile, inoContent, { encoding: 'utf8' });
-    return this.loadSketch(FileUri.create(sketchDir).toString());
+    return this.doLoadSketch(FileUri.create(sketchDir).toString(), false);
   }
 
   /**
@@ -528,7 +538,7 @@ export class SketchesServiceImpl
     uri: string
   ): Promise<SketchWithDetails | undefined> {
     try {
-      const sketch = await this.loadSketch(uri);
+      const sketch = await this.doLoadSketch(uri, false);
       return sketch;
     } catch (err) {
       if (SketchesError.NotFound.is(err) || SketchesError.InvalidName.is(err)) {
@@ -553,7 +563,7 @@ export class SketchesServiceImpl
     }
     // Nothing to do when source and destination are the same.
     if (sketch.uri === destinationUri) {
-      await this.loadSketch(sketch.uri); // Sanity check.
+      await this.doLoadSketch(sketch.uri, false); // Sanity check.
       return sketch.uri;
     }
 
@@ -574,7 +584,10 @@ export class SketchesServiceImpl
             if (oldPath !== newPath) {
               await fs.rename(oldPath, newPath);
             }
-            await this.loadSketch(FileUri.create(destinationPath).toString()); // Sanity check.
+            await this.doLoadSketch(
+              FileUri.create(destinationPath).toString(),
+              false
+            ); // Sanity check.
             resolve();
           } catch (e) {
             reject(e);
@@ -596,7 +609,7 @@ export class SketchesServiceImpl
   }
 
   async archive(sketch: Sketch, destinationUri: string): Promise<string> {
-    await this.loadSketch(sketch.uri); // sanity check
+    await this.doLoadSketch(sketch.uri, false); // sanity check
     const { client } = await this.coreClient;
     const archivePath = FileUri.fsPath(destinationUri);
     // The CLI cannot override existing archives, so we have to wipe it manually: https://github.com/arduino/arduino-cli/issues/1160
@@ -666,7 +679,7 @@ export class SketchesServiceImpl
 
       return this.tryParse(raw);
     } catch (err) {
-      if ('code' in err && err.code === 'ENOENT') {
+      if (ErrnoException.isENOENT(err)) {
         return undefined;
       }
       throw err;
@@ -695,7 +708,7 @@ export class SketchesServiceImpl
             });
             this.inoContent.resolve(inoContent);
           } catch (err) {
-            if ('code' in err && err.code === 'ENOENT') {
+            if (ErrnoException.isENOENT(err)) {
               // Ignored. The custom `.ino` blueprint file is optional.
             } else {
               throw err;
@@ -763,7 +776,7 @@ async function isInvalidSketchNameError(
             .map((name) => path.join(requestSketchPath, name))[0]
         );
       } catch (err) {
-        if ('code' in err && err.code === 'ENOTDIR') {
+        if (ErrnoException.isENOENT(err) || ErrnoException.isENOTDIR(err)) {
           return undefined;
         }
         throw err;
