@@ -119,6 +119,9 @@
       "syncEditSketches": "Synchronizuj i edytuj swoje szkice w chmurze Arduino",
       "visitArduinoCloud": "Odwiedź chmurę Arduino, aby tworzyć szkice w chmurze."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "Wszytko",
       "contributed": "Przyczynił się",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Nie można zamknąć gniazda sieciowego",
       "unableToConnectToWebSocket": "Nie można połączyć się z gniazdem sieciowym"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Sieć",
       "serial": "Szaregowy"
@@ -349,6 +358,9 @@
         "username": "Nazwa Użytkownika"
       },
       "showVerbose": "Pokazuj informacje zwrotne podczas:",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Lokalizacja szkicownika",
       "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze szkicu. Fałsz jest wartością domyślną.",
       "survey.notification": "Prawdziwy, jeśli użytkownicy powinni być powiadamiani o dostępności ankiety. Domyślnie prawdwdziwy.",
@@ -385,7 +397,7 @@
       "exportBinary": "Eksportuj skompilowane binarnie",
       "moving": "Przenoszenie",
       "movingMsg": "Plik \"{0}\" musi znajdować się w folderze szkiców o nazwie \"{1}\".\nCzy utworzyć ten folder, przenieść podany plik i kontynuować?",
-      "new": "Nowy",
+      "new": "New Sketch",
       "openFolder": "Otwórz folder",
       "openRecent": "Otwórz ostatnie",
       "openSketchInNewWindow": "Otwórz szkic w nowym oknie.",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Nie można znaleźć pól użytkownika dla podłączonej płytki",
       "verify": "Weryfikuj",
       "verifyOrCompile": "Weryfikuj/Kompiluj"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Odpowiedz na ankietę",

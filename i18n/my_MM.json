@@ -119,6 +119,9 @@
       "syncEditSketches": "သင်၏Arduino Cloud ကုတ်ဖိုင်လ်များကို အင်တာနက်မှတဆင့် အချိန်နှင့်တပြေးညီ ရယူကိုက်ညီစေပြီး တည်းဖြတ်လိုက်ပါ",
       "visitArduinoCloud": "ကလောက်ကုတ်ဖိုင်ဖန်တီးရန် Arduino Cloudသို့သွားပါ။"
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "အားလုံး",
       "contributed": "ကူညီရေးသားထားသည်များ",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "ဝက်ဘ်ဆော့ကတ်ကိုမပိတ်နိုင်ပါ",
       "unableToConnectToWebSocket": "ဝက်ဘ်ဆော့ကတ်သို့မချိတ်ဆက်နိုင်ပါ"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "ကွန်ရက်",
       "serial": "အတန်းလိုက်"
@@ -349,6 +358,9 @@
         "username": "အသုံးပြုသူအမည်"
       },
       "showVerbose": "နောက်ပါလုပ်နေစဉ် အချက်အလက်များပိုမိုများပြားစွာပြမည်",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာ",
       "sketchbook.showAllFiles": "အမှန်ဖြစ်ပါက ကုတ်ဖိုင်လ်အတွင်း ဖိုင်လ်အားလုံးပြမည်။ မူရင်းတန်ဖိုး - အမှား",
       "survey.notification": "စစ်တမ်းကောက်ပါက အသုံးပြုသူကို အသိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
@@ -385,7 +397,7 @@
       "exportBinary": "ကုတ်ပေါင်းထားသောဘိုင်နရီဖိုင် ထုတ်ပို့မည်",
       "moving": "ရွှေ့နေသည်",
       "movingMsg": "ဖိုင်လ် \"{0}\" သည် ကုတ်ဖိုင်လ်ဖိုလ်ဒါ \"{1}\"အတွင်းရှိရန်လိုသည်။\nဖိုလ်ဒါတည်ဆောက်ပြီးဖိုင်လ်ကိုရွှေ့မည်လား။",
-      "new": "အသစ်",
+      "new": "New Sketch",
       "openFolder": "ဖိုလ်ဒါဖွင့်မည်",
       "openRecent": "လတ်တလောဖိုင်လ်ဖွင့်မည်",
       "openSketchInNewWindow": "ကုတ်ဖိုင်လ်ကို ဝင်းဒိုးအသစ်တွင်ဖွင့်မည်",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "ချိတ်ဆက်ထားသောဘုတ်အတွက်အသုံးပြုသူဆိုင်ရာအချက်အလက်များရှာမတွေ့ပါ",
       "verify": "စစ်ဆေး",
       "verifyOrCompile": "စစ်ဆေး/ကုတ်ပေါင်း"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "စစ်တမ်းကိုဖြေဆိုပါ",

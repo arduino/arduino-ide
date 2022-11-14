@@ -119,6 +119,9 @@
       "syncEditSketches": "المزامنة و التعديل على مشاريعك في Arduino Cloud",
       "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "تعذر اغلاق مقبس الويب",
       "unableToConnectToWebSocket": "تعذر الاتصال بمقبس الويب"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "شبكة",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "اظهر خرج مطوّل خلال",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "موقع ملف المشاريع",
       "sketchbook.showAllFiles": "True لعرض كل مجلدات مشاريع داخل المشروع . False افتراضيا",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "تصدير الملف الثنائي المترجم",
       "moving": "يتم النقل",
       "movingMsg": "الملف \"{0}\" يجب ان يكون داخل مجلد مشروع مسمى \"{1}\"\nهل انشئ المجلد , ثم انقل الملف و اكمل ؟",
-      "new": "جديد",
+      "new": "New Sketch",
       "openFolder": "فتح المجلد",
       "openRecent": "فُتِحَ مؤخرا ",
       "openSketchInNewWindow": "فتح المشروع في نافذة جديدة",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "تعذر ايجاد حقول المستخدم للوحة المتصلة",
       "verify": "تحقق",
       "verifyOrCompile": "تحقق/ترجم"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "الاجابة على الاستبيان",

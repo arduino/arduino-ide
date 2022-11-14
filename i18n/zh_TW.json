@@ -119,6 +119,9 @@
       "syncEditSketches": "同步和編輯您的Arduino Clou草稿",
       "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "所有",
       "contributed": "已貢獻",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "無法關閉 websocket",
       "unableToConnectToWebSocket": "無法連接到 websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "網路",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "顯示詳細輸出",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "草稿資料夾位置",
       "sketchbook.showAllFiles": "True則顯示所有草稿中的草稿檔案。預設為false。",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "會出已編譯的二進位檔",
       "moving": "移動",
       "movingMsg": "\"{0}\"必須在命名為\"{1}\"的草稿資料夾中。建立這個資料夾，移動草稿並繼續？",
-      "new": "新增",
+      "new": "New Sketch",
       "openFolder": "打開資料夾",
       "openRecent": "開啟最近的",
       "openSketchInNewWindow": "在新視窗開啟草稿",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "找不到已連接開發版中的用戶字段",
       "verify": "驗證",
       "verifyOrCompile": "驗證/編譯"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "回覆問卷",

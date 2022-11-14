@@ -6,46 +6,46 @@
     },
     "board": {
       "board": "Deska {0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "Zvolit jinou Desku a Port",
       "boardInfo": "Info o desce",
-      "boards": "boards",
+      "boards": "Desky",
       "configDialog1": "Pokud chcete nahrát sketch, musíte zvolit jak desku tak i port.",
       "configDialog2": "Pokud zvolíte jen desku, budete schopni kompilovat sketch, ale nebudete ji moci nahrát do desky.",
       "couldNotFindPreviouslySelected": "Dříve zvolená deska '{0}' v instalované platformě '{1}' nebyla nalezena. Zvolte prosím manuálně desku kterou chcete použít. Chcete tuto desku zvolit nyní? ",
-      "disconnected": "Disconnected",
+      "disconnected": "Odpojeno",
       "getBoardInfo": "Získat info o desce.",
       "inSketchbook": "(v projektech)",
       "installNow": "\"{0}{1}\" jádro musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
-      "noBoardsFound": "No boards found for \"{0}\"",
+      "noBoardsFound": "Nenalezeny žádné desky pro \"{0}\"",
       "noFQBN": "FQBN není dostupné pro zvolenou desku \"{0}\". Máte nainstalované příslušné jádro? ",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "Nenalezeny žádné porty",
       "noPortsSelected": "Nebyl zvolen port pro desku '{0}'.",
       "noneSelected": "Nebyla zvolena deska.",
       "openBoardsConfig": "Zvolte jinou desku a port...",
       "platformMissing": "Platforma pro zvolenou desku '{0}' není nainstalována.",
       "pleasePickBoard": "Vyberte prosím desku která je připojená k zvolenému portu. ",
       "port": "Port {0}",
-      "portLabel": "Port: {0}",
-      "ports": "ports",
+      "portLabel": "Port:{0}",
+      "ports": "porty",
       "programmer": "Programátor",
       "reselectLater": "Zvolit později",
-      "searchBoard": "Search board",
+      "searchBoard": "Vyhledat desku",
       "selectBoard": "Zvolit desku",
       "selectBoardForInfo": "Prosím zvolte desku pro získání informací o desce.",
       "selectPortForInfo": "Prosím zvolte port pro získání informací o desce.",
       "showAllAvailablePorts": "Zobrazit všechny dostupné porty (pokud je zaškrtnuto)",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "Ukázat všechny porty",
       "succesfullyInstalledPlatform": "Platforma {0}:{1} byla úspěšně nainstalována.",
       "succesfullyUninstalledPlatform": "Platforma {0}:{1} byla úspěšně odinstalována.",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0}porty"
     },
     "boardsManager": "Manažér desek",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Certifikováno Arduinem"
     },
     "bootloader": {
-      "burnBootloader": "Nahrát zavaděč",
-      "burningBootloader": "Burning bootloader...",
+      "burnBootloader": "Vypálit zavaděč",
+      "burningBootloader": "Vypalování zavaděče...",
       "doneBurningBootloader": "Nahrání zavaděče bylo dokončeno. "
     },
     "burnBootloader": {
@@ -69,20 +69,20 @@
       "uploadingCertificates": "Nahrávám certifikát."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "checkForUpdates": "Kontrola pro aktualizace",
+      "installAll": "Instalovat vše",
+      "noUpdates": "Nejsou k dispozici žádné aktualizace",
+      "promptUpdateBoards": "Jsou k dispozici aktualizace pro některé z vašich desek ",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "updatingBoards": "Aktualizuji desky...",
+      "updatingLibraries": "Aktualizuji knihovny..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Účet",
       "chooseSketchVisibility": "Zvolte viditelnost sketche:",
       "connected": "Připojen",
       "continue": "Pokračovat",
@@ -90,7 +90,7 @@
       "donePushing": "Odesílání dokončeno ‘{0}’.",
       "embed": "Vložit: ",
       "emptySketchbook": "Umístění projektů je prázdné",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "Jít na Cloud",
       "learnMore": "Zjistit více",
       "link": "Adresa: ",
       "notYetPulled": "Nemohu odeslat do cloudu jelikož z něj ještě nebylo staženo.",
@@ -108,19 +108,22 @@
       "pushSketch": "Odeslat sketch",
       "pushSketchMsg": "Toto je veřejná sketch. Před odesláním se prosím ujistěte že jsou smazané citlivé informace ze souboru arduino_secrets.h . Tuto sketch můžete změnit na soukromou v panelu pro sdílení.  ",
       "remote": "Vzdálený",
-      "remoteSketchbook": "Remote Sketchbook",
+      "remoteSketchbook": "Odstranit Sketchbook",
       "share": "Sdílet...",
       "shareSketch": "Sdílet sketch",
       "showHideRemoveSketchbook": "Zobrazit/skrýt vzdálenou sketch",
       "signIn": "Přihlásit se",
       "signInToCloud": "Přihlásit se do Arduino Cloud",
       "signOut": "Odhlásit se",
-      "sync": "Sync",
+      "sync": "Synchronizovat",
       "syncEditSketches": "Synchronizovat a editovat sketche v Arduino Cloud",
       "visitArduinoCloud": "Navštivte Arduino Cloud pro vytvoření cloudové sketche"
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
-      "all": "All",
+      "all": "Vše",
       "contributed": "Contributed",
       "installManually": "Instalovat ručně",
       "later": "Později",
@@ -130,11 +133,11 @@
       "oldFormat": "{0}používá stále starý formát `.pde`. Chcete ho převést na soubor s příponou `.ino`?",
       "partner": "Partner",
       "processing": "Zpracovávám",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "Doporučené",
+      "retired": "Zastaralý",
       "selectedOn": "zapnuto{0}",
       "serialMonitor": "Seriový monitor",
-      "type": "Type",
+      "type": "typ",
       "unknown": "Neznámý",
       "updateable": "Updatable"
     },
@@ -162,10 +165,10 @@
     },
     "core": {
       "compilerWarnings": {
-        "all": "All",
-        "default": "Default",
-        "more": "More",
-        "none": "None"
+        "all": "Vše",
+        "default": "Výchozí",
+        "more": "Více",
+        "none": "Žádný"
       }
     },
     "coreContribution": {
@@ -174,8 +177,8 @@
     },
     "daemon": {
       "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "start": "Spustit Daemon",
+      "stop": "Zastavit Daemon"
     },
     "debug": {
       "debugWithMessage": "Debug - {0}",
@@ -194,8 +197,8 @@
       "decreaseIndent": "Zmenšit odrážku",
       "increaseFontSize": "Zvýšit velikost písma",
       "increaseIndent": "Zvětšit odrážku",
-      "nextError": "Next Error",
-      "previousError": "Previous Error",
+      "nextError": "Další chyba",
+      "previousError": "Předchozí chyba",
       "revealError": "Reveal Error"
     },
     "electron": {
@@ -234,7 +237,7 @@
       "visit": "Navštívit Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Zkontrolovat aktualizace",
       "closeAndInstallButton": "Zavřít a nainstalovat",
       "closeToInstallNotice": "Vypněte program a nainstalujte update na Váš stroj. ",
       "downloadButton": "Stáhnout",
@@ -255,7 +258,7 @@
       "arduinoLibraries": "Arduino knihovny",
       "contributedLibraries": "Přispěné knihovny",
       "include": "Zahrnout knihovnu",
-      "installAll": "Install All",
+      "installAll": "Instalovat vše",
       "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Chcete nainstalovat všechny chybějící závislosti? ",
       "installOneMissingDependency": "Chcete nainstalovat chybějící závislost? ",
@@ -273,7 +276,7 @@
       "zipLibrary": "Knihovna"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "Téma"
     },
     "libraryTopic": {
       "communication": "Communication",
@@ -281,23 +284,29 @@
       "dataStorage": "Data Storage",
       "deviceControl": "Device Control",
       "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
+      "other": "Jiné",
+      "sensors": "Senzory",
       "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
+      "timing": "Časování",
       "uncategorized": "Uncategorized"
     },
     "libraryType": {
       "installed": "Installed"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Pokročilé",
       "sketch": "Sketch",
       "tools": "Nástroje"
     },
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
     },
     "portProtocol": {
       "network": "Síť",
@@ -332,7 +341,7 @@
       "files.inside.sketches": "Zobrazit soubory uvnitř sketche",
       "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "Výběr kanálu pro aktualizace. 'stable' pro stabilní vydání, 'nightly' pro nejnovější vývojové verze.",
-      "interfaceScale": "Měřítko prostředí",
+      "interfaceScale": "Velikost rozhraní",
       "invalid.editorFontSize": "Neplatná velikost editoru písem: Toto číslo musí být kladné.",
       "invalid.sketchbook.location": "Neplatné umístění projektů:{0}",
       "invalid.theme": "Neplatné téma.",
@@ -343,12 +352,15 @@
       "newSketchbookLocation": "Zvolit nové umístění projektů",
       "noProxy": "Bez proxy",
       "proxySettings": {
-        "hostname": "Host name",
-        "password": "Password",
-        "port": "Port number",
-        "username": "Username"
+        "hostname": "Jméno hosta",
+        "password": "Heslo",
+        "port": "Číslo portu",
+        "username": "Uživatelské jméno"
       },
       "showVerbose": "Zobrazit podrobný výstup během",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Umístění sketche",
       "sketchbook.showAllFiles": "Ano pro zobrazení všech souborů sketche. Ne je výchozí hodnota. ",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,12 +397,12 @@
       "exportBinary": "Exportovat kompilované soubory",
       "moving": "Přesouvám",
       "movingMsg": "Soubor \"{0}\" musí být uvnitř složky která je shodná názvem \"{1}\".\nVytvořit složku, přesunout tam- soubor a pokračovat? ",
-      "new": "Nový",
+      "new": "New Sketch",
       "openFolder": "Otevřít složku",
       "openRecent": "Otevřít nedávné",
       "openSketchInNewWindow": "Otevřít sketch v novém okně",
       "saveFolderAs": "Uložit složku sketche jako...",
-      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketch": "Uložte svůj sketch, abyste ho mohli znovu otevřít později.",
       "saveSketchAs": "Uložit složku sketche jako...",
       "showFolder": "Zobrazit složku sketche",
       "sketch": "Sketch",
@@ -399,14 +411,18 @@
       "titleSketchbook": "Projekty",
       "upload": "Nahrát",
       "uploadUsingProgrammer": "Nahrát pomocí programátoru",
-      "uploading": "Uploading...",
+      "uploading": "Nahrávám...",
       "userFieldsNotFoundError": "Nemohu nalézt uživatelská pole pro připojenou desku",
       "verify": "Ověřit",
       "verifyOrCompile": "Ověřit/Kompilovat"
     },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
+    },
     "survey": {
       "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
+      "dismissSurvey": "Znovu nezobrazovat",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "updateIndexes": {
@@ -430,7 +446,7 @@
       "couldNotSave": "Nebylo možné uložit sketch. Zkopírujte prosím neuloženou práci do Vašeho oblíbeného textového editoru a restartujte IDE. ",
       "daemonOffline": "CLI Daemon nepřipojen",
       "offline": "Nepřipojen",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Jste si jisti že chcete odejít"
     },
     "debug": {
       "start": "Start...",

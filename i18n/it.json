@@ -8,7 +8,7 @@
       "board": "Scheda{0}",
       "boardConfigDialogTitle": "Seleziona un'altra scheda e un'altra porta",
       "boardInfo": "Informazioni sulla scheda",
-      "boards": "boards",
+      "boards": "schede",
       "configDialog1": "Seleziona una scheda ed una porta se vuoi caricare uno sketch.",
       "configDialog2": "Se selezioni solo una scheda, potrai compilare, ma non potrai caricare il tuo sketch.",
       "couldNotFindPreviouslySelected": "Impossibile trovare la scheda selezionata '{0}' nella piattaforma installata '{1}'. Scegli nuovamente la scheda che vuoi utilizzare. Vuoi sceglierla ora?",
@@ -16,7 +16,7 @@
       "getBoardInfo": "Acquisisci informazioni sulla scheda",
       "inSketchbook": "(nella raccolta degli sketch)",
       "installNow": "Il \"{0} {1}\" core non è installato per la scheda  \"{2}\" . Vuoi installarlo ora?",
-      "noBoardsFound": "Nessuna scheda è stata trovata per \"{0}\"",
+      "noBoardsFound": "Nessuna scheda trovata per \"{0}\"",
       "noFQBN": "La FQBN non è disponibile per la scheda selezionata\"{0}\". Sei sicuro che il core specifico sia stato installato?",
       "noPortsDiscovered": "Nessuna porta rilevata",
       "noPortsSelected": "Nessuna porta selezionata per la scheda: '{0}'.",
@@ -26,7 +26,7 @@
       "pleasePickBoard": "Scegli la scheda collegata alla porta che hai selezionato.",
       "port": "Porta{0}",
       "portLabel": "Porta: {0}",
-      "ports": "ports",
+      "ports": "porte",
       "programmer": "Programmatore",
       "reselectLater": "Riselezionare più tardi",
       "searchBoard": "Seleziona la scheda",
@@ -34,10 +34,10 @@
       "selectBoardForInfo": "Seleziona la scheda per la quale desideri informazioni.",
       "selectPortForInfo": "Selezionare la porta per ottenere info sulla scheda.",
       "showAllAvailablePorts": "Quando abilitato, mostra tutte le porte disponibili",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "Mostra tutte le porte",
       "succesfullyInstalledPlatform": "Piattaforma installata correttamente {0}:{1}",
       "succesfullyUninstalledPlatform": "Piattaforma disinstallata correttamente {0}:{1}",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} porte"
     },
     "boardsManager": "Gestore schede",
     "boardsType": {
@@ -90,7 +90,7 @@
       "donePushing": "Invio terminato ‘{0}’.",
       "embed": "Includi:",
       "emptySketchbook": "La raccolta degli sketch è vuota",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "Vai al Cloud",
       "learnMore": "Più informazioni",
       "link": "Link:",
       "notYetPulled": "Sul Cloud non puoi effettuare il push se non hai ancora fatto il pull",
@@ -118,6 +118,9 @@
       "sync": "Sincronizza",
       "syncEditSketches": "Sincronizza e modifica la tua raccolta di Sketches sul Cloud Arduino",
       "visitArduinoCloud": "Visita Arduino Cloud per creare Cloud Sketch "
+    },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
     },
     "common": {
       "all": "Tutti",
@@ -156,16 +159,16 @@
       "addFile": "Aggiungi file...",
       "fileAdded": "Aggiunto un file allo sketch.",
       "plotter": {
-        "couldNotOpen": "Couldn't open serial plotter"
+        "couldNotOpen": "Impossibile aprire la porta seriale"
       },
       "replaceTitle": "Sostituisci"
     },
     "core": {
       "compilerWarnings": {
         "all": "Tutti",
-        "default": "Default",
-        "more": "More",
-        "none": "None"
+        "default": "Predefinito",
+        "more": "Altro",
+        "none": "Nessuno"
       }
     },
     "coreContribution": {
@@ -256,10 +259,10 @@
       "contributedLibraries": "Librerie di terze parti",
       "include": "Includi Libreria",
       "installAll": "Installa tutto",
-      "installLibraryDependencies": "Install library dependencies",
+      "installLibraryDependencies": "Installa le dipendenze della libreria",
       "installMissingDependencies": "Vorresti installare tutte le dipendenze mancanti?",
       "installOneMissingDependency": "Vorresti installare le dipendenze mancanti?",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "Installa senza le dipendenze",
       "installedSuccessfully": "Libreria installata correttamente  1{0}  :  2{1} ",
       "libraryAlreadyExists": "Libreria già presente. Vuoi sovrascriverla?",
       "manageLibraries": "Gestisci Librerie",
@@ -299,9 +302,15 @@
       "unableToCloseWebSocket": "Impossibile chiudere il websocket",
       "unableToConnectToWebSocket": "Impossibile connettersi al websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Rete",
-      "serial": "Serial"
+      "serial": "Seriale"
     },
     "preferences": {
       "additionalManagerURLs": "URL aggiuntive per il Gestore schede",
@@ -343,12 +352,15 @@
       "newSketchbookLocation": "Seleziona un percorso per il nuovo sketchbook",
       "noProxy": "Nessun proxy",
       "proxySettings": {
-        "hostname": "Host name",
+        "hostname": "Nome host",
         "password": "Password",
-        "port": "Port number",
-        "username": "Username"
+        "port": "Numero di porta",
+        "username": "Nome utente"
       },
       "showVerbose": "Mostra un output dettagliato durante",
+      "sketch": {
+        "inoBlueprint": "Percorso assoluto del filesystem per il file predefinito blueprint `.ino`. Se specificato, il contenuto del file blueprint sarà utilizzato per ogni nuovo sketch creato dall'IDE. Se non specificato, gli sketch saranno generati con il contenuto predefinito di Arduino. I file blueprint non accessibili saranno ignorati. **È necessario un riavvio dell'IDE** affinché questa impostazione abbia effetto."
+      },
       "sketchbook.location": "Posizione della raccolta degli sketch",
       "sketchbook.showAllFiles": "Vero per mostrare tutti i file relativi contenuti all'interno dello sketch. L'opzione predefinita è falso.",
       "survey.notification": "Vero se gli utenti devono essere avvisati quando è disponibile un sondaggio. Vero per impostazione predefinita.",
@@ -378,14 +390,14 @@
       "cantOpen": "Una cartella di nome \"{0}\" esiste già. Impossibile aprire lo sketch.",
       "close": "Sei sicuro di voler chiudere lo sketch?",
       "compile": "Compilazione dello sketch in corso...",
-      "configureAndUpload": "Configure and Upload",
+      "configureAndUpload": "Configura e Carica",
       "createdArchive": "Creato l'archivio '{0}'.",
       "doneCompiling": "Compilazione completata.",
       "doneUploading": "Caricamento terminato.",
       "exportBinary": "Esporta sketch compilato",
       "moving": "Spostando",
       "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella  \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
-      "new": "Nuovo",
+      "new": "New Sketch",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",
       "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra.",
@@ -404,15 +416,19 @@
       "verify": "Verifica",
       "verifyOrCompile": "Verifica/Compila"
     },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
+    },
     "survey": {
       "answerSurvey": "Rispondi al questionario",
       "dismissSurvey": "Non mostrare più",
       "surveyMessage": "Aiutaci a migliorare rispondendo a questo brevissimo questionario. Abbiamo a cuore la nostra comunità e vorremmo conoscere meglio chi ci supporta!"
     },
     "updateIndexes": {
-      "updateIndexes": "Update Indexes",
-      "updateLibraryIndex": "Update Library Index",
-      "updatePackageIndex": "Update Package Index"
+      "updateIndexes": "Aggiorna gli indici",
+      "updateLibraryIndex": "Aggiorna l'indice di libreria",
+      "updatePackageIndex": "Aggiorna l'indice del pacchetto"
     },
     "upload": {
       "error": "1 {0}   errore:   2 {1}"

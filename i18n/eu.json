@@ -119,6 +119,9 @@
       "syncEditSketches": "Sinkronizatu eta editatu zure Arduino Cloud-eko programak",
       "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Sarea",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Erakutsi irteera xehatua honetan zehar:",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Programa bildumaren kokalekua",
       "sketchbook.showAllFiles": "Egia programaren barruko programa-fitxategi guztiak erakusteko. Lehenetsia gezurra da.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "Esportatu konpilatutako bitarra",
       "moving": "Lekuz aldatzen",
       "movingMsg": "\"{0}\" fitxategiak \"{1}\" izeneko programa-karpetaren barruan egon behar du.\nSortu karpeta, eraman fitxategia bertara eta jarraitu?",
-      "new": "Berria",
+      "new": "New Sketch",
       "openFolder": "Ireki karpeta",
       "openRecent": "Ireki azkenaldikoa",
       "openSketchInNewWindow": "Ireki programa leiho berrian",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Ezin dira erabiltzaile eremuak aurkitu konektatutako plakarentzat",
       "verify": "Egiaztatu",
       "verifyOrCompile": "Egiaztatu/Konpilatu"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",

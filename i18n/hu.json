@@ -119,6 +119,9 @@
       "syncEditSketches": "Arduino felhővázlatok szinkronizálása és szerkesztése",
       "visitArduinoCloud": "Látogasd meg az Arduino Cloud webhelyet, hogy a felhőben vázlatokat hozhass létre. "
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Hálózat",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Részletes kimenet megjelenítése eközben: ",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "SketchBook elérési helye ",
       "sketchbook.showAllFiles": "Kipipálva: az összes vázlatfájl/sketch megjelenítése a vázlaton/sketch-en belül. Alapértelmezés szerint: nincs kipipálva.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "Összeállított bináris exportálása",
       "moving": "Mozgatás",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
-      "new": "Új",
+      "new": "New Sketch",
       "openFolder": "Mappa megnyitása",
       "openRecent": "Legutóbbi megnyitása",
       "openSketchInNewWindow": "Vázlat/sketch megnyitása új ablakban",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Nem találhatók felhasználói adatok a csatlakoztatott kártyához",
       "verify": "Ellenőrzés",
       "verifyOrCompile": "Ellenőrzés/fordítás"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",

@@ -6,9 +6,9 @@
     },
     "board": {
       "board": "Placa{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "Seleccionar Otra Placa y Puerto",
       "boardInfo": "Información de la placa",
-      "boards": "boards",
+      "boards": "Placas",
       "configDialog1": "Selecciona tanto una placa como un puerto si quieres cargar un sketch.",
       "configDialog2": "Si seleccionas solo una placa podrás compilar, pero no cargar tu sketch.",
       "couldNotFindPreviouslySelected": "No se ha podido encontrar la placa previamente seleccionada '{0}' en la plataforma instalada '{1}'. Por favor, vuelve a seleccionar manualmente la placa que quieres utilizar. ¿Quieres volver a seleccionarla ahora?",
@@ -16,9 +16,9 @@
       "getBoardInfo": "Obtener información de la placa",
       "inSketchbook": " (en el Sketchbook)",
       "installNow": "Hay que instalar el núcleo \"{0} {1} \" para la placa \"{2}\" actualmente seleccionada. ¿Quieres instalarlo ahora?",
-      "noBoardsFound": "No boards found for \"{0}\"",
+      "noBoardsFound": "No se han encotrado placas para \"{0}\"",
       "noFQBN": "El FQBN no está disponible para la placa seleccionada \"{0}\". ¿Tienes instalado el núcleo correspondiente?",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "No se ha descubierto ningún puerto",
       "noPortsSelected": "No se han seleccionado puertos para la placa: '{0}'.",
       "noneSelected": "Ninguna placa seleccionada.",
       "openBoardsConfig": "Seleccione otra placa y puerto...",
@@ -26,26 +26,26 @@
       "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
       "port": "Puerto {0}",
       "portLabel": "Puerto: {0}",
-      "ports": "ports",
+      "ports": "puertos",
       "programmer": "Programador",
       "reselectLater": "Vuelve a seleccionar más tarde",
-      "searchBoard": "Search board",
+      "searchBoard": "Buscar placa",
       "selectBoard": "Seleccionar Placa",
       "selectBoardForInfo": "Por favor, seleccione una placa para obtener información sobre ella.",
       "selectPortForInfo": "Por favor, seleccione un puerto para obtener información sobre la placa.",
       "showAllAvailablePorts": "Muestra todos los puertos disponibles cuando está activado",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "Mostrar todos los puertos",
       "succesfullyInstalledPlatform": "Plataforma {0}:{1} instalada correctamente",
       "succesfullyUninstalledPlatform": "Plataforma {0}:{1} desinstalada correctamente",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} puertos"
     },
     "boardsManager": "Gestor de placas",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Certificado Arduino"
     },
     "bootloader": {
       "burnBootloader": "Grabar Bootloader",
-      "burningBootloader": "Burning bootloader...",
+      "burningBootloader": "Grabando bootloader...",
       "doneBurningBootloader": "Finalizada la grabación del bootloader."
     },
     "burnBootloader": {
@@ -69,13 +69,13 @@
       "uploadingCertificates": "Cargando certificados."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "Comprobar Actualizaciones para Arduino",
+      "installAll": "Instalar todo",
+      "noUpdates": "No se han encontrado actualizaciones recientes disponibles",
+      "promptUpdateBoards": "Actualizaciones disponibles para alguna de tus placas",
+      "promptUpdateLibraries": "Actualizaciones disponibles para algunas de tus librerías",
+      "updatingBoards": "Actualizando placas...",
+      "updatingLibraries": "Actualizando librerías..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Keyboard.h>'?",
@@ -90,7 +90,7 @@
       "donePushing": "Envío a '{0}' realizado.",
       "embed": "Incrustado:",
       "emptySketchbook": "Tu Sketchbook está vacío",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "Ir al Cloud",
       "learnMore": "Aprender más",
       "link": "Enlace:",
       "notYetPulled": "No se puede cargar a las nube. Todavía no ha sido descargado",
@@ -119,34 +119,37 @@
       "syncEditSketches": "Sincroniza y edita tus Arduino Cloud Sketches",
       "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "Todo",
+      "contributed": "Contribuido",
       "installManually": "Instalar manualmente",
       "later": "Más tarde",
       "noBoardSelected": "Ninguna placa seleccionada.",
       "notConnected": "[no conectado]",
       "offlineIndicator": "Al parecer no estás en línea. Sin una conexión a internet, el CLI de Arduino no podrá descargar los recursos necesarios, lo cual puede ocasionar fallos. Por favor, conecte a internet y reinicie la aplicación.",
       "oldFormat": "La página '{0}' sigue utilizando el formato antiguo `.pde`. ¿Quieres cambiar a la nueva extensión `.ino`?",
-      "partner": "Partner",
+      "partner": "Socio",
       "processing": "Procesando",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "Recomendado",
+      "retired": "Retirado",
       "selectedOn": "on  1{0}\n ",
       "serialMonitor": "Monitor Serie",
-      "type": "Type",
+      "type": "Tipo",
       "unknown": "Desconocido",
-      "updateable": "Updatable"
+      "updateable": "Actualizable"
     },
     "compile": {
       "error": "Error de compilación: {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "Placas incluidas en este paquete:",
       "by": "de",
       "filterSearch": "Filtre su búsqueda...",
       "install": "Instalar",
-      "installed": "Installed",
+      "installed": "Instalado",
       "moreInfo": "Más información",
       "uninstall": "Desinstalar",
       "uninstallMsg": "¿Quieres desinstalar {0}?",
@@ -156,21 +159,21 @@
       "addFile": "Añadir fichero...",
       "fileAdded": "Un archivo añadido al sketch.",
       "plotter": {
-        "couldNotOpen": "Couldn't open serial plotter"
+        "couldNotOpen": "No se puede abrir el plotter serial"
       },
       "replaceTitle": "Reemplazar"
     },
     "core": {
       "compilerWarnings": {
-        "all": "All",
-        "default": "Default",
-        "more": "More",
-        "none": "None"
+        "all": "Todo",
+        "default": "Predeterminado",
+        "more": "Más",
+        "none": "Niguno"
       }
     },
     "coreContribution": {
       "copyError": "Copiar mensajes de error",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "noBoardSelected": "Ninguna placa seleccionada. Por favor selecciona una placa Arduino en el menú Herramientas > Placas"
     },
     "daemon": {
       "restart": "Reiniciar Daemon",
@@ -196,7 +199,7 @@
       "increaseIndent": "Aumentar sangría",
       "nextError": "Siguiente Error",
       "previousError": "Error Anterior",
-      "revealError": "Reveal Error"
+      "revealError": "Revelar Error"
     },
     "electron": {
       "couldNotSave": "No se ha podido guardar el sketch. Por favor, copia tu trabajo no guardado en tu editor de texto favorito y reinicia el IDE.",
@@ -234,7 +237,7 @@
       "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Comprobar actualizaciones para Arduino IDE",
       "closeAndInstallButton": "Cerrar e instalar",
       "closeToInstallNotice": "Cierra el programa e instala la actualización en tu máquina.",
       "downloadButton": "Descargar",
@@ -255,11 +258,11 @@
       "arduinoLibraries": "Bibliotecas de Arduino",
       "contributedLibraries": "Bibliotecas aportadas",
       "include": "Incluir biblioteca",
-      "installAll": "Install All",
-      "installLibraryDependencies": "Install library dependencies",
+      "installAll": "Instalar todo",
+      "installLibraryDependencies": "Instalar las dependencias de la biblioteca",
       "installMissingDependencies": "¿Quieres instalar todas las dependencias faltantes?",
       "installOneMissingDependency": "¿Quieres instalar la dependencia faltante?",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "Instalar sin dependencias",
       "installedSuccessfully": "Biblioteca {0}:{1} instalada correctamente",
       "libraryAlreadyExists": "Ya existe una biblioteca. ¿Quieres sobrescribirla?",
       "manageLibraries": "Gestionar bibliotecas...",
@@ -273,22 +276,22 @@
       "zipLibrary": "Biblioteca"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "Tema"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "communication": "Comunicación",
+      "dataProcessing": "Procesando datos",
+      "dataStorage": "Almacenamiento de datos",
+      "deviceControl": "Control de dispositivo",
+      "display": "Pantalla",
+      "other": "Otro",
+      "sensors": "Sensores",
+      "signalInputOutput": "Señal Entrada/Salida",
+      "timing": "Temporización",
+      "uncategorized": "Descategorizado"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Instalado"
     },
     "menu": {
       "advanced": "Avanzado",
@@ -299,9 +302,15 @@
       "unableToCloseWebSocket": " No se puede cerrar websocket",
       "unableToConnectToWebSocket": " No se puede conectar al websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Red",
-      "serial": "Serial"
+      "serial": "Serie"
     },
     "preferences": {
       "additionalManagerURLs": "URLs adicionales de gestor de placas",
@@ -312,7 +321,7 @@
       "automatic": "Automático",
       "board.certificates": "Listado de certificados que pueden ser cargados en las placas",
       "browse": "Explorar",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "Recibe notificaciones sobre actualizaciones disponibles del IDE, placas y librerías. Requiere reiniciar el IDE despues de hacer cambios. Por defecto está habilitado.",
       "choose": "Elija",
       "cli.daemonDebug": "Habilitar logueo de depuración de las llamadas gRPC al Arduino CLI. Requiere un reinicio del IDE para tener efecto. Deshabilitado por defecto.",
       "cloud.enabled": "Verdadero si las funciones de sincronización del sketch están activadas. Verdadero por defecto.",
@@ -343,12 +352,15 @@
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
       "noProxy": "Sin Proxy",
       "proxySettings": {
-        "hostname": "Host name",
-        "password": "Password",
-        "port": "Port number",
-        "username": "Username"
+        "hostname": "nombre del host",
+        "password": "Contraseña",
+        "port": "Numero del puerto",
+        "username": "Nombre de usuario"
       },
       "showVerbose": "Mostrar salida verbosa durante",
+      "sketch": {
+        "inoBlueprint": "Ruta absoluta del sistema de archivos al archivo blueprint `.ino` por defecto. Si se especifica, el contenido del archivo blueprint se utilizará para cada nuevo sketch creado por el IDE. Los sketches se generarán con el contenido por defecto de Arduino si no se especifica. Los archivos blueprint no accesibles son ignorados. **Se necesita reiniciar el IDE** para que este ajuste surta efecto."
+      },
       "sketchbook.location": "Ruta del Sketchbook",
       "sketchbook.showAllFiles": "Verdadero para mostrar todos los archivos de bocetos dentro del boceto. Por defecto es falso.",
       "survey.notification": "Verdadero si usuarios deberían ser notificados cuando una encuesta esté disponible. Verdadero es predeterminado.",
@@ -364,7 +376,7 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Retorno de carro",
-      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "message": "Mensaje (Intro para mandar el mensaje de '{0}' a '{1}')",
       "newLine": "Nueva línea",
       "newLineCarriageReturn": "Ambos NL & CR",
       "noLineEndings": "Sin ajuste de línea",
@@ -377,15 +389,15 @@
       "archiveSketch": "Archivo de programa",
       "cantOpen": "Ya existe una carpeta con el nombre \"{0}\". No se puede abrir.",
       "close": "¿Estás seguro de que quieres cerrar el sketch?",
-      "compile": "Compiling sketch...",
-      "configureAndUpload": "Configure and Upload",
+      "compile": "Compilando proyecto...",
+      "configureAndUpload": "Configura y Subir",
       "createdArchive": "Archivo '{0}' creado.",
       "doneCompiling": "Compilación completada.",
       "doneUploading": "Carga completada.",
       "exportBinary": "Exportar binario compilado",
       "moving": "Moviendo",
       "movingMsg": "El archivo \"{0}\" tiene que estar dentro de una carpeta de bocetos llamada \"{1}\".\n¿Crear esta carpeta, mover el archivo y continuar?",
-      "new": "Nuevo",
+      "new": "New Sketch",
       "openFolder": "Abrir carpeta",
       "openRecent": "Abierto recientemente",
       "openSketchInNewWindow": "Abrir Sketch en una ventana nueva",
@@ -399,10 +411,14 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Cargar",
       "uploadUsingProgrammer": "Cargar usando el programador",
-      "uploading": "Uploading...",
+      "uploading": "Actualizando...",
       "userFieldsNotFoundError": "No se pueden encontrar campos de usuario para la placa conectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Completar encuesta",
@@ -410,16 +426,16 @@
       "surveyMessage": "Por favor ayudenos mejorar completando esta breve encuesta. Valoramos nuestra comunidad y nos gustaría conocer algo mejor a los que nos apoyan."
     },
     "updateIndexes": {
-      "updateIndexes": "Update Indexes",
-      "updateLibraryIndex": "Update Library Index",
-      "updatePackageIndex": "Update Package Index"
+      "updateIndexes": "Actualizar indices",
+      "updateLibraryIndex": "Actualizar Indice de librerías",
+      "updatePackageIndex": "Actualizar índice de paquete"
     },
     "upload": {
       "error": "1{0} error: 2{1}"
     },
     "userFields": {
       "cancel": "Cancelar",
-      "enterField": "Enter {0}",
+      "enterField": "Introduce {0}",
       "upload": "Cargar"
     }
   },
