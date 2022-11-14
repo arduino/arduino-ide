@@ -290,7 +290,6 @@ export class SettingsService {
       this.savePreference('editor.quickSuggestions', quickSuggestions),
       this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface),
       this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale),
-      this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale),
       this.savePreference(COMPILE_VERBOSE_SETTING, verboseOnCompile),
       this.savePreference(COMPILE_WARNINGS_SETTING, compilerWarnings),
       this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload),
