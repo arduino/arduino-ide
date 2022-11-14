@@ -114,11 +114,12 @@ export const ArduinoConfigSchema: PreferenceSchema = {
     },
     'arduino.window.zoomLevel': {
       type: 'number',
-      description: nls.localize(
-        'arduino/preferences/window.zoomLevel',
-        'Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity.'
-      ),
+      description: '',
       default: 0,
+      deprecationMessage: nls.localize(
+        'arduino/preferences/window.zoomLevel/deprecationMessage',
+        "Deprecated. Use 'window.zoomLevel' instead."
+      ),
     },
     'arduino.ide.updateChannel': {
       type: 'string',
@@ -270,7 +271,6 @@ export interface ArduinoConfiguration {
   'arduino.upload.verbose': boolean;
   'arduino.upload.verify': boolean;
   'arduino.window.autoScale': boolean;
-  'arduino.window.zoomLevel': number;
   'arduino.ide.updateChannel': UpdateChannel;
   'arduino.ide.updateBaseUrl': string;
   'arduino.board.certificates': string;
