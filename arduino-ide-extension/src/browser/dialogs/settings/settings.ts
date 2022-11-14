@@ -28,16 +28,17 @@ import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron
 import { DefaultTheme } from '@theia/application-package/lib/application-props';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 
+export const WINDOW_SETTING = 'window';
 export const EDITOR_SETTING = 'editor';
 export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
 export const AUTO_SAVE_SETTING = `files.autoSave`;
 export const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
 export const ARDUINO_SETTING = 'arduino';
-export const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
+export const ARDUINO_WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
 export const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
 export const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
 export const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
-export const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
+export const AUTO_SCALE_SETTING = `${ARDUINO_WINDOW_SETTING}.autoScale`;
 export const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
 export const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
 export const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
@@ -55,7 +56,7 @@ export interface Settings {
   currentLanguage: string;
 
   autoScaleInterface: boolean; // `arduino.window.autoScale`
-  interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
+  interfaceScale: number; // `window.zoomLevel`
   verboseOnCompile: boolean; // `arduino.compile.verbose`
   compilerWarnings: CompilerWarnings; // `arduino.compile.warnings`
   verboseOnUpload: boolean; // `arduino.upload.verbose`
