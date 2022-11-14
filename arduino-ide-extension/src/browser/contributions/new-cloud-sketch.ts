@@ -1,9 +1,22 @@
-import { MenuModelRegistry } from '@theia/core/lib/common/menu';
+import { DialogError } from '@theia/core/lib/browser/dialogs';
 import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
+import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { CompositeTreeNode } from '@theia/core/lib/browser/tree';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { Widget } from '@theia/core/lib/browser/widgets/widget';
+import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { MenuModelRegistry } from '@theia/core/lib/common/menu';
+import {
+  Progress,
+  ProgressUpdate,
+} from '@theia/core/lib/common/message-service-protocol';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { WorkspaceInputDialogProps } from '@theia/workspace/lib/browser/workspace-input-dialog';
+import { v4 } from 'uuid';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import type { AuthenticationSession } from '../../node/auth/types';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
@@ -90,7 +103,7 @@ export class NewCloudSketch extends Contribution {
 
   private async createNewSketch(
     initialValue?: string | undefined
-  ): Promise<URI | undefined> {
+  ): Promise<unknown> {
     const widget = await this.widgetContribution.widget;
     const treeModel = this.treeModelFrom(widget);
     if (!treeModel) {
@@ -102,34 +115,50 @@ export class NewCloudSketch extends Contribution {
     if (!rootNode) {
       return undefined;
     }
+    return this.openWizard(rootNode, treeModel, initialValue);
+  }
 
-    const newSketchName = await this.newSketchName(rootNode, initialValue);
-    if (!newSketchName) {
-      return undefined;
-    }
-    let result: Create.Sketch | undefined | 'conflict';
-    try {
-      result = await this.createApi.createSketch(newSketchName);
-    } catch (err) {
-      if (isConflict(err)) {
-        result = 'conflict';
-      } else {
-        throw err;
+  private withProgress(
+    value: string,
+    treeModel: CloudSketchbookTreeModel
+  ): (progress: Progress) => Promise<unknown> {
+    return async (progress: Progress) => {
+      let result: Create.Sketch | undefined | 'conflict';
+      try {
+        progress.report({
+          message: nls.localize(
+            'arduino/cloudSketch/creating',
+            "Creating remote sketch '{0}'...",
+            value
+          ),
+        });
+        result = await this.createApi.createSketch(value);
+      } catch (err) {
+        if (isConflict(err)) {
+          result = 'conflict';
+        } else {
+          throw err;
+        }
+      } finally {
+        if (result) {
+          progress.report({
+            message: nls.localize(
+              'arduino/cloudSketch/synchronizing',
+              "Synchronizing sketchbook, pulling '{0}'...",
+              value
+            ),
+          });
+          await treeModel.refresh();
+        }
       }
-    } finally {
+      if (result === 'conflict') {
+        return this.createNewSketch(value);
+      }
       if (result) {
-        await treeModel.refresh();
+        return this.open(treeModel, result);
       }
-    }
-
-    if (result === 'conflict') {
-      return this.createNewSketch(newSketchName);
-    }
-
-    if (result) {
-      return this.open(treeModel, result);
-    }
-    return undefined;
+      return undefined;
+    };
   }
 
   private async open(
@@ -183,14 +212,15 @@ export class NewCloudSketch extends Contribution {
     return undefined;
   }
 
-  private async newSketchName(
+  private async openWizard(
     rootNode: CompositeTreeNode,
+    treeModel: CloudSketchbookTreeModel,
     initialValue?: string | undefined
-  ): Promise<string | undefined> {
+  ): Promise<unknown> {
     const existingNames = rootNode.children
       .filter(CloudSketchbookTree.CloudSketchDirNode.is)
       .map(({ fileStat }) => fileStat.name);
-    return new WorkspaceInputDialog(
+    return new NewCloudSketchDialog(
       {
         title: nls.localize(
           'arduino/newCloudSketch/newSketchTitle',
@@ -216,7 +246,8 @@ export class NewCloudSketch extends Contribution {
           );
         },
       },
-      this.labelProvider
+      this.labelProvider,
+      (value) => this.withProgress(value, treeModel)
     ).open();
   }
 }
@@ -244,4 +275,98 @@ function isErrorWithStatusOf(
     return 'status' in object && object.status === status;
   }
   return false;
+}
+
+@injectable()
+class NewCloudSketchDialog extends WorkspaceInputDialog {
+  constructor(
+    @inject(WorkspaceInputDialogProps)
+    protected override readonly props: WorkspaceInputDialogProps,
+    @inject(LabelProvider)
+    protected override readonly labelProvider: LabelProvider,
+    private readonly withProgress: (
+      value: string
+    ) => (progress: Progress) => Promise<unknown>
+  ) {
+    super(props, labelProvider);
+  }
+  protected override async accept(): Promise<void> {
+    if (!this.resolve) {
+      return;
+    }
+    this.acceptCancellationSource.cancel();
+    this.acceptCancellationSource = new CancellationTokenSource();
+    const token = this.acceptCancellationSource.token;
+    const value = this.value;
+    const error = await this.isValid(value, 'open');
+    if (token.isCancellationRequested) {
+      return;
+    }
+    if (!DialogError.getResult(error)) {
+      this.setErrorMessage(error);
+    } else {
+      const spinner = document.createElement('div');
+      spinner.classList.add('spinner');
+      const disposables = new DisposableCollection();
+      try {
+        this.toggleButtons(true);
+        disposables.push(Disposable.create(() => this.toggleButtons(false)));
+
+        const closeParent = this.closeCrossNode.parentNode;
+        closeParent?.removeChild(this.closeCrossNode);
+        disposables.push(
+          Disposable.create(() => {
+            closeParent?.appendChild(this.closeCrossNode);
+          })
+        );
+
+        this.errorMessageNode.classList.add('progress');
+        disposables.push(
+          Disposable.create(() =>
+            this.errorMessageNode.classList.remove('progress')
+          )
+        );
+
+        const errorParent = this.errorMessageNode.parentNode;
+        errorParent?.insertBefore(spinner, this.errorMessageNode);
+        disposables.push(
+          Disposable.create(() => errorParent?.removeChild(spinner))
+        );
+
+        const cancellationSource = new CancellationTokenSource();
+        const progress: Progress = {
+          id: v4(),
+          cancel: () => cancellationSource.cancel(),
+          report: (update: ProgressUpdate) => {
+            this.setProgressMessage(update);
+          },
+          result: Promise.resolve(value),
+        };
+        await this.withProgress(value)(progress);
+      } finally {
+        disposables.dispose();
+      }
+      this.resolve(value);
+      Widget.detach(this);
+    }
+  }
+
+  private toggleButtons(disabled: boolean): void {
+    if (this.acceptButton) {
+      this.acceptButton.disabled = disabled;
+    }
+    if (this.closeButton) {
+      this.closeButton.disabled = disabled;
+    }
+  }
+
+  private setProgressMessage(update: ProgressUpdate): void {
+    if (update.work && update.work.done === update.work.total) {
+      this.errorMessageNode.innerText = '';
+    } else {
+      if (update.message) {
+        this.errorMessageNode.innerText = update.message;
+      }
+    }
+  }
 }
