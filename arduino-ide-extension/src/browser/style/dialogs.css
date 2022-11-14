@@ -55,6 +55,7 @@
     align-items: center;
 }
 
+.p-Widget.dialogOverlay .dialogControl .spinner,
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow .spinner {
     background: var(--theia-icon-loading) center center no-repeat;
     animation: theia-spin 1.25s linear infinite;
@@ -63,11 +64,11 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow:first-child {
-    margin-top: 0px;    
+    margin-top: 0px;
     height: 32px;
 }
 
-.fl1{
+.fl1 {
     flex: 1;
 }
 
@@ -84,4 +85,9 @@
     .p-Widget.dialogOverlay .dialogBlock {
         max-height: 400px;
     }
+}
+
+.p-Widget.dialogOverlay .error.progress {
+    color: var(--theia-button-background);
+    align-self: center;
 }
