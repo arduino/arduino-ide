@@ -88,9 +88,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set autoscroll(autoscroll: boolean) {
     if (autoscroll === this._autoscroll) return;
     this._autoscroll = autoscroll;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { autoscroll },
-    });
     this.storeState().then(() => {
       this.onChangeEmitter.fire({
         property: 'autoscroll',
@@ -110,9 +107,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set timestamp(timestamp: boolean) {
     if (timestamp === this._timestamp) return;
     this._timestamp = timestamp;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { timestamp },
-    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'timestamp',
@@ -132,9 +126,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set lineEnding(lineEnding: MonitorModel.EOL) {
     if (lineEnding === this._lineEnding) return;
     this._lineEnding = lineEnding;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { lineEnding },
-    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'lineEnding',
@@ -150,9 +141,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set interpolate(interpolate: boolean) {
     if (interpolate === this._interpolate) return;
     this._interpolate = interpolate;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { interpolate },
-    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'interpolate',
@@ -168,9 +156,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set darkTheme(darkTheme: boolean) {
     if (darkTheme === this._darkTheme) return;
     this._darkTheme = darkTheme;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { darkTheme },
-    });
     this.onChangeEmitter.fire({
       property: 'darkTheme',
       value: this._darkTheme,
@@ -184,9 +169,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set wsPort(wsPort: number) {
     if (wsPort === this._wsPort) return;
     this._wsPort = wsPort;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { wsPort },
-    });
     this.onChangeEmitter.fire({
       property: 'wsPort',
       value: this._wsPort,
@@ -200,9 +182,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set serialPort(serialPort: string) {
     if (serialPort === this._serialPort) return;
     this._serialPort = serialPort;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { serialPort },
-    });
     this.storeState().then(() =>
       this.onChangeEmitter.fire({
         property: 'serialPort',
@@ -218,9 +197,6 @@ export class MonitorModel implements FrontendApplicationContribution {
   set connected(connected: boolean) {
     if (connected === this._connected) return;
     this._connected = connected;
-    this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { connected },
-    });
     this.onChangeEmitter.fire({
       property: 'connected',
       value: this._connected,
