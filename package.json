@@ -79,7 +79,7 @@
     "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.5.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix",
+    "cortex-debug": "https://downloads.arduino.cc/marus25.cortex-debug/marus25.cortex-debug-1.5.1.vsix",
     "vscode-language-pack-bg": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-bg/1.48.3/file/MS-CEINTL.vscode-language-pack-bg-1.48.3.vsix",
     "vscode-language-pack-cs": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-cs/1.53.2/file/MS-CEINTL.vscode-language-pack-cs-1.53.2.vsix",
     "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.53.2/file/MS-CEINTL.vscode-language-pack-de-1.53.2.vsix",
