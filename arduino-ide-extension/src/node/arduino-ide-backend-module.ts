@@ -109,6 +109,8 @@ import {
 } from '../common/protocol/survey-service';
 import { IsTempSketch } from './is-temp-sketch';
 import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
+import { MessagingContribution } from './theia/core/messaging-contribution';
+import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -379,6 +381,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
 
   bind(IsTempSketch).toSelf().inSingletonScope();
+  rebind(MessagingService.Identifier)
+    .to(MessagingContribution)
+    .inSingletonScope();
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {
