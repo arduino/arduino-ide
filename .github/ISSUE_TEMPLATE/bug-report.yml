@@ -30,7 +30,7 @@ body:
       description: |
         Which version of the Arduino IDE are you using?
         See **Help > About Arduino IDE** in the Arduino IDE menus (**Arduino IDE > About Arduino IDE** on macOS).
-        This should be the latest [nightly build](https://github.com/arduino/arduino-ide#nightly-builds).
+        This should be the latest [nightly build](https://www.arduino.cc/en/software#nightly-builds).
     validations:
       required: true
   - type: dropdown
@@ -68,7 +68,7 @@ body:
       options:
         - label: I searched for previous reports in [the issue tracker](https://github.com/arduino/arduino-ide/issues?q=)
           required: true
-        - label: I verified the problem still occurs when using the latest [nightly build](https://github.com/arduino/arduino-ide#nightly-builds)
+        - label: I verified the problem still occurs when using the latest [nightly build](https://www.arduino.cc/en/software#nightly-builds)
           required: true
         - label: My report contains all necessary details
           required: true
