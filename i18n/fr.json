@@ -119,6 +119,9 @@
       "syncEditSketches": "Synchroniser et éditer vos croquis Arduino Cloud.",
       "visitArduinoCloud": "Visitez Arduino Cloud pour créer des croquis sut le cloud."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Impossible de fermer le web socket",
       "unableToConnectToWebSocket": "Impossible de se connecter au web socket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Réseau",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Afficher la sortie de débogage verbeuse pendant",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Localisation du croquis.",
       "sketchbook.showAllFiles": "Vrai pour montrer tous les fichiers croquis à l'intérieur du croquis. La valeur par défaut est faux.",
       "survey.notification": "Vrai si les utilisateurs doivent être avertis si une enquête est disponible. Vrai par défaut.",
@@ -385,7 +397,7 @@
       "exportBinary": "Exporter les binaires compilés",
       "moving": "Déplacement",
       "movingMsg": "Le fichier \"{0}\" à besoin d'être à l'intérieur d'un dossier de croquis appelé \"{1}\".\nCréer ce dossier, déplacer le fichier et continuer ?",
-      "new": "Nouveau",
+      "new": "New Sketch",
       "openFolder": "Ouvrir le dossier",
       "openRecent": "Ouvrir les récents",
       "openSketchInNewWindow": "Ouvrir le croquis dans une nouvelle fenêtre",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Impossible de trouver un champ utilisateur pour les cartes connectés",
       "verify": "Vérifier",
       "verifyOrCompile": "Vérifier / Compiler"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Enquête sur les réponses",

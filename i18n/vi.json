@@ -119,6 +119,9 @@
       "syncEditSketches": "Đồng bộ và chỉnh sửa các Arduino Cloud Sketch của bạn",
       "visitArduinoCloud": "Truy cập Arduino Cloud để tạo Cloud Sketch."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Mạng",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Hiển thị đầu ra chi tiết trong khi",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Địa điểm chứa sketchbook",
       "sketchbook.showAllFiles": "'True' để hiển thị tất cả các tệp sketch trong sketch. Mặc định là 'false'.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "Xuất tệp nhị phân đã biên dịch",
       "moving": "Chuyển",
       "movingMsg": "Tệp \"{0}\" cần phải được chứa trong thư mục sketch tên \"{1}\".\nTạo thư mục này, chuyển tệp tin vào đó, và tiếp tục?",
-      "new": "Tạo mới",
+      "new": "New Sketch",
       "openFolder": "Mở thư mục",
       "openRecent": "Mở gần đây",
       "openSketchInNewWindow": "Mở sketch trong cửa sổ mới",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Không thể tìm thấy các trường người dùng cho bo mạch đã kết nối",
       "verify": "Xác thực",
       "verifyOrCompile": "Xác thực/Biên dịch"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",

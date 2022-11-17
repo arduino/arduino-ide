@@ -119,6 +119,9 @@
       "syncEditSketches": "Arduino Cloud eskizlerinizi eşitleyin ve düzenleyin",
       "visitArduinoCloud": "Bulut Eskizleri oluşturmak için Arduino Cloud'u ziyaret edin."
     },
+    "cloudSketch": {
+      "new": "Yeni Uzak Eskiz"
+    },
     "common": {
       "all": "Tümü",
       "contributed": "Eklenen",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Websocket kapatılamadı ",
       "unableToConnectToWebSocket": "Websocket'e bağlanılamadı"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "İsim harfler, rakamlar veya altçizgiden oluşmalıdır. Azami uzunluk 36 karakterdir.",
+      "newSketchTitle": "Yeni bir Uzak Eskiz'in adı",
+      "notFound": "Uzak eskiz '{0}' çekilemedi. Böyle bir eskiz yok.",
+      "sketchAlreadyExists": "'{0}' adlı uzak eskiz zaten mevcut."
+    },
     "portProtocol": {
       "network": "Ağ",
       "serial": "Seri"
@@ -349,6 +358,9 @@
         "username": "Kullanıcı adı"
       },
       "showVerbose": "Ayrıntılı çıktıyı görüntüle",
+      "sketch": {
+        "inoBlueprint": "Örnek `.ino` dosyasının tam dosya yoludur. Açıldığında IDE'de oluşturulan her yeni eskizde bu örnek dosya içeriği kullanılır. Açılmadığında eskizler varsayılan Arduino içeriği ile oluşturulur. Ulaşılamayan örnek dosyalar yoksayılır. Bu ayarın etkili olması için **IDE'nin yeniden başlatılması** gerekir."
+      },
       "sketchbook.location": "Eskiz Defteri konumu",
       "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için açın. Varsayılan: kapalı.",
       "survey.notification": "Bir anket bulunduğunda kullanıcılara gösterilecekse açın. Varsayılan olarak açıktır.",
@@ -385,7 +397,7 @@
       "exportBinary": "Derlenmiş Dosyayı Dışa Aktar",
       "moving": "Taşınıyor",
       "movingMsg": "\"{0}\" dosyasının \"{1}\" isminde bir eskiz klasörünün içinde olması gerekiyor.\nKlasörü oluştur, dosyayı taşı ve devam et?",
-      "new": "Yeni",
+      "new": "Yeni Eskiz",
       "openFolder": "Klasörü Aç",
       "openRecent": "Yakın Geçmiş",
       "openSketchInNewWindow": "Eskizi Yeni Pencerede Aç",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Bağlı kart için kullanıcı alanları bulunamadı",
       "verify": "Doğrula",
       "verifyOrCompile": "Doğrula/Derle"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "Yeni Uzak Eskiz",
+      "newSketch": "Yeni Eskiz"
     },
     "survey": {
       "answerSurvey": "Anketi yanıtla",

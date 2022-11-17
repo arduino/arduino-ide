@@ -119,6 +119,9 @@
       "syncEditSketches": "סנכרון ועריכת הסקיצה בענן של ארדואינו",
       "visitArduinoCloud": "כנס.י לענן של ארדואינו ליצור סקיצה בענן"
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "הכל",
       "contributed": "נתרם",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "רשת",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Show verbose output during",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "ייצוא בינארי מקומפל.",
       "moving": "מעביר",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
-      "new": "חדש",
+      "new": "New Sketch",
       "openFolder": "פתח תיקיה",
       "openRecent": "נפתח לאחרונה",
       "openSketchInNewWindow": "Open Sketch in New Window",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "לא נמצאו שדות משתמש ללוח המחובר",
       "verify": "בדיקה",
       "verifyOrCompile": "בדיקה\\קומפילציה"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "ענה על סקר",

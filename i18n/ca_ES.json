@@ -119,6 +119,9 @@
       "syncEditSketches": "Tanca la sessió de sincronització i edita els teus programes del núvol Arduino",
       "visitArduinoCloud": "Visiteu Arduino Cloud per crear programes al núvol."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Xarxa",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Mostra la sortida detallada durant",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Ubicació del quadern de programes",
       "sketchbook.showAllFiles": "True per mostrar tots els fitxers del programa dins del programa. És fals per defecte.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "Exporta el binari compilat",
       "moving": "Movent-se",
       "movingMsg": "El fitxer \"{0}\" ha d'estar dins d'una carpeta deprograma anomenada \"{1}\".\nVoleu crear aquesta carpeta, moure el fitxer i continuar?",
-      "new": "Nou",
+      "new": "New Sketch",
       "openFolder": "Obrir carpeta",
       "openRecent": "Obre Recent",
       "openSketchInNewWindow": "Obriu el programa a una finestra nova",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "No s'han trobat camps d'usuari per a la tarja connectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",

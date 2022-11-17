@@ -119,6 +119,9 @@
       "syncEditSketches": "Синхронизировать и редактировать скетчи в Arduino Cloud",
       "visitArduinoCloud": "Посетите Arduino Cloud, чтобы создать скетчи в облаке."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Не удалось закрыть веб-сокет.",
       "unableToConnectToWebSocket": "Не удается подключиться к веб-сокету."
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Сеть",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Показывать детализированный вывод при",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Путь к альбому со скетчами",
       "sketchbook.showAllFiles": "True - показывать все файлы внутри скетча. По умолчанию - false.",
       "survey.notification": "Включите, если пользователи должны получать уведомления, когда появится новый опрос. Включено по умолчанию.",
@@ -385,7 +397,7 @@
       "exportBinary": "Экспортировать скомпилированный бинарный файл",
       "moving": "Переместить",
       "movingMsg": "Файл «{0}» должен быть в папке с именем скетча «{1}». \nСоздать эту папку, переместить файл и продолжить?",
-      "new": "Новый скетч",
+      "new": "New Sketch",
       "openFolder": "Открыть папку",
       "openRecent": "Открыть предыдущий",
       "openSketchInNewWindow": "Открыть скетч в новом окне",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Не могу найти пользовательские поля для подключенной платы",
       "verify": "Проверить",
       "verifyOrCompile": "Проверить/Скомпилировать"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Ответить на опрос",

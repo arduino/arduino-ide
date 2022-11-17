@@ -83,7 +83,7 @@
     },
     "cloud": {
       "account": "계정",
-      "chooseSketchVisibility": "Choose visibility of your Sketch:",
+      "chooseSketchVisibility": "보여질 스케치를 선택하세요",
       "connected": "연결됨",
       "continue": "계속",
       "donePulling": "pulling 완료 ‘{0}’.",
@@ -119,16 +119,19 @@
       "syncEditSketches": "아두이노 클라우드 스케치 동기화 및 편집",
       "visitArduinoCloud": "아두이노 클라우드를 방문하여 클라우드 스케치를 만드십시오."
     },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
+    },
     "common": {
       "all": "전체",
-      "contributed": "Contributed",
+      "contributed": "공헌된",
       "installManually": "수동설치",
       "later": "나중에",
       "noBoardSelected": "선택된 보드 없음",
       "notConnected": "[연결되지 않음]",
       "offlineIndicator": "오프라인 상태인 것 같습니다. 인터넷 연결이 없으면 Arduino CLI가 필요한 리소스를 다운로드하지 못하고 오작동을 일으킬 수 있습니다. 인터넷에 연결하고 애플리케이션을 다시 시작해주세요.",
       "oldFormat": "'{0}' 파일은 오래된 `.pde` 확장자로 되어있어요. 새로운 `.ino` 확장자로 변경하시겠어요?",
-      "partner": "Partner",
+      "partner": "파트너",
       "processing": "처리 중",
       "recommended": "추천됨",
       "retired": "Retired",
@@ -144,7 +147,7 @@
     "component": {
       "boardsIncluded": "이 패키지에 포함된 보드:",
       "by": "by",
-      "filterSearch": "Filter your search...",
+      "filterSearch": "필터 검색...",
       "install": "설치",
       "installed": "설치됨",
       "moreInfo": "더 많은 정보",
@@ -163,9 +166,9 @@
     "core": {
       "compilerWarnings": {
         "all": "전체",
-        "default": "Default",
-        "more": "More",
-        "none": "None"
+        "default": "기본",
+        "more": "추가",
+        "none": "없음"
       }
     },
     "coreContribution": {
@@ -253,10 +256,10 @@
     "library": {
       "addZip": ".ZIP 라이브러리 추가...",
       "arduinoLibraries": "아두이노 라이브러리",
-      "contributedLibraries": "Contributed libraries",
+      "contributedLibraries": "공헌된 라이브러리들",
       "include": "라이브러리 포함",
       "installAll": "모두 설치",
-      "installLibraryDependencies": "Install library dependencies",
+      "installLibraryDependencies": "라이브러리 종속성 설치",
       "installMissingDependencies": "누락된 모든 종속성을 설치하시겠습니까?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
       "installWithoutDependencies": "Install without dependencies",
@@ -267,7 +270,7 @@
       "needsMultipleDependencies": "라이브러리 <b>{0}:{1}</b> 는 현재 설치되지 않은 다른 종속성이 필요합니다.",
       "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
       "overwriteExistingLibrary": "기존 라이브러리를 덮어쓰시겠습니까?",
-      "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
+      "successfullyInstalledZipLibrary": "라이브러리가 {0} 저장소에 성공적으로 설치됨",
       "title": "라이브러리 매니저",
       "uninstalledSuccessfully": "라이브러리가 성공적으로 제거됨 {0}:{1}",
       "zipLibrary": "라이브러리"
@@ -291,7 +294,7 @@
       "installed": "설치됨"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "고급",
       "sketch": "스케치",
       "tools": "도구"
     },
@@ -299,9 +302,15 @@
       "unableToCloseWebSocket": "웹소켓을 닫을 수 없습니다.",
       "unableToConnectToWebSocket": "웹소켓에 연결 할 수 없습니다."
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "네트워크",
-      "serial": "Serial"
+      "serial": "시리얼"
     },
     "preferences": {
       "additionalManagerURLs": "추가 보드 관리자 URL",
@@ -349,6 +358,9 @@
         "username": "사용자이름"
       },
       "showVerbose": "출력 중 자세한  표시",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "스케치북 위치",
       "sketchbook.showAllFiles": "스케치 내부의 모든 스케치 파일을 표시하려면 True입니다. 기본은 false입니다.",
       "survey.notification": "설문조사를 사용할 수 있는 경우 사용자에게 알림을 보내야 하는 경우 True입니다. 기본은 True입니다.",
@@ -363,18 +375,18 @@
     "selectZip": "추가하려는 라이브러리가 포함된 zip 파일을 선택하세요.",
     "serial": {
       "autoscroll": "자동스크롤",
-      "carriageReturn": "Carriage Return",
+      "carriageReturn": "캐리지 리턴",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "새 줄",
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "연결되지 않음. 자동으로 연결할 보드와 포트를 선택합니다.",
       "openSerialPlotter": "시리얼 플로터",
-      "timestamp": "Timestamp",
-      "toggleTimestamp": "Toggle Timestamp"
+      "timestamp": "타임스탬프",
+      "toggleTimestamp": "타임스탬프 표시"
     },
     "sketch": {
-      "archiveSketch": "Archive Sketch",
+      "archiveSketch": "스케치 압축저장",
       "cantOpen": "이름이 \"{0}\" 인 폴더가 이미 존재합니다. 스케치를 열 수 없습니다.",
       "close": "스케치를 닫으시겠습니까?",
       "compile": "스케치 컴파일중...",
@@ -385,7 +397,7 @@
       "exportBinary": "컴파일된 바이너리 내보내기",
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
-      "new": "새 파일",
+      "new": "New Sketch",
       "openFolder": "폴더 열기",
       "openRecent": "최근 파일 열기",
       "openSketchInNewWindow": "새 창에서 스케치 열기",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "연결된 보드에서 사용자 영역을 찾을 수 없습니다",
       "verify": "확인",
       "verifyOrCompile": "확인/컴파일"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "설문조사 응답",

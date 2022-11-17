@@ -90,7 +90,7 @@
       "donePushing": "‘{0}’のプッシュが完了しました。",
       "embed": "埋め込み:",
       "emptySketchbook": "スケッチブックは空です",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "クラウドへ",
       "learnMore": "詳細はこちら",
       "link": "リンク:",
       "notYetPulled": "クラウドにプッシュできません。まだプルされていません。",
@@ -118,6 +118,9 @@
       "sync": "同期",
       "syncEditSketches": "Arduinoクラウドスケッチの同期と編集",
       "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
+    },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
     },
     "common": {
       "all": "全て",
@@ -256,10 +259,10 @@
       "contributedLibraries": "提供されたライブラリ",
       "include": "ライブラリをインクルード",
       "installAll": "全てをインストール",
-      "installLibraryDependencies": "Install library dependencies",
+      "installLibraryDependencies": "ライブラリの依存関係をインストール",
       "installMissingDependencies": "不足している全ての依存関係をインストールしますか？",
       "installOneMissingDependency": "不足している依存関係をインストールしますか？",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "依存関係なしにインストール",
       "installedSuccessfully": "ライブラリ{0}:{1}のインストールに成功しました。",
       "libraryAlreadyExists": "ライブラリはすでに存在しています。上書きしますか？",
       "manageLibraries": "ライブラリを管理...",
@@ -298,6 +301,12 @@
     "monitor": {
       "unableToCloseWebSocket": "websocketを閉じることができません",
       "unableToConnectToWebSocket": "websocketに接続することができません"
+    },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
     },
     "portProtocol": {
       "network": "ネットワーク",
@@ -349,6 +358,9 @@
         "username": "ユーザ名"
       },
       "showVerbose": "より詳細な情報を表示する",
+      "sketch": {
+        "inoBlueprint": "デフォルトの `.ino` ブループリント・ファイルへの絶対ファイルシステムパス。指定された場合、IDEによって作成されるすべての新しいスケッチに、ブループリント・ファイルの内容が使用されます。指定されない場合、スケッチはArduinoデフォルトの内容で生成されます。アクセスできないブループリント・ファイルは無視されます。この設定を有効にするには**IDE の再起動が必要**です。"
+      },
       "sketchbook.location": "スケッチブックの場所",
       "sketchbook.showAllFiles": "スケッチ内のすべてのスケッチファイルを表示するにはtrueを指定。デフォルトではfalse。",
       "survey.notification": "アンケートが利用可能になったとき、通知を受け取る場合はTrueを指定します。デフォルトではTrue。",
@@ -385,7 +397,7 @@
       "exportBinary": "コンパイル済みバイナリをエクスポート",
       "moving": "移動",
       "movingMsg": "ファイル\"{0}\"は、\"{1}\"という名前のスケッチフォルダの中にあることが必要です。\nこのフォルダを作成し、ファイルを移動させ、継続しますか？",
-      "new": "新規",
+      "new": "New Sketch",
       "openFolder": "フォルダを開く",
       "openRecent": "最近使った項目を開く",
       "openSketchInNewWindow": "新規ウィンドウでスケッチを開く",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "接続されたボードのユーザーフィールドが見つかりません。",
       "verify": "検証",
       "verifyOrCompile": "検証・コンパイル"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "アンケートに回答する",

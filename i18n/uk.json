@@ -8,18 +8,18 @@
       "board": "Плата {0}",
       "boardConfigDialogTitle": "Оберіть іншу плату або  порт",
       "boardInfo": "Інформація про плату",
-      "boards": "boards",
+      "boards": "плати",
       "configDialog1": "Оберіть плату та порт якщо бажаєте завантажити скетч",
-      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "configDialog2": "Якщо вибрати лише плату, ви зможете скомпілювати, але не завантажити свій ескіз.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Disconnected",
+      "disconnected": "Від’єднано",
       "getBoardInfo": "Отримати інформацію про плату",
       "inSketchbook": " (in Sketchbook)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
-      "noBoardsFound": "No boards found for \"{0}\"",
+      "noBoardsFound": "Для \"{0}\" не знайдено плат",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
-      "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "No ports selected for board: '{0}'.",
+      "noPortsDiscovered": "Порти не знайдено",
+      "noPortsSelected": "Немає вибраних портів для плати: '{0}'.",
       "noneSelected": "Не обрана плата",
       "openBoardsConfig": "Оберіть іншу плату або порт",
       "platformMissing": "The platform for the selected '{0}' board is not installed.",
@@ -29,9 +29,9 @@
       "ports": "ports",
       "programmer": "Programmer",
       "reselectLater": "Reselect later",
-      "searchBoard": "Search board",
+      "searchBoard": "Шукати плату",
       "selectBoard": "Оберіть плату",
-      "selectBoardForInfo": "Please select a board to obtain board info.",
+      "selectBoardForInfo": "Виберіть плату, щоб отримати інформацію про плату.",
       "selectPortForInfo": "Please select a port to obtain board info.",
       "showAllAvailablePorts": "Shows all available ports when enabled",
       "showAllPorts": "Show all ports",
@@ -118,6 +118,9 @@
       "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
+    },
+    "cloudSketch": {
+      "new": "New Remote Sketch"
     },
     "common": {
       "all": "Все",
@@ -207,7 +210,7 @@
       "couldNotInitializeExamples": "Could not initialize built-in examples.",
       "customLibrary": "Examples from Custom Libraries",
       "for": "Examples for {0}",
-      "forAny": "Examples for any board",
+      "forAny": "Приклади для будь-якої плати",
       "menu": "Приклади"
     },
     "firmware": {
@@ -299,6 +302,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Мережа",
       "serial": "Serial"
@@ -349,6 +358,9 @@
         "username": "Username"
       },
       "showVerbose": "Show verbose output during",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -385,7 +397,7 @@
       "exportBinary": "Export Compiled Binary",
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
-      "new": "Новий",
+      "new": "New Sketch",
       "openFolder": "Відкрити папку",
       "openRecent": "Open Recent",
       "openSketchInNewWindow": "Open Sketch in New Window",
@@ -403,6 +415,10 @@
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Перевірити ",
       "verifyOrCompile": "Verify/Compile"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",
