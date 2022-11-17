@@ -599,28 +599,6 @@ function deserialize_cc_arduino_cli_commands_v1_NewSketchResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_cc_arduino_cli_commands_v1_OutdatedRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.OutdatedRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_OutdatedRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_OutdatedResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.OutdatedResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_OutdatedResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_cc_arduino_cli_commands_v1_PlatformDownloadRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_core_pb.PlatformDownloadRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.PlatformDownloadRequest');
@@ -775,28 +753,6 @@ function deserialize_cc_arduino_cli_commands_v1_SupportedUserFieldsResponse(buff
   return cc_arduino_cli_commands_v1_upload_pb.SupportedUserFieldsResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.UpdateCoreLibrariesIndexRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.UpdateCoreLibrariesIndexResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_cc_arduino_cli_commands_v1_UpdateIndexRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.UpdateIndexRequest');
@@ -839,28 +795,6 @@ function serialize_cc_arduino_cli_commands_v1_UpdateLibrariesIndexResponse(arg) 
 
 function deserialize_cc_arduino_cli_commands_v1_UpdateLibrariesIndexResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_UpgradeRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.UpgradeRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_UpgradeRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_UpgradeResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.UpgradeResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_UpgradeResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_cc_arduino_cli_commands_v1_UploadRequest(arg) {
@@ -1014,42 +948,6 @@ updateLibrariesIndex: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_UpdateLibrariesIndexRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_UpdateLibrariesIndexResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_UpdateLibrariesIndexResponse,
-  },
-  // Update packages indexes for both Cores and Libraries
-updateCoreLibrariesIndex: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/UpdateCoreLibrariesIndex',
-    requestStream: false,
-    responseStream: true,
-    requestType: cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest,
-    responseType: cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_UpdateCoreLibrariesIndexResponse,
-  },
-  // Outdated returns a message with a list of outdated Cores and Libraries
-outdated: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Outdated',
-    requestStream: false,
-    responseStream: false,
-    requestType: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest,
-    responseType: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_OutdatedRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_OutdatedRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_OutdatedResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_OutdatedResponse,
-  },
-  // Upgrade both Cores and Libraries
-upgrade: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Upgrade',
-    requestStream: false,
-    responseStream: true,
-    requestType: cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest,
-    responseType: cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_UpgradeRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_UpgradeRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_UpgradeResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_UpgradeResponse,
   },
   // Get the version of Arduino CLI in use.
 version: {

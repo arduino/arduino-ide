@@ -22,9 +22,6 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     destroy: IArduinoCoreServiceService_IDestroy;
     updateIndex: IArduinoCoreServiceService_IUpdateIndex;
     updateLibrariesIndex: IArduinoCoreServiceService_IUpdateLibrariesIndex;
-    updateCoreLibrariesIndex: IArduinoCoreServiceService_IUpdateCoreLibrariesIndex;
-    outdated: IArduinoCoreServiceService_IOutdated;
-    upgrade: IArduinoCoreServiceService_IUpgrade;
     version: IArduinoCoreServiceService_IVersion;
     newSketch: IArduinoCoreServiceService_INewSketch;
     loadSketch: IArduinoCoreServiceService_ILoadSketch;
@@ -105,33 +102,6 @@ interface IArduinoCoreServiceService_IUpdateLibrariesIndex extends grpc.MethodDe
     requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest>;
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
-}
-interface IArduinoCoreServiceService_IUpdateCoreLibrariesIndex extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/UpdateCoreLibrariesIndex";
-    requestStream: false;
-    responseStream: true;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-}
-interface IArduinoCoreServiceService_IOutdated extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Outdated";
-    requestStream: false;
-    responseStream: false;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse>;
-}
-interface IArduinoCoreServiceService_IUpgrade extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Upgrade";
-    requestStream: false;
-    responseStream: true;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
 }
 interface IArduinoCoreServiceService_IVersion extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.VersionRequest, cc_arduino_cli_commands_v1_commands_pb.VersionResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/Version";
@@ -448,9 +418,6 @@ export interface IArduinoCoreServiceServer {
     destroy: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.DestroyRequest, cc_arduino_cli_commands_v1_commands_pb.DestroyResponse>;
     updateIndex: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     updateLibrariesIndex: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
-    updateCoreLibrariesIndex: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-    outdated: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse>;
-    upgrade: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
     version: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.VersionRequest, cc_arduino_cli_commands_v1_commands_pb.VersionResponse>;
     newSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.NewSketchRequest, cc_arduino_cli_commands_v1_commands_pb.NewSketchResponse>;
     loadSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse>;
@@ -500,13 +467,6 @@ export interface IArduinoCoreServiceClient {
     updateIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     updateLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
     updateLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
-    updateCoreLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-    updateCoreLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-    outdated(request: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse) => void): grpc.ClientUnaryCall;
-    outdated(request: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse) => void): grpc.ClientUnaryCall;
-    outdated(request: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse) => void): grpc.ClientUnaryCall;
-    upgrade(request: cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
-    upgrade(request: cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
     version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
@@ -609,13 +569,6 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public updateIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateIndexResponse>;
     public updateLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
     public updateLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateLibrariesIndexResponse>;
-    public updateCoreLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-    public updateCoreLibrariesIndex(request: cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpdateCoreLibrariesIndexResponse>;
-    public outdated(request: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse) => void): grpc.ClientUnaryCall;
-    public outdated(request: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse) => void): grpc.ClientUnaryCall;
-    public outdated(request: cc_arduino_cli_commands_v1_commands_pb.OutdatedRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.OutdatedResponse) => void): grpc.ClientUnaryCall;
-    public upgrade(request: cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
-    public upgrade(request: cc_arduino_cli_commands_v1_commands_pb.UpgradeRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_commands_pb.UpgradeResponse>;
     public version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     public version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
     public version(request: cc_arduino_cli_commands_v1_commands_pb.VersionRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.VersionResponse) => void): grpc.ClientUnaryCall;
