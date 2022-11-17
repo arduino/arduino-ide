@@ -12,7 +12,6 @@ import {
   CreateRequest,
   InitRequest,
   InitResponse,
-  UpdateCoreLibrariesIndexResponse,
   UpdateIndexRequest,
   UpdateIndexResponse,
   UpdateLibrariesIndexRequest,
@@ -347,10 +346,7 @@ export class CoreClientProvider {
   }
 
   private async doUpdateIndex<
-    R extends
-      | UpdateIndexResponse
-      | UpdateLibrariesIndexResponse
-      | UpdateCoreLibrariesIndexResponse // not used by IDE2
+    R extends UpdateIndexResponse | UpdateLibrariesIndexResponse
   >(
     responseProvider: () => grpc.ClientReadableStream<R>,
     progressHandler?: IndexesUpdateProgressHandler,
