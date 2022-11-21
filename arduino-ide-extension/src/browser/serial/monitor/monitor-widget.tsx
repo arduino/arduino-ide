@@ -74,6 +74,10 @@ export class MonitorWidget extends ReactWidget {
     this.monitorManagerProxy.startMonitor();
   }
 
+  protected override onAfterAttach(msg: Message): void {
+    this.monitorManagerProxy.setMonitorWidgetStatus(this.isAttached);
+  }
+
   onMonitorSettingsDidChange(settings: MonitorSettings): void {
     this.settings = {
       ...this.settings,
@@ -91,6 +95,7 @@ export class MonitorWidget extends ReactWidget {
   }
 
   override dispose(): void {
+    this.monitorManagerProxy.setMonitorWidgetStatus(this.isAttached);
     super.dispose();
   }
 

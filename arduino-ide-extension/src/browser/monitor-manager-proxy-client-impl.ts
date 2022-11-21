@@ -46,6 +46,7 @@ export class MonitorManagerProxyClientImpl
   private wsPort?: number;
   private lastConnectedBoard: BoardsConfig.Config;
   private onBoardsConfigChanged: Disposable | undefined;
+  private isMonitorWidgetOpen = false;
 
   getWebSocketPort(): number | undefined {
     return this.wsPort;
@@ -172,6 +173,14 @@ export class MonitorManagerProxyClientImpl
 
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {
     return this.server().getCurrentSettings(board, port);
+  }
+
+  setMonitorWidgetStatus(value: boolean): void {
+    this.isMonitorWidgetOpen = value;
+  }
+
+  getMonitorWidgetStatus(): boolean {
+    return this.isMonitorWidgetOpen;
   }
 
   send(message: string): void {
