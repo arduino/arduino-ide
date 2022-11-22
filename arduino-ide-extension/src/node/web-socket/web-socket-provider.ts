@@ -1,5 +1,5 @@
 import { Event } from '@theia/core/lib/common/event';
-import * as WebSocket from 'ws';
+import * as WebSocket from '@theia/core/shared/ws';
 
 export const WebSocketProvider = Symbol('WebSocketProvider');
 export interface WebSocketProvider {

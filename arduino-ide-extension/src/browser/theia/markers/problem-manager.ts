@@ -3,7 +3,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { Diagnostic } from 'vscode-languageserver-types';
+import { Diagnostic } from '@theia/core/shared/vscode-languageserver-types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core';
 import { Marker } from '@theia/markers/lib/common/marker';

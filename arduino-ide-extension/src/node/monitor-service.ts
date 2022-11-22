@@ -12,7 +12,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
 import { CoreClientAware } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
-import { Port as RpcPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
   MonitorSettings,
   PluggableMonitorSettings,
