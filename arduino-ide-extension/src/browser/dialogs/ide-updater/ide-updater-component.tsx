@@ -1,7 +1,6 @@
 import { nls } from '@theia/core/lib/common';
-import { shell } from 'electron';
+import { shell } from '@theia/core/electron-shared/@electron/remote';
 import * as React from '@theia/core/shared/react';
-import { createRoot } from '@theia/core/shared/react-dom/client';
 import ReactMarkdown from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
@@ -28,32 +27,19 @@ export const IDEUpdaterComponent = ({
   },
 }: IDEUpdaterComponentProps): React.ReactElement => {
   const { version, releaseNotes } = updateInfo;
-  const changelogDivRef =
-    React.useRef() as React.MutableRefObject<HTMLDivElement>;
-  const changelogRoot = createRoot(changelogDivRef.current);
+  const [changelog, setChangelog] = React.useState<string>('');
   React.useEffect(() => {
-    if (!!releaseNotes && changelogDivRef.current) {
-      let changelog: string;
-      if (typeof releaseNotes === 'string') changelog = releaseNotes;
-      else
-        changelog = releaseNotes.reduce((acc, item) => {
-          return item.note ? (acc += `${item.note}\n\n`) : acc;
-        }, '');
-      changelogRoot.render(
-        <ReactMarkdown
-          components={{
-            a: ({ href, children, ...props }) => (
-              <a onClick={() => href && shell.openExternal(href)} {...props}>
-                {children}
-              </a>
-            ),
-          }}
-        >
-          {changelog}
-        </ReactMarkdown>
+    if (releaseNotes) {
+      setChangelog(
+        typeof releaseNotes === 'string'
+          ? releaseNotes
+          : releaseNotes.reduce(
+              (acc, item) => (item.note ? (acc += `${item.note}\n\n`) : acc),
+              ''
+            )
       );
     }
-  }, [updateInfo]);
+  }, [releaseNotes, changelog]);
 
   const DownloadCompleted: () => React.ReactElement = () => (
     <div className="ide-updater-dialog--downloaded">
@@ -106,9 +92,24 @@ export const IDEUpdaterComponent = ({
             version
           )}
         </div>
-        {releaseNotes && (
+        {changelog && (
           <div className="dialogRow changelog-container">
-            <div className="changelog" ref={changelogDivRef} />
+            <div className="changelog">
+              <ReactMarkdown
+                components={{
+                  a: ({ href, children, ...props }) => (
+                    <a
+                      onClick={() => href && shell.openExternal(href)}
+                      {...props}
+                    >
+                      {children}
+                    </a>
+                  ),
+                }}
+              >
+                {changelog}
+              </ReactMarkdown>
+            </div>
           </div>
         )}
       </div>

@@ -262,7 +262,6 @@ import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-client-impl';
 import {
   IDEUpdaterDialog,
   IDEUpdaterDialogProps,
-  IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 import { MonitorModel } from './monitor-model';
@@ -910,7 +909,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     title: 'UploadCertificate',
   });
 
-  bind(IDEUpdaterDialogWidget).toSelf().inSingletonScope();
   bind(IDEUpdaterDialog).toSelf().inSingletonScope();
   bind(IDEUpdaterDialogProps).toConstantValue({
     title: 'IDEUpdater',
