@@ -40,6 +40,7 @@
     "@theia/scm": "1.31.1",
     "@theia/search-in-workspace": "1.31.1",
     "@theia/terminal": "1.31.1",
+    "@theia/typehierarchy": "1.31.1",
     "@theia/workspace": "1.31.1",
     "@tippyjs/react": "^4.2.5",
     "@types/auth0-js": "^9.14.0",

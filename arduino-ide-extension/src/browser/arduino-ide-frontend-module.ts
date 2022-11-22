@@ -329,6 +329,10 @@ import { ThemeService } from './theia/core/theming';
 import { ThemeService as TheiaThemeService } from '@theia/core/lib/browser/theming';
 import { MonacoThemingService } from './theia/monaco/monaco-theming-service';
 import { MonacoThemingService as TheiaMonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
+import { TypeHierarchyServiceProvider } from './theia/typehierarchy/type-hierarchy-service';
+import { TypeHierarchyServiceProvider as TheiaTypeHierarchyServiceProvider } from '@theia/typehierarchy/lib/browser/typehierarchy-service';
+import { TypeHierarchyContribution } from './theia/typehierarchy/type-hierarchy-contribution';
+import { TypeHierarchyContribution as TheiaTypeHierarchyContribution } from '@theia/typehierarchy/lib/browser/typehierarchy-contribution';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -951,4 +955,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaThemeService).toService(ThemeService);
   bind(MonacoThemingService).toSelf().inSingletonScope();
   rebind(TheiaMonacoThemingService).toService(MonacoThemingService);
+
+  // disable type-hierarchy support
+  // https://github.com/eclipse-theia/theia/commit/16c88a584bac37f5cf3cc5eb92ffdaa541bda5be
+  bind(TypeHierarchyServiceProvider).toSelf().inSingletonScope();
+  rebind(TheiaTypeHierarchyServiceProvider).toService(
+    TypeHierarchyServiceProvider
+  );
+  bind(TypeHierarchyContribution).toSelf().inSingletonScope();
+  rebind(TheiaTypeHierarchyContribution).toService(TypeHierarchyContribution);
 });
