@@ -1,5 +1,5 @@
 import '../../src/browser/style/index.css';
-import { ContainerModule } from '@theia/core/shared/inversify';
+import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
@@ -331,6 +331,18 @@ import { TypeHierarchyServiceProvider } from './theia/typehierarchy/type-hierarc
 import { TypeHierarchyServiceProvider as TheiaTypeHierarchyServiceProvider } from '@theia/typehierarchy/lib/browser/typehierarchy-service';
 import { TypeHierarchyContribution } from './theia/typehierarchy/type-hierarchy-contribution';
 import { TypeHierarchyContribution as TheiaTypeHierarchyContribution } from '@theia/typehierarchy/lib/browser/typehierarchy-contribution';
+import { DefaultDebugSessionFactory } from './theia/debug/debug-session-contribution';
+import { DebugSessionFactory } from '@theia/debug/lib/browser/debug-session-contribution';
+import { DebugToolbar } from './theia/debug/debug-toolbar-widget';
+import { DebugToolBar as TheiaDebugToolbar } from '@theia/debug/lib/browser/view/debug-toolbar-widget';
+import { PluginMenuCommandAdapter } from './theia/plugin-ext/plugin-menu-command-adapter';
+import { PluginMenuCommandAdapter as TheiaPluginMenuCommandAdapter } from '@theia/plugin-ext/lib/main/browser/menus/plugin-menu-command-adapter';
+import { DebugSessionManager } from './theia/debug/debug-session-manager';
+import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
+import { DebugWidget } from '@theia/debug/lib/browser/view/debug-widget';
+import { DebugViewModel } from '@theia/debug/lib/browser/view/debug-view-model';
+import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-widget';
+import { DebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -960,4 +972,36 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   );
   bind(TypeHierarchyContribution).toSelf().inSingletonScope();
   rebind(TheiaTypeHierarchyContribution).toService(TypeHierarchyContribution);
+
+  // patched the debugger for `cortex-debug@1.5.1`
+  // https://github.com/eclipse-theia/theia/issues/11871
+  // https://github.com/eclipse-theia/theia/issues/11879
+  // https://github.com/eclipse-theia/theia/issues/11880
+  // https://github.com/eclipse-theia/theia/issues/11885
+  // https://github.com/eclipse-theia/theia/issues/11886
+  // https://github.com/eclipse-theia/theia/issues/11916
+  // based on: https://github.com/eclipse-theia/theia/compare/master...kittaakos:theia:%2311871
+  bind(DefaultDebugSessionFactory).toSelf().inSingletonScope();
+  rebind(DebugSessionFactory).toService(DefaultDebugSessionFactory);
+  bind(DebugSessionManager).toSelf().inSingletonScope();
+  rebind(TheiaDebugSessionManager).toService(DebugSessionManager);
+  bind(DebugToolbar).toSelf().inSingletonScope();
+  rebind(TheiaDebugToolbar).toService(DebugToolbar);
+  bind(PluginMenuCommandAdapter).toSelf().inSingletonScope();
+  rebind(TheiaPluginMenuCommandAdapter).toService(PluginMenuCommandAdapter);
+  bind(WidgetFactory)
+    .toDynamicValue(({ container }) => ({
+      id: DebugWidget.ID,
+      createWidget: () => {
+        const child = new Container({ defaultScope: 'Singleton' });
+        child.parent = container;
+        child.bind(DebugViewModel).toSelf();
+        child.bind(DebugToolbar).toSelf(); // patched toolbar
+        child.bind(DebugSessionWidget).toSelf();
+        child.bind(DebugConfigurationWidget).toSelf();
+        child.bind(DebugWidget).toSelf();
+        return child.get(DebugWidget);
+      },
+    }))
+    .inSingletonScope();
 });
