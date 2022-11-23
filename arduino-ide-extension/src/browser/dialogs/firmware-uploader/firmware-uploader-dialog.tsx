@@ -67,15 +67,17 @@ export class UploadFirmwareDialog extends ReactDialog<void> {
 
   protected override render(): React.ReactNode {
     return (
-      <form>
-        <FirmwareUploaderComponent
-          availableBoards={this.availableBoards}
-          firmwareUploader={this.arduinoFirmwareUploader}
-          flashFirmware={this.flashFirmware.bind(this)}
-          updatableFqbns={this.updatableFqbns}
-          isOpen={this.isOpen}
-        />
-      </form>
+      <div>
+        <form>
+          <FirmwareUploaderComponent
+            availableBoards={this.availableBoards}
+            firmwareUploader={this.arduinoFirmwareUploader}
+            flashFirmware={this.flashFirmware.bind(this)}
+            updatableFqbns={this.updatableFqbns}
+            isOpen={this.isOpen}
+          />
+        </form>
+      </div>
     );
   }
 
@@ -83,11 +85,6 @@ export class UploadFirmwareDialog extends ReactDialog<void> {
     const firstButton = this.node.querySelector('button');
     firstButton?.focus();
     super.onAfterAttach(msg);
-    this.update();
-  }
-
-  protected override onUpdateRequest(msg: Message): void {
-    super.onUpdateRequest(msg);
     this.update();
   }
 
