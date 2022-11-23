@@ -5,10 +5,8 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
-import { AbstractDialog } from '../../theia/dialogs/dialogs';
-import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { ReactDialog } from '../../theia/dialogs/dialogs';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import {
   AvailableBoard,
   BoardsServiceProvider,
@@ -23,26 +21,30 @@ import { Port } from '../../../common/protocol';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
-export class UploadFirmwareDialogWidget extends ReactWidget {
+export class UploadFirmwareDialogProps extends DialogProps {}
+
+@injectable()
+export class UploadFirmwareDialog extends ReactDialog<void> {
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
-
+  private readonly boardsServiceClient: BoardsServiceProvider;
   @inject(ArduinoFirmwareUploader)
-  protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
-
+  private readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
   @inject(FrontendApplicationStateService)
   private readonly appStatusService: FrontendApplicationStateService;
 
-  protected updatableFqbns: string[] = [];
-  protected availableBoards: AvailableBoard[] = [];
-  protected isOpen = new Object();
+  private updatableFqbns: string[] = [];
+  private availableBoards: AvailableBoard[] = [];
+  private isOpen = new Object();
+  private busy = false;
 
-  public busyCallback = (busy: boolean) => {
-    return;
-  };
-
-  constructor() {
-    super();
+  constructor(
+    @inject(UploadFirmwareDialogProps)
+    protected override readonly props: UploadFirmwareDialogProps
+  ) {
+    super({ title: UploadFirmware.Commands.OPEN.label || '' });
+    this.node.id = 'firmware-uploader-dialog-container';
+    this.contentNode.classList.add('firmware-uploader-dialog');
+    this.acceptButton = undefined;
   }
 
   @postConstruct()
@@ -59,19 +61,11 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
     });
   }
 
-  protected flashFirmware(firmware: FirmwareInfo, port: Port): Promise<any> {
-    this.busyCallback(true);
-    return this.arduinoFirmwareUploader
-      .flash(firmware, port)
-      .finally(() => this.busyCallback(false));
+  get value(): void {
+    return;
   }
 
-  protected override onCloseRequest(msg: Message): void {
-    super.onCloseRequest(msg);
-    this.isOpen = new Object();
-  }
-
-  protected render(): React.ReactNode {
+  protected override render(): React.ReactNode {
     return (
       <form>
         <FirmwareUploaderComponent
@@ -84,54 +78,20 @@ export class UploadFirmwareDialogWidget extends ReactWidget {
       </form>
     );
   }
-}
-
-@injectable()
-export class UploadFirmwareDialogProps extends DialogProps {}
-
-@injectable()
-export class UploadFirmwareDialog extends AbstractDialog<void> {
-  @inject(UploadFirmwareDialogWidget)
-  protected readonly widget: UploadFirmwareDialogWidget;
-
-  private busy = false;
-
-  constructor(
-    @inject(UploadFirmwareDialogProps)
-    protected override readonly props: UploadFirmwareDialogProps
-  ) {
-    super({ title: UploadFirmware.Commands.OPEN.label || '' });
-    this.node.id = 'firmware-uploader-dialog-container';
-    this.contentNode.classList.add('firmware-uploader-dialog');
-    this.acceptButton = undefined;
-  }
-
-  get value(): void {
-    return;
-  }
 
   protected override onAfterAttach(msg: Message): void {
-    if (this.widget.isAttached) {
-      Widget.detach(this.widget);
-    }
-    Widget.attach(this.widget, this.contentNode);
-    const firstButton = this.widget.node.querySelector('button');
+    const firstButton = this.node.querySelector('button');
     firstButton?.focus();
-    this.widget.busyCallback = this.busyCallback.bind(this);
     super.onAfterAttach(msg);
     this.update();
   }
 
   protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
-    this.widget.update();
+    this.update();
   }
 
-  protected override onActivateRequest(msg: Message): void {
-    super.onActivateRequest(msg);
-    this.widget.activate();
-  }
-
+  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
   protected override handleEnter(event: KeyboardEvent): boolean | void {
     return false;
   }
@@ -140,16 +100,23 @@ export class UploadFirmwareDialog extends AbstractDialog<void> {
     if (this.busy) {
       return;
     }
-    this.widget.close();
     super.close();
+    this.isOpen = new Object();
   }
 
-  busyCallback(busy: boolean): void {
+  private busyCallback(busy: boolean): void {
     this.busy = busy;
     if (busy) {
       this.closeCrossNode.classList.add('disabled');
     } else {
       this.closeCrossNode.classList.remove('disabled');
     }
+  }
+
+  private flashFirmware(firmware: FirmwareInfo, port: Port): Promise<any> {
+    this.busyCallback(true);
+    return this.arduinoFirmwareUploader
+      .flash(firmware, port)
+      .finally(() => this.busyCallback(false));
   }
 }

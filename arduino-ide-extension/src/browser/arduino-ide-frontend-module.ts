@@ -232,7 +232,6 @@ import { UploadFirmware } from './contributions/upload-firmware';
 import {
   UploadFirmwareDialog,
   UploadFirmwareDialogProps,
-  UploadFirmwareDialogWidget,
 } from './dialogs/firmware-uploader/firmware-uploader-dialog';
 
 import { UploadCertificate } from './contributions/upload-certificate';
@@ -902,7 +901,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     createWidget: () => ctx.container.get(CloudSketchbookCompositeWidget),
   }));
 
-  bind(UploadFirmwareDialogWidget).toSelf().inSingletonScope();
   bind(UploadFirmwareDialog).toSelf().inSingletonScope();
   bind(UploadFirmwareDialogProps).toConstantValue({
     title: 'UploadFirmware',
