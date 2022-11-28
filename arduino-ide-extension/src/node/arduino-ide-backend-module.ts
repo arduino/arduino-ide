@@ -111,6 +111,8 @@ import { IsTempSketch } from './is-temp-sketch';
 import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
 import { MessagingContribution } from './theia/core/messaging-contribution';
 import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
+import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
+import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -384,6 +386,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(MessagingService.Identifier)
     .to(MessagingContribution)
     .inSingletonScope();
+
+  // Removed undesired contributions from VS Code extensions
+  // Such as the RTOS view from the `cortex-debug` extension
+  // https://github.com/arduino/arduino-ide/pull/1706#pullrequestreview-1195595080
+  bind(HostedPluginReader).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginReader).toService(HostedPluginReader);
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {
