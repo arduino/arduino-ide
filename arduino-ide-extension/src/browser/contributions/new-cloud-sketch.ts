@@ -202,11 +202,12 @@ export class NewCloudSketch extends Contribution {
   private treeModelFrom(
     widget: SketchbookWidget
   ): CloudSketchbookTreeModel | undefined {
-    const treeWidget = widget.getTreeWidget();
-    if (treeWidget instanceof CloudSketchbookTreeWidget) {
-      const model = treeWidget.model;
-      if (model instanceof CloudSketchbookTreeModel) {
-        return model;
+    for (const treeWidget of widget.getTreeWidgets()) {
+      if (treeWidget instanceof CloudSketchbookTreeWidget) {
+        const model = treeWidget.model;
+        if (model instanceof CloudSketchbookTreeModel) {
+          return model;
+        }
       }
     }
     return undefined;
