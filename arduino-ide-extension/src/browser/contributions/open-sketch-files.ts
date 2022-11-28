@@ -184,7 +184,7 @@ export class OpenSketchFiles extends SketchContribution {
         // The editor is expected to be attached to the shell and visible in the UI.
         // The deferred promise does not have to wait for the `editorManager#onCreated` event.
         // It can resolve earlier.
-        if (!widget) {
+        if (widget) {
           deferred.resolve(editorWidget);
         }
       });
