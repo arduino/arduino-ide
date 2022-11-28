@@ -248,7 +248,6 @@ import { PlotterFrontendContribution } from './serial/plotter/plotter-frontend-c
 import {
   UserFieldsDialog,
   UserFieldsDialogProps,
-  UserFieldsDialogWidget,
 } from './dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
@@ -916,7 +915,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     title: 'IDEUpdater',
   });
 
-  bind(UserFieldsDialogWidget).toSelf().inSingletonScope();
   bind(UserFieldsDialog).toSelf().inSingletonScope();
   bind(UserFieldsDialogProps).toConstantValue({
     title: 'UserFields',
