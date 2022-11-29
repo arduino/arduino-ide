@@ -218,16 +218,14 @@ export class SettingsComponent extends React.Component<
             <div className="flex-line">
               <select
                 className="theia-select"
-                value={ThemeService.get().getCurrentTheme().label}
+                value={this.props.themeService.getCurrentTheme().label}
                 onChange={this.themeDidChange}
               >
-                {ThemeService.get()
-                  .getThemes()
-                  .map(({ id, label }) => (
-                    <option key={id} value={label}>
-                      {label}
-                    </option>
-                  ))}
+                {this.props.themeService.getThemes().map(({ id, label }) => (
+                  <option key={id} value={label}>
+                    {label}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex-line">
@@ -612,11 +610,11 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const { selectedIndex } = event.target.options;
-    const theme = ThemeService.get().getThemes()[selectedIndex];
+    const theme = this.props.themeService.getThemes()[selectedIndex];
     if (theme) {
       this.setState({ themeId: theme.id });
-      if (ThemeService.get().getCurrentTheme().id !== theme.id) {
-        ThemeService.get().setCurrentTheme(theme.id);
+      if (this.props.themeService.getCurrentTheme().id !== theme.id) {
+        this.props.themeService.setCurrentTheme(theme.id);
       }
     }
   };
@@ -755,6 +753,7 @@ export namespace SettingsComponent {
     readonly fileDialogService: FileDialogService;
     readonly windowService: WindowService;
     readonly localizationProvider: AsyncLocalizationProvider;
+    readonly themeService: ThemeService;
   }
   export type State = Settings & {
     rawAdditionalUrlsValue: string;

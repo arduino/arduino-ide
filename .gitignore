@@ -7,7 +7,7 @@ build/
 Examples/
 !electron/build/
 src-gen/
-!webpack.config.js
+webpack.config.js
 gen-webpack.config.js
 .DS_Store
 # switching from `electron` to `browser` in dev mode.
@@ -15,8 +15,6 @@ gen-webpack.config.js
 yarn*.log
 # For the VS Code extensions used by Theia.
 plugins
-# the config files for the CLI
-arduino-ide-extension/data/cli/config
 # the tokens folder for the themes
 scripts/themes/tokens
 # environment variables

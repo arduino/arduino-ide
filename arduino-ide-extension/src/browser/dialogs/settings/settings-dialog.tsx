@@ -35,6 +35,9 @@ export class SettingsWidget extends ReactWidget {
   @inject(AsyncLocalizationProvider)
   protected readonly localizationProvider: AsyncLocalizationProvider;
 
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
+
   protected render(): React.ReactNode {
     return (
       <SettingsComponent
@@ -43,6 +46,7 @@ export class SettingsWidget extends ReactWidget {
         fileDialogService={this.fileDialogService}
         windowService={this.windowService}
         localizationProvider={this.localizationProvider}
+        themeService={this.themeService}
       />
     );
   }
@@ -58,6 +62,9 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
 
   @inject(SettingsWidget)
   protected readonly widget: SettingsWidget;
+
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
 
   constructor(
     @inject(SettingsDialogProps)
@@ -121,11 +128,11 @@ export class SettingsDialog extends AbstractDialog<Promise<Settings>> {
   }
 
   override async open(): Promise<Promise<Settings> | undefined> {
-    const themeIdBeforeOpen = ThemeService.get().getCurrentTheme().id;
+    const themeIdBeforeOpen = this.themeService.getCurrentTheme().id;
     const result = await super.open();
     if (!result) {
-      if (ThemeService.get().getCurrentTheme().id !== themeIdBeforeOpen) {
-        ThemeService.get().setCurrentTheme(themeIdBeforeOpen);
+      if (this.themeService.getCurrentTheme().id !== themeIdBeforeOpen) {
+        this.themeService.setCurrentTheme(themeIdBeforeOpen);
       }
     }
     return result;

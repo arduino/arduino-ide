@@ -1,5 +1,4 @@
 import * as React from '@theia/core/shared/react';
-import * as ReactDOM from '@theia/core/shared/react-dom';
 import {
   inject,
   injectable,
@@ -25,15 +24,14 @@ export class NotificationsRenderer extends TheiaNotificationsRenderer {
   }
 
   protected override render(): void {
-    ReactDOM.render(
+    this.containerRoot.render(
       <div>
         <NotificationToastsComponent
           manager={this.manager}
           corePreferences={this.corePreferences}
         />
         <NotificationCenterComponent manager={this.manager} />
-      </div>,
-      this.container
+      </div>
     );
   }
 }

@@ -5,7 +5,7 @@ import {
 } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
-import { Deferred, timeout } from '@theia/core/lib/common/promise-util';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
@@ -25,6 +25,8 @@ import {
   LanguageInfo,
 } from '@theia/core/lib/common/i18n/localization';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
+import { DefaultTheme } from '@theia/application-package/lib/application-props';
+import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 
 export const EDITOR_SETTING = 'editor';
 export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
@@ -101,6 +103,9 @@ export class SettingsService {
   @inject(CommandService)
   protected commandService: CommandService;
 
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
+
   protected readonly onDidChangeEmitter = new Emitter<Readonly<Settings>>();
   readonly onDidChange = this.onDidChangeEmitter.event;
   protected readonly onDidResetEmitter = new Emitter<Readonly<Settings>>();
@@ -141,10 +146,9 @@ export class SettingsService {
       this.preferenceService.get<number>(FONT_SIZE_SETTING, 12),
       this.preferenceService.get<string>(
         'workbench.colorTheme',
-        window.matchMedia &&
-          window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'arduino-theme-dark'
-          : 'arduino-theme'
+        DefaultTheme.defaultForOSTheme(
+          FrontendApplicationConfigProvider.get().defaultTheme
+        )
       ),
       this.preferenceService.get<Settings.AutoSave>(
         AUTO_SAVE_SETTING,
@@ -231,11 +235,7 @@ export class SettingsService {
           'Invalid editor font size. It must be a positive integer.'
         );
       }
-      if (
-        !ThemeService.get()
-          .getThemes()
-          .find(({ id }) => id === themeId)
-      ) {
+      if (!this.themeService.getThemes().find(({ id }) => id === themeId)) {
         return nls.localize(
           'arduino/preferences/invalid.theme',
           'Invalid theme.'
@@ -252,7 +252,6 @@ export class SettingsService {
 
   private async savePreference(name: string, value: unknown): Promise<void> {
     await this.preferenceService.set(name, value, PreferenceScope.User);
-    await timeout(5);
   }
 
   async save(): Promise<string | true> {
@@ -283,19 +282,21 @@ export class SettingsService {
     (config as any).network = network;
     (config as any).locale = currentLanguage;
 
-    await this.savePreference('editor.fontSize', editorFontSize);
-    await this.savePreference('workbench.colorTheme', themeId);
-    await this.savePreference(AUTO_SAVE_SETTING, autoSave);
-    await this.savePreference('editor.quickSuggestions', quickSuggestions);
-    await this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface);
-    await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);
-    await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);
-    await this.savePreference(COMPILE_VERBOSE_SETTING, verboseOnCompile);
-    await this.savePreference(COMPILE_WARNINGS_SETTING, compilerWarnings);
-    await this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload);
-    await this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload);
-    await this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles);
-    await this.configService.setConfiguration(config);
+    await Promise.all([
+      this.savePreference('editor.fontSize', editorFontSize),
+      this.savePreference('workbench.colorTheme', themeId),
+      this.savePreference(AUTO_SAVE_SETTING, autoSave),
+      this.savePreference('editor.quickSuggestions', quickSuggestions),
+      this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface),
+      this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale),
+      this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale),
+      this.savePreference(COMPILE_VERBOSE_SETTING, verboseOnCompile),
+      this.savePreference(COMPILE_WARNINGS_SETTING, compilerWarnings),
+      this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload),
+      this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload),
+      this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles),
+      this.configService.setConfiguration(config),
+    ]);
     this.onDidChangeEmitter.fire(this._settings);
 
     // after saving all the settings, if we need to change the language we need to perform a reload

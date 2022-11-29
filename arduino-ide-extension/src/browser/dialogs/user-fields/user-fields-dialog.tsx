@@ -1,63 +1,18 @@
 import * as React from '@theia/core/shared/react';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import {
-  AbstractDialog,
-  DialogProps,
-  ReactWidget,
-} from '@theia/core/lib/browser';
-import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { UploadSketch } from '../../contributions/upload-sketch';
 import { UserFieldsComponent } from './user-fields-component';
 import { BoardUserField } from '../../../common/protocol';
-
-@injectable()
-export class UserFieldsDialogWidget extends ReactWidget {
-  private _currentUserFields: BoardUserField[] = [];
-
-  constructor(private cancel: () => void, private accept: () => Promise<void>) {
-    super();
-  }
-
-  set currentUserFields(userFields: BoardUserField[]) {
-    this.setUserFields(userFields);
-  }
-
-  get currentUserFields(): BoardUserField[] {
-    return this._currentUserFields;
-  }
-
-  resetUserFieldsValue(): void {
-    this._currentUserFields = this._currentUserFields.map((field) => {
-      field.value = '';
-      return field;
-    });
-  }
-
-  private setUserFields(userFields: BoardUserField[]): void {
-    this._currentUserFields = userFields;
-  }
-
-  protected render(): React.ReactNode {
-    return (
-      <form>
-        <UserFieldsComponent
-          initialBoardUserFields={this._currentUserFields}
-          updateUserFields={this.setUserFields.bind(this)}
-          cancel={this.cancel}
-          accept={this.accept}
-        />
-      </form>
-    );
-  }
-}
+import { ReactDialog } from '../../theia/dialogs/dialogs';
 
 @injectable()
 export class UserFieldsDialogProps extends DialogProps {}
 
 @injectable()
-export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
-  protected readonly widget: UserFieldsDialogWidget;
+export class UserFieldsDialog extends ReactDialog<BoardUserField[]> {
+  private _currentUserFields: BoardUserField[] = [];
 
   constructor(
     @inject(UserFieldsDialogProps)
@@ -69,37 +24,34 @@ export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
     this.titleNode.classList.add('user-fields-dialog-title');
     this.contentNode.classList.add('user-fields-dialog-content');
     this.acceptButton = undefined;
-    this.widget = new UserFieldsDialogWidget(
-      this.close.bind(this),
-      this.accept.bind(this)
-    );
-  }
-
-  set value(userFields: BoardUserField[]) {
-    this.widget.currentUserFields = userFields;
   }
 
   get value(): BoardUserField[] {
-    return this.widget.currentUserFields;
+    return this._currentUserFields;
+  }
+
+  set value(userFields: BoardUserField[]) {
+    this._currentUserFields = userFields;
+  }
+
+  protected override render(): React.ReactNode {
+    return (
+      <div>
+        <form>
+          <UserFieldsComponent
+            initialBoardUserFields={this.value}
+            updateUserFields={this.doUpdateUserFields}
+            cancel={this.doCancel}
+            accept={this.doAccept}
+          />
+        </form>
+      </div>
+    );
   }
 
   protected override onAfterAttach(msg: Message): void {
-    if (this.widget.isAttached) {
-      Widget.detach(this.widget);
-    }
-    Widget.attach(this.widget, this.contentNode);
     super.onAfterAttach(msg);
     this.update();
-  }
-
-  protected override onUpdateRequest(msg: Message): void {
-    super.onUpdateRequest(msg);
-    this.widget.update();
-  }
-
-  protected override onActivateRequest(msg: Message): void {
-    super.onActivateRequest(msg);
-    this.widget.activate();
   }
 
   protected override async accept(): Promise<void> {
@@ -114,8 +66,21 @@ export class UserFieldsDialog extends AbstractDialog<BoardUserField[]> {
   }
 
   override close(): void {
-    this.widget.resetUserFieldsValue();
-    this.widget.close();
+    this.resetUserFieldsValue();
     super.close();
   }
+
+  private resetUserFieldsValue(): void {
+    this.value = this.value.map((field) => {
+      field.value = '';
+      return field;
+    });
+  }
+
+  private readonly doCancel: () => void = () => this.close();
+  private readonly doAccept: () => Promise<void> = () => this.accept();
+  private readonly doUpdateUserFields: (userFields: BoardUserField[]) => void =
+    (userFields: BoardUserField[]) => {
+      this.value = userFields;
+    };
 }
