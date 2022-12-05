@@ -120,7 +120,9 @@
       "visitArduinoCloud": "بازدید از ابر آردوینو برای ساخت ابر طرح ها"
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "همه",
@@ -369,7 +371,9 @@
       "upload.verbose": "برای خروجی آپلود پرمخاطب درست است. به طور پیش فرض نادرست است.",
       "verifyAfterUpload": "تائید کد بعد از آپلود",
       "window.autoScale": "اگر رابط کاربری به طور خودکار با اندازه فونت تغییر کند درست است.",
-      "window.zoomLevel": "سطح بزرگنمایی پنجره را تنظیم کنید. اندازه اصلی 0 است و هر افزایش به بالاتر (مثلاً 1) یا پایین تر (مثلاً -1) نشان دهنده بزرگنمایی 20٪ بزرگتر یا کوچکتر است. همچنین می توانید اعداد اعشاری را وارد کنید تا سطح زوم را با دقت دقیق تر تنظیم کنید."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "آیا می خواهید نسخه موجود را با {0} جایگزین کنید؟",
     "selectZip": "یک فایل فشرده حاوی کتابخانه ای را که می خواهید اضافه کنید انتخاب کنید",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI آفلاین پس زمینه",
       "offline": "آفلاین",
       "quitTitle": "آیا مطمئن هستید که می خواهید خارج شوید؟"
-    },
-    "debug": {
-      "start": "شروع...",
-      "startError": "یک خطا در آغاز جلسه رفع خطا بود، تاریخچه بقیه جزئیات را بررسی کنید.",
-      "typeNotSupported": "جلسه رفع خطا \"{0}\" پشتیبانی نمی شود."
     },
     "editor": {
       "unsavedTitle": "ذخیره نشده – {0}"

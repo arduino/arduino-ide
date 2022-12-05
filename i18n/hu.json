@@ -12,13 +12,13 @@
       "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Nem található a korábban kiválasztott  '{0}' alaplap a/az '{1}' telepített platformon. Válaszd ki  újra a használni kívánt alaplapot. Szeretnéd most újra megadni?",
-      "disconnected": "Disconnected",
+      "disconnected": "Leválasztott",
       "getBoardInfo": "Alaplap információk beszerzése",
       "inSketchbook": "(a vázlatfüzetben/sketchbook-ban) ",
       "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
       "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "Az FQBN nem érhető el a kiválasztott „{0}” alaplapon. A megfelelő mag/core telepítve van? ",
-      "noPortsDiscovered": "No ports discovered",
+      "noPortsDiscovered": "Nincs észlelt port",
       "noPortsSelected": "Nincsen port kiválasztva a alaplaphoz: '{0}'. ",
       "noneSelected": "Nincs alaplap kiválasztva",
       "openBoardsConfig": "Válassz másik alaplapot és portot… ",
@@ -69,9 +69,9 @@
       "uploadingCertificates": "Tanúsítványok feltöltése "
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
+      "checkForUpdates": "Arduino frissítések keresése",
       "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
+      "noUpdates": "Nem állnak rendelkezésre új frissítések.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
       "updatingBoards": "Updating boards...",
@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Látogasd meg az Arduino Cloud webhelyet, hogy a felhőben vázlatokat hozhass létre. "
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "Kipipálva: a részletes feltöltési üzenetek kiírása a képernyőre. Alapértelmezés szerint hamis/nincs kipipálva.",
       "verifyAfterUpload": "Kód ellenőrzése feltöltés után",
       "window.autoScale": "Kipipálva, ha a felhasználói felület automatikusan méreteződik a betűmérettel együtt. ",
-      "window.zoomLevel": "Ablak nagyítási szintjének megadása. Az eredeti méret: 0, és minden lépés növelése (pl. 1) vagy csökkentése (pl. -1) 20%-kal nagyobb vagy kisebb nagyítást jelent. Tizedesjegyeket is meg lehet adni a nagyítási szint finomabb  beállításához. "
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Lecseréled a/az {0} meglévő verzióját? ",
     "selectZip": "Válaszd ki a hozzáadni kívánt könyvtárat tartalmazó ZIP-fájlt ",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon offline/elérhetetlen ",
       "offline": "Offline / nincs hálózat",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "Hiba történt a hibakeresési munkamenet indításakor. További részletekért ellenőrizd a naplókat. ",
-      "typeNotSupported": "A {0} hibakeresési munkamenet típusa nem támogatott. "
     },
     "editor": {
       "unsavedTitle": "Nincs mentve – {0}"

@@ -6,9 +6,9 @@
     },
     "board": {
       "board": "اللوحة {0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "أختر متحكم و منفذ مختلفين ",
       "boardInfo": "معلومات اللوحة",
-      "boards": "boards",
+      "boards": "المتحكمات",
       "configDialog1": "اختر لوحة و منفذ معا اذا اردت ان ترفع السكتش",
       "configDialog2": "اذا قمت باختيار لوحة فقط ستسطيع ان تترجم لكن بدون ان ترفع المشروع",
       "couldNotFindPreviouslySelected": "تعذر ايجاد اللوحة '{0}'  المختارة مسبقا في المنصة المثبتة '{1}' . الرجاء اعادة اختيار اللوحة التي تريد استعمالها يدويا . هل تريد باعادة الاختيار الان؟",
@@ -26,15 +26,15 @@
       "pleasePickBoard": "من فضلك اختر لوحة متصلة على المنفذ الذي اخترته",
       "port": "المنفذ {0}",
       "portLabel": "Port: {0}",
-      "ports": "ports",
+      "ports": "منافذ",
       "programmer": "المبرمجة",
       "reselectLater": "اعد الاختيار لاحقا",
-      "searchBoard": "Search board",
+      "searchBoard": "أبحث عن متحكم",
       "selectBoard": "اختر لوحة",
       "selectBoardForInfo": "الرجاء اختيار لوحة من احل الحصول على معلومات اللوحة",
       "selectPortForInfo": "الرجاء اختيار منفذ من اجل الحصول على معلومات اللوحة",
       "showAllAvailablePorts": "يظهر كل المنافذ المتاحة عند تفعيله",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "أظهر جميع المنافذ",
       "succesfullyInstalledPlatform": "تم تثبيت المنصة {0}:{1} بنجاح",
       "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح",
       "typeOfPorts": "{0} ports"
@@ -120,7 +120,9 @@
       "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "True لخرج الرفع المطول . False افتراضيا",
       "verifyAfterUpload": "التحقق من الكود بعد الرفع",
       "window.autoScale": "True اذا كان مقياس الواجهة يتزامن تلقائيا مع حجم الخط ",
-      "window.zoomLevel": "تعديل درجة التكبير للنافذة . الحجم الاصلي 0 و كل زيادة فوقه (مثلا 1) او اقل (مثلا -1) تمثل تكبير بدرجة 20% اكبر او اصغر . تستطيع ايضا ادخال فواصل لتعديل درجة التكبير بدقة اكبر"
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "هل تريد استبدال النسخة الحالية من {0} ؟",
     "selectZip": "اختر ملف .zip يحوي المكتبة التي تريد اضافتها",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon غير متصل",
       "offline": "غير متصل",
       "quitTitle": "هل انت متاكد بانك تريد الخروج؟"
-    },
-    "debug": {
-      "start": "البدء...",
-      "startError": "لقد حصل خطأ اثناء بدأ جلسة التصحيح . تحقق من السجلات للمزيد من المعلومات",
-      "typeNotSupported": "جلسة التصحيح من نوع \"{0}\" غير مدعومة"
     },
     "editor": {
       "unsavedTitle": "غير محفوظ – {0}"

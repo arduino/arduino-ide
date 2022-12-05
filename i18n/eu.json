@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "Egia kargaren irteera xehatua izateko. Lehenetsia Gezurra.",
       "verifyAfterUpload": "Egiaztatu kodea kargatu ondoren",
       "window.autoScale": "Egia erabiltzaile interfazea letra-tamainarekin automatikoki eskalatzen bada.",
-      "window.zoomLevel": "Doitu leihoaren zoom maila. Jatorrizko tamaina 0 da eta goraka (1) edo beheraka (-1) egindako aldaketa bakoitzak zooma %20 handitzea edo txikiagotzea eragiten du. Zoom maila zehaztasun handiagoarekin doitzeko zenbaki hamartarrak erabili ditzakezu."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Lehendik dagoen {0} bertsioa ordezkatu?",
     "selectZip": "Hautatu gehitu nahi duzun liburutegia daukan zip fitxategia",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI daemon-a lineaz kanpo",
       "offline": "Lineaz kanpo",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Hasi...",
-      "startError": "Errore bat gertatu da arazketa saioa hastean. Ikusi egunkariak xehetasun gehiagorako.",
-      "typeNotSupported": "\"{0}\" motako arazketa saioak ez du euskarririk."
     },
     "editor": {
       "unsavedTitle": "Gorde gabe – {0}"

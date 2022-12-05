@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Bulut Eskizleri oluşturmak için Arduino Cloud'u ziyaret edin."
     },
     "cloudSketch": {
-      "new": "Yeni Uzak Eskiz"
+      "creating": "Uzak eskiz '{0}' oluşturuluyor...",
+      "new": "Yeni Uzak Eskiz",
+      "synchronizing": "Eskiz defteri eşitleniyor, '{0}' çekiliyor..."
     },
     "common": {
       "all": "Tümü",
@@ -369,7 +371,9 @@
       "upload.verbose": " Ayrıntılı yükleme çıktısı için açın. Varsayılan: Kapalı",
       "verifyAfterUpload": "Yüklemeden sonra kodu doğrula",
       "window.autoScale": "Kullanıcı arayüzü yazı tipi boyutu ile otomatik olarak ölçeklenecekse açın",
-      "window.zoomLevel": "Pencerenin yakınlaştırma seviyesini ayarlar. Orijinal boyut 0'dır ve her yukarı artış (örn. 1) veya düşüş (örn. -1) %20 daha büyük veya daha küçük anlamına gelir. Aynı zamanda yakınlaştırma seviyesini daha hassas ayarlamak için ondalıklar da girebilirsiniz."
+      "window.zoomLevel": {
+        "deprecationMessage": "Kullanımdan kalktı. Yerine 'window.zoomLevel' kullanın."
+      }
     },
     "replaceMsg": "{0}'un mevcut versiyonu değiştirilsin mi?",
     "selectZip": "Eklemek istediğiniz kütüphaneyi içeren ZIP dosyasını seçin",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon Çevrimdışı",
       "offline": "Çevrimdışı",
       "quitTitle": "Çıkmak istediğinizden emin misiniz?"
-    },
-    "debug": {
-      "start": "Başla...",
-      "startError": "Debug oturumunu başlatırken bir hata oluştu, daha fazla bilgi için logları kontrol edin.",
-      "typeNotSupported": "\"{0}\" debug oturum tipi desteklenmiyor."
     },
     "editor": {
       "unsavedTitle": "Kaydedilmedi – {0}"
