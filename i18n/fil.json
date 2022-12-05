@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "True para sa verbose upload output. Ito ay naka-false by default.",
       "verifyAfterUpload": "Verify code after upload",
       "window.autoScale": "True kung nais mong awtomatikong mag-adjust ang scaling ng user interface depende sa laki ng font o letra sa screen.",
-      "window.zoomLevel": "Baguhin ang lebel ng pagka-zoom ng window. Ang orihinal na laki ay 0 at bawat dagdag (halimbawa +1) o bawas (halimbawa -1) ay katumbas ng 20% na pagtaas o pagbaba sa zoom. Pwede kang mag-enter ng decimals para mas makontrol mo ang pag-adjust ng lebel ng zoom. "
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Replace the existing version of {0}?",
     "selectZip": "Select a zip file containing the library you'd like to add",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "Unsaved – {0}"

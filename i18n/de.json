@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Besuche Arduino Cloud um Cloud Sketche zu erstellen."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "Alle",
@@ -369,7 +371,9 @@
       "upload.verbose": "Wenn aktiviert, werden ausführliche Compiler-Meldungen angezeigt. Standardgemäß deaktiviert.",
       "verifyAfterUpload": "Code nach Hochladen überprüfen ",
       "window.autoScale": "Wenn aktiviert: Benutzeroberfläche soll mit Schriftgröße skalieren.",
-      "window.zoomLevel": "Stelle die Zoomstufe des Fensters ein. Der Standardwert ist 0, jede Vergrößerung (z.B.: 1) oder Verringerung (z.B.: -1) um eins steht für 20% Vergrößerung bzw. Verkleinerung des Fensters. Du kannst auch Kommazahlen eingeben, um die Zoomstufe feiner einzustellen.\n "
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Existierende Version von {0} ersetzen?",
     "selectZip": "Wähle die ZIP-Datei, welche die hinzuzufügende Bibliothek enthält",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitTitle": "Sind Sie sicher, dass das Fenster schließen möchten?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "Es gab einen Fehler beim Start der Debug-Session. Überprüfe die Logs für mehr Informationen.",
-      "typeNotSupported": "Die Debug Session vom Typ \"{0}\" wird nicht unterstützt."
     },
     "editor": {
       "unsavedTitle": "Nicht gespeichert – {0}"

@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Visiteu Arduino Cloud per crear programes al núvol."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "True per a la sortida detallada de la càrrega. Fals per defecte.",
       "verifyAfterUpload": "Verifica el codi després de pujar",
       "window.autoScale": "És cert si la interfície d'usuari escala automàticament amb la mida de la lletra.",
-      "window.zoomLevel": "Ajusteu el nivell de zoom de la finestra. La mida original és 0 i cada increment per sobre (p. ex. 1) o per sota (p. ex. -1) representa un 20% més gran o més petit. També podeu introduir decimals per ajustar el nivell de zoom amb una granularitat més fina."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Substitueix la versió existent de {0}?",
     "selectZip": "Seleccioneu un fitxer zip que contingui la llibreria que voleu afegir",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon fora de línia",
       "offline": "Fora de línia",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Començar...",
-      "startError": "S'ha produït un error en iniciar la sessió de depuració, comproveu els registres per obtenir més informació.",
-      "typeNotSupported": "No s'admet el tipus de sessió de depuració \"{0}\"."
     },
     "editor": {
       "unsavedTitle": "No desat –{0}"

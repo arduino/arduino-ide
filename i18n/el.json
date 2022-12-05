@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Επισκέψου το Arduino Cloud για δημιουργία Σχεδίων Cloud."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "Αληθές για λεπτομερή έξοδο ανεβάσματος. Ψευδές απο προεπιλογή.",
       "verifyAfterUpload": "Επιβεβαίωση κώδικα μετά το ανέβασμα",
       "window.autoScale": "Αληθές αν η διεπαφή χρήστη κλιμακλωνεται αυτόματα μαζί με το μέγεθος γραμματοσειράς.",
-      "window.zoomLevel": "Ρύθμιση του επιπέδου μεγέθυνσης του παραθύρου. Το αρχικό μέγεθος ειναι 0 και κάθε αύξηση (π.χ. 1) ή μείωση (π.χ. -1) αναπαριστά μεγέθυνση 20% μεγαλύτερη ή μικρότερη. Μπορούν να εισαχθούν και δεκαδικά για προσαρμογή της μεγέθυνσης με μεγαλύτερη λεπτομέρεια."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Replace the existing version of {0}?",
     "selectZip": "Select a zip file containing the library you'd like to add",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Εκτός Σύνδεσης",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Έναρξη...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "Unsaved – {0}"

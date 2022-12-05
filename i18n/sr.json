@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -369,7 +371,9 @@
       "upload.verbose": "True for verbose upload output. False by default.",
       "verifyAfterUpload": "Провјери код након спуштања",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
-      "window.zoomLevel": "Подесите ниво зумирања прозора. Оригинална величина је 0 и сваки корак изнад (нпр. 1) или испод (нпр. -1) представља зумирање за 20% веће или мање. Такође можете да унесете децимале да бисте подесили ниво зумирања са бољом прецизношћу."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Замјени тренутну верзију {0}?",
     "selectZip": "Одабери zip датотеку са библиотеком коју желиш да додаш",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Није на мрежи",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Почни...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "Несачуван – {0} "

@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "Todo",
@@ -369,7 +371,9 @@
       "upload.verbose": "Verdadero para una salida verbosa de la carga. Falso por defecto.",
       "verifyAfterUpload": "Verificar el código después de cargarlo",
       "window.autoScale": "Verdadero si la interfaz de usuario se escala automáticamente con el tamaño de la fuente.",
-      "window.zoomLevel": "Ajusta el nivel de zoom de la ventana. El tamaño original es 0 y cada incremento por encima (p. ej. 1) o por debajo (p. ej. -1) representa un zoom un 20 % más grande o más pequeño. También puedes introducir decimales para ajustar el nivel de zoom con una granularidad más fina."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "¿Sustituir la versión existente de {0}?",
     "selectZip": "Seleccione un archivo zip que contenga la biblioteca que deseas añadir",
@@ -447,11 +451,6 @@
       "daemonOffline": "Demonio del CLI fuera de línea",
       "offline": "Desconectado",
       "quitTitle": "Seguro que quiere salir ?"
-    },
-    "debug": {
-      "start": "Empezar...",
-      "startError": "Se ha producido un error al iniciar la sesión de depuración, consulte los logs para obtener más detalles.",
-      "typeNotSupported": "El tipo de sesión de depuración \"{0}\" no es compatible."
     },
     "editor": {
       "unsavedTitle": "Sin guardar – {0}"

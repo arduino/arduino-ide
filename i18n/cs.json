@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Navštivte Arduino Cloud pro vytvoření cloudové sketche"
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "Vše",
@@ -369,7 +371,9 @@
       "upload.verbose": "Ano pro podrobný výstup při nahrávání. Ne je výchozí hodnota.  ",
       "verifyAfterUpload": "Kontrolovat kód po nahrání",
       "window.autoScale": "Ano pokud se měřítko uživatelského prostředí automaticky mění s velikostí písma. ",
-      "window.zoomLevel": "Přizpůsobení přiblížení okna. Originální velikost je 0, zvýšení (např. o 1) nebo snížení (např. o -1) znamená 20% přiblížení nebo oddálení. Můžete použít desetinná čísla pro jemnější přizpůsobení."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Vyměnit existující verzi {0}?",
     "selectZip": "Zvolte ZIP soubor s knihovnou kterou chcete přidat",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon nepřipojen",
       "offline": "Nepřipojen",
       "quitTitle": "Jste si jisti že chcete odejít"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "Vyskytla se chyba při spouštění debugovacího spojení, zkontrolujte prosím log pro více informací. ",
-      "typeNotSupported": "Typ \"{0}\" debugovacího spojení není podporován, "
     },
     "editor": {
       "unsavedTitle": "Neuloženo – {0}"

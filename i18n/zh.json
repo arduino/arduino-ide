@@ -120,7 +120,9 @@
       "visitArduinoCloud": "访问 Arduino Cloud 以创建云项目。"
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "全部",
@@ -369,7 +371,9 @@
       "upload.verbose": "True 则输出详细上传信息。默认情况下为 False。",
       "verifyAfterUpload": "上传后验证代码",
       "window.autoScale": "True 则用户界面随字体大小自动缩放。",
-      "window.zoomLevel": "调整窗口的缩放级别。默认缩放级别为 0，大于（例如 1）或小于（例如 -1）的每个增量表示放大或缩小 20%。输入小数可以更精细的调整缩放级别。"
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "是否替换 {0} 的现有版本？",
     "selectZip": "选择包含要添加的库的 zip 文件",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI 守护进程离线",
       "offline": "离线",
       "quitTitle": "你确定你要退出吗？"
-    },
-    "debug": {
-      "start": "开始...",
-      "startError": "启动调试会话时出错，请检查日志以了解更多详细信息。",
-      "typeNotSupported": "不支持调试会话的类型 “{0}”。"
     },
     "editor": {
       "unsavedTitle": "未保存–{0}"

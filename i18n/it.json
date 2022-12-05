@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Visita Arduino Cloud per creare Cloud Sketch "
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creando lo sketch remoto{0}",
+      "new": "Nuovo Sketch remoto",
+      "synchronizing": "Sincronizzazione degli sketch, pulling{0}"
     },
     "common": {
       "all": "Tutti",
@@ -303,10 +305,10 @@
       "unableToConnectToWebSocket": "Impossibile connettersi al websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "invalidSketchName": "Il nome deve essere composto da lettere, numeri o underscores. La lunghezza massima è di 36 caratteri.",
+      "newSketchTitle": "Nome del nuovo Sketch Remoto",
+      "notFound": "Non posso fare il pull dello sketch '{0}'. Lo sketch non esiste.",
+      "sketchAlreadyExists": "Esiste già lo sketch remoto {0}"
     },
     "portProtocol": {
       "network": "Rete",
@@ -369,7 +371,9 @@
       "upload.verbose": " Seleziona Vero per un rapporto dettagliato durante l'upload. Il valore predefinito è impostato su falso",
       "verifyAfterUpload": "Verifica il codice dopo il caricamento",
       "window.autoScale": "Impostato su True l'interfaccia scala automaticamente in base alla dimensione del font  .",
-      "window.zoomLevel": "Regola il livello di zoom della finestra. La dimensione originale è 0 e ogni incremento sopra (es. 1) o sotto (es. -1) rappresenta lo zoom del 20% in più o in meno. Puoi anche inserire i decimali per regolare il livello di zoom con una granularità più fine."
+      "window.zoomLevel": {
+        "deprecationMessage": "Non più disponibile. Al suo posto utilizza 'windows.zoomLevel'."
+      }
     },
     "replaceMsg": "Sostituisce la versione esistente con la versione 1{0}  ?",
     "selectZip": "Scegli il file zip che contiene la libreria che vuoi aggiungere",
@@ -397,7 +401,7 @@
       "exportBinary": "Esporta sketch compilato",
       "moving": "Spostando",
       "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella  \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
-      "new": "New Sketch",
+      "new": "Nuovo Sketch",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",
       "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra.",
@@ -417,8 +421,8 @@
       "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
-      "newSketch": "New Sketch"
+      "newRemoteSketch": "Nuovo Sketch Remoto",
+      "newSketch": "Nuovo Sketch"
     },
     "survey": {
       "answerSurvey": "Rispondi al questionario",
@@ -447,11 +451,6 @@
       "daemonOffline": "Il CLI Daemon è disconnesso",
       "offline": "Disconnesso",
       "quitTitle": "Sei sicuro di volere chiudere?"
-    },
-    "debug": {
-      "start": "Inizio...",
-      "startError": "Si è verificato un problema all'avvio del debug, per ulteriori controlla i logs",
-      "typeNotSupported": "Il tipo di sessione di debug \"  1 {0}  \" non è supportato.  "
     },
     "editor": {
       "unsavedTitle": "Non salvato – 1{0}"

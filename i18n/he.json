@@ -120,7 +120,9 @@
       "visitArduinoCloud": "כנס.י לענן של ארדואינו ליצור סקיצה בענן"
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "הכל",
@@ -369,7 +371,9 @@
       "upload.verbose": "True for verbose upload output. False by default.",
       "verifyAfterUpload": "Verify code after upload",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
-      "window.zoomLevel": "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Replace the existing version of {0}?",
     "selectZip": "Select a zip file containing the library you'd like to add",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI daemon במצב לא מקוון",
       "offline": "מנותק",
       "quitTitle": "בטוח.ה שתרצה.י לצאת?"
-    },
-    "debug": {
-      "start": "התחל...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "הפעלת ניפוי באגים מסוג \"{0}\" אינה נתמכת."
     },
     "editor": {
       "unsavedTitle": "לא שמור – {0}"

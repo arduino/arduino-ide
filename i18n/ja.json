@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "全て",
@@ -369,7 +371,9 @@
       "upload.verbose": "書き込み時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
       "verifyAfterUpload": "書き込み後にコードを検証する",
       "window.autoScale": "ユーザーインターフェイスをフォントサイズに合わせて自動的に拡大縮小させるにはtrueを指定。",
-      "window.zoomLevel": "ウィンドウの拡大率を調整します。元のサイズは0で、数値を上（例：1）か下（例：-1）に変えるごとに20％拡大率が変わります。小数を入力して、拡大率をより細かく調整することもできます。"
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "{0}の既存のバージョンを置き換えますか？",
     "selectZip": "追加したいライブラリの入ったZIPファイルを選択",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemonはオフラインです",
       "offline": "オフライン",
       "quitTitle": "本当に終了しますか？"
-    },
-    "debug": {
-      "start": "開始…",
-      "startError": "デバッグセッションの開始時にエラーが発生しました。詳細はログを確認してください。",
-      "typeNotSupported": "デバッグセッションのタイプ\"{0}\"はサポートされていません。"
     },
     "editor": {
       "unsavedTitle": "未保存 – {0}"

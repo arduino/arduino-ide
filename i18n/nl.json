@@ -120,7 +120,9 @@
       "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Sketches te maken."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "Alle",
@@ -369,7 +371,9 @@
       "upload.verbose": "Waar voor uitgebreide uploaduitvoer. Standaard onwaar.",
       "verifyAfterUpload": "Verifieer de code na het uploaden",
       "window.autoScale": "Waar als de gebruikersinterface automatisch wordt geschaald met de lettergrootte.",
-      "window.zoomLevel": "Pas het zoomniveau van het venster aan. De oorspronkelijke grootte is 0 en elke stap hoger (bijv. 1) of lager (bijv. -1) staat voor 20% groter of kleiner zoomen. U kunt ook decimalen invoeren om het zoomniveau fijner in te stellen. "
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "De bestaande versie van {0} vervangen?",
     "selectZip": "Selecteer een zipbestand met de bibliotheek die U wilt toevoegen",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitTitle": "Weet je zeker dat je wilt stoppen?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "Er is een fout opgetreden bij het starten van de foutopsporingssessie, controleer de logboeken voor meer details. ",
-      "typeNotSupported": "Het foutopsporingssessietype \"{0}\" wordt niet ondersteund. "
     },
     "editor": {
       "unsavedTitle": "Niet opgeslagen – {0}"

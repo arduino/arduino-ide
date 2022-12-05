@@ -120,7 +120,9 @@
       "visitArduinoCloud": "아두이노 클라우드를 방문하여 클라우드 스케치를 만드십시오."
     },
     "cloudSketch": {
-      "new": "New Remote Sketch"
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "전체",
@@ -369,7 +371,9 @@
       "upload.verbose": "자세한 업로드 출력의 경우 True이고 기본적으로 False입니다.",
       "verifyAfterUpload": "업로드 후 코드확인",
       "window.autoScale": "사용자 인터페이스가 글꼴 크기에 따라 자동으로 조정되는 경우 True입니다.",
-      "window.zoomLevel": "창의 확대/축소 수준을 조정합니다. 원래 크기는 0이고 위(예: 1) 또는 아래(예: -1)의 각 증가는 확대/축소를 20% 더 크거나 작게 나타냅니다. 소수를 입력하여 확대/축소 수준을 미세하게 조정할 수도 있습니다."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "{0}의 기존 버젼을 바꾸시겠습니까?",
     "selectZip": "추가하려는 라이브러리가 포함된 zip 파일을 선택하세요.",
@@ -447,11 +451,6 @@
       "daemonOffline": "CLI 데몬 오프라인",
       "offline": "오프라인",
       "quitTitle": "정말 종료하시겠습니까?"
-    },
-    "debug": {
-      "start": "시작...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "저장되지않음 – 1{0}\n "
