@@ -1,32 +1,37 @@
+import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { MainMenuManager } from '../../common/main-menu-manager';
+import type { Settings } from '../dialogs/settings/settings';
+import { SettingsDialog } from '../dialogs/settings/settings-dialog';
+import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   Command,
-  MenuModelRegistry,
   CommandRegistry,
-  SketchContribution,
   KeybindingRegistry,
+  MenuModelRegistry,
+  SketchContribution,
 } from './contribution';
-import { ArduinoMenus } from '../menu/arduino-menus';
-import { Settings as Preferences } from '../dialogs/settings/settings';
-import { SettingsDialog } from '../dialogs/settings/settings-dialog';
-import { nls } from '@theia/core/lib/common';
 
 @injectable()
-export class Settings extends SketchContribution {
+export class OpenSettings extends SketchContribution {
   @inject(SettingsDialog)
-  protected readonly settingsDialog: SettingsDialog;
+  private readonly settingsDialog: SettingsDialog;
+  @inject(MainMenuManager)
+  private readonly menuManager: MainMenuManager;
 
-  protected settingsOpened = false;
+  private settingsOpened = false;
 
   override registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(Settings.Commands.OPEN, {
+    registry.registerCommand(OpenSettings.Commands.OPEN, {
       execute: async () => {
-        let settings: Preferences | undefined = undefined;
+        let settings: Settings | undefined = undefined;
         try {
           this.settingsOpened = true;
+          this.menuManager.update();
           settings = await this.settingsDialog.open();
         } finally {
           this.settingsOpened = false;
+          this.menuManager.update();
         }
         if (settings) {
           await this.settingsService.update(settings);
@@ -41,7 +46,7 @@ export class Settings extends SketchContribution {
 
   override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__PREFERENCES_GROUP, {
-      commandId: Settings.Commands.OPEN.id,
+      commandId: OpenSettings.Commands.OPEN.id,
       label:
         nls.localize(
           'vscode/preferences.contribution/preferences',
@@ -57,13 +62,13 @@ export class Settings extends SketchContribution {
 
   override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
-      command: Settings.Commands.OPEN.id,
+      command: OpenSettings.Commands.OPEN.id,
       keybinding: 'CtrlCmd+,',
     });
   }
 }
 
-export namespace Settings {
+export namespace OpenSettings {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-settings-open',

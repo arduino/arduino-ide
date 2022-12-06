@@ -127,7 +127,7 @@ import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/
 import { PreferencesContribution } from './theia/preferences/preferences-contribution';
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control';
-import { Settings } from './contributions/settings';
+import { OpenSettings } from './contributions/open-settings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
@@ -691,7 +691,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, EditContributions);
   Contribution.configure(bind, QuitApp);
   Contribution.configure(bind, SketchControl);
-  Contribution.configure(bind, Settings);
+  Contribution.configure(bind, OpenSettings);
   Contribution.configure(bind, BurnBootloader);
   Contribution.configure(bind, BuiltInExamples);
   Contribution.configure(bind, LibraryExamples);
