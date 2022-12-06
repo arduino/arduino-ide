@@ -323,8 +323,8 @@ import { NewCloudSketch } from './contributions/new-cloud-sketch';
 import { SketchbookCompositeWidget } from './widgets/sketchbook/sketchbook-composite-widget';
 import { WindowTitleUpdater } from './theia/core/window-title-updater';
 import { WindowTitleUpdater as TheiaWindowTitleUpdater } from '@theia/core/lib/browser/window/window-title-updater';
-import { ThemeService } from './theia/core/theming';
-import { ThemeService as TheiaThemeService } from '@theia/core/lib/browser/theming';
+import { ThemeServiceWithDB } from './theia/core/theming';
+import { ThemeServiceWithDB as TheiaThemeServiceWithDB } from '@theia/monaco/lib/browser/monaco-indexed-db';
 import { MonacoThemingService } from './theia/monaco/monaco-theming-service';
 import { MonacoThemingService as TheiaMonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 import { TypeHierarchyServiceProvider } from './theia/typehierarchy/type-hierarchy-service';
@@ -959,8 +959,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaWindowTitleUpdater).toService(WindowTitleUpdater);
 
   // register Arduino themes
-  bind(ThemeService).toSelf().inSingletonScope();
-  rebind(TheiaThemeService).toService(ThemeService);
+  bind(ThemeServiceWithDB).toSelf().inSingletonScope();
+  rebind(TheiaThemeServiceWithDB).toService(ThemeServiceWithDB);
   bind(MonacoThemingService).toSelf().inSingletonScope();
   rebind(TheiaMonacoThemingService).toService(MonacoThemingService);
 
