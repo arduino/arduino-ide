@@ -32,7 +32,7 @@ export class FilterableListContainer<
   }
 
   override componentDidMount(): void {
-    this.search = debounce(this.search, 500);
+    this.search = debounce(this.search, 500, { trailing: true });
     this.search(this.state.searchOptions);
     this.props.searchOptionsDidChange((newSearchOptions) => {
       const { searchOptions } = this.state;

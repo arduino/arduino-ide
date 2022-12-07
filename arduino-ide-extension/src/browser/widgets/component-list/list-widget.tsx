@@ -7,6 +7,7 @@ import {
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { Emitter } from '@theia/core/lib/common/event';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -42,6 +43,7 @@ export abstract class ListWidget<
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
    */
   protected focusNode: HTMLElement | undefined;
+  private readonly didReceiveFirstFocus = new Deferred();
   protected readonly searchOptionsChangeEmitter = new Emitter<
     Partial<S> | undefined
   >();
@@ -117,6 +119,7 @@ export abstract class ListWidget<
 
   protected onFocusResolved = (element: HTMLElement | undefined): void => {
     this.focusNode = element;
+    this.didReceiveFirstFocus.resolve();
   };
 
   protected async install({
@@ -192,7 +195,9 @@ export abstract class ListWidget<
    * If it is `undefined`, updates the view state by re-running the search with the current `filterText` term.
    */
   refresh(searchOptions: Partial<S> | undefined): void {
-    this.searchOptionsChangeEmitter.fire(searchOptions);
+    this.didReceiveFirstFocus.promise.then(() =>
+      this.searchOptionsChangeEmitter.fire(searchOptions)
+    );
   }
 
   updateScrollBar(): void {
