@@ -80,16 +80,16 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                 string,
                 Disposable & { label: string }
               >();
+              let selectedValue = '';
               for (const value of values) {
                 const id = `${fqbn}-${option}--${value.value}`;
                 const command = { id };
-                const selectedValue = value.value;
                 const handler = {
                   execute: () =>
                     this.boardsDataStore.selectConfigOption({
                       fqbn,
                       option,
-                      selectedValue,
+                      selectedValue: value.value,
                     }),
                   isToggled: () => value.selected,
                 };
@@ -100,8 +100,14 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                     { label: value.label }
                   )
                 );
+                if (value.selected) {
+                  selectedValue = value.label;
+                }
               }
-              this.menuRegistry.registerSubmenu(menuPath, label);
+              this.menuRegistry.registerSubmenu(
+                menuPath,
+                `${label}${selectedValue ? `: "${selectedValue}"` : ''}`
+              );
               this.toDisposeOnBoardChange.pushAll([
                 ...commands.values(),
                 Disposable.create(() =>
