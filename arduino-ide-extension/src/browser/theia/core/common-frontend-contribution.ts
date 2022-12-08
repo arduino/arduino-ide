@@ -46,7 +46,8 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.SELECT_ICON_THEME,
       CommonCommands.SELECT_COLOR_THEME,
       CommonCommands.ABOUT_COMMAND,
-      CommonCommands.SAVE_WITHOUT_FORMATTING, // Patched for https://github.com/eclipse-theia/theia/pull/8877
+      CommonCommands.SAVE_WITHOUT_FORMATTING, // Patched for https://github.com/eclipse-theia/theia/pull/8877,
+      CommonCommands.NEW_UNTITLED_FILE,
     ]) {
       registry.unregisterMenuAction(command);
     }

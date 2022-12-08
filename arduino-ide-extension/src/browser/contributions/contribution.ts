@@ -61,6 +61,7 @@ import { BoardsDataStore } from '../boards/boards-data-store';
 import { NotificationManager } from '../theia/messages/notifications-manager';
 import { MessageType } from '@theia/core/lib/common/message-service-protocol';
 import { WorkspaceService } from '../theia/workspace/workspace-service';
+import { MainMenuManager } from '../../common/main-menu-manager';
 
 export {
   Command,
@@ -105,6 +106,9 @@ export abstract class Contribution
 
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
+
+  @inject(MainMenuManager)
+  protected readonly menuManager: MainMenuManager;
 
   @postConstruct()
   protected init(): void {

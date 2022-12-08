@@ -12,7 +12,6 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { ExamplesService } from '../../common/protocol/examples-service';
 import {
@@ -38,9 +37,6 @@ export abstract class Examples extends SketchContribution {
 
   @inject(MenuModelRegistry)
   private readonly menuRegistry: MenuModelRegistry;
-
-  @inject(MainMenuManager)
-  protected readonly menuManager: MainMenuManager;
 
   @inject(ExamplesService)
   protected readonly examplesService: ExamplesService;
