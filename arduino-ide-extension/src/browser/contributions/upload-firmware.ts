@@ -21,9 +21,11 @@ export class UploadFirmware extends Contribution {
       execute: async () => {
         try {
           this.dialogOpened = true;
+          this.menuManager.update();
           await this.dialog.open();
         } finally {
           this.dialogOpened = false;
+          this.menuManager.update();
         }
       },
       isEnabled: () => !this.dialogOpened,

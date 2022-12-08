@@ -1,9 +1,9 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { DisposableCollection, nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common';
 import { BoardUserField, CoreError } from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
-import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
+import { ArduinoMenus } from '../menu/arduino-menus';
 import { MenuModelRegistry, Contribution } from './contribution';
 import { UploadSketch } from './upload-sketch';
 
@@ -12,7 +12,6 @@ export class UserFields extends Contribution {
   private boardRequiresUserFields = false;
   private userFieldsSet = false;
   private readonly cachedUserFields: Map<string, BoardUserField[]> = new Map();
-  private readonly menuActionsDisposables = new DisposableCollection();
 
   @inject(UserFieldsDialog)
   private readonly userFieldsDialog: UserFieldsDialog;
@@ -20,42 +19,22 @@ export class UserFields extends Contribution {
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  @inject(MenuModelRegistry)
-  private readonly menuRegistry: MenuModelRegistry;
-
   protected override init(): void {
     super.init();
     this.boardsServiceProvider.onBoardsConfigChanged(async () => {
       const userFields =
         await this.boardsServiceProvider.selectedBoardUserFields();
       this.boardRequiresUserFields = userFields.length > 0;
-      this.registerMenus(this.menuRegistry);
+      this.menuManager.update();
     });
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
-    this.menuActionsDisposables.dispose();
-    if (this.boardRequiresUserFields) {
-      this.menuActionsDisposables.push(
-        registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-          commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
-          label: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
-          order: '2',
-        })
-      );
-    } else {
-      this.menuActionsDisposables.push(
-        registry.registerMenuNode(
-          ArduinoMenus.SKETCH__MAIN_GROUP,
-          new PlaceholderMenuNode(
-            ArduinoMenus.SKETCH__MAIN_GROUP,
-            // commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
-            UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
-            { order: '2' }
-          )
-        )
-      );
-    }
+    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+      commandId: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.id,
+      label: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
+      order: '2',
+    });
   }
 
   private selectedFqbnAddress(): string | undefined {

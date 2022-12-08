@@ -1,6 +1,5 @@
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { MainMenuManager } from '../../common/main-menu-manager';
 import type { Settings } from '../dialogs/settings/settings';
 import { SettingsDialog } from '../dialogs/settings/settings-dialog';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -16,8 +15,6 @@ import {
 export class OpenSettings extends SketchContribution {
   @inject(SettingsDialog)
   private readonly settingsDialog: SettingsDialog;
-  @inject(MainMenuManager)
-  private readonly menuManager: MainMenuManager;
 
   private settingsOpened = false;
 

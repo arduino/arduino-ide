@@ -17,7 +17,6 @@ import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { WorkspaceInputDialogProps } from '@theia/workspace/lib/browser/workspace-input-dialog';
 import { v4 } from 'uuid';
-import { MainMenuManager } from '../../common/main-menu-manager';
 import type { AuthenticationSession } from '../../node/auth/types';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { CreateApi } from '../create/create-api';
@@ -41,8 +40,6 @@ export class NewCloudSketch extends Contribution {
   private readonly widgetContribution: SketchbookWidgetContribution;
   @inject(AuthenticationClientService)
   private readonly authenticationService: AuthenticationClientService;
-  @inject(MainMenuManager)
-  private readonly mainMenuManager: MainMenuManager;
 
   private readonly toDispose = new DisposableCollection();
   private _session: AuthenticationSession | undefined;
@@ -54,7 +51,7 @@ export class NewCloudSketch extends Contribution {
         const oldSession = this._session;
         this._session = session;
         if (!!oldSession !== !!this._session) {
-          this.mainMenuManager.update();
+          this.menuManager.update();
         }
       }),
       this.preferences.onPreferenceChanged(({ preferenceName, newValue }) => {
@@ -62,7 +59,7 @@ export class NewCloudSketch extends Contribution {
           const oldEnabled = this._enabled;
           this._enabled = Boolean(newValue);
           if (this._enabled !== oldEnabled) {
-            this.mainMenuManager.update();
+            this.menuManager.update();
           }
         }
       }),
@@ -70,7 +67,7 @@ export class NewCloudSketch extends Contribution {
     this._enabled = this.preferences['arduino.cloud.enabled'];
     this._session = this.authenticationService.session;
     if (this._session) {
-      this.mainMenuManager.update();
+      this.menuManager.update();
     }
   }
 
