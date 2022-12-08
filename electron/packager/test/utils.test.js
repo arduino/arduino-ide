@@ -7,13 +7,13 @@ const testMe = require('../utils');
 const sinon = require('sinon');
 
 describe('utils', () => {
-
   describe('adjustArchiveStructure', () => {
-
     let consoleStub;
 
     beforeEach(() => {
-      consoleStub = sinon.stub(console, 'log').value(() => { });
+      consoleStub = sinon.stub(console, 'log').value(() => {
+        /* NOOP */
+      });
     });
 
     afterEach(() => {
@@ -34,8 +34,15 @@ describe('utils', () => {
 
     it('should reject when target directory does not exist', async () => {
       try {
-        const zip = path.join(__dirname, 'resources', 'zip-with-base-folder.zip');
-        await testMe.adjustArchiveStructure(zip, path.join(__dirname, 'some', 'missing', 'path'));
+        const zip = path.join(
+          __dirname,
+          'resources',
+          'zip-with-base-folder.zip'
+        );
+        await testMe.adjustArchiveStructure(
+          zip,
+          path.join(__dirname, 'some', 'missing', 'path')
+        );
         throw new Error('Expected a rejection');
       } catch (e) {
         expect(e).to.be.an.instanceOf(Error);
@@ -45,7 +52,11 @@ describe('utils', () => {
 
     it('should reject when target is a file', async () => {
       try {
-        const zip = path.join(__dirname, 'resources', 'zip-with-base-folder.zip');
+        const zip = path.join(
+          __dirname,
+          'resources',
+          'zip-with-base-folder.zip'
+        );
         await testMe.adjustArchiveStructure(zip, path.join(__filename));
         throw new Error('Expected a rejection');
       } catch (e) {
@@ -56,7 +67,10 @@ describe('utils', () => {
 
     it('should be a NOOP when the zip already has the desired base folder', async () => {
       const zip = path.join(__dirname, 'resources', 'zip-with-base-folder.zip');
-      const actual = await testMe.adjustArchiveStructure(zip, track.mkdirSync());
+      const actual = await testMe.adjustArchiveStructure(
+        zip,
+        track.mkdirSync()
+      );
       expect(actual).to.be.equal(zip);
     });
 
@@ -92,7 +106,13 @@ describe('utils', () => {
 
       const verifyOut = track.mkdirSync();
       await unpack(actual, verifyOut);
-      expect(fs.lstatSync(path.join(verifyOut, 'zip-with-symlink', 'folder', 'symlinked-sub')).isSymbolicLink()).to.be.true;
+      expect(
+        fs
+          .lstatSync(
+            path.join(verifyOut, 'zip-with-symlink', 'folder', 'symlinked-sub')
+          )
+          .isSymbolicLink()
+      ).to.be.true;
     });
 
     it('should adjust the archive structure if base folder is not present', async () => {
@@ -113,7 +133,5 @@ describe('utils', () => {
       expect(subs).to.have.lengthOf(3);
       expect(subs.sort()).to.be.deep.equal(['a.txt', 'b.txt', 'foo']);
     });
-
   });
-
 });
