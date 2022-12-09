@@ -80,7 +80,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   private readonly board: Board;
   private readonly port: Port;
   private readonly monitorID: string;
-  private streamingTextDecoder = new TextDecoder('utf8');
+  private readonly streamingTextDecoder = new TextDecoder('utf8');
 
   /**
    * The lightweight representation of the port configuration currently in use for the running monitor.
