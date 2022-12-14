@@ -180,7 +180,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
 
     if (
       CompoundMenuNode.is(menu) &&
-      menu.children.length &&
+      this.visibleSubmenu(menu) && // customization for #569 and #655
       this.undefinedOrMatch(menu.when, options.context)
     ) {
       const role = CompoundMenuNode.getRole(menu);
@@ -193,10 +193,17 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
         this.fillMenuTemplate(myItems, child, args, options)
       );
       if (myItems.length === 0) {
-        return parentItems;
+        // customization for #569 and #655
+        if (!this.visibleLeafSubmenu(menu)) {
+          return parentItems;
+        }
       }
       if (role === CompoundMenuNodeRole.Submenu) {
-        parentItems.push({ label: menu.label, submenu: myItems });
+        parentItems.push({
+          label: menu.label,
+          submenu: myItems,
+          enabled: !this.visibleLeafSubmenu(menu), // customization for #569 and #655
+        });
       } else if (role === CompoundMenuNodeRole.Group && menu.id !== 'inline') {
         if (
           parentItems.length &&
@@ -278,4 +285,31 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     }
     return parentItems;
   }
+
+  /**
+   * `true` if either has at least `children`, or was forced to be visible.
+   */
+  private visibleSubmenu(node: MenuNode & CompoundMenuNode): boolean {
+    return node.children.length > 0 || this.visibleLeafSubmenu(node);
+  }
+
+  /**
+   * The node is a visible submenu if is a compound node but has zero children.
+   */
+  private visibleLeafSubmenu(node: MenuNode): boolean {
+    if (CompoundMenuNode.is(node)) {
+      return (
+        node.children.length === 0 &&
+        AlwaysVisibleSubmenus.findIndex(
+          (menuPath) => menuPath[menuPath.length - 1] === node.id
+        ) >= 0
+      );
+    }
+    return false;
+  }
 }
+
+const AlwaysVisibleSubmenus: MenuPath[] = [
+  ArduinoMenus.TOOLS__PORTS_SUBMENU, // #655
+  ArduinoMenus.FILE__SKETCHBOOK_SUBMENU, // #569
+];

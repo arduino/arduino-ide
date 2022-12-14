@@ -53,6 +53,7 @@ export class IncludeLibrary extends SketchContribution {
     this.notificationCenter.onLibraryDidUninstall(() =>
       this.updateMenuActions()
     );
+    this.notificationCenter.onDidReinitialize(() => this.updateMenuActions());
   }
 
   override async onReady(): Promise<void> {

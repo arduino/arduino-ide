@@ -27,6 +27,7 @@ import {
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 import { DefaultTheme } from '@theia/application-package/lib/application-props';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
+import type { FileStat } from '@theia/filesystem/lib/common/files';
 
 export const WINDOW_SETTING = 'window';
 export const EDITOR_SETTING = 'editor';
@@ -171,7 +172,15 @@ export class SettingsService {
       this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
       this.configService.getConfiguration(),
     ]);
-    const { additionalUrls, sketchDirUri, network } = cliConfig;
+    const {
+      config = {
+        additionalUrls: [],
+        sketchDirUri: '',
+        network: Network.Default(),
+      },
+    } = cliConfig;
+    const { additionalUrls, sketchDirUri, network } = config;
+
     const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
     return {
       editorFontSize,
@@ -223,7 +232,11 @@ export class SettingsService {
     try {
       const { sketchbookPath, editorFontSize, themeId } = await settings;
       const sketchbookDir = await this.fileSystemExt.getUri(sketchbookPath);
-      if (!(await this.fileService.exists(new URI(sketchbookDir)))) {
+      let sketchbookStat: FileStat | undefined = undefined;
+      try {
+        sketchbookStat = await this.fileService.resolve(new URI(sketchbookDir));
+      } catch {}
+      if (!sketchbookStat || !sketchbookStat.isDirectory) {
         return nls.localize(
           'arduino/preferences/invalid.sketchbook.location',
           'Invalid sketchbook location: {0}',
@@ -274,10 +287,19 @@ export class SettingsService {
       network,
       sketchbookShowAllFiles,
     } = this._settings;
-    const [config, sketchDirUri] = await Promise.all([
+    const [cliConfig, sketchDirUri] = await Promise.all([
       this.configService.getConfiguration(),
       this.fileSystemExt.getUri(sketchbookPath),
     ]);
+    const { config } = cliConfig;
+    if (!config) {
+      // Do not check for any error messages. The config might has errors (such as invalid directories.user) right before saving the new values.
+      return nls.localize(
+        'arduino/preferences/noCliConfig',
+        'Could not load the CLI configuration'
+      );
+    }
+
     (config as any).additionalUrls = additionalUrls;
     (config as any).sketchDirUri = sketchDirUri;
     (config as any).network = network;

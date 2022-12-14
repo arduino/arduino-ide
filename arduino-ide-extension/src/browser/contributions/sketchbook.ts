@@ -11,6 +11,7 @@ import { nls } from '@theia/core/lib/common/nls';
 export class Sketchbook extends Examples {
   override onStart(): void {
     this.sketchServiceClient.onSketchbookDidChange(() => this.update());
+    this.configService.onDidChangeSketchDirUri(() => this.update());
   }
 
   override async onReady(): Promise<void> {

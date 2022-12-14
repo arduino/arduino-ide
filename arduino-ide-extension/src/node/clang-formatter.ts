@@ -79,9 +79,12 @@ export class ClangFormatter implements Formatter {
     return `-style="${style(toClangOptions(options))}"`;
   }
 
-  private async dataDirPath(): Promise<string> {
-    const { dataDirUri } = await this.configService.getConfiguration();
-    return FileUri.fsPath(dataDirUri);
+  private async dataDirPath(): Promise<string | undefined> {
+    const { config } = await this.configService.getConfiguration();
+    if (!config?.dataDirUri) {
+      return undefined;
+    }
+    return FileUri.fsPath(config.dataDirUri);
   }
 
   private async configDirPath(): Promise<string> {
@@ -90,9 +93,13 @@ export class ClangFormatter implements Formatter {
   }
 
   private async clangConfigPath(
-    folderUri: MaybePromise<string>
+    folderUri: MaybePromise<string | undefined>
   ): Promise<string | undefined> {
-    const folderPath = FileUri.fsPath(await folderUri);
+    const uri = await folderUri;
+    if (!uri) {
+      return undefined;
+    }
+    const folderPath = FileUri.fsPath(uri);
     const clangFormatPath = join(folderPath, ClangFormatFile);
     try {
       await fs.access(clangFormatPath, constants.R_OK);

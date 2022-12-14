@@ -82,10 +82,7 @@ export class OpenSketch extends SketchContribution {
   }
 
   private async selectSketch(): Promise<Sketch | undefined> {
-    const config = await this.configService.getConfiguration();
-    const defaultPath = await this.fileService.fsPath(
-      new URI(config.sketchDirUri)
-    );
+    const defaultPath = await this.defaultPath();
     const { filePaths } = await remote.dialog.showOpenDialog(
       remote.getCurrentWindow(),
       {

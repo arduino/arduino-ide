@@ -157,6 +157,11 @@
       "uninstallMsg": "Do you want to uninstall {0}?",
       "version": "Version {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "Add File",
       "fileAdded": "One file added to the sketch.",
@@ -352,6 +357,7 @@
       "manualProxy": "Manual proxy configuration",
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "No proxy",
       "proxySettings": {
         "hostname": "Host name",
