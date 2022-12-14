@@ -88,8 +88,25 @@ export class LocalCacheFsProvider
   }
 
   protected async init(fileService: FileService): Promise<void> {
-    const config = await this.configService.getConfiguration();
-    this._localCacheRoot = new URI(config.dataDirUri);
+    const { config } = await this.configService.getConfiguration();
+    // Any possible CLI config errors are ignored here. IDE2 does not verify the `directories.data` folder.
+    // If the data dir is accessible, IDE2 creates the cache folder for the remote sketches. Otherwise, it does not.
+    // The data folder can be configured outside of the IDE2, and the new data folder will be picked up with a
+    // subsequent IDE2 start.
+    if (!config?.dataDirUri) {
+      return; // the deferred promise will never resolve
+    }
+    const localCacheUri = new URI(config.dataDirUri);
+    try {
+      await fileService.access(localCacheUri);
+    } catch (err) {
+      console.error(
+        `'directories.data' location is inaccessible at ${config.dataDirUri}`,
+        err
+      );
+      return;
+    }
+    this._localCacheRoot = localCacheUri;
     for (const segment of ['RemoteSketchbook', 'ArduinoCloud']) {
       this._localCacheRoot = this._localCacheRoot.resolve(segment);
       await fileService.createFolder(this._localCacheRoot);

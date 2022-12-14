@@ -58,10 +58,7 @@ export class SaveAsSketch extends SketchContribution {
       markAsRecentlyOpened,
     }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
   ): Promise<boolean> {
-    const [sketch, configuration] = await Promise.all([
-      this.sketchServiceClient.currentSketch(),
-      this.configService.getConfiguration(),
-    ]);
+    const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return false;
     }
@@ -72,7 +69,7 @@ export class SaveAsSketch extends SketchContribution {
     }
 
     const sketchUri = new URI(sketch.uri);
-    const sketchbookDirUri = new URI(configuration.sketchDirUri);
+    const sketchbookDirUri = await this.defaultUri();
     // If the sketch is temp, IDE2 proposes the default sketchbook folder URI.
     // If the sketch is not temp, but not contained in the default sketchbook folder, IDE2 proposes the default location.
     // Otherwise, it proposes the parent folder of the current sketch.

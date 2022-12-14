@@ -25,6 +25,7 @@ import {
   IndexUpdateDidFailParams,
   IndexUpdateWillStartParams,
   NotificationServiceServer,
+  AdditionalUrls,
 } from '../common/protocol';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
@@ -75,9 +76,27 @@ export class CoreClientProvider {
     });
     this.daemon.onDaemonStarted((port) => this.create(port));
     this.daemon.onDaemonStopped(() => this.closeClient());
-    this.configService.onConfigChange(
-      () => this.client.then((client) => this.updateIndex(client, ['platform'])) // Assuming 3rd party URL changes. No library index update is required.
-    );
+    this.configService.onConfigChange(async ({ oldState, newState }) => {
+      if (
+        !AdditionalUrls.sameAs(
+          oldState.config?.additionalUrls,
+          newState.config?.additionalUrls
+        )
+      ) {
+        const client = await this.client;
+        this.updateIndex(client, ['platform']);
+      } else if (
+        !!newState.config?.sketchDirUri &&
+        oldState.config?.sketchDirUri !== newState.config.sketchDirUri
+      ) {
+        // If the sketchbook location has changed, the custom libraries has changed.
+        // Reinitialize the core client and fire an event so that the frontend can refresh.
+        // https://github.com/arduino/arduino-ide/issues/796 (see the file > examples and sketch > include examples)
+        const client = await this.client;
+        await this.initInstance(client);
+        this.notificationService.notifyDidReinitialize();
+      }
+    });
   }
 
   get tryGetClient(): CoreClientProvider.Client | undefined {

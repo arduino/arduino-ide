@@ -2,7 +2,7 @@ import { inject, injectable, postConstruct } from '@theia/core/shared/inversify'
 import URI from '@theia/core/lib/common/uri';
 import { FileNode, FileTreeModel } from '@theia/filesystem/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { ConfigService } from '../../../common/protocol';
+import { ConfigServiceClient } from './../../config/config-service-client';
 import { SketchbookTree } from './sketchbook-tree';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import {
@@ -36,8 +36,8 @@ export class SketchbookTreeModel extends FileTreeModel {
   @inject(CommandRegistry)
   public readonly commandRegistry: CommandRegistry;
 
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceClient)
+  protected readonly configService: ConfigServiceClient;
 
   @inject(OpenerService)
   protected readonly openerService: OpenerService;
@@ -59,6 +59,12 @@ export class SketchbookTreeModel extends FileTreeModel {
     super.init();
     this.reportBusyProgress();
     this.initializeRoot();
+    this.toDispose.push(
+      this.configService.onDidChangeSketchDirUri(async () => {
+        await this.updateRoot();
+        this.selectRoot(this.root);
+      })
+    );
   }
 
   protected readonly pendingBusyProgress = new Map<string, Deferred<void>>();
@@ -121,6 +127,10 @@ export class SketchbookTreeModel extends FileTreeModel {
       return;
     }
     const root = this.root;
+    this.selectRoot(root);
+  }
+
+  private selectRoot(root: TreeNode | undefined) {
     if (CompositeTreeNode.is(root) && root.children.length === 1) {
       const child = root.children[0];
       if (
@@ -161,10 +171,12 @@ export class SketchbookTreeModel extends FileTreeModel {
   }
 
   protected async createRoot(): Promise<TreeNode | undefined> {
-    const config = await this.configService.getConfiguration();
-    const rootFileStats = await this.fileService.resolve(
-      new URI(config.sketchDirUri)
-    );
+    const sketchDirUri = this.configService.tryGetSketchDirUri();
+    const errors = this.configService.tryGetMessages();
+    if (!sketchDirUri || errors?.length) {
+      return undefined;
+    }
+    const rootFileStats = await this.fileService.resolve(sketchDirUri);
 
     if (this.workspaceService.opened && rootFileStats.children) {
       // filter out libraries and hardware

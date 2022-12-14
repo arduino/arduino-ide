@@ -155,10 +155,7 @@ PID: ${PID}`;
     );
 
     // Ports submenu
-    const portsSubmenuPath = [
-      ...ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
-      '2_ports',
-    ];
+    const portsSubmenuPath = ArduinoMenus.TOOLS__PORTS_SUBMENU;
     const portsSubmenuLabel = config.selectedPort?.address;
     this.menuModelRegistry.registerSubmenu(
       portsSubmenuPath,

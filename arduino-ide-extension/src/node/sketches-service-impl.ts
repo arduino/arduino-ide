@@ -80,6 +80,15 @@ export class SketchesServiceImpl
 
   async getSketches({ uri }: { uri?: string }): Promise<SketchContainer> {
     const root = await this.root(uri);
+    if (!root) {
+      this.logger.warn(`Could not derive sketchbook root from ${uri}.`);
+      return SketchContainer.create('');
+    }
+    const exists = await this.exists(root);
+    if (!exists) {
+      this.logger.warn(`Sketchbook root ${root} does not exist.`);
+      return SketchContainer.create('');
+    }
     const pathToAllSketchFiles = await new Promise<string[]>(
       (resolve, reject) => {
         glob(
@@ -179,13 +188,23 @@ export class SketchesServiceImpl
     return container;
   }
 
-  private async root(uri?: string | undefined): Promise<string> {
-    return FileUri.fsPath(uri ?? (await this.sketchbookUri()));
+  private async root(uri?: string | undefined): Promise<string | undefined> {
+    if (uri) {
+      return FileUri.fsPath(uri);
+    }
+    const sketchbookUri = await this.sketchbookUri();
+    if (sketchbookUri) {
+      return FileUri.fsPath(sketchbookUri);
+    }
+    return undefined;
   }
 
-  private async sketchbookUri(): Promise<string> {
-    const { sketchDirUri } = await this.configService.getConfiguration();
-    return sketchDirUri;
+  private async sketchbookUri(): Promise<string | undefined> {
+    const { config, messages } = await this.configService.getConfiguration();
+    if (!config?.sketchDirUri || messages?.length) {
+      return undefined;
+    }
+    return config.sketchDirUri;
   }
 
   async loadSketch(uri: string): Promise<SketchWithDetails> {
@@ -454,8 +473,10 @@ export class SketchesServiceImpl
     const sketchBaseName = `sketch_${
       monthNames[today.getMonth()]
     }${today.getDate()}`;
-    const config = await this.configService.getConfiguration();
-    const sketchbookPath = FileUri.fsPath(config.sketchDirUri);
+    const { config } = await this.configService.getConfiguration();
+    const sketchbookPath = config?.sketchDirUri
+      ? FileUri.fsPath(config?.sketchDirUri)
+      : os.homedir();
     let sketchName: string | undefined;
 
     // If it's another day, reset the count of sketches created today

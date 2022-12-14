@@ -3,13 +3,15 @@ import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { MessageService } from '@theia/core/lib/common/message-service';
 import { FileChangeType } from '@theia/filesystem/lib/common/files';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { Sketch, SketchesService } from '../../common/protocol';
-import { ConfigService } from './config-service';
+import { Sketch, SketchesService } from '.';
+import { ConfigServiceClient } from '../../browser/config/config-service-client';
 import { SketchContainer, SketchesError, SketchRef } from './sketches-service';
 import {
   ARDUINO_CLOUD_FOLDER,
@@ -34,139 +36,143 @@ export class SketchesServiceClientImpl
   implements FrontendApplicationContribution
 {
   @inject(FileService)
-  protected readonly fileService: FileService;
-
-  @inject(MessageService)
-  protected readonly messageService: MessageService;
-
+  private readonly fileService: FileService;
   @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
-
+  private readonly sketchService: SketchesService;
   @inject(WorkspaceService)
-  protected readonly workspaceService: WorkspaceService;
-
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
-
+  private readonly workspaceService: WorkspaceService;
+  @inject(ConfigServiceClient)
+  private readonly configService: ConfigServiceClient;
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
-  protected sketches = new Map<string, SketchRef>();
-  // TODO: rename this + event to the `onBlabla` pattern
-  protected sketchbookDidChangeEmitter = new Emitter<{
+  private sketches = new Map<string, SketchRef>();
+  private onSketchbookDidChangeEmitter = new Emitter<{
     created: SketchRef[];
     removed: SketchRef[];
   }>();
-  readonly onSketchbookDidChange = this.sketchbookDidChangeEmitter.event;
-  protected currentSketchDidChangeEmitter = new Emitter<CurrentSketch>();
+  readonly onSketchbookDidChange = this.onSketchbookDidChangeEmitter.event;
+  private currentSketchDidChangeEmitter = new Emitter<CurrentSketch>();
   readonly onCurrentSketchDidChange = this.currentSketchDidChangeEmitter.event;
 
-  protected toDispose = new DisposableCollection(
-    this.sketchbookDidChangeEmitter,
-    this.currentSketchDidChangeEmitter
+  private toDisposeBeforeWatchSketchbookDir = new DisposableCollection();
+  private toDispose = new DisposableCollection(
+    this.onSketchbookDidChangeEmitter,
+    this.currentSketchDidChangeEmitter,
+    this.toDisposeBeforeWatchSketchbookDir
   );
 
   private _currentSketch: CurrentSketch | undefined;
   private currentSketchLoaded = new Deferred<CurrentSketch>();
 
   onStart(): void {
-    this.configService.getConfiguration().then(({ sketchDirUri }) => {
-      this.sketchService
-        .getSketches({ uri: sketchDirUri })
-        .then((container) => {
-          const sketchbookUri = new URI(sketchDirUri);
-          for (const sketch of SketchContainer.toArray(container)) {
-            this.sketches.set(sketch.uri, sketch);
-          }
-          this.toDispose.push(
-            // Watch changes in the sketchbook to update `File` > `Sketchbook` menu items.
-            this.fileService.watch(new URI(sketchDirUri), {
-              recursive: true,
-              excludes: [],
-            })
-          );
-          this.toDispose.push(
-            this.fileService.onDidFilesChange(async (event) => {
-              for (const { type, resource } of event.changes) {
-                // The file change events have higher precedence in the current sketch over the sketchbook.
-                if (
-                  CurrentSketch.isValid(this._currentSketch) &&
-                  new URI(this._currentSketch.uri).isEqualOrParent(resource)
-                ) {
-                  // https://github.com/arduino/arduino-ide/pull/1351#pullrequestreview-1086666656
-                  // On a sketch file rename, the FS watcher will contain two changes:
-                  //  - Deletion of the original file,
-                  //  - Update of the new file,
-                  // Hence, `UPDATE` events must be processed but only and if only there is a `DELETED` change in the same event.
-                  // Otherwise, IDE2 would ask CLI to reload the sketch content on every save event in IDE2.
-                  if (
-                    type === FileChangeType.UPDATED &&
-                    event.changes.length === 1
-                  ) {
-                    // If the event contains only one `UPDATE` change, it cannot be a rename.
-                    return;
-                  }
-
-                  let reloadedSketch: Sketch | undefined = undefined;
-                  try {
-                    reloadedSketch = await this.sketchService.loadSketch(
-                      this._currentSketch.uri
-                    );
-                  } catch (err) {
-                    if (!SketchesError.NotFound.is(err)) {
-                      throw err;
-                    }
-                  }
-
-                  if (!reloadedSketch) {
-                    return;
-                  }
-
-                  if (!Sketch.sameAs(this._currentSketch, reloadedSketch)) {
-                    this.useCurrentSketch(reloadedSketch, true);
-                  }
-                  return;
-                }
-                // We track main sketch files changes only. // TODO: check sketch folder changes. One can rename the folder without renaming the `.ino` file.
-                if (sketchbookUri.isEqualOrParent(resource)) {
-                  if (Sketch.isSketchFile(resource)) {
-                    if (type === FileChangeType.ADDED) {
-                      try {
-                        const toAdd = await this.sketchService.loadSketch(
-                          resource.parent.toString()
-                        );
-                        if (!this.sketches.has(toAdd.uri)) {
-                          console.log(
-                            `New sketch '${toAdd.name}' was created in sketchbook '${sketchDirUri}'.`
-                          );
-                          this.sketches.set(toAdd.uri, toAdd);
-                          this.fireSoon(toAdd, 'created');
-                        }
-                      } catch {}
-                    } else if (type === FileChangeType.DELETED) {
-                      const uri = resource.parent.toString();
-                      const toDelete = this.sketches.get(uri);
-                      if (toDelete) {
-                        console.log(
-                          `Sketch '${toDelete.name}' was removed from sketchbook '${sketchbookUri}'.`
-                        );
-                        this.sketches.delete(uri);
-                        this.fireSoon(toDelete, 'removed');
-                      }
-                    }
-                  }
-                }
-              }
-            })
-          );
-        });
-    });
+    const sketchDirUri = this.configService.tryGetSketchDirUri();
+    this.watchSketchbookDir(sketchDirUri);
+    const refreshCurrentSketch = async () => {
+      const currentSketch = await this.loadCurrentSketch();
+      this.useCurrentSketch(currentSketch);
+    };
+    this.toDispose.push(
+      this.configService.onDidChangeSketchDirUri((sketchDirUri) => {
+        this.watchSketchbookDir(sketchDirUri);
+        refreshCurrentSketch();
+      })
+    );
     this.appStateService
       .reachedState('started_contributions')
-      .then(async () => {
-        const currentSketch = await this.loadCurrentSketch();
-        this.useCurrentSketch(currentSketch);
-      });
+      .then(refreshCurrentSketch);
+  }
+
+  private async watchSketchbookDir(
+    sketchDirUri: URI | undefined
+  ): Promise<void> {
+    this.toDisposeBeforeWatchSketchbookDir.dispose();
+    if (!sketchDirUri) {
+      return;
+    }
+    const container = await this.sketchService.getSketches({
+      uri: sketchDirUri.toString(),
+    });
+    for (const sketch of SketchContainer.toArray(container)) {
+      this.sketches.set(sketch.uri, sketch);
+    }
+    this.toDisposeBeforeWatchSketchbookDir.pushAll([
+      Disposable.create(() => this.sketches.clear()),
+      // Watch changes in the sketchbook to update `File` > `Sketchbook` menu items.
+      this.fileService.watch(sketchDirUri, {
+        recursive: true,
+        excludes: [],
+      }),
+      this.fileService.onDidFilesChange(async (event) => {
+        for (const { type, resource } of event.changes) {
+          // The file change events have higher precedence in the current sketch over the sketchbook.
+          if (
+            CurrentSketch.isValid(this._currentSketch) &&
+            new URI(this._currentSketch.uri).isEqualOrParent(resource)
+          ) {
+            // https://github.com/arduino/arduino-ide/pull/1351#pullrequestreview-1086666656
+            // On a sketch file rename, the FS watcher will contain two changes:
+            //  - Deletion of the original file,
+            //  - Update of the new file,
+            // Hence, `UPDATE` events must be processed but only and if only there is a `DELETED` change in the same event.
+            // Otherwise, IDE2 would ask CLI to reload the sketch content on every save event in IDE2.
+            if (type === FileChangeType.UPDATED && event.changes.length === 1) {
+              // If the event contains only one `UPDATE` change, it cannot be a rename.
+              return;
+            }
+
+            let reloadedSketch: Sketch | undefined = undefined;
+            try {
+              reloadedSketch = await this.sketchService.loadSketch(
+                this._currentSketch.uri
+              );
+            } catch (err) {
+              if (!SketchesError.NotFound.is(err)) {
+                throw err;
+              }
+            }
+
+            if (!reloadedSketch) {
+              return;
+            }
+
+            if (!Sketch.sameAs(this._currentSketch, reloadedSketch)) {
+              this.useCurrentSketch(reloadedSketch, true);
+            }
+            return;
+          }
+          // We track main sketch files changes only. // TODO: check sketch folder changes. One can rename the folder without renaming the `.ino` file.
+          if (sketchDirUri.isEqualOrParent(resource)) {
+            if (Sketch.isSketchFile(resource)) {
+              if (type === FileChangeType.ADDED) {
+                try {
+                  const toAdd = await this.sketchService.loadSketch(
+                    resource.parent.toString()
+                  );
+                  if (!this.sketches.has(toAdd.uri)) {
+                    console.log(
+                      `New sketch '${toAdd.name}' was created in sketchbook '${sketchDirUri}'.`
+                    );
+                    this.sketches.set(toAdd.uri, toAdd);
+                    this.fireSoon(toAdd, 'created');
+                  }
+                } catch {}
+              } else if (type === FileChangeType.DELETED) {
+                const uri = resource.parent.toString();
+                const toDelete = this.sketches.get(uri);
+                if (toDelete) {
+                  console.log(
+                    `Sketch '${toDelete.name}' was removed from sketchbook '${sketchDirUri}'.`
+                  );
+                  this.sketches.delete(uri);
+                  this.fireSoon(toDelete, 'removed');
+                }
+              }
+            }
+          }
+        }
+      }),
+    ]);
   }
 
   private useCurrentSketch(
@@ -249,7 +255,7 @@ export class SketchesServiceClientImpl
           event.removed.push(sketch);
         }
       }
-      this.sketchbookDidChangeEmitter.fire(event);
+      this.onSketchbookDidChangeEmitter.fire(event);
       this.bufferedSketchbookEvents.length = 0;
     }, 100);
   }
