@@ -406,7 +406,7 @@ export class SettingsComponent extends React.Component<
                 }
                 onChange={this.socksProtocolDidChange}
               />
-              SOCKS
+              SOCKS5
             </label>
           </form>
           <div className="flex-line proxy-settings">
@@ -682,7 +682,7 @@ export class SettingsComponent extends React.Component<
   ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
-      network.protocol = event.target.checked ? 'http' : 'socks';
+      network.protocol = event.target.checked ? 'http' : 'socks5';
       this.setState({ network });
     }
   };
@@ -692,7 +692,7 @@ export class SettingsComponent extends React.Component<
   ): void => {
     if (this.state.network !== 'none') {
       const network = this.cloneProxySettings;
-      network.protocol = event.target.checked ? 'socks' : 'http';
+      network.protocol = event.target.checked ? 'socks5' : 'http';
       this.setState({ network });
     }
   };
