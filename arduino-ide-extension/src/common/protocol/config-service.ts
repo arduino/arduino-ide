@@ -60,8 +60,10 @@ export namespace Network {
     try {
       // Patter: PROTOCOL://USER:PASS@HOSTNAME:PORT/
       const { protocol, hostname, password, username, port } = new URL(raw);
+      // protocol in URL object contains a trailing colon
+      const newProtocol = protocol.replace(/:$/, '');
       return {
-        protocol,
+        newProtocol,
         hostname,
         password,
         username,
