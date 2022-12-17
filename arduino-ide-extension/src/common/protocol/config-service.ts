@@ -63,7 +63,7 @@ export namespace Network {
       // protocol in URL object contains a trailing colon
       const newProtocol = protocol.replace(/:$/, '');
       return {
-        newProtocol,
+        protocol: newProtocol,
         hostname,
         password,
         username,
