@@ -17,15 +17,9 @@ import { nls } from '@theia/core/lib/common';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { MonitorSettings } from '../../../node/monitor-settings/monitor-settings-provider';
-import { ConfigService } from '../../../common/protocol';
-
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
-
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
-
   static readonly LABEL = nls.localize(
     'arduino/common/serialMonitor',
     'Serial Monitor'
@@ -234,8 +228,6 @@ export class MonitorWidget extends ReactWidget {
 
   protected readonly onSend = (value: string) => this.doSend(value);
   protected async doSend(value: string): Promise<void> {
-    const configPath = await this.configService.getConfiguration();
-    console.log('This is the config path', configPath);
     this.monitorManagerProxy.send(value);
   }
 
