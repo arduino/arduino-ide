@@ -15,7 +15,7 @@ import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { CLI_CONFIG } from './cli-config';
-import { getExecPath, spawnCommand } from './exec-util';
+import { getExecPath } from './exec-util';
 import { ErrnoException } from './utils/errors';
 
 @injectable()
@@ -124,28 +124,6 @@ export class ArduinoDaemonImpl
     }
     this._execPath = await getExecPath('arduino-cli', this.onError.bind(this));
     return this._execPath;
-  }
-
-  async getVersion(): Promise<
-    Readonly<{ version: string; commit: string; status?: string }>
-  > {
-    const execPath = await this.getExecPath();
-    const raw = await spawnCommand(
-      `"${execPath}"`,
-      ['version', '--format', 'json'],
-      this.onError.bind(this)
-    );
-    try {
-      // The CLI `Info` object: https://github.com/arduino/arduino-cli/blob/17d24eb901b1fdaa5a4ec7da3417e9e460f84007/version/version.go#L31-L34
-      const { VersionString, Commit, Status } = JSON.parse(raw);
-      return {
-        version: VersionString,
-        commit: Commit,
-        status: Status,
-      };
-    } catch {
-      return { version: raw, commit: raw };
-    }
   }
 
   protected async getSpawnArgs(): Promise<string[]> {

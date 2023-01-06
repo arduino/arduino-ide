@@ -131,10 +131,8 @@ export class ConfigServiceImpl
     return this.configChangeEmitter.event;
   }
 
-  async getVersion(): Promise<
-    Readonly<{ version: string; commit: string; status?: string }>
-  > {
-    return this.daemon.getVersion();
+  async getVersion(): Promise<string> {
+    return require('../../package.json').arduino?.cli?.version || '';
   }
 
   private async initConfig(): Promise<void> {

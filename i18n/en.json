@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "About {0}"
     },
     "board": {
