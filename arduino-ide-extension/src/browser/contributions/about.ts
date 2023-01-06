@@ -41,22 +41,16 @@ export class About extends Contribution {
   }
 
   async showAbout(): Promise<void> {
-    const {
-      version,
-      commit,
-      status: cliStatus,
-    } = await this.configService.getVersion();
+    const version = await this.configService.getVersion();
     const buildDate = this.buildDate;
     const detail = (showAll: boolean) =>
       nls.localize(
         'arduino/about/detail',
-        'Version: {0}\nDate: {1}{2}\nCLI Version: {3}{4} [{5}]\n\n{6}',
+        'Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}',
         remote.app.getVersion(),
         buildDate ? buildDate : nls.localize('', 'dev build'),
         buildDate && showAll ? ` (${this.ago(buildDate)})` : '',
         version,
-        cliStatus ? ` ${cliStatus}` : '',
-        commit,
         nls.localize(
           'arduino/about/copyright',
           'Copyright © {0} Arduino SA',

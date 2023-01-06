@@ -3,9 +3,7 @@ import { RecursivePartial } from '@theia/core/lib/common/types';
 export const ConfigServicePath = '/services/config-service';
 export const ConfigService = Symbol('ConfigService');
 export interface ConfigService {
-  getVersion(): Promise<
-    Readonly<{ version: string; commit: string; status?: string }>
-  >;
+  getVersion(): Promise<Readonly<string>>;
   getConfiguration(): Promise<ConfigState>;
   setConfiguration(config: Config): Promise<void>;
 }
