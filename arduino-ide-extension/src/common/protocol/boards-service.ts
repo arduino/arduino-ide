@@ -11,6 +11,7 @@ import {
   Updatable,
 } from '../nls';
 import URI from '@theia/core/lib/common/uri';
+import { MaybePromise } from '@theia/core/lib/common/types';
 
 export type AvailablePorts = Record<string, [Port, Array<Board>]>;
 export namespace AvailablePorts {
@@ -656,4 +657,108 @@ export function sanitizeFqbn(fqbn: string | undefined): string | undefined {
   }
   const [vendor, arch, id] = fqbn.split(':');
   return `${vendor}:${arch}:${id}`;
+}
+
+export interface BoardConfig {
+  selectedBoard?: Board;
+  selectedPort?: Port;
+}
+
+export interface BoardInfo {
+  /**
+   * Board name. Could be `'Unknown board`'.
+   */
+  BN: string;
+  /**
+   * Vendor ID.
+   */
+  VID: string;
+  /**
+   * Product ID.
+   */
+  PID: string;
+  /**
+   * Serial number.
+   */
+  SN: string;
+}
+
+export const selectPortForInfo = nls.localize(
+  'arduino/board/selectPortForInfo',
+  'Please select a port to obtain board info.'
+);
+export const nonSerialPort = nls.localize(
+  'arduino/board/nonSerialPort',
+  "Non-serial port, can't obtain info."
+);
+export const noNativeSerialPort = nls.localize(
+  'arduino/board/noNativeSerialPort',
+  "Native serial port, can't obtain info."
+);
+export const unknownBoard = nls.localize(
+  'arduino/board/unknownBoard',
+  'Unknown board'
+);
+
+/**
+ * The returned promise resolves to a `BoardInfo` if available to show in the UI or an info message explaining why showing the board info is not possible.
+ */
+export async function getBoardInfo(
+  selectedPort: Port | undefined,
+  availablePorts: MaybePromise<AvailablePorts>
+): Promise<BoardInfo | string> {
+  if (!selectedPort) {
+    return selectPortForInfo;
+  }
+  // IDE2 must show the board info based on the selected port.
+  // https://github.com/arduino/arduino-ide/issues/1489
+  // IDE 1.x supports only serial port protocol
+  if (selectedPort.protocol !== 'serial') {
+    return nonSerialPort;
+  }
+  const selectedPortKey = Port.keyOf(selectedPort);
+  const state = await availablePorts;
+  const boardListOnSelectedPort = Object.entries(state).filter(
+    ([portKey, [port]]) =>
+      portKey === selectedPortKey && isNonNativeSerial(port)
+  );
+
+  if (!boardListOnSelectedPort.length) {
+    return noNativeSerialPort;
+  }
+
+  const [, [port, boards]] = boardListOnSelectedPort[0];
+  if (boardListOnSelectedPort.length > 1 || boards.length > 1) {
+    console.warn(
+      `Detected more than one available boards on the selected port : ${JSON.stringify(
+        selectedPort
+      )}. Detected boards were: ${JSON.stringify(
+        boardListOnSelectedPort
+      )}. Using the first one: ${JSON.stringify([port, boards])}`
+    );
+  }
+
+  const board = boards[0];
+  const BN = board?.name ?? unknownBoard;
+  const VID = readProperty('vid', port);
+  const PID = readProperty('pid', port);
+  const SN = readProperty('serialNumber', port);
+  return { VID, PID, SN, BN };
+}
+
+// serial protocol with one or many detected boards or available VID+PID properties from the port
+function isNonNativeSerial(port: Port): boolean {
+  return !!(
+    port.protocol === 'serial' &&
+    port.properties?.['vid'] &&
+    port.properties?.['pid']
+  );
+}
+
+function readProperty(property: string, port: Port): string {
+  return falsyToNullString(port.properties?.[property]);
+}
+
+function falsyToNullString(s: string | undefined): string {
+  return !!s ? s : '(null)';
 }
