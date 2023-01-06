@@ -20,6 +20,7 @@ import {
   InstalledBoardWithPackage,
   AvailablePorts,
   Port,
+  getBoardInfo,
 } from '../../common/protocol';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { nls } from '@theia/core/lib/common';
@@ -49,52 +50,28 @@ export class BoardSelection extends SketchContribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BoardSelection.Commands.GET_BOARD_INFO, {
       execute: async () => {
-        const { selectedBoard, selectedPort } =
-          this.boardsServiceProvider.boardsConfig;
-        if (!selectedBoard) {
-          this.messageService.info(
-            nls.localize(
-              'arduino/board/selectBoardForInfo',
-              'Please select a board to obtain board info.'
-            )
-          );
+        const boardInfo = await getBoardInfo(
+          this.boardsServiceProvider.boardsConfig.selectedPort,
+          this.boardsService.getState()
+        );
+        if (typeof boardInfo === 'string') {
+          this.messageService.info(boardInfo);
           return;
         }
-        if (!selectedBoard.fqbn) {
-          this.messageService.info(
-            nls.localize(
-              'arduino/board/platformMissing',
-              "The platform for the selected '{0}' board is not installed.",
-              selectedBoard.name
-            )
-          );
-          return;
-        }
-        if (!selectedPort) {
-          this.messageService.info(
-            nls.localize(
-              'arduino/board/selectPortForInfo',
-              'Please select a port to obtain board info.'
-            )
-          );
-          return;
-        }
-        const boardDetails = await this.boardsService.getBoardDetails({
-          fqbn: selectedBoard.fqbn,
-        });
-        if (boardDetails) {
-          const { VID, PID } = boardDetails;
-          const detail = `BN: ${selectedBoard.name}
+        const { BN, VID, PID, SN } = boardInfo;
+        const detail = `
+BN: ${BN}
 VID: ${VID}
-PID: ${PID}`;
-          await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-            message: nls.localize('arduino/board/boardInfo', 'Board Info'),
-            title: nls.localize('arduino/board/boardInfo', 'Board Info'),
-            type: 'info',
-            detail,
-            buttons: [nls.localize('vscode/issueMainService/ok', 'OK')],
-          });
-        }
+PID: ${PID}
+SN: ${SN}
+`.trim();
+        await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+          message: nls.localize('arduino/board/boardInfo', 'Board Info'),
+          title: nls.localize('arduino/board/boardInfo', 'Board Info'),
+          type: 'info',
+          detail,
+          buttons: [nls.localize('vscode/issueMainService/ok', 'OK')],
+        });
       },
     });
   }
