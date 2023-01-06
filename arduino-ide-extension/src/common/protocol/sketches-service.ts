@@ -162,18 +162,9 @@ export namespace Sketch {
   }
   export namespace Extensions {
     export const MAIN = ['.ino', '.pde'];
-    export const SOURCE = ['.c', '.cpp', '.s'];
-    export const ADDITIONAL = [
-      '.h',
-      '.c',
-      '.hpp',
-      '.hh',
-      '.cpp',
-      '.S',
-      '.json',
-      '.md',
-      '.adoc',
-    ];
+    export const SOURCE = ['.c', '.cpp', '.S'];
+    export const CODE_FILES = [...MAIN, ...SOURCE, '.h', '.hh', '.hpp'];
+    export const ADDITIONAL = [...CODE_FILES, '.json', '.md', '.adoc'];
     export const ALL = Array.from(new Set([...MAIN, ...SOURCE, ...ADDITIONAL]));
   }
   export function isInSketch(uri: string | URI, sketch: Sketch): boolean {
