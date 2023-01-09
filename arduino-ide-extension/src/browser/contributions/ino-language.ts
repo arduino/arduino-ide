@@ -1,15 +1,17 @@
-import { Mutex } from 'async-mutex';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { Mutex } from 'async-mutex';
 import {
   ArduinoDaemon,
   BoardsService,
   ExecutableService,
 } from '../../common/protocol';
-import { HostedPluginEvents } from '../hosted-plugin-events';
-import { SketchContribution, URI } from './contribution';
 import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { HostedPluginEvents } from '../hosted-plugin-events';
+import { NotificationCenter } from '../notification-center';
+import { SketchContribution, URI } from './contribution';
 
 @injectable()
 export class InoLanguage extends SketchContribution {
@@ -28,8 +30,12 @@ export class InoLanguage extends SketchContribution {
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
+  @inject(NotificationCenter)
+  private readonly notificationCenter: NotificationCenter;
+
+  private readonly toDispose = new DisposableCollection();
+  private readonly languageServerStartMutex = new Mutex();
   private languageServerFqbn?: string;
-  private languageServerStartMutex = new Mutex();
 
   override onReady(): void {
     const start = (
@@ -43,25 +49,39 @@ export class InoLanguage extends SketchContribution {
         }
       }
     };
-    this.boardsServiceProvider.onBoardsConfigChanged(start);
-    this.hostedPluginEvents.onPluginsDidStart(() =>
-      start(this.boardsServiceProvider.boardsConfig)
-    );
-    this.hostedPluginEvents.onPluginsWillUnload(
-      () => (this.languageServerFqbn = undefined)
-    );
-    this.preferences.onPreferenceChanged(
-      ({ preferenceName, oldValue, newValue }) => {
-        if (oldValue !== newValue) {
-          switch (preferenceName) {
-            case 'arduino.language.log':
-            case 'arduino.language.realTimeDiagnostics':
-              start(this.boardsServiceProvider.boardsConfig, true);
+    const forceRestart = () => {
+      start(this.boardsServiceProvider.boardsConfig, true);
+    };
+    this.toDispose.pushAll([
+      this.boardsServiceProvider.onBoardsConfigChanged(start),
+      this.hostedPluginEvents.onPluginsDidStart(() =>
+        start(this.boardsServiceProvider.boardsConfig)
+      ),
+      this.hostedPluginEvents.onPluginsWillUnload(
+        () => (this.languageServerFqbn = undefined)
+      ),
+      this.preferences.onPreferenceChanged(
+        ({ preferenceName, oldValue, newValue }) => {
+          if (oldValue !== newValue) {
+            switch (preferenceName) {
+              case 'arduino.language.log':
+              case 'arduino.language.realTimeDiagnostics':
+                forceRestart();
+            }
           }
         }
-      }
-    );
+      ),
+      this.notificationCenter.onLibraryDidInstall(() => forceRestart()),
+      this.notificationCenter.onLibraryDidUninstall(() => forceRestart()),
+      this.notificationCenter.onPlatformDidInstall(() => forceRestart()),
+      this.notificationCenter.onPlatformDidUninstall(() => forceRestart()),
+      this.notificationCenter.onDidReinitialize(() => forceRestart()),
+    ]);
     start(this.boardsServiceProvider.boardsConfig);
+  }
+
+  onStop(): void {
+    this.toDispose.dispose();
   }
 
   private async startLanguageServer(
