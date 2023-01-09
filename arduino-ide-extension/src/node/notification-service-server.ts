@@ -59,7 +59,9 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyPlatformDidUninstall(event));
   }
 
-  notifyLibraryDidInstall(event: { item: LibraryPackage }): void {
+  notifyLibraryDidInstall(event: {
+    item: LibraryPackage | 'zip-install';
+  }): void {
     this.clients.forEach((client) => client.notifyLibraryDidInstall(event));
   }
 

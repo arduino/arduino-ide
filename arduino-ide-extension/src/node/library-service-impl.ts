@@ -373,22 +373,26 @@ export class LibraryServiceImpl
 
     // stop the board discovery
     await this.boardDiscovery.stop();
-
-    const resp = client.zipLibraryInstall(req);
-    resp.on(
-      'data',
-      ExecuteWithProgress.createDataCallback({
-        progressId,
-        responseService: this.responseService,
-      })
-    );
-    await new Promise<void>((resolve, reject) => {
-      resp.on('end', () => {
-        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
-        resolve();
+    try {
+      const resp = client.zipLibraryInstall(req);
+      resp.on(
+        'data',
+        ExecuteWithProgress.createDataCallback({
+          progressId,
+          responseService: this.responseService,
+        })
+      );
+      await new Promise<void>((resolve, reject) => {
+        resp.on('end', resolve);
+        resp.on('error', reject);
       });
-      resp.on('error', reject);
-    });
+      await this.refresh(); // let the CLI re-scan the libraries
+      this.notificationServer.notifyLibraryDidInstall({
+        item: 'zip-install',
+      });
+    } finally {
+      this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
+    }
   }
 
   async uninstall(options: {
