@@ -566,11 +566,24 @@ export class SketchesServiceImpl
     return FileUri.create(genBuildPath).toString();
   }
 
-  async getIdeTempFolderPath(sketch: Sketch): Promise<string> {
+  private async getIdeTempFolderPath(sketch: Sketch): Promise<string> {
     const sketchPath = FileUri.fsPath(sketch.uri);
     await fs.readdir(sketchPath); // Validates the sketch folder and rejects if not accessible.
     const suffix = crypto.createHash('md5').update(sketchPath).digest('hex');
-    return path.join(os.tmpdir(), `arduino-ide2-${suffix}`);
+    return path.join(
+      this.isTempSketch.tempDirRealpath,
+      `arduino-ide2-${suffix}`
+    );
+  }
+
+  async tempBuildPath(sketch: Sketch): Promise<string> {
+    const sketchPath = FileUri.fsPath(sketch.uri);
+    const hash = crypto
+      .createHash('md5')
+      .update(sketchPath)
+      .digest('hex')
+      .toUpperCase();
+    return join(this.isTempSketch.tempDirRealpath, `arduino-sketch-${hash}`);
   }
 
   async deleteSketch(sketch: Sketch): Promise<void> {

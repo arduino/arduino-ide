@@ -105,6 +105,12 @@ export interface SketchesService {
    * Recursively deletes the sketch folder with all its content.
    */
   deleteSketch(sketch: Sketch): Promise<void>;
+
+  /**
+   * This is the JS/TS re-implementation of [`GenBuildPath`](https://github.com/arduino/arduino-cli/blob/c0d4e4407d80aabad81142693513b3306759cfa6/arduino/sketch/sketch.go#L296-L306) of the CLI.
+   * Pass in a sketch and get the build temporary folder filesystem path calculated from the main sketch file location. This method does not check the existence of the sketch.
+   */
+  tempBuildPath(sketch: Sketch): Promise<string>;
 }
 
 export interface SketchRef {
