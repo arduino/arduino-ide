@@ -56,7 +56,7 @@ export class NotificationCenter
     item: BoardsPackage;
   }>();
   private readonly libraryDidInstallEmitter = new Emitter<{
-    item: LibraryPackage;
+    item: LibraryPackage | 'zip-install';
   }>();
   private readonly libraryDidUninstallEmitter = new Emitter<{
     item: LibraryPackage;
@@ -156,7 +156,9 @@ export class NotificationCenter
     this.platformDidUninstallEmitter.fire(event);
   }
 
-  notifyLibraryDidInstall(event: { item: LibraryPackage }): void {
+  notifyLibraryDidInstall(event: {
+    item: LibraryPackage | 'zip-install';
+  }): void {
     this.libraryDidInstallEmitter.fire(event);
   }
 

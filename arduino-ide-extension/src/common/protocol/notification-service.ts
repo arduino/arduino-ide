@@ -62,7 +62,9 @@ export interface NotificationServiceClient {
   notifyPlatformDidUninstall(event: { item: BoardsPackage }): void;
 
   // Libraries
-  notifyLibraryDidInstall(event: { item: LibraryPackage }): void;
+  notifyLibraryDidInstall(event: {
+    item: LibraryPackage | 'zip-install';
+  }): void;
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void;
 
   // Boards discovery
