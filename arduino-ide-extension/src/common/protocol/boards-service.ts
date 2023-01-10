@@ -623,3 +623,27 @@ export namespace Board {
     }));
   }
 }
+
+/**
+ * Throws an error if the `fqbn` argument is not sanitized. A sanitized FQBN has the `VENDOR:ARCHITECTURE:BOARD_ID` construct.
+ */
+export function assertSanitizedFqbn(fqbn: string): void {
+  if (fqbn.split(':').length !== 3) {
+    throw new Error(
+      `Expected a sanitized FQBN with three segments in the following format: 'VENDOR:ARCHITECTURE:BOARD_ID'. Got ${fqbn} instead.`
+    );
+  }
+}
+
+/**
+ * Converts the `VENDOR:ARCHITECTURE:BOARD_ID[:MENU_ID=OPTION_ID[,MENU2_ID=OPTION_ID ...]]` FQBN to
+ * `VENDOR:ARCHITECTURE:BOARD_ID` format.
+ * See the details of the `{build.fqbn}` entry in the [specs](https://arduino.github.io/arduino-cli/latest/platform-specification/#global-predefined-properties).
+ */
+export function sanitizeFqbn(fqbn: string | undefined): string | undefined {
+  if (!fqbn) {
+    return undefined;
+  }
+  const [vendor, arch, id] = fqbn.split(':');
+  return `${vendor}:${arch}:${id}`;
+}

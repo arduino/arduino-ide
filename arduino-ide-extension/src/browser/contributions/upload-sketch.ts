@@ -1,6 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import { CoreService, Port } from '../../common/protocol';
+import { CoreService, Port, sanitizeFqbn } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
@@ -170,7 +170,7 @@ export class UploadSketch extends CoreServiceContribution {
     const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
       await Promise.all([
         verifyOptions.fqbn, // already decorated FQBN
-        this.boardsDataStore.getData(this.sanitizeFqbn(verifyOptions.fqbn)),
+        this.boardsDataStore.getData(sanitizeFqbn(verifyOptions.fqbn)),
         this.preferences.get('arduino.upload.verify'),
         this.preferences.get('arduino.upload.verbose'),
       ]);
@@ -206,19 +206,6 @@ export class UploadSketch extends CoreServiceContribution {
       }
     }
     return port;
-  }
-
-  /**
-   * Converts the `VENDOR:ARCHITECTURE:BOARD_ID[:MENU_ID=OPTION_ID[,MENU2_ID=OPTION_ID ...]]` FQBN to
-   * `VENDOR:ARCHITECTURE:BOARD_ID` format.
-   * See the details of the `{build.fqbn}` entry in the [specs](https://arduino.github.io/arduino-cli/latest/platform-specification/#global-predefined-properties).
-   */
-  private sanitizeFqbn(fqbn: string | undefined): string | undefined {
-    if (!fqbn) {
-      return undefined;
-    }
-    const [vendor, arch, id] = fqbn.split(':');
-    return `${vendor}:${arch}:${id}`;
   }
 }
 
