@@ -30,11 +30,11 @@ export class BoardsDataStore implements FrontendApplicationContribution {
   @inject(LocalStorageService)
   protected readonly storageService: LocalStorageService;
 
-  protected readonly onChangedEmitter = new Emitter<void>();
+  protected readonly onChangedEmitter = new Emitter<string[]>();
 
   onStart(): void {
     this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
-      let shouldFireChanged = false;
+      const dataDidChangePerFqbn: string[] = [];
       for (const fqbn of item.boards
         .map(({ fqbn }) => fqbn)
         .filter(notEmpty)
@@ -49,18 +49,18 @@ export class BoardsDataStore implements FrontendApplicationContribution {
             data = details.configOptions;
             if (data.length) {
               await this.storageService.setData(key, data);
-              shouldFireChanged = true;
+              dataDidChangePerFqbn.push(fqbn);
             }
           }
         }
       }
-      if (shouldFireChanged) {
-        this.fireChanged();
+      if (dataDidChangePerFqbn.length) {
+        this.fireChanged(...dataDidChangePerFqbn);
       }
     });
   }
 
-  get onChanged(): Event<void> {
+  get onChanged(): Event<string[]> {
     return this.onChangedEmitter.event;
   }
 
@@ -116,7 +116,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       fqbn,
       data: { ...data, selectedProgrammer },
     });
-    this.fireChanged();
+    this.fireChanged(fqbn);
     return true;
   }
 
@@ -146,7 +146,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       return false;
     }
     await this.setData({ fqbn, data });
-    this.fireChanged();
+    this.fireChanged(fqbn);
     return true;
   }
 
@@ -190,8 +190,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
   }
 
-  protected fireChanged(): void {
-    this.onChangedEmitter.fire();
+  protected fireChanged(...fqbn: string[]): void {
+    this.onChangedEmitter.fire(fqbn);
   }
 }
 
