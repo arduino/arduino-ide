@@ -2,6 +2,9 @@
   "files.exclude": {
     "**/lib": false
   },
+  "search.exclude": {
+    "arduino-ide-extension/src/test/node/__test_sketchbook__": true
+  },
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
