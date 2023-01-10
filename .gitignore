@@ -4,7 +4,7 @@ node_modules/
 lib/
 downloads/
 build/
-Examples/
+arduino-ide-extension/Examples/
 !electron/build/
 src-gen/
 webpack.config.js
@@ -21,3 +21,5 @@ scripts/themes/tokens
 .env
 # content trace files for electron
 electron-app/traces
+# any Arduino LS generated log files
+inols*.log

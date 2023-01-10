@@ -7,6 +7,7 @@ import * as glob from 'glob';
 import * as crypto from 'crypto';
 import * as PQueue from 'p-queue';
 import { ncp } from 'ncp';
+import { Mutable } from '@theia/core/lib/common/types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -84,108 +85,15 @@ export class SketchesServiceImpl
       this.logger.warn(`Could not derive sketchbook root from ${uri}.`);
       return SketchContainer.create('');
     }
-    const exists = await this.exists(root);
-    if (!exists) {
+    const rootExists = await exists(root);
+    if (!rootExists) {
       this.logger.warn(`Sketchbook root ${root} does not exist.`);
       return SketchContainer.create('');
     }
-    const pathToAllSketchFiles = await new Promise<string[]>(
-      (resolve, reject) => {
-        glob(
-          '/!(libraries|hardware)/**/*.{ino,pde}',
-          { root },
-          (error, results) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(results);
-            }
-          }
-        );
-      }
+    const container = <Mutable<SketchContainer>>(
+      SketchContainer.create(uri ? path.basename(root) : 'Sketchbook')
     );
-    // Sort by path length to filter out nested sketches, such as the `Nested_folder` inside the `Folder` sketch.
-    //
-    // `directories#user`
-    // |
-    // +--Folder
-    //    |
-    //    +--Folder.ino
-    //    |
-    //    +--Nested_folder
-    //       |
-    //       +--Nested_folder.ino
-    pathToAllSketchFiles.sort((left, right) => left.length - right.length);
-    const container = SketchContainer.create(
-      uri ? path.basename(root) : 'Sketchbook'
-    );
-    const getOrCreateChildContainer = (
-      parent: SketchContainer,
-      segments: string[]
-    ) => {
-      if (segments.length === 1) {
-        throw new Error(
-          `Expected at least two segments relative path: ['ExampleSketchName', 'ExampleSketchName.{ino,pde}]. Was: ${segments}`
-        );
-      }
-      if (segments.length === 2) {
-        return parent;
-      }
-      const label = segments[0];
-      const existingSketch = parent.sketches.find(
-        (sketch) => sketch.name === label
-      );
-      if (existingSketch) {
-        // If the container has a sketch with the same label, it cannot have a child container.
-        // See above example about how to ignore nested sketches.
-        return undefined;
-      }
-      let child = parent.children.find((child) => child.label === label);
-      if (!child) {
-        child = SketchContainer.create(label);
-        parent.children.push(child);
-      }
-      return child;
-    };
-    for (const pathToSketchFile of pathToAllSketchFiles) {
-      const relative = path.relative(root, pathToSketchFile);
-      if (!relative) {
-        this.logger.warn(
-          `Could not determine relative sketch path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Relative path was: ${relative}`
-        );
-        continue;
-      }
-      const segments = relative.split(path.sep);
-      if (segments.length < 2) {
-        // folder name, and sketch name.
-        this.logger.warn(
-          `Expected at least one segment relative path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Segments were: ${segments}.`
-        );
-        continue;
-      }
-      // the folder name and the sketch name must match. For example, `Foo/foo.ino` is invalid.
-      // drop the folder name from the sketch name, if `.ino` or `.pde` remains, it's valid
-      const sketchName = segments[segments.length - 2];
-      const sketchFilename = segments[segments.length - 1];
-      const sketchFileExtension = segments[segments.length - 1].replace(
-        new RegExp(escapeRegExpCharacters(sketchName)),
-        ''
-      );
-      if (sketchFileExtension !== '.ino' && sketchFileExtension !== '.pde') {
-        this.logger.warn(
-          `Mismatching sketch file <${sketchFilename}> and sketch folder name <${sketchName}>. Skipping`
-        );
-        continue;
-      }
-      const child = getOrCreateChildContainer(container, segments);
-      if (child) {
-        child.sketches.push({
-          name: sketchName,
-          uri: FileUri.create(path.dirname(pathToSketchFile)).toString(),
-        });
-      }
-    }
-    return container;
+    return discoverSketches(root, container, this.logger);
   }
 
   private async root(uri?: string | undefined): Promise<string | undefined> {
@@ -488,7 +396,7 @@ export class SketchesServiceImpl
         this.sketchSuffixIndex++
       )}`;
       // Note: we check the future destination folder (`directories.user`) for name collision and not the temp folder!
-      const sketchExists = await this.exists(
+      const sketchExists = await exists(
         path.join(sketchbookPath, sketchNameCandidate)
       );
       if (!sketchExists) {
@@ -579,8 +487,8 @@ export class SketchesServiceImpl
     { destinationUri }: { destinationUri: string }
   ): Promise<string> {
     const source = FileUri.fsPath(sketch.uri);
-    const exists = await this.exists(source);
-    if (!exists) {
+    const sketchExists = await exists(source);
+    if (!sketchExists) {
       throw new Error(`Sketch does not exist: ${sketch}`);
     }
     // Nothing to do when source and destination are the same.
@@ -635,7 +543,7 @@ export class SketchesServiceImpl
     const { client } = await this.coreClient;
     const archivePath = FileUri.fsPath(destinationUri);
     // The CLI cannot override existing archives, so we have to wipe it manually: https://github.com/arduino/arduino-cli/issues/1160
-    if (await this.exists(archivePath)) {
+    if (await exists(archivePath)) {
       await fs.unlink(archivePath);
     }
     const req = new ArchiveSketchRequest();
@@ -678,15 +586,6 @@ export class SketchesServiceImpl
         }
       });
     });
-  }
-
-  private async exists(pathLike: string): Promise<boolean> {
-    try {
-      await fs.access(pathLike, constants.R_OK);
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   // Returns the default.ino from the settings or from default folder.
@@ -836,4 +735,158 @@ function sketchIndexToLetters(num: number): string {
     num = pow;
   } while (pow > 0);
   return out;
+}
+
+async function exists(pathLike: string): Promise<boolean> {
+  try {
+    await fs.access(pathLike, constants.R_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Recursively discovers sketches in the `root` folder give by the filesystem path.
+ * Missing `root` must be handled by callers. This function expects an accessible `root` directory.
+ */
+export async function discoverSketches(
+  root: string,
+  container: Mutable<SketchContainer>,
+  logger?: ILogger
+): Promise<SketchContainer> {
+  const pathToAllSketchFiles = await globSketches(
+    '/!(libraries|hardware)/**/*.{ino,pde}',
+    root
+  );
+  // if no match try to glob the sketchbook as a sketch folder
+  if (!pathToAllSketchFiles.length) {
+    pathToAllSketchFiles.push(...(await globSketches('/*.{ino,pde}', root)));
+  }
+
+  // Sort by path length to filter out nested sketches, such as the `Nested_folder` inside the `Folder` sketch.
+  //
+  // `directories#user`
+  // |
+  // +--Folder
+  //    |
+  //    +--Folder.ino
+  //    |
+  //    +--Nested_folder
+  //       |
+  //       +--Nested_folder.ino
+  pathToAllSketchFiles.sort((left, right) => left.length - right.length);
+  const getOrCreateChildContainer = (
+    container: SketchContainer,
+    segments: string[]
+  ): SketchContainer => {
+    // the sketchbook is a sketch folder
+    if (segments.length === 1) {
+      return container;
+    }
+    const segmentsCopy = segments.slice();
+    let currentContainer = container;
+    while (segmentsCopy.length > 2) {
+      const currentSegment = segmentsCopy.shift();
+      if (!currentSegment) {
+        throw new Error(
+          `'currentSegment' was not set when processing sketch container: ${JSON.stringify(
+            container
+          )}, original segments: ${JSON.stringify(
+            segments
+          )}, current container: ${JSON.stringify(
+            currentContainer
+          )}, current working segments: ${JSON.stringify(segmentsCopy)}`
+        );
+      }
+      let childContainer = currentContainer.children.find(
+        (childContainer) => childContainer.label === currentSegment
+      );
+      if (!childContainer) {
+        childContainer = SketchContainer.create(currentSegment);
+        currentContainer.children.push(childContainer);
+      }
+      currentContainer = childContainer;
+    }
+    if (segmentsCopy.length !== 2) {
+      throw new Error(
+        `Expected exactly two segments. A sketch folder name and the main sketch file name. For example, ['ExampleSketchName', 'ExampleSketchName.{ino,pde}]. Was: ${segmentsCopy}`
+      );
+    }
+    return currentContainer;
+  };
+
+  // If the container has a sketch with the same name, it cannot have a child container.
+  // See above example about how to ignore nested sketches.
+  const prune = (
+    container: Mutable<SketchContainer>
+  ): Mutable<SketchContainer> => {
+    for (const sketch of container.sketches) {
+      const childContainerIndex = container.children.findIndex(
+        (childContainer) => childContainer.label === sketch.name
+      );
+      if (childContainerIndex >= 0) {
+        container.children.splice(childContainerIndex, 1);
+      }
+    }
+    container.children.forEach(prune);
+    return container;
+  };
+
+  for (const pathToSketchFile of pathToAllSketchFiles) {
+    const relative = path.relative(root, pathToSketchFile);
+    if (!relative) {
+      logger?.warn(
+        `Could not determine relative sketch path from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping. Relative path was: ${relative}`
+      );
+      continue;
+    }
+    const segments = relative.split(path.sep);
+    let sketchName: string;
+    let sketchFilename: string;
+    if (!segments.length) {
+      // no segments.
+      logger?.warn(
+        `Expected at least one segment relative path ${relative} from the root <${root}> to the sketch <${pathToSketchFile}>. Skipping.`
+      );
+      continue;
+    } else if (segments.length === 1) {
+      // The sketchbook root is a sketch folder
+      sketchName = path.basename(root);
+      sketchFilename = segments[0];
+    } else {
+      // the folder name and the sketch name must match. For example, `Foo/foo.ino` is invalid.
+      // drop the folder name from the sketch name, if `.ino` or `.pde` remains, it's valid
+      sketchName = segments[segments.length - 2];
+      sketchFilename = segments[segments.length - 1];
+    }
+    const sketchFileExtension = segments[segments.length - 1].replace(
+      new RegExp(escapeRegExpCharacters(sketchName)),
+      ''
+    );
+    if (sketchFileExtension !== '.ino' && sketchFileExtension !== '.pde') {
+      logger?.warn(
+        `Mismatching sketch file <${sketchFilename}> and sketch folder name <${sketchName}>. Skipping`
+      );
+      continue;
+    }
+    const child = getOrCreateChildContainer(container, segments);
+    child.sketches.push({
+      name: sketchName,
+      uri: FileUri.create(path.dirname(pathToSketchFile)).toString(),
+    });
+  }
+  return prune(container);
+}
+
+async function globSketches(pattern: string, root: string): Promise<string[]> {
+  return new Promise<string[]>((resolve, reject) => {
+    glob(pattern, { root }, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
 }
