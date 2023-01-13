@@ -113,6 +113,11 @@ import { MessagingContribution } from './theia/core/messaging-contribution';
 import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
 import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
 import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
+import { PluginDeployer } from '@theia/plugin-ext/lib/common/plugin-protocol';
+import {
+  LocalDirectoryPluginDeployerResolverWithFallback,
+  PluginDeployer_GH_12064,
+} from './theia/plugin-ext/plugin-deployer';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -392,6 +397,12 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // https://github.com/arduino/arduino-ide/pull/1706#pullrequestreview-1195595080
   bind(HostedPluginReader).toSelf().inSingletonScope();
   rebind(TheiaHostedPluginReader).toService(HostedPluginReader);
+
+  // https://github.com/eclipse-theia/theia/issues/12064
+  bind(LocalDirectoryPluginDeployerResolverWithFallback)
+    .toSelf()
+    .inSingletonScope();
+  rebind(PluginDeployer).to(PluginDeployer_GH_12064).inSingletonScope();
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {
