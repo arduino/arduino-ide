@@ -4,7 +4,7 @@ import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { injectable } from '@theia/core/shared/inversify';
 import { firstToLowerCase } from '../common/utils';
 
-const Win32DriveRegex = /^[a-zA-Z]:\\/;
+export const Win32DriveRegex = /^[a-zA-Z]:\\/;
 export const TempSketchPrefix = '.arduinoIDE-unsaved';
 
 @injectable()

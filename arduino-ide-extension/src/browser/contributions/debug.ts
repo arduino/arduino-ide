@@ -246,8 +246,10 @@ export class Debug extends SketchContribution {
   ): Promise<boolean> {
     if (err instanceof Error) {
       try {
-        const tempBuildPath = await this.sketchService.tempBuildPath(sketch);
-        return err.message.includes(tempBuildPath);
+        const tempBuildPaths = await this.sketchService.tempBuildPath(sketch);
+        return tempBuildPaths.some((tempBuildPath) =>
+          err.message.includes(tempBuildPath)
+        );
       } catch {
         return false;
       }
