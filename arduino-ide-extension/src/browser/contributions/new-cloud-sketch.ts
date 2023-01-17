@@ -30,7 +30,13 @@ import { CloudSketchbookTreeWidget } from '../widgets/cloud-sketchbook/cloud-ske
 import { SketchbookCommands } from '../widgets/sketchbook/sketchbook-commands';
 import { SketchbookWidget } from '../widgets/sketchbook/sketchbook-widget';
 import { SketchbookWidgetContribution } from '../widgets/sketchbook/sketchbook-widget-contribution';
-import { Command, CommandRegistry, Contribution, URI } from './contribution';
+import {
+  Command,
+  CommandRegistry,
+  Contribution,
+  Sketch,
+  URI,
+} from './contribution';
 
 @injectable()
 export class NewCloudSketch extends Contribution {
@@ -234,14 +240,7 @@ export class NewCloudSketch extends Contribution {
               input
             );
           }
-          // This is how https://create.arduino.cc/editor/ works when renaming a sketch.
-          if (/^[0-9a-zA-Z_]{1,36}$/.test(input)) {
-            return '';
-          }
-          return nls.localize(
-            'arduino/newCloudSketch/invalidSketchName',
-            'The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.'
-          );
+          return Sketch.validateCloudSketchFolderName(input) ?? '';
         },
       },
       this.labelProvider,

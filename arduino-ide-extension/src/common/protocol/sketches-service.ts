@@ -1,4 +1,5 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
+import { nls } from '@theia/core/lib/common/nls';
 import URI from '@theia/core/lib/common/uri';
 
 export namespace SketchesError {
@@ -151,6 +152,51 @@ export interface Sketch extends SketchRef {
   readonly rootFolderFileUris: string[]; // `RootFolderFiles` (does not include the main sketch file)
 }
 export namespace Sketch {
+  // (non-API) exported for the tests
+  export const invalidSketchFolderNameMessage = nls.localize(
+    'arduino/sketch/invalidSketchName',
+    'Sketch names must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.'
+  );
+  const invalidCloudSketchFolderNameMessage = nls.localize(
+    'arduino/sketch/invalidCloudSketchName',
+    'The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.'
+  );
+  /**
+   * `undefined` if the candidate sketch folder name is valid. Otherwise, the validation error message.
+   * Based on the [specs](https://arduino.github.io/arduino-cli/latest/sketch-specification/#sketch-folders-and-files).
+   */
+  export function validateSketchFolderName(
+    candidate: string
+  ): string | undefined {
+    return /^[0-9a-zA-Z]{1}[0-9a-zA-Z_\.-]{0,62}$/.test(candidate)
+      ? undefined
+      : invalidSketchFolderNameMessage;
+  }
+
+  /**
+   * `undefined` if the candidate cloud sketch folder name is valid. Otherwise, the validation error message.
+   * Based on how https://create.arduino.cc/editor/ works.
+   */
+  export function validateCloudSketchFolderName(
+    candidate: string
+  ): string | undefined {
+    return /^[0-9a-zA-Z_]{1,36}$/.test(candidate)
+      ? undefined
+      : invalidCloudSketchFolderNameMessage;
+  }
+
+  /**
+   * Transforms the valid local sketch name into a valid cloud sketch name by replacing dots and dashes with underscore and trimming the length after 36 characters.
+   * Throws an error if `candidate` is not valid.
+   */
+  export function toValidCloudSketchFolderName(candidate: string): string {
+    const errorMessage = validateSketchFolderName(candidate);
+    if (errorMessage) {
+      throw new Error(errorMessage);
+    }
+    return candidate.replace(/\./g, '_').replace(/-/g, '_').slice(0, 36);
+  }
+
   export function is(arg: unknown): arg is Sketch {
     if (!SketchRef.is(arg)) {
       return false;
@@ -172,7 +218,8 @@ export namespace Sketch {
     return false;
   }
   export namespace Extensions {
-    export const MAIN = ['.ino', '.pde'];
+    export const DEFAULT = '.ino';
+    export const MAIN = [DEFAULT, '.pde'];
     export const SOURCE = ['.c', '.cpp', '.S'];
     export const CODE_FILES = [...MAIN, ...SOURCE, '.h', '.hh', '.hpp'];
     export const ADDITIONAL = [...CODE_FILES, '.json', '.md', '.adoc'];

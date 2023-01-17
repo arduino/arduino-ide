@@ -311,7 +311,6 @@
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
       "newSketchTitle": "Name of a new Remote Sketch",
       "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
       "sketchAlreadyExists": "Remote sketch '{0}' already exists."
@@ -405,7 +404,11 @@
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
       "doneUploading": "Done uploading.",
+      "editInvalidSketchFolderName": "Do you want to try to save the sketch folder with a different name?",
       "exportBinary": "Export Compiled Binary",
+      "invalidCloudSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "invalidSketchFolderNameTitle": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "Sketch names must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
       "new": "New Sketch",
@@ -448,6 +451,14 @@
       "cancel": "Cancel",
       "enterField": "Enter {0}",
       "upload": "Upload"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. Sketch filenames must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters without the file extension. To get rid of this message, rename the sketch file. Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. Sketch names must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters. To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
     }
   },
   "theia": {
@@ -470,7 +481,6 @@
       "deleteCurrentSketch": "Do you want to delete the current sketch?",
       "fileNewName": "Name for new file",
       "invalidExtension": ".{0} is not a valid extension",
-      "invalidFilename": "Invalid filename.",
       "newFileName": "New name for file"
     }
   }

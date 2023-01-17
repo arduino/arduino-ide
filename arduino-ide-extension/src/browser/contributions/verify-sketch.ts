@@ -27,7 +27,7 @@ export interface VerifySketchParams {
 }
 
 /**
- *  - `"idle"` when neither verify, not upload is running,
+ *  - `"idle"` when neither verify, nor upload is running,
  *  - `"explicit-verify"` when only verify is running triggered by the user, and
  *  - `"automatic-verify"` is when the automatic verify phase is running as part of an upload triggered by the user.
  */

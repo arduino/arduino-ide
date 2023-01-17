@@ -3,6 +3,7 @@ import * as remote from '@theia/core/electron-shared/@electron/remote';
 import * as dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
+  Sketch,
   SketchContribution,
   URI,
   Command,
@@ -90,20 +91,9 @@ export class SaveAsSketch extends SketchContribution {
         : sketch.name
     );
     const defaultPath = await this.fileService.fsPath(defaultUri);
-    const { filePath, canceled } = await remote.dialog.showSaveDialog(
-      remote.getCurrentWindow(),
-      {
-        title: nls.localize(
-          'arduino/sketch/saveFolderAs',
-          'Save sketch folder as...'
-        ),
-        defaultPath,
-      }
+    const destinationUri = await this.promptSketchFolderDestination(
+      defaultPath
     );
-    if (!filePath || canceled) {
-      return false;
-    }
-    const destinationUri = await this.fileSystemExt.getUri(filePath);
     if (!destinationUri) {
       return false;
     }
@@ -131,6 +121,67 @@ export class SaveAsSketch extends SketchContribution {
       this.workspaceService.open(new URI(workspaceUri), options);
     }
     return !!workspaceUri;
+  }
+
+  /**
+   * Prompts for the new sketch folder name until a valid one is give,
+   * then resolves with the destination sketch folder URI string,
+   * or `undefined` if the operation was canceled.
+   */
+  private async promptSketchFolderDestination(
+    defaultPath: string
+  ): Promise<string | undefined> {
+    let sketchFolderDestinationUri: string | undefined;
+    while (!sketchFolderDestinationUri) {
+      const { filePath } = await remote.dialog.showSaveDialog(
+        remote.getCurrentWindow(),
+        {
+          title: nls.localize(
+            'arduino/sketch/saveFolderAs',
+            'Save sketch folder as...'
+          ),
+          defaultPath,
+        }
+      );
+      if (!filePath) {
+        return undefined;
+      }
+      const destinationUri = await this.fileSystemExt.getUri(filePath);
+      const sketchFolderName = new URI(destinationUri).path.base;
+      const errorMessage = Sketch.validateSketchFolderName(sketchFolderName);
+      if (errorMessage) {
+        const message = `
+${nls.localize(
+  'arduino/sketch/invalidSketchFolderNameTitle',
+  "Invalid sketch folder name: '{0}'",
+  sketchFolderName
+)}
+
+${errorMessage}
+
+${nls.localize(
+  'arduino/sketch/editInvalidSketchFolderName',
+  'Do you want to try to save the sketch folder with a different name?'
+)}`.trim();
+        defaultPath = filePath;
+        const { response } = await remote.dialog.showMessageBox(
+          remote.getCurrentWindow(),
+          {
+            message,
+            buttons: [
+              nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+              nls.localize('vscode/extensionsUtils/yes', 'Yes'),
+            ],
+        });
+        // cancel
+        if (response === 0) {
+          return undefined;
+        }
+      } else {
+        sketchFolderDestinationUri = destinationUri;
+      }
+    }
+    return sketchFolderDestinationUri;
   }
 
   private async saveOntoCopiedSketch(mainFileUri: string, sketchUri: string, newSketchUri: string): Promise<void> {

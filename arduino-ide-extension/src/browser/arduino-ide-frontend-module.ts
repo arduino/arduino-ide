@@ -344,6 +344,7 @@ import { DebugViewModel } from '@theia/debug/lib/browser/view/debug-view-model';
 import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-widget';
 import { DebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
 import { ConfigServiceClient } from './config/config-service-client';
+import { ValidateSketch } from './contributions/validate-sketch';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -729,6 +730,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UpdateIndexes);
   Contribution.configure(bind, InterfaceScale);
   Contribution.configure(bind, NewCloudSketch);
+  Contribution.configure(bind, ValidateSketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

@@ -163,6 +163,10 @@ const testSketchbookContainerTemplate: SketchContainer = {
       uri: 'template://bar%2B%2B',
     },
     {
+      name: 'bar++ 2',
+      uri: 'template://bar%2B%2B%202',
+    },
+    {
       name: 'a_sketch',
       uri: 'template://a_sketch',
     },
