@@ -90,7 +90,7 @@ export class LocalCacheFsProvider
   protected async init(fileService: FileService): Promise<void> {
     const { config } = await this.configService.getConfiguration();
     // Any possible CLI config errors are ignored here. IDE2 does not verify the `directories.data` folder.
-    // If the data dir is accessible, IDE2 creates the cache folder for the remote sketches. Otherwise, it does not.
+    // If the data dir is accessible, IDE2 creates the cache folder for the cloud sketches. Otherwise, it does not.
     // The data folder can be configured outside of the IDE2, and the new data folder will be picked up with a
     // subsequent IDE2 start.
     if (!config?.dataDirUri) {

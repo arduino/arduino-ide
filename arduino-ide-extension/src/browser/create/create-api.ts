@@ -1,12 +1,16 @@
-import { injectable, inject } from '@theia/core/shared/inversify';
+import { MaybePromise } from '@theia/core/lib/common/types';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { fetch } from 'cross-fetch';
+import { SketchesService } from '../../common/protocol';
+import { ArduinoPreferences } from '../arduino-preferences';
+import { AuthenticationClientService } from '../auth/authentication-client-service';
+import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
 import * as createPaths from './create-paths';
 import { posix } from './create-paths';
-import { AuthenticationClientService } from '../auth/authentication-client-service';
-import { ArduinoPreferences } from '../arduino-preferences';
-import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
 import { Create, CreateError } from './typings';
 
 export interface ResponseResultProvider {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (response: Response): Promise<any>;
 }
 export namespace ResponseResultProvider {
@@ -15,6 +19,8 @@ export namespace ResponseResultProvider {
   export const JSON: ResponseResultProvider = (response) => response.json();
 }
 
+// TODO: check if this is still needed: https://github.com/electron/electron/issues/18733
+// The original issue was reported for Electron 5.x and 6.x. Theia uses 15.x
 export function Utf8ArrayToStr(array: Uint8Array): string {
   let out, i, c;
   let char2, char3;
@@ -61,20 +67,13 @@ type ResourceType = 'f' | 'd';
 @injectable()
 export class CreateApi {
   @inject(SketchCache)
-  protected sketchCache: SketchCache;
-
-  protected authenticationService: AuthenticationClientService;
-  protected arduinoPreferences: ArduinoPreferences;
-
-  public init(
-    authenticationService: AuthenticationClientService,
-    arduinoPreferences: ArduinoPreferences
-  ): CreateApi {
-    this.authenticationService = authenticationService;
-    this.arduinoPreferences = arduinoPreferences;
-
-    return this;
-  }
+  readonly sketchCache: SketchCache;
+  @inject(AuthenticationClientService)
+  private readonly authenticationService: AuthenticationClientService;
+  @inject(ArduinoPreferences)
+  private readonly arduinoPreferences: ArduinoPreferences;
+  @inject(SketchesService)
+  private readonly sketchesService: SketchesService;
 
   getSketchSecretStat(sketch: Create.Sketch): Create.Resource {
     return {
@@ -129,10 +128,13 @@ export class CreateApi {
 
   async createSketch(
     posixPath: string,
-    content: string = CreateApi.defaultInoContent
+    contentProvider: MaybePromise<string> = this.sketchesService.defaultInoContent()
   ): Promise<Create.Sketch> {
     const url = new URL(`${this.domain()}/sketches`);
-    const headers = await this.headers();
+    const [headers, content] = await Promise.all([
+      this.headers(),
+      contentProvider,
+    ]);
     const payload = {
       ino: btoa(content),
       path: posixPath,
@@ -291,7 +293,7 @@ export class CreateApi {
       this.sketchCache.addSketch(sketch);
 
       let file = '';
-      if (sketch && sketch.secrets) {
+      if (sketch.secrets) {
         for (const item of sketch.secrets) {
           file += `#define ${item.name} "${item.value}"\r\n`;
         }
@@ -381,7 +383,7 @@ export class CreateApi {
       return;
     }
 
-    // do not upload "do_not_sync" files/directoris and their descendants
+    // do not upload "do_not_sync" files/directories and their descendants
     const segments = posixPath.split(posix.sep) || [];
     if (
       segments.some((segment) => Create.do_not_sync_files.includes(segment))
@@ -413,6 +415,21 @@ export class CreateApi {
 
   async deleteDirectory(posixPath: string): Promise<void> {
     await this.delete(posixPath, 'd');
+  }
+
+  /**
+   * `sketchPath` is not the POSIX path but the path with the user UUID, username, etc.
+   * See [Create.Resource#path](./typings.ts). Unlike other endpoints, it does not support the `$HOME`
+   * variable substitution. The DELETE directory endpoint is bogus and responses with HTTP 500
+   * instead of 404 when deleting a non-existing resource.
+   */
+  async deleteSketch(sketchPath: string): Promise<void> {
+    const url = new URL(`${this.domain()}/sketches/byPath/${sketchPath}`);
+    const headers = await this.headers();
+    await this.run(url, {
+      method: 'DELETE',
+      headers,
+    });
   }
 
   private async delete(posixPath: string, type: ResourceType): Promise<void> {
@@ -475,14 +492,12 @@ export class CreateApi {
   }
 
   private async run<T>(
-    requestInfo: RequestInfo | URL,
+    requestInfo: URL,
     init: RequestInit | undefined,
     resultProvider: ResponseResultProvider = ResponseResultProvider.JSON
   ): Promise<T> {
-    const response = await fetch(
-      requestInfo instanceof URL ? requestInfo.toString() : requestInfo,
-      init
-    );
+    console.debug(`HTTP ${init?.method}: ${requestInfo.toString()}`);
+    const response = await fetch(requestInfo.toString(), init);
     if (!response.ok) {
       let details: string | undefined = undefined;
       try {
@@ -515,20 +530,4 @@ export class CreateApi {
   private async token(): Promise<string> {
     return this.authenticationService.session?.accessToken || '';
   }
-}
-
-export namespace CreateApi {
-  export const defaultInoContent = `/*
-
-*/
-
-void setup() {
-  
-}
-
-void loop() {
-  
-}
-
-`;
 }

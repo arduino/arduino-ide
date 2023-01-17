@@ -23,7 +23,7 @@ import {
   SketchesService,
   SketchesServicePath,
 } from '../common/protocol/sketches-service';
-import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
+import { SketchesServiceClientImpl } from './sketches-service-client-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
@@ -344,6 +344,9 @@ import { DebugViewModel } from '@theia/debug/lib/browser/view/debug-view-model';
 import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-widget';
 import { DebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
 import { ConfigServiceClient } from './config/config-service-client';
+import { ValidateSketch } from './contributions/validate-sketch';
+import { RenameCloudSketch } from './contributions/rename-cloud-sketch';
+import { CreateFeatures } from './create/create-features';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -729,6 +732,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UpdateIndexes);
   Contribution.configure(bind, InterfaceScale);
   Contribution.configure(bind, NewCloudSketch);
+  Contribution.configure(bind, ValidateSketch);
+  Contribution.configure(bind, RenameCloudSketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
@@ -889,6 +894,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   );
   bind(CreateApi).toSelf().inSingletonScope();
   bind(SketchCache).toSelf().inSingletonScope();
+  bind(CreateFeatures).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(CreateFeatures);
 
   bind(ShareSketchDialog).toSelf().inSingletonScope();
   bind(AuthenticationClientService).toSelf().inSingletonScope();

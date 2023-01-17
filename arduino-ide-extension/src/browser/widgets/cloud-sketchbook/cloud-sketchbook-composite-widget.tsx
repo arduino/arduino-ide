@@ -26,8 +26,8 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
     super();
     this.id = 'cloud-sketchbook-composite-widget';
     this.title.caption = nls.localize(
-      'arduino/cloud/remoteSketchbook',
-      'Remote Sketchbook'
+      'arduino/cloud/cloudSketchbook',
+      'Cloud Sketchbook'
     );
     this.title.iconClass = 'cloud-sketchbook-tree-icon';
   }
@@ -55,8 +55,8 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
         {this._session && (
           <CreateNew
             label={nls.localize(
-              'arduino/sketchbook/newRemoteSketch',
-              'New Remote Sketch'
+              'arduino/sketchbook/newCloudSketch',
+              'New Cloud Sketch'
             )}
             onClick={this.onDidClickCreateNew}
           />

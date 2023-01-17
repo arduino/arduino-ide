@@ -9,7 +9,7 @@ import {
 import { fork } from 'child_process';
 import { AddressInfo } from 'net';
 import { join, isAbsolute, resolve } from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs, rm, rmSync } from 'fs';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
@@ -29,6 +29,13 @@ import {
 } from '../../common/ipc-communication';
 import { ErrnoException } from '../../node/utils/errors';
 import { isAccessibleSketchPath } from '../../node/sketches-service-impl';
+import { SCHEDULE_DELETION_SIGNAL } from '../../electron-common/electron-messages';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { Sketch } from '../../common/protocol';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -66,6 +73,34 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   private startup = false;
   private _firstWindowId: number | undefined;
   private openFilePromise = new Deferred();
+  /**
+   * It contains all things the IDE2 must clean up before a normal stop.
+   *
+   * When deleting the sketch, the IDE2 must close the browser window and
+   * recursively delete the sketch folder from the filesystem. The sketch
+   * cannot be deleted when the window is open because that is the currently
+   * opened workspace. IDE2 cannot delete the sketch folder from the
+   * filesystem after closing the browser window because the window can be
+   * the last, and when the last window closes, the application quits.
+   * There is no way to clean up the undesired resources.
+   *
+   * This array contains disposable instances wrapping synchronous sketch
+   * delete operations. When IDE2 closes the browser window, it schedules
+   * the sketch deletion, and the window closes.
+   *
+   * When IDE2 schedules a sketch for deletion, it creates a synchronous
+   * folder deletion as a disposable instance and pushes it into this
+   * array. After the push, IDE2 starts the sketch deletion in an
+   * asynchronous way. When the deletion completes, the disposable is
+   * removed. If the app quits when the asynchronous deletion is still in
+   * progress, it disposes the elements of this array. Since it is
+   * synchronous, it is [ensured by Theia](https://github.com/eclipse-theia/theia/blob/678e335644f1b38cb27522cc27a3b8209293cf31/packages/core/src/node/backend-application.ts#L91-L97)
+   * that IDE2 won't quit before the cleanup is done. It works only in normal
+   * quit.
+   */
+  // TODO: Why is it here and not in the Theia backend?
+  // https://github.com/eclipse-theia/theia/discussions/12135
+  private readonly scheduledDeletions: Disposable[] = [];
 
   override async start(config: FrontendApplicationConfig): Promise<void> {
     // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
@@ -309,6 +344,13 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     ipcMain.on(Restart, ({ sender }) => {
       this.restart(sender.id);
     });
+    ipcMain.on(SCHEDULE_DELETION_SIGNAL, (event, sketch: unknown) => {
+      if (Sketch.is(sketch)) {
+        console.log(`Sketch ${sketch.uri} was scheduled for deletion`);
+        // TODO: remove deleted sketch from closedWorkspaces?
+        this.delete(sketch);
+      }
+    });
   }
 
   protected override async onSecondInstance(
@@ -511,6 +553,16 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       `Stored workspaces roots: ${workspaces.map(({ file }) => file)}`
     );
 
+    if (this.scheduledDeletions.length) {
+      console.log(
+        '>>> Finishing scheduled sketch deletions before app quit...'
+      );
+      new DisposableCollection(...this.scheduledDeletions).dispose();
+      console.log('<<< Successfully finishing scheduled sketch deletions.');
+    } else {
+      console.log('No sketches were scheduled for deletion.');
+    }
+
     super.onWillQuit(event);
   }
 
@@ -520,6 +572,59 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
   get firstWindowId(): number | undefined {
     return this._firstWindowId;
+  }
+
+  private async delete(sketch: Sketch): Promise<void> {
+    const sketchPath = FileUri.fsPath(sketch.uri);
+    const disposable = Disposable.create(() => {
+      try {
+        this.deleteSync(sketchPath);
+      } catch (err) {
+        console.error(
+          `Could not delete sketch ${sketchPath} on app quit.`,
+          err
+        );
+      }
+    });
+    this.scheduledDeletions.push(disposable);
+    return new Promise<void>((resolve, reject) => {
+      rm(sketchPath, { recursive: true, maxRetries: 5 }, (error) => {
+        if (error) {
+          console.error(`Failed to delete sketch ${sketchPath}`, error);
+          reject(error);
+        } else {
+          console.info(`Successfully deleted sketch ${sketchPath}`);
+          resolve();
+          const index = this.scheduledDeletions.indexOf(disposable);
+          if (index >= 0) {
+            this.scheduledDeletions.splice(index, 1);
+            console.info(
+              `Successfully completed the scheduled sketch deletion: ${sketchPath}`
+            );
+          } else {
+            console.warn(
+              `Could not find the scheduled sketch deletion: ${sketchPath}`
+            );
+          }
+        }
+      });
+    });
+  }
+
+  private deleteSync(sketchPath: string): void {
+    console.info(
+      `>>> Running sketch deletion ${sketchPath} before app quit...`
+    );
+    try {
+      rmSync(sketchPath, { recursive: true, maxRetries: 5 });
+      console.info(`<<< Deleted sketch ${sketchPath}`);
+    } catch (err) {
+      if (!ErrnoException.isENOENT(err)) {
+        throw err;
+      } else {
+        console.info(`<<< Sketch ${sketchPath} did not exist.`);
+      }
+    }
   }
 }
 

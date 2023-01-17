@@ -10,7 +10,7 @@ import {
   KeybindingRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class SaveSketch extends SketchContribution {
@@ -40,7 +40,7 @@ export class SaveSketch extends SketchContribution {
     if (!CurrentSketch.isValid(sketch)) {
       return;
     }
-    const isTemp = await this.sketchService.isTemp(sketch);
+    const isTemp = await this.sketchesService.isTemp(sketch);
     if (isTemp) {
       return this.commandService.executeCommand(
         SaveAsSketch.Commands.SAVE_AS_SKETCH.id,

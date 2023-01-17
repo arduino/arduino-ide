@@ -35,7 +35,7 @@ export class NewSketch extends SketchContribution {
 
   async newSketch(): Promise<void> {
     try {
-      const sketch = await this.sketchService.createNewSketch();
+      const sketch = await this.sketchesService.createNewSketch();
       this.workspaceService.open(new URI(sketch.uri));
     } catch (e) {
       await this.messageService.error(e.toString());

@@ -26,7 +26,7 @@ import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
@@ -67,9 +67,9 @@ export namespace CloudSketchbookCommands {
   export const TOGGLE_CLOUD_SKETCHBOOK = Command.toLocalizedCommand(
     {
       id: 'arduino-cloud-sketchbook--disable',
-      label: 'Show/Hide Remote Sketchbook',
+      label: 'Show/Hide Cloud Sketchbook',
     },
-    'arduino/cloud/showHideRemoveSketchbook'
+    'arduino/cloud/showHideSketchbook'
   );
 
   export const PULL_SKETCH = Command.toLocalizedCommand(

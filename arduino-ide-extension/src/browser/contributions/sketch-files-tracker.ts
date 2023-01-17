@@ -3,7 +3,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { FileSystemFrontendContribution } from '@theia/filesystem/lib/browser/filesystem-frontend-contribution';
 import { FileChangeType } from '@theia/filesystem/lib/common/files';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { Sketch, SketchContribution } from './contribution';
 import { OpenSketchFiles } from './open-sketch-files';
 
@@ -38,7 +38,7 @@ export class SketchFilesTracker extends SketchContribution {
                 type === FileChangeType.ADDED &&
                 resource.parent.toString() === sketch.uri
               ) {
-                const reloadedSketch = await this.sketchService.loadSketch(
+                const reloadedSketch = await this.sketchesService.loadSketch(
                   sketch.uri
                 );
                 if (Sketch.isInSketch(resource, reloadedSketch)) {

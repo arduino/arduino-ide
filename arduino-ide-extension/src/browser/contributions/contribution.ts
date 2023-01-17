@@ -41,7 +41,7 @@ import { SettingsService } from '../dialogs/settings/settings';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../common/protocol/sketches-service-client-impl';
+} from '../sketches-service-client-impl';
 import {
   SketchesService,
   FileSystemExt,
@@ -147,7 +147,7 @@ export abstract class SketchContribution extends Contribution {
   protected readonly configService: ConfigServiceClient;
 
   @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
+  protected readonly sketchesService: SketchesService;
 
   @inject(OpenerService)
   protected readonly openerService: OpenerService;

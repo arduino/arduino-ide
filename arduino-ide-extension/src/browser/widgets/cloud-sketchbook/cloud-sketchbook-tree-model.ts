@@ -17,12 +17,11 @@ import {
   LocalCacheUri,
 } from '../../local-cache/local-cache-fs-provider';
 import URI from '@theia/core/lib/common/uri';
-import { SketchCache } from './cloud-sketch-cache';
 import { Create } from '../../create/typings';
 import { nls } from '@theia/core/lib/common/nls';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 
-export function sketchBaseDir(sketch: Create.Sketch): FileStat {
+function sketchBaseDir(sketch: Create.Sketch): FileStat {
   // extract the sketch path
   const [, path] = splitSketchPath(sketch.path);
   const dirs = posixSegments(path);
@@ -42,7 +41,7 @@ export function sketchBaseDir(sketch: Create.Sketch): FileStat {
   return baseDir;
 }
 
-export function sketchesToFileStats(sketches: Create.Sketch[]): FileStat[] {
+function sketchesToFileStats(sketches: Create.Sketch[]): FileStat[] {
   const sketchesBaseDirs: Record<string, FileStat> = {};
 
   for (const sketch of sketches) {
@@ -64,8 +63,6 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   private readonly authenticationService: AuthenticationClientService;
   @inject(LocalCacheFsProvider)
   private readonly localCacheFsProvider: LocalCacheFsProvider;
-  @inject(SketchCache)
-  private readonly sketchCache: SketchCache;
 
   private _localCacheFsProviderReady: Deferred<void> | undefined;
 
@@ -127,8 +124,7 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
       this.tree.root = undefined;
       return;
     }
-    this.createApi.init(this.authenticationService, this.arduinoPreferences);
-    this.sketchCache.init();
+    this.createApi.sketchCache.init();
     const [sketches] = await Promise.all([
       this.createApi.sketches(),
       this.ensureLocalFsProviderReady(),

@@ -14,7 +14,7 @@ import { SketchesService } from '../../../common/protocol';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { DebugConfigurationModel } from './debug-configuration-model';
 import {
   FileOperationError,

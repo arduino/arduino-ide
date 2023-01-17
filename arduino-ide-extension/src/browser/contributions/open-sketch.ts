@@ -71,7 +71,7 @@ export class OpenSketch extends SketchContribution {
     }
     const uri = SketchLocation.toUri(toOpen);
     try {
-      await this.sketchService.loadSketch(uri.toString());
+      await this.sketchesService.loadSketch(uri.toString());
     } catch (err) {
       if (SketchesError.NotFound.is(err)) {
         this.messageService.error(err.message);
@@ -106,14 +106,14 @@ export class OpenSketch extends SketchContribution {
     }
     const sketchFilePath = filePaths[0];
     const sketchFileUri = await this.fileSystemExt.getUri(sketchFilePath);
-    const sketch = await this.sketchService.getSketchFolder(sketchFileUri);
+    const sketch = await this.sketchesService.getSketchFolder(sketchFileUri);
     if (sketch) {
       return sketch;
     }
     if (Sketch.isSketchFile(sketchFileUri)) {
       return promptMoveSketch(sketchFileUri, {
         fileService: this.fileService,
-        sketchService: this.sketchService,
+        sketchesService: this.sketchesService,
         labelProvider: this.labelProvider,
       });
     }
@@ -132,11 +132,11 @@ export async function promptMoveSketch(
   sketchFileUri: string | URI,
   options: {
     fileService: FileService;
-    sketchService: SketchesService;
+    sketchesService: SketchesService;
     labelProvider: LabelProvider;
   }
 ): Promise<Sketch | undefined> {
-  const { fileService, sketchService, labelProvider } = options;
+  const { fileService, sketchesService, labelProvider } = options;
   const uri =
     sketchFileUri instanceof URI ? sketchFileUri : new URI(sketchFileUri);
   const name = uri.path.name;
@@ -176,6 +176,6 @@ export async function promptMoveSketch(
       uri,
       new URI(newSketchUri.resolve(nameWithExt).toString())
     );
-    return sketchService.getSketchFolder(newSketchUri.toString());
+    return sketchesService.getSketchFolder(newSketchUri.toString());
   }
 }

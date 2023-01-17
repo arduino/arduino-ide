@@ -1,8 +1,6 @@
-import { SketchCache } from './cloud-sketch-cache';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { MaybePromise } from '@theia/core/lib/common/types';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileStatNode } from '@theia/filesystem/lib/browser/file-tree';
 import { Command } from '@theia/core/lib/common/command';
 import { WidgetDecoration } from '@theia/core/lib/browser/widget-decoration';
@@ -28,8 +26,6 @@ import { CloudSketchbookCommands } from './cloud-sketchbook-contributions';
 import { DoNotAskAgainConfirmDialog } from '../../dialogs/do-not-ask-again-dialog';
 import { SketchbookTree } from '../sketchbook/sketchbook-tree';
 import { firstToUpperCase } from '../../../common/utils';
-import { ArduinoPreferences } from '../../arduino-preferences';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
 import { posix, splitSketchPath } from '../../create/create-paths';
@@ -46,29 +42,17 @@ type FilesToSync = {
 };
 @injectable()
 export class CloudSketchbookTree extends SketchbookTree {
-  @inject(FileService)
-  protected override readonly fileService: FileService;
-
   @inject(LocalCacheFsProvider)
-  protected readonly localCacheFsProvider: LocalCacheFsProvider;
-
-  @inject(SketchCache)
-  protected readonly sketchCache: SketchCache;
-
-  @inject(ArduinoPreferences)
-  protected override readonly arduinoPreferences: ArduinoPreferences;
+  private readonly localCacheFsProvider: LocalCacheFsProvider;
 
   @inject(PreferenceService)
-  protected readonly preferenceService: PreferenceService;
+  private readonly preferenceService: PreferenceService;
 
   @inject(MessageService)
-  protected readonly messageService: MessageService;
-
-  @inject(SketchesServiceClientImpl)
-  protected readonly sketchServiceClient: SketchesServiceClientImpl;
+  private readonly messageService: MessageService;
 
   @inject(CreateApi)
-  protected readonly createApi: CreateApi;
+  private readonly createApi: CreateApi;
 
   async pushPublicWarn(
     node: CloudSketchbookTree.CloudSketchDirNode
@@ -93,15 +77,13 @@ export class CloudSketchbookTree extends SketchbookTree {
             PreferenceScope.User
           ),
       }).open();
-      if (!ok) {
-        return false;
-      }
-      return true;
+      return Boolean(ok);
     } else {
       return true;
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   async pull(arg: any): Promise<void> {
     const {
       // model,
@@ -145,7 +127,7 @@ export class CloudSketchbookTree extends SketchbookTree {
       );
       await this.sync(node.remoteUri, localUri);
 
-      this.sketchCache.purgeByPath(node.remoteUri.path.toString());
+      this.createApi.sketchCache.purgeByPath(node.remoteUri.path.toString());
 
       node.commands = commandsCopy;
       this.messageService.info(
@@ -213,7 +195,7 @@ export class CloudSketchbookTree extends SketchbookTree {
       );
       await this.sync(localUri, node.remoteUri);
 
-      this.sketchCache.purgeByPath(node.remoteUri.path.toString());
+      this.createApi.sketchCache.purgeByPath(node.remoteUri.path.toString());
 
       node.commands = commandsCopy;
       this.messageService.info(
@@ -229,7 +211,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     });
   }
 
-  async recursiveURIs(uri: URI): Promise<URI[]> {
+  private async recursiveURIs(uri: URI): Promise<URI[]> {
     // remote resources can be fetched one-shot via api
     if (CreateUri.is(uri)) {
       const resources = await this.createApi.readDirectory(
@@ -286,7 +268,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     }, {});
   }
 
-  async getUrisMap(uri: URI) {
+  private async getUrisMap(uri: URI): Promise<Record<string, URI>> {
     const basepath = uri.toString();
     const exists = await this.fileService.exists(uri);
     const uris =
@@ -294,7 +276,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     return uris;
   }
 
-  async treeDiff(source: URI, dest: URI): Promise<FilesToSync> {
+  private async treeDiff(source: URI, dest: URI): Promise<FilesToSync> {
     const [sourceURIs, destURIs] = await Promise.all([
       this.getUrisMap(source),
       this.getUrisMap(dest),
@@ -356,7 +338,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     }
   }
 
-  async sync(source: URI, dest: URI) {
+  private async sync(source: URI, dest: URI): Promise<void> {
     const { filesToWrite, filesToDelete } = await this.treeDiff(source, dest);
     await Promise.all(
       filesToWrite.map(async ({ source, dest }) => {
@@ -375,7 +357,9 @@ export class CloudSketchbookTree extends SketchbookTree {
     );
   }
 
-  override async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
+  override async resolveChildren(
+    parent: CompositeTreeNode
+  ): Promise<TreeNode[]> {
     return (await super.resolveChildren(parent)).sort((a, b) => {
       if (
         WorkspaceNode.is(parent) &&
@@ -416,14 +400,16 @@ export class CloudSketchbookTree extends SketchbookTree {
       CreateUri.is(node.remoteUri)
     ) {
       let remoteFileStat: FileStat;
-      const cacheHit = this.sketchCache.getItem(node.remoteUri.path.toString());
+      const cacheHit = this.createApi.sketchCache.getItem(
+        node.remoteUri.path.toString()
+      );
       if (cacheHit) {
         remoteFileStat = cacheHit;
       } else {
         // not found, fetch and add it for future calls
         remoteFileStat = await this.fileService.resolve(node.remoteUri);
         if (remoteFileStat) {
-          this.sketchCache.addItem(remoteFileStat);
+          this.createApi.sketchCache.addItem(remoteFileStat);
         }
       }
 
@@ -453,6 +439,7 @@ export class CloudSketchbookTree extends SketchbookTree {
           if (!CreateUri.is(childFs.resource)) {
             let refUri = node.fileStat.resource;
             if (node.fileStat.hasOwnProperty('remoteUri')) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               refUri = (node.fileStat as any).remoteUri;
             }
             remoteUri = refUri.resolve(childFs.name);
@@ -471,6 +458,7 @@ export class CloudSketchbookTree extends SketchbookTree {
   }
 
   protected override toNode(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
     fileStat: any,
     parent: CompositeTreeNode
   ): FileNode | DirNode {
@@ -530,7 +518,7 @@ export class CloudSketchbookTree extends SketchbookTree {
    * @returns
    */
   protected override async augmentSketchNode(node: DirNode): Promise<void> {
-    const sketch = this.sketchCache.getSketch(
+    const sketch = this.createApi.sketchCache.getSketch(
       node.fileStat.resource.path.toString()
     );
 
@@ -594,7 +582,7 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   protected override async isSketchNode(node: DirNode): Promise<boolean> {
     if (DirNode.is(node)) {
-      const sketch = this.sketchCache.getSketch(
+      const sketch = this.createApi.sketchCache.getSketch(
         node.fileStat.resource.path.toString()
       );
       return !!sketch;
@@ -621,6 +609,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     if (DecoratedTreeNode.is(node)) {
       for (const property of Object.keys(decorationData)) {
         if (node.decorationData.hasOwnProperty(property)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           delete (node.decorationData as any)[property];
         }
       }
@@ -661,7 +650,7 @@ export namespace CloudSketchbookTree {
     commands?: Command[];
   }
   export namespace CloudSketchDirNode {
-    export function is(node: TreeNode): node is CloudSketchDirNode {
+    export function is(node: TreeNode | undefined): node is CloudSketchDirNode {
       return SketchbookTree.SketchDirNode.is(node);
     }
 

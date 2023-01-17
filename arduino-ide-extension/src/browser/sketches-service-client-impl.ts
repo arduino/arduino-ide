@@ -10,13 +10,17 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { Sketch, SketchesService } from '.';
-import { ConfigServiceClient } from '../../browser/config/config-service-client';
-import { SketchContainer, SketchesError, SketchRef } from './sketches-service';
+import { Sketch, SketchesService } from '../common/protocol';
+import { ConfigServiceClient } from './config/config-service-client';
+import {
+  SketchContainer,
+  SketchesError,
+  SketchRef,
+} from '../common/protocol/sketches-service';
 import {
   ARDUINO_CLOUD_FOLDER,
   REMOTE_SKETCHBOOK_FOLDER,
-} from '../../browser/utils/constants';
+} from './utils/constants';
 import * as monaco from '@theia/monaco-editor-core';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -38,7 +42,7 @@ export class SketchesServiceClientImpl
   @inject(FileService)
   private readonly fileService: FileService;
   @inject(SketchesService)
-  private readonly sketchService: SketchesService;
+  private readonly sketchesService: SketchesService;
   @inject(WorkspaceService)
   private readonly workspaceService: WorkspaceService;
   @inject(ConfigServiceClient)
@@ -90,7 +94,7 @@ export class SketchesServiceClientImpl
     if (!sketchDirUri) {
       return;
     }
-    const container = await this.sketchService.getSketches({
+    const container = await this.sketchesService.getSketches({
       uri: sketchDirUri.toString(),
     });
     for (const sketch of SketchContainer.toArray(container)) {
@@ -123,7 +127,7 @@ export class SketchesServiceClientImpl
 
             let reloadedSketch: Sketch | undefined = undefined;
             try {
-              reloadedSketch = await this.sketchService.loadSketch(
+              reloadedSketch = await this.sketchesService.loadSketch(
                 this._currentSketch.uri
               );
             } catch (err) {
@@ -146,7 +150,7 @@ export class SketchesServiceClientImpl
             if (Sketch.isSketchFile(resource)) {
               if (type === FileChangeType.ADDED) {
                 try {
-                  const toAdd = await this.sketchService.loadSketch(
+                  const toAdd = await this.sketchesService.loadSketch(
                     resource.parent.toString()
                   );
                   if (!this.sketches.has(toAdd.uri)) {
@@ -197,7 +201,7 @@ export class SketchesServiceClientImpl
         this.workspaceService
           .tryGetRoots()
           .map(({ resource }) =>
-            this.sketchService.getSketchFolder(resource.toString())
+            this.sketchesService.getSketchFolder(resource.toString())
           )
       )
     ).filter(notEmpty);

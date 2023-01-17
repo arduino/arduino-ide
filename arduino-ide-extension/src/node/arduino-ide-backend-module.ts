@@ -344,7 +344,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     MonitorServiceName,
   ].forEach((name) => bindChildLogger(bind, name));
 
-  // Remote sketchbook bindings
+  // Cloud sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
   bind(AuthenticationService).toService(AuthenticationServiceImpl);
   bind(BackendApplicationContribution).toService(AuthenticationServiceImpl);

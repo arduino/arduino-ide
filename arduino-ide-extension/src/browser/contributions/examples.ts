@@ -201,7 +201,7 @@ export abstract class Examples extends SketchContribution {
 
   private async clone(uri: string): Promise<Sketch | undefined> {
     try {
-      const sketch = await this.sketchService.cloneExample(uri);
+      const sketch = await this.sketchesService.cloneExample(uri);
       return sketch;
     } catch (err) {
       if (SketchesError.NotFound.is(err)) {
