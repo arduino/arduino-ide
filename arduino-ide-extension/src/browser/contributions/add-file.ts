@@ -11,7 +11,7 @@ import {
 } from './contribution';
 import { FileDialogService } from '@theia/filesystem/lib/browser';
 import { nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class AddFile extends SketchContribution {

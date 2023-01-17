@@ -21,7 +21,7 @@ import { ArduinoPreferences } from '../../arduino-preferences';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
 import { Sketch } from '../../contributions/contribution';
 import { nls } from '@theia/core/lib/common';

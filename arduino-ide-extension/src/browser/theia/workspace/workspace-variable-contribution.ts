@@ -9,7 +9,7 @@ import { Sketch } from '../../../common/protocol';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 
 @injectable()

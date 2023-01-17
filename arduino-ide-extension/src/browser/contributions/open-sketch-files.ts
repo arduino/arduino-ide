@@ -39,7 +39,7 @@ export class OpenSketchFiles extends SketchContribution {
     focusMainSketchFile = false
   ): Promise<void> {
     try {
-      const sketch = await this.sketchService.loadSketch(uri.toString());
+      const sketch = await this.sketchesService.loadSketch(uri.toString());
       const { mainFileUri, rootFolderFileUris } = sketch;
       for (const uri of [mainFileUri, ...rootFolderFileUris]) {
         await this.ensureOpened(uri);
@@ -112,7 +112,7 @@ export class OpenSketchFiles extends SketchContribution {
     await wait(250); // let IDE2 open the editor and toast the error message, then open the modal dialog
     const movedSketch = await promptMoveSketch(invalidMainSketchUri, {
       fileService: this.fileService,
-      sketchService: this.sketchService,
+      sketchesService: this.sketchesService,
       labelProvider: this.labelProvider,
     });
     if (movedSketch) {
@@ -125,7 +125,7 @@ export class OpenSketchFiles extends SketchContribution {
   }
 
   private async openFallbackSketch(): Promise<void> {
-    const sketch = await this.sketchService.createNewSketch();
+    const sketch = await this.sketchesService.createNewSketch();
     this.workspaceService.open(new URI(sketch.uri), { preserveWindow: true });
   }
 

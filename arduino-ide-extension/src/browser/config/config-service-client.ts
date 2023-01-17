@@ -38,7 +38,7 @@ export class ConfigServiceClient implements FrontendApplicationContribution {
   @postConstruct()
   protected init(): void {
     this.appStateService.reachedState('ready').then(async () => {
-      const config = await this.fetchConfig();
+      const config = await this.delegate.getConfiguration();
       this.use(config);
     });
   }
@@ -57,10 +57,6 @@ export class ConfigServiceClient implements FrontendApplicationContribution {
 
   get onDidChangeDataDirUri(): Event<URI | undefined> {
     return this.didChangeDataDirUriEmitter.event;
-  }
-
-  async fetchConfig(): Promise<ConfigState> {
-    return this.delegate.getConfiguration();
   }
 
   /**

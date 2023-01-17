@@ -19,7 +19,7 @@ export class Sketchbook extends Examples {
   }
 
   protected override update(): void {
-    this.sketchService.getSketches({}).then((container) => {
+    this.sketchesService.getSketches({}).then((container) => {
       this.register(container);
       this.menuManager.update();
     });

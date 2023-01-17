@@ -9,7 +9,7 @@ import {
   MenuModelRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class ArchiveSketch extends SketchContribution {
@@ -56,7 +56,7 @@ export class ArchiveSketch extends SketchContribution {
     if (!destinationUri) {
       return;
     }
-    await this.sketchService.archive(sketch, destinationUri.toString());
+    await this.sketchesService.archive(sketch, destinationUri.toString());
     this.messageService.info(
       nls.localize(
         'arduino/sketch/createdArchive',

@@ -20,7 +20,7 @@ import {
   URI,
 } from './contribution';
 import { Dialog } from '@theia/core/lib/browser/dialogs';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { SaveAsSketch } from './save-as-sketch';
 
 /**
@@ -185,7 +185,7 @@ export class Close extends SketchContribution {
   private async isCurrentSketchTemp(): Promise<false | Sketch> {
     const currentSketch = await this.sketchServiceClient.currentSketch();
     if (CurrentSketch.isValid(currentSketch)) {
-      const isTemp = await this.sketchService.isTemp(currentSketch);
+      const isTemp = await this.sketchesService.isTemp(currentSketch);
       if (isTemp) {
         return currentSketch;
       }

@@ -39,4 +39,11 @@ export class SketchCache {
   getSketch(path: string): Create.Sketch | null {
     return this.sketches[path] || null;
   }
+
+  toString(): string {
+    return JSON.stringify({
+      sketches: this.sketches,
+      fileStats: this.fileStats,
+    });
+  }
 }
