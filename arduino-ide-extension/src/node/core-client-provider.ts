@@ -63,7 +63,6 @@ export class CoreClientProvider {
     new Emitter<CoreClientProvider.Client>();
   private readonly onClientReady = this.onClientReadyEmitter.event;
 
-  private ready = new Deferred<void>();
   private pending: Deferred<CoreClientProvider.Client> | undefined;
   private _client: CoreClientProvider.Client | undefined;
 
@@ -135,14 +134,6 @@ export class CoreClientProvider {
     const client = await this.createClient(address);
     this.toDisposeOnCloseClient.pushAll([
       Disposable.create(() => client.client.close()),
-      Disposable.create(() => {
-        this.ready.reject(
-          new Error(
-            `Disposed. Creating a new gRPC core client on address ${address}.`
-          )
-        );
-        this.ready = new Deferred();
-      }),
     ]);
     await this.initInstanceWithFallback(client);
     return this.useClient(client);

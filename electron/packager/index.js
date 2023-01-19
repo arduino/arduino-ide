@@ -107,6 +107,13 @@
         `yarn --network-timeout 1000000 --cwd ${join(repoRoot, extension)}`,
         `Building and testing ${extension}`
       );
+      exec(
+        `yarn --network-timeout 1000000 --cwd ${join(
+          repoRoot,
+          extension
+        )} test:slow`,
+        `Executing slow tests ${extension}`
+      );
     }
 
     //------------------------+
@@ -434,12 +441,7 @@ ${fs
    * @param {BufferEncoding|undefined} [encoding="base64"]
    * @param {object|undefined} [options]
    */
-  function hashFile(
-    file,
-    algorithm = 'sha512',
-    encoding = 'base64',
-    options
-  ) {
+  function hashFile(file, algorithm = 'sha512', encoding = 'base64', options) {
     const crypto = require('crypto');
     return new Promise((resolve, reject) => {
       const hash = crypto.createHash(algorithm);

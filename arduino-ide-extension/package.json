@@ -17,6 +17,7 @@
     "build": "tsc && ncp ./src/node/cli-protocol/ ./lib/node/cli-protocol/ && yarn lint",
     "watch": "tsc -w",
     "test": "mocha \"./lib/test/**/*.test.js\"",
+    "test:slow": "mocha \"./lib/test/**/*.slow-test.js\"",
     "test:watch": "mocha --watch --watch-files lib \"./lib/test/**/*.test.js\""
   },
   "dependencies": {

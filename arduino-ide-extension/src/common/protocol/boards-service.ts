@@ -141,6 +141,16 @@ export const BoardsService = Symbol('BoardsService');
 export interface BoardsService
   extends Installable<BoardsPackage>,
     Searchable<BoardsPackage, BoardSearch> {
+  install(options: {
+    item: BoardsPackage;
+    progressId?: string;
+    version?: Installable.Version;
+    noOverwrite?: boolean;
+    /**
+     * Only for testing to avoid confirmation dialogs from Windows User Access Control when installing a platform.
+     */
+    skipPostInstall?: boolean;
+  }): Promise<void>;
   getState(): Promise<AvailablePorts>;
   getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
   getBoardPackage(options: { id: string }): Promise<BoardsPackage | undefined>;
