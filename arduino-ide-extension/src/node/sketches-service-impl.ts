@@ -19,7 +19,7 @@ import {
   SketchContainer,
   SketchesError,
 } from '../common/protocol/sketches-service';
-import { NotificationServiceServerImpl } from './notification-service-server';
+import { NotificationServiceServer } from '../common/protocol';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { CoreClientAware } from './core-client-provider';
 import {
@@ -77,8 +77,8 @@ export class SketchesServiceImpl
   @inject(ConfigServiceImpl)
   private readonly configService: ConfigServiceImpl;
 
-  @inject(NotificationServiceServerImpl)
-  private readonly notificationService: NotificationServiceServerImpl;
+  @inject(NotificationServiceServer)
+  private readonly notificationService: NotificationServiceServer;
 
   @inject(EnvVariablesServer)
   private readonly envVariableServer: EnvVariablesServer;

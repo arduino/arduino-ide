@@ -434,6 +434,7 @@ export class BoardsServiceImpl
     progressId?: string;
     version?: Installable.Version;
     noOverwrite?: boolean;
+    skipPostInstall?: boolean;
   }): Promise<void> {
     const item = options.item;
     const version = !!options.version
@@ -450,6 +451,9 @@ export class BoardsServiceImpl
     req.setPlatformPackage(platform);
     req.setVersion(version);
     req.setNoOverwrite(Boolean(options.noOverwrite));
+    if (options.skipPostInstall) {
+      req.setSkipPostInstall(true);
+    }
 
     console.info('>>> Starting boards package installation...', item);
 
