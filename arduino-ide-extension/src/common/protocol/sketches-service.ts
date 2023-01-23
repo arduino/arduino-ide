@@ -105,6 +105,17 @@ export interface SketchesService {
    * Recursively deletes the sketch folder with all its content.
    */
   deleteSketch(sketch: Sketch): Promise<void>;
+
+  /**
+   * This is the JS/TS re-implementation of [`GenBuildPath`](https://github.com/arduino/arduino-cli/blob/c0d4e4407d80aabad81142693513b3306759cfa6/arduino/sketch/sketch.go#L296-L306) of the CLI.
+   * Pass in a sketch and get the build temporary folder filesystem path calculated from the main sketch file location. Can be multiple ones. This method does not check the existence of the sketch.
+   *
+   * The case sensitivity of the drive letter on Windows matters when the CLI calculates the MD5 hash of the temporary build folder.
+   * IDE2 does not know and does not want to rely on how the CLI treats the paths: with lowercase or uppercase drive letters.
+   * Hence, IDE2 has to provide multiple build paths on Windows. This hack will be obsolete when the CLI can provide error codes:
+   * https://github.com/arduino/arduino-cli/issues/1762.
+   */
+  tempBuildPath(sketch: Sketch): Promise<string[]>;
 }
 
 export interface SketchRef {

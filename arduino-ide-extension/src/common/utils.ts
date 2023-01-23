@@ -13,6 +13,10 @@ export function firstToUpperCase(what: string): string {
   return what.charAt(0).toUpperCase() + what.slice(1);
 }
 
-export function isNullOrUndefined(what: any): what is undefined | null {
+export function startsWithUpperCase(what: string): boolean {
+  return !!what && what.charAt(0) === firstToUpperCase(what.charAt(0));
+}
+
+export function isNullOrUndefined(what: unknown): what is undefined | null {
   return what === undefined || what === null;
 }

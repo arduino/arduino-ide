@@ -33,9 +33,16 @@ import {
   IsTempSketch,
   maybeNormalizeDrive,
   TempSketchPrefix,
+  Win32DriveRegex,
 } from './is-temp-sketch';
 import { join } from 'path';
 import { ErrnoException } from './utils/errors';
+import { isWindows } from '@theia/core/lib/common/os';
+import {
+  firstToLowerCase,
+  firstToUpperCase,
+  startsWithUpperCase,
+} from '../common/utils';
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -566,11 +573,59 @@ export class SketchesServiceImpl
     return FileUri.create(genBuildPath).toString();
   }
 
-  async getIdeTempFolderPath(sketch: Sketch): Promise<string> {
+  private async getIdeTempFolderPath(sketch: Sketch): Promise<string> {
     const sketchPath = FileUri.fsPath(sketch.uri);
     await fs.readdir(sketchPath); // Validates the sketch folder and rejects if not accessible.
     const suffix = crypto.createHash('md5').update(sketchPath).digest('hex');
-    return path.join(os.tmpdir(), `arduino-ide2-${suffix}`);
+    return path.join(
+      this.isTempSketch.tempDirRealpath,
+      `arduino-ide2-${suffix}`
+    );
+  }
+
+  async tempBuildPath(sketch: Sketch): Promise<string[]> {
+    const sketchPath = FileUri.fsPath(sketch.uri);
+    const { tempDirRealpath } = this.isTempSketch;
+    const tempBuildPaths = [
+      this.tempBuildPathMD5Hash(tempDirRealpath, sketchPath),
+    ];
+
+    // If on Windows, provide both the upper and the lowercase drive letter MD5 hashes. All together four paths are expected:
+    // One of them should match if the sketch is not yet compiled.
+    // https://github.com/arduino/arduino-ide/pull/1809#discussion_r1071031040
+    if (isWindows && Win32DriveRegex.test(tempDirRealpath)) {
+      const toggleFirstCharCasing = (s: string) =>
+        startsWithUpperCase(s) ? firstToLowerCase(s) : firstToUpperCase(s);
+      const otherCaseTempDirRealPath = toggleFirstCharCasing(tempDirRealpath);
+      tempBuildPaths.push(
+        this.tempBuildPathMD5Hash(otherCaseTempDirRealPath, sketchPath)
+      );
+      if (Win32DriveRegex.test(sketchPath)) {
+        const otherCaseSketchPath = toggleFirstCharCasing(sketchPath);
+        tempBuildPaths.push(
+          this.tempBuildPathMD5Hash(tempDirRealpath, otherCaseSketchPath),
+          this.tempBuildPathMD5Hash(
+            otherCaseTempDirRealPath,
+            otherCaseSketchPath
+          )
+        );
+      }
+    }
+    return tempBuildPaths;
+  }
+
+  private tempBuildPathMD5Hash(tempFolderPath: string, path: string): string {
+    return join(tempFolderPath, this.tempBuildFolderMD5Hash(path));
+  }
+
+  private tempBuildFolderMD5Hash(path: string): string {
+    const hash = crypto
+      .createHash('md5')
+      .update(path)
+      .digest('hex')
+      .toUpperCase();
+    const folderName = `arduino-sketch-${hash}`;
+    return folderName;
   }
 
   async deleteSketch(sketch: Sketch): Promise<void> {
