@@ -16,6 +16,7 @@ sudo apt update \
   libx11-dev \
   libxkbfile-dev \
   build-essential \
+  libsecret-1-dev \
 && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
 && source ~/.bashrc \
 && nvm install 16 \

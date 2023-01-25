@@ -1,5 +1,7 @@
 //@ts-check
 
+// Usage `node ./scripts/update-version.js 2.1.3`
+
 const fs = require('fs');
 const path = require('path');
 const semver = require('semver');
