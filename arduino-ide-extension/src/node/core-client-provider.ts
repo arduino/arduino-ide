@@ -254,8 +254,8 @@ export class CoreClientProvider {
           }
         })
         .on('error', reject)
-        .on('end', () => {
-          const error = this.evaluateErrorStatus(errors);
+        .on('end', async () => {
+          const error = await this.evaluateErrorStatus(errors);
           if (error) {
             reject(error);
             return;
@@ -265,7 +265,10 @@ export class CoreClientProvider {
     });
   }
 
-  private evaluateErrorStatus(status: RpcStatus[]): Error | undefined {
+  private async evaluateErrorStatus(
+    status: RpcStatus[]
+  ): Promise<Error | undefined> {
+    await this.configService.getConfiguration(); // to ensure the CLI config service has been initialized.
     const { cliConfiguration } = this.configService;
     if (!cliConfiguration) {
       // If the CLI config is not available, do not even try to guess what went wrong.

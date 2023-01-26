@@ -136,8 +136,10 @@ export class ConfigServiceImpl
   }
 
   private async initConfig(): Promise<void> {
+    this.logger.info('>>> Initializing CLI configuration...');
     try {
       const cliConfig = await this.loadCliConfig();
+      this.logger.info('Loaded the CLI configuration.');
       this.cliConfig = cliConfig;
       const [config] = await Promise.all([
         this.mapCliConfigToAppConfig(this.cliConfig),
@@ -153,10 +155,16 @@ export class ConfigServiceImpl
         }),
       ]);
       this.config.config = config;
+      this.logger.info(
+        `Mapped the CLI configuration: ${JSON.stringify(this.config.config)}`
+      );
+      this.logger.info('Validating the CLI configuration...');
       await this.validateCliConfig(this.cliConfig);
       delete this.config.messages;
+      this.logger.info('The CLI config is valid.');
       if (config) {
         this.ready.resolve();
+        this.logger.info('<<< Initialized the CLI configuration.');
         return;
       }
     } catch (err: unknown) {
@@ -173,18 +181,35 @@ export class ConfigServiceImpl
   ): Promise<DefaultCliConfig> {
     const cliConfigFileUri = await this.getCliConfigFileUri();
     const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
+    this.logger.info(`Loading CLI configuration from ${cliConfigPath}...`);
     try {
       const content = await fs.readFile(cliConfigPath, {
         encoding: 'utf8',
       });
       const model = (yaml.safeLoad(content) || {}) as DefaultCliConfig;
+      this.logger.info(`Loaded CLI configuration: ${JSON.stringify(model)}`);
       if (model.directories.data && model.directories.user) {
+        this.logger.info(
+          "'directories.data' and 'directories.user' are set in the CLI configuration model."
+        );
         return model;
       }
       // The CLI can run with partial (missing `port`, `directories`), the IDE2 cannot.
       // We merge the default CLI config with the partial user's config.
+      this.logger.info(
+        "Loading fallback CLI configuration to get 'directories.data' and 'directories.user'"
+      );
       const fallbackModel = await this.getFallbackCliConfig();
-      return deepmerge(fallbackModel, model) as DefaultCliConfig;
+      this.logger.info(
+        `Loaded fallback CLI configuration: ${JSON.stringify(fallbackModel)}`
+      );
+      const mergedModel = deepmerge(fallbackModel, model) as DefaultCliConfig;
+      this.logger.info(
+        `Merged CLI configuration with the fallback: ${JSON.stringify(
+          mergedModel
+        )}`
+      );
+      return mergedModel;
     } catch (error) {
       if (ErrnoException.isENOENT(error)) {
         if (initializeIfAbsent) {
