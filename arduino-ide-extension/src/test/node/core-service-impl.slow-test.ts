@@ -7,7 +7,8 @@ import {
 import { bindContributionProvider } from '@theia/core/lib/common/contribution-provider';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { ILogger } from '@theia/core/lib/common/logger';
+import { ILogger, Loggable } from '@theia/core/lib/common/logger';
+import { LogLevel } from '@theia/core/lib/common/logger-protocol';
 import { isWindows } from '@theia/core/lib/common/os';
 import { waitForEvent } from '@theia/core/lib/common/promise-util';
 import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
@@ -66,7 +67,7 @@ describe('core-service-impl', () => {
   let toDispose: Disposable[];
 
   before(() => {
-    BackendApplicationConfigProvider.set({ configDirName: 'testArduinoIDE' });
+    BackendApplicationConfigProvider.set({ configDirName: '.testArduinoIDE' });
   });
 
   beforeEach(async function () {
@@ -175,10 +176,11 @@ function createContainer(): Container {
     );
     bind(EnvVariablesServer).toSelf().inSingletonScope();
     bind(TheiaEnvVariablesServer).toService(EnvVariablesServer);
-    bind(ArduinoDaemonImpl).toSelf().inSingletonScope();
-    bind(ArduinoDaemon).toService(ArduinoDaemonImpl);
-    bind(MockLogger).toSelf().inSingletonScope();
-    bind(ILogger).toService(MockLogger);
+    bind(SilentArduinoDaemon).toSelf().inSingletonScope();
+    bind(ArduinoDaemon).toService(SilentArduinoDaemon);
+    bind(ArduinoDaemonImpl).toService(SilentArduinoDaemon);
+    bind(ConsoleLogger).toSelf().inSingletonScope();
+    bind(ILogger).toService(ConsoleLogger);
     bind(TestNotificationServiceServer).toSelf().inSingletonScope();
     bind(NotificationServiceServer).toService(TestNotificationServiceServer);
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
@@ -310,5 +312,90 @@ class TestCommandRegistry extends CommandRegistry {
     this.executedCommands.push([commandId, args]);
     this.onDidExecuteCommandEmitter.fire({ commandId, args });
     return undefined;
+  }
+}
+
+@injectable()
+class ConsoleLogger extends MockLogger {
+  override log(
+    logLevel: number,
+    arg2: string | Loggable | Error,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...params: any[]
+  ): Promise<void> {
+    if (arg2 instanceof Error) {
+      return this.error(String(arg2), params);
+    }
+    switch (logLevel) {
+      case LogLevel.INFO:
+        return this.info(arg2, params);
+      case LogLevel.WARN:
+        return this.warn(arg2, params);
+      case LogLevel.TRACE:
+        return this.trace(arg2, params);
+      case LogLevel.ERROR:
+        return this.error(arg2, params);
+      case LogLevel.FATAL:
+        return this.fatal(arg2, params);
+      default:
+        return this.info(arg2, params);
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  override async info(arg: string | Loggable, ...params: any[]): Promise<void> {
+    if (params.length) {
+      console.info(arg, ...params);
+    } else {
+      console.info(arg);
+    }
+  }
+
+  override async trace(
+    arg: string | Loggable,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...params: any[]
+  ): Promise<void> {
+    if (params.length) {
+      console.trace(arg, ...params);
+    } else {
+      console.trace(arg);
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  override async warn(arg: string | Loggable, ...params: any[]): Promise<void> {
+    if (params.length) {
+      console.warn(arg, ...params);
+    } else {
+      console.warn(arg);
+    }
+  }
+
+  override async error(
+    arg: string | Loggable,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...params: any[]
+  ): Promise<void> {
+    if (params.length) {
+      console.error(arg, ...params);
+    } else {
+      console.error(arg);
+    }
+  }
+
+  override async fatal(
+    arg: string | Loggable,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...params: any[]
+  ): Promise<void> {
+    return this.error(arg, params);
+  }
+}
+
+@injectable()
+class SilentArduinoDaemon extends ArduinoDaemonImpl {
+  protected override onData(): void {
+    //  NOOP
   }
 }
