@@ -57,9 +57,11 @@ export class EditContributions extends Contribution {
       execute: async () => {
         const value = await this.currentValue();
         if (value !== undefined) {
-          this.clipboardService.writeText(`\`\`\`cpp
+          this.clipboardService.writeText(`
+\`\`\`cpp
 ${value}
-\`\`\``);
+\`\`\`
+`);
         }
       },
     });
