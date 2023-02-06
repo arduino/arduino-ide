@@ -500,7 +500,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(WidgetFactory).toDynamicValue((context) => ({
     id: DecodeWidget.ID,
     createWidget: () => {
-      return new DecodeWidget();
+      return new DecodeWidget(
+        context.container.get<ConfigService>(ConfigService),
+        context.container.get<BoardsServiceProvider>(BoardsServiceProvider),
+        context.container.get<SketchesServiceClientImpl>(SketchesServiceClientImpl)
+      );
     },
   }));
 

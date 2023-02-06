@@ -1,6 +1,7 @@
 import * as React from '@theia/core/shared/react';
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
+import URI from '@theia/core/lib/common/uri';
 import {
   ReactWidget,
   Message,
@@ -11,13 +12,11 @@ import { DecodeSendInput } from './decode-send-input';
 import { DecodeOutput } from './decode-output';
 import { spawnCommand } from '../../../node/exec-util';
 import { ConfigService } from '../../../common/protocol';
-
+import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 
 @injectable()
 export class DecodeWidget extends ReactWidget {
-
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
 
   static readonly LABEL = 'Decode Box';
   static readonly ID = 'decode-box';
@@ -36,7 +35,16 @@ export class DecodeWidget extends ReactWidget {
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
 
-  constructor() {
+  constructor(
+    @inject(ConfigService)
+    protected readonly configService: ConfigService,
+
+    @inject(BoardsServiceProvider)
+    protected readonly boardsServiceProvider: BoardsServiceProvider,
+
+    @inject(SketchesServiceClientImpl)
+    protected readonly sketchServiceClient: SketchesServiceClientImpl,
+  ) {
     super();
     this.id = DecodeWidget.ID;
     this.title.label = DecodeWidget.LABEL;
@@ -120,16 +128,46 @@ export class DecodeWidget extends ReactWidget {
 
   protected readonly onSend = (value: string) => this.doSend(value);
   protected async doSend(value: string) {
-    const configPath = await this.configService.getConfiguration();
-    console.log('This is the config path', configPath);
-    const xtensaPath= '/Users/radurentea/Library/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r2-patch3/bin/xtensa-esp32-elf-addr2line';
-    // Add logic here; value is the backtrace user copied
-    let result = await spawnCommand(`${xtensaPath}`, [
-      '-pfiaC',
-      '-e',
-      '/Users/radurentea/Documents/Arduino/sketch_nov3a/build/esp32.esp32.esp32wroverkit/sketch_nov3a.ino.elf',
-      `"${value}"`,
-    ]);
-    this.decodeOutputElement.current.decodeText(result);
+    
+    const configPath = await this.configService.getConfiguration()
+      .then(({ dataDirUri }) => (new URI(dataDirUri)).path);
+    const boards = this.boardsServiceProvider.boardsConfig
+    const fqbn = boards.selectedBoard?.fqbn;
+    if(!fqbn) {
+      return
+    }
+    const selectedBoard = fqbn.split(':')[1];
+    const currentSketch = await this.sketchServiceClient.currentSketch();
+    if (!CurrentSketch.isValid(currentSketch)) {
+      return;
+    }
+    const sketchUri = (new URI(currentSketch.uri)).path;
+    const elfPath = `${sketchUri}/build/${fqbn.split(':').join('.')}/${currentSketch.name}.ino.elf`;
+    // * enters an unkown foldername, in this case the version of gcc
+    const xtensaPath= `${configPath}/packages/${selectedBoard}/tools/xtensa-${selectedBoard}-elf-gcc/\*/bin/xtensa-${selectedBoard}-elf-addr2line`;
+    // Add logic here; value is the backtrace user 
+
+    const regex = new RegExp(/[0-3]x([a-f]|[A-F]|[0-9]){8}/g);
+
+    const arrAddresses = value.match(regex);
+
+    if(!arrAddresses) {
+      return this.decodeOutputElement.current.decodeText('Provided format can not be decoded!');
+    }
+
+    let decodeResult = '';
+
+    for(let i=0;i<arrAddresses.length; i++) {
+      
+      let result = await spawnCommand(`${xtensaPath}`, [
+        '-pfiaC',
+        '-e',
+        `${elfPath}`,
+        `"${arrAddresses[i]}"`,
+      ]);
+      decodeResult += `${result} \n`;
+    }
+    
+    this.decodeOutputElement.current.decodeText(decodeResult);
   }
 }

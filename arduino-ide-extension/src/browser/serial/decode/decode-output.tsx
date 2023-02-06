@@ -25,10 +25,9 @@ export class DecodeOutput extends React.Component<
     };
   }
 
-   decodeText = (value: string) => {
-    console.log("decodeText works!", value);
-    this.setState({text: value});
-  }
+  decodeText = (value: string) => {
+    this.setState({ text: value });
+  };
 
   override render(): React.ReactNode {
     return (
@@ -48,7 +47,7 @@ export class DecodeOutput extends React.Component<
       // >
       //   {Row}
       // </List>
-      <div>{this.state.text}</div>
+      <div style={{ whiteSpace: 'pre-wrap' }}>{this.state.text}</div>
     );
   }
 
@@ -118,5 +117,3 @@ export namespace DecodeOutput {
 
   export const MAX_CHARACTERS = 1_000_000;
 }
-
-
