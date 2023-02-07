@@ -53,11 +53,9 @@ export abstract class ListWidget<
    */
   protected firstActivate = true;
 
-  protected readonly defaultSortComparator: (left: T, right: T) => number;
-
   constructor(protected options: ListWidget.Options<T, S>) {
     super();
-    const { id, label, iconClass, itemDeprecated, itemLabel } = options;
+    const { id, label, iconClass } = options;
     this.id = id;
     this.title.label = label;
     this.title.caption = label;
@@ -67,15 +65,6 @@ export abstract class ListWidget<
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
     this.scrollOptions = undefined;
     this.toDispose.push(this.searchOptionsChangeEmitter);
-
-    this.defaultSortComparator = (left, right): number => {
-      // always put deprecated items at the bottom of the list
-      if (itemDeprecated(left)) {
-        return 1;
-      }
-
-      return itemLabel(left).localeCompare(itemLabel(right));
-    };
   }
 
   @postConstruct()
@@ -144,30 +133,6 @@ export abstract class ListWidget<
     return this.options.installable.uninstall({ item, progressId });
   }
 
-  protected filterableListSort = (items: T[]): T[] => {
-    const isArduinoTypeComparator = (left: T, right: T) => {
-      const aIsArduinoType = left.types.includes('Arduino');
-      const bIsArduinoType = right.types.includes('Arduino');
-
-      if (aIsArduinoType && !bIsArduinoType && !left.deprecated) {
-        return -1;
-      }
-
-      if (!aIsArduinoType && bIsArduinoType && !right.deprecated) {
-        return 1;
-      }
-
-      return 0;
-    };
-
-    return items.sort((left, right) => {
-      return (
-        isArduinoTypeComparator(left, right) ||
-        this.defaultSortComparator(left, right)
-      );
-    });
-  };
-
   render(): React.ReactNode {
     return (
       <FilterableListContainer<T, S>
@@ -178,14 +143,12 @@ export abstract class ListWidget<
         install={this.install.bind(this)}
         uninstall={this.uninstall.bind(this)}
         itemLabel={this.options.itemLabel}
-        itemDeprecated={this.options.itemDeprecated}
         itemRenderer={this.options.itemRenderer}
         filterRenderer={this.options.filterRenderer}
         searchOptionsDidChange={this.searchOptionsChangeEmitter.event}
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
-        sort={this.filterableListSort}
       />
     );
   }
@@ -218,7 +181,6 @@ export namespace ListWidget {
     readonly installable: Installable<T>;
     readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
-    readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
     readonly filterRenderer: FilterRenderer<S>;
     readonly defaultSearchOptions: S;

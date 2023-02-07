@@ -82,12 +82,11 @@ export class FilterableListContainer<
   }
 
   protected renderComponentList(): React.ReactNode {
-    const { itemLabel, itemDeprecated, itemRenderer } = this.props;
+    const { itemLabel, itemRenderer } = this.props;
     return (
       <ComponentList<T>
         items={this.state.items}
         itemLabel={itemLabel}
-        itemDeprecated={itemDeprecated}
         itemRenderer={itemRenderer}
         install={this.install.bind(this)}
         uninstall={this.uninstall.bind(this)}
@@ -109,9 +108,7 @@ export class FilterableListContainer<
 
   protected search(searchOptions: S): void {
     const { searchable } = this.props;
-    searchable
-      .search(searchOptions)
-      .then((items) => this.setState({ items: this.props.sort(items) }));
+    searchable.search(searchOptions).then((items) => this.setState({ items }));
   }
 
   protected async install(
@@ -127,7 +124,7 @@ export class FilterableListContainer<
       run: ({ progressId }) => install({ item, progressId, version }),
     });
     const items = await searchable.search(this.state.searchOptions);
-    this.setState({ items: this.props.sort(items) });
+    this.setState({ items });
   }
 
   protected async uninstall(item: T): Promise<void> {
@@ -155,7 +152,7 @@ export class FilterableListContainer<
       run: ({ progressId }) => uninstall({ item, progressId }),
     });
     const items = await searchable.search(this.state.searchOptions);
-    this.setState({ items: this.props.sort(items) });
+    this.setState({ items });
   }
 }
 
@@ -168,7 +165,6 @@ export namespace FilterableListContainer {
     readonly container: ListWidget<T, S>;
     readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
-    readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
     readonly filterRenderer: FilterRenderer<S>;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
@@ -192,7 +188,6 @@ export namespace FilterableListContainer {
       progressId: string;
     }) => Promise<void>;
     readonly commandService: CommandService;
-    readonly sort: (items: T[]) => T[];
   }
 
   export interface State<T, S extends Searchable.Options> {

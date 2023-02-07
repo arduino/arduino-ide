@@ -41,7 +41,6 @@ export class LibraryListWidget extends ListWidget<
       searchable: service,
       installable: service,
       itemLabel: (item: LibraryPackage) => item.name,
-      itemDeprecated: (item: LibraryPackage) => item.deprecated,
       itemRenderer,
       filterRenderer,
       defaultSearchOptions: { query: '', type: 'All', topic: 'All' },
