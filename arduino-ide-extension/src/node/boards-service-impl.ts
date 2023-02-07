@@ -17,6 +17,8 @@ import {
   BoardWithPackage,
   BoardUserField,
   BoardSearch,
+  sortComponents,
+  SortGroup,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -405,7 +407,8 @@ export class BoardsServiceImpl
     }
 
     const filter = this.typePredicate(options);
-    return [...packages.values()].filter(filter);
+    const boardsPackages = [...packages.values()].filter(filter);
+    return sortComponents(boardsPackages, boardsPackageSortGroup);
   }
 
   private typePredicate(
@@ -558,4 +561,15 @@ function isMissingPlatformError(error: unknown): boolean {
     }
   }
   return false;
+}
+
+function boardsPackageSortGroup(boardsPackage: BoardsPackage): SortGroup {
+  const types: string[] = [];
+  if (boardsPackage.types.includes('Arduino')) {
+    types.push('Arduino');
+  }
+  if (boardsPackage.deprecated) {
+    types.push('Retired');
+  }
+  return types.join('-') as SortGroup;
 }
