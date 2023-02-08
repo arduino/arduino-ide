@@ -1,7 +1,9 @@
 import * as remote from '@theia/core/electron-shared/@electron/remote';
+import { NativeImage } from '@theia/core/electron-shared/electron';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
+  ActionMenuNode,
   CommandMenuNode,
   CompoundMenuNode,
   CompoundMenuNodeRole,
@@ -278,6 +280,12 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
           delete menuItem.click;
         }
       }
+
+      // Native image customization for IDE2
+      if (isMenuNodeWithNativeImage(node)) {
+        menuItem.icon = node.action.nativeImage;
+      }
+
       parentItems.push(menuItem);
 
       if (this.commandRegistry.getToggledHandler(commandId, ...args)) {
@@ -314,3 +322,23 @@ const AlwaysVisibleSubmenus: MenuPath[] = [
   ArduinoMenus.TOOLS__PORTS_SUBMENU, // #655
   ArduinoMenus.FILE__SKETCHBOOK_SUBMENU, // #569
 ];
+
+// Theia does not support icons for electron menu items.
+// This is a hack to show a cloud icon as a native image for the cloud sketches in `File` > `Open Recent` menu.
+type MenuNodeWithNativeImage = MenuNode & {
+  action: ActionMenuNode & { nativeImage: NativeImage };
+};
+type ActionMenuNodeWithNativeImage = ActionMenuNode & {
+  nativeImage: NativeImage;
+};
+function isMenuNodeWithNativeImage(
+  node: MenuNode
+): node is MenuNodeWithNativeImage {
+  if (node instanceof ActionMenuNode) {
+    const action: unknown = node['action'];
+    if ((<ActionMenuNodeWithNativeImage>action).nativeImage !== undefined) {
+      return true;
+    }
+  }
+  return false;
+}
