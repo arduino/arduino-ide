@@ -19,7 +19,8 @@ export class ArduinoToolbarContainer extends Widget {
     this.toolbars = toolbars;
   }
 
-  override onAfterAttach(msg: Message) {
+  override onAfterAttach(msg: Message): void {
+    super.onAfterAttach(msg);
     for (const toolbar of this.toolbars) {
       Widget.attach(toolbar, this.node);
     }
@@ -56,9 +57,11 @@ export class ArduinoToolbarContribution
     );
   }
 
-  onStart(app: FrontendApplication) {
-    app.shell.addWidget(this.arduinoToolbarContainer, {
-      area: 'top',
-    });
+  onStart(app: FrontendApplication): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const options = <any>{
+      area: 'toolbar',
+    };
+    app.shell.addWidget(this.arduinoToolbarContainer, options);
   }
 }

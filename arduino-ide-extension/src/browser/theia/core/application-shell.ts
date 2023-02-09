@@ -7,6 +7,8 @@ import {
   SHELL_TABBAR_CONTEXT_MENU,
   TabBar,
   Widget,
+  Layout,
+  SplitPanel,
 } from '@theia/core/lib/browser';
 import {
   ConnectionStatus,
@@ -17,6 +19,11 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { ToolbarAwareTabBar } from './tab-bars';
 
+interface WidgetOptions
+  extends Omit<TheiaApplicationShell.WidgetOptions, 'area'> {
+  area?: TheiaApplicationShell.Area | 'toolbar';
+}
+
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
   @inject(MessageService)
@@ -24,10 +31,11 @@ export class ApplicationShell extends TheiaApplicationShell {
 
   @inject(ConnectionStatusService)
   private readonly connectionStatusService: ConnectionStatusService;
+  private toolbarPanel: Panel;
 
   override async addWidget(
     widget: Widget,
-    options: Readonly<TheiaApplicationShell.WidgetOptions> = {}
+    options: Readonly<WidgetOptions> = {}
   ): Promise<void> {
     // By default, Theia open a widget **next** to the currently active in the target area.
     // Instead of this logic, we want to open the new widget after the last of the target area.
@@ -37,8 +45,12 @@ export class ApplicationShell extends TheiaApplicationShell {
       );
       return;
     }
+    if (options.area === 'toolbar') {
+      this.toolbarPanel.addWidget(widget);
+      return;
+    }
+    const area = options.area || 'main';
     let ref: Widget | undefined = options.ref;
-    const area: TheiaApplicationShell.Area = options.area || 'main';
     if (!ref && (area === 'main' || area === 'bottom')) {
       const tabBar = this.getTabBarFor(area);
       if (tabBar) {
@@ -48,12 +60,55 @@ export class ApplicationShell extends TheiaApplicationShell {
         }
       }
     }
-    return super.addWidget(widget, { ...options, ref });
+    return super.addWidget(widget, {
+      ...(<TheiaApplicationShell.WidgetOptions>options),
+      ref,
+    });
   }
 
   override handleEvent(): boolean {
     // NOOP, dragging has been disabled
     return false;
+  }
+
+  protected override initializeShell(): void {
+    this.toolbarPanel = this.createToolbarPanel();
+    super.initializeShell();
+  }
+
+  private createToolbarPanel(): Panel {
+    const toolbarPanel = new Panel();
+    toolbarPanel.id = 'arduino-toolbar-panel';
+    toolbarPanel.show();
+    return toolbarPanel;
+  }
+
+  protected override createLayout(): Layout {
+    const bottomSplitLayout = this.createSplitLayout(
+      [this.mainPanel, this.bottomPanel],
+      [1, 0],
+      { orientation: 'vertical', spacing: 0 }
+    );
+    const panelForBottomArea = new SplitPanel({ layout: bottomSplitLayout });
+    panelForBottomArea.id = 'theia-bottom-split-panel';
+
+    const leftRightSplitLayout = this.createSplitLayout(
+      [
+        this.leftPanelHandler.container,
+        panelForBottomArea,
+        this.rightPanelHandler.container,
+      ],
+      [0, 1, 0],
+      { orientation: 'horizontal', spacing: 0 }
+    );
+    const panelForSideAreas = new SplitPanel({ layout: leftRightSplitLayout });
+    panelForSideAreas.id = 'theia-left-right-split-panel';
+
+    return this.createBoxLayout(
+      [this.topPanel, this.toolbarPanel, panelForSideAreas, this.statusBar],
+      [0, 0, 1, 0],
+      { direction: 'top-to-bottom', spacing: 0 }
+    );
   }
 
   // Avoid hiding top panel as we use it for arduino toolbar
