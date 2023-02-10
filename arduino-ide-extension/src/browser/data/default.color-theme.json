@@ -14,7 +14,7 @@
     "editor.foreground": "#4e5b61",
     "editor.lineHighlightBackground": "#434f5410",
     "editor.selectionBackground": "#7fcbcdb3",
-    "editorCursor.foreground": "#434f54",
+    "editorCursor.foreground": "#4e5b61",
     "editorWhitespace.foreground": "#bfbfbf",
     "editorWidget.background": "#f7f9f9",
     "editorWidget.foreground": "#4e5b61",
@@ -67,7 +67,8 @@
     "tree.indentGuidesStroke": "#dae3e3",
     "tab.unfocusedActiveForeground": "#4e5b61",
     "tab.inactiveBackground": "#ecf1f1",
-    "textLink.foreground": "#008184"
+    "textLink.foreground": "#008184",
+    "errorForeground": "#df7365"
   },
   "tokenColors": [
     {
