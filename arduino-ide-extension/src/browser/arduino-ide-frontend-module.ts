@@ -347,6 +347,9 @@ import { ConfigServiceClient } from './config/config-service-client';
 import { ValidateSketch } from './contributions/validate-sketch';
 import { RenameCloudSketch } from './contributions/rename-cloud-sketch';
 import { CreateFeatures } from './create/create-features';
+import { Account } from './contributions/account';
+import { SidebarBottomMenuWidget } from './theia/core/sidebar-bottom-menu-widget';
+import { SidebarBottomMenuWidget as TheiaSidebarBottomMenuWidget } from '@theia/core/lib/browser/shell/sidebar-bottom-menu-widget';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -734,6 +737,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, NewCloudSketch);
   Contribution.configure(bind, ValidateSketch);
   Contribution.configure(bind, RenameCloudSketch);
+  Contribution.configure(bind, Account);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
@@ -1014,4 +1018,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       },
     }))
     .inSingletonScope();
+
+  bind(SidebarBottomMenuWidget).toSelf();
+  rebind(TheiaSidebarBottomMenuWidget).toService(SidebarBottomMenuWidget);
 });

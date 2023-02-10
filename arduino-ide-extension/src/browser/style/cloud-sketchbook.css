@@ -119,8 +119,8 @@
 
 .account-icon {
     background: url("./account-icon.svg") center center no-repeat;
-    width: var(--theia-icon-size);
-    height: var(--theia-icon-size);
+    width: var(--theia-private-sidebar-icon-size);
+    height: var(--theia-private-sidebar-icon-size);
     border-radius: 50%;
     overflow: hidden;
 }

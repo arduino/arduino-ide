@@ -83,9 +83,13 @@ export class AuthenticationClientService
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(CloudUserCommands.LOGIN, {
       execute: () => this.service.login(),
+      isEnabled: () => !this._session,
+      isVisible: () => !this._session,
     });
     registry.registerCommand(CloudUserCommands.LOGOUT, {
       execute: () => this.service.logout(),
+      isEnabled: () => !!this._session,
+      isVisible: () => !!this._session,
     });
   }
 

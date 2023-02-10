@@ -5,11 +5,9 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
-import { CloudUserCommands } from '../../auth/cloud-user-commands';
-import { AuthenticationSessionAccountInformation } from '../../../common/protocol/authentication-service';
 import { nls } from '@theia/core/lib/common';
 
-export class UserStatus extends React.Component<
+export class CloudStatus extends React.Component<
   UserStatus.Props,
   UserStatus.State
 > {
@@ -19,7 +17,6 @@ export class UserStatus extends React.Component<
     super(props);
     this.state = {
       status: this.status,
-      accountInfo: props.authenticationService.session?.account,
       refreshing: false,
     };
   }
@@ -29,9 +26,6 @@ export class UserStatus extends React.Component<
     window.addEventListener('online', statusListener);
     window.addEventListener('offline', statusListener);
     this.toDispose.pushAll([
-      this.props.authenticationService.onSessionDidChange((session) =>
-        this.setState({ accountInfo: session?.account })
-      ),
       Disposable.create(() =>
         window.removeEventListener('online', statusListener)
       ),
@@ -73,34 +67,6 @@ export class UserStatus extends React.Component<
             onClick={this.onDidClickRefresh}
           />
         </div>
-        <div className="account item flex-line">
-          <div
-            title={nls.localize('arduino/cloud/account', 'Account')}
-            className="account-icon"
-            style={{ cursor: 'pointer' }}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              this.props.model.commandRegistry.executeCommand(
-                CloudUserCommands.OPEN_PROFILE_CONTEXT_MENU.id,
-                {
-                  event: event.nativeEvent,
-                  username: this.state.accountInfo?.label,
-                }
-              );
-            }}
-          >
-            {this.state.accountInfo?.picture && (
-              <img
-                src={this.state.accountInfo?.picture}
-                alt={nls.localize(
-                  'arduino/cloud/profilePicture',
-                  'Profile picture'
-                )}
-              />
-            )}
-          </div>
-        </div>
       </div>
     );
   }
@@ -128,7 +94,6 @@ export namespace UserStatus {
   }
   export interface State {
     status: 'connected' | 'offline';
-    accountInfo?: AuthenticationSessionAccountInformation;
     refreshing?: boolean;
   }
 }

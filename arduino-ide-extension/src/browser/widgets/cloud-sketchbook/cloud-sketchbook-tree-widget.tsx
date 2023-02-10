@@ -5,16 +5,16 @@ import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
-import { CloudUserCommands } from '../../auth/cloud-user-commands';
+import {
+  CloudUserCommands,
+  LEARN_MORE_URL,
+} from '../../auth/cloud-user-commands';
 import { NodeProps } from '@theia/core/lib/browser/tree/tree-widget';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { CompositeTreeNode } from '@theia/core/lib/browser';
 import { shell } from '@theia/core/electron-shared/@electron/remote';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
-
-const LEARN_MORE_URL =
-  'https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-cloud-sketch-sync';
 
 @injectable()
 export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {

@@ -10,10 +10,7 @@ import {
   MenuContribution,
   MenuModelRegistry,
 } from '@theia/core';
-import {
-  FrontendApplication,
-  FrontendApplicationContribution,
-} from '@theia/core/lib/browser';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
@@ -77,7 +74,7 @@ export class ArduinoFrontendContribution
     }
   }
 
-  onStart(app: FrontendApplication): void {
+  onStart(): void {
     this.electronWindowPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
@@ -98,8 +95,6 @@ export class ArduinoFrontendContribution
         webContents.setZoomLevel(zoomLevel);
       })
     );
-    // Removes the _Settings_ (cog) icon from the left sidebar
-    app.shell.leftPanelHandler.removeBottomMenu('settings-menu');
   }
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {

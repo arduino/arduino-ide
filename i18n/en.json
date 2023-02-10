@@ -4,6 +4,12 @@
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "About {0}"
     },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "Board{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
@@ -83,7 +89,6 @@
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
       "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connected",
