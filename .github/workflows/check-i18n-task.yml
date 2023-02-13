@@ -48,6 +48,8 @@ jobs:
 
       - name: Install dependencies
         run: yarn
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check for errors
         run: yarn i18n:check
