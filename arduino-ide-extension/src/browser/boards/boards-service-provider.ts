@@ -158,15 +158,9 @@ export class BoardsServiceProvider
     this.lastAvailablePortsOnUpload = undefined;
   }
 
-  private portToAutoSelectCanBeDerived(): boolean {
-    return Boolean(
-      this.lastBoardsConfigOnUpload && this.lastAvailablePortsOnUpload
-    );
-  }
-
   attemptPostUploadAutoSelect(): void {
     setTimeout(() => {
-      if (this.portToAutoSelectCanBeDerived()) {
+      if (this.lastBoardsConfigOnUpload && this.lastAvailablePortsOnUpload) {
         this.attemptAutoSelect({
           ports: this._availablePorts,
           boards: this._availableBoards,
@@ -185,12 +179,12 @@ export class BoardsServiceProvider
   private deriveBoardConfigToAutoSelect(
     newState: AttachedBoardsChangeEvent['newState']
   ): void {
-    if (!this.portToAutoSelectCanBeDerived()) {
+    if (!this.lastBoardsConfigOnUpload || !this.lastAvailablePortsOnUpload) {
       this.boardConfigToAutoSelect = undefined;
       return;
     }
 
-    const oldPorts = this.lastAvailablePortsOnUpload!;
+    const oldPorts = this.lastAvailablePortsOnUpload;
     const { ports: newPorts, boards: newBoards } = newState;
 
     const appearedPorts =
@@ -205,20 +199,36 @@ export class BoardsServiceProvider
         Port.sameAs(board.port, port)
       );
 
-      const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload!;
+      const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload;
 
-      if (
-        boardOnAppearedPort &&
-        lastBoardsConfigOnUpload.selectedBoard &&
-        Board.sameAs(
+      if (boardOnAppearedPort && lastBoardsConfigOnUpload.selectedBoard) {
+        const boardIsSameHardware = Board.sameDistinctHardwareAs(
           boardOnAppearedPort,
           lastBoardsConfigOnUpload.selectedBoard
-        )
-      ) {
+        );
+
+        const boardIsSameFqbn = Board.sameAs(
+          boardOnAppearedPort,
+          lastBoardsConfigOnUpload.selectedBoard
+        );
+
+        if (!boardIsSameHardware && !boardIsSameFqbn) return;
+
+        let boardToAutoSelect = boardOnAppearedPort;
+        if (boardIsSameHardware && !boardIsSameFqbn) {
+          const { name, fqbn } = lastBoardsConfigOnUpload.selectedBoard;
+
+          boardToAutoSelect = {
+            ...boardToAutoSelect,
+            name,
+            fqbn,
+          };
+        }
+
         this.clearBoardDiscoverySnapshot();
 
         this.boardConfigToAutoSelect = {
-          selectedBoard: boardOnAppearedPort,
+          selectedBoard: boardToAutoSelect,
           selectedPort: port,
         };
         return;
@@ -326,8 +336,10 @@ export class BoardsServiceProvider
         // it is just a FQBN, so we need to find the `selected` board among the `AvailableBoards`
         const selectedAvailableBoard = AvailableBoard.is(selectedBoard)
           ? selectedBoard
-          : this._availableBoards.find((availableBoard) =>
-              Board.sameAs(availableBoard, selectedBoard)
+          : this._availableBoards.find(
+              (availableBoard) =>
+                Board.sameDistinctHardwareAs(availableBoard, selectedBoard) ||
+                Board.sameAs(availableBoard, selectedBoard)
             );
         if (
           selectedAvailableBoard &&
@@ -353,24 +365,33 @@ export class BoardsServiceProvider
 
   protected tryReconnect(): boolean {
     if (this.latestValidBoardsConfig && !this.canUploadTo(this.boardsConfig)) {
+      // ** Reconnect to a board unplugged from, and plugged back into the same port
       for (const board of this.availableBoards.filter(
         ({ state }) => state !== AvailableBoard.State.incomplete
       )) {
         if (
-          this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
+          (Board.sameDistinctHardwareAs(
+            this.latestValidBoardsConfig.selectedBoard,
+            board
+          ) ||
+            (this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
+              this.latestValidBoardsConfig.selectedBoard.name ===
+                board.name)) &&
           Port.sameAs(this.latestValidBoardsConfig.selectedPort, board.port)
         ) {
           this.boardsConfig = this.latestValidBoardsConfig;
           return true;
         }
       }
+      // **
 
+      // ** Reconnect to a board whose port changed due to an upload
       if (!this.boardConfigToAutoSelect) return false;
 
       this.boardsConfig = this.boardConfigToAutoSelect;
       this.boardConfigToAutoSelect = undefined;
       return true;
+      // **
     }
     return false;
   }

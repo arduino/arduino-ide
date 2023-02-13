@@ -323,14 +323,14 @@ export class BoardDiscovery
   }
 
   private fromRpcPort(rpcPort: RpcPort): Port {
-    const port = {
+    return {
       address: rpcPort.getAddress(),
       addressLabel: rpcPort.getLabel(),
       protocol: rpcPort.getProtocol(),
       protocolLabel: rpcPort.getProtocolLabel(),
       properties: Port.Properties.create(rpcPort.getPropertiesMap().toObject()),
+      hardwareId: rpcPort.getHardwareId(), // method to be confirmed
     };
-    return port;
   }
 }
 
