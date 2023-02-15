@@ -11,9 +11,9 @@
 @font-face {
   font-family: 'FontAwesome';
   src:
-    url('fonts/FontAwesome.ttf?2jhpmq') format('truetype'),
-    url('fonts/FontAwesome.woff?2jhpmq') format('woff'),
-    url('fonts/FontAwesome.svg?2jhpmq#FontAwesome') format('svg');
+    url('fonts/FontAwesome.ttf?h959em') format('truetype'),
+    url('fonts/FontAwesome.woff?h959em') format('woff'),
+    url('fonts/FontAwesome.svg?h959em#FontAwesome') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -678,4 +678,22 @@
 }
 .fa-microchip:before {
   content: "\f2db";
+}
+.fa-arduino-cloud-download:before {
+  content: "\e910";
+}
+.fa-arduino-cloud-upload:before {
+  content: "\e914";
+}
+.fa-arduino-cloud:before {
+  content: "\e915";
+}
+.fa-arduino-cloud-filled:before {
+  content: "\e912";
+}
+.fa-arduino-cloud-offline:before {
+  content: "\e913";
+}
+.fa-arduino-cloud-filled-offline:before {
+  content: "\e911";
 }

@@ -93,7 +93,7 @@ export abstract class CloudSketchContribution extends SketchContribution {
       );
     }
     try {
-      await treeModel.sketchbookTree().pull({ node });
+      await treeModel.sketchbookTree().pull({ node }, true);
       return node;
     } catch (err) {
       if (isNotFound(err)) {

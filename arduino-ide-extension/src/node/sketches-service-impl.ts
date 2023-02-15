@@ -6,7 +6,6 @@ import * as path from 'path';
 import * as glob from 'glob';
 import * as crypto from 'crypto';
 import * as PQueue from 'p-queue';
-import { ncp } from 'ncp';
 import { Mutable } from '@theia/core/lib/common/types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -44,6 +43,7 @@ import {
   startsWithUpperCase,
 } from '../common/utils';
 import { SettingsReader } from './settings-reader';
+import cpy = require('cpy');
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -368,63 +368,66 @@ export class SketchesServiceImpl
     const destinationUri = FileUri.create(
       path.join(parentPath, sketch.name)
     ).toString();
-    const copiedSketchUri = await this.copy(sketch, { destinationUri });
-    return this.doLoadSketch(copiedSketchUri, false);
+    const copiedSketch = await this.copy(sketch, { destinationUri });
+    return this.doLoadSketch(copiedSketch.uri, false);
   }
 
-  async createNewSketch(): Promise<Sketch> {
-    const monthNames = [
-      'jan',
-      'feb',
-      'mar',
-      'apr',
-      'may',
-      'jun',
-      'jul',
-      'aug',
-      'sep',
-      'oct',
-      'nov',
-      'dec',
-    ];
-    const today = new Date();
+  async createNewSketch(name?: string, content?: string): Promise<Sketch> {
+    let sketchName: string | undefined = name;
     const parentPath = await this.createTempFolder();
-    const sketchBaseName = `sketch_${
-      monthNames[today.getMonth()]
-    }${today.getDate()}`;
-    const { config } = await this.configService.getConfiguration();
-    const sketchbookPath = config?.sketchDirUri
-      ? FileUri.fsPath(config?.sketchDirUri)
-      : os.homedir();
-    let sketchName: string | undefined;
+    if (!sketchName) {
+      const monthNames = [
+        'jan',
+        'feb',
+        'mar',
+        'apr',
+        'may',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'oct',
+        'nov',
+        'dec',
+      ];
+      const today = new Date();
+      const sketchBaseName = `sketch_${
+        monthNames[today.getMonth()]
+      }${today.getDate()}`;
+      const { config } = await this.configService.getConfiguration();
+      const sketchbookPath = config?.sketchDirUri
+        ? FileUri.fsPath(config?.sketchDirUri)
+        : os.homedir();
 
-    // If it's another day, reset the count of sketches created today
-    if (this.lastSketchBaseName !== sketchBaseName) this.sketchSuffixIndex = 1;
+      // If it's another day, reset the count of sketches created today
+      if (this.lastSketchBaseName !== sketchBaseName)
+        this.sketchSuffixIndex = 1;
 
-    let nameFound = false;
-    while (!nameFound) {
-      const sketchNameCandidate = `${sketchBaseName}${sketchIndexToLetters(
-        this.sketchSuffixIndex++
-      )}`;
-      // Note: we check the future destination folder (`directories.user`) for name collision and not the temp folder!
-      const sketchExists = await exists(
-        path.join(sketchbookPath, sketchNameCandidate)
-      );
-      if (!sketchExists) {
-        nameFound = true;
-        sketchName = sketchNameCandidate;
+      let nameFound = false;
+      while (!nameFound) {
+        const sketchNameCandidate = `${sketchBaseName}${sketchIndexToLetters(
+          this.sketchSuffixIndex++
+        )}`;
+        // Note: we check the future destination folder (`directories.user`) for name collision and not the temp folder!
+        const sketchExists = await exists(
+          path.join(sketchbookPath, sketchNameCandidate)
+        );
+        if (!sketchExists) {
+          nameFound = true;
+          sketchName = sketchNameCandidate;
+        }
       }
+      this.lastSketchBaseName = sketchBaseName;
     }
 
     if (!sketchName) {
       throw new Error('Cannot create a unique sketch name');
     }
-    this.lastSketchBaseName = sketchBaseName;
 
     const sketchDir = path.join(parentPath, sketchName);
     const sketchFile = path.join(sketchDir, `${sketchName}.ino`);
     const [inoContent] = await Promise.all([
-      this.loadInoContent(),
+      content ? content : this.loadInoContent(),
       fs.mkdir(sketchDir, { recursive: true }),
     ]);
     await fs.writeFile(sketchFile, inoContent, { encoding: 'utf8' });
@@ -441,7 +444,7 @@ export class SketchesServiceImpl
    * For example, on Windows, instead of getting an [8.3 filename](https://en.wikipedia.org/wiki/8.3_filename), callers will get a fully resolved path.
    * `C:\\Users\\KITTAA~1\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a` will be `C:\\Users\\kittaakos\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a`
    */
-  private createTempFolder(): Promise<string> {
+  createTempFolder(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       temp.mkdir({ prefix: TempSketchPrefix }, (createError, dirPath) => {
         if (createError) {
@@ -499,58 +502,37 @@ export class SketchesServiceImpl
 
   async copy(
     sketch: Sketch,
-    { destinationUri }: { destinationUri: string }
-  ): Promise<string> {
-    const source = FileUri.fsPath(sketch.uri);
-    const sketchExists = await exists(source);
-    if (!sketchExists) {
-      throw new Error(`Sketch does not exist: ${sketch}`);
-    }
-    // Nothing to do when source and destination are the same.
-    if (sketch.uri === destinationUri) {
-      await this.doLoadSketch(sketch.uri, false); // Sanity check.
-      return sketch.uri;
-    }
-
-    const copy = async (sourcePath: string, destinationPath: string) => {
-      return new Promise<void>((resolve, reject) => {
-        ncp.ncp(sourcePath, destinationPath, async (error) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          const newName = path.basename(destinationPath);
-          try {
-            const oldPath = path.join(
-              destinationPath,
-              new URI(sketch.mainFileUri).path.base
-            );
-            const newPath = path.join(destinationPath, `${newName}.ino`);
-            if (oldPath !== newPath) {
-              await fs.rename(oldPath, newPath);
-            }
-            await this.doLoadSketch(
-              FileUri.create(destinationPath).toString(),
-              false
-            ); // Sanity check.
-            resolve();
-          } catch (e) {
-            reject(e);
-          }
-        });
-      });
-    };
-    // https://github.com/arduino/arduino-ide/issues/65
-    // When copying `/path/to/sketchbook/sketch_A` to `/path/to/sketchbook/sketch_A/anything` on a non-POSIX filesystem,
-    // `ncp` makes a recursion and copies the folders over and over again. In such cases, we copy the source into a temp folder,
-    // then move it to the desired destination.
+    {
+      destinationUri,
+      onlySketchFiles,
+    }: { destinationUri: string; onlySketchFiles?: boolean }
+  ): Promise<Sketch> {
+    const sourceUri = sketch.uri;
+    const source = FileUri.fsPath(sourceUri);
     const destination = FileUri.fsPath(destinationUri);
-    let tempDestination = await this.createTempFolder();
-    tempDestination = path.join(tempDestination, sketch.name);
-    await fs.mkdir(tempDestination, { recursive: true });
-    await copy(source, tempDestination);
-    await copy(tempDestination, destination);
-    return FileUri.create(destination).toString();
+    if (source === destination) {
+      const reloadedSketch = await this.doLoadSketch(sourceUri, false);
+      return reloadedSketch;
+    }
+    const sourceFolderBasename = path.basename(source);
+    const destinationFolderBasename = path.basename(destination);
+    let filter: cpy.Options['filter'];
+    if (onlySketchFiles) {
+      const sketchFilePaths = Sketch.uris(sketch).map(FileUri.fsPath);
+      filter = (file) => sketchFilePaths.includes(file.path);
+    } else {
+      filter = () => true;
+    }
+    await cpy(source, destination, {
+      rename: (basename) =>
+        sourceFolderBasename !== destinationFolderBasename &&
+        basename === `${sourceFolderBasename}.ino`
+          ? `${destinationFolderBasename}.ino`
+          : basename,
+      filter,
+    });
+    const copiedSketch = await this.doLoadSketch(destinationUri, false);
+    return copiedSketch;
   }
 
   async archive(sketch: Sketch, destinationUri: string): Promise<string> {

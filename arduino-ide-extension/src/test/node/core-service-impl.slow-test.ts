@@ -1,6 +1,6 @@
 import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
 import { CommandRegistry } from '@theia/core/lib/common/command';
-import { Disposable } from '@theia/core/lib/common/disposable';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container, injectable } from '@theia/core/shared/inversify';
@@ -23,7 +23,7 @@ const uno = 'arduino:avr:uno';
 
 describe('core-service-impl', () => {
   let container: Container;
-  let toDispose: Disposable[];
+  let toDispose: DisposableCollection;
 
   before(() => {
     configureBackendApplicationConfigProvider();
@@ -31,20 +31,12 @@ describe('core-service-impl', () => {
 
   beforeEach(async function () {
     this.timeout(setupTimeout);
-    toDispose = [];
+    toDispose = new DisposableCollection();
     container = createContainer();
     await start(container, toDispose);
   });
 
-  afterEach(() => {
-    let disposable = toDispose.pop();
-    while (disposable) {
-      try {
-        disposable?.dispose();
-      } catch {}
-      disposable = toDispose.pop();
-    }
-  });
+  afterEach(() => toDispose.dispose());
 
   describe('compile', () => {
     it('should execute a command with the build path', async function () {
@@ -92,7 +84,7 @@ describe('core-service-impl', () => {
 
 async function start(
   container: Container,
-  toDispose: Disposable[]
+  toDispose: DisposableCollection
 ): Promise<void> {
   await startDaemon(container, toDispose, async (container) => {
     const boardService = container.get<BoardsService>(BoardsService);

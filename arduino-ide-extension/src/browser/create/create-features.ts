@@ -8,6 +8,9 @@ import { AuthenticationSession } from '../../node/auth/types';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
+import { CreateUri } from './create-uri';
+
+export type CloudSketchState = 'push' | 'pull';
 
 @injectable()
 export class CreateFeatures implements FrontendApplicationContribution {
@@ -18,13 +21,22 @@ export class CreateFeatures implements FrontendApplicationContribution {
   @inject(LocalCacheFsProvider)
   private readonly localCacheFsProvider: LocalCacheFsProvider;
 
+  /**
+   * The keys are the Create URI of the sketches.
+   */
+  private readonly _cloudSketchStates = new Map<string, CloudSketchState>();
   private readonly onDidChangeSessionEmitter = new Emitter<
     AuthenticationSession | undefined
   >();
   private readonly onDidChangeEnabledEmitter = new Emitter<boolean>();
+  private readonly onDidChangeCloudSketchStateEmitter = new Emitter<{
+    uri: URI;
+    state: CloudSketchState | undefined;
+  }>();
   private readonly toDispose = new DisposableCollection(
     this.onDidChangeSessionEmitter,
-    this.onDidChangeEnabledEmitter
+    this.onDidChangeEnabledEmitter,
+    this.onDidChangeCloudSketchStateEmitter
   );
   private _enabled: boolean;
   private _session: AuthenticationSession | undefined;
@@ -64,12 +76,44 @@ export class CreateFeatures implements FrontendApplicationContribution {
     return this.onDidChangeEnabledEmitter.event;
   }
 
-  get enabled(): boolean {
-    return this._enabled;
+  get onDidChangeCloudSketchState(): Event<{
+    uri: URI;
+    state: CloudSketchState | undefined;
+  }> {
+    return this.onDidChangeCloudSketchStateEmitter.event;
   }
 
   get session(): AuthenticationSession | undefined {
     return this._session;
+  }
+
+  get enabled(): boolean {
+    return this._enabled;
+  }
+
+  cloudSketchState(uri: URI): CloudSketchState | undefined {
+    return this._cloudSketchStates.get(uri.toString());
+  }
+
+  setCloudSketchState(uri: URI, state: CloudSketchState | undefined): void {
+    if (uri.scheme !== CreateUri.scheme) {
+      throw new Error(
+        `Expected a URI with '${uri.scheme}' scheme. Got: ${uri.toString()}`
+      );
+    }
+    const key = uri.toString();
+    if (!state) {
+      if (!this._cloudSketchStates.delete(key)) {
+        console.warn(
+          `Could not reset the cloud sketch state of ${key}. No state existed for the the cloud sketch.`
+        );
+      } else {
+        this.onDidChangeCloudSketchStateEmitter.fire({ uri, state: undefined });
+      }
+    } else {
+      this._cloudSketchStates.set(key, state);
+      this.onDidChangeCloudSketchStateEmitter.fire({ uri, state });
+    }
   }
 
   /**
@@ -83,7 +127,10 @@ export class CreateFeatures implements FrontendApplicationContribution {
       );
       return undefined;
     }
-    return dataDirUri.isEqualOrParent(new URI(sketch.uri));
+    return dataDirUri
+      .resolve('RemoteSketchbook')
+      .resolve('ArduinoCloud')
+      .isEqualOrParent(new URI(sketch.uri));
   }
 
   cloudUri(sketch: Sketch): URI | undefined {

@@ -5,7 +5,7 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree/tree';
-import { CommandRegistry } from '@theia/core/lib/common/command';
+import { Command, CommandRegistry } from '@theia/core/lib/common/command';
 import {
   NodeProps,
   TreeProps,
@@ -23,7 +23,6 @@ import {
   SketchesServiceClientImpl,
 } from '../../sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
-import { Sketch } from '../../contributions/contribution';
 import { nls } from '@theia/core/lib/common';
 
 const customTreeProps: TreeProps = {
@@ -91,8 +90,8 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     node: TreeNode,
     props: NodeProps
   ): React.ReactNode {
-    if (SketchbookTree.SketchDirNode.is(node) || Sketch.isSketchFile(node.id)) {
-      return <div className="sketch-folder-icon file-icon"></div>;
+    if (SketchbookTree.SketchDirNode.is(node)) {
+      return undefined;
     }
     const icon = this.toNodeIcon(node);
     if (icon) {
@@ -133,26 +132,34 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   protected renderInlineCommands(node: TreeNode): React.ReactNode {
     if (SketchbookTree.SketchDirNode.is(node) && node.commands) {
       return Array.from(new Set(node.commands)).map((command) =>
-        this.renderInlineCommand(command.id, node)
+        this.renderInlineCommand(command, node)
       );
     }
     return undefined;
   }
 
   protected renderInlineCommand(
-    commandId: string,
+    command: Command | string | [command: string, label: string],
     node: SketchbookTree.SketchDirNode,
     options?: any
   ): React.ReactNode {
-    const command = this.commandRegistry.getCommand(commandId);
-    const icon = command?.iconClass;
+    const commandId = Command.is(command)
+      ? command.id
+      : Array.isArray(command)
+      ? command[0]
+      : command;
+    const resolvedCommand = this.commandRegistry.getCommand(commandId);
+    const icon = resolvedCommand?.iconClass;
     const args = { model: this.model, node: node, ...options };
     if (
-      command &&
+      resolvedCommand &&
       icon &&
       this.commandRegistry.isEnabled(commandId, args) &&
       this.commandRegistry.isVisible(commandId, args)
     ) {
+      const label = Array.isArray(command)
+        ? command[1]
+        : resolvedCommand.label ?? resolvedCommand.id;
       const className = [
         TREE_NODE_SEGMENT_CLASS,
         TREE_NODE_TAIL_CLASS,
@@ -164,7 +171,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
         <div
           key={`${commandId}--${node.id}`}
           className={className}
-          title={command?.label || command.id}
+          title={label}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();

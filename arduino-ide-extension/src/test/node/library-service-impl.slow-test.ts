@@ -1,4 +1,4 @@
-import { Disposable } from '@theia/core/lib/common/disposable';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { LibrarySearch, LibraryService } from '../../common/protocol';
@@ -11,26 +11,18 @@ import {
 
 describe('library-service-impl', () => {
   let libraryService: LibraryService;
-  let toDispose: Disposable[] = [];
+  let toDispose: DisposableCollection;
 
   before(async function () {
     configureBackendApplicationConfigProvider();
     this.timeout(20_000);
-    toDispose = [];
+    toDispose = new DisposableCollection();
     const container = createContainer();
     await start(container, toDispose);
     libraryService = container.get<LibraryService>(LibraryService);
   });
 
-  after(() => {
-    let disposable = toDispose.pop();
-    while (disposable) {
-      try {
-        disposable?.dispose();
-      } catch {}
-      disposable = toDispose.pop();
-    }
-  });
+  after(() => toDispose.dispose());
 
   describe('search', () => {
     it('should run search', async function () {
@@ -89,7 +81,7 @@ function createContainer(): Container {
 
 async function start(
   container: Container,
-  toDispose: Disposable[]
+  toDispose: DisposableCollection
 ): Promise<void> {
   return startDaemon(container, toDispose);
 }

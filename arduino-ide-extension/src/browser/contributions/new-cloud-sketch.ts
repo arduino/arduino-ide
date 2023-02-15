@@ -6,7 +6,7 @@ import { Progress } from '@theia/core/lib/common/message-service-protocol';
 import { nls } from '@theia/core/lib/common/nls';
 import { injectable } from '@theia/core/shared/inversify';
 import { CreateUri } from '../create/create-uri';
-import { isConflict } from '../create/typings';
+import { Create, isConflict } from '../create/typings';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   TaskFactoryImpl,
@@ -15,13 +15,36 @@ import {
 import { CloudSketchbookTree } from '../widgets/cloud-sketchbook/cloud-sketchbook-tree';
 import { CloudSketchbookTreeModel } from '../widgets/cloud-sketchbook/cloud-sketchbook-tree-model';
 import { SketchbookCommands } from '../widgets/sketchbook/sketchbook-commands';
-import { Command, CommandRegistry, Sketch } from './contribution';
 import {
   CloudSketchContribution,
   pullingSketch,
   sketchAlreadyExists,
   synchronizingSketchbook,
 } from './cloud-contribution';
+import { Command, CommandRegistry, Sketch } from './contribution';
+
+export interface CreateNewCloudSketchCallback {
+  (
+    newSketch: Create.Sketch,
+    newNode: CloudSketchbookTree.CloudSketchDirNode,
+    progress: Progress
+  ): Promise<void>;
+}
+
+export interface NewCloudSketchParams {
+  /**
+   * Value to populate the dialog `<input>` when it opens.
+   */
+  readonly initialValue?: string | undefined;
+  /**
+   * Additional callback to call when the new cloud sketch has been created.
+   */
+  readonly callback?: CreateNewCloudSketchCallback;
+  /**
+   * If `true`, the validation error message will not be visible in the input dialog, but the `OK` button will be disabled. Defaults to `true`.
+   */
+  readonly skipShowErrorMessageOnOpen?: boolean;
+}
 
 @injectable()
 export class NewCloudSketch extends CloudSketchContribution {
@@ -43,7 +66,12 @@ export class NewCloudSketch extends CloudSketchContribution {
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(NewCloudSketch.Commands.NEW_CLOUD_SKETCH, {
-      execute: () => this.createNewSketch(true),
+      execute: (params: NewCloudSketchParams) =>
+        this.createNewSketch(
+          params?.skipShowErrorMessageOnOpen === false ? false : true,
+          params?.initialValue,
+          params?.callback
+        ),
       isEnabled: () => Boolean(this.createFeatures.session),
       isVisible: () => this.createFeatures.enabled,
     });
@@ -66,7 +94,8 @@ export class NewCloudSketch extends CloudSketchContribution {
 
   private async createNewSketch(
     skipShowErrorMessageOnOpen: boolean,
-    initialValue?: string | undefined
+    initialValue?: string | undefined,
+    callback?: CreateNewCloudSketchCallback
   ): Promise<void> {
     const treeModel = await this.treeModel();
     if (treeModel) {
@@ -75,7 +104,8 @@ export class NewCloudSketch extends CloudSketchContribution {
         rootNode,
         treeModel,
         skipShowErrorMessageOnOpen,
-        initialValue
+        initialValue,
+        callback
       );
     }
   }
@@ -84,13 +114,14 @@ export class NewCloudSketch extends CloudSketchContribution {
     rootNode: CompositeTreeNode,
     treeModel: CloudSketchbookTreeModel,
     skipShowErrorMessageOnOpen: boolean,
-    initialValue?: string | undefined
+    initialValue?: string | undefined,
+    callback?: CreateNewCloudSketchCallback
   ): Promise<void> {
     const existingNames = rootNode.children
       .filter(CloudSketchbookTree.CloudSketchDirNode.is)
       .map(({ fileStat }) => fileStat.name);
     const taskFactory = new TaskFactoryImpl((value) =>
-      this.createNewSketchWithProgress(treeModel, value)
+      this.createNewSketchWithProgress(treeModel, value, callback)
     );
     try {
       const dialog = new WorkspaceInputDialogWithProgress(
@@ -118,7 +149,11 @@ export class NewCloudSketch extends CloudSketchContribution {
     } catch (err) {
       if (isConflict(err)) {
         await treeModel.refresh();
-        return this.createNewSketch(false, taskFactory.value ?? initialValue);
+        return this.createNewSketch(
+          false,
+          taskFactory.value ?? initialValue,
+          callback
+        );
       }
       throw err;
     }
@@ -126,7 +161,8 @@ export class NewCloudSketch extends CloudSketchContribution {
 
   private createNewSketchWithProgress(
     treeModel: CloudSketchbookTreeModel,
-    value: string
+    value: string,
+    callback?: CreateNewCloudSketchCallback
   ): (
     progress: Progress
   ) => Promise<CloudSketchbookTree.CloudSketchDirNode | undefined> {
@@ -143,6 +179,9 @@ export class NewCloudSketch extends CloudSketchContribution {
       await treeModel.refresh();
       progress.report({ message: pullingSketch(sketch.name) });
       const node = await this.pull(sketch);
+      if (callback && node) {
+        await callback(sketch, node, progress);
+      }
       return node;
     };
   }
@@ -152,7 +191,7 @@ export class NewCloudSketch extends CloudSketchContribution {
   ): Promise<void> {
     return this.commandService.executeCommand(
       SketchbookCommands.OPEN_NEW_WINDOW.id,
-      { node }
+      { node, treeWidgetId: 'cloud-sketchbook-composite-widget' }
     );
   }
 }

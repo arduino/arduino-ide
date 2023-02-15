@@ -9,6 +9,7 @@ import {
   WorkspaceRootNode,
 } from '@theia/navigator/lib/browser/navigator-tree';
 import { ArduinoPreferences } from '../../arduino-preferences';
+import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export class SketchbookTree extends FileNavigatorTree {
@@ -18,7 +19,9 @@ export class SketchbookTree extends FileNavigatorTree {
   @inject(ArduinoPreferences)
   protected readonly arduinoPreferences: ArduinoPreferences;
 
-  override async resolveChildren(parent: CompositeTreeNode): Promise<TreeNode[]> {
+  override async resolveChildren(
+    parent: CompositeTreeNode
+  ): Promise<TreeNode[]> {
     const showAllFiles =
       this.arduinoPreferences['arduino.sketchbook.showAllFiles'];
 
@@ -71,7 +74,13 @@ export class SketchbookTree extends FileNavigatorTree {
   protected async augmentSketchNode(node: DirNode): Promise<void> {
     Object.assign(node, {
       type: 'sketch',
-      commands: [SketchbookCommands.OPEN_SKETCHBOOK_CONTEXT_MENU],
+      commands: [
+        [
+          'arduino-create-cloud-copy',
+          nls.localize('arduino/createCloudCopy', 'Push Sketch to Cloud'),
+        ],
+        SketchbookCommands.OPEN_SKETCHBOOK_CONTEXT_MENU,
+      ],
     });
   }
 
@@ -96,7 +105,10 @@ export class SketchbookTree extends FileNavigatorTree {
 export namespace SketchbookTree {
   export interface SketchDirNode extends DirNode {
     readonly type: 'sketch';
-    readonly commands?: Command[];
+    /**
+     * Theia command, the command ID string, or a tuple of command ID and preferred UI label. If the array construct is used, the label is the 1<sup>st</sup> of the array.
+     */
+    readonly commands?: (Command | string | [string, string])[];
   }
   export namespace SketchDirNode {
     export function is(

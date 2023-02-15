@@ -93,8 +93,8 @@
       "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connected",
       "continue": "Continue",
-      "donePulling": "Done pulling ‘{0}’.",
-      "donePushing": "Done pushing ‘{0}’.",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "Embed:",
       "emptySketchbook": "Your Sketchbook is empty",
       "goToCloud": "Go to Cloud",
@@ -179,6 +179,9 @@
         "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
       }
     },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
     "contributions": {
       "addFile": "Add File",
       "fileAdded": "One file added to the sketch.",
@@ -199,6 +202,7 @@
       "copyError": "Copy error messages",
       "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "Restart Daemon",
       "start": "Start Daemon",
@@ -462,6 +466,9 @@
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
+    "title": {
+      "cloud": "Cloud"
+    },
     "updateIndexes": {
       "updateIndexes": "Update Indexes",
       "updateLibraryIndex": "Update Library Index",
@@ -494,6 +501,7 @@
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
+      "offlineText": "Offline",
       "quitTitle": "Are you sure you want to quit?"
     },
     "editor": {

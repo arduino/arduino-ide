@@ -6,6 +6,7 @@ import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shel
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WorkspaceInput } from '@theia/workspace/lib/browser/workspace-service';
 import { StartupTask } from '../../electron-common/startup-task';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -28,7 +29,7 @@ import {
 @injectable()
 export class SaveAsSketch extends CloudSketchContribution {
   @inject(ApplicationShell)
-  private readonly applicationShell: ApplicationShell;
+  private readonly shell: ApplicationShell;
   @inject(WindowService)
   private readonly windowService: WindowService;
 
@@ -80,14 +81,17 @@ export class SaveAsSketch extends CloudSketchContribution {
       return false;
     }
 
-    const newWorkspaceUri = await this.sketchesService.copy(sketch, {
+    const copiedSketch = await this.sketchesService.copy(sketch, {
       destinationUri,
     });
-    if (!newWorkspaceUri) {
-      return false;
-    }
+    const newWorkspaceUri = copiedSketch.uri;
 
-    await this.saveOntoCopiedSketch(sketch, newWorkspaceUri);
+    await saveOntoCopiedSketch(
+      sketch,
+      newWorkspaceUri,
+      this.shell,
+      this.editorManager
+    );
     if (markAsRecentlyOpened) {
       this.sketchesService.markAsRecentlyOpened(newWorkspaceUri);
     }
@@ -238,53 +242,6 @@ ${dialogContent.question}`.trim();
     }
     return sketchFolderDestinationUri;
   }
-
-  private async saveOntoCopiedSketch(
-    sketch: Sketch,
-    newSketchFolderUri: string
-  ): Promise<void> {
-    const widgets = this.applicationShell.widgets;
-    const snapshots = new Map<string, Saveable.Snapshot>();
-    for (const widget of widgets) {
-      const saveable = Saveable.getDirty(widget);
-      const uri = NavigatableWidget.getUri(widget);
-      if (!uri) {
-        continue;
-      }
-      const uriString = uri.toString();
-      let relativePath: string;
-      if (
-        uriString.includes(sketch.uri) &&
-        saveable &&
-        saveable.createSnapshot
-      ) {
-        // The main file will change its name during the copy process
-        // We need to store the new name in the map
-        if (sketch.mainFileUri === uriString) {
-          const lastPart = new URI(newSketchFolderUri).path.base + uri.path.ext;
-          relativePath = '/' + lastPart;
-        } else {
-          relativePath = uri.toString().substring(sketch.uri.length);
-        }
-        snapshots.set(relativePath, saveable.createSnapshot());
-      }
-    }
-    await Promise.all(
-      Array.from(snapshots.entries()).map(async ([path, snapshot]) => {
-        const widgetUri = new URI(newSketchFolderUri + path);
-        try {
-          const widget = await this.editorManager.getOrCreateByUri(widgetUri);
-          const saveable = Saveable.get(widget);
-          if (saveable && saveable.applySnapshot) {
-            saveable.applySnapshot(snapshot);
-            await saveable.save();
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      })
-    );
-  }
 }
 
 interface InvalidSketchFolderDialogContent {
@@ -316,4 +273,49 @@ export namespace SaveAsSketch {
       markAsRecentlyOpened: false,
     };
   }
+}
+
+export async function saveOntoCopiedSketch(
+  sketch: Sketch,
+  newSketchFolderUri: string,
+  shell: ApplicationShell,
+  editorManager: EditorManager
+): Promise<void> {
+  const widgets = shell.widgets;
+  const snapshots = new Map<string, Saveable.Snapshot>();
+  for (const widget of widgets) {
+    const saveable = Saveable.getDirty(widget);
+    const uri = NavigatableWidget.getUri(widget);
+    if (!uri) {
+      continue;
+    }
+    const uriString = uri.toString();
+    let relativePath: string;
+    if (uriString.includes(sketch.uri) && saveable && saveable.createSnapshot) {
+      // The main file will change its name during the copy process
+      // We need to store the new name in the map
+      if (sketch.mainFileUri === uriString) {
+        const lastPart = new URI(newSketchFolderUri).path.base + uri.path.ext;
+        relativePath = '/' + lastPart;
+      } else {
+        relativePath = uri.toString().substring(sketch.uri.length);
+      }
+      snapshots.set(relativePath, saveable.createSnapshot());
+    }
+  }
+  await Promise.all(
+    Array.from(snapshots.entries()).map(async ([path, snapshot]) => {
+      const widgetUri = new URI(newSketchFolderUri + path);
+      try {
+        const widget = await editorManager.getOrCreateByUri(widgetUri);
+        const saveable = Saveable.get(widget);
+        if (saveable && saveable.applySnapshot) {
+          saveable.applySnapshot(snapshot);
+          await saveable.save();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })
+  );
 }

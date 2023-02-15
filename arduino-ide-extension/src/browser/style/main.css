@@ -77,7 +77,7 @@
 
 .arduino-upload-sketch--toolbar-icon {
     -webkit-mask: url(../icons/upload.svg) center no-repeat;
-    background-color: var(--theia-titleBar-activeBackground);   
+    background-color: var(--theia-titleBar-activeBackground);
 }
 
 .toggle-serial-monitor-icon {
@@ -112,6 +112,10 @@
     margin: 0 12px;
     padding: 0;
     z-index: 0;
+}
+
+.p-TabBar-toolbar .item > div {
+    text-align: center;
 }
 
 :root {

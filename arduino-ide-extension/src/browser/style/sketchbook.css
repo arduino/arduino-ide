@@ -3,13 +3,6 @@
   mask: url('./sketchbook.svg');
 }
 
-.sketch-folder-icon {
-  background: url('./sketch-folder-icon.svg') center center no-repeat;
-  background-position-x: 1px;
-  width: var(--theia-icon-size);
-  height: var(--theia-icon-size);
-}
-
 .p-TabBar-tabIcon.sketchbook-tree-icon {
   background-color: var(--theia-foreground);
   -webkit-mask: url(./sketchbook-tree-icon.svg);

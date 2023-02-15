@@ -1,4 +1,4 @@
-import { Disposable } from '@theia/core/lib/common/disposable';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { BoardSearch, BoardsService } from '../../common/protocol';
@@ -10,26 +10,18 @@ import {
 
 describe('boards-service-impl', () => {
   let boardService: BoardsService;
-  let toDispose: Disposable[] = [];
+  let toDispose: DisposableCollection;
 
   before(async function () {
     configureBackendApplicationConfigProvider();
     this.timeout(20_000);
-    toDispose = [];
+    toDispose = new DisposableCollection();
     const container = createContainer();
     await start(container, toDispose);
     boardService = container.get<BoardsService>(BoardsService);
   });
 
-  after(() => {
-    let disposable = toDispose.pop();
-    while (disposable) {
-      try {
-        disposable?.dispose();
-      } catch {}
-      disposable = toDispose.pop();
-    }
-  });
+  after(() => toDispose.dispose());
 
   describe('search', () => {
     it('should run search', async function () {
@@ -37,7 +29,7 @@ describe('boards-service-impl', () => {
       expect(result).is.not.empty;
     });
 
-    it("should boost a result when 'types' includes 'arduino', and lower the score if deprecated", async function () {
+    it("should boost a result when 'types' includes 'arduino', and lower the score if deprecated", async () => {
       const result = await boardService.search({});
       const arduinoIndexes: number[] = [];
       const otherIndexes: number[] = [];
@@ -108,7 +100,7 @@ function createContainer(): Container {
 
 async function start(
   container: Container,
-  toDispose: Disposable[]
+  toDispose: DisposableCollection
 ): Promise<void> {
   return startDaemon(container, toDispose);
 }

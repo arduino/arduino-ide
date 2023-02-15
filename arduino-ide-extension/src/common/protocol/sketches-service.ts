@@ -74,12 +74,15 @@ export interface SketchesService {
   isTemp(sketch: SketchRef): Promise<boolean>;
 
   /**
-   * If `isTemp` is `true` for the `sketch`, you can call this method to move the sketch from the temp
-   * location to `directories.user`. Resolves with the URI of the sketch after the move. Rejects, when the sketch
-   * was not in the temp folder. This method always overrides. It's the callers responsibility to ask the user whether
-   * the files at the destination can be overwritten or not.
+   * Recursively copies the sketch folder content including all files into the destination folder.
+   * Resolves with the new URI of the sketch after the move. This method always overrides. It's the callers responsibility to ask the user whether
+   * the files at the destination can be overwritten or not. This method copies all filesystem files, if you want to copy only sketch files,
+   * but exclude, for example, language server log file, set the `onlySketchFiles` property to `true`. `onlySketchFiles` is `false` by default.
    */
-  copy(sketch: Sketch, options: { destinationUri: string }): Promise<string>;
+  copy(
+    sketch: Sketch,
+    options: { destinationUri: string; onlySketchFiles?: boolean }
+  ): Promise<Sketch>;
 
   /**
    * Returns with the container sketch for the input `uri`. If the `uri` is not in a sketch folder, the promise resolves to `undefined`.

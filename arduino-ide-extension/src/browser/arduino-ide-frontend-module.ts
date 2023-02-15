@@ -93,6 +93,8 @@ import { EditorCommandContribution as TheiaEditorCommandContribution } from '@th
 import {
   FrontendConnectionStatusService,
   ApplicationConnectionStatusContribution,
+  DaemonPort,
+  IsOnline,
 } from './theia/core/connection-status-service';
 import {
   FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
@@ -353,6 +355,7 @@ import { CreateFeatures } from './create/create-features';
 import { Account } from './contributions/account';
 import { SidebarBottomMenuWidget } from './theia/core/sidebar-bottom-menu-widget';
 import { SidebarBottomMenuWidget as TheiaSidebarBottomMenuWidget } from '@theia/core/lib/browser/shell/sidebar-bottom-menu-widget';
+import { CreateCloudCopy } from './contributions/create-cloud-copy';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -741,6 +744,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, ValidateSketch);
   Contribution.configure(bind, RenameCloudSketch);
   Contribution.configure(bind, Account);
+  Contribution.configure(bind, CloudSketchbookContribution);
+  Contribution.configure(bind, CreateCloudCopy);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
@@ -919,8 +924,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(CreateFsProvider).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(CreateFsProvider);
   bind(FileServiceContribution).toService(CreateFsProvider);
-  bind(CloudSketchbookContribution).toSelf().inSingletonScope();
-  bind(CommandContribution).toService(CloudSketchbookContribution);
   bind(LocalCacheFsProvider).toSelf().inSingletonScope();
   bind(FileServiceContribution).toService(LocalCacheFsProvider);
   bind(CloudSketchbookCompositeWidget).toSelf();
@@ -1026,4 +1029,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaSidebarBottomMenuWidget).toService(SidebarBottomMenuWidget);
 
   bind(ArduinoComponentContextMenuRenderer).toSelf().inSingletonScope();
+
+  bind(DaemonPort).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(DaemonPort);
+  bind(IsOnline).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(IsOnline);
 });
