@@ -22,15 +22,22 @@ import {
   LocalCacheFsProvider,
   LocalCacheUri,
 } from '../../local-cache/local-cache-fs-provider';
-import { CloudSketchbookCommands } from './cloud-sketchbook-contributions';
+import { CloudSketchbookCommands } from './cloud-sketchbook-commands';
 import { DoNotAskAgainConfirmDialog } from '../../dialogs/do-not-ask-again-dialog';
 import { SketchbookTree } from '../sketchbook/sketchbook-tree';
-import { firstToUpperCase } from '../../../common/utils';
+import { assertUnreachable } from '../../../common/utils';
 import { FileStat } from '@theia/filesystem/lib/common/files';
 import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
 import { posix, splitSketchPath } from '../../create/create-paths';
 import { Create } from '../../create/typings';
 import { nls } from '@theia/core/lib/common';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
+import { ExecuteWithProgress } from '../../../common/protocol/progressible';
+import {
+  pullingSketch,
+  pushingSketch,
+} from '../../contributions/cloud-contribution';
+import { CloudSketchState, CreateFeatures } from '../../create/create-features';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
@@ -53,6 +60,19 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   @inject(CreateApi)
   private readonly createApi: CreateApi;
+
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
+
+  @inject(CreateFeatures)
+  private readonly createFeatures: CreateFeatures;
+
+  protected override init(): void {
+    this.toDispose.push(
+      this.connectionStatus.onOfflineStatusDidChange(() => this.refresh())
+    );
+    super.init();
+  }
 
   async pushPublicWarn(
     node: CloudSketchbookTree.CloudSketchDirNode
@@ -84,7 +104,7 @@ export class CloudSketchbookTree extends SketchbookTree {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-  async pull(arg: any): Promise<void> {
+  async pull(arg: any, noProgress = false): Promise<void> {
     const {
       // model,
       node,
@@ -118,32 +138,45 @@ export class CloudSketchbookTree extends SketchbookTree {
         return;
       }
     }
-    return this.runWithState(node, 'pulling', async (node) => {
-      const commandsCopy = node.commands;
-      node.commands = [];
-
-      const localUri = await this.fileService.toUnderlyingResource(
-        LocalCacheUri.root.resolve(node.remoteUri.path)
-      );
-      await this.sync(node.remoteUri, localUri);
-
-      this.createApi.sketchCache.purgeByPath(node.remoteUri.path.toString());
-
-      node.commands = commandsCopy;
-      this.messageService.info(
-        nls.localize(
-          'arduino/cloud/donePulling',
-          'Done pulling ‘{0}’.',
-          node.fileStat.name
-        ),
-        {
-          timeout: MESSAGE_TIMEOUT,
-        }
-      );
-    });
+    return this.runWithState(
+      node,
+      'pull',
+      async (node) => {
+        await this.pullNode(node);
+      },
+      noProgress
+    );
   }
 
-  async push(node: CloudSketchbookTree.CloudSketchDirNode): Promise<void> {
+  private async pullNode(node: CloudSketchbookTree.CloudSketchDirNode) {
+    const commandsCopy = node.commands;
+    node.commands = [];
+
+    const localUri = await this.fileService.toUnderlyingResource(
+      LocalCacheUri.root.resolve(node.remoteUri.path)
+    );
+    await this.sync(node.remoteUri, localUri);
+
+    this.createApi.sketchCache.purgeByPath(node.remoteUri.path.toString());
+
+    node.commands = commandsCopy;
+    this.messageService.info(
+      nls.localize(
+        'arduino/cloud/donePulling',
+        "Done pulling '{0}'.",
+        node.fileStat.name
+      ),
+      {
+        timeout: MESSAGE_TIMEOUT,
+      }
+    );
+  }
+
+  async push(
+    node: CloudSketchbookTree.CloudSketchDirNode,
+    noProgress = false,
+    ignorePushWarnings = false
+  ): Promise<void> {
     if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
       throw new Error(
         nls.localize(
@@ -158,7 +191,8 @@ export class CloudSketchbookTree extends SketchbookTree {
       return;
     }
 
-    const warn = this.arduinoPreferences['arduino.cloud.push.warn'];
+    const warn =
+      !ignorePushWarnings && this.arduinoPreferences['arduino.cloud.push.warn'];
 
     if (warn) {
       const ok = await new DoNotAskAgainConfirmDialog({
@@ -178,37 +212,46 @@ export class CloudSketchbookTree extends SketchbookTree {
         return;
       }
     }
-    return this.runWithState(node, 'pushing', async (node) => {
-      if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
-        throw new Error(
-          nls.localize(
-            'arduino/cloud/pullFirst',
-            'You have to pull first to be able to push to the Cloud.'
-          )
-        );
-      }
-      const commandsCopy = node.commands;
-      node.commands = [];
+    return this.runWithState(
+      node,
+      'push',
+      async (node) => {
+        await this.pushNode(node);
+      },
+      noProgress
+    );
+  }
 
-      const localUri = await this.fileService.toUnderlyingResource(
-        LocalCacheUri.root.resolve(node.remoteUri.path)
-      );
-      await this.sync(localUri, node.remoteUri);
-
-      this.createApi.sketchCache.purgeByPath(node.remoteUri.path.toString());
-
-      node.commands = commandsCopy;
-      this.messageService.info(
+  private async pushNode(node: CloudSketchbookTree.CloudSketchDirNode) {
+    if (!CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
+      throw new Error(
         nls.localize(
-          'arduino/cloud/donePushing',
-          'Done pushing ‘{0}’.',
-          node.fileStat.name
-        ),
-        {
-          timeout: MESSAGE_TIMEOUT,
-        }
+          'arduino/cloud/pullFirst',
+          'You have to pull first to be able to push to the Cloud.'
+        )
       );
-    });
+    }
+    const commandsCopy = node.commands;
+    node.commands = [];
+
+    const localUri = await this.fileService.toUnderlyingResource(
+      LocalCacheUri.root.resolve(node.remoteUri.path)
+    );
+    await this.sync(localUri, node.remoteUri);
+
+    this.createApi.sketchCache.purgeByPath(node.remoteUri.path.toString());
+
+    node.commands = commandsCopy;
+    this.messageService.info(
+      nls.localize(
+        'arduino/cloud/donePushing',
+        "Done pushing '{0}'.",
+        node.fileStat.name
+      ),
+      {
+        timeout: MESSAGE_TIMEOUT,
+      }
+    );
   }
 
   private async recursiveURIs(uri: URI): Promise<URI[]> {
@@ -310,31 +353,37 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   private async runWithState<T>(
     node: CloudSketchbookTree.CloudSketchDirNode & Partial<DecoratedTreeNode>,
-    state: CloudSketchbookTree.CloudSketchDirNode.State,
-    task: (node: CloudSketchbookTree.CloudSketchDirNode) => MaybePromise<T>
+    state: CloudSketchState,
+    task: (node: CloudSketchbookTree.CloudSketchDirNode) => MaybePromise<T>,
+    noProgress = false
   ): Promise<T> {
-    const decoration: WidgetDecoration.TailDecoration = {
-      data: `${firstToUpperCase(state)}...`,
-      fontData: {
-        color: 'var(--theia-list-highlightForeground)',
-      },
-    };
+    this.createFeatures.setCloudSketchState(node.remoteUri, state);
     try {
-      node.state = state;
-      this.mergeDecoration(node, { tailDecorations: [decoration] });
+      const result = await (noProgress
+        ? task(node)
+        : ExecuteWithProgress.withProgress(
+            this.taskMessage(state, node.uri.path.name),
+            this.messageService,
+            async (progress) => {
+              progress.report({ work: { done: 0, total: NaN } });
+              return task(node);
+            }
+          ));
       await this.refresh(node);
-      const result = await task(node);
       return result;
     } finally {
-      delete node.state;
-      // TODO: find a better way to attach and detach decorators. Do we need a proper `TreeDecorator` instead?
-      const index = node.decorationData?.tailDecorations?.findIndex(
-        (candidate) => JSON.stringify(decoration) === JSON.stringify(candidate)
-      );
-      if (typeof index === 'number' && index !== -1) {
-        node.decorationData?.tailDecorations?.splice(index, 1);
-      }
-      await this.refresh(node);
+      this.createFeatures.setCloudSketchState(node.remoteUri, undefined);
+    }
+  }
+
+  private taskMessage(state: CloudSketchState, input: string): string {
+    switch (state) {
+      case 'pull':
+        return pullingSketch(input);
+      case 'push':
+        return pushingSketch(input);
+      default:
+        assertUnreachable(state);
     }
   }
 
@@ -501,7 +550,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     };
   }
 
-  protected readonly notInSyncDecoration: WidgetDecoration.Data = {
+  protected readonly notInSyncOfflineDecoration: WidgetDecoration.Data = {
     fontData: {
       color: 'var(--theia-activityBar-inactiveForeground)',
     },
@@ -522,11 +571,15 @@ export class CloudSketchbookTree extends SketchbookTree {
       node.fileStat.resource.path.toString()
     );
 
-    const commands = [CloudSketchbookCommands.PULL_SKETCH];
+    const commands: Command[] = [];
+    if (this.connectionStatus.offlineStatus !== 'internet') {
+      commands.push(CloudSketchbookCommands.PULL_SKETCH);
+    }
 
     if (
       CloudSketchbookTree.CloudSketchTreeNode.is(node) &&
-      CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)
+      CloudSketchbookTree.CloudSketchTreeNode.isSynced(node) &&
+      this.connectionStatus.offlineStatus !== 'internet'
     ) {
       commands.push(CloudSketchbookCommands.PUSH_SKETCH);
     }
@@ -557,14 +610,15 @@ export class CloudSketchbookTree extends SketchbookTree {
       }
     }
 
-    // add style decoration for not-in-sync files
+    // add style decoration for not-in-sync files when offline
     if (
       CloudSketchbookTree.CloudSketchTreeNode.is(node) &&
-      !CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)
+      !CloudSketchbookTree.CloudSketchTreeNode.isSynced(node) &&
+      this.connectionStatus.offlineStatus === 'internet'
     ) {
-      this.mergeDecoration(node, this.notInSyncDecoration);
+      this.mergeDecoration(node, this.notInSyncOfflineDecoration);
     } else {
-      this.removeDecoration(node, this.notInSyncDecoration);
+      this.removeDecoration(node, this.notInSyncOfflineDecoration);
     }
 
     return node;
@@ -644,7 +698,7 @@ export namespace CloudSketchbookTree {
   export interface CloudSketchDirNode
     extends Omit<SketchbookTree.SketchDirNode, 'fileStat'>,
       CloudSketchTreeNode {
-    state?: CloudSketchDirNode.State;
+    state?: CloudSketchState;
     isPublic?: boolean;
     sketchId?: string;
     commands?: Command[];
@@ -653,7 +707,5 @@ export namespace CloudSketchbookTree {
     export function is(node: TreeNode | undefined): node is CloudSketchDirNode {
       return SketchbookTree.SketchDirNode.is(node);
     }
-
-    export type State = 'syncing' | 'pulling' | 'pushing';
   }
 }

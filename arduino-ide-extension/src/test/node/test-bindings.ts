@@ -4,7 +4,10 @@ import {
   CommandService,
 } from '@theia/core/lib/common/command';
 import { bindContributionProvider } from '@theia/core/lib/common/contribution-provider';
-import { Disposable } from '@theia/core/lib/common/disposable';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { ILogger, Loggable } from '@theia/core/lib/common/logger';
 import { LogLevel } from '@theia/core/lib/common/logger-protocol';
@@ -289,18 +292,23 @@ export function createBaseContainer(
 
 export async function startDaemon(
   container: Container,
-  toDispose: Disposable[],
+  toDispose: DisposableCollection,
   startCustomizations?: (
     container: Container,
-    toDispose: Disposable[]
+    toDispose: DisposableCollection
   ) => Promise<void>
 ): Promise<void> {
   const daemon = container.get<ArduinoDaemonImpl>(ArduinoDaemonImpl);
   const configService = container.get<ConfigServiceImpl>(ConfigServiceImpl);
+  const coreClientProvider =
+    container.get<CoreClientProvider>(CoreClientProvider);
   toDispose.push(Disposable.create(() => daemon.stop()));
   configService.onStart();
   daemon.onStart();
-  await waitForEvent(daemon.onDaemonStarted, 10_000);
+  await Promise.all([
+    waitForEvent(daemon.onDaemonStarted, 10_000),
+    coreClientProvider.client,
+  ]);
   if (startCustomizations) {
     await startCustomizations(container, toDispose);
   }

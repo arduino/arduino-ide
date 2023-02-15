@@ -20,6 +20,7 @@ import URI from '@theia/core/lib/common/uri';
 import { Create } from '../../create/typings';
 import { nls } from '@theia/core/lib/common/nls';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
 
 function sketchBaseDir(sketch: Create.Sketch): FileStat {
   // extract the sketch path
@@ -63,15 +64,22 @@ export class CloudSketchbookTreeModel extends SketchbookTreeModel {
   private readonly authenticationService: AuthenticationClientService;
   @inject(LocalCacheFsProvider)
   private readonly localCacheFsProvider: LocalCacheFsProvider;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
 
   private _localCacheFsProviderReady: Deferred<void> | undefined;
 
   @postConstruct()
   protected override init(): void {
     super.init();
-    this.toDispose.push(
-      this.authenticationService.onSessionDidChange(() => this.updateRoot())
-    );
+    this.toDispose.pushAll([
+      this.authenticationService.onSessionDidChange(() => this.updateRoot()),
+      this.connectionStatus.onOfflineStatusDidChange((offlineStatus) => {
+        if (!offlineStatus) {
+          this.updateRoot();
+        }
+      }),
+    ]);
   }
 
   override *getNodesByUri(uri: URI): IterableIterator<TreeNode> {

@@ -14,7 +14,6 @@ import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
-
 import {
   MenuModelRegistry,
   MenuContribution,
@@ -58,7 +57,7 @@ import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 import { ExecuteWithProgress } from '../../common/protocol/progressible';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { BoardsDataStore } from '../boards/boards-data-store';
-import { NotificationManager } from '../theia/messages/notifications-manager';
+import { NotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 import { MessageType } from '@theia/core/lib/common/message-service-protocol';
 import { WorkspaceService } from '../theia/workspace/workspace-service';
 import { MainMenuManager } from '../../common/main-menu-manager';
@@ -295,7 +294,7 @@ export abstract class CoreServiceContribution extends SketchContribution {
   }
 
   private notificationId(message: string, ...actions: string[]): string {
-    return this.notificationManager.getMessageId({
+    return this.notificationManager['getMessageId']({
       text: message,
       actions,
       type: MessageType.Error,

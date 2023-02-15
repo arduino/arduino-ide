@@ -21,8 +21,15 @@ export function isNullOrUndefined(what: unknown): what is undefined | null {
   return what === undefined || what === null;
 }
 
+// Use it for and exhaustive `switch` statements
+// https://stackoverflow.com/a/39419171/5529090
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function assertUnreachable(_: never): never {
+  throw new Error();
+}
+
 // Text encoder can crash in electron browser: https://github.com/arduino/arduino-ide/issues/634#issuecomment-1440039171
-export function unit8ArrayToString(uint8Array: Uint8Array): string {
+export function uint8ArrayToString(uint8Array: Uint8Array): string {
   return uint8Array.reduce(
     (text, byte) => text + String.fromCharCode(byte),
     ''

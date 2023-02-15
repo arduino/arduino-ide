@@ -123,7 +123,7 @@ export class RenameCloudSketch extends CloudSketchContribution {
       const toPosixPath = params.cloudUri.parent.resolve(value).path.toString();
       // push
       progress.report({ message: pushingSketch(params.sketch.name) });
-      await treeModel.sketchbookTree().push(node);
+      await treeModel.sketchbookTree().push(node, true);
 
       // rename
       progress.report({

@@ -2,7 +2,7 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { fetch } from 'cross-fetch';
 import { SketchesService } from '../../common/protocol';
-import { unit8ArrayToString } from '../../common/utils';
+import { uint8ArrayToString } from '../../common/utils';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
@@ -10,11 +10,11 @@ import * as createPaths from './create-paths';
 import { posix } from './create-paths';
 import { Create, CreateError } from './typings';
 
-export interface ResponseResultProvider {
+interface ResponseResultProvider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (response: Response): Promise<any>;
 }
-export namespace ResponseResultProvider {
+namespace ResponseResultProvider {
   export const NOOP: ResponseResultProvider = async () => undefined;
   export const TEXT: ResponseResultProvider = (response) => response.text();
   export const JSON: ResponseResultProvider = (response) => response.json();
@@ -288,10 +288,9 @@ export class CreateApi {
       if (sketch) {
         const url = new URL(`${this.domain()}/sketches/${sketch.id}`);
         const headers = await this.headers();
-
         // parse the secret file
         const secrets = (
-          typeof content === 'string' ? content : unit8ArrayToString(content)
+          typeof content === 'string' ? content : uint8ArrayToString(content)
         )
           .split(/\r?\n/)
           .reduce((prev, curr) => {
@@ -355,7 +354,7 @@ export class CreateApi {
     const headers = await this.headers();
 
     let data: string =
-      typeof content === 'string' ? content : unit8ArrayToString(content);
+      typeof content === 'string' ? content : uint8ArrayToString(content);
     data = await this.toggleSecretsInclude(posixPath, data, 'remove');
 
     const payload = { data: btoa(data) };

@@ -10,17 +10,21 @@ import {
 import * as React from '@theia/core/shared/react';
 import { accountMenu } from '../../contributions/account';
 import { CreateFeatures } from '../../create/create-features';
+import { ApplicationConnectionStatusContribution } from './connection-status-service';
 
 @injectable()
 export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
   @inject(CreateFeatures)
   private readonly createFeatures: CreateFeatures;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatue: ApplicationConnectionStatusContribution;
 
   @postConstruct()
   protected init(): void {
-    this.toDispose.push(
-      this.createFeatures.onDidChangeSession(() => this.update())
-    );
+    this.toDispose.pushAll([
+      this.createFeatures.onDidChangeSession(() => this.update()),
+      this.connectionStatue.onOfflineStatusDidChange(() => this.update()),
+    ]);
   }
 
   protected override onClick(
@@ -28,7 +32,7 @@ export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
     menuPath: MenuPath
   ): void {
     const button = e.currentTarget.getBoundingClientRect();
-    this.contextMenuRenderer.render({
+    const options = {
       menuPath,
       includeAnchorArg: false,
       anchor: {
@@ -37,7 +41,9 @@ export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
         // https://github.com/eclipse-theia/theia/discussions/12170
         y: button.top,
       },
-    });
+      showDisabled: true,
+    };
+    this.contextMenuRenderer.render(options);
   }
 
   protected override render(): React.ReactNode {
@@ -55,7 +61,9 @@ export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
     }
     const arduinoAccount = menu.id === accountMenu.id;
     const picture =
-      arduinoAccount && this.createFeatures.session?.account.picture;
+      arduinoAccount &&
+      this.connectionStatue.offlineStatus !== 'internet' &&
+      this.createFeatures.session?.account.picture;
     const className = typeof picture === 'string' ? undefined : menu.iconClass;
     return (
       <i
