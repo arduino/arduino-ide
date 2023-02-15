@@ -31,6 +31,7 @@ import { WorkspaceNode } from '@theia/navigator/lib/browser/navigator-tree';
 import { posix, splitSketchPath } from '../../create/create-paths';
 import { Create } from '../../create/typings';
 import { nls } from '@theia/core/lib/common';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
 
 const MESSAGE_TIMEOUT = 5 * 1000;
 const deepmerge = require('deepmerge').default;
@@ -53,6 +54,16 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   @inject(CreateApi)
   private readonly createApi: CreateApi;
+
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
+
+  protected override init(): void {
+    this.toDispose.push(
+      this.connectionStatus.onOfflineStatusDidChange(() => this.refresh())
+    );
+    super.init();
+  }
 
   async pushPublicWarn(
     node: CloudSketchbookTree.CloudSketchDirNode
@@ -501,7 +512,7 @@ export class CloudSketchbookTree extends SketchbookTree {
     };
   }
 
-  protected readonly notInSyncDecoration: WidgetDecoration.Data = {
+  protected readonly notInSyncOfflineDecoration: WidgetDecoration.Data = {
     fontData: {
       color: 'var(--theia-activityBar-inactiveForeground)',
     },
@@ -522,11 +533,15 @@ export class CloudSketchbookTree extends SketchbookTree {
       node.fileStat.resource.path.toString()
     );
 
-    const commands = [CloudSketchbookCommands.PULL_SKETCH];
+    const commands: Command[] = [];
+    if (this.connectionStatus.offlineStatus !== 'internet') {
+      commands.push(CloudSketchbookCommands.PULL_SKETCH);
+    }
 
     if (
       CloudSketchbookTree.CloudSketchTreeNode.is(node) &&
-      CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)
+      CloudSketchbookTree.CloudSketchTreeNode.isSynced(node) &&
+      this.connectionStatus.offlineStatus !== 'internet'
     ) {
       commands.push(CloudSketchbookCommands.PUSH_SKETCH);
     }
@@ -557,14 +572,15 @@ export class CloudSketchbookTree extends SketchbookTree {
       }
     }
 
-    // add style decoration for not-in-sync files
+    // add style decoration for not-in-sync files when offline
     if (
       CloudSketchbookTree.CloudSketchTreeNode.is(node) &&
-      !CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)
+      !CloudSketchbookTree.CloudSketchTreeNode.isSynced(node) &&
+      this.connectionStatus.offlineStatus === 'internet'
     ) {
-      this.mergeDecoration(node, this.notInSyncDecoration);
+      this.mergeDecoration(node, this.notInSyncOfflineDecoration);
     } else {
-      this.removeDecoration(node, this.notInSyncDecoration);
+      this.removeDecoration(node, this.notInSyncOfflineDecoration);
     }
 
     return node;

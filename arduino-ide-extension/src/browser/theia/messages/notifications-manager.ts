@@ -1,6 +1,5 @@
 import { CancellationToken } from '@theia/core/lib/common/cancellation';
 import type {
-  Message,
   ProgressMessage,
   ProgressUpdate,
 } from '@theia/core/lib/common/message-service-protocol';
@@ -45,12 +44,5 @@ export class NotificationManager extends TheiaNotificationManager {
       return Number.NaN; // This should trigger the unknown monitor.
     }
     return Math.min((update.work.done / update.work.total) * 100, 100);
-  }
-
-  /**
-   * For `public` visibility.
-   */
-  override getMessageId(message: Message): string {
-    return super.getMessageId(message);
   }
 }

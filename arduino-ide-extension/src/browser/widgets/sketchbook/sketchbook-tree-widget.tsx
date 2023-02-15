@@ -23,7 +23,6 @@ import {
   SketchesServiceClientImpl,
 } from '../../sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
-import { Sketch } from '../../contributions/contribution';
 import { nls } from '@theia/core/lib/common';
 
 const customTreeProps: TreeProps = {
@@ -91,8 +90,8 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     node: TreeNode,
     props: NodeProps
   ): React.ReactNode {
-    if (SketchbookTree.SketchDirNode.is(node) || Sketch.isSketchFile(node.id)) {
-      return <div className="sketch-folder-icon file-icon"></div>;
+    if (SketchbookTree.SketchDirNode.is(node)) {
+      return undefined;
     }
     const icon = this.toNodeIcon(node);
     if (icon) {

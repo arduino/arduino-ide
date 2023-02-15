@@ -90,6 +90,8 @@ import { EditorCommandContribution as TheiaEditorCommandContribution } from '@th
 import {
   FrontendConnectionStatusService,
   ApplicationConnectionStatusContribution,
+  DaemonPort,
+  IsOnline,
 } from './theia/core/connection-status-service';
 import {
   FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
@@ -1021,4 +1023,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(SidebarBottomMenuWidget).toSelf();
   rebind(TheiaSidebarBottomMenuWidget).toService(SidebarBottomMenuWidget);
+  bind(DaemonPort).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(DaemonPort);
+  bind(IsOnline).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(IsOnline);
 });

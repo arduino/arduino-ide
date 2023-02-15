@@ -8,6 +8,7 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { CloudUserCommands, LEARN_MORE_URL } from '../auth/cloud-user-commands';
 import { CreateFeatures } from '../create/create-features';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { ApplicationConnectionStatusContribution } from '../theia/core/connection-status-service';
 import {
   Command,
   CommandRegistry,
@@ -29,6 +30,8 @@ export class Account extends Contribution {
   private readonly windowService: WindowService;
   @inject(CreateFeatures)
   private readonly createFeatures: CreateFeatures;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
 
   private readonly toDispose = new DisposableCollection();
   private app: FrontendApplication;
@@ -50,21 +53,28 @@ export class Account extends Contribution {
   override registerCommands(registry: CommandRegistry): void {
     const openExternal = (url: string) =>
       this.windowService.openNewWindow(url, { external: true });
+    const loggedIn = () => Boolean(this.createFeatures.session);
+    const loggedInWithInternetConnection = () =>
+      loggedIn() && this.connectionStatus.offlineStatus !== 'internet';
     registry.registerCommand(Account.Commands.LEARN_MORE, {
       execute: () => openExternal(LEARN_MORE_URL),
-      isEnabled: () => !Boolean(this.createFeatures.session),
+      isEnabled: () => !loggedIn(),
+      isVisible: () => !loggedIn(),
     });
     registry.registerCommand(Account.Commands.GO_TO_PROFILE, {
       execute: () => openExternal('https://id.arduino.cc/'),
-      isEnabled: () => Boolean(this.createFeatures.session),
+      isEnabled: () => loggedInWithInternetConnection(),
+      isVisible: () => loggedIn(),
     });
     registry.registerCommand(Account.Commands.GO_TO_CLOUD_EDITOR, {
       execute: () => openExternal('https://create.arduino.cc/editor'),
-      isEnabled: () => Boolean(this.createFeatures.session),
+      isEnabled: () => loggedInWithInternetConnection(),
+      isVisible: () => loggedIn(),
     });
     registry.registerCommand(Account.Commands.GO_TO_IOT_CLOUD, {
       execute: () => openExternal('https://create.arduino.cc/iot/'),
-      isEnabled: () => Boolean(this.createFeatures.session),
+      isEnabled: () => loggedInWithInternetConnection(),
+      isVisible: () => loggedIn(),
     });
   }
 

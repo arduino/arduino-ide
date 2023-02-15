@@ -173,6 +173,9 @@
         "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
       }
     },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud Sketches actions and Updates won't be available"
+    },
     "contributions": {
       "addFile": "Add File",
       "fileAdded": "One file added to the sketch.",
@@ -488,6 +491,7 @@
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
+      "offlineText": "Offline",
       "quitTitle": "Are you sure you want to quit?"
     },
     "editor": {

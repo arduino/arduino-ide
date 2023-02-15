@@ -15,6 +15,7 @@ import { CompositeTreeNode } from '@theia/core/lib/browser';
 import { shell } from '@theia/core/electron-shared/@electron/remote';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
 
 @injectable()
 export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
@@ -26,6 +27,9 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
 
   @inject(CloudSketchbookTree)
   protected readonly cloudSketchbookTree: CloudSketchbookTree;
+
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
 
   protected override renderTree(model: TreeModel): React.ReactNode {
     if (this.shouldShowWelcomeView()) return this.renderViewWelcome();
@@ -89,6 +93,28 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     }
 
     return classNames;
+  }
+
+  protected override renderIcon(
+    node: TreeNode,
+    props: NodeProps
+  ): React.ReactNode {
+    if (CloudSketchbookTree.CloudSketchDirNode.is(node)) {
+      const iconClassName = ['sketch-folder-icon', 'cloud'];
+      if (CloudSketchbookTree.CloudSketchTreeNode.isSynced(node)) {
+        iconClassName.push('synced');
+      }
+      if (this.connectionStatus.offlineStatus === 'internet') {
+        iconClassName.push('offline');
+      }
+      const icon = iconClassName.join(' ');
+      return (
+        <div className="theia-file-icons-js file-icon">
+          <div className={icon} />
+        </div>
+      );
+    }
+    return super.renderIcon(node, props);
   }
 
   protected override renderInlineCommands(node: any): React.ReactNode {

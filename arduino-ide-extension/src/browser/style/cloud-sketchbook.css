@@ -15,10 +15,10 @@
 
 .p-TabBar-tabIcon.cloud-sketchbook-tree-icon {
     background-color: var(--theia-foreground);
-    -webkit-mask: url(./cloud-sketchbook-tree-icon.svg);
+    -webkit-mask: url(../icons/cloud.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
-    width: var(--theia-icon-size);
+    width: 19px !important;
     height: var(--theia-icon-size);
     -webkit-mask-size: 100%;
 }
@@ -26,7 +26,7 @@
 .p-mod-current
 .cloud-sketchbook-tree-icon {
     background-color: var(--theia-foreground);
-    -webkit-mask: url(./cloud-sketchbook-tree-icon-filled.svg);
+    -webkit-mask: url(../icons/cloud-filled.svg);
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 100%;
@@ -118,7 +118,6 @@
 }
 
 .account-icon {
-    background: url("./account-icon.svg") center center no-repeat;
     width: var(--theia-private-sidebar-icon-size);
     height: var(--theia-private-sidebar-icon-size);
     border-radius: 50%;
@@ -198,4 +197,40 @@
 
 .arduino-share-sketch-dialog .sketch-link-embed textarea {
     width: 100%;
+}
+
+.theia-file-icons-js.file-icon > .sketch-folder-icon {
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100%;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+    background-color: var(--theia-foreground);
+}
+
+.theia-file-icons-js.file-icon > .sketch-folder-icon.cloud {
+    -webkit-mask: url('../icons/cloud.svg');
+}
+
+.theia-file-icons-js.file-icon > .sketch-folder-icon.cloud.offline {
+    -webkit-mask: url('../icons/cloud-offline.svg');
+    background-color: var(--theia-activityBar-inactiveForeground);
+}
+
+.theia-file-icons-js.file-icon > .sketch-folder-icon.cloud.synced {
+    -webkit-mask: url('../icons/cloud-filled.svg');
+}
+
+.theia-TreeNodeContent > .theia-file-icons-js.file-icon > .sketch-folder-icon.cloud.synced.offline {
+    -webkit-mask: url('../icons/cloud-filled-offline.svg');
+}
+
+.sketch-folder-icon.cloud.offline.action {
+    -webkit-mask: url('../icons/cloud-offline.svg');
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100%;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
+    background-color: var(--theia-foreground);
 }

@@ -28,7 +28,7 @@ export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
     menuPath: MenuPath
   ): void {
     const button = e.currentTarget.getBoundingClientRect();
-    this.contextMenuRenderer.render({
+    const options = {
       menuPath,
       includeAnchorArg: false,
       anchor: {
@@ -37,7 +37,9 @@ export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
         // https://github.com/eclipse-theia/theia/discussions/12170
         y: button.top,
       },
-    });
+      showDisabled: true,
+    };
+    this.contextMenuRenderer.render(options);
   }
 
   protected override render(): React.ReactNode {

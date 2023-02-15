@@ -5,7 +5,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { CloudStatus } from './cloud-user-status';
+import { CloudStatus } from './cloud-status';
 import { nls } from '@theia/core/lib/common/nls';
 import { CloudSketchbookTreeWidget } from './cloud-sketchbook-tree-widget';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
@@ -13,6 +13,7 @@ import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { BaseSketchbookCompositeWidget } from '../sketchbook/sketchbook-composite-widget';
 import { CreateNew } from '../sketchbook/create-new';
 import { AuthenticationSession } from '../../../node/auth/types';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
 
 @injectable()
 export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidget<CloudSketchbookTreeWidget> {
@@ -20,6 +21,9 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
   private readonly authenticationService: AuthenticationClientService;
   @inject(CloudSketchbookTreeWidget)
   private readonly cloudSketchbookTreeWidget: CloudSketchbookTreeWidget;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
+
   private _session: AuthenticationSession | undefined;
 
   constructor() {
@@ -66,6 +70,7 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
             this.cloudSketchbookTreeWidget.model as CloudSketchbookTreeModel
           }
           authenticationService={this.authenticationService}
+          connectionStatus={this.connectionStatus}
         />
       </>
     );
