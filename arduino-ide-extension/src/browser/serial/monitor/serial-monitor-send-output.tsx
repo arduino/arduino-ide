@@ -55,6 +55,10 @@ export class SerialMonitorOutput extends React.Component<
     return true;
   }
 
+  override componentDidUpdate(): void {
+    this.scrollToBottom();
+  }
+
   override componentDidMount(): void {
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
