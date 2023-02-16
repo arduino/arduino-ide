@@ -127,8 +127,8 @@ export class DecodeWidget extends ReactWidget {
   }
 
   protected readonly onSend = (value: string) => this.doSend(value);
+
   protected async doSend(value: string) {
-    
     const configPath = await this.configService.getConfiguration()
       .then(({ dataDirUri }) => (new URI(dataDirUri)).path);
     const boards = this.boardsServiceProvider.boardsConfig
@@ -143,31 +143,28 @@ export class DecodeWidget extends ReactWidget {
     }
     const sketchUri = (new URI(currentSketch.uri)).path;
     const elfPath = `${sketchUri}/build/${fqbn.split(':').join('.')}/${currentSketch.name}.ino.elf`;
+
     // * enters an unkown foldername, in this case the version of gcc
     const xtensaPath= `${configPath}/packages/${selectedBoard}/tools/xtensa-${selectedBoard}-elf-gcc/\*/bin/xtensa-${selectedBoard}-elf-addr2line`;
-    // Add logic here; value is the backtrace user 
-
-    const regex = new RegExp(/[0-3]x([a-f]|[A-F]|[0-9]){8}/g);
-
+    const regex = new RegExp(/0x4(\d|[a-f]|[A-F]){7}/g);
     const arrAddresses = value.match(regex);
-
     if(!arrAddresses) {
       return this.decodeOutputElement.current.decodeText('Provided format can not be decoded!');
     }
-
     let decodeResult = '';
-
-    for(let i=0;i<arrAddresses.length; i++) {
-      
+    for(let i=0;i<arrAddresses.length; i++) {  
       let result = await spawnCommand(`${xtensaPath}`, [
         '-pfiaC',
         '-e',
         `${elfPath}`,
         `"${arrAddresses[i]}"`,
       ]);
-      decodeResult += `${result} \n`;
+
+      // only display rows which are readable
+      if(!result.includes("??")) {
+        decodeResult += `${result}`;
+      }
     }
-    
     this.decodeOutputElement.current.decodeText(decodeResult);
   }
 }

@@ -1,9 +1,18 @@
 import * as React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-// import { areEqual } from 'react-window';
+import { spawnCommand } from '../../../node/exec-util';
 
 export type Line = { message: string; lineLen: number };
+export type Element = {
+  address: string;
+  function: string;
+  path: {
+    value: string;
+    isLink: boolean;
+  }
+  lineNumber: string
+};
 
 export class DecodeOutput extends React.Component<
   DecodeOutput.Props,
@@ -13,41 +22,83 @@ export class DecodeOutput extends React.Component<
    * Do not touch it. It is used to be able to "follow" the serial monitor log.
    */
   protected toDisposeBeforeUnmount = new DisposableCollection();
-  private listRef: React.RefObject<any>;
 
   constructor(props: Readonly<DecodeOutput.Props>) {
     super(props);
-    this.listRef = React.createRef();
     this.state = {
-      lines: [],
-      charCount: 0,
-      text: '',
+      elements: [],
     };
   }
 
-  decodeText = (value: string) => {
-    this.setState({ text: value });
+  isClientPath = async (path:string): Promise<boolean> => {
+    return await spawnCommand("cd", [
+      path
+    ], (err) => err)
+    .then((data) => true)
+    .catch(err => false)
+  }
+
+  openFinder = async (path:string) => {
+    await spawnCommand("open", [
+      path
+    ]);
+  }
+
+  retrievePath = (dirPath:string) => {
+    return dirPath.substring(0,dirPath.lastIndexOf("/")+1);
+  }
+
+  decodeText = async (value: string) => {
+    const lines = value.split("\n");
+
+    // Remove the extra newline at the end
+    lines.pop();
+    const elements : Array<Element> = [];
+    for(let i=0;i<lines.length;i++) {
+      let line = lines[i].split(/(?!\(.*)\s(?![^(]*?\))/g);
+      if(line[0] === "") {
+        line.shift();
+      }
+      let pathSplit = line[3].split(":");
+      let obj: Element = {
+        address: line[0],
+        function: line[1],
+        path: {
+          value: pathSplit[0],
+          isLink: false,
+        },
+        lineNumber: pathSplit[1]
+      };
+      if(await this.isClientPath(this.retrievePath(pathSplit[0]))) {
+        obj = {
+          address: line[0],
+          function: line[1],
+          path: {
+            value: pathSplit[0],
+            isLink: true,
+          },
+          lineNumber: pathSplit[1]
+        };
+      }
+      elements.push(obj);
+    }
+    this.setState({ elements });
   };
 
   override render(): React.ReactNode {
     return (
-      // <List
-      //   className="serial-monitor-messages"
-      //   height={this.props.height}
-      //   itemData={
-      //     {
-      //       lines: this.state.lines,
-      //     } as any
-      //   }
-      //   itemCount={this.state.lines.length}
-      //   itemSize={18}
-      //   width={'100%'}
-      //   style={{ whiteSpace: 'nowrap' }}
-      //   ref={this.listRef}
-      // >
-      //   {Row}
-      // </List>
-      <div style={{ whiteSpace: 'pre-wrap' }}>{this.state.text}</div>
+      <div style={{ whiteSpace: 'pre-wrap' }}>
+        {this.state.elements.map((element) => (
+          <div style={{display: "inline-block"}}>
+            <span style={{color: "green"}}>{element.address} </span>
+            <span style={{color: "blue", fontWeight: "bold"}}>{element.function} </span>
+            at
+            { element.path.isLink ? <a><span onClick={async () => await this.openFinder(this.retrievePath(element.path.value))}>{element.path.value}</span></a> : <span> {element.path.value} </span> }
+            line
+            <span style={{fontWeight: "bold"}}> {element.lineNumber}</span>
+          </div>
+        ))}
+      </div>
     );
   }
 
@@ -56,10 +107,9 @@ export class DecodeOutput extends React.Component<
   }
 
   override componentDidMount(): void {
-    this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.clearConsoleEvent(() =>
-        this.setState({ lines: [], charCount: 0 })
+        this.setState({ elements: [] })
       ),
     ]);
   }
@@ -68,35 +118,7 @@ export class DecodeOutput extends React.Component<
     // TODO: "Your preferred browser's local storage is almost full." Discard `content` before saving layout?
     this.toDisposeBeforeUnmount.dispose();
   }
-
-  scrollToBottom = ((): void => {
-    if (this.listRef.current) {
-      this.listRef.current.scrollToItem(this.state.lines.length, 'end');
-    }
-  }).bind(this);
 }
-
-// const _Row = ({
-//   index,
-//   style,
-//   data,
-// }: {
-//   index: number;
-//   style: any;
-//   data: { lines: Line[]; timestamp: boolean };
-// }) => {
-//   return (
-//     (data.lines[index].lineLen && (
-//       <div style={style}>
-//         <pre>
-//           {data.lines[index].message}
-//         </pre>
-//       </div>
-//     )) ||
-//     null
-//   );
-// };
-// const Row = React.memo(_Row, areEqual);
 
 export namespace DecodeOutput {
   export interface Props {
@@ -105,9 +127,7 @@ export namespace DecodeOutput {
   }
 
   export interface State {
-    lines: Line[];
-    charCount: number;
-    text: string;
+    elements: Element[];
   }
 
   export interface SelectOption<T> {
