@@ -12,7 +12,7 @@ import { DecodeSendInput } from './decode-send-input';
 import { DecodeOutput } from './decode-output';
 import { spawnCommand } from '../../../node/exec-util';
 import { ConfigService } from '../../../common/protocol';
-import { CurrentSketch, SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch, SketchesServiceClientImpl } from '../../sketches-service-client-impl';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 
 @injectable()
@@ -130,7 +130,7 @@ export class DecodeWidget extends ReactWidget {
 
   protected async doSend(value: string) {
     const configPath = await this.configService.getConfiguration()
-      .then(({ dataDirUri }) => (new URI(dataDirUri)).path);
+      .then(({config}) => (new URI(config?.dataDirUri)).path);
     const boards = this.boardsServiceProvider.boardsConfig
     const fqbn = boards.selectedBoard?.fqbn;
     if(!fqbn) {
