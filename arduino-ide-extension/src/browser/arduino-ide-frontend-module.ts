@@ -72,6 +72,7 @@ import {
   ConfigServicePath,
 } from '../common/protocol/config-service';
 import { MonitorWidget } from './serial/monitor/monitor-widget';
+import { DecodeWidget } from './serial/decode/decode-widget';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
@@ -321,6 +322,7 @@ import { InterfaceScale } from './contributions/interface-scale';
 import { OpenHandler } from '@theia/core/lib/browser/opener-service';
 import { NewCloudSketch } from './contributions/new-cloud-sketch';
 import { SketchbookCompositeWidget } from './widgets/sketchbook/sketchbook-composite-widget';
+import { DecodeViewContribution } from './serial/decode/decode-view';
 import { WindowTitleUpdater } from './theia/core/window-title-updater';
 import { WindowTitleUpdater as TheiaWindowTitleUpdater } from '@theia/core/lib/browser/window/window-title-updater';
 import { ThemeServiceWithDB } from './theia/core/theming';
@@ -476,6 +478,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
   bind(CoreErrorHandler).toSelf().inSingletonScope();
+
+  // Decode box
+  bind(DecodeWidget).toSelf();
+  bindViewContribution(bind, DecodeViewContribution);
+  bind(TabBarToolbarContribution).toService(DecodeViewContribution);
+  bind(WidgetFactory).toDynamicValue((context) => ({
+    id: DecodeWidget.ID,
+    createWidget: () => {
+      return new DecodeWidget(
+        context.container.get<ConfigService>(ConfigService),
+        context.container.get<BoardsServiceProvider>(BoardsServiceProvider),
+        context.container.get<SketchesServiceClientImpl>(SketchesServiceClientImpl)
+      );
+    },
+  }));
 
   // Serial monitor
   bind(MonitorWidget).toSelf();
