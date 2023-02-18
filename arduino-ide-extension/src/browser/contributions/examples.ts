@@ -12,7 +12,6 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
 import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { ExamplesService } from '../../common/protocol/examples-service';
 import {
@@ -30,6 +29,7 @@ import {
   CoreService,
 } from '../../common/protocol';
 import { nls } from '@theia/core/lib/common';
+import { unregisterSubmenu } from '../menu/arduino-menus';
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -37,10 +37,7 @@ export abstract class Examples extends SketchContribution {
   private readonly commandRegistry: CommandRegistry;
 
   @inject(MenuModelRegistry)
-  private readonly menuRegistry: MenuModelRegistry;
-
-  @inject(MainMenuManager)
-  protected readonly menuManager: MainMenuManager;
+  protected readonly menuRegistry: MenuModelRegistry;
 
   @inject(ExamplesService)
   protected readonly examplesService: ExamplesService;
@@ -51,12 +48,21 @@ export abstract class Examples extends SketchContribution {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
 
+  @inject(NotificationCenter)
+  protected readonly notificationCenter: NotificationCenter;
+
   protected readonly toDispose = new DisposableCollection();
 
   protected override init(): void {
     super.init();
     this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
       this.handleBoardChanged(selectedBoard)
+    );
+    this.notificationCenter.onDidReinitialize(() =>
+      this.update({
+        board: this.boardsServiceClient.boardsConfig.selectedBoard,
+        // No force refresh. The core client was already refreshed.
+      })
     );
   }
 
@@ -124,6 +130,11 @@ export abstract class Examples extends SketchContribution {
         const { label } = sketchContainerOrPlaceholder;
         submenuPath = [...menuPath, label];
         this.menuRegistry.registerSubmenu(submenuPath, label, subMenuOptions);
+        this.toDispose.push(
+          Disposable.create(() =>
+            unregisterSubmenu(submenuPath, this.menuRegistry)
+          )
+        );
         sketches.push(...sketchContainerOrPlaceholder.sketches);
         children.push(...sketchContainerOrPlaceholder.children);
       } else {
@@ -190,7 +201,7 @@ export abstract class Examples extends SketchContribution {
 
   private async clone(uri: string): Promise<Sketch | undefined> {
     try {
-      const sketch = await this.sketchService.cloneExample(uri);
+      const sketch = await this.sketchesService.cloneExample(uri);
       return sketch;
     } catch (err) {
       if (SketchesError.NotFound.is(err)) {
@@ -243,9 +254,6 @@ export class BuiltInExamples extends Examples {
 
 @injectable()
 export class LibraryExamples extends Examples {
-  @inject(NotificationCenter)
-  private readonly notificationCenter: NotificationCenter;
-
   private readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
 
   override onStart(): void {

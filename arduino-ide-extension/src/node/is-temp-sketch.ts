@@ -4,16 +4,16 @@ import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { injectable } from '@theia/core/shared/inversify';
 import { firstToLowerCase } from '../common/utils';
 
-const Win32DriveRegex = /^[a-zA-Z]:\\/;
+export const Win32DriveRegex = /^[a-zA-Z]:\\/;
 export const TempSketchPrefix = '.arduinoIDE-unsaved';
 
 @injectable()
 export class IsTempSketch {
   // If on macOS, the `temp-dir` lib will make sure there is resolved realpath.
-  // If on Windows, the `C:\Users\KITTAA~1\AppData\Local\Temp` path will be resolved and normalized to `C:\Users\kittaakos\AppData\Local\Temp`.
+  // If on Windows, the `C:\Users\KITTAA~1\AppData\Local\Temp` path will be resolved and normalized to `c:\Users\kittaakos\AppData\Local\Temp`.
   // Note: VS Code URI normalizes the drive letter. `C:` will be converted into `c:`.
   // https://github.com/Microsoft/vscode/issues/68325#issuecomment-462239992
-  private readonly tempDirRealpath = isOSX
+  readonly tempDirRealpath = isOSX
     ? tempDir
     : maybeNormalizeDrive(fs.realpathSync.native(tempDir));
 

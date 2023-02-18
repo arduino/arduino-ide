@@ -1,6 +1,7 @@
 import { ClientDuplexStream } from '@grpc/grpc-js';
 import { Disposable, Emitter, ILogger } from '@theia/core';
 import { inject, named, postConstruct } from '@theia/core/shared/inversify';
+import { diff, Operation } from 'just-diff';
 import { Board, Port, Status, Monitor } from '../common/protocol';
 import {
   EnumerateMonitorPortSettingsRequest,
@@ -12,7 +13,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
 import { CoreClientAware } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
-import { Port as RpcPort } from 'arduino-ide-extension/src/node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
   MonitorSettings,
   PluggableMonitorSettings,
@@ -79,6 +80,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
   private readonly board: Board;
   private readonly port: Port;
   private readonly monitorID: string;
+  private readonly streamingTextDecoder = new TextDecoder('utf8');
+
+  /**
+   * The lightweight representation of the port configuration currently in use for the running monitor.
+   * IDE2 stores this object after starting the monitor. On every monitor settings change request, IDE2 compares
+   * the current config with the new settings, and only sends the diff as the new config to overcome https://github.com/arduino/arduino-ide/issues/375.
+   */
+  private currentPortConfigSnapshot:
+    | MonitorPortConfiguration.AsObject
+    | undefined;
 
   constructor(
     @inject(MonitorServiceFactoryOptions) options: MonitorServiceFactoryOptions
@@ -211,6 +222,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
       monitorRequest
     );
     if (wroteToStreamSuccessfully) {
+      // Only store the config, if the monitor has successfully started.
+      this.currentPortConfigSnapshot = MonitorPortConfiguration.toObject(
+        false,
+        config
+      );
+      this.logger.info(
+        `Using port configuration for ${this.port.protocol}:${
+          this.port.address
+        }: ${JSON.stringify(this.currentPortConfigSnapshot)}`
+      );
       this.startMessagesHandlers();
       this.logger.info(
         `started monitor to ${this.port?.address} using ${this.port?.protocol}`
@@ -299,7 +320,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
               const message =
                 typeof data === 'string'
                   ? data
-                  : new TextDecoder('utf8').decode(data);
+                  : this.streamingTextDecoder.decode(data, {stream:true});
               this.messages.push(...splitLines(message));
             },
           },
@@ -518,14 +539,118 @@ export class MonitorService extends CoreClientAware implements Disposable {
     if (!this.duplex) {
       return Status.NOT_CONNECTED;
     }
+
+    const diffConfig = this.maybeUpdatePortConfigSnapshot(config);
+    if (!diffConfig) {
+      this.logger.info(
+        `No port configuration changes have been detected. No need to send configure commands to the running monitor ${this.port.protocol}:${this.port.address}.`
+      );
+      return Status.OK;
+    }
+
     const coreClient = await this.coreClient;
     const { instance } = coreClient;
 
+    this.logger.info(
+      `Sending monitor request with new port configuration: ${JSON.stringify(
+        MonitorPortConfiguration.toObject(false, diffConfig)
+      )}`
+    );
     const req = new MonitorRequest();
     req.setInstance(instance);
-    req.setPortConfiguration(config);
+    req.setPortConfiguration(diffConfig);
     this.duplex.write(req);
     return Status.OK;
+  }
+
+  /**
+   * Function to calculate a diff between the `otherPortConfig` argument and the `currentPortConfigSnapshot`.
+   *
+   * If the current config snapshot and the snapshot derived from `otherPortConfig` are the same, no snapshot update happens,
+   * and the function returns with undefined. Otherwise, the current snapshot config value will be updated from the snapshot
+   * derived from the `otherPortConfig` argument, and this function returns with a `MonitorPortConfiguration` instance
+   * representing only the difference between the two snapshot configs to avoid sending unnecessary monitor to configure commands to the CLI.
+   * See [#1703 (comment)](https://github.com/arduino/arduino-ide/pull/1703#issuecomment-1327913005) for more details.
+   */
+  private maybeUpdatePortConfigSnapshot(
+    otherPortConfig: MonitorPortConfiguration
+  ): MonitorPortConfiguration | undefined {
+    const otherPortConfigSnapshot = MonitorPortConfiguration.toObject(
+      false,
+      otherPortConfig
+    );
+    if (!this.currentPortConfigSnapshot) {
+      throw new Error(
+        `The current port configuration object was undefined when tried to merge in ${JSON.stringify(
+          otherPortConfigSnapshot
+        )}.`
+      );
+    }
+
+    const snapshotDiff = diff(
+      this.currentPortConfigSnapshot,
+      otherPortConfigSnapshot
+    );
+    if (!snapshotDiff.length) {
+      return undefined;
+    }
+
+    const diffConfig = snapshotDiff.reduce((acc, curr) => {
+      if (!this.isValidMonitorPortSettingChange(curr)) {
+        throw new Error(
+          `Expected only 'replace' operation: a 'value' change in the 'settingsList'. Calculated diff a ${JSON.stringify(
+            snapshotDiff
+          )} between ${JSON.stringify(
+            this.currentPortConfigSnapshot
+          )} and ${JSON.stringify(
+            otherPortConfigSnapshot
+          )} snapshots. Current JSON-patch entry was ${JSON.stringify(curr)}.`
+        );
+      }
+      const { path, value } = curr;
+      const [, index] = path;
+      if (!this.currentPortConfigSnapshot?.settingsList) {
+        throw new Error(
+          `'settingsList' is missing from current port config snapshot: ${JSON.stringify(
+            this.currentPortConfigSnapshot
+          )}`
+        );
+      }
+      const changedSetting = this.currentPortConfigSnapshot.settingsList[index];
+      const setting = new MonitorPortSetting();
+      setting.setValue(value);
+      setting.setSettingId(changedSetting.settingId);
+      acc.addSettings(setting);
+      return acc;
+    }, new MonitorPortConfiguration());
+
+    this.currentPortConfigSnapshot = otherPortConfigSnapshot;
+    this.logger.info(
+      `Updated the port configuration for ${this.port.protocol}:${
+        this.port.address
+      }: ${JSON.stringify(this.currentPortConfigSnapshot)}`
+    );
+    return diffConfig;
+  }
+
+  private isValidMonitorPortSettingChange(entry: {
+    op: Operation;
+    path: (string | number)[];
+    value: unknown;
+  }): entry is {
+    op: 'replace';
+    path: ['settingsList', number, string];
+    value: string;
+  } {
+    const { op, path, value } = entry;
+    return (
+      op === 'replace' &&
+      path.length === 3 &&
+      path[0] === 'settingsList' &&
+      typeof path[1] === 'number' &&
+      path[2] === 'value' &&
+      typeof value === 'string'
+    );
   }
 
   /**

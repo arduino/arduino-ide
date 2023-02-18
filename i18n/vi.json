@@ -119,6 +119,11 @@
       "syncEditSketches": "Đồng bộ và chỉnh sửa các Arduino Cloud Sketch của bạn",
       "visitArduinoCloud": "Truy cập Arduino Cloud để tạo Cloud Sketch."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Mạng",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Hiển thị đầu ra chi tiết trong khi",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Địa điểm chứa sketchbook",
       "sketchbook.showAllFiles": "'True' để hiển thị tất cả các tệp sketch trong sketch. Mặc định là 'false'.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "'True' để bật đầu ra nạp lệnh chi tiết (verbose upload output). Mặc định là 'false'",
       "verifyAfterUpload": "Xác minh mã sau khi nạp",
       "window.autoScale": "'True' nếu giao diện người dùng tự động thay đổi theo cỡ chữ.",
-      "window.zoomLevel": "Điều chỉnh mức thu phóng của của sổ. Kích thước mặc định là 0 và cứ mỗi mức tăng (+1) hoặc giảm (-1) tượng trưng cho việc thu phóng 20% lớn hơn hoặc nhỏ hơn. Bạn cũng có thể sử dụng số thập phân để thay đổi mức thu phóng với độ chi tiết tốt hơn."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Thay thế phiên bản hiện tại của {0}?",
     "selectZip": "Chọn một tệp zip chứa thư viện mà bạn muốn cài",
@@ -385,7 +401,7 @@
       "exportBinary": "Xuất tệp nhị phân đã biên dịch",
       "moving": "Chuyển",
       "movingMsg": "Tệp \"{0}\" cần phải được chứa trong thư mục sketch tên \"{1}\".\nTạo thư mục này, chuyển tệp tin vào đó, và tiếp tục?",
-      "new": "Tạo mới",
+      "new": "New Sketch",
       "openFolder": "Mở thư mục",
       "openRecent": "Mở gần đây",
       "openSketchInNewWindow": "Mở sketch trong cửa sổ mới",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Không thể tìm thấy các trường người dùng cho bo mạch đã kết nối",
       "verify": "Xác thực",
       "verifyOrCompile": "Xác thực/Biên dịch"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",
@@ -431,11 +451,6 @@
       "daemonOffline": "Trình chạy nền CLI ngoại tuyến",
       "offline": "Ngoại tuyến",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Bắt đầu...",
-      "startError": "Có lỗi xảy ra khi khởi chạy phiên sửa lỗi, hãy kiểm tra log để biết thêm chi tiết.",
-      "typeNotSupported": "Phiên gỡ lỗi loại \"{0}\" không được hỗ trợ."
     },
     "editor": {
       "unsavedTitle": "Chưa được lưu – {0}"

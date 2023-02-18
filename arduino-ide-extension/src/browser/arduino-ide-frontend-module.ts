@@ -1,12 +1,9 @@
 import '../../src/browser/style/index.css';
-import { ContainerModule } from '@theia/core/shared/inversify';
+import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import {
-  TabBarToolbarContribution,
-  TabBarToolbarFactory,
-} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
 import {
   FrontendApplicationContribution,
@@ -26,7 +23,7 @@ import {
   SketchesService,
   SketchesServicePath,
 } from '../common/protocol/sketches-service';
-import { SketchesServiceClientImpl } from '../common/protocol/sketches-service-client-impl';
+import { SketchesServiceClientImpl } from './sketches-service-client-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
 import { BoardsListWidget } from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
@@ -85,10 +82,7 @@ import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
-import {
-  MonacoThemeJson,
-  MonacoThemingService,
-} from '@theia/monaco/lib/browser/monaco-theming-service';
+
 import {
   ArduinoDaemonPath,
   ArduinoDaemon,
@@ -134,11 +128,10 @@ import { PreferencesContribution as TheiaPreferencesContribution } from '@theia/
 import { PreferencesContribution } from './theia/preferences/preferences-contribution';
 import { QuitApp } from './contributions/quit-app';
 import { SketchControl } from './contributions/sketch-control';
-import { Settings } from './contributions/settings';
+import { OpenSettings } from './contributions/open-settings';
 import { WorkspaceCommandContribution } from './theia/workspace/workspace-commands';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
 import { WorkspaceDeleteHandler } from './theia/workspace/workspace-delete-handler';
-import { TabBarToolbar } from './theia/core/tab-bar-toolbar';
 import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/lib/browser/editor-widget-factory';
 import { EditorWidgetFactory } from './theia/editor/editor-widget-factory';
 import { BurnBootloader } from './contributions/burn-bootloader';
@@ -182,8 +175,6 @@ import { EditorCommandContribution } from './theia/editor/editor-command';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-decorator';
 import { Debug } from './contributions/debug';
-import { DebugSessionManager } from './theia/debug/debug-session-manager';
-import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
 import { Sketchbook } from './contributions/sketchbook';
 import { DebugFrontendApplicationContribution } from './theia/debug/debug-frontend-application-contribution';
 import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
@@ -242,7 +233,6 @@ import { UploadFirmware } from './contributions/upload-firmware';
 import {
   UploadFirmwareDialog,
   UploadFirmwareDialogProps,
-  UploadFirmwareDialogWidget,
 } from './dialogs/firmware-uploader/firmware-uploader-dialog';
 
 import { UploadCertificate } from './contributions/upload-certificate';
@@ -259,7 +249,6 @@ import { PlotterFrontendContribution } from './serial/plotter/plotter-frontend-c
 import {
   UserFieldsDialog,
   UserFieldsDialogProps,
-  UserFieldsDialogWidget,
 } from './dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
@@ -272,7 +261,6 @@ import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-client-impl';
 import {
   IDEUpdaterDialog,
   IDEUpdaterDialogProps,
-  IDEUpdaterDialogWidget,
 } from './dialogs/ide-updater/ide-updater-dialog';
 import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 import { MonitorModel } from './monitor-model';
@@ -314,10 +302,6 @@ import { SelectedBoard } from './contributions/selected-board';
 import { CheckForIDEUpdates } from './contributions/check-for-ide-updates';
 import { OpenBoardsConfig } from './contributions/open-boards-config';
 import { SketchFilesTracker } from './contributions/sketch-files-tracker';
-import { MonacoThemeServiceIsReady } from './utils/window';
-import { Deferred } from '@theia/core/lib/common/promise-util';
-import { StatusBarImpl } from './theia/core/status-bar';
-import { StatusBarImpl as TheiaStatusBarImpl } from '@theia/core/lib/browser';
 import { EditorMenuContribution } from './theia/editor/editor-file';
 import { EditorMenuContribution as TheiaEditorMenuContribution } from '@theia/editor/lib/browser/editor-menu';
 import { PreferencesEditorWidget as TheiaPreferencesEditorWidget } from '@theia/preferences/lib/browser/views/preference-editor-widget';
@@ -339,32 +323,32 @@ import { OpenHandler } from '@theia/core/lib/browser/opener-service';
 import { NewCloudSketch } from './contributions/new-cloud-sketch';
 import { SketchbookCompositeWidget } from './widgets/sketchbook/sketchbook-composite-widget';
 import { DecodeViewContribution } from './serial/decode/decode-view';
-
-const registerArduinoThemes = () => {
-  const themes: MonacoThemeJson[] = [
-    {
-      id: 'arduino-theme',
-      label: 'Light (Arduino)',
-      uiTheme: 'vs',
-      json: require('../../src/browser/data/default.color-theme.json'),
-    },
-    {
-      id: 'arduino-theme-dark',
-      label: 'Dark (Arduino)',
-      uiTheme: 'vs-dark',
-      json: require('../../src/browser/data/dark.color-theme.json'),
-    },
-  ];
-  themes.forEach((theme) => MonacoThemingService.register(theme));
-};
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const global = window as any;
-const ready = global[MonacoThemeServiceIsReady] as Deferred;
-if (ready) {
-  ready.promise.then(registerArduinoThemes);
-} else {
-  registerArduinoThemes();
-}
+import { WindowTitleUpdater } from './theia/core/window-title-updater';
+import { WindowTitleUpdater as TheiaWindowTitleUpdater } from '@theia/core/lib/browser/window/window-title-updater';
+import { ThemeServiceWithDB } from './theia/core/theming';
+import { ThemeServiceWithDB as TheiaThemeServiceWithDB } from '@theia/monaco/lib/browser/monaco-indexed-db';
+import { MonacoThemingService } from './theia/monaco/monaco-theming-service';
+import { MonacoThemingService as TheiaMonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
+import { TypeHierarchyServiceProvider } from './theia/typehierarchy/type-hierarchy-service';
+import { TypeHierarchyServiceProvider as TheiaTypeHierarchyServiceProvider } from '@theia/typehierarchy/lib/browser/typehierarchy-service';
+import { TypeHierarchyContribution } from './theia/typehierarchy/type-hierarchy-contribution';
+import { TypeHierarchyContribution as TheiaTypeHierarchyContribution } from '@theia/typehierarchy/lib/browser/typehierarchy-contribution';
+import { DefaultDebugSessionFactory } from './theia/debug/debug-session-contribution';
+import { DebugSessionFactory } from '@theia/debug/lib/browser/debug-session-contribution';
+import { DebugToolbar } from './theia/debug/debug-toolbar-widget';
+import { DebugToolBar as TheiaDebugToolbar } from '@theia/debug/lib/browser/view/debug-toolbar-widget';
+import { PluginMenuCommandAdapter } from './theia/plugin-ext/plugin-menu-command-adapter';
+import { PluginMenuCommandAdapter as TheiaPluginMenuCommandAdapter } from '@theia/plugin-ext/lib/main/browser/menus/plugin-menu-command-adapter';
+import { DebugSessionManager } from './theia/debug/debug-session-manager';
+import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
+import { DebugWidget } from '@theia/debug/lib/browser/view/debug-widget';
+import { DebugViewModel } from '@theia/debug/lib/browser/view/debug-view-model';
+import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-widget';
+import { DebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
+import { ConfigServiceClient } from './config/config-service-client';
+import { ValidateSketch } from './contributions/validate-sketch';
+import { RenameCloudSketch } from './contributions/rename-cloud-sketch';
+import { CreateFeatures } from './create/create-features';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -426,6 +410,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       )
     )
     .inSingletonScope();
+  bind(ConfigServiceClient).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(ConfigServiceClient);
 
   // Boards service
   bind(BoardsService)
@@ -604,14 +590,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .to(WorkspaceDeleteHandler)
     .inSingletonScope();
   rebind(TheiaEditorWidgetFactory).to(EditorWidgetFactory).inSingletonScope();
-  rebind(TabBarToolbarFactory).toFactory(
-    ({ container: parentContainer }) =>
-      () => {
-        const container = parentContainer.createChild();
-        container.bind(TabBarToolbar).toSelf().inSingletonScope();
-        return container.get(TabBarToolbar);
-      }
-  );
   bind(OutputChannelManager).toSelf().inSingletonScope();
   rebind(TheiaOutputChannelManager).toService(OutputChannelManager);
   bind(OutputChannelRegistryMainImpl).toSelf().inTransientScope();
@@ -736,7 +714,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, EditContributions);
   Contribution.configure(bind, QuitApp);
   Contribution.configure(bind, SketchControl);
-  Contribution.configure(bind, Settings);
+  Contribution.configure(bind, OpenSettings);
   Contribution.configure(bind, BurnBootloader);
   Contribution.configure(bind, BuiltInExamples);
   Contribution.configure(bind, LibraryExamples);
@@ -771,6 +749,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UpdateIndexes);
   Contribution.configure(bind, InterfaceScale);
   Contribution.configure(bind, NewCloudSketch);
+  Contribution.configure(bind, ValidateSketch);
+  Contribution.configure(bind, RenameCloudSketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
@@ -855,9 +835,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(AboutDialog).toSelf().inSingletonScope();
   rebind(TheiaAboutDialog).toService(AboutDialog);
 
-  // To avoid running `Save All` when there are no dirty editors before starting the debug session.
-  bind(DebugSessionManager).toSelf().inSingletonScope();
-  rebind(TheiaDebugSessionManager).toService(DebugSessionManager);
   // To remove the `Run` menu item from the application menu.
   bind(DebugFrontendApplicationContribution).toSelf().inSingletonScope();
   rebind(TheiaDebugFrontendApplicationContribution).toService(
@@ -870,10 +847,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To avoid duplicate tabs use deepEqual instead of string equal: https://github.com/eclipse-theia/theia/issues/11309
   bind(WidgetManager).toSelf().inSingletonScope();
   rebind(TheiaWidgetManager).toService(WidgetManager);
-
-  // To avoid running a status bar update on every single `keypress` event from the editor.
-  bind(StatusBarImpl).toSelf().inSingletonScope();
-  rebind(TheiaStatusBarImpl).toService(StatusBarImpl);
 
   // Debounced update for the tab-bar toolbar when typing in the editor.
   bind(DockPanelRenderer).toSelf();
@@ -938,6 +911,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   );
   bind(CreateApi).toSelf().inSingletonScope();
   bind(SketchCache).toSelf().inSingletonScope();
+  bind(CreateFeatures).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(CreateFeatures);
 
   bind(ShareSketchDialog).toSelf().inSingletonScope();
   bind(AuthenticationClientService).toSelf().inSingletonScope();
@@ -959,12 +934,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(LocalCacheFsProvider).toSelf().inSingletonScope();
   bind(FileServiceContribution).toService(LocalCacheFsProvider);
   bind(CloudSketchbookCompositeWidget).toSelf();
-  bind<WidgetFactory>(WidgetFactory).toDynamicValue((ctx) => ({
+  bind(WidgetFactory).toDynamicValue((ctx) => ({
     id: 'cloud-sketchbook-composite-widget',
     createWidget: () => ctx.container.get(CloudSketchbookCompositeWidget),
   }));
 
-  bind(UploadFirmwareDialogWidget).toSelf().inSingletonScope();
   bind(UploadFirmwareDialog).toSelf().inSingletonScope();
   bind(UploadFirmwareDialogProps).toConstantValue({
     title: 'UploadFirmware',
@@ -975,13 +949,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     title: 'UploadCertificate',
   });
 
-  bind(IDEUpdaterDialogWidget).toSelf().inSingletonScope();
   bind(IDEUpdaterDialog).toSelf().inSingletonScope();
   bind(IDEUpdaterDialogProps).toConstantValue({
     title: 'IDEUpdater',
   });
 
-  bind(UserFieldsDialogWidget).toSelf().inSingletonScope();
   bind(UserFieldsDialog).toSelf().inSingletonScope();
   bind(UserFieldsDialogProps).toConstantValue({
     title: 'UserFields',
@@ -1008,4 +980,55 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaHostedPluginSupport).toService(HostedPluginSupport);
   bind(HostedPluginEvents).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(HostedPluginEvents);
+
+  // custom window titles
+  bind(WindowTitleUpdater).toSelf().inSingletonScope();
+  rebind(TheiaWindowTitleUpdater).toService(WindowTitleUpdater);
+
+  // register Arduino themes
+  bind(ThemeServiceWithDB).toSelf().inSingletonScope();
+  rebind(TheiaThemeServiceWithDB).toService(ThemeServiceWithDB);
+  bind(MonacoThemingService).toSelf().inSingletonScope();
+  rebind(TheiaMonacoThemingService).toService(MonacoThemingService);
+
+  // disable type-hierarchy support
+  // https://github.com/eclipse-theia/theia/commit/16c88a584bac37f5cf3cc5eb92ffdaa541bda5be
+  bind(TypeHierarchyServiceProvider).toSelf().inSingletonScope();
+  rebind(TheiaTypeHierarchyServiceProvider).toService(
+    TypeHierarchyServiceProvider
+  );
+  bind(TypeHierarchyContribution).toSelf().inSingletonScope();
+  rebind(TheiaTypeHierarchyContribution).toService(TypeHierarchyContribution);
+
+  // patched the debugger for `cortex-debug@1.5.1`
+  // https://github.com/eclipse-theia/theia/issues/11871
+  // https://github.com/eclipse-theia/theia/issues/11879
+  // https://github.com/eclipse-theia/theia/issues/11880
+  // https://github.com/eclipse-theia/theia/issues/11885
+  // https://github.com/eclipse-theia/theia/issues/11886
+  // https://github.com/eclipse-theia/theia/issues/11916
+  // based on: https://github.com/eclipse-theia/theia/compare/master...kittaakos:theia:%2311871
+  bind(DefaultDebugSessionFactory).toSelf().inSingletonScope();
+  rebind(DebugSessionFactory).toService(DefaultDebugSessionFactory);
+  bind(DebugSessionManager).toSelf().inSingletonScope();
+  rebind(TheiaDebugSessionManager).toService(DebugSessionManager);
+  bind(DebugToolbar).toSelf().inSingletonScope();
+  rebind(TheiaDebugToolbar).toService(DebugToolbar);
+  bind(PluginMenuCommandAdapter).toSelf().inSingletonScope();
+  rebind(TheiaPluginMenuCommandAdapter).toService(PluginMenuCommandAdapter);
+  bind(WidgetFactory)
+    .toDynamicValue(({ container }) => ({
+      id: DebugWidget.ID,
+      createWidget: () => {
+        const child = new Container({ defaultScope: 'Singleton' });
+        child.parent = container;
+        child.bind(DebugViewModel).toSelf();
+        child.bind(DebugToolbar).toSelf(); // patched toolbar
+        child.bind(DebugSessionWidget).toSelf();
+        child.bind(DebugConfigurationWidget).toSelf();
+        child.bind(DebugWidget).toSelf();
+        return child.get(DebugWidget);
+      },
+    }))
+    .inSingletonScope();
 });

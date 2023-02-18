@@ -5,7 +5,7 @@ import {
 } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Emitter } from '@theia/core/lib/common/event';
-import { Deferred, timeout } from '@theia/core/lib/common/promise-util';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { deepClone } from '@theia/core/lib/common/objects';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { ThemeService } from '@theia/core/lib/browser/theming';
@@ -25,17 +25,21 @@ import {
   LanguageInfo,
 } from '@theia/core/lib/common/i18n/localization';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
+import { DefaultTheme } from '@theia/application-package/lib/application-props';
+import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
+import type { FileStat } from '@theia/filesystem/lib/common/files';
 
+export const WINDOW_SETTING = 'window';
 export const EDITOR_SETTING = 'editor';
 export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
 export const AUTO_SAVE_SETTING = `files.autoSave`;
 export const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
 export const ARDUINO_SETTING = 'arduino';
-export const WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
+export const ARDUINO_WINDOW_SETTING = `${ARDUINO_SETTING}.window`;
 export const COMPILE_SETTING = `${ARDUINO_SETTING}.compile`;
 export const UPLOAD_SETTING = `${ARDUINO_SETTING}.upload`;
 export const SKETCHBOOK_SETTING = `${ARDUINO_SETTING}.sketchbook`;
-export const AUTO_SCALE_SETTING = `${WINDOW_SETTING}.autoScale`;
+export const AUTO_SCALE_SETTING = `${ARDUINO_WINDOW_SETTING}.autoScale`;
 export const ZOOM_LEVEL_SETTING = `${WINDOW_SETTING}.zoomLevel`;
 export const COMPILE_VERBOSE_SETTING = `${COMPILE_SETTING}.verbose`;
 export const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
@@ -53,7 +57,7 @@ export interface Settings {
   currentLanguage: string;
 
   autoScaleInterface: boolean; // `arduino.window.autoScale`
-  interfaceScale: number; // `arduino.window.zoomLevel` https://github.com/eclipse-theia/theia/issues/8751
+  interfaceScale: number; // `window.zoomLevel`
   verboseOnCompile: boolean; // `arduino.compile.verbose`
   compilerWarnings: CompilerWarnings; // `arduino.compile.warnings`
   verboseOnUpload: boolean; // `arduino.upload.verbose`
@@ -101,6 +105,9 @@ export class SettingsService {
   @inject(CommandService)
   protected commandService: CommandService;
 
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
+
   protected readonly onDidChangeEmitter = new Emitter<Readonly<Settings>>();
   readonly onDidChange = this.onDidChangeEmitter.event;
   protected readonly onDidResetEmitter = new Emitter<Readonly<Settings>>();
@@ -141,10 +148,9 @@ export class SettingsService {
       this.preferenceService.get<number>(FONT_SIZE_SETTING, 12),
       this.preferenceService.get<string>(
         'workbench.colorTheme',
-        window.matchMedia &&
-          window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'arduino-theme-dark'
-          : 'arduino-theme'
+        DefaultTheme.defaultForOSTheme(
+          FrontendApplicationConfigProvider.get().defaultTheme
+        )
       ),
       this.preferenceService.get<Settings.AutoSave>(
         AUTO_SAVE_SETTING,
@@ -166,7 +172,15 @@ export class SettingsService {
       this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
       this.configService.getConfiguration(),
     ]);
-    const { additionalUrls, sketchDirUri, network } = cliConfig;
+    const {
+      config = {
+        additionalUrls: [],
+        sketchDirUri: '',
+        network: Network.Default(),
+      },
+    } = cliConfig;
+    const { additionalUrls, sketchDirUri, network } = config;
+
     const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
     return {
       editorFontSize,
@@ -218,7 +232,11 @@ export class SettingsService {
     try {
       const { sketchbookPath, editorFontSize, themeId } = await settings;
       const sketchbookDir = await this.fileSystemExt.getUri(sketchbookPath);
-      if (!(await this.fileService.exists(new URI(sketchbookDir)))) {
+      let sketchbookStat: FileStat | undefined = undefined;
+      try {
+        sketchbookStat = await this.fileService.resolve(new URI(sketchbookDir));
+      } catch {}
+      if (!sketchbookStat || !sketchbookStat.isDirectory) {
         return nls.localize(
           'arduino/preferences/invalid.sketchbook.location',
           'Invalid sketchbook location: {0}',
@@ -231,11 +249,7 @@ export class SettingsService {
           'Invalid editor font size. It must be a positive integer.'
         );
       }
-      if (
-        !ThemeService.get()
-          .getThemes()
-          .find(({ id }) => id === themeId)
-      ) {
+      if (!this.themeService.getThemes().find(({ id }) => id === themeId)) {
         return nls.localize(
           'arduino/preferences/invalid.theme',
           'Invalid theme.'
@@ -252,7 +266,6 @@ export class SettingsService {
 
   private async savePreference(name: string, value: unknown): Promise<void> {
     await this.preferenceService.set(name, value, PreferenceScope.User);
-    await timeout(5);
   }
 
   async save(): Promise<string | true> {
@@ -274,28 +287,38 @@ export class SettingsService {
       network,
       sketchbookShowAllFiles,
     } = this._settings;
-    const [config, sketchDirUri] = await Promise.all([
+    const [cliConfig, sketchDirUri] = await Promise.all([
       this.configService.getConfiguration(),
       this.fileSystemExt.getUri(sketchbookPath),
     ]);
+    const { config } = cliConfig;
+    if (!config) {
+      // Do not check for any error messages. The config might has errors (such as invalid directories.user) right before saving the new values.
+      return nls.localize(
+        'arduino/preferences/noCliConfig',
+        'Could not load the CLI configuration'
+      );
+    }
+
     (config as any).additionalUrls = additionalUrls;
     (config as any).sketchDirUri = sketchDirUri;
     (config as any).network = network;
     (config as any).locale = currentLanguage;
 
-    await this.savePreference('editor.fontSize', editorFontSize);
-    await this.savePreference('workbench.colorTheme', themeId);
-    await this.savePreference(AUTO_SAVE_SETTING, autoSave);
-    await this.savePreference('editor.quickSuggestions', quickSuggestions);
-    await this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface);
-    await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);
-    await this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale);
-    await this.savePreference(COMPILE_VERBOSE_SETTING, verboseOnCompile);
-    await this.savePreference(COMPILE_WARNINGS_SETTING, compilerWarnings);
-    await this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload);
-    await this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload);
-    await this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles);
-    await this.configService.setConfiguration(config);
+    await Promise.all([
+      this.savePreference('editor.fontSize', editorFontSize),
+      this.savePreference('workbench.colorTheme', themeId),
+      this.savePreference(AUTO_SAVE_SETTING, autoSave),
+      this.savePreference('editor.quickSuggestions', quickSuggestions),
+      this.savePreference(AUTO_SCALE_SETTING, autoScaleInterface),
+      this.savePreference(ZOOM_LEVEL_SETTING, interfaceScale),
+      this.savePreference(COMPILE_VERBOSE_SETTING, verboseOnCompile),
+      this.savePreference(COMPILE_WARNINGS_SETTING, compilerWarnings),
+      this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload),
+      this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload),
+      this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles),
+      this.configService.setConfiguration(config),
+    ]);
     this.onDidChangeEmitter.fire(this._settings);
 
     // after saving all the settings, if we need to change the language we need to perform a reload

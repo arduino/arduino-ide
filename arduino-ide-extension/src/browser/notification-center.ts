@@ -18,7 +18,7 @@ import {
   AttachedBoardsChangeEvent,
   BoardsPackage,
   LibraryPackage,
-  Config,
+  ConfigState,
   Sketch,
   ProgressMessage,
 } from '../common/protocol';
@@ -37,6 +37,7 @@ export class NotificationCenter
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
+  private readonly didReinitializeEmitter = new Emitter<void>();
   private readonly indexUpdateDidCompleteEmitter =
     new Emitter<IndexUpdateDidCompleteParams>();
   private readonly indexUpdateWillStartEmitter =
@@ -47,9 +48,7 @@ export class NotificationCenter
     new Emitter<IndexUpdateDidFailParams>();
   private readonly daemonDidStartEmitter = new Emitter<string>();
   private readonly daemonDidStopEmitter = new Emitter<void>();
-  private readonly configDidChangeEmitter = new Emitter<{
-    config: Config | undefined;
-  }>();
+  private readonly configDidChangeEmitter = new Emitter<ConfigState>();
   private readonly platformDidInstallEmitter = new Emitter<{
     item: BoardsPackage;
   }>();
@@ -57,7 +56,7 @@ export class NotificationCenter
     item: BoardsPackage;
   }>();
   private readonly libraryDidInstallEmitter = new Emitter<{
-    item: LibraryPackage;
+    item: LibraryPackage | 'zip-install';
   }>();
   private readonly libraryDidUninstallEmitter = new Emitter<{
     item: LibraryPackage;
@@ -71,6 +70,7 @@ export class NotificationCenter
     new Emitter<FrontendApplicationState>();
 
   private readonly toDispose = new DisposableCollection(
+    this.didReinitializeEmitter,
     this.indexUpdateWillStartEmitter,
     this.indexUpdateDidProgressEmitter,
     this.indexUpdateDidCompleteEmitter,
@@ -85,6 +85,7 @@ export class NotificationCenter
     this.attachedBoardsDidChangeEmitter
   );
 
+  readonly onDidReinitialize = this.didReinitializeEmitter.event;
   readonly onIndexUpdateDidComplete = this.indexUpdateDidCompleteEmitter.event;
   readonly onIndexUpdateWillStart = this.indexUpdateWillStartEmitter.event;
   readonly onIndexUpdateDidProgress = this.indexUpdateDidProgressEmitter.event;
@@ -115,6 +116,10 @@ export class NotificationCenter
     this.toDispose.dispose();
   }
 
+  notifyDidReinitialize(): void {
+    this.didReinitializeEmitter.fire();
+  }
+
   notifyIndexUpdateWillStart(params: IndexUpdateWillStartParams): void {
     this.indexUpdateWillStartEmitter.fire(params);
   }
@@ -139,7 +144,7 @@ export class NotificationCenter
     this.daemonDidStopEmitter.fire();
   }
 
-  notifyConfigDidChange(event: { config: Config | undefined }): void {
+  notifyConfigDidChange(event: ConfigState): void {
     this.configDidChangeEmitter.fire(event);
   }
 
@@ -151,7 +156,9 @@ export class NotificationCenter
     this.platformDidUninstallEmitter.fire(event);
   }
 
-  notifyLibraryDidInstall(event: { item: LibraryPackage }): void {
+  notifyLibraryDidInstall(event: {
+    item: LibraryPackage | 'zip-install';
+  }): void {
     this.libraryDidInstallEmitter.fire(event);
   }
 

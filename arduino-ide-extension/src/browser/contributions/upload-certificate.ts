@@ -12,7 +12,6 @@ import {
   PreferenceScope,
   PreferenceService,
 } from '@theia/core/lib/browser/preferences/preference-service';
-import { ArduinoPreferences } from '../arduino-preferences';
 import {
   arduinoCert,
   certificateList,
@@ -31,22 +30,29 @@ export class UploadCertificate extends Contribution {
   @inject(PreferenceService)
   protected readonly preferenceService: PreferenceService;
 
-  @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
-
   @inject(ArduinoFirmwareUploader)
   protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
 
   protected dialogOpened = false;
+
+  override onStart(): void {
+    this.preferences.onPreferenceChanged(({ preferenceName }) => {
+      if (preferenceName === 'arduino.board.certificates') {
+        this.menuManager.update();
+      }
+    });
+  }
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadCertificate.Commands.OPEN, {
       execute: async () => {
         try {
           this.dialogOpened = true;
+          this.menuManager.update();
           await this.dialog.open();
         } finally {
           this.dialogOpened = false;
+          this.menuManager.update();
         }
       },
       isEnabled: () => !this.dialogOpened,
@@ -54,7 +60,7 @@ export class UploadCertificate extends Contribution {
 
     registry.registerCommand(UploadCertificate.Commands.REMOVE_CERT, {
       execute: async (certToRemove) => {
-        const certs = this.arduinoPreferences.get('arduino.board.certificates');
+        const certs = this.preferences.get('arduino.board.certificates');
 
         this.preferenceService.set(
           'arduino.board.certificates',
@@ -75,7 +81,6 @@ export class UploadCertificate extends Contribution {
             .join(' ')}`
         );
       },
-      isEnabled: () => true,
     });
 
     registry.registerCommand(UploadCertificate.Commands.OPEN_CERT_CONTEXT, {
@@ -89,7 +94,6 @@ export class UploadCertificate extends Contribution {
           args: [args.cert],
         });
       },
-      isEnabled: () => true,
     });
   }
 

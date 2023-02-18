@@ -119,6 +119,11 @@
       "syncEditSketches": "Συγχρονισμός και τροποποίηση των Arduino Cloud Σχεδίων σου.",
       "visitArduinoCloud": "Επισκέψου το Arduino Cloud για δημιουργία Σχεδίων Cloud."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Δίκτυο",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Εμφάνιση λεπτομερούς εξόδου κατά τη διάρκεια",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Τοποθεσία σχεδίων",
       "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "Αληθές για λεπτομερή έξοδο ανεβάσματος. Ψευδές απο προεπιλογή.",
       "verifyAfterUpload": "Επιβεβαίωση κώδικα μετά το ανέβασμα",
       "window.autoScale": "Αληθές αν η διεπαφή χρήστη κλιμακλωνεται αυτόματα μαζί με το μέγεθος γραμματοσειράς.",
-      "window.zoomLevel": "Ρύθμιση του επιπέδου μεγέθυνσης του παραθύρου. Το αρχικό μέγεθος ειναι 0 και κάθε αύξηση (π.χ. 1) ή μείωση (π.χ. -1) αναπαριστά μεγέθυνση 20% μεγαλύτερη ή μικρότερη. Μπορούν να εισαχθούν και δεκαδικά για προσαρμογή της μεγέθυνσης με μεγαλύτερη λεπτομέρεια."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Replace the existing version of {0}?",
     "selectZip": "Select a zip file containing the library you'd like to add",
@@ -385,7 +401,7 @@
       "exportBinary": "Export Compiled Binary",
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
-      "new": "Νέο",
+      "new": "New Sketch",
       "openFolder": "Άνοιγμα φακέλου",
       "openRecent": "Άνοιγμα πρόσφατου",
       "openSketchInNewWindow": "Open Sketch in New Window",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Επαλήθευση",
       "verifyOrCompile": "Επικύρωση"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Εκτός Σύνδεσης",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Έναρξη...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "Unsaved – {0}"

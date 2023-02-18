@@ -17,7 +17,7 @@ import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
 import { nls } from '@theia/core/lib/common';
 import * as monaco from '@theia/monaco-editor-core';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -53,6 +53,7 @@ export class IncludeLibrary extends SketchContribution {
     this.notificationCenter.onLibraryDidUninstall(() =>
       this.updateMenuActions()
     );
+    this.notificationCenter.onDidReinitialize(() => this.updateMenuActions());
   }
 
   override async onReady(): Promise<void> {

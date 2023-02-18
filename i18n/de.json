@@ -119,6 +119,11 @@
       "syncEditSketches": "Synchronisiere und editiere deine Arduino Cloud Sketches.",
       "visitArduinoCloud": "Besuche Arduino Cloud um Cloud Sketche zu erstellen."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "Alle",
       "contributed": "Beigetragen",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Websocket wurde nicht geschlossen",
       "unableToConnectToWebSocket": "Websocket wurde nicht verbunden"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Netzwerk",
       "serial": "Seriell"
@@ -349,6 +360,9 @@
         "username": "Benutzername"
       },
       "showVerbose": "Compiler-Meldungen anzeigen beim",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Dateipfad des Sketchbooks",
       "sketchbook.showAllFiles": "Wenn aktiviert, werden alle Sketch-Dateien innerhalb des Sketch angezeigt. Standardgemäß deaktiviert. ",
       "survey.notification": "Wenn aktiviert, werden Nutzer benachrichtigt, wenn eine Umfrage verfügbar ist. Standardgemäß aktiviert.",
@@ -357,7 +371,9 @@
       "upload.verbose": "Wenn aktiviert, werden ausführliche Compiler-Meldungen angezeigt. Standardgemäß deaktiviert.",
       "verifyAfterUpload": "Code nach Hochladen überprüfen ",
       "window.autoScale": "Wenn aktiviert: Benutzeroberfläche soll mit Schriftgröße skalieren.",
-      "window.zoomLevel": "Stelle die Zoomstufe des Fensters ein. Der Standardwert ist 0, jede Vergrößerung (z.B.: 1) oder Verringerung (z.B.: -1) um eins steht für 20% Vergrößerung bzw. Verkleinerung des Fensters. Du kannst auch Kommazahlen eingeben, um die Zoomstufe feiner einzustellen.\n "
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Existierende Version von {0} ersetzen?",
     "selectZip": "Wähle die ZIP-Datei, welche die hinzuzufügende Bibliothek enthält",
@@ -385,7 +401,7 @@
       "exportBinary": "Kompilierte Binärdatei exportieren",
       "moving": "Übertragen...",
       "movingMsg": "Die Datei \"{0}\" muss sich in einen Sketch Ordner \"{1}\" befinden.\nOrdner erstellen, Datei verschieben und fortfahren?",
-      "new": "Neu",
+      "new": "New Sketch",
       "openFolder": "Ordner öffnen",
       "openRecent": "Zuletzt geöffnet",
       "openSketchInNewWindow": "Sketch in neuen Fenster öffnen",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "User Fields für das angeschlossene Board nicht gefunden",
       "verify": "Überprüfen",
       "verifyOrCompile": "Überprüfen/Kompilieren"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Umfrage beantworten",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitTitle": "Sind Sie sicher, dass das Fenster schließen möchten?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "Es gab einen Fehler beim Start der Debug-Session. Überprüfe die Logs für mehr Informationen.",
-      "typeNotSupported": "Die Debug Session vom Typ \"{0}\" wird nicht unterstützt."
     },
     "editor": {
       "unsavedTitle": "Nicht gespeichert – {0}"

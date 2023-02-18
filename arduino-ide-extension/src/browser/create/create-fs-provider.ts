@@ -189,10 +189,6 @@ export class CreateFsProvider
         FileSystemProviderErrorCode.NoPermissions
       );
     }
-
-    return this.createApi.init(
-      this.authenticationService,
-      this.arduinoPreferences
-    );
+    return this.createApi;
   }
 }

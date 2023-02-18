@@ -11,7 +11,6 @@ import {
   ResponseService,
 } from '../common/protocol/response-service';
 import {
-  UpdateCoreLibrariesIndexResponse,
   UpdateIndexResponse,
   UpdateLibrariesIndexResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
@@ -78,16 +77,12 @@ namespace PlatformProgressResponse {
     };
   }
 }
-type IndexProgressResponse =
-  | UpdateIndexResponse
-  | UpdateLibrariesIndexResponse
-  | UpdateCoreLibrariesIndexResponse;
+type IndexProgressResponse = UpdateIndexResponse | UpdateLibrariesIndexResponse;
 namespace IndexProgressResponse {
   export function is(response: unknown): response is IndexProgressResponse {
     return (
       response instanceof UpdateIndexResponse ||
-      response instanceof UpdateLibrariesIndexResponse ||
-      response instanceof UpdateCoreLibrariesIndexResponse // not used by the IDE2 but available for full typings compatibility
+      response instanceof UpdateLibrariesIndexResponse
     );
   }
   export function workUnit(response: IndexProgressResponse): UnitOfWork {

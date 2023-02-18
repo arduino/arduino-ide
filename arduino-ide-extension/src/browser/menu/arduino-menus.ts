@@ -97,6 +97,11 @@ export namespace ArduinoMenus {
   export const TOOLS__BOARD_SELECTION_GROUP = [...TOOLS, '2_board_selection'];
   // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`
   export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '3_board_settings'];
+  // `Tool` > `Ports` (always visible https://github.com/arduino/arduino-ide/issues/655)
+  export const TOOLS__PORTS_SUBMENU = [
+    ...ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
+    '2_ports',
+  ];
 
   // -- Help
   // `Getting Started`, `Environment`, `Troubleshooting`, etc.

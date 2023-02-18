@@ -20,6 +20,16 @@
 @import './progress-bar.css';
 @import './settings-step-input.css';
 
+/* Revive of the `--theia-icon-loading`. The variable has been removed from Theia while IDE2 still uses is. */
+/* The SVG icons are still part of Theia (1.31.1) */
+/* https://github.com/arduino/arduino-ide/pull/1662#issuecomment-1324997134 */
+body {
+  --theia-icon-loading: url(../icons/loading-light.svg);
+}
+body.theia-dark {
+  --theia-icon-loading: url(../icons/loading-dark.svg);
+}
+
 .theia-input.warning:focus {
   outline-width: 1px;
   outline-style: solid;
@@ -165,4 +175,14 @@ button.theia-button.message-box-dialog-button {
   background-color: var(--theia-notifications-background);
   outline: 1px dashed var(--theia-focusBorder);
   outline-offset: -2px;
+}
+
+.debug-toolbar .debug-action>div {
+  font-family: var(--theia-ui-font-family);
+  font-size: var(--theia-ui-font-size0);
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  min-height: inherit;
 }

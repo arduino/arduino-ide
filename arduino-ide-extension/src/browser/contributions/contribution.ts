@@ -12,6 +12,7 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { MessageService } from '@theia/core/lib/common/message-service';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
 
 import {
@@ -40,10 +41,9 @@ import { SettingsService } from '../dialogs/settings/settings';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../common/protocol/sketches-service-client-impl';
+} from '../sketches-service-client-impl';
 import {
   SketchesService,
-  ConfigService,
   FileSystemExt,
   Sketch,
   CoreService,
@@ -61,6 +61,8 @@ import { BoardsDataStore } from '../boards/boards-data-store';
 import { NotificationManager } from '../theia/messages/notifications-manager';
 import { MessageType } from '@theia/core/lib/common/message-service-protocol';
 import { WorkspaceService } from '../theia/workspace/workspace-service';
+import { MainMenuManager } from '../../common/main-menu-manager';
+import { ConfigServiceClient } from '../config/config-service-client';
 
 export {
   Command,
@@ -106,6 +108,9 @@ export abstract class Contribution
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
 
+  @inject(MainMenuManager)
+  protected readonly menuManager: MainMenuManager;
+
   @postConstruct()
   protected init(): void {
     this.appStateService.reachedState('ready').then(() => this.onReady());
@@ -138,11 +143,11 @@ export abstract class SketchContribution extends Contribution {
   @inject(FileSystemExt)
   protected readonly fileSystemExt: FileSystemExt;
 
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceClient)
+  protected readonly configService: ConfigServiceClient;
 
   @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
+  protected readonly sketchesService: SketchesService;
 
   @inject(OpenerService)
   protected readonly openerService: OpenerService;
@@ -156,6 +161,9 @@ export abstract class SketchContribution extends Contribution {
   @inject(OutputChannelManager)
   protected readonly outputChannelManager: OutputChannelManager;
 
+  @inject(EnvVariablesServer)
+  protected readonly envVariableServer: EnvVariablesServer;
+
   protected async sourceOverride(): Promise<Record<string, string>> {
     const override: Record<string, string> = {};
     const sketch = await this.sketchServiceClient.currentSketch();
@@ -168,6 +176,25 @@ export abstract class SketchContribution extends Contribution {
       }
     }
     return override;
+  }
+
+  /**
+   * Defaults to `directories.user` if defined and not CLI config errors were detected.
+   * Otherwise, the URI of the user home directory.
+   */
+  protected async defaultUri(): Promise<URI> {
+    const errors = this.configService.tryGetMessages();
+    let defaultUri = this.configService.tryGetSketchDirUri();
+    if (!defaultUri || errors?.length) {
+      // Fall back to user home when the `directories.user` is not available or there are known CLI config errors
+      defaultUri = new URI(await this.envVariableServer.getHomeDirUri());
+    }
+    return defaultUri;
+  }
+
+  protected async defaultPath(): Promise<string> {
+    const defaultUri = await this.defaultUri();
+    return this.fileService.fsPath(defaultUri);
   }
 }
 

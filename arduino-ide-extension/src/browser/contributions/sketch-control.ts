@@ -1,50 +1,34 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
-import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
-import { WorkspaceCommands } from '@theia/workspace/lib/browser';
 import { ContextMenuRenderer } from '@theia/core/lib/browser/context-menu-renderer';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import {
-  URI,
-  SketchContribution,
   Command,
   CommandRegistry,
-  MenuModelRegistry,
   KeybindingRegistry,
-  TabBarToolbarRegistry,
+  MenuModelRegistry,
   open,
+  SketchContribution,
+  TabBarToolbarRegistry,
+  URI,
 } from './contribution';
-import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
-import {
-  CurrentSketch,
-  SketchesServiceClientImpl,
-} from '../../common/protocol/sketches-service-client-impl';
-import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
-import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class SketchControl extends SketchContribution {
   @inject(ApplicationShell)
-  protected readonly shell: ApplicationShell;
-
+  private readonly shell: ApplicationShell;
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
-
+  private readonly menuRegistry: MenuModelRegistry;
   @inject(ContextMenuRenderer)
-  protected readonly contextMenuRenderer: ContextMenuRenderer;
-
-  @inject(EditorManager)
-  protected override readonly editorManager: EditorManager;
-
-  @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
-
-  @inject(LocalCacheFsProvider)
-  protected readonly localCacheFsProvider: LocalCacheFsProvider;
+  private readonly contextMenuRenderer: ContextMenuRenderer;
 
   protected readonly toDisposeBeforeCreateNewContextMenu =
     new DisposableCollection();
@@ -57,107 +41,57 @@ export class SketchControl extends SketchContribution {
           this.shell.getWidgets('main').indexOf(widget) !== -1,
         execute: async () => {
           this.toDisposeBeforeCreateNewContextMenu.dispose();
+
+          let parentElement: HTMLElement | undefined = undefined;
+          const target = document.getElementById(
+            SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id
+          );
+          if (target instanceof HTMLElement) {
+            parentElement = target.parentElement ?? undefined;
+          }
+          if (!parentElement) {
+            return;
+          }
+
           const sketch = await this.sketchServiceClient.currentSketch();
           if (!CurrentSketch.isValid(sketch)) {
             return;
           }
 
-          const target = document.getElementById(
-            SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id
+          this.menuRegistry.registerMenuAction(
+            ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
+            {
+              commandId: WorkspaceCommands.FILE_RENAME.id,
+              label: nls.localize('vscode/fileActions/rename', 'Rename'),
+              order: '1',
+            }
           );
-          if (!(target instanceof HTMLElement)) {
-            return;
-          }
-          const { parentElement } = target;
-          if (!parentElement) {
-            return;
-          }
+          this.toDisposeBeforeCreateNewContextMenu.push(
+            Disposable.create(() =>
+              this.menuRegistry.unregisterMenuAction(
+                WorkspaceCommands.FILE_RENAME
+              )
+            )
+          );
+
+          this.menuRegistry.registerMenuAction(
+            ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
+            {
+              commandId: WorkspaceCommands.FILE_DELETE.id,
+              label: nls.localize('vscode/fileActions/delete', 'Delete'),
+              order: '2',
+            }
+          );
+          this.toDisposeBeforeCreateNewContextMenu.push(
+            Disposable.create(() =>
+              this.menuRegistry.unregisterMenuAction(
+                WorkspaceCommands.FILE_DELETE
+              )
+            )
+          );
 
           const { mainFileUri, rootFolderFileUris } = sketch;
           const uris = [mainFileUri, ...rootFolderFileUris];
-
-          const parentSketchUri = this.editorManager.currentEditor
-            ?.getResourceUri()
-            ?.toString();
-          const parentSketch = await this.sketchService.getSketchFolder(
-            parentSketchUri || ''
-          );
-
-          // if the current file is in the current opened sketch, show extra menus
-          if (
-            sketch &&
-            parentSketch &&
-            parentSketch.uri === sketch.uri &&
-            this.allowRename(parentSketch.uri)
-          ) {
-            this.menuRegistry.registerMenuAction(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              {
-                commandId: WorkspaceCommands.FILE_RENAME.id,
-                label: nls.localize('vscode/fileActions/rename', 'Rename'),
-                order: '1',
-              }
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuAction(
-                  WorkspaceCommands.FILE_RENAME
-                )
-              )
-            );
-          } else {
-            const renamePlaceholder = new PlaceholderMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              nls.localize('vscode/fileActions/rename', 'Rename')
-            );
-            this.menuRegistry.registerMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              renamePlaceholder
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuNode(renamePlaceholder.id)
-              )
-            );
-          }
-
-          if (
-            sketch &&
-            parentSketch &&
-            parentSketch.uri === sketch.uri &&
-            this.allowDelete(parentSketch.uri)
-          ) {
-            this.menuRegistry.registerMenuAction(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              {
-                commandId: WorkspaceCommands.FILE_DELETE.id, // TODO: customize delete. Wipe sketch if deleting main file. Close window.
-                label: nls.localize('vscode/fileActions/delete', 'Delete'),
-                order: '2',
-              }
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuAction(
-                  WorkspaceCommands.FILE_DELETE
-                )
-              )
-            );
-          } else {
-            const deletePlaceholder = new PlaceholderMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              nls.localize('vscode/fileActions/delete', 'Delete')
-            );
-            this.menuRegistry.registerMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              deletePlaceholder
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuNode(deletePlaceholder.id)
-              )
-            );
-          }
-
           for (let i = 0; i < uris.length; i++) {
             const uri = new URI(uris[i]);
 
@@ -193,6 +127,7 @@ export class SketchControl extends SketchContribution {
                 parentElement.getBoundingClientRect().top +
                 parentElement.offsetHeight,
             },
+            showDisabled: true,
           };
           this.contextMenuRenderer.render(options);
         },
@@ -235,7 +170,7 @@ export class SketchControl extends SketchContribution {
     });
     registry.registerKeybinding({
       command: CommonCommands.PREVIOUS_TAB.id,
-      keybinding: 'CtrlCmd+Alt+Left', // TODO: check why electron does not show the keybindings in the UI.
+      keybinding: 'CtrlCmd+Alt+Left',
     });
     registry.registerKeybinding({
       command: CommonCommands.NEXT_TAB.id,
@@ -248,27 +183,6 @@ export class SketchControl extends SketchContribution {
       id: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,
       command: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,
     });
-  }
-
-  protected isCloudSketch(uri: string): boolean {
-    try {
-      const cloudCacheLocation = this.localCacheFsProvider.from(new URI(uri));
-
-      if (cloudCacheLocation) {
-        return true;
-      }
-      return false;
-    } catch {
-      return false;
-    }
-  }
-
-  protected allowRename(uri: string): boolean {
-    return !this.isCloudSketch(uri);
-  }
-
-  protected allowDelete(uri: string): boolean {
-    return !this.isCloudSketch(uri);
   }
 }
 

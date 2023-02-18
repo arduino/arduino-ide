@@ -137,7 +137,7 @@ describe('reconcileSettings', () => {
 
     expect(reconciledSettings).not.to.have.property('setting4');
   });
-  it('should reset non-value fields to those defiend in the default settings', async () => {
+  it('should reset non-value fields to those defined in the default settings', async () => {
     const newSettings: DeepWriteable<PluggableMonitorSettings> = JSON.parse(
       JSON.stringify(defaultSettings)
     );

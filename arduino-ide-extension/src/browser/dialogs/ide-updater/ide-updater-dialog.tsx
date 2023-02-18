@@ -5,10 +5,8 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
-import { AbstractDialog } from '../../theia/dialogs/dialogs';
-import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
+import { ReactDialog } from '../../theia/dialogs/dialogs';
 import { nls } from '@theia/core';
 import { IDEUpdaterComponent, UpdateProgress } from './ide-updater-component';
 import {
@@ -23,46 +21,10 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 const DOWNLOAD_PAGE_URL = 'https://www.arduino.cc/en/software';
 
 @injectable()
-export class IDEUpdaterDialogWidget extends ReactWidget {
-  private _updateInfo: UpdateInfo;
-  private _updateProgress: UpdateProgress = {};
-
-  setUpdateInfo(updateInfo: UpdateInfo): void {
-    this._updateInfo = updateInfo;
-    this.update();
-  }
-
-  mergeUpdateProgress(updateProgress: UpdateProgress): void {
-    this._updateProgress = { ...this._updateProgress, ...updateProgress };
-    this.update();
-  }
-
-  get updateInfo(): UpdateInfo {
-    return this._updateInfo;
-  }
-
-  get updateProgress(): UpdateProgress {
-    return this._updateProgress;
-  }
-
-  protected render(): React.ReactNode {
-    return !!this._updateInfo ? (
-      <IDEUpdaterComponent
-        updateInfo={this._updateInfo}
-        updateProgress={this._updateProgress}
-      />
-    ) : null;
-  }
-}
-
-@injectable()
 export class IDEUpdaterDialogProps extends DialogProps {}
 
 @injectable()
-export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
-  @inject(IDEUpdaterDialogWidget)
-  private readonly widget: IDEUpdaterDialogWidget;
-
+export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
   @inject(IDEUpdater)
   private readonly updater: IDEUpdater;
 
@@ -74,6 +36,9 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
 
   @inject(WindowService)
   private readonly windowService: WindowService;
+
+  private _updateInfo: UpdateInfo | undefined;
+  private _updateProgress: UpdateProgress = {};
 
   constructor(
     @inject(IDEUpdaterDialogProps)
@@ -94,26 +59,34 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   protected init(): void {
     this.updaterClient.onUpdaterDidFail((error) => {
       this.appendErrorButtons();
-      this.widget.mergeUpdateProgress({ error });
+      this.mergeUpdateProgress({ error });
     });
     this.updaterClient.onDownloadProgressDidChange((progressInfo) => {
-      this.widget.mergeUpdateProgress({ progressInfo });
+      this.mergeUpdateProgress({ progressInfo });
     });
     this.updaterClient.onDownloadDidFinish(() => {
       this.appendInstallButtons();
-      this.widget.mergeUpdateProgress({ downloadFinished: true });
+      this.mergeUpdateProgress({ downloadFinished: true });
     });
   }
 
-  get value(): UpdateInfo {
-    return this.widget.updateInfo;
+  protected render(): React.ReactNode {
+    return (
+      this.updateInfo && (
+        <IDEUpdaterComponent
+          updateInfo={this.updateInfo}
+          updateProgress={this.updateProgress}
+        />
+      )
+    );
+  }
+
+  get value(): UpdateInfo | undefined {
+    return this.updateInfo;
   }
 
   protected override onAfterAttach(msg: Message): void {
-    if (this.widget.isAttached) {
-      Widget.detach(this.widget);
-    }
-    Widget.attach(this.widget, this.contentNode);
+    this.update();
     this.appendInitialButtons();
     super.onAfterAttach(msg);
   }
@@ -196,15 +169,19 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
   }
 
   private skipVersion(): void {
+    if (!this.updateInfo) {
+      console.warn(`Nothing to skip. No update info is available`);
+      return;
+    }
     this.localStorageService.setData<string>(
       SKIP_IDE_VERSION,
-      this.widget.updateInfo.version
+      this.updateInfo.version
     );
     this.close();
   }
 
   private startDownload(): void {
-    this.widget.mergeUpdateProgress({
+    this.mergeUpdateProgress({
       downloadStarted: true,
     });
     this.clearButtons();
@@ -216,31 +193,48 @@ export class IDEUpdaterDialog extends AbstractDialog<UpdateInfo> {
     this.close();
   }
 
+  private set updateInfo(updateInfo: UpdateInfo | undefined) {
+    this._updateInfo = updateInfo;
+    this.update();
+  }
+
+  private get updateInfo(): UpdateInfo | undefined {
+    return this._updateInfo;
+  }
+
+  private get updateProgress(): UpdateProgress {
+    return this._updateProgress;
+  }
+
+  private mergeUpdateProgress(updateProgress: UpdateProgress): void {
+    this._updateProgress = { ...this._updateProgress, ...updateProgress };
+    this.update();
+  }
+
   override async open(
     data: UpdateInfo | undefined = undefined
   ): Promise<UpdateInfo | undefined> {
     if (data && data.version) {
-      this.widget.mergeUpdateProgress({
+      this.mergeUpdateProgress({
         progressInfo: undefined,
         downloadStarted: false,
         downloadFinished: false,
         error: undefined,
       });
-      this.widget.setUpdateInfo(data);
+      this.updateInfo = data;
       return super.open();
     }
   }
 
   protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
-    this.widget.activate();
+    this.update();
   }
 
   override close(): void {
-    this.widget.dispose();
     if (
-      this.widget.updateProgress?.downloadStarted &&
-      !this.widget.updateProgress?.downloadFinished
+      this.updateProgress?.downloadStarted &&
+      !this.updateProgress?.downloadFinished
     ) {
       this.updater.stopDownload();
     }

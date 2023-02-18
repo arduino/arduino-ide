@@ -1,4 +1,4 @@
-import { URI as Uri } from 'vscode-uri';
+import { URI as Uri } from '@theia/core/shared/vscode-uri';
 import URI from '@theia/core/lib/common/uri';
 import { toPosixPath, parentPosix, posix } from './create-paths';
 import { Create } from './typings';

@@ -5458,7 +5458,8 @@ proto.cc.arduino.cli.commands.v1.Library.toObject = function(includeInstance, ms
     layout: jspb.Message.getFieldWithDefault(msg, 25, 0),
     examplesList: (f = jspb.Message.getRepeatedField(msg, 26)) == null ? undefined : f,
     providesIncludesList: (f = jspb.Message.getRepeatedField(msg, 27)) == null ? undefined : f,
-    compatibleWithMap: (f = msg.getCompatibleWithMap()) ? f.toObject(includeInstance, undefined) : []
+    compatibleWithMap: (f = msg.getCompatibleWithMap()) ? f.toObject(includeInstance, undefined) : [],
+    inDevelopment: jspb.Message.getBooleanFieldWithDefault(msg, 29, false)
   };
 
   if (includeInstance) {
@@ -5598,6 +5599,10 @@ proto.cc.arduino.cli.commands.v1.Library.deserializeBinaryFromReader = function(
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readBool, null, "", false);
          });
+      break;
+    case 29:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setInDevelopment(value);
       break;
     default:
       reader.skipField();
@@ -5796,6 +5801,13 @@ proto.cc.arduino.cli.commands.v1.Library.serializeBinaryToWriter = function(mess
   f = message.getCompatibleWithMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(28, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeBool);
+  }
+  f = message.getInDevelopment();
+  if (f) {
+    writer.writeBool(
+      29,
+      f
+    );
   }
 };
 
@@ -6332,6 +6344,24 @@ proto.cc.arduino.cli.commands.v1.Library.prototype.getCompatibleWithMap = functi
 proto.cc.arduino.cli.commands.v1.Library.prototype.clearCompatibleWithMap = function() {
   this.getCompatibleWithMap().clear();
   return this;};
+
+
+/**
+ * optional bool in_development = 29;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.Library.prototype.getInDevelopment = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 29, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.Library} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Library.prototype.setInDevelopment = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 29, value);
+};
 
 
 

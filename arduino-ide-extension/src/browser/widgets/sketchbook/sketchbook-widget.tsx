@@ -53,8 +53,26 @@ export class SketchbookWidget extends BaseWidget {
     );
   }
 
+  /**
+   * The currently selected sketchbook tree widget inside the view.
+   */
   getTreeWidget(): SketchbookTreeWidget {
     return this.sketchbookCompositeWidget.treeWidget;
+  }
+
+  /**
+   * An array of all sketchbook tree widgets managed by the view.
+   */
+  getTreeWidgets(): SketchbookTreeWidget[] {
+    return toArray(this.sketchbookTreesContainer.widgets()).reduce(
+      (acc, curr) => {
+        if (curr instanceof BaseSketchbookCompositeWidget) {
+          acc.push(curr.treeWidget);
+        }
+        return acc;
+      },
+      [] as SketchbookTreeWidget[]
+    );
   }
 
   activeTreeWidgetId(): string | undefined {

@@ -20,7 +20,8 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 export class OpenSketchFiles extends SketchContribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketchFiles.Commands.OPEN_SKETCH_FILES, {
-      execute: (uri: URI) => this.openSketchFiles(uri),
+      execute: (uri: URI, focusMainSketchFile) =>
+        this.openSketchFiles(uri, focusMainSketchFile),
     });
     registry.registerCommand(OpenSketchFiles.Commands.ENSURE_OPENED, {
       execute: (
@@ -33,12 +34,18 @@ export class OpenSketchFiles extends SketchContribution {
     });
   }
 
-  private async openSketchFiles(uri: URI): Promise<void> {
+  private async openSketchFiles(
+    uri: URI,
+    focusMainSketchFile = false
+  ): Promise<void> {
     try {
-      const sketch = await this.sketchService.loadSketch(uri.toString());
+      const sketch = await this.sketchesService.loadSketch(uri.toString());
       const { mainFileUri, rootFolderFileUris } = sketch;
       for (const uri of [mainFileUri, ...rootFolderFileUris]) {
         await this.ensureOpened(uri);
+      }
+      if (focusMainSketchFile) {
+        await this.ensureOpened(mainFileUri, true, { mode: 'activate' });
       }
       if (mainFileUri.endsWith('.pde')) {
         const message = nls.localize(
@@ -105,7 +112,7 @@ export class OpenSketchFiles extends SketchContribution {
     await wait(250); // let IDE2 open the editor and toast the error message, then open the modal dialog
     const movedSketch = await promptMoveSketch(invalidMainSketchUri, {
       fileService: this.fileService,
-      sketchService: this.sketchService,
+      sketchesService: this.sketchesService,
       labelProvider: this.labelProvider,
     });
     if (movedSketch) {
@@ -118,7 +125,7 @@ export class OpenSketchFiles extends SketchContribution {
   }
 
   private async openFallbackSketch(): Promise<void> {
-    const sketch = await this.sketchService.createNewSketch();
+    const sketch = await this.sketchesService.createNewSketch();
     this.workspaceService.open(new URI(sketch.uri), { preserveWindow: true });
   }
 
@@ -126,7 +133,7 @@ export class OpenSketchFiles extends SketchContribution {
     uri: string,
     forceOpen = false,
     options?: EditorOpenerOptions
-  ): Promise<unknown> {
+  ): Promise<EditorWidget | undefined> {
     const widget = this.editorManager.all.find(
       (widget) => widget.editor.uri.toString() === uri
     );
@@ -184,23 +191,24 @@ export class OpenSketchFiles extends SketchContribution {
         // The editor is expected to be attached to the shell and visible in the UI.
         // The deferred promise does not have to wait for the `editorManager#onCreated` event.
         // It can resolve earlier.
-        if (!widget) {
+        if (widget) {
           deferred.resolve(editorWidget);
         }
       });
 
     const timeout = 5_000; // number of ms IDE2 waits for the editor to show up in the UI
-    const result = await Promise.race([
+    const result: EditorWidget | undefined | 'timeout' = await Promise.race([
       deferred.promise,
       wait(timeout).then(() => {
         disposables.dispose();
-        return 'timeout';
+        return 'timeout' as const;
       }),
     ]);
     if (result === 'timeout') {
       console.warn(
         `Timeout after ${timeout} millis. The editor has not shown up in time. URI: ${uri}`
       );
+      return undefined;
     }
     return result;
   }

@@ -5,7 +5,7 @@ import type {
   AttachedBoardsChangeEvent,
   BoardsPackage,
   LibraryPackage,
-  Config,
+  ConfigState,
   Sketch,
   ProgressMessage,
   IndexUpdateWillStartParams,
@@ -18,6 +18,10 @@ export class NotificationServiceServerImpl
   implements NotificationServiceServer
 {
   private readonly clients: NotificationServiceClient[] = [];
+
+  notifyDidReinitialize(): void {
+    this.clients.forEach((client) => client.notifyDidReinitialize());
+  }
 
   notifyIndexUpdateWillStart(params: IndexUpdateWillStartParams): void {
     this.clients.forEach((client) => client.notifyIndexUpdateWillStart(params));
@@ -55,7 +59,9 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyPlatformDidUninstall(event));
   }
 
-  notifyLibraryDidInstall(event: { item: LibraryPackage }): void {
+  notifyLibraryDidInstall(event: {
+    item: LibraryPackage | 'zip-install';
+  }): void {
     this.clients.forEach((client) => client.notifyLibraryDidInstall(event));
   }
 
@@ -69,7 +75,7 @@ export class NotificationServiceServerImpl
     );
   }
 
-  notifyConfigDidChange(event: { config: Config | undefined }): void {
+  notifyConfigDidChange(event: ConfigState): void {
     this.clients.forEach((client) => client.notifyConfigDidChange(event));
   }
 

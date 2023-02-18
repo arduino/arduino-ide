@@ -1,5 +1,5 @@
 import * as React from '@theia/core/shared/react';
-import * as ReactDOM from '@theia/core/shared/react-dom';
+import type { Root } from '@theia/core/shared/react-dom/client';
 import {
   inject,
   injectable,
@@ -26,8 +26,8 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
     super();
     this.id = 'cloud-sketchbook-composite-widget';
     this.title.caption = nls.localize(
-      'arduino/cloud/remoteSketchbook',
-      'Remote Sketchbook'
+      'arduino/cloud/cloudSketchbook',
+      'Cloud Sketchbook'
     );
     this.title.iconClass = 'cloud-sketchbook-tree-icon';
   }
@@ -49,14 +49,14 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
     return this.cloudSketchbookTreeWidget;
   }
 
-  protected renderFooter(footerNode: HTMLElement): void {
-    ReactDOM.render(
+  protected renderFooter(footerRoot: Root): void {
+    footerRoot.render(
       <>
         {this._session && (
           <CreateNew
             label={nls.localize(
-              'arduino/sketchbook/newRemoteSketch',
-              'New Remote Sketch'
+              'arduino/sketchbook/newCloudSketch',
+              'New Cloud Sketch'
             )}
             onClick={this.onDidClickCreateNew}
           />
@@ -67,8 +67,7 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
           }
           authenticationService={this.authenticationService}
         />
-      </>,
-      footerNode
+      </>
     );
   }
 

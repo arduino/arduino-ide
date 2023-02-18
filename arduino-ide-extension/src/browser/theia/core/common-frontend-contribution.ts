@@ -6,6 +6,8 @@ import {
 } from '@theia/core/lib/browser/common-frontend-contribution';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application';
+import { KeybindingRegistry } from '@theia/core/lib/browser';
+import { isOSX } from '@theia/core';
 
 @injectable()
 export class CommonFrontendContribution extends TheiaCommonFrontendContribution {
@@ -22,7 +24,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.TOGGLE_MAXIMIZED,
       CommonCommands.PIN_TAB,
       CommonCommands.UNPIN_TAB,
-      CommonCommands.NEW_FILE,
+      CommonCommands.NEW_UNTITLED_FILE,
     ]) {
       commandRegistry.unregisterCommand(command);
     }
@@ -44,9 +46,40 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.SELECT_ICON_THEME,
       CommonCommands.SELECT_COLOR_THEME,
       CommonCommands.ABOUT_COMMAND,
-      CommonCommands.SAVE_WITHOUT_FORMATTING, // Patched for https://github.com/eclipse-theia/theia/pull/8877
+      CommonCommands.SAVE_WITHOUT_FORMATTING, // Patched for https://github.com/eclipse-theia/theia/pull/8877,
+      CommonCommands.NEW_UNTITLED_FILE,
     ]) {
       registry.unregisterMenuAction(command);
+    }
+  }
+
+  override registerKeybindings(registry: KeybindingRegistry): void {
+    super.registerKeybindings(registry);
+    // Workaround for https://github.com/eclipse-theia/theia/issues/11875
+    if (isOSX) {
+      registry.unregisterKeybinding('ctrlcmd+tab');
+      registry.unregisterKeybinding('ctrlcmd+alt+d');
+      registry.unregisterKeybinding('ctrlcmd+shift+tab');
+      registry.unregisterKeybinding('ctrlcmd+alt+a');
+
+      registry.registerKeybindings(
+        {
+          command: CommonCommands.NEXT_TAB.id,
+          keybinding: 'ctrl+tab',
+        },
+        {
+          command: CommonCommands.NEXT_TAB.id,
+          keybinding: 'ctrl+alt+d',
+        },
+        {
+          command: CommonCommands.PREVIOUS_TAB.id,
+          keybinding: 'ctrl+shift+tab',
+        },
+        {
+          command: CommonCommands.PREVIOUS_TAB.id,
+          keybinding: 'ctrl+alt+a',
+        }
+      );
     }
   }
 

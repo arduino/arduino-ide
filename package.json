@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "Arduino IDE",
   "repository": "https://github.com/arduino/arduino-ide.git",
   "author": "Arduino SA",
@@ -10,9 +10,9 @@
     "node": ">=16.0.0 <17"
   },
   "devDependencies": {
-    "@theia/cli": "1.25.0",
-    "@types/sinon": "^2.3.5",
+    "@theia/cli": "1.31.1",
     "@types/jsdom": "^11.0.4",
+    "@types/sinon": "^2.3.5",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "cross-env": "^7.0.2",
@@ -24,21 +24,21 @@
     "eslint-plugin-unused-imports": "^1.1.1",
     "husky": "^6.0.0",
     "ignore-styles": "^5.0.1",
-    "lerna": "^3.20.2",
+    "jsdom": "^11.5.1",
+    "lerna": "^6.1.0",
     "lint-staged": "^11.0.0",
     "node-gyp": "^9.3.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
     "semver": "^7.3.2",
-    "typescript": "~4.5.5",
-    "jsdom": "^11.5.1",
     "style-dictionary": "^3.7.0",
+    "typescript": "~4.5.5",
     "xhr2": "^0.2.1"
   },
   "resolutions": {
-    "@types/react": "16.14.25",
-    "electron-rebuild": "3.2.9"
+    "@types/react": "18.0.0",
+    "@types/react-dom": "18.0.0"
   },
   "scripts": {
     "prepare": "lerna run prepare && yarn download:plugins",
@@ -48,6 +48,7 @@
     "start": "yarn --cwd ./electron-app start",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test",
+    "test:slow": "lerna run test:slow",
     "download:plugins": "theia download:plugins",
     "update:version": "node ./scripts/update-version.js",
     "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
@@ -75,10 +76,10 @@
   "theiaPluginsDir": "plugins",
   "theiaPlugins": {
     "vscode-builtin-cpp": "https://open-vsx.org/api/vscode/cpp/1.52.1/file/vscode.cpp-1.52.1.vsix",
-    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.5.vsix",
+    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.7.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix",
+    "cortex-debug": "https://downloads.arduino.cc/marus25.cortex-debug/marus25.cortex-debug-1.5.1.vsix",
     "vscode-language-pack-bg": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-bg/1.48.3/file/MS-CEINTL.vscode-language-pack-bg-1.48.3.vsix",
     "vscode-language-pack-cs": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-cs/1.53.2/file/MS-CEINTL.vscode-language-pack-cs-1.53.2.vsix",
     "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.53.2/file/MS-CEINTL.vscode-language-pack-de-1.53.2.vsix",

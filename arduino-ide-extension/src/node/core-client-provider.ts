@@ -12,7 +12,6 @@ import {
   CreateRequest,
   InitRequest,
   InitResponse,
-  UpdateCoreLibrariesIndexResponse,
   UpdateIndexRequest,
   UpdateIndexResponse,
   UpdateLibrariesIndexRequest,
@@ -26,6 +25,7 @@ import {
   IndexUpdateDidFailParams,
   IndexUpdateWillStartParams,
   NotificationServiceServer,
+  AdditionalUrls,
 } from '../common/protocol';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
@@ -63,7 +63,6 @@ export class CoreClientProvider {
     new Emitter<CoreClientProvider.Client>();
   private readonly onClientReady = this.onClientReadyEmitter.event;
 
-  private ready = new Deferred<void>();
   private pending: Deferred<CoreClientProvider.Client> | undefined;
   private _client: CoreClientProvider.Client | undefined;
 
@@ -76,9 +75,27 @@ export class CoreClientProvider {
     });
     this.daemon.onDaemonStarted((port) => this.create(port));
     this.daemon.onDaemonStopped(() => this.closeClient());
-    this.configService.onConfigChange(
-      () => this.client.then((client) => this.updateIndex(client, ['platform'])) // Assuming 3rd party URL changes. No library index update is required.
-    );
+    this.configService.onConfigChange(async ({ oldState, newState }) => {
+      if (
+        !AdditionalUrls.sameAs(
+          oldState.config?.additionalUrls,
+          newState.config?.additionalUrls
+        )
+      ) {
+        const client = await this.client;
+        this.updateIndex(client, ['platform']);
+      } else if (
+        !!newState.config?.sketchDirUri &&
+        oldState.config?.sketchDirUri !== newState.config.sketchDirUri
+      ) {
+        // If the sketchbook location has changed, the custom libraries has changed.
+        // Reinitialize the core client and fire an event so that the frontend can refresh.
+        // https://github.com/arduino/arduino-ide/issues/796 (see the file > examples and sketch > include examples)
+        const client = await this.client;
+        await this.initInstance(client);
+        this.notificationService.notifyDidReinitialize();
+      }
+    });
   }
 
   get tryGetClient(): CoreClientProvider.Client | undefined {
@@ -117,14 +134,6 @@ export class CoreClientProvider {
     const client = await this.createClient(address);
     this.toDisposeOnCloseClient.pushAll([
       Disposable.create(() => client.client.close()),
-      Disposable.create(() => {
-        this.ready.reject(
-          new Error(
-            `Disposed. Creating a new gRPC core client on address ${address}.`
-          )
-        );
-        this.ready = new Deferred();
-      }),
     ]);
     await this.initInstanceWithFallback(client);
     return this.useClient(client);
@@ -245,8 +254,8 @@ export class CoreClientProvider {
           }
         })
         .on('error', reject)
-        .on('end', () => {
-          const error = this.evaluateErrorStatus(errors);
+        .on('end', async () => {
+          const error = await this.evaluateErrorStatus(errors);
           if (error) {
             reject(error);
             return;
@@ -256,7 +265,10 @@ export class CoreClientProvider {
     });
   }
 
-  private evaluateErrorStatus(status: RpcStatus[]): Error | undefined {
+  private async evaluateErrorStatus(
+    status: RpcStatus[]
+  ): Promise<Error | undefined> {
+    await this.configService.getConfiguration(); // to ensure the CLI config service has been initialized.
     const { cliConfiguration } = this.configService;
     if (!cliConfiguration) {
       // If the CLI config is not available, do not even try to guess what went wrong.
@@ -347,10 +359,7 @@ export class CoreClientProvider {
   }
 
   private async doUpdateIndex<
-    R extends
-      | UpdateIndexResponse
-      | UpdateLibrariesIndexResponse
-      | UpdateCoreLibrariesIndexResponse // not used by IDE2
+    R extends UpdateIndexResponse | UpdateLibrariesIndexResponse
   >(
     responseProvider: () => grpc.ClientReadableStream<R>,
     progressHandler?: IndexesUpdateProgressHandler,

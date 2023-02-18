@@ -9,7 +9,7 @@
     "node-log-rotate": "^0.1.5"
   },
   "devDependencies": {
-    "@theia/cli": "1.25.0",
+    "@theia/cli": "1.31.1",
     "cross-env": "^7.0.2",
     "electron-builder": "23.3.3",
     "electron-notarize": "^1.1.1",
@@ -21,7 +21,6 @@
     "build": "yarn download:plugins && theia build --mode production && yarn patch",
     "rebuild": "yarn theia rebuild:electron",
     "package": "cross-env DEBUG=* && electron-builder --publish=never",
-    "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
     "download:plugins": "theia download:plugins",
     "patch": "ncp ./patch/backend/main.js ./src-gen/backend/main.js"
   },

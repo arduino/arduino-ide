@@ -807,6 +807,9 @@ export class Library extends jspb.Message {
     getCompatibleWithMap(): jspb.Map<string, boolean>;
     clearCompatibleWithMap(): void;
 
+    getInDevelopment(): boolean;
+    setInDevelopment(value: boolean): Library;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Library.AsObject;
@@ -847,6 +850,7 @@ export namespace Library {
         providesIncludesList: Array<string>,
 
         compatibleWithMap: Array<[string, boolean]>,
+        inDevelopment: boolean,
     }
 }
 

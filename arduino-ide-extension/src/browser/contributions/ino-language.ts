@@ -1,15 +1,20 @@
-import { Mutex } from 'async-mutex';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { Mutex } from 'async-mutex';
 import {
   ArduinoDaemon,
+  assertSanitizedFqbn,
   BoardsService,
   ExecutableService,
+  sanitizeFqbn,
 } from '../../common/protocol';
-import { HostedPluginEvents } from '../hosted-plugin-events';
-import { SketchContribution, URI } from './contribution';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { BoardsConfig } from '../boards/boards-config';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { HostedPluginEvents } from '../hosted-plugin-events';
+import { NotificationCenter } from '../notification-center';
+import { SketchContribution, URI } from './contribution';
+import { BoardsDataStore } from '../boards/boards-data-store';
 
 @injectable()
 export class InoLanguage extends SketchContribution {
@@ -28,8 +33,15 @@ export class InoLanguage extends SketchContribution {
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
+  @inject(NotificationCenter)
+  private readonly notificationCenter: NotificationCenter;
+
+  @inject(BoardsDataStore)
+  private readonly boardDataStore: BoardsDataStore;
+
+  private readonly toDispose = new DisposableCollection();
+  private readonly languageServerStartMutex = new Mutex();
   private languageServerFqbn?: string;
-  private languageServerStartMutex = new Mutex();
 
   override onReady(): void {
     const start = (
@@ -43,25 +55,59 @@ export class InoLanguage extends SketchContribution {
         }
       }
     };
-    this.boardsServiceProvider.onBoardsConfigChanged(start);
-    this.hostedPluginEvents.onPluginsDidStart(() =>
-      start(this.boardsServiceProvider.boardsConfig)
-    );
-    this.hostedPluginEvents.onPluginsWillUnload(
-      () => (this.languageServerFqbn = undefined)
-    );
-    this.preferences.onPreferenceChanged(
-      ({ preferenceName, oldValue, newValue }) => {
-        if (oldValue !== newValue) {
-          switch (preferenceName) {
-            case 'arduino.language.log':
-            case 'arduino.language.realTimeDiagnostics':
-              start(this.boardsServiceProvider.boardsConfig, true);
+    const forceRestart = () => {
+      start(this.boardsServiceProvider.boardsConfig, true);
+    };
+    this.toDispose.pushAll([
+      this.boardsServiceProvider.onBoardsConfigChanged(start),
+      this.hostedPluginEvents.onPluginsDidStart(() =>
+        start(this.boardsServiceProvider.boardsConfig)
+      ),
+      this.hostedPluginEvents.onPluginsWillUnload(
+        () => (this.languageServerFqbn = undefined)
+      ),
+      this.preferences.onPreferenceChanged(
+        ({ preferenceName, oldValue, newValue }) => {
+          if (oldValue !== newValue) {
+            switch (preferenceName) {
+              case 'arduino.language.log':
+              case 'arduino.language.realTimeDiagnostics':
+                forceRestart();
+            }
           }
         }
-      }
-    );
+      ),
+      this.notificationCenter.onLibraryDidInstall(() => forceRestart()),
+      this.notificationCenter.onLibraryDidUninstall(() => forceRestart()),
+      this.notificationCenter.onPlatformDidInstall(() => forceRestart()),
+      this.notificationCenter.onPlatformDidUninstall(() => forceRestart()),
+      this.notificationCenter.onDidReinitialize(() => forceRestart()),
+      this.boardDataStore.onChanged((dataChangePerFqbn) => {
+        if (this.languageServerFqbn) {
+          const sanitizedFqbn = sanitizeFqbn(this.languageServerFqbn);
+          if (!sanitizeFqbn) {
+            throw new Error(
+              `Failed to sanitize the FQBN of the running language server. FQBN with the board settings was: ${this.languageServerFqbn}`
+            );
+          }
+          const matchingFqbn = dataChangePerFqbn.find(
+            (fqbn) => sanitizedFqbn === fqbn
+          );
+          const { boardsConfig } = this.boardsServiceProvider;
+          if (
+            matchingFqbn &&
+            boardsConfig.selectedBoard?.fqbn === matchingFqbn
+          ) {
+            start(boardsConfig);
+          }
+        }
+      }),
+    ]);
     start(this.boardsServiceProvider.boardsConfig);
+  }
+
+  onStop(): void {
+    this.toDispose.dispose();
   }
 
   private async startLanguageServer(
@@ -101,11 +147,18 @@ export class InoLanguage extends SketchContribution {
         }
         return;
       }
-      if (!forceStart && fqbn === this.languageServerFqbn) {
+      assertSanitizedFqbn(fqbn);
+      const fqbnWithConfig = await this.boardDataStore.appendConfigToFqbn(fqbn);
+      if (!fqbnWithConfig) {
+        throw new Error(
+          `Failed to append boards config to the FQBN. Original FQBN was: ${fqbn}`
+        );
+      }
+      if (!forceStart && fqbnWithConfig === this.languageServerFqbn) {
         // NOOP
         return;
       }
-      this.logger.info(`Starting language server: ${fqbn}`);
+      this.logger.info(`Starting language server: ${fqbnWithConfig}`);
       const log = this.preferences.get('arduino.language.log');
       const realTimeDiagnostics = this.preferences.get(
         'arduino.language.realTimeDiagnostics'
@@ -141,7 +194,7 @@ export class InoLanguage extends SketchContribution {
             log: currentSketchPath ? currentSketchPath : log,
             cliDaemonInstance: '1',
             board: {
-              fqbn,
+              fqbn: fqbnWithConfig,
               name: name ? `"${name}"` : undefined,
             },
             realTimeDiagnostics,
@@ -150,7 +203,7 @@ export class InoLanguage extends SketchContribution {
         ),
       ]);
     } catch (e) {
-      console.log(`Failed to start language server for ${fqbn}`, e);
+      console.log(`Failed to start language server. Original FQBN: ${fqbn}`, e);
       this.languageServerFqbn = undefined;
     } finally {
       release();

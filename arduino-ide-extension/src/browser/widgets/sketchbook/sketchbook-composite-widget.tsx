@@ -1,5 +1,5 @@
 import * as React from '@theia/core/shared/react';
-import * as ReactDOM from '@theia/core/shared/react-dom';
+import { createRoot, Root } from '@theia/core/shared/react-dom/client';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { nls } from '@theia/core/lib/common/nls';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
@@ -18,29 +18,30 @@ export abstract class BaseSketchbookCompositeWidget<
   protected readonly commandService: CommandService;
 
   private readonly compositeNode: HTMLElement;
-  private readonly footerNode: HTMLElement;
+  private readonly footerRoot: Root;
 
   constructor() {
     super();
     this.compositeNode = document.createElement('div');
     this.compositeNode.classList.add('composite-node');
-    this.footerNode = document.createElement('div');
-    this.footerNode.classList.add('footer-node');
-    this.compositeNode.appendChild(this.footerNode);
+    const footerNode = document.createElement('div');
+    footerNode.classList.add('footer-node');
+    this.compositeNode.appendChild(footerNode);
+    this.footerRoot = createRoot(footerNode);
     this.node.appendChild(this.compositeNode);
     this.title.closable = false;
   }
 
   abstract get treeWidget(): TW;
-  protected abstract renderFooter(footerNode: HTMLElement): void;
+  protected abstract renderFooter(footerRoot: Root): void;
   protected updateFooter(): void {
-    this.renderFooter(this.footerNode);
+    this.renderFooter(this.footerRoot);
   }
 
   protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
     Widget.attach(this.treeWidget, this.compositeNode);
-    this.renderFooter(this.footerNode);
+    this.renderFooter(this.footerRoot);
     this.toDisposeOnDetach.push(
       Disposable.create(() => Widget.detach(this.treeWidget))
     );
@@ -77,13 +78,12 @@ export class SketchbookCompositeWidget extends BaseSketchbookCompositeWidget<Ske
     return this.sketchbookTreeWidget;
   }
 
-  protected renderFooter(footerNode: HTMLElement): void {
-    ReactDOM.render(
+  protected renderFooter(footerRoot: Root): void {
+    footerRoot.render(
       <CreateNew
         label={nls.localize('arduino/sketchbook/newSketch', 'New Sketch')}
         onClick={this.onDidClickCreateNew}
-      />,
-      footerNode
+      />
     );
   }
 

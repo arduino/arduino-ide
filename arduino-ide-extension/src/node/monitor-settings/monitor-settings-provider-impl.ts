@@ -1,6 +1,10 @@
 import * as fs from 'fs';
 import { join } from 'path';
-import { injectable, inject, postConstruct } from 'inversify';
+import {
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { promisify } from 'util';
@@ -95,7 +99,7 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
     const rawJson = await promisify(fs.readFile)(
       this.pluggableMonitorSettingsPath,
       {
-        encoding: 'utf-8',
+        encoding: 'utf8',
         flag: 'a+', // a+ = append and read, creating the file if it doesn't exist
       }
     );

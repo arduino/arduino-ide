@@ -3,33 +3,25 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { Diagnostic } from 'vscode-languageserver-types';
+import { Diagnostic } from '@theia/core/shared/vscode-languageserver-types';
 import URI from '@theia/core/lib/common/uri';
-import { ILogger } from '@theia/core';
 import { Marker } from '@theia/markers/lib/common/marker';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser/problem/problem-manager';
-import { ConfigService } from '../../../common/protocol/config-service';
+import { ConfigServiceClient } from '../../config/config-service-client';
 import debounce = require('lodash.debounce');
 
 @injectable()
 export class ProblemManager extends TheiaProblemManager {
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceClient)
+  private readonly configService: ConfigServiceClient;
 
-  @inject(ILogger)
-  protected readonly logger: ILogger;
-
-  protected dataDirUri: URI | undefined;
+  private dataDirUri: URI | undefined;
 
   @postConstruct()
   protected override init(): void {
     super.init();
-    this.configService
-      .getConfiguration()
-      .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
-      .catch((err) =>
-        this.logger.error(`Failed to determine the data directory: ${err}`)
-      );
+    this.dataDirUri = this.configService.tryGetDataDirUri();
+    this.configService.onDidChangeDataDirUri((uri) => (this.dataDirUri = uri));
   }
 
   override setMarkers(

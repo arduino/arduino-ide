@@ -7,7 +7,6 @@ import {
   BoardsPackage,
   Board,
   BoardDetails,
-  Tool,
   ConfigOption,
   ConfigValue,
   Programmer,
@@ -17,6 +16,8 @@ import {
   BoardWithPackage,
   BoardUserField,
   BoardSearch,
+  sortComponents,
+  SortGroup,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -97,14 +98,11 @@ export class BoardsServiceImpl
 
     const debuggingSupported = detailsResp.getDebuggingSupported();
 
-    const requiredTools = detailsResp.getToolsDependenciesList().map(
-      (t) =>
-        <Tool>{
-          name: t.getName(),
-          packager: t.getPackager(),
-          version: t.getVersion(),
-        }
-    );
+    const requiredTools = detailsResp.getToolsDependenciesList().map((t) => ({
+      name: t.getName(),
+      packager: t.getPackager(),
+      version: t.getVersion(),
+    }));
 
     const configOptions = detailsResp.getConfigOptionsList().map(
       (c) =>
@@ -405,7 +403,8 @@ export class BoardsServiceImpl
     }
 
     const filter = this.typePredicate(options);
-    return [...packages.values()].filter(filter);
+    const boardsPackages = [...packages.values()].filter(filter);
+    return sortComponents(boardsPackages, boardsPackageSortGroup);
   }
 
   private typePredicate(
@@ -434,6 +433,7 @@ export class BoardsServiceImpl
     progressId?: string;
     version?: Installable.Version;
     noOverwrite?: boolean;
+    skipPostInstall?: boolean;
   }): Promise<void> {
     const item = options.item;
     const version = !!options.version
@@ -450,6 +450,9 @@ export class BoardsServiceImpl
     req.setPlatformPackage(platform);
     req.setVersion(version);
     req.setNoOverwrite(Boolean(options.noOverwrite));
+    if (options.skipPostInstall) {
+      req.setSkipPostInstall(true);
+    }
 
     console.info('>>> Starting boards package installation...', item);
 
@@ -554,4 +557,15 @@ function isMissingPlatformError(error: unknown): boolean {
     }
   }
   return false;
+}
+
+function boardsPackageSortGroup(boardsPackage: BoardsPackage): SortGroup {
+  const types: string[] = [];
+  if (boardsPackage.types.includes('Arduino')) {
+    types.push('Arduino');
+  }
+  if (boardsPackage.deprecated) {
+    types.push('Retired');
+  }
+  return types.join('-') as SortGroup;
 }

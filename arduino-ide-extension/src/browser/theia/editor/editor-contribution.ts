@@ -10,4 +10,12 @@ export class EditorContribution extends TheiaEditorContribution {
   ): void {
     // NOOP
   }
+
+  protected override updateEncodingStatus(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
+    editor: TextEditor | undefined
+  ): void {
+    // https://github.com/arduino/arduino-ide/issues/1393
+    // NOOP
+  }
 }

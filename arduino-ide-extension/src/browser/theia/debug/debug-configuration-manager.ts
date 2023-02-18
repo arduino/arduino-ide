@@ -1,5 +1,9 @@
 import debounce = require('p-debounce');
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -10,7 +14,7 @@ import { SketchesService } from '../../../common/protocol';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { DebugConfigurationModel } from './debug-configuration-model';
 import {
   FileOperationError,
@@ -126,7 +130,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
       const uri = tempFolderUri.resolve('launch.json');
       const { value } = await this.fileService.read(uri);
       const configurations = DebugConfigurationModel.parse(JSON.parse(value));
-      return { uri, configurations };
+      return { uri, configurations, compounds: [] };
     } catch (err) {
       if (
         err instanceof FileOperationError &&

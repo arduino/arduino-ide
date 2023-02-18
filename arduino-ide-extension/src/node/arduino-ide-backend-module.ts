@@ -100,8 +100,8 @@ import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { ClangFormatter } from './clang-formatter';
 import { FormatterPath } from '../common/protocol/formatter';
-import { LocalizationBackendContribution } from './i18n/localization-backend-contribution';
-import { LocalizationBackendContribution as TheiaLocalizationBackendContribution } from '@theia/core/lib/node/i18n/localization-backend-contribution';
+import { HostedPluginLocalizationService } from './theia/plugin-ext/hosted-plugin-localization-service';
+import { HostedPluginLocalizationService as TheiaHostedPluginLocalizationService } from '@theia/plugin-ext/lib/hosted/node/hosted-plugin-localization-service';
 import { SurveyNotificationServiceImpl } from './survey-service-impl';
 import {
   SurveyNotificationService,
@@ -109,6 +109,15 @@ import {
 } from '../common/protocol/survey-service';
 import { IsTempSketch } from './is-temp-sketch';
 import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
+import { MessagingContribution } from './theia/core/messaging-contribution';
+import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
+import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
+import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
+import { PluginDeployer } from '@theia/plugin-ext/lib/common/plugin-protocol';
+import {
+  LocalDirectoryPluginDeployerResolverWithFallback,
+  PluginDeployer_GH_12064,
+} from './theia/plugin-ext/plugin-deployer';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -335,7 +344,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     MonitorServiceName,
   ].forEach((name) => bindChildLogger(bind, name));
 
-  // Remote sketchbook bindings
+  // Cloud sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
   bind(AuthenticationService).toService(AuthenticationServiceImpl);
   bind(BackendApplicationContribution).toService(AuthenticationServiceImpl);
@@ -360,9 +369,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplicationContribution).toService(PlotterBackendContribution);
   bind(ArduinoLocalizationContribution).toSelf().inSingletonScope();
   bind(LocalizationContribution).toService(ArduinoLocalizationContribution);
-  bind(LocalizationBackendContribution).toSelf().inSingletonScope();
-  rebind(TheiaLocalizationBackendContribution).toService(
-    LocalizationBackendContribution
+  bind(HostedPluginLocalizationService).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginLocalizationService).toService(
+    HostedPluginLocalizationService
   );
 
   // Survey notification bindings
@@ -379,6 +388,21 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .inSingletonScope();
 
   bind(IsTempSketch).toSelf().inSingletonScope();
+  rebind(MessagingService.Identifier)
+    .to(MessagingContribution)
+    .inSingletonScope();
+
+  // Removed undesired contributions from VS Code extensions
+  // Such as the RTOS view from the `cortex-debug` extension
+  // https://github.com/arduino/arduino-ide/pull/1706#pullrequestreview-1195595080
+  bind(HostedPluginReader).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginReader).toService(HostedPluginReader);
+
+  // https://github.com/eclipse-theia/theia/issues/12064
+  bind(LocalDirectoryPluginDeployerResolverWithFallback)
+    .toSelf()
+    .inSingletonScope();
+  rebind(PluginDeployer).to(PluginDeployer_GH_12064).inSingletonScope();
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {

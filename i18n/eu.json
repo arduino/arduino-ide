@@ -119,6 +119,11 @@
       "syncEditSketches": "Sinkronizatu eta editatu zure Arduino Cloud-eko programak",
       "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Sarea",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Erakutsi irteera xehatua honetan zehar:",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Programa bildumaren kokalekua",
       "sketchbook.showAllFiles": "Egia programaren barruko programa-fitxategi guztiak erakusteko. Lehenetsia gezurra da.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "Egia kargaren irteera xehatua izateko. Lehenetsia Gezurra.",
       "verifyAfterUpload": "Egiaztatu kodea kargatu ondoren",
       "window.autoScale": "Egia erabiltzaile interfazea letra-tamainarekin automatikoki eskalatzen bada.",
-      "window.zoomLevel": "Doitu leihoaren zoom maila. Jatorrizko tamaina 0 da eta goraka (1) edo beheraka (-1) egindako aldaketa bakoitzak zooma %20 handitzea edo txikiagotzea eragiten du. Zoom maila zehaztasun handiagoarekin doitzeko zenbaki hamartarrak erabili ditzakezu."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Lehendik dagoen {0} bertsioa ordezkatu?",
     "selectZip": "Hautatu gehitu nahi duzun liburutegia daukan zip fitxategia",
@@ -385,7 +401,7 @@
       "exportBinary": "Esportatu konpilatutako bitarra",
       "moving": "Lekuz aldatzen",
       "movingMsg": "\"{0}\" fitxategiak \"{1}\" izeneko programa-karpetaren barruan egon behar du.\nSortu karpeta, eraman fitxategia bertara eta jarraitu?",
-      "new": "Berria",
+      "new": "New Sketch",
       "openFolder": "Ireki karpeta",
       "openRecent": "Ireki azkenaldikoa",
       "openSketchInNewWindow": "Ireki programa leiho berrian",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Ezin dira erabiltzaile eremuak aurkitu konektatutako plakarentzat",
       "verify": "Egiaztatu",
       "verifyOrCompile": "Egiaztatu/Konpilatu"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI daemon-a lineaz kanpo",
       "offline": "Lineaz kanpo",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Hasi...",
-      "startError": "Errore bat gertatu da arazketa saioa hastean. Ikusi egunkariak xehetasun gehiagorako.",
-      "typeNotSupported": "\"{0}\" motako arazketa saioak ez du euskarririk."
     },
     "editor": {
       "unsavedTitle": "Gorde gabe – {0}"

@@ -119,6 +119,11 @@
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Rețea",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Show verbose output during",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "Adevărat pentru a afișa toate fișierele tip schița din interiorul schiței. Este fals în modul implicit.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "True for verbose upload output. False by default.",
       "verifyAfterUpload": "Verifică codul după încarcare",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
-      "window.zoomLevel": "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Replace the existing version of {0}?",
     "selectZip": "Select a zip file containing the library you'd like to add",
@@ -385,7 +401,7 @@
       "exportBinary": "Export Compiled Binary",
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
-      "new": "Nou",
+      "new": "New Sketch",
       "openFolder": "Deschide Folder",
       "openRecent": "Deschide Recente",
       "openSketchInNewWindow": "Open Sketch in New Window",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verifică",
       "verifyOrCompile": "Verify/Compile"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Deconectat",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "Nesalvat – {0}"

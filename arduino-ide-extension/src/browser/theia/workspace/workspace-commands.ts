@@ -1,34 +1,53 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
-import URI from '@theia/core/lib/common/uri';
 import { open } from '@theia/core/lib/browser/opener-service';
-import { FileStat } from '@theia/filesystem/lib/common/files';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import {
   CommandRegistry,
   CommandService,
 } from '@theia/core/lib/common/command';
+import { nls } from '@theia/core/lib/common/nls';
+import { Path } from '@theia/core/lib/common/path';
+import { waitForEvent } from '@theia/core/lib/common/promise-util';
+import { SelectionService } from '@theia/core/lib/common/selection-service';
+import { MaybeArray } from '@theia/core/lib/common/types';
+import URI from '@theia/core/lib/common/uri';
+import {
+  UriAwareCommandHandler,
+  UriCommandHandler,
+} from '@theia/core/lib/common/uri-command-handler';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { EditorWidget } from '@theia/editor/lib/browser/editor-widget';
+import { FileStat } from '@theia/filesystem/lib/common/files';
 import {
   WorkspaceCommandContribution as TheiaWorkspaceCommandContribution,
   WorkspaceCommands,
 } from '@theia/workspace/lib/browser/workspace-commands';
-import { Sketch, SketchesService } from '../../../common/protocol';
-import { WorkspaceInputDialog } from './workspace-input-dialog';
+import { Sketch } from '../../../common/protocol';
+import { ConfigServiceClient } from '../../config/config-service-client';
+import { CreateFeatures } from '../../create/create-features';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
-import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { nls } from '@theia/core/lib/common';
+} from '../../sketches-service-client-impl';
+import { WorkspaceInputDialog } from './workspace-input-dialog';
+
+interface ValidationContext {
+  sketch: Sketch;
+  isCloud: boolean | undefined;
+}
 
 @injectable()
 export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribution {
-  @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
-
   @inject(CommandService)
-  protected readonly commandService: CommandService;
-
-  @inject(SketchesService)
-  protected readonly sketchService: SketchesService;
+  private readonly commandService: CommandService;
+  @inject(SketchesServiceClientImpl)
+  private readonly sketchesServiceClient: SketchesServiceClientImpl;
+  @inject(CreateFeatures)
+  private readonly createFeatures: CreateFeatures;
+  @inject(ApplicationShell)
+  private readonly shell: ApplicationShell;
+  @inject(ConfigServiceClient)
+  private readonly configServiceClient: ConfigServiceClient;
+  private _validationContext: ValidationContext | undefined;
 
   override registerCommands(registry: CommandRegistry): void {
     super.registerCommands(registry);
@@ -46,9 +65,14 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         execute: (uri) => this.renameFile(uri),
       })
     );
+    registry.unregisterCommand(WorkspaceCommands.FILE_DELETE);
+    registry.registerCommand(
+      WorkspaceCommands.FILE_DELETE,
+      this.newMultiUriAwareCommandHandler(this.deleteHandler)
+    );
   }
 
-  protected async newFile(uri: URI | undefined): Promise<void> {
+  private async newFile(uri: URI | undefined): Promise<void> {
     if (!uri) {
       return;
     }
@@ -67,51 +91,72 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
       this.labelProvider
     );
 
-    const name = await dialog.open();
-    const nameWithExt = this.maybeAppendInoExt(name);
-    if (nameWithExt) {
-      const fileUri = parentUri.resolve(nameWithExt);
-      await this.fileService.createFile(fileUri);
-      this.fireCreateNewFile({ parent: parentUri, uri: fileUri });
-      open(this.openerService, fileUri);
+    const name = await this.openDialog(dialog, parentUri);
+    if (!name) {
+      return;
     }
+    const nameWithExt = this.maybeAppendInoExt(name);
+    const fileUri = parentUri.resolve(nameWithExt);
+    await this.fileService.createFile(fileUri);
+    this.fireCreateNewFile({ parent: parentUri, uri: fileUri });
+    open(this.openerService, fileUri);
   }
 
   protected override async validateFileName(
-    name: string,
+    userInput: string,
     parent: FileStat,
     recursive = false
   ): Promise<string> {
-    // In the Java IDE the followings are the rules:
-    //  - `name` without an extension should default to `name.ino`.
-    //  - `name` with a single trailing `.` also defaults to `name.ino`.
-    const nameWithExt = this.maybeAppendInoExt(name);
-    const errorMessage = await super.validateFileName(
-      nameWithExt,
-      parent,
-      recursive
-    );
+    // If name does not have extension or ends with trailing dot (from IDE 1.x), treat it as an .ino file.
+    // If has extension,
+    //  - if unsupported extension -> error
+    //  - if has a code file extension -> apply folder name validation without the extension and use the Theia-based validation
+    //  - if has any additional file extension -> use the default Theia-based validation
+    const fileInput = parseFileInput(userInput);
+    const { name, extension } = fileInput;
+    if (!Sketch.Extensions.ALL.includes(extension)) {
+      return invalidExtension(extension);
+    }
+    let errorMessage: string | undefined = undefined;
+    if (Sketch.Extensions.CODE_FILES.includes(extension)) {
+      errorMessage = this._validationContext?.isCloud
+        ? Sketch.validateCloudSketchFolderName(name)
+        : Sketch.validateSketchFolderName(name);
+    }
     if (errorMessage) {
-      return errorMessage;
+      return this.maybeRemapAlreadyExistsMessage(errorMessage, userInput);
     }
-    const extension = nameWithExt.split('.').pop();
-    if (!extension) {
-      return nls.localize(
-        'theia/workspace/invalidFilename',
-        'Invalid filename.'
-      ); // XXX: this should not happen as we forcefully append `.ino` if it's not there.
+    errorMessage = await super.validateFileName(userInput, parent, recursive); // run the default Theia validation with the raw input.
+    if (errorMessage) {
+      return this.maybeRemapAlreadyExistsMessage(errorMessage, userInput);
     }
-    if (Sketch.Extensions.ALL.indexOf(`.${extension}`) === -1) {
-      return nls.localize(
-        'theia/workspace/invalidExtension',
-        '.{0} is not a valid extension',
-        extension
-      );
+    // It's a legacy behavior from IDE 1.x. Validate the file as if it were an `.ino` file.
+    // If user did not write the `.ino` extension or ended the user input with dot, run the default Theia validation with the inferred name.
+    if (extension === '.ino' && !userInput.endsWith('.ino')) {
+      userInput = `${name}${extension}`;
+      errorMessage = await super.validateFileName(userInput, parent, recursive);
     }
-    return '';
+    return this.maybeRemapAlreadyExistsMessage(errorMessage ?? '', userInput);
   }
 
-  protected maybeAppendInoExt(name: string | undefined): string {
+  // Remaps the Theia-based `A file or folder **$fileName** already exists at this location. Please choose a different name.` to a custom one.
+  private maybeRemapAlreadyExistsMessage(
+    errorMessage: string,
+    userInput: string
+  ): string {
+    if (
+      errorMessage ===
+      nls.localizeByDefault(
+        'A file or folder **{0}** already exists at this location. Please choose a different name.',
+        this['trimFileName'](userInput)
+      )
+    ) {
+      return fileAlreadyExists(userInput);
+    }
+    return errorMessage;
+  }
+
+  private maybeAppendInoExt(name: string): string {
     if (!name) {
       return '';
     }
@@ -126,7 +171,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     return name;
   }
 
-  protected async renameFile(uri: URI | undefined): Promise<void> {
+  protected async renameFile(uri: URI | undefined): Promise<unknown> {
     if (!uri) {
       return;
     }
@@ -136,10 +181,7 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
     }
 
     // file belongs to another sketch, do not allow rename
-    const parentSketch = await this.sketchService.getSketchFolder(
-      uri.toString()
-    );
-    if (parentSketch && parentSketch.uri !== sketch.uri) {
+    if (!Sketch.isInSketch(uri, sketch)) {
       return;
     }
 
@@ -149,11 +191,10 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         openAfterMove: true,
         wipeOriginal: true,
       };
-      await this.commandService.executeCommand(
-        SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
+      return await this.commandService.executeCommand<string>(
+        'arduino-save-as-sketch',
         options
       );
-      return;
     }
     const parent = await this.getParent(uri);
     if (!parent) {
@@ -180,12 +221,243 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
       },
       this.labelProvider
     );
-    const newName = await dialog.open();
-    const newNameWithExt = this.maybeAppendInoExt(newName);
-    if (newNameWithExt) {
-      const oldUri = uri;
-      const newUri = uri.parent.resolve(newNameWithExt);
-      this.fileService.move(oldUri, newUri);
+    const name = await this.openDialog(dialog, uri);
+    if (!name) {
+      return;
     }
+    const nameWithExt = this.maybeAppendInoExt(name);
+    const oldUri = uri;
+    const newUri = uri.parent.resolve(nameWithExt);
+    return this.fileService.move(oldUri, newUri);
+  }
+
+  protected override newUriAwareCommandHandler(
+    handler: UriCommandHandler<URI>
+  ): UriAwareCommandHandler<URI> {
+    return this.createUriAwareCommandHandler(handler);
+  }
+
+  protected override newMultiUriAwareCommandHandler(
+    handler: UriCommandHandler<URI[]>
+  ): UriAwareCommandHandler<URI[]> {
+    return this.createUriAwareCommandHandler(handler, true);
+  }
+
+  private createUriAwareCommandHandler<T extends MaybeArray<URI>>(
+    delegate: UriCommandHandler<T>,
+    multi = false
+  ): UriAwareCommandHandler<T> {
+    return new UriAwareCommandHandlerWithCurrentEditorFallback(
+      delegate,
+      this.selectionService,
+      this.shell,
+      this.sketchesServiceClient,
+      this.configServiceClient,
+      this.createFeatures,
+      { multi }
+    );
+  }
+
+  private async openDialog(
+    dialog: WorkspaceInputDialog,
+    uri: URI
+  ): Promise<string | undefined> {
+    try {
+      let dataDirUri = this.configServiceClient.tryGetDataDirUri();
+      if (!dataDirUri) {
+        dataDirUri = await waitForEvent(
+          this.configServiceClient.onDidChangeDataDirUri,
+          2_000
+        );
+      }
+      this.acquireValidationContext(uri, dataDirUri);
+      const name = await dialog.open(true);
+      return name;
+    } finally {
+      this._validationContext = undefined;
+    }
+  }
+
+  private acquireValidationContext(
+    uri: URI,
+    dataDirUri: URI | undefined
+  ): void {
+    const sketch = this.sketchesServiceClient.tryGetCurrentSketch();
+    if (
+      CurrentSketch.isValid(sketch) &&
+      new URI(sketch.uri).isEqualOrParent(uri)
+    ) {
+      const isCloud = this.createFeatures.isCloud(sketch, dataDirUri);
+      this._validationContext = { sketch, isCloud };
+    }
+  }
+}
+
+// (non-API) exported for tests
+export function fileAlreadyExists(userInput: string): string {
+  return nls.localize(
+    'arduino/workspace/alreadyExists',
+    "'{0}' already exists.",
+    userInput
+  );
+}
+
+// (non-API) exported for tests
+export function invalidExtension(extension: string): string {
+  return nls.localize(
+    'theia/workspace/invalidExtension',
+    '.{0} is not a valid extension',
+    extension.charAt(0) === '.' ? extension.slice(1) : extension
+  );
+}
+
+interface FileInput {
+  /**
+   * The raw text the user enters in the `<input>`.
+   */
+  readonly raw: string;
+  /**
+   * This is the name without the extension. If raw is `'lib.cpp'`, then `name` will be `'lib'`. If raw is `'foo'` or `'foo.'` this value is `'foo'`.
+   */
+  readonly name: string;
+  /**
+   * With the leading dot. For example `'.ino'` or `'.cpp'`.
+   */
+  readonly extension: string;
+}
+export function parseFileInput(userInput: string): FileInput {
+  if (!userInput) {
+    return {
+      raw: '',
+      name: '',
+      extension: Sketch.Extensions.DEFAULT,
+    };
+  }
+  const path = new Path(userInput);
+  let extension = path.ext;
+  if (extension.trim() === '' || extension.trim() === '.') {
+    extension = Sketch.Extensions.DEFAULT;
+  }
+  return {
+    raw: userInput,
+    name: path.name,
+    extension,
+  };
+}
+
+/**
+ * By default, the Theia-based URI-aware command handler tries to retrieve the URI from the selection service.
+ * Delete/Rename from the tab-bar toolbar (`...`) is not active if the selection was never inside an editor.
+ * This implementation falls back to the current current title of the main panel if no URI can be retrieved from the parent classes.
+ *  - https://github.com/arduino/arduino-ide/issues/1847
+ *  - https://github.com/eclipse-theia/theia/issues/12139
+ */
+class UriAwareCommandHandlerWithCurrentEditorFallback<
+  T extends MaybeArray<URI>
+> extends UriAwareCommandHandler<T> {
+  constructor(
+    delegate: UriCommandHandler<T>,
+    selectionService: SelectionService,
+    private readonly shell: ApplicationShell,
+    private readonly sketchesServiceClient: SketchesServiceClientImpl,
+    private readonly configServiceClient: ConfigServiceClient,
+    private readonly createFeatures: CreateFeatures,
+    options?: UriAwareCommandHandler.Options
+  ) {
+    super(selectionService, delegate, options);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected override getUri(...args: any[]): T | undefined {
+    const uri = super.getUri(...args);
+    if (!uri || (Array.isArray(uri) && !uri.length)) {
+      const fallbackUri = this.currentTitleOwnerUriFromMainPanel;
+      if (fallbackUri) {
+        return (this.isMulti() ? [fallbackUri] : fallbackUri) as T;
+      }
+    }
+    return uri;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  override isEnabled(...args: any[]): boolean {
+    const [uri, ...others] = this.getArgsWithUri(...args);
+    if (uri) {
+      if (!this.isInSketch(uri)) {
+        return false;
+      }
+      if (this.affectsCloudSketchFolderWhenSignedOut(uri)) {
+        return false;
+      }
+      if (this.handler.isEnabled) {
+        return this.handler.isEnabled(uri, ...others);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // The `currentEditor` is broken after a rename. (https://github.com/eclipse-theia/theia/issues/12139)
+  // `ApplicationShell#currentWidget` might provide a wrong result just as the `getFocusedCodeEditor` and `getFocusedCodeEditor` of the `MonacoEditorService`
+  // Try to extract the URI from the current title of the main panel if it's an editor widget.
+  private get currentTitleOwnerUriFromMainPanel(): URI | undefined {
+    const owner = this.shell.mainPanel.currentTitle?.owner;
+    return owner instanceof EditorWidget
+      ? owner.editor.getResourceUri()
+      : undefined;
+  }
+
+  private isInSketch(uri: T | undefined): boolean {
+    if (!uri) {
+      return false;
+    }
+    const sketch = this.sketchesServiceClient.tryGetCurrentSketch();
+    if (!CurrentSketch.isValid(sketch)) {
+      return false;
+    }
+    if (this.isMulti() && Array.isArray(uri)) {
+      return uri.every((u) => Sketch.isInSketch(u, sketch));
+    }
+    if (!this.isMulti() && uri instanceof URI) {
+      return Sketch.isInSketch(uri, sketch);
+    }
+    return false;
+  }
+
+  /**
+   * If the user is not logged in, deleting/renaming the main sketch file or the sketch folder of a cloud sketch is disabled.
+   */
+  private affectsCloudSketchFolderWhenSignedOut(uri: T | undefined): boolean {
+    return (
+      !Boolean(this.createFeatures.session) &&
+      Boolean(this.isCurrentSketchCloud()) &&
+      this.affectsSketchFolder(uri)
+    );
+  }
+
+  private affectsSketchFolder(uri: T | undefined): boolean {
+    if (!uri) {
+      return false;
+    }
+    const sketch = this.sketchesServiceClient.tryGetCurrentSketch();
+    if (!CurrentSketch.isValid(sketch)) {
+      return false;
+    }
+    if (this.isMulti() && Array.isArray(uri)) {
+      return uri.map((u) => u.toString()).includes(sketch.mainFileUri);
+    }
+    if (!this.isMulti()) {
+      return sketch.mainFileUri === uri.toString();
+    }
+    return false;
+  }
+
+  private isCurrentSketchCloud(): boolean | undefined {
+    const sketch = this.sketchesServiceClient.tryGetCurrentSketch();
+    if (!CurrentSketch.isValid(sketch)) {
+      return false;
+    }
+    const dataDirUri = this.configServiceClient.tryGetDataDirUri();
+    return this.createFeatures.isCloud(sketch, dataDirUri);
   }
 }

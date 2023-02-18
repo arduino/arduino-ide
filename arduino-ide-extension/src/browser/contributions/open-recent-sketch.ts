@@ -47,7 +47,7 @@ export class OpenRecentSketch extends SketchContribution {
   }
 
   private update(forceUpdate?: boolean): void {
-    this.sketchService
+    this.sketchesService
       .recentlyOpenedSketches(forceUpdate)
       .then((sketches) => this.refreshMenu(sketches));
   }

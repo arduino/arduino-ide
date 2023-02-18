@@ -1,17 +1,22 @@
 import * as React from '@theia/core/shared/react';
 import Select from 'react-select';
-import { Styles } from 'react-select/src/styles';
-import { Props } from 'react-select/src/components';
-import { ThemeConfig } from 'react-select/src/theme';
+import type { StylesConfig } from 'react-select/dist/declarations/src/styles';
+import type { ThemeConfig } from 'react-select/dist/declarations/src/theme';
+import type { GroupBase } from 'react-select/dist/declarations/src/types';
+import type { StateManagerProps } from 'react-select/dist/declarations/src/useStateManager';
 
-export class ArduinoSelect<T> extends Select<T> {
-  constructor(props: Readonly<Props<T, false>>) {
+export class ArduinoSelect<
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>
+> extends React.Component<StateManagerProps<Option, IsMulti, Group>> {
+  constructor(props: StateManagerProps<Option, IsMulti, Group>) {
     super(props);
   }
 
   override render(): React.ReactNode {
     const controlHeight = 27; // from `monitor.css` -> `.serial-monitor-container .head` (`height: 27px;`)
-    const styles: Styles<T, false> = {
+    const styles: StylesConfig = {
       control: (styles) => ({
         ...styles,
         minWidth: 120,

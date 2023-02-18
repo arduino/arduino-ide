@@ -71,3 +71,23 @@ export class CreateError extends Error {
     Object.setPrototypeOf(this, CreateError.prototype);
   }
 }
+
+export type ConflictError = CreateError & { status: 409 };
+export function isConflict(err: unknown): err is ConflictError {
+  return isErrorWithStatusOf(err, 409);
+}
+
+export type NotFoundError = CreateError & { status: 404 };
+export function isNotFound(err: unknown): err is NotFoundError {
+  return isErrorWithStatusOf(err, 404);
+}
+
+function isErrorWithStatusOf(
+  err: unknown,
+  status: number
+): err is CreateError & { status: number } {
+  if (err instanceof CreateError) {
+    return err.status === status;
+  }
+  return false;
+}

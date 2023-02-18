@@ -119,6 +119,11 @@
       "syncEditSketches": "Synchroniseer en bewerk uw Arduino Cloud Sketches",
       "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Sketches te maken."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "Alle",
       "contributed": "Bijgedragen",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Kan websocket niet sluiten",
       "unableToConnectToWebSocket": "Kan geen verbinding maken met websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Netwerk",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Uitgebreide uitvoer weergeven tijdens",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Schetsboek locatie",
       "sketchbook.showAllFiles": "Waar om al de schets bestanden in de schets weer te geven. Standaard ingesteld op onwaar.",
       "survey.notification": "Waar als gebruikers een melding moeten krijgen als er een enquête beschikbaar is. Standaard is dit waar.",
@@ -357,7 +371,9 @@
       "upload.verbose": "Waar voor uitgebreide uploaduitvoer. Standaard onwaar.",
       "verifyAfterUpload": "Verifieer de code na het uploaden",
       "window.autoScale": "Waar als de gebruikersinterface automatisch wordt geschaald met de lettergrootte.",
-      "window.zoomLevel": "Pas het zoomniveau van het venster aan. De oorspronkelijke grootte is 0 en elke stap hoger (bijv. 1) of lager (bijv. -1) staat voor 20% groter of kleiner zoomen. U kunt ook decimalen invoeren om het zoomniveau fijner in te stellen. "
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "De bestaande versie van {0} vervangen?",
     "selectZip": "Selecteer een zipbestand met de bibliotheek die U wilt toevoegen",
@@ -385,7 +401,7 @@
       "exportBinary": "Gecompileerd binair bestand exporteren",
       "moving": "Verplaatsten",
       "movingMsg": "Het bestand \"{0}\" moet binnen een schetsmap met de naam \"{1}\" staan.\nMaak deze map, verplaats het bestand, en ga verder?",
-      "new": "Nieuw",
+      "new": "New Sketch",
       "openFolder": "Map Openen",
       "openRecent": "Recentelijk geopend",
       "openSketchInNewWindow": "Schets openen in nieuw venster",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Kan gebruiker veld van verbonden bord niet vinden",
       "verify": "Verifiëren",
       "verifyOrCompile": "Verifiëren/Compileren"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Antwoord enquête",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitTitle": "Weet je zeker dat je wilt stoppen?"
-    },
-    "debug": {
-      "start": "Start...",
-      "startError": "Er is een fout opgetreden bij het starten van de foutopsporingssessie, controleer de logboeken voor meer details. ",
-      "typeNotSupported": "Het foutopsporingssessietype \"{0}\" wordt niet ondersteund. "
     },
     "editor": {
       "unsavedTitle": "Niet opgeslagen – {0}"

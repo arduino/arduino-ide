@@ -31,7 +31,7 @@ import { EditorCommands, EditorMainMenu } from '@theia/editor/lib/browser';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
-import { ArduinoPreferences } from './arduino-preferences';
+import { ElectronWindowPreferences } from '@theia/core/lib/electron-browser/window/electron-window-preferences';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { BoardsToolBarItem } from './boards/boards-toolbar-item';
 import { ArduinoMenus } from './menu/arduino-menus';
@@ -58,8 +58,8 @@ export class ArduinoFrontendContribution
   @inject(CommandRegistry)
   private readonly commandRegistry: CommandRegistry;
 
-  @inject(ArduinoPreferences)
-  private readonly arduinoPreferences: ArduinoPreferences;
+  @inject(ElectronWindowPreferences)
+  private readonly electronWindowPreferences: ElectronWindowPreferences;
 
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
@@ -78,10 +78,10 @@ export class ArduinoFrontendContribution
   }
 
   onStart(app: FrontendApplication): void {
-    this.arduinoPreferences.onPreferenceChanged((event) => {
+    this.electronWindowPreferences.onPreferenceChanged((event) => {
       if (event.newValue !== event.oldValue) {
         switch (event.preferenceName) {
-          case 'arduino.window.zoomLevel':
+          case 'window.zoomLevel':
             if (typeof event.newValue === 'number') {
               const webContents = remote.getCurrentWebContents();
               webContents.setZoomLevel(event.newValue || 0);
@@ -91,11 +91,10 @@ export class ArduinoFrontendContribution
       }
     });
     this.appStateService.reachedState('ready').then(() =>
-      this.arduinoPreferences.ready.then(() => {
+      this.electronWindowPreferences.ready.then(() => {
         const webContents = remote.getCurrentWebContents();
-        const zoomLevel = this.arduinoPreferences.get(
-          'arduino.window.zoomLevel'
-        );
+        const zoomLevel =
+          this.electronWindowPreferences.get('window.zoomLevel');
         webContents.setZoomLevel(zoomLevel);
       })
     );

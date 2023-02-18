@@ -1,30 +1,30 @@
 {
   "private": true,
   "name": "electron-app",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "license": "AGPL-3.0-or-later",
   "main": "src-gen/frontend/electron-main.js",
   "dependencies": {
-    "@theia/core": "1.25.0",
-    "@theia/debug": "1.25.0",
-    "@theia/editor": "1.25.0",
-    "@theia/electron": "1.25.0",
-    "@theia/file-search": "1.25.0",
-    "@theia/filesystem": "1.25.0",
-    "@theia/keymaps": "1.25.0",
-    "@theia/messages": "1.25.0",
-    "@theia/monaco": "1.25.0",
-    "@theia/navigator": "1.25.0",
-    "@theia/plugin-ext": "1.25.0",
-    "@theia/plugin-ext-vscode": "1.25.0",
-    "@theia/preferences": "1.25.0",
-    "@theia/process": "1.25.0",
-    "@theia/terminal": "1.25.0",
-    "@theia/workspace": "1.25.0",
-    "arduino-ide-extension": "2.0.2"
+    "@theia/core": "1.31.1",
+    "@theia/debug": "1.31.1",
+    "@theia/editor": "1.31.1",
+    "@theia/electron": "1.31.1",
+    "@theia/file-search": "1.31.1",
+    "@theia/filesystem": "1.31.1",
+    "@theia/keymaps": "1.31.1",
+    "@theia/messages": "1.31.1",
+    "@theia/monaco": "1.31.1",
+    "@theia/navigator": "1.31.1",
+    "@theia/plugin-ext": "1.31.1",
+    "@theia/plugin-ext-vscode": "1.31.1",
+    "@theia/preferences": "1.31.1",
+    "@theia/process": "1.31.1",
+    "@theia/terminal": "1.31.1",
+    "@theia/workspace": "1.31.1",
+    "arduino-ide-extension": "2.0.4"
   },
   "devDependencies": {
-    "@theia/cli": "1.25.0",
+    "@theia/cli": "1.31.1",
     "electron": "^15.3.5"
   },
   "scripts": {
@@ -37,8 +37,13 @@
     "frontend": {
       "config": {
         "applicationName": "Arduino IDE",
-        "defaultTheme": "arduino-theme",
+        "defaultTheme": {
+          "light": "arduino-theme",
+          "dark": "arduino-theme-dark"
+        },
+        "validatePreferencesSchema": false,
         "preferences": {
+          "window.title": "${rootName}${activeEditorShort}${appName}",
           "files.autoSave": "afterDelay",
           "editor.minimap.enabled": false,
           "editor.tabSize": 2,
@@ -49,6 +54,7 @@
             "strings": false
           },
           "editor.maxTokenizationLineLength": 500,
+          "editor.bracketPairColorization.enabled": false,
           "breadcrumbs.enabled": false,
           "workbench.tree.renderIndentGuides": "none",
           "explorer.compactFolders": false

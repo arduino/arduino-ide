@@ -2,7 +2,7 @@ import * as React from '@theia/core/shared/react';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { clipboard } from 'electron';
+import { clipboard } from '@theia/core/electron-shared/@electron/remote';
 import { ReactWidget, DialogProps } from '@theia/core/lib/browser';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { CreateApi } from '../create/create-api';

@@ -1,5 +1,8 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
+import { nls } from '@theia/core/lib/common/nls';
 import URI from '@theia/core/lib/common/uri';
+import * as dateFormat from 'dateformat';
+const filenameReservedRegex = require('filename-reserved-regex');
 
 export namespace SketchesError {
   export const Codes = {
@@ -53,6 +56,11 @@ export interface SketchesService {
   createNewSketch(): Promise<Sketch>;
 
   /**
+   * The default content when creating a new `.ino` file. Either the built-in or the user defined (`arduino.sketch.inoBlueprint`) content.
+   */
+  defaultInoContent(): Promise<string>;
+
+  /**
    * Creates a new sketch with existing content. Rejects if `uri` is not pointing to a valid sketch folder.
    */
   cloneExample(uri: string): Promise<Sketch>;
@@ -102,9 +110,15 @@ export interface SketchesService {
   getIdeTempFolderUri(sketch: Sketch): Promise<string>;
 
   /**
-   * Recursively deletes the sketch folder with all its content.
+   * This is the JS/TS re-implementation of [`GenBuildPath`](https://github.com/arduino/arduino-cli/blob/c0d4e4407d80aabad81142693513b3306759cfa6/arduino/sketch/sketch.go#L296-L306) of the CLI.
+   * Pass in a sketch and get the build temporary folder filesystem path calculated from the main sketch file location. Can be multiple ones. This method does not check the existence of the sketch.
+   *
+   * The case sensitivity of the drive letter on Windows matters when the CLI calculates the MD5 hash of the temporary build folder.
+   * IDE2 does not know and does not want to rely on how the CLI treats the paths: with lowercase or uppercase drive letters.
+   * Hence, IDE2 has to provide multiple build paths on Windows. This hack will be obsolete when the CLI can provide error codes:
+   * https://github.com/arduino/arduino-cli/issues/1762.
    */
-  deleteSketch(sketch: Sketch): Promise<void>;
+  tempBuildPath(sketch: Sketch): Promise<string[]>;
 }
 
 export interface SketchRef {
@@ -140,6 +154,142 @@ export interface Sketch extends SketchRef {
   readonly rootFolderFileUris: string[]; // `RootFolderFiles` (does not include the main sketch file)
 }
 export namespace Sketch {
+  // (non-API) exported for the tests
+  export const defaultSketchFolderName = 'sketch';
+  // (non-API) exported for the tests
+  export const defaultFallbackFirstChar = '0';
+  // (non-API) exported for the tests
+  export const defaultFallbackChar = '_';
+  // (non-API) exported for the tests
+  export function reservedFilename(name: string): string {
+    return nls.localize(
+      'arduino/sketch/reservedFilename',
+      "'{0}' is a reserved filename.",
+      name
+    );
+  }
+  // (non-API) exported for the tests
+  export const noTrailingPeriod = nls.localize(
+    'arduino/sketch/noTrailingPeriod',
+    'A filename cannot end with a dot'
+  );
+  // (non-API) exported for the tests
+  export const invalidSketchFolderNameMessage = nls.localize(
+    'arduino/sketch/invalidSketchName',
+    'The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.'
+  );
+  const invalidCloudSketchFolderNameMessage = nls.localize(
+    'arduino/sketch/invalidCloudSketchName',
+    'The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.'
+  );
+  /**
+   * `undefined` if the candidate sketch folder name is valid. Otherwise, the validation error message.
+   * Based on the [specs](https://arduino.github.io/arduino-cli/latest/sketch-specification/#sketch-folders-and-files).
+   */
+  export function validateSketchFolderName(
+    candidate: string
+  ): string | undefined {
+    const validFilenameError = isValidFilename(candidate);
+    if (validFilenameError) {
+      return validFilenameError;
+    }
+    return /^[0-9a-zA-Z]{1}[0-9a-zA-Z_\.-]{0,62}$/.test(candidate)
+      ? undefined
+      : invalidSketchFolderNameMessage;
+  }
+
+  /**
+   * `undefined` if the candidate cloud sketch folder name is valid. Otherwise, the validation error message.
+   */
+  export function validateCloudSketchFolderName(
+    candidate: string
+  ): string | undefined {
+    const validFilenameError = isValidFilename(candidate);
+    if (validFilenameError) {
+      return validFilenameError;
+    }
+    return /^[0-9a-zA-Z]{1}[0-9a-zA-Z_\.-]{0,35}$/.test(candidate)
+      ? undefined
+      : invalidCloudSketchFolderNameMessage;
+  }
+
+  function isValidFilename(candidate: string): string | undefined {
+    if (isReservedFilename(candidate)) {
+      return reservedFilename(candidate);
+    }
+    if (endsWithPeriod(candidate)) {
+      return noTrailingPeriod;
+    }
+    return undefined;
+  }
+
+  function endsWithPeriod(candidate: string): boolean {
+    return candidate.length > 1 && candidate[candidate.length - 1] === '.';
+  }
+
+  function isReservedFilename(candidate: string): boolean {
+    return (
+      filenameReservedRegex().test(candidate) ||
+      filenameReservedRegex.windowsNames().test(candidate)
+    );
+  }
+
+  /**
+   * Transforms the `candidate` argument into a valid sketch folder name by replacing all invalid characters with underscore (`_`) and trimming the string after 63 characters.
+   * If the argument is falsy, returns with `"sketch"`.
+   */
+  export function toValidSketchFolderName(
+    candidate: string,
+    /**
+     * Type of `Date` is only for tests. Use boolean for production.
+     */
+    appendTimestampSuffix: boolean | Date = false
+  ): string {
+    if (
+      !appendTimestampSuffix &&
+      filenameReservedRegex.windowsNames().test(candidate)
+    ) {
+      return defaultSketchFolderName;
+    }
+    const validName = candidate
+      ? candidate
+          .replace(/^[^0-9a-zA-Z]{1}/g, defaultFallbackFirstChar)
+          .replace(/[^0-9a-zA-Z_]/g, defaultFallbackChar)
+          .slice(0, 63)
+      : defaultSketchFolderName;
+    if (appendTimestampSuffix) {
+      return `${validName.slice(0, 63 - timestampSuffixLength)}${
+        typeof appendTimestampSuffix === 'boolean'
+          ? timestampSuffix()
+          : timestampSuffix(appendTimestampSuffix)
+      }`;
+    }
+    return validName;
+  }
+
+  const copy = '_copy_';
+  const datetimeFormat = 'yyyymmddHHMMss';
+  const timestampSuffixLength = copy.length + datetimeFormat.length;
+  // (non-API)
+  export function timestampSuffix(now = new Date()): string {
+    return `${copy}${dateFormat(now, datetimeFormat)}`;
+  }
+
+  /**
+   * Transforms the `candidate` argument into a valid cloud sketch folder name by replacing all invalid characters with underscore and trimming the string after 36 characters.
+   */
+  export function toValidCloudSketchFolderName(candidate: string): string {
+    if (filenameReservedRegex.windowsNames().test(candidate)) {
+      return defaultSketchFolderName;
+    }
+    return candidate
+      ? candidate
+          .replace(/^[^0-9a-zA-Z]{1}/g, defaultFallbackFirstChar)
+          .replace(/[^0-9a-zA-Z_]/g, defaultFallbackChar)
+          .slice(0, 36)
+      : defaultSketchFolderName;
+  }
+
   export function is(arg: unknown): arg is Sketch {
     if (!SketchRef.is(arg)) {
       return false;
@@ -161,19 +311,19 @@ export namespace Sketch {
     return false;
   }
   export namespace Extensions {
-    export const MAIN = ['.ino', '.pde'];
-    export const SOURCE = ['.c', '.cpp', '.s'];
-    export const ADDITIONAL = [
+    export const DEFAULT = '.ino';
+    export const MAIN = [DEFAULT, '.pde'];
+    export const SOURCE = ['.c', '.cpp', '.S'];
+    export const CODE_FILES = [
+      ...MAIN,
+      ...SOURCE,
       '.h',
-      '.c',
-      '.hpp',
       '.hh',
-      '.cpp',
-      '.S',
-      '.json',
-      '.md',
-      '.adoc',
+      '.hpp',
+      '.tpp',
+      '.ipp',
     ];
+    export const ADDITIONAL = [...CODE_FILES, '.json', '.md', '.adoc'];
     export const ALL = Array.from(new Set([...MAIN, ...SOURCE, ...ADDITIONAL]));
   }
   export function isInSketch(uri: string | URI, sketch: Sketch): boolean {

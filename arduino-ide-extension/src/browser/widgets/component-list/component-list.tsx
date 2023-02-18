@@ -147,7 +147,6 @@ export namespace ComponentList {
   export interface Props<T extends ArduinoComponent> {
     readonly items: T[];
     readonly itemLabel: (item: T) => string;
-    readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
     readonly install: (item: T, version?: Installable.Version) => Promise<void>;
     readonly uninstall: (item: T) => Promise<void>;

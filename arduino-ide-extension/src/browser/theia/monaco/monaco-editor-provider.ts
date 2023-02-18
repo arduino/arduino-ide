@@ -6,7 +6,7 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { EditorServiceOverrides, MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { SketchesServiceClientImpl } from '../../sketches-service-client-impl';
 import * as monaco from '@theia/monaco-editor-core';
 import type { ReferencesModel } from '@theia/monaco-editor-core/esm/vs/editor/contrib/gotoSymbol/browser/referencesModel';
 

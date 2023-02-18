@@ -90,7 +90,7 @@
       "donePushing": "已完成推送 ‘{0}’。",
       "embed": "嵌入：",
       "emptySketchbook": "你的项目文件夹是空的",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "前往 Cloud",
       "learnMore": "查看更多",
       "link": "链接：",
       "notYetPulled": "无法推送到 Cloud。未被拉取。",
@@ -119,6 +119,11 @@
       "syncEditSketches": "同步和编辑 Arduino Cloud 项目",
       "visitArduinoCloud": "访问 Arduino Cloud 以创建云项目。"
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "全部",
       "contributed": "已贡献",
@@ -132,7 +137,7 @@
       "processing": "正在处理中",
       "recommended": "推荐",
       "retired": "不再支持的",
-      "selectedOn": "on {0}",
+      "selectedOn": "在{0}上",
       "serialMonitor": "串口监视器",
       "type": "类型",
       "unknown": "未知",
@@ -146,7 +151,7 @@
       "by": "by",
       "filterSearch": "筛选搜索结果......",
       "install": "安装",
-      "installed": "安装",
+      "installed": "已安装",
       "moreInfo": "更多信息",
       "uninstall": "卸载",
       "uninstallMsg": "是否要卸载 {0}？",
@@ -256,10 +261,10 @@
       "contributedLibraries": "贡献库",
       "include": "包含库",
       "installAll": "全部安装",
-      "installLibraryDependencies": "Install library dependencies",
+      "installLibraryDependencies": "安装库的依赖",
       "installMissingDependencies": "是否安装所有缺少的依赖？",
       "installOneMissingDependency": "是否安装缺少的依赖？",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "仅安装库 (跳过依赖)",
       "installedSuccessfully": "已成功安装 {0} 库：{1}",
       "libraryAlreadyExists": "库已经存在。是否要覆盖它？",
       "manageLibraries": "管理库...",
@@ -298,6 +303,12 @@
     "monitor": {
       "unableToCloseWebSocket": "无法关闭 websocket",
       "unableToConnectToWebSocket": "无法连接 websocket"
+    },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
     },
     "portProtocol": {
       "network": "网络",
@@ -349,6 +360,9 @@
         "username": "用户名"
       },
       "showVerbose": "显示详细输出",
+      "sketch": {
+        "inoBlueprint": "指定默认 “.ino” 模板文件的绝对路径。如果指定，则该模板文件的内容将被用于 IDE 创建的每一个新 sketch。如果未指定，则使用Arduino默认的内容来创建新 sketch。不可用的模板文件将被自动忽略。**需要重启IDE** 以使此设置生效。"
+      },
       "sketchbook.location": "项目文件夹地址",
       "sketchbook.showAllFiles": "True 则显示项目中的所有项目文件。默认情况下为 False。",
       "survey.notification": "True 则在有调查时应通知用户。默认为 True。",
@@ -357,7 +371,9 @@
       "upload.verbose": "True 则输出详细上传信息。默认情况下为 False。",
       "verifyAfterUpload": "上传后验证代码",
       "window.autoScale": "True 则用户界面随字体大小自动缩放。",
-      "window.zoomLevel": "调整窗口的缩放级别。默认缩放级别为 0，大于（例如 1）或小于（例如 -1）的每个增量表示放大或缩小 20%。输入小数可以更精细的调整缩放级别。"
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "是否替换 {0} 的现有版本？",
     "selectZip": "选择包含要添加的库的 zip 文件",
@@ -385,7 +401,7 @@
       "exportBinary": "导出已编译的二进制文件",
       "moving": "移动",
       "movingMsg": "“{0}” 文件需要位于 “{1}” 项目文件夹中。\n创建此文件夹，移动文件，然后继续？",
-      "new": "新建",
+      "new": "New Sketch",
       "openFolder": "打开文件夹",
       "openRecent": "打开最近",
       "openSketchInNewWindow": "在新窗口打开项目",
@@ -404,15 +420,19 @@
       "verify": "验证",
       "verifyOrCompile": "验证/编译"
     },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
+    },
     "survey": {
       "answerSurvey": "回答问卷",
       "dismissSurvey": "不要再显示",
       "surveyMessage": "请回答这份很短的调查来帮助我们改进。我们重视我们的社区，也希望能够更好地了解我们的支持者。"
     },
     "updateIndexes": {
-      "updateIndexes": "Update Indexes",
-      "updateLibraryIndex": "Update Library Index",
-      "updatePackageIndex": "Update Package Index"
+      "updateIndexes": "更新索引",
+      "updateLibraryIndex": "更新库索引",
+      "updatePackageIndex": "更新包索引"
     },
     "upload": {
       "error": "{0} 错误：{1}"
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI 守护进程离线",
       "offline": "离线",
       "quitTitle": "你确定你要退出吗？"
-    },
-    "debug": {
-      "start": "开始...",
-      "startError": "启动调试会话时出错，请检查日志以了解更多详细信息。",
-      "typeNotSupported": "不支持调试会话的类型 “{0}”。"
     },
     "editor": {
       "unsavedTitle": "未保存–{0}"

@@ -119,6 +119,11 @@
       "syncEditSketches": "Sincronizar e editar seus Sketches no Arduino Cloud",
       "visitArduinoCloud": "Visite Arduino Cloud para criar Cloud Sketches."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "All",
       "contributed": "Contribuído",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Impossível fechar websocket",
       "unableToConnectToWebSocket": "Impossível conectar ao websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Rede",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Mostrar a saída detalhada durante",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Localização dos Sketchbooks",
       "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de sketch dentro do sketch. Falso é padrão.",
       "survey.notification": "Verdadeiro se o usuário deve ser notificado se uma pesquisa estiver disponível. Verdadeiro por padrão",
@@ -357,7 +371,9 @@
       "upload.verbose": "Verdadeiro para saída de upload detalhada. Falsa é padrão.",
       "verifyAfterUpload": "Verificar o código após enviar",
       "window.autoScale": "Verdadeiro se a interface do usuário for dimensionada automaticamente com o tamanho da fonte.",
-      "window.zoomLevel": "Ajuste o nível de zoom da janela. O tamanho original é 0 e cada incremento acima (por exemplo, 1) ou abaixo (por exemplo, -1) representa um zoom 20% maior ou menor. Você também pode inserir decimais para ajustar o nível de zoom para uma maior precisão."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Substituir a versão existente de {0}?",
     "selectZip": "Selecione um arquivo zip contendo a biblioteca que deseja adicionar",
@@ -385,7 +401,7 @@
       "exportBinary": "Exportar Binário Compilado",
       "moving": "Movendo",
       "movingMsg": "O ficheiro \"{0}\" tem que estar dentro de uma pasta de esboços chamada \"{1}\".\nCriar esta pasta, mover o ficheiro e continuar?",
-      "new": "Novo",
+      "new": "New Sketch",
       "openFolder": "Abrir Pasta",
       "openRecent": "Abrir Recente",
       "openSketchInNewWindow": "Abrir sketch em uma nova janela",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Não é possível encontrar dados de usuário para placa conectada",
       "verify": "Verificar",
       "verifyOrCompile": "Verificar/Compilar"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Responder a pesquisa",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "quitTitle": "Você tem certeza que quer sair?"
-    },
-    "debug": {
-      "start": "Iniciar...",
-      "startError": "Ocorreu um erro ao iniciar a sessão de depuração, verifique os logs para obter mais detalhes.",
-      "typeNotSupported": "O tipo de sessão de depuração \"{0}\" não é suportado."
     },
     "editor": {
       "unsavedTitle": "Não salvo – \"1{0}\""

@@ -3,7 +3,12 @@ import { Event, Emitter } from '@theia/core/lib/common/event';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { NotificationCenter } from '../notification-center';
-import { Board, BoardsService, ExecutableService } from '../../common/protocol';
+import {
+  Board,
+  BoardsService,
+  ExecutableService,
+  Sketch,
+} from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   URI,
@@ -13,12 +18,11 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
-import { MainMenuManager } from '../../common/main-menu-manager';
-
 const COMPILE_FOR_DEBUG_KEY = 'arduino-compile-for-debug';
+
 @injectable()
 export class Debug extends SketchContribution {
   @inject(HostedPluginSupport)
@@ -35,9 +39,6 @@ export class Debug extends SketchContribution {
 
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
-
-  @inject(MainMenuManager)
-  private readonly mainMenuManager: MainMenuManager;
 
   /**
    * If `undefined`, debugging is enabled. Otherwise, the reason why it's disabled.
@@ -186,7 +187,7 @@ export class Debug extends SketchContribution {
     if (!CurrentSketch.isValid(sketch)) {
       return;
     }
-    const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(
+    const ideTempFolderUri = await this.sketchesService.getIdeTempFolderUri(
       sketch
     );
     const [cliPath, sketchPath, configPath] = await Promise.all([
@@ -203,7 +204,28 @@ export class Debug extends SketchContribution {
       sketchPath,
       configPath,
     };
-    return this.commandService.executeCommand('arduino.debug.start', config);
+    try {
+      await this.commandService.executeCommand('arduino.debug.start', config);
+    } catch (err) {
+      if (await this.isSketchNotVerifiedError(err, sketch)) {
+        const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
+        const answer = await this.messageService.error(
+          nls.localize(
+            'arduino/debug/sketchIsNotCompiled',
+            "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?",
+            sketch.name
+          ),
+          yes
+        );
+        if (answer === yes) {
+          this.commandService.executeCommand('arduino-verify-sketch');
+        }
+      } else {
+        this.messageService.error(
+          err instanceof Error ? err.message : String(err)
+        );
+      }
+    }
   }
 
   get compileForDebug(): boolean {
@@ -215,7 +237,24 @@ export class Debug extends SketchContribution {
     const oldState = this.compileForDebug;
     const newState = !oldState;
     window.localStorage.setItem(COMPILE_FOR_DEBUG_KEY, String(newState));
-    this.mainMenuManager.update();
+    this.menuManager.update();
+  }
+
+  private async isSketchNotVerifiedError(
+    err: unknown,
+    sketch: Sketch
+  ): Promise<boolean> {
+    if (err instanceof Error) {
+      try {
+        const tempBuildPaths = await this.sketchesService.tempBuildPath(sketch);
+        return tempBuildPaths.some((tempBuildPath) =>
+          err.message.includes(tempBuildPath)
+        );
+      } catch {
+        return false;
+      }
+    }
+    return false;
   }
 }
 export namespace Debug {

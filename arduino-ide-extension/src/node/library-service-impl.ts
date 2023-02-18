@@ -1,4 +1,14 @@
-import { injectable, inject } from '@theia/core/shared/inversify';
+import { ILogger, notEmpty } from '@theia/core';
+import { FileUri } from '@theia/core/lib/node';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { duration } from '../common/decorators';
+import {
+  NotificationServiceServer,
+  ResponseService,
+  sortComponents,
+  SortGroup,
+} from '../common/protocol';
+import { Installable } from '../common/protocol/installable';
 import {
   LibraryDependency,
   LibraryLocation,
@@ -6,29 +16,24 @@ import {
   LibrarySearch,
   LibraryService,
 } from '../common/protocol/library-service';
-import { CoreClientAware } from './core-client-provider';
 import { BoardDiscovery } from './board-discovery';
 import {
   InstalledLibrary,
   Library,
+  LibraryInstallLocation,
   LibraryInstallRequest,
   LibraryListRequest,
   LibraryListResponse,
   LibraryLocation as GrpcLibraryLocation,
   LibraryRelease,
   LibraryResolveDependenciesRequest,
-  LibraryUninstallRequest,
-  ZipLibraryInstallRequest,
   LibrarySearchRequest,
   LibrarySearchResponse,
-  LibraryInstallLocation,
+  LibraryUninstallRequest,
+  ZipLibraryInstallRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/lib_pb';
-import { Installable } from '../common/protocol/installable';
-import { ILogger, notEmpty } from '@theia/core';
-import { FileUri } from '@theia/core/lib/node';
-import { ResponseService, NotificationServiceServer } from '../common/protocol';
+import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress } from './grpc-progressible';
-import { duration } from '../common/decorators';
 
 @injectable()
 export class LibraryServiceImpl
@@ -108,7 +113,10 @@ export class LibraryServiceImpl
 
     const typePredicate = this.typePredicate(options);
     const topicPredicate = this.topicPredicate(options);
-    return items.filter((item) => typePredicate(item) && topicPredicate(item));
+    const libraries = items.filter(
+      (item) => typePredicate(item) && topicPredicate(item)
+    );
+    return sortComponents(libraries, librarySortGroup);
   }
 
   private typePredicate(
@@ -373,22 +381,26 @@ export class LibraryServiceImpl
 
     // stop the board discovery
     await this.boardDiscovery.stop();
-
-    const resp = client.zipLibraryInstall(req);
-    resp.on(
-      'data',
-      ExecuteWithProgress.createDataCallback({
-        progressId,
-        responseService: this.responseService,
-      })
-    );
-    await new Promise<void>((resolve, reject) => {
-      resp.on('end', () => {
-        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
-        resolve();
+    try {
+      const resp = client.zipLibraryInstall(req);
+      resp.on(
+        'data',
+        ExecuteWithProgress.createDataCallback({
+          progressId,
+          responseService: this.responseService,
+        })
+      );
+      await new Promise<void>((resolve, reject) => {
+        resp.on('end', resolve);
+        resp.on('error', reject);
       });
-      resp.on('error', reject);
-    });
+      await this.refresh(); // let the CLI re-scan the libraries
+      this.notificationServer.notifyLibraryDidInstall({
+        item: 'zip-install',
+      });
+    } finally {
+      this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
+    }
   }
 
   async uninstall(options: {
@@ -444,7 +456,6 @@ function toLibrary(
     name: '',
     exampleUris: [],
     installable: false,
-    deprecated: false,
     location: 0,
     ...pkg,
 
@@ -457,4 +468,15 @@ function toLibrary(
     category: lib.getCategory(),
     types: lib.getTypesList(),
   };
+}
+
+// Libraries do not have a deprecated property. The deprecated information is inferred if 'Retired' is in 'types'
+function librarySortGroup(library: LibraryPackage): SortGroup {
+  const types: string[] = [];
+  for (const type of ['Arduino', 'Retired']) {
+    if (library.types.includes(type)) {
+      types.push(type);
+    }
+  }
+  return types.join('-') as SortGroup;
 }

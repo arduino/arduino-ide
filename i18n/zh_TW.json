@@ -119,6 +119,11 @@
       "syncEditSketches": "同步和編輯您的Arduino Clou草稿",
       "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "所有",
       "contributed": "已貢獻",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "無法關閉 websocket",
       "unableToConnectToWebSocket": "無法連接到 websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "網路",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "顯示詳細輸出",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "草稿資料夾位置",
       "sketchbook.showAllFiles": "True則顯示所有草稿中的草稿檔案。預設為false。",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "True則輸出詳細上傳資訊。預設為False",
       "verifyAfterUpload": "上傳後驗證程式",
       "window.autoScale": "True則使用者介面隨字體大小自動縮放。",
-      "window.zoomLevel": "調整視窗的縮放大小。預設大小為0，增加(例如1)或者減少(例如-1)代表縮放增加或減少20%。可以自行輸入小數調整更精細的大小。"
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "取代 1{0} 的現有版本？",
     "selectZip": "選擇要加入函示庫的zip檔案",
@@ -385,7 +401,7 @@
       "exportBinary": "會出已編譯的二進位檔",
       "moving": "移動",
       "movingMsg": "\"{0}\"必須在命名為\"{1}\"的草稿資料夾中。建立這個資料夾，移動草稿並繼續？",
-      "new": "新增",
+      "new": "New Sketch",
       "openFolder": "打開資料夾",
       "openRecent": "開啟最近的",
       "openSketchInNewWindow": "在新視窗開啟草稿",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "找不到已連接開發版中的用戶字段",
       "verify": "驗證",
       "verifyOrCompile": "驗證/編譯"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "回覆問卷",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI 命令列常駐程式離線",
       "offline": "離線",
       "quitTitle": "你確定要退出嗎？"
-    },
-    "debug": {
-      "start": "開始 ....",
-      "startError": "除錯階段出現錯誤，更多細節請檢查日誌內容",
-      "typeNotSupported": "不支援 \" 1{0} \" 除錯階段型態"
     },
     "editor": {
       "unsavedTitle": "1[0] –尚未儲存"

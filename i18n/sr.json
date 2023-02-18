@@ -119,6 +119,11 @@
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
     },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+    },
     "common": {
       "all": "All",
       "contributed": "Contributed",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "Мрежа",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "Прикажи детаљан испис током",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "Локација радне свеске",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "True for verbose upload output. False by default.",
       "verifyAfterUpload": "Провјери код након спуштања",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
-      "window.zoomLevel": "Подесите ниво зумирања прозора. Оригинална величина је 0 и сваки корак изнад (нпр. 1) или испод (нпр. -1) представља зумирање за 20% веће или мање. Такође можете да унесете децимале да бисте подесили ниво зумирања са бољом прецизношћу."
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "Замјени тренутну верзију {0}?",
     "selectZip": "Одабери zip датотеку са библиотеком коју желиш да додаш",
@@ -385,7 +401,7 @@
       "exportBinary": "Export Compiled Binary",
       "moving": "Премјешта се",
       "movingMsg": "Датотека \"{0}\" мора да буде унутар радног директоријума \"{1}\".\nКреирај овај директоријум, премјести датотеку, и настави?",
-      "new": "Нови",
+      "new": "New Sketch",
       "openFolder": "Отвори директоријум",
       "openRecent": "Отвори недавно",
       "openSketchInNewWindow": "Отвори рад у новом прозору",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "Није могуће пронаћи корисничка поља за повезану плочу.",
       "verify": "Провјери",
       "verifyOrCompile": "Провјери/Преведи"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "Answer survey",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Није на мрежи",
       "quitTitle": "Are you sure you want to quit?"
-    },
-    "debug": {
-      "start": "Почни...",
-      "startError": "There was an error starting the debug session, check the logs for more details.",
-      "typeNotSupported": "The debug session type \"{0}\" is not supported."
     },
     "editor": {
       "unsavedTitle": "Несачуван – {0} "

@@ -3,13 +3,13 @@ import { RecursivePartial } from '@theia/core/lib/common/types';
 export const ConfigServicePath = '/services/config-service';
 export const ConfigService = Symbol('ConfigService');
 export interface ConfigService {
-  getVersion(): Promise<
-    Readonly<{ version: string; commit: string; status?: string }>
-  >;
-  getCliConfigFileUri(): Promise<string>;
-  getConfiguration(): Promise<Config>;
+  getVersion(): Promise<Readonly<string>>;
+  getConfiguration(): Promise<ConfigState>;
   setConfiguration(config: Config): Promise<void>;
 }
+export type ConfigState =
+  | { config: undefined; messages: string[] }
+  | { config: Config; messages?: string[] };
 
 export interface Daemon {
   readonly port: string | number;
@@ -60,8 +60,10 @@ export namespace Network {
     try {
       // Patter: PROTOCOL://USER:PASS@HOSTNAME:PORT/
       const { protocol, hostname, password, username, port } = new URL(raw);
+      // protocol in URL object contains a trailing colon
+      const newProtocol = protocol.replace(/:$/, '');
       return {
-        protocol,
+        protocol: newProtocol,
         hostname,
         password,
         username,
@@ -117,7 +119,16 @@ export interface Config {
   readonly network: Network;
 }
 export namespace Config {
-  export function sameAs(left: Config, right: Config): boolean {
+  export function sameAs(
+    left: Config | undefined,
+    right: Config | undefined
+  ): boolean {
+    if (!left) {
+      return !right;
+    }
+    if (!right) {
+      return false;
+    }
     const leftUrls = left.additionalUrls.sort();
     const rightUrls = right.additionalUrls.sort();
     if (leftUrls.length !== rightUrls.length) {
@@ -148,7 +159,16 @@ export namespace AdditionalUrls {
   export function stringify(additionalUrls: AdditionalUrls): string {
     return additionalUrls.join(',');
   }
-  export function sameAs(left: AdditionalUrls, right: AdditionalUrls): boolean {
+  export function sameAs(
+    left: AdditionalUrls | undefined,
+    right: AdditionalUrls | undefined
+  ): boolean {
+    if (!left) {
+      return !right;
+    }
+    if (!right) {
+      return false;
+    }
     if (left.length !== right.length) {
       return false;
     }

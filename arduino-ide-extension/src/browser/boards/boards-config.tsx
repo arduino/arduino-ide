@@ -6,6 +6,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import {
   Board,
   Port,
+  BoardConfig as ProtocolBoardConfig,
   BoardWithPackage,
 } from '../../common/protocol/boards-service';
 import { NotificationCenter } from '../notification-center';
@@ -18,10 +19,7 @@ import { nls } from '@theia/core/lib/common';
 import { FrontendApplicationState } from '@theia/core/lib/common/frontend-application-state';
 
 export namespace BoardsConfig {
-  export interface Config {
-    selectedBoard?: Board;
-    selectedPort?: Port;
-  }
+  export type Config = ProtocolBoardConfig;
 
   export interface Props {
     readonly boardsServiceProvider: BoardsServiceProvider;

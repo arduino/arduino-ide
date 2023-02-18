@@ -9,7 +9,7 @@ import { CloudUserCommands } from '../../auth/cloud-user-commands';
 import { NodeProps } from '@theia/core/lib/browser/tree/tree-widget';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { CompositeTreeNode } from '@theia/core/lib/browser';
-import { shell } from 'electron';
+import { shell } from '@theia/core/electron-shared/@electron/remote';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
 

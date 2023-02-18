@@ -1,31 +1,17 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import {
   Contribution,
   Command,
   MenuModelRegistry,
   KeybindingRegistry,
 } from './contribution';
-import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import {
-  CommandRegistry,
-  DisposableCollection,
-  MaybePromise,
-  nls,
-} from '@theia/core/lib/common';
-
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { CommandRegistry, MaybePromise, nls } from '@theia/core/lib/common';
 import { Settings } from '../dialogs/settings/settings';
-import { MainMenuManager } from '../../common/main-menu-manager';
 import debounce = require('lodash.debounce');
 
 @injectable()
 export class InterfaceScale extends Contribution {
-  @inject(MenuModelRegistry)
-  private readonly menuRegistry: MenuModelRegistry;
-
-  @inject(MainMenuManager)
-  private readonly mainMenuManager: MainMenuManager;
-
-  private readonly menuActionsDisposables = new DisposableCollection();
   private fontScalingEnabled: InterfaceScale.FontScalingEnabled = {
     increase: true,
     decrease: true,
@@ -62,63 +48,22 @@ export class InterfaceScale extends Contribution {
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
-    this.menuActionsDisposables.dispose();
-    const increaseFontSizeMenuAction = {
+    registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
       commandId: InterfaceScale.Commands.INCREASE_FONT_SIZE.id,
       label: nls.localize(
         'arduino/editor/increaseFontSize',
         'Increase Font Size'
       ),
       order: '0',
-    };
-    const decreaseFontSizeMenuAction = {
+    });
+    registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
       commandId: InterfaceScale.Commands.DECREASE_FONT_SIZE.id,
       label: nls.localize(
         'arduino/editor/decreaseFontSize',
         'Decrease Font Size'
       ),
       order: '1',
-    };
-
-    if (this.fontScalingEnabled.increase) {
-      this.menuActionsDisposables.push(
-        registry.registerMenuAction(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          increaseFontSizeMenuAction
-        )
-      );
-    } else {
-      this.menuActionsDisposables.push(
-        registry.registerMenuNode(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          new PlaceholderMenuNode(
-            ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-            increaseFontSizeMenuAction.label,
-            { order: increaseFontSizeMenuAction.order }
-          )
-        )
-      );
-    }
-    if (this.fontScalingEnabled.decrease) {
-      this.menuActionsDisposables.push(
-        this.menuRegistry.registerMenuAction(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          decreaseFontSizeMenuAction
-        )
-      );
-    } else {
-      this.menuActionsDisposables.push(
-        this.menuRegistry.registerMenuNode(
-          ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-          new PlaceholderMenuNode(
-            ArduinoMenus.EDIT__FONT_CONTROL_GROUP,
-            decreaseFontSizeMenuAction.label,
-            { order: decreaseFontSizeMenuAction.order }
-          )
-        )
-      );
-    }
-    this.mainMenuManager.update();
+    });
   }
 
   private updateFontScalingEnabled(): void {
@@ -153,7 +98,7 @@ export class InterfaceScale extends Contribution {
     );
     if (isChanged) {
       this.fontScalingEnabled = fontScalingEnabled;
-      this.registerMenus(this.menuRegistry);
+      this.menuManager.update();
     }
   }
 

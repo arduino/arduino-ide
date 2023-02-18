@@ -6,9 +6,9 @@
     },
     "board": {
       "board": "اللوحة {0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "أختر متحكم و منفذ مختلفين ",
       "boardInfo": "معلومات اللوحة",
-      "boards": "boards",
+      "boards": "المتحكمات",
       "configDialog1": "اختر لوحة و منفذ معا اذا اردت ان ترفع السكتش",
       "configDialog2": "اذا قمت باختيار لوحة فقط ستسطيع ان تترجم لكن بدون ان ترفع المشروع",
       "couldNotFindPreviouslySelected": "تعذر ايجاد اللوحة '{0}'  المختارة مسبقا في المنصة المثبتة '{1}' . الرجاء اعادة اختيار اللوحة التي تريد استعمالها يدويا . هل تريد باعادة الاختيار الان؟",
@@ -26,15 +26,15 @@
       "pleasePickBoard": "من فضلك اختر لوحة متصلة على المنفذ الذي اخترته",
       "port": "المنفذ {0}",
       "portLabel": "Port: {0}",
-      "ports": "ports",
+      "ports": "منافذ",
       "programmer": "المبرمجة",
       "reselectLater": "اعد الاختيار لاحقا",
-      "searchBoard": "Search board",
+      "searchBoard": "أبحث عن متحكم",
       "selectBoard": "اختر لوحة",
       "selectBoardForInfo": "الرجاء اختيار لوحة من احل الحصول على معلومات اللوحة",
       "selectPortForInfo": "الرجاء اختيار منفذ من اجل الحصول على معلومات اللوحة",
       "showAllAvailablePorts": "يظهر كل المنافذ المتاحة عند تفعيله",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "أظهر جميع المنافذ",
       "succesfullyInstalledPlatform": "تم تثبيت المنصة {0}:{1} بنجاح",
       "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح",
       "typeOfPorts": "{0} ports"
@@ -118,6 +118,11 @@
       "sync": "مزامنة",
       "syncEditSketches": "المزامنة و التعديل على مشاريعك في Arduino Cloud",
       "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
+    },
+    "cloudSketch": {
+      "creating": "Creating remote sketch '{0}'...",
+      "new": "New Remote Sketch",
+      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
     },
     "common": {
       "all": "All",
@@ -299,6 +304,12 @@
       "unableToCloseWebSocket": "تعذر اغلاق مقبس الويب",
       "unableToConnectToWebSocket": "تعذر الاتصال بمقبس الويب"
     },
+    "newCloudSketch": {
+      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
+      "newSketchTitle": "Name of a new Remote Sketch",
+      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
+      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+    },
     "portProtocol": {
       "network": "شبكة",
       "serial": "Serial"
@@ -349,6 +360,9 @@
         "username": "Username"
       },
       "showVerbose": "اظهر خرج مطوّل خلال",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
       "sketchbook.location": "موقع ملف المشاريع",
       "sketchbook.showAllFiles": "True لعرض كل مجلدات مشاريع داخل المشروع . False افتراضيا",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
@@ -357,7 +371,9 @@
       "upload.verbose": "True لخرج الرفع المطول . False افتراضيا",
       "verifyAfterUpload": "التحقق من الكود بعد الرفع",
       "window.autoScale": "True اذا كان مقياس الواجهة يتزامن تلقائيا مع حجم الخط ",
-      "window.zoomLevel": "تعديل درجة التكبير للنافذة . الحجم الاصلي 0 و كل زيادة فوقه (مثلا 1) او اقل (مثلا -1) تمثل تكبير بدرجة 20% اكبر او اصغر . تستطيع ايضا ادخال فواصل لتعديل درجة التكبير بدقة اكبر"
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
     },
     "replaceMsg": "هل تريد استبدال النسخة الحالية من {0} ؟",
     "selectZip": "اختر ملف .zip يحوي المكتبة التي تريد اضافتها",
@@ -385,7 +401,7 @@
       "exportBinary": "تصدير الملف الثنائي المترجم",
       "moving": "يتم النقل",
       "movingMsg": "الملف \"{0}\" يجب ان يكون داخل مجلد مشروع مسمى \"{1}\"\nهل انشئ المجلد , ثم انقل الملف و اكمل ؟",
-      "new": "جديد",
+      "new": "New Sketch",
       "openFolder": "فتح المجلد",
       "openRecent": "فُتِحَ مؤخرا ",
       "openSketchInNewWindow": "فتح المشروع في نافذة جديدة",
@@ -403,6 +419,10 @@
       "userFieldsNotFoundError": "تعذر ايجاد حقول المستخدم للوحة المتصلة",
       "verify": "تحقق",
       "verifyOrCompile": "تحقق/ترجم"
+    },
+    "sketchbook": {
+      "newRemoteSketch": "New Remote Sketch",
+      "newSketch": "New Sketch"
     },
     "survey": {
       "answerSurvey": "الاجابة على الاستبيان",
@@ -431,11 +451,6 @@
       "daemonOffline": "CLI Daemon غير متصل",
       "offline": "غير متصل",
       "quitTitle": "هل انت متاكد بانك تريد الخروج؟"
-    },
-    "debug": {
-      "start": "البدء...",
-      "startError": "لقد حصل خطأ اثناء بدأ جلسة التصحيح . تحقق من السجلات للمزيد من المعلومات",
-      "typeNotSupported": "جلسة التصحيح من نوع \"{0}\" غير مدعومة"
     },
     "editor": {
       "unsavedTitle": "غير محفوظ – {0}"

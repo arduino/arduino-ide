@@ -30,7 +30,6 @@ export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
       searchable: service,
       installable: service,
       itemLabel: (item: BoardsPackage) => item.name,
-      itemDeprecated: (item: BoardsPackage) => item.deprecated,
       itemRenderer,
       filterRenderer,
       defaultSearchOptions: { query: '', type: 'All' },

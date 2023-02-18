@@ -6,7 +6,7 @@ import { EditorWidgetFactory as TheiaEditorWidgetFactory } from '@theia/editor/l
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { SketchesService, Sketch } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 
@@ -20,7 +20,7 @@ export class EditorWidgetFactory extends TheiaEditorWidgetFactory {
 
   protected override async createEditor(
     uri: URI,
-    options: NavigatableWidgetOptions
+    options?: NavigatableWidgetOptions
   ): Promise<EditorWidget> {
     const widget = await super.createEditor(uri, options);
     return this.maybeUpdateCaption(widget);
