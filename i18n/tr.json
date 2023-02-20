@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Versiyon: {0}\nDate: {1}{2}\nCLI Versiyonu: {3}{4} [{5}]\n\n{6}",
+      "detail": "Versiyon: {0}\nTarih: {1}{2}\nCLI Versiyonu: {3}\n\n{4}",
       "label": "{0} Hakkında"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "Mevcut seçili \"{2}\" kartı için \"{0} {1}\" çekirdeğinin kurulması gerekiyor. Bunu şimdi kurmak istiyor musunuz?",
       "noBoardsFound": "\"{0}\" için kart bulunamadı",
       "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
+      "noNativeSerialPort": "Yerel seri port, veri alınamıyor.",
       "noPortsDiscovered": "Port bulunamadı",
       "noPortsSelected": "'{0}' kartı için port seçilmedi",
+      "nonSerialPort": "Seri port değil, veri alınamıyor.",
       "noneSelected": "Kart seçilmedi.",
       "openBoardsConfig": "Başka Kart ve Port Seç",
-      "platformMissing": "Seçili '{0}' kart için platform kurulmadı.",
       "pleasePickBoard": "Lütfen seçtiğiniz porta bağlı kartı seçin.",
       "port": "Port{0}",
       "portLabel": "Port{0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Daha sonra tekrar seç",
       "searchBoard": "Kart ara",
       "selectBoard": "Kart Seç",
-      "selectBoardForInfo": "Kart bilgisi almak için lütfen bir kart seçin.",
       "selectPortForInfo": "Kart bilgisi almak için lütfen bir port seçin.",
       "showAllAvailablePorts": "Etkinleştirildiğinde tüm mevcut portları görüntüler",
       "showAllPorts": "Tüm portları göster",
       "succesfullyInstalledPlatform": "Platform başarıyla kuruldu {0}:{1}",
       "succesfullyUninstalledPlatform": "Platform başarıyla kaldırıldı {0}:{1}",
-      "typeOfPorts": "{0} portlar"
+      "typeOfPorts": "{0} portlar",
+      "unknownBoard": "Bilinmeyen kart"
     },
     "boardsManager": "Kart Yöneticisi",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Hesap",
       "chooseSketchVisibility": "Eskizinizin görünürlüğünü seçin",
+      "cloudSketchbook": "Bulut Eskiz Defteri",
       "connected": "Bağlandı",
       "continue": "Devam et",
       "donePulling": "Çekme bitti: ‘{0}’.",
@@ -108,10 +110,9 @@
       "pushSketch": "Eskizi Gönder",
       "pushSketchMsg": "Bu bir Herkese Açık Eskiz. Göndermeden önce tüm hassas bilgilerin arduino_secrets.h dosyaları içinde tanımlandığından emin olun. Eskizleri Paylaş panelinden gizli yapabilirsiniz.",
       "remote": "Uzak",
-      "remoteSketchbook": "Bulut Eskiz Defteri",
       "share": "Paylaş...",
       "shareSketch": "Eskizi Paylaş",
-      "showHideRemoveSketchbook": "Bulut Eskiz Defteri'ni Göster/Gizle",
+      "showHideSketchbook": "Bulut Eskiz Defteri'ni Göster/Gizle",
       "signIn": "GİRİŞ YAP",
       "signInToCloud": "Arduino Cloud'a giriş yap",
       "signOut": "Çıkış Yap",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Bulut Eskizleri oluşturmak için Arduino Cloud'u ziyaret edin."
     },
     "cloudSketch": {
-      "creating": "Uzak eskiz '{0}' oluşturuluyor...",
-      "new": "Yeni Uzak Eskiz",
-      "synchronizing": "Eskiz defteri eşitleniyor, '{0}' çekiliyor..."
+      "alreadyExists": "'{0}' adlı bulut eskiz zaten mevcut.",
+      "creating": "Bulut eskiz '{0}' oluşturuluyor...",
+      "new": "Yeni Bulut Eskiz",
+      "notFound": "Bulut eskiz '{0}' çekilemedi. Böyle bir eskiz yok.",
+      "pulling": "Eskiz defteri eşitleniyor, '{0}' çekiliyor...",
+      "pushing": "Eskiz defteri eşitleniyor, '{0}' gönderiliyor...",
+      "renaming": "Bulut eskiz adı '{0}' dan '{1}''a değiştiriliyor...",
+      "synchronizingSketchbook": "Eskiz defteri eşitleniyor..."
     },
     "common": {
       "all": "Tümü",
@@ -157,6 +163,11 @@
       "uninstallMsg": "{0} kaldırılsın mı?",
       "version": "Versiyon {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "'{0}': {1} konumundaki eskiz defterine erişilemedi"
+      }
+    },
     "contributions": {
       "addFile": "Dosya Ekle",
       "fileAdded": "Eskize bir dosya eklendi.",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",
       "noPlatformInstalledFor": "'{0}' için platform kurulmadı",
-      "optimizeForDebugging": "Debug için Optimize et"
+      "optimizeForDebugging": "Debug için Optimize et",
+      "sketchIsNotCompiled": "Hata ayıklama -debug- oturumuna başlamadan önce '{0}' eskizi doğrulanmalıdır. Lütfen eskizi doğrulayın ve hata ayıklamayı yeniden başlatın. Eskizi şimdi doğrulamak ister misiniz?"
     },
     "dialog": {
       "dontAskAgain": "Tekrar sorma"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Websocket'e bağlanılamadı"
     },
     "newCloudSketch": {
-      "invalidSketchName": "İsim harfler, rakamlar veya altçizgiden oluşmalıdır. Azami uzunluk 36 karakterdir.",
-      "newSketchTitle": "Yeni bir Uzak Eskiz'in adı",
-      "notFound": "Uzak eskiz '{0}' çekilemedi. Böyle bir eskiz yok.",
-      "sketchAlreadyExists": "'{0}' adlı uzak eskiz zaten mevcut."
+      "newSketchTitle": "Yeni Bulut Eskiz'in adı"
     },
     "portProtocol": {
       "network": "Ağ",
@@ -352,6 +361,7 @@
       "manualProxy": "Elle vekil ayarlama",
       "network": "Ağ",
       "newSketchbookLocation": "Yeni eskiz defteri konumu seç",
+      "noCliConfig": "CLI yapılandırması yüklenemedi",
       "noProxy": "Vekil yok",
       "proxySettings": {
         "hostname": "Host adı",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Kullanımdan kalktı. Yerine 'window.zoomLevel' kullanın."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "Bulut Eskiz'in yeni adı"
     },
     "replaceMsg": "{0}'un mevcut versiyonu değiştirilsin mi?",
     "selectZip": "Eklemek istediğiniz kütüphaneyi içeren ZIP dosyasını seçin",
@@ -398,13 +411,22 @@
       "createdArchive": "'{0}' arşivi oluşturuldu.",
       "doneCompiling": "Derleme bitti.",
       "doneUploading": "Yükleme bitti.",
+      "editInvalidSketchFolderLocationQuestion": "Eskizi farklı bir konuma kaydetmeyi denemek ister misiniz?",
+      "editInvalidSketchFolderQuestion": "Eskizi farklı bir isimle kaydetmeyi denemek ister misiniz?",
       "exportBinary": "Derlenmiş Dosyayı Dışa Aktar",
+      "invalidCloudSketchName": "İsim bir harf veya rakam ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 36 karakterdir.",
+      "invalidSketchFolderLocationDetails": "Bir eskizi kendi içindeki bir klasöre kaydedemezsiniz.",
+      "invalidSketchFolderLocationMessage": "Hatalı eskiz klasörü konumu: {0}",
+      "invalidSketchFolderNameMessage": "Hatalı eskiz klasörü adı: {0}",
+      "invalidSketchName": "İsim bir harf veya rakam ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 63 karakterdir.",
       "moving": "Taşınıyor",
       "movingMsg": "\"{0}\" dosyasının \"{1}\" isminde bir eskiz klasörünün içinde olması gerekiyor.\nKlasörü oluştur, dosyayı taşı ve devam et?",
       "new": "Yeni Eskiz",
+      "noTrailingPeriod": "Dosya adı nokta ile bitemez",
       "openFolder": "Klasörü Aç",
       "openRecent": "Yakın Geçmiş",
       "openSketchInNewWindow": "Eskizi Yeni Pencerede Aç",
+      "reservedFilename": "'{0}' rezerve bir isimdir, kullanılamaz.",
       "saveFolderAs": "Eskiz klasörünü farklı kaydet...",
       "saveSketch": "Daha sonra tekrar açmak için eskizinizi kaydedin.",
       "saveSketchAs": "Eskiz klasörünü farklı kaydet...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Doğrula/Derle"
     },
     "sketchbook": {
-      "newRemoteSketch": "Yeni Uzak Eskiz",
+      "newCloudSketch": "Yeni Bulut Eskiz",
       "newSketch": "Yeni Eskiz"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "İptal",
       "enterField": "{0} gir",
       "upload": "Yükle"
+    },
+    "validateSketch": {
+      "abortFixMessage": "Eskiz hala hatalı. Kalan sorunları çözmek ister misiniz? '{0}' butonuna tıklarsanız yeni bir eskiz açılır.",
+      "abortFixTitle": "Hatalı eskiz",
+      "renameSketchFileMessage": "'{0}' adlı eskiz kullanılamaz. {1} Eskiz dosyasını şimdi yeniden adlandırmak ister misiniz?",
+      "renameSketchFileTitle": "Hatalı eskiz dosya adı",
+      "renameSketchFolderMessage": "'{0}' eskizi kullanılamaz. {1} Bu mesajdan kurtulmak için eskizi yeniden adlandırın. Eskizi şimdi yeniden adlandırmak istiyor musunuz?",
+      "renameSketchFolderTitle": "Hatalı eskiz adı"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' zaten mevcut."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Genişlet"
     },
     "workspace": {
-      "deleteCurrentSketch": "Mevcut eskizi silmek istiyor musunuz?",
+      "deleteCloudSketch": "'{0}' bulut eskizi Arduino sunucularından ve yerel geçici saklamadan kalıcı olarak silinecek. Bu işlem geri alınamaz. Mevcut eskizi silmek istiyor musunuz?",
+      "deleteCurrentSketch": "'{0}' eskiz kalıcı olarak silinecek. Bu işlem geri alınamaz. Mevcut eskizi silmek istiyor musunuz?",
       "fileNewName": "Yeni dosya için isim",
-      "invalidExtension": ".{0}  geçerli bir uzantı değil",
-      "invalidFilename": "Hatalı dosya adı.",
+      "invalidExtension": ".{0} geçerli bir uzantı değil",
       "newFileName": "Dosya için yeni isim"
     }
   }

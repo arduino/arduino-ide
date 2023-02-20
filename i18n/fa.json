@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "نسخه :{0}\nتاریخ: {1} {2}\nنسخه CLI : {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "درباره {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "هسته \"{0}{1}\" باید برای برد \"{2}\" انتخاب شده فعلی نصب شود. آیا الان می خواهید نصبش کنید؟",
       "noBoardsFound": "هیچ بردی پیدا نشد برای{0}",
       "noFQBN": "FQBN برای برد انتخاب شده \"{0}\" موجود نیست. آیا هسته مربوطه را نصب کرده اید؟",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "هیچ پورتی پیدا نشد",
       "noPortsSelected": "هیچ پورتی برای برد انتخاب نشده است.{0}",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "هیچ بردی انتخاب نشده است.",
       "openBoardsConfig": "انتخاب سایر برد ها و پورت ها",
-      "platformMissing": "پلت فرم برای برد انتخابی '{0}' نصب نشده است.",
       "pleasePickBoard": "لطفاً یک برد متصل به پورتی که انتخاب کرده اید را انتخاب کنید.",
       "port": "پورت {0}",
       "portLabel": "پورت: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "بعدا انتخاب کنید",
       "searchBoard": "جستجوی بورد",
       "selectBoard": "انتخاب برد",
-      "selectBoardForInfo": "لطفاً یک برد را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
       "selectPortForInfo": "لطفاً یک پورت را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
       "showAllAvailablePorts": "نمایش تمام پورت های موجود در صورت فعال بودن",
       "showAllPorts": "نمایش تمام پورت ها",
       "succesfullyInstalledPlatform": "نصب پلتفرم موفقیت آمیز بود {0}:{1}",
       "succesfullyUninstalledPlatform": "لغو نصب پلتفرم موفقیت آمیز بود. {0}:{1}",
-      "typeOfPorts": "پورت ها{0}"
+      "typeOfPorts": "پورت ها{0}",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "مدیریت برد ها",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "حساب کاربری",
       "chooseSketchVisibility": "قابلیت مشاهده طرح خود را انتخاب کنید:",
+      "cloudSketchbook": "منبع ابری طرح ها",
       "connected": "متصل",
       "continue": "ادامه",
       "donePulling": "پایان دریافت {0}",
@@ -108,10 +110,9 @@
       "pushSketch": "ارسال طرح",
       "pushSketchMsg": "این یک طرح عمومی است. قبل از ارسال، مطمئن شوید که اطلاعات حساس در فایل‌های arduino_secrets.h تعریف شده است. می‌توانید از پانل اشتراک‌گذاری یک طرح را خصوصی کنید.",
       "remote": "از راه دور",
-      "remoteSketchbook": "کتاب طراحی از راه دور",
       "share": "اشتراک گذاری...",
       "shareSketch": "اشتراک طرح",
-      "showHideRemoveSketchbook": "نمایش/پنهان کردن از راه دور منبع طرح ها",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "ورود کاربر",
       "signInToCloud": "ورود به ابر آردوینو",
       "signOut": "خروج کاربر",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "بازدید از ابر آردوینو برای ساخت ابر طرح ها"
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "همه",
@@ -157,6 +163,11 @@
       "uninstallMsg": "آیا شما می خواهید {0} را لغو نصب کنید؟",
       "version": "ورژن {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "فایل اظافه کن",
       "fileAdded": "یک فایل به طرح افزوده شد.",
@@ -186,7 +197,8 @@
       "debugWithMessage": "رفع خطا {0}",
       "debuggingNotSupported": "رفع خطا توسط {0} پشتیبانی نمی شود.",
       "noPlatformInstalledFor": "دستگاه مورد نظر برای {0} نصب نشده است",
-      "optimizeForDebugging": "بهینه کردن برای رفع خطا"
+      "optimizeForDebugging": "بهینه کردن برای رفع خطا",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "نمی تواند بپرسد."
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "اتصال به وب سوکت امکان پذیر نیست"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "نتورک",
@@ -352,6 +361,7 @@
       "manualProxy": "پیکربندی دستی پروکسی",
       "network": "نتورک",
       "newSketchbookLocation": "مکان جدید منبع طرح ها را مشخص کنید",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "بدون پروکسی",
       "proxySettings": {
         "hostname": "نام میزبان",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "آیا می خواهید نسخه موجود را با {0} جایگزین کنید؟",
     "selectZip": "یک فایل فشرده حاوی کتابخانه ای را که می خواهید اضافه کنید انتخاب کنید",
@@ -398,13 +411,22 @@
       "createdArchive": "آرشیو {0} ایجاد شد.",
       "doneCompiling": "پایان کامپایل کردن",
       "doneUploading": "پایان بارگذاری",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "دریافت خروجی باینری کامپایل شده",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "جابجا کردن",
       "movingMsg": "فایل \"{0}\" باید داخل یک پوشه طرح به نام \"{1}\" باشد.\nاین پوشه را ایجاد کنید، فایل را منتقل کنید و ادامه دهید؟",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "بازکردن پوشه",
       "openRecent": "باز کردن آخرین ها",
       "openSketchInNewWindow": "باز کردن طرح در پنجره جدید.",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "ذخیره پوشه طرح در ...",
       "saveSketch": "طرح خود را ذخیره کنید تا بعداً دوباره باز شود.",
       "saveSketchAs": "ذخیره پوشه طرح در ...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "تائید / کامپایل"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "لغو",
       "enterField": "ورود{0}",
       "upload": "بارگذاری"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "باز کردن."
     },
     "workspace": {
-      "deleteCurrentSketch": "آیا می خواهید طرح کنونی را حذف کنید؟",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "نام برای فایل جدید",
       "invalidExtension": "افزونه {0} نادرست است.",
-      "invalidFilename": "عدم وجود نام برای فایل",
       "newFileName": "نام جدید برای فایل"
     }
   }

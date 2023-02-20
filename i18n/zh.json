@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "版本：{0}\n日期：{1}{2}\nCLI 版本：{3}{4}[{5}]{6}",
+      "detail": "版本：{0}\n日期：{1}{2}\nCLI 版本：{3}\n\n{4}",
       "label": "关于 {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
       "noBoardsFound": "没有找到 “{0}” 相关开发板",
       "noFQBN": "FQBN 不可用于所选开发板 “{0}”。你是否安装了相应的内核？",
+      "noNativeSerialPort": "本地串行端口，无法获取信息。",
       "noPortsDiscovered": "未发现端口",
       "noPortsSelected": "没有为开发板选择端口：‘{0}’。",
+      "nonSerialPort": "非串行端口，无法获取信息。",
       "noneSelected": "未选择任何开发板。",
       "openBoardsConfig": "选择其他开发板和接口......",
-      "platformMissing": "未安装所选 ‘{0}’ 开发板的平台。",
       "pleasePickBoard": "请选择要连接的开发板。",
       "port": "端口 {0}",
       "portLabel": "端口：{0}",
@@ -31,13 +32,13 @@
       "reselectLater": "稍后重新选择",
       "searchBoard": "搜索开发坂",
       "selectBoard": "选择开发板",
-      "selectBoardForInfo": "请选择一个开发板以获取开发板信息。",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
       "showAllAvailablePorts": "启用时显示所有可用端口",
       "showAllPorts": "显示所有端口",
       "succesfullyInstalledPlatform": "已成功安装平台 {0}：{1}",
       "succesfullyUninstalledPlatform": "已成功卸载平台 {0}：{1}",
-      "typeOfPorts": "{0} 端口"
+      "typeOfPorts": "{0} 端口",
+      "unknownBoard": "未知开发板"
     },
     "boardsManager": "开发板管理器",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "账户",
       "chooseSketchVisibility": "选择项目的可见性：",
+      "cloudSketchbook": "云项目文件夹",
       "connected": "已连接",
       "continue": "继续",
       "donePulling": "已完成拉取 ‘{0}’。",
@@ -108,10 +110,9 @@
       "pushSketch": "推送项目",
       "pushSketchMsg": "这是公开的项目。推送前，确保在 arduino_secrets.h 中明确了所有敏感信息。可以从共享界面将项目设为私人项目。",
       "remote": "远程",
-      "remoteSketchbook": "远程项目文件夹",
       "share": "共享......",
       "shareSketch": "共享项目",
-      "showHideRemoveSketchbook": "显示/隐藏远程项目文件夹",
+      "showHideSketchbook": "显示 / 隐藏云端项目",
       "signIn": "登录",
       "signInToCloud": "登录 Arduino Cloud",
       "signOut": "退出登录",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "访问 Arduino Cloud 以创建云项目。"
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "云端项目 '{0}' 已经存在。",
+      "creating": "正在创建云端项目 '{0}'...",
+      "new": "新的云端草图",
+      "notFound": "无法拉取云端项目 '{0}'。它并不存在。",
+      "pulling": "正在同步远程项目文件夹，拉取“{0}”中...",
+      "pushing": "同步项目中，正在推送 '{0}'...",
+      "renaming": "将云端项目从 '{0}' 重命名为 '{1}'...",
+      "synchronizingSketchbook": "同步项目中..."
     },
     "common": {
       "all": "全部",
@@ -157,6 +163,11 @@
       "uninstallMsg": "是否要卸载 {0}？",
       "version": "版本 {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "无法访问位于 ‘{0}’ 的项目文件夹：{1}。"
+      }
+    },
     "contributions": {
       "addFile": "添加文件",
       "fileAdded": "将一个文件添加到项目中。",
@@ -186,7 +197,8 @@
       "debugWithMessage": "调试 - {0}",
       "debuggingNotSupported": "‘{0}’ 不支持调试",
       "noPlatformInstalledFor": "‘{0}’ 平台未安装",
-      "optimizeForDebugging": "调试优化"
+      "optimizeForDebugging": "调试优化",
+      "sketchIsNotCompiled": "项目 '{0}' 在开始调试会话之前必须经过验证。请验证草图并重新开始调试。你现在要验证草图吗？"
     },
     "dialog": {
       "dontAskAgain": "不要再请求"
@@ -257,9 +269,9 @@
     },
     "library": {
       "addZip": "添加 .ZIP 库...",
-      "arduinoLibraries": "arduino 库",
+      "arduinoLibraries": "Arduino 库",
       "contributedLibraries": "贡献库",
-      "include": "包含库",
+      "include": "导入库",
       "installAll": "全部安装",
       "installLibraryDependencies": "安装库的依赖",
       "installMissingDependencies": "是否安装所有缺少的依赖？",
@@ -293,7 +305,7 @@
       "uncategorized": "未分类"
     },
     "libraryType": {
-      "installed": "安装"
+      "installed": "已安装"
     },
     "menu": {
       "advanced": "高级设置",
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "无法连接 websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "新云端项目的名称"
     },
     "portProtocol": {
       "network": "网络",
@@ -323,11 +332,11 @@
       "automatic": " 自动调整",
       "board.certificates": "可上传到开发板的证书列表",
       "browse": "浏览",
-      "checkForUpdate": "接收 IDE、开发板和库的可用更新通知。更改后需要重启IDE。默认情况为开启。",
+      "checkForUpdate": "接收 IDE、开发板和库的可用更新通知。更改后需要重启 IDE。默认情况为开启。",
       "choose": "选择",
       "cli.daemonDebug": "启用对 Arduino CLI 的 gRPC 调用的调试记录。该设置需要重新启动 IDE 才能生效。默认不启用。",
       "cloud.enabled": "True 则启用项目同步功能。默认为 True。",
-      "cloud.pull.warn": "True 则在拉取cloud项目之前警告用户。默认为 True。",
+      "cloud.pull.warn": "True 则在拉取 cloud 项目之前警告用户。默认为 True。",
       "cloud.push.warn": "True 则在推送 cloud 项目之前警告用户。默认为 True。",
       "cloud.pushpublic.warn": "True 则将公开项目推送到 cloud 中之前警告用户。默认为 True。",
       "cloud.sketchSyncEndpoint": "用于从后台推送项目的端点。默认情况下，它指向 Arduino Cloud API。",
@@ -352,6 +361,7 @@
       "manualProxy": "手动配置代理",
       "network": "网络",
       "newSketchbookLocation": "选择新的项目文件夹地址",
+      "noCliConfig": "无法加载 CLI 配置",
       "noProxy": "无代理",
       "proxySettings": {
         "hostname": "主机名",
@@ -372,8 +382,11 @@
       "verifyAfterUpload": "上传后验证代码",
       "window.autoScale": "True 则用户界面随字体大小自动缩放。",
       "window.zoomLevel": {
-        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+        "deprecationMessage": "已弃用。请改用“window.zoomLevel”。"
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "云端项目的新名称"
     },
     "replaceMsg": "是否替换 {0} 的现有版本？",
     "selectZip": "选择包含要添加的库的 zip 文件",
@@ -398,13 +411,22 @@
       "createdArchive": "已创建存档 ‘{0}’。",
       "doneCompiling": "编译完成",
       "doneUploading": "上传完成",
+      "editInvalidSketchFolderLocationQuestion": "你想试试把项目保存到不同的位置吗？",
+      "editInvalidSketchFolderQuestion": "你想尝试用不同的名字保存项目吗？",
       "exportBinary": "导出已编译的二进制文件",
+      "invalidCloudSketchName": "名称必须以字母或数字开头，后面可以是字母、数字、破折号、点和下划线。最大长度为 36 个字符。",
+      "invalidSketchFolderLocationDetails": "你不能把一个项目保存到它本身的一个文件夹里。",
+      "invalidSketchFolderLocationMessage": "无效的项目文件夹位置： '{0}'",
+      "invalidSketchFolderNameMessage": "无效的项目文件夹名称：'{0}'",
+      "invalidSketchName": "名称必须以字母或数字开头，后面可以是字母、数字、破折号、点和下划线。最大长度为 63 个字符。",
       "moving": "移动",
       "movingMsg": "“{0}” 文件需要位于 “{1}” 项目文件夹中。\n创建此文件夹，移动文件，然后继续？",
-      "new": "New Sketch",
+      "new": "新建项目",
+      "noTrailingPeriod": "文件名不能以点结尾",
       "openFolder": "打开文件夹",
       "openRecent": "打开最近",
       "openSketchInNewWindow": "在新窗口打开项目",
+      "reservedFilename": "'{0}' 是一个保留的文件名。",
       "saveFolderAs": "将项目文件夹另存为。。。",
       "saveSketch": "保存你的项目，以便以后再次打开它。",
       "saveSketchAs": "将项目文件夹另存为。。。",
@@ -421,8 +443,8 @@
       "verifyOrCompile": "验证/编译"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
-      "newSketch": "New Sketch"
+      "newCloudSketch": "新的云端项目",
+      "newSketch": "新建项目"
     },
     "survey": {
       "answerSurvey": "回答问卷",
@@ -441,6 +463,17 @@
       "cancel": "取消",
       "enterField": "输入 {0}",
       "upload": "上传"
+    },
+    "validateSketch": {
+      "abortFixMessage": "项目仍然是无效的。你想解决剩下的问题吗？通过点击 '{0}'，一个新的项目将被打开。",
+      "abortFixTitle": "无效的项目",
+      "renameSketchFileMessage": "项目文件 '{0}' 不能使用。{1} 你想现在重新命名项目文件吗？",
+      "renameSketchFileTitle": "无效的项目文件名",
+      "renameSketchFolderMessage": "不能使用项目 '{0}'。 '{1}' 要删除此消息，请重命名项目。 现在要重命名项目吗？",
+      "renameSketchFolderTitle": "无效的项目名"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' 已经存在。"
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "扩展"
     },
     "workspace": {
-      "deleteCurrentSketch": "是否要删除当前项目？",
+      "deleteCloudSketch": "云端项目 '{0}' 将从 Arduino 服务器和本地缓存中被永久删除。这个操作是不可逆的。你想删除当前的项目吗？",
+      "deleteCurrentSketch": "项目 '{0}' 将被永久删除。这个操作是不可逆的。你想删除当前的项目吗？",
       "fileNewName": "新文件的名称",
       "invalidExtension": ".{0} 不是有效扩展名",
-      "invalidFilename": "无效的文件名。",
       "newFileName": "文件的新名称"
     }
   }

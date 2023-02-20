@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Verze: {0}\nDatum: {1}[2]\nVerze CLI:  {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "O {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "\"{0}{1}\" jádro musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
       "noBoardsFound": "Nenalezeny žádné desky pro \"{0}\"",
       "noFQBN": "FQBN není dostupné pro zvolenou desku \"{0}\". Máte nainstalované příslušné jádro? ",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Nenalezeny žádné porty",
       "noPortsSelected": "Nebyl zvolen port pro desku '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Nebyla zvolena deska.",
       "openBoardsConfig": "Zvolte jinou desku a port...",
-      "platformMissing": "Platforma pro zvolenou desku '{0}' není nainstalována.",
       "pleasePickBoard": "Vyberte prosím desku která je připojená k zvolenému portu. ",
       "port": "Port {0}",
       "portLabel": "Port:{0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Zvolit později",
       "searchBoard": "Vyhledat desku",
       "selectBoard": "Zvolit desku",
-      "selectBoardForInfo": "Prosím zvolte desku pro získání informací o desce.",
       "selectPortForInfo": "Prosím zvolte port pro získání informací o desce.",
       "showAllAvailablePorts": "Zobrazit všechny dostupné porty (pokud je zaškrtnuto)",
       "showAllPorts": "Ukázat všechny porty",
       "succesfullyInstalledPlatform": "Platforma {0}:{1} byla úspěšně nainstalována.",
       "succesfullyUninstalledPlatform": "Platforma {0}:{1} byla úspěšně odinstalována.",
-      "typeOfPorts": "{0}porty"
+      "typeOfPorts": "{0}porty",
+      "unknownBoard": "Neznámá deska"
     },
     "boardsManager": "Manažér desek",
     "boardsType": {
@@ -73,17 +74,18 @@
       "installAll": "Instalovat vše",
       "noUpdates": "Nejsou k dispozici žádné aktualizace",
       "promptUpdateBoards": "Jsou k dispozici aktualizace pro některé z vašich desek ",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "promptUpdateLibraries": "Jsou k dispozici aktualizace pro některé z vašich knihoven",
       "updatingBoards": "Aktualizuji desky...",
       "updatingLibraries": "Aktualizuji knihovny..."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "keyboardError": "'Keyboard' nebylo nalezeno. Obsahuje váš projekt řádek '#include <Keyboard.h>'?",
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
       "account": "Účet",
       "chooseSketchVisibility": "Zvolte viditelnost sketche:",
+      "cloudSketchbook": "Cloudové umístění projektů",
       "connected": "Připojen",
       "continue": "Pokračovat",
       "donePulling": "Stahování dokončeno ’{0}’.",
@@ -108,10 +110,9 @@
       "pushSketch": "Odeslat sketch",
       "pushSketchMsg": "Toto je veřejná sketch. Před odesláním se prosím ujistěte že jsou smazané citlivé informace ze souboru arduino_secrets.h . Tuto sketch můžete změnit na soukromou v panelu pro sdílení.  ",
       "remote": "Vzdálený",
-      "remoteSketchbook": "Odstranit Sketchbook",
       "share": "Sdílet...",
       "shareSketch": "Sdílet sketch",
-      "showHideRemoveSketchbook": "Zobrazit/skrýt vzdálenou sketch",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "Přihlásit se",
       "signInToCloud": "Přihlásit se do Arduino Cloud",
       "signOut": "Odhlásit se",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Navštivte Arduino Cloud pro vytvoření cloudové sketche"
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizuji projekt..."
     },
     "common": {
       "all": "Vše",
@@ -151,11 +157,16 @@
       "by": "od",
       "filterSearch": "Filtrovat vyhledávání... ",
       "install": "Instalovat",
-      "installed": "Installed",
+      "installed": "Nainstalováno",
       "moreInfo": "Více informací",
       "uninstall": "Odinstalovat",
       "uninstallMsg": "Chcete odinstalovat {0}?",
       "version": "Verze {0}"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
     },
     "contributions": {
       "addFile": "Přidat soubor",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging není podporován s  '{0}'",
       "noPlatformInstalledFor": "Platforma není nainstalována pro '{0}'",
-      "optimizeForDebugging": "optimalizovat pro Debugging"
+      "optimizeForDebugging": "optimalizovat pro Debugging",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "Znovu se neptat"
@@ -201,7 +213,7 @@
       "increaseIndent": "Zvětšit odrážku",
       "nextError": "Další chyba",
       "previousError": "Předchozí chyba",
-      "revealError": "Reveal Error"
+      "revealError": "Zobrazit Chybu"
     },
     "electron": {
       "couldNotSave": "Nebylo možné uložit sketch. Zkopírujte prosím neuloženou práci do Vašeho oblíbeného textového editoru a restartujte IDE. ",
@@ -293,7 +305,7 @@
       "uncategorized": "Uncategorized"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Nainstalováno"
     },
     "menu": {
       "advanced": "Pokročilé",
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Síť",
@@ -352,6 +361,7 @@
       "manualProxy": "Ruční nastavení proxy",
       "network": "Síť",
       "newSketchbookLocation": "Zvolit nové umístění projektů",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Bez proxy",
       "proxySettings": {
         "hostname": "Jméno hosta",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "Vyměnit existující verzi {0}?",
     "selectZip": "Zvolte ZIP soubor s knihovnou kterou chcete přidat",
@@ -398,13 +411,22 @@
       "createdArchive": "Vytvořen archív '{0}'.",
       "doneCompiling": "Ověřování dokončeno.",
       "doneUploading": "Nahrávání dokončeno. ",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Exportovat kompilované soubory",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Přesouvám",
       "movingMsg": "Soubor \"{0}\" musí být uvnitř složky která je shodná názvem \"{1}\".\nVytvořit složku, přesunout tam- soubor a pokračovat? ",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Otevřít složku",
       "openRecent": "Otevřít nedávné",
       "openSketchInNewWindow": "Otevřít sketch v novém okně",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Uložit složku sketche jako...",
       "saveSketch": "Uložte svůj sketch, abyste ho mohli znovu otevřít později.",
       "saveSketchAs": "Uložit složku sketche jako...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Ověřit/Kompilovat"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "Zrušit",
       "enterField": "Enter {0}",
       "upload": "Nahrát"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Rozšířit"
     },
     "workspace": {
-      "deleteCurrentSketch": "Opravdu chcete vymazat aktuální sketch? ",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Název pro nový soubor",
       "invalidExtension": ".{0}je neplatná přípona",
-      "invalidFilename": "Neplatný název souboru.",
       "newFileName": "Nový název souboru"
     }
   }

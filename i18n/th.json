@@ -2,14 +2,14 @@
   "arduino": {
     "about": {
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
-      "label": "About {0}"
+      "label": "เกี่ยวกับ{0}"
     },
     "board": {
-      "board": "Board{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
-      "boardInfo": "Board Info",
-      "boards": "boards",
-      "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
+      "board": "บอร์ด{0}",
+      "boardConfigDialogTitle": "เลือกบอร์ดและพอร์ตอื่นๆ",
+      "boardInfo": "ข้อมูลบอร์ด",
+      "boards": "บอร์ด",
+      "configDialog1": "เลือกบอร์ดและพอร์ตที่คุณต้องการอัปโหลดโปรแกรมของคุณ",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
       "disconnected": "Disconnected",
@@ -22,16 +22,16 @@
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "No ports selected for board: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Geen bord gekies nie.",
-      "openBoardsConfig": "Kies ander bord en poort...",
+      "noneSelected": "No boards selected.",
+      "openBoardsConfig": "Select other board and port…",
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
       "portLabel": "Port: {0}",
       "ports": "ports",
-      "programmer": "Programeerder",
-      "reselectLater": "Herselekteer later",
+      "programmer": "Programmer",
+      "reselectLater": "Reselect later",
       "searchBoard": "Search board",
-      "selectBoard": "Kies Bord",
+      "selectBoard": "Select Board",
       "selectPortForInfo": "Please select a port to obtain board info.",
       "showAllAvailablePorts": "Shows all available ports when enabled",
       "showAllPorts": "Show all ports",
@@ -55,7 +55,7 @@
     "certificate": {
       "addNew": "Add New",
       "addURL": "Add URL to fetch SSL certificate",
-      "boardAtPort": "{0} by {1}",
+      "boardAtPort": "{0} at {1}",
       "certificatesUploaded": "Certificates uploaded.",
       "enterURL": "Enter URL",
       "noSupportedBoardConnected": "No supported board connected",
@@ -85,37 +85,37 @@
     "cloud": {
       "account": "Account",
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
-      "cloudSketchbook": "Wolk Skets",
+      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connected",
       "continue": "Continue",
       "donePulling": "Done pulling ‘{0}’.",
       "donePushing": "Done pushing ‘{0}’.",
       "embed": "Embed:",
-      "emptySketchbook": "Jou Sketsboek is leeg",
+      "emptySketchbook": "Your Sketchbook is empty",
       "goToCloud": "Go to Cloud",
       "learnMore": "Learn more",
-      "link": "Skakel:",
+      "link": "Link:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
-      "offline": "Aflyn",
+      "offline": "Offline",
       "openInCloudEditor": "Open in Cloud Editor",
-      "options": "Opsies...",
+      "options": "Options...",
       "privateVisibility": "Private. Only you can view the Sketch.",
-      "profilePicture": "Profiel foto",
+      "profilePicture": "Profile picture",
       "publicVisibility": "Public. Anyone with the link can view the Sketch.",
-      "pull": "Trek",
+      "pull": "Pull",
       "pullFirst": "You have to pull first to be able to push to the Cloud.",
       "pullSketch": "Pull Sketch",
       "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
-      "push": "Stoot",
+      "push": "Push",
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Remote",
-      "share": "Deel...",
+      "share": "Share...",
       "shareSketch": "Share Sketch",
       "showHideSketchbook": "Show/Hide Cloud Sketchbook",
-      "signIn": "TEKEN AAN",
+      "signIn": "SIGN IN",
       "signInToCloud": "Sign in to Arduino Cloud",
-      "signOut": "Teken Uit",
+      "signOut": "Sign Out",
       "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
@@ -135,18 +135,18 @@
       "contributed": "Contributed",
       "installManually": "Install Manually",
       "later": "Later",
-      "noBoardSelected": "Geen bord geselekteer",
-      "notConnected": "[nie gekoppel]",
-      "offlineIndicator": "Dit lyk of jy van af lyn is. Sonder 'n internetverbinding kan die Arduino CLI moontlik nie die nodige hulpbronne aflaai nie en kan dit wanfunksionering veroorsaak. Koppel asseblief aan die internet en herbegin die toepassing.",
+      "noBoardSelected": "No board selected",
+      "notConnected": "[not connected]",
+      "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
       "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
       "partner": "Partner",
-      "processing": "Verwerking",
+      "processing": "Processing",
       "recommended": "Recommended",
       "retired": "Retired",
-      "selectedOn": "aan {0}",
-      "serialMonitor": "Seriaal Monitor",
+      "selectedOn": "on {0}",
+      "serialMonitor": "Serial Monitor",
       "type": "Type",
-      "unknown": "Onbekend",
+      "unknown": "Unknown",
       "updateable": "Updatable"
     },
     "compile": {
@@ -158,10 +158,10 @@
       "filterSearch": "Filter your search...",
       "install": "Install",
       "installed": "Installed",
-      "moreInfo": "Meer inligting",
+      "moreInfo": "More info",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
-      "version": "Weergawe {0}"
+      "version": "Version {0}"
     },
     "configuration": {
       "cli": {
@@ -170,11 +170,11 @@
     },
     "contributions": {
       "addFile": "Add File",
-      "fileAdded": "Een lêer by skets gevoeg",
+      "fileAdded": "One file added to the sketch.",
       "plotter": {
         "couldNotOpen": "Couldn't open serial plotter"
       },
-      "replaceTitle": "Vervang"
+      "replaceTitle": "Replace"
     },
     "core": {
       "compilerWarnings": {
@@ -194,10 +194,10 @@
       "stop": "Stop Daemon"
     },
     "debug": {
-      "debugWithMessage": "Ontfouting {0}",
+      "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
-      "noPlatformInstalledFor": "Platform is nie geïnstalleer vir ' {0} '",
-      "optimizeForDebugging": "Geoptimaliseerd vir ontfouting",
+      "noPlatformInstalledFor": "Platform is not installed for '{0}'",
+      "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
@@ -217,7 +217,7 @@
     },
     "electron": {
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Enige ongestoorde veranderinge sal nie gestoor word nie."
+      "unsavedChanges": "Any unsaved changes will not be saved."
     },
     "examples": {
       "builtInExamples": "Built-in examples",
@@ -233,7 +233,7 @@
       "install": "Install",
       "installingFirmware": "Installing firmware.",
       "overwriteSketch": "Installation will overwrite the Sketch on the board.",
-      "selectBoard": "Kies Bord",
+      "selectBoard": "Select Board",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
       "updater": "WiFi101 / WiFiNINA Firmware Updater"
@@ -254,7 +254,7 @@
       "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
-      "downloadButton": "Aflaai",
+      "downloadButton": "Download",
       "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
       "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
       "goToDownloadButton": "Go To Download",
@@ -263,7 +263,7 @@
       "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
       "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
       "notNowButton": "Not now",
-      "skipVersionButton": "Volgende Weergawe",
+      "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
     },
@@ -309,8 +309,8 @@
     },
     "menu": {
       "advanced": "Advanced",
-      "sketch": "Skets",
-      "tools": "Gereedskap"
+      "sketch": "Sketch",
+      "tools": "Tools"
     },
     "monitor": {
       "unableToCloseWebSocket": "Unable to close websocket",
@@ -320,46 +320,46 @@
       "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
-      "network": "Netwerk",
+      "network": "Network",
       "serial": "Serial"
     },
     "preferences": {
       "additionalManagerURLs": "Additional Boards Manager URLs",
-      "auth.audience": "Die OAuth2 gehoor.",
+      "auth.audience": "The OAuth2 audience.",
       "auth.clientID": "The OAuth2 client ID.",
-      "auth.domain": "Die OAuth2 domein.",
-      "auth.registerUri": "Die URI wat gebruik word vir nuwe registrasies.",
-      "automatic": "Automaties",
+      "auth.domain": "The OAuth2 domain.",
+      "auth.registerUri": "The URI used to register a new user.",
+      "automatic": "Automatic",
       "board.certificates": "List of certificates that can be uploaded to boards",
-      "browse": "Snuffel",
+      "browse": "Browse",
       "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
-      "choose": "Kies",
+      "choose": "Choose",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
       "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
-      "compile": "saamstel",
+      "compile": "compile",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
       "compile.verbose": "True for verbose compile output. False by default",
       "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
       "compilerWarnings": "Compiler warnings",
-      "editorFontSize": "Editor lettertipe grootte",
+      "editorFontSize": "Editor font size",
       "editorQuickSuggestions": "Editor Quick Suggestions",
       "enterAdditionalURLs": "Enter additional URLs, one for each row",
-      "files.inside.sketches": "Toon lêers binne in Sketse aan",
+      "files.inside.sketches": "Show files inside Sketches",
       "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
-      "interfaceScale": "Koppelvlak skaal",
+      "interfaceScale": "Interface scale",
       "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
       "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
       "invalid.theme": "Invalid theme.",
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
-      "network": "Netwerk",
+      "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "No proxy",
@@ -369,17 +369,17 @@
         "port": "Port number",
         "username": "Username"
       },
-      "showVerbose": "Wys ontfoutings uitset tydens",
+      "showVerbose": "Show verbose output during",
       "sketch": {
         "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
       },
-      "sketchbook.location": "Sketsboek ligging",
+      "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
-      "upload": "oplaai",
+      "upload": "upload",
       "upload.verbose": "True for verbose upload output. False by default.",
-      "verifyAfterUpload": "Verifieer kode na oplaai ",
+      "verifyAfterUpload": "Verify code after upload",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
@@ -392,14 +392,14 @@
     "selectZip": "Select a zip file containing the library you'd like to add",
     "serial": {
       "autoscroll": "Autoscroll",
-      "carriageReturn": "Wagterugkeer",
+      "carriageReturn": "Carriage Return",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
-      "newLine": "Nuwe lyn",
-      "newLineCarriageReturn": "Beide NL & CR",
+      "newLine": "New Line",
+      "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
       "openSerialPlotter": "Serial Plotter",
-      "timestamp": "Tydstempel",
+      "timestamp": "Timestamp",
       "toggleTimestamp": "Toggle Timestamp"
     },
     "sketch": {
@@ -431,7 +431,7 @@
       "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Save sketch folder as...",
       "showFolder": "Show Sketch Folder",
-      "sketch": "Skets",
+      "sketch": "Sketch",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Local Sketchbook",
       "titleSketchbook": "Sketchbook",
@@ -482,7 +482,7 @@
       "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
-      "offline": "Aflyn",
+      "offline": "Offline",
       "quitTitle": "Are you sure you want to quit?"
     },
     "editor": {
@@ -495,9 +495,9 @@
     "workspace": {
       "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
       "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
-      "fileNewName": "Naam vir nuwe lêer",
+      "fileNewName": "Name for new file",
       "invalidExtension": ".{0} is not a valid extension",
-      "newFileName": "Nuwe naam vir lêer"
+      "newFileName": "New name for file"
     }
   }
 }

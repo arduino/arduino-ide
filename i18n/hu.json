@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Verziószám: {0}\nDátum: {1}{2}\nCLI Verziószám: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "About {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
       "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "Az FQBN nem érhető el a kiválasztott „{0}” alaplapon. A megfelelő mag/core telepítve van? ",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Nincs észlelt port",
       "noPortsSelected": "Nincsen port kiválasztva a alaplaphoz: '{0}'. ",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Nincs alaplap kiválasztva",
       "openBoardsConfig": "Válassz másik alaplapot és portot… ",
-      "platformMissing": "A kiválasztott '{0}' alaplap platformja nincs telepítve. ",
       "pleasePickBoard": "Válassz alaplapot, amely a kiválasztott porthoz csatlakozik. ",
       "port": "Port {0}",
       "portLabel": "Port: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Később újra válaszd ki",
       "searchBoard": "Search board",
       "selectBoard": "Alaplap választás",
-      "selectBoardForInfo": "Válassz egy alaplapot az információinak megtekintéséhez. ",
       "selectPortForInfo": "Válassz egy portot az alaplap információinak megtekintéséhez. ",
       "showAllAvailablePorts": "Elérhető portok mutatása - ha engedélyezett",
       "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Sikeresen telepített platform {0}:{1}",
       "succesfullyUninstalledPlatform": "A platform sikeresen eltávolítva: {0}:{1} ",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "Alaplap-kezelő",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Account",
       "chooseSketchVisibility": "Válaszd ki a vázlat/sketch láthatóságát: ",
+      "cloudSketchbook": "Felhő vázlatfüzet/sketchbook ",
       "connected": "Kapcsolódva",
       "continue": "Tovább",
       "donePulling": "Letöltés kész: '{0}'.",
@@ -108,10 +110,9 @@
       "pushSketch": "Vázlat/sketch feltöltése",
       "pushSketchMsg": "Ez egy nyilvános vázlat/sketch. A beküldés előtt győződj meg arról, hogy minden érzékeny információ definiálva van az arduino_secrets.h fájlokban. A vázlatot priváttá tehet tenni a Megosztás panelen. ",
       "remote": "Távoli",
-      "remoteSketchbook": "Remote Sketchbook",
       "share": "Megosztás...",
       "shareSketch": "Vázlat/sketch megosztása",
-      "showHideRemoveSketchbook": "Távoli vázlatfüzet/sketch megjelenítése/elrejtése ",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "BEJELENTKEZÉS",
       "signInToCloud": "Bejelentkezés az Arduino Cloudba ",
       "signOut": "Kijelentkezés",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Látogasd meg az Arduino Cloud webhelyet, hogy a felhőben vázlatokat hozhass létre. "
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "All",
@@ -157,6 +163,11 @@
       "uninstallMsg": "El szeretnéd távolítani a következőt: {0}? ",
       "version": "Verzió: {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "Fájl hozzáadása",
       "fileAdded": "Egy fájl hozzáadása megtörtént a vázlathoz/sketch-hez. ",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Hibakeresés/Debug - {0}",
       "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja ",
       "noPlatformInstalledFor": "A platform nincs telepítve a következőhöz: „{0}” ",
-      "optimizeForDebugging": "Optimalizálás hibakereséséhez"
+      "optimizeForDebugging": "Optimalizálás hibakereséséhez",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "Ne kérdezd meg még egyszer"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Hálózat",
@@ -352,6 +361,7 @@
       "manualProxy": "Kézi proxy konfiguráció",
       "network": "Hálózat",
       "newSketchbookLocation": "Új Vázlatfüzet/Sketchbook elérési út",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Nincs proxy",
       "proxySettings": {
         "hostname": "Host name",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "Lecseréled a/az {0} meglévő verzióját? ",
     "selectZip": "Válaszd ki a hozzáadni kívánt könyvtárat tartalmazó ZIP-fájlt ",
@@ -398,13 +411,22 @@
       "createdArchive": "Archívum létrehozva: {0}. ",
       "doneCompiling": "Fordítás kész.",
       "doneUploading": "Feltöltés kész.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Összeállított bináris exportálása",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Mozgatás",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Mappa megnyitása",
       "openRecent": "Legutóbbi megnyitása",
       "openSketchInNewWindow": "Vázlat/sketch megnyitása új ablakban",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Vázlat-/sketch-mappa mentése másként... ",
       "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Vázlat-/sketch-mappa mentése másként... ",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Ellenőrzés/fordítás"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "Mégsem",
       "enterField": "Enter {0}",
       "upload": "Feltöltés"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Bővebb"
     },
     "workspace": {
-      "deleteCurrentSketch": "Törlöd az aktuális vázlatot/sketch-et? ",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Az új fájl neve",
       "invalidExtension": "A .{0} nem érvényes kiterjesztés",
-      "invalidFilename": "Hibás fájlnév.",
       "newFileName": "A fájl új neve"
     }
   }

@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Versione: {0}\nData: {1}{2}\nVersione CLI: {3}{4} [{5}]\n\n{6}",
+      "detail": "Versione: {0}\nData: {1}{2}\nVersione CLI: {3}\n\n{4}",
       "label": "Informazioni su {0}"
     },
     "board": {
@@ -15,29 +15,30 @@
       "disconnected": "Disconnesso",
       "getBoardInfo": "Acquisisci informazioni sulla scheda",
       "inSketchbook": "(nella raccolta degli sketch)",
-      "installNow": "Il \"{0} {1}\" core non è installato per la scheda  \"{2}\" . Vuoi installarlo ora?",
+      "installNow": "Il \"{0} {1}\" core non è installato per la scheda \"{2}\". Vuoi installarlo ora?",
       "noBoardsFound": "Nessuna scheda trovata per \"{0}\"",
       "noFQBN": "La FQBN non è disponibile per la scheda selezionata\"{0}\". Sei sicuro che il core specifico sia stato installato?",
+      "noNativeSerialPort": "Porta seriale nativa, non è possibile ottenere informazioni.",
       "noPortsDiscovered": "Nessuna porta rilevata",
       "noPortsSelected": "Nessuna porta selezionata per la scheda: '{0}'.",
+      "nonSerialPort": "Porta non seriale, non è possibile ottenere informazioni.",
       "noneSelected": "Nessuna scheda selezionata.",
       "openBoardsConfig": "Scegli un'altra scheda e un altra porta...",
-      "platformMissing": "La piattaforma per la scheda '{0}' non è installata.",
       "pleasePickBoard": "Scegli la scheda collegata alla porta che hai selezionato.",
       "port": "Porta{0}",
       "portLabel": "Porta: {0}",
       "ports": "porte",
       "programmer": "Programmatore",
       "reselectLater": "Riselezionare più tardi",
-      "searchBoard": "Seleziona la scheda",
+      "searchBoard": "Cerca la scheda",
       "selectBoard": "Seleziona la scheda",
-      "selectBoardForInfo": "Seleziona la scheda per la quale desideri informazioni.",
       "selectPortForInfo": "Selezionare la porta per ottenere info sulla scheda.",
       "showAllAvailablePorts": "Quando abilitato, mostra tutte le porte disponibili",
       "showAllPorts": "Mostra tutte le porte",
       "succesfullyInstalledPlatform": "Piattaforma installata correttamente {0}:{1}",
       "succesfullyUninstalledPlatform": "Piattaforma disinstallata correttamente {0}:{1}",
-      "typeOfPorts": "{0} porte"
+      "typeOfPorts": "{0} porte",
+      "unknownBoard": "Scheda sconosciuta"
     },
     "boardsManager": "Gestore schede",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Account",
       "chooseSketchVisibility": "Scegli a chi far vedere il tuo Sketch:",
+      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connesso",
       "continue": "Continua",
       "donePulling": "Pulling terminato ‘{0}’.",
@@ -108,11 +110,10 @@
       "pushSketch": "Invia lo Sketch",
       "pushSketchMsg": "Questo è uno sketch pubblico. Prima di inviarlo, verifica che tutte le informazioni sensibili siano all'interno di arduino_secrets.h. Eventualmente puoi rendere lo sketch privato dal Pannello di Condivisione.",
       "remote": "Remoto",
-      "remoteSketchbook": "Raccolta remota degli sketch",
       "share": "Condividi...",
       "shareSketch": "Condividi sketch",
-      "showHideRemoveSketchbook": "Mostra/Nascondi la raccolta remota degli sketch",
-      "signIn": "COLLEGATI",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "ACCEDI",
       "signInToCloud": "Effettua la registrazione su Arduino Cloud",
       "signOut": "Disconnetti",
       "sync": "Sincronizza",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Visita Arduino Cloud per creare Cloud Sketch "
     },
     "cloudSketch": {
-      "creating": "Creando lo sketch remoto{0}",
-      "new": "Nuovo Sketch remoto",
-      "synchronizing": "Sincronizzazione degli sketch, pulling{0}"
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Sincronizzazione degli sketch, pulling \"{0}\"...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "Tutti",
@@ -132,7 +138,7 @@
       "noBoardSelected": "Nessuna scheda selezionata",
       "notConnected": "[non connesso]",
       "offlineIndicator": "Sembra che tu sia offline. Senza una connessione Internet, l'Arduino CLI potrebbe non essere in grado di scaricare le risorse richieste e potrebbe causare un malfunzionamento. Verificare la connessione a Internet e riavviare l'applicazione.",
-      "oldFormat": "Il '{0}' utilizza ancora il vecchio formato `.pde` . Vuoi sostituirlo con la nuova estensione `.ino?",
+      "oldFormat": "Il '{0}' utilizza ancora il vecchio formato `.pde`. Vuoi sostituirlo con la nuova estensione `.ino?",
       "partner": "Partner",
       "processing": "In elaborazione",
       "recommended": "Consigliato",
@@ -154,11 +160,16 @@
       "installed": "Installata",
       "moreInfo": "Maggiori informazioni",
       "uninstall": "Disinstalla",
-      "uninstallMsg": "Vuoi veramente disinstallare  1 {0}  ?",
+      "uninstallMsg": "Vuoi veramente disinstallare {0}?",
       "version": "Versione {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Impossibile accedere alla raccolta degli sketch presenti in '{0}': {1}"
+      }
+    },
     "contributions": {
-      "addFile": "Aggiungi file...",
+      "addFile": "Aggiungi file",
       "fileAdded": "Aggiunto un file allo sketch.",
       "plotter": {
         "couldNotOpen": "Impossibile aprire la porta seriale"
@@ -184,9 +195,10 @@
     },
     "debug": {
       "debugWithMessage": "Debug - {0}",
-      "debuggingNotSupported": "Il debug non è supportato da  '{0}'",
+      "debuggingNotSupported": "Il debug non è supportato da '{0}'",
       "noPlatformInstalledFor": "La piattaforma non è ancora stata installata per '{0}'",
-      "optimizeForDebugging": "Ottimizzato per il Debug."
+      "optimizeForDebugging": "Ottimizzato per il Debug.",
+      "sketchIsNotCompiled": "Lo sketch '{0}' deve essere verificato prima di avviare una sessione di debug. Verificare lo sketch e avviare nuovamente il debug. Si desidera verificare lo sketch adesso?"
     },
     "dialog": {
       "dontAskAgain": "Non chiedere più"
@@ -204,14 +216,14 @@
       "revealError": "Rileva l'errore"
     },
     "electron": {
-      "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l' Arduino IDE. ",
-      "unsavedChanges": "Eventuali modifiche non salvate verranno perse"
+      "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l'Arduino IDE. ",
+      "unsavedChanges": "Eventuali modifiche non salvate verranno perse."
     },
     "examples": {
       "builtInExamples": "Esempi integrati",
       "couldNotInitializeExamples": "Impossibile inizializzare gli esempi incorporati.",
       "customLibrary": "Esempi da librerie di terzi",
-      "for": "Esempi per  {0}",
+      "for": "Esempi per {0}",
       "forAny": "Esempi per tutte le schede",
       "menu": "Esempi"
     },
@@ -224,7 +236,7 @@
       "selectBoard": "Seleziona la scheda",
       "selectVersion": "Selezione la versione del firmware",
       "successfullyInstalled": "Firmware correttamente installato.",
-      "updater": "WiFi101 / WiFiNINA Aggiornamento Frmware"
+      "updater": "WiFi101 / WiFiNINA Aggiornamento Firmware"
     },
     "help": {
       "environment": "Ambiente di sviluppo",
@@ -244,16 +256,16 @@
       "closeToInstallNotice": "Chiudi il software e installa l’aggiornamento sulla tua macchina",
       "downloadButton": "Scarica",
       "downloadingNotice": "Stai scaricando l’ultima versione dell’Arduino IDE",
-      "errorCheckingForUpdates": "Si è verificato un errore durante il controllo degli aggiornamenti per Arduino IDE {0} .",
+      "errorCheckingForUpdates": "Si è verificato un errore durante il controllo degli aggiornamenti per Arduino IDE {0}.",
       "goToDownloadButton": "Clicca per scaricare",
       "goToDownloadPage": "E' disponibile un nuovo aggiornamento per Arduino IDE, ma attualmente non è possibile scaricarlo ne tantomeno installarlo in modalità automatica. Si consiglia di andare sul sito ufficiale e dalla pagina  download scaricare l'ultima versione disponibile. ",
       "ideUpdaterDialog": "Aggiornamento software",
-      "newVersionAvailable": "La nuova versione (1{0})  di Arduino IDE è disponibile per il download.",
+      "newVersionAvailable": "La nuova versione ({0}) di Arduino IDE è disponibile per il download.",
       "noUpdatesAvailable": "Non ci sono aggiornamenti recenti per Arduino IDE ",
       "notNowButton": "Non ora",
       "skipVersionButton": "Salta questa versione",
       "updateAvailable": "Aggiornamento disponibile",
-      "versionDownloaded": "L'Arduino IDE ( 1 {0} ) è stato correttamente scaricato."
+      "versionDownloaded": "Arduino IDE {0} è stato scaricato correttamente."
     },
     "library": {
       "addZip": "Aggiungi libreria da file .ZIP...",
@@ -265,16 +277,16 @@
       "installMissingDependencies": "Vorresti installare tutte le dipendenze mancanti?",
       "installOneMissingDependency": "Vorresti installare le dipendenze mancanti?",
       "installWithoutDependencies": "Installa senza le dipendenze",
-      "installedSuccessfully": "Libreria installata correttamente  1{0}  :  2{1} ",
+      "installedSuccessfully": "Libreria installata correttamente {0}:{1}",
       "libraryAlreadyExists": "Libreria già presente. Vuoi sovrascriverla?",
-      "manageLibraries": "Gestisci Librerie",
+      "manageLibraries": "Gestisci Librerie...",
       "namedLibraryAlreadyExists": "La cartella con nome {0} esiste già. Vuoi sovrascriverla?",
-      "needsMultipleDependencies": "La libreria <b>{0}:{1}</b> di altre dipendenze che al momento non risultano installate:",
-      "needsOneDependency": "La libreria <b>{0}:{1}</b> necessità di dipendenze che attualmente non sono installate:",
+      "needsMultipleDependencies": "La libreria <b>{0}:{1}</b> necessita altre dipendenze che attualmente non sono installate:",
+      "needsOneDependency": "La libreria <b>{0}:{1}</b> necessita di dipendenze che attualmente non sono installate:",
       "overwriteExistingLibrary": "Vuoi sovrascrivere la libreria esistente?",
       "successfullyInstalledZipLibrary": "La libreria è stata installata con successo dalla cartella {0}",
       "title": "Gestore Librerie",
-      "uninstalledSuccessfully": "Libreria disinstallata con successo  1{0}  :  2{1}",
+      "uninstalledSuccessfully": "Libreria disinstallata con successo {0}:{1}",
       "zipLibrary": "Libreria"
     },
     "librarySearchProperty": {
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Impossibile connettersi al websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "Il nome deve essere composto da lettere, numeri o underscores. La lunghezza massima è di 36 caratteri.",
-      "newSketchTitle": "Nome del nuovo Sketch Remoto",
-      "notFound": "Non posso fare il pull dello sketch '{0}'. Lo sketch non esiste.",
-      "sketchAlreadyExists": "Esiste già lo sketch remoto {0}"
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Rete",
@@ -335,7 +344,7 @@
       "compile.experimental": "Imposta su true se l'IDE deve gestire errori multipli del compilatore. Il valore predefinito è false.",
       "compile.revealRange": "Regola il modo in cui gli errori del compilatore vengono rivelati nell'editor, dopo una verifica/caricamento non andato a buon fine. Valori possibili: 'auto': scorre verticalmente come necessario e rivela una riga. 'center': scorre verticalmente come necessario e rivela una riga centrata verticalmente. 'top': scorre verticalmente come necessario e rivela una riga vicino alla parte superiore della finestra, ottimizzata per la visualizzazione di una definizione di codice. 'centerIfOutsideViewport': scorre in verticale come necessario e rivela una riga centrata verticalmente solo se si trova al di fuori della finestra di visualizzazione. Il valore predefinito è '{0}'.",
       "compile.verbose": "Vero per compilazione esplicita. Falso come opzione predefinita",
-      "compile.warnings": "Indica a gcc il livello di avviso che deve mostrare. Il valore predefinito è 'None' ",
+      "compile.warnings": "Indica a gcc il livello di avviso che deve mostrare. Il valore predefinito è \"Nessuno\"",
       "compilerWarnings": "Warning del compilatore",
       "editorFontSize": "Dimensione del carattere dell'editor",
       "editorQuickSuggestions": "Suggerimenti rapidi dell'editor",
@@ -352,6 +361,7 @@
       "manualProxy": "Configurazione manuale del proxy",
       "network": "Rete",
       "newSketchbookLocation": "Seleziona un percorso per il nuovo sketchbook",
+      "noCliConfig": "Impossibile caricare il file di configurazione della CLI",
       "noProxy": "Nessun proxy",
       "proxySettings": {
         "hostname": "Nome host",
@@ -363,19 +373,22 @@
       "sketch": {
         "inoBlueprint": "Percorso assoluto del filesystem per il file predefinito blueprint `.ino`. Se specificato, il contenuto del file blueprint sarà utilizzato per ogni nuovo sketch creato dall'IDE. Se non specificato, gli sketch saranno generati con il contenuto predefinito di Arduino. I file blueprint non accessibili saranno ignorati. **È necessario un riavvio dell'IDE** affinché questa impostazione abbia effetto."
       },
-      "sketchbook.location": "Posizione della raccolta degli sketch",
+      "sketchbook.location": "Percorso della cartella degli sketch",
       "sketchbook.showAllFiles": "Vero per mostrare tutti i file relativi contenuti all'interno dello sketch. L'opzione predefinita è falso.",
       "survey.notification": "Vero se gli utenti devono essere avvisati quando è disponibile un sondaggio. Vero per impostazione predefinita.",
       "unofficialBoardSupport": "Clicca per ottenere la lista di collegamenti per le schede di terze parti, non schede ufficiali.",
       "upload": "caricamento",
-      "upload.verbose": " Seleziona Vero per un rapporto dettagliato durante l'upload. Il valore predefinito è impostato su falso",
+      "upload.verbose": "Vero per un rapporto dettagliato durante l'upload. Il valore predefinito è impostato su falso.",
       "verifyAfterUpload": "Verifica il codice dopo il caricamento",
-      "window.autoScale": "Impostato su True l'interfaccia scala automaticamente in base alla dimensione del font  .",
+      "window.autoScale": "Vero se l'interfaccia scala automaticamente in base alla dimensione del font.",
       "window.zoomLevel": {
         "deprecationMessage": "Non più disponibile. Al suo posto utilizza 'windows.zoomLevel'."
       }
     },
-    "replaceMsg": "Sostituisce la versione esistente con la versione 1{0}  ?",
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "Sostituire la versione esistente con la versione {0}?",
     "selectZip": "Scegli il file zip che contiene la libreria che vuoi aggiungere",
     "serial": {
       "autoscroll": "Scorrimento automatico",
@@ -398,13 +411,22 @@
       "createdArchive": "Creato l'archivio '{0}'.",
       "doneCompiling": "Compilazione completata.",
       "doneUploading": "Caricamento terminato.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Esporta sketch compilato",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Spostando",
-      "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella  \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
+      "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
       "new": "Nuovo Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",
-      "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra.",
+      "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Salva la cartella sketch come...",
       "saveSketch": "Salva il tuo sketch per riaprirlo in seguito.",
       "saveSketchAs": "Salva la cartella dello sketch come...",
@@ -413,7 +435,7 @@
       "sketchbook": "Raccolta degli sketch",
       "titleLocalSketchbook": "Cartella degli sketch locali",
       "titleSketchbook": "Sketchbook",
-      "upload": "Caricare",
+      "upload": "Carica",
       "uploadUsingProgrammer": "Carica tramite Programmatore",
       "uploading": "Caricamento in corso...",
       "userFieldsNotFoundError": "Non è possibile trovare i campi utente per connettere la scheda",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {
-      "newRemoteSketch": "Nuovo Sketch Remoto",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "Nuovo Sketch"
     },
     "survey": {
@@ -435,12 +457,23 @@
       "updatePackageIndex": "Aggiorna l'indice del pacchetto"
     },
     "upload": {
-      "error": "1 {0}   errore:   2 {1}"
+      "error": "{0} errore: {1}"
     },
     "userFields": {
       "cancel": "Annulla",
       "enterField": "Inserisci {0}",
       "upload": "Carica"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -449,21 +482,21 @@
       "cannotConnectDaemon": "Non riesco a collegarmi al demone CLI",
       "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l' Arduino IDE. ",
       "daemonOffline": "Il CLI Daemon è disconnesso",
-      "offline": "Disconnesso",
+      "offline": "Offline",
       "quitTitle": "Sei sicuro di volere chiudere?"
     },
     "editor": {
-      "unsavedTitle": "Non salvato – 1{0}"
+      "unsavedTitle": "Non salvato – {0}"
     },
     "messages": {
       "collapse": "Collassa",
       "expand": "Espandi"
     },
     "workspace": {
-      "deleteCurrentSketch": "Vuoi eliminare lo sketch attuale?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Nome per il nuovo file",
       "invalidExtension": "\".{0}\" non è un'estensione valida",
-      "invalidFilename": "Nome del file invalido",
       "newFileName": "Nuovo nome del file"
     }
   }

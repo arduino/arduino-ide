@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "バージョン: {0}\n日付: {1}{2}\nCLIバージョン: {3}{4} [{5}]\n\n{6}",
+      "detail": "バージョン：{0}\n日付：{1}{2}\nCLIバージョン：{3}\n\n{4}",
       "label": "{0}について"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "現在選択されているボード\"{2}\"用にコア\"{0} {1}\"をインストールする必要があります。今すぐインストールしますか？",
       "noBoardsFound": "\"{0}\"のボードが見つかりませんでした",
       "noFQBN": "選択されたボード\"{0}\"にはFQBNがありません。対応するコアをインストール済みですか？",
+      "noNativeSerialPort": "ネイティブのシリアルポートで、情報を取得できません。",
       "noPortsDiscovered": "ポートが見つかりませんでした",
       "noPortsSelected": "ボード用に選択されたポートがありません: '{0}'.",
+      "nonSerialPort": "シリアルポートではないため、情報を取得できません。",
       "noneSelected": "ボード未選択です。",
       "openBoardsConfig": "他のボードとポートを選択…",
-      "platformMissing": "選択したボード'{0}'用のプラットフォームがインストールされていません。",
       "pleasePickBoard": "選択したポートに接続されているボードを選んでください。",
       "port": "ポート{0}",
       "portLabel": "ポート: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "後で選択しなおす",
       "searchBoard": "ボードを検索",
       "selectBoard": "ボードを選択",
-      "selectBoardForInfo": "ボード情報を得るには、ボードを選択してください。",
       "selectPortForInfo": "ボード情報を得るには、ポートを選択してください。",
       "showAllAvailablePorts": "有効な場合、利用可能なすべてのポートを表示",
       "showAllPorts": "全てのポートを表示",
       "succesfullyInstalledPlatform": "プラットフォーム{0}:{1}のインストールに成功しました",
       "succesfullyUninstalledPlatform": "プラットフォーム{0}:{1}のアンインストールに成功しました",
-      "typeOfPorts": "{0}ポート"
+      "typeOfPorts": "{0}ポート",
+      "unknownBoard": "未知のボード"
     },
     "boardsManager": "ボードマネージャ",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "アカウント",
       "chooseSketchVisibility": "スケッチの可視性を選択:",
+      "cloudSketchbook": "クラウドスケッチブック",
       "connected": "接続済み",
       "continue": "続ける",
       "donePulling": "‘{0}’のプルが完了しました。",
@@ -108,10 +110,9 @@
       "pushSketch": "スケッチをプッシュする",
       "pushSketchMsg": "これはパブリックなスケッチです。プッシュする前に、すべての機密情報がarduino_secrets.hファイルで定義されていることを確認してください。共有パネルでスケッチをプライベートにできます。",
       "remote": "リモート",
-      "remoteSketchbook": "リモートスケッチブック",
       "share": "共有...",
       "shareSketch": "スケッチを共有",
-      "showHideRemoveSketchbook": "リモートスケッチブックの表示・非表示",
+      "showHideSketchbook": "クラウドスケッチブックの表示・非表示",
       "signIn": "ログイン",
       "signInToCloud": "Arduino Cloudにログインする",
       "signOut": "ログアウト",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "クラウドスケッチ'{0}'は既に存在しています。",
+      "creating": "クラウドスケッチ'{0}'を作成中…",
+      "new": "新規クラウドスケッチ",
+      "notFound": "クラウドスケッチ'{0}'を取得できませんでした。存在しません。",
+      "pulling": "スケッチブックを同期中。'{0}'を取得中です…",
+      "pushing": "スケッチブックを同期中。'{0}'をプッシュ中です…",
+      "renaming": "クラウドスケッチの名前を'{0}'から'{1}'に変更中です...",
+      "synchronizingSketchbook": "スケッチブックを同期中です…"
     },
     "common": {
       "all": "全て",
@@ -157,6 +163,11 @@
       "uninstallMsg": "{0}をアンインストールしますか？",
       "version": "バージョン{0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "'{0}': {1}にあるスケッチブックにアクセスできませんでした"
+      }
+    },
     "contributions": {
       "addFile": "ファイルを追加...",
       "fileAdded": "スケッチにファイルが1つ追加されました。",
@@ -186,7 +197,8 @@
       "debugWithMessage": "デバッグ - {0}",
       "debuggingNotSupported": "デバッグは'{0}'ではサポートされていません。",
       "noPlatformInstalledFor": "'{0}'用にプラットフォームがインストールされていません。",
-      "optimizeForDebugging": "デバッグに最適化"
+      "optimizeForDebugging": "デバッグに最適化",
+      "sketchIsNotCompiled": "デバッグセッションを開始する前に、スケッチ'{0}'を検証する必要があります。スケッチを検証してから、もう一度デバッグを開始してください。今すぐスケッチを検証しますか？"
     },
     "dialog": {
       "dontAskAgain": "次回から表示しない"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "websocketに接続することができません"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "新しいクラウドスケッチの名前"
     },
     "portProtocol": {
       "network": "ネットワーク",
@@ -352,12 +361,13 @@
       "manualProxy": "手動プロキシ設定",
       "network": "ネットワーク",
       "newSketchbookLocation": "新しいスケッチブックの場所を選択",
+      "noCliConfig": "CLIの設定を読み込めませんでした",
       "noProxy": "プロキシなし",
       "proxySettings": {
         "hostname": "ホスト名",
         "password": "パスワード",
         "port": "ポート番号",
-        "username": "ユーザ名"
+        "username": "ユーザー名"
       },
       "showVerbose": "より詳細な情報を表示する",
       "sketch": {
@@ -372,8 +382,11 @@
       "verifyAfterUpload": "書き込み後にコードを検証する",
       "window.autoScale": "ユーザーインターフェイスをフォントサイズに合わせて自動的に拡大縮小させるにはtrueを指定。",
       "window.zoomLevel": {
-        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+        "deprecationMessage": "廃止済み。代わりに'window.zoomLevel'を使用してください。"
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "クラウドスケッチの新しい名前"
     },
     "replaceMsg": "{0}の既存のバージョンを置き換えますか？",
     "selectZip": "追加したいライブラリの入ったZIPファイルを選択",
@@ -398,13 +411,22 @@
       "createdArchive": "アーカイブ'{0}'を作成しました。",
       "doneCompiling": "コンパイル完了。",
       "doneUploading": "書き込み完了",
+      "editInvalidSketchFolderLocationQuestion": "スケッチを別の場所に保存してみますか？",
+      "editInvalidSketchFolderQuestion": "スケッチを別の名前で保存しますか？",
       "exportBinary": "コンパイル済みバイナリをエクスポート",
+      "invalidCloudSketchName": "名前は、文字または数字で始まり、文字、数字、ダッシュ、ドット、アンダースコアが続く必要があります。最大文字数は36文字です。",
+      "invalidSketchFolderLocationDetails": "スケッチは、それ自身の中のフォルダに保存することはできません。",
+      "invalidSketchFolderLocationMessage": "無効なスケッチフォルダの場所：'{0}'。",
+      "invalidSketchFolderNameMessage": "スケッチフォルダの名前が無効です：'{0}'",
+      "invalidSketchName": "名前は、文字または数字で始まり、文字、数字、ダッシュ、ドット、アンダースコアが続く必要があります。最大文字数は63文字です。",
       "moving": "移動",
       "movingMsg": "ファイル\"{0}\"は、\"{1}\"という名前のスケッチフォルダの中にあることが必要です。\nこのフォルダを作成し、ファイルを移動させ、継続しますか？",
-      "new": "New Sketch",
+      "new": "新規スケッチ",
+      "noTrailingPeriod": "ファイル名の末尾にドットを付けることはできません",
       "openFolder": "フォルダを開く",
       "openRecent": "最近使った項目を開く",
       "openSketchInNewWindow": "新規ウィンドウでスケッチを開く",
+      "reservedFilename": "'{0}'は予約されたファイル名です。",
       "saveFolderAs": "スケッチフォルダを別名で保存…",
       "saveSketch": "あとで再び開くためスケッチを保存する。",
       "saveSketchAs": "スケッチを別名で保存…",
@@ -421,8 +443,8 @@
       "verifyOrCompile": "検証・コンパイル"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
-      "newSketch": "New Sketch"
+      "newCloudSketch": "新規クラウドスケッチ",
+      "newSketch": "新規スケッチ"
     },
     "survey": {
       "answerSurvey": "アンケートに回答する",
@@ -441,6 +463,17 @@
       "cancel": "キャンセル",
       "enterField": "{0}を入力",
       "upload": "マイコンボードに書き込む"
+    },
+    "validateSketch": {
+      "abortFixMessage": "スケッチはまだ無効です。残りの問題を修正しますか？'{0}'をクリックすると、新しいスケッチが開かれます。",
+      "abortFixTitle": "無効なスケッチです",
+      "renameSketchFileMessage": "スケッチファイル'{0}'は使用できません。{1}スケッチファイルの名前を今すぐ変更しますか？",
+      "renameSketchFileTitle": "無効なスケッチファイル名です",
+      "renameSketchFolderMessage": "スケッチ'{0}'は使用できません。{1}このメッセージをなくすには、スケッチの名前を変えてください。今すぐスケッチ名を変更しますか？",
+      "renameSketchFolderTitle": "無効なスケッチ名です"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}'は既に存在しています。"
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "展開する"
     },
     "workspace": {
-      "deleteCurrentSketch": "現在のスケッチを削除しますか？",
+      "deleteCloudSketch": "クラウドスケッチ'{0}'はArduinoサーバおよびローカルキャッシュから永久に削除されます。この動作はやり直せません。現在のスケッチを削除しますか？",
+      "deleteCurrentSketch": "スケッチ'{0}'は永久に削除されます。この動作はやり直せません。現在のスケッチを削除しますか？",
       "fileNewName": "新しいファイルの名前",
       "invalidExtension": "拡張子「.{0}」は、使えません。",
-      "invalidFilename": "無効なファイル名です。",
       "newFileName": "ファイルの新しい名前"
     }
   }

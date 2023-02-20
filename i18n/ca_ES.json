@@ -5,188 +5,200 @@
       "label": "Sobre{0}"
     },
     "board": {
-      "board": "Tarja{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
-      "boardInfo": "Informació de la Tarja",
-      "boards": "boards",
-      "configDialog1": "Seleccioneu una Tarja i un port si voleu carregar un programa.",
-      "configDialog2": "Si només seleccioneu una Tarja, podreu compilar, però no carregar el vostre programa.",
-      "couldNotFindPreviouslySelected": "No s'ha pogut trobar la Tarja seleccionada anteriorment '{0}' a la plataforma instal·lada '{1}'. Torneu a seleccionar manualment la tarja que voleu utilitzar. Vols tornar a seleccionar-la ara?",
-      "disconnected": "Disconnected",
-      "getBoardInfo": "Obtenir informació de la Tarja",
+      "board": "Placa {0}",
+      "boardConfigDialogTitle": "Selecciona una altra placa i port",
+      "boardInfo": "Informació de la placa",
+      "boards": "plaques",
+      "configDialog1": "Selecciona una placa i un port si vols carregar un programa.",
+      "configDialog2": "Si només selecciones una placa, podràs compilar, però no carregar un programa.",
+      "couldNotFindPreviouslySelected": "No s'ha trobat la placa \"{0}\" seleccionada anteriorment en la plataforma instal·lada \"{1}\". Torna a seleccionar manualment la placa que vols utilitzar. Vols tornar-la a seleccionar ara?",
+      "disconnected": "Desconnectada",
+      "getBoardInfo": "Obtín informació de la placa",
       "inSketchbook": "(al quadern de programes)",
-      "installNow": "El nucli de \"{0} {1}\"  s'ha d'instal·lar per a la Tarja \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
-      "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "El FQBN no està disponible per la Tarja seleccionada \"{0}\". Tens instal·lat el nucli corresponent?",
-      "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "No hi ha cap port seleccionat per a la tarja: '{0}'.",
-      "noneSelected": "No hi ha cap tarja seleccionada.",
-      "openBoardsConfig": "Selecciona una altre tarja i port...",
-      "platformMissing": "La plataforma per a la tarja '{0}' seleccionada no està instal·lada.",
-      "pleasePickBoard": "Si us plau, trieu una tarja connectada al port que heu seleccionat.",
+      "installNow": "El nucli de \"{0} {1}\" s'ha d'instal·lar en la placa \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
+      "noBoardsFound": "No s'han trobat plaques per a \"{0}\"",
+      "noFQBN": "El FQBN no està disponible per la placa seleccionada \"{0}\". Tens instal·lat el nucli corresponent?",
+      "noNativeSerialPort": "No s'ha pogut obtenir informació del port série natiu.",
+      "noPortsDiscovered": "No s'ha trobat cap port",
+      "noPortsSelected": "No hi ha cap port seleccionat per a la placa: \"{0}\".",
+      "nonSerialPort": "No s'ha pogut obtenir informació del port no série.",
+      "noneSelected": "No s'ha seleccionat cap placa.",
+      "openBoardsConfig": "Selecciona una altra placa i port...",
+      "pleasePickBoard": "Per favor, tria una placa connectada al port seleccionat.",
       "port": "Port {0}",
-      "portLabel": "Port: {0}",
+      "portLabel": "Port {0}",
       "ports": "ports",
       "programmer": "Programador",
-      "reselectLater": "Torneu a seleccionar més tard",
-      "searchBoard": "Search board",
-      "selectBoard": "Seleccioneu la Tarja",
-      "selectBoardForInfo": "Seleccioneu una tarja per obtenir informació sobre ella.",
-      "selectPortForInfo": "Seleccioneu un port per obtenir la informació de la tarja.",
-      "showAllAvailablePorts": "Mostra tots els ports disponibles quan estiguin habilitats",
-      "showAllPorts": "Show all ports",
+      "reselectLater": "Torna a triar més tard",
+      "searchBoard": "Busca una placa",
+      "selectBoard": "Tria una placa",
+      "selectPortForInfo": "Tria un port per obtenir informació de la placa.",
+      "showAllAvailablePorts": "Mostra tots els ports disponibles habilitats",
+      "showAllPorts": "Mostra tots els ports",
       "succesfullyInstalledPlatform": "Plataforma instal·lada correctament {0}:{1}",
       "succesfullyUninstalledPlatform": "Plataforma desinstal·lada correctament {0}:{1}",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Placa desconeguda"
     },
-    "boardsManager": "Gestor de Targetes",
+    "boardsManager": "Gestor de plaques",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Certificat per Arduino"
     },
     "bootloader": {
       "burnBootloader": "Grava el carregador d'arrencada (Bootloader)",
-      "burningBootloader": "Burning bootloader...",
-      "doneBurningBootloader": "S'ha acabat de gravar el carregador d'arrencada (Bootloader)."
+      "burningBootloader": "Gravant el carregador d'arrencada...",
+      "doneBurningBootloader": "S'ha acabat de gravar el carregador d'arrencada."
     },
     "burnBootloader": {
-      "error": "Error mentre es gravava el carregador d'arrencada (Bootloader): {0} "
+      "error": "Error mentre es gravava el carregador d'arrencada: {0} "
     },
     "certificate": {
-      "addNew": "Afegir Nou",
+      "addNew": "Afig nou",
       "addURL": "Afegeix l'URL per obtenir el certificat SSL",
       "boardAtPort": "{0} a {1}",
       "certificatesUploaded": "S'han carregat els certificats.",
       "enterURL": "Introduïu l'URL",
-      "noSupportedBoardConnected": "No hi ha cap tarja compatible connectada",
+      "noSupportedBoardConnected": "No hi ha cap placa compatible connectada",
       "openContext": "Context obert",
-      "remove": "Eliminar",
-      "selectBoard": "Seleccioneu una tarja...",
+      "remove": "Elimina",
+      "selectBoard": "Tria una placa...",
       "selectCertificateToUpload": "1. Seleccioneu el certificat per carregar",
-      "selectDestinationBoardToUpload": "2. Seleccioneu la tarja de destinació i carregueu el certificat",
+      "selectDestinationBoardToUpload": "2. Tria la placa de destinació i carrega el certificat",
       "upload": "Carrega",
       "uploadFailed": "La càrrega ha fallat. Si us plau, torna-ho a provar.",
       "uploadRootCertificates": "Carregueu els certificats arrel SSL",
       "uploadingCertificates": "Càrrega de certificats."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "Comprovant actualitzacions d'Arduino",
+      "installAll": "Instal·la-ho tot",
+      "noUpdates": "No hi ha actualitzacions disponibles",
+      "promptUpdateBoards": "Algunes plaques tenen actualitzacions disponibles.",
+      "promptUpdateLibraries": "Algunes llibreries tenen actualitzacions disponibles.",
+      "updatingBoards": "Actualitzant plaques...",
+      "updatingLibraries": "Actualitzant llibreries..."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "No s'ha trobat \"Keyboard\". El teu programa té la línia \"#include <Keyboard.h>\"?",
+      "mouseError": "No s'ha trobat \"Mouse\". El teu programa té la línia \"#include <Mouse.h>\"?"
     },
     "cloud": {
-      "account": "Account",
+      "account": "Compte",
       "chooseSketchVisibility": "Trieu la visibilitat del vostre programa:",
+      "cloudSketchbook": "Quadern de programes del núvol",
       "connected": "Connectat",
-      "continue": "Continuar",
-      "donePulling": "S'ha acabat de extreure '{0}.",
-      "donePushing": "S'ha acabat de enviar '{0}'.",
-      "embed": "Incrustar:",
+      "continue": "Continua",
+      "donePulling": "Descarregat correctament \"{0}\".",
+      "donePushing": "Enviat correctament \"{0}\".",
+      "embed": "Encasta:",
       "emptySketchbook": "El teu quadern de programes està buit",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "Ves al núvol",
       "learnMore": "Aprèn més",
       "link": "Enllaç:",
-      "notYetPulled": "No es pot enviar cap als núvol. Encara no ha estat baixat",
+      "notYetPulled": "No es pot enviar al núvol. Encara no s'ha descarregat.",
       "offline": "Fora de línia",
-      "openInCloudEditor": "Obre a l'Editor del núvol",
+      "openInCloudEditor": "Obri a l'editor del núvol",
       "options": "Opcions...",
       "privateVisibility": "Privat. Només tu pots veure el programa.",
       "profilePicture": "Imatge del perfil",
       "publicVisibility": "Públic. Qualsevol persona amb l'enllaç pot veure el programa.",
-      "pull": "Descarregar",
+      "pull": "Descarrega",
       "pullFirst": "Primer has de descarregar per poder enviar al núvol.",
-      "pullSketch": "Descarregar programa",
-      "pullSketchMsg": "Si descarregueu aquest programa del núvol, sobreescriurà la seva versió local. Esteu segur que voleu continuar?",
-      "push": "Enviar",
-      "pushSketch": "Enviar programa",
-      "pushSketchMsg": "Aquest és un programa públic. Abans d'enviar, assegureu-vos que qualsevol informació sensible estigui definida als fitxers arduino_secrets.h. Podeu fer un programa privat des del tauler Compartir.",
+      "pullSketch": "Baixa el programa",
+      "pullSketchMsg": "Si descarregueu aquest programa del núvol, sobreescriurà la seva versió local. Segur que vols continuar?",
+      "push": "Envia",
+      "pushSketch": "Envia el programa",
+      "pushSketchMsg": "Aquest és un programa públic. Abans d'enviar, assegureu-vos que qualsevol informació sensible estigui definida als fitxers arduino_secrets.h. Podeu fer un programa privat des del tauler de compartir.",
       "remote": "Remot",
-      "remoteSketchbook": "Remote Sketchbook",
-      "share": "Compartir...",
-      "shareSketch": "Compartir programa",
-      "showHideRemoveSketchbook": "Mostra/amaga el quadern de programes remot",
-      "signIn": "Inicieu sessió",
-      "signInToCloud": "Inicieu la sessió a Arduino Cloud",
+      "share": "Comparteix...",
+      "shareSketch": "Comparteix programa...",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "Inicia sessió",
+      "signInToCloud": "Inicia la sessió a Arduino Cloud",
       "signOut": "Tanca sessió",
-      "sync": "Sync",
+      "sync": "Sincronitza",
       "syncEditSketches": "Tanca la sessió de sincronització i edita els teus programes del núvol Arduino",
       "visitArduinoCloud": "Visiteu Arduino Cloud per crear programes al núvol."
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Sincronitzant quadern de programes, descarregant \"{0}\"...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
-      "installManually": "Instal·la Manualment",
+      "all": "Tot",
+      "contributed": "Contribucions",
+      "installManually": "Instal·la manualment",
       "later": "Més tard",
-      "noBoardSelected": "No s'ha seleccionat cap tarja",
+      "noBoardSelected": "No s'ha seleccionat cap placa",
       "notConnected": "[no connectat]",
       "offlineIndicator": "Sembla que estàs fora de línia. Sense connexió a Internet, és possible que l'Arduino CLI no pugui descarregar els recursos necessaris i podria provocar un mal funcionament. Connecteu-vos a Internet i reinicieu l'aplicació.",
-      "oldFormat": "El '{0}' encara utilitza l'antic format `.pde`. Voleu canviar a la nova extensió '.ino'`?",
-      "partner": "Partner",
+      "oldFormat": "El \"{0}\" encara utilitza l'antic format \".pde\". Voleu canviar a la nova extensió \".ino\"?",
+      "partner": "Company",
       "processing": "Processant",
-      "recommended": "Recommended",
-      "retired": "Retired",
+      "recommended": "Recomanat",
+      "retired": "Retirat",
       "selectedOn": "sobre {0}",
       "serialMonitor": "Monitor sèrie",
-      "type": "Type",
+      "type": "Tipus",
       "unknown": "Desconegut",
-      "updateable": "Updatable"
+      "updateable": "Actualitzable"
     },
     "compile": {
       "error": "Error de compilació: {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "Plaques incloses al paquet:",
       "by": "per",
       "filterSearch": "Filtra la teva cerca...",
-      "install": "Instal·lar",
-      "installed": "Installed",
+      "install": "Instal·la",
+      "installed": "Instal·lat",
       "moreInfo": "Més informació",
       "uninstall": "Desinstal·la",
       "uninstallMsg": "Vols desinstal·lar {0}?",
       "version": "Versió {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "No s'ha pogut accedir a la ubicació del quadern de programes a \"{0}\": {1}"
+      }
+    },
     "contributions": {
       "addFile": "Afegeix un fitxer",
       "fileAdded": "S'ha afegit un fitxer al programa.",
       "plotter": {
-        "couldNotOpen": "Couldn't open serial plotter"
+        "couldNotOpen": "No s'ha pogut obrir el gràfic sèrie"
       },
       "replaceTitle": "Substitueix"
     },
     "core": {
       "compilerWarnings": {
-        "all": "All",
-        "default": "Default",
-        "more": "More",
-        "none": "None"
+        "all": "Tot",
+        "default": "Per defecte",
+        "more": "Més",
+        "none": "Cap"
       }
     },
     "coreContribution": {
-      "copyError": "Copy error messages",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "copyError": "Còpia els missatges d'error",
+      "noBoardSelected": "No s'ha seleccionat cap placa. Tria una placa Arduino des d'Eines > Plaques"
     },
     "daemon": {
-      "restart": "Restart Daemon",
-      "start": "Start Daemon",
-      "stop": "Stop Daemon"
+      "restart": "Reinicia el servei",
+      "start": "Inicia el servei",
+      "stop": "Para el servei"
     },
     "debug": {
       "debugWithMessage": "Depuració - {0}",
       "debuggingNotSupported": "La depuració no és compatible amb '{0}'",
       "noPlatformInstalledFor": "La plataforma no està instal·lada per a '{0}'",
-      "optimizeForDebugging": "Optimitzar per a la depuració"
+      "optimizeForDebugging": "Optimitzar per a la depuració",
+      "sketchIsNotCompiled": "El programa \"{0}\" s'ha de comprovar abans de començar la depuració. Per favor, verifica el programa i comença a depurar de nou. Vols verificar el programa ara?"
     },
     "dialog": {
       "dontAskAgain": "No ho tornis a preguntar"
@@ -194,42 +206,42 @@
     "editor": {
       "autoFormat": "Format automàtic",
       "commentUncomment": "Comenta/Descomenta",
-      "copyForForum": "Còpia per al fòrum (Markdown)",
+      "copyForForum": "Còpia per al fòrum (baix de l'últim)",
       "decreaseFontSize": "Disminueix la mida de la lletra",
       "decreaseIndent": "Disminueix el sagnat",
       "increaseFontSize": "Augmenta la mida de la lletra",
       "increaseIndent": "Augmenta el sagnat",
-      "nextError": "Next Error",
-      "previousError": "Previous Error",
-      "revealError": "Reveal Error"
+      "nextError": "Següent error",
+      "previousError": "Error anterior",
+      "revealError": "Mostra l'error"
     },
     "electron": {
       "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
-      "unsavedChanges": "Els canvis no desats no es desaran."
+      "unsavedChanges": "Els canvis no desats es perdran."
     },
     "examples": {
       "builtInExamples": "Exemples incorporats",
       "couldNotInitializeExamples": "No es poden inicialitzar els exemples incorporats.",
-      "customLibrary": "Exemples de Llibreries personalitzades",
-      "for": "Exemples per {0}",
-      "forAny": "Exemples per a qualsevol tarja",
+      "customLibrary": "Exemples de llibreries personalitzades",
+      "for": "Exemples per a {0}",
+      "forAny": "Exemples per a qualsevol placa",
       "menu": "Exemples"
     },
     "firmware": {
-      "checkUpdates": "Consulta les actualitzacions",
+      "checkUpdates": "Comprova si hi ha actualitzacions",
       "failedInstall": "La instal·lació ha fallat. Si us plau, torna-ho a provar.",
-      "install": "Instal·lar",
-      "installingFirmware": "Instal·lació del firmware.",
-      "overwriteSketch": "La instal·lació sobreescriurà el programa a la tarja.",
-      "selectBoard": "Seleccioneu la Tarja",
-      "selectVersion": "Seleccioneu la versió del firmware",
-      "successfullyInstalled": "El firmware s'ha instal·lat correctament.",
-      "updater": "Actualitzador de firmware WiFi101 / WiFiNINA"
+      "install": "Instal·la",
+      "installingFirmware": "Instal·lació de l'entorn.",
+      "overwriteSketch": "La instal·lació sobreescriurà el programa a la placa.",
+      "selectBoard": "Selecciona una placa",
+      "selectVersion": "Selecciona la versió de l'entorn",
+      "successfullyInstalled": "L'entorn s'ha instal·lat correctament.",
+      "updater": "Actualitzador de l'entorn WiFi101 / WiFiNINA"
     },
     "help": {
-      "environment": "L'entorn",
+      "environment": "Entorn",
       "faq": "Preguntes freqüents",
-      "findInReference": "Cerca a Referència",
+      "findInReference": "Busca a les referències",
       "gettingStarted": "Com començar",
       "keyword": "Escriviu una paraula clau",
       "privacyPolicy": "Política de privacitat",
@@ -239,231 +251,252 @@
       "visit": "Visiteu Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Comprova si hi ha actualitzacions de l'IDE d'Arduino",
       "closeAndInstallButton": "Tanca i instal·la",
       "closeToInstallNotice": "Tanqueu el programari i instal·leu l'actualització a la vostra màquina.",
-      "downloadButton": "Descarregar",
-      "downloadingNotice": "Descàrrega de l'última versió de l'IDE d'Arduino.",
-      "errorCheckingForUpdates": "S'ha produït un error en comprovar si hi ha actualitzacions d'IDE d'Arduino. \n{0}",
-      "goToDownloadButton": "Vés a Descarregar",
+      "downloadButton": "Descarrega",
+      "downloadingNotice": "Descarregant de l'última versió de l'IDE d'Arduino.",
+      "errorCheckingForUpdates": "S'ha produït un error en comprovar si hi ha actualitzacions de l'IDE d'Arduino.\n{0}",
+      "goToDownloadButton": "Ves a descàrregues",
       "goToDownloadPage": "Hi ha disponible una actualització per a l'IDE d'Arduino, però no podem baixar-la i instal·lar-la automàticament. Si us plau, aneu a la pàgina de descàrrega i descarregueu-ne la darrera versió.",
-      "ideUpdaterDialog": "Actualització de software",
-      "newVersionAvailable": "Una nova versió d'Arduino IDE ({0}) està disponible per descarregar.",
+      "ideUpdaterDialog": "Actualització de programari",
+      "newVersionAvailable": "Una nova versió de l'IDE d'Arduino ({0}) està disponible per descarregar.",
       "noUpdatesAvailable": "No hi ha actualitzacions recents disponibles per a l'IDE d'Arduino",
       "notNowButton": "Ara no",
       "skipVersionButton": "Omet la versió",
       "updateAvailable": "Actualització disponible",
-      "versionDownloaded": "Arduino IDE {0} s'ha descarregat."
+      "versionDownloaded": "L'IDE d'Arduino {0} s'ha descarregat"
     },
     "library": {
       "addZip": "Afegeix llibreria .ZIP...",
-      "arduinoLibraries": "Llibreries Arduino",
+      "arduinoLibraries": "Llibreries d'Arduino",
       "contributedLibraries": "Llibreriess aportades",
       "include": "Inclou llibreria",
-      "installAll": "Install All",
-      "installLibraryDependencies": "Install library dependencies",
+      "installAll": "Instal·la-ho tot",
+      "installLibraryDependencies": "Instal·la les dependències de la llibreria",
       "installMissingDependencies": "Voleu instal·lar totes les dependències que falten?",
       "installOneMissingDependency": "Voleu instal·lar la dependència que falta?",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "Instal·la sense les dependències",
       "installedSuccessfully": "Llibreria instal·lada correctament {0}:{1}",
       "libraryAlreadyExists": "Ja existeix una llibreria. Voleu sobreescriure-la?",
-      "manageLibraries": "Gestiona les Llibreries...",
-      "namedLibraryAlreadyExists": "Ja existeix una carpeta de llibreria anomenada {0}. Voleu sobreescriure-lo?",
+      "manageLibraries": "Gestiona les llibreries...",
+      "namedLibraryAlreadyExists": "Ja existeix una carpeta de llibreria anomenada {0}. Voleu sobreescriure-la?",
       "needsMultipleDependencies": "La llibreria <b>{0}: {1}</b> necessita algunes altres dependències actualment no instal·lades:",
       "needsOneDependency": "La llibreria<b>{0}:{1}</b> necessita una altra dependència actualment no instal·lada:",
       "overwriteExistingLibrary": "Voleu sobreescriure la llibreria existent?",
       "successfullyInstalledZipLibrary": "La llibreria s'ha instal·lat correctament des de l'arxiu {0}",
-      "title": "Gestor de Llibreries",
+      "title": "Gestor de llibreries",
       "uninstalledSuccessfully": "Llibreria desinstal·lada correctament {0}:{1}",
       "zipLibrary": "Llibreria"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "Tema"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
+      "communication": "Comunicació",
+      "dataProcessing": "Processament de dades",
+      "dataStorage": "Emmagatzematge de dades",
+      "deviceControl": "Control del dispositiu",
+      "display": "Pantalla",
+      "other": "Altres",
       "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "signalInputOutput": "Senyal entrada/eixida",
+      "timing": "Temporitzador",
+      "uncategorized": "Sense categoria"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Instal·lat"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Avançat",
       "sketch": "Programa",
       "tools": "Eines"
     },
     "monitor": {
-      "unableToCloseWebSocket": "Unable to close websocket",
-      "unableToConnectToWebSocket": "Unable to connect to websocket"
+      "unableToCloseWebSocket": "No s'ha pogut tancar la ranura web",
+      "unableToConnectToWebSocket": "No s'ha pogut connectar a la ranura web"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Xarxa",
-      "serial": "Serial"
+      "serial": "Sèrie"
     },
     "preferences": {
-      "additionalManagerURLs": "URL addicionals del gestor de targetes",
+      "additionalManagerURLs": "URLs addicionals del gestor de plaques",
       "auth.audience": "L'audiència d'OAuth2.",
       "auth.clientID": "L'identificador de client OAuth2.",
       "auth.domain": "El domini OAuth2.",
       "auth.registerUri": "L'URI utilitzat per registrar un nou usuari.",
       "automatic": "Automàtic",
-      "board.certificates": "Llista de certificats que es poden carregar a les targes",
+      "board.certificates": "Llistat de certificats que es poden carregar a les plaques",
       "browse": "Navega",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "Rep notificacions d'actualitzacions disponibles per a l'IDE, plaques i llibreries. Requereix reiniciar l'IDE per aplicar els canvis. Per defecte està activat.",
       "choose": "Tria",
-      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
-      "cloud.enabled": "És cert si les funcions de sincronització del programa estan habilitades. El valor predeterminat és true.",
-      "cloud.pull.warn": "És cert si s'ha d'avisar als usuaris abans de baixar un programa del núvol. El valor predeterminat és true.",
-      "cloud.push.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa del núvol. El valor predeterminat és true.",
-      "cloud.pushpublic.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa públic al núvol. El valor predeterminat és true.",
-      "cloud.sketchSyncEndpoint": "El punt final s'utilitza per a enviar i descarregar programes des d'un backend. Per defecte apunta a l'API d'Arduino Cloud.",
-      "compile": "compilar",
-      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
-      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
-      "compile.verbose": "Veritat per a la sortida de compilació detallada. Fals per defecte",
+      "cli.daemonDebug": "Activa la depuració de registre de les cridades gRPC a l'Arduino CLI. Requereix reiniciar l'IDE perquè els canvis tinguen efecte. Per defecte està desactivat.",
+      "cloud.enabled": "És cert si les funcions de sincronització del programa estan habilitades. Per defecte està activat.",
+      "cloud.pull.warn": "És cert si s'ha d'avisar als usuaris abans de baixar un programa del núvol. Per defecte està activat.",
+      "cloud.push.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa del núvol. Per defecte està activat.",
+      "cloud.pushpublic.warn": "És cert si s'ha d'avisar als usuaris abans d'enviar un programa públic al núvol. Per defecte està activat.",
+      "cloud.sketchSyncEndpoint": "El punt final s'utilitza per a enviar i descarregar programes des d'un administrador. Per defecte apunta a l'API d'Arduino Cloud.",
+      "compile": "compila",
+      "compile.experimental": "És cert si l'IDE gestiona múltiples errors de compilació. Per defecte està desactivat.",
+      "compile.revealRange": "Ajusta com els errors de compilació es mostren a l'editor després d'un error de verificació/pujada. Els possibles valors són \"auto\": Baixa verticalment si és necessari per revelar una línia. \"center\": Baixa verticalment si és necessari revelar una línia centrada verticalment. \"top\": Baixa verticalment si és necessari revelar una línia prop de la part de dalt de tot de la consola, optimitzat per veure la definició del codi. \"centerIfOutsideViewport\": Baixa verticalment si és necessari revelar una línia centrada verticalment només si se n'ix de la consola. Per defecte el valor és \"{0}\".",
+      "compile.verbose": "És cert si l'eixida de la compilació és detallada. Per defecte està desactivat.",
       "compile.warnings": "Indica a gcc quin nivell d'avís s'ha d'utilitzar. Per defecte és \"Cap\".",
       "compilerWarnings": "Advertències del compilador",
       "editorFontSize": "Mida de lletra de l'editor",
       "editorQuickSuggestions": "Suggeriments ràpids de l'editor",
       "enterAdditionalURLs": "Introduïu URL addicionals, un per a cada fila",
-      "files.inside.sketches": "Mostra fitxers dins del programes",
+      "files.inside.sketches": "Mostra fitxers dins dels programes",
       "ide.updateBaseUrl": "L'URL base des d'on baixar les actualitzacions. El valor per defecte és \"https://downloads.arduino.cc/arduino-ide\"",
-      "ide.updateChannel": "Allibera el canal per rebre actualitzacions. 'stable' és la versió estable, 'nightly' és l'última versió de desenvolupament.",
+      "ide.updateChannel": "Canal de novetats per rebre actualitzacions. \"stable\" és la versió estable, \"nightly\" és l'última versió de desenvolupament.",
       "interfaceScale": "Escala de la interfície",
       "invalid.editorFontSize": "Mida del tipus de lletra de l'editor no vàlida. Ha de ser un nombre enter positiu.",
       "invalid.sketchbook.location": "La ubicació del quadern de programes no és vàlida: {0}",
       "invalid.theme": "Tema no vàlid.",
       "language.log": "És cert si el servidor d'idiomes Arduino hauria de generar fitxers de registre a la carpeta de programes. En cas contrari, fals. És fals per defecte.",
-      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "language.realTimeDiagnostics": "Si està activat, el servidor d'idiomes ofereix diagnòstics en temps real mentre s'escriu. Per defecte està desactivat.",
       "manualProxy": "Configuració manual del proxy",
       "network": "Xarxa",
       "newSketchbookLocation": "Seleccioneu una ubicació nova del quadern de programes",
+      "noCliConfig": "No s'ha pogut carregar la configuració del CLI",
       "noProxy": "Sense proxy",
       "proxySettings": {
-        "hostname": "Host name",
-        "password": "Password",
-        "port": "Port number",
-        "username": "Username"
+        "hostname": "Nom de l'hostatge",
+        "password": "Contrasenya",
+        "port": "Número de port",
+        "username": "Nom d'usuari"
       },
       "showVerbose": "Mostra la sortida detallada durant",
       "sketch": {
-        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+        "inoBlueprint": "Ruta del sistema d'arxius absolut per als fitxers per defecte \".ino\". Si s'especifica, el contingut dels fitxers s'utilitzarà per als nous programes creats per l'IDE. Si no, els programes es generaran amb el contingut per defecte d'Arduino. Els fitxers inaccessibles seran ignorats. **Es requereix reiniciar l'IDE** perquè els canvis tinguen efecte."
       },
       "sketchbook.location": "Ubicació del quadern de programes",
-      "sketchbook.showAllFiles": "True per mostrar tots els fitxers del programa dins del programa. És fals per defecte.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
-      "unofficialBoardSupport": "Feu clic per obtenir una llista d'URL de suport de targetes no oficials",
-      "upload": "carregar",
-      "upload.verbose": "True per a la sortida detallada de la càrrega. Fals per defecte.",
-      "verifyAfterUpload": "Verifica el codi després de pujar",
-      "window.autoScale": "És cert si la interfície d'usuari escala automàticament amb la mida de la lletra.",
+      "sketchbook.showAllFiles": "Si està activat es mostraran els fitxers dins del programa. Per defecte està desactivat.",
+      "survey.notification": "Si està activat els usuaris seran notificats si hi ha una enquesta disponible. Per defecte està activat.",
+      "unofficialBoardSupport": "Fes clic per obtenir una llista d'URLs de suport de plaques no oficials",
+      "upload": "carrega",
+      "upload.verbose": "Si està activat es mostrarà l'eixida detallada de la càrrega. Per defecte està desactivat.",
+      "verifyAfterUpload": "Verifica el codi després de pujar-lo",
+      "window.autoScale": "Si està activat la interfície s'escalarà automàticament amb la mida de la lletra.",
       "window.zoomLevel": {
-        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+        "deprecationMessage": "Obsolet. Utilitza \"window.zoomLevel\"."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "Substitueix la versió existent de {0}?",
     "selectZip": "Seleccioneu un fitxer zip que contingui la llibreria que voleu afegir",
     "serial": {
       "autoscroll": "Desplaçament automàtic",
       "carriageReturn": "Retorn de carro",
-      "message": "Message (Enter to send message to '{0}' on '{1}')",
-      "newLine": "Nova Línia",
+      "message": "Missatge (escriu per enviar un missatge a \"{0}\" en \"{1}\")",
+      "newLine": "Línia nova",
       "newLineCarriageReturn": "Ambdós NL & CR",
       "noLineEndings": "Sense final de línia",
-      "notConnected": "No connectat. Seleccioneu una tarja i un port per connectar-vos automàticament.",
-      "openSerialPlotter": "Serial Plotter",
+      "notConnected": "No connectat. Selecciona una placa i un port per connectar-te automàticament.",
+      "openSerialPlotter": "Gràfic sèrie",
       "timestamp": "Marca de temps",
       "toggleTimestamp": "Activa o desactiva la marca de temps"
     },
     "sketch": {
-      "archiveSketch": "Guardar programa",
+      "archiveSketch": "Arxiva el programa",
       "cantOpen": "Ja existeix una carpeta anomenada \"{0}\". No es pot obrir el programa.",
       "close": "Esteu segur que voleu tancar el programa?",
-      "compile": "Compiling sketch...",
-      "configureAndUpload": "Configure and Upload",
-      "createdArchive": "S'ha creat l'arxiu '{0}'.",
-      "doneCompiling": "S'ha fet la compilació.",
-      "doneUploading": "S'ha acabat de carregar.",
+      "compile": "Compilant el programa...",
+      "configureAndUpload": "Configura i puja",
+      "createdArchive": "S'ha creat l'arxiu \"{0}\".",
+      "doneCompiling": "Compilació enllestida.",
+      "doneUploading": "Pujada enllestida.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Exporta el binari compilat",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Movent-se",
-      "movingMsg": "El fitxer \"{0}\" ha d'estar dins d'una carpeta deprograma anomenada \"{1}\".\nVoleu crear aquesta carpeta, moure el fitxer i continuar?",
-      "new": "New Sketch",
-      "openFolder": "Obrir carpeta",
-      "openRecent": "Obre Recent",
-      "openSketchInNewWindow": "Obriu el programa a una finestra nova",
-      "saveFolderAs": "Desa la carpeta de programa com a...",
-      "saveSketch": "Save your sketch to open it again later.",
-      "saveSketchAs": "Desa la carpeta de programa com a...",
-      "showFolder": "Mostra la carpeta de programa",
+      "movingMsg": "El fitxer \"{0}\" ha d'estar dins d'una carpeta anomenada \"{1}\".\nVoleu crear aquesta carpeta, moure el fitxer i continuar?",
+      "new": "Programa nou",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "Obri la carpeta",
+      "openRecent": "Obri recent",
+      "openSketchInNewWindow": "Obri el programa en una finestra nova",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "Desa la carpeta del programa com a...",
+      "saveSketch": "Guarda el fitxer per obrir-lo de nou més tard.",
+      "saveSketchAs": "Desa la carpeta del programa com a...",
+      "showFolder": "Mostra la carpeta del programa",
       "sketch": "Programa",
       "sketchbook": "Quadern de programes",
-      "titleLocalSketchbook": "Quadern de programes Local",
+      "titleLocalSketchbook": "Quadern de programes local",
       "titleSketchbook": "Quadern de programes",
       "upload": "Carrega",
-      "uploadUsingProgrammer": "Càrrega mitjançant el programador",
-      "uploading": "Uploading...",
-      "userFieldsNotFoundError": "No s'han trobat camps d'usuari per a la tarja connectada",
-      "verify": "Verificar",
-      "verifyOrCompile": "Verificar/Compilar"
+      "uploadUsingProgrammer": "Carrega mitjançant el programador",
+      "uploading": "Carregant...",
+      "userFieldsNotFoundError": "No s'han trobat camps d'usuari per a la placa connectada",
+      "verify": "Verifica",
+      "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
-      "newSketch": "New Sketch"
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "Programa nou"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "Contesta l'enquesta",
+      "dismissSurvey": "No ho tornes a mostrar",
+      "surveyMessage": "Ajuda'ns a millorar contestant aquesta enquesta súper curta. Valorem la nostra comunitat i volem conéixer els nostres usuaris un poc millor."
     },
     "updateIndexes": {
-      "updateIndexes": "Update Indexes",
-      "updateLibraryIndex": "Update Library Index",
-      "updatePackageIndex": "Update Package Index"
+      "updateIndexes": "Actualitza els índexs",
+      "updateLibraryIndex": "Actualitza l'índex de la llibreria",
+      "updatePackageIndex": "Actualitza l'índex del paquet"
     },
     "upload": {
       "error": "{0} error: {1}"
     },
     "userFields": {
-      "cancel": "Cancel · lar",
-      "enterField": "Enter {0}",
+      "cancel": "Cancel·la",
+      "enterField": "Entra {0}",
       "upload": "Carrega"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
     "core": {
-      "cannotConnectBackend": "No es pot connectar al backend.",
-      "cannotConnectDaemon": "No es pot connectar al CLI daemon.",
+      "cannotConnectBackend": "No es pot connectar amb l'administrador.",
+      "cannotConnectDaemon": "No es pot connectar amb el servei del CLI.",
       "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
-      "daemonOffline": "CLI Daemon fora de línia",
+      "daemonOffline": "El servei CLI està fora de línia",
       "offline": "Fora de línia",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "Segur que vols eixir?"
     },
     "editor": {
       "unsavedTitle": "No desat –{0}"
     },
     "messages": {
-      "collapse": "Col·lapsar",
+      "collapse": "Col·lapsa",
       "expand": "Expandeix"
     },
     "workspace": {
-      "deleteCurrentSketch": "Voleu eliminar el programa actual?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Nom del nou fitxer",
       "invalidExtension": ". {0} no és una extensió vàlida",
-      "invalidFilename": "El nom del fitxer no és vàlid.",
       "newFileName": "Nou nom per al fitxer"
     }
   }
