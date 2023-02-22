@@ -20,3 +20,14 @@ export function startsWithUpperCase(what: string): boolean {
 export function isNullOrUndefined(what: unknown): what is undefined | null {
   return what === undefined || what === null;
 }
+
+// Text encoder can crash in electron browser: https://github.com/arduino/arduino-ide/issues/634#issuecomment-1440039171
+export function unit8ArrayToString(uint8Array: Uint8Array): string {
+  return uint8Array.reduce(
+    (text, byte) => text + String.fromCharCode(byte),
+    ''
+  );
+}
+export function stringToUint8Array(text: string): Uint8Array {
+  return Uint8Array.from(text, (char) => char.charCodeAt(0));
+}
