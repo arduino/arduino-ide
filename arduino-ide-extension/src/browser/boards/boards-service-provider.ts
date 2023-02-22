@@ -202,7 +202,7 @@ export class BoardsServiceProvider
       const lastBoardsConfigOnUpload = this.lastBoardsConfigOnUpload;
 
       if (boardOnAppearedPort && lastBoardsConfigOnUpload.selectedBoard) {
-        const boardIsSameHardware = Board.sameDistinctHardwareAs(
+        const boardIsSameHardware = Board.hardwareIdEquals(
           boardOnAppearedPort,
           lastBoardsConfigOnUpload.selectedBoard
         );
@@ -338,7 +338,7 @@ export class BoardsServiceProvider
           ? selectedBoard
           : this._availableBoards.find(
               (availableBoard) =>
-                Board.sameDistinctHardwareAs(availableBoard, selectedBoard) ||
+                Board.hardwareIdEquals(availableBoard, selectedBoard) ||
                 Board.sameAs(availableBoard, selectedBoard)
             );
         if (
@@ -370,7 +370,7 @@ export class BoardsServiceProvider
         ({ state }) => state !== AvailableBoard.State.incomplete
       )) {
         if (
-          (Board.sameDistinctHardwareAs(
+          (Board.hardwareIdEquals(
             this.latestValidBoardsConfig.selectedBoard,
             board
           ) ||
