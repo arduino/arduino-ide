@@ -2,6 +2,7 @@ import { MaybePromise } from '@theia/core/lib/common/types';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { fetch } from 'cross-fetch';
 import { SketchesService } from '../../common/protocol';
+import { unit8ArrayToString } from '../../common/utils';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
@@ -17,49 +18,6 @@ export namespace ResponseResultProvider {
   export const NOOP: ResponseResultProvider = async () => undefined;
   export const TEXT: ResponseResultProvider = (response) => response.text();
   export const JSON: ResponseResultProvider = (response) => response.json();
-}
-
-// TODO: check if this is still needed: https://github.com/electron/electron/issues/18733
-// The original issue was reported for Electron 5.x and 6.x. Theia uses 15.x
-export function Utf8ArrayToStr(array: Uint8Array): string {
-  let out, i, c;
-  let char2, char3;
-
-  out = '';
-  const len = array.length;
-  i = 0;
-  while (i < len) {
-    c = array[i++];
-    switch (c >> 4) {
-      case 0:
-      case 1:
-      case 2:
-      case 3:
-      case 4:
-      case 5:
-      case 6:
-      case 7:
-        // 0xxxxxxx
-        out += String.fromCharCode(c);
-        break;
-      case 12:
-      case 13:
-        // 110x xxxx   10xx xxxx
-        char2 = array[i++];
-        out += String.fromCharCode(((c & 0x1f) << 6) | (char2 & 0x3f));
-        break;
-      case 14:
-        // 1110 xxxx  10xx xxxx  10xx xxxx
-        char2 = array[i++];
-        char3 = array[i++];
-        out += String.fromCharCode(
-          ((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0)
-        );
-        break;
-    }
-  }
-
-  return out;
 }
 
 type ResourceType = 'f' | 'd';
@@ -333,7 +291,7 @@ export class CreateApi {
 
         // parse the secret file
         const secrets = (
-          typeof content === 'string' ? content : Utf8ArrayToStr(content)
+          typeof content === 'string' ? content : unit8ArrayToString(content)
         )
           .split(/\r?\n/)
           .reduce((prev, curr) => {
@@ -397,7 +355,7 @@ export class CreateApi {
     const headers = await this.headers();
 
     let data: string =
-      typeof content === 'string' ? content : Utf8ArrayToStr(content);
+      typeof content === 'string' ? content : unit8ArrayToString(content);
     data = await this.toggleSecretsInclude(posixPath, data, 'remove');
 
     const payload = { data: btoa(data) };
