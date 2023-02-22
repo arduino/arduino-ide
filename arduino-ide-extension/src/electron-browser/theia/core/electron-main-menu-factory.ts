@@ -74,11 +74,12 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     menuPath: MenuPath,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args?: any[],
-    context?: HTMLElement
+    context?: HTMLElement,
+    showDisabled?: boolean
   ): Electron.Menu {
     const menuModel = this.menuProvider.getMenu(menuPath);
     const template = this.fillMenuTemplate([], menuModel, args, {
-      showDisabled: false,
+      showDisabled,
       context,
       rootMenuPath: menuPath,
     });

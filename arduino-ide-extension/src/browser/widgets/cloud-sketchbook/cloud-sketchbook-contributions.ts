@@ -14,7 +14,6 @@ import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
-import { CloudUserCommands } from '../../auth/cloud-user-commands';
 import { ShareSketchDialog } from '../../dialogs/cloud-share-sketch-dialog';
 import { CreateApi } from '../../create/create-api';
 import {
@@ -26,7 +25,7 @@ import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
+} from '../../sketches-service-client-impl';
 import { Contribution } from '../../contributions/contribution';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { MainMenuManager } from '../../../common/main-menu-manager';
@@ -38,16 +37,6 @@ export const SKETCHBOOKSYNC__CONTEXT = ['arduino-sketchbook-sync--context'];
 export const SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP = [
   ...SKETCHBOOKSYNC__CONTEXT,
   '0_main',
-];
-
-export const CLOUD_USER__CONTEXT = ['arduino-cloud-user--context'];
-export const CLOUD_USER__CONTEXT__USERNAME = [
-  ...CLOUD_USER__CONTEXT,
-  '0_username',
-];
-export const CLOUD_USER__CONTEXT__MAIN_GROUP = [
-  ...CLOUD_USER__CONTEXT,
-  '1_main',
 ];
 
 export namespace CloudSketchbookCommands {
@@ -67,9 +56,9 @@ export namespace CloudSketchbookCommands {
   export const TOGGLE_CLOUD_SKETCHBOOK = Command.toLocalizedCommand(
     {
       id: 'arduino-cloud-sketchbook--disable',
-      label: 'Show/Hide Remote Sketchbook',
+      label: 'Show/Hide Cloud Sketchbook',
     },
-    'arduino/cloud/showHideRemoveSketchbook'
+    'arduino/cloud/showHideSketchbook'
   );
 
   export const PULL_SKETCH = Command.toLocalizedCommand(
@@ -327,52 +316,6 @@ export class CloudSketchbookContribution extends Contribution {
         },
       }
     );
-
-    registry.registerCommand(CloudUserCommands.OPEN_PROFILE_CONTEXT_MENU, {
-      execute: async (arg) => {
-        this.toDisposeBeforeNewContextMenu.dispose();
-        const container = arg.event.target;
-        if (!container) {
-          return;
-        }
-
-        this.menuRegistry.registerMenuAction(CLOUD_USER__CONTEXT__MAIN_GROUP, {
-          commandId: CloudUserCommands.LOGOUT.id,
-          label: CloudUserCommands.LOGOUT.label,
-        });
-        this.toDisposeBeforeNewContextMenu.push(
-          Disposable.create(() =>
-            this.menuRegistry.unregisterMenuAction(CloudUserCommands.LOGOUT)
-          )
-        );
-
-        const placeholder = new PlaceholderMenuNode(
-          CLOUD_USER__CONTEXT__USERNAME,
-          arg.username
-        );
-        this.menuRegistry.registerMenuNode(
-          CLOUD_USER__CONTEXT__USERNAME,
-          placeholder
-        );
-        this.toDisposeBeforeNewContextMenu.push(
-          Disposable.create(() =>
-            this.menuRegistry.unregisterMenuNode(placeholder.id)
-          )
-        );
-
-        const options: RenderContextMenuOptions = {
-          menuPath: CLOUD_USER__CONTEXT,
-          anchor: {
-            x: container.getBoundingClientRect().left,
-            y:
-              container.getBoundingClientRect().top -
-              3.5 * container.offsetHeight,
-          },
-          args: [arg],
-        };
-        this.contextMenuRenderer.render(options);
-      },
-    });
 
     this.registerMenus(this.menuRegistry);
   }

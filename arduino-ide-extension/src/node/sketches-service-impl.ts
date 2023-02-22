@@ -1,5 +1,5 @@
 import { injectable, inject, named } from '@theia/core/shared/inversify';
-import { promises as fs, realpath, lstat, Stats, constants, rm } from 'fs';
+import { promises as fs, realpath, lstat, Stats, constants } from 'fs';
 import * as os from 'os';
 import * as temp from 'temp';
 import * as path from 'path';
@@ -427,6 +427,10 @@ export class SketchesServiceImpl
     return this.doLoadSketch(FileUri.create(sketchDir).toString(), false);
   }
 
+  defaultInoContent(): Promise<string> {
+    return this.loadInoContent();
+  }
+
   /**
    * Creates a temp folder and returns with a promise that resolves with the canonicalized absolute pathname of the newly created temp folder.
    * This method ensures that the file-system path pointing to the new temp directory is fully resolved.
@@ -626,21 +630,6 @@ export class SketchesServiceImpl
       .toUpperCase();
     const folderName = `arduino-sketch-${hash}`;
     return folderName;
-  }
-
-  async deleteSketch(sketch: Sketch): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const sketchPath = FileUri.fsPath(sketch.uri);
-      rm(sketchPath, { recursive: true, maxRetries: 5 }, (error) => {
-        if (error) {
-          this.logger.error(`Failed to delete sketch at ${sketchPath}.`, error);
-          reject(error);
-        } else {
-          this.logger.info(`Successfully deleted sketch at ${sketchPath}.`);
-          resolve();
-        }
-      });
-    });
   }
 
   // Returns the default.ino from the settings or from default folder.

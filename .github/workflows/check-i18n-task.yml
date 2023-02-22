@@ -2,7 +2,7 @@ name: Check Internationalization
 
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
-  GO_VERSION: "1.17"
+  GO_VERSION: "1.19"
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 on:

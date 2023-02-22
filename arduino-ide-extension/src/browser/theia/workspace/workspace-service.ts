@@ -23,7 +23,7 @@ import { WindowServiceExt } from '../core/window-service-ext';
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
   @inject(SketchesService)
-  private readonly sketchService: SketchesService;
+  private readonly sketchesService: SketchesService;
   @inject(WindowServiceExt)
   private readonly windowServiceExt: WindowServiceExt;
   @inject(ContributionProvider)
@@ -41,7 +41,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
   ): Promise<FileStat | undefined> {
     const stat = await super.toFileStat(uri);
     if (!stat) {
-      const newSketchUri = await this.sketchService.createNewSketch();
+      const newSketchUri = await this.sketchesService.createNewSketch();
       return this.toFileStat(newSketchUri.uri);
     }
     // When opening a file instead of a directory, IDE2 (and Theia) expects a workspace JSON file.
@@ -52,18 +52,18 @@ export class WorkspaceService extends TheiaWorkspaceService {
     // If loading the sketch fails, create a fallback sketch and open the new temp sketch folder as the workspace root.
     if (stat.isFile && stat.resource.path.ext === '.ino') {
       try {
-        const sketch = await this.sketchService.loadSketch(
+        const sketch = await this.sketchesService.loadSketch(
           stat.resource.toString()
         );
         return this.toFileStat(sketch.uri);
       } catch (err) {
         if (SketchesError.InvalidName.is(err)) {
           this._workspaceError = err;
-          const newSketchUri = await this.sketchService.createNewSketch();
+          const newSketchUri = await this.sketchesService.createNewSketch();
           return this.toFileStat(newSketchUri.uri);
         } else if (SketchesError.NotFound.is(err)) {
           this._workspaceError = err;
-          const newSketchUri = await this.sketchService.createNewSketch();
+          const newSketchUri = await this.sketchesService.createNewSketch();
           return this.toFileStat(newSketchUri.uri);
         }
         throw err;

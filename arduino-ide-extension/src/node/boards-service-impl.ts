@@ -7,7 +7,6 @@ import {
   BoardsPackage,
   Board,
   BoardDetails,
-  Tool,
   ConfigOption,
   ConfigValue,
   Programmer,
@@ -99,14 +98,11 @@ export class BoardsServiceImpl
 
     const debuggingSupported = detailsResp.getDebuggingSupported();
 
-    const requiredTools = detailsResp.getToolsDependenciesList().map(
-      (t) =>
-        <Tool>{
-          name: t.getName(),
-          packager: t.getPackager(),
-          version: t.getVersion(),
-        }
-    );
+    const requiredTools = detailsResp.getToolsDependenciesList().map((t) => ({
+      name: t.getName(),
+      packager: t.getPackager(),
+      version: t.getVersion(),
+    }));
 
     const configOptions = detailsResp.getConfigOptionsList().map(
       (c) =>

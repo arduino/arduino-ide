@@ -11,7 +11,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { CoreService } from '../../common/protocol';
 import { CoreErrorHandler } from './core-error-handler';
 
@@ -27,7 +27,7 @@ export interface VerifySketchParams {
 }
 
 /**
- *  - `"idle"` when neither verify, not upload is running,
+ *  - `"idle"` when neither verify, nor upload is running,
  *  - `"explicit-verify"` when only verify is running triggered by the user, and
  *  - `"automatic-verify"` is when the automatic verify phase is running as part of an upload triggered by the user.
  */

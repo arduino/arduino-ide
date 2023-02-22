@@ -1,55 +1,36 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
+import { CommandService } from '@theia/core/lib/common/command';
 import URI from '@theia/core/lib/common/uri';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { WorkspaceDeleteHandler as TheiaWorkspaceDeleteHandler } from '@theia/workspace/lib/browser/workspace-delete-handler';
+import { DeleteSketch } from '../../contributions/delete-sketch';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
-} from '../../../common/protocol/sketches-service-client-impl';
-import { nls } from '@theia/core/lib/common';
+} from '../../sketches-service-client-impl';
 
 @injectable()
 export class WorkspaceDeleteHandler extends TheiaWorkspaceDeleteHandler {
+  @inject(CommandService)
+  private readonly commandService: CommandService;
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  private readonly sketchesServiceClient: SketchesServiceClientImpl;
 
   override async execute(uris: URI[]): Promise<void> {
     const sketch = await this.sketchesServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return;
     }
-    // Deleting the main sketch file.
-    if (
-      uris
-        .map((uri) => uri.toString())
-        .some((uri) => uri === sketch.mainFileUri)
-    ) {
-      const { response } = await remote.dialog.showMessageBox({
-        title: nls.localize('vscode/fileActions/delete', 'Delete'),
-        type: 'question',
-        buttons: [
-          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
-          nls.localize('vscode/issueMainService/ok', 'OK'),
-        ],
-        message: nls.localize(
-          'theia/workspace/deleteCurrentSketch',
-          'Do you want to delete the current sketch?'
-        ),
-      });
-      if (response === 1) {
-        // OK
-        await Promise.all(
-          [
-            ...sketch.additionalFileUris,
-            ...sketch.otherSketchFileUris,
-            sketch.mainFileUri,
-          ].map((uri) => this.closeWithoutSaving(new URI(uri)))
-        );
-        await this.fileService.delete(new URI(sketch.uri));
-        window.close();
-      }
-      return;
+    // Deleting the main sketch file means deleting the sketch folder and all its content.
+    if (uris.some((uri) => uri.toString() === sketch.mainFileUri)) {
+      return this.commandService.executeCommand(
+        DeleteSketch.Commands.DELETE_SKETCH.id,
+        {
+          toDelete: sketch,
+          willNavigateAway: true,
+        }
+      );
     }
+    // Individual file deletion(s).
     return super.execute(uris);
   }
 }

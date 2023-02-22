@@ -12,7 +12,7 @@ import {
   CoreServiceContribution,
 } from './contribution';
 import { deepClone, nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import type { VerifySketchParams } from './verify-sketch';
 import { UserFields } from './user-fields';
 

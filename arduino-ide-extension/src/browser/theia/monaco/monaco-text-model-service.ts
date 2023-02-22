@@ -6,14 +6,16 @@ import { EditorPreferences } from '@theia/editor/lib/browser/editor-preferences'
 import { MonacoToProtocolConverter } from '@theia/monaco/lib/browser/monaco-to-protocol-converter';
 import { ProtocolToMonacoConverter } from '@theia/monaco/lib/browser/protocol-to-monaco-converter';
 import { MonacoTextModelService as TheiaMonacoTextModelService } from '@theia/monaco/lib/browser/monaco-text-model-service';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { SketchesServiceClientImpl } from '../../sketches-service-client-impl';
 
 @injectable()
 export class MonacoTextModelService extends TheiaMonacoTextModelService {
   @inject(SketchesServiceClientImpl)
   protected readonly sketchesServiceClient: SketchesServiceClientImpl;
 
-  protected override async createModel(resource: Resource): Promise<MonacoEditorModel> {
+  protected override async createModel(
+    resource: Resource
+  ): Promise<MonacoEditorModel> {
     const factory = this.factories
       .getContributions()
       .find(({ scheme }) => resource.uri.scheme === scheme);

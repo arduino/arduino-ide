@@ -18,7 +18,7 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../../common/protocol/sketches-service-client-impl';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
 const COMPILE_FOR_DEBUG_KEY = 'arduino-compile-for-debug';
@@ -187,7 +187,7 @@ export class Debug extends SketchContribution {
     if (!CurrentSketch.isValid(sketch)) {
       return;
     }
-    const ideTempFolderUri = await this.sketchService.getIdeTempFolderUri(
+    const ideTempFolderUri = await this.sketchesService.getIdeTempFolderUri(
       sketch
     );
     const [cliPath, sketchPath, configPath] = await Promise.all([
@@ -246,7 +246,7 @@ export class Debug extends SketchContribution {
   ): Promise<boolean> {
     if (err instanceof Error) {
       try {
-        const tempBuildPaths = await this.sketchService.tempBuildPath(sketch);
+        const tempBuildPaths = await this.sketchesService.tempBuildPath(sketch);
         return tempBuildPaths.some((tempBuildPath) =>
           err.message.includes(tempBuildPath)
         );
