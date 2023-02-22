@@ -619,17 +619,16 @@ export class SketchesServiceImpl
   }
 
   private tempBuildPathMD5Hash(tempFolderPath: string, path: string): string {
-    return join(tempFolderPath, this.tempBuildFolderMD5Hash(path));
+    return join(
+      tempFolderPath,
+      'arduino',
+      'sketches',
+      this.tempBuildFolderMD5Hash(path)
+    );
   }
 
   private tempBuildFolderMD5Hash(path: string): string {
-    const hash = crypto
-      .createHash('md5')
-      .update(path)
-      .digest('hex')
-      .toUpperCase();
-    const folderName = `arduino-sketch-${hash}`;
-    return folderName;
+    return crypto.createHash('md5').update(path).digest('hex').toUpperCase();
   }
 
   // Returns the default.ino from the settings or from default folder.
