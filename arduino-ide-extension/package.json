@@ -166,7 +166,7 @@
       "version": {
         "owner": "arduino",
         "repo": "arduino-cli",
-        "commitish": "master"
+        "commitish": "940c945"
       }
     },
     "fwuploader": {
