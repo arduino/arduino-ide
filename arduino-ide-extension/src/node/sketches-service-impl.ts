@@ -628,7 +628,7 @@ export class SketchesServiceImpl
       .update(path)
       .digest('hex')
       .toUpperCase();
-    const folderName = `arduino-sketch-${hash}`;
+    const folderName = `arduino/sketches/${hash}`;
     return folderName;
   }
 
