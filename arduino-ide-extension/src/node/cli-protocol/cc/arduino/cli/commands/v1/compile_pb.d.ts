@@ -182,6 +182,11 @@ export class CompileResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): CompileResponse;
 
+    clearBuildPropertiesList(): void;
+    getBuildPropertiesList(): Array<string>;
+    setBuildPropertiesList(value: Array<string>): CompileResponse;
+    addBuildProperties(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileResponse.AsObject;
@@ -203,6 +208,7 @@ export namespace CompileResponse {
         boardPlatform?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.AsObject,
         buildPlatform?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.AsObject,
         progress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        buildPropertiesList: Array<string>,
     }
 }
 

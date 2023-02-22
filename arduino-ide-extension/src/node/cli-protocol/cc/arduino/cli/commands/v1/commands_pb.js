@@ -2546,7 +2546,8 @@ proto.cc.arduino.cli.commands.v1.NewSketchRequest.toObject = function(includeIns
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     sketchName: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    sketchDir: jspb.Message.getFieldWithDefault(msg, 3, "")
+    sketchDir: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    overwrite: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -2596,6 +2597,10 @@ proto.cc.arduino.cli.commands.v1.NewSketchRequest.deserializeBinaryFromReader = 
       var value = /** @type {string} */ (reader.readString());
       msg.setSketchDir(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOverwrite(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2644,6 +2649,13 @@ proto.cc.arduino.cli.commands.v1.NewSketchRequest.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getOverwrite();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -2720,6 +2732,24 @@ proto.cc.arduino.cli.commands.v1.NewSketchRequest.prototype.getSketchDir = funct
  */
 proto.cc.arduino.cli.commands.v1.NewSketchRequest.prototype.setSketchDir = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool overwrite = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.NewSketchRequest.prototype.getOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.NewSketchRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.NewSketchRequest.prototype.setOverwrite = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
@@ -3382,7 +3412,8 @@ proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.toObject = function(includ
   var f, obj = {
     sketchPath: jspb.Message.getFieldWithDefault(msg, 1, ""),
     archivePath: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    includeBuildDir: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    includeBuildDir: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    overwrite: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -3431,6 +3462,10 @@ proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.deserializeBinaryFromReade
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIncludeBuildDir(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOverwrite(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3478,6 +3513,13 @@ proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.serializeBinaryToWriter = 
   if (f) {
     writer.writeBool(
       3,
+      f
+    );
+  }
+  f = message.getOverwrite();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -3535,6 +3577,24 @@ proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.prototype.getIncludeBuildD
  */
 proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.prototype.setIncludeBuildDir = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+/**
+ * optional bool overwrite = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.prototype.getOverwrite = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.ArchiveSketchRequest.prototype.setOverwrite = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 

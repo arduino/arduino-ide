@@ -388,66 +388,6 @@ export namespace ConfigValue {
     }
 }
 
-export class BoardAttachRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardAttachRequest;
-
-    getBoardUri(): string;
-    setBoardUri(value: string): BoardAttachRequest;
-
-    getSketchPath(): string;
-    setSketchPath(value: string): BoardAttachRequest;
-
-    getSearchTimeout(): string;
-    setSearchTimeout(value: string): BoardAttachRequest;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): BoardAttachRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: BoardAttachRequest): BoardAttachRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: BoardAttachRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): BoardAttachRequest;
-    static deserializeBinaryFromReader(message: BoardAttachRequest, reader: jspb.BinaryReader): BoardAttachRequest;
-}
-
-export namespace BoardAttachRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        boardUri: string,
-        sketchPath: string,
-        searchTimeout: string,
-    }
-}
-
-export class BoardAttachResponse extends jspb.Message { 
-
-    hasTaskProgress(): boolean;
-    clearTaskProgress(): void;
-    getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
-    setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): BoardAttachResponse;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): BoardAttachResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: BoardAttachResponse): BoardAttachResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: BoardAttachResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): BoardAttachResponse;
-    static deserializeBinaryFromReader(message: BoardAttachResponse, reader: jspb.BinaryReader): BoardAttachResponse;
-}
-
-export namespace BoardAttachResponse {
-    export type AsObject = {
-        taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
-    }
-}
-
 export class BoardListRequest extends jspb.Message { 
 
     hasInstance(): boolean;
@@ -457,6 +397,9 @@ export class BoardListRequest extends jspb.Message {
 
     getTimeout(): number;
     setTimeout(value: number): BoardListRequest;
+
+    getFqbn(): string;
+    setFqbn(value: string): BoardListRequest;
 
 
     serializeBinary(): Uint8Array;
@@ -473,6 +416,7 @@ export namespace BoardListRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         timeout: number,
+        fqbn: string,
     }
 }
 

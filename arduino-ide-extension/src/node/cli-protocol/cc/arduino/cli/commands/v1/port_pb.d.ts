@@ -23,6 +23,9 @@ export class Port extends jspb.Message {
     getPropertiesMap(): jspb.Map<string, string>;
     clearPropertiesMap(): void;
 
+    getHardwareId(): string;
+    setHardwareId(value: string): Port;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Port.AsObject;
@@ -42,5 +45,6 @@ export namespace Port {
         protocolLabel: string,
 
         propertiesMap: Array<[string, string]>,
+        hardwareId: string,
     }
 }
