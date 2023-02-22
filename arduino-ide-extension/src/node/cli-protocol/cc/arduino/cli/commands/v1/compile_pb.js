@@ -1052,7 +1052,7 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSkipLibrariesDiscov
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.CompileResponse.repeatedFields_ = [4,5];
+proto.cc.arduino.cli.commands.v1.CompileResponse.repeatedFields_ = [4,5,9];
 
 
 
@@ -1094,7 +1094,8 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.toObject = function(includeInst
     proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.toObject, includeInstance),
     boardPlatform: (f = msg.getBoardPlatform()) && cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.toObject(includeInstance, f),
     buildPlatform: (f = msg.getBuildPlatform()) && cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.toObject(includeInstance, f),
-    progress: (f = msg.getProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f)
+    progress: (f = msg.getProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f),
+    buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 9)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1167,6 +1168,10 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.deserializeBinaryFromReader = f
       var value = new cc_arduino_cli_commands_v1_common_pb.TaskProgress;
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.TaskProgress.deserializeBinaryFromReader);
       msg.setProgress(value);
+      break;
+    case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBuildProperties(value);
       break;
     default:
       reader.skipField();
@@ -1256,6 +1261,13 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.serializeBinaryToWriter = funct
       8,
       f,
       cc_arduino_cli_commands_v1_common_pb.TaskProgress.serializeBinaryToWriter
+    );
+  }
+  f = message.getBuildPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      9,
+      f
     );
   }
 };
@@ -1547,6 +1559,43 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearProgress = funct
  */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasProgress = function() {
   return jspb.Message.getField(this, 8) != null;
+};
+
+
+/**
+ * repeated string build_properties = 9;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBuildPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 9));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBuildPropertiesList = function(value) {
+  return jspb.Message.setField(this, 9, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.addBuildProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 9, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearBuildPropertiesList = function() {
+  return this.setBuildPropertiesList([]);
 };
 
 

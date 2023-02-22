@@ -329,7 +329,7 @@ export class BoardDiscovery
       protocol: rpcPort.getProtocol(),
       protocolLabel: rpcPort.getProtocolLabel(),
       properties: Port.Properties.create(rpcPort.getPropertiesMap().toObject()),
-      hardwareId: rpcPort.getHardwareId(), // method to be confirmed
+      hardwareId: rpcPort.getHardwareId(),
     };
   }
 }

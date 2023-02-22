@@ -364,6 +364,9 @@ export class NewSketchRequest extends jspb.Message {
     getSketchDir(): string;
     setSketchDir(value: string): NewSketchRequest;
 
+    getOverwrite(): boolean;
+    setOverwrite(value: boolean): NewSketchRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): NewSketchRequest.AsObject;
@@ -380,6 +383,7 @@ export namespace NewSketchRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         sketchName: string,
         sketchDir: string,
+        overwrite: boolean,
     }
 }
 
@@ -485,6 +489,9 @@ export class ArchiveSketchRequest extends jspb.Message {
     getIncludeBuildDir(): boolean;
     setIncludeBuildDir(value: boolean): ArchiveSketchRequest;
 
+    getOverwrite(): boolean;
+    setOverwrite(value: boolean): ArchiveSketchRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ArchiveSketchRequest.AsObject;
@@ -501,6 +508,7 @@ export namespace ArchiveSketchRequest {
         sketchPath: string,
         archivePath: string,
         includeBuildDir: boolean,
+        overwrite: boolean,
     }
 }
 
