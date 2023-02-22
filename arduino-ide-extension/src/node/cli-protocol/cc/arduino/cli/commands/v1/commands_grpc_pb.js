@@ -49,28 +49,6 @@ function deserialize_cc_arduino_cli_commands_v1_ArchiveSketchResponse(buffer_arg
   return cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_cc_arduino_cli_commands_v1_BoardAttachRequest(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.BoardAttachRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_BoardAttachRequest(buffer_arg) {
-  return cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_cc_arduino_cli_commands_v1_BoardAttachResponse(arg) {
-  if (!(arg instanceof cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse)) {
-    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.BoardAttachResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_cc_arduino_cli_commands_v1_BoardAttachResponse(buffer_arg) {
-  return cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_cc_arduino_cli_commands_v1_BoardDetailsRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.BoardDetailsRequest');
@@ -1011,19 +989,6 @@ boardDetails: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardDetailsRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_BoardDetailsResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardDetailsResponse,
-  },
-  // Attach a board to a sketch. When the `fqbn` field of a request is not
-// provided, the FQBN of the attached board will be used.
-boardAttach: {
-    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardAttach',
-    requestStream: false,
-    responseStream: true,
-    requestType: cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest,
-    responseType: cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse,
-    requestSerialize: serialize_cc_arduino_cli_commands_v1_BoardAttachRequest,
-    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardAttachRequest,
-    responseSerialize: serialize_cc_arduino_cli_commands_v1_BoardAttachResponse,
-    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardAttachResponse,
   },
   // List the boards currently connected to the computer.
 boardList: {

@@ -255,6 +255,12 @@ export class Platform extends jspb.Message {
     addType(value: string, index?: number): string;
 
 
+    hasHelp(): boolean;
+    clearHelp(): void;
+    getHelp(): HelpResources | undefined;
+    setHelp(value?: HelpResources): Platform;
+
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
     static toObject(includeInstance: boolean, msg: Platform): Platform.AsObject;
@@ -278,6 +284,7 @@ export namespace Platform {
         manuallyInstalled: boolean,
         deprecated: boolean,
         typeList: Array<string>,
+        help?: HelpResources.AsObject,
     }
 }
 
@@ -361,5 +368,26 @@ export namespace Profile {
     export type AsObject = {
         name: string,
         fqbn: string,
+    }
+}
+
+export class HelpResources extends jspb.Message { 
+    getOnline(): string;
+    setOnline(value: string): HelpResources;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): HelpResources.AsObject;
+    static toObject(includeInstance: boolean, msg: HelpResources): HelpResources.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: HelpResources, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): HelpResources;
+    static deserializeBinaryFromReader(message: HelpResources, reader: jspb.BinaryReader): HelpResources;
+}
+
+export namespace HelpResources {
+    export type AsObject = {
+        online: string,
     }
 }
