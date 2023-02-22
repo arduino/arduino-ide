@@ -555,7 +555,7 @@ export namespace Board {
   }
 
   export function hardwareIdEquals(left: Board, right: Board): boolean {
-    if (Board.is(right) && left.port && right.port) {
+    if (left.port && right.port) {
       const { hardwareId: leftHardwareId } = left.port;
       const { hardwareId: rightHardwareId } = right.port;
 
