@@ -370,13 +370,24 @@ export class BoardsServiceProvider
         ({ state }) => state !== AvailableBoard.State.incomplete
       )) {
         if (
-          (Board.hardwareIdEquals(
+          Board.hardwareIdEquals(
             this.latestValidBoardsConfig.selectedBoard,
             board
-          ) ||
-            (this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
-              this.latestValidBoardsConfig.selectedBoard.name ===
-                board.name)) &&
+          )
+        ) {
+          this.boardsConfig = {
+            selectedBoard: {
+              ...this.latestValidBoardsConfig.selectedBoard,
+              port: board.port,
+            },
+            selectedPort: board.port,
+          };
+          return true;
+        }
+
+        if (
+          this.latestValidBoardsConfig.selectedBoard.fqbn === board.fqbn &&
+          this.latestValidBoardsConfig.selectedBoard.name === board.name &&
           Port.sameAs(this.latestValidBoardsConfig.selectedPort, board.port)
         ) {
           this.boardsConfig = this.latestValidBoardsConfig;
