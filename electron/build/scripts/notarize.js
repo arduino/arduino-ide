@@ -3,8 +3,18 @@ const { notarize } = require('electron-notarize');
 
 exports.default = async function notarizing(context) {
   if (!isCI) {
-    console.log('Skipping notarization: not on CI.');
-    return;
+    if (
+      typeof process.env.MACOS_FORCE_NOTARIZE === 'string' &&
+      /true/i.test(process.env.MACOS_FORCE_NOTARIZE)
+    ) {
+      // Hack for manual M1 signing. Set the MACOS_FORCE_NOTARIZE env variable to true, to force notarization when not on a CI. The 'true' is case insensitive.
+      console.log(
+        `Detected the 'MACOS_FORCE_NOTARIZE' environment variable with '${process.env.MACOS_FORCE_NOTARIZE}' value. Forcing the app notarization, although not on a CI.`
+      );
+    } else {
+      console.log('Skipping notarization: not on CI.');
+      return;
+    }
   }
   if (process.env.CAN_SIGN === 'false') {
     console.log('Skipping the app notarization: certificate was not provided.');
