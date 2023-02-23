@@ -220,8 +220,8 @@ export class BoardsServiceProvider
 
           boardToAutoSelect = {
             ...boardToAutoSelect,
-            name,
-            fqbn,
+            name: boardToAutoSelect.name || name,
+            fqbn: boardToAutoSelect.fqbn || fqbn,
           };
         }
 
