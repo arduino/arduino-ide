@@ -220,7 +220,10 @@ export class BoardsServiceProvider
 
           boardToAutoSelect = {
             ...boardToAutoSelect,
-            name: boardToAutoSelect.name || name,
+            name:
+              boardToAutoSelect.name === Unknown || !boardToAutoSelect.name
+                ? name
+                : boardToAutoSelect.name,
             fqbn: boardToAutoSelect.fqbn || fqbn,
           };
         }
