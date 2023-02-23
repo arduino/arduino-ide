@@ -220,7 +220,10 @@ export class BoardsServiceProvider
 
           boardToAutoSelect = {
             ...boardToAutoSelect,
-            name: boardToAutoSelect.name || name,
+            name:
+              boardToAutoSelect.name === Unknown || !boardToAutoSelect.name
+                ? name
+                : boardToAutoSelect.name,
             fqbn: boardToAutoSelect.fqbn || fqbn,
           };
         }
@@ -378,7 +381,7 @@ export class BoardsServiceProvider
           const { name, fqbn } = this.latestValidBoardsConfig.selectedBoard;
           this.boardsConfig = {
             selectedBoard: {
-              name: board.name || name,
+              name: board.name === Unknown || !board.name ? name : board.name,
               fqbn: board.fqbn || fqbn,
               port: board.port,
             },
