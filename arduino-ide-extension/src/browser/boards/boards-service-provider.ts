@@ -375,9 +375,11 @@ export class BoardsServiceProvider
             board
           )
         ) {
+          const { name, fqbn } = this.latestValidBoardsConfig.selectedBoard;
           this.boardsConfig = {
             selectedBoard: {
-              ...this.latestValidBoardsConfig.selectedBoard,
+              name: board.name || name,
+              fqbn: board.fqbn || fqbn,
               port: board.port,
             },
             selectedPort: board.port,
