@@ -212,7 +212,7 @@ export class BoardsServiceProvider
           lastBoardsConfigOnUpload.selectedBoard
         );
 
-        if (!boardIsSameHardware && !boardIsSameFqbn) return;
+        if (!boardIsSameHardware && !boardIsSameFqbn) continue;
 
         let boardToAutoSelect = boardOnAppearedPort;
         if (boardIsSameHardware && !boardIsSameFqbn) {
