@@ -28,17 +28,17 @@ function artifactName() {
     }
     case 'darwin': {
       if (arch === 'arm64') {
-        return `${name}_${id}_macOS_ARM64.\$\{ext}`;
+        return `${name}_${id}_macOS_arm64.\$\{ext}`;
       }
       return `${name}_${id}_macOS_64bit.\$\{ext}`;
     }
     case 'linux': {
       switch (arch) {
         case 'arm': {
-          return `${name}_${id}_Linux_ARMv7.\$\{ext}`;
+          return `${name}_${id}_Linux_armv7.\$\{ext}`;
         }
         case 'arm64': {
-          return `${name}_${id}_Linux_ARM64.\$\{ext}`;
+          return `${name}_${id}_Linux_arm64.\$\{ext}`;
         }
         case 'x64': {
           return `${name}_${id}_Linux_64bit.\$\{ext}`;
