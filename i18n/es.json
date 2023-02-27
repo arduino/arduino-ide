@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Versión: {0}\nFecha: {1}{2}\nVersión del CLI: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "Acerca de {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "Hay que instalar el núcleo \"{0} {1} \" para la placa \"{2}\" actualmente seleccionada. ¿Quieres instalarlo ahora?",
       "noBoardsFound": "No se han encotrado placas para \"{0}\"",
       "noFQBN": "El FQBN no está disponible para la placa seleccionada \"{0}\". ¿Tienes instalado el núcleo correspondiente?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No se ha descubierto ningún puerto",
       "noPortsSelected": "No se han seleccionado puertos para la placa: '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Ninguna placa seleccionada.",
       "openBoardsConfig": "Seleccione otra placa y puerto...",
-      "platformMissing": "La plataforma seleccionada para la placa '{0}' no está instalada.",
       "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
       "port": "Puerto {0}",
       "portLabel": "Puerto: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Vuelve a seleccionar más tarde",
       "searchBoard": "Buscar placa",
       "selectBoard": "Seleccionar Placa",
-      "selectBoardForInfo": "Por favor, seleccione una placa para obtener información sobre ella.",
       "selectPortForInfo": "Por favor, seleccione un puerto para obtener información sobre la placa.",
       "showAllAvailablePorts": "Muestra todos los puertos disponibles cuando está activado",
       "showAllPorts": "Mostrar todos los puertos",
       "succesfullyInstalledPlatform": "Plataforma {0}:{1} instalada correctamente",
       "succesfullyUninstalledPlatform": "Plataforma {0}:{1} desinstalada correctamente",
-      "typeOfPorts": "{0} puertos"
+      "typeOfPorts": "{0} puertos",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "Gestor de placas",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Cuenta",
       "chooseSketchVisibility": "Elige la visibilidad de tu Sketch:",
+      "cloudSketchbook": "Libro de bocetos en la nube",
       "connected": "Conectado",
       "continue": "Continuar",
       "donePulling": "Extracción de '{0}' realizada.",
@@ -108,10 +110,9 @@
       "pushSketch": "Pulsa para listar las URLs de la tarjetas no oficiales",
       "pushSketchMsg": "Este es un Sketch público. Antes de enviarlo, asegúrate de que cualquier información sensible está definida en los archivos arduino_secrets.h. Puedes hacer que un Sketch sea privado desde el panel Compartir.",
       "remote": "Remoto",
-      "remoteSketchbook": "Libreria de proyectos remota",
       "share": "Compartir...",
       "shareSketch": "Compartir Sketch",
-      "showHideRemoveSketchbook": "Mostrar/Ocultar Sketchbook Remoto",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "Iniciar sesión",
       "signInToCloud": "Iniciar sesión en Arduino Cloud",
       "signOut": "Cerrar sesión",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "Todo",
@@ -137,7 +143,7 @@
       "processing": "Procesando",
       "recommended": "Recomendado",
       "retired": "Retirado",
-      "selectedOn": "on  1{0}\n ",
+      "selectedOn": "en {0}",
       "serialMonitor": "Monitor Serie",
       "type": "Tipo",
       "unknown": "Desconocido",
@@ -156,6 +162,11 @@
       "uninstall": "Desinstalar",
       "uninstallMsg": "¿Quieres desinstalar {0}?",
       "version": "Versión {0}"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
     },
     "contributions": {
       "addFile": "Añadir fichero...",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
       "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
-      "optimizeForDebugging": "Optimizar para depuración"
+      "optimizeForDebugging": "Optimizar para depuración",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "No volver a preguntar"
@@ -208,7 +220,7 @@
       "unsavedChanges": "Los cambios no guardados no serán guardados."
     },
     "examples": {
-      "builtInExamples": "Ejemplos Construidos ",
+      "builtInExamples": "Ejemplos Construidos",
       "couldNotInitializeExamples": "No se han podido inicializar los ejemplos integrados.",
       "customLibrary": "Ejemplos de bibliotecas personalizadas",
       "for": "Ejemplos para {0}",
@@ -253,7 +265,7 @@
       "notNowButton": "Ahora no",
       "skipVersionButton": "Omitir versión",
       "updateAvailable": "Actualización disponible",
-      "versionDownloaded": "Arduino IDE 1{0} se ha descargado."
+      "versionDownloaded": "Arduino IDE {0} se ha descargado."
     },
     "library": {
       "addZip": "Añadir biblioteca .ZIP...",
@@ -301,14 +313,11 @@
       "tools": "Herramientas"
     },
     "monitor": {
-      "unableToCloseWebSocket": " No se puede cerrar websocket",
-      "unableToConnectToWebSocket": " No se puede conectar al websocket"
+      "unableToCloseWebSocket": "No se puede cerrar websocket",
+      "unableToConnectToWebSocket": "No se puede conectar al websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Red",
@@ -352,6 +361,7 @@
       "manualProxy": "Configuración manual del proxy",
       "network": "Red",
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Sin Proxy",
       "proxySettings": {
         "hostname": "nombre del host",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "¿Sustituir la versión existente de {0}?",
     "selectZip": "Seleccione un archivo zip que contenga la biblioteca que deseas añadir",
@@ -398,13 +411,22 @@
       "createdArchive": "Archivo '{0}' creado.",
       "doneCompiling": "Compilación completada.",
       "doneUploading": "Carga completada.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Exportar binario compilado",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Moviendo",
       "movingMsg": "El archivo \"{0}\" tiene que estar dentro de una carpeta de bocetos llamada \"{1}\".\n¿Crear esta carpeta, mover el archivo y continuar?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Abrir carpeta",
       "openRecent": "Abierto recientemente",
       "openSketchInNewWindow": "Abrir Sketch en una ventana nueva",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Guardar carpeta de sketch como...",
       "saveSketch": "Guarde su sketch para abirlo más tarde.",
       "saveSketchAs": "Guardar carpeta de sketch como...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Verificar/Compilar"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -435,12 +457,23 @@
       "updatePackageIndex": "Actualizar índice de paquete"
     },
     "upload": {
-      "error": "1{0} error: 2{1}"
+      "error": "{0} error: {1}"
     },
     "userFields": {
       "cancel": "Cancelar",
       "enterField": "Introduce {0}",
       "upload": "Cargar"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Expandir"
     },
     "workspace": {
-      "deleteCurrentSketch": "¿Quieres borrar el sketch actual?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Nombre del nuevo archivo",
       "invalidExtension": "\".{0}\" no es una extensión válida",
-      "invalidFilename": "Nombre de archivo no válido.",
       "newFileName": "Nuevo nombre para el archivo"
     }
   }

@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "ဗားရှင်း: {0}\nရက်စွဲ: {1}{2}\nCLI ဗားရှင်း: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "{0} အကြောင်း"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "လက်ရှိရွေးချယ်ထားသည့် \"{2}\" ဘုတ်အတွက် \"{0} {1}\" core အား တပ်ဆင်ဖို့လိုပါသည်။ သင်ယခု တပ်ဆင်လိုပါသလား?",
       "noBoardsFound": "\"{0}\"အတွက် ဘုတ်ရှာမတွေ့ပါ",
       "noFQBN": "ရွေးချယ်ထားသည့် ဘုတ် \"{0}\" အတွက် FQBN မရနိုင်သေးပါ။ သင့်မှာ သက်ဆိုင်ရာတပ်ဆင်ထားသည့် core ရှိပါသလား?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "မည်သည့်အပေါက်မှမတွေ့ပါ",
       "noPortsSelected": "'{0}' ဘုတ် အတွက် မည်သည့်အပေါက်မှ မရွေးချယ်ထားပါ။",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "ဘုတ်မရွေးချယ်ထားပါ။",
       "openBoardsConfig": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ရန်...",
-      "platformMissing": "ရွေးချယ်ထားသည့် '{0}' ဘုတ်အတွက် ပလက်ဖောင်းမှာ မတပ်ဆင်ထားပါ။",
       "pleasePickBoard": "သင်ရွေးချယ်ထားသော အပေါက်နှင့် ချိတ်ဆက်ထားသည့် ဘုတ်ကို ကျေးဇူးပြု၍ ရွေးပေးပါ။",
       "port": "အပေါက်{0}",
       "portLabel": "အပေါက် - {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "နောက်မှ ပြန်ရွေးချယ်မည်",
       "searchBoard": "ဘုတ်ရှာမည်",
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
-      "selectBoardForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် ဘုတ်ရွေးချယ်ပါ",
       "selectPortForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် အပေါက်ကို ရွေးချယ်ပါ။",
       "showAllAvailablePorts": "အမှန်ခြစ်ထားပါက ရွေးချယ်နိုင်သော အပေါက်များအားလုံးကို ဖော်ပြပေးမည်",
       "showAllPorts": "အပေါက်အားလုံးပြ",
       "succesfullyInstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ တပ်ဆင်ပြီးသည် :{1}",
       "succesfullyUninstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ ဖြုတ်ချပြီးသည် :{1}",
-      "typeOfPorts": "{0} အပေါက်များ"
+      "typeOfPorts": "{0} အပေါက်များ",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "ဘုတ်မန်နေဂျာ",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "အကောင့်",
       "chooseSketchVisibility": "သင့်ကုတ်ပုံကြမ်း၏ မြင်နိုင်စွမ်းအား ရွေးချယ်ခြင်း - ",
+      "cloudSketchbook": "တိမ်တိုက် Sketchbook ဖိုင်တွဲ",
       "connected": "ချိတ်ဆက်ထားသည်",
       "continue": "ဆက်သွားမည်",
       "donePulling": "‘{0}’ကိုဆွဲယူပြီးပါပြီ။",
@@ -108,10 +110,9 @@
       "pushSketch": "ကုတ်ဖိုင်လ်တင်မည်",
       "pushSketchMsg": "ဤကုတ်ဖိုင်လ်သည် အများသုံးဖြစ်သည်။ မတင်မီ လျှိုဝှက်သင့်သောအချက်အလက်ကို arduino_secrets.h ဖိုင်လ်များတွင် သတ်မှတ်ထားပေးပါ။ သင်အနေဖြင့် 'ဝေမျှမည်'ပန်နယ်တွင် ကုတ်ဖိုင်လ်ကို ပုဂ္ဂလိကအဖြစ်သတ်မှတ်နိုင်သည်။",
       "remote": "အဝေး",
-      "remoteSketchbook": "အဝေးရှိ ကုတ်ပုံကြမ်းဖိုင်တွဲ",
       "share": "ဝေမျှမည်…",
       "shareSketch": "ကုတ်ဖိုင်လ်ဝေမျှမည်",
-      "showHideRemoveSketchbook": "အဝေးရှိ Sketchbook ဖိုင်တွဲအား ပြ/ဖွက် မည်",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "လက်မှတ်ထိုးဝင်",
       "signInToCloud": "Arduino Cloudသို့ လက်မှတ်ထိုးဝင်ရောက်ပါ",
       "signOut": "လက်မှတ်ထိုးထွက်",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "ကလောက်ကုတ်ဖိုင်ဖန်တီးရန် Arduino Cloudသို့သွားပါ။"
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "အားလုံး",
@@ -157,6 +163,11 @@
       "uninstallMsg": "သင် {0} ကိုဖြုတ်ချချင်ပါသလား?",
       "version": "ဗားရှင်း {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "ဖိုင်လ်ထည့်မည်",
       "fileAdded": "ကုတ်ပုံကြမ်းထဲသို့ ဖိုင်တစ်ခု ထည့်လိုက်သည်။",
@@ -186,7 +197,8 @@
       "debugWithMessage": "ပြစ်ချက်ရှာဖွေချက် - {0}",
       "debuggingNotSupported": "ကုတ်ပြစ်ချက်ရှာဖွေမှုကို '{0}'မှ မပေးထားပါ",
       "noPlatformInstalledFor": "'{0}' အတွက် ပလက်ဖောင်းကို မထည့်သွင်းရသေးပါ",
-      "optimizeForDebugging": "ကုတ်ပြစ်ချက်ရှာဖွေရန်အတွက်ဦးစားပေးမည်"
+      "optimizeForDebugging": "ကုတ်ပြစ်ချက်ရှာဖွေရန်အတွက်ဦးစားပေးမည်",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "နောက်ထပ်မမေးပါနှင့်"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "ဝက်ဘ်ဆော့ကတ်သို့မချိတ်ဆက်နိုင်ပါ"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "ကွန်ရက်",
@@ -352,6 +361,7 @@
       "manualProxy": "ကိုယ်တိုင် ကြားခံကွန်ရက်ပြင်ဆင်ခြင်း",
       "network": "ကွန်ရက်",
       "newSketchbookLocation": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာအသစ်ရွေးမည်",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "ကြားခံကွန်ရက်မရှိ",
       "proxySettings": {
         "hostname": "အိမ်ရှင်အမည်",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "{0}၏ရှိနှင့်ပြီးဗားရှင်းကို အစားထိုးမည်လား။",
     "selectZip": "သင်ထည့်သွင်းချင်သော ကုတ်ကြည့်တိုက်ပါဝင်သည့်ဇစ်ဖိုင်လ်ရွေးပါ",
@@ -398,13 +411,22 @@
       "createdArchive": "ဖန်းတီးပြီးသော သိမ်းဆည်းဖိုင်လ် '{0}'။",
       "doneCompiling": "ကုတ်ပေါင်းပြီးပါပြီ။",
       "doneUploading": "အပ်လုတ်တင်ပြီးပါပြီ။",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "ကုတ်ပေါင်းထားသောဘိုင်နရီဖိုင် ထုတ်ပို့မည်",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "ရွှေ့နေသည်",
       "movingMsg": "ဖိုင်လ် \"{0}\" သည် ကုတ်ဖိုင်လ်ဖိုလ်ဒါ \"{1}\"အတွင်းရှိရန်လိုသည်။\nဖိုလ်ဒါတည်ဆောက်ပြီးဖိုင်လ်ကိုရွှေ့မည်လား။",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "ဖိုလ်ဒါဖွင့်မည်",
       "openRecent": "လတ်တလောဖိုင်လ်ဖွင့်မည်",
       "openSketchInNewWindow": "ကုတ်ဖိုင်လ်ကို ဝင်းဒိုးအသစ်တွင်ဖွင့်မည်",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "ကုတ်ဖိုင်လ် ဖိုလ်ဒါကို သိမ်းမည်…",
       "saveSketch": "သင်၏ကုတ်ဖိုင်လ်ကို နောင်အခါပြန်ကြည့်၍ရရန် မှတ်သားပါ။",
       "saveSketchAs": "ကုတ်ဖိုင်လ် ဖိုလ်ဒါကို သိမ်းမည်…",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "စစ်ဆေး/ကုတ်ပေါင်း"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "ပယ်ဖျက်မည်",
       "enterField": "{0} ရိုက်သွင်းပါ",
       "upload": "အပ်လုတ်တင်မည်"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "ချဲ့မည်"
     },
     "workspace": {
-      "deleteCurrentSketch": "လက်ရှိကုတ်ဖိုင်လ်ကို ဖျက်ပစ်ချင်ပါသလား။",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "ဖိုင်လ်အသစ်အတွက်အမည်",
       "invalidExtension": ".{0}သည် မှန်ကန်သော တိုးချဲ့အမှတ်အသားမဟုတ်ပါ",
-      "invalidFilename": "မမှန်ကန်သောဖိုင်လ်အမည်။",
       "newFileName": "ဖိုင်လ်အတွက်အမည်အသစ်"
     }
   }
