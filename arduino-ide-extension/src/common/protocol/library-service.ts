@@ -198,6 +198,10 @@ export namespace LibraryService {
   export namespace List {
     export interface Options {
       readonly fqbn?: string | undefined;
+      /**
+       * The name of the library to filter to.
+       */
+      readonly libraryName?: string | undefined;
     }
   }
 }
@@ -241,11 +245,15 @@ export interface LibraryPackage extends ArduinoComponent {
   readonly category: string;
 }
 export namespace LibraryPackage {
-  export function is(arg: any): arg is LibraryPackage {
+  export function is(arg: unknown): arg is LibraryPackage {
     return (
       ArduinoComponent.is(arg) &&
-      'includes' in arg &&
-      Array.isArray(arg['includes'])
+      (<LibraryPackage>arg).includes !== undefined &&
+      Array.isArray((<LibraryPackage>arg).includes) &&
+      (<LibraryPackage>arg).exampleUris !== undefined &&
+      Array.isArray((<LibraryPackage>arg).exampleUris) &&
+      (<LibraryPackage>arg).location !== undefined &&
+      typeof (<LibraryPackage>arg).location === 'number'
     );
   }
 

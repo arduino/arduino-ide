@@ -51,6 +51,46 @@ export namespace Installable {
     };
   }
 
+  export const ActionLiterals = [
+    'installLatest',
+    'installSelected',
+    'update',
+    'remove',
+    'unknown',
+  ] as const;
+  export type Action = typeof ActionLiterals[number];
+
+  export function action(params: {
+    installed?: Version | undefined;
+    available: Version[];
+    selected?: Version;
+  }): Action {
+    const { installed, available } = params;
+    const latest = Installable.latest(available);
+    if (!latest || (installed && !available.includes(installed))) {
+      return 'unknown';
+    }
+    const selected = params.selected ?? latest;
+    if (installed === selected) {
+      return 'remove';
+    }
+    if (installed) {
+      return selected === latest && installed !== latest
+        ? 'update'
+        : 'installSelected';
+    } else {
+      return selected === latest ? 'installLatest' : 'installSelected';
+    }
+  }
+
+  export function latest(versions: Version[]): Version | undefined {
+    if (!versions.length) {
+      return undefined;
+    }
+    const ordered = versions.slice().sort(Installable.Version.COMPARATOR);
+    return ordered[ordered.length - 1];
+  }
+
   export const Installed = <T extends ArduinoComponent>({
     installedVersion,
   }: T): boolean => {

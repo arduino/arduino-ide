@@ -9,4 +9,8 @@ export interface ExamplesService {
     current: SketchContainer[];
     any: SketchContainer[];
   }>;
+  /**
+   * Finds example sketch containers for the installed library.
+   */
+  find(options: { libraryName: string }): Promise<SketchContainer[]>;
 }

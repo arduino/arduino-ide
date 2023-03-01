@@ -29,29 +29,27 @@ export abstract class ListWidget<
 > extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
-
-  @inject(CommandService)
-  protected readonly commandService: CommandService;
-
-  @inject(ResponseServiceClient)
-  protected readonly responseService: ResponseServiceClient;
-
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
+  @inject(CommandService)
+  private readonly commandService: CommandService;
+  @inject(ResponseServiceClient)
+  private readonly responseService: ResponseServiceClient;
 
   /**
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
    */
-  protected focusNode: HTMLElement | undefined;
+  private focusNode: HTMLElement | undefined;
   private readonly didReceiveFirstFocus = new Deferred();
-  protected readonly searchOptionsChangeEmitter = new Emitter<
+  private readonly searchOptionsChangeEmitter = new Emitter<
     Partial<S> | undefined
   >();
+  private readonly onDidShowEmitter = new Emitter<void>();
   /**
    * Instead of running an `update` from the `postConstruct` `init` method,
    * we use this variable to track first activate, then run.
    */
-  protected firstActivate = true;
+  private firstUpdate = true;
 
   constructor(protected options: ListWidget.Options<T, S>) {
     super();
@@ -64,7 +62,10 @@ export abstract class ListWidget<
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
     this.scrollOptions = undefined;
-    this.toDispose.push(this.searchOptionsChangeEmitter);
+    this.toDispose.pushAll([
+      this.searchOptionsChangeEmitter,
+      this.onDidShowEmitter,
+    ]);
   }
 
   @postConstruct()
@@ -81,12 +82,14 @@ export abstract class ListWidget<
   protected override onAfterShow(message: Message): void {
     this.maybeUpdateOnFirstRender();
     super.onAfterShow(message);
+    this.onDidShowEmitter.fire();
   }
 
   private maybeUpdateOnFirstRender() {
-    if (this.firstActivate) {
-      this.firstActivate = false;
+    if (this.firstUpdate) {
+      this.firstUpdate = false;
       this.update();
+      this.didReceiveFirstFocus.promise.then(() => this.focusNode?.focus());
     }
   }
 
@@ -106,7 +109,9 @@ export abstract class ListWidget<
     this.updateScrollBar();
   }
 
-  protected onFocusResolved = (element: HTMLElement | undefined): void => {
+  private readonly onFocusResolved = (
+    element: HTMLElement | undefined
+  ): void => {
     this.focusNode = element;
     this.didReceiveFirstFocus.resolve();
   };
@@ -133,7 +138,7 @@ export abstract class ListWidget<
     return this.options.installable.uninstall({ item, progressId });
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <FilterableListContainer<T, S>
         defaultSearchOptions={this.options.defaultSearchOptions}
@@ -149,6 +154,7 @@ export abstract class ListWidget<
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
+        onDidShow={this.onDidShowEmitter.event}
       />
     );
   }
@@ -184,5 +190,12 @@ export namespace ListWidget {
     readonly itemRenderer: ListItemRenderer<T>;
     readonly filterRenderer: FilterRenderer<S>;
     readonly defaultSearchOptions: S;
+  }
+}
+
+export class UserAbortError extends Error {
+  constructor(message = 'User abort') {
+    super(message);
+    Object.setPrototypeOf(this, UserAbortError.prototype);
   }
 }

@@ -28,8 +28,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 28px;
-    width: 28px;
+    height: var(--arduino-button-height);
+    width: var(--arduino-button-height);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-upload-sketch--toolbar,
@@ -66,8 +66,8 @@
 }
 
 .arduino-tool-icon {
-    height: 28px;
-    width: 28px;
+    height: var(--arduino-button-height);
+    width: var(--arduino-button-height);
 }
 
 .arduino-verify-sketch--toolbar-icon {

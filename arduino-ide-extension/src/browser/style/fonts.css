@@ -1,5 +1,10 @@
 @font-face {
   font-family: 'Open Sans';
+  src: url('fonts/OpenSans-Regular-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Open Sans Bold';
   src: url('fonts/OpenSans-Bold-webfont.woff') format('woff');
 }
 

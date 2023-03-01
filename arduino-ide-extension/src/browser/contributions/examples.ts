@@ -1,6 +1,6 @@
 import * as PQueue from 'p-queue';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { CommandHandler } from '@theia/core/lib/common/command';
+import { CommandHandler, CommandService } from '@theia/core/lib/common/command';
 import {
   MenuPath,
   CompositeMenuNode,
@@ -11,7 +11,11 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { OpenSketch } from './open-sketch';
-import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
+import {
+  ArduinoMenus,
+  examplesLabel,
+  PlaceholderMenuNode,
+} from '../menu/arduino-menus';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { ExamplesService } from '../../common/protocol/examples-service';
 import {
@@ -25,11 +29,73 @@ import {
   SketchRef,
   SketchContainer,
   SketchesError,
-  Sketch,
   CoreService,
+  SketchesService,
+  Sketch,
 } from '../../common/protocol';
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
 import { unregisterSubmenu } from '../menu/arduino-menus';
+import { MaybePromise } from '@theia/core/lib/common/types';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
+
+/**
+ * Creates a cloned copy of the example sketch and opens it in a new window.
+ */
+export async function openClonedExample(
+  uri: string,
+  services: {
+    sketchesService: SketchesService;
+    commandService: CommandService;
+  },
+  onError: {
+    onDidFailClone?: (
+      err: ApplicationError<
+        number,
+        {
+          uri: string;
+        }
+      >,
+      uri: string
+    ) => MaybePromise<unknown>;
+    onDidFailOpen?: (
+      err: ApplicationError<
+        number,
+        {
+          uri: string;
+        }
+      >,
+      sketch: Sketch
+    ) => MaybePromise<unknown>;
+  } = {}
+): Promise<void> {
+  const { sketchesService, commandService } = services;
+  const { onDidFailClone, onDidFailOpen } = onError;
+  try {
+    const sketch = await sketchesService.cloneExample(uri);
+    try {
+      await commandService.executeCommand(
+        OpenSketch.Commands.OPEN_SKETCH.id,
+        sketch
+      );
+    } catch (openError) {
+      if (SketchesError.NotFound.is(openError)) {
+        if (onDidFailOpen) {
+          await onDidFailOpen(openError, sketch);
+          return;
+        }
+      }
+      throw openError;
+    }
+  } catch (cloneError) {
+    if (SketchesError.NotFound.is(cloneError)) {
+      if (onDidFailClone) {
+        await onDidFailClone(cloneError, uri);
+        return;
+      }
+    }
+    throw cloneError;
+  }
+}
 
 @injectable()
 export abstract class Examples extends SketchContribution {
@@ -94,7 +160,7 @@ export abstract class Examples extends SketchContribution {
     // TODO: unregister submenu? https://github.com/eclipse-theia/theia/issues/7300
     registry.registerSubmenu(
       ArduinoMenus.FILE__EXAMPLES_SUBMENU,
-      nls.localize('arduino/examples/menu', 'Examples'),
+      examplesLabel,
       {
         order: '4',
       }
@@ -174,46 +240,32 @@ export abstract class Examples extends SketchContribution {
   }
 
   protected createHandler(uri: string): CommandHandler {
+    const forceUpdate = () =>
+      this.update({
+        board: this.boardsServiceClient.boardsConfig.selectedBoard,
+        forceRefresh: true,
+      });
     return {
       execute: async () => {
-        const sketch = await this.clone(uri);
-        if (sketch) {
-          try {
-            return this.commandService.executeCommand(
-              OpenSketch.Commands.OPEN_SKETCH.id,
-              sketch
-            );
-          } catch (err) {
-            if (SketchesError.NotFound.is(err)) {
+        await openClonedExample(
+          uri,
+          {
+            sketchesService: this.sketchesService,
+            commandService: this.commandRegistry,
+          },
+          {
+            onDidFailClone: () => {
               // Do not toast the error message. It's handled by the `Open Sketch` command.
-              this.update({
-                board: this.boardsServiceClient.boardsConfig.selectedBoard,
-                forceRefresh: true,
-              });
-            } else {
-              throw err;
-            }
+              forceUpdate();
+            },
+            onDidFailOpen: (err) => {
+              this.messageService.error(err.message);
+              forceUpdate();
+            },
           }
-        }
+        );
       },
     };
-  }
-
-  private async clone(uri: string): Promise<Sketch | undefined> {
-    try {
-      const sketch = await this.sketchesService.cloneExample(uri);
-      return sketch;
-    } catch (err) {
-      if (SketchesError.NotFound.is(err)) {
-        this.messageService.error(err.message);
-        this.update({
-          board: this.boardsServiceClient.boardsConfig.selectedBoard,
-          forceRefresh: true,
-        });
-      } else {
-        throw err;
-      }
-    }
   }
 }
 

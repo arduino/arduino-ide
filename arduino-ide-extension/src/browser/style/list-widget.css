@@ -44,102 +44,152 @@
     height: 100%; /* This has top be 100% down to the `scrollContainer`. */
 }
 
-.filterable-list-container .items-container > div > div:nth-child(odd) {
-    background-color: var(--theia-sideBar-background);
-    filter: contrast(105%);
-}
-
-.filterable-list-container .items-container > div > div:nth-child(even) {
-    background-color: var(--theia-sideBar-background);
-    filter: contrast(95%);
-}
-
-.filterable-list-container .items-container > div > div:hover {
-    background-color: var(--theia-sideBar-background);
-    filter: contrast(90%);
-}
-
 .component-list-item {
-    padding: 10px 10px 10px 15px;
-    font-size: var(--theia-ui-font-size1);
-}
-
-.component-list-item:hover {
-    cursor: pointer;
+    padding: 20px 15px 25px;
 }
 
 .component-list-item .header {
     padding-bottom: 2px;
-    display: flex;
-    flex-direction: column;
+    min-height: var(--theia-statusBar-height);
 }
 
-.component-list-item .header .version-info {
+.component-list-item .header > div {
+    display: flex;
+}
+
+.component-list-item .header > div .p-TabBar-toolbar {
+    align-self: start;
+    padding: unset;
+    margin-right: unset;
+}
+
+.component-list-item:hover .header > div .p-TabBar-toolbar > div {
+    visibility: visible;
+}
+
+.component-list-item .header > div .p-TabBar-toolbar > div {
+    visibility: hidden;
+}
+
+.component-list-item .header .title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 auto;
+}
+
+.component-list-item .header .title .name {
+    font-family: 'Open Sans Bold';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.component-list-item .header .version {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.component-list-item .header .name {
-    font-weight: bold;
-}
-
 .component-list-item .header .author {
-    font-weight: bold;
     color: var(--theia-panelTitle-inactiveForeground);
-}
-
-.component-list-item:hover .header .author {
-    color: var(--theia-foreground);
 }
 
 .component-list-item .header .version {
     color: var(--theia-panelTitle-inactiveForeground);
+    padding-top: 4px;
 }
 
 .component-list-item .footer .theia-button.install {
     height: auto; /* resets the default Theia button height in the filterable list widget */
 }
 
-.component-list-item .header .installed:before {
-    margin-left: 4px;
+.component-list-item .header .installed-version:before {
+    min-width: 79px;
     display: inline-block;
     justify-self: end;
-    background-color: var(--theia-button-background);
+    text-align: center;
+    background-color: var(--theia-arduino-toolbar-dropdown-option-backgroundHover);
     padding: 2px 4px 2px 4px;
-    font-size: 10px;
-    font-weight: bold;
+    font-size: 12px;
     max-height: calc(1em + 4px);
-    color: var(--theia-button-foreground);
-    content: attr(install);
-}
-
-.component-list-item .header .installed:hover:before {
-    background-color: var(--theia-button-foreground);
     color: var(--theia-button-background);
-    content: attr(uninstall);
+    content: attr(version);
+    cursor: pointer;
+    border-radius: 4px;
 }
 
-.component-list-item[min-width~="170px"] .footer {
-    padding: 5px 5px 0px 0px;
-    min-height: 35px;
+.component-list-item .header .installed-version:hover:before {
+    content: attr(remove);
+    text-transform: uppercase;
+}
+
+.component-list-item .content {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: column;
+    padding-top: 4px;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.component-list-item .content > p {
+    margin-block-start: unset;
+    margin-block-end: unset;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.component-list-item .content > .info {
+    white-space: nowrap;
 }
 
 .component-list-item .footer {
     flex-direction: column-reverse;
+    padding-top: 8px;
 }
 
 .component-list-item .footer > * {
     display: inline-block;
-    margin: 5px 0px 0px 10px;
+}
+
+.filterable-list-container .separator {
+    display: flex;
+    flex-direction: row;
+}
+
+.filterable-list-container .separator :last-child,
+.filterable-list-container .separator :first-child {
+    min-height: 8px;
+    max-height: 8px;
+    min-width: 8px;
+    max-width: 8px;
+}
+
+div.filterable-list-container > div > div > div > div:nth-child(1) > div.separator :first-child,
+div.filterable-list-container > div > div > div > div:nth-child(1) > div.separator :last-child {
+    display: none;
+}
+
+.filterable-list-container .separator .line {
+    max-height: 1px;
+    height: 1px;
+    background-color: var(--theia-activityBar-inactiveForeground);
+    flex: 1 1 auto;
 }
 
 .component-list-item:hover .footer > label {
     display: inline-block;
     align-self: center;
-    margin: 5px 0px 0px 10px;
 }
 
 .component-list-item .info a {
@@ -151,13 +201,33 @@
     text-decoration: underline;
 }
 
-/* High Contrast Theme rules */
-/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
-.hc-black.hc-theia.theia-hc .component-list-item .header .installed:hover:before {
-    background-color: transparent;
-    outline: 1px dashed var(--theia-focusBorder);    
+.component-list-item .theia-button.secondary.no-border {
+    border: 2px solid var(--theia-button-foreground)
 }
 
-.hc-black.hc-theia.theia-hc .component-list-item .header .installed:before {
+.component-list-item .theia-button.secondary.no-border:hover {
+    border: 2px solid var(--theia-secondaryButton-foreground)
+}
+
+.component-list-item .theia-button {
+    margin-left: 12px;
+}
+
+.component-list-item .theia-select {
+    height: var(--arduino-button-height);
+    min-height: var(--arduino-button-height);
+    width: 65px;
+    min-width: 65px;
+}
+
+/* High Contrast Theme rules */
+/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
+.hc-black.hc-theia.theia-hc .component-list-item .header .installed-version:hover:before {
+    background-color: transparent;
+    outline: 1px dashed var(--theia-focusBorder);
+}
+
+.hc-black.hc-theia.theia-hc .component-list-item .header .installed-version:before {
+    color: var(--theia-button-background);
     border: 1px solid var(--theia-button-border);
 }

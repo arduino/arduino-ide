@@ -12,7 +12,10 @@ import {
   LibrarySearch,
   LibraryService,
 } from '../../common/protocol/library-service';
-import { ListWidget } from '../widgets/component-list/list-widget';
+import {
+  ListWidget,
+  UserAbortError,
+} from '../widgets/component-list/list-widget';
 import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
@@ -141,6 +144,8 @@ export class LibraryListWidget extends ListWidget<
           // All
           installDependencies = true;
         }
+      } else {
+        throw new UserAbortError();
       }
     } else {
       // The lib does not have any dependencies.
@@ -234,6 +239,21 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
   protected override handleEnter(event: KeyboardEvent): boolean | void {
     this.response = 0;
     super.handleEnter(event);
+  }
+
+  protected override onAfterAttach(message: Message): void {
+    super.onAfterAttach(message);
+    let buttonToFocus: HTMLButtonElement | undefined = undefined;
+    for (const child of Array.from(this.controlPanel.children)) {
+      if (child instanceof HTMLButtonElement) {
+        if (child.classList.contains('main')) {
+          buttonToFocus = child;
+          break;
+        }
+        buttonToFocus = child;
+      }
+    }
+    buttonToFocus?.focus();
   }
 }
 export namespace MessageBoxDialog {

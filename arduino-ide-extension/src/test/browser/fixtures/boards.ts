@@ -49,7 +49,6 @@ export const aPackage: BoardsPackage = {
   deprecated: false,
   description: 'Some Arduino Board, Some Other Arduino Board',
   id: 'some:arduinoCoreId',
-  installable: true,
   moreInfoLink: 'http://www.some-url.lol/',
   name: 'Some Arduino Package',
   summary: 'Boards included in this package:',

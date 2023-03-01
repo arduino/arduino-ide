@@ -20,6 +20,10 @@
 @import './progress-bar.css';
 @import './settings-step-input.css';
 
+:root {
+  --arduino-button-height: 28px;
+}
+
 /* Revive of the `--theia-icon-loading`. The variable has been removed from Theia while IDE2 still uses is. */
 /* The SVG icons are still part of Theia (1.31.1) */
 /* https://github.com/arduino/arduino-ide/pull/1662#issuecomment-1324997134 */
@@ -64,9 +68,9 @@ body.theia-dark {
 
 /* Makes the sidepanel a bit wider when opening the widget */
 .p-DockPanel-widget {
-  min-width: 200px;
+  min-width: 220px;
   min-height: 20px;
-  height: 200px;
+  height: 220px;
 }
 
 /* Overrule the default Theia CSS button styles. */
@@ -74,9 +78,9 @@ button.theia-button,
 .theia-button {
   align-items: center;
   display: flex;
-  font-family: 'Open Sans',sans-serif;
+  font-family: 'Open Sans Bold',sans-serif;
   font-style: normal;
-  font-weight: 700;  
+  font-weight: 700;
   font-size: 14px;
   justify-content: center;
   cursor: pointer;
@@ -95,7 +99,7 @@ button.theia-button,
 }
 
 button.theia-button {
-  height: 28px;
+  height: var(--arduino-button-height);
   max-width: none;
 }
 
@@ -152,10 +156,6 @@ button.theia-button.message-box-dialog-button {
 
 .fa-reload {
   font-size: 14px;
-}
-
-.uppercase {
-  text-transform: uppercase;
 }
 
 /* High Contrast Theme rules */
