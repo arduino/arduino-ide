@@ -12,7 +12,7 @@
     
     min-width: 424px;
     max-height: 560px;
-    padding: 0 28px;
+    padding: 0 var(--arduino-button-height);
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogTitle {
@@ -35,7 +35,7 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent > input {
-    margin-bottom: 28px;
+    margin-bottom: var(--arduino-button-height);
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent > div {
@@ -43,7 +43,7 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection {
-    margin-top: 28px;
+    margin-top: var(--arduino-button-height);
 }
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection:first-child {
     margin-top: 0;

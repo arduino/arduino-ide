@@ -103,7 +103,6 @@ export class LibraryServiceImpl
         return toLibrary(
           {
             name: item.getName(),
-            installable: true,
             installedVersion,
           },
           item.getLatest()!,
@@ -154,8 +153,10 @@ export class LibraryServiceImpl
 
   async list({
     fqbn,
+    libraryName,
   }: {
     fqbn?: string | undefined;
+    libraryName?: string | undefined;
   }): Promise<LibraryPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
@@ -165,6 +166,9 @@ export class LibraryServiceImpl
       // Only get libraries from the cores when the FQBN is defined. Otherwise, we retrieve user installed libraries only.
       req.setAll(true); // https://github.com/arduino/arduino-ide/pull/303#issuecomment-815556447
       req.setFqbn(fqbn);
+    }
+    if (libraryName) {
+      req.setName(libraryName);
     }
 
     const resp = await new Promise<LibraryListResponse | undefined>(
@@ -219,7 +223,6 @@ export class LibraryServiceImpl
           {
             name: library.getName(),
             installedVersion,
-            installable: true,
             description: library.getSentence(),
             summary: library.getParagraph(),
             moreInfoLink: library.getWebsite(),
@@ -455,8 +458,7 @@ function toLibrary(
   return {
     name: '',
     exampleUris: [],
-    installable: false,
-    location: 0,
+    location: LibraryLocation.BUILTIN,
     ...pkg,
 
     author: lib.getAuthor(),

@@ -174,7 +174,7 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
     // CLI returns the packages already sorted with the deprecated ones at the end of the list
     // in order to ensure the new ones are preferred
     const candidates = packagesForBoard.filter(
-      ({ installable, installedVersion }) => installable && !installedVersion
+      ({ installedVersion }) => !installedVersion
     );
 
     return candidates[0];

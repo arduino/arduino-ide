@@ -15,7 +15,7 @@
 }
 
 .ide-updater-dialog--logo-container {
-  margin-right: 28px;
+  margin-right: var(--arduino-button-height);
 }
 
 .ide-updater-dialog--logo {
@@ -76,7 +76,7 @@
 .ide-updater-dialog .buttons-container {
   display: flex;
   justify-content: flex-end;
-  margin-top: 28px;
+  margin-top: var(--arduino-button-height);
 }
 
 .ide-updater-dialog .buttons-container a.theia-button {

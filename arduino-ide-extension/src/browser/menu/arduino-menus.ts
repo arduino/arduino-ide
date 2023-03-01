@@ -1,4 +1,3 @@
-import { isOSX } from '@theia/core/lib/common/os';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
 import {
   MAIN_MENU_BAR,
@@ -7,6 +6,8 @@ import {
   MenuPath,
   SubMenuOptions,
 } from '@theia/core/lib/common/menu';
+import { nls } from '@theia/core/lib/common/nls';
+import { isOSX } from '@theia/core/lib/common/os';
 
 export namespace ArduinoMenus {
   // Main menu
@@ -173,6 +174,17 @@ export namespace ArduinoMenus {
     '3_sign_out',
   ];
 
+  // Context menu from the library and boards manager widget
+  export const ARDUINO_COMPONENT__CONTEXT = ['arduino-component--context'];
+  export const ARDUINO_COMPONENT__CONTEXT__INFO_GROUP = [
+    ...ARDUINO_COMPONENT__CONTEXT,
+    '0_info',
+  ];
+  export const ARDUINO_COMPONENT__CONTEXT__ACTION_GROUP = [
+    ...ARDUINO_COMPONENT__CONTEXT,
+    '1_action',
+  ];
+
   // -- ROOT SSL CERTIFICATES
   export const ROOT_CERTIFICATES__CONTEXT = [
     'arduino-root-certificates--context',
@@ -230,3 +242,5 @@ export class PlaceholderMenuNode implements MenuNode {
     return [...this.menuPath, 'placeholder'].join('-');
   }
 }
+
+export const examplesLabel = nls.localize('arduino/examples/menu', 'Examples');

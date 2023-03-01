@@ -15,6 +15,7 @@ import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceClient } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 import { FilterRenderer } from './filter-renderer';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
 
 export class FilterableListContainer<
   T extends ArduinoComponent,
@@ -23,27 +24,40 @@ export class FilterableListContainer<
   FilterableListContainer.Props<T, S>,
   FilterableListContainer.State<T, S>
 > {
+  private readonly toDispose: DisposableCollection;
+
   constructor(props: Readonly<FilterableListContainer.Props<T, S>>) {
     super(props);
     this.state = {
       searchOptions: props.defaultSearchOptions,
       items: [],
     };
+    this.toDispose = new DisposableCollection();
   }
 
   override componentDidMount(): void {
     this.search = debounce(this.search, 500, { trailing: true });
     this.search(this.state.searchOptions);
-    this.props.searchOptionsDidChange((newSearchOptions) => {
-      const { searchOptions } = this.state;
-      this.setSearchOptionsAndUpdate({ ...searchOptions, ...newSearchOptions });
-    });
+    this.toDispose.pushAll([
+      this.props.searchOptionsDidChange((newSearchOptions) => {
+        const { searchOptions } = this.state;
+        this.setSearchOptionsAndUpdate({
+          ...searchOptions,
+          ...newSearchOptions,
+        });
+      }),
+      this.props.onDidShow(() => this.setState({ edited: undefined })),
+    ]);
   }
 
   override componentDidUpdate(): void {
     // See: arduino/arduino-pro-ide#101
     // Resets the top of the perfect scroll-bar's thumb.
     this.props.container.updateScrollBar();
+  }
+
+  override componentWillUnmount(): void {
+    this.toDispose.dispose();
   }
 
   override render(): React.ReactNode {
@@ -90,11 +104,13 @@ export class FilterableListContainer<
         itemRenderer={itemRenderer}
         install={this.install.bind(this)}
         uninstall={this.uninstall.bind(this)}
+        edited={this.state.edited}
+        onItemEdit={this.onItemEdit.bind(this)}
       />
     );
   }
 
-  protected handlePropChange = (prop: keyof S, value: S[keyof S]): void => {
+  private handlePropChange = (prop: keyof S, value: S[keyof S]): void => {
     const searchOptions = {
       ...this.state.searchOptions,
       [prop]: value,
@@ -106,15 +122,14 @@ export class FilterableListContainer<
     this.setState({ searchOptions }, () => this.search(searchOptions));
   }
 
-  protected search(searchOptions: S): void {
+  private search(searchOptions: S): void {
     const { searchable } = this.props;
-    searchable.search(searchOptions).then((items) => this.setState({ items }));
+    searchable
+      .search(searchOptions)
+      .then((items) => this.setState({ items, edited: undefined }));
   }
 
-  protected async install(
-    item: T,
-    version: Installable.Version
-  ): Promise<void> {
+  private async install(item: T, version: Installable.Version): Promise<void> {
     const { install, searchable } = this.props;
     await ExecuteWithProgress.doWithProgress({
       ...this.props,
@@ -124,10 +139,10 @@ export class FilterableListContainer<
       run: ({ progressId }) => install({ item, progressId, version }),
     });
     const items = await searchable.search(this.state.searchOptions);
-    this.setState({ items });
+    this.setState({ items, edited: undefined });
   }
 
-  protected async uninstall(item: T): Promise<void> {
+  private async uninstall(item: T): Promise<void> {
     const ok = await new ConfirmDialog({
       title: nls.localize('arduino/component/uninstall', 'Uninstall'),
       msg: nls.localize(
@@ -152,7 +167,11 @@ export class FilterableListContainer<
       run: ({ progressId }) => uninstall({ item, progressId }),
     });
     const items = await searchable.search(this.state.searchOptions);
-    this.setState({ items });
+    this.setState({ items, edited: undefined });
+  }
+
+  private onItemEdit(item: T, selectedVersion: Installable.Version): void {
+    this.setState({ edited: { item, selectedVersion } });
   }
 }
 
@@ -171,6 +190,7 @@ export namespace FilterableListContainer {
     readonly searchOptionsDidChange: Event<Partial<S> | undefined>;
     readonly messageService: MessageService;
     readonly responseService: ResponseServiceClient;
+    readonly onDidShow: Event<void>;
     readonly install: ({
       item,
       progressId,
@@ -193,5 +213,9 @@ export namespace FilterableListContainer {
   export interface State<T, S extends Searchable.Options> {
     searchOptions: S;
     items: T[];
+    edited?: {
+      item: T;
+      selectedVersion: Installable.Version;
+    };
   }
 }

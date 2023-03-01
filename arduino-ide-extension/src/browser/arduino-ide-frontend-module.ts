@@ -79,7 +79,10 @@ import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browse
 import { ProblemManager } from './theia/markers/problem-manager';
 import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
-import { ListItemRenderer } from './widgets/component-list/list-item-renderer';
+import {
+  ArduinoComponentContextMenuRenderer,
+  ListItemRenderer,
+} from './widgets/component-list/list-item-renderer';
 import { ColorContribution } from '@theia/core/lib/browser/color-application-contribution';
 
 import {
@@ -1021,4 +1024,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(SidebarBottomMenuWidget).toSelf();
   rebind(TheiaSidebarBottomMenuWidget).toService(SidebarBottomMenuWidget);
+
+  bind(ArduinoComponentContextMenuRenderer).toSelf().inSingletonScope();
 });

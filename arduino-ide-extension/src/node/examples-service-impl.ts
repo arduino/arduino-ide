@@ -118,6 +118,16 @@ export class ExamplesServiceImpl implements ExamplesService {
     return { user, current, any };
   }
 
+  async find(options: { libraryName: string }): Promise<SketchContainer[]> {
+    const { libraryName } = options;
+    const packages = await this.libraryService.list({ libraryName });
+    return Promise.all(
+      packages
+        .filter(({ location }) => location === LibraryLocation.USER)
+        .map((pkg) => this.tryGroupExamples(pkg))
+    );
+  }
+
   /**
    * The CLI provides direct FS paths to the examples so that menus and menu groups cannot be built for the UI by traversing the
    * folder hierarchy. This method tries to workaround it by falling back to the `installDirUri` and manually creating the

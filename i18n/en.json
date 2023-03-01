@@ -160,13 +160,19 @@
     "component": {
       "boardsIncluded": "Boards included in this package:",
       "by": "by",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Filter your search...",
       "install": "Install",
-      "installed": "Installed",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
       "moreInfo": "More info",
+      "otherVersions": "Other Versions",
+      "remove": "Remove",
+      "title": "{0} by {1}",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
-      "version": "Version {0}"
+      "update": "Update"
     },
     "configuration": {
       "cli": {
