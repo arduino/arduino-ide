@@ -117,6 +117,11 @@ export class MonitorWidget extends ReactWidget {
     (this.focusNode || this.node).focus();
   }
 
+  protected override onAfterShow(msg: Message): void {
+    super.onAfterShow(msg);
+    this.update();
+  }
+
   protected onFocusResolved = (element: HTMLElement | undefined) => {
     if (this.closing || !this.isAttached) {
       return;
