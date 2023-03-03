@@ -17,7 +17,7 @@ export class SerialMonitorOutput extends React.Component<
    * Do not touch it. It is used to be able to "follow" the serial monitor log.
    */
   protected toDisposeBeforeUnmount = new DisposableCollection();
-  private listRef: React.RefObject<any>;
+  private listRef: React.RefObject<List>;
 
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
@@ -34,12 +34,10 @@ export class SerialMonitorOutput extends React.Component<
       <List
         className="serial-monitor-messages"
         height={this.props.height}
-        itemData={
-          {
-            lines: this.state.lines,
-            timestamp: this.state.timestamp,
-          } as any
-        }
+        itemData={{
+          lines: this.state.lines,
+          timestamp: this.state.timestamp,
+        }}
         itemCount={this.state.lines.length}
         itemSize={18}
         width={'100%'}
@@ -93,11 +91,11 @@ export class SerialMonitorOutput extends React.Component<
     this.toDisposeBeforeUnmount.dispose();
   }
 
-  scrollToBottom = ((): void => {
+  private readonly scrollToBottom = () => {
     if (this.listRef.current && this.props.monitorModel.autoscroll) {
       this.listRef.current.scrollToItem(this.state.lines.length, 'end');
     }
-  }).bind(this);
+  };
 }
 
 const _Row = ({
