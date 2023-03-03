@@ -65,11 +65,13 @@ export class SerialMonitorOutput extends React.Component<
           this.state.charCount
         );
         const [lines, charCount] = truncateLines(newLines, totalCharCount);
-        this.setState({
-          lines,
-          charCount,
-        });
-        this.scrollToBottom();
+        this.setState(
+          {
+            lines,
+            charCount,
+          },
+          () => this.scrollToBottom()
+        );
       }),
       this.props.clearConsoleEvent(() =>
         this.setState({ lines: [], charCount: 0 })
