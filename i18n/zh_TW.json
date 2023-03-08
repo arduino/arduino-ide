@@ -1,11 +1,11 @@
 {
   "arduino": {
     "about": {
-      "detail": "版本：1{0}，日期：2{1}，命令列版本：{3}{4}[{5}]  {6}",
-      "label": "關於 1[0]"
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "關於 {0}"
     },
     "board": {
-      "board": "1{0} 開發板",
+      "board": "{0} 開發板",
       "boardConfigDialogTitle": "選擇其他開發板和埠",
       "boardInfo": "開發板資訊",
       "boards": "boards",
@@ -15,29 +15,30 @@
       "disconnected": "斷開連接",
       "getBoardInfo": "取得開發板資訊",
       "inSketchbook": "(在草稿資料夾中)",
-      "installNow": "必須為目前選定的 {2} 開發板安裝 1{0} 2{1} 核心程式，你要現在安裝嗎？",
+      "installNow": "必須為目前選定的 {2} 開發板安裝 {0} {1} 核心程式，你要現在安裝嗎？",
       "noBoardsFound": "未找到開發板 {0}",
       "noFQBN": "FQBN無法用於所選擇的\"{0}\"開發版。你是否安裝了對應的核心?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "未找到埠",
       "noPortsSelected": "沒有選到 '{0}' 板的埠",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "沒有選擇電路板",
       "openBoardsConfig": "選擇其他的電路板或埠...",
-      "platformMissing": "選擇的'{0}'開發版平台並未安裝",
       "pleasePickBoard": "請選擇要連接的開發版",
-      "port": "1{0} 埠",
+      "port": "{0} 埠",
       "portLabel": "端口: {0}",
       "ports": "ports",
       "programmer": "燒錄器",
       "reselectLater": "請稍後在選擇",
       "searchBoard": "搜尋開發板",
       "selectBoard": "選擇開發版",
-      "selectBoardForInfo": "請選擇電路板以取得板子的資訊",
       "selectPortForInfo": "請選定一個埠，以便能取得板子的資訊",
       "showAllAvailablePorts": "當開啟時，顯示所有可用的埠",
       "showAllPorts": "Show all ports",
-      "succesfullyInstalledPlatform": "平台已成功安裝 1[0]：2[1]",
-      "succesfullyUninstalledPlatform": "平台已成功移除 1[0]：2[1]",
-      "typeOfPorts": "{0} ports"
+      "succesfullyInstalledPlatform": "已成功卸载平台 {0}：{1}",
+      "succesfullyUninstalledPlatform": "平台已成功移除 {0}：{1}",
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "開發板管理器",
     "boardsType": {
@@ -49,7 +50,7 @@
       "doneBurningBootloader": "Bootloader 燒錄完成"
     },
     "burnBootloader": {
-      "error": "燒錄 1{0} Bootloader 時出現錯誤"
+      "error": "燒錄 {0} Bootloader 時出現錯誤"
     },
     "certificate": {
       "addNew": "加入新的",
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "帳戶",
       "chooseSketchVisibility": "選擇草稿的能見度：",
+      "cloudSketchbook": "雲端草稿資料夾",
       "connected": "已連接",
       "continue": "繼續",
       "donePulling": "完成讀取'{0}'。",
@@ -108,10 +110,9 @@
       "pushSketch": "更改草稿",
       "pushSketchMsg": "這是一個公開草稿，在更改前，請確認所有敏感資訊都定義在arduino_secrets.h中。可以在分享介面設定為私人草稿。",
       "remote": "遠端",
-      "remoteSketchbook": "遠端資料夾",
       "share": "分享...",
       "shareSketch": "分享草稿",
-      "showHideRemoveSketchbook": "顯示/隱藏遠端草稿資料夾",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "登入",
       "signInToCloud": "登入Arduino Cloud",
       "signOut": "登出",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "前往Arduino Cloud建立雲端草稿。"
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "所有",
@@ -137,14 +143,14 @@
       "processing": "資料處理中",
       "recommended": "推薦",
       "retired": "不在支援",
-      "selectedOn": "在 1{0}",
+      "selectedOn": "在 {0}",
       "serialMonitor": "序列埠監控",
       "type": "類型",
       "unknown": "未知",
       "updateable": "可更新"
     },
     "compile": {
-      "error": "1{0} 編譯錯誤"
+      "error": "{0} 編譯錯誤"
     },
     "component": {
       "boardsIncluded": "包含在此包的開發版:",
@@ -154,8 +160,13 @@
       "installed": "安裝",
       "moreInfo": "更多資訊",
       "uninstall": "移除安裝",
-      "uninstallMsg": "你要移除 1{0}？",
-      "version": "版本 1{0}"
+      "uninstallMsg": "你要移除 {0}？",
+      "version": "版本 {0}"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
     },
     "contributions": {
       "addFile": "加入檔案",
@@ -186,7 +197,8 @@
       "debugWithMessage": "除錯 - {0}",
       "debuggingNotSupported": "'{0}'不支援除錯。",
       "noPlatformInstalledFor": "未安裝'{0}'的平台",
-      "optimizeForDebugging": "除錯最佳化"
+      "optimizeForDebugging": "除錯最佳化",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "請勿再次請求"
@@ -211,7 +223,7 @@
       "builtInExamples": "內建範例",
       "couldNotInitializeExamples": "無法初始內建的範例",
       "customLibrary": "客製函式庫的範例",
-      "for": "1 {0} 的範例",
+      "for": "{0} 的範例",
       "forAny": "適用各種開發板的範例",
       "menu": "範例"
     },
@@ -265,16 +277,16 @@
       "installMissingDependencies": "是否安裝所有缺少的附屬程式？",
       "installOneMissingDependency": "是否安裝缺少的附屬程式?",
       "installWithoutDependencies": "Install without dependencies",
-      "installedSuccessfully": "成功安裝 1{0}：2{1} 函式庫",
+      "installedSuccessfully": "成功安裝 {0}：{1} 函式庫",
       "libraryAlreadyExists": "函式庫已經存在，你要覆寫它嗎？",
       "manageLibraries": "管理函式庫",
-      "namedLibraryAlreadyExists": "函式庫的資料夾名稱 1{0} 已經存在，你要覆寫它嗎？",
+      "namedLibraryAlreadyExists": "函式庫的資料夾名稱 {0} 已經存在，你要覆寫它嗎？",
       "needsMultipleDependencies": "函式庫<b>{0}：{1}</b>需要一些未安装的附屬程式：",
       "needsOneDependency": "函式庫<b>{0}：{1}</b>需要一些未安装的附屬程式：",
       "overwriteExistingLibrary": "你要覆寫既有的函式庫嗎？",
-      "successfullyInstalledZipLibrary": "從 1{0} 歸檔成功安裝函式庫",
+      "successfullyInstalledZipLibrary": "從 {0} 歸檔成功安裝函式庫",
       "title": "函式庫管理器",
-      "uninstalledSuccessfully": "成功移除安裝的 1{0}：2{1} 函式庫",
+      "uninstalledSuccessfully": "成功移除安裝的 {0}：{1} 函式庫",
       "zipLibrary": "函式庫"
     },
     "librarySearchProperty": {
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "無法連接到 websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "網路",
@@ -352,6 +361,7 @@
       "manualProxy": "手動設置代理",
       "network": "網路",
       "newSketchbookLocation": "選取新的草稿資料夾位置",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "無代理",
       "proxySettings": {
         "hostname": "Host name",
@@ -375,7 +385,10 @@
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
     },
-    "replaceMsg": "取代 1{0} 的現有版本？",
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "取代 {0} 的現有版本？",
     "selectZip": "選擇要加入函示庫的zip檔案",
     "serial": {
       "autoscroll": "自動滾頁面",
@@ -398,13 +411,22 @@
       "createdArchive": "已創建文件{0}。",
       "doneCompiling": "編譯完成",
       "doneUploading": "上傳完畢",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "會出已編譯的二進位檔",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "移動",
       "movingMsg": "\"{0}\"必須在命名為\"{1}\"的草稿資料夾中。建立這個資料夾，移動草稿並繼續？",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "打開資料夾",
       "openRecent": "開啟最近的",
       "openSketchInNewWindow": "在新視窗開啟草稿",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "另存 Sketch 資料夾",
       "saveSketch": "保存您的項目，以便以後再次打開它。",
       "saveSketchAs": "另存 Sketch 資料夾",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "驗證/編譯"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -435,12 +457,23 @@
       "updatePackageIndex": "Update Package Index"
     },
     "upload": {
-      "error": "1 [0] 錯誤：2 [1]"
+      "error": "{0} 錯誤：{1}"
     },
     "userFields": {
       "cancel": "取消",
       "enterField": "輸入 {0}",
       "upload": "上傳"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -453,17 +486,17 @@
       "quitTitle": "你確定要退出嗎？"
     },
     "editor": {
-      "unsavedTitle": "1[0] –尚未儲存"
+      "unsavedTitle": "{0} – 尚未儲存"
     },
     "messages": {
       "collapse": "崩潰",
       "expand": "延伸"
     },
     "workspace": {
-      "deleteCurrentSketch": "你要刪除現行的草稿嗎？",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "給予檔案新名稱",
       "invalidExtension": ".{0} 不是合法的副檔名",
-      "invalidFilename": "不合法的檔案名稱",
       "newFileName": "給予檔案新名稱"
     }
   }

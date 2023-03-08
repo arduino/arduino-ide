@@ -5,7 +5,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { UserStatus } from './cloud-user-status';
+import { CloudStatus } from './cloud-user-status';
 import { nls } from '@theia/core/lib/common/nls';
 import { CloudSketchbookTreeWidget } from './cloud-sketchbook-tree-widget';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
@@ -61,7 +61,7 @@ export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidge
             onClick={this.onDidClickCreateNew}
           />
         )}
-        <UserStatus
+        <CloudStatus
           model={
             this.cloudSketchbookTreeWidget.model as CloudSketchbookTreeModel
           }

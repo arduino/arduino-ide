@@ -245,6 +245,7 @@ export interface Port {
   readonly protocol: string;
   readonly protocolLabel: string;
   readonly properties?: Record<string, string>;
+  readonly hardwareId?: string;
 }
 export namespace Port {
   export type Properties = Record<string, string>;
@@ -551,6 +552,19 @@ export namespace Board {
 
   export function equals(left: Board, right: Board): boolean {
     return left.name === right.name && left.fqbn === right.fqbn;
+  }
+
+  export function hardwareIdEquals(left: Board, right: Board): boolean {
+    if (left.port && right.port) {
+      const { hardwareId: leftHardwareId } = left.port;
+      const { hardwareId: rightHardwareId } = right.port;
+
+      if (leftHardwareId && rightHardwareId) {
+        return leftHardwareId === rightHardwareId;
+      }
+    }
+
+    return false;
   }
 
   export function sameAs(left: Board, right: string | Board): boolean {

@@ -27,7 +27,6 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     loadSketch: IArduinoCoreServiceService_ILoadSketch;
     archiveSketch: IArduinoCoreServiceService_IArchiveSketch;
     boardDetails: IArduinoCoreServiceService_IBoardDetails;
-    boardAttach: IArduinoCoreServiceService_IBoardAttach;
     boardList: IArduinoCoreServiceService_IBoardList;
     boardListAll: IArduinoCoreServiceService_IBoardListAll;
     boardSearch: IArduinoCoreServiceService_IBoardSearch;
@@ -147,15 +146,6 @@ interface IArduinoCoreServiceService_IBoardDetails extends grpc.MethodDefinition
     requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest>;
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse>;
-}
-interface IArduinoCoreServiceService_IBoardAttach extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest, cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardAttach";
-    requestStream: false;
-    responseStream: true;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
 }
 interface IArduinoCoreServiceService_IBoardList extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_board_pb.BoardListRequest, cc_arduino_cli_commands_v1_board_pb.BoardListResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardList";
@@ -423,7 +413,6 @@ export interface IArduinoCoreServiceServer {
     loadSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.LoadSketchRequest, cc_arduino_cli_commands_v1_commands_pb.LoadSketchResponse>;
     archiveSketch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest, cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchResponse>;
     boardDetails: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse>;
-    boardAttach: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest, cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
     boardList: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardListRequest, cc_arduino_cli_commands_v1_board_pb.BoardListResponse>;
     boardListAll: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardListAllRequest, cc_arduino_cli_commands_v1_board_pb.BoardListAllResponse>;
     boardSearch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse>;
@@ -482,8 +471,6 @@ export interface IArduinoCoreServiceClient {
     boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
-    boardAttach(request: cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
-    boardAttach(request: cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
     boardList(request: cc_arduino_cli_commands_v1_board_pb.BoardListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardListResponse) => void): grpc.ClientUnaryCall;
     boardList(request: cc_arduino_cli_commands_v1_board_pb.BoardListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardListResponse) => void): grpc.ClientUnaryCall;
     boardList(request: cc_arduino_cli_commands_v1_board_pb.BoardListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardListResponse) => void): grpc.ClientUnaryCall;
@@ -584,8 +571,6 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     public boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
     public boardDetails(request: cc_arduino_cli_commands_v1_board_pb.BoardDetailsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse) => void): grpc.ClientUnaryCall;
-    public boardAttach(request: cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
-    public boardAttach(request: cc_arduino_cli_commands_v1_board_pb.BoardAttachRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardAttachResponse>;
     public boardList(request: cc_arduino_cli_commands_v1_board_pb.BoardListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardListResponse) => void): grpc.ClientUnaryCall;
     public boardList(request: cc_arduino_cli_commands_v1_board_pb.BoardListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardListResponse) => void): grpc.ClientUnaryCall;
     public boardList(request: cc_arduino_cli_commands_v1_board_pb.BoardListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardListResponse) => void): grpc.ClientUnaryCall;

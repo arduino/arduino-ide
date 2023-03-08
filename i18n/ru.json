@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Версия: {0}\nДата: {1}{2}\nВерсия CLI: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "О программе {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "Необходимо установить ядро «{0} {1}»  для выбранной в данный момент «{2}» платы. Вы хотите установить его сейчас?",
       "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN недоступен для выбранной платы \"{0}\". Проверьте наличие необходимого ядра.",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Не выбраны порты для платы: '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Плата не выбрана.",
       "openBoardsConfig": "Выберите другую плату и порт...",
-      "platformMissing": "Платформа для выбранной платы '{0}' не установлена.",
       "pleasePickBoard": "Пожалуйста, выберите плату, подключенную к выбранному вами порту.",
       "port": "Порт{0}",
       "portLabel": "Порт:{0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Перевыбрать позже",
       "searchBoard": "Search board",
       "selectBoard": "Выбор платы",
-      "selectBoardForInfo": "Пожалуйста, выберите плату в меню инструментов для получения информации с платы.",
       "selectPortForInfo": "Пожалуйста, выберите порт в меню инструментов для получения информации с платы.",
       "showAllAvailablePorts": "Показать все доступные порты при включении",
       "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Платформа установлена успешно {0}:{1}",
       "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "Менеджер плат",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Аккаунт",
       "chooseSketchVisibility": "Выберите видимость своего скетча:",
+      "cloudSketchbook": "Альбом в облаке",
       "connected": "Подключено",
       "continue": "Продолжить",
       "donePulling": "Закончить вытягивание ‘{0}’.",
@@ -108,10 +110,9 @@
       "pushSketch": "Выдавить скетч",
       "pushSketchMsg": "Это Публичный скетч. Перед нажатием убедитесь, что любая конфиденциальная информация определена в файлах arduino_secrets.h. Вы можете сделать скетч приватным на панели общего доступа.",
       "remote": "Удаленный",
-      "remoteSketchbook": "Удалённый альбом",
       "share": "Поделиться...",
       "shareSketch": "Поделиться скетчем",
-      "showHideRemoveSketchbook": "Показать/скрыть удаленный альбом",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "Войти",
       "signInToCloud": "Войдите в Arduino Cloud",
       "signOut": "Выйти",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Посетите Arduino Cloud, чтобы создать скетчи в облаке."
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "All",
@@ -154,8 +160,13 @@
       "installed": "Installed",
       "moreInfo": "Дополнительная информация",
       "uninstall": "Удалить",
-      "uninstallMsg": "Вы хотите удалить  {0}?",
+      "uninstallMsg": "Вы хотите удалить {0}?",
       "version": "Версия {0}"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
     },
     "contributions": {
       "addFile": "Добавить файл...",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Отладка - {0}",
       "debuggingNotSupported": "Отладка не поддерживается '{0}'",
       "noPlatformInstalledFor": "Платформа не установлена для '{0}'",
-      "optimizeForDebugging": "Оптимизировать для отладки"
+      "optimizeForDebugging": "Оптимизировать для отладки",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "Больше не спрашивать"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Не удается подключиться к веб-сокету."
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Сеть",
@@ -352,6 +361,7 @@
       "manualProxy": "Ручная настройка параметров прокси-сервера",
       "network": "Сеть",
       "newSketchbookLocation": "Выбрать новое расположение для альбома со скетчами",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Не использовать прокси-сервер",
       "proxySettings": {
         "hostname": "Host name",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "Заменить имеющуюся версию {0}?",
     "selectZip": "Выберите zip-файл, содержащий библиотеку, которую вы хотите установить",
@@ -398,13 +411,22 @@
       "createdArchive": "Создать архив '{0}'.",
       "doneCompiling": "Компиляция завершена.",
       "doneUploading": "Загрузка завершена.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Экспортировать скомпилированный бинарный файл",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Переместить",
       "movingMsg": "Файл «{0}» должен быть в папке с именем скетча «{1}». \nСоздать эту папку, переместить файл и продолжить?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Открыть папку",
       "openRecent": "Открыть предыдущий",
       "openSketchInNewWindow": "Открыть скетч в новом окне",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Сохранить папку со скетчем как...",
       "saveSketch": "Сохраните свой скетч, чтобы открыть его позже.",
       "saveSketchAs": "Сохранить папку скетча как...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Проверить/Скомпилировать"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "Отмена",
       "enterField": "Enter {0}",
       "upload": "Загрузка"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Развернуть"
     },
     "workspace": {
-      "deleteCurrentSketch": "Вы хотите удалить текущий скетч?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Имя нового файла",
       "invalidExtension": "Файлы с расширением \".{0}\" не поддерживаются.",
-      "invalidFilename": "Неправильное имя файла",
       "newFileName": "Новое имя файла"
     }
   }

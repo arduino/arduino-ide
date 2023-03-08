@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Bertsioa: {0}\nData: {1}{2}\nCLI bertsioa: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "{0}ri buruz"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "\"{0} {1}\" nukleoa instalatu behar da unean hautatutako \"{2}\" plakarentzat. Orain instalatu nahi duzu?",
       "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "FQBN ez dago erabilgarri hautatutako \"{0}\" plakarentzat. Dagokion nukleoa instalatuta daukazu?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Ez da atakarik hautatu plakarentzat: '{0}'",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Plakarik ez da hautatu",
       "openBoardsConfig": "Hautatu beste plaka eta ataka bat...",
-      "platformMissing": "Hautatutako '{0}' plakarentzako plataforma ez dago instalatuta.",
       "pleasePickBoard": "Aukeratu hautatu duzun atakara konektatutako plaka bat.",
       "port": "{0} ataka",
       "portLabel": "Port: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Hautatu berriz geroago",
       "searchBoard": "Search board",
       "selectBoard": "Hautatu plaka",
-      "selectBoardForInfo": "Hautatu plaka bat plakaren informazioa eskuratzeko.",
       "selectPortForInfo": "Hautatu ataka bat plakaren informazioa eskuratzeko.",
       "showAllAvailablePorts": "Gaituta dagoenean erabilgarri dauden ataka guztiak erakusten ditu",
       "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "{0}:{1} plataforma behar bezala instalatu da",
       "succesfullyUninstalledPlatform": "{0}:{1} plataforma behar bezala desinstalatu da",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "Plaka kudeatzailea",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Account",
       "chooseSketchVisibility": "Aukeratu zure programaren ikusgaitasuna:",
+      "cloudSketchbook": "Hodeiko programa bilduma",
       "connected": "Konektatuta",
       "continue": "Jarraitu",
       "donePulling": "Hodeitik kargatzea burututa: '{0}'.",
@@ -108,10 +110,9 @@
       "pushSketch": "Kargatu hodeitik",
       "pushSketchMsg": "Hau programa publiko bat da. Hodeian gorde aurretik, ziurtatu isilpeko informazioa arduino_secrets.h fitxategietan definituta dagoela. Programa pribatu bihurtu dezakezu Partekatu paneletik.",
       "remote": "Urrunekoa",
-      "remoteSketchbook": "Remote Sketchbook",
       "share": "Partekatu...",
       "shareSketch": "Partekatu programa",
-      "showHideRemoveSketchbook": "Erakutsi/Ezkutatu urruneko programa bilduma",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "HASI SAIOA",
       "signInToCloud": "Hasi saioa Arduino Cloud-en",
       "signOut": "Amaitu saioa",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "All",
@@ -157,6 +163,11 @@
       "uninstallMsg": "{0} desinstalatu nahi duzu?",
       "version": "{0} bertsioa"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "Gehitu fitxategia",
       "fileAdded": "Fitxategi bat gehitu da programara.",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Araztu - {0}",
       "debuggingNotSupported": "Ez dauka arazketarako euskarririk: '{0}'",
       "noPlatformInstalledFor": "Plataforma ez dago instalatuta honentzat: '{0}'",
-      "optimizeForDebugging": "Optimizatu arazketarako"
+      "optimizeForDebugging": "Optimizatu arazketarako",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "Ez galdetu berriro"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Sarea",
@@ -352,6 +361,7 @@
       "manualProxy": "Proxyaren eskuzko konfigurazioa",
       "network": "Sarea",
       "newSketchbookLocation": "Hautatu programa bilduma berriaren kokalekua",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Proxyrik ez",
       "proxySettings": {
         "hostname": "Host name",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "Lehendik dagoen {0} bertsioa ordezkatu?",
     "selectZip": "Hautatu gehitu nahi duzun liburutegia daukan zip fitxategia",
@@ -398,13 +411,22 @@
       "createdArchive": "'{0}' artxiboa sortu da.",
       "doneCompiling": "Konpilazioa burutu da.",
       "doneUploading": "Karga burutu da.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Esportatu konpilatutako bitarra",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Lekuz aldatzen",
       "movingMsg": "\"{0}\" fitxategiak \"{1}\" izeneko programa-karpetaren barruan egon behar du.\nSortu karpeta, eraman fitxategia bertara eta jarraitu?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Ireki karpeta",
       "openRecent": "Ireki azkenaldikoa",
       "openSketchInNewWindow": "Ireki programa leiho berrian",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Gorde programen karpeta honela...",
       "saveSketch": "Save your sketch to open it again later.",
       "saveSketchAs": "Gorde programen karpeta honela...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Egiaztatu/Konpilatu"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "Utzi",
       "enterField": "Enter {0}",
       "upload": "Kargatu"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Zabaldu"
     },
     "workspace": {
-      "deleteCurrentSketch": "Uneko programa ezabatu nahi duzu?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Fitxategi berriaren izena",
       "invalidExtension": "{0} ez da baliozko luzapen bat.",
-      "invalidFilename": "Fitxategi-izen baliogabea.",
       "newFileName": "Fitxategiaren izen berria"
     }
   }

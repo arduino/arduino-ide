@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Versie: {0}\nDatum: {1}{2}\nCLI versie: {3}{4} [{5}]\n\n{6} ",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "Over {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn om het huidige geselecteerde \"{2}\" bord. Wilt U dit nu installeren?",
       "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "De FQBN is niet beschikbaar voor het geselecteerde bord \"{0}\". Heeft U de bijhorende kern geïnstalleerd?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Geen poorten gevonden",
       "noPortsSelected": "Geen poorten geselecteerd voor bord: '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Geen borden geselecteerd.",
       "openBoardsConfig": "Selecteer een ander bord en poort...",
-      "platformMissing": "Het platform voor het geselecteerde '{0}' bord is niet geïnstalleerd.",
       "pleasePickBoard": "Gelieve een bord te selecteren dat verbonden is met de door U gekozen poort.",
       "port": "Poort{0}",
       "portLabel": "Poort: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Later opnieuw selecteren",
       "searchBoard": "Bord zoeken",
       "selectBoard": "Selecteer Bord",
-      "selectBoardForInfo": "Selecteer een bord om bord informatie te bekomen.",
       "selectPortForInfo": "Selecteer een poort om bord informatie te bekomen.",
       "showAllAvailablePorts": "Toont alle beschikbare poorten indien ingeschakeld",
       "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Platform {0}:{1} succesvol geïnstalleerd",
       "succesfullyUninstalledPlatform": "Platform {0}:{1} is succesvol verwijderd",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "Borden Beheerder",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "Account",
       "chooseSketchVisibility": "Kies de zichtbaarheid van je Sketch:",
+      "cloudSketchbook": "Cload Schetsboek",
       "connected": "Verbonden",
       "continue": "Doorgaan",
       "donePulling": "Klaar met trekken van '{0}'.",
@@ -108,10 +110,9 @@
       "pushSketch": "Push Schets",
       "pushSketchMsg": "Dit is een openbare schets. Voordat u gaat pushen, moet u ervoor zorgen dat gevoelige informatie is gedefinieerd in arduino_secrets.h bestanden. U kunt een schets privé maken vanuit het deelvenster Delen.",
       "remote": "Op Afstand",
-      "remoteSketchbook": "Schetsboek op afstand",
       "share": "Delen...",
       "shareSketch": "Schets Delen",
-      "showHideRemoveSketchbook": "Toon/verberg schetsboek op afstand",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "INLOGGEN",
       "signInToCloud": "Aanmelden bij Arduino Cloud",
       "signOut": "Uitloggen",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Sketches te maken."
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "Alle",
@@ -157,6 +163,11 @@
       "uninstallMsg": "Wil je {0} verwijderen?",
       "version": "Versie {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "Bestand Toevoegen",
       "fileAdded": "Één bestand toegevoegd aan de schets.",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Foutopsporing - {0}",
       "debuggingNotSupported": "Foutopsporing wordt niet ondersteund door '{0}'",
       "noPlatformInstalledFor": "Platform is niet geïnstalleerd voor '{0}'",
-      "optimizeForDebugging": "Optimaliseren voor foutopsporing"
+      "optimizeForDebugging": "Optimaliseren voor foutopsporing",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "Niet meer vragen"
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Kan geen verbinding maken met websocket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Netwerk",
@@ -352,6 +361,7 @@
       "manualProxy": "Manuele proxy configuratie",
       "network": "Netwerk",
       "newSketchbookLocation": "Selecteer een nieuwe schetsboeklocatie.",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Geen proxy",
       "proxySettings": {
         "hostname": "Host name",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "De bestaande versie van {0} vervangen?",
     "selectZip": "Selecteer een zipbestand met de bibliotheek die U wilt toevoegen",
@@ -398,13 +411,22 @@
       "createdArchive": "Archief '{0}' gemaakt.",
       "doneCompiling": "Klaar met compileren.",
       "doneUploading": "Klaar met uploaden.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Gecompileerd binair bestand exporteren",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Verplaatsten",
       "movingMsg": "Het bestand \"{0}\" moet binnen een schetsmap met de naam \"{1}\" staan.\nMaak deze map, verplaats het bestand, en ga verder?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Map Openen",
       "openRecent": "Recentelijk geopend",
       "openSketchInNewWindow": "Schets openen in nieuw venster",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Sla de schets map op als...",
       "saveSketch": "Bewaar je schets om hem later weer te openen.",
       "saveSketchAs": "Sla de schetsmap op als...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Verifiëren/Compileren"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "Annuleer",
       "enterField": "Ga naar {0}",
       "upload": "Uploaden"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Uitvouwen"
     },
     "workspace": {
-      "deleteCurrentSketch": "Wilt u de huidige schets verwijderen?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Naam voor nieuw bestand",
       "invalidExtension": ".{0} is geen geldige extensie",
-      "invalidFilename": "Ongeldige bestandsnaam.",
       "newFileName": "Nieuwe naam voor bestand"
     }
   }

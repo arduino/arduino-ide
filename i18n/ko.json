@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "버전: {0}\n날짜: {1}{2}\nCLI 버전: {3}{4} [{5}]\n\n{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "프로그램 정보 {0}"
     },
     "board": {
@@ -15,14 +15,15 @@
       "disconnected": "연결해제됨",
       "getBoardInfo": "보드정보 얻기",
       "inSketchbook": "(스케치북에서)",
-      "installNow": "\"1{0} 2{1}\"버전은 최근에 선택된 \"{2}\"보드를 설치해야 합니다. 지금 설치하시겠습니까?",
+      "installNow": "\"{0} {1}\"버전은 최근에 선택된 \"{2}\"보드를 설치해야 합니다. 지금 설치하시겠습니까?",
       "noBoardsFound": "\"{0}\"에 대한 보드를 찾을 수 없습니다.",
       "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "포트를 찾을 수 없습니다.",
       "noPortsSelected": "보드에 맞는 포트가 없습니다: '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "보드가 선택되지 않았습니다.",
       "openBoardsConfig": "보드 및 포트를 선택하세요.",
-      "platformMissing": "선택한 '{0}' 보드의 플랫폼이 설치되지 않았습니다.",
       "pleasePickBoard": "선택한 포트에 연결할 보드를 선택하십시오",
       "port": "포트{0}",
       "portLabel": "포트: {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "나중에 선택",
       "searchBoard": "보드찾기",
       "selectBoard": "보드 선택",
-      "selectBoardForInfo": "보드 정보를 얻으려면 보드를 선택하십시오.",
       "selectPortForInfo": "보드 정보를 얻으려면 포트를 선택하십시오.",
       "showAllAvailablePorts": "활성화된 사용 가능한 모든 포트를 표시합니다.",
       "showAllPorts": "모든 포트 보이기",
       "succesfullyInstalledPlatform": "성공적으로 설치된 플랫폼{0}:{1}",
       "succesfullyUninstalledPlatform": "성공적으로 설치된 플랫폼 {0}:{1}",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "보드매니저",
     "boardsType": {
@@ -84,6 +85,7 @@
     "cloud": {
       "account": "계정",
       "chooseSketchVisibility": "보여질 스케치를 선택하세요",
+      "cloudSketchbook": "Cloud Sketchbook",
       "connected": "연결됨",
       "continue": "계속",
       "donePulling": "pulling 완료 ‘{0}’.",
@@ -108,10 +110,9 @@
       "pushSketch": "Push 스케치",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "원격",
-      "remoteSketchbook": "원격 스케치북",
       "share": "공유...",
       "shareSketch": "스케치 공유",
-      "showHideRemoveSketchbook": "보이기/숨기기 원격 스케치북",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "로그인",
       "signInToCloud": "아두이노 클라우드에 로그인",
       "signOut": "로그아웃",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "아두이노 클라우드를 방문하여 클라우드 스케치를 만드십시오."
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "전체",
@@ -157,6 +163,11 @@
       "uninstallMsg": "설치해제를 원하십니까 {0}?",
       "version": "버전 {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "파일 추가",
       "fileAdded": "스케치에 하나의 파일이 추가되었습니다.",
@@ -186,7 +197,8 @@
       "debugWithMessage": "디버그 - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "noPlatformInstalledFor": "'{0}'에 대한 플랫폼이 설치되어 있지 않습니다",
-      "optimizeForDebugging": "디버깅 최적화"
+      "optimizeForDebugging": "디버깅 최적화",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "다시 묻지 않음"
@@ -268,7 +280,7 @@
       "installedSuccessfully": "성공적으로 설치된 라이브러리 {0}:{1}",
       "libraryAlreadyExists": "라이브러리가 이미 존재합니다. 덮어 쓰시겠습니까? ",
       "manageLibraries": "라이브러리 관리...",
-      "namedLibraryAlreadyExists": " {0} 이라는 라이브러리 폴더이름이 이미 존재합니다. 덮어 쓰시겠습니까?",
+      "namedLibraryAlreadyExists": "{0} 이라는 라이브러리 폴더이름이 이미 존재합니다. 덮어 쓰시겠습니까?",
       "needsMultipleDependencies": "라이브러리 <b>{0}:{1}</b> 는 현재 설치되지 않은 다른 종속성이 필요합니다.",
       "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
       "overwriteExistingLibrary": "기존 라이브러리를 덮어쓰시겠습니까?",
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "웹소켓에 연결 할 수 없습니다."
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "네트워크",
@@ -352,6 +361,7 @@
       "manualProxy": "수동 프록시 구성",
       "network": "네트워크",
       "newSketchbookLocation": "새 스케치북 위치 선택",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "No proxy",
       "proxySettings": {
         "hostname": "Host name",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "{0}의 기존 버젼을 바꾸시겠습니까?",
     "selectZip": "추가하려는 라이브러리가 포함된 zip 파일을 선택하세요.",
@@ -398,13 +411,22 @@
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "컴파일 완료.",
       "doneUploading": "업로딩 완료.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "컴파일된 바이너리 내보내기",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "폴더 열기",
       "openRecent": "최근 파일 열기",
       "openSketchInNewWindow": "새 창에서 스케치 열기",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "스케치 폴더를 다른 이름으로 저장...",
       "saveSketch": "스케치를 저장하여 나중에 다시 엽니다.",
       "saveSketchAs": "스케치 폴더를 다른 이름으로 저장...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "확인/컴파일"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "취소",
       "enterField": "Enter {0}",
       "upload": "업로드"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -453,17 +486,17 @@
       "quitTitle": "정말 종료하시겠습니까?"
     },
     "editor": {
-      "unsavedTitle": "저장되지않음 – 1{0}\n "
+      "unsavedTitle": "저장되지않음 – {0}"
     },
     "messages": {
       "collapse": "Collapse",
       "expand": "Expand"
     },
     "workspace": {
-      "deleteCurrentSketch": "현재 스케치를 삭제하겠습니까?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "새 파일의 이름",
       "invalidExtension": ".{0} 유효한 확장자가 아닙니다",
-      "invalidFilename": "잘못된 파일이름.",
       "newFileName": "New name for file"
     }
   }

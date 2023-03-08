@@ -116,7 +116,6 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   protected hoveredNodeId: string | undefined;
   protected setHoverNodeId(id: string | undefined): void {
     this.hoveredNodeId = id;
-    this.update();
   }
 
   protected override createNodeAttributes(

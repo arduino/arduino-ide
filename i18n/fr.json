@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Version: {0}Date: {1}{2} Version CLI: {3}{4} [{5}]{6}",
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "A propos de {0}"
     },
     "board": {
@@ -18,11 +18,12 @@
       "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
       "noBoardsFound": "No boards found for \"{0}\"",
       "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
       "noPortsSelected": "Aucun porte sélectionné pour la carte : '{0}'",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
       "noneSelected": "Aucune carte sélectionnée.",
       "openBoardsConfig": "Sélectionner une autre carte et un autre port ...",
-      "platformMissing": "La plateforme pour la carte '{0}' sélectionnée n'est pas installée.",
       "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
       "port": "Port{0}",
       "portLabel": "Port : {0}",
@@ -31,13 +32,13 @@
       "reselectLater": "Re-sélectionner plus tard",
       "searchBoard": "Search board",
       "selectBoard": "Selectionner une carte",
-      "selectBoardForInfo": "Merci de choisir une carte pour obtenir ses informations.",
       "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
       "showAllAvailablePorts": "Affiche les ports disponibles quand activer.",
       "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Plateforme installé avec succès {0}:{1}",
       "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}",
-      "typeOfPorts": "{0} ports"
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
     },
     "boardsManager": "Gestionnaire de carte",
     "boardsType": {
@@ -84,9 +85,10 @@
     "cloud": {
       "account": "Compte",
       "chooseSketchVisibility": "Choisissez la visibilité du croquis :",
+      "cloudSketchbook": "Carnet de Croquis Cloud",
       "connected": "Connecté",
       "continue": "Continuer",
-      "donePulling": "Récupération de  '{0}' terminée.",
+      "donePulling": "Récupération de '{0}' terminée.",
       "donePushing": "Téléchargement terminé pour '{0}'",
       "embed": "Embarqué : ",
       "emptySketchbook": "Votre carnet de croquis est vide",
@@ -108,10 +110,9 @@
       "pushSketch": "Push le croquis",
       "pushSketchMsg": "Ceci est un croquis public. Avant de le publier, assurez-vous que les informations sensibles sont bien définies dans le fichier arduino_secrets.h. Vous pouvez rendre priver le croquis à partir du panneau de Partage.",
       "remote": "A distance",
-      "remoteSketchbook": "Carnet de croquis à distance",
       "share": "Partager...",
       "shareSketch": "Partager le croquis",
-      "showHideRemoveSketchbook": "Montrer / Cacher le carnet de croquis distant.",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
       "signIn": "Se connecter",
       "signInToCloud": "Se connecter à Arduino Cloud",
       "signOut": "Deconnexion",
@@ -120,9 +121,14 @@
       "visitArduinoCloud": "Visitez Arduino Cloud pour créer des croquis sut le cloud."
     },
     "cloudSketch": {
-      "creating": "Creating remote sketch '{0}'...",
-      "new": "New Remote Sketch",
-      "synchronizing": "Synchronizing sketchbook, pulling '{0}'..."
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "All",
@@ -157,6 +163,11 @@
       "uninstallMsg": "Voulez vous désinstaller {0}?",
       "version": "Version {0}"
     },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
     "contributions": {
       "addFile": "Ajouter un fichier",
       "fileAdded": "Un fichier a été ajouté au croquis",
@@ -186,7 +197,8 @@
       "debugWithMessage": "Débogage - {0}",
       "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'",
       "noPlatformInstalledFor": "La plateforme n'est pas installée pour '{0}'",
-      "optimizeForDebugging": "Optimisé pour le déboggage."
+      "optimizeForDebugging": "Optimisé pour le déboggage.",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "dialog": {
       "dontAskAgain": "Ne plus demander."
@@ -305,10 +317,7 @@
       "unableToConnectToWebSocket": "Impossible de se connecter au web socket"
     },
     "newCloudSketch": {
-      "invalidSketchName": "The name must consist of basic letters, numbers, or underscores. The maximum length is 36 characters.",
-      "newSketchTitle": "Name of a new Remote Sketch",
-      "notFound": "Could not pull the remote sketch '{0}'. It does not exist.",
-      "sketchAlreadyExists": "Remote sketch '{0}' already exists."
+      "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
       "network": "Réseau",
@@ -352,6 +361,7 @@
       "manualProxy": "Configuration manuelle du proxy",
       "network": "Réseau",
       "newSketchbookLocation": "Sélectionner la localisation du nouveau croquis.",
+      "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Aucun proxy",
       "proxySettings": {
         "hostname": "Host name",
@@ -374,6 +384,9 @@
       "window.zoomLevel": {
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
     },
     "replaceMsg": "Remplacer la version existante de {0} ?",
     "selectZip": "Sélectionnez un fichier zip contenant la bibliothèque que vous souhaitez ajouter",
@@ -398,13 +411,22 @@
       "createdArchive": "Archive créer '{0}'",
       "doneCompiling": "Compilation terminée.",
       "doneUploading": "Téléversement fait.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Exporter les binaires compilés",
+      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Déplacement",
       "movingMsg": "Le fichier \"{0}\" à besoin d'être à l'intérieur d'un dossier de croquis appelé \"{1}\".\nCréer ce dossier, déplacer le fichier et continuer ?",
       "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Ouvrir le dossier",
       "openRecent": "Ouvrir les récents",
       "openSketchInNewWindow": "Ouvrir le croquis dans une nouvelle fenêtre",
+      "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Sauvegarder le dossier de croquis en tant que ...",
       "saveSketch": "Enregistrer son programme pour le rouvrir plus tard.",
       "saveSketchAs": "Sauvegarder un dossier de croquis comme ...",
@@ -421,7 +443,7 @@
       "verifyOrCompile": "Vérifier / Compiler"
     },
     "sketchbook": {
-      "newRemoteSketch": "New Remote Sketch",
+      "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -441,6 +463,17 @@
       "cancel": "Annuler",
       "enterField": "Enter {0}",
       "upload": "Téléverser"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
     }
   },
   "theia": {
@@ -460,10 +493,10 @@
       "expand": "Replier"
     },
     "workspace": {
-      "deleteCurrentSketch": "Voulez-vous supprimer le croquis en cours ?",
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Nouveau nom pour le fichier",
       "invalidExtension": "« .{0} » n''est pas une extension valide.",
-      "invalidFilename": "Nom de fichier non valide",
       "newFileName": "Nouveau nom pour le fichier"
     }
   }

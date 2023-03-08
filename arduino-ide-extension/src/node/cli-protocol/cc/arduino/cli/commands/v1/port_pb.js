@@ -73,7 +73,8 @@ proto.cc.arduino.cli.commands.v1.Port.toObject = function(includeInstance, msg) 
     label: jspb.Message.getFieldWithDefault(msg, 2, ""),
     protocol: jspb.Message.getFieldWithDefault(msg, 3, ""),
     protocolLabel: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    propertiesMap: (f = msg.getPropertiesMap()) ? f.toObject(includeInstance, undefined) : []
+    propertiesMap: (f = msg.getPropertiesMap()) ? f.toObject(includeInstance, undefined) : [],
+    hardwareId: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -131,6 +132,10 @@ proto.cc.arduino.cli.commands.v1.Port.deserializeBinaryFromReader = function(msg
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setHardwareId(value);
       break;
     default:
       reader.skipField();
@@ -192,6 +197,13 @@ proto.cc.arduino.cli.commands.v1.Port.serializeBinaryToWriter = function(message
   f = message.getPropertiesMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getHardwareId();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
   }
 };
 
@@ -288,6 +300,24 @@ proto.cc.arduino.cli.commands.v1.Port.prototype.getPropertiesMap = function(opt_
 proto.cc.arduino.cli.commands.v1.Port.prototype.clearPropertiesMap = function() {
   this.getPropertiesMap().clear();
   return this;};
+
+
+/**
+ * optional string hardware_id = 6;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.Port.prototype.getHardwareId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.Port} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Port.prototype.setHardwareId = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
+};
 
 
 goog.object.extend(exports, proto.cc.arduino.cli.commands.v1);
