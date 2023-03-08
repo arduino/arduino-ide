@@ -29,6 +29,16 @@ export class DecodeOutput extends React.Component<
       elements: [],
     };
   }
+  
+  // If a string of <digit>.<digit>.<digit> or <digit>.<digit> is found, replaces it with "*"
+  changeVersionToAny = (path: string) => {
+    const regex = new RegExp(/(\d\.\d\.\d)|(\d\.\d)/g);
+    const found = path.match(regex);
+    if(found) {
+      return path.replace(found[0], "*")
+    }
+    return path
+  }
 
   isClientPath = async (path:string): Promise<boolean> => {
     return await spawnCommand("cd", [
@@ -60,6 +70,7 @@ export class DecodeOutput extends React.Component<
         line.shift();
       }
       let pathSplit = line[3].split(":");
+      pathSplit[0] = this.changeVersionToAny(pathSplit[0]);
       let obj: Element = {
         address: line[0],
         function: line[1],
