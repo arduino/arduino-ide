@@ -43,6 +43,7 @@ import {
   firstToUpperCase,
   startsWithUpperCase,
 } from '../common/utils';
+import { SettingsReader } from './settings-reader';
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -85,6 +86,9 @@ export class SketchesServiceImpl
 
   @inject(IsTempSketch)
   private readonly isTempSketch: IsTempSketch;
+
+  @inject(SettingsReader)
+  private readonly settingsReader: SettingsReader;
 
   async getSketches({ uri }: { uri?: string }): Promise<SketchContainer> {
     const root = await this.root(uri);
@@ -632,37 +636,10 @@ export class SketchesServiceImpl
   }
 
   // Returns the default.ino from the settings or from default folder.
-  private async readSettings(): Promise<Record<string, unknown> | undefined> {
-    const configDirUri = await this.envVariableServer.getConfigDirUri();
-    const configDirPath = FileUri.fsPath(configDirUri);
-
-    try {
-      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
-        encoding: 'utf8',
-      });
-
-      return this.tryParse(raw);
-    } catch (err) {
-      if (ErrnoException.isENOENT(err)) {
-        return undefined;
-      }
-      throw err;
-    }
-  }
-
-  private tryParse(raw: string): Record<string, unknown> | undefined {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return undefined;
-    }
-  }
-
-  // Returns the default.ino from the settings or from default folder.
   private async loadInoContent(): Promise<string> {
     if (!this.inoContent) {
       this.inoContent = new Deferred<string>();
-      const settings = await this.readSettings();
+      const settings = await this.settingsReader.read();
       if (settings) {
         const inoBlueprintPath = settings['arduino.sketch.inoBlueprint'];
         if (inoBlueprintPath && typeof inoBlueprintPath === 'string') {

@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { promises as fs } from 'fs';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { spawn, ChildProcess } from 'child_process';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -16,7 +15,7 @@ import { BackendApplicationContribution } from '@theia/core/lib/node/backend-app
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath } from './exec-util';
-import { ErrnoException } from './utils/errors';
+import { SettingsReader } from './settings-reader';
 
 @injectable()
 export class ArduinoDaemonImpl
@@ -31,6 +30,9 @@ export class ArduinoDaemonImpl
 
   @inject(NotificationServiceServer)
   private readonly notificationService: NotificationServiceServer;
+
+  @inject(SettingsReader)
+  private readonly settingsReader: SettingsReader;
 
   private readonly toDispose = new DisposableCollection();
   private readonly onDaemonStartedEmitter = new Emitter<string>();
@@ -149,34 +151,12 @@ export class ArduinoDaemonImpl
   }
 
   private async debugDaemon(): Promise<boolean> {
-    // Poor man's preferences on the backend. (https://github.com/arduino/arduino-ide/issues/1056#issuecomment-1153975064)
-    const configDirUri = await this.envVariablesServer.getConfigDirUri();
-    const configDirPath = FileUri.fsPath(configDirUri);
-    try {
-      const raw = await fs.readFile(join(configDirPath, 'settings.json'), {
-        encoding: 'utf8',
-      });
-      const json = this.tryParse(raw);
-      if (json) {
-        const value = json['arduino.cli.daemon.debug'];
-        return typeof value === 'boolean' && !!value;
-      }
-      return false;
-    } catch (error) {
-      if (ErrnoException.isENOENT(error)) {
-        return false;
-      }
-      throw error;
+    const settings = await this.settingsReader.read();
+    if (settings) {
+      const value = settings['arduino.cli.daemon.debug'];
+      return value === true;
     }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private tryParse(raw: string): any | undefined {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return undefined;
-    }
+    return false;
   }
 
   protected async spawnDaemonProcess(): Promise<{
