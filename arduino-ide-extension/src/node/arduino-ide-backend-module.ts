@@ -118,6 +118,7 @@ import {
   LocalDirectoryPluginDeployerResolverWithFallback,
   PluginDeployer_GH_12064,
 } from './theia/plugin-ext/plugin-deployer';
+import { SettingsReader } from './settings-reader';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -403,6 +404,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .toSelf()
     .inSingletonScope();
   rebind(PluginDeployer).to(PluginDeployer_GH_12064).inSingletonScope();
+
+  bind(SettingsReader).toSelf().inSingletonScope();
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {

@@ -51,6 +51,7 @@ import {
   MonitorServiceFactory,
   MonitorServiceFactoryOptions,
 } from '../../node/monitor-service-factory';
+import { SettingsReader } from '../../node/settings-reader';
 import { SketchesServiceImpl } from '../../node/sketches-service-impl';
 import { EnvVariablesServer } from '../../node/theia/env-variables/env-variables-server';
 
@@ -277,6 +278,7 @@ export function createBaseContainer(
     bind(IsTempSketch).toSelf().inSingletonScope();
     bind(SketchesServiceImpl).toSelf().inSingletonScope();
     bind(SketchesService).toService(SketchesServiceImpl);
+    bind(SettingsReader).toSelf().inSingletonScope();
     if (containerCustomizations) {
       containerCustomizations(bind, rebind);
     }
