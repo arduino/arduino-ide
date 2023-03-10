@@ -406,6 +406,9 @@ export class LibrarySearchRequest extends jspb.Message {
     getQuery(): string;
     setQuery(value: string): LibrarySearchRequest;
 
+    getOmitReleasesDetails(): boolean;
+    setOmitReleasesDetails(value: boolean): LibrarySearchRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibrarySearchRequest.AsObject;
@@ -421,6 +424,7 @@ export namespace LibrarySearchRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         query: string,
+        omitReleasesDetails: boolean,
     }
 }
 
@@ -465,6 +469,11 @@ export class SearchedLibrary extends jspb.Message {
     getLatest(): LibraryRelease | undefined;
     setLatest(value?: LibraryRelease): SearchedLibrary;
 
+    clearAvailableVersionsList(): void;
+    getAvailableVersionsList(): Array<string>;
+    setAvailableVersionsList(value: Array<string>): SearchedLibrary;
+    addAvailableVersions(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SearchedLibrary.AsObject;
@@ -482,6 +491,7 @@ export namespace SearchedLibrary {
 
         releasesMap: Array<[string, LibraryRelease.AsObject]>,
         latest?: LibraryRelease.AsObject,
+        availableVersionsList: Array<string>,
     }
 }
 

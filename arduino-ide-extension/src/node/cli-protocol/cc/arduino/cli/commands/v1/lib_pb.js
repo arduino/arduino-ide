@@ -374,7 +374,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.cc.arduino.cli.commands.v1.SearchedLibrary = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.SearchedLibrary.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.SearchedLibrary, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -3202,7 +3202,8 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.toObject = funct
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-    query: jspb.Message.getFieldWithDefault(msg, 2, "")
+    query: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    omitReleasesDetails: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -3248,6 +3249,10 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.deserializeBinaryFromReade
       var value = /** @type {string} */ (reader.readString());
       msg.setQuery(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOmitReleasesDetails(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3289,6 +3294,13 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.serializeBinaryToWriter = 
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getOmitReleasesDetails();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -3347,6 +3359,24 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getQuery = funct
  */
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setQuery = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional bool omit_releases_details = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getOmitReleasesDetails = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.LibrarySearchRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setOmitReleasesDetails = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
@@ -3541,6 +3571,13 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchResponse.prototype.setStatus = fun
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.cc.arduino.cli.commands.v1.SearchedLibrary.repeatedFields_ = [4];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -3574,7 +3611,8 @@ proto.cc.arduino.cli.commands.v1.SearchedLibrary.toObject = function(includeInst
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
     releasesMap: (f = msg.getReleasesMap()) ? f.toObject(includeInstance, proto.cc.arduino.cli.commands.v1.LibraryRelease.toObject) : [],
-    latest: (f = msg.getLatest()) && proto.cc.arduino.cli.commands.v1.LibraryRelease.toObject(includeInstance, f)
+    latest: (f = msg.getLatest()) && proto.cc.arduino.cli.commands.v1.LibraryRelease.toObject(includeInstance, f),
+    availableVersionsList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -3626,6 +3664,10 @@ proto.cc.arduino.cli.commands.v1.SearchedLibrary.deserializeBinaryFromReader = f
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.LibraryRelease.deserializeBinaryFromReader);
       msg.setLatest(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addAvailableVersions(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3672,6 +3714,13 @@ proto.cc.arduino.cli.commands.v1.SearchedLibrary.serializeBinaryToWriter = funct
       3,
       f,
       proto.cc.arduino.cli.commands.v1.LibraryRelease.serializeBinaryToWriter
+    );
+  }
+  f = message.getAvailableVersionsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      4,
+      f
     );
   }
 };
@@ -3751,6 +3800,43 @@ proto.cc.arduino.cli.commands.v1.SearchedLibrary.prototype.clearLatest = functio
  */
 proto.cc.arduino.cli.commands.v1.SearchedLibrary.prototype.hasLatest = function() {
   return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * repeated string available_versions = 4;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.SearchedLibrary.prototype.getAvailableVersionsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 4));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.SearchedLibrary} returns this
+ */
+proto.cc.arduino.cli.commands.v1.SearchedLibrary.prototype.setAvailableVersionsList = function(value) {
+  return jspb.Message.setField(this, 4, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.SearchedLibrary} returns this
+ */
+proto.cc.arduino.cli.commands.v1.SearchedLibrary.prototype.addAvailableVersions = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 4, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.SearchedLibrary} returns this
+ */
+proto.cc.arduino.cli.commands.v1.SearchedLibrary.prototype.clearAvailableVersionsList = function() {
+  return this.setAvailableVersionsList([]);
 };
 
 
