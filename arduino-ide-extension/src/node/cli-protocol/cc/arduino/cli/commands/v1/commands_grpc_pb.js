@@ -1333,5 +1333,3 @@ enumerateMonitorPortSettings: {
   },
 };
 
-// BOOTSTRAP COMMANDS
-// -------------------

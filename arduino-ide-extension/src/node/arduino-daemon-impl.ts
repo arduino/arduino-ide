@@ -136,8 +136,6 @@ export class ArduinoDaemonImpl
     const cliConfigPath = join(FileUri.fsPath(configDirUri), CLI_CONFIG);
     const args = [
       'daemon',
-      '--format',
-      'jsonmini',
       '--port',
       '0',
       '--config-file',
@@ -177,26 +175,6 @@ export class ArduinoDaemonImpl
 
     daemon.stdout.on('data', (data) => {
       const message = data.toString();
-
-      let port = '';
-      let address = '';
-      message
-        .split('\n')
-        .filter((line: string) => line.length)
-        .forEach((line: string) => {
-          try {
-            const parsedLine = JSON.parse(line);
-            if ('Port' in parsedLine) {
-              port = parsedLine.Port;
-            }
-            if ('IP' in parsedLine) {
-              address = parsedLine.IP;
-            }
-          } catch (err) {
-            // ignore
-          }
-        });
-
       this.onData(message);
       if (!grpcServerIsReady) {
         const error = DaemonError.parse(message);
@@ -204,6 +182,25 @@ export class ArduinoDaemonImpl
           ready.reject(error);
           return;
         }
+
+        let port = '';
+        let address = '';
+        message
+          .split('\n')
+          .filter((line: string) => line.length)
+          .forEach((line: string) => {
+            try {
+              const parsedLine = JSON.parse(line);
+              if ('Port' in parsedLine) {
+                port = parsedLine.Port;
+              }
+              if ('IP' in parsedLine) {
+                address = parsedLine.IP;
+              }
+            } catch (err) {
+              // ignore
+            }
+          });
 
         if (port.length && address.length) {
           grpcServerIsReady = true;

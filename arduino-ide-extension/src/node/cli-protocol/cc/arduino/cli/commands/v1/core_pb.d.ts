@@ -82,6 +82,23 @@ export namespace PlatformInstallResponse {
     }
 }
 
+export class PlatformLoadingError extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformLoadingError.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformLoadingError): PlatformLoadingError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformLoadingError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformLoadingError;
+    static deserializeBinaryFromReader(message: PlatformLoadingError, reader: jspb.BinaryReader): PlatformLoadingError;
+}
+
+export namespace PlatformLoadingError {
+    export type AsObject = {
+    }
+}
+
 export class PlatformDownloadRequest extends jspb.Message { 
 
     hasInstance(): boolean;
