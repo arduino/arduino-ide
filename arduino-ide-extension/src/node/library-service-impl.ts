@@ -79,6 +79,7 @@ export class LibraryServiceImpl
     const req = new LibrarySearchRequest();
     req.setQuery(options.query || '');
     req.setInstance(instance);
+    req.setOmitReleasesDetails(true);
     const resp = await new Promise<LibrarySearchResponse>((resolve, reject) =>
       client.librarySearch(req, (err, resp) =>
         !!err ? reject(err) : resolve(resp)
@@ -88,11 +89,8 @@ export class LibraryServiceImpl
       .getLibrariesList()
       .filter((item) => !!item.getLatest())
       .map((item) => {
-        // TODO: This seems to contain only the latest item instead of all of the items.
         const availableVersions = item
-          .getReleasesMap()
-          .getEntryList()
-          .map(([key, _]) => key)
+          .getAvailableVersionsList()
           .sort(Installable.Version.COMPARATOR)
           .reverse();
         let installedVersion: string | undefined;
