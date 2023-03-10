@@ -172,6 +172,31 @@ export namespace InitResponse {
 
 }
 
+export class FailedInstanceInitError extends jspb.Message { 
+    getReason(): FailedInstanceInitReason;
+    setReason(value: FailedInstanceInitReason): FailedInstanceInitError;
+
+    getMessage(): string;
+    setMessage(value: string): FailedInstanceInitError;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): FailedInstanceInitError.AsObject;
+    static toObject(includeInstance: boolean, msg: FailedInstanceInitError): FailedInstanceInitError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: FailedInstanceInitError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): FailedInstanceInitError;
+    static deserializeBinaryFromReader(message: FailedInstanceInitError, reader: jspb.BinaryReader): FailedInstanceInitError;
+}
+
+export namespace FailedInstanceInitError {
+    export type AsObject = {
+        reason: FailedInstanceInitReason,
+        message: string,
+    }
+}
+
 export class DestroyRequest extends jspb.Message { 
 
     hasInstance(): boolean;
@@ -527,4 +552,11 @@ export class ArchiveSketchResponse extends jspb.Message {
 export namespace ArchiveSketchResponse {
     export type AsObject = {
     }
+}
+
+export enum FailedInstanceInitReason {
+    FAILED_INSTANCE_INIT_REASON_UNSPECIFIED = 0,
+    FAILED_INSTANCE_INIT_REASON_INVALID_INDEX_URL = 1,
+    FAILED_INSTANCE_INIT_REASON_INDEX_LOAD_ERROR = 2,
+    FAILED_INSTANCE_INIT_REASON_TOOL_LOAD_ERROR = 3,
 }
