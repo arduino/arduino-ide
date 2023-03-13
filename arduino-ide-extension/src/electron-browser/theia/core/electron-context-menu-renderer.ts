@@ -1,4 +1,3 @@
-import { webFrame } from '@theia/core/electron-shared/electron/';
 import {
   ContextMenuAccess,
   coordinateFromAnchor,
@@ -16,28 +15,24 @@ export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRendere
     options: RenderContextMenuOptions
   ): ContextMenuAccess {
     if (this.useNativeStyle) {
-      const { menuPath, anchor, args, onHide, context } = options;
+      const { menuPath, anchor, args, onHide, context, contextKeyService } =
+        options;
       const menu = this['electronMenuFactory'].createElectronContextMenu(
         menuPath,
         args,
         context,
+        contextKeyService,
         this.showDisabled(options)
       );
       const { x, y } = coordinateFromAnchor(anchor);
-      const zoom = webFrame.getZoomFactor();
-      // TODO: Remove the offset once Electron fixes https://github.com/electron/electron/issues/31641
-      const offset = process.platform === 'win32' ? 0 : 2;
-      // x and y values must be Ints or else there is a conversion error
-      menu.popup({
-        x: Math.round(x * zoom) + offset,
-        y: Math.round(y * zoom) + offset,
+      const menuHandle = window.electronTheiaCore.popup(menu, x, y, () => {
+        if (onHide) {
+          onHide();
+        }
       });
       // native context menu stops the event loop, so there is no keyboard events
       this.context.resetAltPressed();
-      if (onHide) {
-        menu.once('menu-will-close', () => onHide());
-      }
-      return new ElectronContextMenuAccess(menu);
+      return new ElectronContextMenuAccess(menuHandle);
     } else {
       return super.doRender(options);
     }

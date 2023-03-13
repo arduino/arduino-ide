@@ -3,7 +3,7 @@ import {
   LocalizationRegistry,
 } from '@theia/core/lib/node/i18n/localization-contribution';
 import { injectable } from '@theia/core/shared/inversify';
-import { join } from 'path';
+import { join } from 'node:path';
 
 @injectable()
 export class ArduinoLocalizationContribution

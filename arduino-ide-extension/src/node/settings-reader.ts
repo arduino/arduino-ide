@@ -1,13 +1,13 @@
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import {
   parse as parseJsonc,
   ParseError,
   printParseErrorCode,
 } from 'jsonc-parser';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ErrnoException } from './utils/errors';
 
 // Poor man's preferences on the backend. (https://github.com/arduino/arduino-ide/issues/1056#issuecomment-1153975064)

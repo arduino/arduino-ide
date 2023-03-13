@@ -12,8 +12,8 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { list as listDrives } from 'drivelist';
-import { homedir } from 'os';
-import { join } from 'path';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 @injectable()
 export class ConfigDirUriProvider {

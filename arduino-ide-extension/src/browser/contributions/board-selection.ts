@@ -1,5 +1,4 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
   DisposableCollection,
@@ -65,7 +64,7 @@ VID: ${VID}
 PID: ${PID}
 SN: ${SN}
 `.trim();
-        await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+        await this.dialogService.showMessageBox({
           message: nls.localize('arduino/board/boardInfo', 'Board Info'),
           title: nls.localize('arduino/board/boardInfo', 'Board Info'),
           type: 'info',

@@ -230,10 +230,6 @@
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
     },
-    "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Any unsaved changes will not be saved."
-    },
     "examples": {
       "builtInExamples": "Built-in examples",
       "couldNotInitializeExamples": "Could not initialize built-in examples.",
@@ -428,7 +424,6 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
@@ -478,7 +473,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

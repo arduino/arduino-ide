@@ -67,6 +67,7 @@ import { WorkspaceService } from '../theia/workspace/workspace-service';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ConfigServiceClient } from '../config/config-service-client';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
+import { DialogService } from '../dialog-service';
 
 export {
   Command,
@@ -114,6 +115,9 @@ export abstract class Contribution
 
   @inject(MainMenuManager)
   protected readonly menuManager: MainMenuManager;
+
+  @inject(DialogService)
+  protected readonly dialogService: DialogService;
 
   @postConstruct()
   protected init(): void {

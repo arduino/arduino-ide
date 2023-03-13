@@ -1,9 +1,8 @@
-import * as fs from 'fs';
-// import * as net from 'net';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as temp from 'temp';
 import { expect } from 'chai';
-import { ChildProcess } from 'child_process';
+import { ChildProcess } from 'node:child_process';
 import { safeLoad, safeDump } from 'js-yaml';
 import { ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
 import { spawnCommand } from '../../node/exec-util';
@@ -20,7 +19,10 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
     // NOOP
   }
 
-  override async spawnDaemonProcess(): Promise<{ daemon: ChildProcess; port: string }> {
+  override async spawnDaemonProcess(): Promise<{
+    daemon: ChildProcess;
+    port: string;
+  }> {
     return super.spawnDaemonProcess();
   }
 

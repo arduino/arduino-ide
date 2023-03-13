@@ -6,10 +6,10 @@ import {
   ipcMain,
   Event as ElectronEvent,
 } from '@theia/core/electron-shared/electron';
-import { fork } from 'child_process';
-import { AddressInfo } from 'net';
-import { join, isAbsolute, resolve } from 'path';
-import { promises as fs, rm, rmSync } from 'fs';
+import { fork } from 'node:child_process';
+import { AddressInfo } from 'node:net';
+import { join, isAbsolute, resolve } from 'node:path';
+import { promises as fs, rm, rmSync } from 'node:fs';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
@@ -20,22 +20,22 @@ import {
 import { URI } from '@theia/core/shared/vscode-uri';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import * as os from '@theia/core/lib/common/os';
-import { Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
 import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
 import { IsTempSketch } from '../../node/is-temp-sketch';
-import {
-  CLOSE_PLOTTER_WINDOW,
-  SHOW_PLOTTER_WINDOW,
-} from '../../common/ipc-communication';
 import { ErrnoException } from '../../node/utils/errors';
 import { isAccessibleSketchPath } from '../../node/sketches-service-impl';
-import { SCHEDULE_DELETION_SIGNAL } from '../../electron-common/electron-messages';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { Sketch } from '../../common/protocol';
+import {
+  CHANNEL_PLOTTER_WINDOW_DID_CLOSE,
+  CHANNEL_SCHEDULE_DELETION,
+  CHANNEL_SHOW_PLOTTER_WINDOW,
+  isShowPlotterWindowParams,
+} from '../../electron-common/electron-arduino';
 
 app.commandLine.appendSwitch('disable-http-cache');
 
@@ -340,17 +340,73 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     app.on('will-quit', this.onWillQuit.bind(this));
     app.on('second-instance', this.onSecondInstance.bind(this));
     app.on('window-all-closed', this.onWindowAllClosed.bind(this));
-
-    ipcMain.on(Restart, ({ sender }) => {
-      this.restart(sender.id);
-    });
-    ipcMain.on(SCHEDULE_DELETION_SIGNAL, (event, sketch: unknown) => {
+    ipcMain.on(CHANNEL_SCHEDULE_DELETION, (event, sketch: unknown) => {
       if (Sketch.is(sketch)) {
         console.log(`Sketch ${sketch.uri} was scheduled for deletion`);
         // TODO: remove deleted sketch from closedWorkspaces?
         this.delete(sketch);
       }
     });
+    ipcMain.on(CHANNEL_SHOW_PLOTTER_WINDOW, (event, args) =>
+      this.handleShowPlotterWindow(event, args)
+    );
+  }
+
+  // keys are the host window IDs
+  private readonly plotterWindows = new Map<number, BrowserWindow>();
+  private handleShowPlotterWindow(
+    event: Electron.IpcMainEvent,
+    args: unknown
+  ): void {
+    if (!isShowPlotterWindowParams(args)) {
+      console.warn(
+        `Received unexpected params on the '${CHANNEL_SHOW_PLOTTER_WINDOW}' channel. Sender ID: ${
+          event.sender.id
+        }, params: ${JSON.stringify(args)}`
+      );
+      return;
+    }
+    const electronWindow = BrowserWindow.fromWebContents(event.sender);
+    if (!electronWindow) {
+      console.warn(
+        `Could not find the host window of event received on the '${CHANNEL_SHOW_PLOTTER_WINDOW}' channel. Sender ID: ${
+          event.sender.id
+        }, params: ${JSON.stringify(args)}`
+      );
+      return;
+    }
+
+    const windowId = electronWindow.id;
+    let plotterWindow = this.plotterWindows.get(windowId);
+    if (plotterWindow) {
+      if (!args.forceReload) {
+        plotterWindow.focus();
+      } else {
+        plotterWindow.loadURL(args.url);
+      }
+      return;
+    }
+
+    plotterWindow = new BrowserWindow({
+      width: 800,
+      minWidth: 620,
+      height: 500,
+      minHeight: 320,
+      x: 100,
+      y: 100,
+      webPreferences: <Electron.WebPreferences>{
+        devTools: true,
+        nativeWindowOpen: true,
+        openerId: electronWindow.webContents.id,
+      },
+    });
+    this.plotterWindows.set(windowId, plotterWindow);
+    plotterWindow.setMenu(null);
+    plotterWindow.on('closed', () => {
+      this.plotterWindows.delete(windowId);
+      electronWindow.webContents.send(CHANNEL_PLOTTER_WINDOW_DID_CLOSE);
+    });
+    plotterWindow.loadURL(args.url);
   }
 
   protected override async onSecondInstance(
@@ -391,40 +447,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   private attachListenersToWindow(electronWindow: BrowserWindow) {
-    electronWindow.webContents.on(
-      'new-window',
-      (event, url, frameName, disposition, options) => {
-        if (frameName === 'serialPlotter') {
-          event.preventDefault();
-          Object.assign(options, {
-            width: 800,
-            minWidth: 620,
-            height: 500,
-            minHeight: 320,
-            x: 100,
-            y: 100,
-            webPreferences: {
-              devTools: true,
-              nativeWindowOpen: true,
-              openerId: electronWindow.webContents.id,
-            },
-          });
-          event.newGuest = new BrowserWindow(options);
-
-          const showPlotterWindow = () => {
-            event.newGuest?.show();
-          };
-          ipcMain.on(SHOW_PLOTTER_WINDOW, showPlotterWindow);
-          event.newGuest.setMenu(null);
-          event.newGuest.on('closed', () => {
-            ipcMain.removeListener(SHOW_PLOTTER_WINDOW, showPlotterWindow);
-            electronWindow.webContents.send(CLOSE_PLOTTER_WINDOW);
-          });
-          event.newGuest.loadURL(url);
-        }
-      }
-    );
     this.attachClosedWorkspace(electronWindow);
+    this.attachClosePlotterWindow(electronWindow);
   }
 
   protected override async startBackend(): Promise<number> {
@@ -525,6 +549,13 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     });
   }
 
+  private attachClosePlotterWindow(window: BrowserWindow): void {
+    window.on('close', () => {
+      this.plotterWindows.get(window.id)?.close();
+      this.plotterWindows.delete(window.id);
+    });
+  }
+
   protected override onWillQuit(event: Electron.Event): void {
     // Only add workspaces which were closed within the last second (1000 milliseconds)
     const threshold = Date.now() - 1000;
@@ -563,6 +594,16 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       console.log('No sketches were scheduled for deletion.');
     }
 
+    if (this.plotterWindows.size) {
+      for (const [
+        hostWindowId,
+        plotterWindow,
+      ] of this.plotterWindows.entries()) {
+        plotterWindow.close();
+        this.plotterWindows.delete(hostWindowId);
+      }
+    }
+
     super.onWillQuit(event);
   }
 
@@ -572,6 +613,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
   get firstWindowId(): number | undefined {
     return this._firstWindowId;
+  }
+
+  get appVersion(): string {
+    return app.getVersion();
   }
 
   private async delete(sketch: Sketch): Promise<void> {

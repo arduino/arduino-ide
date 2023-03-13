@@ -3,7 +3,7 @@ import {
   longestPrefixMatch,
   reconcileSettings,
 } from '../../node/monitor-settings/monitor-settings-utils';
-import { PluggableMonitorSettings } from '../../node/monitor-settings/monitor-settings-provider';
+import { PluggableMonitorSettings } from '../../common/protocol';
 
 type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> };
 

@@ -72,6 +72,14 @@ const cortexDebugFilter: PluginContributionFilter = (
       }
     }
   }
+  if (contribution.commands) {
+    for (const command of contribution.commands) {
+      if (command.command === 'cortex-debug.resetDevice') {
+        // TODO: fix loading of original SVG icon in Theia
+        delete command.iconUrl;
+      }
+    }
+  }
   return contribution;
 };
 

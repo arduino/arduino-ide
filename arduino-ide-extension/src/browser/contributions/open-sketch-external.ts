@@ -1,5 +1,4 @@
 import { injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
@@ -9,7 +8,7 @@ import {
   MenuModelRegistry,
   KeybindingRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export class OpenSketchExternal extends SketchContribution {
@@ -41,7 +40,7 @@ export class OpenSketchExternal extends SketchContribution {
       if (exists) {
         const fsPath = await this.fileService.fsPath(new URI(uri));
         if (fsPath) {
-          remote.shell.showItemInFolder(fsPath);
+          window.electronTheiaCore.showItemInFolder(fsPath);
         }
       }
     }

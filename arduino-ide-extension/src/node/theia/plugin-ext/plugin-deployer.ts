@@ -10,8 +10,8 @@ import {
 } from '@theia/plugin-ext/lib/common/plugin-protocol';
 import { PluginDeployerImpl } from '@theia/plugin-ext/lib/main/node/plugin-deployer-impl';
 import { LocalDirectoryPluginDeployerResolver } from '@theia/plugin-ext/lib/main/node/resolvers/local-directory-plugin-deployer-resolver';
-import { constants, promises as fs } from 'fs';
-import { isAbsolute, resolve } from 'path';
+import { constants, promises as fs } from 'node:fs';
+import { isAbsolute, resolve } from 'node:path';
 
 @injectable()
 export class LocalDirectoryPluginDeployerResolverWithFallback extends LocalDirectoryPluginDeployerResolver {

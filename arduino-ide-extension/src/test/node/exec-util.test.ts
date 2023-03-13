@@ -1,4 +1,4 @@
-import * as os from 'os';
+import * as os from 'node:os';
 import { expect, use } from 'chai';
 import { getExecPath } from '../../node/exec-util';
 

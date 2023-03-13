@@ -1,4 +1,3 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { Dialog } from '@theia/core/lib/browser/dialogs';
 import { NavigatableWidget } from '@theia/core/lib/browser/navigatable';
 import { Saveable } from '@theia/core/lib/browser/saveable';
@@ -8,7 +7,7 @@ import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WorkspaceInput } from '@theia/workspace/lib/browser/workspace-service';
-import { StartupTask } from '../../electron-common/startup-task';
+import { StartupTasks } from '../../electron-common/startup-task';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { CloudSketchContribution } from './cloud-contribution';
@@ -95,7 +94,7 @@ export class SaveAsSketch extends CloudSketchContribution {
     if (markAsRecentlyOpened) {
       this.sketchesService.markAsRecentlyOpened(newWorkspaceUri);
     }
-    const options: WorkspaceInput & StartupTask.Owner = {
+    const options: WorkspaceInput & StartupTasks = {
       preserveWindow: true,
       tasks: [],
     };
@@ -165,16 +164,13 @@ export class SaveAsSketch extends CloudSketchContribution {
   ): Promise<string | undefined> {
     let sketchFolderDestinationUri: string | undefined;
     while (!sketchFolderDestinationUri) {
-      const { filePath } = await remote.dialog.showSaveDialog(
-        remote.getCurrentWindow(),
-        {
-          title: nls.localize(
-            'arduino/sketch/saveFolderAs',
-            'Save sketch folder as...'
-          ),
-          defaultPath,
-        }
-      );
+      const { filePath } = await this.dialogService.showSaveDialog({
+        title: nls.localize(
+          'arduino/sketch/saveFolderAs',
+          'Save sketch folder as...'
+        ),
+        defaultPath,
+      });
       if (!filePath) {
         return undefined;
       }
@@ -225,13 +221,10 @@ ${dialogContent.details}
 
 ${dialogContent.question}`.trim();
         defaultPath = filePath;
-        const { response } = await remote.dialog.showMessageBox(
-          remote.getCurrentWindow(),
-          {
-            message,
-            buttons: [Dialog.CANCEL, Dialog.YES],
-          }
-        );
+        const { response } = await this.dialogService.showMessageBox({
+          message,
+          buttons: [Dialog.CANCEL, Dialog.YES],
+        });
         // cancel
         if (response === 0) {
           return undefined;

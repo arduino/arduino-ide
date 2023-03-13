@@ -1,15 +1,8 @@
-import { AuthenticationSession } from '../../common/protocol/authentication-service';
+import {
+  AuthOptions,
+  AuthenticationSession,
+} from '../../common/protocol/authentication-service';
 export { AuthenticationSession };
-
-export type AuthOptions = {
-  redirectUri: string;
-  responseType: string;
-  clientID: string;
-  domain: string;
-  audience: string;
-  registerUri: string;
-  scopes: string[];
-};
 
 export interface AuthenticationProviderAuthenticationSessionsChangeEvent {
   readonly added?: ReadonlyArray<AuthenticationSession>;

@@ -2,13 +2,11 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   MonitorManagerProxy,
   MonitorManagerProxyClient,
+  MonitorSettings,
+  PluggableMonitorSettings,
 } from '../common/protocol';
 import { Board, Port } from '../common/protocol';
 import { MonitorManager } from './monitor-manager';
-import {
-  MonitorSettings,
-  PluggableMonitorSettings,
-} from './monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorManagerProxyImpl implements MonitorManagerProxy {

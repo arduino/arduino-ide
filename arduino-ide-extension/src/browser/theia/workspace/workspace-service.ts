@@ -15,8 +15,9 @@ import {
   SketchesService,
 } from '../../../common/protocol/sketches-service';
 import {
-  StartupTask,
   StartupTaskProvider,
+  hasStartupTasks,
+  StartupTask,
 } from '../../../electron-common/startup-task';
 import { WindowServiceExt } from '../core/window-service-ext';
 
@@ -128,7 +129,7 @@ export class WorkspaceService extends TheiaWorkspaceService {
       .getContributions()
       .map((contribution) => contribution.tasks())
       .reduce((prev, curr) => prev.concat(curr), []);
-    if (StartupTask.has(options)) {
+    if (hasStartupTasks(options)) {
       tasks.push(...options.tasks);
     }
     return tasks;

@@ -1,4 +1,4 @@
-import debounce = require('p-debounce');
+import debounce from 'p-debounce';
 import {
   inject,
   injectable,

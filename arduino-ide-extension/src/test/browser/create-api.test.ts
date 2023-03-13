@@ -5,7 +5,7 @@ import {
 } from '@theia/core/shared/inversify';
 import { assert, expect } from 'chai';
 import fetch from 'cross-fetch';
-import { posix } from 'path';
+import { posix } from 'node:path';
 import { v4 } from 'uuid';
 import { ArduinoPreferences } from '../../browser/arduino-preferences';
 import { AuthenticationClientService } from '../../browser/auth/authentication-client-service';
@@ -15,7 +15,7 @@ import { Create, CreateError } from '../../browser/create/typings';
 import { SketchCache } from '../../browser/widgets/cloud-sketchbook/cloud-sketch-cache';
 import { SketchesService } from '../../common/protocol';
 import { AuthenticationSession } from '../../node/auth/types';
-import queryString = require('query-string');
+import queryString from 'query-string';
 
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -229,47 +229,6 @@ describe('create-api', () => {
     expect(findByName(otherName, sketches)).to.be.not.undefined;
   });
 
-  [
-    [-1, 1],
-    [0, 2],
-    [1, 2],
-  ].forEach(([diff, expected]) =>
-    it(`should not run unnecessary fetches when retrieving all sketches (sketch count ${
-      diff < 0 ? '<' : diff > 0 ? '>' : '='
-    } limit)`, async () => {
-      const content = 'void setup(){} void loop(){}';
-      const maxLimit = 50; // https://github.com/arduino/arduino-ide/pull/875
-      const sketchCount = maxLimit + diff;
-      const sketchNames = [...Array(sketchCount).keys()].map(() => v4());
-
-      await sketchNames
-        .map((name) => createApi.createSketch(toPosix(name), content))
-        .reduce(async (acc, curr) => {
-          await acc;
-          return curr;
-        }, Promise.resolve() as Promise<unknown>);
-
-      createApi.resetRequestRecording();
-      const sketches = await createApi.sketches();
-      const allRequests = createApi.requestRecording.slice();
-
-      expect(sketches.length).to.be.equal(sketchCount);
-      sketchNames.forEach(
-        (name) => expect(findByName(name, sketches)).to.be.not.undefined
-      );
-
-      expect(allRequests.length).to.be.equal(expected);
-      const getSketchesRequests = allRequests.filter(
-        (description) =>
-          description.method === 'GET' &&
-          description.pathname === '/create/v2/sketches' &&
-          description.query &&
-          description.query.includes(`limit=${maxLimit}`)
-      );
-      expect(getSketchesRequests.length).to.be.equal(expected);
-    })
-  );
-
   ['.', '-', '_'].map((char) => {
     it(`should create a new sketch with '${char}' in the sketch folder name although it's disallowed from the Create Editor`, async () => {
       const name = `sketch${char}`;
@@ -331,6 +290,47 @@ describe('create-api', () => {
     expect(content.includes(`#include "${Create.arduino_secrets_file}"`)).to.be
       .true;
   });
+
+  [
+    [-1, 1],
+    [0, 2],
+    [1, 2],
+  ].forEach(([diff, expected]) =>
+    it(`should not run unnecessary fetches when retrieving all sketches (sketch count ${
+      diff < 0 ? '<' : diff > 0 ? '>' : '='
+    } limit)`, async () => {
+      const content = 'void setup(){} void loop(){}';
+      const maxLimit = 50; // https://github.com/arduino/arduino-ide/pull/875
+      const sketchCount = maxLimit + diff;
+      const sketchNames = [...Array(sketchCount).keys()].map(() => v4());
+
+      await sketchNames
+        .map((name) => createApi.createSketch(toPosix(name), content))
+        .reduce(async (acc, curr) => {
+          await acc;
+          return curr;
+        }, Promise.resolve() as Promise<unknown>);
+
+      createApi.resetRequestRecording();
+      const sketches = await createApi.sketches();
+      const allRequests = createApi.requestRecording.slice();
+
+      expect(sketches.length).to.be.equal(sketchCount);
+      sketchNames.forEach(
+        (name) => expect(findByName(name, sketches)).to.be.not.undefined
+      );
+
+      expect(allRequests.length).to.be.equal(expected);
+      const getSketchesRequests = allRequests.filter(
+        (description) =>
+          description.method === 'GET' &&
+          description.pathname === '/create/v2/sketches' &&
+          description.query &&
+          description.query.includes(`limit=${maxLimit}`)
+      );
+      expect(getSketchesRequests.length).to.be.equal(expected);
+    })
+  );
 });
 
 // Using environment variables is recommended for testing but you can modify the module too.

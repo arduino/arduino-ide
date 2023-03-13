@@ -1,6 +1,5 @@
 import { injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
-import * as dateFormat from 'dateformat';
+import dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   SketchContribution,
@@ -39,16 +38,13 @@ export class ArchiveSketch extends SketchContribution {
     const defaultContainerUri = await this.defaultUri();
     const defaultUri = defaultContainerUri.resolve(archiveBasename);
     const defaultPath = await this.fileService.fsPath(defaultUri);
-    const { filePath, canceled } = await remote.dialog.showSaveDialog(
-      remote.getCurrentWindow(),
-      {
-        title: nls.localize(
-          'arduino/sketch/saveSketchAs',
-          'Save sketch folder as...'
-        ),
-        defaultPath,
-      }
-    );
+    const { filePath, canceled } = await this.dialogService.showSaveDialog({
+      title: nls.localize(
+        'arduino/sketch/saveSketchAs',
+        'Save sketch folder as...'
+      ),
+      defaultPath,
+    });
     if (!filePath || canceled) {
       return;
     }

@@ -1,4 +1,3 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 import { NavigatableWidget } from '@theia/core/lib/browser/navigatable-types';
@@ -118,10 +117,8 @@ export class WindowTitleUpdater extends TheiaWindowTitleUpdater {
     if (widget instanceof EditorWidget) {
       const { uri } = widget.editor;
       const filename = uri.path.toString();
-      // Do not necessarily require the current window if not needed. It's a synchronous, blocking call.
       if (this.previousRepresentedFilename !== filename) {
-        const currentWindow = remote.getCurrentWindow();
-        currentWindow.setRepresentedFilename(uri.path.toString());
+        window.electronArduino.setRepresentedFilename(uri.path.fsPath());
         this.previousRepresentedFilename = filename;
       }
     }

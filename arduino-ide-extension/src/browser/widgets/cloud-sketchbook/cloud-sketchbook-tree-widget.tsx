@@ -12,7 +12,6 @@ import {
 import { NodeProps } from '@theia/core/lib/browser/tree/tree-widget';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { CompositeTreeNode } from '@theia/core/lib/browser';
-import { shell } from '@theia/core/electron-shared/@electron/remote';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
 import { nls } from '@theia/core/lib/common';
 import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
@@ -60,7 +59,12 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
         </div>
         <button
           className="theia-button uppercase"
-          onClick={() => shell.openExternal('https://create.arduino.cc/editor')}
+          onClick={() =>
+            this.windowService.openNewWindow(
+              'https://create.arduino.cc/editor',
+              { external: true }
+            )
+          }
         >
           {nls.localize('arduino/cloud/goToCloud', 'Go to Cloud')}
         </button>
@@ -81,7 +85,10 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return CompositeTreeNode.is(node) && node.children.length === 0;
   }
 
-  protected override createNodeClassNames(node: any, props: NodeProps): string[] {
+  protected override createNodeClassNames(
+    node: any,
+    props: NodeProps
+  ): string[] {
     const classNames = super.createNodeClassNames(node, props);
 
     if (

@@ -34,6 +34,7 @@ import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
 import { CloudSketchbookCommands } from './cloud-sketchbook-commands';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
 import { CreateUri } from '../../create/create-uri';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 
 const SKETCHBOOKSYNC__CONTEXT = ['arduino-sketchbook-sync--context'];
 
@@ -61,6 +62,8 @@ export class CloudSketchbookContribution extends CloudSketchContribution {
   private readonly configServiceClient: ConfigServiceClient;
   @inject(ApplicationConnectionStatusContribution)
   private readonly connectionStatus: ApplicationConnectionStatusContribution;
+  @inject(ClipboardService)
+  private readonly clipboardService: ClipboardService;
 
   private readonly onDidChangeToolbarEmitter = new Emitter<void>();
   private readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
@@ -176,6 +179,7 @@ export class CloudSketchbookContribution extends CloudSketchContribution {
           node: arg.node,
           title: nls.localize('arduino/cloud/shareSketch', 'Share Sketch'),
           createApi: this.createApi,
+          clipboardService: this.clipboardService,
         }).open();
       },
       isEnabled: (arg) => this.isCloudSketchDirNodeCommandArg(arg),

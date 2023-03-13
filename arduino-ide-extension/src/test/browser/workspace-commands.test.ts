@@ -89,6 +89,7 @@ describe('workspace-commands', () => {
     const child: FileStat = {
       isFile: true,
       isDirectory: false,
+      isReadonly: false,
       isSymbolicLink: false,
       resource: new URI('sketch/sketch.ino'),
       name: 'sketch.ino',
@@ -96,6 +97,7 @@ describe('workspace-commands', () => {
     const parent: FileStat = {
       isFile: false,
       isDirectory: true,
+      isReadonly: false,
       isSymbolicLink: false,
       resource: new URI('sketch'),
       name: 'sketch',

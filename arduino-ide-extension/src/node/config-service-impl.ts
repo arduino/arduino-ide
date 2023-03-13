@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
-import { dirname } from 'path';
+import { promises as fs } from 'node:fs';
+import { dirname } from 'node:path';
 import * as yaml from 'js-yaml';
 import * as grpc from '@grpc/grpc-js';
 import { injectable, inject, named } from '@theia/core/shared/inversify';
