@@ -14,7 +14,15 @@ It will be shown in these search results:
 
 https://github.com/arduino/arduino-ide/pulls/app%2Fgithub-actions
 
-### 2. 👀 Check version of packages
+### 2. 🛠️ Check bundled tool versions
+
+The Arduino IDE release includes several tool dependencies. Unstable versions of these tools may be pinned provisionally for use with the development version of Arduino IDE, but production releases of Arduino IDE must use production releases of the tool dependencies.
+
+The tool versions are defined in the `arduino` object of [`arduino-ide-extension/package.json`](../../arduino-ide-extension/package.json).
+
+If any of the tools are pinned to a development version, ensure a suitable production release of the tool is available and then submit a PR to update the version in `arduino-ide-extension/package.json`.
+
+### 3. 👀 Check version of packages
 
 The [`version` field](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version) of the project's `package.json` metadata files received a patch version bump (e.g., `2.0.1` -> `2.0.2`) at the time of the previous release.
 
@@ -31,7 +39,7 @@ If the version number of the previous release was `2.0.1`:
 - If this is considered a minor release (non-breaking changes to the "API"), the `version` values must be changed to `2.1.0`.
 - If this is considered a major release (breaking changes to the "API"), the `version` values must be changed to `3.0.0`.
 
-### 3. 🚢 Create the release on GitHub
+### 4. 🚢 Create the release on GitHub
 
 Then, you need to **create and push the new tag** and wait for the release to appear on [the "**Releases**" page](https://github.com/arduino/arduino-ide/releases).
 
@@ -46,13 +54,13 @@ git push origin <YOUR_VERSION>
 
 Pushing a tag will trigger a **GitHub Actions** workflow on the `main` branch. Check the "**Arduino IDE**" workflow and see that everything goes right. If the workflow succeeds, a new release will be created automatically and you should see it on the ["**Releases**"](https://github.com/arduino/arduino-ide/releases) page.
 
-### 4. ⬆️ Bump version metadata of packages
+### 5. ⬆️ Bump version metadata of packages
 
 In order for the version number of the tester and nightly builds to have correct precedence compared to the release version, the `version` field of the project's `package.json` files must be given a patch version bump (e.g., `2.0.1` -> `2.0.2`) **after** the creation of the release tag.
 
 Follow the instructions for updating the version metadata [**here**](#update-version-metadata).
 
-### 5. 📄 Create the changelog
+### 6. 📄 Create the changelog
 
 **Create GitHub issues for the known issues** that we haven't solved in the current release:
 
@@ -71,7 +79,7 @@ Add a list of mentions of GitHub users who contributed to the release in any of 
 
 Add a "**Known Issues**" section at the bottom of the changelog.
 
-### 6. ✎ Update the "**Software**" Page
+### 7. ✎ Update the "**Software**" Page
 
 Open a PR on the [bcmi-labs/wiki-content](https://github.com/bcmi-labs/wiki-content) repository to update the links and texts.
 
@@ -88,7 +96,7 @@ When the deploy workflow is done, check if links on the "**Software**" page are 
 
 https://www.arduino.cc/en/software#future-version-of-the-arduino-ide
 
-### 7. 😎 Brag about it
+### 8. 😎 Brag about it
 
 - Ask in the `#product_releases` **Slack** channel to write a post for the social media and, if needed, a blog post.
 - Post a message on the forum (ask @per1234).<br />
