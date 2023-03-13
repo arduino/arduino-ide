@@ -171,22 +171,22 @@ describe('workspace-commands', () => {
     });
 
     it('code files cannot start with number (no extension)', async () => {
-      const actual = await testMe('_invalid');
+      const actual = await testMe('-invalid');
       expect(actual).to.be.equal(Sketch.invalidSketchFolderNameMessage);
     });
 
     it('code files cannot start with number (trailing dot)', async () => {
-      const actual = await testMe('_invalid.');
+      const actual = await testMe('-invalid.');
       expect(actual).to.be.equal(Sketch.invalidSketchFolderNameMessage);
     });
 
     it('code files cannot start with number (trailing dot)', async () => {
-      const actual = await testMe('_invalid.cpp');
+      const actual = await testMe('-invalid.cpp');
       expect(actual).to.be.equal(Sketch.invalidSketchFolderNameMessage);
     });
 
     it('should warn about invalid extension first', async () => {
-      const actual = await testMe('_invalid.xxx');
+      const actual = await testMe('-invalid.xxx');
       expect(actual).to.be.equal(invalidExtensionMessage('.xxx'));
     });
 
@@ -196,7 +196,7 @@ describe('workspace-commands', () => {
     });
 
     it('should ignore non-code filename validation from the spec', async () => {
-      const actual = await testMe('_invalid.json');
+      const actual = await testMe('-invalid.json');
       expect(actual).to.be.empty;
     });
 

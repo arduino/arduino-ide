@@ -157,8 +157,6 @@ export namespace Sketch {
   // (non-API) exported for the tests
   export const defaultSketchFolderName = 'sketch';
   // (non-API) exported for the tests
-  export const defaultFallbackFirstChar = '0';
-  // (non-API) exported for the tests
   export const defaultFallbackChar = '_';
   // (non-API) exported for the tests
   export function reservedFilename(name: string): string {
@@ -176,11 +174,11 @@ export namespace Sketch {
   // (non-API) exported for the tests
   export const invalidSketchFolderNameMessage = nls.localize(
     'arduino/sketch/invalidSketchName',
-    'The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.'
+    'The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.'
   );
   const invalidCloudSketchFolderNameMessage = nls.localize(
     'arduino/sketch/invalidCloudSketchName',
-    'The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.'
+    'The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.'
   );
   /**
    * `undefined` if the candidate sketch folder name is valid. Otherwise, the validation error message.
@@ -193,7 +191,7 @@ export namespace Sketch {
     if (validFilenameError) {
       return validFilenameError;
     }
-    return /^[0-9a-zA-Z]{1}[0-9a-zA-Z_\.-]{0,62}$/.test(candidate)
+    return /^[0-9a-zA-Z_]{1}[0-9a-zA-Z_\.-]{0,62}$/.test(candidate)
       ? undefined
       : invalidSketchFolderNameMessage;
   }
@@ -208,7 +206,7 @@ export namespace Sketch {
     if (validFilenameError) {
       return validFilenameError;
     }
-    return /^[0-9a-zA-Z]{1}[0-9a-zA-Z_\.-]{0,35}$/.test(candidate)
+    return /^[0-9a-zA-Z_]{1}[0-9a-zA-Z_\.-]{0,35}$/.test(candidate)
       ? undefined
       : invalidCloudSketchFolderNameMessage;
   }
@@ -252,10 +250,7 @@ export namespace Sketch {
       return defaultSketchFolderName;
     }
     const validName = candidate
-      ? candidate
-          .replace(/^[^0-9a-zA-Z]{1}/g, defaultFallbackFirstChar)
-          .replace(/[^0-9a-zA-Z_]/g, defaultFallbackChar)
-          .slice(0, 63)
+      ? candidate.replace(/[^0-9a-zA-Z_]/g, defaultFallbackChar).slice(0, 63)
       : defaultSketchFolderName;
     if (appendTimestampSuffix) {
       return `${validName.slice(0, 63 - timestampSuffixLength)}${
@@ -283,10 +278,7 @@ export namespace Sketch {
       return defaultSketchFolderName;
     }
     return candidate
-      ? candidate
-          .replace(/^[^0-9a-zA-Z]{1}/g, defaultFallbackFirstChar)
-          .replace(/[^0-9a-zA-Z_]/g, defaultFallbackChar)
-          .slice(0, 36)
+      ? candidate.replace(/[^0-9a-zA-Z_]/g, defaultFallbackChar).slice(0, 36)
       : defaultSketchFolderName;
   }
 
