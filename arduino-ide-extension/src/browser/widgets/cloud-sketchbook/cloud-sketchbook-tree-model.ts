@@ -35,6 +35,7 @@ function sketchBaseDir(sketch: Create.Sketch): FileStat {
     isDirectory: true,
     isFile: false,
     isSymbolicLink: false,
+    isReadonly: false,
     resource: createPath,
     mtime,
     ctime,

@@ -182,7 +182,11 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     if (
       CompoundMenuNode.is(menu) &&
       this.visibleSubmenu(menu) && // customization for #569 and #655
-      this.undefinedOrMatch(menu.when, options.context)
+      this.undefinedOrMatch(
+        options.contextKeyService ?? this.contextKeyService,
+        menu.when,
+        options.context
+      )
     ) {
       const role = CompoundMenuNode.getRole(menu);
       if (role === CompoundMenuNodeRole.Group && menu.id === 'inline') {
@@ -236,7 +240,11 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
           commandId,
           ...args
         ) ||
-        !this.undefinedOrMatch(node.when, options.context)
+        !this.undefinedOrMatch(
+          options.contextKeyService ?? this.contextKeyService,
+          node.when,
+          options.context
+        )
       ) {
         return parentItems;
       }
