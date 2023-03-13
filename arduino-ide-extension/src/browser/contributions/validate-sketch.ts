@@ -1,4 +1,3 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { Dialog } from '@theia/core/lib/browser/dialogs';
 import { nls } from '@theia/core/lib/common/nls';
 import { Deferred, waitForEvent } from '@theia/core/lib/common/promise-util';
@@ -180,15 +179,12 @@ export class ValidateSketch extends CloudSketchContribution {
     message: string,
     buttons: string[] = [Dialog.CANCEL, Dialog.OK]
   ): Promise<boolean> {
-    const { response } = await remote.dialog.showMessageBox(
-      remote.getCurrentWindow(),
-      {
-        title,
-        message,
-        type: 'warning',
-        buttons,
-      }
-    );
+    const { response } = await this.dialogService.showMessageBox({
+      title,
+      message,
+      type: 'warning',
+      buttons,
+    });
     // cancel
     if (response === 0) {
       return false;

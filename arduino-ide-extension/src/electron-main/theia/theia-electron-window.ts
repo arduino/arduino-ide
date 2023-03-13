@@ -1,52 +1,37 @@
-import {
-  RELOAD_REQUESTED_SIGNAL,
-  StopReason,
-} from '@theia/core/lib/electron-common/messaging/electron-messages';
-import { createDisposableListener } from '@theia/core/lib/electron-main/event-utils';
+import { StopReason } from '@theia/core/lib/common/frontend-application-state';
+import { TheiaRendererAPI } from '@theia/core/lib/electron-main/electron-api-main';
 import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
 import { injectable } from '@theia/core/shared/inversify';
-import { ipcMain, IpcMainEvent } from '@theia/electron/shared/electron';
-import { StartupTask } from '../../electron-common/startup-task';
-import { load } from './window';
+import { hasStartupTasks } from '../../electron-common/startup-task';
+import { ElectronArduinoRenderer } from '../electron-arduino';
 
 @injectable()
 export class TheiaElectronWindow extends DefaultTheiaElectronWindow {
-  protected override reload(tasks?: StartupTask[]): void {
+  protected override reload(args?: unknown): void {
     this.handleStopRequest(() => {
       this.applicationState = 'init';
-      if (tasks && tasks.length) {
-        load(this._window, (electronWindow) => electronWindow.reload()).then(
-          (electronWindow) =>
-            electronWindow.webContents.send(
-              StartupTask.Messaging.STARTUP_TASKS_SIGNAL,
-              { tasks }
-            )
+      if (hasStartupTasks(args)) {
+        const { webContents } = this._window;
+        const toDisposeOnReady = TheiaRendererAPI.onApplicationStateChanged(
+          webContents,
+          (state) => {
+            if (state === 'ready') {
+              ElectronArduinoRenderer.sendStartupTasks(webContents, args);
+              toDisposeOnReady.dispose();
+            }
+          }
         );
-      } else {
-        this._window.reload();
       }
+      this._window.reload();
     }, StopReason.Reload);
   }
 
   protected override attachReloadListener(): void {
-    createDisposableListener(
-      ipcMain,
-      RELOAD_REQUESTED_SIGNAL,
-      (e: IpcMainEvent, arg: unknown) => {
-        if (this.isSender(e)) {
-          if (StartupTask.has(arg)) {
-            this.reload(arg.tasks);
-          } else {
-            this.reload();
-          }
-        }
-      },
-      this.toDispose
+    this.toDispose.push(
+      ElectronArduinoRenderer.onRequestReload(
+        this.window.webContents,
+        (args?: unknown) => this.reload(args)
+      )
     );
-  }
-
-  // https://github.com/eclipse-theia/theia/issues/11600#issuecomment-1240657481
-  protected override isSender(e: IpcMainEvent): boolean {
-    return e.sender.id === this._window.webContents.id;
   }
 }

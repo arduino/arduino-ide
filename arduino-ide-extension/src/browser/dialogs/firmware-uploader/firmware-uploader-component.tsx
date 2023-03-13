@@ -157,7 +157,7 @@ export const FirmwareUploaderComponent = ({
                 options={firmwareOptions}
                 value={selectedFirmware}
                 tabSelectsValue={false}
-                onChange={(value) => {
+                onChange={(value: FirmwareOption | null) => {
                   if (value) {
                     setInstallFeedback(null);
                     setSelectedFirmware(value);

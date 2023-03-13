@@ -1,26 +1,26 @@
-import { injectable } from '@theia/core/shared/inversify';
-import { toArray } from '@theia/core/shared/@phosphor/algorithm';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
-import type { MaybePromise } from '@theia/core/lib/common/types';
+import { Dialog } from '@theia/core/lib/browser/dialogs';
 import type {
   FrontendApplication,
   OnWillStopAction,
 } from '@theia/core/lib/browser/frontend-application';
-import { nls } from '@theia/core/lib/common/nls';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
+import { nls } from '@theia/core/lib/common/nls';
+import type { MaybePromise } from '@theia/core/lib/common/types';
+import { toArray } from '@theia/core/shared/@phosphor/algorithm';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
+import { WindowServiceExt } from '../theia/core/window-service-ext';
 import {
-  SketchContribution,
   Command,
   CommandRegistry,
-  MenuModelRegistry,
   KeybindingRegistry,
+  MenuModelRegistry,
   Sketch,
+  SketchContribution,
   URI,
 } from './contribution';
-import { Dialog } from '@theia/core/lib/browser/dialogs';
-import { CurrentSketch } from '../sketches-service-client-impl';
 import { SaveAsSketch } from './save-as-sketch';
 
 /**
@@ -28,6 +28,9 @@ import { SaveAsSketch } from './save-as-sketch';
  */
 @injectable()
 export class Close extends SketchContribution {
+  @inject(WindowServiceExt)
+  private readonly windowServiceExt: WindowServiceExt;
+
   private shell: ApplicationShell | undefined;
 
   override onStart(app: FrontendApplication): MaybePromise<void> {
@@ -56,7 +59,7 @@ export class Close extends SketchContribution {
             }
           }
         }
-        return remote.getCurrentWindow().close();
+        return this.windowServiceExt.close();
       },
     });
   }
@@ -150,26 +153,23 @@ export class Close extends SketchContribution {
   }
 
   private async prompt(isTemp: boolean): Promise<Prompt> {
-    const { response } = await remote.dialog.showMessageBox(
-      remote.getCurrentWindow(),
-      {
-        message: nls.localize(
-          'arduino/sketch/saveSketch',
-          'Save your sketch to open it again later.'
-        ),
-        title: nls.localize(
-          'theia/core/quitTitle',
-          'Are you sure you want to quit?'
-        ),
-        type: 'question',
-        buttons: [
-          nls.localizeByDefault("Don't Save"),
-          Dialog.CANCEL,
-          nls.localizeByDefault(isTemp ? 'Save As...' : 'Save'),
-        ],
-        defaultId: 2, // `Save`/`Save As...` button index is the default.
-      }
-    );
+    const { response } = await this.dialogService.showMessageBox({
+      message: nls.localize(
+        'arduino/sketch/saveSketch',
+        'Save your sketch to open it again later.'
+      ),
+      title: nls.localize(
+        'theia/core/quitTitle',
+        'Are you sure you want to quit?'
+      ),
+      type: 'question',
+      buttons: [
+        nls.localizeByDefault("Don't Save"),
+        Dialog.CANCEL,
+        nls.localizeByDefault(isTemp ? 'Save As...' : 'Save'),
+      ],
+      defaultId: 2, // `Save`/`Save As...` button index is the default.
+    });
     switch (response) {
       case 0:
         return Prompt.DoNotSave;

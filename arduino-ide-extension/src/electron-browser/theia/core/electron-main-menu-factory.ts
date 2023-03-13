@@ -1,4 +1,4 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
+import { ContextMatcher } from '@theia/core/lib/browser/context-key-service';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
@@ -11,10 +11,10 @@ import {
 } from '@theia/core/lib/common/menu';
 import { isOSX } from '@theia/core/lib/common/os';
 import {
-  ElectronMainMenuFactory as TheiaElectronMainMenuFactory,
-  ElectronMenuItemRole,
   ElectronMenuOptions,
+  ElectronMainMenuFactory as TheiaElectronMainMenuFactory,
 } from '@theia/core/lib/electron-browser/menu/electron-main-menu-factory';
+import type { MenuDto } from '@theia/core/lib/electron-common/electron-api';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   ArduinoMenus,
@@ -39,18 +39,18 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     });
   }
 
-  override createElectronMenuBar(): Electron.Menu {
+  override createElectronMenuBar(): MenuDto[] {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
-    const template = this.fillMenuTemplate([], menuModel, [], {
+    const menu = this.fillMenuTemplate([], menuModel, [], {
       rootMenuPath: MAIN_MENU_BAR,
     });
     if (isOSX) {
-      template.unshift(this.createOSXMenu());
+      menu.unshift(this.createOSXMenu());
     }
-    const menu = remote.Menu.buildFromTemplate(this.escapeAmpersand(template));
-    this._menu = menu;
-    return menu;
+    const escapedMenu = this.escapeAmpersand(menu);
+    this._menu = escapedMenu;
+    return escapedMenu;
   }
 
   override async setMenuBar(): Promise<void> {
@@ -62,12 +62,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       return;
     }
     await this.preferencesService.ready;
-    const createdMenuBar = this.createElectronMenuBar();
-    if (isOSX) {
-      remote.Menu.setApplicationMenu(createdMenuBar);
-    } else {
-      remote.getCurrentWindow().setMenu(createdMenuBar);
-    }
+    return super.setMenuBar();
   }
 
   override createElectronContextMenu(
@@ -75,35 +70,32 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args?: any[],
     context?: HTMLElement,
+    contextKeyService?: ContextMatcher,
     showDisabled?: boolean
-  ): Electron.Menu {
+  ): MenuDto[] {
     const menuModel = this.menuProvider.getMenu(menuPath);
-    const template = this.fillMenuTemplate([], menuModel, args, {
+    return this.fillMenuTemplate([], menuModel, args, {
       showDisabled,
       context,
       rootMenuPath: menuPath,
+      contextKeyService,
     });
-    return remote.Menu.buildFromTemplate(this.escapeAmpersand(template));
   }
 
   // TODO: remove after https://github.com/eclipse-theia/theia/pull/9231
-  private escapeAmpersand(
-    template: Electron.MenuItemConstructorOptions[]
-  ): Electron.MenuItemConstructorOptions[] {
+  private escapeAmpersand(template: MenuDto[]): MenuDto[] {
     for (const option of template) {
       if (option.label) {
         option.label = option.label.replace(/\&+/g, '&$&');
       }
       if (option.submenu) {
-        this.escapeAmpersand(
-          option.submenu as Electron.MenuItemConstructorOptions[]
-        );
+        this.escapeAmpersand(option.submenu);
       }
     }
     return template;
   }
 
-  protected override createOSXMenu(): Electron.MenuItemConstructorOptions {
+  protected override createOSXMenu(): MenuDto {
     const { submenu } = super.createOSXMenu();
     const label = FrontendApplicationConfigProvider.get().applicationName;
     if (!!submenu && Array.isArray(submenu)) {
@@ -141,21 +133,12 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return { label, submenu };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
-  protected override roleFor(id: string): ElectronMenuItemRole | undefined {
-    // MenuItem `roles` are completely broken on macOS:
-    //  - https://github.com/eclipse-theia/theia/issues/11217,
-    //  - https://github.com/arduino/arduino-ide/issues/969
-    // IDE2 uses commands instead.
-    return undefined;
-  }
-
   protected override fillMenuTemplate(
-    parentItems: Electron.MenuItemConstructorOptions[],
+    parentItems: MenuDto[],
     menuModel: MenuNode,
     args: unknown[] | undefined,
     options: ElectronMenuOptions
-  ): Electron.MenuItemConstructorOptions[] {
+  ): MenuDto[] {
     if (menuModel instanceof PlaceholderMenuNode) {
       parentItems.push({
         label: menuModel.label,
@@ -172,24 +155,28 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
   // Source: https://github.com/eclipse-theia/theia/blob/5e641750af83383f2ce0cb3432ec333df70778a8/packages/core/src/electron-browser/menu/electron-main-menu-factory.ts#L132-L203
   // See https://github.com/arduino/arduino-ide/issues/1533
   private superFillMenuTemplate(
-    parentItems: Electron.MenuItemConstructorOptions[],
+    parentItems: MenuDto[],
     menu: MenuNode,
     args: unknown[] = [],
     options: ElectronMenuOptions
-  ): Electron.MenuItemConstructorOptions[] {
+  ): MenuDto[] {
     const showDisabled = options?.showDisabled !== false;
 
     if (
       CompoundMenuNode.is(menu) &&
       this.visibleSubmenu(menu) && // customization for #569 and #655
-      this.undefinedOrMatch(menu.when, options.context)
+      this.undefinedOrMatch(
+        options.contextKeyService ?? this.contextKeyService,
+        menu.when,
+        options.context
+      )
     ) {
       const role = CompoundMenuNode.getRole(menu);
       if (role === CompoundMenuNodeRole.Group && menu.id === 'inline') {
         return parentItems;
       }
       const children = CompoundMenuNode.getFlatChildren(menu.children);
-      const myItems: Electron.MenuItemConstructorOptions[] = [];
+      const myItems: MenuDto[] = [];
       children.forEach((child) =>
         this.fillMenuTemplate(myItems, child, args, options)
       );
@@ -236,7 +223,11 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
           commandId,
           ...args
         ) ||
-        !this.undefinedOrMatch(node.when, options.context)
+        !this.undefinedOrMatch(
+          options.contextKeyService ?? this.contextKeyService,
+          node.when,
+          options.context
+        )
       ) {
         return parentItems;
       }
@@ -258,7 +249,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
 
       const accelerator = bindings[0] && this.acceleratorFor(bindings[0]);
 
-      const menuItem: Electron.MenuItemConstructorOptions = {
+      const menuItem: MenuDto = {
         id: node.id,
         label: node.label,
         type: this.commandRegistry.getToggledHandler(commandId, ...args)
@@ -268,14 +259,14 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
         enabled: this.commandRegistry.isEnabled(commandId, ...args), // Unlike Theia https://github.com/eclipse-theia/theia/blob/v1.31.1/packages/core/src/electron-browser/menu/electron-main-menu-factory.ts#L183
         visible: true,
         accelerator,
-        click: () => this.execute(commandId, args, options.rootMenuPath),
+        execute: () => this.execute(commandId, args, options.rootMenuPath),
       };
 
       if (isOSX) {
         const role = this.roleFor(node.id);
         if (role) {
           menuItem.role = role;
-          delete menuItem.click;
+          delete menuItem.execute;
         }
       }
       parentItems.push(menuItem);

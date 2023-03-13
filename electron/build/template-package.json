@@ -9,7 +9,7 @@
     "node-log-rotate": "^0.1.5"
   },
   "devDependencies": {
-    "@theia/cli": "1.31.1",
+    "@theia/cli": "1.37.0",
     "cross-env": "^7.0.2",
     "electron-builder": "23.6.0",
     "electron-notarize": "^1.1.1",

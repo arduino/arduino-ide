@@ -1,4 +1,3 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
@@ -120,7 +119,7 @@ export class SketchbookWidgetContribution
           if (exists) {
             const fsPath = await this.fileService.fsPath(new URI(arg.node.uri));
             if (fsPath) {
-              remote.shell.openPath(fsPath);
+              registry.executeCommand('revealFileInOS', fsPath);
             }
           }
         }

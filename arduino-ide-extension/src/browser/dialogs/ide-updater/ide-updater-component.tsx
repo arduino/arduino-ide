@@ -1,5 +1,4 @@
 import { nls } from '@theia/core/lib/common';
-import { shell } from '@theia/core/electron-shared/@electron/remote';
 import * as React from '@theia/core/shared/react';
 import ReactMarkdown from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
@@ -15,6 +14,7 @@ export interface UpdateProgress {
 export interface IDEUpdaterComponentProps {
   updateInfo: UpdateInfo;
   updateProgress: UpdateProgress;
+  openExternal: (url: string) => undefined;
 }
 
 export const IDEUpdaterComponent = ({
@@ -25,6 +25,7 @@ export const IDEUpdaterComponent = ({
     progressInfo,
     error,
   },
+  openExternal,
 }: IDEUpdaterComponentProps): React.ReactElement => {
   const { version, releaseNotes } = updateInfo;
   const [changelog, setChangelog] = React.useState<string>('');
@@ -98,10 +99,7 @@ export const IDEUpdaterComponent = ({
               <ReactMarkdown
                 components={{
                   a: ({ href, children, ...props }) => (
-                    <a
-                      onClick={() => href && shell.openExternal(href)}
-                      {...props}
-                    >
+                    <a onClick={() => href && openExternal(href)} {...props}>
                       {children}
                     </a>
                   ),

@@ -20,8 +20,7 @@ import { ArduinoDaemon } from '../../../common/protocol';
 import { assertUnreachable } from '../../../common/utils';
 import { CreateFeatures } from '../../create/create-features';
 import { NotificationCenter } from '../../notification-center';
-import debounce = require('lodash.debounce');
-import isOnline = require('is-online');
+import debounce from 'lodash.debounce';
 
 @injectable()
 export class IsOnline implements FrontendApplicationContribution {
@@ -30,17 +29,19 @@ export class IsOnline implements FrontendApplicationContribution {
   private stopped = false;
 
   onStart(): void {
-    const checkOnline = async () => {
-      if (!this.stopped) {
-        try {
-          const online = await isOnline();
-          this.setOnline(online);
-        } finally {
-          window.setTimeout(() => checkOnline(), 6_000); // 6 seconds poll interval
+    import('is-online').then((module) => {
+      const checkOnline = async () => {
+        if (!this.stopped) {
+          try {
+            const online = await module.default();
+            this.setOnline(online);
+          } finally {
+            window.setTimeout(() => checkOnline(), 6_000); // 6 seconds poll interval
+          }
         }
-      }
-    };
-    checkOnline();
+      };
+      checkOnline();
+    });
   }
 
   onStop(): void {
@@ -56,7 +57,7 @@ export class IsOnline implements FrontendApplicationContribution {
     return this.onDidChangeOnlineEmitter.event;
   }
 
-  private setOnline(online: boolean) {
+  private setOnline(online: boolean): void {
     const oldOnline = this._online;
     this._online = online;
     if (!this.stopped && this._online !== oldOnline) {

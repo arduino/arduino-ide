@@ -118,6 +118,7 @@ export class OpenSketchFiles extends SketchContribution {
       fileService: this.fileService,
       sketchesService: this.sketchesService,
       labelProvider: this.labelProvider,
+      dialogService: this.dialogService,
     });
     if (movedSketch) {
       this.workspaceService.open(new URI(movedSketch.uri), {

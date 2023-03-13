@@ -86,7 +86,8 @@
     //----------------------------------------------------+
     // Copy the Theia preload, etc. from `./electron-app` |
     //----------------------------------------------------+
-    for (const filename of foldersToSyncFromDev) {
+    const filesToSyncFromDev = ['webpack.config.js'];
+    for (const filename of [...foldersToSyncFromDev, ...filesToSyncFromDev]) {
       cp(
         '-rf',
         join(repoRoot, 'electron-app', filename),

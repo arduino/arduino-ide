@@ -8,7 +8,7 @@ import URI from '@theia/core/lib/common/uri';
 import { Marker } from '@theia/markers/lib/common/marker';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser/problem/problem-manager';
 import { ConfigServiceClient } from '../../config/config-service-client';
-import debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 
 @injectable()
 export class ProblemManager extends TheiaProblemManager {

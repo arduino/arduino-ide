@@ -1,10 +1,10 @@
-import { Mutable } from '@theia/core/lib/common/types';
-import { FileUri } from '@theia/core/lib/node';
-import * as assert from 'assert';
-import { basename, join } from 'path';
+import type { Mutable } from '@theia/core/lib/common/types';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import stableJsonStringify from 'fast-json-stable-stringify';
+import * as assert from 'node:assert';
+import { basename, join } from 'node:path';
 import { SketchContainer, SketchRef } from '../../common/protocol';
 import { discoverSketches } from '../../node/sketches-service-impl';
-import stableJsonStringify = require('fast-json-stable-stringify');
 
 const testSketchbook = join(
   __dirname,

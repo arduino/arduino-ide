@@ -1,11 +1,11 @@
 import { injectable, inject, named } from '@theia/core/shared/inversify';
-import { promises as fs, realpath, lstat, Stats, constants } from 'fs';
-import * as os from 'os';
-import * as temp from 'temp';
-import * as path from 'path';
-import * as glob from 'glob';
-import * as crypto from 'crypto';
-import * as PQueue from 'p-queue';
+import { promises as fs, realpath, lstat, Stats, constants } from 'node:fs';
+import os from 'node:os';
+import temp from 'temp';
+import path from 'node:path';
+import glob from 'glob';
+import crypto from 'node:crypto';
+import PQueue from 'p-queue';
 import { Mutable } from '@theia/core/lib/common/types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -34,7 +34,7 @@ import {
   TempSketchPrefix,
   Win32DriveRegex,
 } from './is-temp-sketch';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ErrnoException } from './utils/errors';
 import { isWindows } from '@theia/core/lib/common/os';
 import {
@@ -43,7 +43,6 @@ import {
   startsWithUpperCase,
 } from '../common/utils';
 import { SettingsReader } from './settings-reader';
-import cpy = require('cpy');
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -74,19 +73,14 @@ export class SketchesServiceImpl
   @inject(ILogger)
   @named('sketches-service')
   private readonly logger: ILogger;
-
   @inject(ConfigServiceImpl)
   private readonly configService: ConfigServiceImpl;
-
   @inject(NotificationServiceServer)
   private readonly notificationService: NotificationServiceServer;
-
   @inject(EnvVariablesServer)
   private readonly envVariableServer: EnvVariablesServer;
-
   @inject(IsTempSketch)
   private readonly isTempSketch: IsTempSketch;
-
   @inject(SettingsReader)
   private readonly settingsReader: SettingsReader;
 
@@ -516,13 +510,16 @@ export class SketchesServiceImpl
     }
     const sourceFolderBasename = path.basename(source);
     const destinationFolderBasename = path.basename(destination);
-    let filter: cpy.Options['filter'];
+    let filter;
     if (onlySketchFiles) {
       const sketchFilePaths = Sketch.uris(sketch).map(FileUri.fsPath);
-      filter = (file) => sketchFilePaths.includes(file.path);
+      filter = (file: { path: string }) => sketchFilePaths.includes(file.path);
     } else {
       filter = () => true;
     }
+
+    const cpyModule = await import('cpy');
+    const cpy = cpyModule.default;
     await cpy(source, destination, {
       rename: (basename) =>
         sourceFolderBasename !== destinationFolderBasename &&

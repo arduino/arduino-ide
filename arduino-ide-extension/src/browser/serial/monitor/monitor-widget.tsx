@@ -23,9 +23,9 @@ import { nls } from '@theia/core/lib/common';
 import {
   MonitorEOL,
   MonitorManagerProxyClient,
+  MonitorSettings,
 } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
-import { MonitorSettings } from '../../../node/monitor-settings/monitor-settings-provider';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()

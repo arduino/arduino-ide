@@ -1,4 +1,7 @@
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Mutex } from 'async-mutex';
 import {
@@ -120,6 +123,7 @@ export class InoLanguage extends SketchContribution {
       return;
     }
     const release = await this.languageServerStartMutex.acquire();
+    const toDisposeOnRelease = new DisposableCollection();
     try {
       await this.hostedPluginEvents.didStart;
       const details = await this.boardsService.getBoardDetails({ fqbn });
@@ -179,12 +183,13 @@ export class InoLanguage extends SketchContribution {
       ]);
 
       this.languageServerFqbn = await Promise.race([
-        new Promise<undefined>((_, reject) =>
-          setTimeout(
+        new Promise<undefined>((_, reject) => {
+          const timer = setTimeout(
             () => reject(new Error(`Timeout after ${20_000} ms.`)),
             20_000
-          )
-        ),
+          );
+          toDisposeOnRelease.push(Disposable.create(() => clearTimeout(timer)));
+        }),
         this.commandService.executeCommand<string>(
           'arduino.languageserver.start',
           {
@@ -206,6 +211,7 @@ export class InoLanguage extends SketchContribution {
       console.log(`Failed to start language server. Original FQBN: ${fqbn}`, e);
       this.languageServerFqbn = undefined;
     } finally {
+      toDisposeOnRelease.dispose();
       release();
     }
   }

@@ -1,26 +1,27 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
-import * as moment from 'moment';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { isOSX, isWindows } from '@theia/core/lib/common/os';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
-import {
-  Contribution,
-  Command,
-  MenuModelRegistry,
-  CommandRegistry,
-} from './contribution';
-import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/common/nls';
+import { isOSX, isWindows } from '@theia/core/lib/common/os';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import moment from 'moment';
 import { ConfigService } from '../../common/protocol';
-import { nls } from '@theia/core/lib/common';
+import { AppService } from '../app-service';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import {
+  Command,
+  CommandRegistry,
+  Contribution,
+  MenuModelRegistry,
+} from './contribution';
 
 @injectable()
 export class About extends Contribution {
   @inject(ClipboardService)
-  protected readonly clipboardService: ClipboardService;
-
+  private readonly clipboardService: ClipboardService;
   @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  private readonly configService: ConfigService;
+  @inject(AppService)
+  private readonly appService: AppService;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(About.Commands.ABOUT_APP, {
@@ -40,17 +41,20 @@ export class About extends Contribution {
     });
   }
 
-  async showAbout(): Promise<void> {
-    const version = await this.configService.getVersion();
+  private async showAbout(): Promise<void> {
+    const [appVersion, cliVersion] = await Promise.all([
+      this.appService.version(),
+      this.configService.getVersion(),
+    ]);
     const buildDate = this.buildDate;
     const detail = (showAll: boolean) =>
       nls.localize(
         'arduino/about/detail',
         'Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}',
-        remote.app.getVersion(),
+        appVersion,
         buildDate ? buildDate : nls.localize('', 'dev build'),
         buildDate && showAll ? ` (${this.ago(buildDate)})` : '',
-        version,
+        cliVersion,
         nls.localize(
           'arduino/about/copyright',
           'Copyright © {0} Arduino SA',
@@ -60,34 +64,31 @@ export class About extends Contribution {
     const ok = nls.localize('vscode/issueMainService/ok', 'OK');
     const copy = nls.localize('vscode/textInputActions/copy', 'Copy');
     const buttons = !isWindows && !isOSX ? [copy, ok] : [ok, copy];
-    const { response } = await remote.dialog.showMessageBox(
-      remote.getCurrentWindow(),
-      {
-        message: `${this.applicationName}`,
-        title: `${this.applicationName}`,
-        type: 'info',
-        detail: detail(true),
-        buttons,
-        noLink: true,
-        defaultId: buttons.indexOf(ok),
-        cancelId: buttons.indexOf(ok),
-      }
-    );
+    const { response } = await this.dialogService.showMessageBox({
+      message: `${this.applicationName}`,
+      title: `${this.applicationName}`,
+      type: 'info',
+      detail: detail(true),
+      buttons,
+      noLink: true,
+      defaultId: buttons.indexOf(ok),
+      cancelId: buttons.indexOf(ok),
+    });
 
     if (buttons[response] === copy) {
       await this.clipboardService.writeText(detail(false).trim());
     }
   }
 
-  protected get applicationName(): string {
+  private get applicationName(): string {
     return FrontendApplicationConfigProvider.get().applicationName;
   }
 
-  protected get buildDate(): string | undefined {
+  private get buildDate(): string | undefined {
     return FrontendApplicationConfigProvider.get().buildDate;
   }
 
-  protected ago(isoTime: string): string {
+  private ago(isoTime: string): string {
     const now = moment(Date.now());
     const other = moment(isoTime);
     let result = now.diff(other, 'minute');

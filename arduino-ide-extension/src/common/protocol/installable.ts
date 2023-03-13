@@ -1,8 +1,12 @@
-import * as semver from 'semver';
-import { ExecuteWithProgress } from './progressible';
+import type { MessageService } from '@theia/core/lib/common/message-service';
+import {
+  coerce as coerceSemver,
+  compare as compareSemver,
+  parse as parseSemver,
+} from 'semver';
 import { naturalCompare } from '../utils';
 import type { ArduinoComponent } from './arduino-component';
-import type { MessageService } from '@theia/core/lib/common/message-service';
+import { ExecuteWithProgress } from './progressible';
 import type { ResponseServiceClient } from './response-service';
 
 export interface Installable<T extends ArduinoComponent> {
@@ -35,16 +39,16 @@ export namespace Installable {
       right: Version,
       coerce = false
     ): number => {
-      const validLeft = semver.parse(left);
-      const validRight = semver.parse(right);
+      const validLeft = parseSemver(left);
+      const validRight = parseSemver(right);
       if (validLeft && validRight) {
-        return semver.compare(validLeft, validRight);
+        return compareSemver(validLeft, validRight);
       }
       if (coerce) {
-        const coercedLeft = validLeft ?? semver.coerce(left);
-        const coercedRight = validRight ?? semver.coerce(right);
+        const coercedLeft = validLeft ?? coerceSemver(left);
+        const coercedRight = validRight ?? coerceSemver(right);
         if (coercedLeft && coercedRight) {
-          return semver.compare(coercedLeft, coercedRight);
+          return compareSemver(coercedLeft, coercedRight);
         }
       }
       return naturalCompare(left, right);

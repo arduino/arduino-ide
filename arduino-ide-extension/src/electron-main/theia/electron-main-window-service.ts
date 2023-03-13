@@ -1,23 +1,15 @@
 import type { NewWindowOptions } from '@theia/core/lib/common/window';
-import type { BrowserWindow } from '@theia/core/electron-shared/electron';
 import { ElectronMainWindowServiceImpl as TheiaElectronMainWindowService } from '@theia/core/lib/electron-main/electron-main-window-service-impl';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { ElectronMainWindowServiceExt } from '../../electron-common/electron-main-window-service-ext';
-import { StartupTask } from '../../electron-common/startup-task';
+import { hasStartupTasks } from '../../electron-common/startup-task';
+import { ElectronArduinoRenderer } from '../electron-arduino';
 import { ElectronMainApplication } from './electron-main-application';
-import { load } from './window';
+import { TheiaRendererAPI } from '@theia/core/lib/electron-main/electron-api-main';
 
 @injectable()
-export class ElectronMainWindowServiceImpl
-  extends TheiaElectronMainWindowService
-  implements ElectronMainWindowServiceExt
-{
+export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowService {
   @inject(ElectronMainApplication)
   protected override readonly app: ElectronMainApplication;
-
-  async isFirstWindow(windowId: number): Promise<boolean> {
-    return this.app.firstWindowId === windowId;
-  }
 
   override openNewWindow(url: string, options: NewWindowOptions): undefined {
     // External window has highest precedence.
@@ -34,30 +26,25 @@ export class ElectronMainWindowServiceImpl
       return undefined;
     }
 
-    // Create new window and share the startup tasks.
-    if (StartupTask.has(options)) {
-      const { tasks } = options;
-      this.app.createWindow().then((electronWindow) => {
-        this.loadURL(electronWindow, url).then(() => {
-          electronWindow.webContents.send(
-            StartupTask.Messaging.STARTUP_TASKS_SIGNAL,
-            { tasks }
-          );
-        });
-      });
-      return undefined;
+    // Default.
+    if (!hasStartupTasks(options)) {
+      return super.openNewWindow(url, options);
     }
 
-    // Default.
-    return super.openNewWindow(url, options);
-  }
-
-  private loadURL(
-    electronWindow: BrowserWindow,
-    url: string
-  ): Promise<BrowserWindow> {
-    return load(electronWindow, (electronWindow) =>
-      electronWindow.loadURL(url)
-    );
+    // Create new window and share the startup tasks.
+    this.app.createWindow().then((electronWindow) => {
+      const { webContents } = electronWindow;
+      const toDisposeOnReady = TheiaRendererAPI.onApplicationStateChanged(
+        webContents,
+        (state) => {
+          if (state === 'ready') {
+            ElectronArduinoRenderer.sendStartupTasks(webContents, options);
+            toDisposeOnReady.dispose();
+          }
+        }
+      );
+      return electronWindow.loadURL(url);
+    });
+    return undefined;
   }
 }

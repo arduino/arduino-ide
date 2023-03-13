@@ -10,10 +10,10 @@ import {
   monitorConnectionStatusEquals,
   MonitorEOL,
   MonitorManagerProxyClient,
+  MonitorSettings,
   MonitorState,
 } from '../common/protocol';
 import { isNullOrUndefined } from '../common/utils';
-import { MonitorSettings } from '../node/monitor-settings/monitor-settings-provider';
 
 @injectable()
 export class MonitorModel implements FrontendApplicationContribution {

@@ -10,6 +10,7 @@ import {
   arduinoThemeTypeOf,
   darkThemeLabel,
   deprecatedThemeLabel,
+  hcLightThemeLabel,
   hcThemeLabel,
   lightThemeLabel,
   themeLabelForSettings,
@@ -52,15 +53,17 @@ describe('theming', () => {
           testTheme,
           BuiltinThemeProvider.hcTheme,
           anotherTestTheme,
+          BuiltinThemeProvider.hcLightTheme,
         ],
         currentTheme: () => BuiltinThemeProvider.hcTheme,
       }).reduce((acc, curr) => acc.concat(curr), []);
-      expect(actual.length).to.be.equal(5);
+      expect(actual.length).to.be.equal(6);
       expect(actual[0].id).to.be.equal(ArduinoThemes.light.id);
       expect(actual[1].id).to.be.equal(ArduinoThemes.dark.id);
-      expect(actual[2].id).to.be.equal(BuiltinThemeProvider.hcTheme.id);
-      expect(actual[3].id).to.be.equal(anotherTestTheme.id);
-      expect(actual[4].id).to.be.equal(testTheme.id);
+      expect(actual[2].id).to.be.equal(BuiltinThemeProvider.hcLightTheme.id);
+      expect(actual[3].id).to.be.equal(BuiltinThemeProvider.hcTheme.id);
+      expect(actual[4].id).to.be.equal(anotherTestTheme.id);
+      expect(actual[5].id).to.be.equal(testTheme.id);
     });
 
     it('should show only built-in and user installed themes but not deprecated (Theia) ones if current theme is a user', () => {
@@ -69,6 +72,7 @@ describe('theming', () => {
           BuiltinThemeProvider.hcTheme,
           BuiltinThemeProvider.lightTheme,
           BuiltinThemeProvider.darkTheme,
+          BuiltinThemeProvider.hcLightTheme,
           ArduinoThemes.dark,
           testTheme,
           anotherTestTheme,
@@ -76,18 +80,20 @@ describe('theming', () => {
         ],
         currentTheme: () => testTheme,
       }).reduce((acc, curr) => acc.concat(curr), []);
-      expect(actual.length).to.be.equal(5);
+      expect(actual.length).to.be.equal(6);
       expect(actual[0].id).to.be.equal(ArduinoThemes.light.id);
       expect(actual[1].id).to.be.equal(ArduinoThemes.dark.id);
-      expect(actual[2].id).to.be.equal(BuiltinThemeProvider.hcTheme.id);
-      expect(actual[3].id).to.be.equal(anotherTestTheme.id);
-      expect(actual[4].id).to.be.equal(testTheme.id);
+      expect(actual[2].id).to.be.equal(BuiltinThemeProvider.hcLightTheme.id);
+      expect(actual[3].id).to.be.equal(BuiltinThemeProvider.hcTheme.id);
+      expect(actual[4].id).to.be.equal(anotherTestTheme.id);
+      expect(actual[5].id).to.be.equal(testTheme.id);
     });
 
     it('should show built-in, user installed, and deprecated (Theia) themes if current theme is a deprecated (Theia)', () => {
       const actual = userConfigurableThemes({
         themes: () => [
           ArduinoThemes.dark,
+          BuiltinThemeProvider.hcLightTheme,
           ArduinoThemes.light,
           testTheme,
           BuiltinThemeProvider.hcTheme,
@@ -99,15 +105,16 @@ describe('theming', () => {
         ],
         currentTheme: () => BuiltinThemeProvider.lightTheme,
       }).reduce((acc, curr) => acc.concat(curr), []);
-      expect(actual.length).to.be.equal(8);
+      expect(actual.length).to.be.equal(9);
       expect(actual[0].id).to.be.equal(ArduinoThemes.light.id);
       expect(actual[1].id).to.be.equal(ArduinoThemes.dark.id);
-      expect(actual[2].id).to.be.equal(BuiltinThemeProvider.hcTheme.id);
-      expect(actual[3].id).to.be.equal(anotherTestTheme.id);
-      expect(actual[4].id).to.be.equal(testTheme.id);
-      expect(actual[5].id).to.be.equal(anotherDarkTestTheme.id);
-      expect(actual[6].id).to.be.equal(darkTestTheme.id);
-      expect(actual[7].id).to.be.equal(BuiltinThemeProvider.lightTheme.id);
+      expect(actual[2].id).to.be.equal(BuiltinThemeProvider.hcLightTheme.id);
+      expect(actual[3].id).to.be.equal(BuiltinThemeProvider.hcTheme.id);
+      expect(actual[4].id).to.be.equal(anotherTestTheme.id);
+      expect(actual[5].id).to.be.equal(testTheme.id);
+      expect(actual[6].id).to.be.equal(anotherDarkTestTheme.id);
+      expect(actual[7].id).to.be.equal(darkTestTheme.id);
+      expect(actual[8].id).to.be.equal(BuiltinThemeProvider.lightTheme.id);
     });
 
     it('should group the themes by arduino theme types', () => {
@@ -115,6 +122,7 @@ describe('theming', () => {
         themes: () => [
           ArduinoThemes.dark,
           ArduinoThemes.light,
+          BuiltinThemeProvider.hcLightTheme,
           testTheme,
           BuiltinThemeProvider.hcTheme,
           anotherTestTheme,
@@ -126,7 +134,7 @@ describe('theming', () => {
         currentTheme: () => BuiltinThemeProvider.lightTheme,
       });
       expect(actual.length).to.be.equal(3);
-      expect(actual[0].length).to.be.equal(3);
+      expect(actual[0].length).to.be.equal(4);
       expect(actual[1].length).to.be.equal(4);
       expect(actual[2].length).to.be.equal(1);
     });
@@ -137,6 +145,7 @@ describe('theming', () => {
       [
         [BuiltinThemeProvider.lightTheme, 'deprecated'],
         [BuiltinThemeProvider.darkTheme, 'deprecated'],
+        [BuiltinThemeProvider.hcLightTheme, 'built-in'],
         [BuiltinThemeProvider.hcTheme, 'built-in'],
         [ArduinoThemes.light, 'built-in'],
         [ArduinoThemes.dark, 'built-in'],
@@ -146,7 +155,7 @@ describe('theming', () => {
         [anotherDarkTestTheme, 'user'],
       ] as [Theme, ArduinoThemeType][]
     ).map(([theme, expected]) =>
-      it(`should detect the '${theme.label}' theme as '${expected}' theme`, () =>
+      it(`should detect the '${theme.label}' theme as a '${expected}' theme`, () =>
         expect(arduinoThemeTypeOf(theme)).to.be.equal(expected))
     );
   });
@@ -163,6 +172,7 @@ describe('theming', () => {
           deprecatedThemeLabel(BuiltinThemeProvider.darkTheme),
         ],
         [BuiltinThemeProvider.hcTheme, hcThemeLabel],
+        [BuiltinThemeProvider.hcLightTheme, hcLightThemeLabel],
         [ArduinoThemes.light, lightThemeLabel],
         [ArduinoThemes.dark, darkThemeLabel],
         [testTheme, userThemeLabel(testTheme)],

@@ -1,26 +1,16 @@
+import { Endpoint } from '@theia/core/lib/browser/endpoint';
 import { ThemeService } from '@theia/core/lib/browser/theming';
-import { injectable, inject } from '@theia/core/shared/inversify';
-import {
-  Command,
-  CommandRegistry,
-  MaybePromise,
-  MenuModelRegistry,
-} from '@theia/core';
-import { ArduinoMenus } from '../../menu/arduino-menus';
-import { Contribution } from '../../contributions/contribution';
-import { Endpoint, FrontendApplication } from '@theia/core/lib/browser';
-import { ipcRenderer } from '@theia/electron/shared/electron';
+import { Command, CommandRegistry } from '@theia/core/lib/common/command';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import type { MenuModelRegistry } from '@theia/core/lib/common/menu';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import queryString from 'query-string';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
-import { BoardsServiceProvider } from '../../boards/boards-service-provider';
+import { Contribution } from '../../contributions/contribution';
+import { ArduinoMenus } from '../../menu/arduino-menus';
 import { MonitorModel } from '../../monitor-model';
 import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
-import {
-  CLOSE_PLOTTER_WINDOW,
-  SHOW_PLOTTER_WINDOW,
-} from '../../../common/ipc-communication';
-import { nls } from '@theia/core/lib/common/nls';
-
-const queryString = require('query-string');
 
 export namespace SerialPlotterContribution {
   export namespace Commands {
@@ -44,38 +34,31 @@ export namespace SerialPlotterContribution {
 
 @injectable()
 export class PlotterFrontendContribution extends Contribution {
-  protected window: Window | null;
-  protected url: string;
-  protected wsPort: number;
+  private readonly endpointUrl = new Endpoint({ path: '/plotter' })
+    .getRestUrl()
+    .toString();
+  private readonly toDispose = new DisposableCollection();
+  private _plotterUrl: string | undefined;
 
   @inject(MonitorModel)
-  protected readonly model: MonitorModel;
-
+  private readonly model: MonitorModel;
   @inject(ThemeService)
-  protected readonly themeService: ThemeService;
-
+  private readonly themeService: ThemeService;
   @inject(MonitorManagerProxyClient)
-  protected readonly monitorManagerProxy: MonitorManagerProxyClient;
+  private readonly monitorManagerProxy: MonitorManagerProxyClient;
 
-  @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
-
-  override onStart(app: FrontendApplication): MaybePromise<void> {
-    this.url = new Endpoint({ path: '/plotter' }).getRestUrl().toString();
-
-    ipcRenderer.on(CLOSE_PLOTTER_WINDOW, async () => {
-      if (!!this.window) {
-        this.window = null;
-      }
-    });
+  override onStart(): void {
+    this.toDispose.push(
+      window.electronArduino.registerPlotterWindowCloseHandler(() => {
+        this._plotterUrl = undefined;
+      })
+    );
     this.monitorManagerProxy.onMonitorShouldReset(() => this.reset());
-
-    return super.onStart(app);
   }
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SerialPlotterContribution.Commands.OPEN, {
-      execute: this.startPlotter.bind(this),
+      execute: () => this.startPlotter(),
     });
     registry.registerCommand(SerialPlotterContribution.Commands.RESET, {
       execute: () => this.reset(),
@@ -85,7 +68,7 @@ export class PlotterFrontendContribution extends Contribution {
       {
         isVisible: (widget) =>
           ArduinoToolbar.is(widget) && widget.side === 'right',
-        execute: this.startPlotter.bind(this),
+        execute: () => this.startPlotter(),
       }
     );
   }
@@ -98,10 +81,13 @@ export class PlotterFrontendContribution extends Contribution {
     });
   }
 
-  async startPlotter(): Promise<void> {
+  private async startPlotter(forceReload = false): Promise<void> {
     await this.monitorManagerProxy.startMonitor();
-    if (!!this.window) {
-      ipcRenderer.send(SHOW_PLOTTER_WINDOW);
+    if (this._plotterUrl) {
+      window.electronArduino.showPlotterWindow({
+        url: this._plotterUrl,
+        forceReload,
+      });
       return;
     }
     const wsPort = this.monitorManagerProxy.getWebSocketPort();
@@ -117,26 +103,30 @@ export class PlotterFrontendContribution extends Contribution {
     }
   }
 
-  protected async open(wsPort: number): Promise<void> {
+  private open(wsPort: number): void {
     const initConfig = {
-      darkTheme: this.themeService.getCurrentTheme().type === 'dark',
+      darkTheme: this.isDarkTheme,
       wsPort,
       serialPort: this.model.serialPort,
     };
-    const urlWithParams = queryString.stringifyUrl(
+    this._plotterUrl = queryString.stringifyUrl(
       {
-        url: this.url,
+        url: this.endpointUrl,
         query: initConfig,
       },
       { arrayFormat: 'comma' }
     );
-    this.window = window.open(urlWithParams, 'serialPlotter');
+    window.electronArduino.showPlotterWindow({ url: this._plotterUrl });
   }
 
-  protected async reset(): Promise<void> {
-    if (!!this.window) {
-      this.window.close();
-      await this.startPlotter();
+  private get isDarkTheme(): boolean {
+    const themeType = this.themeService.getCurrentTheme().type;
+    return themeType === 'dark' || themeType === 'hc';
+  }
+
+  private async reset(): Promise<void> {
+    if (this._plotterUrl) {
+      await this.startPlotter(true);
     }
   }
 }

@@ -219,15 +219,3 @@ div.filterable-list-container > div > div > div > div:nth-child(1) > div.separat
     width: 65px;
     min-width: 65px;
 }
-
-/* High Contrast Theme rules */
-/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
-.hc-black.hc-theia.theia-hc .component-list-item .header .installed-version:hover:before {
-    background-color: transparent;
-    outline: 1px dashed var(--theia-focusBorder);
-}
-
-.hc-black.hc-theia.theia-hc .component-list-item .header .installed-version:before {
-    color: var(--theia-button-background);
-    border: 1px solid var(--theia-button-border);
-}

@@ -1,4 +1,4 @@
-import { notEmpty } from '@theia/core';
+import { notEmpty } from '@theia/core/lib/common/objects';
 
 /**
  * Finds the closest child HTMLButtonElement representing a Theia button.

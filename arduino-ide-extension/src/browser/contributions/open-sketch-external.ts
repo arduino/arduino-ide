@@ -1,6 +1,6 @@
 import { injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
+import { CommandService } from '@theia/core/lib/common/command';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   SketchContribution,
@@ -9,13 +9,13 @@ import {
   MenuModelRegistry,
   KeybindingRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export class OpenSketchExternal extends SketchContribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketchExternal.Commands.OPEN_EXTERNAL, {
-      execute: () => this.openExternal(),
+      execute: () => this.openExternal(registry),
     });
   }
 
@@ -34,14 +34,14 @@ export class OpenSketchExternal extends SketchContribution {
     });
   }
 
-  protected async openExternal(): Promise<void> {
+  protected async openExternal(commandService: CommandService): Promise<void> {
     const uri = await this.sketchServiceClient.currentSketchFile();
     if (uri) {
       const exists = await this.fileService.exists(new URI(uri));
       if (exists) {
         const fsPath = await this.fileService.fsPath(new URI(uri));
         if (fsPath) {
-          remote.shell.showItemInFolder(fsPath);
+          commandService.executeCommand('revealFileInOS', fsPath);
         }
       }
     }
